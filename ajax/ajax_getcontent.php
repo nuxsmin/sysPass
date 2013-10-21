@@ -1,0 +1,291 @@
+<?php
+
+/**
+ * sysPass
+ * 
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ *  
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+define('APP_ROOT', '..');
+include_once (APP_ROOT . "/inc/init.php");
+
+SP_Util::checkReferer('POST');
+
+if (!SP_Init::isLoggedIn()) {
+    SP_Util::logout();
+}
+
+if (isset($_POST["action"])) {
+    $action = $tplvars['action'] = $_POST["action"];
+    $itemId = $tplvars['id'] = ( isset($_POST["id"]) ) ? (int) $_POST["id"] : 0;
+    $lastAction = $tplvars['lastaction'] = ( isset($_POST["lastAction"]) ) ? SP_Html::sanitize($_POST["lastAction"]) : 'accsearch';
+} else {
+    die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
+}
+
+switch ($action) {
+    case "accsearch":
+        SP_Account::$accountSearchTxt = ( isset($_SESSION["accountSearchTxt"]) ) ? $_SESSION["accountSearchTxt"] : "";
+        SP_Account::$accountSearchCustomer = ( isset($_SESSION["accountSearchCustomer"]) ) ? $_SESSION["accountSearchCustomer"] : "";
+        SP_Account::$accountSearchCategory = ( isset($_SESSION["accountSearchCategory"]) ) ? $_SESSION["accountSearchCategory"] : 0;
+        SP_Account::$accountSearchOrder = ( isset($_SESSION["accountSearchOrder"]) ) ? $_SESSION["accountSearchOrder"] : 0;
+        SP_Account::$accountSearchKey = ( isset($_SESSION["accountSearchKey"]) ) ? $_SESSION["accountSearchKey"] : 0;
+
+        SP_Html::getTemplate('search', $tplvars);
+        break;
+    case "accnew":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
+
+        SP_Html::getTemplate('accounts', $tplvars);
+        break;
+    case "acccopy":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
+
+        SP_Html::getTemplate('accounts', $tplvars);
+        break;
+    case "accedit":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
+
+        SP_Html::getTemplate('accounts', $tplvars);
+        break;
+    case "acceditpass":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
+
+        SP_Html::getTemplate('editpass', $tplvars);
+        break;
+    case "accview":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+
+        SP_Html::getTemplate('accounts', $tplvars);
+        break;
+    case "accviewhistory":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+
+        SP_Html::getTemplate('accounts', $tplvars);
+        break;
+    case "accdelete":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+
+        SP_Html::getTemplate('accounts', $tplvars);
+        break;
+    case "usersmenu":
+        echo '<DIV ID="tabs">';
+        echo '<UL>';
+        echo ( SP_Users::checkUserAccess("users") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Usuarios') . '">' . _('Gestión de Usuarios') . '</A></LI>' : '';
+        echo ( SP_Users::checkUserAccess("groups") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Grupos') . '">' . _('Gestión de Grupos') . '</A></LI>' : '';
+        echo ( SP_Users::checkUserAccess("profiles") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Gestión de Perfiles') . '">' . _('Gestión de Perfiles') . '</A></LI>' : '';
+        echo '</UL>';
+
+		$tplvars['active'] = 0;
+		
+        if (SP_Users::checkUserAccess("users")) {
+            $arrUsersTableProp = array(
+                "tblId" => "tblUsers",
+                "header" => '',
+                "tblHeaders" => array(
+                    _('Nombre')
+                    , _('Login')
+                    , _('Perfil')
+                    , _('Grupo')
+                    , _('Propiedades')
+                    , ''),
+                "tblRowSrc" => array(
+                    "user_name"
+                    , "user_login"
+                    , "userprofile_name"
+                    , "usergroup_name"
+                    , array(
+                        "user_isAdminApp" => array('img_file' => "check_blue.png", 'img_title' => _('Admin Aplicación'))
+                        , "user_isAdminAcc" => array('img_file' => "check_orange.png", 'img_title' => _('Admin Cuentas'))
+                        , "user_isLdap" => array('img_file' => "ldap.png", 'img_title' => _('Usuario de LDAP'))
+                        , "user_isDisabled" => array('img_file' => "disabled.png", 'img_title' => _('Deshabilitado'))
+                    )
+                ),
+                "tblRowSrcId" => "user_id",
+                "frmId" => "frm_tblusers",
+                "actionId" => 1,
+                "newActionId" => 2,
+                "active" => $tplvars['active']++,
+                "actions" => array("edit", "del", "pass"));
+
+            echo '<DIV ID="tabs-1">';
+            $startTime = microtime();
+            SP_Users::setQueryUsers();
+
+            if (SP_Users::getItemDetail()) {
+                SP_Users::getUsrGrpTable($arrUsersTableProp);
+                SP_Html::printQueryInfoBar(SP_Users::$queryCount, $startTime);
+            }
+            echo '</DIV>';
+        }
+
+        if (SP_Users::checkUserAccess("groups")) {
+            $arrGroupsTableProp = array("tblId" => "tblGroups",
+                "header" => '',
+                "tblHeaders" => array(_('Nombre'), _('Descripción'), ''),
+                "tblRowSrc" => array("usergroup_name", "usergroup_description"),
+                "tblRowSrcId" => "usergroup_id",
+                "frmId" => "frm_tblgroups",
+                "actionId" => 3,
+                "newActionId" => 4,
+				"active" => $tplvars['active']++,
+                "actions" => array("edit", "del"));
+
+            echo '<DIV ID="tabs-2">';
+
+            $startTime = microtime();
+            SP_Users::setQueryUserGroups();
+
+            if (SP_Users::getItemDetail()) {
+                SP_Users::getUsrGrpTable($arrGroupsTableProp);
+                SP_Html::printQueryInfoBar(SP_Users::$queryCount, $startTime);
+            }
+
+            echo '</DIV>';
+        }
+
+        if (SP_Users::checkUserAccess("profiles")) {
+            $arrProfilesTableProp = array("tblId" => "tblProfiles",
+                "header" => '',
+                "tblHeaders" => array(_('Nombre'), ''),
+                "tblRowSrc" => array("userprofile_name"),
+                "tblRowSrcId" => "userprofile_id",
+                "frmId" => "frm_tblprofiles",
+                "actionId" => 5,
+                "newActionId" => 6,
+				"active" => $tplvars['active']++,
+                "actions" => array("edit", "del"));
+
+            echo '<DIV ID="tabs-3">';
+
+            $startTime = microtime();
+            SP_Users::setQueryUserProfiles();
+
+            if (SP_Users::getItemDetail()) {
+                SP_Users::getUsrGrpTable($arrProfilesTableProp);
+                SP_Html::printQueryInfoBar(SP_Users::$queryCount, $startTime);
+            }
+
+            echo '</DIV>';
+        }
+
+        echo '</DIV>';
+
+        echo '<script>
+            $("#tabs").tabs();
+            $("#tabs").tabs( "option", "active", ' . $itemId . ');
+            $("#tabs").on("tabsactivate", function( event, ui ) {
+				setContentSize();
+                //$("#container").css("height",$("#content").height() + 150);
+            });
+            </script>';
+        break;
+    case "configmenu":
+        echo '<DIV ID="tabs">';
+        echo '<UL>';
+        echo ( SP_Users::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
+        echo ( SP_Users::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Categorías') . '">' . _('Categorías') . '</A></LI>' : '';
+        echo ( SP_Users::checkUserAccess("masterpass") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
+        echo ( SP_Users::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
+        echo ( SP_Users::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-5" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
+        echo '</UL>';
+		
+		$tplvars['active'] = 0;
+
+        if (SP_Users::checkUserAccess("config")) {
+			$tplvars['active']++;
+			
+            echo '<DIV ID="tabs-1">';
+            SP_Html::getTemplate('config', $tplvars);
+            echo '</DIV>';
+        }
+
+        if (SP_Users::checkUserAccess("categories")) {
+			$tplvars['active']++;
+			
+            echo '<DIV ID="tabs-2">';
+            SP_Html::getTemplate('categories', $tplvars);
+            echo '</DIV>';
+        }
+
+        if (SP_Users::checkUserAccess("masterpass")) {
+			$tplvars['active']++;
+			
+            echo '<DIV ID="tabs-3">';
+            SP_Html::getTemplate('masterpass', $tplvars);
+            echo '</DIV>';
+        }
+
+        if (SP_Users::checkUserAccess("backup")) {
+			$tplvars['active']++;
+			
+            echo '<DIV ID="tabs-4">';
+            SP_Html::getTemplate('backup', $tplvars);
+            echo '</DIV>';
+        }
+
+        if (SP_Users::checkUserAccess("config")) {
+			$tplvars['active']++;
+			
+            echo '<DIV ID="tabs-5">';
+            SP_Html::getTemplate('migrate', $tplvars);
+            echo '</DIV>';
+        }	
+        
+        echo '</DIV>';
+
+        echo '<SCRIPT>
+            $("#tabs").tabs();
+            $("#tabs").tabs( "option", "active", ' . $itemId . ');
+            $("#tabs").on("tabsactivate", function( event, ui ) {
+                $("#container").css("height",$("#content").height() + 150);
+            });
+            </SCRIPT>';
+        break;
+    case "eventlog":
+        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        
+        SP_Html::getTemplate('eventlog', $tplvars);
+        break;
+}
+
+if (SP_Config::getValue('debug') && isset($_SESSION["uisadminapp"])) {
+    $time_stop = SP_Init::microtime_float();
+    $time = ($time_stop - $time_start);
+    $memEnd = memory_get_usage();
+
+    echo "<div ID= 'debuginfo' class='round'>";
+    echo "<h3>DEBUG INFO</h3>";
+    echo "<ul>";
+    echo "<li>RENDER -> " . $time . " sec</li>";
+//    echo "<li>RENDER - Init: ".$startTime." - End: ".$stopTime." - Total: ".($stopTime - $startTime)."</li>";
+    echo "<li>MEM -> Init: " . ($memInit / 1000) . " KB - End: " . ($memEnd / 1000) . " KB - Total: " . (($memEnd - $memInit) / 1000) . " KB</li>";
+    echo "<li>SESSION:<pre>";
+    print_r($_SESSION);
+    echo "</pre></li>";
+    echo "<li>CONFIG:<pre>";
+    print_r(SP_Config::getKeys(TRUE));
+    echo "</pre></li>";
+    echo "</div>";
+}

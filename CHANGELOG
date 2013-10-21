@@ -1,0 +1,178 @@
+=== ** v0.971b ** ===
+
+* [BUG] Corregidos fallo al actualizar la BBDD.
+* [MOD] Cambios visuales.
+
+=== ** v0.97b ** ===
+
+* [BUG] Corregidos fallos de la aplicación.
+* [MOD] Optimización de código.
+* [MOD] Cambios visuales.
+
+=== ** v0.962b ** ===
+
+* [MOD] El módulo LDAP es opcional.
+
+=== ** v0.961b ** ===
+
+* [BUG] Corrección de fallos críticos de funcionalidad.
+* [NUEVO] Añadidos roles de administrador de cuentas (A) y administrador de aplicación (A+). Se suprime el grupo 1 como administradores.
+* [MOD] Supresión de avisos de PHP. Se adapta el código a E_STRICT.
+* [MOD] Mejoras en el timeout de sesión.
+* [MOD] Mejoras en el instalador.
+
+=== ** v0.96b **  ===
+
+* [BUG] Si se cambia la clave maestra, los usuarios que están logados no tienen permitido cambiar claves.
+* [BUG] Corrección de fallos menores.
+* [NUEVO] Nuevo generador de claves seguras.
+* [NUEVO] Nuevo indicador de fortaleza de una clave.
+* [MOD] Simplicación de opciones de instalación.
+
+=== ** v0.954b **  ===
+
+* [BUG] Corrección de fallos en el instalador cuando se trata de actualizar.
+
+=== ** v0.953b **  ===
+
+* [BUG] Corrección de fallos menores.
+* [NUEVO] Nuevas opciones de configuración.
+* [NUEVO] Ayuda a parámetros de configuración.
+* [MOD] Mejoras en el instalador.
+* [MOD] Retoques en el diseño.
+
+=== ** v0.952b **  ===
+
+* [BUG] Corregidos fallos en el instalador.
+* [NUEVO] Aplicación de actualizaciones de la BBDD según versiones.
+
+=== ** v0.951b **  ===
+
+* [BUG] Corrección de fallos.
+* [MOD] Completada traducción a inglés.
+
+=== ** v0.95b **  ===
+
+* [BUG] Corrección de fallos.
+* [NUEVO] Instalador reescrito. Ahora es posible crear/actualizar la BBDD desde el navegador. También es posible modificar la configuración.
+* [NUEVO] Soporte i18n (localización).
+
+=== ** v0.94b **  ===
+
+* [BUG] Corregido fallo en la comprobación de actualizaciones.
+* [BUG] Corrección de fallos.
+* [MOD] Instalador mejorado.
+* [MOD] Cambios en el diseño.
+
+=== ** v0.93b **  ===
+
+* [BUG] Corrección de fallos.
+
+=== ** v0.92b **  ===
+
+* [BUG] Corrección de fallos.
+* [NUEVO] Gestión de opciones de configuración.
+* [NUEVO] Comprobación de actualizaciones.
+* [NUEVO] Los archivos adjuntos del tipo texto o imagen se pueden previsualizar.
+
+=== ** v0.91b **  ===
+
+* [BUG] Corrección de fallos en consulta ajax con sesión caducada.
+* [NUEVO] Carga de configuración en la BBDD. No es necesario archivo config.ini (puede ser visible desde el navegador si el servidor no tiene deshabilitado este tipo de archivos). En próximas versiones se dispondrá de interface para configurar dichas opciones.
+* [MOD] Mejoras de seguridad en consultas a la BBDD.
+* [MOD] Cambios estéticos.
+
+=== ** v0.9b **  ===
+
+* [NUEVO] Versión inicial
+
+---
+
+=== ** v0.971b ** ===
+
+* [BUG] Bugfix for BBDD upgrade.
+* [MOD] Visual changes.
+
+=== ** v0.97b ** ===
+
+* [BUG] Several bugfixes.
+* [MOD] Code improvements.
+* [MOD] Visual changes.
+
+=== ** v0.962b ** ===
+
+* [MOD] LDAP module is optional.
+
+=== ** v0.961b ** ===
+
+* [BUG] Critical bugfixes.
+* [NEW] Added new user roles:  accounts administrator (A) and application administrator (A+). Group with id 1 is removed as administrators.
+* [MOD] Suppressed PHP warnings. Code adapted to E_STRICT.
+* [MOD] Improved session timeout.
+* [MOD] Installer improvements.
+
+=== ** v0.96b **  ===
+
+* [BUG] If you change the master password, users that are logged in, can't change account passwords.
+* [BUG] Minor bugfixes.
+* [NEW] New secure password generator.
+* [NEW] New password strength meter.
+* [MOD] Installation options has been simplified.
+
+=== ** v0.954b **  ===
+
+* [BUG] Bugfixed installer on update process.
+
+=== ** v0.953b **  ===
+
+* [BUG] Minor bugfixes.
+* [NEW] New configuration options.
+* [NEW] Help for configuration parameters.
+* [MOD] Installer improvements.
+* [MOD] Design changes.
+
+
+=== ** v0.952b **  ===
+
+* [BUG] Installer bugfixes.
+* [NEW] Apply DB updates according to version.
+
+=== ** v0.951b **  ===
+
+* [BUG] Minor bugfixes.
+* [MOD} English translation completed (I hope, if you find a mistake, please tell me).
+
+=== ** v0.95b **  ===
+
+* [BUG] Minor bugfixes.
+* [NEW] Installer has been rewritten. Now is possible to create/update the database from web browser. Also, it's possible to modify configuration parameters.
+* [NEW] i18n support (localization).
+
+=== ** v0.94b **  ===
+
+* [BUG] Fixed issue on checking updates.
+* [BUG] Minor bugfixes.
+* [MOD] Improved installer.
+* [MOD] Design changes.
+
+=== ** v0.93b **  ===
+
+* [BUG] Minor bugfixes.
+
+=== ** v0.92b **  ===
+
+* [BUG] Minor bugfixes.
+* [NEW] Configuration options management.
+* [NEW] Autocheck for updates.
+* [NEW] Attachments of type text or image could be previewed.
+
+=== ** v0.91b **  ===
+
+* [BUG] Bugfixed ajax query with sessión finished.
+* [NEW] Configuration options are stored on DB. It's not needed config.ini file (it could be downloaded if the server have not been configured to deny this kind of files). In the next releases it there will be an interface to configure these options.
+* [MOD] Improved security of DB queries.
+* [MOD] Layout changes.
+
+=== ** v0.9b **  ===
+
+* [NEW] Initial version.
