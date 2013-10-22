@@ -953,6 +953,7 @@ class SP_Account {
      * @brief Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra
      * @param string $currentMasterPass con la clave maestra actual
      * @param string $newMasterPass con la nueva clave maestra
+     * @param string $newHash con el nuevo hash de la clave maestra 
      * @return bool
      */
     public function updateAllAccountsHistoryMPass($currentMasterPass, $newMasterPass, $newHash){
