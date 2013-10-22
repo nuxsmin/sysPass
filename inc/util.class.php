@@ -201,7 +201,7 @@ class SP_Util {
 //        
 //        curl_close($ch);
         
-        $feedUrl = 'http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/1/rss';
+        $feedUrl = 'http://sourceforge.net/api/file/index/project-id/1257402/mtime/desc/limit/1/rss';
         $feed =  file_get_contents($feedUrl);
         
         if ( $feed ){
