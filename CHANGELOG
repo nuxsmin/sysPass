@@ -1,3 +1,17 @@
+=== ** v1.0rc1 ** ===
+
+* [NUEVO] Nuevo nombre: phpPMS es ahora sysPass, Sysadmin Password Manager.
+* [NUEVO] Instalación en un solo paso.
+* [NUEVO] Nueva interface basada en HTML5 y Ajax, con redistribución de elementos y menús para aprovechar el espacio en pantalla.
+* [NUEVO] Seguridad mejorada con encriptación de clave maestra en sesión y formularios con token de identificación única.
+* [NUEVO] Gestión de perfiles avanzada con 16 niveles de acceso.
+* [NUEVO] Gestión de usuarios mejorada y simplificada.
+* [NUEVO] Autentificación con OpenLDAP y Active Directory.
+* [NUEVO] Visor del histórico de cambios en cuentas.
+* [NUEVO] Registro de eventos con navegación.
+* [MOD] Refactorización de métodos y reescritura de código.
+* [MOD] Reorganización de la BBDD.
+
 === ** v0.971b ** ===
 
 * [BUG] Corregidos fallo al actualizar la BBDD.
@@ -87,6 +101,20 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0rc1 ** ===
+
+* [NEW] New name: phpPMS is now sysPass, Sysadmin Password Manager.
+* [NEW] One-step install process.
+* [NEW] New HTML5 and Ajax based interface with element redistribution and menus to have more space on screen.
+* [NEW] Enhanced security with in session master password encryption and forms with unique identity token.
+* [NEW] Advanced profiles management with 16 access levels.
+* [NEW] Enhanced and simplified users management.
+* [NEW] OpenLDAP and Active Directory authentication.
+* [NEW] Accounts' history change viewer.
+* [NEW] Event log with navigation bar.
+* [MOD] Method refactoring and code rewriting for performance.
+* [MOD] Database reorganization.
 
 === ** v0.971b ** ===
 

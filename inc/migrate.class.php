@@ -107,6 +107,8 @@ class SP_Migrate {
         
         self::$result['ok'][] = _('Importación finalizada');
         self::$result['ok'][] = _('Revise el registro de eventos para más detalles');
+        
+        return(self::$result);
     }
 
     /**

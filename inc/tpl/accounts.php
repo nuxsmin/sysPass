@@ -135,6 +135,7 @@ $showEditPass = ($action == "accedit"
                 && ! $account->accountIsHistory);
 $showDelete = ($action == "accdelete" && $account->checkAccountAccess("accdelete")  && SP_Users::checkUserAccess("accdelete"));
 $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
+$skey = SP_Common::getSessionKey();
 ?>
 
 <div id="title" class="midroundup <? echo $title['class']; ?>"><? echo $title['name']; ?></div>
@@ -258,7 +259,7 @@ $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
     <input type="hidden" name="next" value="<? echo $nextaction; ?>">
     <input type="hidden" name="savetyp" value="<? echo $savetype; ?>">
     <input type="hidden" name="accountid" value="<? echo $account->accountId; ?>" />
-    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="sk" value="<? echo $skey; ?>">
     <input type="hidden" name="is_ajax" value="1">
 </form>
     <? endif; ?>
@@ -269,15 +270,15 @@ $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
                 <td class="valField">
                     <div id="downFiles"></div>
                     <? if ( $account->accountIsHistory ): ?>
-                        <script>getFiles(<? echo $account->accountParentId; ?>, <? echo $filesDelete; ?>, '<? echo SP_Common::getSessionKey(TRUE); ?>');</script>
+                        <script>getFiles(<? echo $account->accountParentId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');</script>
                     <? else: ?>
-                        <script>getFiles(<? echo $account->accountId; ?>, <? echo $filesDelete; ?>, '<? echo SP_Common::getSessionKey(TRUE); ?>');	</script>
+                        <script>getFiles(<? echo $account->accountId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');	</script>
                         <? if ( $action == "accedit" ): ?>
                             <div id="fileUpload">
                                 <form method="post" enctypr="multipart/form-data" action="ajax/ajax_files.php" name="upload_form" id="upload_form">
                                     <input type="hidden" name="accountId" id="account" value="<? echo $account->accountId; ?>" />
                                     <input type="hidden" name="action" id="action" value="upload" />
-                                    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+                                    <input type="hidden" name="sk" value="<? echo $skey; ?>">
                                     <input type="text" id="inFilename" placeholder="<? echo _('Seleccionar archivo'); ?>" />
                                     <input type="file" id="inFile" name="inFile" OnChange="$('#inFilename').val(this.value);" />
                                     <img id="btnUpload" src="imgs/upload.png" title="<? echo _('Subir archivo (max. 1 MB)'); ?>" class="inputImg" OnClick="upldFile(<? echo $account->accountId; ?>)" />
