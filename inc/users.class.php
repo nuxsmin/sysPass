@@ -52,7 +52,7 @@ class SP_Users {
     var $profileId;
     var $profileName;
     // Variables de consulta
-    static $resQuery;
+    static $queryRes;
     static $querySelect;
     static $queryFrom;
     static $queryWhere;
@@ -71,28 +71,28 @@ class SP_Users {
      * Esta función obtiene los datos de un usuario y los guarda en las variables de la clase.
      */
     public function getUserInfo() {
-        $strQuery = "SELECT user_id, user_name, user_groupId, user_login, user_email, user_notes, user_count, user_profileId,
+        $query = "SELECT user_id, user_name, user_groupId, user_login, user_email, user_notes, user_count, user_profileId,
                     usergroup_name, user_isAdminApp, user_isAdminAcc, user_isLdap, user_isDisabled 
                     FROM usrData
                     LEFT JOIN usrGroups ON user_groupId = usergroup_id 
                     LEFT JOIN usrProfiles ON user_profileId = userprofile_id 
                     WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
 
-        $this->userId = (int) $resQuery[0]->user_id;
-        $this->userName = $resQuery[0]->user_name;
-        $this->userGroupId = (int) $resQuery[0]->user_groupId;
-        $this->userGroupName = $resQuery[0]->usergroup_name;
-        $this->userEmail = $resQuery[0]->user_email;
-        $this->userProfileId = (int) $resQuery[0]->user_profileId;
-        $this->userIsAdminApp = (int) $resQuery[0]->user_isAdminApp;
-        $this->userIsAdminAcc = (int) $resQuery[0]->user_isAdminAcc;
-        $this->userIsLdap = (int) $resQuery[0]->user_isLdap;
+        $this->userId = (int) $queryRes[0]->user_id;
+        $this->userName = $queryRes[0]->user_name;
+        $this->userGroupId = (int) $queryRes[0]->user_groupId;
+        $this->userGroupName = $queryRes[0]->usergroup_name;
+        $this->userEmail = $queryRes[0]->user_email;
+        $this->userProfileId = (int) $queryRes[0]->user_profileId;
+        $this->userIsAdminApp = (int) $queryRes[0]->user_isAdminApp;
+        $this->userIsAdminAcc = (int) $queryRes[0]->user_isAdminAcc;
+        $this->userIsLdap = (int) $queryRes[0]->user_isLdap;
 
         return TRUE;
     }
@@ -109,14 +109,14 @@ class SP_Users {
             return FALSE;
         }
 
-        $strQuery = self::$querySelect . ' ' . self::$queryFrom . ' ' . self::$queryWhere;
-        self::$resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = self::$querySelect . ' ' . self::$queryFrom . ' ' . self::$queryWhere;
+        self::$queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (self::$resQuery === FALSE || !is_array(self::$resQuery)) {
+        if (self::$queryRes === FALSE || !is_array(self::$queryRes)) {
             return FALSE;
         }
 
-        self::$queryCount = count(self::$resQuery);
+        self::$queryCount = count(self::$queryRes);
 
         if (self::$queryCount === 0) {
             return FALSE;
@@ -198,16 +198,16 @@ class SP_Users {
 
         $strFilter = ( is_array($arrFilter) ) ? " WHERE " . implode(" OR ", $arrFilter) : "";
 
-        $strQuery = "SELECT $tblColId, $tblColName FROM $tblName $strFilter";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter";
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
         $arrValues = array();
 
-        foreach ($resQuery as $row) {
+        foreach ($queryRes as $row) {
             $arrValues[$row->$tblColId] = $row->$tblColName;
         }
 
@@ -251,7 +251,7 @@ class SP_Users {
 
         echo '<div class="data-rows">';
 
-        foreach (self::$resQuery as $item) {
+        foreach (self::$queryRes as $item) {
             $intId = $item->$arrUsersTableProp["tblRowSrcId"];
             $action_check = array();
 
@@ -325,7 +325,7 @@ class SP_Users {
             if (self::getItemDetail()) {
                 $user['checks'] = array();
 
-                foreach (self::$resQuery as $row) {
+                foreach (self::$queryRes as $row) {
                     foreach ($row as $name => $value) {
                         // Check if field is a checkbox one
                         if (preg_match('/^.*_is[A-Z].*$/', $name)) {
@@ -358,7 +358,7 @@ class SP_Users {
             self::setQueryUserGroups($id);
 
             if (self::getItemDetail()) {
-                foreach (self::$resQuery as $row) {
+                foreach (self::$queryRes as $row) {
                     foreach ($row as $name => $value) {
                         $group[$name] = $value;
                     }
@@ -401,7 +401,7 @@ class SP_Users {
             self::setQueryUserProfiles($id);
 
             if (self::getItemDetail()) {
-                foreach (self::$resQuery as $row) {
+                foreach (self::$queryRes as $row) {
                     foreach ($row as $name => $value) {
                         if (preg_match('/^.*_p[A-Z].*$/', $name)) {
                             $profile[$name] = ( (int) $value === 1 ) ? "CHECKED" : "";
@@ -426,17 +426,17 @@ class SP_Users {
         $userLogin = strtoupper($this->userLogin);
         $userEmail = strtoupper($this->userEmail);
 
-        $strQuery = "SELECT user_login, user_email FROM usrData
+        $query = "SELECT user_login, user_email FROM usrData
                     WHERE (UPPER(user_login) = '" . DB::escape($userLogin) . "' 
                     OR UPPER(user_email) = '" . DB::escape($userEmail) . "') 
                     AND user_id != " . (int) $this->userId;
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        foreach ($resQuery as $userData) {
+        foreach ($queryRes as $userData) {
             $resULogin = strtoupper($userData->user_login);
             $resUEmail = strtoupper($userData->user_email);
 
@@ -456,15 +456,15 @@ class SP_Users {
         $strGroupName = strtoupper($this->groupName);
 
         if ($this->groupId) {
-            $strQuery = "SELECT usergroup_name FROM usrGroups
+            $query = "SELECT usergroup_name FROM usrGroups
                         WHERE UPPER(usergroup_name) = '" . DB::escape($strGroupName) . "' 
                         AND usergroup_id != " . (int) $this->groupId;
         } else {
-            $strQuery = "SELECT usergroup_name FROM usrGroups
+            $query = "SELECT usergroup_name FROM usrGroups
                         WHERE UPPER(usergroup_name) = '" . DB::escape($strGroupName) . "'";
         }
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -483,15 +483,15 @@ class SP_Users {
         $profileName = strtoupper($this->profileName);
 
         if ($this->profileId) {
-            $strQuery = "SELECT userprofile_name FROM usrProfiles
+            $query = "SELECT userprofile_name FROM usrProfiles
                         WHERE UPPER(userprofile_name) = '" . DB::escape($profileName) . "' 
                         AND userprofile_id != " . (int) $this->profileId;
         } else {
-            $strQuery = "SELECT userprofile_name FROM usrProfiles
+            $query = "SELECT userprofile_name FROM usrProfiles
                         WHERE UPPER(userprofile_name) = '" . DB::escape($profileName) . "'";
         }
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -510,9 +510,9 @@ class SP_Users {
      */
     public function checkGroupInUse() {
         // Número de usuarios con el grupo
-        $strQuery = "SELECT user_id FROM usrData WHERE user_groupId = " . (int) $this->groupId;
+        $query = "SELECT user_id FROM usrData WHERE user_groupId = " . (int) $this->groupId;
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE)
+        if (DB::doQuery($query, __FUNCTION__) === FALSE)
             return FALSE;
 
         $numRows = count(DB::$last_result);
@@ -523,9 +523,9 @@ class SP_Users {
         }
 
         // Número de cuentas con el grupo como primario
-        $strQuery = "SELECT account_id FROM accounts WHERE account_groupId = " . (int) $this->groupId;
+        $query = "SELECT account_id FROM accounts WHERE account_groupId = " . (int) $this->groupId;
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -537,9 +537,9 @@ class SP_Users {
         }
 
         // Número de cuentas con el grupo como secundario
-        $strQuery = "SELECT accgroup_id FROM accGroups WHERE accgroup_groupId = " . (int) $this->groupId;
+        $query = "SELECT accgroup_id FROM accGroups WHERE accgroup_groupId = " . (int) $this->groupId;
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -558,9 +558,9 @@ class SP_Users {
      * @return bool
      */
     public function checkProfileInUse() {
-        $strQuery = "SELECT user_id FROM usrData WHERE user_profileId = " . (int) $this->profileId;
+        $query = "SELECT user_id FROM usrData WHERE user_profileId = " . (int) $this->profileId;
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -587,12 +587,12 @@ class SP_Users {
             }
         }
 
-        $strQuery = "SELECT user_login, user_pass FROM usrData
+        $query = "SELECT user_login, user_pass FROM usrData
                         WHERE user_login = '" . DB::escape($this->userLogin) . "'
                         AND user_isMigrate = 0
                         AND user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($this->userPass) . "')) LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -608,15 +608,15 @@ class SP_Users {
      * @return bool
      */
     public function checkUserIsDisabled() {
-        $strQuery = "SELECT user_isDisabled FROM usrData
+        $query = "SELECT user_isDisabled FROM usrData
                     WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        if ($resQuery[0]->user_isDisabled == 0) {
+        if ($queryRes[0]->user_isDisabled == 0) {
             return FALSE;
         }
 
@@ -628,10 +628,10 @@ class SP_Users {
      * @return bool
      */
     public function checkUserLDAP() {
-        $strQuery = "SELECT user_login FROM usrData 
+        $query = "SELECT user_login FROM usrData 
                     WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -647,15 +647,15 @@ class SP_Users {
      * @return bool
      */
     private function checkUserIsMigrate() {
-        $strQuery = "SELECT user_isMigrate FROM usrData
+        $query = "SELECT user_isMigrate FROM usrData
                     WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        if ($resQuery[0]->user_isMigrate == 0) {
+        if ($queryRes[0]->user_isMigrate == 0) {
             return FALSE;
         }
 
@@ -671,7 +671,7 @@ class SP_Users {
     private function migrateUser() {
         $passdata = $this->makeUserPass();
 
-        $strQuery = "UPDATE usrData SET 
+        $query = "UPDATE usrData SET 
                     user_pass = '" . $passdata['pass'] . "',
                     user_hashSalt = '" . $passdata['salt'] . "',
                     user_lastUpdate = NOW(),
@@ -681,7 +681,7 @@ class SP_Users {
                     AND (user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($this->userPass) . "'))
                     OR user_pass = MD5('" . DB::escape($this->userPass) . "')) LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -714,7 +714,7 @@ class SP_Users {
     public function newUserLDAP() {
         $passdata = $this->makeUserPass();
 
-        $strQuery = "INSERT INTO usrData SET
+        $query = "INSERT INTO usrData SET
                     user_name = '" . DB::escape($this->userName) . "',
                     user_groupId = 0,
                     user_login = '" . DB::escape($this->userLogin) . "',
@@ -726,7 +726,7 @@ class SP_Users {
                     user_isLdap = 1,
                     user_isDisabled = 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -753,7 +753,7 @@ class SP_Users {
 
         switch ($actionName) {
             case "add":
-                $strQuery = "INSERT INTO usrData SET
+                $query = "INSERT INTO usrData SET
                             user_name = '" . DB::escape($this->userName) . "',
                             user_login = '" . DB::escape($this->userLogin) . "',
                             user_email = '" . DB::escape($this->userEmail) . "',
@@ -767,7 +767,7 @@ class SP_Users {
                             user_isLdap = 0";
                 break;
             case "update":
-                $strQuery = "UPDATE usrData SET
+                $query = "UPDATE usrData SET
                             user_name = '" . DB::escape($this->userName) . "',
                             user_login = '" . DB::escape($this->userLogin) . "',
                             user_email = '" . DB::escape($this->userEmail) . "',
@@ -781,20 +781,20 @@ class SP_Users {
                             WHERE user_id = " . (int) $this->userId . " LIMIT 1";
                 break;
             case "updatepass":
-                $strQuery = "UPDATE usrData SET 
+                $query = "UPDATE usrData SET 
                             user_pass = '" . $passdata['pass'] . "',
                             user_hashSalt = '" . $passdata['salt'] . "',
                             user_lastUpdate = NOW()
                             WHERE user_id = " . (int) $this->userId . " LIMIT 1";
                 break;
             case "delete":
-                $strQuery = "DELETE FROM usrData WHERE user_id = " . (int) $this->userId . " LIMIT 1";
+                $query = "DELETE FROM usrData WHERE user_id = " . (int) $this->userId . " LIMIT 1";
                 break;
             default :
                 return FALSE;
         }
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -814,24 +814,24 @@ class SP_Users {
     public function manageGroup($actionName) {
         switch ($actionName) {
             case "add":
-                $strQuery = "INSERT INTO usrGroups SET
+                $query = "INSERT INTO usrGroups SET
                             usergroup_name = '" . DB::escape($this->groupName) . "',
                             usergroup_description = '" . DB::escape($this->groupDesc) . "'";
                 break;
             case "update":
-                $strQuery = "UPDATE usrGroups SET 
+                $query = "UPDATE usrGroups SET 
                             usergroup_name = '" . DB::escape($this->groupName) . "',
                             usergroup_description = '" . $this->groupDesc . "' 
                             WHERE usergroup_id = " . (int) $this->groupId;
                 break;
             case "delete":
-                $strQuery = "DELETE FROM usrGroups WHERE usergroup_id = " . (int) $this->groupId . " LIMIT 1";
+                $query = "DELETE FROM usrGroups WHERE usergroup_id = " . (int) $this->groupId . " LIMIT 1";
                 break;
             default :
                 return FALSE;
         }
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -855,7 +855,7 @@ class SP_Users {
 
         switch ($actionName) {
             case "add":
-                $strQuery = "INSERT INTO usrProfiles SET
+                $query = "INSERT INTO usrProfiles SET
                             userprofile_name = '" . DB::escape($this->profileName) . "',
                             userProfile_pView = " . $profileProp["pAccView"] . ",
                             userProfile_pViewPass = " . $profileProp["pAccViewPass"] . ",
@@ -877,7 +877,7 @@ class SP_Users {
                             userProfile_pEventlog = " . $profileProp["pEventlog"];
                 break;
             case "update":
-                $strQuery = "UPDATE usrProfiles SET
+                $query = "UPDATE usrProfiles SET
                             userprofile_name = '" . DB::escape($this->profileName) . "',
                             userProfile_pView = " . $profileProp["pAccView"] . ",
                             userProfile_pViewPass = " . $profileProp["pAccViewPass"] . ",
@@ -900,13 +900,13 @@ class SP_Users {
                             WHERE userprofile_id = " . (int) $this->profileId . " LIMIT 1";
                 break;
             case "delete":
-                $strQuery = "DELETE FROM usrProfiles WHERE userprofile_id = " . (int) $this->profileId . " LIMIT 1";
+                $query = "DELETE FROM usrProfiles WHERE userprofile_id = " . (int) $this->profileId . " LIMIT 1";
                 break;
             default :
                 return FALSE;
         }
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -922,13 +922,13 @@ class SP_Users {
     public function updateUserLDAP() {
         $passdata = $this->makeUserPass();
 
-        $strQuery = "UPDATE usrData SET 
+        $query = "UPDATE usrData SET 
                     user_pass = '" . $passdata['pass'] . "',
                     user_hashSalt = '" . $passdata['salt'] . "',
                     user_lastUpdate = NOW()
                     WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -960,11 +960,11 @@ class SP_Users {
      * @return bool
      */
     private function setUserLastLogin() {
-        $strQuery = "UPDATE usrData SET "
+        $query = "UPDATE usrData SET "
                 . "user_lastLogin = NOW() "
                 . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
     }
@@ -974,16 +974,16 @@ class SP_Users {
      * @return int con el Id del usuario
      */
     public static function getUserIdByLogin($login) {
-        $strQuery = "SELECT user_id FROM usrData 
+        $query = "SELECT user_id FROM usrData 
                     WHERE user_login = '" . DB::escape($login) . "' LIMIT 1";
 
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        return (int) $resQuery[0]->user_id;
+        return (int) $queryRes[0]->user_id;
     }
 
     /**
@@ -1143,14 +1143,14 @@ class SP_Users {
             return FALSE;
         }
 
-        $strQuery = 'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = ' . $userId;
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = 'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = ' . $userId;
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        foreach ($resQuery as $userData) {
+        foreach ($queryRes as $userData) {
             $userLastUpdateMPass = $userData->user_lastUpdateMPass;
         }
 
@@ -1183,13 +1183,13 @@ class SP_Users {
             return FALSE;
         }
 
-        $strQuery = "UPDATE usrData SET
+        $query = "UPDATE usrData SET
                         user_mPass = '$strUserMPwd[0]',
                         user_mIV = '$strUserMPwd[1]',
                         user_lastUpdateMPass = UNIX_TIMESTAMP()
                         WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -1202,16 +1202,16 @@ class SP_Users {
      * @return bool|string Devuelve bool se hay error o string si se devuelve la clave
      */
     public function getUserMPass($showPass = FALSE) {
-        $strQuery = "SELECT user_mPass, user_mIV "
+        $query = "SELECT user_mPass, user_mIV "
                 . "FROM usrData "
                 . "WHERE user_id = " . (int) $this->userId;
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        foreach ($resQuery as $userData) {
+        foreach ($queryRes as $userData) {
             if ($userData->user_mPass && $userData->user_mIV) {
                 $objCrypt = new SP_Crypt;
                 $strClearMPwd = $objCrypt->decrypt($userData->user_mPass, $this->userPass, $userData->user_mIV);
@@ -1241,7 +1241,7 @@ class SP_Users {
      * @return object con los permisos del perfil del usuario
      */
     public static function getUserProfile() {
-        $strQuery = "SELECT user_profileId,
+        $query = "SELECT user_profileId,
                             userProfile_pView,
                             userProfile_pViewPass,
                             userProfile_pViewHistory,
@@ -1264,13 +1264,13 @@ class SP_Users {
                             JOIN usrProfiles ON userProfile_Id = user_profileId
                             WHERE user_id = " . $_SESSION['uid'] . " LIMIT 1";
 
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($resQuery === FALSE || !is_array($resQuery)) {
+        if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        return $resQuery[0];
+        return $queryRes[0];
     }
 
     /**

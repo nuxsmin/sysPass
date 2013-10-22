@@ -68,7 +68,7 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                 </tr>
 
                 <tr>
-                    <td class="descField"><? echo _('Login'); ?>'</td><td class="valField">
+                    <td class="descField"><? echo _('Login'); ?></td><td class="valField">
                         <input type="text" id="usrlogin" name="login" title="<? echo _('Login de inicio de sesión'); ?>" class="txtlogin" maxlength="10" value="<? echo $user['user_login'] ?>" <? echo $ro; ?> />
                         <? if ($ro): ?>
                             <img src="imgs/ldap.png" title="<? echo _('Usuario de LDAP'); ?>" class="iconMini" />

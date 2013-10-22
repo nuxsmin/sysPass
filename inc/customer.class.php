@@ -41,17 +41,17 @@ class SP_Customer{
      * @return array con el id de cliente como clave y el nombre como valor
      */ 
     public static function getCustomers(){
-        $strQuery = "SELECT customer_id, customer_name "
+        $query = "SELECT customer_id, customer_name "
                 . "FROM customers ORDER BY customer_name";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
         
-        if ( $resQuery === FALSE || ! is_array($resQuery) ){
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
             return FALSE;
         }
         
         $resCustomers = array();
         
-        foreach ( $resQuery as $customer ){
+        foreach ( $queryRes as $customer ){
             $resCustomers[$customer->customer_id] = $customer->customer_name;
         }
 
@@ -63,11 +63,11 @@ class SP_Customer{
      * @return bool
      */ 
     public function customerAdd(){
-        $strQuery = "INSERT INTO customers SET "
+        $query = "INSERT INTO customers SET "
                 . "customer_name = '".DB::escape($this->customerName)."',"
                 . "customer_hash = '".$this->mkCustomerHash()."'";
         
-        if ( DB::doQuery($strQuery, __FUNCTION__) === FALSE ){
+        if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
         }
         
@@ -81,10 +81,10 @@ class SP_Customer{
      * @return bool
      */ 
     public function customerDel(){
-        $strQuery = "DELETE FROM customers"
+        $query = "DELETE FROM customers"
                 . " WHERE customer_id = $this->customerId LIMIT 1";
         
-        if ( DB::doQuery($strQuery, __FUNCTION__) === FALSE ){
+        if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
         }
         
@@ -111,11 +111,11 @@ class SP_Customer{
      * @return bool
      */ 
     public function chekDupCustomer(){
-        $strQuery = "SELECT customer_id "
+        $query = "SELECT customer_id "
                 . "FROM customers "
                 . "WHERE customer_hash = '".$this->mkCustomerHash()."'";
         
-        if ( DB::doQuery($strQuery, __FUNCTION__) === FALSE ){
+        if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
         }
         

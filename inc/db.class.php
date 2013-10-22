@@ -103,9 +103,9 @@ class DB {
         // Limpiar valores de caché
         self::$last_result = array();
         
-        $resQuery = self::$_db->query($query);
+        $queryRes = self::$_db->query($query);
 
-        if ( ! $resQuery ) {
+        if ( ! $queryRes ) {
             self::$txtError = self::$_db->error;
             
             $message['action'] = $querySource;
@@ -119,12 +119,12 @@ class DB {
         if ( $isSelect ) {
             $num_rows = 0;
             
-            while ( $row = @$resQuery->fetch_object() ) {
+            while ( $row = @$queryRes->fetch_object() ) {
                 self::$last_result[$num_rows] = $row;
                 $num_rows++;
             }
             
-            $resQuery->close();
+            $queryRes->close();
         }
 
         self::$lastId = self::$_db->insert_id;

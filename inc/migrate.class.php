@@ -149,13 +149,13 @@ class SP_Migrate {
                 . "WHERE table_schema='" . self::$dbname . "' "
                 . "AND table_name = 'users';";
 
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if ($resQuery) {
-            $row = $resQuery->fetch_row();
+        if ($queryRes) {
+            $row = $queryRes->fetch_row();
         }
 
-        if (!$resQuery || $row[0] == 0) {
+        if (!$queryRes || $row[0] == 0) {
             return FALSE;
         }
 
@@ -174,9 +174,9 @@ class SP_Migrate {
         // Limpiar datos de las tablas
         foreach ($tables as $table) {
             $query = 'TRUNCATE TABLE ' . $table;
-            $resQuery = DB::doQuery($query, __FUNCTION__);
+            $queryRes = DB::doQuery($query, __FUNCTION__);
 
-            if ( $resQuery === FALSE) {
+            if ( $queryRes === FALSE) {
                 throw new MigrateException('critical',
                 _('Error al vaciar tabla') . ' (' . $table . ')',
                 DB::$txtError);
@@ -188,9 +188,9 @@ class SP_Migrate {
         // Limpiar datos de usuarios manteniendo el usuario actual
         if (self::checkAdminAccount($currentUserId)) {
             $query = 'DELETE FROM usrData WHERE user_id != ' . $currentUserId;
-            $resQuery = DB::doQuery($query, __FUNCTION__);
+            $queryRes = DB::doQuery($query, __FUNCTION__);
 
-            if ( $resQuery === FALSE ) {
+            if ( $queryRes === FALSE ) {
                 throw new MigrateException('critical',
                 _('Error al vaciar tabla') . ' (' . $table . ')',
                 DB::$txtError);
@@ -210,9 +210,9 @@ class SP_Migrate {
         $query = 'SELECT COUNT(*) '
                 . 'FROM usrData '
                 . 'WHERE user_id = ' . $currentUserId . ' AND user_isAdminApp = 1';
-        $resQuery = DB::doQuery($query,__FUNCTION__);
+        $queryRes = DB::doQuery($query,__FUNCTION__);
 
-        if ($resQuery !== 1) {
+        if ($queryRes !== 1) {
             return FALSE;
         }
 
@@ -225,15 +225,15 @@ class SP_Migrate {
      */
     private static function getCustomers() {
         $query = 'SELECT DISTINCT vacCliente FROM accounts';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener los clientes'),
             self::$dbc->error);
         }
 
-        while ($row = @$resQuery->fetch_row()) {
+        while ($row = @$queryRes->fetch_row()) {
             $customers[] = trim($row[0]);
         }
 
@@ -286,18 +286,18 @@ class SP_Migrate {
                         vacInitialValue, txtNotice, intCountView, intCountDecrypt, 
                         datAdded, datChanged
                         FROM accounts ';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener cuentas'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertAccounts($row)) {
                 $num++;
             }
@@ -367,18 +367,18 @@ class SP_Migrate {
      */
     private static function migrateAccountsGroups() {
         $query = 'SELECT intAccId, intUGroupId FROM acc_usergroups';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener los grupos de cuentas'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertAccountsGroups($row)) {
                 $num++;
             }
@@ -420,18 +420,18 @@ class SP_Migrate {
                     vacLogin, vacUrl, vacPassword, vacInitialValue, txtNotice, intCountView, 
                     intCountDecrypt, datAdded, datChanged, blnModificada, blnEliminada
                     FROM acc_history';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener el historico de cuentas'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertAccountsHistory($row)) {
                 $num++;
             }
@@ -500,18 +500,18 @@ class SP_Migrate {
      */
     private static function migrateAcountsFiles() {
         $query = 'SELECT intAccountId, vacName, vacType, intSize, blobContent, vacExtension	FROM files';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener los archivos de cuentas'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertAccountsFiles($row)) {
                 $num++;
             }
@@ -555,18 +555,18 @@ class SP_Migrate {
      */
     private static function migrateAccountsCategories() {
         $query = 'SELECT intCategoryId, vacCategoryName FROM categories';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener las categorías de cuentas'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertAccountsCategories($row)) {
                 $num++;
             }
@@ -610,18 +610,18 @@ class SP_Migrate {
                         blnIsAdminAcc, vacUserMPwd, vacUserMIv, datULastUpdate, datUserLastUpdateMPass,
                         blnFromLdap, blnDisabled 
                         FROM users WHERE intUserId <> ' . $_SESSION['uid'];
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener los usuarios'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertUsers($row)) {
                 $num++;
             }
@@ -680,18 +680,18 @@ class SP_Migrate {
      */
     private static function migrateUsersGroups() {
         $query = 'SELECT intUGroupId, vacUGroupName, vacUGroupDesc FROM usergroups';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener los grupos de usuarios'),
             self::$dbc->error);
         }
 
-        $totalRecords = $resQuery->num_rows;
+        $totalRecords = $queryRes->num_rows;
         $num = 0;
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             if (self::insertUsersGroups($row)) {
                 $num++;
             }
@@ -732,15 +732,15 @@ class SP_Migrate {
      */
     private static function getSourceConfig(){
         $query = 'SELECT vacValue as value, vacParameter as parameter FROM config';
-        $resQuery = self::$dbc->query($query);
+        $queryRes = self::$dbc->query($query);
 
-        if (!$resQuery) {
+        if (!$queryRes) {
             throw new MigrateException('critical',
             _('Error al obtener la configuración'),
             self::$dbc->error);
         }
 
-        while ($row = @$resQuery->fetch_assoc()) {
+        while ($row = @$queryRes->fetch_assoc()) {
             self::parseSourceConfig($row);
         }
     }

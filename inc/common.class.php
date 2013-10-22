@@ -45,14 +45,14 @@ class SP_Common {
         $action = utf8_encode($message['action']);
         $description = utf8_encode(implode(';;', $message['text']));
 
-        $strQuery = "INSERT INTO log SET
+        $query = "INSERT INTO log SET
                     log_date = UNIX_TIMESTAMP(),
                     log_login = '" . DB::escape($login) . "',
                     log_userId = " . $userId . ",
                     log_action = '" . DB::escape($action) . "',
                     log_description = '" . DB::escape($description) . "'";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
     }

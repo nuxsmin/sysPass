@@ -56,14 +56,14 @@ class SP_Config{
      * Obtener el valor de un parámetro almacenado en la BBDD
      */
     public static function getConfigValue($strConfigParam){
-        $strQuery = "SELECT config_value FROM config WHERE config_parameter = '$strConfigParam'";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = "SELECT config_value FROM config WHERE config_parameter = '$strConfigParam'";
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $resQuery === FALSE || ! is_array($resQuery) ){
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
             return FALSE;
         }
         
-        return $resQuery[0]->config_value;
+        return $queryRes[0]->config_value;
     }
 
     /**
@@ -72,14 +72,14 @@ class SP_Config{
      * Obtener un array con la configuración almacenada en la BBDD
      */
     public static function getConfig(){
-        $strQuery = "SELECT config_parameter, config_value FROM config";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = "SELECT config_parameter, config_value FROM config";
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $resQuery === FALSE || ! is_array($resQuery) ){
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
             return FALSE;
         }
         
-        foreach ( $resQuery as $config ){
+        foreach ( $queryRes as $config ){
             $strKey = $config->config_parameter;
             $strValue = $config->config_value;
             self::$arrConfigValue[$strKey] = $strValue;
@@ -100,16 +100,16 @@ class SP_Config{
             $value = DB::escape($value);
             
             if ( $mkInsert ){
-                $strQuery = "INSERT INTO config "
+                $query = "INSERT INTO config "
                         . "VALUES ('$key','$value') "
                         . "ON DUPLICATE KEY UPDATE config_value = '$value' ";
             } else {
-                $strQuery = "UPDATE config SET "
+                $query = "UPDATE config SET "
                         . "config_value = '$value' "
                         . "WHERE config_parameter = '$key'";
             }
             
-            if ( DB::doQuery($strQuery, __FUNCTION__) === FALSE ){
+            if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
                 return FALSE;
             }
         }
@@ -135,14 +135,14 @@ class SP_Config{
 
         if ( isset ($CFG) && ! $force ) return TRUE;
 
-        $strQuery = "SELECT config_parameter, config_value FROM config";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = "SELECT config_parameter, config_value FROM config";
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $resQuery === FALSE || ! is_array($resQuery) ){
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
             return FALSE;
         }
         
-        foreach ( $resQuery as $config ){
+        foreach ( $queryRes as $config ){
             $cfgParam = $config->config_parameter;
             $cfgValue = $config->config_value;
             
@@ -354,14 +354,14 @@ class SP_Config{
      * @return array or false
      */    
     public static function getConfigParameter($param){
-        $strQuery = "SELECT config_value FROM config WHERE config_parameter = '$param' ";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = "SELECT config_value FROM config WHERE config_parameter = '$param' ";
+        $queryRes = DB::getResults($query, __FUNCTION__);
         
-        if ( $resQuery === FALSE || ! is_array($resQuery) ){
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
             return FALSE;
         }
         
-        return $resQuery;
+        return $queryRes;
     }
     
     /**

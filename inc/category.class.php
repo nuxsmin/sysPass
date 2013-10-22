@@ -37,19 +37,19 @@ class SP_Category {
      * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int 
      */ 
     public static function getCategoryIdByName($categoryName) {
-        $strQuery = "SELECT category_id "
+        $query = "SELECT category_id "
                 . "FROM categories "
                 . "WHERE category_name = '" . DB::escape($categoryName) . "' LIMIT 1";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (!$resQuery && !is_array($resQuery)) {
+        if (!$queryRes && !is_array($queryRes)) {
             return FALSE;
         }
 
         if (count(DB::$last_result) == 0) {
             return 0;
         } else {
-            return $resQuery[0]->intCategoryId;
+            return $queryRes[0]->intCategoryId;
         }
     }
 
@@ -59,10 +59,10 @@ class SP_Category {
      * @return bool
      */ 
     public static function categoryAdd($categoryName) {
-        $strQuery = "INSERT INTO categories SET "
+        $query = "INSERT INTO categories SET "
                 . "category_name = '" . DB::escape($categoryName) . "'";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -75,11 +75,11 @@ class SP_Category {
      * @return bool
      */ 
     public static function isCategoryInUse($categoryId) {
-        $strQuery = "SELECT account_categoryId "
+        $query = "SELECT account_categoryId "
                 . "FROM accounts "
                 . "WHERE account_categoryId = " . (int) $categoryId;
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -92,10 +92,10 @@ class SP_Category {
      * @return bool
      */
     public static function categoryDel($categoryId) {
-        $strQuery = "DELETE FROM categories "
+        $query = "DELETE FROM categories "
                 . "WHERE category_id = $categoryId LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -109,11 +109,11 @@ class SP_Category {
      * @return bool
      */
     public static function editCategoryById($categoryId, $categoryNameNew) {
-        $strQuery = "UPDATE categories SET "
+        $query = "UPDATE categories SET "
                 . "category_name = '" . DB::escape($categoryNameNew) . "' "
                 . "WHERE category_id = " . (int) $categoryId . " LIMIT 1";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
@@ -125,16 +125,16 @@ class SP_Category {
      * @return array con en id de categorioa como clave y en nombre como valor
      */ 
     public static function getCategories(){
-        $strQuery = "SELECT category_id, category_name FROM categories ORDER BY category_name";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $query = "SELECT category_id, category_name FROM categories ORDER BY category_name";
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $resQuery === FALSE || ! is_array($resQuery) ){
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
             return FALSE;
         }
         
         $resCategories = array();
         
-        foreach ( $resQuery as $category ){
+        foreach ( $queryRes as $category ){
             $resCategories[$category->category_id] = $category->category_name;
         }
 

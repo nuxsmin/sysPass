@@ -54,14 +54,14 @@ class SP_Files {
      * @return bool
      */ 
     public static function fileUpload($accountId, $fileData = array()) {
-        $strQuery = "INSERT INTO accFiles SET accfile_accountId = " . (int) $accountId . ", 
+        $query = "INSERT INTO accFiles SET accfile_accountId = " . (int) $accountId . ", 
                     accfile_name = '" . $fileData['name'] . "',
                     accfile_type = '".$fileData['type']."',
                     accfile_size = '".$fileData['size']."',
                     accfile_content = '".$fileData['content']."',
                     accfile_extension = '" . DB::escape($fileData['extension']) . "'";
 
-        if (DB::doQuery($strQuery, __FUNCTION__) !== FALSE) {
+        if (DB::doQuery($query, __FUNCTION__) !== FALSE) {
             $message['action'] = _('Subir Archivo');
             $message['text'][] = _('Cuenta') . ": " . $accountId;
             $message['text'][] = _('Archivo') . ": " . $fileData['name'];
@@ -87,11 +87,11 @@ class SP_Files {
      */ 
     public static function fileDownload($fileId) {
         // Obtenemos el archivo de la BBDD
-        $strQuery = "SELECT * FROM accFiles "
+        $query = "SELECT * FROM accFiles "
                 . "WHERE accfile_id = " . (int) $fileId . " LIMIT 1";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (!$resQuery || !is_array($resQuery)){
+        if (!$queryRes || !is_array($queryRes)){
             return FALSE;
         }
 
@@ -99,7 +99,7 @@ class SP_Files {
             return FALSE;
         }
 
-        return $resQuery[0];
+        return $queryRes[0];
     }
 
     /**
@@ -108,12 +108,12 @@ class SP_Files {
      * @return object con el resultado de la consulta
      */ 
     public static function getFileInfo($fileId) {
-        $strQuery = "SELECT accfile_name, accfile_size, accfile_type "
+        $query = "SELECT accfile_name, accfile_size, accfile_type "
                 . "FROM accFiles "
                 . "WHERE accfile_id = " . (int) $fileId . " LIMIT 1";
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (!$resQuery || !is_array($resQuery)) {
+        if (!$queryRes || !is_array($queryRes)) {
             return FALSE;
         }
 
@@ -122,7 +122,7 @@ class SP_Files {
             return FALSE;
         }
 
-        return $resQuery[0];
+        return $queryRes[0];
     }
 
     /**
@@ -134,11 +134,11 @@ class SP_Files {
         $fileInfo = self::getFileInfo($fileId);
 
         // Eliminamos el archivo de la BBDD
-        $strQuery = "DELETE FROM accFiles "
+        $query = "DELETE FROM accFiles "
                 . "WHERE accfile_id = " . (int) $fileId . " LIMIT 1";
-        $resQuery = DB::doQuery($strQuery, __FUNCTION__);
+        $queryRes = DB::doQuery($query, __FUNCTION__);
 
-        if ($resQuery !== FALSE) {
+        if ($queryRes !== FALSE) {
             $message['action'] = _('Eliminar Archivo');
             $message['text'][] = _('ID') . ": " . $fileId;
             $message['text'][] = _('Archivo') . ": " . $fileInfo->accfile_name;
@@ -161,18 +161,18 @@ class SP_Files {
      * @return array con los archivos de la cuenta.
      */ 
     public static function getFileList($accountId) {
-        $strQuery = "SELECT accfile_id, accfile_name, accfile_size "
+        $query = "SELECT accfile_id, accfile_name, accfile_size "
                 . "FROM accFiles WHERE accfile_accountId = " . (int) $accountId;
-        $resQuery = DB::getResults($strQuery, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (!$resQuery || !is_array($resQuery)){
+        if (!$queryRes || !is_array($queryRes)){
             return FALSE;
         }
 
         $files = array();
         $fileNum = 0;
         
-        foreach ($resQuery as $file) {
+        foreach ($queryRes as $file) {
             $files[$fileNum]['id'] = $file->accfile_id;
             $files[$fileNum]['name'] = $file->accfile_name;
             $files[$fileNum]['size'] = round($file->accfile_size / 1000, 2);
@@ -189,11 +189,11 @@ class SP_Files {
      */ 
     public static function countFiles($accountId) {
         // Obtenemos los archivos de la BBDD para dicha cuenta
-        $strQuery = "SELECT accfile_id "
+        $query = "SELECT accfile_id "
                 . "FROM accFiles "
                 . "WHERE accfile_accountId = " . (int) $accountId;
 
-        if (DB::doQuery($strQuery, __FUNCTION__) === FALSE){
+        if (DB::doQuery($query, __FUNCTION__) === FALSE){
             return FALSE;
         }
 
