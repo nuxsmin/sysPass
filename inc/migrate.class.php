@@ -756,7 +756,7 @@ class SP_Migrate {
         if ( strtolower($config['value']) == 'true' || strtolower($config['value']) == 'on' ){
             $value = 1;
         } else{
-            $value = $config['value'];
+            $value = (is_numeric($config['value'])) ? (int)$config['value'] : $config['value'];
         }
         
         // Guardar la configuración anterior
@@ -770,18 +770,31 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateConfig(){
+    	// Obtener la configuración actual
         self::getSourceConfig();
 		        
-        // Obtener la configuración actual
-        $protected = array ('version', 'installed', 'dbhost', 'dbname', 'dbuser', 'dbpass', 'passwordsalt');
-        $savedConfig = array_diff_key($protected, SP_Config::getKeys());
+        $skip = array ('version',
+			'installed',
+			'install',
+			'dbhost',
+			'dbname',
+			'dbuser',
+			'dbpass',
+			'siteroot',
+			'sitelang',
+			'sitename',
+			'siteshortname',
+			'md5_pass',
+			'password_show',
+			'passwordsalt');
+        //$savedConfig = array_diff_key($skip, SP_Config::getKeys());
         
-		$totalParams = count(self::$oldConfig);
-		$num = 0;
+	$totalParams = count(self::$oldConfig);
+	$num = 0;
 		
         // Guardar la nueva configuración
         foreach ( self::$oldConfig as $key => $value){
-            if ( array_key_exists($key, $protected) ){
+            if ( array_key_exists($key, $skip) ){
                 continue;
             }
             SP_Config::setValue($key, $value);
