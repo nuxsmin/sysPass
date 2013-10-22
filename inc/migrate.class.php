@@ -756,11 +756,11 @@ class SP_Migrate {
         if ( strtolower($config['value']) == 'true' || strtolower($config['value']) == 'on' ){
             $value = 1;
         } else{
-            $value = (is_numeric($config['value'])) ? (int)$config['value'] : $config['value'];
+            $value = (is_numeric($config['value'])) ? (int)$config['value'] : trim($config['value']);
         }
         
         // Guardar la configuración anterior
-        self::$oldConfig[$config['parameter']] = trim($value);
+        self::$oldConfig[$config['parameter']] = $value;
 		
         //error_log($config['parameter'].' >> '.$value);
     }
@@ -786,6 +786,7 @@ class SP_Migrate {
 			'siteshortname',
 			'md5_pass',
 			'password_show',
+			'lastupdatempass',
 			'passwordsalt');
         //$savedConfig = array_diff_key($skip, SP_Config::getKeys());
         
