@@ -164,7 +164,7 @@ DROP TABLE IF EXISTS `log`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log` (
   `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `log_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `log_date` int(11) unsigned NOT NULL,
   `log_login` varchar(25) NOT NULL,
   `log_userId` tinyint(3) unsigned NOT NULL,
   `log_action` varchar(50) NOT NULL,
