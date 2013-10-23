@@ -41,11 +41,16 @@ if ( SP_Config::getValue('filesenabled') == 0 ){
 
 $accountId = ( isset($_GET['id']) ) ? (int)$_GET['id'] : 0 ;
 $deleteEnabled = ( isset($_GET['del']) ) ? (int)$_GET['del'] : 0 ;
+$skey = ( isset($_GET['sk']) ) ? SP_Html::sanitize($_GET['sk']) : NULL;
+
+if ( is_null($skey) ) {
+    return _('CONSULTA INVÁLIDA');
+}
 
 $files = SP_Files::getFileList($accountId, $deleteEnabled);
 
 if ( ! is_array($files) || count($files) === 0 ){
-	return;
+    return;
 }
 ?>
 
@@ -55,7 +60,6 @@ if ( ! is_array($files) || count($files) === 0 ){
     <option value='<? echo $file['id']; ?>'><? echo $file['name'] ?> (<? echo $file['size']; ?> KB)</option>
     <? endforeach;?>
     </select>
-	<input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
     <input name="action" type="hidden" id="action" value="download">
 </form>
 <div class="actionFiles">

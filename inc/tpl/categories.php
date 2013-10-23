@@ -50,6 +50,7 @@ $categoriesSelProp2 = array ( "name" => "categoryId",
                         "js" => "",
                         "attribs" => "");
 
+$skey = SP_Common::getSessionKey(TRUE);
 ?>
 <table class="data tblConfig round">
     
@@ -63,7 +64,7 @@ $categoriesSelProp2 = array ( "name" => "categoryId",
                     <input type="image" src="imgs/add.png" title="<? echo _('Nueva categoría'); ?>" class="inputImg" id="btnAdd" />
 					<input type="hidden" name="active" value="<? echo $activeTab ?>" />
                     <input type="hidden" name="categoryFunction" value="1">
-                    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+                    <input type="hidden" name="sk" value="<? echo $skey; ?>">
                 </form>
             </td>
         </tr>
@@ -79,7 +80,7 @@ $categoriesSelProp2 = array ( "name" => "categoryId",
 				<input type="hidden" name="active" value="<? echo $activeTab ?>" />
                 <input type="text" name="categoryNameNew" maxlength="50" >
                 <input type="hidden" name="categoryFunction" value="2">
-                <input type="hidden" name="sk" value="'.SP_Common::getSessionKey(TRUE).'">
+                <input type="hidden" name="sk" value="<? echo $skey; ?>">
                 <input type="image" src="imgs/save.png" title="<? echo _('Guardar'); ?>" class="inputImg" id="btnGuardar" />
             </form>
         </td>
@@ -93,7 +94,7 @@ $categoriesSelProp2 = array ( "name" => "categoryId",
                 <? SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp2); ?>
 				<input type="hidden" name="active" value="<? echo $activeTab ?>" />
                 <input type="hidden" name="categoryFunction" value="3">
-                <input type="hidden" name="sk" value="'.SP_Common::getSessionKey(TRUE).'">
+                <input type="hidden" name="sk" value="<? echo $skey; ?>">
                 <input type="image" src="imgs/delete.png" title="<? echo _('Borrar categoría'); ?>" class="inputImg" />
             </form>
         </td>

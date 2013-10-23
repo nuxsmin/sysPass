@@ -53,7 +53,7 @@ $activeTab = $data['active'];
         <input type="hidden" name="id" value="<? echo $group["usergroup_id"]; ?>" />
         <input type="hidden" name="action" value="<? echo $group["action"] ?>" />
         <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
-        <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey() ?>">
+        <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE) ?>">
         <input type="hidden" name="is_ajax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>

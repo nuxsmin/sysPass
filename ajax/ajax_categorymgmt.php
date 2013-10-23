@@ -32,6 +32,10 @@ if ( ! SP_Init::isLoggedIn() ) {
     SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'),10);
 }
 
+if (!isset($_POST["sk"]) || !SP_Common::checkSessionKey($_POST["sk"])) {
+    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+}
+
 SP_Users::checkUserAccess('config') || SP_Html::showCommonError('unavailable');
 
 $intCategoryFunction = ( isset($_POST["categoryFunction"]) ) ? (int) $_POST["categoryFunction"] : 0;

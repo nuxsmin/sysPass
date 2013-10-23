@@ -135,7 +135,7 @@ $showEditPass = ($action == "accedit"
                 && ! $account->accountIsHistory);
 $showDelete = ($action == "accdelete" && $account->checkAccountAccess("accdelete")  && SP_Users::checkUserAccess("accdelete"));
 $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
-$skey = SP_Common::getSessionKey();
+$skey = SP_Common::getSessionKey(TRUE);
 ?>
 
 <div id="title" class="midroundup <? echo $title['class']; ?>"><? echo $title['name']; ?></div>
@@ -405,7 +405,7 @@ $skey = SP_Common::getSessionKey();
             
             <? if ( $showDelete ): ?>
             <li>
-                <img src="imgs/delete.png" title="<? echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<? echo $account->accountId; ?>,3,'<? echo SP_Common::getSessionKey(TRUE); ?>');" />
+                <img src="imgs/delete.png" title="<? echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<? echo $account->accountId; ?>,3,'<? echo $skey; ?>');" />
             </li>
             <? endif; ?>
         </ul>
