@@ -546,7 +546,10 @@ function usrgrpDetail(id, type, sk, active){
         url: url,
         data: data,
         success: function(response){
-            $.fancybox(response,{padding: [0,10,10,10]});
+            $.fancybox(response,{
+                padding: [0,10,10,10],
+                afterClose: function(){doAction('usersmenu','',active);}
+                });
         },
         error:function(jqXHR, textStatus, errorThrown){
             var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
@@ -588,7 +591,7 @@ function usersMgmt(frmId, isDel, id, type, sk){
 
             switch(status){
                 case 0:
-                    doAction('usersmenu','',active);
+//                    doAction('usersmenu','',active);
                     resMsg("ok", description);
                     break;
                 case 1:

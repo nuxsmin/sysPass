@@ -224,7 +224,7 @@ class SP_Users {
 
         echo '<div class="action fullWidth">';
         echo '<ul>';
-        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . '" class="inputImg" OnClick="usrgrpDetail(0,' . $arrUsersTableProp["newActionId"] . ',\'' . $sk . '\');" /></LI>';
+        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . '" class="inputImg" OnClick="usrgrpDetail(0,' . $arrUsersTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrUsersTableProp["active"] . ');" /></LI>';
         echo '</ul>';
         echo '</div>';
 

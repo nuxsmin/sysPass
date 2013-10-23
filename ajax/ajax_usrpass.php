@@ -67,7 +67,7 @@ SP_Users::checkUserAccess("acceditpass",$userId) || die ($strError);
     <input type="hidden" name="id" value="<? echo $userId; ?>" />
     <input type="hidden" name="type" value="1" />
     <input type="hidden" name="action" value="3" />
-    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(); ?>">
 </form>
 
     <div id="resCheck">
