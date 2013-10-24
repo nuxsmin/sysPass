@@ -38,7 +38,11 @@ class SP_Crypt {
      */ 
     private static function createIV() {
         $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-        $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_DEV_URANDOM);
+        if ( SP_Util::runningOnWindows() && (! defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300) ){
+            $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_RAND);
+        } else {
+            $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_DEV_URANDOM);
+        }
         mcrypt_module_close($resEncDes);
 
         return $cryptIV;

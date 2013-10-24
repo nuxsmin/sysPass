@@ -358,12 +358,12 @@ class SP_Account {
         // No escribir en el log ni enviar correos si la actualización es 
         // por cambio de clave maestra...
         if ( ! $isMassive ){
-            $accountInfo = array('customer_name');
+            $accountInfo = array('customer_name','account_name');
             $this->getAccountInfoById($accountInfo);
 
             $message['action'] = _('Modificar Clave');
             $message['text'][] = _('Cliente').": ".$this->cacheParams['customer_name'];
-            $message['text'][] = _('Cuenta').": $this->accountName ($this->accountId)";
+            $message['text'][] = _('Cuenta').": ".$this->cacheParams['account_name']." ($this->accountId)";
 
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);
