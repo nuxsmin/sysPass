@@ -36,6 +36,8 @@ $userGroupId = $_SESSION["ugroup"];
 $userIsAdminApp = $_SESSION["uisadminapp"];
 $userIsAdminAcc = $_SESSION["uisadminacc"];
 
+$changesHash = '';
+
 switch ($action) {
     case 'accnew':
         $savetype = 1;
