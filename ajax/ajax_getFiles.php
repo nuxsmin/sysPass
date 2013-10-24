@@ -60,7 +60,8 @@ if ( ! is_array($files) || count($files) === 0 ){
     <option value='<? echo $file['id']; ?>'><? echo $file['name'] ?> (<? echo $file['size']; ?> KB)</option>
     <? endforeach;?>
     </select>
-    <input name="action" type="hidden" id="action" value="download">
+    <input name="sk" type="hidden" id="sk" value="<? echo SP_Common::getSessionKey(); ?>" />
+    <input name="action" type="hidden" id="action" value="download" />
 </form>
 <div class="actionFiles">
     <img src="imgs/download.png" title="<? echo _('Descargar archivo'); ?>" id="btnDownload" class="inputImg" alt="download" OnClick="downFile();" />

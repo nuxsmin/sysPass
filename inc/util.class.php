@@ -169,7 +169,7 @@ class SP_Util {
      * @return array con el número de versión
      */
     public static function getVersion() {
-        return array(1, 00, 01);
+        return array(1, 00, 'rc1');
     }
     
     /**
@@ -201,7 +201,7 @@ class SP_Util {
 //        
 //        curl_close($ch);
         
-        $feedUrl = 'http://sourceforge.net/api/file/index/project-id/1257402/mtime/desc/limit/1/rss';
+        $feedUrl = 'https://sourceforge.net/api/file/index/project-id/1257402/mtime/desc/limit/20/rss';
         $feed =  file_get_contents($feedUrl);
         
         if ( $feed ){
@@ -212,16 +212,22 @@ class SP_Util {
 
 	if ( $xmlUpd->channel->item->title ){
 
-            $url = (string)$xmlUpd->channel->item->link;
-            $title = (string)$xmlUpd->channel->item->title;
-            $description = (string)$xmlUpd->channel->item->description;
+            $pubVer = '';
             
-            preg_match("/^\/sysPass|phpPMS_(\d)\.(\d{1,})([a-z])?\.(tar\.gz|zip)$/", $title, $pubVer);
+            foreach ( $xmlUpd->channel->item as $item ){
+                $url = (string)$item->link;
+                $title = (string)$item->title;
+                $description = (string)$item->description;
+
+                if ( preg_match("/.*\/sysPass_(\d)\.(\d{1,})([a-z0-9]+)?\.(tar\.gz|zip)$/", $title, $pubVer) ){
+                    break;
+                }
+            }
             
             $appVersion = self::getVersion();
             
             if ( is_array($pubVer) && SP_Init::isLoggedIn() ){
-                if ( $pubVer[1] >= $appVersion[0] && $pubVer[2] > $appVersion[1] ){
+                if ( $pubVer[1] >= $appVersion[0] && $pubVer[2] > $appVersion[1] && $pubVer[3] != $appVersion[2]){
                     $version = $pubVer[1].'.'.$pubVer[2].'.'.$pubVer[3];
                     return array('version' => $version,'url' => $url);
                 } else {
