@@ -27,12 +27,14 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 $startTime = microtime();
 
-$strAdminApp = ( isset($_SESSION["uisadminapp"]) && $_SESSION["uisadminapp"] == 1 ) ? "<span title=\""._('Admin Aplicación')."\">(A+)</span>" : "";
-$strUserName = ( isset($_SESSION["uname"]) ) ? $_SESSION["uname"] : $_SESSION["ulogin"];
-$strUserGroup = ( isset($_SESSION["ugroupn"]) ) ? $_SESSION["ugroupn"] : "";
+$adminApp = ( isset($_SESSION["uisadminapp"]) && $_SESSION["uisadminapp"] == 1 ) ? "<span title=\""._('Admin Aplicación')."\">(A+)</span>" : "";
+$userId = ( isset($_SESSION["uid"]) ) ? $_SESSION["uid"] : 0;
+$userLogin = ( isset($_SESSION["ulogin"]) ) ? $_SESSION["ulogin"] : '';
+$userName = ( isset($_SESSION["uname"]) ) ? $_SESSION["uname"] : $userLogin;
+$userGroup = ( isset($_SESSION["ugroupn"]) ) ? $_SESSION["ugroupn"] : '';
 
-$strUser = "$strUserName ($strUserGroup) " . $strAdminApp;
-$chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img src="imgs/key.png" class="iconMini" title="' . _('Cambiar clave de usuario') . '" Onclick="usrUpdPass(' . $_SESSION["uid"] . ',\'' . $_SESSION["ulogin"] . '\')" />' : '';
+$strUser = "$userName ($userGroup) " . $adminApp;
+$chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img src="imgs/key.png" class="iconMini" title="' . _('Cambiar clave de usuario') . '" Onclick="usrUpdPass(' . $userId . ',\'' . $userLogin . '\')" />' : '';
 
 ?>
 

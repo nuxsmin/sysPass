@@ -40,19 +40,19 @@ if ($accountId == 0) {
     return;
 }
 
-$objAccount = new SP_Account;
-$objAccount->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : "";
-$objAccount->accountId = $accountId;
-$objAccount->accountIsHistory = $isHistory;
+$account = new SP_Account;
+$account->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : "";
+$account->accountId = $accountId;
+$account->accountIsHistory = $isHistory;
 
 if (!$isHistory) {
-    $objAccount->getAccount();
-    if (!$objAccount->checkAccountAccess("accviewpass") || !SP_Users::checkUserAccess("accviewpass"))
+    $account->getAccount();
+    if (!$account->checkAccountAccess("accviewpass") || !SP_Users::checkUserAccess("accviewpass"))
         die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
 } else {
-    if ($objAccount->checkAccountMPass()) {
-        $objAccount->getAccountHistory();
-        if (!$objAccount->checkAccountAccess("accviewpass") || !SP_Users::checkUserAccess("accviewpass"))
+    if ($account->checkAccountMPass()) {
+        $account->getAccountHistory();
+        if (!$account->checkAccountAccess("accviewpass") || !SP_Users::checkUserAccess("accviewpass"))
             die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
     } else {
         echo '<div id="fancyMsg" class="msgError">' . _('La clave maestra no coincide') . '</div>';
@@ -61,24 +61,26 @@ if (!$isHistory) {
 }
 
 if (!SP_Users::checkUserUpdateMPass()) {
-    echo ( $fullTxt ) ? '<div id="fancyMsg" class="msgError">' . _('Clave maestra actualizada') . '<BR />' . _('Reinicie la sesión para cambiarla') . '</div>' : _('Clave maestra actualizada') . '<BR />' . _('Reinicie la sesión para cambiarla');
+    if ( $fullTxt ){
+        echo '<div id="fancyMsg" class="msgError">' . _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla') . '</div>';
+    } else {
+        echo _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla');
+    }
     return;
 }
 
-$objCrypt = new SP_Crypt;
-
-//$strDecrypted = $objCrypt->decrypt($objAccount->accountPass, $_SESSION["mPass"], $objAccount->accountIV);
-
-$mPass = $objCrypt->decrypt($_SESSION["mPass"], $_SESSION['mPassPwd'], $_SESSION['mPassIV']);
-$strDecrypted = $objCrypt->decrypt($objAccount->accountPass, $mPass, $objAccount->accountIV);
+$crypt = new SP_Crypt;
+$masterPass = $crypt->getSessionMasterPass();
+$accountClearPass = $crypt->decrypt($account->accountPass, $masterPass, $account->accountIV);
 
 
-if (!$isHistory)
-    $objAccount->incrementDecryptCounter($accountId);
+if (!$isHistory){
+    $account->incrementDecryptCounter();
+}
 
 $message['action'] = _('Ver clave');
 $message['text'][] = _('ID') . ': ' . $accountId;
-$message['text'][] = _('Cuenta') . ': ' . $objAccount->accountCustomerName . " / " . $objAccount->accountName;
+$message['text'][] = _('Cuenta') . ': ' . $account->accountCustomerName . " / " . $account->accountName;
 $message['text'][] = _('IP') . ': ' . $_SERVER['REMOTE_ADDR'];
 
 SP_Common::wrLogInfo($message);
@@ -88,14 +90,14 @@ if ($fullTxt) {
     echo '<table>
         <tr>
             <td><span class="altTxtBlue">' . _('Usuario') . '</span></td>
-            <td>' . $objAccount->accountLogin . '</td>
+            <td>' . $account->accountLogin . '</td>
         </tr>
         <tr>
             <td><span class="altTxtBlue">' . _('Clave') . '</span></td>
-            <td>' . trim($strDecrypted) . '</td>
+            <td>' . trim($accountClearPass) . '</td>
         </tr>
         </table>';
     echo '</div>';
 } else {
-    echo trim($strDecrypted);
+    echo trim($accountClearPass);
 }

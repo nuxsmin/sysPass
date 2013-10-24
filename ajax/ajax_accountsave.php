@@ -106,7 +106,7 @@ if ($frmSaveType == 1) {
     $SP_Common::printXML(_('No es una acción válida'));
 }
 
-if ($frmSaveType == 1 OR $frmSaveType == 4) {
+if ($frmSaveType == 1 || $frmSaveType == 4) {
     $crypt = new SP_Crypt;
 
     // Comprobar el módulo de encriptación
@@ -114,16 +114,16 @@ if ($frmSaveType == 1 OR $frmSaveType == 4) {
         SP_Common::printXML(_('No se puede usar el módulo de encriptación'));
     }
 
-    // Desencriptar clave maestra
-    $mPass = $crypt->decrypt($_SESSION["mPass"], $_SESSION['mPassPwd'], $_SESSION['mPassIV']);
-
     // Encriptar clave de cuenta
-    if (!$crypt->mkPassEncrypt($frmPassword, $mPass)) {
-        SP_Common::printXML(_('Error al generar la contraseña cifrada'));
+    $accountPass = $crypt->mkEncrypt($frmPassword);
+    //$accountURL = $crypt->mkEncrypt($frmUrl, $crypt->getSessionMasterPass());
+    //$accountNotes = $crypt->mkEncrypt($frmNotes, $crypt->getSessionMasterPass());
+    
+    if ( $accountPass === FALSE || is_null($accountPass) ){
+        SP_Common::printXML(_('Error al generar datos cifrados'));
     }
 
-    $pwdCrypt = $crypt->pwdCrypt;
-    $strInitialVector = $crypt->strInitialVector;
+    $accountIV = $crypt->strInitialVector;
 }
 
 $account = new SP_Account;
@@ -153,8 +153,8 @@ switch ($frmSaveType) {
         $account->accountCategoryId = $frmCategoryId;
         $account->accountLogin = $frmLogin;
         $account->accountUrl = $frmUrl;
-        $account->accountPass = $pwdCrypt;
-        $account->accountIV = $strInitialVector;
+        $account->accountPass = $accountPass;
+        $account->accountIV = $accountIV;
         $account->accountNotes = $frmNotes;
         $account->accountUserId = $userId;
         $account->accountUserGroupId = $groupId;
@@ -218,8 +218,8 @@ switch ($frmSaveType) {
         break;
     case 4:
         $account->accountId = $frmAccountId;
-        $account->accountPass = $pwdCrypt;
-        $account->accountIV = $strInitialVector;
+        $account->accountPass = $accountPass;
+        $account->accountIV = $accountIV;
         $account->accountUserEditId = $userId;
 
         // Actualizar clave de cuenta

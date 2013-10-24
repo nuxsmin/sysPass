@@ -1173,8 +1173,8 @@ class SP_Users {
         }
 
         if (SP_Crypt::checkHashPass($masterPwd, $configMPass[0]->config_value)) {
-            $objCrypt = new SP_Crypt;
-            $strUserMPwd = $objCrypt->mkCustomMPassEncrypt($this->userPass, $masterPwd);
+            $crypt = new SP_Crypt;
+            $strUserMPwd = $crypt->mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
 
             if (!$strUserMPwd) {
                 return FALSE;
@@ -1195,6 +1195,17 @@ class SP_Users {
 
         return TRUE;
     }
+    
+    /**
+     * @brief Obtener una clave de cifrado basada en la clave del usuario y un salt
+     * @return string con la clave de cifrado
+     */
+    private function getCypherPass(){
+        $configSalt = SP_Config::getConfigParameter("passwordsalt");
+        $cypherPass = substr(sha1($configSalt.$this->userPass), 0, 32);
+        
+        return $cypherPass;
+    }
 
     /**
      * @brief Desencriptar la clave maestra del usuario para la sesión
@@ -1204,33 +1215,33 @@ class SP_Users {
     public function getUserMPass($showPass = FALSE) {
         $query = "SELECT user_mPass, user_mIV "
                 . "FROM usrData "
-                . "WHERE user_id = " . (int) $this->userId;
+                . "WHERE user_id = " . (int) $this->userId ." LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ($queryRes === FALSE || !is_array($queryRes)) {
             return FALSE;
         }
 
-        foreach ($queryRes as $userData) {
-            if ($userData->user_mPass && $userData->user_mIV) {
-                $objCrypt = new SP_Crypt;
-                $strClearMPwd = $objCrypt->decrypt($userData->user_mPass, $this->userPass, $userData->user_mIV);
+        $userData = $queryRes[0];
+                
+        if ($userData->user_mPass && $userData->user_mIV) {
+            $crypt = new SP_Crypt;
+            $clearMasterPass = $crypt->decrypt($userData->user_mPass, $this->getCypherPass(), $userData->user_mIV);
 
-                if (!$strClearMPwd) {
-                    return FALSE;
-                }
+            if (!$clearMasterPass) {
+                return FALSE;
+            }
 
-                if ($showPass == TRUE) {
-                    return $strClearMPwd;
-                } else {
-                    $_SESSION['mPassPwd'] = uniqid();
+            if ($showPass == TRUE) {
+                return $clearMasterPass;
+            } else {
+                $_SESSION['mPassPwd'] = uniqid();
 
-                    $sessionMPwd = $objCrypt->mkCustomMPassEncrypt($_SESSION["mPassPwd"], $strClearMPwd);
-
-                    $_SESSION['mPass'] = $sessionMPwd[0];
-                    $_SESSION['mPassIV'] = $sessionMPwd[1];
-                    return TRUE;
-                }
+                $sessionMasterPass = $crypt->mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
+                
+                $_SESSION['mPass'] = $sessionMasterPass[0];
+                $_SESSION['mPassIV'] = $sessionMasterPass[1];
+                return TRUE;
             }
         }
         return FALSE;

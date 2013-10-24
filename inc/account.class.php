@@ -725,9 +725,9 @@ class SP_Account {
      * @brief Incrementa el contador de vista de clave de una cuenta en la BBDD
      * @return bool
      */ 
-    public function incrementDecryptCounter($accountId){
+    public function incrementDecryptCounter(){
         $query = "UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) "
-                . "WHERE account_id = ".(int)$accountId;
+                . "WHERE account_id = ".(int)$this->accountId;
         
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
@@ -927,20 +927,19 @@ class SP_Account {
             }
             
             $decryptedPass = $crypt->decrypt($account->account_pass, $currentMasterPass, $account->account_IV);
+            $this->accountPass = $crypt->mkEncrypt($decryptedPass,$newMasterPass);
+            $this->accountIV = $crypt->strInitialVector;
             
-            if ( $crypt->mkPassEncrypt($decryptedPass,$newMasterPass) ){
-                $this->accountPass = $crypt->pwdCrypt;
-                $this->accountIV = $crypt->strInitialVector;
-                                
-                if ( ! $this->updateAccountPass(TRUE) ){
-                    $errorCount++;
-                    $message['text'][] = _('Fallo al actualizar la clave de la cuenta')."(".$this->accountId.")";
-                }
-                $accountsOk[] = $this->accountId;
-            } else {
+            if ( $this->accountPass === FALSE  ){
                 $errorCount++;
                 continue;
             }
+                                
+            if ( ! $this->updateAccountPass(TRUE) ){
+                $errorCount++;
+                $message['text'][] = _('Fallo al actualizar la clave de la cuenta')."(".$this->accountId.")";
+            }
+            $accountsOk[] = $this->accountId;
         }
         
         // Vaciar el array de mensaje de log
@@ -1016,19 +1015,20 @@ class SP_Account {
             
             $decryptedPass = $crypt->decrypt($account->acchistory_pass, $currentMasterPass, $account->acchistory_IV);
             
-            if ( $crypt->mkPassEncrypt($decryptedPass,$newMasterPass) ){
-                $this->accountPass = $crypt->pwdCrypt;
-                $this->accountIV = $crypt->strInitialVector;
-                                
-                if ( ! $this->updateAccountHistoryPass($account->acchistory_id, $newHash) ){
-                    $errorCount++;
-                    $message['text'][] = _('Fallo al actualizar la clave del histórico')." (".$account->acchistory_id.")";
-                }
-                $idOk[] = $account->acchistory_id;
-            } else {
+            $this->accountPass = $crypt->mkEncrypt($decryptedPass,$newMasterPass);
+            $this->accountIV = $crypt->strInitialVector;
+            
+            if ( $this->accountPass === FALSE ){
                 $errorCount++;
                 continue;
             }
+            
+            if ( ! $this->updateAccountHistoryPass($account->acchistory_id, $newHash) ){
+                $errorCount++;
+                $message['text'][] = _('Fallo al actualizar la clave del histórico')." (".$account->acchistory_id.")";
+            }
+            
+            $idOk[] = $account->acchistory_id;
         }
 
         // Vaciar el array de mensaje de log

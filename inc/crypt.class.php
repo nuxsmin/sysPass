@@ -30,7 +30,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Crypt {
 
-    public $pwdCrypt;
     public $strInitialVector;
 
     /**
@@ -39,19 +38,19 @@ class SP_Crypt {
      */ 
     private static function createIV() {
         $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-        $strInitialVector = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_DEV_URANDOM);
+        $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_DEV_URANDOM);
         mcrypt_module_close($resEncDes);
 
-        return $strInitialVector;
+        return $cryptIV;
     }
 
     /**
      * @brief Comprobar si el vector de inicialización tiene la longitud correcta
-     * @param string $strInitialVector con el IV
+     * @param string $cryptIV con el IV
      * @return bool
      */ 
-    private static function checkIV($strInitialVector){
-        $strEscapeInitialVector = DB::escape($strInitialVector);
+    private static function checkIV($cryptIV){
+        $strEscapeInitialVector = DB::escape($cryptIV);
 
         if (strlen($strEscapeInitialVector) != 32 ) {
             return FALSE;
@@ -64,12 +63,12 @@ class SP_Crypt {
      * @brief Encriptar datos con la clave maestra
      * @param string $strValue con los datos a encriptar
      * @param string $strPassword con la clave maestra
-     * @param string $strInitialVector con el IV
+     * @param string $cryptIV con el IV
      * @return string con los datos encriptados
      */ 
-    private function encrypt($strValue, $strPassword, $strInitialVector){
+    private function encrypt($strValue, $strPassword, $cryptIV){
         $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-        mcrypt_generic_init($resEncDes, $strPassword, $strInitialVector);
+        mcrypt_generic_init($resEncDes, $strPassword, $cryptIV);
         $strEncrypted = mcrypt_generic($resEncDes, $strValue);
         mcrypt_generic_deinit($resEncDes);
 
@@ -80,12 +79,12 @@ class SP_Crypt {
      * @brief Desencriptar datos con la clave maestra
      * @param string $strEncrypted con los datos a desencriptar
      * @param string $strPassword con la clave maestra
-     * @param string $strInitialVector con el IV
+     * @param string $cryptIV con el IV
      * @return string con los datos desencriptados
      */ 
-    public function decrypt($strEncrypted, $strPassword, $strInitialVector){
+    public function decrypt($strEncrypted, $strPassword, $cryptIV){
         $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-        mcrypt_generic_init($resEncDes, $strPassword, $strInitialVector);
+        mcrypt_generic_init($resEncDes, $strPassword, $cryptIV);
         $strDecrypted = trim(mdecrypt_generic($resEncDes, $strEncrypted));
         
         mcrypt_generic_deinit($resEncDes);
@@ -98,7 +97,7 @@ class SP_Crypt {
      * @brief Comprobar si el módulo de encriptación está disponible
      * @param string $strEncrypted con los datos a desencriptar
      * @param string $strPassword con la clave maestra
-     * @param string $strInitialVector con el IV
+     * @param string $cryptIV con el IV
      * @return string con los datos desencriptados
      */ 
     public static function checkCryptModule(){
@@ -137,22 +136,22 @@ class SP_Crypt {
      * 
      * Esta función llama a los métodos privados para encriptar datos.
      */ 
-    public function mkPassEncrypt($pwd,$masterPwd = ""){
-        $masterPwd = ( ! $masterPwd )  ? $_SESSION["mPass"] : $masterPwd;
+    public function mkEncrypt($pwd,$masterPwd = ""){
+        $masterPwd = ( ! $masterPwd )  ? $this->getSessionMasterPass() : $masterPwd;
         
         do {
             do {
-                $strInitialVector = SP_Crypt::createIV();
-                $blnCheckIv = SP_Crypt::checkIV($strInitialVector);
+                $cryptIV = SP_Crypt::createIV();
+                $blnCheckIv = SP_Crypt::checkIV($cryptIV);
             } while ($blnCheckIv == FALSE);
+
+            $this->strInitialVector = $cryptIV;
             
-            $pwdCrypt = $this->encrypt($pwd, $masterPwd, $strInitialVector);
-            $blnCheckEncrypted = $this->checkEncryptedPass($pwdCrypt);
+            $cryptValue = $this->encrypt($pwd, $masterPwd, $cryptIV);
+            $blnCheckEncrypted = $this->checkEncryptedPass($cryptValue);
         } while ($blnCheckEncrypted == FALSE );
         
-        $this->pwdCrypt = $pwdCrypt;
-        $this->strInitialVector = $strInitialVector;
-        return TRUE;
+        return $cryptValue;
     }
     
     /**
@@ -166,15 +165,15 @@ class SP_Crypt {
     public function mkCustomMPassEncrypt($customPwd,$masterPwd){       
         do {
             do {
-                $strInitialVector = SP_Crypt::createIV();
-                $blnCheckIv = SP_Crypt::CheckIV($strInitialVector);
+                $cryptIV = SP_Crypt::createIV();
+                $blnCheckIv = SP_Crypt::CheckIV($cryptIV);
             } while ($blnCheckIv == FALSE);
             
-            $pwdCrypt = $this->encrypt($masterPwd, $customPwd, $strInitialVector);
-            $blnCheckEncrypted = $this->checkEncryptedPass($pwdCrypt);
+            $cryptValue = $this->encrypt($masterPwd, $customPwd, $cryptIV);
+            $blnCheckEncrypted = $this->checkEncryptedPass($cryptValue);
         } while ($blnCheckEncrypted == FALSE );
         
-        $dataCrypt = array($pwdCrypt, $strInitialVector);
+        $dataCrypt = array($cryptValue, $cryptIV);
         
         return $dataCrypt;
     }
@@ -220,10 +219,18 @@ class SP_Crypt {
      */ 
     public static function makeHashSalt(){
         do {
-            $strInitialVector = self::createIV();
-            $blnCheckIv = self::checkIV($strInitialVector);
+            $cryptIV = self::createIV();
+            $blnCheckIv = self::checkIV($cryptIV);
         } while ($blnCheckIv == FALSE);
         
-        return $strInitialVector;
+        return $cryptIV;
+    }
+    
+    /**
+     * @brief Desencriptar la clave maestra de la sesión
+     * @return string con la clave maestra
+     */ 
+    public function getSessionMasterPass(){
+        return $this->decrypt($_SESSION["mPass"], $_SESSION['mPassPwd'], $_SESSION['mPassIV']);
     }
 }
