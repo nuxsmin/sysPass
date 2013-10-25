@@ -1184,8 +1184,8 @@ class SP_Users {
         }
 
         $query = "UPDATE usrData SET
-                        user_mPass = '$strUserMPwd[0]',
-                        user_mIV = '$strUserMPwd[1]',
+                        user_mPass = '".DB::escape($strUserMPwd[0])."',
+                        user_mIV = '".DB::escape($strUserMPwd[1])."',
                         user_lastUpdateMPass = UNIX_TIMESTAMP()
                         WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
