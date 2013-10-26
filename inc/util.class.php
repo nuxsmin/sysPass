@@ -227,7 +227,7 @@ class SP_Util {
             $appVersion = self::getVersion();
             
             if ( is_array($pubVer) && SP_Init::isLoggedIn() ){
-                if ( $pubVer[1] >= $appVersion[0] && $pubVer[2] > $appVersion[1] && $pubVer[3] != $appVersion[2]){
+                if ( $pubVer[3] != $appVersion[2] || $pubVer[1] >= $appVersion[0] || $pubVer[2] > $appVersion[1]){
                     $version = $pubVer[1].'.'.$pubVer[2].'.'.$pubVer[3];
                     return array('version' => $version,'url' => $url);
                 } else {
