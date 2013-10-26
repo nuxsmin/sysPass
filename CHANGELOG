@@ -1,3 +1,10 @@
+=== ** v1.0rc2 ** ===
+
+* [MOD] Mejor manejo de peticiones GET/POST.
+* [MOD] Los errores durante el backup son mostrados.
+* [MOD] Volver a la pestaña activa cuando se realiza una acción en las pestañas de configuración.
+* [MOD] Actualizar traducciones.
+
 === ** v1.0rc1 ** ===
 
 * [NUEVO] Nuevo nombre: phpPMS es ahora sysPass, Sysadmin Password Manager.
@@ -101,6 +108,13 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0rc2 ** ===
+
+* [MOD] Better GET/POST variable handling.
+* [MOD] Backups errors are shown.
+* [MOD] Return to active tab when save configurations tabs.
+* [MOD] Fix translations.
 
 === ** v1.0rc1 ** ===
 
