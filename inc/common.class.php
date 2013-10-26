@@ -65,7 +65,7 @@ class SP_Common {
      * @todo Autentificación
      * @todo Permitir HTML
      */ 
-    static function sendEmail($message, $strTo = "") {
+    public static function sendEmail($message, $strTo = "") {
 
         if (SP_Config::getValue('mailenabled', 0) === 0) {
             return FALSE;
@@ -95,7 +95,7 @@ class SP_Common {
 
         $mailbody = _('Acción') . ": " . $message['action'] . "\r\n";
         $mailbody .= _('Realizado por') . ": " . $_SESSION["ulogin"] . "\r\n";
-        $mailbody .= implode("\r\n",$message['text']);
+        $mailbody .= (is_array($message['text'])) ? implode("\r\n",$message['text']) : '';
 
         $header = implode("\r\n", $headers);
         
@@ -121,7 +121,7 @@ class SP_Common {
      * @param int $status devuelve el estado
      * @return string documento XML
      */
-    static function printXML($description, $status = 1) {
+    public static function printXML($description, $status = 1) {
         if (!is_string($description)) {
             return FALSE;
         }
@@ -146,7 +146,7 @@ class SP_Common {
      * @param int $id id del mensaje
      * @return string con la etiqueta html <img>
      */
-    static function printHelpButton($type, $id) {
+    public static function printHelpButton($type, $id) {
         $msgHelp[0] = _('Indicar el usuario de conexión a la base de datos de phpPMS');
         $msgHelp[1] = _('Indicar el nombre de la base de datos de phpPMS');
         $msgHelp[2] = _('Indicar el servidor de la base de datos de phpPMS');
@@ -182,7 +182,7 @@ class SP_Common {
      * 
      * Esta función genera un hash que permite verificar la autenticidad de un formulario
      */
-    static function getSessionKey($new = FALSE) {
+    public static function getSessionKey($new = FALSE) {
         $hash = sha1(time());
 
         if (!isset($_SESSION["sk"]) || $new === TRUE) {
@@ -198,11 +198,67 @@ class SP_Common {
      * @param string $key con el hash a comprobar
      * @return boo|string si no es correcto el hash devuelve bool. Si lo es, devuelve el hash actual.
      */
-    static function checkSessionKey($key) {
+    public static function checkSessionKey($key) {
         if (!isset($_SESSION["sk"]) || $_SESSION["sk"] == "" || !$key){
             return FALSE;
         }
 
         return ( $_SESSION["sk"] == $key );
+    }
+
+    /**
+     * @brief Obtener los valores de peticiones GET o POST y devolver limpios
+     * @param string $method con el método a utilizar
+     * @param string $param con el parámetro a consultar
+     * @param mixed $default opcional, valor por defecto a devolver
+     * @param bool $onlyCHeck opcional, comprobar si el parámetro está presente
+     * @param mixed $force opcional, valor devuelto si el parámeto está definido
+     * @return boo|string si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
+     */
+    public static function parseParams($method, $param, $default = '', $onlyCHeck = FALSE, $force = FALSE){
+        $out = '';
+        
+        switch ($method){
+            case 'g':
+                if ( !isset($_GET[$param]) ){
+                    return $default;
+                }
+                $out = $_GET[$param];
+                break;
+            case 'p':
+                if ( !isset($_POST[$param]) ){
+                    return $default;
+                }
+                $out = $_POST[$param];
+                break;
+            case 's':
+                if ( !isset($_SESSION[$param]) ){
+                    return $default;
+                }
+                $out = $_SESSION[$param];
+                break;
+            default :
+                return FALSE;
+        }
+
+        if ( $onlyCHeck ){
+            return TRUE;
+        }
+        
+        if ($force){
+            return $force;
+        }
+        
+        if (is_numeric($out) && is_numeric($default)){
+            return (int)$out;
+        }
+
+        if (is_string($out)){
+            return ( $method != 's' ) ? SP_Html::sanitize($out) : $out;
+        }
+        
+        if (is_array($out)){
+            return $out;
+        }
     }
 }

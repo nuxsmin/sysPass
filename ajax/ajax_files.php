@@ -34,7 +34,9 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-if (!isset($_POST["sk"]) || !SP_Common::checkSessionKey($_POST["sk"])) {
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
@@ -43,9 +45,9 @@ if (SP_Config::getValue('filesenabled', 0) == 0) {
     return;
 }
 
-$action = ( isset($_POST['action']) ) ? SP_Html::sanitize($_POST['action']) : '';
-$accountId = ( isset($_POST['accountId']) ) ? (int) $_POST['accountId'] : 0;
-$fileId = ( isset($_POST['fileId']) ) ? (int) $_POST['fileId'] : 0;
+$action = SP_Common::parseParams('p', 'action');
+$accountId = SP_Common::parseParams('p', 'accountId', 0);
+$fileId = SP_Common::parseParams('p', 'fileId', 0);
 
 if ($action == 'upload') {
     if (!is_array($_FILES["inFile"]) || !$accountId === 0) {

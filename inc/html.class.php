@@ -174,10 +174,6 @@ class SP_Html {
         self::$htmlPage[] = '</div> <!-- Close Project -->';
         self::$htmlPage[] = '</div> <!-- Close footer -->';
         self::$htmlPage[] = '<script>$(\'input[type="text"], select, textarea\').placeholder().mouseenter(function(){ $(this).focus(); });</script>';
-
-        if ($page == "main") {
-            self::$htmlPage[] = '<script>checkUpds();</script>';
-        }
     }
 
     /**

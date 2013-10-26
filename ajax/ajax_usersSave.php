@@ -33,14 +33,16 @@ if (!SP_Init::isLoggedIn()) {
     SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-if (!isset($_POST["sk"]) || !SP_Common::checkSessionKey($_POST["sk"])) {
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
-$frmSaveType = ( isset($_POST["type"]) ) ? (int) $_POST["type"] : 0;
-$frmAction = ( isset($_POST["action"]) ) ? (int) $_POST["action"] : 0;
-$frmItemId = ( isset($_POST["id"]) ) ? (int) $_POST["id"] : 0;
+$frmSaveType = SP_Common::parseParams('p', 'type', 0);
+$frmAction = SP_Common::parseParams('p', 'action', 0);
+$frmItemId = SP_Common::parseParams('p', 'id', 0);
 
 if ($frmAction == 3) {
     SP_Users::checkUserAccess("acceditpass", $frmItemId) || die('<DIV CLASS="error"' . _('No tiene permisos para acceder') . '</DIV');
@@ -52,18 +54,18 @@ $objUser = new SP_Users;
 
 if ($frmSaveType == 1 || $frmSaveType == 2) {
     // Variables POST del formulario
-    $frmLdap = ( isset($_POST["ldap"]) ) ? $_POST["ldap"] : 0;
-    $frmUsrName = ( isset($_POST["name"]) ) ? SP_Html::sanitize($_POST["name"]) : "";
-    $frmUsrLogin = ( isset($_POST["login"]) ) ? SP_Html::sanitize($_POST["login"]) : "";
-    $frmUsrProfile = ( isset($_POST["profileid"]) ) ? (int) $_POST["profileid"] : "";
-    $frmUsrGroup = ( isset($_POST["groupid"]) ) ? (int) $_POST["groupid"] : "";
-    $frmUsrEmail = ( isset($_POST["email"]) ) ? SP_Html::sanitize($_POST["email"]) : "";
-    $frmUsrNotes = ( isset($_POST["notes"]) ) ? SP_Html::sanitize($_POST["notes"]) : "";
-    $frmUsrPass = ( isset($_POST["pass"]) ) ? $_POST["pass"] : "";
-    $frmUsrPassV = ( isset($_POST["passv"]) ) ? $_POST["passv"] : "";
-    $frmAdminApp = ( isset($_POST["adminapp"]) && $_POST["adminapp"] == "on" ) ? 1 : 0;
-    $frmAdminAcc = ( isset($_POST["adminacc"]) && $_POST["adminacc"] == "on" ) ? 1 : 0;
-    $frmDisabled = ( isset($_POST["disabled"]) && $_POST["disabled"] == "on" ) ? 1 : 0;
+    $frmLdap = SP_Common::parseParams('p', 'ldap', 0);
+    $frmUsrName = SP_Common::parseParams('p', 'name');
+    $frmUsrLogin = SP_Common::parseParams('p', 'login');
+    $frmUsrProfile = SP_Common::parseParams('p', 'profileid', 0);
+    $frmUsrGroup = SP_Common::parseParams('p', 'groupid', 0);
+    $frmUsrEmail = SP_Common::parseParams('p', 'email');
+    $frmUsrNotes = SP_Common::parseParams('p', 'notes');
+    $frmUsrPass = SP_Common::parseParams('p', 'pass');
+    $frmUsrPassV = SP_Common::parseParams('p', 'passv');
+    $frmAdminApp = SP_Common::parseParams('p', 'adminapp', 0, FALSE, 1);
+    $frmAdminAcc = SP_Common::parseParams('p', 'adminacc', 0, FALSE, 1);
+    $frmDisabled = SP_Common::parseParams('p', 'disabled', 0, FALSE, 1);
 
     // Nuevo usuario o editar
     if ($frmAction == 1 OR $frmAction == 2) {
@@ -125,9 +127,9 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Usuario creado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al crear el usuario'));
-            }
+            } 
+            
+            SP_Common::printXML(_('Error al crear el usuario'));
         } elseif ($frmAction == 2) {
             if ($objUser->manageUser("update")) {
                 $message['action'] = _('Modificar Usuario');
@@ -137,9 +139,9 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Usuario actualizado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al actualizar el usuario'));
             }
+            
+            SP_Common::printXML(_('Error al actualizar el usuario'));
         }
         // Cambio de clave
     } elseif ($frmAction == 3 && !SP_Config::getValue('demoenabled', 0)) {
@@ -162,10 +164,10 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::sendEmail($message);
 
             SP_Common::printXML(_('Clave actualizada'), 0);
-        } else {
-            SP_Common::printXML(_('Error al modificar la clave'));
         }
-        // Eliminar usuario
+        
+        SP_Common::printXML(_('Error al modificar la clave'));
+    // Eliminar usuario
     } elseif ($frmAction == 4 && !SP_Config::getValue('demoenabled', 0)) {
 
         $objUser->userId = $frmItemId;
@@ -182,12 +184,12 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::sendEmail($message);
 
             SP_Common::printXML(_('Usuario eliminado'), 0);
-        } else {
-            SP_Common::printXML(_('Error al eliminar el usuario'));
         }
-    } else {
-        SP_Common::printXML(_('No es una acción válida'));
-    }
+        
+        SP_Common::printXML(_('Error al eliminar el usuario'));
+    } 
+    
+    SP_Common::printXML(_('No es una acción válida'));
 } elseif ($frmSaveType == 3 || $frmSaveType == 4) {
     // Variables POST del formulario
     $frmGrpName = ( isset($_POST["name"]) ) ? SP_Html::sanitize($_POST["name"]) : "";
@@ -228,9 +230,9 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Grupo actualizado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al actualizar el grupo'));
             }
+            
+            SP_Common::printXML(_('Error al actualizar el grupo'));
         }
 
         // Eliminar grupo
@@ -250,13 +252,13 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Grupo eliminado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al eliminar el grupo'));
             }
+            
+            SP_Common::printXML(_('Error al eliminar el grupo'));
         }
-    } else {
-        SP_Common::printXML(_('No es una acción válida'));
     }
+
+    SP_Common::printXML(_('No es una acción válida'));
 } elseif ($frmSaveType == 5 || $frmSaveType == 6) {
     $profileProp = array();
 
@@ -265,22 +267,22 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     $objUser->profileId = $frmItemId;
 
     // Profile properties Array
-    $profileProp["pAccView"] = ( isset($_POST["profile_accview"]) ) ? 1 : 0;
-    $profileProp["pAccViewPass"] = ( isset($_POST["profile_accviewpass"]) ) ? 1 : 0;
-    $profileProp["pAccViewHistory"] = ( isset($_POST["profile_accviewhistory"]) ) ? 1 : 0;
-    $profileProp["pAccEdit"] = ( isset($_POST["profile_accedit"]) ) ? 1 : 0;
-    $profileProp["pAccEditPass"] = ( isset($_POST["profile_acceditpass"]) ) ? 1 : 0;
-    $profileProp["pAccAdd"] = ( isset($_POST["profile_accadd"]) ) ? 1 : 0;
-    $profileProp["pAccDel"] = ( isset($_POST["profile_accdel"]) ) ? 1 : 0;
-    $profileProp["pAccFiles"] = ( isset($_POST["profile_accfiles"]) ) ? 1 : 0;
-    $profileProp["pConfig"] = ( isset($_POST["profile_config"]) ) ? 1 : 0;
-    $profileProp["pConfigCat"] = ( isset($_POST["profile_configcat"]) ) ? 1 : 0;
-    $profileProp["pConfigMpw"] = ( isset($_POST["profile_configmpw"]) ) ? 1 : 0;
-    $profileProp["pConfigBack"] = ( isset($_POST["profile_configback"]) ) ? 1 : 0;
-    $profileProp["pUsers"] = ( isset($_POST["profile_users"]) ) ? 1 : 0;
-    $profileProp["pGroups"] = ( isset($_POST["profile_groups"]) ) ? 1 : 0;
-    $profileProp["pProfiles"] = ( isset($_POST["profile_profiles"]) ) ? 1 : 0;
-    $profileProp["pEventlog"] = ( isset($_POST["profile_eventlog"]) ) ? 1 : 0;
+    $profileProp["pAccView"] = SP_Common::parseParams('p', 'profile_accview', 0, FALSE, 1);
+    $profileProp["pAccViewPass"] = SP_Common::parseParams('p', 'profile_accviewpass', 0, FALSE, 1);
+    $profileProp["pAccViewHistory"] = SP_Common::parseParams('p', 'profile_accviewhistory', 0, FALSE, 1);
+    $profileProp["pAccEdit"] = SP_Common::parseParams('p', 'profile_accedit', 0, FALSE, 1);
+    $profileProp["pAccEditPass"] = SP_Common::parseParams('p', 'profile_acceditpass', 0, FALSE, 1);
+    $profileProp["pAccAdd"] = SP_Common::parseParams('p', 'profile_accadd', 0, FALSE, 1);
+    $profileProp["pAccDel"] = SP_Common::parseParams('p', 'profile_accdel', 0, FALSE, 1);
+    $profileProp["pAccFiles"] = SP_Common::parseParams('p', 'profile_accfiles', 0, FALSE, 1);
+    $profileProp["pConfig"] = SP_Common::parseParams('p', 'profile_config', 0, FALSE, 1);
+    $profileProp["pConfigCat"] = SP_Common::parseParams('p', 'profile_configcat', 0, FALSE, 1);
+    $profileProp["pConfigMpw"] = SP_Common::parseParams('p', 'profile_configmpw', 0, FALSE, 1);
+    $profileProp["pConfigBack"] = SP_Common::parseParams('p', 'profile_configback', 0, FALSE, 1);
+    $profileProp["pUsers"] = SP_Common::parseParams('p', 'profile_users', 0, FALSE, 1);
+    $profileProp["pGroups"] = SP_Common::parseParams('p', 'profile_groups', 0, FALSE, 1);
+    $profileProp["pProfiles"] = SP_Common::parseParams('p', 'profile_profiles', 0, FALSE, 1);
+    $profileProp["pEventlog"] = SP_Common::parseParams('p', 'profile_eventlog', 0, FALSE, 1);
 
     // Nuevo perfil o editar
     if ($frmAction == 1 OR $frmAction == 2) {
@@ -303,9 +305,9 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Perfil creado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al crear el perfil'));
             }
+            
+            SP_Common::printXML(_('Error al crear el perfil'));
         } else if ($frmAction == 2) {
             if ($objUser->manageProfiles("update", $profileProp)) {
                 $message['action'] = _('Modificar Perfil');
@@ -315,9 +317,9 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Perfil actualizado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al actualizar el perfil'));
             }
+            
+            SP_Common::printXML(_('Error al actualizar el perfil'));
         }
 
         // Eliminar perfil
@@ -335,11 +337,11 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::sendEmail($message);
 
                 SP_Common::printXML(_('Perfil eliminado'), 0);
-            } else {
-                SP_Common::printXML(_('Error al eliminar el perfil'));
             }
+            
+            SP_Common::printXML(_('Error al eliminar el perfil'));
         }
-    } else {
-        SP_Common::printXML(_('No es una acción válida'));
     }
+    
+    SP_Common::printXML(_('No es una acción válida'));
 }

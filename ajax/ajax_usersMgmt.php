@@ -32,10 +32,11 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-if ( isset($_POST["id"]) && isset($_POST["type"])) {
-    $tplvars['itemid'] = (int)$_POST["id"];
-    $itemType = $tplvars['itemtype'] = (int)$_POST["type"];
-    $tplvars['active'] = (int)$_POST["active"];
+
+if ( SP_Common::parseParams('p', 'id', FALSE, TRUE) && SP_Common::parseParams('p', 'type', FALSE, TRUE) ) {
+    $tplvars['itemid'] = SP_Common::parseParams('p', 'id', 0);
+    $itemType = $tplvars['itemtype'] = SP_Common::parseParams('p', 'type', 0);
+    $tplvars['active'] = SP_Common::parseParams('p', 'active', 0);
 } else {
     return;
 }

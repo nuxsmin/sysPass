@@ -32,11 +32,11 @@ if (!SP_Init::isLoggedIn()) {
     return;
 }
 
-$accountId = ( isset($_POST["accountid"]) ) ? (int) $_POST["accountid"] : 0;
-$fullTxt = ( isset($_POST["full"]) ) ? (int) $_POST["full"] : 0;
-$isHistory = ( isset($_POST["isHistory"]) ) ? (int) $_POST["isHistory"] : 0;
+$accountId = SP_Common::parseParams('p', 'accountid', FALSE);
+$fullTxt = SP_Common::parseParams('p', 'full', 0);
+$isHistory = SP_Common::parseParams('p', 'isHistory', 0);
 
-if ($accountId == 0) {
+if ( ! $accountId) {
     return;
 }
 

@@ -1235,7 +1235,7 @@ class SP_Users {
             if ($showPass == TRUE) {
                 return $clearMasterPass;
             } else {
-                $_SESSION['mPassPwd'] = SHA1(uniqid());
+                $_SESSION['mPassPwd'] = substr(sha1(uniqid()),0,32);
 
                 $sessionMasterPass = $crypt->mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
                 
@@ -1295,7 +1295,7 @@ class SP_Users {
      * en la variable de sesión.
      */
     public static function checkUserAccess($strAction, $userId = 0) {
-        // Usar la cache de permisos?
+        // Comprobamos si la cache de permisos está inicializada
         if (!isset($_SESSION["usrprofile"]) || !is_object($_SESSION["usrprofile"])) {
             return FALSE;
         }

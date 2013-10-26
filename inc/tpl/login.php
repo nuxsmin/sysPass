@@ -37,7 +37,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
         <?php if ( SP_Config::getValue("demoenabled",0) ): ?>
             <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value="" title="> demo <"/><br />
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" title="> syspass <"/><br />
-            <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave maestra'); ?>" value="" title="0000" disabled/><br /></span>
+            <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave maestra'); ?>" value="" title="> 01234567890 <" disabled/><br /></span>
         <?php else: ?>
             <input type="text" name="user" id="user" placeholder="<?php echo  _('Usuario'); ?>" value="" /><br />
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" /><br />
@@ -49,7 +49,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
     </div><!-- Close boxData -->
 </div><!-- Close boxLogin -->
 
-<? if( isset($_GET['logout']) ): ?>
+<? if( SP_Common::parseParams('g', 'logout', FALSE, TRUE) ): ?>
 <div id="boxLogout"><? echo _('Sesión finalizada'); ?></div>
 <script>$('#boxLogout').fadeOut(5000);</script>
 <? endif; ?>

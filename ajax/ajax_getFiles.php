@@ -39,13 +39,14 @@ if ( SP_Config::getValue('filesenabled') == 0 ){
     return FALSE;              
 }
 
-$accountId = ( isset($_GET['id']) ) ? (int)$_GET['id'] : 0 ;
-$deleteEnabled = ( isset($_GET['del']) ) ? (int)$_GET['del'] : 0 ;
-$skey = ( isset($_GET['sk']) ) ? SP_Html::sanitize($_GET['sk']) : NULL;
+$sk = SP_Common::parseParams('g', 'sk', FALSE);
 
-if ( is_null($skey) ) {
-    return _('CONSULTA INVÁLIDA');
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
+    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
+
+$accountId = SP_Common::parseParams('g', 'id', 0);
+$deleteEnabled = SP_Common::parseParams('g', 'del', 0);
 
 $files = SP_Files::getFileList($accountId, $deleteEnabled);
 

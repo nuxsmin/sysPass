@@ -46,7 +46,6 @@ class SP_Account {
     var $accountNumViewDecrypt;
     var $accountDateAdd;
     var $accountDateEdit;
-    var $accountGroups;
 
     // Variables con info del usuario de la Cuenta
     var $accountUserName;
@@ -66,8 +65,10 @@ class SP_Account {
     var $queryNumRows;
     // Variable para indicar si la cuenta es desde el histórico
     var $accountIsHistory = 0;
+    // Cache para grupos de usuarios de las cuentas
+    var $accountCacheUserGroupsId;
     
-    // Variables para filstros de búsqueda
+    // Variables para filtros de búsqueda
     static $accountSearchTxt;
     static $accountSearchCustomer;
     static $accountSearchCategory;
@@ -100,7 +101,7 @@ class SP_Account {
                 $orderKey = "account_customerId";
                 break;
             default :
-                $orderKey = "account_customerId, account_name";
+                $orderKey = "customer_name, account_name";
                 break;
         }
 
@@ -149,8 +150,10 @@ class SP_Account {
 
             $arrQueryWhere[] = "(".implode(" OR ", $arrFilterUser).")";
         }
-
-        $queryOrder = " ORDER BY $orderKey ".$searchFilter["txtOrder"];
+        
+        $order = ( $searchFilter["txtOrder"] == 0 ) ? 'ASC' : 'DESC';
+        
+        $queryOrder = " ORDER BY $orderKey ".$order;
 
         if ( $searchFilter["limitCount"] != 99 ) $queryLimit = "LIMIT ".$searchFilter["limitStart"].", ".$searchFilter["limitCount"];
 
@@ -167,7 +170,9 @@ class SP_Account {
         // Consulta de la búsqueda de cuentas
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE ) return FALSE;
+        if ( $queryRes === FALSE ){
+            return FALSE;
+        }
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         $resQueryNumRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
@@ -517,7 +522,7 @@ class SP_Account {
         $accOldUGroups = $this->getGroupsAccount($this->accountId);
         $accNewUGroups = $this->accountUserGroupsId;
 
-        if ( is_array($accOldUGroups) AND ! is_array($accNewUGroups) ){
+        if ( is_array($accOldUGroups) && ! is_array($accNewUGroups) ){
             $queryDel = "DELETE FROM accGroups "
                     . "WHERE accgroup_accountId = ".(int)$this->accountId;
         } else if ( is_array($accNewUGroups) ){
@@ -665,8 +670,8 @@ class SP_Account {
         $accId = ( $accountId ) ? $accountId : $this->accountId;
         $accId = ( $this->accountParentId ) ? $this->accountParentId : $accId;
         
-        if ( ! is_array($this->accountGroups) ){
-            $this->accountGroups = array($accId => array());
+        if ( ! is_array($this->accountCacheUserGroupsId) ){
+            $this->accountCacheUserGroupsId = array($accId => array());
         }
         
         $query = "SELECT accgroup_groupId FROM accGroups "
@@ -681,10 +686,10 @@ class SP_Account {
         if ( ! is_array($queryRes) ) return array();
         
         foreach ( $queryRes as $groups ){
-            $this->accountGroups[$accId][] = $groups->accgroup_groupId;
+            $this->accountCacheUserGroupsId[$accId][] = $groups->accgroup_groupId;
         }
 
-        return $this->accountGroups[$accId];
+        return $this->accountCacheUserGroupsId[$accId];
     }
 
     /**
@@ -781,9 +786,9 @@ class SP_Account {
         
         // Convertimos en array la lista de grupos de la cuenta
         if ( $this->accountId && $accountId == "" ){
-            $arrAccUGroups = ( is_array($this->accountGroups) && array_key_exists($this->accountId, $this->accountGroups) ) ? $this->accountGroups[$this->accountId] : $this->getGroupsAccount($this->accountId);
+            $arrAccUGroups = ( is_array($this->accountCacheUserGroupsId) && array_key_exists($this->accountId, $this->accountCacheUserGroupsId) ) ? $this->accountUserGroupsId[$this->accountId] : $this->getGroupsAccount($this->accountId);
         } elseif ( $accountId ) {
-            $arrAccUGroups = ( is_array($this->accountGroups) && array_key_exists($accountId, $this->accountGroups) ) ? $this->accountGroups[$accountId] : $this->getGroupsAccount($accountId);
+            $arrAccUGroups = ( is_array($this->accountCacheUserGroupsId) && array_key_exists($accountId, $this->accountCacheUserGroupsId) ) ? $this->accountCacheUserGroupsId[$accountId] : $this->getGroupsAccount($accountId);
         } else {
             return FALSE;
         }
@@ -1133,10 +1138,22 @@ class SP_Account {
      * con respecto a los guardados
      */
     public function calcChangesHash(){
+        $groups = '';
+        
+        if ( is_array($this->accountUserGroupsId)){
+            $groups = implode($this->accountUserGroupsId);
+        } elseif (is_array($this->accountCacheUserGroupsId) ){
+            foreach ($this->accountCacheUserGroupsId as $id => $group){
+                if (is_array($group) ){
+                    $groups = implode($group);
+                }
+            } 
+        }
+        
         return md5($this->accountName.
         $this->accountCategoryId.
         $this->accountCustomerId.
-        $this->accountUserGroupsId.
+        $groups.
         $this->accountLogin.
         $this->accountUrl.
         $this->accountNotes);

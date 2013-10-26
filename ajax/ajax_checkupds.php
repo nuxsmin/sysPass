@@ -28,17 +28,11 @@ include_once (APP_ROOT."/inc/init.php");
 
 SP_Util::checkReferer('GET');
 
-// Only for admins
-if ( ! $_SESSION["uisadminapp"] ){
-    return;
-}
+$checkVersion = SP_Common::parseParams('s', 'UPDATED', FALSE);
 
-// Once per session
-if ( ! isset($_SESSION["UPDATED"]) ){
-    $checkVersion = SP_Util::checkUpdates();
-    $_SESSION["UPDATED"] = $checkVersion;
-} else{
-    $checkVersion = $_SESSION["UPDATED"];
+// Una vez por sesión
+if ( ! $checkVersion ){
+    $_SESSION["UPDATED"] = $checkVersion = SP_Util::checkUpdates();
 }
 
 session_write_close();

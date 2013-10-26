@@ -32,16 +32,18 @@ if ( ! SP_Init::isLoggedIn() ) {
     SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'),10);
 }
 
-if (!isset($_POST["sk"]) || !SP_Common::checkSessionKey($_POST["sk"])) {
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
 SP_Users::checkUserAccess('config') || SP_Html::showCommonError('unavailable');
 
-$intCategoryFunction = ( isset($_POST["categoryFunction"]) ) ? (int) $_POST["categoryFunction"] : 0;
-$categoryName = ( isset($_POST["categoryName"]) ) ? SP_Html::sanitize($_POST["categoryName"]) : "";
-$categoryNameNew = ( isset($_POST["categoryNameNew"]) ) ? SP_Html::sanitize($_POST["categoryNameNew"]) : "";
-$categoryId = ( isset($_POST["categoryId"]) ) ? (int) $_POST["categoryId"] : 0;
+$intCategoryFunction = SP_Common::parseParams('p', 'categoryFunction', 0);
+$categoryName = SP_Common::parseParams('p', 'categoryName');
+$categoryNameNew = SP_Common::parseParams('p', 'categoryNameNew');
+$categoryId = SP_Common::parseParams('p', 'categoryId', 0);
 
 switch ($intCategoryFunction) {
     case 1:
@@ -58,12 +60,10 @@ switch ($intCategoryFunction) {
                     SP_Common::sendEmail($message);
 
                     SP_Common::printXML(_('Categoría añadida'), 0);
-                } else {
-                    SP_Common::printXML(_('Error al añadir la categoría'));
                 }
-            } else {
-                SP_Common::printXML(_('Ya existe una categoría con ese nombre'));
+                SP_Common::printXML(_('Error al añadir la categoría'));
             }
+            SP_Common::printXML(_('Ya existe una categoría con ese nombre'));
         }
         break;
     case 2:
@@ -74,17 +74,19 @@ switch ($intCategoryFunction) {
             if (SP_Category::getCategoryIdByName($categoryNameNew) !== 0) {
                 SP_Common::printXML(_('Ya existe una categoría con ese nombre'));
             } else {
+                // Obtenemos el nombre de la categoría por el Id
+                $oldCategoryName = SP_Category::getCategoryNameById($categoryId);
+                
                 if (SP_Category::editCategoryById($categoryId, $categoryNameNew)) {
                     $message['action'] = _('Modificar Categoría');
-                    $message['text'][] = _('Nombre') . ': ' . $categoryNameNew;
+                    $message['text'][] = _('Nombre') . ': ' . $oldCategoryName.' > '.$categoryNameNew;
 
                     SP_Common::wrLogInfo($message);
                     SP_Common::sendEmail($message);
 
                     SP_Common::printXML(_('Categoría modificada'), 0);
-                } else {
-                    SP_Common::printXML(_('Error al modificar la categoría'));
                 }
+                SP_Common::printXML(_('Error al modificar la categoría'));
             }
         }
         break;
@@ -96,17 +98,19 @@ switch ($intCategoryFunction) {
             if (SP_Category::isCategoryInUse($categoryId)) {
                 SP_Common::printXML(_('Categoría en uso, no es posible eliminar'));
             } else {
+                // Obtenemos el nombre de la categoría por el Id
+                $oldCategoryName = SP_Category::getCategoryNameById($categoryId);
+                
                 if (SP_Category::categoryDel($categoryId)) {
                     $message['action'] = _('Eliminar Categoría');
-                    $message['text'][] = _('ID') . ': ' . $categoryId;
+                    $message['text'][] = _('Nombre') . ': ' .$oldCategoryName.' ('. $categoryId.')';
 
                     SP_Common::wrLogInfo($message);
                     SP_Common::sendEmail($message);
 
                     SP_Common::printXML(_('Categoría eliminada'));
-                } else {
-                    SP_Common::printXML(_('Error al eliminar la categoría'));
                 }
+                SP_Common::printXML(_('Error al eliminar la categoría'));
             }
         }
         break;

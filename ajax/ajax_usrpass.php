@@ -32,7 +32,7 @@ if ( ! SP_Init::isLoggedIn() ){
     return;
 }
 
-$userId = ( isset($_GET["usrid"]) ) ? (int)$_GET["usrid"] : 0;
+$userId = SP_Common::parseParams('g', 'usrid', FALSE);
 
 if ( ! $userId ) {
     return;
@@ -41,6 +41,8 @@ if ( ! $userId ) {
 $strError = '<div id="fancyView" class="msgError">'._('No tiene permisos para realizar esta operación').'</div>';
 
 SP_Users::checkUserAccess("acceditpass",$userId) || die ($strError);
+
+$isDemoMode = SP_Config::getValue('demoenabled', 0);
 ?>
 
 <div id="fancyContainer" align="center">
@@ -64,7 +66,11 @@ SP_Users::checkUserAccess("acceditpass",$userId) || die ($strError);
             </td>
         </tr>
     </table>
-    <input type="hidden" name="id" value="<? echo $userId; ?>" />
+    <?  if ( ! $isDemoMode ): ?>
+        <input type="hidden" name="action" value="3" />
+    <? elseif ( $_SESSION['uid'] != $userId && $isDemoMode ): ?>
+        <input type="hidden" name="id" value="<? echo $userId; ?>" />
+    <? endif; ?>
     <input type="hidden" name="type" value="1" />
     <input type="hidden" name="action" value="3" />
     <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(); ?>">

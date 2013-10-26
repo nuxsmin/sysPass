@@ -32,28 +32,30 @@ if (!SP_Init::isLoggedIn()) {
     SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-if (!isset($_POST["sk"]) || !SP_Common::checkSessionKey($_POST["sk"])) {
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
-$frmSaveType = ( isset($_POST["savetyp"]) ) ? (int) $_POST["savetyp"] : 0;
-$frmAccountId = ( isset($_POST["accountid"]) ) ? (int) $_POST["accountid"] : 0;
-$frmSelCustomer = ( isset($_POST["customerId"]) ) ? (int) $_POST["customerId"] : 0;
-$frmNewCustomer = ( isset($_POST["customer_new"]) ) ? SP_Html::sanitize($_POST["customer_new"]) : "";
-$frmName = ( isset($_POST["name"]) ) ? SP_Html::sanitize($_POST["name"]) : "";
-$frmLogin = ( isset($_POST["login"]) ) ? SP_Html::sanitize($_POST["login"]) : "";
-$frmPassword = ( isset($_POST["password"]) ) ? $_POST["password"] : "";
-$frmPasswordV = ( isset($_POST["password2"]) ) ? $_POST["password2"] : "";
-$frmCategoryId = ( isset($_POST["categoryId"]) ) ? (int) $_POST["categoryId"] : 0;
-$frmUGroups = ( isset($_POST["ugroups"]) ) ? $_POST["ugroups"] : "";
-$frmNotes = ( isset($_POST["notice"]) ) ? SP_Html::sanitize($_POST["notice"]) : "";
-$frmUrl = ( isset($_POST["url"]) ) ? SP_Html::sanitize($_POST["url"]) : "";
-$frmChangesHash = ( isset($_POST["hash"]) ) ? SP_Html::sanitize($_POST["hash"]) : "";
+$frmSaveType = SP_Common::parseParams('p', 'savetyp', 0);
+$frmAccountId = SP_Common::parseParams('p', 'accountid', 0);
+$frmSelCustomer = SP_Common::parseParams('p', 'customerId', 0);
+$frmNewCustomer = SP_Common::parseParams('p', 'customer_new');
+$frmName = SP_Common::parseParams('p', 'name');
+$frmLogin = SP_Common::parseParams('p', 'login');
+$frmPassword = SP_Common::parseParams('p', 'password');
+$frmPasswordV = SP_Common::parseParams('p', 'password2');
+$frmCategoryId = SP_Common::parseParams('p', 'categoryId', 0);
+$frmUGroups = SP_Common::parseParams('p', 'ugroups');
+$frmNotes = SP_Common::parseParams('p', 'notice');
+$frmUrl = SP_Common::parseParams('p', 'url');
+$frmChangesHash = SP_Common::parseParams('p', 'hash');
 
 // Datos del Usuario
-$userId = $_SESSION["uid"];
-$groupId = $_SESSION["ugroup"];
+$userId = SP_Common::parseParams('s', 'uid', 0);
+$groupId = SP_Common::parseParams('s', 'ugroup', 0);
 
 if ($frmSaveType == 1) {
     // Comprobaciones para nueva cuenta
@@ -118,8 +120,8 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
     $accountPass = $crypt->mkEncrypt($frmPassword);
     //$accountURL = $crypt->mkEncrypt($frmUrl, $crypt->getSessionMasterPass());
     //$accountNotes = $crypt->mkEncrypt($frmNotes, $crypt->getSessionMasterPass());
-    
-    if ( $accountPass === FALSE || is_null($accountPass) ){
+
+    if ($accountPass === FALSE || is_null($accountPass)) {
         SP_Common::printXML(_('Error al generar datos cifrados'));
     }
 
@@ -163,9 +165,8 @@ switch ($frmSaveType) {
         // Crear cuenta
         if ($account->createAccount()) {
             SP_Common::printXML(_('Cuenta creada'), 0);
-        } else {
-            SP_Common::printXML(_('Error al crear la cuenta'), 0);
         }
+        SP_Common::printXML(_('Error al crear la cuenta'), 0);
         break;
     case 2:
         $customer->customerId = $frmSelCustomer;
@@ -202,9 +203,8 @@ switch ($frmSaveType) {
         // Actualizar cuenta
         if ($account->updateAccount()) {
             SP_Common::printXML(_('Cuenta actualizada'), 0);
-        } else {
-            SP_Common::printXML(_('Error al modificar la cuenta'));
         }
+        SP_Common::printXML(_('Error al modificar la cuenta'));
         break;
     case 3:
         $account->accountId = $frmAccountId;
@@ -212,9 +212,8 @@ switch ($frmSaveType) {
         // Eliminar cuenta
         if ($account->deleteAccount()) {
             SP_Common::printXML(_('Cuenta eliminada'), 0);
-        } else {
-            SP_Common::printXML(_('Error al eliminar la cuenta'));
         }
+        SP_Common::printXML(_('Error al eliminar la cuenta'));
         break;
     case 4:
         $account->accountId = $frmAccountId;
@@ -225,10 +224,8 @@ switch ($frmSaveType) {
         // Actualizar clave de cuenta
         if ($account->updateAccountPass()) {
             SP_Common::printXML(_('Clave actualizada'), 0);
-        } else {
-            SP_Common::printXML(_('Error al actualizar la clave'));
         }
-
+        SP_Common::printXML(_('Error al actualizar la clave'));
         break;
     default:
         SP_Common::printXML(_('No es una acción válida'));

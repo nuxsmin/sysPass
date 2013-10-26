@@ -62,7 +62,7 @@ $skey = SP_Common::getSessionKey(TRUE);
                 <form OnSubmit="return configMgmt('addcat');" method="post" name="frmAddCategory" id="frmAddCategory">
                     <input type="text" name="categoryName" maxlength="50">
                     <input type="image" src="imgs/add.png" title="<? echo _('Nueva categoría'); ?>" class="inputImg" id="btnAdd" />
-					<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+                    <input type="hidden" name="active" value="<? echo $activeTab ?>" />
                     <input type="hidden" name="categoryFunction" value="1">
                     <input type="hidden" name="sk" value="<? echo $skey; ?>">
                 </form>
@@ -77,7 +77,7 @@ $skey = SP_Common::getSessionKey(TRUE);
                 <? SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp1); ?>
                 <br>
                 <br>
-				<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+                <input type="hidden" name="active" value="<? echo $activeTab ?>" />
                 <input type="text" name="categoryNameNew" maxlength="50" >
                 <input type="hidden" name="categoryFunction" value="2">
                 <input type="hidden" name="sk" value="<? echo $skey; ?>">
@@ -92,7 +92,7 @@ $skey = SP_Common::getSessionKey(TRUE);
         <td  class="valField">
             <form OnSubmit="return configMgmt('delcat');" method="post" name="frmDelCategory" id="frmDelCategory">
                 <? SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp2); ?>
-				<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+                <input type="hidden" name="active" value="<? echo $activeTab ?>" />
                 <input type="hidden" name="categoryFunction" value="3">
                 <input type="hidden" name="sk" value="<? echo $skey; ?>">
                 <input type="image" src="imgs/delete.png" title="<? echo _('Borrar categoría'); ?>" class="inputImg" />

@@ -30,11 +30,11 @@ $action = $data['action'];
 $account = new SP_Account;
 $account->accountId = $data['id'];
 $account->lastAction = $data['lastaction'];
-$account->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : 0;
+$account->accountParentId = SP_Common::parseParams('s', 'accParentId', 0);
 
-$userGroupId = $_SESSION["ugroup"];
-$userIsAdminApp = $_SESSION["uisadminapp"];
-$userIsAdminAcc = $_SESSION["uisadminacc"];
+$userGroupId = SP_Common::parseParams('s', 'ugroup', 0);
+$userIsAdminApp = SP_Common::parseParams('s', 'uisadminapp', 0);
+$userIsAdminAcc = SP_Common::parseParams('s', 'uisadminacc', 0);
 
 $changesHash = '';
 

@@ -34,7 +34,7 @@ if (!SP_Init::isLoggedIn()) {
 
 SP_Users::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
 
-$start = ( isset($_POST["start"]) ) ? (int)$_POST["start"] : 0;
+$start = SP_Common::parseParams('p', 'start', 0);
 
 $tplvars = array('start' => $start);
 SP_Html::getTemplate('eventlog', $tplvars);

@@ -69,6 +69,7 @@ $lastBackupTime = ( file_exists($backupFile['absolute']) ) ? _('Último backup')
 
 <form method="post" name="frmBackup" id="frmBackup">
 	<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+	<input type="hidden" name="backup" value="1" />
 	<input type="hidden" name="action" value="backup" />
 	<input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
 </form>

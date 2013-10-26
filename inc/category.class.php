@@ -140,4 +140,19 @@ class SP_Category {
 
         return $resCategories;
     }
+    
+    /**
+     * @brief Obtiene el nombre de la categoría a partir del Id
+     * @return string con el nombre de la categoría
+     */ 
+    public static function getCategoryNameById($id){
+        $query = "SELECT category_name FROM categories WHERE category_id = ".(int)$id;
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+            return FALSE;
+        }
+        
+        return $queryRes[0]->category_name;
+    }
 }

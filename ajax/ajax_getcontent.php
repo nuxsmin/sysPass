@@ -32,21 +32,21 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-if (isset($_POST["action"])) {
-    $action = $tplvars['action'] = $_POST["action"];
-    $itemId = $tplvars['id'] = ( isset($_POST["id"]) ) ? (int) $_POST["id"] : 0;
-    $lastAction = $tplvars['lastaction'] = ( isset($_POST["lastAction"]) ) ? SP_Html::sanitize($_POST["lastAction"]) : 'accsearch';
+if ( SP_Common::parseParams('p', 'action', '', TRUE) ) {
+    $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
+    $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);
+    $lastAction = $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastaction', 'accsearch');
 } else {
     die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
 }
 
 switch ($action) {
     case "accsearch":
-        SP_Account::$accountSearchTxt = ( isset($_SESSION["accountSearchTxt"]) ) ? $_SESSION["accountSearchTxt"] : "";
-        SP_Account::$accountSearchCustomer = ( isset($_SESSION["accountSearchCustomer"]) ) ? $_SESSION["accountSearchCustomer"] : "";
-        SP_Account::$accountSearchCategory = ( isset($_SESSION["accountSearchCategory"]) ) ? $_SESSION["accountSearchCategory"] : 0;
-        SP_Account::$accountSearchOrder = ( isset($_SESSION["accountSearchOrder"]) ) ? $_SESSION["accountSearchOrder"] : 0;
-        SP_Account::$accountSearchKey = ( isset($_SESSION["accountSearchKey"]) ) ? $_SESSION["accountSearchKey"] : 0;
+        SP_Account::$accountSearchTxt = SP_Common::parseParams('s', 'accountSearchTxt');
+        SP_Account::$accountSearchCustomer = SP_Common::parseParams('s', 'accountSearchCustomer');
+        SP_Account::$accountSearchCategory = SP_Common::parseParams('s', 'accountSearchCategory', 0);
+        SP_Account::$accountSearchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
+        SP_Account::$accountSearchKey = SP_Common::parseParams('s', 'accountSearchKey', 0);
 
         SP_Html::getTemplate('search', $tplvars);
         break;
@@ -270,22 +270,34 @@ switch ($action) {
         break;
 }
 
-if (SP_Config::getValue('debug') && isset($_SESSION["uisadminapp"])) {
+if ( isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug') ) {
     $time_stop = SP_Init::microtime_float();
     $time = ($time_stop - $time_start);
     $memEnd = memory_get_usage();
+    //$crypt = new SP_Crypt;
+    
+    $debugTxt[] = "<div ID= 'debuginfo' class='round'>";
+    $debugTxt[] = "<h3>DEBUG INFO</h3>";
+    $debugTxt[] = "<ul>";
+    $debugTxt[] = "<li>RENDER -> " . $time . " sec</li>";
+    $debugTxt[] = "<li>MEM -> Init: " . ($memInit / 1000) . " KB - End: " . ($memEnd / 1000) . " KB - Total: " . (($memEnd - $memInit) / 1000) . " KB</li>";
+    $debugTxt[] = "<li>SESSION:";
+    $debugTxt[] = "<pre>".print_r($_SESSION, TRUE)."</pre";
+    $debugTxt[] = "</li>";
+    $debugTxt[] = "<li>CONFIG:<pre>";
+    $debugTxt[] = "<pre>".print_r(SP_Config::getKeys(TRUE), TRUE)."</pre>";
+    $debugTxt[] = "</li>";
+    //$debugTxt[] = '<li>'.$crypt->getSessionMasterPass().'</li>';
+    $debugTxt[] = "</div>";
+    
+    foreach ( $debugTxt as $out ){
+        echo $out;
+    }
+}
 
-    echo "<div ID= 'debuginfo' class='round'>";
-    echo "<h3>DEBUG INFO</h3>";
-    echo "<ul>";
-    echo "<li>RENDER -> " . $time . " sec</li>";
-//    echo "<li>RENDER - Init: ".$startTime." - End: ".$stopTime." - Total: ".($stopTime - $startTime)."</li>";
-    echo "<li>MEM -> Init: " . ($memInit / 1000) . " KB - End: " . ($memEnd / 1000) . " KB - Total: " . (($memEnd - $memInit) / 1000) . " KB</li>";
-    echo "<li>SESSION:<pre>";
-    print_r($_SESSION);
-    echo "</pre></li>";
-    echo "<li>CONFIG:<pre>";
-    print_r(SP_Config::getKeys(TRUE));
-    echo "</pre></li>";
-    echo "</div>";
+// Se comprueba si hay actualizaciones.
+// Es necesario que se haga al final de obtener el contenido ya que la 
+// consulta ajax detiene al resto si se ejecuta antes
+if ( $_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 ){
+    echo '<script>checkUpds();</script>';
 }

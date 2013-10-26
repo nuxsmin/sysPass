@@ -28,13 +28,13 @@ include_once (APP_ROOT."/inc/init.php");
 
 SP_Util::checkReferer('POST');
 
-if ( ! isset($_POST["login"]) ){
+if ( ! SP_Common::parseParams('p', 'login', FALSE) ){
     return;
 }
         
-$userLogin = ( isset($_POST["user"]) ) ? SP_Html::sanitize($_POST["user"]) : "";
-$userPass = ( isset($_POST["pass"]) ) ? SP_Html::sanitize($_POST["pass"]) : "";
-$masterPass = ( isset($_POST["mpass"]) ) ? SP_Html::sanitize($_POST["mpass"]) : "";
+$userLogin = SP_Common::parseParams('p', 'user');
+$userPass = SP_Common::parseParams('p', 'pass');
+$masterPass = SP_Common::parseParams('p', 'mpass');
 
 if ( ! $userLogin OR ! $userPass ){
     SP_Common::printXML(_('Usuario/Clave no introducidos'));

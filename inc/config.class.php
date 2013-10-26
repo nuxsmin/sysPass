@@ -211,10 +211,15 @@ class SP_Config{
             
             // Backup de la BBDD
             $command = 'mysqldump -h '.$dbhost.' -u '.$dbuser.' -p'.$dbpass.' -r "'.$bakFileDB.'" '.$dbname.' 2>&1'; 
-            $arrOut[] = system($command);
-            //$bzip = system('bzip2 "'.$backupFile.'"');
-            $command = 'tar czf '.$bakFile.' '.$backupDir.' --exclude "'.$bakDstDir.'"';
-            $arrOut[] = system($command);
+            exec($command, $resOut, $resBakDB);
+            
+            // Backup de la Aplicación
+            $command = 'tar czf '.$bakFile.' '.$backupDir.' --exclude "'.$bakDstDir.'" 2>&1';
+            exec($command, $resOut, $resBakApp);
+            
+            if ( $resBakApp != 0 || $resBakDB != 0 ){
+                $arrOut['error'] = implode('<br>', $resOut);
+            }
         }
         
         return $arrOut;

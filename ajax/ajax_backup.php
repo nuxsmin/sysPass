@@ -32,9 +32,15 @@ if ( ! SP_Init::isLoggedIn() ) {
     SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
+    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+}
+
 SP_Users::checkUserAccess("backup") || die ('<DIV CLASS="error">'._('No tiene permisos para acceder a esta página').'</DIV');
 
-$doBackup = ( isset($_POST["doBackup"]) ) ? $_POST["doBackup"] : 0 ;
+$doBackup = SP_Common::parseParams('p', 'backup', 0);
 
 if ( $doBackup ){
     $arrOut = SP_Config::makeBackup();

@@ -123,28 +123,28 @@ function searchSort(skey,start,nav){
    
     if ( order.dir === 0 ){
         if ( nav === 1 ){
-            var sorder = "ASC";
+            var sorder = 0;
         } else {
             if ( order.key > 0 && order.key != skey ){
                 order.key = skey;
-                var sorder = "ASC";
+                var sorder = 0;
             } else{
                 order.key = skey;
                 order.dir = 1;
-                var sorder = "DESC";
+                var sorder = 1;
             }
         }
     } else {
         if ( nav === 1 ){
-            var sorder = "DESC";
+            var sorder = 1;
         } else {
             if ( order.key > 0 && order.key != skey ){
                 order.key = skey;
-                var sorder = "DESC";
+                var sorder = 1;
             } else{
                 order.key = skey;
                 order.dir = 0;
-                var sorder = "ASC";
+                var sorder = 0;
             }
         }
     }
@@ -367,20 +367,20 @@ function delAccount(id,action,sk){
 
 // Función para guardar la configuración
 function configMgmt(action){
-    var data, url, txt;
-	var activeTab = $('input[name="active"]').val() - 1;
+    var data, url, txt, activeTab;
+    
     
     switch(action){
         case "addcat":
-            data = $("#frmAddCategory").serialize();
+            frm = 'frmAddCategory';
             url = APP_ROOT + '/ajax/ajax_categorymgmt.php';
             break;
         case "editcat":
-            data = $("#frmEditCategory").serialize();
+            frm = 'frmEditCategory';
             url = APP_ROOT + '/ajax/ajax_categorymgmt.php';
             break;
         case "delcat":
-            data = $("#frmDelCategory").serialize();
+            frm = 'frmDelCategory';
             url = APP_ROOT + '/ajax/ajax_categorymgmt.php';
             break;
         case "saveconfig":
@@ -388,26 +388,27 @@ function configMgmt(action){
             $("#wikifilter option").prop('selected',true);
             $("#ldapuserattr option").prop('selected',true);
             
-            data = $("#frmConfig").serialize();
+            frm = 'frmConfig';
             url = APP_ROOT + '/ajax/ajax_configsave.php';
             break;
         case "savempwd":
-            data = $("#frmCrypt").serialize();
+            frm = 'frmCrypt';
             url = APP_ROOT + '/ajax/ajax_configsave.php';
             break;
         case "backup":
-            data = {'doBackup' : 1};
+            frm = 'frmBackup';
             url =  APP_ROOT + '/ajax/ajax_backup.php';
             break;
         case "migrate":
-            data = $("#frmMigrate").serialize();
+            frm = 'frmMigrate';
             url =  APP_ROOT + '/ajax/ajax_migrate.php';
             break;
         default:
             return;
     }    
-
-    $('#btnGuardar').attr('disabled', true);
+    
+    data = $('#' + frm).serialize();
+    activeTab = $('#' + frm + ' input[name="active"]').val() - 1;
     $.fancybox.showLoading();
 
     $.ajax({
@@ -421,13 +422,11 @@ function configMgmt(action){
 
             if ( status === 0 ){
                 resMsg("ok", description);
-                $('#btnGuardar').attr('disabled', true);
                 doAction('configmenu','',activeTab);
             } else if ( status === 10){
                 doLogout();
             } else {
                 resMsg("error", description);
-                $('#btnGuardar').removeAttr("disabled");						
             }
         },
         error:function(jqXHR, textStatus, errorThrown){
@@ -646,7 +645,7 @@ function checkUpds(){
         type: 'GET',
         dataType: 'html',
         url: APP_ROOT + '/ajax/ajax_checkupds.php',
-        timeout: 2000,
+        timeout: 5000,
         success: function(response){
             $('#updates').html(response);
         },

@@ -32,7 +32,11 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-( ! isset($_POST["sk"]) || ! SP_Common::checkSessionKey($_POST["sk"]) ) && die('<div class="error round">'._('CONSULTA INVÁLIDA').'</div>');
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if (!$sk || !SP_Common::checkSessionKey($sk)) {
+   die('<div class="error round">'._('CONSULTA INVÁLIDA').'</div>');
+}
 
 $startTime = microtime();
 
@@ -44,16 +48,16 @@ $wikiSearchUrl = SP_Config::getValue('wikisearchurl');
 $wikiFilter = explode('||',SP_Config::getValue('wikifilter'));
 $wikiPageUrl = SP_Config::getValue('wikipageurl');
 
-$sortKey = ( isset($_POST["skey"]) ) ? (int)$_POST["skey"] : 0;
-$sortOrder = ( isset($_POST["sorder"]) ) ? SP_Html::sanitize($_POST["sorder"]) : "ASC";
-$customerId = ( isset($_POST["customer"]) ) ? (int)$_POST["customer"] : 0;
-$categoryId = ( isset($_POST["category"]) ) ? (int)$_POST["category"] : 0;
-$searchTxt = ( isset($_POST["search"]) ) ? SP_Html::sanitize($_POST["search"]) : "";
-$limitStart = ( isset($_POST["start"]) ) ? (int)$_POST["start"] : 0;    
+$sortKey = SP_Common::parseParams('p', 'skey', 0);
+$sortOrder = SP_Common::parseParams('p', 'sorder', 0);
+$customerId = SP_Common::parseParams('p', 'customer', 0);
+$categoryId = SP_Common::parseParams('p', 'category', 0);
+$searchTxt = SP_Common::parseParams('p', 'search', '');
+$limitStart = SP_Common::parseParams('p', 'start', 0);
 
-$userGroupId = (int)$_SESSION["ugroup"];
-$userProfileId = (int)$_SESSION["uprofile"];
-$userId = (int)$_SESSION["uid"];
+$userGroupId = SP_Common::parseParams('s', 'ugroup', 0);
+$userProfileId = SP_Common::parseParams('s', 'uprofile', 0);
+$userId = SP_Common::parseParams('s', 'uid', 0);
 
 $filterOn = ( $sortKey > 1 || $customerId || $categoryId || $searchTxt ) ? TRUE : FALSE;
 
@@ -70,14 +74,19 @@ $arrSearchFilter = array("txtSearch" => $searchTxt,
 
 $resQuery = $objAccount->getAccounts($arrSearchFilter);
 
-if ( ! $resQuery ) die('<div class="error round">'._('ERROR EN LA CONSULTA').'</div>');
-if ( ! is_array($resQuery) ) die('<div class="noRes round">'._('No se encontraron registros').'</div>');
+if ( ! $resQuery ){
+    die('<div class="error round">'._('ERROR EN LA CONSULTA').'</div>');
+}
+
+if ( ! is_array($resQuery) ){
+    die('<div class="noRes round">'._('No se encontraron registros').'</div>');
+}
 
 if ( count($resQuery) > 0){
     $sortKeyImg = "";
 
     if ( $sortKey > 0 ){
-        $sortKeyImg = ( $sortOrder == "DESC" ) ? "imgs/sort_asc.png" : "imgs/sort_desc.png";
+        $sortKeyImg = ( $sortOrder == 0 ) ? "imgs/sort_asc.png" : "imgs/sort_desc.png";
         $sortKeyImg = '<img src="'.$sortKeyImg.'" class="icon" />';
     }
     
