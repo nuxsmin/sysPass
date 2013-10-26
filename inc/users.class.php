@@ -1235,7 +1235,7 @@ class SP_Users {
             if ($showPass == TRUE) {
                 return $clearMasterPass;
             } else {
-                $_SESSION['mPassPwd'] = uniqid();
+                $_SESSION['mPassPwd'] = SHA1(uniqid());
 
                 $sessionMasterPass = $crypt->mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
                 
