@@ -176,7 +176,7 @@ class SP_Config{
         $backupDir = SP_Init::$SERVERROOT;
         
         $bakDstDir = $backupDir.'/backup';
-        $bakFilePMS = $backupDir.'/backup/'.$siteName.'.tgz';
+        $bakFile = $backupDir.'/backup/'.$siteName.'.tgz';
         $bakFileDB = $backupDir.'/backup/'.$siteName.'_db.sql';
 
         if ( ! is_dir($bakDstDir) ){
@@ -213,7 +213,7 @@ class SP_Config{
             $command = 'mysqldump -h '.$dbhost.' -u '.$dbuser.' -p'.$dbpass.' -r "'.$bakFileDB.'" '.$dbname.' 2>&1'; 
             $arrOut[] = system($command);
             //$bzip = system('bzip2 "'.$backupFile.'"');
-            $command = 'tar czf '.$bakFilePMS.' '.$bakDirPMS.' --exclude "'.$bakDstDir.'"';
+            $command = 'tar czf '.$bakFile.' '.$backupDir.' --exclude "'.$bakDstDir.'"';
             $arrOut[] = system($command);
         }
         
