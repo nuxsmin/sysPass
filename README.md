@@ -10,9 +10,9 @@ Detalles de instalación y log de cambios en Wiki
 
 ----------------
 
-PHP web based Passwords Management System for bussiness and personal use.
+PHP web based Passwords Management System for business and personal use.
 
-Accounts passwords are encripted with an unique master password, group/role based access, file uploading, LDAP integration, auditing event and more....
+Accounts passwords are encrypted with an unique master password, group/role based access, file uploading, LDAP integration, event/actions auditing and more....
 
 Installation instructions and changelog at Wiki
 
