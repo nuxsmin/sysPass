@@ -57,14 +57,14 @@ and added new features that allows:
     - LDAP and DB access.
     - Password encryption with global master password.
     - Users/Groups management.
-    - Attachments could be uploaded.
+    - Attachments can be uploaded.
     - Audit event log.
     - Backup "portable".
     - Wiki links.
     - Accounts changes history.
     - Import from phpPMS.
 
-To install you could follow steps on 'INSTALL' file or at 
+To install you can follow steps on 'INSTALL' file or at 
 http://wiki.syspass.org/doku.php/es:installl
 
 This software is published under GNU GPLv3 license. For details about that, there is
