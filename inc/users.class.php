@@ -256,7 +256,7 @@ class SP_Users {
             $action_check = array();
 
             $lnkEdit = '<img src="imgs/edit.png" title="' . _('Editar') . '" class="inputImg" Onclick="return usrgrpDetail(' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
-            $lnkDel = '<img src="imgs/delete.png" title="' . _('Eliminar') . '" class="inputImg" Onclick="return usersMgmt(\'\', 1,' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
+            $lnkDel = '<img src="imgs/delete.png" title="' . _('Eliminar') . '" class="inputImg" Onclick="return usersMgmt(' . $arrUsersTableProp["active"] . ', 1,' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
             $lnkPass = '<img src="imgs/key.png" title="' . _('Cambiar clave') . '" class="inputImg" Onclick="return usrUpdPass(' . $intId . ');" />';
 
             echo '<ul>';
@@ -523,7 +523,7 @@ class SP_Users {
         }
 
         // Número de cuentas con el grupo como primario
-        $query = "SELECT account_id FROM accounts WHERE account_groupId = " . (int) $this->groupId;
+        $query = "SELECT account_id FROM accounts WHERE account_userGroupId = " . (int) $this->groupId;
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -1110,14 +1110,14 @@ class SP_Users {
             return FALSE;
         }
 
-        $configMPass = SP_Config::getConfigParameter("masterPwd");
+        $configMPass = SP_Config::getConfigValue('masterPwd');
 
         if ($configMPass === FALSE) {
             return FALSE;
         }
 
         // Comprobamos el hash de la clave del usuario con la guardada
-        return SP_Crypt::checkHashPass($userMPass, $configMPass[0]->config_value);
+        return SP_Crypt::checkHashPass($userMPass, $configMPass);
     }
 
     /**
@@ -1137,7 +1137,7 @@ class SP_Users {
             return FALSE;
         }
 
-        $configMPassTime = SP_Config::getConfigParameter("lastupdatempass");
+        $configMPassTime = SP_Config::getConfigValue('lastupdatempass');
 
         if ($configMPassTime === FALSE) {
             return FALSE;
@@ -1154,7 +1154,7 @@ class SP_Users {
             $userLastUpdateMPass = $userData->user_lastUpdateMPass;
         }
 
-        if ($configMPassTime[0]->config_value > $userLastUpdateMPass) {
+        if ($configMPassTime > $userLastUpdateMPass) {
             return FALSE;
         }
 
@@ -1166,13 +1166,13 @@ class SP_Users {
      * @return bool
      */
     public function updateUserMPass($masterPwd) {
-        $configMPass = SP_Config::getConfigParameter("masterPwd");
+        $configMPass = SP_Config::getConfigValue('masterPwd');
 
         if (!$configMPass) {
             return FALSE;
         }
 
-        if (SP_Crypt::checkHashPass($masterPwd, $configMPass[0]->config_value)) {
+        if (SP_Crypt::checkHashPass($masterPwd, $configMPass)) {
             $crypt = new SP_Crypt;
             $strUserMPwd = $crypt->mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
 
@@ -1201,7 +1201,7 @@ class SP_Users {
      * @return string con la clave de cifrado
      */
     private function getCypherPass(){
-        $configSalt = SP_Config::getConfigParameter("passwordsalt");
+        $configSalt = SP_Config::getConfigValue('passwordsalt');
         $cypherPass = substr(sha1($configSalt.$this->userPass), 0, 32);
         
         return $cypherPass;
