@@ -52,7 +52,6 @@ $categoriesSelProp = array("name" => "category",
                 <label FOR="txtSearch"></label>
                 <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1)" value="<? echo SP_Account::$accountSearchTxt; ?>" placeholder="<? echo _('Texto a buscar'); ?>"/>
                 <img src="imgs/clear.png" title="<? echo _('Limpiar'); ?>" class="inputImg" id="btnLimpiar" onClick="Clear('frmSearch', 1); accSearch(0);" />
-                <!--<img src="imgs/search.png" title="<? echo _('Buscar'); ?>" class="inputImg" id="btnBuscar" onClick="accSearch(0);" />-->
                 <input type="hidden" name="start" value="0">
                 <input type="hidden" name="skey" value="<? echo SP_Account::$accountSearchKey; ?>" />
                 <input type="hidden" name="sorder" value="<? echo SP_Account::$accountSearchOrder; ?>" />
@@ -65,16 +64,12 @@ $categoriesSelProp = array("name" => "category",
             </td>
             <td id="toolsRight">
                 <input type="text" name="rpp" id="rpp" placeholder="<? echo _('CPP'); ?>" title="<? echo _('Cuentas por página'); ?>"/>
-                
-                
             </td>
         </tr>
     </table>
 </form>
 <script>
     accSearch(0);
-    //$("#selCategory").combobox({dosearch: 1, placeholder: "<? //echo _('Seleccionar Categoría'); ?>"});
-    //$("#selCustomer").combobox({dosearch: 1, placeholder: "<? //echo _('Seleccionar Cliente'); ?>"});
     $("#selCustomer").chosen({
         allow_single_deselect: true,
         placeholder_text_single: "<? echo _('Seleccionar Cliente'); ?>", 

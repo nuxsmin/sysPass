@@ -28,7 +28,7 @@ include_once (APP_ROOT."/inc/init.php");
 
 SP_Util::checkReferer('GET');
 
-$checkVersion = SP_Common::parseParams('s', 'UPDATED', FALSE);
+$checkVersion = SP_Common::parseParams('s', 'UPDATED', FALSE, TRUE);
 
 // Una vez por sesión
 if ( ! $checkVersion ){

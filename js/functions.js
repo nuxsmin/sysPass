@@ -300,7 +300,7 @@ function saveAccount(frm) {
             var status = parseInt($(xml).find("status").text());
             var description = $(xml).find("description").text();
                         
-            if ( status === 0 ){              
+            if ( status === 0 ){                
                 resMsg("ok", description);
                 
                 if ( savetyp == 1 ){
@@ -330,38 +330,36 @@ function saveAccount(frm) {
 // Función para eliminar una cuenta
 function delAccount(id,action,sk){
     var data = {accountid: id, savetyp: action, sk: sk};
-
-    $.fancybox.showLoading();
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[8] + '</p></div>';
     
-    var res = confirm (LANG[8]);
-    if ( ! res ){
-        $.fancybox.hideLoading();
-        return false;
-    }    
+    alertify.confirm(atext, function (e) {
+        if (e) {
+            $.fancybox.showLoading();
+            $.ajax({
+                type: 'POST',
+                dataType: 'xml',
+                url: APP_ROOT + '/ajax/ajax_accountsave.php',
+                data: data,
+                success: function(xml){
+                    var status = parseInt($(xml).find("status").text());
+                    var description = $(xml).find("description").text();
 
-    $.ajax({
-        type: 'POST',
-        dataType: 'xml',
-        url: APP_ROOT + '/ajax/ajax_accountsave.php',
-        data: data,
-        success: function(xml){
-            var status = parseInt($(xml).find("status").text());
-            var description = $(xml).find("description").text();
-
-            if ( status === 0 ){
-                resMsg("ok", description);
-                doAction('accsearch');
-            } else if ( status === 10){
-                resMsg("error", description);
-                doLogout();
-            } else {
-                resMsg("error", description);
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown){ 
-            resMsg("error", 'Oops...' + LANG[0]);
-        },
-        complete: function(){$.fancybox.hideLoading();}
+                    if ( status === 0 ){
+                        resMsg("ok", description);
+                        doAction('accsearch');
+                    } else if ( status === 10){
+                        resMsg("error", description);
+                        doLogout();
+                    } else {
+                        resMsg("error", description);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){ 
+                    resMsg("error", 'Oops...' + LANG[0]);
+                },
+                complete: function(){$.fancybox.hideLoading();}
+            });
+        }
     });
 }
 
@@ -473,16 +471,16 @@ function downFile(fancy){
 function getFiles(id, isDel, sk){
     var data = {'id' : id, 'del' : isDel, 'sk' : sk};
 		
-	$.ajax({
-            type : "GET",
-            cache : false,
-            url : APP_ROOT + "/ajax/ajax_getFiles.php",
-            data : data,
-            success: function(response) {
-				$('#downFiles').html(response);
-            },
-            complete: function(){$.fancybox.hideLoading();}
-	});
+    $.ajax({
+        type : "GET",
+        cache : false,
+        url : APP_ROOT + "/ajax/ajax_getFiles.php",
+        data : data,
+        success: function(response) {
+                            $('#downFiles').html(response);
+        },
+        complete: function(){$.fancybox.hideLoading();}
+    });
 }
 
 // Función para eliminar archivos de una cuenta
@@ -533,7 +531,6 @@ function upldFile(id){
 
 // Función para mostrar los registros de usuarios y grupos
 function usrgrpDetail(id, type, sk, active){
-    //var active = parseInt($('input:[name=active]').val());
     var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active};
     var url = APP_ROOT + '/ajax/ajax_usersMgmt.php';
 
@@ -548,7 +545,7 @@ function usrgrpDetail(id, type, sk, active){
             $.fancybox(response,{
                 padding: [0,10,10,10],
                 afterClose: function(){doAction('usersmenu','',active);}
-                });
+            });
         },
         error:function(jqXHR, textStatus, errorThrown){
             var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
@@ -561,61 +558,71 @@ function usrgrpDetail(id, type, sk, active){
 // Función para editar los registros de usuarios y grupos
 function usersMgmt(frmId, isDel, id, type, sk){
     var data;
-    var active = parseInt($('input:[name=active]').val());
     var url = '/ajax/ajax_usersSave.php';
     
     if ( isDel === 1 ){
         var data = {'id' : id, 'type' : type, 'action' : 4, 'sk' : sk };
+        var atext = '<div id="alert"><p id="alert-text">' + LANG[21] + '</p></div>';
+        var active = frmId;
         
-        var res = confirm (LANG[21]);
-        if ( ! res ){
-            return false;
-        }
+        alertify.confirm(atext, function (e) {
+            if ( e) {
+                usersAjax(data, url);
+                doAction('usersmenu','',active)
+            }
+        });
     } else {
         data = $("#" + frmId).serialize();
-        type = parseInt($('input:[name=type]').val());
-    }
-    
-    $.fancybox.showLoading();
+        //type = parseInt($('input:[name=type]').val());
+        
+        usersAjax(data, url);
+    } 
+}
 
-    $.ajax({
-        type: 'POST',
-        dataType: 'xml',
-        url: APP_ROOT + url,
-        data: data,
-        success: function(xml){
-            var status = parseInt($(xml).find("status").text());
-            var description = $(xml).find("description").text();
-            description = description.replace(/;;/g,"<br />");
+// Función para realizar la petición ajax de gestión de usuarios
+function usersAjax(data, url){
+$.fancybox.showLoading();
 
-            switch(status){
-                case 0:
-//                    doAction('usersmenu','',active);
-                    resMsg("ok", description);
-                    break;
-                case 1:
-                    resMsg("error", description);
-                    break;
-                case 2:
-                    $("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>');
-                    $("#resFancyAccion").show();
-                    break;
-                case 3:
-                    resMsg("warn", description);
-                    break;
-                case 10:
-                    doLogout();
-                    break;
-                default:
-                    return;
-             }  
-        },
-        error:function(jqXHR, textStatus, errorThrown){
-            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
-            resMsg("error", txt);
-        },
-        complete: function(){$.fancybox.hideLoading();}
-    });   
+$.ajax({
+    type: 'POST',
+    dataType: 'xml',
+    url: APP_ROOT + url,
+    data: data,
+    success: function(xml){
+        var status = parseInt($(xml).find("status").text());
+        var description = $(xml).find("description").text();
+        description = description.replace(/;;/g,"<br />");
+
+        switch(status){
+            case 0:
+                $.fancybox.close();
+                resMsg("ok", description);
+                break;
+            case 1:
+                $.fancybox.close();
+                resMsg("error", description);
+                break;
+            case 2:
+                $("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>');
+                $("#resFancyAccion").show();
+                break;
+            case 3:
+                $.fancybox.close();
+                resMsg("warn", description);
+                break;
+            case 10:
+                doLogout();
+                break;
+            default:
+                return;
+         }  
+    },
+    error:function(jqXHR, textStatus, errorThrown){
+        var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+        resMsg("error", txt);
+    },
+    complete: function(){$.fancybox.hideLoading();}
+});
 }
 
 // Función para mostrar el formulario para cambio de clave de usuario
@@ -724,10 +731,9 @@ function password(length, special, fancy, dstId) {
     
     if ( fancy == true ){
         $("#viewPass").attr("title",password);
-//        var txt = '<span class="altTxtBlue">' + LANG[15] + "</span><br><br>" + password;
-//        resMsg("info", txt);
+        //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[15] + '</p><p id="alert-pass"> ' + password + '</p>');
     } else {
-        alert ( LANG[15] + " " + password);
+        alertify.alert('<div id="alert"><p id="alert-text">' + LANG[15] + '</p><p id="alert-pass"> ' + password + '</p>');
     }
    
    if ( dstId ){
@@ -837,14 +843,14 @@ function resMsg(type, txt, url, action){
     
     switch(type){
         case "ok":
-            html = '<div id="fancyMsg" class="msgOk">' + txt + '</div>';
-            break;
+            //html = '<div id="fancyMsg" class="msgOk">' + txt + '</div>';
+            return alertify.success(txt);
         case "error":
-            html = '<div id="fancyMsg" class="msgError">' + txt + '</div>';
-            break;
+            //html = '<div id="fancyMsg" class="msgError">' + txt + '</div>';
+            return alertify.error(txt);
         case "warn":
-            html = '<div id="fancyMsg" class="msgWarn">' + txt + '</div>';
-            break;
+            //html = '<div id="fancyMsg" class="msgWarn">' + txt + '</div>';
+            return alertify.log(txt);
         case "info":
             html = '<div id="fancyMsg" class="msgInfo">' + txt + '</div>';
             break;
@@ -856,9 +862,10 @@ function resMsg(type, txt, url, action){
             return html;
             break;
         default:
-            html = '<div id="fancyMsg" class="msgError">Oops...<br /' + LANG[1] + '</div>';
+            //html = '<div id="fancyMsg" class="msgError">Oops...<br /' + LANG[1] + '</div>';
+            return alertify.error(txt);
     }
-    
+        
     $.fancybox(html,{afterLoad: function(){
         $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({'border-radius':'25px','-moz-border-radius':'25px','-webkit-border-radius':'25px'});
         },afterClose : function() { if ( typeof(action) !== "undefined" ) eval(action);} });
