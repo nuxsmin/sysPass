@@ -492,13 +492,14 @@ function delFile(id){
 
     $.fancybox.showLoading();
     
-    var data = {fileId: $("#files").val(), action: 'delete'};
+    var sk =  $('input:[name=sk]').val();
+    var data = {'fileId': $("#files").val(), 'action': 'delete', 'sk' : sk};
 
     $.post( APP_ROOT + '/ajax/ajax_files.php', data, 
         function( data ) {
             $.fancybox.hideLoading();
             resMsg("ok", data);
-            $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1");
+            $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1&sk=" + sk);
         }
     );
 }
@@ -515,7 +516,8 @@ function upldFile(id){
         }, 
         success: function(responseText, statusText, xhr, $form){
             resMsg("ok", responseText);
-            $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1");
+            var sk =  $('input:[name=sk]').val();
+            $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1&sk=" + sk);
             $.fancybox.hideLoading();
         },
         error:function(jqXHR, textStatus, errorThrown){
