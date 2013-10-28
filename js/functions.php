@@ -73,7 +73,7 @@ $locale= array(
                     'Option not selected',
                     'Option added<BR \>You should save configuration in order to take effect',
                     'Option deleted<BR \>You should save configuration in order to take effect',
-                    'Generated Password',
+                    'Generated Password:',
                     'High level',
                     'Average level',
                     'Low level',

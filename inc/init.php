@@ -118,8 +118,6 @@ class SP_Init {
         
         // Comprobar si el modo mantenimiento está activado
         self::checkMaintenanceMode();
-        // Comprobar la versión y actualizarla
-        self::checkVersion();
         // Inicializar la sesión
         self::initSession();
 
@@ -404,36 +402,6 @@ class SP_Init {
         bindtextdomain("messages", self::$SERVERROOT."/inc/locales");
         textdomain("messages");
         bind_textdomain_codeset("messages", 'UTF-8');
-    }
-    
-    /**
-     * @brief Comrpueba y actualiza la versión de la aplicación
-     * @returns none
-     */
-    private static function checkVersion(){
-        $update = FALSE;
-        $configVersion = SP_Config::getValue('version');
-        $databaseVersion = SP_Config::getConfigValue('version');
-        $appVersion = SP_Util::getVersionString();
-        
-        if ( $configVersion != $appVersion ){
-            SP_Config::setValue('version', $appVersion);
-            $update = TRUE;
-        }
-
-        if ( $databaseVersion != $appVersion ){
-            SP_Config::setConfigValue('version', $appVersion);
-            $update = TRUE;
-        }
-
-        if ( $update === TRUE ){
-            $message['action'] = _('Actualización');
-            $message['text'][] = _('Actualización de versión realizada.');
-            $message['text'][] = _('Versión') . ': ' . $appVersion;
-
-            SP_Common::wrLogInfo($message);
-            SP_Common::sendEmail($message);
-        }
     }
 }
 

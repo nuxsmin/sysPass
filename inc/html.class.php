@@ -303,8 +303,6 @@ class SP_Html {
             array("href" => "css/jquery.powertip.css", "media" => "screen"),
             array("href" => "css/jquery.powertip-yellow.min.css", "media" => "screen"),
             array("href" => "css/chosen.css", "media" => "screen"),
-            array("href" => "css/alertify.core.css", "media" => "screen"),
-            array("href" => "css/alertify.default.css", "media" => "screen"),
             array("href" => "js/fancybox/jquery.fancybox.css", "media" => "screen"),
             array("href" => "css/styles.css", "media" => ""));
 
@@ -328,7 +326,6 @@ class SP_Html {
             array("src" => "js/fancybox/jquery.fancybox.pack.js", "params" => ""),
             array("src" => "js/jquery.powertip.min.js", "params" => ""),
             array("src" => "js/chosen.jquery.min.js", "params" => ""),
-            array("src" => "js/alertify.min.js", "params" => ""),
             array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . base64_encode(SP_Init::$WEBROOT)));
 
         foreach ($jsProp as $js) {

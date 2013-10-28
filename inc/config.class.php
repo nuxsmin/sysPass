@@ -49,14 +49,14 @@ class SP_Config{
     static $arrConfigValue;
 
     /**
-     * @brief Obtiene un valor desde la configuración en la BBDD
-     * @param string $param con el parámetro de configuración
-     * @return string con el valor
+     * @brief Obtener en valor de un parámetro
+     * @param string $strConfigParam parámetro
+     * @return string valor
      *
      * Obtener el valor de un parámetro almacenado en la BBDD
      */
-    public static function getConfigValue($param){
-        $query = "SELECT config_value FROM config WHERE config_parameter = '$param'";
+    public static function getConfigValue($strConfigParam){
+        $query = "SELECT config_value FROM config WHERE config_parameter = '$strConfigParam'";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ( $queryRes === FALSE || ! is_array($queryRes) ){
@@ -65,7 +65,7 @@ class SP_Config{
         
         return $queryRes[0]->config_value;
     }
-    
+
     /**
      * @brief Obtener array con la configuración
      *
@@ -122,34 +122,7 @@ class SP_Config{
         
         return TRUE;
     }   
-
-    /**
-     * @brief Guardar un parámetro de configuración
-     * @param string $param con el parámetro a guardar
-     * @param string $value con el calor a guardar
-     * @return bool
-     */
-    public static function setConfigValue($param, $value) {
-        $query = "INSERT INTO config "
-                . "SET config_parameter = '" . DB::escape($param) . "',"
-                . "config_value = '" . DB::escape($value) . "'"
-                . "ON DUPLICATE KEY UPDATE config_value = '" . DB::escape($value) . "' ";
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        $message['action'] = _('Configuración');
-        $message['text'][] = _('Modificar configuración');
-        $message['text'][] = _('Parámetro') . ': ' . $param;
-        $message['text'][] = _('Valor') . ': ' . $value;
-
-        SP_Common::wrLogInfo($message);
-        SP_Common::sendEmail($message);
-
-        return TRUE;
-    }
-
+    
     /**
      * @brief Cargar la configuración desde la BBDD
      * @param bool $force reescribir la variable global $CFG?
@@ -378,6 +351,22 @@ class SP_Config{
         @chmod($filename, 0640);
 				
         return TRUE;
+    }
+    
+    /**
+     * @brief Obtiene un valor desde la configuración en la BBDD
+     * @param $param string con el parámetro de configuración
+     * @return array or false
+     */    
+    public static function getConfigParameter($param){
+        $query = "SELECT config_value FROM config WHERE config_parameter = '$param' ";
+        $queryRes = DB::getResults($query, __FUNCTION__);
+        
+        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+            return FALSE;
+        }
+        
+        return $queryRes;
     }
     
     /**
