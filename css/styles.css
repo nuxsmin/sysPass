@@ -244,8 +244,12 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content #tblTools{width: 100%; height: 5em; padding-left: 15px;padding: 5px;}
 
-#content #resBuscar{ width: 100%; margin-top: 20px; min-height: 500px;}
+#content #resBuscar{ width: 100%; margin-top: 20px;}
 #content #resBuscar IMG {vertical-align:middle;}
+#content #resBuscar #data-search, 
+#content .data-rows,
+#content #resEventLog #resSearch
+{overflow-y: auto; max-height: 400px}
 
 #content #pageNav {
     float: left;
@@ -713,6 +717,16 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #passLevel.strong, #passLevel.strong:hover { background-color: #E6F2FF !important; color: #64b4f4; font-weight: bold; border: #64b4f4  1px solid;}
 #passLevel.good, #passLevel.good:hover { background-color: #FFF2D9 !important; color: orange; font-weight: bold; border: #ffe5b3 1px solid;}
 #passLevel.weak, #passLevel.weak:hover { background-color: #fee8e6 !important; color: #CC0000;  font-weight: bold; border: #fed2ce 1px solid;}
+
+#alert #alert-text{margin: 15px auto; font-size: 14px; font-weight: bold;}
+#alert #alert-pass{
+    width: 50%;
+    padding: 10px;
+    margin: 15px auto;
+    border: 1px solid #c9c9c9;
+    color: #555;
+    font-weight: bold;
+}
 
 /*Login Page*/
 #boxLogin{
