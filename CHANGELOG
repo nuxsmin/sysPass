@@ -1,3 +1,12 @@
+=== ** v1.0rc3 ** ===
+
+* [BUG] Corregidos fallos en la comprobación de actualizaciones.
+* [BUG] Corregido error al borrar grupos.
+* [MOD] Cambio de fancybox por alertify para los mensajes que no requieren de bloqueo.
+* [MOD] Ecribir versión en BD y archivo de configuración.
+* [MOD] Añadir scroll en resultados de cuentas, usuarios, grupos y perfiles.
+* [MOD] Actualizadas las traducciones.
+
 === ** v1.0rc2 ** ===
 
 * [MOD] Mejor manejo de peticiones GET/POST.
@@ -108,6 +117,15 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0rc3 ** ===
+
+* [BUG] Fix updates checking.
+* [BUG] Fix error on removing groups.
+* [MOD] Change fancybox to alertify for non-locking messages.
+* [MOD] Set version string in DB and config file
+* [MOD] Update translations
+* [MOD] Add scroll to search, users, groups and profiles results.
 
 === ** v1.0rc2 ** ===
 
