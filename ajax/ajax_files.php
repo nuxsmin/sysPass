@@ -37,7 +37,7 @@ if (!SP_Init::isLoggedIn()) {
 $sk = SP_Common::parseParams('p', 'sk', FALSE);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+    die(_('CONSULTA INVÁLIDA'));
 }
 
 if (SP_Config::getValue('filesenabled', 0) == 0) {
