@@ -345,7 +345,7 @@ class SP_Init {
     public static function isLoggedIn() {
         if( isset($_SESSION['ulogin']) AND $_SESSION['ulogin']) {
             // TODO: refrescar variables de sesión.
-            $_SESSION['usrprofile'] = SP_Users::getUserProfile();
+            //$_SESSION['usrprofile'] = SP_Users::getUserProfile();
             return true;
         }
         return false;
