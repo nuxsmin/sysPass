@@ -672,7 +672,11 @@ class SP_Account {
         
         if ( ! is_array($this->accountCacheUserGroupsId) ){
             $this->accountCacheUserGroupsId = array($accId => array());
-        }
+        } else{
+			if ( array_key_exists($accId, $this->accountCacheUserGroupsId) ){
+				return $this->accountCacheUserGroupsId[$accId];
+			}
+		}
         
         $query = "SELECT accgroup_groupId FROM accGroups "
                 . "WHERE accgroup_accountId = ".(int)$accId;
@@ -786,9 +790,9 @@ class SP_Account {
         
         // Convertimos en array la lista de grupos de la cuenta
         if ( $this->accountId && $accountId == "" ){
-            $arrAccUGroups = ( is_array($this->accountCacheUserGroupsId) && array_key_exists($this->accountId, $this->accountCacheUserGroupsId) ) ? $this->accountUserGroupsId[$this->accountId] : $this->getGroupsAccount($this->accountId);
+            $arrAccUGroups = $this->getGroupsAccount();
         } elseif ( $accountId ) {
-            $arrAccUGroups = ( is_array($this->accountCacheUserGroupsId) && array_key_exists($accountId, $this->accountCacheUserGroupsId) ) ? $this->accountCacheUserGroupsId[$accountId] : $this->getGroupsAccount($accountId);
+            $arrAccUGroups = $this->getGroupsAccount($accountId);
         } else {
             return FALSE;
         }
