@@ -38,7 +38,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-SP_Users::checkUserAccess('config') || SP_Html::showCommonError('unavailable');
+SP_Users::checkUserAccess('categories') || SP_Html::showCommonError('unavailable');
 
 $intCategoryFunction = SP_Common::parseParams('p', 'categoryFunction', 0);
 $categoryName = SP_Common::parseParams('p', 'categoryName');

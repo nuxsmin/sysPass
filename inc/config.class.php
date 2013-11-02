@@ -212,7 +212,7 @@ class SP_Config{
                 
                 $message['action'] = _('Copia BBDD');
                 $message['text'][] = _('No es posible crear el directorio de backups');
-                $message['text'][] = "IP:".$_SERVER['REMOTE_ADDR'];
+                $message['text'][] = "IP: ".$_SERVER['REMOTE_ADDR'];
                 
                 SP_Common::wrLogInfo($message);
                 $error = 1;
@@ -226,7 +226,7 @@ class SP_Config{
 
         if ( $error == 0 ){
             $message['action'] = _('Copia BBDD');
-            $message['text'][] = "IP:".$_SERVER['REMOTE_ADDR'];
+            $message['text'][] = "IP: ".$_SERVER['REMOTE_ADDR'];
 
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);

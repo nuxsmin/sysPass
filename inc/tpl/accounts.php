@@ -43,7 +43,7 @@ switch ($action) {
         $savetype = 1;
         $title = array('class' => 'titleGreen', 'name' => _('Nueva Cuenta'));
         $showform = true;
-        $nextaction = 'accedit';
+        $nextaction = 'accsearch';
         break;
     case "acccopy":
         $savetype = 1;
@@ -94,7 +94,7 @@ switch ($action) {
 }
 
 if ( $data['id'] > 0) {
-    $account->checkAccountAccess($action) || SP_Html::showCommonError('nopermission');
+    $account->checkAccountAccess($action) || SP_Html::showCommonError('noaccpermission');
     $changesHash = $account->calcChangesHash();
 }
 
@@ -135,7 +135,7 @@ $showEditPass = ($action == "accedit"
                 && $account->checkAccountAccess("acceditpass")
                 && SP_Users::checkUserAccess("acceditpass")
                 && ! $account->accountIsHistory);
-$showDelete = ($action == "accdelete" && $account->checkAccountAccess("accdelete")  && SP_Users::checkUserAccess("accdelete"));
+$showDelete = ($action == "accdelete" && $account->checkAccountAccess("accdelete") && SP_Users::checkUserAccess("accdelete"));
 $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
 $skey = SP_Common::getSessionKey(TRUE);
 ?>
@@ -237,7 +237,7 @@ $skey = SP_Common::getSessionKey(TRUE);
                     foreach (SP_Account::getSecGroups() as $groupName => $groupId) {
                         $uGroupSelected = '';
                         
-                        if ($groupId != $account->accountUserGroupId) {
+                        if ($groupId != $account->accountUserGroupId && $groupId != $userGroupId) {
                             if ( isset($accountGroups) && is_array($accountGroups)){
                                 $uGroupSelected = ( in_array($groupId, $accountGroups)) ? "selected" : "";
                             }

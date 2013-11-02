@@ -110,6 +110,7 @@ function accSearch(continous){
         data: datos,
         success: function(response){
             $('#resBuscar').html(response);
+            $('#data-search').css("max-height",$('html').height() - 300);
         },
         error:function(){$('#resBuscar').html(resMsg("nofancyerror"));},
         complete: function(){$.fancybox.hideLoading();}
@@ -164,6 +165,7 @@ function searchSort(skey,start,nav){
         data: frmData,
         success: function(response){
             $('#resBuscar').html(response);
+            $('#data-search').css("max-height",$('html').height() - 300);
         },
         error:function(){$('#resBuscar').html(resMsg("nofancyerror"));},
         complete: function(){
@@ -446,7 +448,7 @@ function downFile(fancy){
     
     if ( fancy == 1){
         $.fancybox.showLoading();
-        $("#action").val('view')
+        $("#action").val('view');
         var data = $('#files_form').serialize();
         
 	$.ajax({
@@ -455,14 +457,20 @@ function downFile(fancy){
             url : APP_ROOT + "/ajax/ajax_files.php",
             data : data,
             success: function(response) {
-                $.fancybox(response,{padding: [10,10,10,10]});
-                // Actualizar fancybox para adaptarlo al tamaño de la imagen
-                setTimeout(function() {$.fancybox.update();}, 1000);
+                if ( response ){
+                    $.fancybox(response,{padding: [10,10,10,10]});
+                    // Actualizar fancybox para adaptarlo al tamaño de la imagen
+                    setTimeout(function() {$.fancybox.update();}, 1000);
+                } else{
+                    resMsg("error", LANG[23]);
+                }
 
             },
             complete: function(){$.fancybox.hideLoading();}
 	});
     } else {
+        $('#files_form input:[name=action]').val('download');
+        $('#files_form input:[name=t]').val(getTime());
         $('#files_form').submit();
     }
 }
@@ -516,6 +524,7 @@ function upldFile(id){
         }, 
         success: function(responseText, statusText, xhr, $form){
             resMsg("ok", responseText);
+            $("#inFilename").val('');
             var sk =  $('input:[name=sk]').val();
             $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1&sk=" + sk);
             $.fancybox.hideLoading();
@@ -706,6 +715,12 @@ function showOptional(me){
     $(me).parent().css('width','15em');
     var actions =  $(me).closest('.cell-actions').children('.actions-optional');
     actions.show(250);
+}
+
+// Función para obtener el tiempo actual en milisegundos
+function getTime(){
+    t = new Date();
+    return t.getTime();
 }
 
 // Función para generar claves aleatorias. 

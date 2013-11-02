@@ -22,7 +22,6 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $account = new SP_Account;
@@ -30,13 +29,14 @@ $account->accountId = $data['id'];
 $account->lastAction = $data['lastaction'];
 $account->getAccount();
 
-($account->checkAccountAccess("acceditpass") && SP_Users::checkUserAccess("acceditpass")) || SP_Html::showCommonError('nopermission');
-
+if (!$account->checkAccountAccess("acceditpass") || !SP_Users::checkUserAccess("acceditpass")) {
+    SP_Html::showCommonError('noaccpermission');
+}
 ?>
 
 <div id="title" class="midroundup titleOrange"><? echo _('Modificar Clave de Cuenta'); ?></div>
 
- <form method="post" name="editpass" id="frmEditPass" >
+<form method="post" name="editpass" id="frmEditPass" >
     <table class="data round">
         <tr>
             <td class="descField"><? echo _('Nombre'); ?></td><td class="valField"><? echo $account->accountName; ?></td>
@@ -58,7 +58,7 @@ $account->getAccount();
                 <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)">
                 <img src="imgs/user-pass.png" title="<? echo _('La clave generada se mostrará aquí'); ?>" class="inputImg" id="viewPass" />
                 &nbsp;&nbsp;
-                <img src="imgs/genpass.png" title="<? echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11,true,true);" />
+                <img src="imgs/genpass.png" title="<? echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11, true, true);" />
             </td>
         </tr>
         <tr>
@@ -72,15 +72,15 @@ $account->getAccount();
     <input type="hidden" name="accountid" value="<? echo $account->accountId; ?>" />
     <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
     <input type="hidden" name="is_ajax" value="1">
- </form>
+</form>
 
- <div class="action">
-     <ul>
+<div class="action">
+    <ul>
         <li>
-            <img SRC="imgs/back.png" title="<? echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<? echo $account->lastAction; ?>','accsearch',<? echo $account->accountId; ?>)" />
+            <img SRC="imgs/back.png" title="<? echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<? echo $account->lastAction; ?>', 'accsearch',<? echo $account->accountId; ?>)" />
         </li>
         <li>
             <img SRC="imgs/check.png" title="<? echo _('Guardar'); ?>" class="inputImg" id="btnSave" OnClick="saveAccount('frmEditPass');" />
         </li>
     </ul>
- </div>
+</div>

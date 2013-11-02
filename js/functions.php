@@ -48,8 +48,8 @@ $locale= array(
                     'Valor no introducido',
                     'Valor duplicado',
                     'Opción no seleccionada',
-                    'Opción añadida<BR \>Guarde la configuración para que sea efectiva',
-                    'Opción eliminada<BR \>Guarde la configuración para que sea efectiva',
+                    'Opción añadida<br>Guarde la configuración para que sea efectiva',
+                    'Opción eliminada<br>Guarde la configuración para que sea efectiva',
                     'Clave Generada',
                     'Nivel alto',
                     'Nivel medio',
@@ -57,7 +57,8 @@ $locale= array(
                     'Nivel muy alto',
                     'Utilizar al menos 8 caracteres',
                     'Borrar elemento?',
-                    'Página no encontrada, verifique el parámetro "siteroot"'),
+                    'Página no encontrada, verifique el parámetro "siteroot"',
+                    'Archivo no soportado para visualizar'),
     "en_us" => array('Query error',
                     'There was an error',
                     'Session ended',
@@ -71,8 +72,8 @@ $locale= array(
                     'Value not entered',
                     'Duplicated value',
                     'Option not selected',
-                    'Option added<BR \>You should save configuration in order to take effect',
-                    'Option deleted<BR \>You should save configuration in order to take effect',
+                    'Option added<br>You should save configuration in order to take effect',
+                    'Option deleted<br>You should save configuration in order to take effect',
                     'Generated Password',
                     'High level',
                     'Average level',
@@ -80,7 +81,8 @@ $locale= array(
                     'Very high level',
                     'You should use at least 8 characters',
                     'Delete item?',
-                    'Page not found, please verify "siteroot" parameter'));
+                    'Page not found, please verify "siteroot" parameter',
+                    'File not supported for preview'));
 
 $arrJsLang = array();
 

@@ -105,7 +105,7 @@ class SP_Account {
                 break;
         }
 
-        $querySelect = "SELECT SQL_CALC_FOUND_ROWS DISTINCT account_id, account_customerId, category_name, account_name,
+        $querySelect = "SELECT SQL_CALC_FOUND_ROWS account_id, account_customerId, category_name, account_name,
                         account_login, account_url, account_notes, account_userId, account_userGroupId, usergroup_name, customer_name
                         FROM accounts
                         LEFT JOIN categories ON account_categoryId = category_id
@@ -155,7 +155,9 @@ class SP_Account {
         
         $queryOrder = " ORDER BY $orderKey ".$order;
 
-        if ( $searchFilter["limitCount"] != 99 ) $queryLimit = "LIMIT ".$searchFilter["limitStart"].", ".$searchFilter["limitCount"];
+        if ( $searchFilter["limitCount"] != 99 ) {
+            $queryLimit = "LIMIT ".$searchFilter["limitStart"].", ".$searchFilter["limitCount"];
+        }
 
         if ( count($arrQueryWhere) === 1 ){
             $query = $querySelect." WHERE ".implode("", $arrQueryWhere)." ".$queryOrder." ".$queryLimit;
@@ -174,6 +176,8 @@ class SP_Account {
             return FALSE;
         }
 
+        //error_log($query);
+        
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         $resQueryNumRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
         $this->queryNumRows =  $resQueryNumRows[0]->numRows;
@@ -519,7 +523,7 @@ class SP_Account {
         $queryDel = "";
         $query = "";
 
-        $accOldUGroups = $this->getGroupsAccount($this->accountId);
+        $accOldUGroups = $this->getGroupsAccount();
         $accNewUGroups = $this->accountUserGroupsId;
 
         if ( is_array($accOldUGroups) && ! is_array($accNewUGroups) ){
@@ -666,17 +670,18 @@ class SP_Account {
      * @brief Obtiene el listado de grupos secundarios de una cuenta
      * @return array con los registros con id de cuenta como clave e id de grupo como valor
      */ 
-    public function getGroupsAccount ($accountId = ""){
-        $accId = ( $accountId ) ? $accountId : $this->accountId;
-        $accId = ( $this->accountParentId ) ? $this->accountParentId : $accId;
+    public function getGroupsAccount (){
+        $accId = ( $this->accountIsHistory && $this->accountParentId ) ? $this->accountParentId : $this->accountId;
         
         if ( ! is_array($this->accountCacheUserGroupsId) ){
+            //error_log('Groups cache MISS');
             $this->accountCacheUserGroupsId = array($accId => array());
         } else{
-			if ( array_key_exists($accId, $this->accountCacheUserGroupsId) ){
-				return $this->accountCacheUserGroupsId[$accId];
-			}
-		}
+            if ( array_key_exists($accId, $this->accountCacheUserGroupsId) ){
+                //error_log('Groups cache HIT');
+                return $this->accountCacheUserGroupsId[$accId];
+            }
+        }
         
         $query = "SELECT accgroup_groupId FROM accGroups "
                 . "WHERE accgroup_accountId = ".(int)$accId;
@@ -713,6 +718,31 @@ class SP_Account {
         }
 
         return $arrGroups;
+    }
+    
+    /**
+     * @brief Obtiene el listado con el nombre de grupos secundarios de una cuenta
+     * @return array con los nombres de los grupos ordenados
+     */ 
+    public static function getAccountGroupsName ($accountId){
+        
+        $query = "SELECT usergroup_name FROM accGroups "
+                . "JOIN usrGroups ON accgroup_groupId = usergroup_id "
+                . "WHERE accgroup_accountId = ".(int)$accountId;
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ( $queryRes === FALSE && ! is_array($queryRes) ){
+            return FALSE;
+        }
+
+        foreach ( $queryRes as $groups ){
+            $groupsName[] = $groups->usergroup_name;
+        }
+        
+        sort($groupsName, SORT_STRING);
+        
+        return $groupsName;
     }
 
     /**
@@ -789,14 +819,16 @@ class SP_Account {
         $userIsAdminAcc = $_SESSION["uisadminacc"];
         
         // Convertimos en array la lista de grupos de la cuenta
-        if ( $this->accountId && $accountId == "" ){
-            $arrAccUGroups = $this->getGroupsAccount();
-        } elseif ( $accountId ) {
-            $arrAccUGroups = $this->getGroupsAccount($accountId);
-        } else {
+        if ( ! $this->accountId && ! $accountId ){
             return FALSE;
         }
+        
+        if ( $accountId ) {
+            $this->accountId = $accountId;
+        } 
 
+        $accountUserGroups = $this->getGroupsAccount();
+        
         $accountUserGroupId = ( ! $accountUserGroupId )  ? $this->accountUserGroupId: $accountUserGroupId;
         $accountUserId = ( ! $accountUserId ) ? $this->accountUserId : $accountUserId;
 
@@ -804,7 +836,7 @@ class SP_Account {
             case "accview":
                 if ( $userId == $accountUserId 
                         || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $arrAccUGroups)
+                        || in_array($userGroupId, $accountUserGroups)
                         || $userIsAdminApp || $userIsAdminAcc){
                     return TRUE;
                 }
@@ -812,7 +844,7 @@ class SP_Account {
             case "accviewpass":
                 if ( $userId == $accountUserId 
                         || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $arrAccUGroups)
+                        || in_array($userGroupId, $accountUserGroups)
                         || $userIsAdminApp || $userIsAdminAcc ){
                     return TRUE;
                 }
@@ -820,7 +852,7 @@ class SP_Account {
             case "accviewhistory":
                 if ( $userId == $accountUserId 
                         || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $arrAccUGroups)
+                        || in_array($userGroupId, $accountUserGroups)
                         || $userIsAdminApp || $userIsAdminAcc){
                     return TRUE;
                 }
@@ -849,7 +881,7 @@ class SP_Account {
             case "acccopy":
                 if ( $userId == $accountUserId 
                         || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $arrAccUGroups)
+                        || in_array($userGroupId, $accountUserGroups)
                         || $userIsAdminApp || $userIsAdminAcc){
                     return TRUE;
                 }
@@ -860,7 +892,7 @@ class SP_Account {
     }
 
     /**
-     * @brief Obtener los datos relativo a la clave de todas las cuentas
+     * @brief Obtener los datos relativos a la clave de todas las cuentas
      * @return array con los datos de la clave
      */
     private function getAccountsPassData(){

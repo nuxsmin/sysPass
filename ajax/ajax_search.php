@@ -182,7 +182,11 @@ foreach ( $resQuery as $account ){
     echo '</li>';
     
     echo'<li class="cell-img">';
-    echo '<img src="imgs/btn_group.png" title="'._('Grupo').': '.$account->usergroup_name.'" />';
+    
+    $groupsName = _('Grupos').':<br><br>*'.$account->usergroup_name.'<br>';
+    $groupsName .= implode('<br>', SP_Account::getAccountGroupsName($account->account_id));
+    
+    echo '<img src="imgs/btn_group.png" title="'.$groupsName.'" />';
     
     $strAccNotes = (strlen($account->account_notes) > 300 ) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
     echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap($strAccNotes,50,'<br>',TRUE)).'" />' : '';

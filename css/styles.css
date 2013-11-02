@@ -11,12 +11,9 @@ HTML, BODY{
 }
 
 TABLE {
-    /*	border-collapse: collapse;*/
-    /*border:1px solid #d9d9d9;*/
     font-size: 11px;
     border-spacing: 0;
 }
-
 
 #tblTools, #tblAccion {
     border: none;
@@ -182,8 +179,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
     position:relative;
     top: 100px;
     left: 30px;
-    /*width: 12%;*/
-    /*padding: 10px 0 10px 0;*/
     margin-right: 80px;
     text-align: center;
 }
@@ -209,11 +204,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
     -moz-box-shadow: 5px 8px 6px -6px #a9a9a9;
 }
 
-//#container #actionsBar LI:hover{border: 1px solid #a9c1d7;}
 #container #actionsBar LI:hover{
     border: 1px solid #5897fb;
     box-shadow: 0 0 5px rgba(88, 151, 251, 0.5);
-    /*box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);*/
 }
 
 #container #actionsBar LI IMG{
@@ -228,7 +221,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
     width: 85%;
     min-height: 600px;
     margin: 50px auto;
-    /*border: 1px solid #e9e9e9;*/
 }
 
 #content TD.descField, #fancyContainer TD.descField{
@@ -277,7 +269,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
     width: 50%;
     padding: 7px;
     margin: auto;
-    /*border: 1px solid #fff;*/
     background-color: #d9d9d9;
     color: #fff;
     font-size: 17px;
@@ -390,7 +381,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
     width: 100%; 
     margin: 0 0 10px 0; 
     padding: 0;
-    /*background-color: #fcfcfc;*/
 }
 #content .data-rows li{
     float: left;
@@ -509,7 +499,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #fancyView.msgInfo { margin: 5px; background-color: #e9e9e9; color: orange; font-weight: bold; border: #ffe5b3 1px solid;}
 
 #fancyView.backGrey{background-color: #f2f2f2 !important;}
-/*#fancyView.backOrange{background-color: #FFF2D9 !important;}*/
 #fancyView PRE{text-align: left;}
 #fancyView TABLE{border: none; width: 100%;font-size: 14px;text-align: left;}
 #fancyView TD{border-bottom: #d9d9d9 1px solid;}
@@ -560,8 +549,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #fancyContainer #resFancyAccion{display: none}
 #fancyContainer #resCheck{float: left; width: 80%; height: 4em; padding: 1em 0; }
-/*#fancyContainer #fancy-actions{float: left;}
-#fancyContainer #fancy-actions ul, #fancyContainer #fancy-actions li{margin: 0; padding: 0; width: auto;}*/
 
 #debug {float:left;text-align: left;}
 #debuginfo {width: 100%; min-height: 10em; padding: 1em; background-color: lightgoldenrodyellow; text-align: left; line-height: 1.5em;}
@@ -582,7 +569,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
     background-color: #F5F5F5;
     color:#b9b9b9;
     font-size:13px;
-    /*border-top: 1px solid #c9c9c9;*/
     box-shadow: 0px -8px 6px -6px #c9c9c9;
     -webkit-box-shadow: 0px -8px 6px -6px #c9c9c9;
     -moz-box-shadow: 0px -8px 6px -6px #c9c9c9;
@@ -762,7 +748,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #boxLogin #boxData{
     float:left;
-    /*width:360px;*/
     width:280px;
     min-height:100px;
     padding: 20px 0;
@@ -786,8 +771,6 @@ A:focus {text-decoration: none;	color: #FF0000;}
     float:left;
     margin-top: 10px;
     margin-left: 40px;
-    /*border: none;
-    border-bottom: 1px solid #b9b9b9;*/
     border: 1px solid #ddd;    
     color:#039;
     width:150px;
@@ -929,7 +912,6 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     margin: 15px;
     text-align: center;
     border: 1px solid #d9d9d9;
-    /*background-color: #045FB4;*/
     background-color: #777;
     color: #fff;
     font-weight: bold;

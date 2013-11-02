@@ -38,7 +38,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-SP_Users::checkUserAccess("config") || die('<DIV CLASS="error">' . _('No tiene permisos para acceder a esta página') . '</DIV');
+SP_Users::checkUserAccess("config") || SP_Html::showCommonError('nopermission');
 
 $frmAction =  SP_Common::parseParams('p', 'action');
 

@@ -309,7 +309,7 @@ class SP_Html {
             array("href" => "css/styles.css", "media" => ""));
 
         foreach ($cssProp as $css) {
-            self::$htmlPage[] = '<liNK rel="stylesheet" href="' . SP_Init::$WEBROOT . "/" . $css["href"] . $versionParameter . '" media="' . $css["media"] . '" />';
+            self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . "/" . $css["href"] . $versionParameter . '" media="' . $css["media"] . '" />';
         }
     }
 
@@ -411,7 +411,8 @@ class SP_Html {
     public static function showCommonError($code) {
         $commonErrors = array(
             'unavailable' => array('txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')),
-            'nopermission' => array('txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')),
+            'noaccpermission' => array('txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')),
+            'nopermission' => array('txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')),
             'updatempass' => array('txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla'))
         );
 

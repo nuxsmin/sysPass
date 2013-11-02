@@ -1,3 +1,11 @@
+=== ** v1.0 ** ===
+
+* [NUEVO] Se muestran los grupos secundarios en el menú contextual de los resultados de búsqueda.
+* [BUG] Corregido fallo de permisos al visualizar cuenta. La caché de permisos no refrescaba correctamente.
+* [BUG] Corregido fallo al gestionar categorias por usuarios no administradores.
+* [BUG] Corregido fallo al descargar archivos después de visualizarlos.
+* [MOD] Modificado mensaje de error al subir archivos.
+
 === ** v1.0rc3 ** ===
 
 * [BUG] Corregidos fallos en la comprobación de actualizaciones.
@@ -117,6 +125,14 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0 ** ===
+
+* [NEW] Secondary groups are shown on search results context menu.
+* [BUG] Fix error on view account permissions. The premissions cache didn't refresh correctly.
+* [BUG] Fix error on category management by non administrator users.
+* [BUG] Fix error on downloading file after preview.
+* [MOD] Updated error message on uploading files.
 
 === ** v1.0rc3 ** ===
 

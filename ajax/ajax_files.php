@@ -41,8 +41,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
 }
 
 if (SP_Config::getValue('filesenabled', 0) == 0) {
-    echo _('Gestión de archivos deshabilitada');
-    return;
+    exit(_('Gestión de archivos deshabilitada'));
 }
 
 $action = SP_Common::parseParams('p', 'action');
@@ -51,7 +50,7 @@ $fileId = SP_Common::parseParams('p', 'fileId', 0);
 
 if ($action == 'upload') {
     if (!is_array($_FILES["inFile"]) || !$accountId === 0) {
-        return;
+        exit();
     }
 
     $allowedExts = strtoupper(SP_Config::getValue('allowed_exts'));
@@ -61,8 +60,7 @@ if ($action == 'upload') {
         // Extensiones aceptadas
         $extsOk = explode(",", $allowedExts);
     } else {
-        echo _('No hay extensiones permitidas');
-        return;
+        exit(_('No hay extensiones permitidas'));
     }
 
     if (is_array($_FILES) && $_FILES['inFile']['name']) {
@@ -70,12 +68,10 @@ if ($action == 'upload') {
         $fileData['extension'] = strtoupper(pathinfo($_FILES['inFile']['name'], PATHINFO_EXTENSION));
 
         if (!in_array($fileData['extension'], $extsOk)) {
-            echo _('Tipo de archivo no soportado') . " '" . $fileData['extension'] . "' ";
-            return;
+            exit(_('Tipo de archivo no soportado') . " '" . $fileData['extension'] . "' ");
         }
     } else {
-        echo _('Archivo inválido') . ":<br />" . $_FILES['inFile']['name'];
-        return;
+        exit(_('Archivo inválido') . ":<br>" . $_FILES['inFile']['name']);
     }
 
     // Variables con información del archivo
@@ -88,13 +84,11 @@ if ($action == 'upload') {
         // Registramos el máximo tamaño permitido por PHP
         SP_Files::getMaxUpload();
 
-        echo _('Error interno al leer el archivo');
-        return;
+        exit(_('Error interno al leer el archivo'));
     }
 
     if ($fileData['size'] > ($allowedSize * 1000)) {
-        echo _('El archivo es mayor de ') . " " . round(($allowedSize / 1000), 1) . "MB";
-        return;
+        exit(_('El archivo es mayor de ') . " " . round(($allowedSize / 1000), 1) . "MB");
     }
 
     // Leemos el archivo a una variable
@@ -106,26 +100,23 @@ if ($action == 'upload') {
 
         SP_Common::wrLogInfo($message);
 
-        echo _('Error interno al leer el archivo');
-        return;
+        exit(_('Error interno al leer el archivo'));
     }
 
     $fileData['content'] = addslashes(fread($fileHandle, filesize($tmpName)));
     fclose($fileHandle);
 
     if (SP_Files::fileUpload($accountId, $fileData)) {
-        echo _('Archivo guardado');
+        exit(_('Archivo guardado'));
     } else {
-        echo _('No se pudo guardar el archivo');
+        exit(_('No se pudo guardar el archivo'));
     }
-    return;
 }
 
 if ($action == 'download' || $action == 'view') {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
-        echo _('No es un ID de archivo válido');
-        return;
+        exit(_('No es un ID de archivo válido'));
     }
 
     $isView = ( $action == 'view' ) ? TRUE : FALSE;
@@ -133,8 +124,7 @@ if ($action == 'download' || $action == 'view') {
     $file = SP_Files::fileDownload($fileId);
 
     if (!$file) {
-        echo _('El archivo no existe');
-        return;
+        exit(_('El archivo no existe'));
     }
 
     $fileSize = $file->accfile_size;
@@ -149,9 +139,9 @@ if ($action == 'download' || $action == 'view') {
     $message['text'][] = _('Tipo') . ": " . $fileType;
     $message['text'][] = _('Tamaño') . ": " . round($fileSize / 1024, 2) . " KB";
 
-    SP_Common::wrLogInfo($message);
-
     if (!$isView) {
+        SP_Common::wrLogInfo($message);
+        
         // Enviamos el archivo al navegador
         header("Content-length: $fileSize");
         header("Content-type: $fileType");
@@ -159,34 +149,35 @@ if ($action == 'download' || $action == 'view') {
         header("Content-Description: PHP Generated Data");
         header("Content-transfer-encoding: binary");
 
-        echo $fileData;
+        exit($fileData);
     } else {
         $extsOkImg = array("JPG", "GIF", "PNG");
         if (in_array(strtoupper($fileExt), $extsOkImg)) {
+            SP_Common::wrLogInfo($message);
+            
             $imgData = chunk_split(base64_encode($fileData));
-            echo '<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />';
+            exit('<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($fileExt) == "TXT") {
-            echo '<div id="fancyView" class="backGrey"><pre>' . $fileData . '</pre></div>';
+            SP_Common::wrLogInfo($message);
+            
+            exit('<div id="fancyView" class="backGrey"><pre>' . $fileData . '</pre></div>');
         } else {
-            echo '<div id="fancyMsg" class="msgError" >' . _('Tipo de archivo no soportado') . '</div>';
+            exit();
         }
     }
-    return;
 }
 
 if ($action == "delete") {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
-        echo _('No es un ID de archivo válido');
-        return;
+        exit(_('No es un ID de archivo válido'));
     }
 
     if (SP_Files::fileDelete($fileId)) {
-        echo _('Archivo eliminado');
+        exit(_('Archivo eliminado'));
     } else {
-        echo _('Error al eliminar el archivo');
+        exit(_('Error al eliminar el archivo'));
     }
-    return;
 }

@@ -292,6 +292,8 @@ class SP_Init {
         } else if (time() - $_SESSION['SID_CREATED'] > $sessionLifeTime / 2) {
             session_regenerate_id(true);
             $_SESSION['SID_CREATED'] = time();
+            // Recargar los permisos del perfil de usuario
+            $_SESSION['usrprofile'] = SP_Users::getUserProfile();
         }
 
         // Timeout de sesión
@@ -345,7 +347,6 @@ class SP_Init {
     public static function isLoggedIn() {
         if( isset($_SESSION['ulogin']) AND $_SESSION['ulogin']) {
             // TODO: refrescar variables de sesión.
-            //$_SESSION['usrprofile'] = SP_Users::getUserProfile();
             return true;
         }
         return false;
