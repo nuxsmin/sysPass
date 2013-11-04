@@ -42,7 +42,6 @@ $strError = '<div id="fancyView" class="msgError">'._('No tiene permisos para re
 
 SP_Users::checkUserAccess("acceditpass",$userId) || die ($strError);
 
-$isDemoMode = SP_Config::getValue('demoenabled', 0);
 ?>
 
 <div id="fancyContainer" align="center">
@@ -66,11 +65,7 @@ $isDemoMode = SP_Config::getValue('demoenabled', 0);
             </td>
         </tr>
     </table>
-    <?  if ( ! $isDemoMode ): ?>
-        <input type="hidden" name="action" value="3" />
-    <? elseif ( $_SESSION['uid'] != $userId && $isDemoMode ): ?>
-        <input type="hidden" name="id" value="<? echo $userId; ?>" />
-    <? endif; ?>
+    <input type="hidden" name="id" value="<? echo $userId; ?>" />
     <input type="hidden" name="type" value="1" />
     <input type="hidden" name="action" value="3" />
     <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(); ?>">
@@ -89,4 +84,3 @@ $isDemoMode = SP_Config::getValue('demoenabled', 0);
         </ul>
     </div>
 </div>
-<script type="text/javascript">$("#usrpass").focus();</script>

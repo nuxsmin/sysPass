@@ -428,5 +428,6 @@ $skey = SP_Common::getSessionKey(TRUE);
         $("#selGroups").chosen({
             placeholder_text_multiple: "<? echo _('Seleccionar grupos secundarios'); ?>",
         });
+        $('input:text:visible:first').focus();
     </script>
 <? endif; ?>

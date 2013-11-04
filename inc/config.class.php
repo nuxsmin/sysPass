@@ -208,7 +208,7 @@ class SP_Config{
 
         if ( ! is_dir($bakDstDir) ){
             if ( ! @mkdir($bakDstDir, 0550) ){
-                $arrOut['error'] = '<span class="altTxtError">'._('No es posible crear el directorio de backups').' ('.$bakDstDir.')</span>';
+                $arrOut['error'] = _('No es posible crear el directorio de backups').' ('.$bakDstDir.')';
                 
                 $message['action'] = _('Copia BBDD');
                 $message['text'][] = _('No es posible crear el directorio de backups');
@@ -220,7 +220,7 @@ class SP_Config{
         }
 
         if ( ! is_writable($bakDstDir) ){
-            $arrOut['error'] = '<span class="altTxtError">'._('Compruebe los permisos del directorio de backups').'</span>';
+            $arrOut['error'] = _('Compruebe los permisos del directorio de backups');
             $error = 1;
         }
 

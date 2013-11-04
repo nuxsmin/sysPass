@@ -84,3 +84,4 @@ if (!$account->checkAccountAccess("acceditpass") || !SP_Users::checkUserAccess("
         </li>
     </ul>
 </div>
+<script>$('input:password:visible:first').focus();</script>

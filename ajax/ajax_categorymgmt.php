@@ -38,8 +38,6 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-SP_Users::checkUserAccess('categories') || SP_Html::showCommonError('unavailable');
-
 $intCategoryFunction = SP_Common::parseParams('p', 'categoryFunction', 0);
 $categoryName = SP_Common::parseParams('p', 'categoryName');
 $categoryNameNew = SP_Common::parseParams('p', 'categoryNameNew');
@@ -115,5 +113,5 @@ switch ($intCategoryFunction) {
         }
         break;
     default:
-        SP_Common::printXML(_('No es una acción válida'));
+        SP_Common::printXML(_('Acción Inválida'));
 }

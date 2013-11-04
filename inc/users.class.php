@@ -512,8 +512,9 @@ class SP_Users {
         // Número de usuarios con el grupo
         $query = "SELECT user_id FROM usrData WHERE user_groupId = " . (int) $this->groupId;
 
-        if (DB::doQuery($query, __FUNCTION__) === FALSE)
+        if (DB::doQuery($query, __FUNCTION__) === FALSE){
             return FALSE;
+        }
 
         $numRows = count(DB::$last_result);
         $txt = _('Usuarios') . " (" . $numRows . ")";
@@ -985,6 +986,57 @@ class SP_Users {
 
         return (int) $queryRes[0]->user_id;
     }
+    
+    /**
+     * @brief Obtener el login de usuario a partir del Id
+     * @return string con el login del usuario
+     */
+    public static function getUserLoginById($id) {
+        $query = "SELECT user_login FROM usrData 
+                    WHERE user_id = " . (int)$id . " LIMIT 1";
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === FALSE || !is_array($queryRes)) {
+            return FALSE;
+        }
+
+        return $queryRes[0]->user_login;
+    }
+    
+    /**
+     * @brief Obtener el nombre de un grupo por a partir del Id
+     * @return string con el nombre del grupo
+     */
+    public static function getGroupNameById($id) {
+        $query = "SELECT usergroup_name FROM usrGroups 
+                    WHERE usergroup_id = " . (int)$id . " LIMIT 1";
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === FALSE || !is_array($queryRes)) {
+            return FALSE;
+        }
+
+        return $queryRes[0]->usergroup_name;
+    }
+    
+    /**
+     * @brief Obtener el nombre de un perfil por a partir del Id
+     * @return string con el nombre del perfil
+     */
+    public static function getProfileNameById($id) {
+        $query = "SELECT userprofile_name FROM usrProfiles 
+                    WHERE userprofile_id = " . (int)$id . " LIMIT 1";
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === FALSE || !is_array($queryRes)) {
+            return FALSE;
+        }
+
+        return $queryRes[0]->userprofile_name;
+    }
 
     /**
      * @brief Autentifica al usuario con LDAP
@@ -1252,6 +1304,12 @@ class SP_Users {
      * @return object con los permisos del perfil del usuario
      */
     public static function getUserProfile() {
+        $userId = SP_Common::parseParams('s', 'uid', 0);
+        
+        if ( ! $userId ){
+            return FALSE;
+        }
+        
         $query = "SELECT user_profileId,
                             userProfile_pView,
                             userProfile_pViewPass,
@@ -1273,7 +1331,7 @@ class SP_Users {
                             userProfile_pEventlog 
                             FROM usrData 
                             JOIN usrProfiles ON userProfile_Id = user_profileId
-                            WHERE user_id = " . $_SESSION['uid'] . " LIMIT 1";
+                            WHERE user_id = " . $userId . " LIMIT 1";
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 

@@ -117,10 +117,10 @@ $activeTab = $data['active'];
         <input type="hidden" name="is_ajax" value="1">
         <script>
             $(function() { 
-                $("#btnProfilesAcc").buttonset();
-                $("#btnProfilesConfig").buttonset();
-                $("#btnProfilesUsers").buttonset();
-                $("#btnProfilesOthers").buttonset();
+                $('#btnProfilesAcc').buttonset();
+                $('#btnProfilesConfig').buttonset();
+                $('#btnProfilesUsers').buttonset();
+                $('#btnProfilesOthers').buttonset();
             });
         </script>
     </form>

@@ -97,7 +97,7 @@ switch ($action) {
         echo ( SP_Users::checkUserAccess("profiles") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Gestión de Perfiles') . '">' . _('Gestión de Perfiles') . '</A></LI>' : '';
         echo '</UL>';
 
-		$tplvars['active'] = 0;
+        $tplvars['active'] = 0;
 		
         if (SP_Users::checkUserAccess("users")) {
             $arrUsersTableProp = array(
@@ -191,13 +191,14 @@ switch ($action) {
         }
 
         echo '</DIV>';
-
+        
         echo '<script>
-            $("#tabs").tabs();
-            $("#tabs").tabs( "option", "active", ' . $itemId . ');
-            $("#tabs").on("tabsactivate", function( event, ui ) {
-				setContentSize();
-                //$("#container").css("height",$("#content").height() + 150);
+            $("#tabs").tabs({
+                active: ' . $itemId . ',
+                create: function( event, ui ) {$("input:visible:first").focus();},
+                activate: function( event, ui ) {
+                    setContentSize();
+                }
             });
             </script>';
         break;
@@ -255,13 +256,16 @@ switch ($action) {
         
         echo '</DIV>';
 
-        echo '<SCRIPT>
-            $("#tabs").tabs();
-            $("#tabs").tabs( "option", "active", ' . $itemId . ');
-            $("#tabs").on("tabsactivate", function( event, ui ) {
-                $("#container").css("height",$("#content").height() + 150);
+        echo '<script>
+            $("#tabs").tabs({
+                active: ' . $itemId . ',
+                create: function( event, ui ) {$("input:visible:first").focus();},
+                activate: function( event, ui ) {
+                    setContentSize();
+                    $("input:visible:first").focus();
+                }
             });
-            </SCRIPT>';
+            </script>';
         break;
     case "eventlog":
         SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');

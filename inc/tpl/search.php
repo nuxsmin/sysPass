@@ -83,6 +83,7 @@ $categoriesSelProp = array("name" => "category",
     $("#rpp").spinner({step: 5, max: 50, min: 5, numberFormat: "n", stop: function(event, ui) {
             accSearch(0);
         }});
+    $('input:text:visible:first').focus();
 </script>
 
 <div id="resBuscar"></div>

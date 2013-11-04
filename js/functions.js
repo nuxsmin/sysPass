@@ -33,7 +33,8 @@ jQuery.extend(jQuery.fancybox.defaults, {
     autoHeight: 'true',
     minHeight: 50,
     padding: 0,
-    helpers:  {overlay : { css : { 'background' : 'rgba(0, 0, 0, 0.1)'}}}
+    helpers:  {overlay : { css : { 'background' : 'rgba(0, 0, 0, 0.1)'}}},
+    afterShow: function(){$('#fancyContainer input:visible:first').focus();}
 });
 
 $(document).ready(function(){
@@ -577,7 +578,7 @@ function usersMgmt(frmId, isDel, id, type, sk){
         var active = frmId;
         
         alertify.confirm(atext, function (e) {
-            if ( e) {
+            if (e) {
                 usersAjax(data, url);
                 doAction('usersmenu','',active)
             }

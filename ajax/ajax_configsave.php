@@ -38,8 +38,6 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-SP_Users::checkUserAccess("config") || SP_Html::showCommonError('nopermission');
-
 $frmAction =  SP_Common::parseParams('p', 'action');
 
 if ($frmAction == "config") {
@@ -194,5 +192,5 @@ if ($frmAction == "config") {
     
     SP_Common::printXML(_('Error al guardar el hash de la clave maestra'));
 } else {
-    SP_Common::printXML(_('No es una acción válida'));
+    SP_Common::printXML(_('Acción Inválida'));
 }

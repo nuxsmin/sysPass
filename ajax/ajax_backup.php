@@ -38,8 +38,6 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-SP_Users::checkUserAccess("backup") || die ('<DIV CLASS="error">'._('No tiene permisos para acceder a esta página').'</DIV');
-
 $doBackup = SP_Common::parseParams('p', 'backup', 0);
 
 if ( $doBackup ){

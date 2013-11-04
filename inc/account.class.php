@@ -459,7 +459,7 @@ class SP_Account {
         
         $message['action'] = _('Eliminar Cuenta');
         $message['text'][] = _('Cliente').": ".$this->cacheParams['customer_name'];
-        $message['text'][] = _('Cuenta').": $this->accountName ($this->accountId)";
+        $message['text'][] = _('Cuenta').": ".$this->cacheParams['account_name']." ($this->accountId)";
         
         $query = "DELETE FROM accounts "
                 . "WHERE account_id = ".(int)$this->accountId." LIMIT 1";
@@ -725,7 +725,6 @@ class SP_Account {
      * @return array con los nombres de los grupos ordenados
      */ 
     public static function getAccountGroupsName ($accountId){
-        
         $query = "SELECT usergroup_name FROM accGroups "
                 . "JOIN usrGroups ON accgroup_groupId = usergroup_id "
                 . "WHERE accgroup_accountId = ".(int)$accountId;
@@ -733,6 +732,10 @@ class SP_Account {
         $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ( $queryRes === FALSE && ! is_array($queryRes) ){
+            return FALSE;
+        }
+
+        if (!is_array($queryRes)) {
             return FALSE;
         }
 

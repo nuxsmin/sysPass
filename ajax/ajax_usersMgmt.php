@@ -32,7 +32,6 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-
 if ( SP_Common::parseParams('p', 'id', FALSE, TRUE) && SP_Common::parseParams('p', 'type', FALSE, TRUE) ) {
     $tplvars['itemid'] = SP_Common::parseParams('p', 'id', 0);
     $itemType = $tplvars['itemtype'] = SP_Common::parseParams('p', 'type', 0);

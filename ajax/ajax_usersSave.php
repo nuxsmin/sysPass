@@ -44,12 +44,6 @@ $frmSaveType = SP_Common::parseParams('p', 'type', 0);
 $frmAction = SP_Common::parseParams('p', 'action', 0);
 $frmItemId = SP_Common::parseParams('p', 'id', 0);
 
-if ($frmAction == 3) {
-    SP_Users::checkUserAccess("acceditpass", $frmItemId) || die('<DIV CLASS="error"' . _('No tiene permisos para acceder') . '</DIV');
-} else {
-    SP_Users::checkUserAccess("users") || die('<DIV CLASS="error"' . _('No tiene permisos para acceder') . '</DIV');
-}
-
 $objUser = new SP_Users;
 
 if ($frmSaveType == 1 || $frmSaveType == 2) {
@@ -143,8 +137,14 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             
             SP_Common::printXML(_('Error al actualizar el usuario'));
         }
-        // Cambio de clave
-    } elseif ($frmAction == 3 && !SP_Config::getValue('demoenabled', 0)) {
+    // Cambio de clave
+    } elseif ($frmAction == 3) {
+        $userLogin = $objUser->getUserLoginById($frmItemId);
+        
+        if ( SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo'){
+            SP_Common::printXML(_('Acción Inválida').'(DEMO)');
+        }
+        
         if (!$frmUsrPass || !$frmUsrPassV) {
             SP_Common::printXML(_('La clave no puede estar en blanco'), 2);
         }
@@ -158,7 +158,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($objUser->manageUser("updatepass")) {
             $message['action'] = _('Modificar Clave Usuario');
-            $message['text'][] = _('Nombre') . ': ' . $frmUsrName . ' (' . $frmUsrLogin . ')';
+            $message['text'][] = _('Login') . ': ' . $userLogin;
 
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);
@@ -168,8 +168,14 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         
         SP_Common::printXML(_('Error al modificar la clave'));
     // Eliminar usuario
-    } elseif ($frmAction == 4 && !SP_Config::getValue('demoenabled', 0)) {
+    } elseif ($frmAction == 4) {
 
+        $userLogin = $objUser->getUserLoginById($frmItemId);
+        
+        if ( SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo' ){
+            SP_Common::printXML(_('Acción Inválida').'(DEMO)');
+        }
+        
         $objUser->userId = $frmItemId;
 
         if ($frmItemId == $_SESSION["uid"]) {
@@ -178,7 +184,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($objUser->manageUser("delete")) {
             $message['action'] = _('Eliminar Usuario');
-            $message['text'][] = _('Login') . ': ' . $frmUsrName . ' (' . $frmUsrLogin . ')';
+            $message['text'][] = _('Login') . ': ' . $userLogin;
 
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);
@@ -189,11 +195,11 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         SP_Common::printXML(_('Error al eliminar el usuario'));
     } 
     
-    SP_Common::printXML(_('No es una acción válida'));
+    SP_Common::printXML(_('Acción Inválida'));
 } elseif ($frmSaveType == 3 || $frmSaveType == 4) {
     // Variables POST del formulario
-    $frmGrpName = ( isset($_POST["name"]) ) ? SP_Html::sanitize($_POST["name"]) : "";
-    $frmGrpDesc = ( isset($_POST["description"]) ) ? SP_Html::sanitize($_POST["description"]) : "";
+    $frmGrpName = SP_Common::parseParams('p', 'name');
+    $frmGrpDesc = SP_Common::parseParams('p', 'description');
 
     // Nuevo grupo o editar
     if ($frmAction == 1 OR $frmAction == 2) {
@@ -235,7 +241,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printXML(_('Error al actualizar el grupo'));
         }
 
-        // Eliminar grupo
+    // Eliminar grupo
     } elseif ($frmAction == 4) {
         $objUser->groupId = $frmItemId;
 
@@ -244,9 +250,11 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         if (is_string($resGroupUse)) {
             SP_Common::printXML(_('No es posible eliminar:Grupo en uso por') . ' ' . $resGroupUse);
         } else {
+            $groupName = $objUser->getGroupNameById($frmItemId);
+            
             if ($objUser->manageGroup("delete")) {
                 $message['action'] = _('Eliminar Grupo');
-                $message['text'][] = _('Nombre') . ': ' . $frmGrpName;
+                $message['text'][] = _('Nombre') . ': ' . $groupName;
 
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
@@ -258,12 +266,12 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         }
     }
 
-    SP_Common::printXML(_('No es una acción válida'));
+    SP_Common::printXML(_('Acción Inválida'));
 } elseif ($frmSaveType == 5 || $frmSaveType == 6) {
     $profileProp = array();
 
     // Variables POST del formulario
-    $frmProfileName = ( isset($_POST["profile_name"]) ) ? SP_Html::sanitize($_POST["profile_name"]) : "";
+    $frmProfileName = SP_Common::parseParams('p', 'profile_name');
     $objUser->profileId = $frmItemId;
 
     // Profile properties Array
@@ -322,16 +330,18 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printXML(_('Error al actualizar el perfil'));
         }
 
-        // Eliminar perfil
+    // Eliminar perfil
     } elseif ($frmAction == 4) {
         $resProfileUse = $objUser->checkProfileInUse();
 
         if (is_string($resProfileUse)) {
             SP_Common::printXML(_('No es posible eliminar: Perfil en uso por') . ' ' . $resProfileUse);
         } else {
+            $profileName = $objUser->getProfileNameById($frmItemId);
+            
             if ($objUser->manageProfiles("delete")) {
                 $message['action'] = _('Eliminar Perfil');
-                $message['text'][] = _('Nombre') . ': ' . $frmProfileName;
+                $message['text'][] = _('Nombre') . ': ' . $profileName;
 
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
@@ -343,5 +353,5 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         }
     }
     
-    SP_Common::printXML(_('No es una acción válida'));
+    SP_Common::printXML(_('Acción Inválida'));
 }

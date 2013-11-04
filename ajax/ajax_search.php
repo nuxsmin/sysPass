@@ -184,7 +184,12 @@ foreach ( $resQuery as $account ){
     echo'<li class="cell-img">';
     
     $groupsName = _('Grupos').':<br><br>*'.$account->usergroup_name.'<br>';
-    $groupsName .= implode('<br>', SP_Account::getAccountGroupsName($account->account_id));
+    
+    $secondaryGroups = SP_Account::getAccountGroupsName($account->account_id);
+            
+    if ( $secondaryGroups ){
+        $groupsName .= implode('<br>', $secondaryGroups);
+    }
     
     echo '<img src="imgs/btn_group.png" title="'.$groupsName.'" />';
     

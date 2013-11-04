@@ -105,7 +105,7 @@ if ($frmSaveType == 1) {
         SP_Common::printXML(_('Las claves no coinciden'));
     }
 } else {
-    $SP_Common::printXML(_('No es una acción válida'));
+    $SP_Common::printXML(_('Acción Inválida'));
 }
 
 if ($frmSaveType == 1 || $frmSaveType == 4) {
@@ -228,5 +228,5 @@ switch ($frmSaveType) {
         SP_Common::printXML(_('Error al actualizar la clave'));
         break;
     default:
-        SP_Common::printXML(_('No es una acción válida'));
+        SP_Common::printXML(_('Acción Inválida'));
 }

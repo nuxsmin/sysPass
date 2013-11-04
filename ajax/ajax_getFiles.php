@@ -32,8 +32,6 @@ if ( ! SP_Init::isLoggedIn() ) {
     return;
 }
 
-SP_Users::checkUserAccess("accfiles") || die ('<DIV CLASS="error">'._('No tiene permisos para acceder a esta página').'</DIV');
-
 if ( SP_Config::getValue('filesenabled') == 0 ){
     echo _('Gestión de archivos deshabilitada');
     return FALSE;              

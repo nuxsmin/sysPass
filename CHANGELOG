@@ -1,3 +1,10 @@
+=== ** v1.0.1 ** ===
+
+* [BUG] Corregido mensaje al eliminar cuentas/usuarios/grupos/perfiles.
+* [BUG] Corregido fallo al obtener el perfil de usuario tras finalizar la sesión.
+* [MOD] Dar el foco a los "inputs" tras cargar el contenido.
+* [MOD] Revisión de traducción.
+
 === ** v1.0 ** ===
 
 * [NUEVO] Se muestran los grupos secundarios en el menú contextual de los resultados de búsqueda.
@@ -125,6 +132,13 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.1 ** ===
+
+* [BUG] Fix message text on deleting accounts/users/groups/profiles.
+* [BUG] Fix error on retrieving profile data while closing session.
+* [MOD] Give focus to "inputs" after loading content.
+* [MOD] Update translations.
 
 === ** v1.0 ** ===
 
