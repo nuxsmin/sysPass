@@ -219,7 +219,7 @@ class SP_Util {
                 $title = (string)$item->title;
                 $description = (string)$item->description;
 
-                if ( preg_match("/.*\/sysPass_(\d)\.(\d{1,})([a-z0-9]+)?\.(tar\.gz|zip)$/", $title, $pubVer) ){
+                if ( preg_match("/.*\/sysPass_(\d)\.(\d{1,})\.?([a-z0-9]+)?\.(tar\.gz|zip)$/", $title, $pubVer) ){
                     break;
                 }
             }
