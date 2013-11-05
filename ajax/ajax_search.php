@@ -194,7 +194,7 @@ foreach ( $resQuery as $account ){
     echo '<img src="imgs/btn_group.png" title="'.$groupsName.'" />';
     
     $strAccNotes = (strlen($account->account_notes) > 300 ) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
-    echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap($strAccNotes,50,'<br>',TRUE)).'" />' : '';
+    echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',TRUE)).'" />' : '';
    
     if ( $filesEnabled == 1 ){
         $intNumFiles = SP_Files::countFiles($account->account_id);
