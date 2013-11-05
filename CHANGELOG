@@ -1,3 +1,8 @@
+=== ** v1.0.2 ** ===
+
+* [BUG] Corregido el resultado de la búsqueda con registros "duplicados" para las cuentas con varios grupos secundarios.
+* [BUG] Corregido fallo al mostrar las notas con carácteres especiales.
+
 === ** v1.0.1 ** ===
 
 * [BUG] Corregido mensaje al eliminar cuentas/usuarios/grupos/perfiles.
@@ -132,6 +137,11 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.2 ** ===
+
+* [BUG] Fixed "duplicated" records on search results for accounts that have secondary groups.
+* [BUG] Fixed notes text with special chars.
 
 === ** v1.0.1 ** ===
 
