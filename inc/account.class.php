@@ -105,7 +105,7 @@ class SP_Account {
                 break;
         }
 
-        $querySelect = "SELECT SQL_CALC_FOUND_ROWS account_id, account_customerId, category_name, account_name,
+        $querySelect = "SELECT SQL_CALC_FOUND_ROWS DISTINCT account_id, account_customerId, category_name, account_name,
                         account_login, account_url, account_notes, account_userId, account_userGroupId, usergroup_name, customer_name
                         FROM accounts
                         LEFT JOIN categories ON account_categoryId = category_id
