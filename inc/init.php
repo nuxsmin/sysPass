@@ -415,7 +415,7 @@ class SP_Init {
         $update = FALSE;
         $configVersion = SP_Config::getValue('version');
         $databaseVersion = SP_Config::getConfigValue('version');
-        $appVersion = SP_Util::getVersionString();
+        $appVersion = implode('.', SP_Util::getVersion());
         
         if ( $configVersion != $appVersion ){
             SP_Config::setValue('version', $appVersion);
