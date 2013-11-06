@@ -927,7 +927,7 @@ class SP_Users {
                     user_pass = '" . $passdata['pass'] . "',
                     user_hashSalt = '" . $passdata['salt'] . "',
                     user_lastUpdate = NOW()
-                    WHERE user_id = " . (int) $this->userId . " LIMIT 1";
+                    WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
