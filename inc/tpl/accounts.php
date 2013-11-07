@@ -138,6 +138,7 @@ $showEditPass = ($action == "accedit"
 $showDelete = ($action == "accdelete" && $account->checkAccountAccess("accdelete") && SP_Users::checkUserAccess("accdelete"));
 $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
 $skey = SP_Common::getSessionKey(TRUE);
+$maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
 ?>
 
 <div id="title" class="midroundup <? echo $title['class']; ?>"><? echo $title['name']; ?></div>
@@ -266,32 +267,29 @@ $skey = SP_Common::getSessionKey(TRUE);
 </form>
     <? endif; ?>
 
-        <? if ( $showFiles ): ?>
-            <tr>
-                <td class="descField"><? echo _('Archivos'); ?></td>
-                <td class="valField">
-                    <div id="downFiles"></div>
-                    <? if ( $account->accountIsHistory ): ?>
-                        <script>getFiles(<? echo $account->accountParentId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');</script>
-                    <? else: ?>
-                        <script>getFiles(<? echo $account->accountId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');	</script>
-                        <? if ( $action == "accedit" ): ?>
-                            <div id="fileUpload">
-                                <form method="post" enctypr="multipart/form-data" action="ajax/ajax_files.php" name="upload_form" id="upload_form">
-                                    <input type="hidden" name="accountId" id="account" value="<? echo $account->accountId; ?>" />
-                                    <input type="hidden" name="action" id="action" value="upload" />
-                                    <input type="hidden" name="sk" value="<? echo $skey; ?>">
-                                    <input type="text" id="inFilename" placeholder="<? echo _('Seleccionar archivo'); ?>" />
-                                    <input type="file" id="inFile" name="inFile" OnChange="$('#inFilename').val(this.value);" />
-                                    <img id="btnUpload" src="imgs/upload.png" title="<? echo _('Subir archivo (max. 1 MB)'); ?>" class="inputImg" OnClick="upldFile(<? echo $account->accountId; ?>)" />
-                                    <input type="hidden" name="is_ajax" value="1">
-                                </form>
-                            </div>
-                        <? endif; ?>
+<!--Files boxes-->
+    <? if ( $showFiles ): ?>
+        <tr>
+            <td class="descField"><? echo _('Archivos'); ?></td>
+            <td class="valField">
+                <div id="downFiles"></div>
+                <? if ( $account->accountIsHistory ): ?>
+                    <script>getFiles(<? echo $account->accountParentId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');</script>
+                <? else: ?>
+                    <script>getFiles(<? echo $account->accountId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');	</script>
+                    <? if ( $action == "accedit" ): ?>
+                        <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
+                            <input type="file" id="inFile" name="inFile" />
+                        </form>
+                        <div id="dropzone" class="round" title="<? echo _('Soltar archivos aquí (max. 5) o click para seleccionar').'<br><br>'._('Tamaño máximo de archivo').' '.$maxFileSize.' MB'; ?>">
+                            <img src="imgs/upload.png" alt="upload" class="opacity50"/>
+                        </div>
+                        <script> dropFile(<? echo $account->accountId; ?>, '<? echo $skey; ?>', <? echo $maxFileSize; ?>); </script>
                     <? endif; ?>
-                </td>
-            </tr>
-        <? endif; ?>
+                <? endif; ?>
+            </td>
+        </tr>
+    <? endif; ?>
 
 <!--More info about account details-->
         <? if ( $showDetails ): ?>

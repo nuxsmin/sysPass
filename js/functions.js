@@ -506,31 +506,48 @@ function delFile(id, sk, accid){
     });
 }
 
-// Función para subir archivos de una cuenta
-function upldFile(id){
-    var optionsUpld = { 
-        beforeSubmit:  function(){
-            if ( $("#upload_form input[name=inFile]").val()  == '' ){
-                resMsg("error", LANG[4]);
-                return false;                
-            }
-            $.fancybox.showLoading();
-        }, 
-        success: function(responseText, statusText, xhr, $form){
-            resMsg("ok", responseText);
-            $("#inFilename").val('');
-            var sk =  $('input:[name=sk]').val();
-            $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1&sk=" + sk);
-            $.fancybox.hideLoading();
-        },
-        error:function(jqXHR, textStatus, errorThrown){
-            $.fancybox.hideLoading();
-            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
-            resMsg("error", txt);
-        }
-    }; 
+function dropFile(accountId, sk, maxsize){
+    var dropbox = $('#dropzone');
 
-    $('#upload_form').ajaxSubmit(optionsUpld);
+    dropbox.filedrop({
+        fallback_id: 'inFile',
+        paramname: 'inFile', // $_FILES name
+        maxfiles: 5,
+        maxfilesize: maxsize, // in mb
+        url: APP_ROOT + '/ajax/ajax_files.php',
+        data: {
+            sk: sk,
+            accountId: accountId,
+            action: 'upload',
+            is_ajax: 1
+        },
+        uploadFinished: function(i, file, response) {
+            $.fancybox.hideLoading();
+
+            var sk = $('input:[name=sk]').val();
+            $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accountId + "&del=1&is_ajax=1&sk=" + sk);
+
+            resMsg("ok", response);
+        },
+        error: function(err, file) {
+            switch (err) {
+                case 'BrowserNotSupported':
+                    resMsg("error", LANG[25]);
+                    break;
+                case 'TooManyFiles':
+                    resMsg("error", LANG[26] + ' (max. ' + this.maxfiles + ')');
+                    break;
+                case 'FileTooLarge':
+                    resMsg("error", LANG[27] + ' ' + maxsize + ' MB' + '<br>' + file.name);
+                    break;
+                default:
+                    break;
+            }
+        },
+        uploadStarted: function(i, file, len) {
+            $.fancybox.showLoading();
+        },
+    });
 }
 
 

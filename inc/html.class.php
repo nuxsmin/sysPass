@@ -323,13 +323,13 @@ class SP_Html {
         $jsProp = array(
             array("src" => "js/jquery.js", "params" => ""),
             array("src" => "js/jquery.placeholder.js", "params" => ""),
-            array("src" => "js/jquery.form.js", "params" => ""),
             array("src" => "js/jquery-ui.js", "params" => ""),
             array("src" => "js/fancybox/jquery.fancybox.pack.js", "params" => ""),
             array("src" => "js/jquery.powertip.min.js", "params" => ""),
             array("src" => "js/chosen.jquery.min.js", "params" => ""),
             array("src" => "js/alertify.min.js", "params" => ""),
             array("src" => "js/jquery.fileDownload.js", "params" => ""),
+            array("src" => "js/jquery.filedrop.js", "params" => ""),
             array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . base64_encode(SP_Init::$WEBROOT)));
 
         foreach ($jsProp as $js) {

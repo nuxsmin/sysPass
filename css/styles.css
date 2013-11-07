@@ -302,16 +302,26 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content .data TD{text-align: left;}
 #content .data TD.descField {text-align:right; font-size:12px; font-weight:bold; color: #999}
-#content .data #downFiles FORM{width: 50%;display: inline;}
 #content .data select {min-width: 210px;}
 
-#content .data #fileUpload {position: relative; margin-top: 1em;}
-#content .data #fileUpload #inFilename {position: absolute; top: 10px;}
-#content .data #fileUpload #inFile {opacity:0; z-index:1;}
-#content .data #fileUpload IMG {position:relative; z-index:2; padding: 1em;}
+#content .data  #files-wrap {max-height: 100px; width: 400px; overflow-y: auto; border: 1px solid #DFDFDF; padding: 0.5em;}
+#content .data  #files-list { list-style-type: none; margin: 0; padding: 0;}
+#content .data #files-list li { background: #f2f2f2; padding: 1em; font-size: 1em; margin-bottom: 5px;}
+#content .data #files-list li:hover {background: #fffccd; color: #000;}
+#content .data #files-list li img{float: right; position: relative; top: -5px; vertical-align: middle;}
 
-#content .data .actionFiles {display: inline;}
-#content .data .actionFiles IMG{margin: 0.5em;}
+#content .data #dropzone{
+    width: 350px;
+    padding: 5px;
+    height: 50px;
+    margin-top: 10px;
+    border: 2px dashed #d9d9d9;
+    text-align: center;
+}
+
+#content .data #dropzone img{vertical-align: middle;}
+
+#content .data #fileUpload {display: none;}
 
 #content .tblIcon {background: url("../imgs/clock.png") no-repeat  98% 5% #f9f9f9;}
 
@@ -673,6 +683,13 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #txtFilterOn{padding: 0.3em 1em ; background-color: #ecfde4;; color: green; border: #dbfdcb 1px solid; }
 
+.opacity50{
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+
 /* COMBO */
  .custom-combobox { position: relative; display: inline-block;}
  .custom-combobox INPUT { width: 80%;}
@@ -921,9 +938,3 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     -webkit-box-shadow: 8px 8px 6px -6px #a9a9a9;
     -moz-box-shadow: 8px 8px 6px -6px #a9a9a9;
 }
-
-#files-wrap {max-height: 100px; width: 400px; overflow-y: auto; border: 1px solid #DFDFDF; padding: 0.5em;}
-#files-list { list-style-type: none; margin: 0; padding: 0;}
-#files-list li { background: #f2f2f2; padding: 1em; font-size: 1em; margin-bottom: 5px;}
-#files-list li:hover {background: #fffccd; color: #000;}
-#files-list li img{float: right; position: relative; top: -5px; vertical-align: middle;}

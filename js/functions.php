@@ -59,7 +59,10 @@ $locale= array(
                     'Borrar elemento?',
                     'Página no encontrada, verifique el parámetro "siteroot"',
                     'Archivo no soportado para visualizar',
-                    'Eliminar archivo?'),
+                    'Eliminar archivo?',
+                    'Su navegador no soporta subir archivos con HTML5',
+                    'Demasiados archivos',
+                    'No es posible guardar el archivo.<br>Tamaño máximo:'),
     "en_us" => array('Query error',
                     'There was an error',
                     'Session ended',
@@ -84,7 +87,10 @@ $locale= array(
                     'Delete item?',
                     'Page not found, please verify "siteroot" parameter',
                     'File not supported for preview',
-                    'Delete file?'));
+                    'Delete file?',
+                    'Your browser does not support HTML5 file uploads.',
+                    'Too many files',
+                    'Unable to save file.<br>Max file size:'));
 
 $arrJsLang = array();
 
