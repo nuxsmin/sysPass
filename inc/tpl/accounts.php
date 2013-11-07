@@ -281,7 +281,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                         <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
                             <input type="file" id="inFile" name="inFile" />
                         </form>
-                        <div id="dropzone" class="round" title="<? echo _('Soltar archivos aquí (max. 5) o click para seleccionar').'<br><br>'._('Tamaño máximo de archivo').' '.$maxFileSize.' MB'; ?>">
+                    <div id="dropzone" class="round" data-files-ext="<? echo SP_Config::getValue('allowed_exts'); ?>" title="<? echo _('Soltar archivos aquí (max. 5) o click para seleccionar').'<br><br>'._('Tamaño máximo de archivo').' '.$maxFileSize.' MB'; ?>">
                             <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                         </div>
                         <script> dropFile(<? echo $account->accountId; ?>, '<? echo $skey; ?>', <? echo $maxFileSize; ?>); </script>

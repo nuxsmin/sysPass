@@ -26,11 +26,12 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $activeTab = $data['active'];
+$isView = $data['view'];
 
 $user = SP_Users::getUserData($data['itemid']);
 
 $isDemo = SP_Config::getValue('demoenabled', 0);
-$isDisabled = ( $isDemo ) ? 'disabled' : '';
+$isDisabled = ( $isDemo || $isView ) ? 'disabled' : '';
 
 $profilesSelProp = array('name' => 'profileid',
     'id' => 'selProfile',
@@ -40,7 +41,7 @@ $profilesSelProp = array('name' => 'profileid',
     'selected' => $user['user_profileId'],
     'default' => '',
     'js' => '',
-    'attribs' => array('required'));
+    'attribs' => array('required',$isDisabled));
 
 $groupsSelProp = array('name' => 'groupid',
     'id' => 'selGroup',
@@ -50,7 +51,7 @@ $groupsSelProp = array('name' => 'groupid',
     'selected' => $user['user_groupId'],
     'default' => '',
     'js' => '',
-    'attribs' => array('required'));
+    'attribs' => array('required',$isDisabled));
 
 $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
 ?>
@@ -63,16 +64,28 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                 <tr>
                     <td class="descField"><? echo _('Nombre') ?></td>
                     <td class="valField">
-                        <input type="text" id="usrname" name="name" title="<? echo _('Nombre de usuario completo'); ?>" class="txtuser" maxlength="80" value="<? echo $user['user_name']; ?>" />
+                        <? if ( ! $isView ): ?>
+                            <input type="text" id="usrname" name="name" title="<? echo _('Nombre de usuario completo'); ?>" class="txtuser" maxlength="80" value="<? echo $user['user_name']; ?>" />
+                        <? 
+                        else:
+                            echo $user['user_name'];
+                        endif;
+                        ?>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="descField"><? echo _('Login'); ?></td><td class="valField">
-                        <input type="text" id="usrlogin" name="login" title="<? echo _('Login de inicio de sesión'); ?>" class="txtlogin" maxlength="30" value="<? echo $user['user_login'] ?>" <? echo $ro; ?> />
-                        <? if ($ro): ?>
-                            <img src="imgs/ldap.png" title="<? echo _('Usuario de LDAP'); ?>" class="iconMini" />
-                        <? endif; ?>
+                        <? if ( ! $isView ): ?>
+                            <input type="text" id="usrlogin" name="login" title="<? echo _('Login de inicio de sesión'); ?>" class="txtlogin" maxlength="30" value="<? echo $user['user_login'] ?>" <? echo $ro; ?> />
+                            <? if ($ro): ?>
+                                <img src="imgs/ldap.png" title="<? echo _('Usuario de LDAP'); ?>" class="iconMini" />
+                            <? endif; ?>
+                        <? 
+                        else:
+                            echo $user['user_login'];
+                        endif;
+                        ?>
                     </td>
                 </tr>
 
@@ -93,12 +106,18 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                 <tr>
                     <td class="descField"><? echo _('Email'); ?></td>
                     <td class="valField">
-                        <input type="text" id="usremail" name="email" title="<? echo _('Dirección de correo'); ?>" class="txtemail" maxlength="50" value="<? echo $user['user_email']; ?>" />
+                        <? if ( ! $isView ): ?>
+                            <input type="text" id="usremail" name="email" title="<? echo _('Dirección de correo'); ?>" class="txtemail" maxlength="50" value="<? echo $user['user_email']; ?>" />
+                        <? 
+                        else:
+                            echo $user['user_email'];
+                        endif;
+                        ?>
                     </td>
 
                 </tr>
 
-                <? if ( $user['action'] === 1): ?>
+                <? if ( $user['action'] === 1 && ! $isView ): ?>
                     <tr>
                         <td class="descField"><? echo _('Clave'); ?></td>
                         <td class="valField">
@@ -136,26 +155,52 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                                 <input type="checkbox" id="usradminacc" name="adminacc" <? echo $user['checks']['user_isAdminAcc'] . ' ' . $isDisabled; ?> />
                             <? endif; ?>
                             <label for="usrdisabled" title="<? echo _('Deshabilitado'); ?>"><? echo _('Deshabilitado'); ?></label>
-                            <input type="checkbox" id="usrdisabled" name="disabled" <? echo $user['checks']['user_isDisabled']; ?>/>
+                            <input type="checkbox" id="usrdisabled" name="disabled" <? echo $user['checks']['user_isDisabled'] . ' ' . $isDisabled; ?>/>
                         </div>
                     </td>
                 </tr>
+                <? if ( $isView ): ?>
+                <tr>
+                    <td class="descField"><? echo _('Entradas'); ?></td>
+                    <td class="valField"> <? echo $user['user_count']; ?></td>
+                </tr>
+                
+                <tr>
+                    <td class="descField"><? echo _('Último Acceso'); ?></td>
+                    <td class="valField"> <? echo $user['user_lastLogin']; ?></td>
+                </tr>
+                
+                <tr>
+                    <td class="descField"><? echo _('Última Modificación'); ?></td>
+                    <td class="valField"> <? echo $user['user_lastUpdate']; ?></td>
+                </tr>
+                
+                <tr>
+                    <td class="descField"><? echo _('Fecha Clave Maestra'); ?></td>
+                    <td class="valField"> <? echo $user['user_lastUpdateMPass']; ?></td>
+                </tr>
+                <? endif; ?>
             </tbody>
         </table>
-        <input type="hidden" name="active" value="<? echo $activeTab ?>" />
-        <input type="hidden" name="ldap" value="<? echo $user['user_isLdap']; ?>" />
-        <input type="hidden" name="id" value="<? echo $user['user_id']; ?>" />
-        <input type="hidden" name="action" value="<? echo $user['action']; ?>" />
-        <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
-        <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE) ?>">
-        <input type="hidden" name="is_ajax" value="1">
+        <? if ( ! $isView ): ?>
+            <input type="hidden" name="active" value="<? echo $activeTab ?>" />
+            <input type="hidden" name="ldap" value="<? echo $user['user_isLdap']; ?>" />
+            <input type="hidden" name="id" value="<? echo $user['user_id']; ?>" />
+            <input type="hidden" name="action" value="<? echo $user['action']; ?>" />
+            <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
+            <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE) ?>">
+            <input type="hidden" name="is_ajax" value="1">
+        <? endif; ?>
     </form>
-    <div id="resCheck"><span id="resFancyAccion"></span></div>
-    <div class="action-in-box">
-        <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmUsers');" /></li>
-        </ul>
-    </div>
+    
+    <? if ( ! $isView ): ?>
+        <div id="resCheck"><span id="resFancyAccion"></span></div>
+        <div class="action-in-box">
+            <ul>
+                <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmUsers');" /></li>
+            </ul>
+        </div>
+    <? endif; ?>
 </div>        
 <script>
     $("#btnUserOptions").buttonset();

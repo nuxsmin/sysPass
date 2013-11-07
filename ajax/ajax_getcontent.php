@@ -101,33 +101,34 @@ switch ($action) {
 		
         if (SP_Users::checkUserAccess("users")) {
             $arrUsersTableProp = array(
-                "tblId" => "tblUsers",
-                "header" => '',
-                "tblHeaders" => array(
-                    _('Nombre')
-                    , _('Login')
-                    , _('Perfil')
-                    , _('Grupo')
-                    , _('Propiedades')
-                    , ''),
-                "tblRowSrc" => array(
-                    "user_name"
-                    , "user_login"
-                    , "userprofile_name"
-                    , "usergroup_name"
-                    , array(
-                        "user_isAdminApp" => array('img_file' => "check_blue.png", 'img_title' => _('Admin Aplicación'))
-                        , "user_isAdminAcc" => array('img_file' => "check_orange.png", 'img_title' => _('Admin Cuentas'))
-                        , "user_isLdap" => array('img_file' => "ldap.png", 'img_title' => _('Usuario de LDAP'))
-                        , "user_isDisabled" => array('img_file' => "disabled.png", 'img_title' => _('Deshabilitado'))
+                'itemName' => _('Usuario'),
+                'tblId' => 'tblUsers',
+                'header' => '',
+                'tblHeaders' => array(
+                    _('Nombre'),
+                    _('Login'),
+                    _('Perfil'),
+                    _('Grupo'),
+                    _('Propiedades'),
+                    ''),
+                'tblRowSrc' => array(
+                    'user_name',
+                    'user_login',
+                    'userprofile_name',
+                    'usergroup_name',
+                    array(
+                        'user_isAdminApp' => array('img_file' => 'check_blue.png', 'img_title' => _('Admin Aplicación')),
+                        'user_isAdminAcc' => array('img_file' => 'check_orange.png', 'img_title' => _('Admin Cuentas')),
+                        'user_isLdap' => array('img_file' => 'ldap.png', 'img_title' => _('Usuario de LDAP')),
+                        'user_isDisabled' => array('img_file' => 'disabled.png', 'img_title' => _('Deshabilitado'))
                     )
                 ),
-                "tblRowSrcId" => "user_id",
-                "frmId" => "frm_tblusers",
-                "actionId" => 1,
-                "newActionId" => 2,
-                "active" => $tplvars['active']++,
-                "actions" => array("edit", "del", "pass"));
+                'tblRowSrcId' => 'user_id',
+                'frmId' => 'frm_tblusers',
+                'actionId' => 1,
+                'newActionId' => 2,
+                'active' => $tplvars['active']++,
+                'actions' => array('view', 'edit', 'del', 'pass'));
 
             echo '<DIV ID="tabs-1">';
             $startTime = microtime();
@@ -141,16 +142,18 @@ switch ($action) {
         }
 
         if (SP_Users::checkUserAccess("groups")) {
-            $arrGroupsTableProp = array("tblId" => "tblGroups",
-                "header" => '',
-                "tblHeaders" => array(_('Nombre'), _('Descripción'), ''),
-                "tblRowSrc" => array("usergroup_name", "usergroup_description"),
-                "tblRowSrcId" => "usergroup_id",
-                "frmId" => "frm_tblgroups",
-                "actionId" => 3,
-                "newActionId" => 4,
-				"active" => $tplvars['active']++,
-                "actions" => array("edit", "del"));
+            $arrGroupsTableProp = array(
+                'itemName' => _('Grupo'),
+                'tblId' => 'tblGroups',
+                'header' => '',
+                'tblHeaders' => array(_('Nombre'), _('Descripción'), ''),
+                'tblRowSrc' => array('usergroup_name', 'usergroup_description'),
+                'tblRowSrcId' => 'usergroup_id',
+                'frmId' => 'frm_tblgroups',
+                'actionId' => 3,
+                'newActionId' => 4,
+				'active' => $tplvars['active']++,
+                'actions' => array('edit', 'del'));
 
             echo '<DIV ID="tabs-2">';
 
@@ -166,16 +169,18 @@ switch ($action) {
         }
 
         if (SP_Users::checkUserAccess("profiles")) {
-            $arrProfilesTableProp = array("tblId" => "tblProfiles",
-                "header" => '',
-                "tblHeaders" => array(_('Nombre'), ''),
-                "tblRowSrc" => array("userprofile_name"),
-                "tblRowSrcId" => "userprofile_id",
-                "frmId" => "frm_tblprofiles",
-                "actionId" => 5,
-                "newActionId" => 6,
-				"active" => $tplvars['active']++,
-                "actions" => array("edit", "del"));
+            $arrProfilesTableProp = array(
+                'itemName' => _('Perfil'),
+                'tblId' => 'tblProfiles',
+                'header' => '',
+                'tblHeaders' => array(_('Nombre'), ''),
+                'tblRowSrc' => array('userprofile_name'),
+                'tblRowSrcId' => 'userprofile_id',
+                'frmId' => 'frm_tblprofiles',
+                'actionId' => 5,
+                'newActionId' => 6,
+				'active' => $tplvars['active']++,
+                'actions' => array('edit', 'del'));
 
             echo '<DIV ID="tabs-3">';
 

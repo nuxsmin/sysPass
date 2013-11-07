@@ -36,6 +36,7 @@ if ( SP_Common::parseParams('p', 'id', FALSE, TRUE) && SP_Common::parseParams('p
     $tplvars['itemid'] = SP_Common::parseParams('p', 'id', 0);
     $itemType = $tplvars['itemtype'] = SP_Common::parseParams('p', 'type', 0);
     $tplvars['active'] = SP_Common::parseParams('p', 'active', 0);
+    $tplvars['view'] = SP_Common::parseParams('p', 'view', 0);
 } else {
     return;
 }
@@ -43,30 +44,30 @@ if ( SP_Common::parseParams('p', 'id', FALSE, TRUE) && SP_Common::parseParams('p
 switch ($itemType) {
     case 1:
         $tplvars['header'] = _('Editar Usuario');
+        $template = 'users';
         break;
     case 2:
         $tplvars['header'] = _('Nuevo Usuario');
+        $template = 'users';
         break;
     case 3:
         $tplvars['header'] = _('Editar Grupo');
+        $template = 'groups';
         break;
     case 4:
         $tplvars['header'] = _('Nuevo Grupo');
+        $template = 'groups';
         break;
     case 5:
         $tplvars['header'] = _('Editar Perfil');
+        $template = 'profiles';
         break;
     case 6:
         $tplvars['header'] = _('Nuevo Perfil');
+        $template = 'profiles';
         break;
     default :
         break;
 }
 
-if ($itemType == 1 || $itemType == 2) {
-    SP_Html::getTemplate('users', $tplvars);
-} elseif ($itemType == 3 || $itemType == 4) {
-    SP_Html::getTemplate('groups', $tplvars);
-} elseif ($itemType == 5 || $itemType == 6) {
-    SP_Html::getTemplate('profiles', $tplvars);
-}
+SP_Html::getTemplate($template, $tplvars);

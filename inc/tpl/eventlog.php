@@ -87,7 +87,7 @@ $numRows = $resQueryNumRows[0]->numRows;
                 $description = ( $isDemoMode === 0 ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
             ?>
 
-            <tr class="<? echo $rowClass ?>">
+            <tr class="<? echo $rowClass; ?>">
                 <td class="cell">
                     <? echo $log->log_id; ?>
                 </td>

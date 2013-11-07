@@ -133,7 +133,8 @@ class SP_Users {
     public static function setQueryUsers($itemId = NULL) {
         if (!is_null($itemId)) {
             self::$querySelect = "SELECT user_id, user_name, user_login, user_profileId, user_groupId, user_email, user_notes, 
-                                    user_isAdminApp, user_isAdminAcc, user_isLdap, user_isDisabled";
+                                    user_isAdminApp, user_isAdminAcc, user_isLdap, user_isDisabled, user_count, user_lastLogin,
+                                    user_lastUpdate, FROM_UNIXTIME(user_lastUpdateMPass) as user_lastUpdateMPass";
             self::$queryWhere = "WHERE user_id = " . (int) $itemId . " LIMIT 1";
         } else {
             self::$querySelect = "SELECT user_id, user_name, user_login, userprofile_name, usergroup_name,  user_isAdminApp, 
@@ -224,7 +225,7 @@ class SP_Users {
 
         echo '<div class="action fullWidth">';
         echo '<ul>';
-        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . '" class="inputImg" OnClick="usrgrpDetail(0,' . $arrUsersTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrUsersTableProp["active"] . ');" /></LI>';
+        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . ' ' . $arrUsersTableProp['itemName'] . '" class="inputImg" OnClick="usersData(0,' . $arrUsersTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrUsersTableProp["active"] . ');" /></LI>';
         echo '</ul>';
         echo '</div>';
 
@@ -255,8 +256,9 @@ class SP_Users {
             $intId = $item->$arrUsersTableProp["tblRowSrcId"];
             $action_check = array();
 
-            $lnkEdit = '<img src="imgs/edit.png" title="' . _('Editar') . '" class="inputImg" Onclick="return usrgrpDetail(' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
-            $lnkDel = '<img src="imgs/delete.png" title="' . _('Eliminar') . '" class="inputImg" Onclick="return usersMgmt(' . $arrUsersTableProp["active"] . ', 1,' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
+            $lnkView = '<img src="imgs/view.png" title="' . _('Ver Detalles') . '" class="inputImg" Onclick="return usersData(' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ',1);" />';
+            $lnkEdit = '<img src="imgs/edit.png" title="' . _('Editar') . ' ' . $arrUsersTableProp['itemName'] . '" class="inputImg" Onclick="return usersData(' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
+            $lnkDel = '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrUsersTableProp['itemName'] . '" class="inputImg" Onclick="return usersMgmt(' . $arrUsersTableProp["active"] . ', 1,' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
             $lnkPass = '<img src="imgs/key.png" title="' . _('Cambiar clave') . '" class="inputImg" Onclick="return usrUpdPass(' . $intId . ');" />';
 
             echo '<ul>';
@@ -282,6 +284,9 @@ class SP_Users {
             echo '<li class="cell-actions round" style="width: ' . $cellWidth . '%;">';
             foreach ($arrUsersTableProp["actions"] as $action) {
                 switch ($action) {
+                    case "view":
+                        echo $lnkView;
+                        break;
                     case "edit":
                         echo $lnkEdit;
                         break;
@@ -317,6 +322,10 @@ class SP_Users {
             'user_isAdminAcc' => 0,
             'user_isLdap' => 0,
             'user_isDisabled' => 0,
+            'user_count' => 0,
+            'user_lastLogin' => '',
+            'user_lastUpdate' => '',
+            'user_lastUpdateMPass' => 0,
             'action' => 1);
 
         if ($id > 0) {
@@ -331,7 +340,11 @@ class SP_Users {
                         if (preg_match('/^.*_is[A-Z].*$/', $name)) {
                             $user['checks'][$name] = ( (int) $value === 1 ) ? 'CHECKED' : '';
                         }
-
+                        
+                        if ( $value === '0000-00-00 00:00:00' || $value === '1970-01-01 01:00:00' ){
+                            $value = _('N/D');
+                        }
+                        
                         $user[$name] = $value;
                     }
                 }
@@ -961,9 +974,10 @@ class SP_Users {
      * @return bool
      */
     private function setUserLastLogin() {
-        $query = "UPDATE usrData SET "
-                . "user_lastLogin = NOW() "
-                . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
+        $query = 'UPDATE usrData SET '
+                . 'user_lastLogin = NOW(), '
+                . 'user_count = (user_count + 1) '
+                . 'WHERE user_id = ' . (int) $this->userId . ' LIMIT 1';
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;

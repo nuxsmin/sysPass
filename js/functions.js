@@ -507,13 +507,15 @@ function delFile(id, sk, accid){
 }
 
 function dropFile(accountId, sk, maxsize){
-    var dropbox = $('#dropzone');
-
-    dropbox.filedrop({
+    var dropfiles = $('#dropzone');
+    var file_exts_ok = dropfiles.attr('data-files-ext').toLowerCase().split(',');
+    
+    dropfiles.filedrop({
         fallback_id: 'inFile',
         paramname: 'inFile', // $_FILES name
         maxfiles: 5,
         maxfilesize: maxsize, // in mb
+        allowedfileextensions: file_exts_ok,
         url: APP_ROOT + '/ajax/ajax_files.php',
         data: {
             sk: sk,
@@ -540,6 +542,9 @@ function dropFile(accountId, sk, maxsize){
                 case 'FileTooLarge':
                     resMsg("error", LANG[27] + ' ' + maxsize + ' MB' + '<br>' + file.name);
                     break;
+            case 'FileExtensionNotAllowed':
+                    resMsg("error", LANG[28]);
+                    break;
                 default:
                     break;
             }
@@ -552,8 +557,8 @@ function dropFile(accountId, sk, maxsize){
 
 
 // Función para mostrar los registros de usuarios y grupos
-function usrgrpDetail(id, type, sk, active){
-    var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active};
+function usersData(id, type, sk, active, view){
+    var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active, 'view' : view};
     var url = APP_ROOT + '/ajax/ajax_usersMgmt.php';
 
     $.fancybox.showLoading();
