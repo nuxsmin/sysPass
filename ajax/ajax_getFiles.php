@@ -53,6 +53,23 @@ if ( ! is_array($files) || count($files) === 0 ){
 }
 ?>
 
+<div id="files-wrap" class="round">
+    <ul id="files-list">
+        <? foreach ($files as $file): ?>
+        <li class="files-item round">
+            <span title="<? echo $file['name']?>"> <? echo SP_Html::truncate($file['name'],30); ?> (<? echo $file['size']; ?> KB)</span>
+            <? if ( $deleteEnabled === 1 ): ?>
+                <img src="imgs/delete.png" title="<? echo _('Eliminar archivo'); ?>" id="btnDelete" class="inputImg" alt="Delete" OnClick="delFile(<? echo $file['id']; ?>, '<? echo SP_Common::getSessionKey(); ?>', <? echo $accountId; ?>);" />
+            <? endif; ?>
+            <img src="imgs/download.png" title="<? echo _('Descargar archivo'); ?>" id="btnDownload" class="inputImg" alt="download" OnClick="downFile(<? echo $file['id']; ?>, '<? echo SP_Common::getSessionKey(); ?>', 'download');" />
+            <img src="imgs/view.png" title="<? echo _('Ver archivo'); ?>" id="btnView" class="inputImg" alt="View" OnClick="downFile(<? echo $file['id']; ?>, '<? echo SP_Common::getSessionKey(); ?>', 'view');" />
+        </li>
+        <? endforeach;?>
+    </ul>
+</div>
+
+<? return; ?>
+
 <form action="ajax/ajax_files.php" method="post" name="files_form" id="files_form">
     <select name="fileId" size="4" class="files" id="files">
     <? foreach ($files as $file): ?>

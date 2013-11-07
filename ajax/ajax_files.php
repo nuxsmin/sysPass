@@ -143,6 +143,8 @@ if ($action == 'download' || $action == 'view') {
         SP_Common::wrLogInfo($message);
         
         // Enviamos el archivo al navegador
+        header('Set-Cookie: fileDownload=true; path=/');
+        header('Cache-Control: max-age=60, must-revalidate');
         header("Content-length: $fileSize");
         header("Content-type: $fileType");
         header("Content-Disposition: attachment; filename=\"$fileName\"");

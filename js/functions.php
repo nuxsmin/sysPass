@@ -58,7 +58,8 @@ $locale= array(
                     'Utilizar al menos 8 caracteres',
                     'Borrar elemento?',
                     'Página no encontrada, verifique el parámetro "siteroot"',
-                    'Archivo no soportado para visualizar'),
+                    'Archivo no soportado para visualizar',
+                    'Eliminar archivo?'),
     "en_us" => array('Query error',
                     'There was an error',
                     'Session ended',
@@ -82,7 +83,8 @@ $locale= array(
                     'You should use at least 8 characters',
                     'Delete item?',
                     'Page not found, please verify "siteroot" parameter',
-                    'File not supported for preview'));
+                    'File not supported for preview',
+                    'Delete file?'));
 
 $arrJsLang = array();
 

@@ -441,16 +441,11 @@ function configMgmt(action){
 }
 
 // Función para descargar/ver archivos de una cuenta
-function downFile(fancy){
-    if ( $("#files").val() == null ){
-        resMsg("error", LANG[3]);
-        return false;                
-    }
+function downFile(id, sk, action){
+    var data = {'fileId' : id, 'sk' : sk, 'action': action};
     
-    if ( fancy == 1){
+    if ( action === 'view'){
         $.fancybox.showLoading();
-        $("#action").val('view');
-        var data = $('#files_form').serialize();
         
 	$.ajax({
             type : "POST",
@@ -469,10 +464,8 @@ function downFile(fancy){
             },
             complete: function(){$.fancybox.hideLoading();}
 	});
-    } else {
-        $('#files_form input:[name=action]').val('download');
-        $('#files_form input:[name=t]').val(getTime());
-        $('#files_form').submit();
+    } else if ( action === 'download') {
+        $.fileDownload(APP_ROOT + '/ajax/ajax_files.php',{'httpMethod' : 'POST','data': data,});
     }
 }
 
@@ -486,31 +479,31 @@ function getFiles(id, isDel, sk){
         url : APP_ROOT + "/ajax/ajax_getFiles.php",
         data : data,
         success: function(response) {
-                            $('#downFiles').html(response);
+            $('#downFiles').html(response);
         },
         complete: function(){$.fancybox.hideLoading();}
     });
 }
 
 // Función para eliminar archivos de una cuenta
-function delFile(id){
-    if ( $("#files").val() == null ){    
-        resMsg("error", LANG[3]);
-        return false;           
-    }
-
-    $.fancybox.showLoading();
+function delFile(id, sk, accid){
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[24] + '</p></div>';
     
-    var sk =  $('input:[name=sk]').val();
-    var data = {'fileId': $("#files").val(), 'action': 'delete', 'sk' : sk};
+    alertify.confirm(atext, function (e) {
+        if (e) {
+            $.fancybox.showLoading();
+            
+            var data = {'fileId': id, 'action': 'delete', 'sk' : sk};
 
-    $.post( APP_ROOT + '/ajax/ajax_files.php', data, 
-        function( data ) {
-            $.fancybox.hideLoading();
-            resMsg("ok", data);
-            $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + id +"&del=1&is_ajax=1&sk=" + sk);
+            $.post( APP_ROOT + '/ajax/ajax_files.php', data, 
+                function( data ) {
+                    $.fancybox.hideLoading();
+                    resMsg("ok", data);
+                    $("#downFiles").load( APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accid +"&del=1&is_ajax=1&sk=" + sk);
+                }
+            );
         }
-    );
+    });
 }
 
 // Función para subir archivos de una cuenta

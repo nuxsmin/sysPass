@@ -921,3 +921,9 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     -webkit-box-shadow: 8px 8px 6px -6px #a9a9a9;
     -moz-box-shadow: 8px 8px 6px -6px #a9a9a9;
 }
+
+#files-wrap {max-height: 100px; width: 400px; overflow-y: auto; border: 1px solid #DFDFDF; padding: 0.5em;}
+#files-list { list-style-type: none; margin: 0; padding: 0;}
+#files-list li { background: #f2f2f2; padding: 1em; font-size: 1em; margin-bottom: 5px;}
+#files-list li:hover {background: #fffccd; color: #000;}
+#files-list li img{float: right; position: relative; top: -5px; vertical-align: middle;}
