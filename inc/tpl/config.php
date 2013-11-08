@@ -217,18 +217,6 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <input type="text" name="wikifilter" id="wikifilter" value="<? echo SP_Config::getValue('wikifilter'); ?>" />
-            <!--<select id="wikifilter" name="wikifilter[]" MULTIPLE="multiple" size="3">-->
-            <? 
-//            if ( SP_Config::getValue('wikifilter') ){
-//                $wikifilter = explode("||", SP_Config::getValue('wikifilter'));
-//                sort($wikifilter, SORT_STRING);
-//
-//                foreach ( $wikifilter as $filter ){
-//                    echo '<OPTION value="'.$filter.'">'.$filter.'</OPTION>';
-//                }
-//            }
-            ?>
-            </select>
         </td>
     </tr>
 </table>
@@ -391,8 +379,19 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             // Fix scrolling to bottom
             var $tagsbox = $(this).next();
             $tagsbox.animate({scrollTop: $tagsbox.height()});
+            
+            if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '" />');
+            }
         },
-        'onRemoveTag' : function(){
+        'onRemoveTag' : function(){           
+            var $tagsbox = $(this).next();
+            
+            if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '"/>');
+            }
+        },
+        onChange : function(){
             // Fix tooltip on refresh the tags list
             $(this + '[title]').powerTip(powertipOptions);
         }
@@ -407,15 +406,25 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             // Fix scrolling to bottom
             var $tagsbox = $(this).next();
             $tagsbox.animate({scrollTop: $tagsbox.height()});
+            
+            if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '"/>');
+            }
         },
         onRemoveTag : function(){
-            // Fix tooltip on refresh the tags list
-            $(this + '[title]').powerTip(powertipOptions);
+            var $tagsbox = $(this).next();
+            
+            if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '"/>');
+            }
         },
         onChange : function(){
             var $tagsbox = $(this).next();
             last_width = $tagsbox.find("span:last").width() + 10;
-            $tagsbox.find(".tag:last").css('width', last_width); 
+            $tagsbox.find(".tag:last").css('width', last_width);
+            
+            // Fix tooltip on refresh the tags list
+            $(this + '[title]').powerTip(powertipOptions);
         }
     });
 </script>
