@@ -720,6 +720,42 @@ function checkUpds(){
     });      
 }
 
+// Función para limpiar el log de eventos
+function clearEventlog(sk){
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[29] + '</p></div>';
+
+    alertify.confirm(atext, function (e) {
+        if (e) {
+            var data = { 'clear' : 1, 'sk' : sk, 'is_ajax' : 1};
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: APP_ROOT + '/ajax/ajax_eventlog.php',
+                data: data,
+                success: function(json){
+                    var status = json.status;
+                    var description = json.description;
+
+                    if ( status === 0 ){
+                        resMsg("ok", description);
+                        doAction('eventlog');
+                        scrollUp();
+                    } else if ( status === 10){
+                        resMsg("error", description);
+                        doLogout();
+                    } else {
+                        resMsg("error", description);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown){ 
+                    resMsg("error", 'Oops...' + LANG[0]);
+                },
+                complete: function(){$.fancybox.hideLoading();}
+            });
+        }
+    });
+}
+
 // Función para añadir opciones a un select desde input
 function addSelOption(dst_id,src_id){
     var dup = 0;
@@ -757,6 +793,7 @@ function delSelOption(id){
     }
 }
 
+// Función para mostrar los botones de acción en los resultados de búsqueda
 function showOptional(me){
     $(me).hide();
     $(me).parent().css('width','15em');

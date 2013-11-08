@@ -244,7 +244,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
 {overflow-y: auto; max-height: 400px}
 
 #content #pageNav {
-    float: left;
+    /*float: left;*/
     clear: both;
     width: 98%;
     margin-top: 15px;

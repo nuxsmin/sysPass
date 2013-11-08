@@ -35,6 +35,16 @@ if (!SP_Init::isLoggedIn()) {
 SP_Users::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
 
 $start = SP_Common::parseParams('p', 'start', 0);
+$clear = SP_Common::parseParams('p', 'clear', 0);
+$sk = SP_Common::parseParams('p', 'sk', FALSE);
+
+if ( $clear && $sk && SP_Common::checkSessionKey($sk) ){
+    if ( SP_Log::clearEvents() ){
+        SP_Common::printJSON(_('Registro de eventos vaciado'), 0);
+    } else{
+        SP_Common::printJSON(_('Error al vaciar el registro de eventos'));
+    }
+}
 
 $tplvars = array('start' => $start);
 SP_Html::getTemplate('eventlog', $tplvars);

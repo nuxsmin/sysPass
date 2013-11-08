@@ -63,7 +63,8 @@ $locale= array(
                     'Su navegador no soporta subir archivos con HTML5',
                     'Demasiados archivos',
                     'No es posible guardar el archivo.<br>Tamaño máximo:',
-                    'Extensión no permitida'),
+                    'Extensión no permitida',
+                    'Vaciar el registro de eventos?'),
     "en_us" => array('Query error',
                     'There was an error',
                     'Session ended',
@@ -92,7 +93,8 @@ $locale= array(
                     'Your browser does not support HTML5 file uploads.',
                     'Too many files',
                     'Unable to save file.<br>Max file size:',
-                    'Extension not allowed'));
+                    'Extension not allowed',
+                    'Clear event log?'));
 
 $arrJsLang = array();
 

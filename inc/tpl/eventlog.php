@@ -30,16 +30,7 @@ $rowClass = "row_even";
 $isDemoMode = SP_Config::getValue('demoenabled',0);
 $start = ( isset($data['start']) ) ? (int)$data['start'] : 0;
 
-$strQuery = 'SELECT SQL_CALC_FOUND_ROWS 
-                log_id,
-                FROM_UNIXTIME(log_date) as date,
-                log_action,
-                log_login,
-                log_description
-                FROM log ORDER BY log_id DESC LIMIT '.$start.', 50';
-
-$resQuery = DB::getResults($strQuery, __FUNCTION__);
-
+$events = SP_Log::getEvents($start);
 ?>
 
 <div id="title" class="midroundup titleNormal">
@@ -47,17 +38,11 @@ $resQuery = DB::getResults($strQuery, __FUNCTION__);
 </div>
 
 <? 
-if ( ! $resQuery ) {
-    die('<div class="error round">'._('ERROR EN LA CONSULTA').'</div>');
-}
-
-if ( ! is_array($resQuery) ) {
+if ( ! $events ) {
     die('<div class="noRes round">'._('No se encontraron registros').'</div>');
 }
 
-$resQueryNumRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
-
-$numRows = $resQueryNumRows[0]->numRows;
+$numRows = SP_Log::$numRows;
 ?>
 
 <div id="resEventLog">
@@ -82,7 +67,7 @@ $numRows = $resQueryNumRows[0]->numRows;
             </tr>
         </thead>
         <tbody id="resSearch">
-            <? foreach ( $resQuery as $log ):
+            <? foreach ( $events as $log ):
                 $rowClass = ( $rowClass == "row_even" ) ? "row_odd" : "row_even";
                 $description = ( $isDemoMode === 0 ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
             ?>
@@ -124,3 +109,10 @@ $totalTime = round($endTime - $startTime, 5);
 
 SP_Html::printQueryLogNavBar($start, $numRows, $totalTime);
 ?>
+<div class="action fullWidth">
+    <ul>
+        <li>
+            <img src="imgs/clear.png" title="<? echo _('Vaciar registro de eventos'); ?>" class="inputImg" OnClick="clearEventlog('<? echo SP_Common::getSessionKey(); ?>');" />
+        </li>
+    </ul>
+</div>
