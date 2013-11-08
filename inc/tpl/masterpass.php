@@ -93,6 +93,7 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
                 <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
                 <? echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                 <br>
+                <br>
                 <label for="confirmPassChange"><? echo _('NO'); ?></label>
                 <input type="checkbox" class="checkbox" name="confirmPassChange"  id="confirmPassChange" />
             </td>

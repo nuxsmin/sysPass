@@ -329,6 +329,9 @@ class SP_Users {
      * @return array con el nombre de la columna como clave y los datos como valor
      */
     public static function getUserData($id = 0) {
+        
+        // Array con los nombres de los campos para devolverlos con el formato correcto
+        // Es necesario que coincidan con las columnas de la tabla
         $user = array('user_id' => 0,
             'user_name' => '',
             'user_login' => '',
@@ -344,14 +347,19 @@ class SP_Users {
             'user_lastLogin' => '',
             'user_lastUpdate' => '',
             'user_lastUpdateMPass' => 0,
-            'action' => 1);
+            'action' => 1,
+            'checks' => array(
+                'user_isLdap' => 0,
+                'user_isAdminApp' => 0,
+                'user_isAdminAcc' => 0,
+                'user_isDisabled' => 0
+                )
+            );
 
         if ($id > 0) {
             self::setQueryUsers($id);
 
             if (self::getItemDetail()) {
-                $user['checks'] = array();
-
                 foreach (self::$queryRes as $row) {
                     foreach ($row as $name => $value) {
                         // Check if field is a checkbox one

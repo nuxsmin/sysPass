@@ -76,13 +76,13 @@ if ($frmAction == "config") {
         $intAccountCount = $frmAccountCount;
     }
 
-    if ($frmWikiEnabled && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !is_array($frmWikiFilter) )) {
+    if ($frmWikiEnabled && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !$frmWikiFilter )) {
         SP_Common::printXML(_('Faltan parámetros de Wiki'));
     } elseif ($frmWikiEnabled) {
         SP_Config::setValue("wikienabled", 1);
         SP_Config::setValue("wikisearchurl", $frmWikiSearchUrl);
         SP_Config::setValue("wikipageurl", $frmWikiPageUrl);
-        SP_Config::setValue("wikifilter", implode("||", $frmWikiFilter));
+        SP_Config::setValue("wikifilter", $frmWikiFilter);
     } else {
         SP_Config::setValue("wikienabled", 0);
     }
@@ -116,7 +116,7 @@ if ($frmAction == "config") {
         SP_Common::printXML(_('El tamaño máximo de archivo es de 16MB'));
     } 
 
-    SP_Config::setValue("allowed_exts", ( is_array($frmAllowedExts) ) ? implode(",", $frmAllowedExts) : "");
+    SP_Config::setValue("allowed_exts", $frmAllowedExts);
     SP_Config::setValue("account_link", $frmAccountLink);
     SP_Config::setValue("account_count", $frmAccountCount);
     SP_Config::setValue("sitelang", $frmSiteLang);

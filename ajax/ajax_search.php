@@ -45,7 +45,7 @@ $intAccountCount = ( isset($_POST["rpp"]) && $_POST["rpp"] > 0 ) ? (int)$_POST["
 $filesEnabled = SP_Config::getValue('filesenabled');
 $wikiEnabled = SP_Config::getValue('wikienabled');
 $wikiSearchUrl = SP_Config::getValue('wikisearchurl');
-$wikiFilter = explode('||',SP_Config::getValue('wikifilter'));
+$wikiFilter = explode(',',SP_Config::getValue('wikifilter'));
 $wikiPageUrl = SP_Config::getValue('wikipageurl');
 
 $sortKey = SP_Common::parseParams('p', 'skey', 0);

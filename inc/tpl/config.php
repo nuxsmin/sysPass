@@ -46,7 +46,7 @@ $chkWiki = ( SP_Config::getValue('wikienabled') ) ? 'checked="checked"' : '';
 $chkLdap = ( SP_Config::getValue('ldapenabled') ) ? 'checked="checked"' : '';
 $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
 $chkMailRequests = ( SP_Config::getValue('mailrequestsenabled') ) ? 'checked="checked"' : '';
-
+$allowedExts = SP_Config::getValue('allowed_exts');
 ?>        
         
 <div id="title" class="midroundup titleNormal">
@@ -141,24 +141,10 @@ $chkMailRequests = ( SP_Config::getValue('mailrequestsenabled') ) ? 'checked="ch
     <tr>
         <td class="descField">
             <? echo _('Extensiones de archivos permitidas'); ?>
+            <? SP_Common::printHelpButton("config", 22); ?>
         </td>
         <td class="valField">
-            <input type="text" name="add_ext" id="add_ext" maxlength="4" />
-            <img src="imgs/add.png" title="<? echo _('Añadir extensión'); ?>" class="inputImg" id="btnAddExt" OnClick="addSelOption('allowed_exts','add_ext')" />
-            <img src="imgs/delete.png" title="<? echo _('Eliminar extensión'); ?>" class="inputImg" id="btnDelExt" OnClick="delSelOption('allowed_exts')" />
-            <br>
-            <select id="allowed_exts" name="allowed_exts[]" multiple="multiple" size="4">
-            <?
-                if ( SP_Config::getValue('allowed_exts') ){
-                    $allowed_exts = explode(",", SP_Config::getValue('allowed_exts'));
-                    sort($allowed_exts, SORT_STRING);
-
-                    foreach ( $allowed_exts as $extAllow ){
-                        echo '<option value="'.$extAllow.'" selected>'.$extAllow.'</option>';
-                    }
-                }
-            ?>
-            </select>
+            <input type="text" name="allowed_exts" id="allowed_exts" value="<? echo $allowedExts; ?>"/>
         </td>
     </tr>
     <tr>
@@ -230,20 +216,17 @@ $chkMailRequests = ( SP_Config::getValue('mailrequestsenabled') ) ? 'checked="ch
             <? SP_Common::printHelpButton("config", 10); ?>
         </td>
         <td class="valField">
-            <input type="text" name="add_wikifilter" id="add_wikifilter" maxlength="128" />
-            <img src="imgs/add.png" title="<? echo _('Añadir filtro'); ?>" class="inputImg" id="btnAddWikifilter" OnClick="addSelOption('wikifilter','add_wikifilter')" />
-            <img src="imgs/delete.png" title="<? echo _('Eliminar filtro'); ?>" class="inputImg" id="btnDelWikifilter" OnClick="delSelOption('wikifilter')" />
-            <br>
-            <select id="wikifilter" name="wikifilter[]" MULTIPLE="multiple" size="3">
+            <input type="text" name="wikifilter" id="wikifilter" value="<? echo SP_Config::getValue('wikifilter'); ?>" />
+            <!--<select id="wikifilter" name="wikifilter[]" MULTIPLE="multiple" size="3">-->
             <? 
-            if ( SP_Config::getValue('wikifilter') ){
-                $wikifilter = explode("||", SP_Config::getValue('wikifilter'));
-                sort($wikifilter, SORT_STRING);
-
-                foreach ( $wikifilter as $filter ){
-                    echo '<OPTION value="'.$filter.'">'.$filter.'</OPTION>';
-                }
-            }
+//            if ( SP_Config::getValue('wikifilter') ){
+//                $wikifilter = explode("||", SP_Config::getValue('wikifilter'));
+//                sort($wikifilter, SORT_STRING);
+//
+//                foreach ( $wikifilter as $filter ){
+//                    echo '<OPTION value="'.$filter.'">'.$filter.'</OPTION>';
+//                }
+//            }
             ?>
             </select>
         </td>
@@ -395,6 +378,44 @@ $chkMailRequests = ( SP_Config::getValue('mailrequestsenabled') ) ? 'checked="ch
             $(this).children().html('OFF');
         } else{
             $(this).children().html('ON');
+        }
+    });
+    $('#allowed_exts').tagsInput({
+        'width':'350px',
+        'defaultText':'<? echo _('Añadir extensión'); ?>',
+        'defaultRemoveText':'<? echo _('Eliminar extensión'); ?>',
+        'removeWithBackspace' : false,
+        'tagsToUpper' : true,
+        'maxChars' : 4,
+        'onAddTag' : function(){
+            // Fix scrolling to bottom
+            var $tagsbox = $(this).next();
+            $tagsbox.animate({scrollTop: $tagsbox.height()});
+        },
+        'onRemoveTag' : function(){
+            // Fix tooltip on refresh the tags list
+            $(this + '[title]').powerTip(powertipOptions);
+        }
+    });
+    $('#wikifilter').tagsInput({
+        'width':'350px',
+        'height':'50px',
+        'defaultText':'<? echo _('Añadir filtro'); ?>',
+        'defaultRemoveText':'<? echo _('Eliminar filtro'); ?>',
+        'removeWithBackspace' : false,
+        onAddTag : function(){
+            // Fix scrolling to bottom
+            var $tagsbox = $(this).next();
+            $tagsbox.animate({scrollTop: $tagsbox.height()});
+        },
+        onRemoveTag : function(){
+            // Fix tooltip on refresh the tags list
+            $(this + '[title]').powerTip(powertipOptions);
+        },
+        onChange : function(){
+            var $tagsbox = $(this).next();
+            last_width = $tagsbox.find("span:last").width() + 10;
+            $tagsbox.find(".tag:last").css('width', last_width); 
         }
     });
 </script>

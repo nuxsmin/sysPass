@@ -75,11 +75,11 @@ $activeTab = $data['active'];
                 <? echo _('Confirmar'); ?>
             </td>
             <td class="valField">
-                <label for="chkmigrate"><? echo _('NO'); ?></label>
-                <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox" />
-                <br>
                 <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
                 <? echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
+                <br><br>
+                <label for="chkmigrate"><? echo _('NO'); ?></label>
+                <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox" />
             </td>
         </tr>
     </table>

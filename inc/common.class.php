@@ -189,9 +189,10 @@ class SP_Common {
         $msgHelp[19] = _('Muestra información relativa a la configuración de la aplicación y rendimiento');
         $msgHelp[20] = _('Guarda las acciones realizadas en la aplicación');
         $msgHelp[21] = _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)');
+        $msgHelp[22] = _('Extensiones de máximo 4 caracteres.') . "<br><br>" . _('Escribir extensión y pulsar intro para añadir.');
 
         if (array_key_exists($id, $msgHelp)) {
-            echo '<IMG SRC="imgs/help.png" TITLE="' . $msgHelp[$id] . '" CLASS="inputImgMini" />';
+            echo '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';
         }
     }
 

@@ -305,6 +305,7 @@ class SP_Html {
             array("href" => "css/chosen.css", "media" => "screen"),
             array("href" => "css/alertify.core.css", "media" => "screen"),
             array("href" => "css/alertify.default.css", "media" => "screen"),
+            array("href" => "css/jquery.tagsinput.css", "media" => "screen"),
             array("href" => "js/fancybox/jquery.fancybox.css", "media" => "screen"),
             array("href" => "css/styles.css", "media" => ""));
 
@@ -330,6 +331,7 @@ class SP_Html {
             array("src" => "js/alertify.min.js", "params" => ""),
             array("src" => "js/jquery.fileDownload.js", "params" => ""),
             array("src" => "js/jquery.filedrop.js", "params" => ""),
+            array("src" => "js/jquery.tagsinput.js", "params" => ""),
             array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . base64_encode(SP_Init::$WEBROOT)));
 
         foreach ($jsProp as $js) {
