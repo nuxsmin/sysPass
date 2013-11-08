@@ -75,7 +75,8 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
                 <? SP_Common::printHelpButton("config", 16); ?>
             </td>
             <td class="valField">
-                <input type="checkbox" class="checkbox" name="chkNoAccountChange" />
+                <label for="chkNoAccountChange"><? echo _('NO'); ?></label>
+                <input type="checkbox" class="checkbox" name="chkNoAccountChange" id="chkNoAccountChange" />
             </td>
         </tr>
         <tr>
@@ -92,7 +93,8 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
                 <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
                 <? echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                 <br>
-                <input type="checkbox" class="checkbox" name="confirmPassChange" value="1" />
+                <label for="confirmPassChange"><? echo _('NO'); ?></label>
+                <input type="checkbox" class="checkbox" name="confirmPassChange"  id="confirmPassChange" />
             </td>
         </tr>
     </table>
@@ -108,3 +110,15 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
     </ul>
 </div>
 
+<script>
+    $('#frmCrypt .checkbox').button();
+    $('#frmCrypt .ui-button').click(function(){
+        // El cambio de clase se produce durante el evento de click
+        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+        if ( $(this).hasClass('ui-state-active') ){
+            $(this).children().html('<? echo _('NO'); ?>');
+        } else{
+            $(this).children().html('<? echo _('SI'); ?>');
+        }
+    });
+</script>

@@ -63,7 +63,9 @@ $message['text'][] = _('Descripción') . ': ' . $frmDescription;
 
 $mailto = implode(',', $recipients);
 
-if ($mailto && SP_Common::sendEmail($message, $mailto)) {
+if ($mailto 
+        && SP_Config::getValue('mailrequestsenabled', FALSE) 
+        && SP_Common::sendEmail($message, $mailto)) {
     SP_Common::printJSON(_('Solicitud enviada'), 0);
 }
 

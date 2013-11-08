@@ -401,7 +401,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
             <li>
                 <img src="imgs/edit.png" title="<? echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit','accview',<? echo $account->accountId; ?>)" />
             </li>
-            <? elseif ( ! $showEdit && $action == 'accview' && SP_Config::getValue('mailenabled', FALSE) ): ?>
+            <? elseif ( ! $showEdit && $action == 'accview' && SP_Config::getValue('mailrequestsenabled', FALSE) ): ?>
             <li>
                 <img src="imgs/request.png" title="<? echo _('Solicitar Modificación'); ?>" class="inputImg" OnClick="doAction('accrequest','accview',<? echo $account->accountId; ?>)" />
             </li>

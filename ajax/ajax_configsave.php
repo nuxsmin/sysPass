@@ -68,6 +68,7 @@ if ($frmAction == "config") {
     $frmMailEnabled = SP_Common::parseParams('p', 'mailenabled', 0, FALSE, 1);
     $frmMailServer = SP_Common::parseParams('p', 'mailserver');
     $frmMailFrom = SP_Common::parseParams('p', 'mailfrom');
+    $frmMailRequestsEnabled = SP_Common::parseParams('p', 'mailrequestsenabled', 0, FALSE, 1);
 
     if ($frmAccountCount == "all") {
         $intAccountCount = 99;
@@ -103,10 +104,12 @@ if ($frmAction == "config") {
         SP_Common::printXML(_('Faltan parámetros de Correo'));
     } elseif ($frmMailEnabled) {
         SP_Config::setValue("mailenabled", 1);
+        SP_Config::setValue("mailrequestsenabled", $frmMailRequestsEnabled);
         SP_Config::setValue("mailserver", $frmMailServer);
         SP_Config::setValue("mailfrom", $frmMailFrom);
     } else {
         SP_Config::setValue("mailenabled", 0);
+        SP_Config::setValue("mailrequestsenabled", 0);
     }
 
     if ($frmAllowedSize > 16384) {

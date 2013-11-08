@@ -45,6 +45,7 @@ $chkFiles = ( SP_Config::getValue('filesenabled') ) ? 'checked="checked"' : '';
 $chkWiki = ( SP_Config::getValue('wikienabled') ) ? 'checked="checked"' : '';
 $chkLdap = ( SP_Config::getValue('ldapenabled') ) ? 'checked="checked"' : '';
 $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
+$chkMailRequests = ( SP_Config::getValue('mailrequestsenabled') ) ? 'checked="checked"' : '';
 
 ?>        
         
@@ -82,7 +83,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 20); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="logenabled" class="checkbox" <? echo $chkLog.' '.$txtDisabled; ?> />
+            <label for="logenabled"><? echo ($chkLog) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="logenabled" id="logenabled" class="checkbox" <? echo $chkLog.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -91,7 +93,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 19); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="debug" class="checkbox" <? echo $chkDebug.' '.$txtDisabled; ?> />
+            <label for="debug"><? echo ($chkDebug) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="debug" id="debug" class="checkbox" <? echo $chkDebug.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -100,7 +103,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 18); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="maintenance" class="checkbox" <? echo $chkMaintenance.' '.$txtDisabled; ?> />           
+            <label for="maintenance"><? echo ($chkMaintenance) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="maintenance" id="maintenance"  class="checkbox" <? echo $chkMaintenance.' '.$txtDisabled; ?> />           
         </td>
     </tr>
     <tr>
@@ -109,7 +113,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 21); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="updates" class="checkbox" <? echo $chkUpdates.' '.$txtDisabled; ?> />
+            <label for="updates"><? echo ($chkUpdates) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="updates" id="updates" class="checkbox" <? echo $chkUpdates.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -118,7 +123,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 3); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="account_link" class="checkbox" <? echo $chkAccountLink; ?> />
+            <label for="account_link"><? echo ($chkAccountLink) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="account_link" id="account_link" class="checkbox" <? echo $chkAccountLink; ?> />
         </td>
     </tr>
     <tr>
@@ -127,7 +133,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 5); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="filesenabled" class="checkbox" <? echo $chkFiles.' '.$txtDisabled; ?> />
+            <label for="filesenabled"><? echo ($chkFiles) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="filesenabled" id="filesenabled" class="checkbox" <? echo $chkFiles.' '.$txtDisabled; ?> />
         </td>
 
     </tr>
@@ -195,7 +202,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 7); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="wikienabled" class="checkbox" <? echo $chkWiki.' '.$txtDisabled; ?> />
+            <label for="wikienabled"><? echo ($chkWiki) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="wikienabled" id="wikienabled" class="checkbox" <? echo $chkWiki.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -256,7 +264,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? SP_Common::printHelpButton("config", 11); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="ldapenabled" class="checkbox" <? echo $chkLdap.' '.$txtDisabled; ?> />
+            <label for="ldapenabled"><? echo ($chkLdap) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="ldapenabled" id="ldapenabled" class="checkbox" <? echo $chkLdap.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -324,7 +333,8 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <? echo _('Habilitar notificaciones de correo'); ?>
         </td>
         <td class="valField">
-            <input type="checkbox" name="mailenabled" class="checkbox" <? echo $chkMail.' '.$txtDisabled; ?> />
+            <label for="mailenabled"><? echo ($chkMail) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="mailenabled" id="mailenabled" class="checkbox" <? echo $chkMail.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -341,6 +351,15 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
         </td>
         <td class="valField">
             <input type="text" name="mailfrom" size="20" value="<? echo SP_Config::getValue('mailfrom'); ?>" maxlength="128" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <? echo _('Habilitar peticiones por correo'); ?>
+        </td>
+        <td class="valField">
+            <label for="mailrequestsenabled"><? echo ($chkMailRequests) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="mailrequestsenabled" id="mailrequestsenabled" class="checkbox" <? echo $chkMailRequests.' '.$txtDisabled; ?> />
         </td>
     </tr>
 </table> 
@@ -368,4 +387,14 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
     $("#sel-sitelang").chosen({disable_search : true});
     $("#sel-account_link").chosen({disable_search : true});
     $("#sel-account_count").chosen({disable_search : true});
+    $('#frmConfig .checkbox').button();
+    $('#frmConfig .ui-button').click(function(){
+        // El cambio de clase se produce durante el evento de click
+        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+        if ( $(this).hasClass('ui-state-active') ){
+            $(this).children().html('OFF');
+        } else{
+            $(this).children().html('ON');
+        }
+    });
 </script>

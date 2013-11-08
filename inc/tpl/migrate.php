@@ -75,7 +75,8 @@ $activeTab = $data['active'];
                 <? echo _('Confirmar'); ?>
             </td>
             <td class="valField">
-                <input type="checkbox" name="chkmigrate" class="checkbox" />
+                <label for="chkmigrate"><? echo _('NO'); ?></label>
+                <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox" />
                 <br>
                 <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
                 <? echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
@@ -95,3 +96,16 @@ $activeTab = $data['active'];
         </li>
     </ul>
 </div>
+
+<script>
+    $('#frmMigrate .checkbox').button();
+    $('#frmMigrate .ui-button').click(function(){
+        // El cambio de clase se produce durante el evento de click
+        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+        if ( $(this).hasClass('ui-state-active') ){
+            $(this).children().html('<? echo _('NO'); ?>');
+        } else{
+            $(this).children().html('<? echo _('SI'); ?>');
+        }
+    });
+</script>
