@@ -29,7 +29,7 @@ include_once (APP_ROOT."/inc/init.php");
 SP_Util::checkReferer('GET');
 
 if ( ! SP_Init::isLoggedIn() ){
-    return;
+    SP_Util::logout();
 }
 
 $userId = SP_Common::parseParams('g', 'usrid', FALSE);

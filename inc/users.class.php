@@ -98,6 +98,24 @@ class SP_Users {
     }
 
     /**
+     * @brief Obtener el email de un usuario
+     * @param int $userId con el Id del usuario
+     * @return string con el email del usuario
+     */
+    public static function getUserEmail($userId) {
+        $query = "SELECT user_email FROM usrData "
+                . "WHERE user_id = " . (int) $userId . " "
+                . "AND user_email IS NOT NULL LIMIT 1";
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === FALSE || !is_array($queryRes)) {
+            return FALSE;
+        }
+
+        return $queryRes[0]->user_email;
+    }
+    
+    /**
      * @brief Obtener los detalles de una consulta para generar una tabla
      * @return bool
      */

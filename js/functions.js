@@ -366,6 +366,37 @@ function delAccount(id,action,sk){
     });
 }
 
+// Función para enviar una solicitud de modificación de cuenta
+function sendRequest(){
+    var data = $('#frmRequestModify').serialize();
+    
+    $.fancybox.showLoading();
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: APP_ROOT + '/ajax/ajax_sendRequest.php',
+        data: data,
+        success: function(json){
+            var status = json.status;
+            var description = json.description;
+
+            if ( status === 0 ){
+                resMsg("ok", description);
+                doAction('accsearch');
+            } else if ( status === 10){
+                resMsg("error", description);
+                doLogout();
+            } else {
+                resMsg("error", description);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown){ 
+            resMsg("error", 'Oops...' + LANG[0]);
+        },
+        complete: function(){$.fancybox.hideLoading();}
+    });
+}
+
 // Función para guardar la configuración
 function configMgmt(action){
     var data, url, txt, activeTab;
@@ -558,7 +589,7 @@ function dropFile(accountId, sk, maxsize){
 
 // Función para mostrar los registros de usuarios y grupos
 function usersData(id, type, sk, active, view){
-    var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active, 'view' : view};
+    var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active, 'view' : view, 'is_ajax' : 1};
     var url = APP_ROOT + '/ajax/ajax_usersMgmt.php';
 
     $.fancybox.showLoading();
@@ -654,7 +685,7 @@ $.ajax({
 
 // Función para mostrar el formulario para cambio de clave de usuario
 function usrUpdPass(id,usrlogin){  
-    var data = {'usrid': id, 'usrlogin': usrlogin};
+    var data = {'usrid': id, 'usrlogin': usrlogin, 'is_ajax' : 1};
     
     $.fancybox.showLoading();
 

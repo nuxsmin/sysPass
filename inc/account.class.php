@@ -287,6 +287,23 @@ class SP_Account {
         $this->accountUserGroupName = $account->usergroup_name;
         $this->accountUserEditName = $account->user_editName;
     }
+    
+    /**
+     * @brief Obtener los datos de usuario y modificador de una cuenta
+     * @param int $accountId con el Id de la cuenta
+     * @return object con el id de usuario y modificador.
+     */ 
+    public static function getAccountRequestData($accountId){
+        $query = "SELECT account_userId, account_userEditId, account_name, customer_name
+                    FROM accounts
+                    LEFT JOIN customers ON account_customerId = customer_id
+                    WHERE account_id = ".(int)$accountId." LIMIT 1";
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ( $queryRes === FALSE || ! is_array($queryRes) ) return FALSE;
+
+        return $queryRes[0];
+    }
 
     /**
      * @brief Actualiza los datos de una cuenta en la BBDD

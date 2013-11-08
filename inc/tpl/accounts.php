@@ -253,7 +253,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
         <tr>
             <td class="descField"><? echo _('Notas'); ?></td>
             <td class="valField">
-                <textarea name="notice" type="text" cols="30" rows="5" placeholder="<? echo _('Notas sobre la cuenta'); ?>" maxlength="1000"><? echo $account->accountNotes; ?></textarea>
+                <textarea name="notice" cols="30" rows="5" placeholder="<? echo _('Notas sobre la cuenta'); ?>" maxlength="1000" <? echo ( ! $showform ) ? 'READONLY' : ''; ?> ><? echo $account->accountNotes; ?></textarea>
             </td>
         </tr>
         
@@ -396,13 +396,17 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                 <img src="imgs/key.png" title="<? echo _('Modificar Clave de Cuenta'); ?>" class="inputImg" OnClick="doAction('acceditpass', '<? echo $action; ?>',<? echo $account->accountId; ?>)"/>
             </li>
             <? endif; ?>
-
-             <? if ( $showEdit ): ?>
-                <li>
-                    <img src="imgs/edit.png" title="<? echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit','accview',<? echo $account->accountId; ?>)" />
-                </li>
-            <? endif; ?>
             
+            <? if ( $showEdit ): ?>
+            <li>
+                <img src="imgs/edit.png" title="<? echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit','accview',<? echo $account->accountId; ?>)" />
+            </li>
+            <? elseif ( ! $showEdit && $action == 'accview' && SP_Config::getValue('mailenabled', FALSE) ): ?>
+            <li>
+                <img src="imgs/request.png" title="<? echo _('Solicitar Modificación'); ?>" class="inputImg" OnClick="doAction('accrequest','accview',<? echo $account->accountId; ?>)" />
+            </li>
+            <? endif; ?>
+
             <? if ( $showDelete ): ?>
             <li>
                 <img src="imgs/delete.png" title="<? echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<? echo $account->accountId; ?>,3,'<? echo $skey; ?>');" />

@@ -60,12 +60,12 @@ class SP_Common {
     /**
      * @brief Enviar un email
      * @param array $message con el nombre de la accióm y el texto del mensaje
-     * @param string $strTo con el destinatario
+     * @param string $mailTo con el destinatario
      * @return bool
      * @todo Autentificación
      * @todo Permitir HTML
      */ 
-    public static function sendEmail($message, $strTo = "") {
+    public static function sendEmail($message, $mailTo = "") {
 
         if (SP_Config::getValue('mailenabled', 0) === 0) {
             return FALSE;
@@ -76,10 +76,10 @@ class SP_Common {
         }
 
         $info = SP_Html::getAppInfo();
-        $strTo = isset($strTo) ? $strTo : SP_Config::getValue('mailfrom');
-
+        $replyTo = SP_Config::getValue('mailfrom');
+        
         $strFrom = SP_Config::getValue('mailfrom');
-        $strAsunto = _('Aviso') . ' ' . $info['appname'] . ' - ' . $message['action'];
+        $mailSubject = _('Aviso') . ' ' . $info['appname'] . ' - ' . $message['action'];
 
         // Para enviar un correo HTML mail, la cabecera Content-type debe fijarse
         $headers[] = 'MIME-Version: 1.0';
@@ -90,25 +90,25 @@ class SP_Common {
         // Cabeceras adicionales
         //$strHead .= "To: $strDestinatario \r\n";
         $headers[] = "From: " . $info['appname'] . " <$strFrom>";
-        $headers[] = "Reply-To: $strTo";
+        $headers[] = "Reply-To: $replyTo";
         $headers[] = "Cc: $strFrom";
 
         $mailbody = _('Acción') . ": " . $message['action'] . "\r\n";
         $mailbody .= _('Realizado por') . ": " . $_SESSION["ulogin"] . "\r\n";
         $mailbody .= (is_array($message['text'])) ? implode("\r\n",$message['text']) : '';
 
-        $header = implode("\r\n", $headers);
+        $mailHeader = implode("\r\n", $headers);
         
         $log['action'] = _('Enviar Email');
                 
         // Enviar correo
-        if ( mail($strTo, $strAsunto, $mailbody, $header) ){
+        if ( mail($mailTo, $mailSubject, $mailbody, $mailHeader) ){
             $log['text'][]= _('Correo enviado');
-            $log['text'][] = _('Destinatario').": $strTo";
+            $log['text'][] = _('Destinatario').": $mailTo";
             $log['text'][] = _('CC').": $strFrom";
         } else{
             $log['text'][] = _('Error al enviar correo');
-            $log['text'][] = _('Destinatario').": $strTo"; 
+            $log['text'][] = _('Destinatario').": $mailTo"; 
             $log['text'][] = _('CC').": $strFrom";
         }
         
@@ -116,7 +116,7 @@ class SP_Common {
     }
 
     /**
-     * @brief Devuelve un XML con el estado y el mensaje
+     * @brief Devuelve una respuesta en formato XML con el estado y el mensaje
      * @param string $description mensaje a devolver
      * @param int $status devuelve el estado
      * @return string documento XML
@@ -126,9 +126,6 @@ class SP_Common {
             return FALSE;
         }
 
-        // Header para el tipo XML
-        header("Content-Type: application/xml");
-
         $arrStrFrom = array("&", "<", ">", "\"", "\'");
         $arrStrTo = array("&amp;", "&lt;", "&gt;", "&quot;", "&apos;");
 
@@ -136,10 +133,33 @@ class SP_Common {
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         $xml .= "<root>\n<status>" . $status . "</status>\n <description>" . $cleanDescription . "</description>\n</root>";
-        echo $xml;
-        exit();
+        
+        header("Content-Type: application/xml");
+        exit($xml);
     }
 
+    /**
+     * @brief Devuelve una respuesta en formato JSON con el estado y el mensaje
+     * @param string $description mensaje a devolver
+     * @param int $status devuelve el estado
+     * @return string respuesta JSON
+     */
+    public static function printJSON($description, $status = 1) {
+        if (!is_string($description)) {
+            return FALSE;
+        }
+
+        $arrStrFrom = array("&", "<", ">", "\"", "\'");
+        $arrStrTo = array("&amp;", "&lt;", "&gt;", "&quot;", "&apos;");
+
+        $cleanDescription = str_replace($arrStrFrom, $arrStrTo, $description);
+
+        $json = array('status' => $status, 'description' => $cleanDescription);
+        
+        header('Content-type: application/json');
+        exit(json_encode($json));
+    }
+    
     /**
      * @brief Devuelve un icono de ayuda con el mensaje
      * @param int $type tipo de mensaje
