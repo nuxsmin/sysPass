@@ -35,7 +35,7 @@ if (!SP_Init::isLoggedIn()) {
 if ( SP_Common::parseParams('p', 'action', '', TRUE) ) {
     $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
     $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);
-    $lastAction = $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastaction', 'accsearch');
+    $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastaction', 'accsearch');
 } else {
     die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
 }

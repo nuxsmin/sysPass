@@ -47,7 +47,7 @@ $(document).ready(function(){
 });
 
 function doAction(action, lastAction, id){
-    var data = {'action' : action,'lastAction': lastAction,'id': id, is_ajax: 1};
+    var data = {'action' : action,'lastaction': lastAction,'id': id, is_ajax: 1};
     
     $.fancybox.showLoading();
 

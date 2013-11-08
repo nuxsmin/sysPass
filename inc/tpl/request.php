@@ -26,7 +26,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 $account = new SP_Account;
 $account->accountId = $data['id'];
-$account->lastAction = $data['lastaction'];
 $account->getAccount();
 
 ?>
@@ -64,7 +63,7 @@ $account->getAccount();
 <div class="action">
     <ul>
         <li>
-            <img SRC="imgs/back.png" title="<? echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<? echo $account->lastAction; ?>', 'accview',<? echo $account->accountId; ?>)" />
+            <img SRC="imgs/back.png" title="<? echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<? echo $data['lastaction']; ?>', 'accsearch',<? echo $account->accountId; ?>)" />
         </li>
         <li>
             <img SRC="imgs/check.png" title="<? echo _('Enviar'); ?>" class="inputImg" id="btnSave" OnClick="sendRequest();" />
