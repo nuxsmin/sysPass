@@ -81,16 +81,25 @@ function scrollUp(){
 
 // Función para limpiar un formulario
 function Clear(id, search){
-    $("#" + id).resetForm();
-    
-    if ( search == 1 ){
+    if ( search === 1 ){
         document.frmSearch.search.value = "";
         document.frmSearch.customer.selectedIndex = 0;
         document.frmSearch.category.selectedIndex = 0;
         $('#frmSearch input[name="start"]').val(0);
         $('#frmSearch input[name="skey"]').val(0);
-        $('#frmSearch input[name="sorder"]').val('ASC');
+        $('#frmSearch input[name="sorder"]').val(0);
+        $(".select-box").val('').trigger("chosen:updated");
     }
+}
+
+// Funcion para crear un desplegable con opciones
+function mkChosen(options){
+    $('#' + options.id).chosen({
+        allow_single_deselect: true,
+        placeholder_text_single: options.placeholder, 
+        disable_search_threshold: 10,
+        no_results_text: options.noresults
+    });
 }
 
 // Función para realizar una búsqueda

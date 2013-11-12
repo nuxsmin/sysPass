@@ -219,8 +219,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #container #content {
     float: left;
     width: 85%;
-    min-height: 600px;
+    min-height: 500px;
     margin: 50px auto;
+    margin-bottom: 80px;
 }
 
 #content TD.descField, #fancyContainer TD.descField{
@@ -238,10 +239,10 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content #resBuscar{ width: 100%; margin-top: 20px;}
 #content #resBuscar IMG {vertical-align:middle;}
-#content #resBuscar #data-search, 
+/*#content #resBuscar #data-search, 
 #content .data-rows,
 #content #resEventLog #resSearch
-{overflow-y: auto; max-height: 400px}
+{overflow-y: auto; max-height: 400px}*/
 
 #content #pageNav {
     float: left;
@@ -620,7 +621,8 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 .hide{display: none !important;}
 
-.btnChecks .ui-button{width: 150px; margin: 5px !important; }
+.btnChecks {border-bottom: 1px solid #c9c9c9; padding-bottom: 10px;}
+.btnChecks .ui-button{width: 150px; margin: 5px !important;}
 
 .shadow{
     box-shadow: 3px 3px 6px -3px #d9d9d9;
@@ -697,6 +699,13 @@ A:focus {text-decoration: none;	color: #FF0000;}
 }
 
 .ui-autocomplete, .ui-menu-item{z-index: 8050;} /* Fix for fancybox z-index*/
+
+.ui-buttonset .ui-state-active{
+  background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+  border: 1px solid #AAAAAA;
+  color: #212121;
+  font-weight: normal;
+}
 
 #passLevel { margin-left: 10px; padding: 3px 15px;}
 #passLevel.strongest, #passLevel.strongest:hover { background-color: #ecfde4 !important; color: green; font-weight: bold; border: #dbfdcb 1px solid;}

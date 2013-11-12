@@ -923,11 +923,11 @@ class SP_Users {
     public function updateUserLDAP() {
         $passdata = $this->makeUserPass();
 
-        $query = "UPDATE usrData SET 
-                    user_pass = '" . $passdata['pass'] . "',
-                    user_hashSalt = '" . $passdata['salt'] . "',
-                    user_lastUpdate = NOW()
-                    WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
+        $query = "UPDATE usrData SET "
+                . "user_pass = '" . $passdata['pass'] . "',"
+                . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_lastUpdate = NOW() "
+                . "WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -957,12 +957,13 @@ class SP_Users {
     }
 
     /**
-     * @brief Actualiza el último inici de sesión del usuario en la BBDD
+     * @brief Actualiza el último inicio de sesión del usuario en la BBDD
      * @return bool
      */
     private function setUserLastLogin() {
         $query = "UPDATE usrData SET "
-                . "user_lastLogin = NOW() "
+                . "user_lastLogin = NOW(), "
+                . "user_count = user_count + 1 "
                 . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {

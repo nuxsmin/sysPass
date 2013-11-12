@@ -187,6 +187,8 @@ class SP_Account {
         $_SESSION["accountSearchCategory"] = $searchFilter["categoryId"];
         $_SESSION["accountSearchOrder"] = $searchFilter["txtOrder"];
         $_SESSION["accountSearchKey"] = $searchFilter["keyId"];
+        $_SESSION["accountSearchStart"] = $searchFilter["limitStart"];
+        $_SESSION["accountSearchLimit"] = $searchFilter["limitCount"];
         
         return $queryRes;
     }

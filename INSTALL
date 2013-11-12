@@ -56,6 +56,7 @@ Cambiar el propietario del directorio 'sysPass/config'.
 Ha de coincidir con el usuario del servidor web:
 
     # chown www-data /var/www/sysPass/config
+    # chmod 750 /var/www/sysPass/config
 
 Cambiar el propietario del directorio 'sysPass/backup':
 

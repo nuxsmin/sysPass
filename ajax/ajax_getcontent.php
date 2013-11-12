@@ -302,6 +302,6 @@ if ( isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug') ) {
 // Se comprueba si hay actualizaciones.
 // Es necesario que se haga al final de obtener el contenido ya que la 
 // consulta ajax detiene al resto si se ejecuta antes
-if ( $_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 ){
+if ( $_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 && ! $_SESSION["UPDATED"] ){
     echo '<script>checkUpds();</script>';
 }

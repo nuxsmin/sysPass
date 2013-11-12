@@ -1,3 +1,12 @@
+=== ** v1.0.3 ** ===
+
+* [BUG] Corregido fallo al guardar filtro de búsqueda en la sesión.
+* [BUG] Corregido fallo al resetear campos de búsqueda.
+* [MOD] En el historial de una cuenta se muestra el desplegable para seleccionar otra fecha.
+* [MOD] Eliminada barra de scroll en resultado de búsqueda.
+* [MOD] Mejor visibilidad en botones de activación de opciones de usuarios y perfiles.
+* [MOD] Mejora en búsqueda de actualizaciones.
+
 === ** v1.0.2 ** ===
 
 * [BUG] Corregido el resultado de la búsqueda con registros "duplicados" para las cuentas con varios grupos secundarios.
@@ -137,6 +146,15 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.3 ** ===
+
+* [BUG] Fixed error on saving search filters in session.
+* [BUG] Fixed error on resetting search filters.
+* [MOD] On account history view the date select is now visible for selecting another date.
+* [MOD] Removed scroll bar on search results.
+* [MOD] Better visibility on options activation buttons in users and profiles.
+* [MOD] Improvement on searching for updates.
 
 === ** v1.0.2 ** ===
 
