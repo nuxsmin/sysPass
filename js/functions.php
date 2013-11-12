@@ -23,16 +23,23 @@
 *
 */
 
-Header("content-type: application/x-javascript");
+$offset = 3600 * 24;
+$expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+
+header("content-type: application/x-javascript");
+header($expire);
+header('Cache-Control: max-age=3600, must-revalidate');
 
 define('APP_ROOT', '..');
 
 if ( isset($_GET["l"]) && isset($_GET["r"]) ){
     $appLang = strtolower($_GET["l"]);
-    $appRoot = base64_decode($_GET["r"]);
-}else{
+    $appRoot = base64_decode(urldecode($_GET["r"]));
+} else{
     return;
 }
+
+$action = ( isset($_GET['a']) ) ? $_GET['a'] : '';
 
 $locale= array(
     "es_es" => array('Ha ocurrido un error en la consulta',
@@ -100,9 +107,27 @@ foreach ( $locale[$appLang] as $langIndex => $langDesc ){
     $arrJsLang[] = "'".$langDesc."'";
 }
 
+if ( $action === 'min' ){
+    $js_files = array(
+        array("src" => "jquery.js", "params" => ""),
+        array("src" => "jquery.placeholder.js", "params" => ""),
+        array("src" => "jquery-ui.js", "params" => ""),
+        array("src" => "fancybox/jquery.fancybox.pack.js", "params" => ""),
+        array("src" => "jquery.powertip.min.js", "params" => ""),
+        array("src" => "chosen.jquery.min.js", "params" => ""),
+        array("src" => "alertify.min.js", "params" => ""),
+        array("src" => "jquery.fileDownload.js", "params" => ""),
+        array("src" => "jquery.filedrop.js", "params" => ""),
+        array("src" => "jquery.tagsinput.js", "params" => ""),
+    );
+    
+    foreach ($js_files as $js){
+        echo "\n\n/* File: ".$js['src']." */\n";
+        echo file_get_contents($js['src']);
+    }
+}
+
 echo "// i18n language array from PHP\n";
 echo "var LANG = [".implode(",",$arrJsLang)."]; \n\n";
 echo "var APP_ROOT = '$appRoot';\n";
-
 include_once 'functions.js';
-?>

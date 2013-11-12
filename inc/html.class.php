@@ -131,7 +131,8 @@ class SP_Html {
         self::$htmlPage[] = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
         self::$htmlPage[] = '<link rel="icon" TYPE="image/png" href="' . SP_Init::$WEBROOT . '/imgs/logo.png">';
         self::setCss();
-        self::setJs();
+        self::setJs(TRUE);
+        //self::setJs();
         self::$htmlPage[] = '</head>';
     }
 
@@ -318,8 +319,32 @@ class SP_Html {
      * @brief Establece los enlaces JAVASCRIPT de la página HTML
      * @return none
      */
-    public static function setJs() {
-        $versionParameter = '?v=' . md5(implode(SP_Util::getVersion()));
+    public static function setJs($min = FALSE) {
+        $versionParameter = md5(implode(SP_Util::getVersion()));
+
+        $js_files = self::getJs();
+        
+        if ( $min ){
+            $js = array_slice($js_files, -1, 1);
+            self::$htmlPage[] = '<script type="text/javascript" src="' 
+                    . SP_Init::$WEBROOT . "/" . $js[0]["src"] 
+                    . '?v=' . $versionParameter 
+                    . $js[0]["params"] 
+                    . '&a=min'
+                    . '"></script>';;
+            return;
+        }
+        
+        foreach ($js_files as $js) {
+            self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . '?v=' . $versionParameter . $js["params"] . '"></script>';
+        }
+    }
+
+    /**
+     * @brief Devuelve un array con los archivos JS a incluir
+     * @return array con los archivos js y parámetros
+     */
+    public static function getJs() {
 
         $jsProp = array(
             array("src" => "js/jquery.js", "params" => ""),
@@ -332,13 +357,12 @@ class SP_Html {
             array("src" => "js/jquery.fileDownload.js", "params" => ""),
             array("src" => "js/jquery.filedrop.js", "params" => ""),
             array("src" => "js/jquery.tagsinput.js", "params" => ""),
-            array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . base64_encode(SP_Init::$WEBROOT)));
-
-        foreach ($jsProp as $js) {
-            self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . $versionParameter . $js["params"] . '"></script>';
-        }
+            array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . urlencode(base64_encode(SP_Init::$WEBROOT)))
+        );
+        
+        return $jsProp;
     }
-
+    
     /**
      * @brief Devuelve información sobre la aplicación
      * @return array con las propiedades de la aplicación
@@ -428,4 +452,16 @@ class SP_Html {
         exit();
     }
 
+    private static function minifier($files){
+        if ( !is_array($files) ){
+            return FALSE;
+        }
+        
+        foreach ($files as $file){
+            //$output_min .= file_get_contents($file['src']);
+            include_once SP_Init::$SERVERROOT.'/'.$file['src'];
+        }
+        
+        //return $output_min;
+    }
 }
