@@ -56,46 +56,46 @@ $skey = SP_Common::getSessionKey(TRUE);
     
         <tr>
             <td class="descField">
-                <? echo _('Nueva categoría'); ?>
+                <?php echo _('Nueva categoría'); ?>
             </td>
             <td class="valField">
                 <form OnSubmit="return configMgmt('addcat');" method="post" name="frmAddCategory" id="frmAddCategory">
                     <input type="text" name="categoryName" maxlength="50">
-                    <input type="image" src="imgs/add.png" title="<? echo _('Nueva categoría'); ?>" class="inputImg" id="btnAdd" />
-                    <input type="hidden" name="active" value="<? echo $activeTab ?>" />
+                    <input type="image" src="imgs/add.png" title="<?php echo _('Nueva categoría'); ?>" class="inputImg" id="btnAdd" />
+                    <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
                     <input type="hidden" name="categoryFunction" value="1">
-                    <input type="hidden" name="sk" value="<? echo $skey; ?>">
+                    <input type="hidden" name="sk" value="<?php echo $skey; ?>">
                 </form>
             </td>
         </tr>
     <tr>
         <td class="descField">
-            <? echo _('Modificar categoría'); ?>
+            <?php echo _('Modificar categoría'); ?>
         </td>
         <td  class="valField">
             <form OnSubmit="return configMgmt('editcat');" method="post" name="frmEditCategory" id="frmEditCategory">
-                <? SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp1); ?>
+                <?php SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp1); ?>
                 <br>
                 <br>
-                <input type="hidden" name="active" value="<? echo $activeTab ?>" />
+                <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
                 <input type="text" name="categoryNameNew" maxlength="50" >
                 <input type="hidden" name="categoryFunction" value="2">
-                <input type="hidden" name="sk" value="<? echo $skey; ?>">
-                <input type="image" src="imgs/save.png" title="<? echo _('Guardar'); ?>" class="inputImg" id="btnGuardar" />
+                <input type="hidden" name="sk" value="<?php echo $skey; ?>">
+                <input type="image" src="imgs/save.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnGuardar" />
             </form>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Borrar categoría'); ?>
+            <?php echo _('Borrar categoría'); ?>
         </td>
         <td  class="valField">
             <form OnSubmit="return configMgmt('delcat');" method="post" name="frmDelCategory" id="frmDelCategory">
-                <? SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp2); ?>
-                <input type="hidden" name="active" value="<? echo $activeTab ?>" />
+                <?php SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp2); ?>
+                <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
                 <input type="hidden" name="categoryFunction" value="3">
-                <input type="hidden" name="sk" value="<? echo $skey; ?>">
-                <input type="image" src="imgs/delete.png" title="<? echo _('Borrar categoría'); ?>" class="inputImg" />
+                <input type="hidden" name="sk" value="<?php echo $skey; ?>">
+                <input type="image" src="imgs/delete.png" title="<?php echo _('Borrar categoría'); ?>" class="inputImg" />
             </form>
         </td>
     </tr>
@@ -103,11 +103,11 @@ $skey = SP_Common::getSessionKey(TRUE);
 
 <script>
     $("#sel-edit_categories").chosen({
-        placeholder_text_single: "<? echo _('Seleccionar Categoría'); ?>", 
+        placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>", 
         disable_search_threshold: 10,
-        no_results_text: "<? echo _('Sin resultados'); ?>"});
+        no_results_text: "<?php echo _('Sin resultados'); ?>"});
     $("#sel-del_categories").chosen({
-        placeholder_text_single: "<? echo _('Seleccionar Categoría'); ?>", 
+        placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>", 
         disable_search_threshold: 10,
-        no_results_text: "<? echo _('Sin resultados'); ?>"});
+        no_results_text: "<?php echo _('Sin resultados'); ?>"});
 </script>

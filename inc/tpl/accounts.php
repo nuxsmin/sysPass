@@ -131,20 +131,20 @@ $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
 $skey = SP_Common::getSessionKey(TRUE);
 ?>
 
-<div id="title" class="midroundup <? echo $title['class']; ?>"><? echo $title['name']; ?></div>
-<? if ($showform): ?>
+<div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
+<?php if ($showform): ?>
     <form METHOD="post" name="frmaccount" id="frmAccount">
-<? endif; ?>
-<? if ($account->accountIsHistory): ?>
+<?php endif; ?>
+<?php if ($account->accountIsHistory): ?>
         <table class="data round tblIcon">
-<? else: ?>
+<?php else: ?>
             <table class="data round">
-<? endif; ?>
+<?php endif; ?>
             <tr>
-                <td class="descField"><? echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
-    <? if ($showform): ?>
-                        <input name="name" type="text" placeholder="<? echo _('Nombre de cuenta'); ?>" required maxlength="50" value="<? echo $account->accountName; ?>">
+    <?php if ($showform): ?>
+                        <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required maxlength="50" value="<?php echo $account->accountName; ?>">
             <?
         else:
             echo $account->accountName;
@@ -153,12 +153,12 @@ $skey = SP_Common::getSessionKey(TRUE);
                 </td>
             </tr>
             <tr>
-                <td class="descField"><? echo _('Cliente'); ?></td>
+                <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
-                    <? if ($showform): ?>
-                        <? SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp); ?>
+                    <?php if ($showform): ?>
+                        <?php SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp); ?>
                         <br><br>
-                        <input type="text" name="customer_new" maxlength="50" placeholder="<? echo _('Buscar en desplegable o introducir'); ?>" />
+                        <input type="text" name="customer_new" maxlength="50" placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>" />
     <?
 else:
     echo $account->accountCustomerName;
@@ -167,7 +167,7 @@ endif;
                 </td>
             </tr>
             <tr>
-                <td class="descField"><? echo _('Categoría'); ?></td>
+                <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?
                     if ($showform):
@@ -179,10 +179,10 @@ endif;
                 </td>
             </tr>
             <tr>
-                <td class="descField"><? echo _('URL / IP'); ?></td>
+                <td class="descField"><?php echo _('URL / IP'); ?></td>
                 <td class="valField">
-                    <? if ($showform): ?>
-                        <input name="url" type="text" placeholder="<? echo _('URL o IP de acceso'); ?>" maxlength="255" value="<? echo $account->accountUrl; ?>">
+                    <?php if ($showform): ?>
+                        <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>" maxlength="255" value="<?php echo $account->accountUrl; ?>">
                         <?
                     else:
                         echo $account->accountUrl;
@@ -191,10 +191,10 @@ endif;
                 </td>
             </tr>
             <tr>
-                <td class="descField"><? echo _('Usuario'); ?></td>
+                <td class="descField"><?php echo _('Usuario'); ?></td>
                 <td class="valField">
-                    <? if ($showform): ?>
-                        <input name="login" type="text" placeholder="<? echo _('Usuario de acceso'); ?>" maxlength="50" value="<? echo $account->accountLogin; ?>">
+                    <?php if ($showform): ?>
+                        <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>" maxlength="50" value="<?php echo $account->accountLogin; ?>">
                         <?
                     else:
                         echo $account->accountLogin;
@@ -202,27 +202,27 @@ endif;
                     ?>
                 </td>
             </tr>
-                    <? if ($showPass): ?>
+                    <?php if ($showPass): ?>
                 <tr>
-                    <td class="descField"><? echo _('Clave'); ?></td>
+                    <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
                         <input name="password" type="password" id="txtPass" maxlength="255" OnKeyUp="checkPassLevel(this.value)">
-                        <img src="imgs/user-pass.png" title="<? echo _('La clave generada se mostrará aquí'); ?>" class="inputImg" id="viewPass" />
+                        <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>" class="inputImg" id="viewPass" />
                         &nbsp;&nbsp;
-                        <img src="imgs/genpass.png" title="<? echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11, true, true);" />
+                        <img src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11, true, true);" />
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField"><? echo _('Clave (repetir)'); ?></td>
+                    <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <input name="password2" type="password" maxlength="255">
-                        <span id="passLevel" title="<? echo _('Nivel de fortaleza de la clave'); ?>" ></span>
+                        <span id="passLevel" title="<?php echo _('Nivel de fortaleza de la clave'); ?>" ></span>
                     </td>
                 </tr>
-<? endif; ?>
-<? if ($showform): ?>
+<?php endif; ?>
+<?php if ($showform): ?>
                 <tr>
-                    <td class="descField"><? echo _('Grupos Secundarios'); ?></td>
+                    <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
                     <td class="valField">
                         <select id="selGroups" name="ugroups[]" multiple="multiple" size="5" >
     <?
@@ -240,72 +240,72 @@ endif;
                         </select>
                     </td>
                 </tr>
-                        <? endif; ?>
+                        <?php endif; ?>
             <tr>
-                <td class="descField"><? echo _('Notas'); ?></td>
+                <td class="descField"><?php echo _('Notas'); ?></td>
                 <td class="valField">
-                    <textarea name="notice" type="text" cols="30" rows="5" placeholder="<? echo _('Notas sobre la cuenta'); ?>" maxlength="1000"><? echo $account->accountNotes; ?></textarea>
+                    <textarea name="notice" type="text" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>" maxlength="1000"><?php echo $account->accountNotes; ?></textarea>
                 </td>
             </tr>
 
-            <? if ($showform): ?>
-                <input type="hidden" name="hash" value="<? echo $changesHash; ?>">
-                <input type="hidden" name="next" value="<? echo $nextaction; ?>">
-                <input type="hidden" name="savetyp" value="<? echo $savetype; ?>">
-                <input type="hidden" name="accountid" value="<? echo $account->accountId; ?>" />
-                <input type="hidden" name="sk" value="<? echo $skey; ?>">
+            <?php if ($showform): ?>
+                <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
+                <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
+                <input type="hidden" name="savetyp" value="<?php echo $savetype; ?>">
+                <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>" />
+                <input type="hidden" name="sk" value="<?php echo $skey; ?>">
                 <input type="hidden" name="is_ajax" value="1">
                 </form>
-            <? endif; ?>
+            <?php endif; ?>
 
-<? if ($showFiles): ?>
+<?php if ($showFiles): ?>
                 <tr>
-                    <td class="descField"><? echo _('Archivos'); ?></td>
+                    <td class="descField"><?php echo _('Archivos'); ?></td>
                     <td class="valField">
                         <div id="downFiles"></div>
-                <? if ($account->accountIsHistory): ?>
-                            <script>getFiles(<? echo $account->accountParentId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');</script>
-                <? else: ?>
-                            <script>getFiles(<? echo $account->accountId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');</script>
-        <? if ($action == "accedit"): ?>
+                <?php if ($account->accountIsHistory): ?>
+                            <script>getFiles(<?php echo $account->accountParentId; ?>, <?php echo $filesDelete; ?>, '<?php echo $skey; ?>');</script>
+                <?php else: ?>
+                            <script>getFiles(<?php echo $account->accountId; ?>, <?php echo $filesDelete; ?>, '<?php echo $skey; ?>');</script>
+        <?php if ($action == "accedit"): ?>
                                 <div id="fileUpload">
                                     <form method="post" enctypr="multipart/form-data" action="ajax/ajax_files.php" name="upload_form" id="upload_form">
-                                        <input type="hidden" name="accountId" id="account" value="<? echo $account->accountId; ?>" />
+                                        <input type="hidden" name="accountId" id="account" value="<?php echo $account->accountId; ?>" />
                                         <input type="hidden" name="action" id="action" value="upload" />
-                                        <input type="hidden" name="sk" value="<? echo $skey; ?>">
-                                        <input type="text" id="inFilename" placeholder="<? echo _('Seleccionar archivo'); ?>" />
+                                        <input type="hidden" name="sk" value="<?php echo $skey; ?>">
+                                        <input type="text" id="inFilename" placeholder="<?php echo _('Seleccionar archivo'); ?>" />
                                         <input type="file" id="inFile" name="inFile" OnChange="$('#inFilename').val(this.value);" />
-                                        <img id="btnUpload" src="imgs/upload.png" title="<? echo _('Subir archivo (max. 1 MB)'); ?>" class="inputImg" OnClick="upldFile(<? echo $account->accountId; ?>)" />
+                                        <img id="btnUpload" src="imgs/upload.png" title="<?php echo _('Subir archivo').' (max. '.round(SP_Config::getValue('allowed_size') / 1024,1).' MB)'; ?>" class="inputImg" OnClick="upldFile(<?php echo $account->accountId; ?>)" />
                                         <input type="hidden" name="is_ajax" value="1">
                                     </form>
                                 </div>
-        <? endif; ?>
-    <? endif; ?>
+        <?php endif; ?>
+    <?php endif; ?>
                     </td>
                 </tr>
-<? endif; ?>
+<?php endif; ?>
 
             <!--More info about account details-->
-                    <? if ($showDetails): ?>
+                    <?php if ($showDetails): ?>
                 <tr>
-                    <td class="descField"><? echo _('Visitas'); ?></td>
-                    <td class="valField"><? echo $account->accountNumView . "(" . $account->accountNumViewDecrypt . ")"; ?></td>
+                    <td class="descField"><?php echo _('Visitas'); ?></td>
+                    <td class="valField"><?php echo $account->accountNumView . "(" . $account->accountNumViewDecrypt . ")"; ?></td>
                 </tr>
                 <tr>
-                    <td class="descField"><? echo _('Fecha Alta'); ?></td>
-                    <td class="valField"><? echo $account->accountDateAdd ?></td>
+                    <td class="descField"><?php echo _('Fecha Alta'); ?></td>
+                    <td class="valField"><?php echo $account->accountDateAdd ?></td>
                 </tr>
                 <tr>
-                    <td class="descField"><? echo _('Creador'); ?></td>
-                    <td class="valField"><? echo $account->accountUserName; ?></td>
+                    <td class="descField"><?php echo _('Creador'); ?></td>
+                    <td class="valField"><?php echo $account->accountUserName; ?></td>
                 </tr>
                 <tr>
-                    <td class="descField"><? echo _('Grupo Principal'); ?></td>
-                    <td class="valField"><? echo $account->accountUserGroupName; ?></td>
+                    <td class="descField"><?php echo _('Grupo Principal'); ?></td>
+                    <td class="valField"><?php echo $account->accountUserGroupName; ?></td>
                 </tr>
-    <? if (count($accountGroups) > 0): ?>
+    <?php if (count($accountGroups) > 0): ?>
                     <tr>
-                        <td class="descField"><? echo _('Grupos Secundarios'); ?></td>
+                        <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
                         <td class="valField">
         <?
         foreach (SP_Account::getSecGroups() as $groupName => $groupId) {
@@ -319,21 +319,21 @@ endif;
         ?>
                         </td>
                     </tr>
-                        <? endif; ?>
-                        <? if ($isModified): ?>
+                        <?php endif; ?>
+                        <?php if ($isModified): ?>
                     <tr>
-                        <td class="descField"><? echo _('Fecha Edición'); ?></td>
-                        <td class="valField"><? echo $account->accountDateEdit; ?></td></tr>
+                        <td class="descField"><?php echo _('Fecha Edición'); ?></td>
+                        <td class="valField"><?php echo $account->accountDateEdit; ?></td></tr>
                     <tr>
-                        <td class="descField"><? echo _('Editor'); ?></td>
-                        <td class="valField"><? echo $account->accountUserEditName; ?></td>
+                        <td class="descField"><?php echo _('Editor'); ?></td>
+                        <td class="valField"><?php echo $account->accountUserEditName; ?></td>
                     </tr>
-                <? endif; ?>
-<? endif; ?>
+                <?php endif; ?>
+<?php endif; ?>
 
-<? if ($showHistory): ?>
+<?php if ($showHistory): ?>
                 <tr>
-                    <td class="descField"><? echo _('Historial'); ?></td>
+                    <td class="descField"><?php echo _('Historial'); ?></td>
                     <td class="valField">
                 <?
                 $arrSelectProp = array("name" => "historyId",
@@ -348,78 +348,78 @@ endif;
 
                 SP_Html::printSelect($account->getAccountHistoryList(), $arrSelectProp);
                 ?>
-                        <script>$("#sel-history").chosen({disable_search: true, placeholder_text_single: "<? echo _('Seleccionar fecha'); ?>"});</script>
+                        <script>$("#sel-history").chosen({disable_search: true, placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"});</script>
                     </td>
                 </tr>
-                    <? endif; ?>
+                    <?php endif; ?>
 
-                    <? if ($action == "accedit"): ?>
+                    <?php if ($action == "accedit"): ?>
                 <tr>
-                    <td class="descField"><? echo _('Última Modificación'); ?></td>
-    <? if ($account->accountUserEditName): ?>
-                        <td class="valField"><? echo $account->accountDateEdit; ?> <? echo _('por'); ?> <? echo $account->accountUserEditName; ?></td>
-                <? endif; ?>
+                    <td class="descField"><?php echo _('Última Modificación'); ?></td>
+    <?php if ($account->accountUserEditName): ?>
+                        <td class="valField"><?php echo $account->accountDateEdit; ?> <?php echo _('por'); ?> <?php echo $account->accountUserEditName; ?></td>
+                <?php endif; ?>
                 </tr>
-            <? endif; ?>
+            <?php endif; ?>
         </table>
 
         <div class="action">
             <ul>
                 <li>
-                <? if ($account->accountIsHistory): ?>
-                        <img SRC="imgs/back.png" title="<? echo _('Ver Actual'); ?>" class="inputImg" id="btnBack" OnClick="doAction('accview', 'accsearch',<? echo $account->accountParentId; ?>)" />
-            <? else: ?>
-                        <img src="imgs/back.png" title="<? echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<? echo $account->lastAction; ?>', '<? echo $action; ?>',<? echo $account->accountId; ?>)" />
-<? endif; ?>
+                <?php if ($account->accountIsHistory): ?>
+                        <img SRC="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack" OnClick="doAction('accview', 'accsearch',<?php echo $account->accountParentId; ?>)" />
+            <?php else: ?>
+                        <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<?php echo $account->lastAction; ?>', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)" />
+<?php endif; ?>
                 </li>
 
-                    <? if ($showViewPass): ?>
+                    <?php if ($showViewPass): ?>
                     <li>
-                        <img src="imgs/user-pass.png" title="<? echo _('Ver clave'); ?>" onClick="viewPass(<? echo $account->accountId; ?>, 1,<? echo $account->accountIsHistory; ?>)" class="inputImg" />
+                        <img src="imgs/user-pass.png" title="<?php echo _('Ver clave'); ?>" onClick="viewPass(<?php echo $account->accountId; ?>, 1,<?php echo $account->accountIsHistory; ?>)" class="inputImg" />
                     </li>
-                    <? endif; ?>
+                    <?php endif; ?>
 
-<? if ($showSave): ?>
+<?php if ($showSave): ?>
                     <li>
-                        <img src="imgs/check.png" title="<? echo _('Guardar'); ?>" class="inputImg" id="btnSave" OnClick="saveAccount('frmAccount');" />
+                        <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave" OnClick="saveAccount('frmAccount');" />
                     </li>
-<? endif; ?>
+<?php endif; ?>
 
-                <? if ($showEditPass): ?>
+                <?php if ($showEditPass): ?>
                     <li>
-                        <img src="imgs/key.png" title="<? echo _('Modificar Clave de Cuenta'); ?>" class="inputImg" OnClick="doAction('acceditpass', '<? echo $action; ?>',<? echo $account->accountId; ?>)"/>
+                        <img src="imgs/key.png" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="inputImg" OnClick="doAction('acceditpass', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)"/>
                     </li>
-<? endif; ?>
+<?php endif; ?>
 
-                <? if ($showEdit): ?>
+                <?php if ($showEdit): ?>
                     <li>
-                        <img src="imgs/edit.png" title="<? echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit', 'accview',<? echo $account->accountId; ?>)" />
+                        <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit', 'accview',<?php echo $account->accountId; ?>)" />
                     </li>
-<? endif; ?>
+<?php endif; ?>
 
-                <? if ($showDelete): ?>
+                <?php if ($showDelete): ?>
                     <li>
-                        <img src="imgs/delete.png" title="<? echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<? echo $account->accountId; ?>, 3, '<? echo $skey; ?>');" />
+                        <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<?php echo $account->accountId; ?>, 3, '<?php echo $skey; ?>');" />
                     </li>
-<? endif; ?>
+<?php endif; ?>
             </ul>
         </div>
 
-                <? if ($showform): ?>
+                <?php if ($showform): ?>
             <script>
                 $("#selCustomer").chosen({
-                    placeholder_text_single: "<? echo _('Seleccionar Cliente'); ?>",
+                    placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>",
                     disable_search_threshold: 10,
-                    no_results_text: "<? echo _('Sin resultados'); ?>"
+                    no_results_text: "<?php echo _('Sin resultados'); ?>"
                 });
                 $("#selCategory").chosen({
-                    placeholder_text_single: "<? echo _('Seleccionar Categoría'); ?>",
+                    placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
                     disable_search_threshold: 10,
-                    no_results_text: "<? echo _('Sin resultados'); ?>"
+                    no_results_text: "<?php echo _('Sin resultados'); ?>"
                 });
                 $("#selGroups").chosen({
-                    placeholder_text_multiple: "<? echo _('Seleccionar grupos secundarios'); ?>",
+                    placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>",
                 });
                 $('input:text:visible:first').focus();
             </script>
-<? endif; ?>
+<?php endif; ?>

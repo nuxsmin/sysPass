@@ -169,7 +169,7 @@ class SP_Util {
      * @return array con el número de versión
      */
     public static function getVersion() {
-        return array(1, 00, 03);
+        return array(1, 00, 04);
     }
     
     /**

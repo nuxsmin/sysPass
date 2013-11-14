@@ -374,7 +374,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
     color: #696969;
 }
 #content .data-header li a{color: #777;}
-#content .data-header li img{width: 24px; height: 24px; vertical-align: middle;}
+#content .data-header li img{float: right; width: 24px; height: 24px; vertical-align: middle;}
 
 #content .data-rows ul{
     display: table; 
@@ -432,16 +432,17 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #content #resEventLog .cell{text-align: center;}
 #content #resEventLog .cell-description{width: 60%;}
 
-#content #tblTools SELECT, #tblTools INPUT{margin-left: 15px;}
 #content #tblTools div.chosen-container{margin: 0 5px;}
-#content #tblTools select {width: 210px;}
-#content #tblTools #txtSearch{width:30%;}
+#content #tblTools #txtSearch,
+#content #tblTools select {width: 220px;}
 #content #tblTools LABEL{margin-left:15px; color: #999;}
 #content #tblTools IMG{margin-left:0.5em;}
 #content #tblTools #toolsLeft{text-align: left; width: 80%;}
 #content #tblTools #toolsRight{text-align: right; width: 5%;}
 #content #tblTools #toolsRight input{margin-left: 15px; text-align: center;}
 #content #tblTools .custom-combobox{margin-left: 25px;}
+#content #tblTools #btnClear{opacity: 0.35;filter:alpha(opacity=35);}
+#content #tblTools #btnClear:hover{opacity: 1;filter:alpha(opacity=100);}
 
 #content #tabs>DIV{min-height: 475px;}
 #content #tabs.ui-widget-content {border: none; background-color: transparent;}

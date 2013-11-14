@@ -43,10 +43,10 @@ $resQuery = DB::getResults($strQuery, __FUNCTION__);
 ?>
 
 <div id="title" class="midroundup titleNormal">
-    <? echo _('Registro de Eventos'); ?>
+    <?php echo _('Registro de Eventos'); ?>
 </div>
 
-<? 
+<?php 
 if ( ! $resQuery ) {
     die('<div class="error round">'._('ERROR EN LA CONSULTA').'</div>');
 }
@@ -65,43 +65,43 @@ $numRows = $resQueryNumRows[0]->numRows;
         <thead>
             <tr class="header-grey">
                 <th>
-                    <? echo _('ID'); ?>
+                    <?php echo _('ID'); ?>
                 </th>
                 <th>
-                    <? echo _('Fecha / Hora'); ?>
+                    <?php echo _('Fecha / Hora'); ?>
                 </th>
                 <th>
-                    <? echo _('Evento'); ?>
+                    <?php echo _('Evento'); ?>
                 </th>
                 <th>
-                    <? echo _('Usuario'); ?>
+                    <?php echo _('Usuario'); ?>
                 </th>
                 <th class="cell-description">
-                    <? echo _('Descripción'); ?>
+                    <?php echo _('Descripción'); ?>
                 </th>
             </tr>
         </thead>
         <tbody id="resSearch">
-            <? foreach ( $resQuery as $log ):
+            <?php foreach ( $resQuery as $log ):
                 $rowClass = ( $rowClass == "row_even" ) ? "row_odd" : "row_even";
                 $description = ( $isDemoMode === 0 ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
             ?>
 
-            <tr class="<? echo $rowClass ?>">
+            <tr class="<?php echo $rowClass ?>">
                 <td class="cell">
-                    <? echo $log->log_id; ?>
+                    <?php echo $log->log_id; ?>
                 </td>
                 <td class="cell">
-                    <? echo $log->date; ?>
+                    <?php echo $log->date; ?>
                 </td>
                 <td class="cell">
-                    <? echo utf8_decode($log->log_action); ?>
+                    <?php echo utf8_decode($log->log_action); ?>
                 </td>
                 <td class="cell">
-                    <? echo strtoupper($log->log_login); ?>
+                    <?php echo strtoupper($log->log_login); ?>
                 </td>
                 <td class="cell-description">
-                    <? 
+                    <?php 
                     $descriptions = explode(';;', $description);
                     
                     foreach ( $descriptions as $text ){
@@ -114,7 +114,7 @@ $numRows = $resQueryNumRows[0]->numRows;
                     ?>
                 </td>
             </tr>
-            <? endforeach; ?>
+            <?php endforeach; ?>
         </tbody>
     </table>
 </div>

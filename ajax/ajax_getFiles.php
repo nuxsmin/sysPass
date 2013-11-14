@@ -55,18 +55,18 @@ if ( ! is_array($files) || count($files) === 0 ){
 
 <form action="ajax/ajax_files.php" method="post" name="files_form" id="files_form">
     <select name="fileId" size="4" class="files" id="files">
-    <? foreach ($files as $file): ?>
-    <option value='<? echo $file['id']; ?>'><? echo $file['name'] ?> (<? echo $file['size']; ?> KB)</option>
-    <? endforeach;?>
+    <?php foreach ($files as $file): ?>
+    <option value='<?php echo $file['id']; ?>'><?php echo $file['name'] ?> (<?php echo $file['size']; ?> KB)</option>
+    <?php endforeach;?>
     </select>
-    <input name="t" type="hidden" id="t" value="<? echo time(); ?>" />
-    <input name="sk" type="hidden" id="sk" value="<? echo SP_Common::getSessionKey(); ?>" />
+    <input name="t" type="hidden" id="t" value="<?php echo time(); ?>" />
+    <input name="sk" type="hidden" id="sk" value="<?php echo SP_Common::getSessionKey(); ?>" />
     <input name="action" type="hidden" id="action" value="download" />
 </form>
 <div class="actionFiles">
-    <img src="imgs/download.png" title="<? echo _('Descargar archivo'); ?>" id="btnDownload" class="inputImg" alt="download" OnClick="downFile();" />
-    <img src="imgs/view.png" title="<? echo _('Ver archivo'); ?>" id="btnView" class="inputImg" alt="View" OnClick="downFile(1);" />
-<? if ( $deleteEnabled === 1 ): ?>
-    <img src="imgs/delete.png" title="<? echo _('Eliminar archivo'); ?>" id="btnDelete" class="inputImg" alt="Delete" OnClick="delFile(<? echo $accountId; ?>);" />
-<? endif; ?>
+    <img src="imgs/download.png" title="<?php echo _('Descargar archivo'); ?>" id="btnDownload" class="inputImg" alt="download" OnClick="downFile();" />
+    <img src="imgs/view.png" title="<?php echo _('Ver archivo'); ?>" id="btnView" class="inputImg" alt="View" OnClick="downFile(1);" />
+<?php if ( $deleteEnabled === 1 ): ?>
+    <img src="imgs/delete.png" title="<?php echo _('Eliminar archivo'); ?>" id="btnDelete" class="inputImg" alt="Delete" OnClick="delFile(<?php echo $accountId; ?>);" />
+<?php endif; ?>
 </div>

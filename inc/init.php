@@ -391,14 +391,21 @@ class SP_Init {
      * @brief Establece el lenguaje de la aplicación
      * @returns none
      * 
-     * Esta función establece el lenguaje según esté definidi en la configuración o en el navegador.
+     * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
      */
     private static function selectLang(){
         $browserLang = str_replace("-","_",substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
         $configLang = SP_Config::getValue('sitelang');
 
-        self::$LANG = ( $configLang ) ? $configLang : $browserLang;
-
+        // Establecer a en_US si no existe la traducción o no es español
+        if ( ! file_exists( self::$SERVERROOT.'/inc/locales/'.$browserLang) 
+                && ! preg_match('/^es_.*/i',$browserLang) 
+                && ! $configLang ){
+            self::$LANG = 'en_US';
+        } else{
+            self::$LANG = ( $configLang ) ? $configLang : $browserLang;
+        }
+        
         putenv("LANG=".self::$LANG);
         setlocale(LC_MESSAGES, self::$LANG);
         setlocale(LC_ALL, self::$LANG);

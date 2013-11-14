@@ -35,19 +35,19 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
 
 <form method="post" name="frmCrypt" id="frmCrypt">
     <table class="data tblConfig round">
-    <? if ( $lastUpdateMPass > 0 ): ?>
+    <?php if ( $lastUpdateMPass > 0 ): ?>
         <tr>
             <td class="descField">
-                <? echo _('Último cambio'); ?>
+                <?php echo _('Último cambio'); ?>
             </td>
             <td class="valField">
-                <? echo date("r",$lastUpdateMPass); ?>
+                <?php echo date("r",$lastUpdateMPass); ?>
             </td>
         </tr>
-    <? endif; ?>
+    <?php endif; ?>
         <tr>
             <td class="descField">
-                <? echo _('Clave Maestra actual'); ?>
+                <?php echo _('Clave Maestra actual'); ?>
             </td>
             <td class="valField">
                 <input type="password" name="curMasterPwd" maxlength="255">
@@ -55,7 +55,7 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('Nueva Clave Maestra'); ?>
+                <?php echo _('Nueva Clave Maestra'); ?>
             </td>
             <td class="valField">
                 <input type="password" name="newMasterPwd" maxlength="255">
@@ -63,7 +63,7 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('Nueva Clave Maestra (repetir)'); ?>
+                <?php echo _('Nueva Clave Maestra (repetir)'); ?>
             </td>
             <td class="valField">
                 <input type="password" name="newMasterPwdR" maxlength="255">
@@ -71,8 +71,8 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('No modificar cuentas'); ?>
-                <? SP_Common::printHelpButton("config", 16); ?>
+                <?php echo _('No modificar cuentas'); ?>
+                <?php SP_Common::printHelpButton("config", 16); ?>
             </td>
             <td class="valField">
                 <input type="checkbox" class="checkbox" name="chkNoAccountChange" />
@@ -80,30 +80,30 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('Confirmar cambio'); ?>
+                <?php echo _('Confirmar cambio'); ?>
             </td>
             <td class="valField">
-                <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
-                <? echo _('Guarde la nueva clave en un lugar seguro.'); ?>
+                <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini" />
+                <?php echo _('Guarde la nueva clave en un lugar seguro.'); ?>
                 <br>
-                <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
-                <? echo _('Se volverán a encriptar las claves de todas las cuentas.'); ?>
+                <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini" />
+                <?php echo _('Se volverán a encriptar las claves de todas las cuentas.'); ?>
                 <br>
-                <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
-                <? echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
+                <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini" />
+                <?php echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                 <br>
                 <input type="checkbox" class="checkbox" name="confirmPassChange" value="1" />
             </td>
         </tr>
     </table>
-	<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
     <input type="hidden" name="action" value="crypt" />
-    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
 </form>
 <div class="action">
     <ul>
         <li>
-            <img src="imgs/check.png" title="<? echo _('Guardar'); ?>" class="inputImg" OnClick="configMgmt('savempwd');" />
+            <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="configMgmt('savempwd');" />
         </li>
     </ul>
 </div>

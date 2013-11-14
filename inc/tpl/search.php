@@ -50,12 +50,12 @@ $categoriesSelProp = array("name" => "category",
         <tr>
             <td id="toolsLeft">
                 <label FOR="txtSearch"></label>
-                <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1)" value="<? echo SP_Common::parseParams('s', 'accountSearchTxt'); ?>" placeholder="<? echo _('Texto a buscar'); ?>"/>
-                <img src="imgs/clear.png" title="<? echo _('Limpiar'); ?>" class="inputImg" id="btnLimpiar" onClick="Clear('frmSearch', 1); accSearch(0);" />
-                <input type="hidden" name="start" value="<? echo SP_Common::parseParams('s', 'accountSearchStart', 0); ?>">
-                <input type="hidden" name="skey" value="<? echo SP_Common::parseParams('s', 'accountSearchKey', 1); ?>" />
-                <input type="hidden" name="sorder" value="<? echo SP_Common::parseParams('s', 'accountSearchOrder', 0); ?>" />
-                <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+                <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="Clear('frmSearch', 1); accSearch(0);" />
+                <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1)" value="<?php echo SP_Common::parseParams('s', 'accountSearchTxt'); ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
+                <input type="hidden" name="start" value="<?php echo SP_Common::parseParams('s', 'accountSearchStart', 0); ?>">
+                <input type="hidden" name="skey" value="<?php echo SP_Common::parseParams('s', 'accountSearchKey', 0); ?>" />
+                <input type="hidden" name="sorder" value="<?php echo SP_Common::parseParams('s', 'accountSearchOrder', 0); ?>" />
+                <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
                 <input type="hidden" name="is_ajax" value="1">
                 <?
                 SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp);
@@ -63,15 +63,15 @@ $categoriesSelProp = array("name" => "category",
                 ?>
             </td>
             <td id="toolsRight">
-                <input type="text" name="rpp" id="rpp" placeholder="<? echo _('CPP'); ?>" title="<? echo _('Cuentas por página'); ?>" value="<? echo SP_Common::parseParams('s', 'accountSearchLimit', SP_Config::getValue('account_count')); ?>"/>
+                <input type="text" name="rpp" id="rpp" placeholder="<?php echo _('CPP'); ?>" title="<?php echo _('Cuentas por página'); ?>" value="<?php echo SP_Common::parseParams('s', 'accountSearchLimit', SP_Config::getValue('account_count')); ?>"/>
             </td>
         </tr>
     </table>
 </form>
 <script>
     accSearch(0);
-    mkChosen({id: 'selCustomer', placeholder: '<? echo _('Seleccionar Cliente'); ?>', noresults: '<? echo _('Sin resultados'); ?>' });
-    mkChosen({id: 'selCategory', placeholder: '<? echo _('Seleccionar Categoría'); ?>', noresults: '<? echo _('Sin resultados'); ?>' });
+    mkChosen({id: 'selCustomer', placeholder: '<?php echo _('Seleccionar Cliente'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
+    mkChosen({id: 'selCategory', placeholder: '<?php echo _('Seleccionar Categoría'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
     
     $("#rpp").spinner({step: 5, max: 50, min: 5, numberFormat: "n", stop: function(event, ui) {
             accSearch(0);

@@ -1,3 +1,11 @@
+=== ** v1.0.4 ** ===
+
+* [MOD] Modificadas etiquetas de inicio de código php.
+* [MOD] Ajustes de visualización de barra de búsquedas.
+* [MOD] No se muestra el icono de filtro de orden si no se usa.
+* [MOD] Si el lenguaje del navegador no tiene traducción, ni está configurado en la aplicación, ni es ninguna varinte del español, se utiliza inglés.
+* [MOD] Mostrar tamaño máximo de archivo permitido para subir al editar cuenta.
+
 === ** v1.0.3 ** ===
 
 * [BUG] Corregido fallo al guardar filtro de búsqueda en la sesión.
@@ -146,6 +154,14 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.4 ** ===
+
+* [MOD] Modified php short open tags for environments that have disabled them.
+* [MOD] Visual improvements on search bar.
+* [MOD] Filter icon is not shown if not using it.
+* [MOD] If browser language does not have translation, or language not set, or is not a spanish variant, english is used.
+* [MOD] Show maximum allowed file size for upload on edit account.
 
 === ** v1.0.3 ** ===
 

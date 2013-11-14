@@ -30,15 +30,15 @@ $activeTab = $data['active'];
 ?>
 
 <div id="title" class="midroundup titleNormal">
-    <? echo _('Importar phpPMS'); ?>
+    <?php echo _('Importar phpPMS'); ?>
 </div>
 
 <form METHOD="post" name="frmMigrate" id="frmMigrate">
     <table class="data round">
         <tr>
             <td class="descField">
-                <? echo _('Usuario BBDD'); ?>
-                <? SP_Common::printHelpButton("config", 0); ?>
+                <?php echo _('Usuario BBDD'); ?>
+                <?php SP_Common::printHelpButton("config", 0); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbuser" value="" />
@@ -46,7 +46,7 @@ $activeTab = $data['active'];
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('Clave BBDD'); ?>
+                <?php echo _('Clave BBDD'); ?>
             </td>
             <td class="valField">
                 <input type="password" name="dbpass" value=""/>
@@ -54,8 +54,8 @@ $activeTab = $data['active'];
         </tr>	
         <tr>
             <td class="descField">
-                <? echo _('Nombre BBDD'); ?>
-                <? SP_Common::printHelpButton("config", 1); ?>
+                <?php echo _('Nombre BBDD'); ?>
+                <?php SP_Common::printHelpButton("config", 1); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbname" value="phppms" />
@@ -63,8 +63,8 @@ $activeTab = $data['active'];
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('Servidor BBDD'); ?>
-                <? SP_Common::printHelpButton("config", 2); ?>
+                <?php echo _('Servidor BBDD'); ?>
+                <?php SP_Common::printHelpButton("config", 2); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbhost" value="localhost" />
@@ -72,26 +72,26 @@ $activeTab = $data['active'];
         </tr>
         <tr>
             <td class="descField">
-                <? echo _('Confirmar'); ?>
+                <?php echo _('Confirmar'); ?>
             </td>
             <td class="valField">
                 <input type="checkbox" name="chkmigrate" class="checkbox" />
                 <br>
-                <img src="imgs/warning.png" ALT="<? echo _('Atención'); ?>" class="iconMini" />
-                <? echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
+                <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini" />
+                <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
             </td>
         </tr>
     </table>
 
-	<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
     <input type="hidden" name="action" value="migrate" />
-    <input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
 </form>
 
 <div class="action">
     <ul>
         <li>
-            <img src="imgs/start.png" title="<? echo _('Iniciar'); ?>" class="inputImg" OnClick="configMgmt('migrate');" />
+            <img src="imgs/start.png" title="<?php echo _('Iniciar'); ?>" class="inputImg" OnClick="configMgmt('migrate');" />
         </li>
     </ul>
 </div>

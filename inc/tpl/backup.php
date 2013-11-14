@@ -43,22 +43,22 @@ $lastBackupTime = ( file_exists($backupFile['absolute']) ) ? _('Último backup')
 <table class="data round">
     <tr>
         <td class="descField">
-            <? echo _('Resultado'); ?>
+            <?php echo _('Resultado'); ?>
         </td>
         <td class="valField">
-            <? echo $lastBackupTime; ?>
+            <?php echo $lastBackupTime; ?>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Descargar Actual'); ?>
+            <?php echo _('Descargar Actual'); ?>
         </td>
         <td class="valField">
-        <? if ( file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute']) ): ?>
-            <a href="<? echo $backupDbFile['relative']; ?>">Backup BBDD</a>
+        <?php if ( file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute']) ): ?>
+            <a href="<?php echo $backupDbFile['relative']; ?>">Backup BBDD</a>
             -
-            <a href="<? echo $backupFile['relative']; ?>">Backup <? echo $siteName; ?></a>
-        <? 
+            <a href="<?php echo $backupFile['relative']; ?>">Backup <?php echo $siteName; ?></a>
+        <?php 
             else:
                 echo _('No hay backups para descargar'); 
             endif;
@@ -68,16 +68,16 @@ $lastBackupTime = ( file_exists($backupFile['absolute']) ) ? _('Último backup')
 </table>
 
 <form method="post" name="frmBackup" id="frmBackup">
-	<input type="hidden" name="active" value="<? echo $activeTab ?>" />
+	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
 	<input type="hidden" name="backup" value="1" />
 	<input type="hidden" name="action" value="backup" />
-	<input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+	<input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
 </form>
 
 <div class="action">
     <ul>
         <li>
-            <img src="imgs/backup.png" title="<? echo _('Realizar Backup'); ?>" class="inputImg" OnClick="configMgmt('backup');" />
+            <img src="imgs/backup.png" title="<?php echo _('Realizar Backup'); ?>" class="inputImg" OnClick="configMgmt('backup');" />
         </li>
     </ul>
 </div>

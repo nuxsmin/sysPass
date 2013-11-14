@@ -49,7 +49,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
     </div><!-- Close boxData -->
 </div><!-- Close boxLogin -->
 
-<? if( SP_Common::parseParams('g', 'logout', FALSE, TRUE) ): ?>
-<div id="boxLogout"><? echo _('Sesión finalizada'); ?></div>
+<?php if( SP_Common::parseParams('g', 'logout', FALSE, TRUE) ): ?>
+<div id="boxLogout"><?php echo _('Sesión finalizada'); ?></div>
 <script>$('#boxLogout').fadeOut(5000);</script>
-<? endif; ?>
+<?php endif; ?>
