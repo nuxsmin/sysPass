@@ -74,10 +74,9 @@ if (count($errors) > 0) {
     }
     echo '</ul>';
 }
+?>
 
-if ($isCompleted == 0):
-    ?>
-
+<?php if ($isCompleted == 0): ?>
             <fieldset id="adminaccount">
                 <legend><?php echo _('Crear cuenta de admin'); ?></legend>
                 <p>

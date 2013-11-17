@@ -168,8 +168,7 @@ class SP_Installer {
                 return($error);
             }
 
-            SP_Config::$arrConfigValue['version'] = SP_Util::getVersionString();
-            SP_Config::writeConfig(TRUE);
+            SP_Config::setConfigValue('version', implode('.', SP_Util::getVersion()));
             SP_Config::setValue('installed', 1);
         }
 

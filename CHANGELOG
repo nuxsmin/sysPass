@@ -1,3 +1,9 @@
+=== ** v1.0.5 ** ===
+
+* [BUG] Corregido error que no mostraba la configuración. El archivo de plantilla config.php no se encontraba por un error en el empaquetado.
+* [MOD] Algunas etiquetas de apertura de PHP no estaban bien definidas para la versión 5.3 de PHP.
+* [MOD] Modificados bloques de control que usaban el formato abreviado y no funcionaban la versión 5.0 de PHP.
+
 === ** v1.0.4 ** ===
 
 * [MOD] Modificadas etiquetas de inicio de código php.
@@ -154,6 +160,12 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.5 ** ===
+
+* [BUG] Fix blank configuration tab because missing config.php template file that was skipped on building process.
+* [MOD] Some PHP's opening tags were not well defined for PHP version 5.3.
+* [MOD] Modified some structure control blocks that were using short format and they were not compatible with PHP version 5.3.
 
 === ** v1.0.4 ** ===
 

@@ -60,10 +60,9 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
         <td class="descField"><?php echo _('Idioma'); ?></td>
         <td class="valField">
             <select name="sitelang" id="sel-sitelang" size="1">
-            <?php foreach ( $arrLangAvailable as $langOption ):
-                $selected = ( SP_Config::getValue('sitelang') == $langOption ) ?  "SELECTED" : "";
-            ?>
-                <OPTION <?php echo $selected; ?>><?php echo $langOption; ?></OPTION>
+            <?php foreach ( $arrLangAvailable as $langOption ): ?>
+            <?php $selected = ( SP_Config::getValue('sitelang') == $langOption ) ?  "SELECTED" : ""; ?>
+                <option <?php echo $selected; ?>><?php echo $langOption; ?></option>
             <?php endforeach; ?>
             </select>
         </td>
@@ -141,7 +140,7 @@ $chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
             <img src="imgs/delete.png" title="<?php echo _('Eliminar extensión'); ?>" class="inputImg" id="btnDelExt" OnClick="delSelOption('allowed_exts')" />
             <br>
             <select id="allowed_exts" name="allowed_exts[]" multiple="multiple" size="4">
-            <?
+            <?php 
                 if ( SP_Config::getValue('allowed_exts') ){
                     $allowed_exts = explode(",", SP_Config::getValue('allowed_exts'));
                     sort($allowed_exts, SORT_STRING);

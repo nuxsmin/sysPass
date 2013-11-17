@@ -82,10 +82,9 @@ $numRows = $resQueryNumRows[0]->numRows;
             </tr>
         </thead>
         <tbody id="resSearch">
-            <?php foreach ( $resQuery as $log ):
-                $rowClass = ( $rowClass == "row_even" ) ? "row_odd" : "row_even";
-                $description = ( $isDemoMode === 0 ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
-            ?>
+            <?php foreach ( $resQuery as $log ): ?>
+            <?php $rowClass = ( $rowClass == "row_even" ) ? "row_odd" : "row_even"; ?>
+            <?php  $description = ( $isDemoMode === 0 ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description)); ?>
 
             <tr class="<?php echo $rowClass ?>">
                 <td class="cell">

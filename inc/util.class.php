@@ -169,7 +169,7 @@ class SP_Util {
      * @return array con el número de versión
      */
     public static function getVersion() {
-        return array(1, 00, 04);
+        return array(1, 00, 05);
     }
     
     /**
@@ -177,7 +177,7 @@ class SP_Util {
      * @return string con la versión
      */
     public static function getVersionString() {
-        return '1.0';
+        return '1.0-5';
     }
     
     /**
