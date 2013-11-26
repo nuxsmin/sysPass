@@ -720,7 +720,7 @@ class SP_Users {
                     user_groupId = 0,
                     user_login = '" . DB::escape($this->userLogin) . "',
                     user_pass = '" . $passdata['pass'] . "',
-                    user_hashSalt = " . $passdata['salt'] . ",
+                    user_hashSalt = '" . $passdata['salt'] . "',
                     user_email = '" . DB::escape($this->userEmail) . "',
                     user_notes = 'LDAP',
                     user_profileId = 0,
