@@ -1,3 +1,8 @@
+=== ** v1.0.6 ** ===
+
+* [BUG] Corregido error al crear un usuario de LDAP.
+* [MOD] No comprobar los permisos del directorio "config" en Windows.
+
 === ** v1.0.5 ** ===
 
 * [BUG] Corregido error que no mostraba la configuración. El archivo de plantilla config.php no se encontraba por un error en el empaquetado.
@@ -160,6 +165,11 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.6 ** ===
+
+* [BUG] Fixed error on creating user from LDAP.
+* [MOD] Don't check "config" directory permissions on Windows environment.
 
 === ** v1.0.5 ** ===
 
