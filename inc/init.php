@@ -224,7 +224,7 @@ class SP_Init {
         //$configPerms = substr(sprintf('%o', fileperms(self::$SERVERROOT.'/config')), -4);
         $configPerms = decoct(fileperms(self::$SERVERROOT.'/config') & 0777);
         
-        if ( $configPerms != "750" ){
+        if ( ! SP_Util::runningOnWindows() && $configPerms != "750" ){
             self::initError(_('Los permisos del directorio "/config" son incorrectos'),$configPerms);
         }
     }
