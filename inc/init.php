@@ -215,10 +215,17 @@ class SP_Init {
     private static function checkConfig() {
         if ( !is_dir(self::$SERVERROOT.'/config') ){           
             self::initError(_('El directorio "/config" no existe'));
-        } elseif ( !is_writable(self::$SERVERROOT.'/config') ) {
+        } 
+        
+        if ( !is_writable(self::$SERVERROOT.'/config') ) {
             self::initError(_('No es posible escribir en el directorio "config"'));
-        } elseif ( substr(sprintf('%o', fileperms(self::$SERVERROOT.'/config')), -4) != "0750" ){
-            self::initError(_('Los permisos del directorio "/config" son incorrectos'));
+        } 
+        
+        //$configPerms = substr(sprintf('%o', fileperms(self::$SERVERROOT.'/config')), -4);
+        $configPerms = decoct(fileperms(self::$SERVERROOT.'/config') & 0777);
+        
+        if ( $configPerms != "750" ){
+            self::initError(_('Los permisos del directorio "/config" son incorrectos'),$configPerms);
         }
     }
 
