@@ -168,8 +168,7 @@ class SP_Installer {
                 return($error);
             }
 
-            SP_Config::$arrConfigValue['version'] = SP_Util::getVersionString();
-            SP_Config::writeConfig(TRUE);
+            SP_Config::setConfigValue('version', implode('.', SP_Util::getVersion()));
             SP_Config::setValue('installed', 1);
         }
 
@@ -404,7 +403,7 @@ class SP_Installer {
 
         $user->profileName = 'Admin';
 
-        if (!$user->manageProfiles("add", $profileProp)) {
+        if (!SP_Profiles::addProfile($profileProp)) {
             self::rollback();
 
             throw new InstallerException("critical"
@@ -422,7 +421,7 @@ class SP_Installer {
         $user->userIsAdminApp = 1;
 
 
-        if (!$user->manageUser('add')) {
+        if (!$user->addUser()) {
             self::rollback();
 
             throw new InstallerException('critical'

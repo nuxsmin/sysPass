@@ -28,7 +28,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 $action = $data['action'];
 $activeTab = $data['active'];
 
-SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         
 $arrLangAvailable = array('es_ES','en_US');
 $isDemoMode = SP_Config::getValue('demoenabled',0);
@@ -50,7 +50,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
 ?>        
         
 <div id="title" class="midroundup titleNormal">
-    <? echo _('Sitio'); ?>
+    <?php echo _('Sitio'); ?>
 </div>
 
 <form method="post" name="frmConfig" id="frmConfig">
@@ -58,119 +58,117 @@ $allowedExts = SP_Config::getValue('allowed_exts');
 <table id="tblSite" class="data tblConfig round">
 
     <tr>
-        <td class="descField"><? echo _('Idioma'); ?></td>
+        <td class="descField"><?php echo _('Idioma'); ?></td>
         <td class="valField">
             <select name="sitelang" id="sel-sitelang" size="1">
-            <? foreach ( $arrLangAvailable as $langOption ):
-                $selected = ( SP_Config::getValue('sitelang') == $langOption ) ?  "SELECTED" : "";
-            ?>
-                <OPTION <? echo $selected; ?>><? echo $langOption; ?></OPTION>
-            <? endforeach; ?>
+                <?php 
+                foreach ( $arrLangAvailable as $langOption ){
+                    $selected = ( SP_Config::getValue('sitelang') == $langOption ) ?  "SELECTED" : "";
+                    echo "<option $selected>$langOption</option>";
+                }
+                ?>
             </select>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Timeout de sesión (s)'); ?>
+            <?php echo _('Timeout de sesión (s)'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="session_timeout" value="<? echo SP_Config::getValue('session_timeout'); ?>" maxlength="4" <? echo $txtDisabled; ?> />
+            <input type="text" name="session_timeout" value="<?php echo SP_Config::getValue('session_timeout'); ?>" maxlength="4" <?php echo $txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Habilitar log de eventos'); ?>
-            <? SP_Common::printHelpButton("config", 20); ?>
+            <?php echo _('Habilitar log de eventos'); ?>
+            <?php SP_Common::printHelpButton("config", 20); ?>
         </td>
         <td class="valField">
-            <label for="logenabled"><? echo ($chkLog) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="logenabled" id="logenabled" class="checkbox" <? echo $chkLog.' '.$txtDisabled; ?> />
+            <label for="logenabled"><?php echo ($chkLog) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="logenabled" id="logenabled" class="checkbox" <?php echo $chkLog.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Habilitar depuración'); ?>
-            <? SP_Common::printHelpButton("config", 19); ?>
+            <?php echo _('Habilitar depuración'); ?>
+            <?php SP_Common::printHelpButton("config", 19); ?>
         </td>
         <td class="valField">
-            <label for="debug"><? echo ($chkDebug) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="debug" id="debug" class="checkbox" <? echo $chkDebug.' '.$txtDisabled; ?> />
+            <label for="debug"><?php echo ($chkDebug) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="debug" id="debug" class="checkbox" <?php echo $chkDebug.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Modo mantenimiento'); ?>
-            <? SP_Common::printHelpButton("config", 18); ?>
+            <?php echo _('Modo mantenimiento'); ?>
+            <?php SP_Common::printHelpButton("config", 18); ?>
         </td>
         <td class="valField">
-            <label for="maintenance"><? echo ($chkMaintenance) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="maintenance" id="maintenance"  class="checkbox" <? echo $chkMaintenance.' '.$txtDisabled; ?> />           
+            <label for="maintenance"><?php echo ($chkMaintenance) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="maintenance" id="maintenance"  class="checkbox" <?php echo $chkMaintenance.' '.$txtDisabled; ?> />           
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Comprobar actualizaciones'); ?>
-            <? SP_Common::printHelpButton("config", 21); ?>
+            <?php echo _('Comprobar actualizaciones'); ?>
+            <?php SP_Common::printHelpButton("config", 21); ?>
         </td>
         <td class="valField">
-            <label for="updates"><? echo ($chkUpdates) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="updates" id="updates" class="checkbox" <? echo $chkUpdates.' '.$txtDisabled; ?> />
+            <label for="updates"><?php echo ($chkUpdates) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="updates" id="updates" class="checkbox" <?php echo $chkUpdates.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Nombre de cuenta como enlace'); ?>
-            <? SP_Common::printHelpButton("config", 3); ?>
+            <?php echo _('Nombre de cuenta como enlace'); ?>
+            <?php SP_Common::printHelpButton("config", 3); ?>
         </td>
         <td class="valField">
-            <label for="account_link"><? echo ($chkAccountLink) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="account_link" id="account_link" class="checkbox" <? echo $chkAccountLink; ?> />
+            <label for="account_link"><?php echo ($chkAccountLink) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="account_link" id="account_link" class="checkbox" <?php echo $chkAccountLink; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Gestión de archivos'); ?>
-            <? SP_Common::printHelpButton("config", 5); ?>
+            <?php echo _('Gestión de archivos'); ?>
+            <?php SP_Common::printHelpButton("config", 5); ?>
         </td>
         <td class="valField">
-            <label for="filesenabled"><? echo ($chkFiles) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="filesenabled" id="filesenabled" class="checkbox" <? echo $chkFiles.' '.$txtDisabled; ?> />
-        </td>
-
-    </tr>
-    <tr>
-        <td class="descField">
-            <? echo _('Extensiones de archivos permitidas'); ?>
-            <? SP_Common::printHelpButton("config", 22); ?>
-        </td>
-        <td class="valField">
-            <input type="text" name="allowed_exts" id="allowed_exts" value="<? echo $allowedExts; ?>"/>
+            <label for="filesenabled"><?php echo ($chkFiles) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="filesenabled" id="filesenabled" class="checkbox" <?php echo $chkFiles.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Tamaño máximo de archivo'); ?>
-            <? SP_Common::printHelpButton("config", 6); ?>
+            <?php echo _('Extensiones de archivos permitidas'); ?>
+            <?php SP_Common::printHelpButton("config", 22); ?>
         </td>
         <td class="valField">
-            <input type="text" name="allowed_size" value="<? echo SP_Config::getValue('allowed_size'); ?>" maxlength="5" <? echo $txtDisabled; ?> />
+            <input type="text" name="allowed_exts" id="allowed_exts" value="<?php echo $allowedExts; ?>"/>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Resultados por página'); ?>
-            <? SP_Common::printHelpButton("config", 4); ?>
+            <?php echo _('Tamaño máximo de archivo'); ?>
+            <?php SP_Common::printHelpButton("config", 6); ?>
+        </td>
+        <td class="valField">
+            <input type="text" name="allowed_size" value="<?php echo SP_Config::getValue('allowed_size'); ?>" maxlength="5" <?php echo $txtDisabled; ?> />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Resultados por página'); ?>
+            <?php SP_Common::printHelpButton("config", 4); ?>
         </td>
         <td class="valField">
             <select name="account_count" id="sel-account_count" size="1">
-        <? foreach ($arrAccountCount as $num ){
-                if ( SP_Config::getValue('account_count') == $num){
-                    echo "<OPTION SELECTED>$num</OPTION>";
-                } else {
-                    echo "<OPTION>$num</OPTION>";
+                <?php 
+                foreach ($arrAccountCount as $num ){
+                    $selected = ( SP_Config::getValue('account_count') == $num) ? 'SELECTED' : '';
+                    echo "<option $selected>$num</option>";
                 }
-            }
-        ?>
+                ?>
             </select>
         </td>
     </tr>
@@ -178,45 +176,45 @@ $allowedExts = SP_Config::getValue('allowed_exts');
 
 <!--WIKI-->
 <div id="title" class="midroundup titleNormal">
-    <? echo _('Wiki'); ?>
+    <?php echo _('Wiki'); ?>
 </div>
 
 <table id="tblWiki" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <? echo _('Habilitar enlaces Wiki'); ?>
-            <? SP_Common::printHelpButton("config", 7); ?>
+            <?php echo _('Habilitar enlaces Wiki'); ?>
+            <?php SP_Common::printHelpButton("config", 7); ?>
         </td>
         <td class="valField">
-            <label for="wikienabled"><? echo ($chkWiki) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="wikienabled" id="wikienabled" class="checkbox" <? echo $chkWiki.' '.$txtDisabled; ?> />
+            <label for="wikienabled"><?php echo ($chkWiki) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="wikienabled" id="wikienabled" class="checkbox" <?php echo $chkWiki.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('URL de búsqueda Wiki'); ?>
-            <? SP_Common::printHelpButton("config", 8); ?>
+            <?php echo _('URL de búsqueda Wiki'); ?>
+            <?php SP_Common::printHelpButton("config", 8); ?>
         </td>
         <td class="valField">
-            <input type="text" name="wikisearchurl" class="txtLong" value="<? echo SP_Config::getValue('wikisearchurl'); ?>" maxlength="128" />
+            <input type="text" name="wikisearchurl" class="txtLong" value="<?php echo SP_Config::getValue('wikisearchurl'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('URL de página en Wiki'); ?>
-            <? SP_Common::printHelpButton("config", 9); ?>
+            <?php echo _('URL de página en Wiki'); ?>
+            <?php SP_Common::printHelpButton("config", 9); ?>
         </td>
         <td class="valField">
-            <input type="text" name="wikipageurl" class="txtLong" value="<? echo SP_Config::getValue('wikipageurl'); ?>" maxlength="128" />
+            <input type="text" name="wikipageurl" class="txtLong" value="<?php echo SP_Config::getValue('wikipageurl'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Prefijo para nombre de cuenta'); ?>
-            <? SP_Common::printHelpButton("config", 10); ?>
+            <?php echo _('Prefijo para nombre de cuenta'); ?>
+            <?php SP_Common::printHelpButton("config", 10); ?>
         </td>
         <td class="valField">
-            <input type="text" name="wikifilter" id="wikifilter" value="<? echo SP_Config::getValue('wikifilter'); ?>" />
+            <input type="text" name="wikifilter" id="wikifilter" value="<?php echo SP_Config::getValue('wikifilter'); ?>" />
         </td>
     </tr>
 </table>
@@ -224,132 +222,132 @@ $allowedExts = SP_Config::getValue('allowed_exts');
 <!--LDAP-->
 
 <div id="title" class="midroundup titleNormal">
-    <? echo _('LDAP'); ?>
+    <?php echo _('LDAP'); ?>
 </div>
 
 <table id="tblLdap" class="data tblConfig round">
-<? if ( SP_Util::ldapIsAvailable() && ! $isDemoMode ): ?>
+<?php if ( SP_Util::ldapIsAvailable() && ! $isDemoMode ): ?>
     <tr>
         <td class="descField">
-            <? echo _('Habilitar LDAP'); ?>
-            <? SP_Common::printHelpButton("config", 11); ?>
+            <?php echo _('Habilitar LDAP'); ?>
+            <?php SP_Common::printHelpButton("config", 11); ?>
         </td>
         <td class="valField">
-            <label for="ldapenabled"><? echo ($chkLdap) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="ldapenabled" id="ldapenabled" class="checkbox" <? echo $chkLdap.' '.$txtDisabled; ?> />
+            <label for="ldapenabled"><?php echo ($chkLdap) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="ldapenabled" id="ldapenabled" class="checkbox" <?php echo $chkLdap.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Servidor'); ?>
-            <? SP_Common::printHelpButton("config", 15); ?>
+            <?php echo _('Servidor'); ?>
+            <?php SP_Common::printHelpButton("config", 15); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldapserver" value="<? echo SP_Config::getValue('ldapserver'); ?>" maxlength="128" />
+            <input type="text" name="ldapserver" value="<?php echo SP_Config::getValue('ldapserver'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Usuario de conexión'); ?>
-            <? SP_Common::printHelpButton("config", 12); ?>
+            <?php echo _('Usuario de conexión'); ?>
+            <?php SP_Common::printHelpButton("config", 12); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldapbinduser" value="<? echo SP_Config::getValue('ldapbinduser'); ?>" maxlength="128" />
+            <input type="text" name="ldapbinduser" value="<?php echo SP_Config::getValue('ldapbinduser'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Clave de conexión'); ?>
-            <? SP_Common::printHelpButton("config", 17); ?>
+            <?php echo _('Clave de conexión'); ?>
+            <?php SP_Common::printHelpButton("config", 17); ?>
         </td>
         <td class="valField">
-            <input type="password" name="ldapbindpass" value="<? echo SP_Config::getValue('ldapbindpass'); ?>" maxlength="128" />
+            <input type="password" name="ldapbindpass" value="<?php echo SP_Config::getValue('ldapbindpass'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
     <td class="descField">
-        <? echo _('Base de búsqueda'); ?>
-        <? SP_Common::printHelpButton("config", 13); ?>
+        <?php echo _('Base de búsqueda'); ?>
+        <?php SP_Common::printHelpButton("config", 13); ?>
     </td>
         <td class="valField">
-            <input type="text" name="ldapbase" class="txtLong" value="<? echo SP_Config::getValue('ldapbase'); ?>" maxlength="128" />
+            <input type="text" name="ldapbase" class="txtLong" value="<?php echo SP_Config::getValue('ldapbase'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Grupo'); ?>
-            <? SP_Common::printHelpButton("config", 14); ?>
+            <?php echo _('Grupo'); ?>
+            <?php SP_Common::printHelpButton("config", 14); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldapgroup" class="txtLong" value="<? echo SP_Config::getValue('ldapgroup'); ?>" maxlength="128" />
+            <input type="text" name="ldapgroup" class="txtLong" value="<?php echo SP_Config::getValue('ldapgroup'); ?>" maxlength="128" />
         </td>
     </tr>
-<? else: ?>
+<?php else: ?>
     <tr>
         <td class="option-disabled">
-            <? echo _('Módulo no disponible'); ?>
+            <?php echo _('Módulo no disponible'); ?>
         </td>
     </tr>   
-<? endif; ?>
+<?php endif; ?>
 </table>
 
 <!--MAIL-->
 <div id="title" class="midroundup titleNormal">
-    <? echo _('Correo'); ?>
+    <?php echo _('Correo'); ?>
 </div>
 
 <table id="tblMail" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <? echo _('Habilitar notificaciones de correo'); ?>
+            <?php echo _('Habilitar notificaciones de correo'); ?>
         </td>
         <td class="valField">
-            <label for="mailenabled"><? echo ($chkMail) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="mailenabled" id="mailenabled" class="checkbox" <? echo $chkMail.' '.$txtDisabled; ?> />
+            <label for="mailenabled"><?php echo ($chkMail) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="mailenabled" id="mailenabled" class="checkbox" <?php echo $chkMail.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Servidor'); ?>
+            <?php echo _('Servidor'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailserver" size="20" value="<? echo SP_Config::getValue('mailserver'); ?>" maxlength="128" />
+            <input type="text" name="mailserver" size="20" value="<?php echo SP_Config::getValue('mailserver'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Dirección de correo de envío'); ?>
+            <?php echo _('Dirección de correo de envío'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailfrom" size="20" value="<? echo SP_Config::getValue('mailfrom'); ?>" maxlength="128" />
+            <input type="text" name="mailfrom" size="20" value="<?php echo SP_Config::getValue('mailfrom'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <? echo _('Habilitar peticiones por correo'); ?>
+            <?php echo _('Habilitar peticiones por correo'); ?>
         </td>
         <td class="valField">
-            <label for="mailrequestsenabled"><? echo ($chkMailRequests) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="mailrequestsenabled" id="mailrequestsenabled" class="checkbox" <? echo $chkMailRequests.' '.$txtDisabled; ?> />
+            <label for="mailrequestsenabled"><?php echo ($chkMailRequests) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="mailrequestsenabled" id="mailrequestsenabled" class="checkbox" <?php echo $chkMailRequests.' '.$txtDisabled; ?> />
         </td>
     </tr>
 </table> 
 
-<? if ( $isDemoMode ): ?>
+<?php if ( $isDemoMode ): ?>
     <input type="hidden" name="logenabled" value="1" />
     <input type="hidden" name="filesenabled" value="1" />
     <input type="hidden" name="wikienabled" value="1" />
-<? endif; ?>
-
-<input type="hidden" name="active" value="<? echo $activeTab ?>" />
-<input type="hidden" name="action" value="config" />
-<input type="hidden" name="sk" value="<? echo SP_Common::getSessionKey(TRUE); ?>">
+<?php endif; ?>
+    <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+    <input type="hidden" name="action" value="config" />
+    <input type="hidden" name="is_ajax" value="1" />
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
 </form>
 
 <div class="action">
     <ul>
         <li
-            ><img src="imgs/check.png" title="<? echo _('Guardar'); ?>" class="inputImg" OnClick="configMgmt('saveconfig');" />
+            ><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="configMgmt('saveconfig');" />
         </li>
     </ul>
 </div>
@@ -370,8 +368,8 @@ $allowedExts = SP_Config::getValue('allowed_exts');
     });
     $('#allowed_exts').tagsInput({
         'width':'350px',
-        'defaultText':'<? echo _('Añadir extensión'); ?>',
-        'defaultRemoveText':'<? echo _('Eliminar extensión'); ?>',
+        'defaultText':'<?php echo _('Añadir extensión'); ?>',
+        'defaultRemoveText':'<?php echo _('Eliminar extensión'); ?>',
         'removeWithBackspace' : false,
         'tagsToUpper' : true,
         'maxChars' : 4,
@@ -399,8 +397,8 @@ $allowedExts = SP_Config::getValue('allowed_exts');
     $('#wikifilter').tagsInput({
         'width':'350px',
         'height':'50px',
-        'defaultText':'<? echo _('Añadir filtro'); ?>',
-        'defaultRemoveText':'<? echo _('Eliminar filtro'); ?>',
+        'defaultText':'<?php echo _('Añadir filtro'); ?>',
+        'defaultRemoveText':'<?php echo _('Eliminar filtro'); ?>',
         'removeWithBackspace' : false,
         onAddTag : function(){
             // Fix scrolling to bottom

@@ -44,13 +44,7 @@ class SP_Users {
     var $userIsAdminAcc;
     var $userIsDisabled;
     var $userIsLdap;
-    // Variables de grupos
-    var $groupId;
-    var $groupName;
-    var $groupDesc;
-    // Variables de Perfil
-    var $profileId;
-    var $profileName;
+    
     // Variables de consulta
     static $queryRes;
     static $querySelect;
@@ -71,28 +65,38 @@ class SP_Users {
      * Esta función obtiene los datos de un usuario y los guarda en las variables de la clase.
      */
     public function getUserInfo() {
-        $query = "SELECT user_id, user_name, user_groupId, user_login, user_email, user_notes, user_count, user_profileId,
-                    usergroup_name, user_isAdminApp, user_isAdminAcc, user_isLdap, user_isDisabled 
-                    FROM usrData
-                    LEFT JOIN usrGroups ON user_groupId = usergroup_id 
-                    LEFT JOIN usrProfiles ON user_profileId = userprofile_id 
-                    WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
+        $query = "SELECT user_id,"
+                . "user_name,"
+                . "user_groupId,"
+                . "user_login,"
+                . "user_email,"
+                . "user_notes,"
+                . "user_count,"
+                . "user_profileId,"
+                . "usergroup_name,"
+                . "user_isAdminApp,"
+                . "user_isAdminAcc,"
+                . "user_isLdap,"
+                . "user_isDisabled "
+                . "FROM usrData "
+                . "LEFT JOIN usrGroups ON user_groupId = usergroup_id "
+                . "LEFT JOIN usrProfiles ON user_profileId = userprofile_id "
+                . "WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-
-        $this->userId = (int) $queryRes[0]->user_id;
-        $this->userName = $queryRes[0]->user_name;
-        $this->userGroupId = (int) $queryRes[0]->user_groupId;
-        $this->userGroupName = $queryRes[0]->usergroup_name;
-        $this->userEmail = $queryRes[0]->user_email;
-        $this->userProfileId = (int) $queryRes[0]->user_profileId;
-        $this->userIsAdminApp = (int) $queryRes[0]->user_isAdminApp;
-        $this->userIsAdminAcc = (int) $queryRes[0]->user_isAdminAcc;
-        $this->userIsLdap = (int) $queryRes[0]->user_isLdap;
+        $this->userId = (int) $queryRes->user_id;
+        $this->userName = $queryRes->user_name;
+        $this->userGroupId = (int) $queryRes->user_groupId;
+        $this->userGroupName = $queryRes->usergroup_name;
+        $this->userEmail = $queryRes->user_email;
+        $this->userProfileId = (int) $queryRes->user_profileId;
+        $this->userIsAdminApp = (int) $queryRes->user_isAdminApp;
+        $this->userIsAdminAcc = (int) $queryRes->user_isAdminAcc;
+        $this->userIsLdap = (int) $queryRes->user_isLdap;
 
         return TRUE;
     }
@@ -103,104 +107,69 @@ class SP_Users {
      * @return string con el email del usuario
      */
     public static function getUserEmail($userId) {
-        $query = "SELECT user_email FROM usrData "
+        $query = "SELECT user_email "
+                . "FROM usrData "
                 . "WHERE user_id = " . (int) $userId . " "
                 . "AND user_email IS NOT NULL LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        return $queryRes[0]->user_email;
+        return $queryRes->user_email;
     }
     
     /**
-     * @brief Obtener los detalles de una consulta para generar una tabla
-     * @return bool
-     */
-    public static function getItemDetail() {
-        if (!isset(self::$querySelect) || self::$querySelect == "") {
-            return FALSE;
-        }
-        if (!isset(self::$queryFrom) || self::$queryFrom == "") {
-            return FALSE;
-        }
-
-        $query = self::$querySelect . ' ' . self::$queryFrom . ' ' . self::$queryWhere;
-        self::$queryRes = DB::getResults($query, __FUNCTION__);
-
-        if (self::$queryRes === FALSE || !is_array(self::$queryRes)) {
-            return FALSE;
-        }
-
-        self::$queryCount = count(self::$queryRes);
-
-        if (self::$queryCount === 0) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    /**
      * @brief Establecer las variables para la consulta de usuarios
      * @param int $itemId opcional, con el Id del usuario a consultar
-     * @return none
+     * @return array con la lista de usuarios
      */
-    public static function setQueryUsers($itemId = NULL) {
+    public static function getUsers($itemId = NULL) {
         if (!is_null($itemId)) {
-            self::$querySelect = "SELECT user_id, user_name, user_login, user_profileId, user_groupId, user_email, user_notes, 
-                                    user_isAdminApp, user_isAdminAcc, user_isLdap, user_isDisabled, user_count, user_lastLogin,
-                                    user_lastUpdate, FROM_UNIXTIME(user_lastUpdateMPass) as user_lastUpdateMPass";
-            self::$queryWhere = "WHERE user_id = " . (int) $itemId . " LIMIT 1";
+            $query = "SELECT user_id,"
+                    . "user_name,"
+                    . "user_login,"
+                    . "user_profileId,"
+                    . "user_groupId,"
+                    . "user_email,"
+                    . "user_notes,"
+                    . "user_isAdminApp,"
+                    . "user_isAdminAcc,"
+                    . "user_isLdap,"
+                    . "user_isDisabled,"
+                    . "user_count,"
+                    . "user_lastLogin,"
+                    . "user_lastUpdate, "
+                    . "FROM_UNIXTIME(user_lastUpdateMPass) as user_lastUpdateMPass "
+                    . "FROM usrData "
+                    . "LEFT JOIN usrProfiles ON user_profileId = userprofile_id "
+                    . "LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id "
+                    . "WHERE user_id = " . (int) $itemId . " LIMIT 1";
         } else {
-            self::$querySelect = "SELECT user_id, user_name, user_login, userprofile_name, usergroup_name,  user_isAdminApp, 
-                                    user_isAdminAcc, user_isLdap, user_isDisabled";
-            self::$queryWhere = ( $_SESSION["uisadminapp"] == 0 ) ? "WHERE user_isAdminApp = 0 ORDER BY user_name" : "ORDER BY user_name";
+            $query = "SELECT user_id,"
+                    . "user_name,"
+                    . "user_login,"
+                    . "userprofile_name,"
+                    . "usergroup_name,"
+                    . "user_isAdminApp,"
+                    . "user_isAdminAcc,"
+                    . "user_isLdap,"
+                    . "user_isDisabled "
+                    . "FROM usrData "
+                    . "LEFT JOIN usrProfiles ON user_profileId = userprofile_id "
+                    . "LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id ";
+            
+            $query .= ( $_SESSION["uisadminapp"] == 0 ) ? "WHERE user_isAdminApp = 0 ORDER BY user_name" : "ORDER BY user_name";
         }
 
-        self::$queryFrom = "FROM usrData 
-                                LEFT JOIN usrProfiles ON user_profileId = userprofile_id
-                                LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id";
-    }
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-    /**
-     * @brief Establecer las variables para la consulta de grupos
-     * @param int $itemId opcional, con el Id del grupo a consultar
-     * @return none
-     */
-    public static function setQueryUserGroups($itemId = NULL) {
-        if (!is_null($itemId)) {
-            self::$querySelect = "SELECT usergroup_id, usergroup_name, usergroup_description";
-            self::$queryWhere = "WHERE usergroup_id = " . (int) $itemId . " LIMIT 1";
-        } else {
-            self::$querySelect = "SELECT usergroup_id, usergroup_name, usergroup_description";
-            self::$queryWhere = "ORDER BY usergroup_name";
+        if ($queryRes === FALSE) {
+            return FALSE;
         }
 
-        self::$queryFrom = "FROM usrGroups";
-    }
-
-    /**
-     * @brief Establecer las variables para la consulta de perfiles
-     * @param int $itemId opcional, con el Id del usuario a perfiles
-     * @return none
-     */
-    public static function setQueryUserProfiles($itemId = NULL) {
-        if (!is_null($itemId)) {
-            self::$querySelect = "SELECT userprofile_id, userprofile_name, userProfile_pView, userProfile_pViewPass,
-                                    userProfile_pViewHistory, userProfile_pEdit, userProfile_pEditPass, userProfile_pAdd,
-                                    userProfile_pDelete, userProfile_pFiles, userProfile_pConfig, userProfile_pConfigCategories,
-                                    userProfile_pConfigMasterPass, userProfile_pConfigBackup, userProfile_pUsers, 
-                                    userProfile_pGroups, userProfile_pProfiles, userProfile_pEventlog";
-            self::$queryWhere = "WHERE userprofile_id = " . (int) $itemId . " LIMIT 1";
-        } else {
-            self::$querySelect = "SELECT userprofile_id, userprofile_name";
-            self::$queryWhere = "ORDER BY userprofile_name";
-        }
-
-        self::$queryFrom = "FROM usrProfiles";
+        return $queryRes;
     }
 
     /**
@@ -220,7 +189,7 @@ class SP_Users {
         $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
@@ -238,7 +207,7 @@ class SP_Users {
      * @param array $arrUsersTableProp con las propiedades de la tabla
      * @return none
      */
-    public static function getUsrGrpTable($arrUsersTableProp) {
+    public static function getUsrGrpTable($arrUsersTableProp, $queryItems = NULL) {
         $sk = SP_Common::getSessionKey(TRUE);
 
         echo '<div class="action fullWidth">';
@@ -270,7 +239,13 @@ class SP_Users {
 
         echo '<div class="data-rows">';
 
-        foreach (self::$queryRes as $item) {
+        if (!is_null($queryItems)){
+            $items = $queryItems;
+        } else{
+            $items = self::$queryRes;
+        }
+        
+        foreach ( $items as $item) {
             $intId = $item->$arrUsersTableProp["tblRowSrcId"];
             $action_check = array();
 
@@ -357,104 +332,26 @@ class SP_Users {
             );
 
         if ($id > 0) {
-            self::setQueryUsers($id);
+            $users = self::getUsers($id);
 
-            if (self::getItemDetail()) {
-                foreach (self::$queryRes as $row) {
-                    foreach ($row as $name => $value) {
-                        // Check if field is a checkbox one
-                        if (preg_match('/^.*_is[A-Z].*$/', $name)) {
-                            $user['checks'][$name] = ( (int) $value === 1 ) ? 'CHECKED' : '';
-                        }
-                        
-                        if ( $value === '0000-00-00 00:00:00' || $value === '1970-01-01 01:00:00' ){
-                            $value = _('N/D');
-                        }
-                        
-                        $user[$name] = $value;
+            if ($users) {
+                foreach ($users[0] as $name => $value) {
+                    // Check if field is a checkbox one
+                    if (preg_match('/^.*_is[A-Z].*$/', $name)) {
+                        $user['checks'][$name] = ( (int) $value === 1 ) ? 'CHECKED' : '';
                     }
+                        
+                    if ( $value === '0000-00-00 00:00:00' || $value === '1970-01-01 01:00:00' ){
+                        $value = _('N/D');
+                    }
+                        
+                    $user[$name] = $value;
                 }
-
                 $user['action'] = 2;
             }
         }
 
         return $user;
-    }
-
-    /**
-     * @brief Obtener los datos de un grupo
-     * @param int $id con el Id del grupo a consultar
-     * @return array con el nombre de la columna como clave y los datos como valor
-     */
-    public static function getGroupData($id = 0) {
-        $group = array('usergroup_id' => 0,
-            'usergroup_name' => '',
-            'usergroup_description' => '',
-            'action' => 1);
-
-        if ($id > 0) {
-            self::setQueryUserGroups($id);
-
-            if (self::getItemDetail()) {
-                foreach (self::$queryRes as $row) {
-                    foreach ($row as $name => $value) {
-                        $group[$name] = $value;
-                    }
-                }
-                $group['action'] = 2;
-            }
-        }
-
-        return $group;
-    }
-
-    /**
-     * @brief Obtener los datos de un perfil
-     * @param int $id con el Id del perfil a consultar
-     * @return array con el nombre de la columna como clave y los datos como valor
-     */
-    public static function getProfileData($id = 0) {
-
-        $profile = array('userprofile_id' => 0,
-            'userprofile_name' => '',
-            'userProfile_pView' => 0,
-            'userProfile_pViewPass' => 0,
-            'userProfile_pViewHistory' => 0,
-            'userProfile_pEdit' => 0,
-            'userProfile_pEditPass' => 0,
-            'userProfile_pAdd' => 0,
-            'userProfile_pDelete' => 0,
-            'userProfile_pFiles' => 0,
-            'userProfile_pConfig' => 0,
-            'userProfile_pConfigCategories' => 0,
-            'userProfile_pConfigMasterPass' => 0,
-            'userProfile_pConfigBackup' => 0,
-            'userProfile_pUsers' => 0,
-            'userProfile_pGroups' => 0,
-            'userProfile_pProfiles' => 0,
-            'userProfile_pEventlog' => 0,
-            'action' => 1);
-
-        if ($id > 0) {
-            self::setQueryUserProfiles($id);
-
-            if (self::getItemDetail()) {
-                foreach (self::$queryRes as $row) {
-                    foreach ($row as $name => $value) {
-                        if (preg_match('/^.*_p[A-Z].*$/', $name)) {
-                            $profile[$name] = ( (int) $value === 1 ) ? "CHECKED" : "";
-                        } else {
-                            $profile[$name] = $value;
-                        }
-                    }
-                }
-
-                $profile['action'] = 2;
-            }
-        }
-
-        return $profile;
     }
 
     /**
@@ -465,13 +362,14 @@ class SP_Users {
         $userLogin = strtoupper($this->userLogin);
         $userEmail = strtoupper($this->userEmail);
 
-        $query = "SELECT user_login, user_email FROM usrData
-                    WHERE (UPPER(user_login) = '" . DB::escape($userLogin) . "' 
-                    OR UPPER(user_email) = '" . DB::escape($userEmail) . "') 
-                    AND user_id != " . (int) $this->userId;
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT user_login, user_email "
+                . "FROM usrData "
+                . "WHERE (UPPER(user_login) = '" . DB::escape($userLogin) . "' "
+                . "OR UPPER(user_email) = '" . DB::escape($userEmail) . "') "
+                . "AND user_id != " . (int) $this->userId;
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
@@ -488,188 +386,13 @@ class SP_Users {
     }
 
     /**
-     * @brief Comprobar si un grupo existe en la BBDD
-     * @return bool
-     */
-    public function checkGroupExist() {
-        $strGroupName = strtoupper($this->groupName);
-
-        if ($this->groupId) {
-            $query = "SELECT usergroup_name FROM usrGroups
-                        WHERE UPPER(usergroup_name) = '" . DB::escape($strGroupName) . "' 
-                        AND usergroup_id != " . (int) $this->groupId;
-        } else {
-            $query = "SELECT usergroup_name FROM usrGroups
-                        WHERE UPPER(usergroup_name) = '" . DB::escape($strGroupName) . "'";
-        }
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        if (count(DB::$last_result) >= 1) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprobar si un perfil existe
-     * @return bool
-     */
-    public function checkProfileExist() {
-        $profileName = strtoupper($this->profileName);
-
-        if ($this->profileId) {
-            $query = "SELECT userprofile_name FROM usrProfiles
-                        WHERE UPPER(userprofile_name) = '" . DB::escape($profileName) . "' 
-                        AND userprofile_id != " . (int) $this->profileId;
-        } else {
-            $query = "SELECT userprofile_name FROM usrProfiles
-                        WHERE UPPER(userprofile_name) = '" . DB::escape($profileName) . "'";
-        }
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        if (count(DB::$last_result) >= 1) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprobar si un grupo está en uso
-     * @return bool
-     * 
-     * Esta función comprueba si un grupo está en uso por usuarios o cuentas.
-     */
-    public function checkGroupInUse() {
-        // Número de usuarios con el grupo
-        $query = "SELECT user_id FROM usrData WHERE user_groupId = " . (int) $this->groupId;
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE){
-            return FALSE;
-        }
-
-        $numRows = count(DB::$last_result);
-        $txt = _('Usuarios') . " (" . $numRows . ")";
-
-        if ($numRows) {
-            return $txt;
-        }
-
-        // Número de cuentas con el grupo como primario
-        $query = "SELECT account_id FROM accounts WHERE account_userGroupId = " . (int) $this->groupId;
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        $numRows = count(DB::$last_result);
-        $txt = _('Cuentas') . " (" . $numRows . ")";
-
-        if ($numRows) {
-            return $txt;
-        }
-
-        // Número de cuentas con el grupo como secundario
-        $query = "SELECT accgroup_id FROM accGroups WHERE accgroup_groupId = " . (int) $this->groupId;
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        $numRows = count(DB::$last_result);
-        $txt = _('Cuentas') . " (" . $numRows . ")";
-
-        if ($numRows) {
-            return $txt;
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprobar si un perfil está en uso
-     * @return bool
-     */
-    public function checkProfileInUse() {
-        $query = "SELECT user_id FROM usrData WHERE user_profileId = " . (int) $this->profileId;
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        $numRows = count(DB::$last_result);
-
-        if ($numRows >= 1) {
-            return "Usuarios ($numRows)";
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprobar la clave de usuario en la BBDD
-     * @return bool
-     * 
-     * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado desde phpPMS,
-     * se ejecuta el proceso para actualizar la clave.
-     */
-    public function checkUserPass() {
-        if ($this->checkUserIsMigrate()) {
-            if (!$this->migrateUser()) {
-                return FALSE;
-            }
-        }
-
-        $query = "SELECT user_login, user_pass FROM usrData
-                        WHERE user_login = '" . DB::escape($this->userLogin) . "'
-                        AND user_isMigrate = 0
-                        AND user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($this->userPass) . "')) LIMIT 1";
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        if (count(DB::$last_result) == 0) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprobar si un usuario está deshabilitado
-     * @return bool
-     */
-    public function checkUserIsDisabled() {
-        $query = "SELECT user_isDisabled FROM usrData
-                    WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === FALSE || !is_array($queryRes)) {
-            return FALSE;
-        }
-
-        if ($queryRes[0]->user_isDisabled == 0) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    /**
      * @brief Comprobar si los datos del usuario de LDAP están en la BBDD
      * @return bool
      */
-    public function checkUserLDAP() {
-        $query = "SELECT user_login FROM usrData 
-                    WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
+    public function checkLDAPUserInDB() {
+        $query = "SELECT user_login "
+                . "FROM usrData "
+                . "WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -686,16 +409,17 @@ class SP_Users {
      * @brief Comprobar si un usuario está migrado desde phpPMS
      * @return bool
      */
-    private function checkUserIsMigrate() {
-        $query = "SELECT user_isMigrate FROM usrData
-                    WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
+    public static function checkUserIsMigrate($userLogin) {
+        $query = "SELECT user_isMigrate "
+                . "FROM usrData "
+                . "WHERE user_login = '" . DB::escape($userLogin) . "' LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        if ($queryRes[0]->user_isMigrate == 0) {
+        if ($queryRes->user_isMigrate == 0) {
             return FALSE;
         }
 
@@ -708,18 +432,18 @@ class SP_Users {
      * 
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
      */
-    private function migrateUser() {
-        $passdata = $this->makeUserPass();
+    public static function migrateUser($userLogin, $userPass) {
+        $passdata = SP_Users::makeUserPass($userPass);
 
-        $query = "UPDATE usrData SET 
-                    user_pass = '" . $passdata['pass'] . "',
-                    user_hashSalt = '" . $passdata['salt'] . "',
-                    user_lastUpdate = NOW(),
-                    user_isMigrate = 0
-                    WHERE user_login = '" . DB::escape($this->userLogin) . "'
-                    AND user_isMigrate = 1
-                    AND (user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($this->userPass) . "'))
-                    OR user_pass = MD5('" . DB::escape($this->userPass) . "')) LIMIT 1";
+        $query = "UPDATE usrData SET "
+                . "user_pass = '" . $passdata['pass'] . "',"
+                . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_lastUpdate = NOW(),"
+                . "user_isMigrate = 0 "
+                . "WHERE user_login = '" . DB::escape($userLogin) . "' "
+                . "AND user_isMigrate = 1 "
+                . "AND (user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($userPass) . "')) "
+                . "OR user_pass = MD5('" . DB::escape($userPass) . "')) LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -727,7 +451,7 @@ class SP_Users {
 
         $message['action'] = __FUNCTION__;
         $message['text'][] = _('Usuario actualizado');
-        $message['text'][] = 'Login: ' . $this->userLogin;
+        $message['text'][] = 'Login: ' . $userLogin;
 
         SP_Common::wrLogInfo($message);
         return TRUE;
@@ -737,9 +461,9 @@ class SP_Users {
      * @brief Crear la clave de un usuario
      * @return array con la clave y salt del usuario
      */
-    private function makeUserPass() {
+    private static function makeUserPass($userPass) {
         $salt = SP_Crypt::makeHashSalt();
-        $userPass = DB::escape(sha1($salt . DB::escape($this->userPass)));
+        $userPass = DB::escape(sha1($salt . DB::escape($userPass)));
 
         return array('salt' => $salt, 'pass' => $userPass);
     }
@@ -752,19 +476,19 @@ class SP_Users {
      * y utilizarlo en caso de fallo de LDAP
      */
     public function newUserLDAP() {
-        $passdata = $this->makeUserPass();
+        $passdata = SP_Users::makeUserPass($this->userPass);
 
-        $query = "INSERT INTO usrData SET
-                    user_name = '" . DB::escape($this->userName) . "',
-                    user_groupId = 0,
-                    user_login = '" . DB::escape($this->userLogin) . "',
-                    user_pass = '" . $passdata['pass'] . "',
-                    user_hashSalt = " . $passdata['salt'] . ",
-                    user_email = '" . DB::escape($this->userEmail) . "',
-                    user_notes = 'LDAP',
-                    user_profileId = 0,
-                    user_isLdap = 1,
-                    user_isDisabled = 1";
+        $query = "INSERT INTO usrData SET"
+                . "user_name = '" . DB::escape($this->userName) . "',"
+                . "user_groupId = 0,"
+                . "user_login = '" . DB::escape($this->userLogin) . "',"
+                . "user_pass = '" . $passdata['pass'] . "',"
+                . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_email = '" . DB::escape($this->userEmail) . "',"
+                . "user_notes = 'LDAP',"
+                . "user_profileId = 0,"
+                . "user_isLdap = 1,"
+                . "user_isDisabled = 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -779,60 +503,27 @@ class SP_Users {
 
         return TRUE;
     }
-
+   
     /**
-     * @brief Gestión de los datos de los usuario de la BBDD
-     * @param string $strAction con la acción a realizar
+     * @brief Crear un usuario
      * @return bool
-     * 
-     * Esta función realiza las operaciones de alta, modificación, eliminación y cambio de clave
-     * de los usuarios de la BBDD
      */
-    public function manageUser($actionName) {
-        $passdata = $this->makeUserPass();
+    public function addUser() {
+        $passdata = SP_Users::makeUserPass($this->userPass);
 
-        switch ($actionName) {
-            case "add":
-                $query = "INSERT INTO usrData SET
-                            user_name = '" . DB::escape($this->userName) . "',
-                            user_login = '" . DB::escape($this->userLogin) . "',
-                            user_email = '" . DB::escape($this->userEmail) . "',
-                            user_notes = '" . DB::escape($this->userNotes) . "',
-                            user_groupId = " . (int) $this->userGroupId . ",
-                            user_profileId = " . (int) $this->userProfileId . ",
-                            user_isAdminApp = " . (int) $this->userIsAdminApp . ",
-                            user_isAdminAcc = " . (int) $this->userIsAdminAcc . ",
-                            user_pass = '" . $passdata['pass'] . "',
-                            user_hashSalt = '" . $passdata['salt'] . "',
-                            user_isLdap = 0";
-                break;
-            case "update":
-                $query = "UPDATE usrData SET
-                            user_name = '" . DB::escape($this->userName) . "',
-                            user_login = '" . DB::escape($this->userLogin) . "',
-                            user_email = '" . DB::escape($this->userEmail) . "',
-                            user_notes = '" . DB::escape($this->userNotes) . "',
-                            user_groupId = " . (int) $this->userGroupId . ",
-                            user_profileId = " . (int) $this->userProfileId . ",
-                            user_isAdminApp = " . (int) $this->userIsAdminApp . ", 
-                            user_isAdminAcc = " . (int) $this->userIsAdminAcc . ", 
-                            user_isDisabled = " . (int) $this->userIsDisabled . ",
-                            user_lastUpdate = NOW()
-                            WHERE user_id = " . (int) $this->userId . " LIMIT 1";
-                break;
-            case "updatepass":
-                $query = "UPDATE usrData SET 
-                            user_pass = '" . $passdata['pass'] . "',
-                            user_hashSalt = '" . $passdata['salt'] . "',
-                            user_lastUpdate = NOW()
-                            WHERE user_id = " . (int) $this->userId . " LIMIT 1";
-                break;
-            case "delete":
-                $query = "DELETE FROM usrData WHERE user_id = " . (int) $this->userId . " LIMIT 1";
-                break;
-            default :
-                return FALSE;
-        }
+        $query = "INSERT INTO usrData SET "
+                . "user_name = '" . DB::escape($this->userName) . "',"
+                . "user_login = '" . DB::escape($this->userLogin) . "',"
+                . "user_email = '" . DB::escape($this->userEmail) . "',"
+                . "user_notes = '" . DB::escape($this->userNotes) . "',"
+                . "user_groupId = " . (int) $this->userGroupId . ","
+                . "user_profileId = " . (int) $this->userProfileId . ","
+                . "user_isAdminApp = " . (int) $this->userIsAdminApp . ","
+                . "user_isAdminAcc = " . (int) $this->userIsAdminAcc . ","
+                . "user_isDisabled = " . (int) $this->userIsDisabled . ","
+                . "user_pass = '" . $passdata['pass'] . "',"
+                . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_isLdap = 0";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -842,34 +533,24 @@ class SP_Users {
 
         return TRUE;
     }
-
+    
     /**
-     * @brief Gestión de los datos de los grupos de la BBDD
-     * @param string $actionName con la acción a realizar
+     * @brief Modificar un usuario
      * @return bool
-     * 
-     * Esta función realiza las operaciones de alta, modificación y eliminación
-     * de los grupos de la BBDD
      */
-    public function manageGroup($actionName) {
-        switch ($actionName) {
-            case "add":
-                $query = "INSERT INTO usrGroups SET
-                            usergroup_name = '" . DB::escape($this->groupName) . "',
-                            usergroup_description = '" . DB::escape($this->groupDesc) . "'";
-                break;
-            case "update":
-                $query = "UPDATE usrGroups SET 
-                            usergroup_name = '" . DB::escape($this->groupName) . "',
-                            usergroup_description = '" . $this->groupDesc . "' 
-                            WHERE usergroup_id = " . (int) $this->groupId;
-                break;
-            case "delete":
-                $query = "DELETE FROM usrGroups WHERE usergroup_id = " . (int) $this->groupId . " LIMIT 1";
-                break;
-            default :
-                return FALSE;
-        }
+    public function updateUser() {
+        $query = "UPDATE usrData SET "
+                . "user_name = '" . DB::escape($this->userName) . "',"
+                . "user_login = '" . DB::escape($this->userLogin) . "',"
+                . "user_email = '" . DB::escape($this->userEmail) . "',"
+                . "user_notes = '" . DB::escape($this->userNotes) . "',"
+                . "user_groupId = " . (int) $this->userGroupId . ","
+                . "user_profileId = " . (int) $this->userProfileId . ","
+                . "user_isAdminApp = " . (int) $this->userIsAdminApp . ","
+                . "user_isAdminAcc = " . (int) $this->userIsAdminAcc . ","
+                . "user_isDisabled = " . (int) $this->userIsDisabled . ","
+                . "user_lastUpdate = NOW() "
+                . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -879,72 +560,36 @@ class SP_Users {
 
         return TRUE;
     }
-
+    
     /**
-     * @brief Gestión de los datos de los perfiles de la BBDD
-     * @param string $actionName con la acción a realizar
-     * @param array $profileProp con los permisos sobre los perfiles de usuarios y configuración
+     * @brief Modificar la clave de un usuario
      * @return bool
-     * 
-     * Esta función realiza las operaciones de alta, modificación y eliminación
-     * de los perfiles de la BBDD
      */
-    public function manageProfiles($actionName, $profileProp = "") {
-        $enableConfig = (int) ( $profileProp["pConfig"] || $profileProp["pConfigCat"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
-        $enableusers = (int) ( $profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
+    public function updateUserPass() {
+        $passdata = SP_Users::makeUserPass($this->userPass);
+        
+        $query = "UPDATE usrData SET "
+                . "user_pass = '" . $passdata['pass'] . "',"
+                . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_lastUpdate = NOW() "
+                . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
-        switch ($actionName) {
-            case "add":
-                $query = "INSERT INTO usrProfiles SET
-                            userprofile_name = '" . DB::escape($this->profileName) . "',
-                            userProfile_pView = " . $profileProp["pAccView"] . ",
-                            userProfile_pViewPass = " . $profileProp["pAccViewPass"] . ",
-                            userProfile_pViewHistory = " . $profileProp["pAccViewHistory"] . ",
-                            userProfile_pEdit = " . $profileProp["pAccEdit"] . ",
-                            userProfile_pEditPass = " . $profileProp["pAccEditPass"] . ",
-                            userProfile_pAdd = " . $profileProp["pAccAdd"] . ",
-                            userProfile_pDelete = " . $profileProp["pAccDel"] . ",
-                            userProfile_pFiles = " . $profileProp["pAccFiles"] . ",
-                            userProfile_pConfigMenu = " . $enableConfig . ",
-                            userProfile_pConfig = " . $profileProp["pConfig"] . ",
-                            userProfile_pConfigCategories = " . $profileProp["pConfigCat"] . ",
-                            userProfile_pConfigMasterPass = " . $profileProp["pConfigMpw"] . ",
-                            userProfile_pConfigBackup = " . $profileProp["pConfigBack"] . ",
-                            userProfile_pUsersMenu = " . $enableusers . ",
-                            userProfile_pUsers = " . $profileProp["pUsers"] . ",
-                            userProfile_pGroups = " . $profileProp["pGroups"] . ",
-                            userProfile_pProfiles = " . $profileProp["pProfiles"] . ",
-                            userProfile_pEventlog = " . $profileProp["pEventlog"];
-                break;
-            case "update":
-                $query = "UPDATE usrProfiles SET
-                            userprofile_name = '" . DB::escape($this->profileName) . "',
-                            userProfile_pView = " . $profileProp["pAccView"] . ",
-                            userProfile_pViewPass = " . $profileProp["pAccViewPass"] . ",
-                            userProfile_pViewHistory = " . $profileProp["pAccViewHistory"] . ",
-                            userProfile_pEdit = " . $profileProp["pAccEdit"] . ",
-                            userProfile_pEditPass = " . $profileProp["pAccEditPass"] . ",
-                            userProfile_pAdd = " . $profileProp["pAccAdd"] . ",
-                            userProfile_pDelete = " . $profileProp["pAccDel"] . ",
-                            userProfile_pFiles = " . $profileProp["pAccFiles"] . ",
-                            userProfile_pConfigMenu = " . $enableConfig . ",
-                            userProfile_pConfig = " . $profileProp["pConfig"] . ",
-                            userProfile_pConfigCategories = " . $profileProp["pConfigCat"] . ",
-                            userProfile_pConfigMasterPass = " . $profileProp["pConfigMpw"] . ",
-                            userProfile_pConfigBackup = " . $profileProp["pConfigBack"] . ",
-                            userProfile_pUsersMenu = " . $enableusers . ",
-                            userProfile_pUsers = " . $profileProp["pUsers"] . ",
-                            userProfile_pGroups = " . $profileProp["pGroups"] . ",
-                            userProfile_pProfiles = " . $profileProp["pProfiles"] . ",
-                            userProfile_pEventlog = " . $profileProp["pEventlog"] . "
-                            WHERE userprofile_id = " . (int) $this->profileId . " LIMIT 1";
-                break;
-            case "delete":
-                $query = "DELETE FROM usrProfiles WHERE userprofile_id = " . (int) $this->profileId . " LIMIT 1";
-                break;
-            default :
-                return FALSE;
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
+            return FALSE;
         }
+
+        $this->queryLastId = DB::$lastId;
+
+        return TRUE;
+    }
+    
+    /**
+     * @brief Eliminar un usuario
+     * @return bool
+     */
+    public function deleteUser() {
+        $query = "DELETE FROM usrData "
+                . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -959,14 +604,14 @@ class SP_Users {
      * @brief Actualiza los datos de los usuarios de LDAP en la BBDD
      * @return bool
      */
-    public function updateUserLDAP() {
-        $passdata = $this->makeUserPass();
+    public function updateLDAPUserInDB() {
+        $passdata = SP_Users::makeUserPass($this->userPass);
 
-        $query = "UPDATE usrData SET 
-                    user_pass = '" . $passdata['pass'] . "',
-                    user_hashSalt = '" . $passdata['salt'] . "',
-                    user_lastUpdate = NOW()
-                    WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
+        $query = "UPDATE usrData SET "
+                . "user_pass = '" . $passdata['pass'] . "',"
+                . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_lastUpdate = NOW() "
+                . "WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -990,20 +635,20 @@ class SP_Users {
         $_SESSION['uisadminapp'] = $this->userIsAdminApp;
         $_SESSION['uisadminacc'] = $this->userIsAdminAcc;
         $_SESSION['uisldap'] = $this->userIsLdap;
-        $_SESSION['usrprofile'] = self::getUserProfile();
+        $_SESSION['usrprofile'] = SP_Profiles::getProfileForUser();
 
         $this->setUserLastLogin();
     }
 
     /**
-     * @brief Actualiza el último inici de sesión del usuario en la BBDD
+     * @brief Actualiza el último inicio de sesión del usuario en la BBDD
      * @return bool
      */
     private function setUserLastLogin() {
-        $query = 'UPDATE usrData SET '
-                . 'user_lastLogin = NOW(), '
-                . 'user_count = (user_count + 1) '
-                . 'WHERE user_id = ' . (int) $this->userId . ' LIMIT 1';
+        $query = "UPDATE usrData SET "
+                . "user_lastLogin = NOW(),"
+                . "user_count = user_count + 1 "
+                . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -1015,16 +660,17 @@ class SP_Users {
      * @return int con el Id del usuario
      */
     public static function getUserIdByLogin($login) {
-        $query = "SELECT user_id FROM usrData 
-                    WHERE user_login = '" . DB::escape($login) . "' LIMIT 1";
+        $query = "SELECT user_id "
+                . "FROM usrData "
+                . "WHERE user_login = '" . DB::escape($login) . "' LIMIT 1";
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        return (int) $queryRes[0]->user_id;
+        return (int) $queryRes->user_id;
     }
     
     /**
@@ -1032,163 +678,17 @@ class SP_Users {
      * @return string con el login del usuario
      */
     public static function getUserLoginById($id) {
-        $query = "SELECT user_login FROM usrData 
-                    WHERE user_id = " . (int)$id . " LIMIT 1";
+        $query = "SELECT user_login "
+                . "FROM usrData "
+                . "WHERE user_id = " . (int)$id . " LIMIT 1";
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        return $queryRes[0]->user_login;
-    }
-    
-    /**
-     * @brief Obtener el nombre de un grupo por a partir del Id
-     * @return string con el nombre del grupo
-     */
-    public static function getGroupNameById($id) {
-        $query = "SELECT usergroup_name FROM usrGroups 
-                    WHERE usergroup_id = " . (int)$id . " LIMIT 1";
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === FALSE || !is_array($queryRes)) {
-            return FALSE;
-        }
-
-        return $queryRes[0]->usergroup_name;
-    }
-    
-    /**
-     * @brief Obtener el nombre de un perfil por a partir del Id
-     * @return string con el nombre del perfil
-     */
-    public static function getProfileNameById($id) {
-        $query = "SELECT userprofile_name FROM usrProfiles 
-                    WHERE userprofile_id = " . (int)$id . " LIMIT 1";
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === FALSE || !is_array($queryRes)) {
-            return FALSE;
-        }
-
-        return $queryRes[0]->userprofile_name;
-    }
-
-    /**
-     * @brief Autentifica al usuario con LDAP
-     * @return bool
-     */
-    public function authUserLDAP() {
-        if (SP_Config::getValue('ldapenabled', 0) === 0 || !SP_Util::ldapIsAvailable()) {
-            return FALSE;
-        }
-
-        $searchBase = SP_Config::getValue('ldapbase');
-        $ldapserver = SP_Config::getValue('ldapserver');
-        $ldapgroup = SP_Config::getValue('ldapgroup');
-        $bindDN = SP_Config::getValue('ldapbinduser');
-        $bindPass = SP_Config::getValue('ldapbindpass');
-
-        if (!$searchBase || !$ldapserver || !$ldapgroup || !$bindDN || !$bindPass) {
-            return FALSE;
-        }
-
-        $ldapAccess = FALSE;
-        $message['action'] = __FUNCTION__;
-
-        // Conexión al servidor LDAP
-        if (!$ldapConn = @ldap_connect($ldapserver)) {
-            $message['text'][] = _('No es posible conectar con el servidor de LDAP') . " '" . $ldapserver . "'";
-            $message['text'][] = 'LDAP ERROR: ' . ldap_error($ldapConn) . '(' . ldap_errno($ldapConn) . ')';
-
-            SP_Common::wrLogInfo($message);
-            return FALSE;
-        }
-
-        @ldap_set_option($ldapConn, LDAP_OPT_NETWORK_TIMEOUT, 10); // Set timeout
-        @ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3); // Set LDAP version
-
-        if (!@ldap_bind($ldapConn, $bindDN, $bindPass)) {
-            $message['text'][] = _('Error al conectar (bind)');
-            $message['text'][] = 'LDAP ERROR: ' . ldap_error($ldapConn) . '(' . ldap_errno($ldapConn) . ')';
-
-            SP_Common::wrLogInfo($message);
-            return FALSE;
-        }
-
-        $filter = "(&(|(samaccountname=$this->userLogin)(cn=$this->userLogin))(|(objectClass=inetOrgPerson)(objectClass=person)))";
-        $filterAttr = array("dn", "displayname", "samaccountname", "mail", "memberof", "lockouttime", "fullname", "groupmembership", "mail");
-
-        $searchRes = @ldap_search($ldapConn, $searchBase, $filter, $filterAttr);
-
-        if (!$searchRes) {
-            $message['text'][] = _('Error al buscar el DN del usuario');
-            $message['text'][] = 'LDAP ERROR: ' . ldap_error($ldapConn) . '(' . ldap_errno($ldapConn) . ')';
-
-            SP_Common::wrLogInfo($message);
-            return FALSE;
-        }
-
-        if (@ldap_count_entries($ldapConn, $searchRes) === 1) {
-            $searchUser = @ldap_get_entries($ldapConn, $searchRes);
-
-            if (!$searchUser) {
-                $message['text'][] = _('Error al localizar el usuario en LDAP');
-                $message['text'][] = 'LDAP ERROR: ' . ldap_error($ldapConn) . '(' . ldap_errno($ldapConn) . ')';
-
-                SP_Common::wrLogInfo($message);
-                return FALSE;
-            }
-
-            $userDN = $searchUser[0]["dn"];
-        }
-
-        if (@ldap_bind($ldapConn, $userDN, $this->userPass)) {
-            @ldap_unbind($ldapConn);
-
-            foreach ($searchUser as $entryValue) {
-                if (is_array($entryValue)) {
-                    foreach ($entryValue as $entryAttr => $attrValue) {
-                        if (is_array($attrValue)) {
-                            if ($entryAttr == "groupmembership" || $entryAttr == "memberof") {
-                                foreach ($attrValue as $group) {
-                                    if (is_int($group)) {
-                                        continue;
-                                    }
-
-                                    preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);
-
-                                    // Comprobamos que el usuario está en el grupo indicado
-                                    if ($groupName[1] == $ldapgroup || $group == $ldapgroup) {
-                                        $ldapAccess = TRUE;
-                                        break;
-                                    }
-                                }
-                            } elseif ($entryAttr == "displayname" | $entryAttr == "fullname") {
-                                $this->userName = $attrValue[0];
-                            } elseif ($entryAttr == "mail") {
-                                $this->userEmail = $attrValue[0];
-                            } elseif ($entryAttr == "lockouttime") {
-                                if ($attrValue[0] > 0)
-                                    return FALSE;
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            $message['text'][] = _('Error al conectar con el usuario');
-            $message['text'][] = 'LDAP ERROR: ' . ldap_error($ldapConn) . '(' . ldap_errno($ldapConn) . ')';
-
-            SP_Common::wrLogInfo($message);
-            return ldap_errno($ldapConn);
-        }
-
-        return $ldapAccess;
+        return $queryRes->user_login;
     }
 
     /**
@@ -1235,18 +735,16 @@ class SP_Users {
             return FALSE;
         }
 
-        $query = 'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = ' . $userId;
+        $query = 'SELECT user_lastUpdateMPass '
+                . 'FROM usrData '
+                . 'WHERE user_id = ' . (int) $userId . ' LIMIT 1';
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        foreach ($queryRes as $userData) {
-            $userLastUpdateMPass = $userData->user_lastUpdateMPass;
-        }
-
-        if ($configMPassTime > $userLastUpdateMPass) {
+        if ($configMPassTime > $queryRes->user_lastUpdateMPass) {
             return FALSE;
         }
 
@@ -1275,11 +773,11 @@ class SP_Users {
             return FALSE;
         }
 
-        $query = "UPDATE usrData SET
-                        user_mPass = '".DB::escape($strUserMPwd[0])."',
-                        user_mIV = '".DB::escape($strUserMPwd[1])."',
-                        user_lastUpdateMPass = UNIX_TIMESTAMP()
-                        WHERE user_id = " . (int) $this->userId . " LIMIT 1";
+        $query = "UPDATE usrData SET "
+                . "user_mPass = '".DB::escape($strUserMPwd[0])."',"
+                . "user_mIV = '".DB::escape($strUserMPwd[1])."',"
+                . "user_lastUpdateMPass = UNIX_TIMESTAMP() "
+                . "WHERE user_id = " . (int) $this->userId . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -1310,15 +808,13 @@ class SP_Users {
                 . "WHERE user_id = " . (int) $this->userId ." LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        $userData = $queryRes[0];
-                
-        if ($userData->user_mPass && $userData->user_mIV) {
+        if ($queryRes->user_mPass && $queryRes->user_mIV) {
             $crypt = new SP_Crypt;
-            $clearMasterPass = $crypt->decrypt($userData->user_mPass, $this->getCypherPass(), $userData->user_mIV);
+            $clearMasterPass = $crypt->decrypt($queryRes->user_mPass, $this->getCypherPass(), $queryRes->user_mIV);
 
             if (!$clearMasterPass) {
                 return FALSE;
@@ -1338,135 +834,150 @@ class SP_Users {
         }
         return FALSE;
     }
-
+    
     /**
-     * @brief Obtener el perfil de un usuario
-     * @return object con los permisos del perfil del usuario
+     * @brief Obtiene el listado de grupos de una cuenta
+     * @return object con el Id de grupo
      */
-    public static function getUserProfile() {
-        $userId = SP_Common::parseParams('s', 'uid', 0);
-        
-        if ( ! $userId ){
-            return FALSE;
-        }
-        
-        $query = "SELECT user_profileId,
-                            userProfile_pView,
-                            userProfile_pViewPass,
-                            userProfile_pViewHistory,
-                            userProfile_pEdit,
-                            userProfile_pEditPass,
-                            userProfile_pAdd,
-                            userProfile_pDelete,
-                            userProfile_pFiles,
-                            userProfile_pConfigMenu,
-                            userProfile_pConfig,
-                            userProfile_pConfigCategories,
-                            userProfile_pConfigMasterPass,
-                            userProfile_pConfigBackup,
-                            userProfile_pUsersMenu,
-                            userProfile_pUsers,
-                            userProfile_pGroups,
-                            userProfile_pProfiles,
-                            userProfile_pEventlog 
-                            FROM usrData 
-                            JOIN usrProfiles ON userProfile_Id = user_profileId
-                            WHERE user_id = " . $userId . " LIMIT 1";
+    public static function getUsersForAccount($accountId) {
+        $query = "SELECT accuser_userId "
+                . "FROM accUsers "
+                . "WHERE accuser_accountId = " . (int) $accountId;
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        return $queryRes[0];
+        return $queryRes;
+    }
+    
+    /**
+     * @brief Obtiene el listado con el nombre de los usuarios de una cuenta
+     * @return array con los nombres de los usuarios ordenados
+     */
+    public static function getUsersNameForAccount($accountId) {
+        $query = "SELECT user_id,"
+                . "user_login "
+                . "FROM accUsers "
+                . "JOIN usrData ON user_Id = accuser_userId "
+                . "WHERE accuser_accountId = " . (int) $accountId;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
+
+        if ($queryRes === FALSE) {
+            return FALSE;
+        }
+
+        foreach ($queryRes as $users) {
+            $usersName[$users->user_id] = $users->user_login;
+        }
+
+        asort($usersName, SORT_STRING);
+
+        return $usersName;
+    }
+    
+    /**
+     * @brief Actualizar la asociación de grupos con cuentas
+     * @param int $accountId con el Id de la cuenta
+     * @param array $newGroups con los grupos de la cuenta
+     * @return bool
+     */
+    public static function updateUsersForAccount($accountId, $usersId) {
+        if (self::deleteUsersForAccount($accountId, $usersId)) {
+            return self::addUsersForAccount($accountId, $usersId);
+        }
+
+        return FALSE;
     }
 
     /**
-     * @brief Comprobar los permisos de acceso del usuario a los módulos de la aplicación
-     * @param string $strAction con el nombre de la acción
-     * @param int $userId opcional, con el Id del usuario
+     * @brief Eliminar la asociación de grupos con cuentas
+     * @param int $accountId con el Id de la cuenta
+     * @param array $usersId opcional con los grupos de la cuenta
      * @return bool
-     * 
-     * Esta función comprueba los permisos del usuario para realizar una acción.
-     * Si los permisos ya han sido obtenidos desde la BBDD, se utiliza el objeto creado
-     * en la variable de sesión.
      */
-    public static function checkUserAccess($strAction, $userId = 0) {
-        // Comprobamos si la cache de permisos está inicializada
-        if (!isset($_SESSION["usrprofile"]) || !is_object($_SESSION["usrprofile"])) {
+    public static function deleteUsersForAccount($accountId, $usersId = NULL) {
+        $queryExcluded = '';
+
+        // Excluimos los grupos actuales
+        if (is_array($usersId)) {
+            $queryExcluded = ' AND accuser_userId NOT IN ('.  implode(',', $usersId).')';
+        }
+
+        $query = 'DELETE FROM accUsers '
+                . 'WHERE accuser_accountId = ' . (int) $accountId . $queryExcluded;
+
+        error_log($query);
+        
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
 
-        $blnUIsAdminApp = $_SESSION["uisadminapp"];
-        $blnUIsAdminAcc = $_SESSION["uisadminacc"];
-        $profile = $_SESSION["usrprofile"];
+        return TRUE;
+    }
 
-        switch ($strAction) {
-            case "accview":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pView );
-                break;
-            case "accviewpass":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pViewPass );
-                break;
-            case "accviewhistory":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pViewHistory );
-                break;
-            case "accedit":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pEdit );
-                break;
-            case "acceditpass":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pEditPass || $userId == $_SESSION["uid"] );
-                break;
-            case "accnew":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pAdd );
-                break;
-            case "acccopy":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || ($profile->userProfile_pAdd && $profile->userProfile_pView) );
-                break;
-            case "accdelete":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pDelete );
-                break;
-            case "accfiles":
-                return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pFiles );
-                break;
-            case "configmenu":
-                return ( $blnUIsAdminApp || $profile->userProfile_pConfigMenu );
-                break;
-            case "config":
-                return ( $blnUIsAdminApp || $profile->userProfile_pConfig );
-                break;
-            case "categories":
-                return ( $blnUIsAdminApp || $profile->userProfile_pConfigCategories );
-                break;
-            case "masterpass":
-                return ( $blnUIsAdminApp || $profile->userProfile_pConfigMasterPass );
-                break;
-            case "backup":
-                return ( $blnUIsAdminApp || $profile->userProfile_pConfigBackup );
-                break;
-            case "usersmenu":
-                return ( $blnUIsAdminApp || $profile->userProfile_pUsersMenu );
-                break;
-            case "users":
-                return ( $blnUIsAdminApp || $profile->userProfile_pUsers );
-                break;
-            case "groups":
-                return ( $blnUIsAdminApp || $profile->userProfile_pGroups );
-                break;
-            case "profiles":
-                return ( $blnUIsAdminApp || $profile->userProfile_pProfiles );
-                break;
-            case "eventlog":
-                return ( $blnUIsAdminApp || $profile->userProfile_pEventlog );
-                break;
+    /**
+     * @brief Crear asociación de grupos con cuentas
+     * @param int $accountId con el Id de la cuenta
+     * @param array $usersId con los grupos de la cuenta
+     * @return bool
+     */
+    public static function addUsersForAccount($accountId, $usersId) {
+        $values = '';
+
+        // Obtenemos los grupos actuales
+        $currentUsers = self::getUsersForAccount($accountId);
+        
+        if (is_array($currentUsers) ){
+            foreach ( $currentUsers as $user ){
+                $usersExcluded[] = $user->accuser_userId;
+            }
+        }
+        
+        foreach ($usersId as $userId) {
+            // Excluimos los usuarios actuales
+            if ( is_array($usersExcluded) && in_array($userId, $usersExcluded)){
+                continue;
+            }
+            
+            $values[] = '(' . $accountId . ',' . $userId . ')';
         }
 
-        $message['action'][] = __FUNCTION__;
-        $message['text'][] = _('Denegado acceso a') . " '" . $strAction . "'";
+        if ( ! is_array($values) ){
+            return TRUE;
+        }
+        
+        $query = 'INSERT INTO accUsers (accuser_accountId, accuser_userId) '
+                . 'VALUES ' . implode(',', $values);
 
-        SP_Common::wrLogInfo($message);
+        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
+            return FALSE;
+        }
 
-        return FALSE;
+        return TRUE;
+    }
+    
+    /**
+     * @brief Obtiene el listado de usuarios
+     * @return array con los registros con nombre de usuario como clave e id de usuario como valor
+     */ 
+    public static function getUsersIdName(){
+        $query = "SELECT user_id,"
+                . "user_name "
+                . "FROM usrData";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
+
+        if ( $queryRes === FALSE ){
+            return FALSE;
+        }
+
+        foreach ( $queryRes as $users ){
+            $arrUsers[$users->user_name] = $users->user_id;
+        }
+
+        return $arrUsers;
     }
 }

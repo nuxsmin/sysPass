@@ -51,41 +51,41 @@ switch ($action) {
         SP_Html::getTemplate('search', $tplvars);
         break;
     case "accnew":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
 
         SP_Html::getTemplate('accounts', $tplvars);
         break;
     case "acccopy":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
 
         SP_Html::getTemplate('accounts', $tplvars);
         break;
     case "accedit":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
 
         SP_Html::getTemplate('accounts', $tplvars);
         break;
     case "acceditpass":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         SP_Users::checkUserUpdateMPass() || SP_Html::showCommonError('updatempass');
 
         SP_Html::getTemplate('editpass', $tplvars);
         break;
     case "accview":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
         SP_Html::getTemplate('accounts', $tplvars);
         break;
     case "accviewhistory":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
         SP_Html::getTemplate('accounts', $tplvars);
         break;
     case "accdelete":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
         SP_Html::getTemplate('accounts', $tplvars);
         break;
@@ -95,14 +95,14 @@ switch ($action) {
     case "usersmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
-        echo ( SP_Users::checkUserAccess("users") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Usuarios') . '">' . _('Gestión de Usuarios') . '</A></LI>' : '';
-        echo ( SP_Users::checkUserAccess("groups") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Grupos') . '">' . _('Gestión de Grupos') . '</A></LI>' : '';
-        echo ( SP_Users::checkUserAccess("profiles") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Gestión de Perfiles') . '">' . _('Gestión de Perfiles') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("users") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Usuarios') . '">' . _('Gestión de Usuarios') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("groups") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Grupos') . '">' . _('Gestión de Grupos') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("profiles") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Gestión de Perfiles') . '">' . _('Gestión de Perfiles') . '</A></LI>' : '';
         echo '</UL>';
 
         $tplvars['active'] = 0;
 		
-        if (SP_Users::checkUserAccess("users")) {
+        if (SP_ACL::checkUserAccess("users")) {
             $arrUsersTableProp = array(
                 'itemName' => _('Usuario'),
                 'tblId' => 'tblUsers',
@@ -135,16 +135,16 @@ switch ($action) {
 
             echo '<DIV ID="tabs-1">';
             $startTime = microtime();
-            SP_Users::setQueryUsers();
+            $users = SP_Users::getUsers();
 
-            if (SP_Users::getItemDetail()) {
-                SP_Users::getUsrGrpTable($arrUsersTableProp);
-                SP_Html::printQueryInfoBar(SP_Users::$queryCount, $startTime);
+            if ($users) {
+                SP_Users::getUsrGrpTable($arrUsersTableProp, $users);
+                SP_Html::printQueryInfoBar(count($users), $startTime);
             }
             echo '</DIV>';
         }
 
-        if (SP_Users::checkUserAccess("groups")) {
+        if (SP_ACL::checkUserAccess("groups")) {
             $arrGroupsTableProp = array(
                 'itemName' => _('Grupo'),
                 'tblId' => 'tblGroups',
@@ -161,17 +161,17 @@ switch ($action) {
             echo '<DIV ID="tabs-2">';
 
             $startTime = microtime();
-            SP_Users::setQueryUserGroups();
+            $groups = SP_Groups::getGroups();
 
-            if (SP_Users::getItemDetail()) {
-                SP_Users::getUsrGrpTable($arrGroupsTableProp);
-                SP_Html::printQueryInfoBar(SP_Users::$queryCount, $startTime);
+            if ($groups) {
+                SP_Users::getUsrGrpTable($arrGroupsTableProp, $groups);
+                SP_Html::printQueryInfoBar(count($groups), $startTime);
             }
 
             echo '</DIV>';
         }
 
-        if (SP_Users::checkUserAccess("profiles")) {
+        if (SP_ACL::checkUserAccess("profiles")) {
             $arrProfilesTableProp = array(
                 'itemName' => _('Perfil'),
                 'tblId' => 'tblProfiles',
@@ -188,11 +188,11 @@ switch ($action) {
             echo '<DIV ID="tabs-3">';
 
             $startTime = microtime();
-            SP_Users::setQueryUserProfiles();
+            $profiles = SP_Profiles::getProfiles();
 
-            if (SP_Users::getItemDetail()) {
-                SP_Users::getUsrGrpTable($arrProfilesTableProp);
-                SP_Html::printQueryInfoBar(SP_Users::$queryCount, $startTime);
+            if ($profiles) {
+                SP_Users::getUsrGrpTable($arrProfilesTableProp, $profiles);
+                SP_Html::printQueryInfoBar(count($profiles), $startTime);
             }
 
             echo '</DIV>';
@@ -213,16 +213,16 @@ switch ($action) {
     case "configmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
-        echo ( SP_Users::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
-        echo ( SP_Users::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Categorías') . '">' . _('Categorías') . '</A></LI>' : '';
-        echo ( SP_Users::checkUserAccess("masterpass") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
-        echo ( SP_Users::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
-        echo ( SP_Users::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-5" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Categorías') . '">' . _('Categorías') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("masterpass") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-5" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
         echo '</UL>';
 		
 		$tplvars['active'] = 0;
 
-        if (SP_Users::checkUserAccess("config")) {
+        if (SP_ACL::checkUserAccess("config")) {
 			$tplvars['active']++;
 			
             echo '<DIV ID="tabs-1">';
@@ -230,7 +230,7 @@ switch ($action) {
             echo '</DIV>';
         }
 
-        if (SP_Users::checkUserAccess("categories")) {
+        if (SP_ACL::checkUserAccess("categories")) {
 			$tplvars['active']++;
 			
             echo '<DIV ID="tabs-2">';
@@ -238,7 +238,7 @@ switch ($action) {
             echo '</DIV>';
         }
 
-        if (SP_Users::checkUserAccess("masterpass")) {
+        if (SP_ACL::checkUserAccess("masterpass")) {
 			$tplvars['active']++;
 			
             echo '<DIV ID="tabs-3">';
@@ -246,7 +246,7 @@ switch ($action) {
             echo '</DIV>';
         }
 
-        if (SP_Users::checkUserAccess("backup")) {
+        if (SP_ACL::checkUserAccess("backup")) {
 			$tplvars['active']++;
 			
             echo '<DIV ID="tabs-4">';
@@ -254,7 +254,7 @@ switch ($action) {
             echo '</DIV>';
         }
 
-        if (SP_Users::checkUserAccess("config")) {
+        if (SP_ACL::checkUserAccess("config")) {
 			$tplvars['active']++;
 			
             echo '<DIV ID="tabs-5">';
@@ -276,7 +276,7 @@ switch ($action) {
             </script>';
         break;
     case "eventlog":
-        SP_Users::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+        SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         
         SP_Html::getTemplate('eventlog', $tplvars);
         break;

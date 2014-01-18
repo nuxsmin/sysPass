@@ -47,7 +47,7 @@ $(document).ready(function(){
 });
 
 function doAction(action, lastAction, id){
-    var data = {'action' : action,'lastaction': lastAction,'id': id, is_ajax: 1};
+    var data = {'action' : action,'lastAction': lastAction,'id': id, is_ajax: 1};
     
     $.fancybox.showLoading();
 
@@ -81,16 +81,25 @@ function scrollUp(){
 
 // Función para limpiar un formulario
 function Clear(id, search){
-    $("#" + id).resetForm();
-    
-    if ( search == 1 ){
+    if ( search === 1 ){
         document.frmSearch.search.value = "";
         document.frmSearch.customer.selectedIndex = 0;
         document.frmSearch.category.selectedIndex = 0;
         $('#frmSearch input[name="start"]').val(0);
         $('#frmSearch input[name="skey"]').val(0);
-        $('#frmSearch input[name="sorder"]').val('ASC');
+        $('#frmSearch input[name="sorder"]').val(0);
+        $(".select-box").val('').trigger("chosen:updated");
     }
+}
+
+// Funcion para crear un desplegable con opciones
+function mkChosen(options){
+    $('#' + options.id).chosen({
+        allow_single_deselect: true,
+        placeholder_text_single: options.placeholder, 
+        disable_search_threshold: 10,
+        no_results_text: options.noresults
+    });
 }
 
 // Función para realizar una búsqueda
@@ -229,7 +238,8 @@ function getUrlVars(){
 function doLogin(){
     $.fancybox.showLoading();
 
-    var form_data = {user: $("#user").val(), pass: $("#pass").val(), mpass: $("#mpass").val(), login: 'login', is_ajax: 1};
+    //var form_data = {user: $("#user").val(), pass: $("#pass").val(), mpass: $("#mpass").val(), login: 'login', is_ajax: 1};
+    var form_data = $('#frmLogin').serialize();
     
     $("#btnLogin").prop('disabled',true);
     
@@ -243,7 +253,7 @@ function doLogin(){
             var description = $(xml).find("description").text();
             
             if( status === 0 || status === 2 ){
-                location.href = 'index.php';
+                location.href = description;
             } else if ( status === 3 || status === 4 ){
                 resMsg("error", description);
                 $("#mpass").prop('disabled',false);
@@ -257,7 +267,7 @@ function doLogin(){
         complete: function(){$('#btnLogin').prop('disabled',false); $.fancybox.hideLoading();},
         statusCode: {
             404: function() {
-            var txt = LANG[1] + '<p>' + LANG[22] + '</p>';
+            var txt = LANG[1] + '<p>' + LANG[13] + '</p>';
             resMsg("error", txt);
         }},
     });
@@ -266,7 +276,11 @@ function doLogin(){
 }
 
 function doLogout() {
-    location.href = 'index.php?logout=1';
+    if ( window.location.search != '' ){
+        location.href = 'index.php' + window.location.search + '&logout=1';
+    } else{
+        location.href = 'index.php?logout=1';
+    }
 }
 
 function checkLogout(){
@@ -333,7 +347,7 @@ function saveAccount(frm) {
 // Función para eliminar una cuenta
 function delAccount(id,action,sk){
     var data = {accountid: id, savetyp: action, sk: sk};
-    var atext = '<div id="alert"><p id="alert-text">' + LANG[8] + '</p></div>';
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[3] + '</p></div>';
     
     alertify.confirm(atext, function (e) {
         if (e) {
@@ -489,7 +503,7 @@ function downFile(id, sk, action){
                     // Actualizar fancybox para adaptarlo al tamaño de la imagen
                     setTimeout(function() {$.fancybox.update();}, 1000);
                 } else{
-                    resMsg("error", LANG[23]);
+                    resMsg("error", LANG[14]);
                 }
 
             },
@@ -518,7 +532,7 @@ function getFiles(id, isDel, sk){
 
 // Función para eliminar archivos de una cuenta
 function delFile(id, sk, accid){
-    var atext = '<div id="alert"><p id="alert-text">' + LANG[24] + '</p></div>';
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[15] + '</p></div>';
     
     alertify.confirm(atext, function (e) {
         if (e) {
@@ -565,16 +579,16 @@ function dropFile(accountId, sk, maxsize){
         error: function(err, file) {
             switch (err) {
                 case 'BrowserNotSupported':
-                    resMsg("error", LANG[25]);
+                    resMsg("error", LANG[16]);
                     break;
                 case 'TooManyFiles':
-                    resMsg("error", LANG[26] + ' (max. ' + this.maxfiles + ')');
+                    resMsg("error", LANG[17] + ' (max. ' + this.maxfiles + ')');
                     break;
                 case 'FileTooLarge':
-                    resMsg("error", LANG[27] + ' ' + maxsize + ' MB' + '<br>' + file.name);
+                    resMsg("error", LANG[18] + ' ' + maxsize + ' MB' + '<br>' + file.name);
                     break;
             case 'FileExtensionNotAllowed':
-                    resMsg("error", LANG[28]);
+                    resMsg("error", LANG[19]);
                     break;
                 default:
                     break;
@@ -620,7 +634,7 @@ function usersMgmt(frmId, isDel, id, type, sk){
     
     if ( isDel === 1 ){
         var data = {'id' : id, 'type' : type, 'action' : 4, 'sk' : sk };
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[21] + '</p></div>';
+        var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
         var active = frmId;
         
         alertify.confirm(atext, function (e) {
@@ -722,7 +736,7 @@ function checkUpds(){
 
 // Función para limpiar el log de eventos
 function clearEventlog(sk){
-    var atext = '<div id="alert"><p id="alert-text">' + LANG[29] + '</p></div>';
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[20] + '</p></div>';
 
     alertify.confirm(atext, function (e) {
         if (e) {
@@ -754,43 +768,6 @@ function clearEventlog(sk){
             });
         }
     });
-}
-
-// Función para añadir opciones a un select desde input
-function addSelOption(dst_id,src_id){
-    var dup = 0;
-    var value_txt = $("#" + src_id).val().toUpperCase();
-    
-    if ( typeof(value_txt) == "undefined" || value_txt == "" ){
-        resMsg("error", LANG[10]);
-    } else {
-        $("#" + dst_id + " option").each(function(){
-            if ( $(this).val().toUpperCase() == value_txt ){
-                resMsg("error", LANG[11]);
-                dup = 1;
-            }
-        });
-
-        if ( dup == 0 ){
-            $("#" + dst_id).append(new Option(value_txt, value_txt, true, true));
-            resMsg("ok", LANG[13]);
-        }
-        
-        $("#" + src_id).val('');
-        $("#" + dst_id + "option").prop('selected',true);
-    }
-}
-
-// Función para eliminar opciones de un select
-function delSelOption(id){
-    var value = $("#" + id +" option:selected").val();
-    
-    if ( typeof(value) == "undefined" ){
-        resMsg("error", LANG[12]);
-    } else {
-        $("#" + id +" option:selected").remove();
-        resMsg("ok", LANG[14]);
-    }
 }
 
 // Función para mostrar los botones de acción en los resultados de búsqueda
@@ -832,9 +809,9 @@ function password(length, special, fancy, dstId) {
     
     if ( fancy == true ){
         $("#viewPass").attr("title",password);
-        //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[15] + '</p><p id="alert-pass"> ' + password + '</p>');
+        //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
     } else {
-        alertify.alert('<div id="alert"><p id="alert-text">' + LANG[15] + '</p><p id="alert-pass"> ' + password + '</p>');
+        alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
     }
    
    if ( dstId ){
@@ -922,15 +899,15 @@ function outputResult(dstId){
     if ( charPassword.length == 0 ){
         complexity.empty().removeClass("weak good strong strongest");
     } else if (charPassword.length < minPasswordLength){
-        complexity.html(LANG[20]).removeClass("good strong strongest").addClass("weak");
+        complexity.html(LANG[11]).removeClass("good strong strongest").addClass("weak");
     } else if (score<50){
-        complexity.html(LANG[18]).removeClass("good strong strongest").addClass("weak");
+        complexity.html(LANG[9]).removeClass("good strong strongest").addClass("weak");
     } else if (score>=50 && score<75){
-        complexity.html(LANG[17]).removeClass("weak strong strongest").addClass("good");
+        complexity.html(LANG[8]).removeClass("weak strong strongest").addClass("good");
     } else if (score>=75 && score<100){
-        complexity.html(LANG[16]).removeClass("weak good strongest").addClass("strong");
+        complexity.html(LANG[7]).removeClass("weak good strongest").addClass("strong");
     } else if (score>=100){
-        complexity.html(LANG[19]).removeClass("weak good strong").addClass("strongest");
+        complexity.html(LANG[10]).removeClass("weak good strong").addClass("strongest");
     }
 }
 

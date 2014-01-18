@@ -75,10 +75,6 @@ $arrSearchFilter = array("txtSearch" => $searchTxt,
 $resQuery = $objAccount->getAccounts($arrSearchFilter);
 
 if ( ! $resQuery ){
-    die('<div class="error round">'._('ERROR EN LA CONSULTA').'</div>');
-}
-
-if ( ! is_array($resQuery) ){
     die('<div class="noRes round">'._('No se encontraron registros').'</div>');
 }
 
@@ -120,16 +116,13 @@ echo '<div id="data-search" class="data-rows">';
 
 // Mostrar los resultados de la búsqueda
 foreach ( $resQuery as $account ){
-    $accView = ( $objAccount->checkAccountAccess("accview", $account->account_userId, $account->account_id, $account->account_userGroupId) 
-            && SP_Users::checkUserAccess("accview") );
-    $accViewPass = ( $objAccount->checkAccountAccess("accviewpass", $account->account_userId, $account->account_id, $account->account_userGroupId) 
-            && SP_Users::checkUserAccess("accviewpass")  );
-    $accEdit = ( $objAccount->checkAccountAccess("accedit", $account->account_userId, $account->account_id, $account->account_userGroupId)  
-                && SP_Users::checkUserAccess("accedit") );
-    $accCopy = ( $objAccount->checkAccountAccess("accview", $account->account_userId, $account->account_id, $account->account_userGroupId) 
-            && SP_Users::checkUserAccess("accnew") );
-    $accDel = ( $objAccount->checkAccountAccess("accdelete", $account->account_userId, $account->account_id, $account->account_userGroupId) 
-            && SP_Users::checkUserAccess("accdelete") );
+    $objAccount->accountId = $account->account_id;
+    
+    $accView = ( SP_ACL::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accview") );
+    $accViewPass = ( SP_ACL::checkAccountAccess("accviewpass", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accviewpass")  );
+    $accEdit = ( SP_ACL::checkAccountAccess("accedit", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accedit") );
+    $accCopy = ( SP_ACL::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accnew") );
+    $accDel = ( SP_ACL::checkAccountAccess("accdelete", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accdelete") );
     
     echo '<ul>';
     echo '<li class="cell-txt txtCliente">';
@@ -183,15 +176,26 @@ foreach ( $resQuery as $account ){
     
     echo'<li class="cell-img">';
     
-    $groupsName = _('Grupos').':<br><br>*'.$account->usergroup_name.'<br>';
+    //$groupsName = _('Grupos').':<br><br>*'.$account->usergroup_name.'<br>';
     
-    $secondaryGroups = SP_Account::getAccountGroupsName($account->account_id);
+    $secondaryGroups = SP_Groups::getGroupsNameForAccount($account->account_id);
+    $secondaryUsers = SP_Users::getUsersNameForAccount($account->account_id);
+    
+    $secondaryAccesses = '<em>(G) '.$account->usergroup_name.'*</em><br>';
             
     if ( $secondaryGroups ){
-        $groupsName .= implode('<br>', $secondaryGroups);
+        foreach ($secondaryGroups as $group){
+            $secondaryAccesses .= '<em>(G) '.$group.'</em><br>';
+        }
     }
     
-    echo '<img src="imgs/btn_group.png" title="'.$groupsName.'" />';
+    if ( $secondaryUsers ){
+        foreach ($secondaryUsers as $user){
+            $secondaryAccesses .= '<em>(U) '.$user.'</em><br>';
+        }
+    }
+    
+    echo '<img src="imgs/btn_group.png" title="'.$secondaryAccesses.'" />';
     
     $strAccNotes = (strlen($account->account_notes) > 300 ) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
     echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',TRUE)).'" />' : '';

@@ -131,8 +131,7 @@ class SP_Html {
         self::$htmlPage[] = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
         self::$htmlPage[] = '<link rel="icon" TYPE="image/png" href="' . SP_Init::$WEBROOT . '/imgs/logo.png">';
         self::setCss();
-        self::setJs(TRUE);
-        //self::setJs();
+        self::setJs();
         self::$htmlPage[] = '</head>';
     }
 
@@ -194,7 +193,7 @@ class SP_Html {
         $txtFilter = ( $filterOn ) ? '<span id="txtFilterOn" class="round">' . _('Filtro ON') . '</span>' : '';
 
         echo '<div id="pageNav" class="round shadow">';
-        echo '<div id="pageNavLeft">' . $intTotal . ' @ ' . $intTime . ' s ' . $txtFilter . '</div>';
+        echo '<div id="pageNavLeft">' . $intTotal . ' @ ' . abs($intTime) . ' s ' . $txtFilter . '</div>';
         echo '<div id="pageNavRight">';
 
         if ($intCur > 1) {
@@ -319,21 +318,10 @@ class SP_Html {
      * @brief Establece los enlaces JAVASCRIPT de la página HTML
      * @return none
      */
-    public static function setJs($min = FALSE) {
+    public static function setJs() {
         $versionParameter = md5(implode(SP_Util::getVersion()));
 
         $js_files = self::getJs();
-        
-        if ( $min ){
-            $js = array_slice($js_files, -1, 1);
-            self::$htmlPage[] = '<script type="text/javascript" src="' 
-                    . SP_Init::$WEBROOT . "/" . $js[0]["src"] 
-                    . '?v=' . $versionParameter 
-                    . $js[0]["params"] 
-                    . '&a=min'
-                    . '"></script>';;
-            return;
-        }
         
         foreach ($js_files as $js) {
             self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . '?v=' . $versionParameter . $js["params"] . '"></script>';

@@ -32,7 +32,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-SP_Users::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
+SP_ACL::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
 
 $start = SP_Common::parseParams('p', 'start', 0);
 $clear = SP_Common::parseParams('p', 'clear', 0);

@@ -280,12 +280,23 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateAccounts() {
-        $query = 'SELECT intAccountId, intUGroupFId, intUserFId, intUEditFId, 
-                        vacCliente, vacName, intCategoryFid, vacLogin, vacUrl, 
-                        vacAccountGroups, vacPassword, vacMd5Password,
-                        vacInitialValue, txtNotice, intCountView, intCountDecrypt, 
-                        datAdded, datChanged
-                        FROM accounts ';
+        $query = 'SELECT intAccountId,'
+                . 'intUGroupFId,'
+                . 'intUserFId,'
+                . 'intUEditFId,'
+                . 'vacCliente,vacName,'
+                . 'intCategoryFid,'
+                . 'vacLogin,'
+                . 'vacUrl,'
+                . 'vacAccountGroups,'
+                . 'vacPassword,'
+                . 'vacMd5Password,'
+                . 'vacInitialValue,'
+                . 'txtNotice,'
+                . 'intCountView,'
+                . 'intCountDecrypt,'
+                . 'datAdded,datChanged '
+                . 'FROM accounts ';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -366,7 +377,9 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateAccountsGroups() {
-        $query = 'SELECT intAccId, intUGroupId FROM acc_usergroups';
+        $query = 'SELECT intAccId,'
+                . 'intUGroupId '
+                . 'FROM acc_usergroups';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -398,9 +411,9 @@ class SP_Migrate {
      * @return bool
      */   
     private static function insertAccountsGroups($accountGroup) {
-        $query = "INSERT INTO accGroups SET
-                    accgroup_accountId = " . $accountGroup['intAccId'] . ",
-                    accgroup_groupId = " . $accountGroup['intUGroupId'];
+        $query = "INSERT INTO accGroups "
+                . "SET accgroup_accountId = " . $accountGroup['intAccId'] . ","
+                . "accgroup_groupId = " . $accountGroup['intUGroupId'];
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             throw new MigrateException('critical',
@@ -416,10 +429,25 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateAccountsHistory() {
-        $query = 'SELECT intAccountId, intUGroupFId, intUserFId, intUEditFId, vacCliente, vacName, intCategoryFid,
-                    vacLogin, vacUrl, vacPassword, vacInitialValue, txtNotice, intCountView, 
-                    intCountDecrypt, datAdded, datChanged, blnModificada, blnEliminada
-                    FROM acc_history';
+        $query = 'SELECT intAccountId,'
+                . 'intUGroupFId,'
+                . 'intUserFId,'
+                . 'intUEditFId,'
+                . 'vacCliente,'
+                . 'vacName,'
+                . 'intCategoryFid,'
+                . 'vacLogin,'
+                . 'vacUrl,'
+                . 'vacPassword,'
+                . 'vacInitialValue,'
+                . 'txtNotice,'
+                . 'intCountView,'
+                . 'intCountDecrypt,'
+                . 'datAdded,'
+                . 'datChanged,'
+                . 'blnModificada,'
+                . 'blnEliminada '
+                . 'FROM acc_history';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -499,7 +527,13 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateAcountsFiles() {
-        $query = 'SELECT intAccountId, vacName, vacType, intSize, blobContent, vacExtension	FROM files';
+        $query = 'SELECT intAccountId,'
+                . 'vacName,'
+                . 'vacType,'
+                . 'intSize,'
+                . 'blobContent,'
+                . 'vacExtension '
+                . 'FROM files';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -532,13 +566,13 @@ class SP_Migrate {
      * @return bool
      */ 
     private static function insertAccountsFiles($accountFile) {
-        $query = "INSERT INTO accFiles SET
-                    accfile_accountId = " . $accountFile['intAccountId'] . ",
-                    accfile_name = '" . DB::escape($accountFile['vacName']) . "',
-                    accfile_type = '" . DB::escape($accountFile['vacType']) . "',
-                    accfile_size = " . $accountFile['intSize'] . ",
-                    accfile_content = '" . DB::escape($accountFile['blobContent']) . "',
-                    accfile_extension = '" . DB::escape($accountFile['vacExtension']) . "'";
+        $query = "INSERT INTO accFiles "
+                . "SET accfile_accountId = " . $accountFile['intAccountId'] . ","
+                . "accfile_name = '" . DB::escape($accountFile['vacName']) . "',"
+                . "accfile_type = '" . DB::escape($accountFile['vacType']) . "',"
+                . "accfile_size = " . $accountFile['intSize'] . ","
+                . "accfile_content = '" . DB::escape($accountFile['blobContent']) . "',"
+                . "accfile_extension = '" . DB::escape($accountFile['vacExtension']) . "'";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             throw new MigrateException('critical',
@@ -554,7 +588,9 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateAccountsCategories() {
-        $query = 'SELECT intCategoryId, vacCategoryName FROM categories';
+        $query = 'SELECT intCategoryId,'
+                . 'vacCategoryName '
+                . 'FROM categories';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -587,9 +623,9 @@ class SP_Migrate {
      * @return bool
      */ 
     private static function insertAccountsCategories($accountCategory) {
-        $query = "INSERT INTO categories SET
-                    category_id = " . $accountCategory['intCategoryId'] . ",
-                    category_name = '" . DB::escape($accountCategory['vacCategoryName']) . "'";
+        $query = "INSERT INTO categories "
+                . "SET category_id = " . $accountCategory['intCategoryId'] . ","
+                . "category_name = '" . DB::escape($accountCategory['vacCategoryName']) . "'";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             throw new MigrateException('critical',
@@ -605,11 +641,26 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateUsers() {
-        $query = 'SELECT intUserId, vacUName, intUGroupFid, vacULogin, vacUPassword,
-                        vacUEmail, txtUNotes, intUCount, intUProfile, datULastLogin, blnIsAdminApp, 
-                        blnIsAdminAcc, vacUserMPwd, vacUserMIv, datULastUpdate, datUserLastUpdateMPass,
-                        blnFromLdap, blnDisabled 
-                        FROM users WHERE intUserId <> ' . $_SESSION['uid'];
+        $query = 'SELECT intUserId,'
+                . 'vacUName,'
+                . 'intUGroupFid,'
+                . 'vacULogin,'
+                . 'vacUPassword,'
+                . 'vacUEmail,'
+                . 'txtUNotes,'
+                . 'intUCount,'
+                . 'intUProfile,'
+                . 'datULastLogin,'
+                . 'blnIsAdminApp,'
+                . 'blnIsAdminAcc,'
+                . 'vacUserMPwd,'
+                . 'vacUserMIv,'
+                . 'datULastUpdate,'
+                . 'datUserLastUpdateMPass,'
+                . 'blnFromLdap,'
+                . 'blnDisabled '
+                . 'FROM users '
+                . 'WHERE intUserId <> ' . $_SESSION['uid'];
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -644,26 +695,26 @@ class SP_Migrate {
     * El usuario importado está deshabilitado
     */ 
     private static function insertUsers($users) {
-        $query = "INSERT INTO usrData SET 
-                    user_id = " . $users['intUserId'] . ",
-                    user_name = '" . DB::escape($users['vacUName']) . "',
-                    user_groupId = " . $users['intUGroupFid'] . ",
-                    user_login = '" . DB::escape($users['vacULogin']) . "',
-                    user_pass = '" . DB::escape($users['vacUPassword']) . "',
-                    user_mPass = '" . DB::escape($users['vacUserMPwd']) . "',
-                    user_mIV = '" . DB::escape($users['vacUserMIv']) . "',
-                    user_email = '" . DB::escape($users['vacUEmail']) . "',
-                    user_notes = '" . DB::escape($users['txtUNotes']) . "',
-                    user_count = " . $users['intUCount'] . ",
-                    user_profileId = 0,
-                    user_lastLogin = '" . $users['datULastLogin'] . "',
-                    user_lastUpdate = '" . $users['datULastUpdate'] . "',
-                    user_lastUpdateMPass = " . $users['datUserLastUpdateMPass'] . ",
-                    user_isAdminApp = " . $users['blnIsAdminApp'] . ",
-                    user_isAdminAcc = " . $users['blnIsAdminAcc'] . ",
-                    user_isLdap = " . $users['blnFromLdap'] . ", 
-                    user_isDisabled = 1,
-                    user_isMigrate = 1";
+        $query = "INSERT INTO usrData "
+                . "SET user_id = " . $users['intUserId'] . ","
+                . "user_name = '" . DB::escape($users['vacUName']) . "',"
+                . "user_groupId = " . $users['intUGroupFid'] . ","
+                . "user_login = '" . DB::escape($users['vacULogin']) . "',"
+                . "user_pass = '" . DB::escape($users['vacUPassword']) . "',"
+                . "user_mPass = '" . DB::escape($users['vacUserMPwd']) . "',"
+                . "user_mIV = '" . DB::escape($users['vacUserMIv']) . "',"
+                . "user_email = '" . DB::escape($users['vacUEmail']) . "',"
+                . "user_notes = '" . DB::escape($users['txtUNotes']) . "',"
+                . "user_count = " . $users['intUCount'] . ","
+                . "user_profileId = 0,"
+                . "user_lastLogin = '" . $users['datULastLogin'] . "',"
+                . "user_lastUpdate = '" . $users['datULastUpdate'] . "',"
+                . "user_lastUpdateMPass = " . $users['datUserLastUpdateMPass'] . ","
+                . "user_isAdminApp = " . $users['blnIsAdminApp'] . ","
+                . "user_isAdminAcc = " . $users['blnIsAdminAcc'] . ","
+                . "user_isLdap = " . $users['blnFromLdap'] . ","
+                . "user_isDisabled = 1,"
+                . "user_isMigrate = 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             throw new MigrateException('critical',
@@ -679,7 +730,10 @@ class SP_Migrate {
      * @return array resultado
      */
     private static function migrateUsersGroups() {
-        $query = 'SELECT intUGroupId, vacUGroupName, vacUGroupDesc FROM usergroups';
+        $query = 'SELECT intUGroupId,'
+                . 'vacUGroupName,'
+                . 'vacUGroupDesc '
+                . 'FROM usergroups';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {
@@ -712,10 +766,10 @@ class SP_Migrate {
     * @return bool
     */ 
     private static function insertUsersGroups($usersGroups) {
-        $query = "INSERT INTO usrGroups SET
-                    usergroup_id = " . $usersGroups['intUGroupId'] . ",
-                    usergroup_name = '" . DB::escape($usersGroups['vacUGroupName']) . "',
-                    usergroup_description = '" . DB::escape($usersGroups['vacUGroupDesc']) . "'";
+        $query = "INSERT INTO usrGroups "
+                . "SET usergroup_id = " . $usersGroups['intUGroupId'] . ","
+                . "usergroup_name = '" . DB::escape($usersGroups['vacUGroupName']) . "',"
+                . "usergroup_description = '" . DB::escape($usersGroups['vacUGroupDesc']) . "'";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             throw new MigrateException('critical',
@@ -731,7 +785,9 @@ class SP_Migrate {
      * @return none
      */
     private static function getSourceConfig(){
-        $query = 'SELECT vacValue as value, vacParameter as parameter FROM config';
+        $query = 'SELECT vacValue as value,'
+                . 'vacParameter as parameter '
+                . 'FROM config';
         $queryRes = self::$dbc->query($query);
 
         if (!$queryRes) {

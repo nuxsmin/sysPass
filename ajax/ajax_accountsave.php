@@ -48,9 +48,12 @@ $frmLogin = SP_Common::parseParams('p', 'login');
 $frmPassword = SP_Common::parseParams('p', 'password');
 $frmPasswordV = SP_Common::parseParams('p', 'password2');
 $frmCategoryId = SP_Common::parseParams('p', 'categoryId', 0);
-$frmUGroups = SP_Common::parseParams('p', 'ugroups');
+$frmOtherGroups = SP_Common::parseParams('p', 'othergroups');
+$frmOtherUsers = SP_Common::parseParams('p', 'otherusers');
 $frmNotes = SP_Common::parseParams('p', 'notice');
 $frmUrl = SP_Common::parseParams('p', 'url');
+$frmGroupEditEnabled = SP_Common::parseParams('p', 'geditenabled', 0, FALSE, 1);
+$frmUserEditEnabled = SP_Common::parseParams('p', 'ueditenabled', 0, FALSE, 1);
 $frmChangesHash = SP_Common::parseParams('p', 'hash');
 
 // Datos del Usuario
@@ -160,7 +163,10 @@ switch ($frmSaveType) {
         $account->accountNotes = $frmNotes;
         $account->accountUserId = $userId;
         $account->accountUserGroupId = $groupId;
-        $account->accountUserGroupsId = $frmUGroups;
+        $account->accountUserGroupsId = $frmOtherGroups;
+        $account->accountUsersId = $frmOtherUsers;
+        $account->accountOtherUserEdit = $frmUserEditEnabled;
+        $account->accountOtherGroupEdit = $frmGroupEditEnabled;
 
         // Crear cuenta
         if ($account->createAccount()) {
@@ -178,7 +184,10 @@ switch ($frmSaveType) {
         $account->accountUrl = $frmUrl;
         $account->accountNotes = $frmNotes;
         $account->accountUserEditId = $userId;
-        $account->accountUserGroupsId = $frmUGroups;
+        $account->accountUserGroupsId = $frmOtherGroups;
+        $account->accountUsersId = $frmOtherUsers;
+        $account->accountOtherUserEdit = $frmUserEditEnabled;
+        $account->accountOtherGroupEdit = $frmGroupEditEnabled;
 
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {

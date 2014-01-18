@@ -25,15 +25,12 @@
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-//SP_Html::$htmlBodyOpts = 'onload="document.frmLogin.user.focus();"';
-
 ?>
 
 <div id="boxLogin" class="round shadow">
     <div id="boxLogo"><img id="imgLogo" src="imgs/logo.png" title="sysPass"/></div>
     <div id="boxData">
         <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
-        
         <?php if ( SP_Config::getValue("demoenabled",0) ): ?>
             <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value="" title="> demo <"/><br />
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" title="> syspass <"/><br />
@@ -43,13 +40,23 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" /><br />
             <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave maestra'); ?>" value="" disabled/><br /></span>
         <?php endif; ?>
-
-            <input id="btnLogin" type="image" src="imgs/login.png" name="login" title="<?php echo _('Acceder') ?>" />
+            <input type="image" id="btnLogin" src="imgs/login.png" title="<?php echo _('Acceder') ?>"/>
+            <input type="hidden" name="login" value="1" />
+            <input type="hidden" name="is_ajax" value="1" />
+        <?php if ( count($_GET) > 0 ): ?>
+            <?php foreach( $_GET as $param => $value ): ?>
+            <input type="hidden" name="g_<?php echo $param; ?>" value="<?php echo $value; ?>" />
+            <?php endforeach; ?>
+        <?php endif; ?>
         </form>
     </div><!-- Close boxData -->
 </div><!-- Close boxLogin -->
 
-<? if( SP_Common::parseParams('g', 'logout', FALSE, TRUE) ): ?>
-<div id="boxLogout"><? echo _('Sesión finalizada'); ?></div>
-<script>$('#boxLogout').fadeOut(5000);</script>
-<? endif; ?>
+<?php if( SP_Common::parseParams('g', 'logout', FALSE, TRUE) ): ?>
+<div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
+<script>$('#boxLogout').fadeOut(1500, function(){ location.href = 'index.php';});</script>
+<?php endif; ?>
+
+<?php if( SP_Init::$UPDATED === TRUE ): ?>
+<div id="boxUpdated" class="round5"><?php echo _('Aplicación actualizada correctamente'); ?></div>
+<?php endif; ?>

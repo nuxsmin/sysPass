@@ -29,37 +29,27 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  * Esta clase es la encargada de realizar las operaciones sobre las cuentas de sysPass.
  */
 class SP_Account {
-
-    // Variables con info de la cuenta
     var $accountId;
+    var $lastAction;
+    var $lastId;
+    var $accountParentId;
+    
+    // Variables de la cuenta
+    var $accountUserId;
+    var $accountUsersId;
+    var $accountUserGroupId;
+    var $accountUserGroupsId;
+    var $accountUserEditId;
     var $accountName;
     var $accountCustomerId;
-    var $accountCustomerName;
     var $accountCategoryId;
-    var $accountCategoryName;
     var $accountLogin;
     var $accountUrl;
     var $accountPass;
     var $accountIV;
     var $accountNotes;
-    var $accountNumView;
-    var $accountNumViewDecrypt;
-    var $accountDateAdd;
-    var $accountDateEdit;
-
-    // Variables con info del usuario de la Cuenta
-    var $accountUserName;
-    var $accountUserId;
-    var $accountUserGroupName;
-    var $accountUserGroupId;
-    var $accountUserEditName;
-    var $accountUserEditId;
-    var $accountUserGroupsId;
-
-    // Variables de última acción
-    var $lastAction;
-    var $lastId;
-    var $accountParentId;
+    var $accountOtherUserEdit;
+    var $accountOtherGroupEdit;
 
     // Variable de consulta
     var $queryNumRows;
@@ -67,6 +57,8 @@ class SP_Account {
     var $accountIsHistory = 0;
     // Cache para grupos de usuarios de las cuentas
     var $accountCacheUserGroupsId;
+    // Cache para usuarios de las cuentas
+    var $accountCacheUsersId;
     
     // Variables para filtros de búsqueda
     static $accountSearchTxt;
@@ -84,6 +76,11 @@ class SP_Account {
      * @return array resultado de la consulta
      */ 
     public function getAccounts($searchFilter){
+        $arrFilterCommon = array();
+        $arrFilterSelect= array();
+        $arrFilterUser = array();
+        $arrQueryWhere = array();
+        
         switch ($searchFilter["keyId"]){
             case 1:
                 $orderKey = "account_name";
@@ -105,21 +102,29 @@ class SP_Account {
                 break;
         }
 
-        $querySelect = "SELECT SQL_CALC_FOUND_ROWS DISTINCT account_id, account_customerId, category_name, account_name,
-                        account_login, account_url, account_notes, account_userId, account_userGroupId, usergroup_name, customer_name
-                        FROM accounts
-                        LEFT JOIN categories ON account_categoryId = category_id
-                        LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id
-                        LEFT JOIN customers ON customer_id = account_customerId
-                        LEFT JOIN accGroups ON accgroup_accountId = account_id";
+        $querySelect = "SELECT SQL_CALC_FOUND_ROWS DISTINCT "
+                . "account_id,"
+                . "account_customerId,"
+                . "category_name,"
+                . "account_name,"
+                . "account_login,"
+                . "account_url,"
+                . "account_notes,"
+                . "account_userId,"
+                . "account_userGroupId,"
+                . "account_otherUserEdit,"
+                . "account_otherGroupEdit,"
+                . "usergroup_name,"
+                . "customer_name "
+                . "FROM accounts "
+                . "LEFT JOIN categories ON account_categoryId = category_id "
+                . "LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id "
+                . "LEFT JOIN customers ON customer_id = account_customerId "
+                . "LEFT JOIN accUsers ON accuser_accountId = account_id "
+                . "LEFT JOIN accGroups ON accgroup_accountId = account_id";
 
         $queryCount = "SELECT COUNT(DISTINCT account_id) AS Number FROM accounts
                         LEFT JOIN accGroups ON accgroup_accountId = account_id";
-
-        $arrFilterCommon = array();
-        $arrFilterSelect= array();
-        $arrFilterUser = array();
-        $arrQueryWhere = array();
         
         if ( $searchFilter["txtSearch"] ){
             $arrFilterCommon[] = "account_name LIKE '%".$searchFilter["txtSearch"]."%'";
@@ -132,13 +137,14 @@ class SP_Account {
             $arrFilterSelect[] = "category_id = ".$searchFilter["categoryId"];
         }
         if ( $searchFilter["customerId"] != 0 ){
-            $arrFilterSelect[] = "account_customerId = '".$searchFilter["customerId"]."'";
+            $arrFilterSelect[] = "account_customerId = ".$searchFilter["customerId"];
         }
         
         
         if ( count($arrFilterCommon) > 0 ){
             $arrQueryWhere[] =  "(".implode(" OR ", $arrFilterCommon).")";
         }
+        
         if ( count($arrFilterSelect) > 0 ){
             $arrQueryWhere[] =  "(".implode(" AND ", $arrFilterSelect).")";
         }
@@ -147,6 +153,7 @@ class SP_Account {
             $arrFilterUser[] = "account_userGroupId = ".$searchFilter["groupId"];
             $arrFilterUser[] = "account_userId = ".$searchFilter["userId"];
             $arrFilterUser[] = "accgroup_groupId = ".$searchFilter["groupId"];
+            $arrFilterUser[] = "accuser_userId = ".$searchFilter["userId"];
 
             $arrQueryWhere[] = "(".implode(" OR ", $arrFilterUser).")";
         }
@@ -160,7 +167,7 @@ class SP_Account {
         }
 
         if ( count($arrQueryWhere) === 1 ){
-            $query = $querySelect." WHERE ".implode("", $arrQueryWhere)." ".$queryOrder." ".$queryLimit;
+            $query = $querySelect." WHERE ".implode($arrQueryWhere)." ".$queryOrder." ".$queryLimit;
         } elseif ( count($arrQueryWhere) > 1 ){
             $query = $querySelect." WHERE ".implode(" AND ", $arrQueryWhere)." ".$queryOrder." ".$queryLimit;
         } else{
@@ -170,7 +177,7 @@ class SP_Account {
         $queryCount = $queryCount." WHERE ".implode(" AND ", $arrQueryWhere);
         
         // Consulta de la búsqueda de cuentas
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
         if ( $queryRes === FALSE ){
             return FALSE;
@@ -180,13 +187,15 @@ class SP_Account {
         
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         $resQueryNumRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
-        $this->queryNumRows =  $resQueryNumRows[0]->numRows;
+        $this->queryNumRows =  $resQueryNumRows->numRows;
 
         $_SESSION["accountSearchTxt"] = $searchFilter["txtSearch"];
         $_SESSION["accountSearchCustomer"] = $searchFilter["customerId"];
         $_SESSION["accountSearchCategory"] = $searchFilter["categoryId"];
         $_SESSION["accountSearchOrder"] = $searchFilter["txtOrder"];
         $_SESSION["accountSearchKey"] = $searchFilter["keyId"];
+        $_SESSION["accountSearchStart"] = $searchFilter["limitStart"];
+        $_SESSION["accountSearchLimit"] = $searchFilter["limitCount"];
         
         return $queryRes;
     }
@@ -198,45 +207,44 @@ class SP_Account {
      * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
      */ 
     public function getAccount(){
-        $query = "SELECT account_id, account_name, account_categoryId, account_userId, account_customerId,
-                    account_userGroupId, account_userEditId, category_name, account_login, account_url, account_pass,
-                    account_IV, account_notes, account_countView, account_countDecrypt,
-                    account_dateAdd, account_dateEdit, u1.user_name as user_name, u2.user_name as user_editName,
-                    usergroup_name, customer_name
-                    FROM accounts
-                    LEFT JOIN categories ON account_categoryId = category_id
-                    LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id
-                    LEFT JOIN usrData u1 ON account_userId = u1.user_id
-                    LEFT JOIN usrData u2 ON account_userEditId = u2.user_id
-                    LEFT JOIN customers ON account_customerId = customer_id
-                    WHERE account_id = ".(int)$this->accountId." LIMIT 1";
+        $query = "SELECT account_id,"
+                . "account_name,"
+                . "account_categoryId,"
+                . "account_userId,"
+                . "account_customerId,"
+                . "account_userGroupId,"
+                . "account_userEditId,"
+                . "category_name,"
+                . "account_login,"
+                . "account_url,"
+                . "account_pass,"
+                . "account_IV,"
+                . "account_notes,"
+                . "account_countView,"
+                . "account_countDecrypt,"
+                . "account_dateAdd,"
+                . "account_dateEdit,"
+                . "account_otherUserEdit,"
+                . "account_otherGroupEdit,"
+                . "u1.user_name as user_name,"
+                . "u2.user_name as user_editName,"
+                . "usergroup_name,"
+                . "customer_name "
+                . "FROM accounts "
+                . "LEFT JOIN categories ON account_categoryId = category_id "
+                . "LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id "
+                . "LEFT JOIN usrData u1 ON account_userId = u1.user_id "
+                . "LEFT JOIN usrData u2 ON account_userEditId = u2.user_id "
+                . "LEFT JOIN customers ON account_customerId = customer_id "
+                . "WHERE account_id = ".(int)$this->accountId." LIMIT 1";
+        
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ) return FALSE;
+        if ( $queryRes === FALSE ){
+            return FALSE;
+        }
 
-        // El resultado es un array de objetos
-        $account = $queryRes[0];
-
-        $this->accountName = $account->account_name;
-        $this->accountCategoryId = $account->account_categoryId;
-        $this->accountUserId = $account->account_userId;
-        $this->accountCustomerId = $account->account_customerId;
-        $this->accountCustomerName = $account->customer_name;
-        $this->accountUserGroupId = $account->account_userGroupId;
-        $this->accountUserEditId = $account->account_userEditId;
-        $this->accountCategoryName = $account->category_name;
-        $this->accountLogin = $account->account_login;
-        $this->accountUrl = $account->account_url;
-        $this->accountPass = $account->account_pass;
-        $this->accountIV = $account->account_IV;
-        $this->accountNotes = $account->account_notes;
-        $this->accountNumView = $account->account_countView;
-        $this->accountNumViewDecrypt = $account->account_countDecrypt;
-        $this->accountDateAdd = $account->account_dateAdd;
-        $this->accountDateEdit = ( $account->account_dateEdit != "0000-00-00 00:00:00") ? $account->account_dateEdit : '';
-        $this->accountUserName = $account->user_name;
-        $this->accountUserGroupName = $account->usergroup_name;
-        $this->accountUserEditName = ( $account->user_editName ) ? $account->user_editName : "";
+        return $queryRes;
     }
 
     /**
@@ -246,46 +254,45 @@ class SP_Account {
      * Esta funcion realiza la consulta a la BBDD y guarda los datos del histórico en las variables de la clase.
      */ 
     public function getAccountHistory(){
-        $query = "SELECT acchistory_accountId, acchistory_customerId, acchistory_categoryId, acchistory_name, acchistory_login,
-                    acchistory_url, acchistory_pass, acchistory_IV, acchistory_notes, acchistory_countView,
-                    acchistory_countDecrypt, acchistory_dateAdd, acchistory_dateEdit, acchistory_userId, acchistory_userGroupId,
-                    acchistory_userEditId, acchistory_isModify, acchistory_isDeleted, u1.user_name, usergroup_name,
-                    u2.user_name as user_editName, category_name, customer_name
-                    FROM accHistory
-                    LEFT JOIN categories ON acchistory_categoryId = category_id
-                    LEFT JOIN usrGroups ON acchistory_userGroupId = usergroup_id
-                    LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id
-                    LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id
-                    LEFT JOIN customers ON acchistory_customerId = customer_id
-                    WHERE acchistory_id = ".(int)$this->accountId." LIMIT 1";
+        $query = "SELECT acchistory_accountId as account_id,"
+                . "acchistory_customerId as account_customerId,"
+                . "acchistory_categoryId as account_categoryId,"
+                . "acchistory_name as account_name,"
+                . "acchistory_login as account_login,"
+                . "acchistory_url as account_url,"
+                . "acchistory_pass as account_pass,"
+                . "acchistory_IV as account_IV,"
+                . "acchistory_notes as account_notes,"
+                . "acchistory_countView as account_countView,"
+                . "acchistory_countDecrypt as account_countDecrypt,"
+                . "acchistory_dateAdd as account_dateAdd,"
+                . "acchistory_dateEdit as account_dateEdit,"
+                . "acchistory_userId as account_userId,"
+                . "acchistory_userGroupId as account_useGroupId,"
+                . "acchistory_userEditId as account_userEditId,"
+                . "acchistory_isModify,"
+                . "acchistory_isDeleted,"
+                . "acchistory_otherUserEdit as account_otherUserEdit,"
+                . "acchistory_otherGroupEdit as account_otherGroupEdit,"
+                . "u1.user_name,"
+                . "usergroup_name,"
+                . "u2.user_name as user_editName,"
+                . "category_name, customer_name "
+                . "FROM accHistory "
+                . "LEFT JOIN categories ON acchistory_categoryId = category_id "
+                . "LEFT JOIN usrGroups ON acchistory_userGroupId = usergroup_id "
+                . "LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id "
+                . "LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id "
+                . "LEFT JOIN customers ON acchistory_customerId = customer_id "
+                . "WHERE acchistory_id = ".(int)$this->accountId." LIMIT 1";
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ) return FALSE;
+        if ( $queryRes === FALSE ){
+            return FALSE;
+        }
 
-        // El resultado es un array de objetos
-        $account = $queryRes[0];
-
-        $this->accountCustomerId = $account->acchistory_customerId;
-        $this->accountCustomerName = $account->customer_name;
-        $this->accountCategoryId = $account->acchistory_categoryId;
-        $this->accountUserId = $account->acchistory_userId;
-        $this->accountUserGroupId = $account->acchistory_userGroupId;
-        $this->accountUserEditId = $account->acchistory_userEditId;
-        $this->accountName = $account->acchistory_name;
-        $this->accountCategoryName = $account->category_name;
-        $this->accountLogin = $account->acchistory_login;
-        $this->accountUrl = $account->acchistory_url;
-        $this->accountPass = $account->acchistory_pass;
-        $this->accountIV = $account->acchistory_IV;
-        $this->accountNotes = $account->acchistory_notes;
-        $this->accountNumView = $account->acchistory_countView;
-        $this->accountNumViewDecrypt = $account->acchistory_countDecrypt;
-        $this->accountDateAdd = $account->acchistory_dateAdd;
-        $this->accountDateEdit = $account->acchistory_dateEdit;
-        $this->accountUserName = $account->user_name;
-        $this->accountUserGroupName = $account->usergroup_name;
-        $this->accountUserEditName = $account->user_editName;
+        return $queryRes;
     }
     
     /**
@@ -294,15 +301,20 @@ class SP_Account {
      * @return object con el id de usuario y modificador.
      */ 
     public static function getAccountRequestData($accountId){
-        $query = "SELECT account_userId, account_userEditId, account_name, customer_name
-                    FROM accounts
-                    LEFT JOIN customers ON account_customerId = customer_id
-                    WHERE account_id = ".(int)$accountId." LIMIT 1";
+        $query = "SELECT account_userId,"
+                . "account_userEditId,"
+                . "account_name,"
+                . "customer_name "
+                . "FROM accounts "
+                . "LEFT JOIN customers ON account_customerId = customer_id "
+                . "WHERE account_id = ".(int)$accountId." LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ) return FALSE;
+        if ( $queryRes === FALSE ){
+            return FALSE;
+        }
 
-        return $queryRes[0];
+        return $queryRes;
     }
 
     /**
@@ -319,21 +331,31 @@ class SP_Account {
             return FALSE;
         }
 
-        if ( ! $this->updateAccGroups() ){
+        if ( ! SP_Groups::updateGroupsForAccount($this->accountId, $this->accountUserGroupsId) ){
             $message['text'][] = _('Error al actualizar los grupos secundarios');
             SP_Common::wrLogInfo($message);
+            $message['text'] = array();
+        }
+        
+        if ( ! SP_Users::updateUsersForAccount($this->accountId, $this->accountUsersId) ){
+            $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
+            SP_Common::wrLogInfo($message);
+            $message['text'] = array();
         }
 
-        $query = "UPDATE accounts SET
-                    account_customerId = '".DB::escape($this->accountCustomerId)."',
-                    account_categoryId = ".(int)$this->accountCategoryId.",
-                    account_name = '".DB::escape($this->accountName)."',
-                    account_login = '".DB::escape($this->accountLogin)."',
-                    account_url = '".DB::escape($this->accountUrl)."',
-                    account_notes = '".DB::escape($this->accountNotes)."',
-                    account_userEditId = ".(int)$this->accountUserEditId.",
-                    account_dateEdit = NOW()
-                    WHERE account_id = ".(int)$this->accountId;
+        $query = "UPDATE accounts SET "
+                . "account_customerId = '".DB::escape($this->accountCustomerId)."',"
+                . "account_categoryId = ".(int)$this->accountCategoryId.","
+                . "account_name = '".DB::escape($this->accountName)."',"
+                . "account_login = '".DB::escape($this->accountLogin)."',"
+                . "account_url = '".DB::escape($this->accountUrl)."',"
+                . "account_notes = '".DB::escape($this->accountNotes)."',"
+                . "account_userEditId = ".(int)$this->accountUserEditId.","
+                . "account_dateEdit = NOW(), "
+                . "account_otherUserEdit = ".(int)$this->accountOtherUserEdit.","
+                . "account_otherGroupEdit = ".(int)$this->accountOtherGroupEdit." "
+                . "WHERE account_id = ".(int)$this->accountId;
+
 
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
@@ -370,12 +392,12 @@ class SP_Account {
             }
         }
 
-        $query = "UPDATE accounts SET
-                        account_pass = '".DB::escape($this->accountPass)."',
-                        account_IV = '".DB::escape($this->accountIV)."',
-                        account_userEditId = ".(int)$this->accountUserEditId.",
-                        account_dateEdit = NOW()
-                        WHERE account_id = ".(int)$this->accountId;
+        $query = "UPDATE accounts SET "
+                . "account_pass = '".DB::escape($this->accountPass)."',"
+                . "account_IV = '".DB::escape($this->accountIV)."',"
+                . "account_userEditId = ".(int)$this->accountUserEditId.","
+                . "account_dateEdit = NOW() "
+                . "WHERE account_id = ".(int)$this->accountId;
 
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
@@ -405,11 +427,11 @@ class SP_Account {
      * @return bool
      */ 
     public function updateAccountHistoryPass($id, $newHash){
-        $query = "UPDATE accHistory SET
-                        acchistory_pass = '".DB::escape($this->accountPass)."',
-                        acchistory_IV = '".DB::escape($this->accountIV)."',
-                        acchistory_mPassHash = '" . DB::escape($newHash)."'
-                        WHERE acchistory_id = ".(int)$id;
+        $query = "UPDATE accHistory SET "
+                . "acchistory_pass = '".DB::escape($this->accountPass)."',"
+                . "acchistory_IV = '".DB::escape($this->accountIV)."',"
+                . "acchistory_mPassHash = '" . DB::escape($newHash)."' "
+                . "WHERE acchistory_id = ".(int)$id;
 
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
@@ -423,18 +445,20 @@ class SP_Account {
      * @return bool
      */ 
     public function createAccount(){
-        $query = "INSERT INTO accounts SET
-                    account_customerId = ".(int)$this->accountCustomerId.",
-                    account_categoryId = ".(int)$this->accountCategoryId.",
-                    account_name = '".DB::escape($this->accountName)."',
-                    account_login = '".DB::escape($this->accountLogin)."',
-                    account_url = '".DB::escape($this->accountUrl)."',
-                    account_pass = '$this->accountPass',
-                    account_IV = '".DB::escape($this->accountIV)."',
-                    account_notes = '".DB::escape($this->accountNotes)."',
-                    account_dateAdd = NOW(),
-                    account_userId = ".(int)$this->accountUserId.",
-                    account_userGroupId = ".(int)$this->accountUserGroupId;
+        $query = "INSERT INTO accounts SET "
+                . "account_customerId = ".(int)$this->accountCustomerId.","
+                . "account_categoryId = ".(int)$this->accountCategoryId.","
+                . "account_name = '".DB::escape($this->accountName)."',"
+                . "account_login = '".DB::escape($this->accountLogin)."',"
+                . "account_url = '".DB::escape($this->accountUrl)."',"
+                . "account_pass = '$this->accountPass',"
+                . "account_IV = '".DB::escape($this->accountIV)."',"
+                . "account_notes = '".DB::escape($this->accountNotes)."',"
+                . "account_dateAdd = NOW(),"
+                . "account_userId = ".(int)$this->accountUserId.","
+                . "account_userGroupId = ".(int)$this->accountUserGroupId.","
+                . "account_otherUserEdit = ".(int)$this->accountOtherUserEdit.","
+                . "account_otherGroupEdit = ".(int)$this->accountOtherGroupEdit;
 
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
@@ -444,8 +468,14 @@ class SP_Account {
 
         $message['action'] = __FUNCTION__;
         
-        if ( ! $this->updateAccGroups() ){
+        if ( ! SP_Groups::addGroupsForAccount($this->accountId, $this->accountUserGroupsId) ){
             $message['text'][] = _('Error al actualizar los grupos secundarios');
+            SP_Common::wrLogInfo($message);
+            $message['text'] = array();
+        }
+        
+        if ( ! SP_Users::addUsersForAccount($this->accountId, $this->accountUsersId) ){
+            $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
             SP_Common::wrLogInfo($message);
             $message['text'] = array();
         }
@@ -485,165 +515,58 @@ class SP_Account {
             return FALSE;
         }
                 
+        if ( ! SP_Groups::deleteGroupsForAccount($this->accountId) ){
+            $message['text'][] = _('Error al eliminar grupos asociados a la cuenta');
+        }
+        
+        if ( ! SP_Users::deleteUsersForAccount($this->accountId) ){
+            $message['text'][] = _('Error al eliminar usuarios asociados a la cuenta');
+        }
+        
+        if ( ! SP_Files::deleteAccountFiles($this->accountId) ){
+            $message['text'][] = _('Error al eliminar archivos asociados a la cuenta');
+        }
+        
         SP_Common::wrLogInfo($message);
-
-        if ( ! $this->deleteAccountGroups() ){
-            return FALSE;
-        }
-        
-        if ( ! $this->deleteAccountFiles() ){
-            return FALSE;
-        }
-        
         SP_Common::sendEmail($message);
             
         return TRUE;
     }
-    
+       
     /**
-     * @brief Elimina los grupos secundarios de una cuenta en la BBDD
-     * @return bool
-     */ 
-    private function deleteAccountGroups(){
-        $query = "DELETE FROM accGroups "
-                . "WHERE accgroup_accountId = ".(int)$this->accountId;
-        
-        if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-    
-    /**
-     * @brief Elimina los archivos de una cuenta en la BBDD
-     * @return bool
-     */ 
-    private function deleteAccountFiles(){
-        $query = "DELETE FROM accFiles "
-                . "WHERE accfile_accountId = ".(int)$this->accountId;
-        
-        if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
-            return FALSE;
-        }
-        
-        return TRUE;
-    }
-
-    /**
-     * @brief Actualiza los grupos secundarios de una cuenta en la BBDD
-     * @return bool
-     */ 
-    private function updateAccGroups(){
-        $valuesDel = "";
-        $valuesNew = "";
-        $queryDel = "";
-        $query = "";
-
-        $accOldUGroups = $this->getGroupsAccount();
-        $accNewUGroups = $this->accountUserGroupsId;
-
-        if ( is_array($accOldUGroups) && ! is_array($accNewUGroups) ){
-            $queryDel = "DELETE FROM accGroups "
-                    . "WHERE accgroup_accountId = ".(int)$this->accountId;
-        } else if ( is_array($accNewUGroups) ){
-            if ( ! is_array($accOldUGroups) ){
-                // Obtenemos los grupos a añadir
-                foreach ( $accNewUGroups as $userNewGroupId ){
-                    $valuesNew .= "(".(int)$this->accountId.",".$userNewGroupId."),";
-                }
-            } else {
-                // Obtenemos los grupos a añadir a partir de los existentes
-                foreach ( $accNewUGroups as $userNewGroupId ){
-                    if ( ! in_array($userNewGroupId, $accOldUGroups)){
-                        $valuesNew .= "(".(int)$this->accountId.",".$userNewGroupId."),";
-                    }
-                }
-
-                // Obtenemos los grupos a eliminar
-                foreach ( $accOldUGroups as $userOldGroupId ){
-                    if ( ! in_array($userOldGroupId, $accNewUGroups)){
-                        $valuesDel[] = $userOldGroupId;
-                    }
-                }
-
-                if ( is_array($valuesDel) ){
-                    $queryDel = "DELETE FROM accGroups "
-                            . "WHERE accgroup_accountId = ".(int)$this->accountId." AND (";
-                    $numValues = count($valuesDel);
-                    $i = 0;
-
-                    foreach ($valuesDel as $value){
-                        if ( $i == $numValues - 1 ){
-                            $queryDel .= "accgroup_groupId = $value";
-                        } else {
-                            $queryDel .= "accgroup_groupId = $value OR ";
-                        }
-                        $i++;
-                    }
-                    $queryDel .= ")";
-                }
-            }
-
-            if ( $valuesNew ){
-                $query = "INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) VALUES ".rtrim($valuesNew, ",");
-            }
-        }
-
-        if ( $queryDel ){
-            if ( DB::doQuery($queryDel, __FUNCTION__) === FALSE ){
-                return FALSE;
-            }
-        }
-
-        if ( $query ){
-            if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
-                return FALSE;
-            }
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Crear un nuevo resitro de histório de cuenta en la BBDD
+     * @brief Crear un nuevo registro de histório de cuenta en la BBDD
      * @return bool
      */ 
     private function addHistory ($isDelete){
         $objAccountHist = new SP_Account;
 
-        $isModify = 0;
-
         $objAccountHist->accountId = $this->accountId;
-        $objAccountHist->getAccount();
+        $accountData = $objAccountHist->getAccount();
 
-        if ( $isDelete == FALSE ){
-            $isModify = 1;
-            $isDelete = 0;
-        } else {
-            $isDelete = 1;
-        }
+        $isModify = ($isDelete === FALSE ) ? 1 : 0;
+        $isDelete = ($isDelete === FALSE ) ? 0 : 1;
 
-        $query = "INSERT INTO accHistory SET
-                    acchistory_accountId = " . $objAccountHist->accountId . ",
-                    acchistory_customerId = " . $objAccountHist->accountCustomerId . ",
-                    acchistory_categoryId = " . $objAccountHist->accountCategoryId . ",
-                    acchistory_name = '" . DB::escape($objAccountHist->accountName) . "',
-                    acchistory_login = '" . DB::escape($objAccountHist->accountLogin) . "',
-                    acchistory_url = '" . DB::escape($objAccountHist->accountUrl) . "',
-                    acchistory_pass = '" . DB::escape($objAccountHist->accountPass) . "',
-                    acchistory_IV = '" . DB::escape($objAccountHist->accountIV) . "',
-                    acchistory_notes = '" . DB::escape($objAccountHist->accountNotes) . "',
-                    acchistory_countView = " . $objAccountHist->accountNumView . ",
-                    acchistory_countDecrypt = " . $objAccountHist->accountNumViewDecrypt . ",
-                    acchistory_dateAdd = '" . $objAccountHist->accountDateAdd . "',
-                    acchistory_dateEdit = '" . $objAccountHist->accountDateEdit . "',
-                    acchistory_userId = " . $objAccountHist->accountUserId . ",
-                    acchistory_userGroupId = " . $objAccountHist->accountUserGroupId . ",
-                    acchistory_userEditId = " . $objAccountHist->accountUserEditId . ",
-                    acchistory_isModify = " . $isModify . ",
-                    acchistory_isDeleted = " . $isDelete . ",
-                    acchistory_mPassHash = '" . DB::escape(SP_Config::getConfigValue('masterPwd'))."'";
+        $query = "INSERT INTO accHistory SET "
+                . "acchistory_accountId = " . $objAccountHist->accountId . ","
+                . "acchistory_customerId = " . $accountData->account_customerId . ","
+                . "acchistory_name = '" . DB::escape($accountData->account_name) . "',"
+                . "acchistory_login = '" . DB::escape($accountData->account_login) . "',"
+                . "acchistory_url = '" . DB::escape($accountData->account_url) . "',"
+                . "acchistory_pass = '" . DB::escape($accountData->account_pass) . "',"
+                . "acchistory_IV = '" . DB::escape($accountData->account_IV) . "',"
+                . "acchistory_notes = '" . DB::escape($accountData->account_notes) . "',"
+                . "acchistory_countView = " . $accountData->account_countView . ","
+                . "acchistory_countDecrypt = " . $accountData->account_countDecrypt . ","
+                . "acchistory_dateAdd = '" . $accountData->account_dateAdd . "',"
+                . "acchistory_dateEdit = '" . $accountData->account_dateEdit . "',"
+                . "acchistory_userId = " . $accountData->account_userId . ","
+                . "acchistory_userGroupId = " . $accountData->account_userGroupId . ","
+                . "acchistory_userEditId = " . $accountData->account_userEditId . ","
+                . "acchistory_isModify = " . $isModify . ","
+                . "acchistory_isDeleted = " . $isDelete . ","
+                . "acchistory_otherUserEdit = " . $accountData->account_otherUserEdit . ","
+                . "acchistory_otherGroupEdit = " . $accountData->account_otherGroupEdit . ","
+                . "acchistory_mPassHash = '" . DB::escape(SP_Config::getConfigValue('masterPwd'))."'";
 
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
             return FALSE;
@@ -657,21 +580,25 @@ class SP_Account {
      * @return array con los registros con id como clave y fecha - usuario como valor
      */ 
     public function getAccountHistoryList(){
-        $query = "SELECT acchistory_id, acchistory_dateEdit, u1.user_login as user_edit, u2.user_login as user_add, acchistory_dateAdd
-                    FROM accHistory
-                    LEFT JOIN usrData u1 ON acchistory_userEditId = u1.user_id
-                    LEFT JOIN usrData u2 ON acchistory_userId = u2.user_id
-                    WHERE acchistory_accountId = ".$_SESSION["accParentId"]." 
-                    ORDER BY acchistory_id DESC";
+        $query = "SELECT acchistory_id,"
+                . "acchistory_dateEdit,"
+                . "u1.user_login as user_edit,"
+                . "u2.user_login as user_add,"
+                . "acchistory_dateAdd "
+                . "FROM accHistory "
+                . "LEFT JOIN usrData u1 ON acchistory_userEditId = u1.user_id "
+                . "LEFT JOIN usrData u2 ON acchistory_userId = u2.user_id "
+                . "WHERE acchistory_accountId = ".$_SESSION["accParentId"]." "
+                . "ORDER BY acchistory_id DESC";
         
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
 
         $arrHistory = array();
-
+        
         foreach ( $queryRes as $history ){
             if ( $history->acchistory_dateEdit == '0000-00-00 00:00:00' ){
                 $arrHistory[$history->acchistory_id] = $history->acchistory_dateAdd." - ".$history->user_add;
@@ -691,7 +618,7 @@ class SP_Account {
         $accId = ( $this->accountIsHistory && $this->accountParentId ) ? $this->accountParentId : $this->accountId;
         
         if ( ! is_array($this->accountCacheUserGroupsId) ){
-            //error_log('Groups cache MISS');
+            //error_log('Groups cache NO_INIT');
             $this->accountCacheUserGroupsId = array($accId => array());
         } else{
             if ( array_key_exists($accId, $this->accountCacheUserGroupsId) ){
@@ -700,55 +627,68 @@ class SP_Account {
             }
         }
         
-        $query = "SELECT accgroup_groupId FROM accGroups "
-                . "WHERE accgroup_accountId = ".(int)$accId;
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ( $queryRes === FALSE && ! is_array($queryRes) ){
-            return FALSE;
-        }
-
-        if ( ! is_array($queryRes) ) return array();
+        //error_log('Groups cache MISS');
         
-        foreach ( $queryRes as $groups ){
-            $this->accountCacheUserGroupsId[$accId][] = $groups->accgroup_groupId;
-        }
+        $groups = SP_Groups::getGroupsForAccount($accId);
 
+        if ( ! is_array($groups) ){
+            return array();
+        }
+        
+        foreach ( $groups as $group ){
+            $this->accountCacheUserGroupsId[$accId][] = $group->accgroup_groupId;
+        }
+        
         return $this->accountCacheUserGroupsId[$accId];
     }
-
+   
     /**
-     * @brief Obtiene el listado de grupos secundarios
-     * @return array con los registros con nombre de grupo como clave e id de grupo como valor
+     * @brief Obtiene el listado usuarios con acceso a una cuenta
+     * @return array con los registros con id de cuenta como clave e id de usuario como valor
      */ 
-    public static function getSecGroups(){
-        $query = "SELECT usergroup_id, usergroup_name FROM usrGroups";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+    public function getUsersAccount (){
+        $accId = ( $this->accountIsHistory && $this->accountParentId ) ? $this->accountParentId : $this->accountId;
+        
+        if ( ! is_array($this->accountCacheUsersId) ){
+            //error_log('Users cache MISS');
+            $this->accountCacheUsersId = array($accId => array());
+        } else{
+            if ( array_key_exists($accId, $this->accountCacheUsersId) ){
+                //error_log('Users cache HIT');
+                return $this->accountCacheUsersId[$accId];
+            }
+        }
+        
+        $query = "SELECT accuser_userId "
+                . "FROM accUsers "
+                . "WHERE accuser_accountId = ".(int)$accId;
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
-            return FALSE;
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
+
+        if ( $queryRes === FALSE ){
+            return array();
         }
 
-        foreach ( $queryRes as $groups ){
-            $arrGroups[$groups->usergroup_name] = $groups->usergroup_id;
+        foreach ( $queryRes as $users ){
+            $this->accountCacheUsersId[$accId][] = $users->accuser_userId;
         }
 
-        return $arrGroups;
+        return $this->accountCacheUsersId[$accId];
     }
     
     /**
-     * @brief Obtiene el listado con el nombre de grupos secundarios de una cuenta
-     * @return array con los nombres de los grupos ordenados
+     * @brief Obtiene el listado con el nombre de los usuaios de una cuenta
+     * @return array con los nombres de los usuarios ordenados
      */ 
-    public static function getAccountGroupsName ($accountId){
-        $query = "SELECT usergroup_name FROM accGroups "
-                . "JOIN usrGroups ON accgroup_groupId = usergroup_id "
-                . "WHERE accgroup_accountId = ".(int)$accountId;
+    public static function getAccountUsersName ($accountId){
+        $query = "SELECT user_name "
+                . "FROM accUsers "
+                . "JOIN usrData ON accuser_userId = user_id "
+                . "WHERE accuser_accountId = ".(int)$accountId;
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE && ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
 
@@ -756,21 +696,22 @@ class SP_Account {
             return FALSE;
         }
 
-        foreach ( $queryRes as $groups ){
-            $groupsName[] = $groups->usergroup_name;
+        foreach ( $queryRes as $users ){
+            $usersName[] = $users->user_name;
         }
         
-        sort($groupsName, SORT_STRING);
+        sort($usersName, SORT_STRING);
         
-        return $groupsName;
+        return $usersName;
     }
-
+   
     /**
      * @brief Incrementa el contador de visitas de una cuenta en la BBDD
      * @return bool
      */ 
     public function incrementViewCounter(){
-        $query = "UPDATE accounts SET account_countView = (account_countView + 1) "
+        $query = "UPDATE accounts "
+                . "SET account_countView = (account_countView + 1) "
                 . "WHERE account_id = ".(int)$this->accountId;
         
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){
@@ -806,109 +747,23 @@ class SP_Account {
         $userIsAdminAcc = $_SESSION['uisadminacc'];
 
         if ( ! $userIsAdminApp && ! $userIsAdminAcc ){
-            $query = "SELECT COUNT(DISTINCT account_id) as numacc FROM accounts
-                        LEFT JOIN accGroups ON account_id = accgroup_accountId
-                        WHERE account_userGroupId = ".(int)$userGroupId."
-                        OR account_userId = ".(int)$userId."
-                        OR accgroup_groupId = ".(int)$userGroupId;
+            $query = "SELECT COUNT(DISTINCT account_id) as numacc "
+                    . "FROM accounts "
+                    . "LEFT JOIN accGroups ON account_id = accgroup_accountId "
+                    . "WHERE account_userGroupId = ".(int)$userGroupId." "
+                    . "OR account_userId = ".(int)$userId." "
+                    . "OR accgroup_groupId = ".(int)$userGroupId;
         } else {
             $query = "SELECT COUNT(account_id) as numacc FROM accounts";
         }
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
 
-        return $queryRes[0]->numacc;
-    }
-
-    /**
-     * @brief Comprueba los permisos de acceso a una cuenta
-     * @param string $action con la acción realizada
-     * @param int $accountUserId opcional, id del usuario a verificar
-     * @param int $accountId opcional, id de la cuenta a verificar
-     * @param int $accountUserGroupId opcional, id con el grupo del usuario a verificar
-     * @return bool
-     */ 
-    public function checkAccountAccess($action, $accountUserId = "", $accountId = "", $accountUserGroupId = ""){
-        $userGroupId = $_SESSION["ugroup"];
-        $userId = $_SESSION["uid"];
-        $userIsAdminApp = $_SESSION["uisadminapp"];
-        $userIsAdminAcc = $_SESSION["uisadminacc"];
-        
-        // Convertimos en array la lista de grupos de la cuenta
-        if ( ! $this->accountId && ! $accountId ){
-            return FALSE;
-        }
-        
-        if ( $accountId ) {
-            $this->accountId = $accountId;
-        } 
-
-        $accountUserGroups = $this->getGroupsAccount();
-        
-        $accountUserGroupId = ( ! $accountUserGroupId )  ? $this->accountUserGroupId: $accountUserGroupId;
-        $accountUserId = ( ! $accountUserId ) ? $this->accountUserId : $accountUserId;
-
-        switch ($action){
-            case "accview":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $accountUserGroups)
-                        || $userIsAdminApp || $userIsAdminAcc){
-                    return TRUE;
-                }
-                break;
-            case "accviewpass":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $accountUserGroups)
-                        || $userIsAdminApp || $userIsAdminAcc ){
-                    return TRUE;
-                }
-                break;
-            case "accviewhistory":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $accountUserGroups)
-                        || $userIsAdminApp || $userIsAdminAcc){
-                    return TRUE;
-                }
-                break;
-            case "accedit":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || $userIsAdminApp || $userIsAdminAcc){
-                    return TRUE;
-                }
-                break;
-            case "accdelete":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || $userIsAdminApp || $userIsAdminAcc ){
-                    return TRUE;
-                }
-                break;
-            case "acceditpass":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || $userIsAdminApp || $userIsAdminAcc){
-                    return TRUE;
-                }
-                break;
-            case "acccopy":
-                if ( $userId == $accountUserId 
-                        || $userGroupId == $accountUserGroupId
-                        || in_array($userGroupId, $accountUserGroups)
-                        || $userIsAdminApp || $userIsAdminAcc){
-                    return TRUE;
-                }
-                break;
-        }
-               
-        return FALSE;
+        return $queryRes->numacc;
     }
 
     /**
@@ -916,10 +771,13 @@ class SP_Account {
      * @return array con los datos de la clave
      */
     private function getAccountsPassData(){
-        $query = "SELECT account_id, account_pass, account_IV FROM accounts";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT account_id,"
+                . "account_pass,"
+                . "account_IV "
+                . "FROM accounts";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
@@ -931,10 +789,13 @@ class SP_Account {
      * @return array con los datos de la clave
      */
     private function getAccountsHistoryPassData(){
-        $query = "SELECT acchistory_id, acchistory_pass, acchistory_IV FROM accHistory";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT acchistory_id,"
+                . "acchistory_pass,"
+                . "acchistory_IV "
+                . "FROM accHistory";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
@@ -1124,15 +985,16 @@ class SP_Account {
             $id = $this->accountId;
         }
         
-        $query = "SELECT acchistory_mPassHash FROM accHistory "
+        $query = "SELECT acchistory_mPassHash "
+                . "FROM accHistory "
                 . "WHERE acchistory_id = ".(int)$id;
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
 
-        if ( $queryRes[0]->acchistory_mPassHash != SP_Config::getConfigValue('masterPwd') ){
+        if ( $queryRes->acchistory_mPassHash != SP_Config::getConfigValue('masterPwd') ){
             return FALSE;
         }
 
@@ -1166,20 +1028,20 @@ class SP_Account {
             }
         }
 
-        $query = "SELECT " . implode(',', $params) . "
-                        FROM accounts
-                        LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id
-                        LEFT JOIN usrData u1 ON account_userId = u1.user_id
-                        LEFT JOIN usrData u2 ON account_userEditId = u2.user_id
-                        LEFT JOIN customers ON account_customerId = customer_id
-                        WHERE account_id = " . (int) $this->accountId . " LIMIT 1";
+        $query = "SELECT " . implode(',', $params) . " "
+                . "FROM accounts "
+                . "LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id "
+                . "LEFT JOIN usrData u1 ON account_userId = u1.user_id "
+                . "LEFT JOIN usrData u2 ON account_userEditId = u2.user_id "
+                . "LEFT JOIN customers ON account_customerId = customer_id "
+                . "WHERE account_id = " . (int) $this->accountId . " LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE || !is_array($queryRes)) {
+        if ($queryRes === FALSE) {
             return FALSE;
         }
 
-        foreach ($queryRes[0] as $param => $value) {
+        foreach ($queryRes as $param => $value) {
             $this->cacheParams[$param] = $value;
         }
 
@@ -1194,14 +1056,29 @@ class SP_Account {
      * con respecto a los guardados
      */
     public function calcChangesHash(){
-        $groups = '';
+        $groups = 0;
+        $users = 0;
         
         if ( is_array($this->accountUserGroupsId)){
             $groups = implode($this->accountUserGroupsId);
         } elseif (is_array($this->accountCacheUserGroupsId) ){
             foreach ($this->accountCacheUserGroupsId as $id => $group){
                 if (is_array($group) ){
+                    // Ordenar el array para que el hash sea igual
+                    sort($group, SORT_NUMERIC);
                     $groups = implode($group);
+                }
+            } 
+        }
+        
+        if ( is_array($this->accountUsersId)){
+            $users = implode($this->accountUsersId);
+        } elseif (is_array($this->accountCacheUsersId) ){
+            foreach ($this->accountCacheUsersId as $id => $user){
+                if (is_array($user) ){
+                    // Ordenar el array para que el hash sea igual
+                    sort($user, SORT_NUMERIC);
+                    $users = implode($user);
                 }
             } 
         }
@@ -1210,8 +1087,25 @@ class SP_Account {
         $this->accountCategoryId.
         $this->accountCustomerId.
         $groups.
+        $users.
         $this->accountLogin.
         $this->accountUrl.
         $this->accountNotes);
+    }
+    
+    /**
+     * @brief Devolver datos de la cuenta para comprobación de accesos
+     * @return array con los datos de la cuenta
+     */
+    public function getAccountDataForACL(){
+        return array(
+            'id' => $this->accountId,
+            'user_id' => $this->accountUserId,
+            'group_id' => $this->accountUserGroupId,
+            'users_id' => $this->getUsersAccount(),
+            'groups_id' => $this->getGroupsAccount(),
+            'otheruser_edit' => $this->accountOtherUserEdit,
+            'othergroup_edit' => $this->accountOtherGroupEdit
+        );
     }
 }

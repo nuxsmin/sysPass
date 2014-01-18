@@ -41,11 +41,13 @@ class SP_Customer{
      * @return array con el id de cliente como clave y el nombre como valor
      */ 
     public static function getCustomers(){
-        $query = "SELECT customer_id, customer_name "
-                . "FROM customers ORDER BY customer_name";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT customer_id,"
+                . "customer_name "
+                . "FROM customers "
+                . "ORDER BY customer_name";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
         
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
@@ -63,8 +65,8 @@ class SP_Customer{
      * @return bool
      */ 
     public function customerAdd(){
-        $query = "INSERT INTO customers SET "
-                . "customer_name = '".DB::escape($this->customerName)."',"
+        $query = "INSERT INTO customers "
+                . "SET customer_name = '".DB::escape($this->customerName)."',"
                 . "customer_hash = '".$this->mkCustomerHash()."'";
         
         if ( DB::doQuery($query, __FUNCTION__) === FALSE ){

@@ -219,17 +219,16 @@ class SP_Util {
                 $title = (string)$item->title;
                 $description = (string)$item->description;
 
-                if ( preg_match("/.*\/sysPass_(\d)\.(\d{1,})\.?([a-z0-9]+)?\.(tar\.gz|zip)$/", $title, $pubVer) ){
+                if ( preg_match("/.*\/sysPass_(\d)\.(\d{1,})\.(\d{1,})(\-[a-z0-9]+)?\.(tar\.gz|zip)$/", $title, $pubVer) ){
                     break;
                 }
             }
-            
-            $appVersion = self::getVersion();
-            
+                    
             if ( is_array($pubVer) && SP_Init::isLoggedIn() ){
-                if ( ($pubVer[3] != $appVersion[2] || $pubVer[3] > $appVersion[2]) 
-                        && $pubVer[1] >= $appVersion[0]
-                        && $pubVer[2] >= $appVersion[1]){
+                $appVersion = implode('',self::getVersion());
+                $pubVersion = $pubVer[1].$pubVer[2].$pubVer[3];
+                
+                if ( $pubVersion > $appVersion ){
                     $version = $pubVer[1].'.'.$pubVer[2].'.'.$pubVer[3];
                     return array('version' => $version,'url' => $url);
                 } else {
@@ -259,7 +258,6 @@ class SP_Util {
      * @return none
      */ 
     public static function logout(){
-        echo '<script>doLogout();</script>';
-        exit();
+        exit('<script>doLogout();</script>');
     }
 }

@@ -35,6 +35,7 @@ class SP_Init {
     // The sysPass root path for http requests (e.g. syspass/)
     public static $WEBROOT = '';
     public static $LANG = '';
+    public static $UPDATED = FALSE;
 
     /**
     * SPL autoload
@@ -152,7 +153,20 @@ class SP_Init {
         if ( self::isLoggedIn() ) {
             if (isset($_GET["logout"]) && $_GET["logout"]) {
                 self::logout();
-                header("Location: ".self::$WEBROOT.'/');
+                
+                if (count($_GET) > 1){
+                    foreach ($_GET as $param => $value){
+                        if ($param == 'logout'){
+                            continue;
+                        }
+                        
+                        $params[] = $param.'='.$value;
+                    }
+                    
+                    header("Location: ".self::$WEBROOT.'/index.php?'.implode('&', $params));
+                } else {
+                    header("Location: ".self::$WEBROOT.'/');
+                }
             } 
             return;
         } else {
@@ -215,10 +229,17 @@ class SP_Init {
     private static function checkConfig() {
         if ( !is_dir(self::$SERVERROOT.'/config') ){           
             self::initError(_('El directorio "/config" no existe'));
-        } elseif ( !is_writable(self::$SERVERROOT.'/config') ) {
+        } 
+        
+        if ( !is_writable(self::$SERVERROOT.'/config') ) {
             self::initError(_('No es posible escribir en el directorio "config"'));
-        } elseif ( substr(sprintf('%o', fileperms(self::$SERVERROOT.'/config')), -4) != "0750" ){
-            self::initError(_('Los permisos del directorio "/config" son incorrectos'));
+        }
+        
+        //$configPerms = substr(sprintf('%o', fileperms(self::$SERVERROOT.'/config')), -4);
+        $configPerms = decoct(fileperms(self::$SERVERROOT.'/config') & 0777);
+        
+        if ( ! SP_Util::runningOnWindows() && $configPerms != "750" ){
+            self::initError(_('Los permisos del directorio "/config" son incorrectos'),$configPerms);
         }
     }
 
@@ -245,19 +266,29 @@ class SP_Init {
 
     /**
      * @brief Comprobar si el modo mantenimeinto está activado
-     * @return none
+     * @param bool $check sólo comprobar si está activado el modo
+     * @return bool
      * 
      * Esta función comprueba si el modo mantenimiento está activado.
      * Devuelve un error 503 y un reintento de 120s al cliente.
      */
-    public static function checkMaintenanceMode() {
+    public static function checkMaintenanceMode($check = FALSE) {
         if ( SP_Config::getValue('maintenance', false) ) {
+            if ( $check === TRUE 
+                || $_REQUEST['is_ajax'] == 1
+                || $_REQUEST['upgrade'] == 1
+                || $_REQUEST['nodbupgrade'] == 1 ){
+                return TRUE;
+            }
+            
             header('HTTP/1.1 503 Service Temporarily Unavailable');
             header('Status: 503 Service Temporarily Unavailable');
             header('Retry-After: 120');
             
             self::initError(_('Aplicación en mantenimiento'),_('En breve estará operativa'));
         }
+        
+        return FALSE;
     }
     
     /**
@@ -293,7 +324,8 @@ class SP_Init {
             session_regenerate_id(true);
             $_SESSION['SID_CREATED'] = time();
             // Recargar los permisos del perfil de usuario
-            $_SESSION['usrprofile'] = SP_Users::getUserProfile();
+            $_SESSION['usrprofile'] = SP_Profiles::getProfileForUser();
+            unset($_SESSION['APP_CONFIG']);
         }
 
         // Timeout de sesión
@@ -393,11 +425,18 @@ class SP_Init {
      * 
      * Esta función establece el lenguaje según esté definidi en la configuración o en el navegador.
      */
-    private static function selectLang(){
+    private static function selectLang(){        
         $browserLang = str_replace("-","_",substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
         $configLang = SP_Config::getValue('sitelang');
 
-        self::$LANG = ( $configLang ) ? $configLang : $browserLang;
+        // Establecer a en_US si no existe la traducción o no es español
+        if ( ! file_exists( self::$SERVERROOT.'/inc/locales/'.$browserLang) 
+                && ! preg_match('/^es_.*/i',$browserLang) 
+                && ! $configLang ){
+            self::$LANG = 'en_US';
+        } else{
+            self::$LANG = ( $configLang ) ? $configLang : $browserLang;
+        }
 
         putenv("LANG=".self::$LANG);
         setlocale(LC_MESSAGES, self::$LANG);
@@ -412,6 +451,10 @@ class SP_Init {
      * @returns none
      */
     private static function checkVersion(){
+        if (substr(self::$SUBURI, -9) != 'index.php' || SP_Common::parseParams('g', 'logout', 0) === 1 ) {
+            return;
+        }
+        
         $update = FALSE;
         $configVersion = SP_Config::getValue('version');
         $databaseVersion = SP_Config::getConfigValue('version');
@@ -422,9 +465,11 @@ class SP_Init {
             $update = TRUE;
         }
 
-        if ( $databaseVersion != $appVersion ){
-            SP_Config::setConfigValue('version', $appVersion);
-            $update = TRUE;
+        if ( $databaseVersion != $appVersion && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0){
+            if ( self::checkMaintenanceMode(TRUE) && SP_Upgrade::doUpgrade() ){
+                SP_Config::setConfigValue('version', $appVersion);
+                $update = TRUE;
+            }
         }
 
         if ( $update === TRUE ){
@@ -434,6 +479,8 @@ class SP_Init {
 
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);
+            
+            self::$UPDATED = TRUE;
         }
     }
 }

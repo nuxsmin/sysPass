@@ -42,14 +42,14 @@ class SP_Category {
                 . "WHERE category_name = '" . DB::escape($categoryName) . "' LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (!$queryRes && !is_array($queryRes)) {
+        if ( $queryRes === FALSE ) {
             return FALSE;
         }
 
-        if (count(DB::$last_result) == 0) {
+        if (DB::$num_rows == 0) {
             return 0;
         } else {
-            return $queryRes[0]->intCategoryId;
+            return $queryRes->intCategoryId;
         }
     }
 
@@ -59,8 +59,8 @@ class SP_Category {
      * @return bool
      */ 
     public static function categoryAdd($categoryName) {
-        $query = "INSERT INTO categories SET "
-                . "category_name = '" . DB::escape($categoryName) . "'";
+        $query = "INSERT INTO categories "
+                . "SET category_name = '" . DB::escape($categoryName) . "'";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
@@ -109,8 +109,8 @@ class SP_Category {
      * @return bool
      */
     public static function editCategoryById($categoryId, $categoryNameNew) {
-        $query = "UPDATE categories SET "
-                . "category_name = '" . DB::escape($categoryNameNew) . "' "
+        $query = "UPDATE categories "
+                . "SET category_name = '" . DB::escape($categoryNameNew) . "' "
                 . "WHERE category_id = " . (int) $categoryId . " LIMIT 1";
 
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
@@ -125,11 +125,14 @@ class SP_Category {
      * @return array con en id de categorioa como clave y en nombre como valor
      */ 
     public static function getCategories(){
-        $query = "SELECT category_id, category_name FROM categories ORDER BY category_name";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT category_id,"
+                . "category_name "
+                . "FROM categories "
+                . "ORDER BY category_name";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
-            return FALSE;
+        if ( $queryRes === FALSE ){
+            return array();
         }
         
         $resCategories = array();
@@ -146,13 +149,15 @@ class SP_Category {
      * @return string con el nombre de la categoría
      */ 
     public static function getCategoryNameById($id){
-        $query = "SELECT category_name FROM categories WHERE category_id = ".(int)$id;
+        $query = "SELECT category_name "
+                . "FROM categories "
+                . "WHERE category_id = ".(int)$id;
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
-        return $queryRes[0]->category_name;
+        return $queryRes->category_name;
     }
 }

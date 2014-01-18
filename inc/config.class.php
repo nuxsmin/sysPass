@@ -56,14 +56,16 @@ class SP_Config{
      * Obtener el valor de un parámetro almacenado en la BBDD
      */
     public static function getConfigValue($param){
-        $query = "SELECT config_value FROM config WHERE config_parameter = '$param'";
+        $query = "SELECT config_value "
+                . "FROM config "
+                . "WHERE config_parameter = '$param'";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
-        return $queryRes[0]->config_value;
+        return $queryRes->config_value;
     }
     
     /**
@@ -72,10 +74,12 @@ class SP_Config{
      * Obtener un array con la configuración almacenada en la BBDD
      */
     public static function getConfig(){
-        $query = "SELECT config_parameter, config_value FROM config";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT config_parameter,"
+                . "config_value "
+                . "FROM config";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
@@ -160,12 +164,16 @@ class SP_Config{
     public static function getDBConfig($force = FALSE){
         global $CFG;
 
-        if ( isset ($CFG) && ! $force ) return TRUE;
+        if ( isset ($CFG) && ! $force ){
+            return TRUE;
+        }
 
-        $query = "SELECT config_parameter, config_value FROM config";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = "SELECT config_parameter,"
+                . "config_value "
+                . "FROM config";
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
@@ -337,12 +345,17 @@ class SP_Config{
         if( self::$init ) {
             return true;
         }
-
-        if( !file_exists( SP_Init::$SERVERROOT."/config/config.php" )) return false;
+        
+        if( !file_exists( SP_Init::$SERVERROOT."/config/config.php" )){
+            return false;
+        }
 
         // Include the file, save the data from $CONFIG
         include SP_Init::$SERVERROOT."/config/config.php";
-        if( isset($CONFIG) && is_array($CONFIG) ) self::$cache = $CONFIG;
+        
+        if( isset($CONFIG) && is_array($CONFIG) ) {
+            self::$cache = $CONFIG;
+        }
 
         // We cached everything
         self::$init = true;

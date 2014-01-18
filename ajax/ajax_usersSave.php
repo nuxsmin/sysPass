@@ -113,7 +113,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::printXML(_('Las claves no coinciden'), 2);
             }
 
-            if ($objUser->manageUser("add")) {
+            if ($objUser->addUser()) {
                 $message['action'] = _('Nuevo Usuario');
                 $message['text'][] = _('Nombre') . ': ' . $frmUsrName . ' (' . $frmUsrLogin . ')';
 
@@ -125,7 +125,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             
             SP_Common::printXML(_('Error al crear el usuario'));
         } elseif ($frmAction == 2) {
-            if ($objUser->manageUser("update")) {
+            if ($objUser->updateUser()) {
                 $message['action'] = _('Modificar Usuario');
                 $message['text'][] = _('Nombre') . ': ' . $frmUsrName . ' (' . $frmUsrLogin . ')';
 
@@ -156,7 +156,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         $objUser->userId = $frmItemId;
         $objUser->userPass = $frmUsrPass;
 
-        if ($objUser->manageUser("updatepass")) {
+        if ($objUser->updateUserPass()) {
             $message['action'] = _('Modificar Clave Usuario');
             $message['text'][] = _('Login') . ': ' . $userLogin;
 
@@ -182,7 +182,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printXML(_('No es posible eliminar, usuario en uso'));
         }
 
-        if ($objUser->manageUser("delete")) {
+        if ($objUser->deleteUser()) {
             $message['action'] = _('Eliminar Usuario');
             $message['text'][] = _('Login') . ': ' . $userLogin;
 
@@ -207,16 +207,16 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printXML(_('Es necesario un nombre de grupo'), 2);
         }
 
-        $objUser->groupId = $frmItemId;
-        $objUser->groupName = $frmGrpName;
-        $objUser->groupDesc = $frmGrpDesc;
-
-        if (!$objUser->checkGroupExist()) {
+        SP_Groups::$groupId = $frmItemId;
+        SP_Groups::$groupName = $frmGrpName;
+        SP_Groups::$groupDescription = $frmGrpDesc;
+        
+        if (!SP_Groups::checkGroupExist()) {
             SP_Common::printXML(_('Nombre de grupo duplicado'), 2);
         }
 
         if ($frmAction == 1) {
-            if ($objUser->manageGroup("add")) {
+            if (SP_Groups::addGroup()) {
                 $message['action'] = _('Nuevo Grupo');
                 $message['text'][] = _('Nombre') . ': ' . $frmGrpName;
 
@@ -228,7 +228,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::printXML(_('Error al crear el grupo'));
             }
         } else if ($frmAction == 2) {
-            if ($objUser->manageGroup("update")) {
+            if (SP_Groups::updateGroup()) {
                 $message['action'] = _('Modificar Grupo');
                 $message['text'][] = _('Nombre') . ': ' . $frmGrpName;
 
@@ -243,16 +243,16 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
     // Eliminar grupo
     } elseif ($frmAction == 4) {
-        $objUser->groupId = $frmItemId;
+        SP_Groups::$groupId = $frmItemId;
 
-        $resGroupUse = $objUser->checkGroupInUse();
+        $resGroupUse = SP_Groups::checkGroupInUse();
 
-        if (is_string($resGroupUse)) {
+        if ( $resGroupUse !== TRUE ) {
             SP_Common::printXML(_('No es posible eliminar:Grupo en uso por') . ' ' . $resGroupUse);
         } else {
-            $groupName = $objUser->getGroupNameById($frmItemId);
+            $groupName = SP_Groups::getGroupNameById($frmItemId);
             
-            if ($objUser->manageGroup("delete")) {
+            if (SP_Groups::deleteGroup()) {
                 $message['action'] = _('Eliminar Grupo');
                 $message['text'][] = _('Nombre') . ': ' . $groupName;
 
@@ -272,7 +272,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
     // Variables POST del formulario
     $frmProfileName = SP_Common::parseParams('p', 'profile_name');
-    $objUser->profileId = $frmItemId;
+    SP_Profiles::$profileId = $frmItemId;
 
     // Profile properties Array
     $profileProp["pAccView"] = SP_Common::parseParams('p', 'profile_accview', 0, FALSE, 1);
@@ -298,14 +298,14 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printXML(_('Es necesario un nombre de perfil'), 2);
         }
 
-        $objUser->profileName = $frmProfileName;
+        SP_Profiles::$profileName = $frmProfileName;
 
-        if (!$objUser->checkProfileExist()) {
+        if (!SP_Profiles::checkProfileExist()) {
             SP_Common::printXML(_('Nombre de perfil duplicado'), 2);
         }
 
         if ($frmAction == 1) {
-            if ($objUser->manageProfiles("add", $profileProp)) {
+            if (SP_Profiles::addProfile($profileProp)) {
                 $message['action'] = _('Nuevo Perfil');
                 $message['text'][] = _('Nombre') . ': ' . $frmProfileName;
 
@@ -317,7 +317,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             
             SP_Common::printXML(_('Error al crear el perfil'));
         } else if ($frmAction == 2) {
-            if ($objUser->manageProfiles("update", $profileProp)) {
+            if (SP_Profiles::updateProfile($profileProp)) {
                 $message['action'] = _('Modificar Perfil');
                 $message['text'][] = _('Nombre') . ': ' . $frmProfileName;
 
@@ -332,14 +332,14 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
     // Eliminar perfil
     } elseif ($frmAction == 4) {
-        $resProfileUse = $objUser->checkProfileInUse();
+        $resProfileUse = SP_Profiles::checkProfileInUse();
 
         if (is_string($resProfileUse)) {
             SP_Common::printXML(_('No es posible eliminar: Perfil en uso por') . ' ' . $resProfileUse);
         } else {
-            $profileName = $objUser->getProfileNameById($frmItemId);
+            $profileName = SP_Profiles::getProfileNameById($frmItemId);
             
-            if ($objUser->manageProfiles("delete")) {
+            if (SP_Profiles::deleteProfile()) {
                 $message['action'] = _('Eliminar Perfil');
                 $message['text'][] = _('Nombre') . ': ' . $profileName;
 

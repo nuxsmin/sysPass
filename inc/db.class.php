@@ -36,7 +36,8 @@ class DB {
     static $lastId;
     static $txtError;
     static $numError;
-    
+    static $num_rows;
+            
     function __construct(){ }
     
     /**
@@ -106,6 +107,7 @@ class DB {
         $queryRes = self::$_db->query($query);
 
         if ( ! $queryRes ) {
+            self::$numError = self::$_db->errno;
             self::$txtError = self::$_db->error;
             
             $message['action'] = $querySource;
@@ -117,12 +119,18 @@ class DB {
         }
 
         if ( $isSelect ) {
-            $num_rows = 0;
-            
-            while ( $row = @$queryRes->fetch_object() ) {
-                self::$last_result[$num_rows] = $row;
-                $num_rows++;
+            if ( $queryRes->num_rows == 1 ){
+                self::$last_result = @$queryRes->fetch_object();
+            } else {
+                $num_row = 0;
+                
+                while ( $row = @$queryRes->fetch_object() ) {
+                    self::$last_result[$num_row] = $row;
+                    $num_row++;
+                }
             }
+            
+            self::$num_rows = $queryRes->num_rows;
             
             $queryRes->close();
         }
@@ -137,19 +145,25 @@ class DB {
      * @brief Obtener los resultados de una consulta
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @return bool|array devuleve bool si hay un error. Devuelve array con el array de registros devueltos
+     * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */ 
-    public static function getResults($query, $querySource) {
-        if ( $query ) self::doQuery($query,$querySource);
+    public static function getResults($query, $querySource, $retArray = FALSE) {
+        if ( $query ){
+            self::doQuery($query,$querySource);
+        }
         
-        if ( self::$numError ) {
+        if ( self::$numError || self::$num_rows === 0) {
             return FALSE;
         }
         
         if ( is_null(self::$numError) && count(self::$last_result) === 0 ){
             return TRUE;
         }
-            
+
+        if ( $retArray === TRUE && is_object(self::$last_result) ){
+            return array(self::$last_result);
+        }
+        
         return self::$last_result;
     }
 
@@ -161,7 +175,7 @@ class DB {
         if ( ! self::connection() ){
             return false;
         }
-        //fill the database if needed
+        
         $query='SELECT COUNT(*) '
                 . 'FROM information_schema.tables'
                 ." WHERE table_schema='".SP_Config::getValue("dbname")."' "
@@ -178,5 +192,5 @@ class DB {
         }
         
         return true;
-    }    
+    }
 }

@@ -37,23 +37,23 @@ class SP_Log {
      * @return array con el resultado de la consulta
      */ 
     public static function getEvents($start){
-        $query = 'SELECT SQL_CALC_FOUND_ROWS 
-                log_id,
-                FROM_UNIXTIME(log_date) as date,
-                log_action,
-                log_login,
-                log_description
-                FROM log ORDER BY log_id DESC LIMIT '.$start.', 50';
+        $query = 'SELECT SQL_CALC_FOUND_ROWS log_id,'
+                . 'FROM_UNIXTIME(log_date) as date,'
+                . 'log_action,log_login,'
+                . 'log_description '
+                . 'FROM log '
+                . 'ORDER BY log_id DESC '
+                . 'LIMIT '.$start.', 50';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
         
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
+        if ( $queryRes === FALSE ){
             return FALSE;
         }
         
         $numRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
         
-        self::$numRows = $numRows[0]->numRows;
+        self::$numRows = $numRows->numRows;
         
         return $queryRes;
     }

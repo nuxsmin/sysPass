@@ -219,8 +219,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #container #content {
     float: left;
     width: 85%;
-    min-height: 600px;
+    min-height: 500px;
     margin: 50px auto;
+    margin-bottom: 80px;
 }
 
 #content TD.descField, #fancyContainer TD.descField{
@@ -238,13 +239,13 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content #resBuscar{ width: 100%; margin-top: 20px;}
 #content #resBuscar IMG {vertical-align:middle;}
-#content #resBuscar #data-search, 
+/*#content #resBuscar #data-search, 
 #content .data-rows,
 #content #resEventLog #resSearch
-{overflow-y: auto; max-height: 400px}
+{overflow-y: auto; max-height: 400px}*/
 
 #content #pageNav {
-    /*float: left;*/
+    float: left;
     clear: both;
     width: 98%;
     margin-top: 15px;
@@ -323,6 +324,24 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content .data #fileUpload {display: none;}
 
+#content .data .account-permissions{float:left; margin-right: 10px;}
+#content .data .account-permissions fieldset{border: 1px solid #c9c9c9; padding: 1em;}
+#content .data .account-permissions legend{
+    font-weight: bold;
+    color: #999;
+    padding: 0.2em 0;
+}
+#content .data .account-permissions fieldset>span{
+    font-weight: bold;
+    color: #999;
+    padding: 0.2em 0;
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+}
+
+#content .extra-info{margin-top:  20px;}
+
 #content .tblIcon {background: url("../imgs/clock.png") no-repeat  98% 5% #f9f9f9;}
 
 #content #tabs FIELDSET{ border: 1px solid #c9c9c9;}
@@ -383,7 +402,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
     color: #696969;
 }
 #content .data-header li a{color: #777;}
-#content .data-header li img{width: 24px; height: 24px; vertical-align: middle;}
+#content .data-header li img{float: right; width: 24px; height: 24px; vertical-align: middle;}
 
 #content .data-rows ul{
     display: table; 
@@ -441,16 +460,17 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #content #resEventLog .cell{text-align: center;}
 #content #resEventLog .cell-description{width: 60%;}
 
-#content #tblTools SELECT, #tblTools INPUT{margin-left: 15px;}
 #content #tblTools div.chosen-container{margin: 0 5px;}
-#content #tblTools select {width: 210px;}
-#content #tblTools #txtSearch{width:30%;}
+#content #tblTools #txtSearch,
+#content #tblTools select {width: 220px;}
 #content #tblTools LABEL{margin-left:15px; color: #999;}
 #content #tblTools IMG{margin-left:0.5em;}
 #content #tblTools #toolsLeft{text-align: left; width: 80%;}
 #content #tblTools #toolsRight{text-align: right; width: 5%;}
 #content #tblTools #toolsRight input{margin-left: 15px; text-align: center;}
 #content #tblTools .custom-combobox{margin-left: 25px;}
+#content #tblTools #btnClear{opacity: 0.35;filter:alpha(opacity=35);}
+#content #tblTools #btnClear:hover{opacity: 1;filter:alpha(opacity=100);}
 
 #content #tabs>DIV{min-height: 475px;}
 #content #tabs.ui-widget-content {border: none; background-color: transparent;}
@@ -596,19 +616,25 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 /* GENERIC CLASSES */
 .round{
-    border-radius: 10px;
+    border-radius: 10px !important;
     -moz-border-radius: 10px !important;
     -webkit-border-radius: 10px !important;
 }
 
+.round5{
+    border-radius: 5px!important;
+    -moz-border-radius: 5px !important;
+    -webkit-border-radius: 5px !important;
+}
+
 .midround{
-    border-radius: 0 0 15px 15px;
+    border-radius: 0 0 15px 15px !important;
     -moz-border-radius:0 0 15px 15px !important;
     -webkit-border-radius:0 0 15px 15px !important;
 }
 
 .midroundup{
-    border-radius: 15px 15px 0 0;
+    border-radius: 15px 15px 0 0 !important;
     -moz-border-radius: 15px 15px 0 0 !important;
     -webkit-border-radius: 15px 15px 0 0 !important;
 }
@@ -630,7 +656,8 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 .hide{display: none !important;}
 
-.btnChecks .ui-button{width: 150px; margin: 5px !important; }
+.btn-checks {border: 1px solid #d9d9d9; padding: 5px; margin: 5px 0;}
+.btn-checks .ui-button{width: 150px; margin: 5px !important;}
 
 .shadow{
     box-shadow: 3px 3px 6px -3px #d9d9d9;
@@ -714,6 +741,17 @@ A:focus {text-decoration: none;	color: #FF0000;}
 }
 
 .ui-autocomplete, .ui-menu-item{z-index: 8050;} /* Fix for fancybox z-index*/
+
+.ui-buttonset .ui-state-active{
+  background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+  border: 1px solid #AAAAAA;
+  color: #212121;
+  font-weight: normal;
+}
+
+.valField .ui-state-active{
+  background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+}
 
 #passLevel { margin-left: 10px; padding: 3px 15px;}
 #passLevel.strongest, #passLevel.strongest:hover { background-color: #ecfde4 !important; color: green; font-weight: bold; border: #dbfdcb 1px solid;}
@@ -817,9 +855,17 @@ A:focus {text-decoration: none;	color: #FF0000;}
     background: #FFF2D9;
     border: #ffe5b3 1px solid;
     padding: 0.5em;
-    border-radius:5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
+}
+
+#boxUpdated{
+    width: 350px;
+    margin: 0 auto;
+    font-size: 14px;
+    text-align: center;
+    color: green;
+    background: #ecfde4;
+    border: #dbfdcb 1px solid;
+    padding: 0.5em;
 }
 
 /* Warnings */

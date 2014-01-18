@@ -32,11 +32,14 @@ $account->accountId = $data['id'];
 $account->lastAction = $data['lastaction'];
 $account->accountParentId = SP_Common::parseParams('s', 'accParentId', 0);
 
+$userId = SP_Common::parseParams('s', 'uid', 0);
 $userGroupId = SP_Common::parseParams('s', 'ugroup', 0);
 $userIsAdminApp = SP_Common::parseParams('s', 'uisadminapp', 0);
 $userIsAdminAcc = SP_Common::parseParams('s', 'uisadminacc', 0);
 
 $changesHash = '';
+$chkUserEdit = '';
+$chkGroupEdit = '';
 
 switch ($action) {
     case 'accnew':
@@ -51,8 +54,9 @@ switch ($action) {
         $showform = true;
         $nextaction = 'acccopy';
         
+        $accountUsers = $account->getUsersAccount();
         $accountGroups = $account->getGroupsAccount();
-        $account->getAccount();
+        $accountData = $account->getAccount();
         break;
     case "accedit":
         $savetype = 2;
@@ -60,15 +64,16 @@ switch ($action) {
         $showform = true;
         $nextaction = 'accedit';
         
+        $accountUsers = $account->getUsersAccount();
         $accountGroups = $account->getGroupsAccount();
-        $account->getAccount();
+        $accountData = $account->getAccount();
         break;
     case "accdelete":
         $savetype = 0;
         $title = array('class' => 'titleRed', 'name' => _('Eliminar Cuenta'));
         $showform = false;
         
-        $account->getAccount();
+        $accountData = $account->getAccount();
         break;
     case "accview":
         $savetype = 0;
@@ -77,8 +82,9 @@ switch ($action) {
         
         $_SESSION["accParentId"] = $data['id'];
         $account->incrementViewCounter();
+        $accountUsers = $account->getUsersAccount();
         $accountGroups = $account->getGroupsAccount();
-        $account->getAccount();
+        $accountData = $account->getAccount();
         break;
     case "accviewhistory":
         $savetype = 0;
@@ -87,15 +93,19 @@ switch ($action) {
         
         $account->accountIsHistory = TRUE;
         $accountGroups = $account->getGroupsAccount();
-        $account->getAccountHistory();
+        $accountData = $account->getAccountHistory();
         break;
     default :
         return;
 }
 
-if ( $data['id'] > 0) {
-    $account->checkAccountAccess($action) || SP_Html::showCommonError('noaccpermission');
+if ( $data['id'] > 0) {   
+    // Comprobar permisos de acceso
+    SP_ACL::checkAccountAccess($action, $account->getAccountDataForACL()) || SP_Html::showCommonError('noaccpermission');
+    
     $changesHash = $account->calcChangesHash();
+    $chkUserEdit = ($accountData->account_otherUserEdit) ? 'checked' : '';
+    $chkGroupEdit = ($accountData->account_otherGroupEdit) ? 'checked' : '';
 }
 
 $customersSelProp = array("name" => "customerId",
@@ -103,7 +113,7 @@ $customersSelProp = array("name" => "customerId",
     "class" => "",
     "size" => 1,
     "label" => "",
-    "selected" => $account->accountCustomerId,
+    "selected" => $accountData->account_customerId,
     "default" => "",
     "js" => "",
     "attribs" => "");
@@ -113,323 +123,408 @@ $categoriesSelProp = array("name" => "categoryId",
     "class" => "",
     "size" => 1,
     "label" => "",
-    "selected" => $account->accountCategoryId,
+    "selected" => $accountData->account_categoryId,
     "default" => "",
     "js" => "",
     "attribs" => "");
 
-$isModified = ( $account->accountDateEdit && $account->accountDateEdit <> '0000-00-00 00:00:00');
-$showHistory = ($action == 'accview' && SP_Users::checkUserAccess("accviewhistory") && $isModified);
+$isModified = ( $accountData->account_dateEdit && $accountData->account_dateEdit <> '0000-00-00 00:00:00');
+$showHistory = (($action == 'accview' || $action == 'accviewhistory' ) && SP_ACL::checkUserAccess("accviewhistory") && ($isModified || $action == 'accviewhistory'));
 $showDetails = ($action == 'accview' || $action == 'accviewhistory' || $action == 'accdelete');
 $showPass = ($action == "accnew" || $action == 'acccopy');
 $showFiles = (($action == "accedit" || $action == "accview" || $action == "accviewhistory")
-            && (SP_Config::getValue('filesenabled') == 1 && SP_Users::checkUserAccess("accfiles")));
-$showViewPass = (($action == "accview"  || $action == "accviewhistory")
-                &&  ($account->checkAccountAccess("accviewpass") && SP_Users::checkUserAccess("accviewpass")));
+            && (SP_Config::getValue('filesenabled') == 1 && SP_ACL::checkUserAccess("accfiles")));
+$showViewPass = (($action == "accview"  || $action == "accviewhistory") 
+                &&  (SP_ACL::checkAccountAccess("accviewpass",$account->getAccountDataForACL()) && SP_ACL::checkUserAccess("accviewpass")));
 $showSave = ($action == "accedit" || $action == "accnew"  || $action == "acccopy");
 $showEdit = ($action == "accview"
-            && $account->checkAccountAccess("accedit")
-            && SP_Users::checkUserAccess("accedit")
+            && SP_ACL::checkAccountAccess("accedit",$account->getAccountDataForACL()) 
+            && SP_ACL::checkUserAccess("accedit")
             && ! $account->accountIsHistory);
 $showEditPass = ($action == "accedit" 
-                && $account->checkAccountAccess("acceditpass")
-                && SP_Users::checkUserAccess("acceditpass")
+                && SP_ACL::checkAccountAccess("acceditpass",$account->getAccountDataForACL())
+                && SP_ACL::checkUserAccess("acceditpass")
                 && ! $account->accountIsHistory);
-$showDelete = ($action == "accdelete" && $account->checkAccountAccess("accdelete") && SP_Users::checkUserAccess("accdelete"));
+$showDelete = ($action == "accdelete" 
+                && SP_ACL::checkAccountAccess("accdelete", $account->getAccountDataForACL())
+                && SP_ACL::checkUserAccess("accdelete"));
 $filesDelete = ( $action == 'accedit' ) ? 1 : 0;
 $skey = SP_Common::getSessionKey(TRUE);
 $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
 ?>
 
-<div id="title" class="midroundup <? echo $title['class']; ?>"><? echo $title['name']; ?></div>
-<? if ( $showform ): ?>
+<div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
+<?php if ( $showform ): ?>
 <form METHOD="post" name="frmaccount" id="frmAccount">
-<? endif; ?>
-    <? if ( $account->accountIsHistory ): ?>
+<?php endif; ?>
+    <?php if ( $account->accountIsHistory ): ?>
     <table class="data round tblIcon">
-    <? else: ?>
+    <?php else: ?>
     <table class="data round">
-    <? endif; ?>
+    <?php endif; ?>
         <tr>
-            <td class="descField"><? echo _('Nombre'); ?></td>
+            <td class="descField"><?php echo _('Nombre'); ?></td>
             <td class="valField">
-                <? if ( $showform ): ?>
-                    <input name="name" type="text" placeholder="<? echo _('Nombre de cuenta'); ?>" required maxlength="50" value="<? echo $account->accountName; ?>">
-                <? 
-                else:
-                    echo $account->accountName;
-                endif;
+                <?php 
+                if ( $showform ){ 
+                ?>
+                    <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required maxlength="50" value="<?php echo $accountData->account_name; ?>">
+                <?php 
+                } else{
+                    echo $accountData->account_name;
+                }
                 ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"><? echo _('Cliente'); ?></td>
+            <td class="descField"><?php echo _('Cliente'); ?></td>
             <td class="valField">
-                <? if ( $showform ): ?>
-                    <? SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp); ?>
-                    <br><br>
-                    <input type="text" name="customer_new" maxlength="50" placeholder="<? echo _('Buscar en desplegable o introducir'); ?>" />
-                <? 
-                else:
-                    echo $account->accountCustomerName;
-                endif;
+                <?php
+                if ( $showform ){
+                    SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp);
+                ?>
+                <br><br>
+                <input type="text" name="customer_new" maxlength="50" placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>" />
+                <?php
+                } else{
+                    echo $accountData->customer_name;
+                }
                 ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"><? echo _('Categoría'); ?></td>
+            <td class="descField"><?php echo _('Categoría'); ?></td>
             <td class="valField">
-                <? if ( $showform ):
+                <?php 
+                if ( $showform ){
                     SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp);
-                else:
-                    echo $account->accountCategoryName;
-                endif;
+                } else{
+                    echo $accountData->category_name;
+                }
                 ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"><? echo _('URL / IP'); ?></td>
+            <td class="descField"><?php echo _('URL / IP'); ?></td>
             <td class="valField">
-                <? if ( $showform ): ?>
-                    <input name="url" type="text" placeholder="<? echo _('URL o IP de acceso'); ?>" maxlength="255" value="<? echo $account->accountUrl; ?>">
-                <? 
-                else:
-                    echo $account->accountUrl;
-                endif;
+                <?php
+                if ( $showform ){
+                ?>
+                    <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>" maxlength="255" value="<?php echo $accountData->account_url; ?>">
+                <?php 
+                } else{
+                    echo $accountData->account_url;
+                }
                 ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"><? echo _('Usuario'); ?></td>
+            <td class="descField"><?php echo _('Usuario'); ?></td>
             <td class="valField">
-                <? if ( $showform ): ?>
-                    <input name="login" type="text" placeholder="<? echo _('Usuario de acceso'); ?>" maxlength="50" value="<? echo $account->accountLogin; ?>">
-                <? 
-                else:
-                    echo $account->accountLogin;
-                endif;
+                <?php 
+                if ( $showform ){
+                ?>
+                    <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>" maxlength="50" value="<?php echo $accountData->account_login; ?>">
+                <?php 
+                } else{
+                    echo $accountData->account_login;
+                }
                 ?>
             </td>
         </tr>
-        <? if ( $showPass ): ?>
+        <?php if ( $showPass ): ?>
             <tr>
-                <td class="descField"><? echo _('Clave'); ?></td>
+                <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
                     <input name="password" type="password" id="txtPass" maxlength="255" OnKeyUp="checkPassLevel(this.value)">
-                    <img src="imgs/user-pass.png" title="<? echo _('La clave generada se mostrará aquí'); ?>" class="inputImg" id="viewPass" />
+                    <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>" class="inputImg" id="viewPass" />
                     &nbsp;&nbsp;
-                    <img src="imgs/genpass.png" title="<? echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11, true, true);" />
+                    <img src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11, true, true);" />
                 </td>
             </tr>
             <tr>
-                <td class="descField"><? echo _('Clave (repetir)'); ?></td>
+                <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                 <td class="valField">
                     <input name="password2" type="password" maxlength="255">
-                    <span id="passLevel" title="<? echo _('Nivel de fortaleza de la clave'); ?>" ></span>
+                    <span id="passLevel" title="<?php echo _('Nivel de fortaleza de la clave'); ?>" ></span>
                 </td>
             </tr>
-        <? endif; ?>
-        <? if ( $showform ): ?>
+        <?php endif; ?>
         <tr>
-            <td class="descField"><? echo _('Grupos Secundarios'); ?></td>
+            <td class="descField"><?php echo _('Notas'); ?></td>
             <td class="valField">
-                <select id="selGroups" name="ugroups[]" multiple="multiple" size="5" >
-<?
-                    foreach (SP_Account::getSecGroups() as $groupName => $groupId) {
-                        $uGroupSelected = '';
-                        
-                        if ($groupId != $account->accountUserGroupId && $groupId != $userGroupId) {
-                            if ( isset($accountGroups) && is_array($accountGroups)){
-                                $uGroupSelected = ( in_array($groupId, $accountGroups)) ? "selected" : "";
+                <textarea name="notice" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>" maxlength="1000" <?php echo ( ! $showform ) ? 'READONLY' : ''; ?> ><?php echo $accountData->account_notes; ?></textarea>
+            </td>
+        </tr>
+        <?php if ( $showform ): ?>
+        <tr>
+            <td class="descField"><?php echo _('Permisos'); ?></td>
+            <td class="valField">
+                <div class="account-permissions">
+                    <fieldset class="round5">
+                        <legend><?php echo _('Usuarios'); ?></legend>
+                        <select id="selUsers" name="otherusers[]" multiple="multiple">
+                        <?php 
+                        foreach (SP_Users::getUsersIdName() as $otherUserName => $otherUserId) {
+                            $userSelected = '';
+
+                            if ($otherUserId != $accountData->account_userGroupId && $otherUserId != $userId) {
+                                if ( isset($accountUsers) && is_array($accountUsers)){
+                                    $userSelected = ( in_array($otherUserId, $accountUsers)) ? "selected" : "";
+                                }
+                                echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
                             }
-                            echo "<option value='" . $groupId . "' $uGroupSelected>" . $groupName . "</option>";
                         }
-                    }
- ?>
-                </select>
+                        ?>
+                        </select>
+                        <br><br>
+                        <span><?php echo _('Hablitar edición'); ?></span>
+                        <label for="ueditenabled"><?php echo ($chkUserEdit) ? _('SI') : _('NO'); ?></label>
+                        <input type="checkbox" name="ueditenabled" id="ueditenabled" class="checkbox" <?php echo $chkUserEdit; ?> />
+                    </fieldset>
+                </div>
+                <div class="account-permissions">
+                    <fieldset class="round5">
+                        <legend><?php echo _('Grupos'); ?></legend>
+                        <select id="selGroups" name="othergroups[]" multiple="multiple">
+                        <?php 
+                        foreach (SP_Groups::getGroups(NULL, TRUE) as $groupName => $groupId) {
+                            $uGroupSelected = '';
+
+                            if ($groupId != $accountData->account_userGroupId && $groupId != $userGroupId) {
+                                if ( isset($accountGroups) && is_array($accountGroups)){
+                                    $uGroupSelected = ( in_array($groupId, $accountGroups)) ? "selected" : "";
+                                }
+                                echo "<option value='" . $groupId . "' $uGroupSelected>" . $groupName . "</option>";
+                            }
+                        }
+                        ?>
+                        </select>
+                        <br><br>
+                        <span><?php echo _('Hablitar edición'); ?></span>
+                        <label for="geditenabled"><?php echo ($chkGroupEdit) ? _('SI') : _('NO'); ?></label>
+                        <input type="checkbox" name="geditenabled" id="geditenabled" class="checkbox" <?php echo $chkGroupEdit; ?> />
+                    </fieldset>
+                </div>
             </td>
         </tr>
-        <? endif; ?>
-        <tr>
-            <td class="descField"><? echo _('Notas'); ?></td>
-            <td class="valField">
-                <textarea name="notice" cols="30" rows="5" placeholder="<? echo _('Notas sobre la cuenta'); ?>" maxlength="1000" <? echo ( ! $showform ) ? 'READONLY' : ''; ?> ><? echo $account->accountNotes; ?></textarea>
-            </td>
-        </tr>
+        <?php endif; ?>
         
-    <? if ( $showform ): ?>
-    <input type="hidden" name="hash" value="<? echo $changesHash; ?>">
-    <input type="hidden" name="next" value="<? echo $nextaction; ?>">
-    <input type="hidden" name="savetyp" value="<? echo $savetype; ?>">
-    <input type="hidden" name="accountid" value="<? echo $account->accountId; ?>" />
-    <input type="hidden" name="sk" value="<? echo $skey; ?>">
+    <?php if ( $showform ): ?>
+    <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
+    <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
+    <input type="hidden" name="savetyp" value="<?php echo $savetype; ?>">
+    <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>" />
+    <input type="hidden" name="sk" value="<?php echo $skey; ?>">
     <input type="hidden" name="is_ajax" value="1">
 </form>
-    <? endif; ?>
+    <?php endif; ?>
 
 <!--Files boxes-->
-    <? if ( $showFiles ): ?>
+    <?php if ( $showFiles ): ?>
         <tr>
-            <td class="descField"><? echo _('Archivos'); ?></td>
+            <td class="descField"><?php echo _('Archivos'); ?></td>
             <td class="valField">
                 <div id="downFiles"></div>
-                <? if ( $account->accountIsHistory ): ?>
-                    <script>getFiles(<? echo $account->accountParentId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');</script>
-                <? else: ?>
-                    <script>getFiles(<? echo $account->accountId; ?>, <? echo $filesDelete; ?>, '<? echo $skey; ?>');	</script>
-                    <? if ( $action == "accedit" ): ?>
+                <?php if ( $account->accountIsHistory ): ?>
+                    <script>getFiles(<?php echo $account->accountParentId; ?>, <?php echo $filesDelete; ?>, '<?php echo $skey; ?>');</script>
+                <?php else: ?>
+                    <script>getFiles(<?php echo $account->accountId; ?>, <?php echo $filesDelete; ?>, '<?php echo $skey; ?>');	</script>
+                    <?php if ( $action == "accedit" ): ?>
                         <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
                             <input type="file" id="inFile" name="inFile" />
                         </form>
-                    <div id="dropzone" class="round" data-files-ext="<? echo SP_Config::getValue('allowed_exts'); ?>" title="<? echo _('Soltar archivos aquí (max. 5) o click para seleccionar').'<br><br>'._('Tamaño máximo de archivo').' '.$maxFileSize.' MB'; ?>">
+                        <div id="dropzone" class="round" data-files-ext="<?php echo SP_Config::getValue('allowed_exts'); ?>" title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar').'<br><br>'._('Tamaño máximo de archivo').' '.$maxFileSize.' MB'; ?>">
                             <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                         </div>
-                        <script> dropFile(<? echo $account->accountId; ?>, '<? echo $skey; ?>', <? echo $maxFileSize; ?>); </script>
-                    <? endif; ?>
-                <? endif; ?>
+                        <script> dropFile(<?php echo $account->accountId; ?>, '<?php echo $skey; ?>', <?php echo $maxFileSize; ?>); </script>
+                    <?php endif; ?>
+                <?php endif; ?>
             </td>
         </tr>
-    <? endif; ?>
+    <?php endif; ?>
 
-<!--More info about account details-->
-        <? if ( $showDetails ): ?>
+    <?php if ( $showHistory ): ?>
         <tr>
-            <td class="descField"><? echo _('Visitas'); ?></td>
-            <td class="valField"><? echo $account->accountNumView."(".$account->accountNumViewDecrypt.")"; ?></td>
-        </tr>
-        <tr>
-            <td class="descField"><? echo _('Fecha Alta'); ?></td>
-            <td class="valField"><? echo $account->accountDateAdd ?></td>
-        </tr>
-        <tr>
-            <td class="descField"><? echo _('Creador'); ?></td>
-            <td class="valField"><? echo $account->accountUserName; ?></td>
-        </tr>
-        <tr>
-            <td class="descField"><? echo _('Grupo Principal'); ?></td>
-            <td class="valField"><? echo $account->accountUserGroupName; ?></td>
-        </tr>
-        <? if ( count($accountGroups) > 0 ): ?>
-        <tr>
-            <td class="descField"><? echo _('Grupos Secundarios'); ?></td>
+            <td class="descField"><?php echo _('Historial'); ?></td>
             <td class="valField">
-<? 
-                foreach ( SP_Account::getSecGroups() as $groupName => $groupId ){
-                    if ( $groupId != $account->accountUserGroupId ){
-                        if ( in_array($groupId, $accountGroups)){
-                            $accUGroups[] = $groupName;
+                <?php 
+                $arrSelectProp = array ( "name" => "historyId",
+                                            "id" => "sel-history",
+                                            "class" => "",
+                                            "size" => 1,
+                                            "label" => "",
+                                            "selected" => ( $account->accountIsHistory ) ? $account->accountId : "",
+                                            "default" => "",
+                                            "js" => "OnChange=\"if ( $('#sel-history').val() > 0 ) doAction('accviewhistory','accview', $('#sel-history').val());\"",
+                                            "attribs" => '');
+
+                SP_Html::printSelect($account->getAccountHistoryList(), $arrSelectProp);
+                ?>
+            <script>$("#sel-history").chosen({disable_search : true, placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"});</script>
+            </td>
+        </tr>
+    <?php endif; ?>
+            
+        <?php if ( $action == "accedit"): ?>
+            <tr>
+                <td class="descField"><?php echo _('Última Modificación'); ?></td>
+                <?php if ($accountData->user_editName): ?>
+                    <td class="valField"><?php echo $accountData->account_dateEdit; ?> <?php echo _('por'); ?> <?php echo $accountData->user_editName; ?></td>
+                <?php endif; ?>
+            </tr>
+        <?php endif; ?>
+    </table>
+        
+<!--More info about account details-->
+<?php if ( $showDetails ): ?>
+<table class="data round extra-info">
+    <tr>
+        <td class="descField"><?php echo _('Visitas'); ?></td>
+        <td class="valField"><?php echo $accountData->account_countView."(".$accountData->account_countDecrypt.")"; ?></td>
+    </tr>
+    <tr>
+        <td class="descField"><?php echo _('Fecha Alta'); ?></td>
+        <td class="valField"><?php echo $accountData->account_dateAdd ?></td>
+    </tr>
+    <tr>
+        <td class="descField"><?php echo _('Creador'); ?></td>
+        <td class="valField"><?php echo $accountData->user_name; ?></td>
+    </tr>
+    <tr>
+        <td class="descField"><?php echo _('Grupo Principal'); ?></td>
+        <td class="valField"><?php echo $accountData->usergroup_name; ?></td>
+    </tr>
+    <?php if ( count($accountUsers) > 0 ): ?>
+        <tr>
+            <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
+            <td class="valField">
+                <?php
+                $users = SP_Users::getUsersNameForAccount($account->accountId);
+                
+                foreach ( $users as $userId => $userName ){
+                    if ( $userId != $accountData->account_userId ){
+                        if ( in_array($userId, $accountUsers)){
+                            $accUsers[] = $userName;
                         }
                     }
                 }
-                echo implode(" | ",$accUGroups);
-?>
+
+                $usersEdit = ($accountData->account_otherUserEdit) ? '(+)' : '';
+                echo $usersEdit.' '.implode(" | ",$accUsers);
+                ?>
             </td>
         </tr>
-        <? endif; ?>
-            <? if ( $isModified ): ?>
-            <tr>
-                <td class="descField"><? echo _('Fecha Edición'); ?></td>
-                <td class="valField"><? echo $account->accountDateEdit; ?></td></tr>
-            <tr>
-                <td class="descField"><? echo _('Editor'); ?></td>
-                <td class="valField"><? echo $account->accountUserEditName; ?></td>
-            </tr>
-            <? endif; ?>
-        <? endif; ?>
-        
-        <? if ( $showHistory ): ?>
+    <?php endif; ?>
+    <?php if ( count($accountGroups) > 0 ): ?>
         <tr>
-            <td class="descField"><? echo _('Historial'); ?></td>
+            <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
             <td class="valField">
-<? 
-            $arrSelectProp = array ( "name" => "historyId",
-                                    "id" => "sel-history",
-                                    "class" => "",
-                                    "size" => 1,
-                                    "label" => "",
-                                    "selected" => ( $account->accountIsHistory ) ? $account->accountId : "",
-                                    "default" => "",
-                                    "js" => "OnChange=\"if ( $('#sel-history').val() > 0 ) doAction('accviewhistory','accview', $('#sel-history').val());\"",
-                                    "attribs" => '');
-
-            SP_Html::printSelect($account->getAccountHistoryList(), $arrSelectProp);
-?>
-            <script>$("#sel-history").chosen({disable_search : true, placeholder_text_single: "<? echo _('Seleccionar fecha'); ?>"});</script>
+                <?php
+                $groups = SP_Groups::getGroupsNameForAccount($accountData->account_id);
+                
+                foreach ( $groups as $groupId => $groupName ){
+                    if ( $groupId != $accountData->account_userGroupId ){
+                        if ( in_array($groupId, $accountGroups)){
+                            $accGroups[] = $groupName;
+                        }
+                    }
+                }
+                
+                $groupsEdit = ($accountData->account_otherGroupEdit) ? '(+)' : '';
+                
+                echo $groupsEdit.' '.implode(" | ",$accGroups);
+                ?>
             </td>
         </tr>
-        <? endif; ?>
-            
-        <? if ( $action == "accedit"): ?>
-            <tr>
-                <td class="descField"><? echo _('Última Modificación'); ?></td>
-                <? if ($account->accountUserEditName): ?>
-                    <td class="valField"><? echo $account->accountDateEdit; ?> <? echo _('por'); ?> <? echo $account->accountUserEditName; ?></td>
-                <? endif; ?>
-            </tr>
-        <? endif; ?>
-    </table>
+    <?php endif; ?>
+    <?php if ( $isModified ): ?>
+        <tr>
+            <td class="descField"><?php echo _('Fecha Edición'); ?></td>
+            <td class="valField"><?php echo $accountData->account_dateEdit; ?></td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo _('Editor'); ?></td>
+            <td class="valField"><?php echo $accountData->user_editName; ?></td>
+        </tr>
+    <?php endif; ?>
+</table>
+<?php endif; ?>        
 
-    <div class="action">
-        <ul>
-            <li>
-                <? if ( $account->accountIsHistory ): ?>
-                    <img SRC="imgs/back.png" title="<? echo _('Ver Actual'); ?>" class="inputImg" id="btnBack" OnClick="doAction('accview','accsearch',<? echo $account->accountParentId; ?>)" />
-                <? else: ?>
-                    <img src="imgs/back.png" title="<? echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<? echo $account->lastAction; ?>', '<? echo $action; ?>',<? echo $account->accountId; ?>)" />
-                <? endif; ?>
-            </li>
+<div class="action">
+    <ul>
+        <li>
+            <?php if ( $account->accountIsHistory ): ?>
+                <img SRC="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack" OnClick="doAction('accview','accsearch',<?php echo $account->accountParentId; ?>)" />
+            <?php else: ?>
+                <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack" OnClick="doAction('<?php echo $account->lastAction; ?>', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)" />
+            <?php endif; ?>
+        </li>
 
-            <? if ( $showViewPass ): ?>
+        <?php if ( $showViewPass ): ?>
             <li>
-                <img src="imgs/user-pass.png" title="<? echo _('Ver clave'); ?>" onClick="viewPass(<? echo $account->accountId; ?>,1,<? echo $account->accountIsHistory; ?>)" class="inputImg" />
+                <img src="imgs/user-pass.png" title="<?php echo _('Ver clave'); ?>" onClick="viewPass(<?php echo $account->accountId; ?>,1,<?php echo $account->accountIsHistory; ?>)" class="inputImg" />
             </li>
-            <? endif; ?>
-        
-            <? if ( $showSave ): ?>
-            <li>
-                <img src="imgs/check.png" title="<? echo _('Guardar'); ?>" class="inputImg" id="btnSave" OnClick="saveAccount('frmAccount');" />
-            </li>
-            <? endif; ?>
-            
-            <? if ( $showEditPass ): ?>
-            <li>
-                <img src="imgs/key.png" title="<? echo _('Modificar Clave de Cuenta'); ?>" class="inputImg" OnClick="doAction('acceditpass', '<? echo $action; ?>',<? echo $account->accountId; ?>)"/>
-            </li>
-            <? endif; ?>
-            
-            <? if ( $showEdit ): ?>
-            <li>
-                <img src="imgs/edit.png" title="<? echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit','accview',<? echo $account->accountId; ?>)" />
-            </li>
-            <? elseif ( ! $showEdit && $action == 'accview' && SP_Config::getValue('mailrequestsenabled', FALSE) ): ?>
-            <li>
-                <img src="imgs/request.png" title="<? echo _('Solicitar Modificación'); ?>" class="inputImg" OnClick="doAction('accrequest','accview',<? echo $account->accountId; ?>)" />
-            </li>
-            <? endif; ?>
+        <?php endif; ?>
 
-            <? if ( $showDelete ): ?>
+        <?php if ( $showSave ): ?>
             <li>
-                <img src="imgs/delete.png" title="<? echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<? echo $account->accountId; ?>,3,'<? echo $skey; ?>');" />
+                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave" OnClick="saveAccount('frmAccount');" />
             </li>
-            <? endif; ?>
-        </ul>
-    </div>
+        <?php endif; ?>
 
-<? if ( $showform ): ?>
+        <?php if ( $showEditPass ): ?>
+            <li>
+                <img src="imgs/key.png" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="inputImg" OnClick="doAction('acceditpass', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)"/>
+            </li>
+        <?php endif; ?>
+
+        <?php if ( $showEdit ): ?>
+            <li>
+                <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg" OnClick="doAction('accedit','accview',<?php echo $account->accountId; ?>)" />
+            </li>
+        <?php elseif ( ! $showEdit && $action == 'accview' && SP_Config::getValue('mailrequestsenabled', FALSE) ): ?>
+            <li>
+                <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>" class="inputImg" OnClick="doAction('accrequest','accview',<?php echo $account->accountId; ?>)" />
+            </li>
+        <?php endif; ?>
+
+        <?php if ( $showDelete ): ?>
+            <li>
+                <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>" class="inputImg" OnClick="delAccount(<?php echo $account->accountId; ?>,3,'<?php echo $skey; ?>');" />
+            </li>
+        <?php endif; ?>
+    </ul>
+</div>
+
+<?php if ( $showform ): ?>
     <script>
         $("#selCustomer").chosen({
-            placeholder_text_single: "<? echo _('Seleccionar Cliente'); ?>", 
+            placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>", 
             disable_search_threshold: 10,
-            no_results_text: "<? echo _('Sin resultados'); ?>"
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
         });
         $("#selCategory").chosen({
-            placeholder_text_single: "<? echo _('Seleccionar Categoría'); ?>",
+            placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
             disable_search_threshold: 10,
-            no_results_text: "<? echo _('Sin resultados'); ?>"
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
         });
         $("#selGroups").chosen({
-            placeholder_text_multiple: "<? echo _('Seleccionar grupos secundarios'); ?>",
+            placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>",
+        });
+        $("#selUsers").chosen({
+            placeholder_text_multiple: "<?php echo _('Seleccionar usuarios'); ?>",
         });
         $('input:text:visible:first').focus();
+        $('.checkbox').button();
+        $('.ui-button').click(function(){
+            // El cambio de clase se produce durante el evento de click
+            // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+            if ( $(this).hasClass('ui-state-active') ){
+                $(this).children().html('<?php echo _('NO'); ?>');
+            } else{
+                $(this).children().html('<?php echo _('SI'); ?>');
+            }
+        });
     </script>
-<? endif; ?>
+<?php endif; ?>
