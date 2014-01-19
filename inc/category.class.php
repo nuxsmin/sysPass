@@ -30,6 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  * Esta clase es la encargada de realizar las operaciones sobre las categorías de sysPass.
  */
 class SP_Category {
+    public static $categoryLastId;
 
     /**
      * @brief Obtener el id de una categoría por el nombre
@@ -47,9 +48,9 @@ class SP_Category {
         }
 
         if (DB::$num_rows == 0) {
-            return 0;
+            return FALSE;
         } else {
-            return $queryRes->intCategoryId;
+            return $queryRes->category_id;
         }
     }
 
@@ -66,6 +67,14 @@ class SP_Category {
             return FALSE;
         }
 
+        self::$categoryLastId = DB::$lastId;
+                    
+        $message['action'] = _('Nueva Categoría');
+        $message['text'][] = _('Nombre') . ': ' . $categoryName;
+
+        SP_Common::wrLogInfo($message);
+        SP_Common::sendEmail($message);
+        
         return TRUE;
     }
 
@@ -116,7 +125,7 @@ class SP_Category {
         if (DB::doQuery($query, __FUNCTION__) === FALSE) {
             return FALSE;
         }
-
+        
         return TRUE;
     }
 

@@ -30,23 +30,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  * Esta clase es la encargada de realizar operaciones con archivos de las cuentas de sysPass
  */
 class SP_Files {
-
-    /**
-     * @brief Obtener el tamaño máximo de subida de PHP
-     * @return none
-     */ 
-    public static function getMaxUpload() {
-        $max_upload = (int) (ini_get('upload_max_filesize'));
-        $max_post = (int) (ini_get('post_max_size'));
-        $memory_limit = (int) (ini_get('memory_limit'));
-        $upload_mb = min($max_upload, $max_post, $memory_limit);
-
-        $message['action'] = __FUNCTION__;
-        $message['text'][] = "Max. PHP upload: " . $upload_mb . "MB";
-
-        SP_Common::wrLogInfo($message);
-    }
-
     /**
      * @brief Guardar un archivo en la BBDD
      * @param int $accountId

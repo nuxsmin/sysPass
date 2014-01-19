@@ -51,12 +51,6 @@ switch ($intCategoryFunction) {
             // Comprobamos si la categoría existe
             if (SP_Category::getCategoryIdByName($categoryName) === 0) {
                 if (SP_Category::categoryAdd($categoryName)) {
-                    $message['action'] = _('Nueva Categoría');
-                    $message['text'][] = _('Nombre') . ': ' . $categoryName;
-
-                    SP_Common::wrLogInfo($message);
-                    SP_Common::sendEmail($message);
-
                     SP_Common::printXML(_('Categoría añadida'), 0);
                 }
                 SP_Common::printXML(_('Error al añadir la categoría'));

@@ -33,7 +33,7 @@ $activeTab = $data['active'];
     <?php echo _('Importar phpPMS'); ?>
 </div>
 
-<form METHOD="post" name="frmMigrate" id="frmMigrate">
+<form method="post" name="frmMigrate" id="frmMigrate">
     <table class="data round">
         <tr>
             <td class="descField">
@@ -97,6 +97,28 @@ $activeTab = $data['active'];
     </ul>
 </div>
 
+<div id="title" class="midroundup titleNormal">
+    <?php echo _('Importar CSV'); ?>
+</div>
+
+
+<table class="data round">
+    <tr>
+        <td class="descField">
+            <?php echo _('Archivo'); ?>
+            <?php SP_Common::printHelpButton("config", 23); ?>
+        </td>
+        <td class="valField">
+            <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
+                <input type="file" id="inFile" name="inFile" />
+            </form>
+            <div id="dropzone" class="round" title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
+                <img src="imgs/upload.png" alt="upload" class="opacity50"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
 <script>
     $('#frmMigrate .checkbox').button();
     $('#frmMigrate .ui-button').click(function(){
@@ -108,4 +130,5 @@ $activeTab = $data['active'];
             $(this).children().html('<?php echo _('SI'); ?>');
         }
     });
+    importFile('<?php echo SP_Common::getSessionKey(TRUE); ?>');
 </script>

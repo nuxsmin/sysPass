@@ -82,7 +82,7 @@ if ($action == 'upload') {
 
     if (!file_exists($tmpName)) {
         // Registramos el máximo tamaño permitido por PHP
-        SP_Files::getMaxUpload();
+        SP_Util::getMaxUpload();
 
         exit(_('Error interno al leer el archivo'));
     }

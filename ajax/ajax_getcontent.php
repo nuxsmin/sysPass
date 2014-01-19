@@ -32,7 +32,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-if ( SP_Common::parseParams('p', 'action', '', TRUE) ) {
+if (SP_Common::parseParams('p', 'action', '', TRUE)) {
     $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
     $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);
     $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastaction', 'accsearch');
@@ -101,7 +101,7 @@ switch ($action) {
         echo '</UL>';
 
         $tplvars['active'] = 0;
-		
+
         if (SP_ACL::checkUserAccess("users")) {
             $arrUsersTableProp = array(
                 'itemName' => _('Usuario'),
@@ -130,7 +130,7 @@ switch ($action) {
                 'frmId' => 'frm_tblusers',
                 'actionId' => 1,
                 'newActionId' => 2,
-                'active' => $tplvars['active']++,
+                'active' => $tplvars['active'] ++,
                 'actions' => array('view', 'edit', 'del', 'pass'));
 
             echo '<DIV ID="tabs-1">';
@@ -155,7 +155,7 @@ switch ($action) {
                 'frmId' => 'frm_tblgroups',
                 'actionId' => 3,
                 'newActionId' => 4,
-				'active' => $tplvars['active']++,
+                'active' => $tplvars['active'] ++,
                 'actions' => array('edit', 'del'));
 
             echo '<DIV ID="tabs-2">';
@@ -182,7 +182,7 @@ switch ($action) {
                 'frmId' => 'frm_tblprofiles',
                 'actionId' => 5,
                 'newActionId' => 6,
-				'active' => $tplvars['active']++,
+                'active' => $tplvars['active'] ++,
                 'actions' => array('edit', 'del'));
 
             echo '<DIV ID="tabs-3">';
@@ -199,7 +199,7 @@ switch ($action) {
         }
 
         echo '</DIV>';
-        
+
         echo '<script>
             $("#tabs").tabs({
                 active: ' . $itemId . ',
@@ -219,49 +219,49 @@ switch ($action) {
         echo ( SP_ACL::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
         echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-5" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
         echo '</UL>';
-		
-		$tplvars['active'] = 0;
+
+        $tplvars['active'] = 0;
 
         if (SP_ACL::checkUserAccess("config")) {
-			$tplvars['active']++;
-			
+            $tplvars['active'] ++;
+
             echo '<DIV ID="tabs-1">';
             SP_Html::getTemplate('config', $tplvars);
             echo '</DIV>';
         }
 
         if (SP_ACL::checkUserAccess("categories")) {
-			$tplvars['active']++;
-			
+            $tplvars['active'] ++;
+
             echo '<DIV ID="tabs-2">';
             SP_Html::getTemplate('categories', $tplvars);
             echo '</DIV>';
         }
 
         if (SP_ACL::checkUserAccess("masterpass")) {
-			$tplvars['active']++;
-			
+            $tplvars['active'] ++;
+
             echo '<DIV ID="tabs-3">';
             SP_Html::getTemplate('masterpass', $tplvars);
             echo '</DIV>';
         }
 
         if (SP_ACL::checkUserAccess("backup")) {
-			$tplvars['active']++;
-			
+            $tplvars['active'] ++;
+
             echo '<DIV ID="tabs-4">';
             SP_Html::getTemplate('backup', $tplvars);
             echo '</DIV>';
         }
 
         if (SP_ACL::checkUserAccess("config")) {
-			$tplvars['active']++;
-			
+            $tplvars['active'] ++;
+
             echo '<DIV ID="tabs-5">';
             SP_Html::getTemplate('migrate', $tplvars);
             echo '</DIV>';
-        }	
-        
+        }
+
         echo '</DIV>';
 
         echo '<script>
@@ -277,32 +277,32 @@ switch ($action) {
         break;
     case "eventlog":
         SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
-        
+
         SP_Html::getTemplate('eventlog', $tplvars);
         break;
 }
 
-if ( isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug') ) {
+if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
     $time_stop = SP_Init::microtime_float();
     $time = ($time_stop - $time_start);
     $memEnd = memory_get_usage();
     //$crypt = new SP_Crypt;
-    
+
     $debugTxt[] = "<div ID= 'debuginfo' class='round'>";
     $debugTxt[] = "<h3>DEBUG INFO</h3>";
     $debugTxt[] = "<ul>";
     $debugTxt[] = "<li>RENDER -> " . $time . " sec</li>";
     $debugTxt[] = "<li>MEM -> Init: " . ($memInit / 1000) . " KB - End: " . ($memEnd / 1000) . " KB - Total: " . (($memEnd - $memInit) / 1000) . " KB</li>";
     $debugTxt[] = "<li>SESSION:";
-    $debugTxt[] = "<pre>".print_r($_SESSION, TRUE)."</pre";
+    $debugTxt[] = "<pre>" . print_r($_SESSION, TRUE) . "</pre";
     $debugTxt[] = "</li>";
     $debugTxt[] = "<li>CONFIG:<pre>";
-    $debugTxt[] = "<pre>".print_r(SP_Config::getKeys(TRUE), TRUE)."</pre>";
+    $debugTxt[] = "<pre>" . print_r(SP_Config::getKeys(TRUE), TRUE) . "</pre>";
     $debugTxt[] = "</li>";
     //$debugTxt[] = '<li>'.$crypt->getSessionMasterPass().'</li>';
     $debugTxt[] = "</div>";
-    
-    foreach ( $debugTxt as $out ){
+
+    foreach ($debugTxt as $out) {
         echo $out;
     }
 }
@@ -310,6 +310,6 @@ if ( isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug') ) {
 // Se comprueba si hay actualizaciones.
 // Es necesario que se haga al final de obtener el contenido ya que la 
 // consulta ajax detiene al resto si se ejecuta antes
-if ( $_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 && ! SP_Common::parseParams('s', 'UPDATED', FALSE, TRUE)){
+if ($_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 && !SP_Common::parseParams('s', 'UPDATED', FALSE, TRUE)) {
     echo '<script>checkUpds();</script>';
 }

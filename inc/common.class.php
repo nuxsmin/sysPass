@@ -190,6 +190,7 @@ class SP_Common {
         $msgHelp[20] = _('Guarda las acciones realizadas en la aplicación');
         $msgHelp[21] = _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)');
         $msgHelp[22] = _('Extensiones de máximo 4 caracteres.') . "<br><br>" . _('Escribir extensión y pulsar intro para añadir.');
+        $msgHelp[23] = _('Importar desde un archivo CSV con el formato') . ":<br><br>" . _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas') . "<br><br>" . _('Si el cliente o la categoría no están creados, se crean automáticamente.');
 
         if (array_key_exists($id, $msgHelp)) {
             echo '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';

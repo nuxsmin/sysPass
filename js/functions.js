@@ -602,6 +602,60 @@ function dropFile(accountId, sk, maxsize){
     });
 }
 
+function importFile(sk){
+    var dropfiles = $('#dropzone');
+    var file_exts_ok = ['csv'];
+    
+    dropfiles.filedrop({
+        fallback_id: 'inFile',
+        paramname: 'inFile', // $_FILES name
+        maxfiles: 1,
+        maxfilesize: 1, // in mb
+        allowedfileextensions: file_exts_ok,
+        url: APP_ROOT + '/ajax/ajax_import.php',
+        data: {
+            sk: sk,
+            action: 'import',
+            is_ajax: 1
+        },
+        uploadFinished: function(i, file, json) {
+            $.fancybox.hideLoading();
+            
+            var status = json.status;
+            var description = json.description;
+
+            if ( status === 0 ){
+                resMsg("ok", description);
+            } else if ( status === 10){
+                resMsg("error", description);
+                doLogout();
+            } else {
+                resMsg("error", description);
+            }
+        },
+        error: function(err, file) {
+            switch (err) {
+                case 'BrowserNotSupported':
+                    resMsg("error", LANG[16]);
+                    break;
+                case 'TooManyFiles':
+                    resMsg("error", LANG[17] + ' (max. ' + this.maxfiles + ')');
+                    break;
+                case 'FileTooLarge':
+                    resMsg("error", LANG[18] + '<br>' + file.name);
+                    break;
+            case 'FileExtensionNotAllowed':
+                    resMsg("error", LANG[19]);
+                    break;
+                default:
+                    break;
+            }
+        },
+        uploadStarted: function(i, file, len) {
+            $.fancybox.showLoading();
+        },
+    });
+}
 
 // Función para mostrar los registros de usuarios y grupos
 function usersData(id, type, sk, active, view){
@@ -920,6 +974,8 @@ function resMsg(type, txt, url, action){
     }
     
     var html;
+    
+    txt = txt.replace(/\\n/g, "<br>");
     
     switch(type){
         case "ok":

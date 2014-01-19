@@ -168,7 +168,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                 <?php 
                 if ( $showform ){ 
                 ?>
-                    <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required maxlength="50" value="<?php echo $accountData->account_name; ?>">
+                    <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required maxlength="50" value="<?php echo ( $action != 'accnew' ) ? $accountData->account_name : ''; ?>">
                 <?php 
                 } else{
                     echo $accountData->account_name;
@@ -210,7 +210,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                 <?php
                 if ( $showform ){
                 ?>
-                    <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>" maxlength="255" value="<?php echo $accountData->account_url; ?>">
+                    <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>" maxlength="255" value="<?php echo ( $action != 'accnew' ) ? $accountData->account_url : ''; ?>">
                 <?php 
                 } else{
                     echo $accountData->account_url;
@@ -224,7 +224,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                 <?php 
                 if ( $showform ){
                 ?>
-                    <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>" maxlength="50" value="<?php echo $accountData->account_login; ?>">
+                    <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>" maxlength="50" value="<?php echo ( $action != 'accnew' ) ? $accountData->account_login : ''; ?>">
                 <?php 
                 } else{
                     echo $accountData->account_login;
@@ -253,7 +253,9 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
         <tr>
             <td class="descField"><?php echo _('Notas'); ?></td>
             <td class="valField">
-                <textarea name="notice" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>" maxlength="1000" <?php echo ( ! $showform ) ? 'READONLY' : ''; ?> ><?php echo $accountData->account_notes; ?></textarea>
+                <textarea name="notice" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>" maxlength="1000" <?php echo ( ! $showform ) ? 'READONLY' : ''; ?> >
+                    <?php echo ( $action != 'accnew' ) ? $accountData->account_notes : ''; ?>
+                </textarea>
             </td>
         </tr>
         <?php if ( $showform ): ?>
@@ -264,15 +266,18 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                     <fieldset class="round5">
                         <legend><?php echo _('Usuarios'); ?></legend>
                         <select id="selUsers" name="otherusers[]" multiple="multiple">
-                        <?php 
-                        foreach (SP_Users::getUsersIdName() as $otherUserName => $otherUserId) {
-                            $userSelected = '';
+                        <?php
+                        
+                        if ( $action != 'accnew' ){
+                            foreach (SP_Users::getUsersIdName() as $otherUserName => $otherUserId) {
+                                $userSelected = '';
 
-                            if ($otherUserId != $accountData->account_userGroupId && $otherUserId != $userId) {
-                                if ( isset($accountUsers) && is_array($accountUsers)){
-                                    $userSelected = ( in_array($otherUserId, $accountUsers)) ? "selected" : "";
+                                if ($otherUserId != $accountData->account_userGroupId && $otherUserId != $userId) {
+                                    if ( isset($accountUsers) && is_array($accountUsers)){
+                                        $userSelected = ( in_array($otherUserId, $accountUsers)) ? "selected" : "";
+                                    }
+                                    echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
                                 }
-                                echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
                             }
                         }
                         ?>
@@ -288,14 +293,16 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                         <legend><?php echo _('Grupos'); ?></legend>
                         <select id="selGroups" name="othergroups[]" multiple="multiple">
                         <?php 
-                        foreach (SP_Groups::getGroups(NULL, TRUE) as $groupName => $groupId) {
-                            $uGroupSelected = '';
+                        if ( $action != 'accnew' ){
+                            foreach (SP_Groups::getGroups(NULL, TRUE) as $groupName => $groupId) {
+                                $uGroupSelected = '';
 
-                            if ($groupId != $accountData->account_userGroupId && $groupId != $userGroupId) {
-                                if ( isset($accountGroups) && is_array($accountGroups)){
-                                    $uGroupSelected = ( in_array($groupId, $accountGroups)) ? "selected" : "";
+                                if ($groupId != $accountData->account_userGroupId && $groupId != $userGroupId) {
+                                    if ( isset($accountGroups) && is_array($accountGroups)){
+                                        $uGroupSelected = ( in_array($groupId, $accountGroups)) ? "selected" : "";
+                                    }
+                                    echo "<option value='" . $groupId . "' $uGroupSelected>" . $groupName . "</option>";
                                 }
-                                echo "<option value='" . $groupId . "' $uGroupSelected>" . $groupName . "</option>";
                             }
                         }
                         ?>

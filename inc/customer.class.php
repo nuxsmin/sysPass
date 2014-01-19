@@ -75,6 +75,10 @@ class SP_Customer{
         
         $this->customerLastId = DB::$lastId;
         
+        $message['action'] = _('Nuevo Cliente');
+        $message['text'][] = _('Nombre').': '.$this->customerName;
+        SP_Common::wrLogInfo($message);
+        
         return TRUE;
     }
 
@@ -126,5 +130,22 @@ class SP_Customer{
         }
         
         return TRUE;
+    }
+    
+    /**
+     * @brief Obtener el Id de un cliente por su nombre
+     * @return int con el Id del cliente
+     */ 
+    public function getCustomerByName(){
+        $query = "SELECT customer_id "
+                . "FROM customers "
+                . "WHERE customer_hash = '".$this->mkCustomerHash()."' LIMIT 1";
+        $queryRes = DB::getResults($query, __FUNCTION__);
+        
+        if (  $queryRes === FALSE ){
+            return FALSE;
+        }
+        
+        return $queryRes->customer_id;
     }
 }
