@@ -29,13 +29,13 @@ include_once (APP_ROOT . "/inc/init.php");
 SP_Util::checkReferer('POST');
 
 if (!SP_Init::isLoggedIn()) {
-    SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP_Common::parseParams('p', 'sk', FALSE);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
@@ -63,52 +63,52 @@ $groupId = SP_Common::parseParams('s', 'ugroup', 0);
 if ($frmSaveType == 1) {
     // Comprobaciones para nueva cuenta
     if (!$frmName) {
-        SP_Common::printXML(_('Es necesario un nombre de cuenta'));
+        SP_Common::printJSON(_('Es necesario un nombre de cuenta'));
     }
 
     if (!$frmSelCustomer && !$frmNewCustomer) {
-        SP_Common::printXML(_('Es necesario un nombre de cliente'));
+        SP_Common::printJSON(_('Es necesario un nombre de cliente'));
     }
 
     if (!$frmLogin) {
-        SP_Common::printXML(_('Es necesario un usuario'));
+        SP_Common::printJSON(_('Es necesario un usuario'));
     }
 
     if (!$frmPassword) {
-        SP_Common::printXML(_('Es necesario una clave'));
+        SP_Common::printJSON(_('Es necesario una clave'));
     }
 
     if ($frmPassword != $frmPasswordV) {
-        SP_Common::printXML(_('Las claves no coinciden'));
+        SP_Common::printJSON(_('Las claves no coinciden'));
     }
 } elseif ($frmSaveType == 2) {
     // Comprobaciones para modificación de cuenta
     if (!$frmSelCustomer && !$frmNewCustomer) {
-        SP_Common::printXML(_('Es necesario un nombre de cliente'));
+        SP_Common::printJSON(_('Es necesario un nombre de cliente'));
     }
 
     if (!$frmName) {
-        SP_Common::printXML(_('Es necesario un nombre de cuenta'));
+        SP_Common::printJSON(_('Es necesario un nombre de cuenta'));
     }
 
     if (!$frmLogin) {
-        SP_Common::printXML(_('Es necesario un usuario'));
+        SP_Common::printJSON(_('Es necesario un usuario'));
     }
 } elseif ($frmSaveType == 3) {
     if (!$frmAccountId) {
-        SP_Common::printXML(_('Id inválido'));
+        SP_Common::printJSON(_('Id inválido'));
     }
 } elseif ($frmSaveType == 4) {
     // Comprobaciones para modficación de clave
     if (!$frmPassword && !$frmPasswordV) {
-        SP_Common::printXML(_('La clave no puede estar en blanco'));
+        SP_Common::printJSON(_('La clave no puede estar en blanco'));
     }
 
     if ($frmPassword != $frmPasswordV) {
-        SP_Common::printXML(_('Las claves no coinciden'));
+        SP_Common::printJSON(_('Las claves no coinciden'));
     }
 } else {
-    $SP_Common::printXML(_('Acción Inválida'));
+    $SP_Common::printJSON(_('Acción Inválida'));
 }
 
 if ($frmSaveType == 1 || $frmSaveType == 4) {
@@ -116,7 +116,7 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
 
     // Comprobar el módulo de encriptación
     if (!SP_Crypt::checkCryptModule()) {
-        SP_Common::printXML(_('No se puede usar el módulo de encriptación'));
+        SP_Common::printJSON(_('No se puede usar el módulo de encriptación'));
     }
 
     // Encriptar clave de cuenta
@@ -125,7 +125,7 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
     //$accountNotes = $crypt->mkEncrypt($frmNotes, $crypt->getSessionMasterPass());
 
     if ($accountPass === FALSE || is_null($accountPass)) {
-        SP_Common::printXML(_('Error al generar datos cifrados'));
+        SP_Common::printJSON(_('Error al generar datos cifrados'));
     }
 
     $accountIV = $crypt->strInitialVector;
@@ -142,11 +142,11 @@ switch ($frmSaveType) {
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {
             if (!$customer->chekDupCustomer()) {
-                SP_Common::printXML(_('Cliente duplicado'));
+                SP_Common::printJSON(_('Cliente duplicado'));
             }
 
             if (!$customer->customerAdd()) {
-                SP_Common::printXML(_('Error al crear cliente'));
+                SP_Common::printJSON(_('Error al crear cliente'));
             }
 
             $account->accountCustomerId = $customer->customerLastId;
@@ -170,9 +170,9 @@ switch ($frmSaveType) {
 
         // Crear cuenta
         if ($account->createAccount()) {
-            SP_Common::printXML(_('Cuenta creada'), 0);
+            SP_Common::printJSON(_('Cuenta creada'), 0);
         }
-        SP_Common::printXML(_('Error al crear la cuenta'), 0);
+        SP_Common::printJSON(_('Error al crear la cuenta'), 0);
         break;
     case 2:
         $customer->customerId = $frmSelCustomer;
@@ -192,11 +192,11 @@ switch ($frmSaveType) {
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {
             if (!$customer->chekDupCustomer()) {
-                SP_Common::printXML(_('Cliente duplicado'));
+                SP_Common::printJSON(_('Cliente duplicado'));
             }
 
             if (!$customer->customerAdd()) {
-                SP_Common::printXML(_('Error al crear cliente'));
+                SP_Common::printJSON(_('Error al crear cliente'));
             }
 
             $account->accountCustomerId = $customer->customerLastId;
@@ -206,23 +206,23 @@ switch ($frmSaveType) {
 
         // Comprobar si han habido cambios
         if ($frmChangesHash == $account->calcChangesHash()) {
-            SP_Common::printXML(_('Sin cambios'), 0);
+            SP_Common::printJSON(_('Sin cambios'), 0);
         }
 
         // Actualizar cuenta
         if ($account->updateAccount()) {
-            SP_Common::printXML(_('Cuenta actualizada'), 0);
+            SP_Common::printJSON(_('Cuenta actualizada'), 0);
         }
-        SP_Common::printXML(_('Error al modificar la cuenta'));
+        SP_Common::printJSON(_('Error al modificar la cuenta'));
         break;
     case 3:
         $account->accountId = $frmAccountId;
 
         // Eliminar cuenta
         if ($account->deleteAccount()) {
-            SP_Common::printXML(_('Cuenta eliminada'), 0);
+            SP_Common::printJSON(_('Cuenta eliminada'), 0);
         }
-        SP_Common::printXML(_('Error al eliminar la cuenta'));
+        SP_Common::printJSON(_('Error al eliminar la cuenta'));
         break;
     case 4:
         $account->accountId = $frmAccountId;
@@ -232,10 +232,10 @@ switch ($frmSaveType) {
 
         // Actualizar clave de cuenta
         if ($account->updateAccountPass()) {
-            SP_Common::printXML(_('Clave actualizada'), 0);
+            SP_Common::printJSON(_('Clave actualizada'), 0);
         }
-        SP_Common::printXML(_('Error al actualizar la clave'));
+        SP_Common::printJSON(_('Error al actualizar la clave'));
         break;
     default:
-        SP_Common::printXML(_('Acción Inválida'));
+        SP_Common::printJSON(_('Acción Inválida'));
 }

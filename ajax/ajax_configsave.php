@@ -29,13 +29,13 @@ include_once (APP_ROOT . "/inc/init.php");
 SP_Util::checkReferer('POST');
 
 if (!SP_Init::isLoggedIn()) {
-    SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP_Common::parseParams('p', 'sk', FALSE);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $frmAction =  SP_Common::parseParams('p', 'action');
@@ -77,7 +77,7 @@ if ($frmAction == "config") {
     }
 
     if ($frmWikiEnabled && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !$frmWikiFilter )) {
-        SP_Common::printXML(_('Faltan parámetros de Wiki'));
+        SP_Common::printJSON(_('Faltan parámetros de Wiki'));
     } elseif ($frmWikiEnabled) {
         SP_Config::setValue("wikienabled", 1);
         SP_Config::setValue("wikisearchurl", $frmWikiSearchUrl);
@@ -88,7 +88,7 @@ if ($frmAction == "config") {
     }
 
     if ($frmLdapEnabled && (!$frmLdapServer || !$frmLdapBase || !$frmLdapGroup || !$frmLdapBindUser )) {
-        SP_Common::printXML(_('Faltan parámetros de LDAP'));
+        SP_Common::printJSON(_('Faltan parámetros de LDAP'));
     } elseif ($frmLdapEnabled) {
         SP_Config::setValue("ldapenabled", 1);
         SP_Config::setValue("ldapserver", $frmLdapServer);
@@ -101,7 +101,7 @@ if ($frmAction == "config") {
     }
 
     if ($frmMailEnabled && (!$frmMailServer || !$frmMailFrom )) {
-        SP_Common::printXML(_('Faltan parámetros de Correo'));
+        SP_Common::printJSON(_('Faltan parámetros de Correo'));
     } elseif ($frmMailEnabled) {
         SP_Config::setValue("mailenabled", 1);
         SP_Config::setValue("mailrequestsenabled", $frmMailRequestsEnabled);
@@ -113,7 +113,7 @@ if ($frmAction == "config") {
     }
 
     if ($frmAllowedSize > 16384) {
-        SP_Common::printXML(_('El tamaño máximo de archivo es de 16MB'));
+        SP_Common::printJSON(_('El tamaño máximo de archivo es de 16MB'));
     } 
 
     SP_Config::setValue("allowed_exts", $frmAllowedExts);
@@ -134,7 +134,7 @@ if ($frmAction == "config") {
     SP_Common::wrLogInfo($message);
     SP_Common::sendEmail($message);
 
-    SP_Common::printXML(_('Configuración actualizada'), 0);
+    SP_Common::printJSON(_('Configuración actualizada'), 0);
 } elseif ($frmAction == "crypt") {
     $currentMasterPass = SP_Common::parseParams('p', 'curMasterPwd');
     $newMasterPass = SP_Common::parseParams('p', 'newMasterPwd');
@@ -143,27 +143,27 @@ if ($frmAction == "config") {
     $noAccountPassChange = SP_Common::parseParams('p', 'chkNoAccountChange', 0, FALSE, 1);
 
     if (!SP_Users::checkUserUpdateMPass()) {
-        SP_Common::printXML(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+        SP_Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
     }
 
     if ($newMasterPass == "" && $currentMasterPass == "") {
-        SP_Common::printXML(_('Clave maestra no indicada'));
+        SP_Common::printJSON(_('Clave maestra no indicada'));
     }
 
     if ($confirmPassChange == 0) {
-        SP_Common::printXML(_('Se ha de confirmar el cambio de clave'));
+        SP_Common::printJSON(_('Se ha de confirmar el cambio de clave'));
     }
 
     if ($newMasterPass == $currentMasterPass) {
-        SP_Common::printXML(_('Las claves son idénticas'));
+        SP_Common::printJSON(_('Las claves son idénticas'));
     }
 
     if ($newMasterPass != $newMasterPassR) {
-        SP_Common::printXML(_('Las claves maestras no coinciden'));
+        SP_Common::printJSON(_('Las claves maestras no coinciden'));
     }
 
     if (!SP_Crypt::checkHashPass($currentMasterPass, SP_Config::getConfigValue("masterPwd"))) {
-        SP_Common::printXML(_('La clave maestra actual no coincide'));
+        SP_Common::printJSON(_('La clave maestra actual no coincide'));
     }
 
     $hashMPass = SP_Crypt::mkHashPassword($newMasterPass);
@@ -172,14 +172,14 @@ if ($frmAction == "config") {
         $objAccount = new SP_Account;
 
         if (!$objAccount->updateAllAccountsMPass($currentMasterPass, $newMasterPass)) {
-            SP_Common::printXML(_('Errores al actualizar las claves de las cuentas'));
+            SP_Common::printJSON(_('Errores al actualizar las claves de las cuentas'));
         }
         
         $objAccount->updateAllAccountsHistoryMPass($currentMasterPass, $newMasterPass, $hashMPass);
     }
 
     if (SP_Config::getValue('demoenabled', 0)) {
-        SP_Common::printXML(_('DEMO'));
+        SP_Common::printJSON(_('DEMO'));
     }
 
     SP_Config::$arrConfigValue["masterPwd"] = $hashMPass;
@@ -190,10 +190,10 @@ if ($frmAction == "config") {
         $message['text'] = '';
 
         SP_Common::sendEmail($message);
-        SP_Common::printXML(_('Clave maestra cambiada'), 0);
+        SP_Common::printJSON(_('Clave maestra cambiada'), 0);
     }
     
-    SP_Common::printXML(_('Error al guardar el hash de la clave maestra'));
+    SP_Common::printJSON(_('Error al guardar el hash de la clave maestra'));
 } else {
-    SP_Common::printXML(_('Acción Inválida'));
+    SP_Common::printJSON(_('Acción Inválida'));
 }

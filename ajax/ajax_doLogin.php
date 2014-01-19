@@ -37,7 +37,7 @@ $userPass = SP_Common::parseParams('p', 'pass');
 $masterPass = SP_Common::parseParams('p', 'mpass');
 
 if (!$userLogin OR !$userPass) {
-    SP_Common::printXML(_('Usuario/Clave no introducidos'));
+    SP_Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
 $resLdap = SP_Auth::authUserLDAP($userLogin, $userPass);
@@ -59,7 +59,7 @@ if ($resLdap == 1) {
             $message['text'][] = _('Error al guardar los datos de LDAP');
             SP_Common::wrLogInfo($message);
 
-            SP_Common::printXML(_('Error interno'));
+            SP_Common::printJSON(_('Error interno'));
         }
     } else {
         // Actualizamos la clave del usuario en MySQL
@@ -67,7 +67,7 @@ if ($resLdap == 1) {
             $message['text'][] = _('Error al actualizar la clave del usuario en la BBDD');
             SP_Common::wrLogInfo($message);
 
-            SP_Common::printXML(_('Error interno'));
+            SP_Common::printJSON(_('Error interno'));
         }
     }
 } else if ($resLdap == 49) {
@@ -76,7 +76,7 @@ if ($resLdap == 1) {
     $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
     SP_Common::wrLogInfo($message);
 
-    SP_Common::printXML(_('Usuario/Clave incorrectos'));
+    SP_Common::printJSON(_('Usuario/Clave incorrectos'));
 } else { // Autentificamos por MySQL (ha fallado LDAP)
     $message['action'] = _('Inicio sesión (MySQL)');
 
@@ -87,7 +87,7 @@ if ($resLdap == 1) {
         $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
         SP_Common::wrLogInfo($message);
 
-        SP_Common::printXML(_('Usuario/Clave incorrectos'));
+        SP_Common::printJSON(_('Usuario/Clave incorrectos'));
     }
 }
 
@@ -98,7 +98,7 @@ if (SP_Auth::checkUserIsDisabled()) {
     $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
     SP_Common::wrLogInfo($message);
 
-    SP_Common::printXML(_('Usuario deshabilitado'));
+    SP_Common::printJSON(_('Usuario deshabilitado'));
 }
 
 // Obtenemos los datos del usuario
@@ -106,18 +106,18 @@ if (!$objUser->getUserInfo()) {
     $message['text'][] = _('Error al obtener los datos del usuario de la BBDD');
     SP_Common::wrLogInfo($message);
 
-    SP_Common::printXML(_('Error interno'));
+    SP_Common::printJSON(_('Error interno'));
 }
 
 // Comprobamos que la clave maestra del usuario es correcta y está actualizada
 if (!$masterPass && (!$objUser->checkUserMPass() || !SP_Users::checkUserUpdateMPass($userLogin) )) {
-    SP_Common::printXML(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
+    SP_Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
     if (!$objUser->updateUserMPass($masterPass)) {
         $message['text'][] = _('Clave maestra incorrecta');
         SP_Common::wrLogInfo($message);
 
-        SP_Common::printXML(_('Clave maestra incorrecta'), 4);
+        SP_Common::printJSON(_('Clave maestra incorrecta'), 4);
     }
 }
 
@@ -143,5 +143,5 @@ if ($objUser->getUserMPass()) {
         $urlParams = '?'.implode('&', $params);
     }
     
-    SP_Common::printXML('index.php'.$urlParams, 0);
+    SP_Common::printJSON('index.php'.$urlParams, 0);
 }

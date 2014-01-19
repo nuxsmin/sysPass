@@ -29,13 +29,13 @@ include_once (APP_ROOT . "/inc/init.php");
 SP_Util::checkReferer('POST');
 
 if ( ! SP_Init::isLoggedIn() ) {
-    SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'),10);
+    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'),10);
 }
 
 $sk = SP_Common::parseParams('p', 'sk', FALSE);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $intCategoryFunction = SP_Common::parseParams('p', 'categoryFunction', 0);
@@ -46,25 +46,25 @@ $categoryId = SP_Common::parseParams('p', 'categoryId', 0);
 switch ($intCategoryFunction) {
     case 1:
         if ($categoryName == "") {
-            SP_Common::printXML(_('Nombre de categoría necesario'));
+            SP_Common::printJSON(_('Nombre de categoría necesario'));
         } else {
             // Comprobamos si la categoría existe
             if (SP_Category::getCategoryIdByName($categoryName) === 0) {
                 if (SP_Category::categoryAdd($categoryName)) {
-                    SP_Common::printXML(_('Categoría añadida'), 0);
+                    SP_Common::printJSON(_('Categoría añadida'), 0);
                 }
-                SP_Common::printXML(_('Error al añadir la categoría'));
+                SP_Common::printJSON(_('Error al añadir la categoría'));
             }
-            SP_Common::printXML(_('Ya existe una categoría con ese nombre'));
+            SP_Common::printJSON(_('Ya existe una categoría con ese nombre'));
         }
         break;
     case 2:
         if ($categoryNameNew == "" || !$categoryId) {
-            SP_Common::printXML(_('Nombre de categoría necesario'));
+            SP_Common::printJSON(_('Nombre de categoría necesario'));
         } else {
             // Comprobamos si la categoría existe
             if (SP_Category::getCategoryIdByName($categoryNameNew) !== 0) {
-                SP_Common::printXML(_('Ya existe una categoría con ese nombre'));
+                SP_Common::printJSON(_('Ya existe una categoría con ese nombre'));
             } else {
                 // Obtenemos el nombre de la categoría por el Id
                 $oldCategoryName = SP_Category::getCategoryNameById($categoryId);
@@ -76,19 +76,19 @@ switch ($intCategoryFunction) {
                     SP_Common::wrLogInfo($message);
                     SP_Common::sendEmail($message);
 
-                    SP_Common::printXML(_('Categoría modificada'), 0);
+                    SP_Common::printJSON(_('Categoría modificada'), 0);
                 }
-                SP_Common::printXML(_('Error al modificar la categoría'));
+                SP_Common::printJSON(_('Error al modificar la categoría'));
             }
         }
         break;
     case 3:
         if (!$categoryId) {
-            SP_Common::printXML(_('Nombre de categoría necesario'));
+            SP_Common::printJSON(_('Nombre de categoría necesario'));
         } else {
             // Comprobamos si la categoría está en uso por una cuenta
             if (SP_Category::isCategoryInUse($categoryId)) {
-                SP_Common::printXML(_('Categoría en uso, no es posible eliminar'));
+                SP_Common::printJSON(_('Categoría en uso, no es posible eliminar'));
             } else {
                 // Obtenemos el nombre de la categoría por el Id
                 $oldCategoryName = SP_Category::getCategoryNameById($categoryId);
@@ -100,12 +100,12 @@ switch ($intCategoryFunction) {
                     SP_Common::wrLogInfo($message);
                     SP_Common::sendEmail($message);
 
-                    SP_Common::printXML(_('Categoría eliminada'));
+                    SP_Common::printJSON(_('Categoría eliminada'));
                 }
-                SP_Common::printXML(_('Error al eliminar la categoría'));
+                SP_Common::printJSON(_('Error al eliminar la categoría'));
             }
         }
         break;
     default:
-        SP_Common::printXML(_('Acción Inválida'));
+        SP_Common::printJSON(_('Acción Inválida'));
 }

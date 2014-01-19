@@ -30,13 +30,13 @@ SP_Util::checkReferer('POST');
 
 
 if (!SP_Init::isLoggedIn()) {
-    SP_Common::printXML(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP_Common::parseParams('p', 'sk', FALSE);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
@@ -64,23 +64,23 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     // Nuevo usuario o editar
     if ($frmAction == 1 OR $frmAction == 2) {
         if (!$frmUsrName && !$frmLdap) {
-            SP_Common::printXML(_('Es necesario un nombre de usuario'), 2);
+            SP_Common::printJSON(_('Es necesario un nombre de usuario'), 2);
         }
 
         if (!$frmUsrLogin && !$frmLdap) {
-            SP_Common::printXML(_('Es necesario un login'), 2);
+            SP_Common::printJSON(_('Es necesario un login'), 2);
         }
 
         if ($frmUsrProfile == "") {
-            SP_Common::printXML(_('Es necesario un perfil'), 2);
+            SP_Common::printJSON(_('Es necesario un perfil'), 2);
         }
 
         if (!$frmUsrGroup) {
-            SP_Common::printXML(_('Es necesario un grupo'), 2);
+            SP_Common::printJSON(_('Es necesario un grupo'), 2);
         }
 
         if (!$frmUsrEmail && !$frmLdap) {
-            SP_Common::printXML(_('Es necesario un email'), 2);
+            SP_Common::printJSON(_('Es necesario un email'), 2);
         }
 
         $objUser->userId = $frmItemId;
@@ -97,20 +97,20 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         switch ($objUser->checkUserExist()) {
             case 1:
-                SP_Common::printXML(_('Login de usuario duplicado'), 2);
+                SP_Common::printJSON(_('Login de usuario duplicado'), 2);
                 break;
             case 2:
-                SP_Common::printXML(_('Email de usuario duplicado'), 2);
+                SP_Common::printJSON(_('Email de usuario duplicado'), 2);
                 break;
         }
 
         if ($frmAction == 1) {
             if (!$frmUsrPass && !$frmUsrPassV) {
-                SP_Common::printXML(_('La clave no puede estar en blanco'), 2);
+                SP_Common::printJSON(_('La clave no puede estar en blanco'), 2);
             }
 
             if ($frmUsrPass != $frmUsrPassV) {
-                SP_Common::printXML(_('Las claves no coinciden'), 2);
+                SP_Common::printJSON(_('Las claves no coinciden'), 2);
             }
 
             if ($objUser->addUser()) {
@@ -120,10 +120,10 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Usuario creado'), 0);
+                SP_Common::printJSON(_('Usuario creado'), 0);
             } 
             
-            SP_Common::printXML(_('Error al crear el usuario'));
+            SP_Common::printJSON(_('Error al crear el usuario'));
         } elseif ($frmAction == 2) {
             if ($objUser->updateUser()) {
                 $message['action'] = _('Modificar Usuario');
@@ -132,25 +132,25 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Usuario actualizado'), 0);
+                SP_Common::printJSON(_('Usuario actualizado'), 0);
             }
             
-            SP_Common::printXML(_('Error al actualizar el usuario'));
+            SP_Common::printJSON(_('Error al actualizar el usuario'));
         }
     // Cambio de clave
     } elseif ($frmAction == 3) {
         $userLogin = $objUser->getUserLoginById($frmItemId);
         
         if ( SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo'){
-            SP_Common::printXML(_('Acción Inválida').'(DEMO)');
+            SP_Common::printJSON(_('Acción Inválida').'(DEMO)');
         }
         
         if (!$frmUsrPass || !$frmUsrPassV) {
-            SP_Common::printXML(_('La clave no puede estar en blanco'), 2);
+            SP_Common::printJSON(_('La clave no puede estar en blanco'), 2);
         }
 
         if ($frmUsrPass != $frmUsrPassV) {
-            SP_Common::printXML(_('Las claves no coinciden'), 2);
+            SP_Common::printJSON(_('Las claves no coinciden'), 2);
         }
 
         $objUser->userId = $frmItemId;
@@ -163,23 +163,23 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);
 
-            SP_Common::printXML(_('Clave actualizada'), 0);
+            SP_Common::printJSON(_('Clave actualizada'), 0);
         }
         
-        SP_Common::printXML(_('Error al modificar la clave'));
+        SP_Common::printJSON(_('Error al modificar la clave'));
     // Eliminar usuario
     } elseif ($frmAction == 4) {
 
         $userLogin = $objUser->getUserLoginById($frmItemId);
         
         if ( SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo' ){
-            SP_Common::printXML(_('Acción Inválida').'(DEMO)');
+            SP_Common::printJSON(_('Acción Inválida').'(DEMO)');
         }
         
         $objUser->userId = $frmItemId;
 
         if ($frmItemId == $_SESSION["uid"]) {
-            SP_Common::printXML(_('No es posible eliminar, usuario en uso'));
+            SP_Common::printJSON(_('No es posible eliminar, usuario en uso'));
         }
 
         if ($objUser->deleteUser()) {
@@ -189,13 +189,13 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::wrLogInfo($message);
             SP_Common::sendEmail($message);
 
-            SP_Common::printXML(_('Usuario eliminado'), 0);
+            SP_Common::printJSON(_('Usuario eliminado'), 0);
         }
         
-        SP_Common::printXML(_('Error al eliminar el usuario'));
+        SP_Common::printJSON(_('Error al eliminar el usuario'));
     } 
     
-    SP_Common::printXML(_('Acción Inválida'));
+    SP_Common::printJSON(_('Acción Inválida'));
 } elseif ($frmSaveType == 3 || $frmSaveType == 4) {
     // Variables POST del formulario
     $frmGrpName = SP_Common::parseParams('p', 'name');
@@ -204,7 +204,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     // Nuevo grupo o editar
     if ($frmAction == 1 OR $frmAction == 2) {
         if (!$frmGrpName) {
-            SP_Common::printXML(_('Es necesario un nombre de grupo'), 2);
+            SP_Common::printJSON(_('Es necesario un nombre de grupo'), 2);
         }
 
         SP_Groups::$groupId = $frmItemId;
@@ -212,7 +212,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         SP_Groups::$groupDescription = $frmGrpDesc;
         
         if (!SP_Groups::checkGroupExist()) {
-            SP_Common::printXML(_('Nombre de grupo duplicado'), 2);
+            SP_Common::printJSON(_('Nombre de grupo duplicado'), 2);
         }
 
         if ($frmAction == 1) {
@@ -223,9 +223,9 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Grupo creado'), 0);
+                SP_Common::printJSON(_('Grupo creado'), 0);
             } else {
-                SP_Common::printXML(_('Error al crear el grupo'));
+                SP_Common::printJSON(_('Error al crear el grupo'));
             }
         } else if ($frmAction == 2) {
             if (SP_Groups::updateGroup()) {
@@ -235,10 +235,10 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Grupo actualizado'), 0);
+                SP_Common::printJSON(_('Grupo actualizado'), 0);
             }
             
-            SP_Common::printXML(_('Error al actualizar el grupo'));
+            SP_Common::printJSON(_('Error al actualizar el grupo'));
         }
 
     // Eliminar grupo
@@ -248,7 +248,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         $resGroupUse = SP_Groups::checkGroupInUse();
 
         if ( $resGroupUse !== TRUE ) {
-            SP_Common::printXML(_('No es posible eliminar:Grupo en uso por') . ' ' . $resGroupUse);
+            SP_Common::printJSON(_('No es posible eliminar:Grupo en uso por') . ' ' . $resGroupUse);
         } else {
             $groupName = SP_Groups::getGroupNameById($frmItemId);
             
@@ -259,14 +259,14 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Grupo eliminado'), 0);
+                SP_Common::printJSON(_('Grupo eliminado'), 0);
             }
             
-            SP_Common::printXML(_('Error al eliminar el grupo'));
+            SP_Common::printJSON(_('Error al eliminar el grupo'));
         }
     }
 
-    SP_Common::printXML(_('Acción Inválida'));
+    SP_Common::printJSON(_('Acción Inválida'));
 } elseif ($frmSaveType == 5 || $frmSaveType == 6) {
     $profileProp = array();
 
@@ -295,13 +295,13 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     // Nuevo perfil o editar
     if ($frmAction == 1 OR $frmAction == 2) {
         if (!$frmProfileName) {
-            SP_Common::printXML(_('Es necesario un nombre de perfil'), 2);
+            SP_Common::printJSON(_('Es necesario un nombre de perfil'), 2);
         }
 
         SP_Profiles::$profileName = $frmProfileName;
 
         if (!SP_Profiles::checkProfileExist()) {
-            SP_Common::printXML(_('Nombre de perfil duplicado'), 2);
+            SP_Common::printJSON(_('Nombre de perfil duplicado'), 2);
         }
 
         if ($frmAction == 1) {
@@ -312,10 +312,10 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Perfil creado'), 0);
+                SP_Common::printJSON(_('Perfil creado'), 0);
             }
             
-            SP_Common::printXML(_('Error al crear el perfil'));
+            SP_Common::printJSON(_('Error al crear el perfil'));
         } else if ($frmAction == 2) {
             if (SP_Profiles::updateProfile($profileProp)) {
                 $message['action'] = _('Modificar Perfil');
@@ -324,10 +324,10 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Perfil actualizado'), 0);
+                SP_Common::printJSON(_('Perfil actualizado'), 0);
             }
             
-            SP_Common::printXML(_('Error al actualizar el perfil'));
+            SP_Common::printJSON(_('Error al actualizar el perfil'));
         }
 
     // Eliminar perfil
@@ -335,7 +335,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         $resProfileUse = SP_Profiles::checkProfileInUse();
 
         if (is_string($resProfileUse)) {
-            SP_Common::printXML(_('No es posible eliminar: Perfil en uso por') . ' ' . $resProfileUse);
+            SP_Common::printJSON(_('No es posible eliminar: Perfil en uso por') . ' ' . $resProfileUse);
         } else {
             $profileName = SP_Profiles::getProfileNameById($frmItemId);
             
@@ -346,12 +346,12 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
                 SP_Common::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printXML(_('Perfil eliminado'), 0);
+                SP_Common::printJSON(_('Perfil eliminado'), 0);
             }
             
-            SP_Common::printXML(_('Error al eliminar el perfil'));
+            SP_Common::printJSON(_('Error al eliminar el perfil'));
         }
     }
     
-    SP_Common::printXML(_('Acción Inválida'));
+    SP_Common::printJSON(_('Acción Inválida'));
 }
