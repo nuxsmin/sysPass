@@ -30,14 +30,15 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Upgrade {
     private static $result = array();
+    private static $upgrade = array(110);
 
-    public static function doUpgrade() {
-        $currentDBVersion = (int) str_replace('.', '', SP_Config::getConfigValue('version'));
-        $version = (int) implode(SP_Util::getVersion());
-
-        if ($currentDBVersion < $version) {
-            $resUpgrade = self::upgradeTo($version);
-        }
+    /**
+     * @brief Inicia el proceso de actualización de la BBDD
+     * @param int $version con la versión a actualizar
+     * @returns bool
+     */    
+    public static function doUpgrade($version) {
+        $resUpgrade = self::upgradeTo($version);
         
         SP_Common::wrLogInfo(self::$result);
         
@@ -50,6 +51,19 @@ class SP_Upgrade {
         return TRUE;
     }
 
+    /**
+     * @brief Comprueba si es necesario actualizar la BBDD
+     * @returns bool
+     */      
+    public static function needUpgrade($version){
+        return ( in_array($version,  self::$upgrade) );
+    }
+
+    /**
+     * @brief Actualiza la BBDD según la versión
+     * @param int $version con la versión a actualizar
+     * @returns bool
+     */    
     private static function upgradeTo($version) {
         self::$result['action'] = _('Actualizar BBDD');
         

@@ -276,8 +276,10 @@ function doLogin(){
 }
 
 function doLogout() {
-    if ( window.location.search != '' ){
-        location.href = 'index.php' + window.location.search + '&logout=1';
+    var url = window.location.search;
+    
+    if ( url.length > 0 ){
+        location.href = 'index.php' + url + '&logout=1';
     } else{
         location.href = 'index.php?logout=1';
     }

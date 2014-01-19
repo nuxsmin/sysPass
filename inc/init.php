@@ -456,20 +456,24 @@ class SP_Init {
         }
         
         $update = FALSE;
-        $configVersion = SP_Config::getValue('version');
-        $databaseVersion = SP_Config::getConfigValue('version');
-        $appVersion = implode('.', SP_Util::getVersion());
-        
-        if ( $configVersion != $appVersion ){
-            SP_Config::setValue('version', $appVersion);
-            $update = TRUE;
-        }
+        $configVersion = (int) str_replace('.', '', SP_Config::getValue('version'));
+        $databaseVersion = (int) str_replace('.', '', SP_Config::getConfigValue('version'));
+        $appVersion = (int) implode(SP_Util::getVersion());
 
-        if ( $databaseVersion != $appVersion && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0){
-            if ( self::checkMaintenanceMode(TRUE) && SP_Upgrade::doUpgrade() ){
+        if ( $databaseVersion < $appVersion && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0){
+            if ( SP_Upgrade::needUpgrade($appVersion) && ! self::checkMaintenanceMode(TRUE) ){
+                self::initError(_('La aplicación necesita actualizarse'), _('Contacte con el administrador'));
+            }
+            
+            if ( SP_Upgrade::doUpgrade($appVersion) ){
                 SP_Config::setConfigValue('version', $appVersion);
                 $update = TRUE;
             }
+        }
+        
+        if ( $configVersion < $appVersion ){
+            SP_Config::setValue('version', $appVersion);
+            $update = TRUE;
         }
 
         if ( $update === TRUE ){
