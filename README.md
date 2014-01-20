@@ -1,3 +1,17 @@
+### ATENCION / WARNING
+
+Esta versión está en desarrollo, pruébala con precaución.
+
+This version is under development, try it with caution.
+
+#### ACTUALIZAR / UPDATE
+
+Para actualizar desde 1.0 es necesario activar el modo mantenimiento e ir a la url .../index.php?upgrade=1
+
+In order to update from 1.0 you need to activate maintenance mode and point to url .../index.php?upgrade=1
+
+----------------
+
 ### sysPass - Sysadmin Password Manager
 
 ----------------
