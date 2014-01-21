@@ -244,6 +244,11 @@ class SP_Account {
             return FALSE;
         }
 
+        $this->accountUserId = $queryRes->account_userId;
+        $this->accountUserGroupId = $queryRes->account_userGroupId;
+        $this->accountOtherUserEdit = $queryRes->account_otherUserEdit;
+        $this->accountOtherGroupEdit = $queryRes->account_otherGroupEdit;
+        
         return $queryRes;
     }
 
@@ -292,6 +297,11 @@ class SP_Account {
             return FALSE;
         }
 
+        $this->accountUserId = $queryRes->acchistory_userId;
+        $this->accountUserGroupId = $queryRes->acchistory_userGroupId;
+        $this->accountOtherUserEdit = $queryRes->acchistory_otherUserEdit;
+        $this->accountOtherGroupEdit = $queryRes->acchistory_otherGroupEdit;
+        
         return $queryRes;
     }
     

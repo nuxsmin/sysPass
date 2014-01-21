@@ -117,10 +117,10 @@ echo '<div id="data-search" class="data-rows">';
 // Mostrar los resultados de la búsqueda
 foreach ( $resQuery as $account ){
     $objAccount->accountId = $account->account_id;
-	$objAccount->accountUserId = $account->account_userId;
-	$objAccount->accountUserGroupId = $account->account_userGroupId;
-	$objAccount->accountOtherUserEdit = $account->account_otherUserEdit;
-	$objAccount->accountOtherGroupEdit = $account->account_otherGroupEdit;
+    $objAccount->accountUserId = $account->account_userId;
+    $objAccount->accountUserGroupId = $account->account_userGroupId;
+    $objAccount->accountOtherUserEdit = $account->account_otherUserEdit;
+    $objAccount->accountOtherGroupEdit = $account->account_otherGroupEdit;
     
     $accView = ( SP_ACL::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accview") );
     $accViewPass = ( SP_ACL::checkAccountAccess("accviewpass", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accviewpass")  );
