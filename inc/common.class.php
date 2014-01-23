@@ -102,17 +102,17 @@ class SP_Common {
         $log['action'] = _('Enviar Email');
                 
         // Enviar correo
-        if ( mail($mailTo, $mailSubject, $mailbody, $mailHeader) ){
+        if ( $sendMail ){
             $log['text'][]= _('Correo enviado');
-            $log['text'][] = _('Destinatario').": $mailTo";
-            $log['text'][] = _('CC').": $strFrom";
         } else{
             $log['text'][] = _('Error al enviar correo');
-            $log['text'][] = _('Destinatario').": $mailTo"; 
-            $log['text'][] = _('CC').": $strFrom";
         }
-        
+
+        $log['text'][] = _('Destinatario').": $mailTo"; 
+	    $log['text'][] = _('CC').": $strFrom";
+
         self::wrLogInfo($log);
+		return $sendMail;
     }
 
     /**
