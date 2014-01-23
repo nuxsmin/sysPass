@@ -40,13 +40,13 @@ if (!$userLogin OR !$userPass) {
     SP_Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
-$resLdap = SP_Auth::authUserLDAP($userLogin, $userPass);
-
 $objUser = new SP_Users;
 $objUser->userLogin = SP_Auth::$userLogin = $userLogin;
 $objUser->userPass = SP_Auth::$userPass = $userPass;
 $objUser->userName = SP_Auth::$userName;
 $objUser->userEmail = SP_Auth::$userEmail;
+
+$resLdap = SP_Auth::authUserLDAP();
 
 // Autentificamos por LDAP
 if ($resLdap == 1) {
