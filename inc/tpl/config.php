@@ -33,13 +33,14 @@ SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 $arrLangAvailable = array('es_ES','en_US');
 $isDemoMode = SP_Config::getValue('demoenabled',0);
 
-$arrAccountCount = array(1,2,3,5,10,15,20,25,30,50,100);
+$arrAccountCount = array(6,9,12,15,21,27,30,51,99);
 
 $txtDisabled = ( $isDemoMode ) ? "DISABLED" : "";
 $chkLog = ( SP_Config::getValue('logenabled') ) ? 'checked="checked"' : '';
 $chkDebug = ( SP_Config::getValue('debug') ) ? 'checked="checked"' : '';
 $chkMaintenance = ( SP_Config::getValue('maintenance') ) ? 'checked="checked"' : '';
 $chkUpdates = ( SP_Config::getValue('checkupdates') ) ? 'checked="checked"' : '';
+$chkGlobalSearch = ( SP_Config::getValue('globalsearch') ) ? 'checked="checked"' : '';
 $chkAccountLink = ( SP_Config::getValue('account_link') ) ? 'checked="checked"' : '';
 $chkFiles = ( SP_Config::getValue('filesenabled') ) ? 'checked="checked"' : '';
 $chkWiki = ( SP_Config::getValue('wikienabled') ) ? 'checked="checked"' : '';
@@ -136,6 +137,16 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         <td class="valField">
             <label for="filesenabled"><?php echo ($chkFiles) ? 'ON' : 'OFF'; ?></label>
             <input type="checkbox" name="filesenabled" id="filesenabled" class="checkbox" <?php echo $chkFiles.' '.$txtDisabled; ?> />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Búsquedas globales'); ?>
+            <?php SP_Common::printHelpButton("config", 24); ?>
+        </td>
+        <td class="valField">
+            <label for="globalsearch"><?php echo ($chkGlobalSearch) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="globalsearch" id="globalsearch" class="checkbox" <?php echo $chkGlobalSearch.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>

@@ -40,6 +40,7 @@ $accountData = $account->getAccount();
         <tr>
             <td class="descField"><?php echo _('Cliente'); ?></td><td class="valField"><?php echo $accountData->customer_name; ?></td>
         </tr>
+        <?php if ( $data['lastaction'] == 'accview' ): ?>
         <tr>
             <td class="descField"><?php echo _('URL / IP'); ?></td>
             <td class="valField"><A href="<?php echo $accountData->account_url; ?>" target="_blank"><?php echo $accountData->account_url; ?></td>
@@ -48,6 +49,7 @@ $accountData = $account->getAccount();
             <td class="descField"><?php echo _('Usuario'); ?></td>
             <td class="valField"><?php echo $accountData->account_login; ?></td>
         </tr>
+        <?php endif; ?>
         <tr>
             <td class="descField"><?php echo _('Petición'); ?></td>
             <td class="valField">

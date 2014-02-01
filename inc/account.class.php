@@ -52,6 +52,7 @@ class SP_Account {
     var $accountOtherGroupEdit;
 
     // Variable de consulta
+    var $query;
     var $queryNumRows;
     // Variable para indicar si la cuenta es desde el histórico
     var $accountIsHistory = 0;
@@ -76,6 +77,9 @@ class SP_Account {
      * @return array resultado de la consulta
      */ 
     public function getAccounts($searchFilter){
+        $isAdmin = ($_SESSION["uisadminapp"] || $_SESSION["uisadminacc"]);
+        $globalSearch = (SP_Config::getValue('globalsearch',0) && $searchFilter["globalSearch"] === 1);
+        
         $arrFilterCommon = array();
         $arrFilterSelect= array();
         $arrFilterUser = array();
@@ -123,9 +127,6 @@ class SP_Account {
                 . "LEFT JOIN accUsers ON accuser_accountId = account_id "
                 . "LEFT JOIN accGroups ON accgroup_accountId = account_id";
 
-        $queryCount = "SELECT COUNT(DISTINCT account_id) AS Number FROM accounts
-                        LEFT JOIN accGroups ON accgroup_accountId = account_id";
-        
         if ( $searchFilter["txtSearch"] ){
             $arrFilterCommon[] = "account_name LIKE '%".$searchFilter["txtSearch"]."%'";
             $arrFilterCommon[] = "account_login LIKE '%".$searchFilter["txtSearch"]."%'";
@@ -149,7 +150,7 @@ class SP_Account {
             $arrQueryWhere[] =  "(".implode(" AND ", $arrFilterSelect).")";
         }
         
-        if ( ! $_SESSION["uisadminapp"] && ! $_SESSION["uisadminacc"] ) {
+        if ( ! $isAdmin && ! $globalSearch ) {
             $arrFilterUser[] = "account_userGroupId = ".$searchFilter["groupId"];
             $arrFilterUser[] = "account_userId = ".$searchFilter["userId"];
             $arrFilterUser[] = "accgroup_groupId = ".$searchFilter["groupId"];
@@ -174,7 +175,7 @@ class SP_Account {
             $query = $querySelect.$queryOrder." ".$queryLimit;
         }
         
-        $queryCount = $queryCount." WHERE ".implode(" AND ", $arrQueryWhere);
+        $this->query = $query;
         
         // Consulta de la búsqueda de cuentas
         $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
@@ -182,8 +183,6 @@ class SP_Account {
         if ( $queryRes === FALSE ){
             return FALSE;
         }
-
-        //error_log($query);
         
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         $resQueryNumRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
@@ -196,6 +195,7 @@ class SP_Account {
         $_SESSION["accountSearchKey"] = $searchFilter["keyId"];
         $_SESSION["accountSearchStart"] = $searchFilter["limitStart"];
         $_SESSION["accountSearchLimit"] = $searchFilter["limitCount"];
+        $_SESSION["accountGlobalSearch"] = $searchFilter["globalSearch"];
         
         return $queryRes;
     }

@@ -224,7 +224,7 @@ class SP_Users {
         echo '<div id="' . $arrUsersTableProp["tblId"] . '" class="data-header" >';
         echo '<ul class="round header-grey">';
 
-        $cellWidth = floor(85 / count($arrUsersTableProp["tblHeaders"]));
+        $cellWidth = floor(65 / count($arrUsersTableProp["tblHeaders"]));
 
         foreach ($arrUsersTableProp["tblHeaders"] as $header) {
             if (is_array($header)) {
@@ -248,12 +248,14 @@ class SP_Users {
         foreach ( $items as $item) {
             $intId = $item->$arrUsersTableProp["tblRowSrcId"];
             $action_check = array();
+            $numActions = count($arrUsersTableProp["actions"]);
+            $classActionsOptional = ( $numActions > 2 ) ? 'actions-optional' : '';
 
             $lnkView = '<img src="imgs/view.png" title="' . _('Ver Detalles') . '" class="inputImg" Onclick="return usersData(' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ',1);" />';
             $lnkEdit = '<img src="imgs/edit.png" title="' . _('Editar') . ' ' . $arrUsersTableProp['itemName'] . '" class="inputImg" Onclick="return usersData(' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
-            $lnkDel = '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrUsersTableProp['itemName'] . '" class="inputImg" Onclick="return usersMgmt(' . $arrUsersTableProp["active"] . ', 1,' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
-            $lnkPass = '<img src="imgs/key.png" title="' . _('Cambiar clave') . '" class="inputImg" Onclick="return usrUpdPass(' . $intId . ');" />';
-
+            $lnkDel = '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrUsersTableProp['itemName'] . '" class="inputImg '.$classActionsOptional.'" Onclick="return usersMgmt(' . $arrUsersTableProp["active"] . ', 1,' . $intId . ',' . $arrUsersTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrUsersTableProp["active"] . ');" />';
+            $lnkPass = '<img src="imgs/key.png" title="' . _('Cambiar clave') . '" class="inputImg '.$classActionsOptional.'" Onclick="return usrUpdPass(' . $intId . ');" />';
+            
             echo '<ul>';
 
             foreach ($arrUsersTableProp["tblRowSrc"] as $rowSrc) {
@@ -273,8 +275,9 @@ class SP_Users {
                     echo '</li>';
                 }
             }
-
-            echo '<li class="cell-actions round" style="width: ' . $cellWidth . '%;">';
+            
+            echo '<li class="cell-actions round" style="width: ' . ($numActions * 5 + 2) . '%;">';
+            //echo '<li class="cell-actions round" style="width: 175px;">';
             foreach ($arrUsersTableProp["actions"] as $action) {
                 switch ($action) {
                     case "view":
@@ -291,6 +294,7 @@ class SP_Users {
                         break;
                 }
             }
+            echo ($numActions > 2 ) ? '<img src="imgs/action.png" title="'._('Más Acciones').'" OnClick="showOptional(this)" />' : '';
             echo '</li>';
             echo '</ul>';
         }

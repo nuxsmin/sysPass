@@ -43,32 +43,33 @@ $frmAction =  SP_Common::parseParams('p', 'action');
 if ($frmAction == "config") {
     $frmSiteLang = SP_Common::parseParams('p', 'sitelang');
     $frmSessionTimeout = SP_Common::parseParams('p', 'session_timeout', 300);
-    $frmLogEnabled = SP_Common::parseParams('p', 'logenabled', 0, FALSE, 1);
-    $frmDebugEnabled = SP_Common::parseParams('p', 'debug', 0, FALSE, 1);
-    $frmMaintenanceEnabled = SP_Common::parseParams('p', 'maintenance', 0, FALSE, 1);
-    $frmCheckUpdatesEnabled = SP_Common::parseParams('p', 'updates', 0, FALSE, 1);
-    $frmFilesEnabled = SP_Common::parseParams('p', 'filesenabled', 0, FALSE, 1);
+    $frmLog = SP_Common::parseParams('p', 'logenabled', 0, FALSE, 1);
+    $frmDebug = SP_Common::parseParams('p', 'debug', 0, FALSE, 1);
+    $frmMaintenance = SP_Common::parseParams('p', 'maintenance', 0, FALSE, 1);
+    $frmCheckUpdates = SP_Common::parseParams('p', 'updates', 0, FALSE, 1);
+    $frmFiles = SP_Common::parseParams('p', 'filesenabled', 0, FALSE, 1);
+    $frmGlobalSearch = SP_Common::parseParams('p', 'globalsearch', 0, FALSE, 1);
     $frmAccountLink = SP_Common::parseParams('p', 'account_link', 0, FALSE, 1);
     $frmAccountCount = SP_Common::parseParams('p', 'account_count', 10);
     $frmAllowedSize = SP_Common::parseParams('p', 'allowed_size', 1024);
     $frmAllowedExts = SP_Common::parseParams('p', 'allowed_exts');
 
-    $frmWikiEnabled = SP_Common::parseParams('p', 'wikienabled', 0, FALSE, 1);
+    $frmWiki = SP_Common::parseParams('p', 'wikienabled', 0, FALSE, 1);
     $frmWikiSearchUrl = SP_Common::parseParams('p', 'wikisearchurl');
     $frmWikiPageUrl = SP_Common::parseParams('p', 'wikipageurl');
     $frmWikiFilter = SP_Common::parseParams('p', 'wikifilter');
 
-    $frmLdapEnabled = SP_Common::parseParams('p', 'ldapenabled', 0, FALSE, 1);
+    $frmLdap = SP_Common::parseParams('p', 'ldapenabled', 0, FALSE, 1);
     $frmLdapServer = SP_Common::parseParams('p', 'ldapserver');
     $frmLdapBase = SP_Common::parseParams('p', 'ldapbase');
     $frmLdapGroup = SP_Common::parseParams('p', 'ldapgroup');
     $frmLdapBindUser = SP_Common::parseParams('p', 'ldapbinduser');
     $frmLdapBindPass = SP_Common::parseParams('p', 'ldapbindpass');
 
-    $frmMailEnabled = SP_Common::parseParams('p', 'mailenabled', 0, FALSE, 1);
+    $frmMail = SP_Common::parseParams('p', 'mailenabled', 0, FALSE, 1);
     $frmMailServer = SP_Common::parseParams('p', 'mailserver');
     $frmMailFrom = SP_Common::parseParams('p', 'mailfrom');
-    $frmMailRequestsEnabled = SP_Common::parseParams('p', 'mailrequestsenabled', 0, FALSE, 1);
+    $frmMailRequests = SP_Common::parseParams('p', 'mailrequestsenabled', 0, FALSE, 1);
 
     if ($frmAccountCount == "all") {
         $intAccountCount = 99;
@@ -76,9 +77,9 @@ if ($frmAction == "config") {
         $intAccountCount = $frmAccountCount;
     }
 
-    if ($frmWikiEnabled && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !$frmWikiFilter )) {
+    if ($frmWiki && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !$frmWikiFilter )) {
         SP_Common::printJSON(_('Faltan parámetros de Wiki'));
-    } elseif ($frmWikiEnabled) {
+    } elseif ($frmWiki) {
         SP_Config::setValue("wikienabled", 1);
         SP_Config::setValue("wikisearchurl", $frmWikiSearchUrl);
         SP_Config::setValue("wikipageurl", $frmWikiPageUrl);
@@ -87,9 +88,9 @@ if ($frmAction == "config") {
         SP_Config::setValue("wikienabled", 0);
     }
 
-    if ($frmLdapEnabled && (!$frmLdapServer || !$frmLdapBase || !$frmLdapGroup || !$frmLdapBindUser )) {
+    if ($frmLdap && (!$frmLdapServer || !$frmLdapBase || !$frmLdapGroup || !$frmLdapBindUser )) {
         SP_Common::printJSON(_('Faltan parámetros de LDAP'));
-    } elseif ($frmLdapEnabled) {
+    } elseif ($frmLdap) {
         SP_Config::setValue("ldapenabled", 1);
         SP_Config::setValue("ldapserver", $frmLdapServer);
         SP_Config::setValue("ldapbase", $frmLdapBase);
@@ -100,11 +101,11 @@ if ($frmAction == "config") {
         SP_Config::setValue("ldapenabled", 0);
     }
 
-    if ($frmMailEnabled && (!$frmMailServer || !$frmMailFrom )) {
+    if ($frmMail && (!$frmMailServer || !$frmMailFrom )) {
         SP_Common::printJSON(_('Faltan parámetros de Correo'));
-    } elseif ($frmMailEnabled) {
+    } elseif ($frmMail) {
         SP_Config::setValue("mailenabled", 1);
-        SP_Config::setValue("mailrequestsenabled", $frmMailRequestsEnabled);
+        SP_Config::setValue("mailrequestsenabled", $frmMailRequests);
         SP_Config::setValue("mailserver", $frmMailServer);
         SP_Config::setValue("mailfrom", $frmMailFrom);
     } else {
@@ -121,11 +122,12 @@ if ($frmAction == "config") {
     SP_Config::setValue("account_count", $frmAccountCount);
     SP_Config::setValue("sitelang", $frmSiteLang);
     SP_Config::setValue("session_timeout", $frmSessionTimeout);
-    SP_Config::setValue("logenabled", $frmLogEnabled);
-    SP_Config::setValue("debug", $frmDebugEnabled);
-    SP_Config::setValue("maintenance", $frmMaintenanceEnabled);
-    SP_Config::setValue("checkupdates", $frmCheckUpdatesEnabled);
-    SP_Config::setValue("filesenabled", $frmFilesEnabled);
+    SP_Config::setValue("logenabled", $frmLog);
+    SP_Config::setValue("debug", $frmDebug);
+    SP_Config::setValue("maintenance", $frmMaintenance);
+    SP_Config::setValue("checkupdates", $frmCheckUpdates);
+    SP_Config::setValue("filesenabled", $frmFiles);
+    SP_Config::setValue("globalsearch", $frmGlobalSearch);
     SP_Config::setValue("allowed_size", $frmAllowedSize);
 
     $message['action'] = _('Modificar Configuración');

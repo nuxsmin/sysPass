@@ -44,23 +44,34 @@ $categoriesSelProp = array("name" => "category",
     "default" => "",
     "js" => 'OnChange="accSearch(0)"',
     "attribs" => "");
+
+$isAdmin = ($_SESSION["uisadminapp"] || $_SESSION["uisadminacc"]);
+$globalSearch = SP_Config::getValue('globalsearch',0);
+$chkGlobalSearch = SP_Common::parseParams('s', 'accountGlobalSearch', 0);
+$searchStart = SP_Common::parseParams('s', 'accountSearchStart', 0);
+$searchKey = SP_Common::parseParams('s', 'accountSearchKey', 0);
+$searchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
 ?>
 <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return accSearch(0);">
     <table id="tblTools" class="round shadow">
         <tr>
             <td id="toolsLeft">
-                <label FOR="txtSearch"></label>
                 <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="Clear('frmSearch', 1); accSearch(0);" />
                 <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1)" value="<?php echo SP_Common::parseParams('s', 'accountSearchTxt'); ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
-                <input type="hidden" name="start" value="<?php echo SP_Common::parseParams('s', 'accountSearchStart', 0); ?>">
-                <input type="hidden" name="skey" value="<?php echo SP_Common::parseParams('s', 'accountSearchKey', 0); ?>" />
-                <input type="hidden" name="sorder" value="<?php echo SP_Common::parseParams('s', 'accountSearchOrder', 0); ?>" />
+                <?php if ( $globalSearch && ! $isAdmin ): ?>
+                <input type="checkbox" name="gsearch" id="gsearch" class="checkbox" <?php echo ($chkGlobalSearch) ? 'checked="checked"' : ''; ?>/>
+                <label for="gsearch" title="<?php echo _('Búsqueda global');?>"><?php echo ($chkGlobalSearch) ? 'ON' : 'OFF'; ?></label>
+                <?php endif; ?>                
+                <input type="hidden" name="start" value="<?php echo $searchStart; ?>">
+                <input type="hidden" name="skey" value="<?php echo $searchKey; ?>" />
+                <input type="hidden" name="sorder" value="<?php echo $searchOrder; ?>" />
                 <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
                 <input type="hidden" name="is_ajax" value="1">
                 <?php
                 SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp);
                 SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp);
                 ?>
+                <br>
             </td>
             <td id="toolsRight">
                 <input type="text" name="rpp" id="rpp" placeholder="<?php echo _('CPP'); ?>" title="<?php echo _('Cuentas por página'); ?>" value="<?php echo SP_Common::parseParams('s', 'accountSearchLimit', SP_Config::getValue('account_count')); ?>"/>
@@ -73,9 +84,20 @@ $categoriesSelProp = array("name" => "category",
     mkChosen({id: 'selCustomer', placeholder: '<?php echo _('Seleccionar Cliente'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
     mkChosen({id: 'selCategory', placeholder: '<?php echo _('Seleccionar Categoría'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
     
-    $("#rpp").spinner({step: 5, max: 50, min: 5, numberFormat: "n", stop: function(event, ui) {
+    $("#rpp").spinner({step: 3, max: 50, min: 6, numberFormat: "n", stop: function(event, ui) {
             accSearch(0);
         }});
+    <?php if ( $globalSearch ): ?>
+    $('#tblTools .checkbox').button();
+    $('#gsearch').click(function(){
+        if ( $(this).next('label').hasClass('ui-state-active') ){
+            $(this).next('label').children('span').html('OFF');
+        } else{
+            $(this).next('label').children('span').html('ON');
+        }
+        accSearch(0);
+    });
+    <?php endif; ?>
     $('input:text:visible:first').focus();
 </script>
 

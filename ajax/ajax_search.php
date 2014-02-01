@@ -40,13 +40,14 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
 
 $startTime = microtime();
 
-$blnAccountLink = SP_Config::getValue('account_link',0);
-$intAccountCount = ( isset($_POST["rpp"]) && $_POST["rpp"] > 0 ) ? (int)$_POST["rpp"] : SP_Config::getValue('account_count',10);
+$accountLink = SP_Config::getValue('account_link',0);
+$accountCount = ( isset($_POST["rpp"]) && $_POST["rpp"] > 0 ) ? (int)$_POST["rpp"] : SP_Config::getValue('account_count',10);
 $filesEnabled = SP_Config::getValue('filesenabled');
 $wikiEnabled = SP_Config::getValue('wikienabled');
 $wikiSearchUrl = SP_Config::getValue('wikisearchurl');
 $wikiFilter = explode(',',SP_Config::getValue('wikifilter'));
 $wikiPageUrl = SP_Config::getValue('wikipageurl');
+$requestEnabled = SP_Config::getValue('mailrequestsenabled', FALSE);
 
 $sortKey = SP_Common::parseParams('p', 'skey', 0);
 $sortOrder = SP_Common::parseParams('p', 'sorder', 0);
@@ -54,6 +55,7 @@ $customerId = SP_Common::parseParams('p', 'customer', 0);
 $categoryId = SP_Common::parseParams('p', 'category', 0);
 $searchTxt = SP_Common::parseParams('p', 'search', '');
 $limitStart = SP_Common::parseParams('p', 'start', 0);
+$globalSearch = SP_Common::parseParams('p', 'gsearch', 0, FALSE, 1);
 
 $userGroupId = SP_Common::parseParams('s', 'ugroup', 0);
 $userProfileId = SP_Common::parseParams('s', 'uprofile', 0);
@@ -70,7 +72,8 @@ $arrSearchFilter = array("txtSearch" => $searchTxt,
                         "keyId" => $sortKey,
                         "txtOrder" => $sortOrder,
                         "limitStart" => $limitStart,
-                        "limitCount" => $intAccountCount);
+                        "limitCount" => $accountCount,
+                        "globalSearch" => $globalSearch);
 
 $resQuery = $objAccount->getAccounts($arrSearchFilter);
 
@@ -86,33 +89,28 @@ if ( count($resQuery) > 0){
         $sortKeyImg = '<img src="'.$sortKeyImg.'" class="icon" />';
     }
     
-    echo '<div id="data-search-header" class="data-header">';
-    echo '<ul class="round header-grey">';
-    echo '<li class="header-txt">';
-    echo '<a onClick="searchSort(5,'.$limitStart.')" title="'._('Ordenar por Cliente').'" >'._('Cliente').'</a>';
-    echo ($sortKey == 5 ) ? $sortKeyImg : '';
+    echo '<div id="data-search-header" class="data-header data-header-minimal">';
+    echo '<ul>';
+    echo '<li>';
+    echo '<a id="search-sort-5" class="round" onClick="searchSort(5,'.$limitStart.')" title="'._('Ordenar por Cliente').'" >'._('Cliente').'</a>';
     echo '</li>';
-    echo '<li class="header-txt">';
-    echo '<a onClick="searchSort(1,'.$limitStart.')" title="'._('Ordenar por Nombre').'">'._('Nombre').'</a>';
-    echo ($sortKey == 1 ) ? $sortKeyImg : '';
+    echo '<li>';
+    echo '<a id="search-sort-1" class="round" onClick="searchSort(1,'.$limitStart.')" title="'._('Ordenar por Nombre').'">'._('Nombre').'</a>';
     echo '</li>';        
-    echo '<li class="header-txt">';
-    echo '<a onClick="searchSort(2,'.$limitStart.')" title="'._('Ordenar por Categoría').'">'._('Categoría').'</a>';
-    echo ($sortKey == 2 ) ? $sortKeyImg : '';
+    echo '<li>';
+    echo '<a id="search-sort-2" class="round" onClick="searchSort(2,'.$limitStart.')" title="'._('Ordenar por Categoría').'">'._('Categoría').'</a>';
     echo '</li>';        
-    echo '<li class="header-txt">';
-    echo '<a onClick="searchSort(3,'.$limitStart.')" title="'._('Ordenar por Usuario').'">'._('Usuario').'</a>';
-    echo ($sortKey == 3 ) ? $sortKeyImg : '';
+    echo '<li>';
+    echo '<a id="search-sort-3" class="round" onClick="searchSort(3,'.$limitStart.')" title="'._('Ordenar por Usuario').'">'._('Usuario').'</a>';
     echo '</li>';
-    echo '<li class="header-txt">';
-    echo '<a onClick="searchSort(4,'.$limitStart.')" title="'._('Ordenar por URL / IP').'">'._('URL / IP').'</a>';
-    echo ($sortKey == 4 ) ? $sortKeyImg : '';
+    echo '<li>';
+    echo '<a id="search-sort-4" class="round" onClick="searchSort(4,'.$limitStart.')" title="'._('Ordenar por URL / IP').'">'._('URL / IP').'</a>';
     echo '</li>';        
     echo '</ul>';
     echo '</div>';
 }
 
-echo '<div id="data-search" class="data-rows">';
+echo '<div id="data-search">';
 
 // Mostrar los resultados de la búsqueda
 foreach ( $resQuery as $account ){
@@ -128,138 +126,170 @@ foreach ( $resQuery as $account ){
     $accCopy = ( SP_ACL::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accnew") );
     $accDel = ( SP_ACL::checkAccountAccess("accdelete", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accdelete") );
     
-    echo '<ul>';
-    echo '<li class="cell-txt txtCliente">';
-
+    $show = ( $accView || $accViewPass || $accEdit || $accCopy || $accDel);
+    
+    $randomRGB = array(rand(150,210),rand(150,210),rand(150,210));
+    $color = array($account->account_customerId => array(SP_Html::rgb2hex($randomRGB), $randomRGB));
+    
+    if ( ! isset($customerColor) ){
+        $customerColor = $color;
+    } elseif ( isset($customerColor) && ! array_key_exists($account->account_customerId, $customerColor)){
+        $customerColor = $color;
+    }
+    
+    $hexColor = $customerColor[$account->account_customerId][0];
+    //$rgbaColor = implode(',',$customerColor[$account->account_customerId][1]).',0.1';
+    
     if ( $wikiEnabled ){
         $wikiLink = $wikiSearchUrl.$account->customer_name;
-        echo '<a href="'.$wikiLink.'" target="blank" title="'._('Buscar en Wiki').'">'.$account->customer_name.'</a>';
+        $customerName = '<a href="'.$wikiLink.'" target="blank" title="'._('Buscar en Wiki').'<br><br>'.$account->customer_name.'">'.SP_Html::truncate($account->customer_name,31).'</a>';
     } else{
-        echo $account->customer_name;
+        $customerName = SP_Html::truncate($account->customer_name,31);
     }
 
-    echo '</li>';
-    echo '<li class="cell-txt">';
-
-    if ( $blnAccountLink == "TRUE" ) {
+    if ( $accountLink && $show ) {
         // Comprobación de accesos para mostrar enlaces de acciones de cuenta
         if ( $accView ){
-            echo '<a title="'._('Detalles de Cuenta').'" OnClick="doAction(\'accview\',\'accsearch\','.$account->account_id.')">'.$account->account_name.'</a>';
+            $accountName = '<a title="'._('Detalles de Cuenta').'" OnClick="doAction(\'accview\',\'accsearch\','.$account->account_id.')">'.$account->account_name.'</a>';
         } else {
-            echo $account->account_name;
+            $accountName = $account->account_name;
         }
     } else {
-        echo $account->account_name;
+        $accountName = $account->account_name;
     }
-
-    echo '</li>';
-    echo '<li class="cell-txt">'.$account->category_name.'</li>';
-    echo '<li class="cell-txt">';
-
-    $vacLogin =  ( strlen($account->account_login) >= 20 ) ? SP_Html::truncate($account->account_login,20) : $account->account_login;
-
-    echo ($vacLogin) ? $vacLogin : '&nbsp;';
-
-    echo '</li>';
-    echo '<li class="cell-txt">';
-
-    $strAccUrl = $account->account_url;
     
-    $urlIsLink = ( $strAccUrl &&  preg_match("#^https?://.*#i", $strAccUrl) );
+    if ( $show ){
+        $vacLogin =  ( strlen($account->account_login) >= 31 ) ? SP_Html::truncate($account->account_login,31) : $account->account_login;
         
-    if ( strlen($strAccUrl) >= 25 ){
-        $strAccUrl_short = SP_Html::truncate($strAccUrl,25);
+        $strAccUrl = $account->account_url;
+        $urlIsLink = ( $strAccUrl &&  preg_match("#^https?://.*#i", $strAccUrl) );
 
-        $strAccUrl = ( $urlIsLink ) ? '<a href="'.$strAccUrl.'" target="_blank" title="'._('Abrir enlace a').': '.$strAccUrl.'">'.$strAccUrl_short.'</a>' : $strAccUrl_short;
-    } else {
-        $strAccUrl = ( $urlIsLink ) ? '<a href="'.$strAccUrl.'" target="_blank" title="'._('Abrir enlace a').': '.$strAccUrl.'">'.$strAccUrl.'</a>' : $strAccUrl;
-    }
+        if ( strlen($strAccUrl) >= 31 ){
+            $strAccUrl_short = SP_Html::truncate($strAccUrl,31);
 
-    echo ( $strAccUrl ) ? $strAccUrl : '';
-    echo '</li>';
+            $strAccUrl = ( $urlIsLink ) ? '<a href="'.$strAccUrl.'" target="_blank" title="'._('Abrir enlace a').': '.$strAccUrl.'">'.$strAccUrl_short.'</a>' : $strAccUrl_short;
+        } else {
+            $strAccUrl = ( $urlIsLink ) ? '<a href="'.$strAccUrl.'" target="_blank" title="'._('Abrir enlace a').': '.$strAccUrl.'">'.$strAccUrl.'</a>' : $strAccUrl;
+        }
+        
+        $secondaryGroups = SP_Groups::getGroupsNameForAccount($account->account_id);
+        $secondaryUsers = SP_Users::getUsersNameForAccount($account->account_id);
     
-    echo'<li class="cell-img">';
-    
-    //$groupsName = _('Grupos').':<br><br>*'.$account->usergroup_name.'<br>';
-    
-    $secondaryGroups = SP_Groups::getGroupsNameForAccount($account->account_id);
-    $secondaryUsers = SP_Users::getUsersNameForAccount($account->account_id);
-    
-    $secondaryAccesses = '<em>(G) '.$account->usergroup_name.'*</em><br>';
+        $secondaryAccesses = '<em>(G) '.$account->usergroup_name.'*</em><br>';
             
-    if ( $secondaryGroups ){
-        foreach ($secondaryGroups as $group){
-            $secondaryAccesses .= '<em>(G) '.$group.'</em><br>';
+        if ( $secondaryGroups ){
+            foreach ($secondaryGroups as $group){
+                $secondaryAccesses .= '<em>(G) '.$group.'</em><br>';
+            }
         }
-    }
-    
-    if ( $secondaryUsers ){
-        foreach ($secondaryUsers as $user){
-            $secondaryAccesses .= '<em>(U) '.$user.'</em><br>';
+
+        if ( $secondaryUsers ){
+            foreach ($secondaryUsers as $user){
+                $secondaryAccesses .= '<em>(U) '.$user.'</em><br>';
+            }
         }
-    }
-    
-    echo '<img src="imgs/btn_group.png" title="'.$secondaryAccesses.'" />';
-    
-    $strAccNotes = (strlen($account->account_notes) > 300 ) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
-    echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',TRUE)).'" />' : '';
-   
-    if ( $filesEnabled == 1 ){
-        $intNumFiles = SP_Files::countFiles($account->account_id);
-        echo ($intNumFiles) ? '<img src="imgs/attach.png" title="'._('Archivos adjuntos').': '.$intNumFiles.'" />' : ''; 
-    }
-    
-    if ( $wikiEnabled ){
-        if ( is_array($wikiFilter) ){
-            foreach ( $wikiFilter as $strFilter ){
-                // Quote filter string
-                $strFilter = preg_quote($strFilter);
         
-                if ( preg_match("/^".$strFilter.".*/i", $account->account_name) ){
-                    $wikiLink = $wikiPageUrl.$account->account_name;
-                    echo '<a href="'.$wikiLink.'" target="_blank" ><img src="imgs/wiki.png" title="'._('Enlace a Wiki').'" /></a>';
+        $strAccNotes = (strlen($account->account_notes) > 300 ) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
+    }
+    
+    //echo '<div class="account-label round shadow" onMouseOver="this.style.backgroundColor=\'RGBA('.$rgbaColor.')\'" onMouseOut="this.style.backgroundColor=\'#FFFFFF\'" >';
+    echo '<div class="account-label round shadow">';
+    
+    echo '<div class="label-field">';
+    echo '<div class="field-name">'._('Cliente').'</div>';
+    echo '<div class="field-text round5 no-link" style="background-color: '.$hexColor.';">'.$customerName.'</div>';
+    echo '</div>';
+
+    echo '<div class="label-field">';
+    echo '<div class="field-name">'._('Nombre').'</div>';
+    echo '<div class="field-text">'.$accountName.'</div>';
+    echo '</div>';
+    
+    echo '<div class="label-field">';
+    echo '<div class="field-name">'._('Categoría').'</div>';
+    echo '<div class="field-text">'.$account->category_name.'</div>';
+    echo '</div>';
+    
+    if ( $show ){
+        echo '<div class="label-field">';
+        echo '<div class="field-name">'._('Usuario').'</div>';
+        echo '<div class="field-text">'.$vacLogin.'</div>';
+        echo '</div>';
+    
+        echo '<div class="label-field">';
+        echo '<div class="field-name">'._('URL / IP').'</div>';
+        echo '<div class="field-text">'.$strAccUrl.'</div>';
+        echo '</div>';
+        
+        echo '<div class="account-info">';
+        echo '<img src="imgs/btn_group.png" title="'.$secondaryAccesses.'" />';
+        
+        echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',TRUE)).'" />' : '';
+   
+        if ( $filesEnabled == 1 ){
+            $intNumFiles = SP_Files::countFiles($account->account_id);
+            echo ($intNumFiles) ? '<img src="imgs/attach.png" title="'._('Archivos adjuntos').': '.$intNumFiles.'" />' : ''; 
+        }
+    
+        if ( $wikiEnabled ){
+            if ( is_array($wikiFilter) ){
+                foreach ( $wikiFilter as $strFilter ){
+                    // Quote filter string
+                    $strFilter = preg_quote($strFilter);
+
+                    if ( preg_match("/^".$strFilter.".*/i", $account->account_name) ){
+                        $wikiLink = $wikiPageUrl.$account->account_name;
+                        echo '<a href="'.$wikiLink.'" target="_blank" ><img src="imgs/wiki.png" title="'._('Enlace a Wiki').'" /></a>';
+                    }
                 }
             }
         }
-    }
-    
-    echo '</li>';
-    
-    echo '<li class="cell-actions round">';
-   
-    // Comprobar accesos para mostrar enlaces de acciones de cuenta
-    if ( $accView ){
-        echo '<img src="imgs/view.png" title="'._('Detalles de Cuenta').'" OnClick="doAction(\'accview\',\'accsearch\','.$account->account_id.')" />';
-    }
 
-    if ( $accViewPass  ){
-        echo '<img src="imgs/user-pass.png" title="'._('Ver clave').'" onClick="viewPass('.$account->account_id.', 1)" />';
-    } 
+        echo '</div>';
+        
+        echo '<div class="account-actions round">';
 
-    if ( $accEdit || $accCopy || $accDel ){
-        echo '<img src="imgs/action.png" title="'._('Más Acciones').'" OnClick="showOptional(this)" />';
+        // Comprobar accesos para mostrar enlaces de acciones de cuenta
+        if ( $accView ){
+            echo '<img src="imgs/view.png" title="'._('Detalles de Cuenta').'" OnClick="doAction(\'accview\',\'accsearch\','.$account->account_id.')" />';
+        }
+
+        if ( $accViewPass  ){
+            echo '<img src="imgs/user-pass.png" title="'._('Ver clave').'" onClick="viewPass('.$account->account_id.', 1)" />';
+        } 
+
+        if ( $accEdit || $accCopy || $accDel ){
+            echo '<img src="imgs/action.png" title="'._('Más Acciones').'" OnClick="showOptional(this)" />';
+        }
+
+        if ( $accEdit ){
+            echo '<img src="imgs/edit.png" title="'._('Modificar Cuenta').'" class="actions-optional" OnClick="doAction(\'accedit\',\'accsearch\','.$account->account_id.')" />';
+        }
+
+        if ( $accCopy ){
+            echo '<img src="imgs/btn_copy.png" title="'._('Copiar Cuenta').'" class="actions-optional" OnClick="doAction(\'acccopy\',\'accsearch\','.$account->account_id.')" />';
+        }
+
+        if ( $accDel ){
+            echo '<img src="imgs/delete.png" title="'._('Eliminar Cuenta').'" class="actions-optional" OnClick="doAction(\'accdelete\',\'accsearch\','.$account->account_id.')"/>';
+        }
+
+        echo '</div>';
+    } elseif ($requestEnabled) {
+        echo '<div class="account-spacer"></div>';
+        echo '<div class="account-actions">';
+        echo '<img src="imgs/request.png" title="'._('Solicitar Modificación').'" class="inputImg" OnClick="doAction(\'accrequest\',\'accsearch\','.$account->account_id.')" />';
+        echo '</div>';
     }
-
-    if ( $accEdit ){
-        echo '<img src="imgs/edit.png" title="'._('Modificar Cuenta').'" class="actions-optional" OnClick="doAction(\'accedit\',\'accsearch\','.$account->account_id.')" />';
-    }
-    
-    if ( $accCopy ){
-        echo '<img src="imgs/btn_copy.png" title="'._('Copiar Cuenta').'" class="actions-optional" OnClick="doAction(\'acccopy\',\'accsearch\','.$account->account_id.')" />';
-    }
-
-    if ( $accDel ){
-        echo '<img src="imgs/delete.png" title="'._('Eliminar Cuenta').'" class="actions-optional" OnClick="doAction(\'accdelete\',\'accsearch\','.$account->account_id.')"/>';
-    }
-
-    echo '</li>';
-    echo '</ul>';
-
+    echo '</div>';
 // Fin del bucle para obtener los registros
 }
+
 echo '</div>';
 
 $endTime = microtime();
 $totalTime = round($endTime - $startTime, 5);
 
 SP_Html::printQuerySearchNavBar($sortKey, $arrSearchFilter["limitStart"], $objAccount->queryNumRows, $arrSearchFilter["limitCount"], $totalTime, $filterOn);
+
+//echo $objAccount->query;

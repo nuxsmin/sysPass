@@ -189,24 +189,28 @@ class SP_Html {
     public static function printQuerySearchNavBar($intSortKey, $intCur, $intTotal, $intLimit, $intTime, $filterOn = FALSE) {
         $firstPage = ceil(($intCur + 1) / $intLimit);
         $lastPage = ceil($intTotal / $intLimit);
-
-        $txtFilter = ( $filterOn ) ? '<span id="txtFilterOn" class="round">' . _('Filtro ON') . '</span>' : '';
+        $globalOn = SP_Common::parseParams('p', 'gsearch', 0, FALSE, 1);
 
         echo '<div id="pageNav" class="round shadow">';
-        echo '<div id="pageNavLeft">' . $intTotal . ' @ ' . abs($intTime) . ' s ' . $txtFilter . '</div>';
+        echo '<div id="pageNavLeft">';
+        echo $intTotal . ' @ ' . abs($intTime) . ' s ';
+        echo ( $filterOn ) ? '<span class="filterOn round">' . _('Filtro ON') . '</span>' : '';
+        echo '&nbsp;';
+        echo ( $globalOn ) ? '<span class="globalOn round">' . _('Global ON') . '</span>' : '';
+        echo '</div>';
         echo '<div id="pageNavRight">';
 
         if ($intCur > 1) {
-            echo '<img src="imgs/aleft.png" onClick="searchSort(' . $intSortKey . ',0,1);" title="' . _('Primera página') . '" />';
-            echo '<img src="imgs/apleft.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur - $intLimit) . ',1);" title="' . _('Página anterior') . '" />';
+            echo '<img src="imgs/arrow_first.png" onClick="searchSort(' . $intSortKey . ',0,1);" title="' . _('Primera página') . '" />';
+            echo '<img src="imgs/arrow_left.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur - $intLimit) . ',1);" title="' . _('Página anterior') . '" />';
         }
 
         echo "&nbsp; $firstPage / $lastPage &nbsp;";
 
         if ($intCur < $intTotal && $firstPage != $lastPage) {
             $intLimitLast = ( ($intTotal % $intLimit) == 0 ) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
-            echo '<img src="imgs/apright.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur + $intLimit) . ',1);" title="' . _('Página siguiente') . '" />';
-            echo '<img src="imgs/aright.png" onClick="searchSort(' . $intSortKey . ',' . $intLimitLast . ',1);" title="' . _('Última página') . '" />';
+            echo '<img src="imgs/arrow_right.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur + $intLimit) . ',1);" title="' . _('Página siguiente') . '" />';
+            echo '<img src="imgs/arrow_last.png" onClick="searchSort(' . $intSortKey . ',' . $intLimitLast . ',1);" title="' . _('Última página') . '" />';
         }
 
         echo '</div></div>';
@@ -229,16 +233,16 @@ class SP_Html {
         echo '<div id="pageNavRight">';
 
         if ($intCur > 1) {
-            echo '<img src="imgs/aleft.png" onClick="navLog(0,' . $intCur . ');" title="' . _('Primera página') . '" />';
-            echo '<img src="imgs/apleft.png" onClick="navLog(' . ($intCur - $intLimit) . ',' . $intCur . ');" title="' . _('Página anterior') . '" />';
+            echo '<img src="imgs/arrow_first.png" onClick="navLog(0,' . $intCur . ');" title="' . _('Primera página') . '" />';
+            echo '<img src="imgs/arrow_left.png" onClick="navLog(' . ($intCur - $intLimit) . ',' . $intCur . ');" title="' . _('Página anterior') . '" />';
         }
 
         echo "&nbsp; $firstPage / $lastPage &nbsp;";
 
         if ($intCur < $intTotal && $firstPage != $lastPage) {
             $intLimitLast = ( ($intTotal % $intLimit) == 0 ) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
-            echo '<img src="imgs/apright.png" onClick="navLog(' . ($intCur + $intLimit) . ',' . $intCur . ');" title="' . _('Página siguiente') . '" />';
-            echo '<img src="imgs/aright.png" onClick="navLog(' . $intLimitLast . ',' . $intCur . ');" title="' . _('Última página') . '" />';
+            echo '<img src="imgs/arrow_right.png" onClick="navLog(' . ($intCur + $intLimit) . ',' . $intCur . ');" title="' . _('Página siguiente') . '" />';
+            echo '<img src="imgs/arrow_last.png" onClick="navLog(' . $intLimitLast . ',' . $intCur . ');" title="' . _('Última página') . '" />';
         }
 
         echo '</div></div>';
@@ -452,4 +456,20 @@ class SP_Html {
         
         //return $output_min;
     }
+    
+    /**
+     * @brief Convertir un color RGB a HEX
+     * @param array $rgb con color en RGB
+     * @return string
+     * 
+     * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
+     */
+    public static function rgb2hex($rgb) {
+       $hex = "#";
+       $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
+       $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
+       $hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
+
+       return $hex; // returns the hex value including the number sign (#)
+    }    
 }

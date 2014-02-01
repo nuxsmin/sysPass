@@ -235,14 +235,10 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content TD.valField, #fancyContainer TD.valField { padding-left:20px; width: 100%;}
 
-#content #tblTools{width: 100%; height: 5em; padding-left: 15px;padding: 5px;}
+#content #tblTools{min-width: 875px; height: 5em; padding-left: 15px;padding: 5px;}
 
-#content #resBuscar{ width: 100%; margin-top: 20px;}
+#content #resBuscar{ min-width: 875px; min-height: 450px;}
 #content #resBuscar IMG {vertical-align:middle;}
-/*#content #resBuscar #data-search, 
-#content .data-rows,
-#content #resEventLog #resSearch
-{overflow-y: auto; max-height: 400px}*/
 
 #content #pageNav {
     float: left;
@@ -294,7 +290,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
 }
 
 #content .data{
-    width: 70%;
+    width: 90%;
     padding: 10px;
     border: 1px solid #c9c9c9;
     margin: auto;
@@ -305,8 +301,8 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #content .data TD.descField {text-align:right; font-size:12px; font-weight:bold; color: #999}
 #content .data select {min-width: 210px;}
 
-#content .data  #files-wrap {max-height: 100px; width: 400px; overflow-y: auto; border: 1px solid #DFDFDF; padding: 0.5em;}
-#content .data  #files-list { list-style-type: none; margin: 0; padding: 0;}
+#content .data #files-wrap {max-height: 100px; width: 400px; overflow-y: auto; border: 1px solid #DFDFDF; padding: 0.5em;}
+#content .data #files-list { list-style-type: none; margin: 0; padding: 0;}
 #content .data #files-list li { background: #f2f2f2; padding: 1em; font-size: 1em; margin-bottom: 5px;}
 #content .data #files-list li:hover {background: #fffccd; color: #000;}
 #content .data #files-list li img{float: right; position: relative; top: -5px; vertical-align: middle;}
@@ -347,7 +343,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #content #tabs FIELDSET{ border: 1px solid #c9c9c9;}
 #content #tabs #frmConfig LABEL{ float: left;}
 
-#content .tblConfig {width: 70%; margin-bottom: 2em;}
+#content .tblConfig {margin-bottom: 2em;}
 #content .tblConfig TD.descField{width:35%; font-size:11px; font-weight:bold;}
 #content .tblConfig TD.rowHeader{
     padding: 5px 0 5px 0;
@@ -404,11 +400,16 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #content .data-header li a{color: #777;}
 #content .data-header li img{float: right; width: 24px; height: 24px; vertical-align: middle;}
 
+#content .data-header-minimal {border-bottom: 1px solid #dfdfdf;}
+#content .data-header-minimal ul{margin: 0;}
+#content .data-header-minimal li{font-weight: normal;letter-spacing: normal;}
+#content .data-header-minimal li a{color:#b9b9b9;padding: 0.3em 0.8em ;}
+
 #content .data-rows ul{
     display: table; 
     list-style: none; 
     width: 100%; 
-    margin: 0 0 10px 0; 
+    margin: 0 0 10px 0;
     padding: 0;
 }
 #content .data-rows li{
@@ -433,23 +434,48 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content .data-rows li.cell-nodata img,
 #content .data-rows li.cell-actions img,
-#content #data-search li.cell-img img {width: 24px; height: 24px;margin: 0 0.5em;}
+#content #data-search .account-info img,
+#content #data-search .account-actions img {width: 24px; height: 24px;margin: 0 0.5em;}
 
-#content #data-search-header li.header-txt,
-#content #data-search li.cell-txt{width: 12%;}
+#content #data-search {text-align: center;}
+#content #data-search .account-label{
+    width: 310px;
+    height: 205px;
+    text-align: left;
+    margin: 1em;
+    padding: 0.5em;
+    color: #696969;
+    background-color: #fcfcfc;
+    display: inline-block;
+}
+#content #data-search .account-label .label-field{width: 100%;height: 2em;}
+#content #data-search .account-label .field-name{float: left; width: 80px; padding: 0.3em 0.2em; color: #b9b9b9;}
+#content #data-search .account-label .field-text{float: left; width: 215px; padding: 0.3em 0.3em;}
+#content #data-search .account-label .header .field-name{color: white; font-weight: bold}
 
-#content #data-search-header li.header-img{width: 1em; padding: 0 1em;}
-#content #data-search li.cell-img{
-    width: 13em;
+#content #data-search .account-label .field-text a{color: #4895FA}
+#content #data-search .account-label .no-link a{color: white; font-weight: bold;}
+
+#content #data-search .account-info{
+    width: 100%;
     height: 2em;
     padding: 1em 0;
     text-align: left;
+    border-top: 1px solid #d9d9d9;
 }
-#content #data-search-header li.header-actions,
-#content #data-search li.cell-actions{width: 10em;}
-#content #data-search li.cell-actions:hover{background-color: #FFFEF0 !important;}
-#content #data-search li.cell-actions .actions-optional{display: none;}
 
+#content #data-search .account-actions{
+    width: 100%;
+    height: 2.5em;
+    padding-top: 5px;
+    text-align: right;
+    /*border-top: 1px solid #c9c9c9;*/
+    background-color: #f5f5f5;
+    box-shadow:  0 0 8px rgba(0, 0, 0,  0.075) inset;
+}
+#content .actions-optional{display: none;}
+#content #data-search .account-spacer{width: 100%; height: 8em;}
+    
 #content .rowSpace>.cellBorder{height: 10px;border-top:1px solid #d9d9d9;}
 #content .rowSpace>.cellBlank{height: 10px;}
 
@@ -462,15 +488,16 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content #tblTools div.chosen-container{margin: 0 5px;}
 #content #tblTools #txtSearch,
-#content #tblTools select {width: 220px;}
+#content #tblTools select {min-width: 180px;}
 #content #tblTools LABEL{margin-left:15px; color: #999;}
-#content #tblTools IMG{margin-left:0.5em;}
+/*#content #tblTools IMG{margin-left:0.5em;}*/
 #content #tblTools #toolsLeft{text-align: left; width: 80%;}
 #content #tblTools #toolsRight{text-align: right; width: 5%;}
 #content #tblTools #toolsRight input{margin-left: 15px; text-align: center;}
 #content #tblTools .custom-combobox{margin-left: 25px;}
 #content #tblTools #btnClear{opacity: 0.35;filter:alpha(opacity=35);}
 #content #tblTools #btnClear:hover{opacity: 1;filter:alpha(opacity=100);}
+#content #tblTools #order {margin-top: 0.5em; padding: 0.3em;color:#696969;}
 
 #content #tabs>DIV{min-height: 475px;}
 #content #tabs.ui-widget-content {border: none; background-color: transparent;}
@@ -682,7 +709,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
 .no-background {background: none !important;}
 
 .action{
-    max-width: 70%;
+    max-width: 90%;
     height: 4em;
     margin: 0.7em auto;
     text-align: right;
@@ -708,7 +735,8 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 .fullWidth{max-width: 100% !important;}
 
-#txtFilterOn{padding: 0.3em 1em ; background-color: #ecfde4;; color: green; border: #dbfdcb 1px solid; }
+.filterOn{padding: 0.3em 1em ; background-color: #ecfde4;; color: green ! important; border: #dbfdcb 1px solid ! important; }
+.globalOn{padding: 0.3em 1em ; background-color: #FFF2D9; color: orange ! important; border: #ffe5b3 1px solid ! important;}
 
 .opacity50{
     filter:alpha(opacity=50);
@@ -718,9 +746,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
 }
 
 /* COMBO */
- .custom-combobox { position: relative; display: inline-block;}
- .custom-combobox INPUT { width: 80%;}
- 
+.custom-combobox { position: relative; display: inline-block;}
+.custom-combobox INPUT { width: 80%;}
+
 .custom-combobox-toggle {
     position: absolute;
     top: 0;
@@ -743,14 +771,14 @@ A:focus {text-decoration: none;	color: #FF0000;}
 .ui-autocomplete, .ui-menu-item{z-index: 8050;} /* Fix for fancybox z-index*/
 
 .ui-buttonset .ui-state-active{
-  background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
-  border: 1px solid #AAAAAA;
-  color: #212121;
-  font-weight: normal;
+    background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+    border: 1px solid #AAAAAA;
+    color: #212121;
+    font-weight: normal;
 }
 
-.valField .ui-state-active{
-  background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+.valField .ui-state-active, #tblTools .ui-state-active{
+    background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
 }
 
 #passLevel { margin-left: 10px; padding: 3px 15px;}
@@ -870,9 +898,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 /* Warnings */
 fieldset.warning {
-	padding:8px;
-	color:#b94a48; background-color:#f2dede; border:1px solid #eed3d7;
-	border-radius:5px;
+    padding:8px;
+    color:#b94a48; background-color:#f2dede; border:1px solid #eed3d7;
+    border-radius:5px;
 }
 fieldset.warning legend { color:#b94a48 !important; }
 fieldset.warning a { color:#b94a48 !important; font-weight:bold; }

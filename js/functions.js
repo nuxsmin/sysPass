@@ -49,19 +49,21 @@ $(document).ready(function(){
 function doAction(action, lastAction, id){
     var data = {'action' : action,'lastAction': lastAction,'id': id, is_ajax: 1};
     
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'html',
-        url: APP_ROOT + '/ajax/ajax_getcontent.php',
-        data: data,        
-        success: function(response){
-            $('#content').html(response);
-            setContentSize();
-        },
-        error:function(){$('#content').html(resMsg("nofancyerror"));},
-        complete: function(){$.fancybox.hideLoading();}
+    $('#content').fadeOut(function(){
+        $.fancybox.showLoading();
+        
+        $.ajax({
+            type: 'POST',
+            dataType: 'html',
+            url: APP_ROOT + '/ajax/ajax_getcontent.php',
+            data: data,        
+            success: function(response){
+                $('#content').fadeIn().html(response);
+                setContentSize();
+            },
+            error:function(){$('#content').html(resMsg("nofancyerror"));},
+            complete: function(){$.fancybox.hideLoading();}
+        });
     });
 }
 
@@ -130,34 +132,22 @@ function accSearch(continous){
 
 // Función para buscar con la ordenación por campos
 function searchSort(skey,start,nav){
-    if ( typeof(skey) == "undefined" || typeof(start) == "undefined" ) return false
+    if ( typeof(skey) === "undefined" || typeof(start) === "undefined" ) return false
+    
+    var sorder = 0;
    
-    if ( order.dir === 0 ){
-        if ( nav === 1 ){
-            var sorder = 0;
-        } else {
-            if ( order.key > 0 && order.key != skey ){
-                order.key = skey;
-                var sorder = 0;
-            } else{
-                order.key = skey;
-                order.dir = 1;
-                var sorder = 1;
-            }
-        }
-    } else {
-        if ( nav === 1 ){
-            var sorder = 1;
-        } else {
-            if ( order.key > 0 && order.key != skey ){
-                order.key = skey;
-                var sorder = 1;
-            } else{
-                order.key = skey;
-                order.dir = 0;
-                var sorder = 0;
-            }
-        }
+    if ( order.key > 0 && order.key != skey ){
+        order.key = skey;
+        order.dir = 0;
+    } else if (nav != 1){
+        order.key = skey;
+
+        if ( order.dir === 1 ){
+            order.dir = 0;
+        } else{
+            order.dir = 1;
+            sorder = 1;
+        }        
     }
     
     $('#frmSearch input[name="skey"]').val(skey);
@@ -176,6 +166,12 @@ function searchSort(skey,start,nav){
         success: function(response){
             $('#resBuscar').html(response);
             $('#data-search').css("max-height",$('html').height() - 300);
+            $('#search-sort-' + skey).addClass('filterOn');
+            if ( order.dir == 0 ){
+                $('#search-sort-' + skey).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
+            } else{
+                $('#search-sort-' + skey).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
+            }
         },
         error:function(){$('#resBuscar').html(resMsg("nofancyerror"));},
         complete: function(){
@@ -831,8 +827,9 @@ function clearEventlog(sk){
 // Función para mostrar los botones de acción en los resultados de búsqueda
 function showOptional(me){
     $(me).hide();
-    $(me).parent().css('width','15em');
-    var actions =  $(me).closest('.cell-actions').children('.actions-optional');
+    //$(me).parent().css('width','15em');
+    //var actions =  $(me).closest('.account-actions').children('.actions-optional');
+    var actions =  $(me).parent().children('.actions-optional');
     actions.show(250);
 }
 

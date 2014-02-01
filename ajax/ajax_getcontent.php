@@ -35,7 +35,7 @@ if (!SP_Init::isLoggedIn()) {
 if (SP_Common::parseParams('p', 'action', '', TRUE)) {
     $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
     $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);
-    $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastaction', 'accsearch');
+    $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastAction', 'accsearch');
 } else {
     die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
 }
@@ -112,8 +112,7 @@ switch ($action) {
                     _('Login'),
                     _('Perfil'),
                     _('Grupo'),
-                    _('Propiedades'),
-                    ''),
+                    _('Propiedades')),
                 'tblRowSrc' => array(
                     'user_name',
                     'user_login',
@@ -149,7 +148,7 @@ switch ($action) {
                 'itemName' => _('Grupo'),
                 'tblId' => 'tblGroups',
                 'header' => '',
-                'tblHeaders' => array(_('Nombre'), _('Descripción'), ''),
+                'tblHeaders' => array(_('Nombre'), _('Descripción')),
                 'tblRowSrc' => array('usergroup_name', 'usergroup_description'),
                 'tblRowSrcId' => 'usergroup_id',
                 'frmId' => 'frm_tblgroups',
@@ -176,7 +175,7 @@ switch ($action) {
                 'itemName' => _('Perfil'),
                 'tblId' => 'tblProfiles',
                 'header' => '',
-                'tblHeaders' => array(_('Nombre'), ''),
+                'tblHeaders' => array(_('Nombre')),
                 'tblRowSrc' => array('userprofile_name'),
                 'tblRowSrcId' => 'userprofile_id',
                 'frmId' => 'frm_tblprofiles',
