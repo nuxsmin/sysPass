@@ -36,17 +36,17 @@ $userLogin = SP_Common::parseParams('p', 'user');
 $userPass = SP_Common::parseParams('p', 'pass');
 $masterPass = SP_Common::parseParams('p', 'mpass');
 
-if (!$userLogin OR !$userPass) {
+if (!$userLogin || !$userPass) {
     SP_Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
+$resLdap = SP_Auth::authUserLDAP($userLogin,$userPass);
+
 $objUser = new SP_Users;
-$objUser->userLogin = SP_Auth::$userLogin = $userLogin;
-$objUser->userPass = SP_Auth::$userPass = $userPass;
+$objUser->userLogin = $userLogin;
+$objUser->userPass = $userPass;
 $objUser->userName = SP_Auth::$userName;
 $objUser->userEmail = SP_Auth::$userEmail;
-
-$resLdap = SP_Auth::authUserLDAP();
 
 // Autentificamos por LDAP
 if ($resLdap == 1) {
@@ -71,6 +71,7 @@ if ($resLdap == 1) {
         }
     }
 } else if ($resLdap == 49) {
+    $message['action'] = _('Inicio sesión (LDAP)');
     $message['text'][] = _('Login incorrecto');
     $message['text'][] = _('Usuario') . ": " . $userLogin;
     $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
@@ -81,7 +82,7 @@ if ($resLdap == 1) {
     $message['action'] = _('Inicio sesión (MySQL)');
 
     // Autentificamos con la BBDD
-    if (!SP_Auth::authUserMySQL()) {
+    if (!SP_Auth::authUserMySQL($userLogin,$userPass)) {
         $message['text'][] = _('Login incorrecto');
         $message['text'][] = _('Usuario') . ": " . $userLogin;
         $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
@@ -92,7 +93,7 @@ if ($resLdap == 1) {
 }
 
 // Comprobar si el usuario está deshabilitado
-if (SP_Auth::checkUserIsDisabled()) {
+if (SP_Auth::checkUserIsDisabled($userLogin)) {
     $message['text'][] = _('Usuario deshabilitado');
     $message['text'][] = _('Usuario') . ": " . $userLogin;
     $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
@@ -139,9 +140,7 @@ if ($objUser->getUserMPass()) {
         }
     }
     
-    if ( isset($params) ){
-        $urlParams = '?'.implode('&', $params);
-    }
+    $urlParams = isset($params) ? '?'.implode('&', $params) : '';
     
     SP_Common::printJSON('index.php'.$urlParams, 0);
 }

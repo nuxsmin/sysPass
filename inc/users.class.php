@@ -482,7 +482,7 @@ class SP_Users {
     public function newUserLDAP() {
         $passdata = SP_Users::makeUserPass($this->userPass);
 
-        $query = "INSERT INTO usrData SET"
+        $query = "INSERT INTO usrData SET "
                 . "user_name = '" . DB::escape($this->userName) . "',"
                 . "user_groupId = 0,"
                 . "user_login = '" . DB::escape($this->userLogin) . "',"
@@ -614,6 +614,8 @@ class SP_Users {
         $query = "UPDATE usrData SET "
                 . "user_pass = '" . $passdata['pass'] . "',"
                 . "user_hashSalt = '" . $passdata['salt'] . "',"
+                . "user_name = '" . DB::escape($this->userName) . "',"
+                . "user_email = '" . DB::escape($this->userEmail) . "',"
                 . "user_lastUpdate = NOW() "
                 . "WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
 
