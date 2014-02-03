@@ -1005,3 +1005,49 @@ function resMsg(type, txt, url, action){
         $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({'border-radius':'25px','-moz-border-radius':'25px','-webkit-border-radius':'25px'});
         },afterClose : function() { if ( typeof(action) !== "undefined" ) eval(action);} });
 }
+
+// Función para comprobar la conexión con LDAP
+function checkLdapConn(){
+    var ldapServer = $('#frmConfig [name=ldapserver]').val();
+    var ldapBase = $('#frmConfig [name=ldapbase]').val();
+    var ldapGroup = $('#frmConfig [name=ldapgroup]').val();
+    var ldapBindUser = $('#frmConfig [name=ldapbinduser]').val();
+    var ldapBindPass = $('#frmConfig [name=ldapbindpass]').val();
+    var sk = $('#frmConfig [name=sk]').val();
+    
+    $.fancybox.showLoading();
+
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: APP_ROOT + '/ajax/ajax_checkLdap.php',
+        data: {'ldapserver' : ldapServer, 'ldapbase' : ldapBase, 'ldapgroup' : ldapGroup, 'ldapbinduser' : ldapBindUser, 'ldapbindpass' : ldapBindPass, 'is_ajax' : 1, 'sk' : sk},
+    success: function(json){
+        var status = json.status;
+        var description = json.description;
+        
+        description = description.replace(/;;/g,"<br />");
+
+        switch(status){
+            case 0:
+                $.fancybox.close();
+                resMsg("ok", description);
+                break;
+            case 1:
+                $.fancybox.close();
+                resMsg("error", description);
+                break;
+            case 10:
+                doLogout();
+                break;
+            default:
+                return;
+         }  
+    },
+    error:function(jqXHR, textStatus, errorThrown){
+        var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+        resMsg("error", txt);
+    },
+    complete: function(){$.fancybox.hideLoading();}
+    });
+}

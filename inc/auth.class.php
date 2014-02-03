@@ -51,8 +51,8 @@ class SP_Auth {
 
         // Conectamos al servidor realizamos la conexión con el usuario proxy
         try {
-            SP_LDAP::connect();
-            SP_LDAP::bind();
+            SP_LDAP::ldapConnect();
+            SP_LDAP::ldapBind();
             SP_LDAP::getUserDN($userLogin);
         } catch (Exception $e) {
             return FALSE;
@@ -70,7 +70,7 @@ class SP_Auth {
         
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try{
-            SP_LDAP::bind($userDN, $userPass);
+            SP_LDAP::ldapBind($userDN, $userPass);
             SP_LDAP::unbind();
             $attribs = SP_LDAP::getLDAPAttr($attribsMap);
         } catch (Exception $e) {

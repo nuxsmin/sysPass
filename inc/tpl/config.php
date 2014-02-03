@@ -293,6 +293,14 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <input type="text" name="ldapgroup" class="txtLong" value="<?php echo SP_Config::getValue('ldapgroup'); ?>" maxlength="128" />
         </td>
     </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Comprobar'); ?>
+        </td>
+        <td class="valField">
+            <img src="imgs/refresh.png" class="inputImg" title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="checkLdapConn();"/>
+        </td>
+    </tr>
 <?php else: ?>
     <tr>
         <td class="option-disabled">
