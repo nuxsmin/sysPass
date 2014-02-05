@@ -100,7 +100,9 @@ class SP_Common {
         $mailHeader = implode("\r\n", $headers);
         
         $log['action'] = _('Enviar Email');
-                
+        
+        $sendMail = mail($mailTo, $mailSubject, $mailbody, $mailHeader);
+        
         // Enviar correo
         if ( $sendMail ){
             $log['text'][]= _('Correo enviado');
