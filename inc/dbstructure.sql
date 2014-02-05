@@ -271,7 +271,7 @@ CREATE TABLE `usrProfiles` (
   `userProfile_pFiles` bit(1) DEFAULT b'0',
   `userProfile_pConfigMenu` bit(1) DEFAULT b'0',
   `userProfile_pUsersMenu` bit(1) DEFAULT b'0',
-  `userProfile_pAppMgmt` bit(1) DEFAULT b'0',
+  `userProfile_pAppMgmtMenu` bit(1) DEFAULT b'0',
   `userProfile_pAppMgmtCategories` bit(1) DEFAULT b'0',
   `userProfile_pAppMgmtCustomers` bit(1) DEFAULT b'0',
   PRIMARY KEY (`userprofile_id`)
