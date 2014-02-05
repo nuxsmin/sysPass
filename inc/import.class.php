@@ -156,6 +156,7 @@ class SP_Import {
             
             $categoryId = SP_Category::getCategoryIdByName($categoryName);
             if ( $categoryId == 0 ){
+                SP_Category::$categoryName = $categoryName;
                 SP_Category::addCategory($categoryName);
                 $categoryId = SP_Category::$categoryLastId;
             }
