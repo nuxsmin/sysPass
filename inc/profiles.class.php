@@ -32,8 +32,7 @@ class SP_Profiles {
 
     static $profileId;
     static $profileName;
-    
-    private static $queryLastId;
+    static $queryLastId;
 
     /**
      * @brief Obtener los datos de un perfil
@@ -328,6 +327,7 @@ class SP_Profiles {
                 . "userProfile_pConfig,"
                 . "userProfile_pConfigMasterPass,"
                 . "userProfile_pConfigBackup,"
+                . "userProfile_pAppMgmtMenu,"                
                 . 'userProfile_pAppMgmtCategories,'
                 . 'userProfile_pAppMgmtCustomers,'
                 . "userProfile_pUsersMenu,"
