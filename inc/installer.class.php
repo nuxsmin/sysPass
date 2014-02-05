@@ -367,10 +367,10 @@ class SP_Installer {
         $user = new SP_Users;
 
         // Datos del grupo
-        $user->groupName = "Admins";
-        $user->groupDesc = "Admins";
+        SP_Groups::$groupName = "Admins";
+        SP_Groups::$groupDescription = "Admins";
 
-        if (!$user->manageGroup("add")) {
+        if (!SP_Groups::addGroup()) {
             self::rollback();
 
             throw new InstallerException("critical"
@@ -379,7 +379,7 @@ class SP_Installer {
         }
 
         // Establecer el id de grupo del usuario al recién creado
-        $user->userGroupId = $user->queryLastId;
+        $user->userGroupId = SP_Groups::$queryLastId;
 
         $profileProp = array("pAccView" => 1
             , "pAccViewPass" => 1
@@ -389,19 +389,18 @@ class SP_Installer {
             , "pAccAdd" => 1
             , "pAccDel" => 1
             , "pAccFiles" => 1
-            , "pConfigMenu" => 1
             , "pConfig" => 1
-            , "pConfigCat" => 1
             , "pConfigMpw" => 1
             , "pConfigBack" => 1
-            , "pUsersMenu" => 1
+            , "pAppMgmtCat" => 1
+            , "pAppMgmtCust" => 1
             , "pUsers" => 1
             , "pGroups" => 1
             , "pProfiles" => 1
             , "pEventlog" => 1);
 
 
-        $user->profileName = 'Admin';
+        SP_Profiles::$profileName = 'Admin';
 
         if (!SP_Profiles::addProfile($profileProp)) {
             self::rollback();
@@ -412,7 +411,7 @@ class SP_Installer {
         }
 
         // Establecer el id de perfil del usuario al recién creado
-        $user->userProfileId = $user->queryLastId;
+        $user->userProfileId = SP_Profiles::$queryLastId;
         
         // Datos del usuario
         $user->userLogin = self::$username;
