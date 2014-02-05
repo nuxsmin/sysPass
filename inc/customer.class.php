@@ -56,7 +56,7 @@ class SP_Customer {
         $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
 
         if ($queryRes === FALSE) {
-            return FALSE;
+            return array();
         }
 
         if ($retAssocArray) {
