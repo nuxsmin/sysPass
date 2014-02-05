@@ -234,7 +234,7 @@ class SP_LDAP {
         $message['action'] = __FUNCTION__;
 
         $groupDN = self::searchGroupDN();
-        $filter = '(&(memberOf=' . $groupDN . ')(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        $filter = '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
         $filterAttr = array("dn");
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
