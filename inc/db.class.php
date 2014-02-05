@@ -213,7 +213,7 @@ class DB {
         $strOrder = ( is_array($arrOrder) ) ? " ORDER BY " . implode(",", $arrOrder) : 'ORDER BY ' . $tblColName . ' ASC';
 
         $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter $strOrder";
-        $queryRes = self::getResults($query, __FUNCTION__);
+        $queryRes = self::getResults($query, __FUNCTION__, TRUE);
 
         if ($queryRes === FALSE) {
             return FALSE;
