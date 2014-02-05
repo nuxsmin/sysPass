@@ -699,7 +699,7 @@ A:focus {text-decoration: none;	color: #FF0000;}
     background-color: #f9f9f9;
     color: #a9a9a9; 
     border: #c9c9c9 1px solid;
-    margin: 0 auto;
+    margin: 20px auto;
     text-align:center;
     font-size: 16px;
 }
