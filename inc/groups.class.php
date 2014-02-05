@@ -34,8 +34,7 @@ class SP_Groups {
     static $groupId;
     static $groupName;
     static $groupDescription;
-    
-    private static $queryLastId;
+    static $queryLastId;
 
     /**
      * @brief Obtener los datos de un grupo
