@@ -654,58 +654,8 @@ function importFile(sk){
     });
 }
 
-// Función para mostrar los registros de usuarios y grupos
-function usersData(id, type, sk, active, view){
-    var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active, 'view' : view, 'is_ajax' : 1};
-    var url = APP_ROOT + '/ajax/ajax_usersMgmt.php';
-
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'html',
-        url: url,
-        data: data,
-        success: function(response){
-            $.fancybox(response,{
-                padding: [0,10,10,10],
-                afterClose: function(){doAction('usersmenu','',active);}
-            });
-        },
-        error:function(jqXHR, textStatus, errorThrown){
-            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
-            resMsg("error", txt);
-        },
-        complete: function(){$.fancybox.hideLoading();}
-    });
-}
-
-// Función para editar los registros de usuarios y grupos
-function usersMgmt(frmId, isDel, id, type, sk){
-    var data;
-    var url = '/ajax/ajax_usersSave.php';
-    
-    if ( isDel === 1 ){
-        var data = {'id' : id, 'type' : type, 'action' : 4, 'sk' : sk };
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
-        var active = frmId;
-        
-        alertify.confirm(atext, function (e) {
-            if (e) {
-                usersAjax(data, url);
-                doAction('usersmenu','',active)
-            }
-        });
-    } else {
-        data = $("#" + frmId).serialize();
-        //type = parseInt($('input:[name=type]').val());
-        
-        usersAjax(data, url);
-    } 
-}
-
-// Función para realizar la petición ajax de gestión de usuarios
-function usersAjax(data, url){
+// Función para realizar la petición ajax
+function sendAjax(data, url){
 $.fancybox.showLoading();
 
 $.ajax({
@@ -770,6 +720,55 @@ function usrUpdPass(id,usrlogin){
             }
         }
     });
+}
+
+// Función para mostrar los datos de un registro
+function appMgmtData(id, type, sk, active, view, nextaction){
+    var data = {'id' : id, 'type' : type, 'sk' : sk, 'active' : active, 'view' : view, 'is_ajax' : 1};
+    var url = APP_ROOT + '/ajax/ajax_appMgmtData.php';
+
+    $.fancybox.showLoading();
+
+    $.ajax({
+        type: 'POST',
+        dataType: 'html',
+        url: url,
+        data: data,
+        success: function(response){
+            $.fancybox(response,{
+                padding: [0,10,10,10],
+                afterClose: function(){doAction(nextaction,'',active);}
+            });
+        },
+        error:function(jqXHR, textStatus, errorThrown){
+            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+            resMsg("error", txt);
+        },
+        complete: function(){$.fancybox.hideLoading();}
+    });
+}
+
+// Función para editar los datos de un registro
+function appMgmtSave(frmId, isDel, id, type, sk, nextaction){
+    var data;
+    var url = '/ajax/ajax_appMgmtSave.php';
+    
+    if ( isDel === 1 ){
+        var data = {'id' : id, 'type' : type, 'action' : 4, 'sk' : sk };
+        var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
+        var active = frmId;
+        
+        alertify.confirm(atext, function (e) {
+            if (e) {
+                sendAjax(data, url);
+                doAction(nextaction,'',active)
+            }
+        });
+    } else {
+        data = $("#" + frmId).serialize();
+        
+        sendAjax(data, url);
+    } 
 }
 
 // Función para verificar si existen actualizaciones

@@ -68,8 +68,8 @@ $searchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
                 <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
                 <input type="hidden" name="is_ajax" value="1">
                 <?php
-                SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp);
-                SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp);
+                SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
+                SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
                 ?>
                 <br>
             </td>

@@ -96,14 +96,14 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                 <tr>
                     <td class="descField"><?php echo _('Perfil'); ?></td>
                     <td class="valField">
-                    <?php  SP_Html::printSelect(SP_Users::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'), $profilesSelProp); ?>
+                    <?php  SP_Html::printSelect(DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'), $profilesSelProp); ?>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo _('Grupo'); ?></td>
                     <td class="valField">
-                    <?php SP_Html::printSelect(SP_Users::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'), $groupsSelProp); ?>
+                    <?php SP_Html::printSelect(DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'), $groupsSelProp); ?>
                     </td>
                 </tr>
 
@@ -203,7 +203,7 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
         <div id="resCheck"><span id="resFancyAccion"></span></div>
         <div class="action-in-box">
             <ul>
-                <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmUsers');" /></li>
+                <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmUsers');" /></li>
             </ul>
         </div>
     <?php endif; ?>

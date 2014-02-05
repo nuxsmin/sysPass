@@ -53,9 +53,10 @@ class SP_Profiles {
             'userProfile_pDelete' => 0,
             'userProfile_pFiles' => 0,
             'userProfile_pConfig' => 0,
-            'userProfile_pConfigCategories' => 0,
             'userProfile_pConfigMasterPass' => 0,
             'userProfile_pConfigBackup' => 0,
+            'userProfile_pAppMgmtCategories' => 0,
+            'userProfile_pAppMgmtCustomers' => 0,
             'userProfile_pUsers' => 0,
             'userProfile_pGroups' => 0,
             'userProfile_pProfiles' => 0,
@@ -99,9 +100,10 @@ class SP_Profiles {
                     . 'userProfile_pDelete,'
                     . 'userProfile_pFiles,'
                     . 'userProfile_pConfig,'
-                    . 'userProfile_pConfigCategories,'
                     . 'userProfile_pConfigMasterPass,'
                     . 'userProfile_pConfigBackup,'
+                    . 'userProfile_pAppMgmtCategories,'
+                    . 'userProfile_pAppMgmtCustomers,'
                     . 'userProfile_pUsers,'
                     . 'userProfile_pGroups,'
                     . 'userProfile_pProfiles,'
@@ -160,7 +162,8 @@ class SP_Profiles {
      */
     public static function addProfile($profileProp = '') {
         $enableConfig = (int) ( $profileProp["pConfig"] || $profileProp["pConfigCat"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
-        $enableusers = (int) ( $profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
+        $enableAppMgmt = (int) ( $profileProp["pAppMgmt"] || $profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
+        $enableUsers = (int) ( $profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
         
         $query = "INSERT INTO usrProfiles SET "
                 . "userprofile_name = '" . DB::escape(self::$profileName) . "',"
@@ -174,10 +177,12 @@ class SP_Profiles {
                 . "userProfile_pFiles = " . $profileProp["pAccFiles"] . ","
                 . "userProfile_pConfigMenu = " . $enableConfig . ","
                 . "userProfile_pConfig = " . $profileProp["pConfig"] . ","
-                . "userProfile_pConfigCategories = " . $profileProp["pConfigCat"] . ","
                 . "userProfile_pConfigMasterPass = " . $profileProp["pConfigMpw"] . ","
                 . "userProfile_pConfigBackup = " . $profileProp["pConfigBack"] . ","
-                . "userProfile_pUsersMenu = " . $enableusers . ","
+                . "userProfile_pAppMgmtMenu = " . $enableAppMgmt . ","
+                . "userProfile_pAppMgmtCategories = " . $profileProp["pAppMgmtCat"] . ","
+                . "userProfile_pAppMgmtCustomers = " . $profileProp["pAppMgmtCust"] . ","
+                . "userProfile_pUsersMenu = " . $enableUsers . ","
                 . "userProfile_pUsers = " . $profileProp["pUsers"] . ","
                 . "userProfile_pGroups = " . $profileProp["pGroups"] . ","
                 . "userProfile_pProfiles = " . $profileProp["pProfiles"] . ","
@@ -198,7 +203,8 @@ class SP_Profiles {
      */
     public static function updateProfile($profileProp = '') {
         $enableConfig = (int) ( $profileProp["pConfig"] || $profileProp["pConfigCat"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
-        $enableusers = (int) ( $profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
+        $enableAppMgmt = (int) ( $profileProp["pAppMgmt"] || $profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
+        $enableUsers = (int) ( $profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
         
         $query = "UPDATE usrProfiles SET "
                 . "userprofile_name = '" . DB::escape(self::$profileName) . "',"
@@ -212,10 +218,12 @@ class SP_Profiles {
                 . "userProfile_pFiles = " . $profileProp["pAccFiles"] . ","
                 . "userProfile_pConfigMenu = " . $enableConfig . ","
                 . "userProfile_pConfig = " . $profileProp["pConfig"] . ","
-                . "userProfile_pConfigCategories = " . $profileProp["pConfigCat"] . ","
                 . "userProfile_pConfigMasterPass = " . $profileProp["pConfigMpw"] . ","
                 . "userProfile_pConfigBackup = " . $profileProp["pConfigBack"] . ","
-                . "userProfile_pUsersMenu = " . $enableusers . ","
+                . "userProfile_pAppMgmtMenu = " . $enableAppMgmt . ","
+                . "userProfile_pAppMgmtCategories = " . $profileProp["pAppMgmtCat"] . ","
+                . "userProfile_pAppMgmtCustomers = " . $profileProp["pAppMgmtCust"] . ","
+                . "userProfile_pUsersMenu = " . $enableUsers . ","
                 . "userProfile_pUsers = " . $profileProp["pUsers"] . ","
                 . "userProfile_pGroups = " . $profileProp["pGroups"] . ","
                 . "userProfile_pProfiles = " . $profileProp["pProfiles"] . ","
@@ -253,20 +261,8 @@ class SP_Profiles {
      * @return mixed string con el número de usuarios, o bool si no está en uso
      */
     public static function checkProfileInUse() {
-
-        $numUsers = self::getProfileInUsers();
-
-        $out = '';
-
-        if ($numUsers) {
-            $out[] = _('Usuarios') . " (" . $numUsers . ")";
-        }
-
-        if (is_array($out)) {
-            return implode('<br>', $out);
-        }
-
-        return TRUE;
+        $count['users'] = self::getProfileInUsers();
+        return $count;
     }
     
     /**
@@ -330,9 +326,10 @@ class SP_Profiles {
                 . "userProfile_pFiles,"
                 . "userProfile_pConfigMenu,"
                 . "userProfile_pConfig,"
-                . "userProfile_pConfigCategories,"
                 . "userProfile_pConfigMasterPass,"
                 . "userProfile_pConfigBackup,"
+                . 'userProfile_pAppMgmtCategories,'
+                . 'userProfile_pAppMgmtCustomers,'
                 . "userProfile_pUsersMenu,"
                 . "userProfile_pUsers,"
                 . "userProfile_pGroups,"

@@ -179,35 +179,19 @@ class SP_Groups {
 
         self::$queryLastId = DB::$lastId;
 
-        return TRUE;
+//        return TRUE;
     }
 
     /**
      * @brief Comprobar si un grupo está en uso
-     * @return bool
+     * @return array con el número de usuarios/cuentas que usan el grupo
      * 
      * Esta función comprueba si un grupo está en uso por usuarios o cuentas.
      */
     public static function checkGroupInUse() {
-
-        $numUsers = self::getGroupInUsers();
-        $numAccounts = self::getGroupInAccounts() + self::getGroupInAccountsSec();
-
-        $out = '';
-
-        if ($numUsers) {
-            $out[] = _('Usuarios') . " (" . $numUsers . ")";
-        }
-
-        if ($numAccounts) {
-            $out[] = _('Cuentas') . " (" . $numAccounts . ")";
-        }
-
-        if (is_array($out)) {
-            return implode('<br>', $out);
-        }
-
-        return TRUE;
+        $count['users'] = self::getGroupInUsers();
+        $count['accounts'] = self::getGroupInAccounts() + self::getGroupInAccountsSec();
+        return $count;
     }
 
     /**
@@ -233,7 +217,7 @@ class SP_Groups {
      * @return integer con el número total de cuentas
      */
     private static function getGroupInAccounts() {
-        $query = "SELECT COUNT(*) as uses"
+        $query = "SELECT COUNT(*) as uses "
                 . "FROM accounts "
                 . "WHERE account_userGroupId = " . (int) self::$groupId;
 

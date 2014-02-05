@@ -246,20 +246,19 @@ class SP_Migrate {
      */
     private static function migrateCustomers() {
         $customers = self::getCustomers();
-        $objCustomer = new SP_Customer;
 
         $totalRecords = count($customers);
         $num = 0;
 
         foreach ($customers as $customer) {
-            $objCustomer->customerName = $customer;
+            SP_Customer::$customerName = $customer;
 
-            if (!$objCustomer->chekDupCustomer()) {
+            if (!SP_Customer::checkDupCustomer()) {
                 $num++;
                 continue;
             }
 
-            if (!$objCustomer->customerAdd()) {
+            if (!SP_Customer::addCustomer()) {
                 throw new MigrateException('critical',
                 _('No es posible crear el cliente'),
                 _('Contacte con el desarrollador'));
@@ -330,7 +329,7 @@ class SP_Migrate {
      */    
     private static function insertAccounts($account) {
         if (!is_array(self::$customersByName)) {
-            $customers = SP_Customer::getCustomers();
+            $customers = SP_Customer::getCustomers(NULL,TRUE);
             self::$customersByName = array_flip($customers);
         }
 
@@ -481,7 +480,7 @@ class SP_Migrate {
      */ 
     private static function insertAccountsHistory($accountHistory) {
         if (!is_array(self::$customersByName)) {
-            $customers = SP_Customer::getCustomers();
+            $customers = SP_Customer::getCustomers(NULL,TRUE);
             self::$customersByName = array_flip($customers);
         }
 

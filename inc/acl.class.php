@@ -71,12 +71,16 @@ class SP_ACL {
                 return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pDelete );
             case "accfiles":
                 return ( $blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pFiles );
+            case "appmgmtmenu":
+                return ( $blnUIsAdminApp || $profile->userProfile_pAppMgmtMenu );
             case "configmenu":
                 return ( $blnUIsAdminApp || $profile->userProfile_pConfigMenu );
             case "config":
                 return ( $blnUIsAdminApp || $profile->userProfile_pConfig );
             case "categories":
-                return ( $blnUIsAdminApp || $profile->userProfile_pConfigCategories );
+                return ( $blnUIsAdminApp || $profile->userProfile_pAppMgmtCategories );
+            case "customers":
+                return ( $blnUIsAdminApp || $profile->userProfile_pAppMgmtCustomers );
             case "masterpass":
                 return ( $blnUIsAdminApp || $profile->userProfile_pConfigMasterPass );
             case "backup":

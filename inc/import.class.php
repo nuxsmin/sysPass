@@ -136,7 +136,6 @@ class SP_Import {
         $groupId = SP_Common::parseParams('s', 'ugroup', 0);
 
         $account = new SP_Account;
-        $customer = new SP_Customer;
 
         foreach (self::$fileContent as $data) {
             $fields = explode(';', $data);
@@ -147,17 +146,17 @@ class SP_Import {
 
             list($accountName, $customerName, $categoryName, $url, $username, $password, $notes) = $fields;
             
-            $customer->customerName = $customerName;
-            if ( ! $customer->chekDupCustomer() ){
-                $customerId = $customer->getCustomerByName();
+            SP_Customer::$customerName = $customerName;
+            if ( !SP_Customer::checkDupCustomer() ){
+                $customerId = SP_Customer::getCustomerByName();
             } else{
-                $customer->customerAdd();
-                $customerId = $customer->customerLastId;
+                SP_Customer::addCustomer();
+                $customerId = SP_Customer::$customerLastId;
             }
             
             $categoryId = SP_Category::getCategoryIdByName($categoryName);
             if ( $categoryId == 0 ){
-                SP_Category::categoryAdd($categoryName);
+                SP_Category::addCategory($categoryName);
                 $categoryId = SP_Category::$categoryLastId;
             }
             

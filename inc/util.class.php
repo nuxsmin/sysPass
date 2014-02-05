@@ -168,8 +168,15 @@ class SP_Util {
      * @brief Devuelve la versión de sysPass
      * @return array con el número de versión
      */
-    public static function getVersion() {
-        return array(1, 1, 02);
+    public static function getVersion($retBuild = FALSE) {
+        $build = 1;
+        $version = array(1, 1, 2);
+        
+        if ( $retBuild ){
+            array_push($version, $build);
+        }
+        
+        return $version;
     }
     
     /**

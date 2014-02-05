@@ -181,7 +181,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
             <td class="valField">
                 <?php
                 if ( $showform ){
-                    SP_Html::printSelect(SP_Customer::getCustomers(), $customersSelProp);
+                    SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
                 ?>
                 <br><br>
                 <input type="text" name="customer_new" maxlength="50" placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>" />
@@ -197,7 +197,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
             <td class="valField">
                 <?php 
                 if ( $showform ){
-                    SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp);
+                    SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
                 } else{
                     echo $accountData->category_name;
                 }
@@ -267,7 +267,9 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                         <?php
                         
                         if ( $action != 'accnew' ){
-                            foreach (SP_Users::getUsersIdName() as $otherUserName => $otherUserId) {
+                            $users = array_flip(DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
+                            
+                            foreach ( $users as $otherUserName => $otherUserId) {
                                 $userSelected = '';
 
                                 if ($otherUserId != $accountData->account_userGroupId && $otherUserId != $userId) {
@@ -292,7 +294,9 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                         <select id="selGroups" name="othergroups[]" multiple="multiple">
                         <?php 
                         if ( $action != 'accnew' ){
-                            foreach (SP_Groups::getGroups(NULL, TRUE) as $groupName => $groupId) {
+                            $groups = array_flip(DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+                            
+                            foreach ($groups as $groupName => $groupId) {
                                 $uGroupSelected = '';
 
                                 if ($groupId != $accountData->account_userGroupId && $groupId != $userGroupId) {
@@ -394,7 +398,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
     </tr>
     <tr>
         <td class="descField"><?php echo _('Creador'); ?></td>
-        <td class="valField"><?php echo $accountData->user_name; ?></td>
+        <td class="valField"><?php echo ($accountData->user_name) ? $accountData->user_name : _('N/D'); ?></td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Grupo Principal'); ?></td>
@@ -450,7 +454,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
         </tr>
         <tr>
             <td class="descField"><?php echo _('Editor'); ?></td>
-            <td class="valField"><?php echo $accountData->user_editName; ?></td>
+            <td class="valField"><?php echo ($accountData->user_editName) ? $accountData->user_editName : _('N/D'); ?></td>
         </tr>
     <?php endif; ?>
 </table>

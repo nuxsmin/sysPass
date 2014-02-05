@@ -26,7 +26,7 @@ CREATE TABLE `accFiles` (
   `accfile_extension` varchar(10) NOT NULL,
   PRIMARY KEY (`accfile_id`),
   KEY `IDX_accountId` (`accfile_accountId`)
-) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `accGroups` (
   `accgroup_groupId` int(10) unsigned NOT NULL,
   PRIMARY KEY (`accgroup_id`),
   KEY `IDX_accountId` (`accgroup_accountId`)
-) ENGINE=MyISAM AUTO_INCREMENT=68 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=69 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `accHistory` (
   `accHistory_otherGroupEdit` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`)
-) ENGINE=MyISAM AUTO_INCREMENT=264 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=285 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `accounts` (
   KEY `IDX_userId` (`account_userGroupId`,`account_userId`),
   KEY `IDX_customerId` (`account_customerId`),
   FULLTEXT KEY `IDX_searchTxt` (`account_name`,`account_login`,`account_url`,`account_notes`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,8 +140,9 @@ DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `category_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `category_name` varchar(50) NOT NULL,
+  `category_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf16;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf16;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +173,7 @@ CREATE TABLE `customers` (
   `customer_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   KEY `IDX_name` (`customer_name`,`customer_hash`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +191,7 @@ CREATE TABLE `log` (
   `log_action` varchar(50) NOT NULL,
   `log_description` text NOT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=640 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,7 +226,7 @@ CREATE TABLE `usrData` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `IDX_login` (`user_login`),
   KEY `IDX_pass` (`user_pass`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -240,7 +241,7 @@ CREATE TABLE `usrGroups` (
   `usergroup_name` varchar(50) NOT NULL,
   `usergroup_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`usergroup_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -257,7 +258,6 @@ CREATE TABLE `usrProfiles` (
   `userProfile_pEdit` bit(1) DEFAULT b'0',
   `userProfile_pAdd` bit(1) DEFAULT b'0',
   `userProfile_pConfig` bit(1) DEFAULT b'0',
-  `userProfile_pConfigCategories` bit(1) DEFAULT b'0',
   `userProfile_pConfigMasterPass` bit(1) DEFAULT b'0',
   `userProfile_pConfigBackup` bit(1) DEFAULT b'0',
   `userProfile_pUsers` bit(1) DEFAULT b'0',
@@ -271,8 +271,11 @@ CREATE TABLE `usrProfiles` (
   `userProfile_pFiles` bit(1) DEFAULT b'0',
   `userProfile_pConfigMenu` bit(1) DEFAULT b'0',
   `userProfile_pUsersMenu` bit(1) DEFAULT b'0',
+  `userProfile_pAppMgmt` bit(1) DEFAULT b'0',
+  `userProfile_pAppMgmtCategories` bit(1) DEFAULT b'0',
+  `userProfile_pAppMgmtCustomers` bit(1) DEFAULT b'0',
   PRIMARY KEY (`userprofile_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -282,5 +285,4 @@ CREATE TABLE `usrProfiles` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

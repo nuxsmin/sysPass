@@ -127,17 +127,18 @@ switch ($action) {
                 ),
                 'tblRowSrcId' => 'user_id',
                 'frmId' => 'frm_tblusers',
+                'nextaction' => $action,
                 'actionId' => 1,
                 'newActionId' => 2,
                 'active' => $tplvars['active'] ++,
-                'actions' => array('view', 'edit', 'del', 'pass'));
+                'actions' => array('view' => 'appMgmtData', 'edit' => 'appMgmtData', 'del' => 'appMgmtSave', 'pass' => 'usrUpdPass'));
 
             echo '<DIV ID="tabs-1">';
             $startTime = microtime();
             $users = SP_Users::getUsers();
 
             if ($users) {
-                SP_Users::getUsrGrpTable($arrUsersTableProp, $users);
+                SP_Html::getQueryTable($arrUsersTableProp, $users);
                 SP_Html::printQueryInfoBar(count($users), $startTime);
             }
             echo '</DIV>';
@@ -152,10 +153,11 @@ switch ($action) {
                 'tblRowSrc' => array('usergroup_name', 'usergroup_description'),
                 'tblRowSrcId' => 'usergroup_id',
                 'frmId' => 'frm_tblgroups',
+                'nextaction' => $action,
                 'actionId' => 3,
                 'newActionId' => 4,
                 'active' => $tplvars['active'] ++,
-                'actions' => array('edit', 'del'));
+                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave'));
 
             echo '<DIV ID="tabs-2">';
 
@@ -163,7 +165,7 @@ switch ($action) {
             $groups = SP_Groups::getGroups();
 
             if ($groups) {
-                SP_Users::getUsrGrpTable($arrGroupsTableProp, $groups);
+                SP_Html::getQueryTable($arrGroupsTableProp, $groups);
                 SP_Html::printQueryInfoBar(count($groups), $startTime);
             }
 
@@ -179,10 +181,11 @@ switch ($action) {
                 'tblRowSrc' => array('userprofile_name'),
                 'tblRowSrcId' => 'userprofile_id',
                 'frmId' => 'frm_tblprofiles',
+                'nextaction' => $action,
                 'actionId' => 5,
                 'newActionId' => 6,
                 'active' => $tplvars['active'] ++,
-                'actions' => array('edit', 'del'));
+                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave'));
 
             echo '<DIV ID="tabs-3">';
 
@@ -190,7 +193,7 @@ switch ($action) {
             $profiles = SP_Profiles::getProfiles();
 
             if ($profiles) {
-                SP_Users::getUsrGrpTable($arrProfilesTableProp, $profiles);
+                SP_Html::getQueryTable($arrProfilesTableProp, $profiles);
                 SP_Html::printQueryInfoBar(count($profiles), $startTime);
             }
 
@@ -209,14 +212,93 @@ switch ($action) {
             });
             </script>';
         break;
+    case "appmgmtmenu":
+        echo '<DIV ID="tabs">';
+        echo '<UL>';
+        echo ( SP_ACL::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Categorías') . '">' . _('Categorías') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("customers") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Clientes') . '">' . _('Clientes') . '</A></LI>' : '';
+        echo '</UL>';
+        
+        $tplvars['active'] = 0;
+        
+        if (SP_ACL::checkUserAccess("categories")) {
+            $arrCategoriesTableProp = array(
+                'itemName' => _('Categoría'),
+                'tblId' => 'tblCategories',
+                'header' => '',
+                'tblHeaders' => array(_('Nombre'),_('Descripción')),
+                'tblRowSrc' => array('category_name','category_description'),
+                'tblRowSrcId' => 'category_id',
+                'frmId' => 'frm_tblcategories',
+                'nextaction' => $action,
+                'actionId' => 9,
+                'newActionId' => 10,
+                'active' => $tplvars['active'] ++,
+                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave')
+                );
+
+            echo '<DIV ID="tabs-1">';
+
+            $startTime = microtime();
+            $categories = SP_Category::getCategories();
+
+            if ($categories) {
+                SP_Html::getQueryTable($arrCategoriesTableProp, $categories);
+                SP_Html::printQueryInfoBar(count($categories), $startTime);
+            }
+
+            echo '</DIV>';
+        }
+        
+        if (SP_ACL::checkUserAccess("customers")) {
+            $arrCustomersTableProp = array(
+                'itemName' => _('Cliente'),
+                'tblId' => 'tblCustomers',
+                'header' => '',
+                'tblHeaders' => array(_('Nombre'),_('Descripción')),
+                'tblRowSrc' => array('customer_name','customer_description'),
+                'tblRowSrcId' => 'customer_id',
+                'frmId' => 'frm_tblcustomers',
+                'nextaction' => $action,
+                'actionId' => 7,
+                'newActionId' => 8,
+                'active' => $tplvars['active'] ++,
+                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave')
+                );
+
+            echo '<DIV ID="tabs-2">';
+
+            $startTime = microtime();
+            $customers = SP_Customer::getCustomers();
+
+            if ($customers) {
+                SP_Html::getQueryTable($arrCustomersTableProp, $customers);
+                SP_Html::printQueryInfoBar(count($customers), $startTime);
+            }
+
+            echo '</DIV>';
+        }
+        
+        echo '</DIV>';
+
+        echo '<script>
+            $("#tabs").tabs({
+                active: ' . $itemId . ',
+                create: function( event, ui ) {$("input:visible:first").focus();},
+                activate: function( event, ui ) {
+                    setContentSize();
+                    $("input:visible:first").focus();
+                }
+            });
+            </script>';
+        break;
     case "configmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
         echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Categorías') . '">' . _('Categorías') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("masterpass") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-5" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("masterpass") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
         echo '</UL>';
 
         $tplvars['active'] = 0;
@@ -229,18 +311,10 @@ switch ($action) {
             echo '</DIV>';
         }
 
-        if (SP_ACL::checkUserAccess("categories")) {
-            $tplvars['active'] ++;
-
-            echo '<DIV ID="tabs-2">';
-            SP_Html::getTemplate('categories', $tplvars);
-            echo '</DIV>';
-        }
-
         if (SP_ACL::checkUserAccess("masterpass")) {
             $tplvars['active'] ++;
 
-            echo '<DIV ID="tabs-3">';
+            echo '<DIV ID="tabs-2">';
             SP_Html::getTemplate('masterpass', $tplvars);
             echo '</DIV>';
         }
@@ -248,7 +322,7 @@ switch ($action) {
         if (SP_ACL::checkUserAccess("backup")) {
             $tplvars['active'] ++;
 
-            echo '<DIV ID="tabs-4">';
+            echo '<DIV ID="tabs-3">';
             SP_Html::getTemplate('backup', $tplvars);
             echo '</DIV>';
         }
@@ -256,7 +330,7 @@ switch ($action) {
         if (SP_ACL::checkUserAccess("config")) {
             $tplvars['active'] ++;
 
-            echo '<DIV ID="tabs-5">';
+            echo '<DIV ID="tabs-4">';
             SP_Html::getTemplate('migrate', $tplvars);
             echo '</DIV>';
         }

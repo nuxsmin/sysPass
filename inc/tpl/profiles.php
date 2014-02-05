@@ -72,11 +72,9 @@ $activeTab = $data['active'];
                         <div id="btnProfilesConfig" class="btn-checks round5">
                             <label for="profile_config" title="<?php echo _('Configuración general'); ?>"><?php echo _('General'); ?></label>
                             <input type="checkbox" id="profile_config" name="profile_config" <?php echo $profile['userProfile_pConfig']; ?> />
-                            <label for="profile_configcat" title="<?php echo _('Gestión de categorías'); ?>"><?php echo _('Categorías'); ?></label>
-                            <input type="checkbox" id="profile_configcat" name="profile_configcat" <?php echo $profile['userProfile_pConfigCategories']; ?> />
-                            <br>
                             <label for="profile_configmpw" title="<?php echo _('Cambiar clave maestra'); ?>"><?php echo _('Clave Maestra'); ?></label>
                             <input type="checkbox" id="profile_configmpw" name="profile_configmpw" <?php echo $profile['userProfile_pConfigMasterPass']; ?> />
+                            <br>
                             <label for="profile_configback" title="<?php echo _('Realizar copia de seguridad'); ?>"><?php echo _('Backup'); ?></label>
                             <input type="checkbox" id="profile_configback" name="profile_configback" <?php echo $profile['userProfile_pConfigBackup']; ?> />
                         </div>
@@ -93,6 +91,11 @@ $activeTab = $data['active'];
                             <br>
                             <label for="profile_profiles" title="<?php echo _('Gestión de perfiles'); ?>"><?php echo _('Perfiles'); ?></label>
                             <input type="checkbox" id="profile_profiles" name="profile_profiles" <?php echo $profile['userProfile_pProfiles']; ?> />
+                            <label for="profile_categories" title="<?php echo _('Gestión de categorías'); ?>"><?php echo _('Categorías'); ?></label>
+                            <input type="checkbox" id="profile_categories" name="profile_categories" <?php echo $profile['userProfile_pAppMgmtCategories']; ?> />
+                            <br>
+                            <label for="profile_customers" title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></label>
+                            <input type="checkbox" id="profile_customers" name="profile_customers" <?php echo $profile['userProfile_pAppMgmtCustomers']; ?> />
                         </div>
                     </td>
                 </tr>
@@ -126,7 +129,7 @@ $activeTab = $data['active'];
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmProfiles');" /></li>
+            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmProfiles');" /></li>
         </ul>
     </div>
 </div>

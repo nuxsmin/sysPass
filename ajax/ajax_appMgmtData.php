@@ -66,6 +66,22 @@ switch ($itemType) {
         $tplvars['header'] = _('Nuevo Perfil');
         $template = 'profiles';
         break;
+    case 7:
+        $tplvars['header'] = _('Editar Cliente');
+        $template = 'customers';
+        break;
+    case 8:
+        $tplvars['header'] = _('Nuevo Cliente');
+        $template = 'customers';
+        break;
+    case 9:
+        $tplvars['header'] = _('Editar Categoría');
+        $template = 'categories';
+        break;
+    case 10:
+        $tplvars['header'] = _('Nueva Categoría');
+        $template = 'categories';
+        break;
     default :
         break;
 }

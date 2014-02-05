@@ -132,24 +132,22 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
 }
 
 $account = new SP_Account;
-$customer = new SP_Customer;
 
 switch ($frmSaveType) {
     case 1:
-        $customer->customerId = $frmSelCustomer;
-        $customer->customerName = $frmNewCustomer;
+        SP_Customer::$customerName = $frmNewCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {
-            if (!$customer->chekDupCustomer()) {
+            if (!SP_Customer::checkDupCustomer()) {
                 SP_Common::printJSON(_('Cliente duplicado'));
             }
 
-            if (!$customer->customerAdd()) {
+            if (!SP_Customer::addCustomer()) {
                 SP_Common::printJSON(_('Error al crear cliente'));
             }
 
-            $account->accountCustomerId = $customer->customerLastId;
+            $account->accountCustomerId = SP_Customer::$customerLastId;
         } else {
             $account->accountCustomerId = $frmSelCustomer;
         }
@@ -175,8 +173,7 @@ switch ($frmSaveType) {
         SP_Common::printJSON(_('Error al crear la cuenta'), 0);
         break;
     case 2:
-        $customer->customerId = $frmSelCustomer;
-        $customer->customerName = $frmNewCustomer;
+        SP_Customer::$customerName = $frmNewCustomer;
         $account->accountId = $frmAccountId;
         $account->accountName = $frmName;
         $account->accountCategoryId = $frmCategoryId;
@@ -191,15 +188,15 @@ switch ($frmSaveType) {
 
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {
-            if (!$customer->chekDupCustomer()) {
+            if (!SP_Customer::checkDupCustomer()) {
                 SP_Common::printJSON(_('Cliente duplicado'));
             }
 
-            if (!$customer->customerAdd()) {
+            if (!SP_Customer::addCustomer()) {
                 SP_Common::printJSON(_('Error al crear cliente'));
             }
 
-            $account->accountCustomerId = $customer->customerLastId;
+            $account->accountCustomerId = SP_Customer::$customerLastId;
         } else {
             $account->accountCustomerId = $frmSelCustomer;
         }

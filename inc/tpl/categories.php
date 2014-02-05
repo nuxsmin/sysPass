@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -25,89 +25,42 @@
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-$action = $data['action'];
+$category = SP_Category::getCategoryData($data['itemid']);
 $activeTab = $data['active'];
-
-SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
-
-$categoriesSelProp1 = array ( "name" => "categoryId",
-                        "id" => "sel-edit_categories",
-                        "class" => "",
-                        "size" => 1,
-                        "label" => "",
-                        "selected" => "",
-                        "default" => "",
-                        "js" => "",
-                        "attribs" => "");
-
-$categoriesSelProp2 = array ( "name" => "categoryId",
-                        "id" => "sel-del_categories",
-                        "class" => "",
-                        "size" => 1,
-                        "label" => "",
-                        "selected" => "",
-                        "default" => "",
-                        "js" => "",
-                        "attribs" => "");
-
-$skey = SP_Common::getSessionKey(TRUE);
 ?>
-<table class="data tblConfig round">
-    
-        <tr>
-            <td class="descField">
-                <?php echo _('Nueva categoría'); ?>
-            </td>
-            <td class="valField">
-                <form OnSubmit="return configMgmt('addcat');" method="post" name="frmAddCategory" id="frmAddCategory">
-                    <input type="text" name="categoryName" maxlength="50">
-                    <input type="image" src="imgs/add.png" title="<?php echo _('Nueva categoría'); ?>" class="inputImg" id="btnAdd" />
-                    <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
-                    <input type="hidden" name="categoryFunction" value="1">
-                    <input type="hidden" name="sk" value="<?php echo $skey; ?>">
-                </form>
-            </td>
-        </tr>
-    <tr>
-        <td class="descField">
-            <?php echo _('Modificar categoría'); ?>
-        </td>
-        <td  class="valField">
-            <form OnSubmit="return configMgmt('editcat');" method="post" name="frmEditCategory" id="frmEditCategory">
-                <?php SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp1); ?>
-                <br>
-                <br>
-                <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
-                <input type="text" name="categoryNameNew" maxlength="50" >
-                <input type="hidden" name="categoryFunction" value="2">
-                <input type="hidden" name="sk" value="<?php echo $skey; ?>">
-                <input type="image" src="imgs/save.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnGuardar" />
-            </form>
-        </td>
-    </tr>
-    <tr>
-        <td class="descField">
-            <?php echo _('Borrar categoría'); ?>
-        </td>
-        <td  class="valField">
-            <form OnSubmit="return configMgmt('delcat');" method="post" name="frmDelCategory" id="frmDelCategory">
-                <?php SP_Html::printSelect(SP_Category::getCategories(), $categoriesSelProp2); ?>
-                <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
-                <input type="hidden" name="categoryFunction" value="3">
-                <input type="hidden" name="sk" value="<?php echo $skey; ?>">
-                <input type="image" src="imgs/delete.png" title="<?php echo _('Borrar categoría'); ?>" class="inputImg" />
-            </form>
-        </td>
-    </tr>
-</table>
 
-<script>
-    $("#sel-edit_categories").chosen({
-        placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>", 
-        disable_search_threshold: 10,
-        no_results_text: "<?php echo _('Sin resultados'); ?>"});
-    $("#sel-del_categories").chosen({
-        placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>", 
-        disable_search_threshold: 10,
-        no_results_text: "<?php echo _('Sin resultados'); ?>"});
-</script>
+<div id="fancyContainer" align="center">
+    <h2 class="midround"><?php echo $data['header']; ?></H2>
+    <form method="post" name="frmCategories" id="frmCategories">
+        <table class="fancydata">
+            <tbody>
+                <tr>
+                    <td class="descField"><?php echo _('Nombre'); ?></td>
+                    <td class="valField">
+                        <input type="text" id="grpname" name="name" title="<?php echo _('Nombre de la categoría'); ?>" value="<?php echo $category["category_name"] ?>" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="descField"><?php echo _('Descripción'); ?></td>
+                        <td class="valField"><input type="text" id="grpdesc" name="description" title="<?php echo _('Descripción de la categoría'); ?>" value="<?php echo $category["category_description"]; ?>" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+		<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+        <input type="hidden" name="id" value="<?php echo $category["category_id"]; ?>" />
+        <input type="hidden" name="action" value="<?php echo $category["action"] ?>" />
+        <input type="hidden" name="nextaction" value="<?php echo $data["nextaction"] ?>" />
+        <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
+        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE) ?>">
+        <input type="hidden" name="is_ajax" value="1">
+    </form>
+    <div id="resCheck"><span id="resFancyAccion"></span></div>
+    <div class="action-in-box">
+        <ul>
+            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmCategories');" /></li>
+        </ul>
+    </div>
+</div>

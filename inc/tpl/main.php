@@ -52,6 +52,7 @@ $chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img
             array('name' => 'accsearch', 'title' => _('Buscar'), 'img' => 'search.png', 'checkaccess' => 0),
             array('name' => 'accnew', 'title' => _('Nueva Cuenta'), 'img' => 'add.png', 'checkaccess' => 1),
             array('name' => 'usersmenu', 'title' => _('Gestión de Usuarios'), 'img' => 'users.png', 'checkaccess' => 1),
+            array('name' => 'appmgmtmenu', 'title' => _('Gestión de Clientes y Categorías'), 'img' => 'appmgmt.png', 'checkaccess' => 0),
             array('name' => 'configmenu', 'title' => _('Configuración'), 'img' => 'config.png', 'checkaccess' => 1),
             array('name' => 'eventlog', 'title' => _('Registro de Eventos'), 'img' => 'log.png', 'checkaccess' => 1)
         );

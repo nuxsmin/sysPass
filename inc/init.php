@@ -458,7 +458,7 @@ class SP_Init {
         $update = FALSE;
         $configVersion = (int) str_replace('.', '', SP_Config::getValue('version'));
         $databaseVersion = (int) str_replace('.', '', SP_Config::getConfigValue('version'));
-        $appVersion = (int) implode(SP_Util::getVersion());
+        $appVersion = (int) implode(SP_Util::getVersion(TRUE));
 
         if ( $databaseVersion < $appVersion && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0){
             if ( SP_Upgrade::needUpgrade($appVersion) && ! self::checkMaintenanceMode(TRUE) ){

@@ -5,7 +5,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -91,7 +91,7 @@ class SP_Html {
      */
     public static function render($page = "main", $err = NULL) {
         $data['showlogo'] = 1;
-        
+
         // UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
 
@@ -110,7 +110,7 @@ class SP_Html {
 
         foreach (self::$htmlPage as $html) {
             if (is_array($html) && array_key_exists('include', $html)) {
-                self::getTemplate($html['include'],$data);
+                self::getTemplate($html['include'], $data);
             } else {
                 echo $html . PHP_EOL;
             }
@@ -146,9 +146,9 @@ class SP_Html {
         self::$htmlPage[] = '<div id="wrap">';
         self::$htmlPage[] = '<noscript><div id="nojs">' . _('Javascript es necesario para el correcto funcionamiento') . '</div></noscript>';
         self::$htmlPage[] = '<div id="container" class="' . $page . '">';
-        
+
         self::$htmlPage[] = array('include' => $page);
-        
+
         self::$htmlPage[] = '</div> <!-- Close container -->';
         self::makeFooter($page);
         self::$htmlPage[] = '</div> <!-- Close wrap -->';
@@ -254,7 +254,7 @@ class SP_Html {
      * @return string con los datos limpiados
      */
     public static function sanitize(&$data) {
-        if (!$data){
+        if (!$data) {
             return FALSE;
         }
 
@@ -326,7 +326,7 @@ class SP_Html {
         $versionParameter = md5(implode(SP_Util::getVersion()));
 
         $js_files = self::getJs();
-        
+
         foreach ($js_files as $js) {
             self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . '?v=' . $versionParameter . $js["params"] . '"></script>';
         }
@@ -351,10 +351,10 @@ class SP_Html {
             array("src" => "js/jquery.tagsinput.js", "params" => ""),
             array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . urlencode(base64_encode(SP_Init::$WEBROOT)))
         );
-        
+
         return $jsProp;
     }
-    
+
     /**
      * @brief Devuelve información sobre la aplicación
      * @return array con las propiedades de la aplicación
@@ -444,19 +444,19 @@ class SP_Html {
         exit();
     }
 
-    private static function minifier($files){
-        if ( !is_array($files) ){
+    private static function minifier($files) {
+        if (!is_array($files)) {
             return FALSE;
         }
-        
-        foreach ($files as $file){
+
+        foreach ($files as $file) {
             //$output_min .= file_get_contents($file['src']);
-            include_once SP_Init::$SERVERROOT.'/'.$file['src'];
+            include_once SP_Init::$SERVERROOT . '/' . $file['src'];
         }
-        
+
         //return $output_min;
     }
-    
+
     /**
      * @brief Convertir un color RGB a HEX
      * @param array $rgb con color en RGB
@@ -465,11 +465,105 @@ class SP_Html {
      * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
      */
     public static function rgb2hex($rgb) {
-       $hex = "#";
-       $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
-       $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
-       $hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
+        $hex = "#";
+        $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
+        $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
+        $hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
 
-       return $hex; // returns the hex value including the number sign (#)
-    }    
+        return $hex; // returns the hex value including the number sign (#)
+    }
+
+    /**
+     * @brief Devolver una tabla con el resultado de una consulta y acciones
+     * @param array $arrTableProp con las propiedades de la tabla
+     * @return none
+     */
+    public static function getQueryTable($arrTableProp, $queryItems) {
+        $sk = SP_Common::getSessionKey(TRUE);
+
+        echo '<div class="action fullWidth">';
+        echo '<ul>';
+        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" OnClick="' . $arrTableProp["actions"]['edit'] . '(0,' . $arrTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrTableProp["active"] . ',0,\'' . $arrTableProp["nextaction"] . '\');" /></LI>';
+        echo '</ul>';
+        echo '</div>';
+
+        if ($arrTableProp["header"]) {
+            echo '<div id="title" class="midroundup titleNormal">' . $arrTableProp["header"] . '</div>';
+        }
+
+        echo '<form name="' . $arrTableProp["frmId"] . '" id="' . $arrTableProp["frmId"] . '" OnSubmit="return false;" >';
+        echo '<div id="' . $arrTableProp["tblId"] . '" class="data-header" >';
+        echo '<ul class="round header-grey">';
+
+        $cellWidth = floor(65 / count($arrTableProp["tblHeaders"]));
+
+        foreach ($arrTableProp["tblHeaders"] as $header) {
+            if (is_array($header)) {
+                echo '<li class="' . $header['class'] . '" style="width: ' . $cellWidth . '%;">' . $header['name'] . '</li>';
+            } else {
+                echo '<li style="width: ' . $cellWidth . '%;">' . $header . '</li>';
+            }
+        }
+
+        echo '</ul>';
+        echo '</div>';
+
+        echo '<div class="data-rows">';
+
+        foreach ($queryItems as $item) {
+            $intId = $item->$arrTableProp["tblRowSrcId"];
+            $action_check = array();
+            $numActions = count($arrTableProp["actions"]);
+            $classActionsOptional = ( $numActions > 2 ) ? 'actions-optional' : '';
+
+            echo '<ul>';
+
+            foreach ($arrTableProp["tblRowSrc"] as $rowSrc) {
+                // If row is an array handle images in it
+                if (is_array($rowSrc)) {
+                    echo '<li class="cell-nodata" style="width: ' . $cellWidth . '%;">';
+                    foreach ($rowSrc as $rowName => $imgProp) {
+                        if ($item->$rowName) {
+                            echo '<img src="imgs/' . $imgProp['img_file'] . '" title="' . $imgProp['img_title'] . '" />';
+                            $action_check[$rowName] = 1;
+                        }
+                    }
+                    echo '</li>';
+                } else {
+                    echo '<li class="cell-data" style="width: ' . $cellWidth . '%;">';
+                    echo ( $item->$rowSrc ) ? $item->$rowSrc : '&nbsp;'; // Fix height
+                    echo '</li>';
+                }
+            }
+
+            echo '<li class="cell-actions round" style="width: ' . ($numActions * 5 + 2) . '%;">';
+            //echo '<li class="cell-actions round" style="width: 175px;">';
+            foreach ($arrTableProp["actions"] as $action => $function) {
+                switch ($action) {
+                    case "view":
+                        echo '<img src="imgs/view.png" title="' . _('Ver Detalles') . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['view'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["active"] . ',1,\'' . $arrTableProp["nextaction"] . '\');" />';
+                        break;
+                    case "edit":
+                        echo '<img src="imgs/edit.png" title="' . _('Editar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['edit'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["active"] . ',0,\'' . $arrTableProp["nextaction"] . '\');" />';
+                        break;
+                    case "del":
+                        echo '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['del'] . '(' . $arrTableProp["active"] . ', 1,' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\',\'' . $arrTableProp["nextaction"] . '\');" />';
+                        break;
+                    case "pass":
+                        if (isset($action_check['user_isLdap'])) {
+                            break;
+                        }
+
+                        echo '<img src="imgs/key.png" title="' . _('Cambiar clave') . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['pass'] . '(' . $intId . ');" />';
+                        break;
+                }
+            }
+            echo ($numActions > 2 ) ? '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />' : '';
+            echo '</li>';
+            echo '</ul>';
+        }
+
+        echo '</div></form>';
+    }
+
 }
