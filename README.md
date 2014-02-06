@@ -18,6 +18,8 @@ Installation instructions and changelog at Wiki
 
 ----------------
 
+#### Wiki: http://wiki.syspass.org
+
 http://sourceforge.net/projects/syspass
 
 http://syspass.org
