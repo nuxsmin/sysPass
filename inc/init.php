@@ -437,7 +437,7 @@ class SP_Init {
             self::$LANG = ( $configLang ) ? $configLang : $browserLang;
         }
         
-        self::$LANG = self::$LANG.".utf8";
+        //self::$LANG = self::$LANG.".utf8";
         
         putenv("LANG=".self::$LANG);
         setlocale(LC_MESSAGES, self::$LANG);
