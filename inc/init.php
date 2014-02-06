@@ -45,7 +45,6 @@ class SP_Init {
         $classfile = dirname(__FILE__)."/$class.class.php";
 
         //error_log('Cargando clase: '.$classfile);
-        locale
         if (file_exists($classfile)) {
             include_once ($classfile);
         }
