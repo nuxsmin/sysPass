@@ -242,7 +242,7 @@ switch ($action) {
             $startTime = microtime();
             $categories = SP_Category::getCategories();
 
-            if ($categories) {
+            if ($categories !== FALSE) {
                 SP_Html::getQueryTable($arrCategoriesTableProp, $categories);
                 SP_Html::printQueryInfoBar(count($categories), $startTime);
             }
@@ -271,7 +271,7 @@ switch ($action) {
             $startTime = microtime();
             $customers = SP_Customer::getCustomers();
 
-            if ($customers) {
+            if ($customers !== FALSE) {
                 SP_Html::getQueryTable($arrCustomersTableProp, $customers);
                 SP_Html::printQueryInfoBar(count($customers), $startTime);
             }
