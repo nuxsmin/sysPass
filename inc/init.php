@@ -45,7 +45,7 @@ class SP_Init {
         $classfile = dirname(__FILE__)."/$class.class.php";
 
         //error_log('Cargando clase: '.$classfile);
-        
+        locale
         if (file_exists($classfile)) {
             include_once ($classfile);
         }
@@ -92,7 +92,7 @@ class SP_Init {
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
                 && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)) {
             list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);locale
             $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
         }
         
@@ -437,7 +437,9 @@ class SP_Init {
         } else{
             self::$LANG = ( $configLang ) ? $configLang : $browserLang;
         }
-
+        
+        self::$LANG = self::$LANG.".utf8";
+        
         putenv("LANG=".self::$LANG);
         setlocale(LC_MESSAGES, self::$LANG);
         setlocale(LC_ALL, self::$LANG);
