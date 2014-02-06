@@ -347,7 +347,7 @@ class SP_Installer {
                 if (strlen(trim($buffer)) > 0) {
                     if (!self::$dbc->query($buffer)) {
                         // drop database on error
-                        self::$dbc->query("DROP DATABASE " . self::$dbc . ";");
+                        self::$dbc->query("DROP DATABASE " . self::$dbname . ";");
                         throw new InstallerException('critical'
                         , _('Error al crear la BBDD')
                         , _('Error al crear la estructura de la Base de Datos.'));
