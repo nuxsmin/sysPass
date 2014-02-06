@@ -40,7 +40,7 @@ class SP_Init {
     * SPL autoload
     */
     public static function autoload($classname){
-        $class = str_replace("sp_", '', strtolower($classname));;
+        $class = str_replace("sp_", '', strtolower($classname));
         $classfile = dirname(__FILE__)."/$class.class.php";
 
         //error_log('Cargando clase: '.$classfile);
