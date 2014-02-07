@@ -206,7 +206,7 @@ CREATE TABLE `usrData` (
   `user_name` varchar(80) NOT NULL,
   `user_groupId` tinyint(3) unsigned NOT NULL,
   `user_secGroupId` tinyint(3) unsigned DEFAULT NULL,
-  `user_login` varchar(10) NOT NULL,
+  `user_login` varchar(30) NOT NULL,
   `user_pass` varbinary(40) NOT NULL,
   `user_mPass` varbinary(32) NOT NULL,
   `user_mIV` varbinary(32) NOT NULL,
