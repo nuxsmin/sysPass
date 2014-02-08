@@ -40,7 +40,7 @@ if ( isset($_GET["l"]) && isset($_GET["r"]) ){
 }
 
 $locale= array(
-    "es_es" => array('Error en la consulta',
+    "es_es.utf8" => array('Error en la consulta',
                     'Ha ocurrido un error',
                     'Sesión finalizada',
                     'Borrar la cuenta?',
@@ -61,7 +61,7 @@ $locale= array(
                     'No es posible guardar el archivo.<br>Tamaño máximo:',
                     'Extensión no permitida',
                     'Vaciar el registro de eventos?'),
-    "en_us" => array('Query error',
+    "en_us.utf8" => array('Query error',
                     'There was an error',
                     'Session ended',
                     'Delete account?',
@@ -89,7 +89,7 @@ foreach ( $locale[$appLang] as $langIndex => $langDesc ){
     $arrJsLang[] = "'".$langDesc."'";
 }
 
-echo "// i18n language array from PHP\n";
+echo "// i18n language array from PHP. Detected language: $appLang\n";
 echo "var LANG = [".implode(",",$arrJsLang)."]; \n\n";
 echo "var APP_ROOT = '$appRoot';\n";
 include_once 'functions.js';
