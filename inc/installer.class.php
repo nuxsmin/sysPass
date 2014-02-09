@@ -144,7 +144,7 @@ class SP_Installer {
             //generate a random salt that is used to salt the local user passwords
             $salt = SP_Util::generate_random_bytes(30);
             SP_Config::setValue('passwordsalt', $salt);
-            SP_Config::setValue('version', implode('.', SP_Util::getVersion(TRUE)));
+            SP_Config::setValue('version', implode(SP_Util::getVersion(TRUE)));
 
             $dbadmin = $options['dbuser'];
             $dbpass = $options['dbpass'];
@@ -168,7 +168,7 @@ class SP_Installer {
                 return($error);
             }
 
-            SP_Config::setConfigValue('version', implode('.', SP_Util::getVersion()));
+            SP_Config::setConfigValue('version', implode(SP_Util::getVersion(TRUE)));
             SP_Config::setValue('installed', 1);
         }
 

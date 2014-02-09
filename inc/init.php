@@ -466,7 +466,7 @@ class SP_Init {
                 self::initError(_('La aplicación necesita actualizarse'), _('Contacte con el administrador'));
             }
             
-            if ( SP_Upgrade::doUpgrade($appVersion) ){
+            if ( SP_Upgrade::doUpgrade($databaseVersion) ){
                 SP_Config::setConfigValue('version', $appVersion);
                 $update = TRUE;
             }

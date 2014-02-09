@@ -215,8 +215,8 @@ switch ($action) {
     case "appmgmtmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
-        echo ( SP_ACL::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Categorías') . '">' . _('Categorías') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("customers") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Clientes') . '">' . _('Clientes') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Categorías') . '">' . _('Gestión de Categorías') . '</A></LI>' : '';
+        echo ( SP_ACL::checkUserAccess("customers") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Clientes') . '">' . _('Gestión de Clientes') . '</A></LI>' : '';
         echo '</UL>';
         
         $tplvars['active'] = 0;

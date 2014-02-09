@@ -213,8 +213,10 @@ class SP_LDAP {
                     if (is_array($attrValue)) {
                         if (array_key_exists($entryAttr, $attribs)) {
                             if ($attrValue['count'] > 1) {
+                                // Almacenamos un array de valores
                                 $res[$attribs[$entryAttr]] = $attrValue;
                             } else {
+                                // Almacenamos  1 solo valor
                                 $res[$attribs[$entryAttr]] = $attrValue[0];
                             }
                         }
@@ -258,8 +260,14 @@ class SP_LDAP {
      */
     private static function searchGroupDN() {
         $message['action'] = __FUNCTION__;
+        $groupName = array();
 
-        $filter = '(cn=' . self::$ldapGroup . ')';
+        if (preg_match('/^cn=([\w\s-]+),.*/i', self::$ldapGroup, $groupName)) {
+            $filter = '(cn=' . $groupName[1] . ')';
+        } else {
+            $filter = '(cn=' . self::$ldapGroup . ')';
+        }
+
         $filterAttr = array("dn");
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
@@ -290,7 +298,7 @@ class SP_LDAP {
             $message['text'][] = 'RDN: ' . $ldapSearchData[0]["dn"];
 
             SP_Common::wrLogInfo($message);
-            
+
             return $ldapSearchData[0]["dn"];
         } else {
             $message['text'][] = _('Error al buscar RDN de grupo');
@@ -300,6 +308,48 @@ class SP_LDAP {
 
             throw new Exception(_('Error al buscar RDN de grupo'));
         }
+    }
+
+    /**
+     * @brief Bustar al usuario en un grupo
+     * @param string $userDN con el RDN del usuario
+     * @return bool
+     */
+    public static function searchUserInGroup($userDN) {
+        $message['action'] = __FUNCTION__;
+
+        self::$ldapGroup = SP_Config::getValue('ldapgroup');
+
+        if (!$groupDN = self::searchGroupDN()) {
+            return FALSE;
+        }
+
+        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)))';
+        $filterAttr = array("member", "uniqueMember");
+
+        $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
+
+        if (!$searchRes) {
+            $message['text'][] = _('Error al buscar el grupo de usuarios');
+            $message['text'][] = 'LDAP ERROR: ' . ldap_error(self::$ldapConn) . '(' . ldap_errno(self::$ldapConn) . ')';
+            $message['text'][] = 'LDAP FILTER: ' . $filter;
+
+            SP_Common::wrLogInfo($message);
+
+            throw new Exception(_('Error al buscar el grupo de usuarios'));
+        }
+
+        if (!@ldap_count_entries(self::$ldapConn, $searchRes) === 1) {
+            $message['text'][] = _('No se encontró el grupo con ese nombre');
+            $message['text'][] = 'LDAP ERROR: ' . ldap_error(self::$ldapConn) . '(' . ldap_errno(self::$ldapConn) . ')';
+            $message['text'][] = 'LDAP FILTER: ' . $filter;
+
+            SP_Common::wrLogInfo($message);
+
+            throw new Exception(_('No se encontró el grupo con ese nombre'));
+        }
+
+        return TRUE;
     }
 
 }

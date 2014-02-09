@@ -169,7 +169,7 @@ class SP_Util {
      * @return array con el número de versión
      */
     public static function getVersion($retBuild = FALSE) {
-        $build = 1;
+        $build = 2;
         $version = array(1, 1, 2);
         
         if ( $retBuild ){

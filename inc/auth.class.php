@@ -40,9 +40,7 @@ class SP_Auth {
      * @return bool
      */
     public static function authUserLDAP($userLogin, $userPass) {
-        if (!SP_Util::ldapIsAvailable() 
-                || !SP_Config::getValue('ldapenabled', FALSE) 
-                || !SP_LDAP::checkLDAPParams()) {
+        if (!SP_Util::ldapIsAvailable() || !SP_Config::getValue('ldapenabled', FALSE) || !SP_LDAP::checkLDAPParams()) {
             return FALSE;
         }
 
@@ -57,7 +55,7 @@ class SP_Auth {
         } catch (Exception $e) {
             return FALSE;
         }
-        
+
         $userDN = SP_LDAP::$ldapSearchData[0]['dn'];
         // Mapeo de los atributos
         $attribsMap = array(
@@ -66,10 +64,10 @@ class SP_Auth {
             'displayname' => 'name',
             'fullname' => 'name',
             'mail' => 'mail',
-            'lockouttime' => 'expire');        
-        
+            'lockouttime' => 'expire');
+
         // Realizamos la conexión con el usuario real y obtenemos los atributos
-        try{
+        try {
             SP_LDAP::ldapBind($userDN, $userPass);
             SP_LDAP::unbind();
             $attribs = SP_LDAP::getLDAPAttr($attribsMap);
@@ -78,38 +76,40 @@ class SP_Auth {
         }
 
         // Comprobamos si la cuenta está bloqueada o expirada
-        if ( isset($attribs['expire']) && $attribs['expire'] > 0){
+        if (isset($attribs['expire']) && $attribs['expire'] > 0) {
             return FALSE;
         }
-        
-        if ( !isset($attribs['group']) ){
+
+        // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del usuario
+        if (isset($attribs['group'])) {
+            if (is_array($attribs['group'])) {
+                foreach ($attribs['group'] as $group) {
+                    if (is_int($group)) {
+                        continue;
+                    }
+
+                    // Comprobamos que el usuario está en el grupo indicado
+                    if (self::checkLDAPGroup($group)) {
+                        $ldapAccess = TRUE;
+                        break;
+                    }
+                }
+            } else {
+                $ldapAccess = self::checkLDAPGroup($attribs['group']);
+            }
+        // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
+        } else {
+            $ldapAccess = SP_LDAP::searchUserInGroup($userDN);
+        }
+
+        if ($ldapAccess == FALSE) {
             $message['text'][] = _('El usuario no tiene grupos asociados');
             SP_Common::wrLogInfo($message);
-            return FALSE;
         }
-        
-        if (is_array($attribs['group'])){
-            foreach ($attribs['group'] as $group) {
-                if (is_int($group)) {
-                    continue;
-                }
-
-                // Comprobamos que el usuario está en el grupo indicado
-                if ( self::checkLDAPGroup($group) ) {
-                    $ldapAccess = TRUE;
-                    break;
-                }
-            }
-        } else{
-            // Comprobamos que el usuario está en el grupo indicado
-            if ( self::checkLDAPGroup($attribs['group']) ) {
-                $ldapAccess = TRUE;
-            }
-        }
-        
+            
         self::$userName = $attribs['name'];
         self::$userEmail = $attribs['mail'];
-        
+
         return $ldapAccess;
     }
 
@@ -174,15 +174,17 @@ class SP_Auth {
      * @param string $group con el nombre del grupo
      * @return bool
      */
-    private static function checkLDAPGroup($group){
+    private static function checkLDAPGroup($group) {
         $ldapgroup = SP_Config::getValue('ldapgroup');
+        $groupName = array();
         
         preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);
 
         if ($groupName[1] == $ldapgroup || $group == $ldapgroup) {
             return TRUE;
         }
-        
+
         return FALSE;
     }
+
 }
