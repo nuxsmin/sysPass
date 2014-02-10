@@ -6,9 +6,9 @@ This version is under development, try it with caution.
 
 #### ACTUALIZAR / UPDATE
 
-Para actualizar desde 1.0 es necesario activar el modo mantenimiento e ir a la url .../index.php?upgrade=1
+Para actualizar desde 1.0 seguir los pasos en http://wiki.syspass.org/doku.php/es:actualizar
 
-In order to update from 1.0 you need to activate maintenance mode and point to url .../index.php?upgrade=1
+In order to update from 1.0 you need to follow the steps at http://wiki.syspass.org/doku.php/en:upgrade
 
 ----------------
 
