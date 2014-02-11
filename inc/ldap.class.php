@@ -268,7 +268,7 @@ class SP_LDAP {
             $filter = '(cn=' . self::$ldapGroup . ')';
         }
 
-        $filterAttr = array("dn");
+        $filterAttr = array("dn","cn");
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
 
