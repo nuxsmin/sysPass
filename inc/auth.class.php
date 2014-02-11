@@ -69,7 +69,7 @@ class SP_Auth {
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
             SP_LDAP::ldapBind($userDN, $userPass);
-            SP_LDAP::unbind();
+            //SP_LDAP::unbind();
             $attribs = SP_LDAP::getLDAPAttr($attribsMap);
         } catch (Exception $e) {
             return ldap_errno(SP_LDAP::getConn());
