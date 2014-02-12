@@ -272,7 +272,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                             foreach ( $users as $otherUserName => $otherUserId) {
                                 $userSelected = '';
 
-                                if ($otherUserId != $accountData->account_userGroupId && $otherUserId != $userId) {
+                                if ($otherUserId != $accountData->account_userGroupId) {
                                     if ( isset($accountUsers) && is_array($accountUsers)){
                                         $userSelected = ( in_array($otherUserId, $accountUsers)) ? "selected" : "";
                                     }
@@ -299,7 +299,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                             foreach ($groups as $groupName => $groupId) {
                                 $uGroupSelected = '';
 
-                                if ($groupId != $accountData->account_userGroupId && $groupId != $userGroupId) {
+                                if ($groupId != $accountData->account_userGroupId) {
                                     if ( isset($accountGroups) && is_array($accountGroups)){
                                         $uGroupSelected = ( in_array($groupId, $accountGroups)) ? "selected" : "";
                                     }
