@@ -282,9 +282,8 @@ class SP_Migrate {
     private static function migrateAccounts() {
         $query = 'SELECT intAccountId, intUGroupFId, intUserFId, intUEditFId, 
                         vacCliente, vacName, intCategoryFid, vacLogin, vacUrl, 
-                        vacAccountGroups, vacPassword, vacMd5Password,
-                        vacInitialValue, txtNotice, intCountView, intCountDecrypt, 
-                        datAdded, datChanged
+                        vacPassword, vacMd5Password, vacInitialValue, txtNotice, 
+                        intCountView, intCountDecrypt, datAdded, datChanged
                         FROM accounts ';
         $queryRes = self::$dbc->query($query);
 
