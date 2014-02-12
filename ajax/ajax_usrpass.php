@@ -79,7 +79,7 @@ SP_Users::checkUserAccess("acceditpass",$userId) || die ($strError);
     <div class="action-in-box">
         <ul>
             <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
+                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
             </li>
         </ul>
     </div>
