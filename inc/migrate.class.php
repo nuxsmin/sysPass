@@ -287,7 +287,6 @@ class SP_Migrate {
                 . 'intCategoryFid,'
                 . 'vacLogin,'
                 . 'vacUrl,'
-                . 'vacAccountGroups,'
                 . 'vacPassword,'
                 . 'vacMd5Password,'
                 . 'vacInitialValue,'
