@@ -35,7 +35,7 @@ if ( isset($_GET["l"]) && isset($_GET["r"]) ){
 }
 
 $locale= array(
-    "es_es" => array('Ha ocurrido un error en la consulta',
+    "es_es.utf8" => array('Ha ocurrido un error en la consulta',
                     'Ha ocurrido un error',
                     'Sesión finalizada',
                     'Archivo no seleccionado',
@@ -59,7 +59,7 @@ $locale= array(
                     'Borrar elemento?',
                     'Página no encontrada, verifique el parámetro "siteroot"',
                     'Archivo no soportado para visualizar'),
-    "en_us" => array('Query error',
+    "en_us.utf8" => array('Query error',
                     'There was an error',
                     'Session ended',
                     'File not selected',
