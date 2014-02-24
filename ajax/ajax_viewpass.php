@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -22,8 +22,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -31,7 +32,7 @@ if (!SP_Init::isLoggedIn()) {
     return;
 }
 
-$accountId = SP_Common::parseParams('p', 'accountid', FALSE);
+$accountId = SP_Common::parseParams('p', 'accountid', false);
 $fullTxt = SP_Common::parseParams('p', 'full', 0);
 $isHistory = SP_Common::parseParams('p', 'isHistory', 0);
 
@@ -84,7 +85,7 @@ $message['text'][] = _('ID') . ': ' . $accountId;
 $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
 $message['text'][] = _('IP') . ': ' . $_SERVER['REMOTE_ADDR'];
 
-SP_Common::wrLogInfo($message);
+SP_Log::wrLogInfo($message);
 
 if ($fullTxt) {
     ?>

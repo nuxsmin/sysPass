@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,8 +23,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,7 +33,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
@@ -52,8 +53,8 @@ $frmOtherGroups = SP_Common::parseParams('p', 'othergroups');
 $frmOtherUsers = SP_Common::parseParams('p', 'otherusers');
 $frmNotes = SP_Common::parseParams('p', 'notice');
 $frmUrl = SP_Common::parseParams('p', 'url');
-$frmGroupEditEnabled = SP_Common::parseParams('p', 'geditenabled', 0, FALSE, 1);
-$frmUserEditEnabled = SP_Common::parseParams('p', 'ueditenabled', 0, FALSE, 1);
+$frmGroupEditEnabled = SP_Common::parseParams('p', 'geditenabled', 0, false, 1);
+$frmUserEditEnabled = SP_Common::parseParams('p', 'ueditenabled', 0, false, 1);
 $frmChangesHash = SP_Common::parseParams('p', 'hash');
 
 // Datos del Usuario
@@ -108,7 +109,7 @@ if ($frmSaveType == 1) {
         SP_Common::printJSON(_('Las claves no coinciden'));
     }
 } else {
-    $SP_Common::printJSON(_('Acción Inválida'));
+    SP_Common::printJSON(_('Acción Inválida'));
 }
 
 if ($frmSaveType == 1 || $frmSaveType == 4) {
@@ -124,7 +125,7 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
     //$accountURL = $crypt->mkEncrypt($frmUrl, $crypt->getSessionMasterPass());
     //$accountNotes = $crypt->mkEncrypt($frmNotes, $crypt->getSessionMasterPass());
 
-    if ($accountPass === FALSE || is_null($accountPass)) {
+    if ($accountPass === false || is_null($accountPass)) {
         SP_Common::printJSON(_('Error al generar datos cifrados'));
     }
 
@@ -217,7 +218,7 @@ switch ($frmSaveType) {
 
         // Eliminar cuenta
         if ($account->deleteAccount()) {
-            SP_Common::printJSON(_('Cuenta eliminada'), 0);
+            SP_Common::printJSON(_('Cuenta eliminada'), 0, "doAction('accsearch');");
         }
         SP_Common::printJSON(_('Error al eliminar la cuenta'));
         break;

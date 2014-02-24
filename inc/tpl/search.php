@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -65,8 +65,8 @@ $searchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
                 <input type="hidden" name="start" value="<?php echo $searchStart; ?>">
                 <input type="hidden" name="skey" value="<?php echo $searchKey; ?>" />
                 <input type="hidden" name="sorder" value="<?php echo $searchOrder; ?>" />
-                <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
-                <input type="hidden" name="is_ajax" value="1">
+                <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
+                <input type="hidden" name="isAjax" value="1">
                 <?php
                 SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
                 SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
@@ -88,7 +88,7 @@ $searchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
             accSearch(0);
         }});
     <?php if ( $globalSearch ): ?>
-    $('#tblTools .checkbox').button();
+    $('#tblTools').find('.checkbox').button();
     $('#gsearch').click(function(){
         if ( $(this).next('label').hasClass('ui-state-active') ){
             $(this).next('label').children('span').html('OFF');

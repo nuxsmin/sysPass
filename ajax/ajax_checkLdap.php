@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,7 +32,7 @@ if ( ! SP_Init::isLoggedIn() ) {
     SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
@@ -46,7 +46,7 @@ $frmLdapBindPass = SP_Common::parseParams('p', 'ldapbindpass');
 
 $resCheckLdap = SP_LDAP::checkLDAPConn($frmLdapServer,$frmLdapBindUser,$frmLdapBindPass,$frmLdapBase,$frmLdapGroup);
 
-if ( $resCheckLdap === FALSE ){
+if ( $resCheckLdap === false ){
     SP_Common::printJSON(_('Error de conexión a LDAP').';;'._('Revise el registro de eventos para más detalles'));
 } else{
     SP_Common::printJSON(_('Conexión a LDAP correcta').';;'._('Objetos encontrados').': '.$resCheckLdap,0);

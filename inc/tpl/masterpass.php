@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -26,7 +26,8 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $action = $data['action'];
-$activeTab = $data['active'];
+$activeTab = $data['activeTab'];
+$onCloseAction = $data['onCloseAction'];
 
 SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
@@ -99,9 +100,11 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
             </td>
         </tr>
     </table>
-	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+	<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
     <input type="hidden" name="action" value="crypt" />
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="isAjax" value="1" />
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
 </form>
 <div class="action">
     <ul>

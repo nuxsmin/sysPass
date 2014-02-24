@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *
  */
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,7 +32,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-if (SP_Common::parseParams('p', 'action', '', TRUE)) {
+if (SP_Common::parseParams('p', 'action', '', true)) {
     $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
     $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);
     $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastAction', 'accsearch');
@@ -95,12 +95,12 @@ switch ($action) {
     case "usersmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
-        echo ( SP_ACL::checkUserAccess("users") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Usuarios') . '">' . _('Gestión de Usuarios') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("groups") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Grupos') . '">' . _('Gestión de Grupos') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("profiles") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Gestión de Perfiles') . '">' . _('Gestión de Perfiles') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("users")) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Usuarios') . '">' . _('Gestión de Usuarios') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("groups")) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Grupos') . '">' . _('Gestión de Grupos') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("profiles")) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Gestión de Perfiles') . '">' . _('Gestión de Perfiles') . '</A></LI>' : '';
         echo '</UL>';
 
-        $tplvars['active'] = 0;
+        $activeTab = 0;
 
         if (SP_ACL::checkUserAccess("users")) {
             $arrUsersTableProp = array(
@@ -127,10 +127,10 @@ switch ($action) {
                 ),
                 'tblRowSrcId' => 'user_id',
                 'frmId' => 'frm_tblusers',
-                'nextaction' => $action,
+                'onCloseAction' => $action,
                 'actionId' => 1,
                 'newActionId' => 2,
-                'active' => $tplvars['active'] ++,
+                'activeTab' => $activeTab++,
                 'actions' => array('view' => 'appMgmtData', 'edit' => 'appMgmtData', 'del' => 'appMgmtSave', 'pass' => 'usrUpdPass'));
 
             echo '<DIV ID="tabs-1">';
@@ -153,10 +153,10 @@ switch ($action) {
                 'tblRowSrc' => array('usergroup_name', 'usergroup_description'),
                 'tblRowSrcId' => 'usergroup_id',
                 'frmId' => 'frm_tblgroups',
-                'nextaction' => $action,
+                'onCloseAction' => $action,
                 'actionId' => 3,
                 'newActionId' => 4,
-                'active' => $tplvars['active'] ++,
+                'activeTab' => $activeTab++,
                 'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave'));
 
             echo '<DIV ID="tabs-2">';
@@ -181,10 +181,10 @@ switch ($action) {
                 'tblRowSrc' => array('userprofile_name'),
                 'tblRowSrcId' => 'userprofile_id',
                 'frmId' => 'frm_tblprofiles',
-                'nextaction' => $action,
+                'onCloseAction' => $action,
                 'actionId' => 5,
                 'newActionId' => 6,
-                'active' => $tplvars['active'] ++,
+                'activeTab' => $activeTab++,
                 'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave'));
 
             echo '<DIV ID="tabs-3">';
@@ -215,70 +215,70 @@ switch ($action) {
     case "appmgmtmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
-        echo ( SP_ACL::checkUserAccess("categories") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Categorías') . '">' . _('Gestión de Categorías') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("customers") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Clientes') . '">' . _('Gestión de Clientes') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("categories")) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Gestión de Categorías') . '">' . _('Gestión de Categorías') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("customers")) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Gestión de Clientes') . '">' . _('Gestión de Clientes') . '</A></LI>' : '';
         echo '</UL>';
-        
-        $tplvars['active'] = 0;
-        
+
+        $activeTab = 0;
+
         if (SP_ACL::checkUserAccess("categories")) {
             $arrCategoriesTableProp = array(
                 'itemName' => _('Categoría'),
                 'tblId' => 'tblCategories',
                 'header' => '',
-                'tblHeaders' => array(_('Nombre'),_('Descripción')),
-                'tblRowSrc' => array('category_name','category_description'),
+                'tblHeaders' => array(_('Nombre'), _('Descripción')),
+                'tblRowSrc' => array('category_name', 'category_description'),
                 'tblRowSrcId' => 'category_id',
                 'frmId' => 'frm_tblcategories',
-                'nextaction' => $action,
+                'onCloseAction' => $action,
                 'actionId' => 9,
                 'newActionId' => 10,
-                'active' => $tplvars['active'] ++,
+                'activeTab' => $activeTab++,
                 'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave')
-                );
+            );
 
             echo '<DIV ID="tabs-1">';
 
             $startTime = microtime();
             $categories = SP_Category::getCategories();
 
-            if ($categories !== FALSE) {
+            if ($categories !== false) {
                 SP_Html::getQueryTable($arrCategoriesTableProp, $categories);
                 SP_Html::printQueryInfoBar(count($categories), $startTime);
             }
 
             echo '</DIV>';
         }
-        
+
         if (SP_ACL::checkUserAccess("customers")) {
             $arrCustomersTableProp = array(
                 'itemName' => _('Cliente'),
                 'tblId' => 'tblCustomers',
                 'header' => '',
-                'tblHeaders' => array(_('Nombre'),_('Descripción')),
-                'tblRowSrc' => array('customer_name','customer_description'),
+                'tblHeaders' => array(_('Nombre'), _('Descripción')),
+                'tblRowSrc' => array('customer_name', 'customer_description'),
                 'tblRowSrcId' => 'customer_id',
                 'frmId' => 'frm_tblcustomers',
-                'nextaction' => $action,
+                'onCloseAction' => $action,
                 'actionId' => 7,
                 'newActionId' => 8,
-                'active' => $tplvars['active'] ++,
+                'activeTab' => $activeTab++,
                 'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave')
-                );
+            );
 
             echo '<DIV ID="tabs-2">';
 
             $startTime = microtime();
             $customers = SP_Customer::getCustomers();
 
-            if ($customers !== FALSE) {
+            if ($customers !== false) {
                 SP_Html::getQueryTable($arrCustomersTableProp, $customers);
                 SP_Html::printQueryInfoBar(count($customers), $startTime);
             }
 
             echo '</DIV>';
         }
-        
+
         echo '</DIV>';
 
         echo '<script>
@@ -295,24 +295,23 @@ switch ($action) {
     case "configmenu":
         echo '<DIV ID="tabs">';
         echo '<UL>';
-        echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("masterpass") ) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("backup") ) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
-        echo ( SP_ACL::checkUserAccess("config") ) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("config")) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("masterpass")) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("backup")) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("config")) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
         echo '</UL>';
 
-        $tplvars['active'] = 0;
+        $tplvars['activeTab'] = 0;
+        $tplvars['onCloseAction'] = $action;
 
         if (SP_ACL::checkUserAccess("config")) {
-            $tplvars['active'] ++;
-
             echo '<DIV ID="tabs-1">';
             SP_Html::getTemplate('config', $tplvars);
             echo '</DIV>';
         }
 
         if (SP_ACL::checkUserAccess("masterpass")) {
-            $tplvars['active'] ++;
+            $tplvars['activeTab']++;
 
             echo '<DIV ID="tabs-2">';
             SP_Html::getTemplate('masterpass', $tplvars);
@@ -320,7 +319,7 @@ switch ($action) {
         }
 
         if (SP_ACL::checkUserAccess("backup")) {
-            $tplvars['active'] ++;
+            $tplvars['activeTab']++;
 
             echo '<DIV ID="tabs-3">';
             SP_Html::getTemplate('backup', $tplvars);
@@ -328,7 +327,7 @@ switch ($action) {
         }
 
         if (SP_ACL::checkUserAccess("config")) {
-            $tplvars['active'] ++;
+            $tplvars['activeTab']++;
 
             echo '<DIV ID="tabs-4">';
             SP_Html::getTemplate('migrate', $tplvars);
@@ -367,10 +366,10 @@ if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
     $debugTxt[] = "<li>RENDER -> " . $time . " sec</li>";
     $debugTxt[] = "<li>MEM -> Init: " . ($memInit / 1000) . " KB - End: " . ($memEnd / 1000) . " KB - Total: " . (($memEnd - $memInit) / 1000) . " KB</li>";
     $debugTxt[] = "<li>SESSION:";
-    $debugTxt[] = "<pre>" . print_r($_SESSION, TRUE) . "</pre";
+    $debugTxt[] = "<pre>" . print_r($_SESSION, true) . "</pre";
     $debugTxt[] = "</li>";
     $debugTxt[] = "<li>CONFIG:<pre>";
-    $debugTxt[] = "<pre>" . print_r(SP_Config::getKeys(TRUE), TRUE) . "</pre>";
+    $debugTxt[] = "<pre>" . print_r(SP_Config::getKeys(true), true) . "</pre>";
     $debugTxt[] = "</li>";
     //$debugTxt[] = '<li>'.$crypt->getSessionMasterPass().'</li>';
     $debugTxt[] = "</div>";
@@ -383,6 +382,6 @@ if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
 // Se comprueba si hay actualizaciones.
 // Es necesario que se haga al final de obtener el contenido ya que la 
 // consulta ajax detiene al resto si se ejecuta antes
-if ($_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 && !SP_Common::parseParams('s', 'UPDATED', FALSE, TRUE)) {
+if ($_SESSION['uisadminapp'] && SP_Config::getValue('checkupdates') === 1 && !SP_Common::parseParams('s', 'UPDATED', false, true)) {
     echo '<script>checkUpds();</script>';
 }

@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,43 +23,36 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones actualización de la aplicación.
  */
-class SP_Upgrade {
-
-    private static $result = array();
-    private static $upgrade = array(110, 1121, 1122);
+class SP_Upgrade
+{
+    private static $upgrade = array(110, 1121, 1122, 1123);
 
     /**
      * @brief Inicia el proceso de actualización de la BBDD
      * @param int $version con la versión de la BBDD actual
      * @returns bool
      */
-    public static function doUpgrade($version) {
+    public static function doUpgrade($version)
+    {
         foreach (self::$upgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
                 error_log($upgradeVersion);
-                
-                if (self::upgradeTo($upgradeVersion) === FALSE) {
+
+                if (self::upgradeTo($upgradeVersion) === false) {
                     SP_Init::initError(
-                            _('Error al aplicar la actualización de la Base de Datos'),
-                            _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
+                        _('Error al aplicar la actualización de la Base de Datos'),
+                        _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
                 }
             }
         }
 
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprueba si es necesario actualizar la BBDD
-     * @returns bool
-     */
-    public static function needUpgrade($version) {
-        return ( in_array($version, self::$upgrade) );
+        return true;
     }
 
     /**
@@ -67,41 +60,57 @@ class SP_Upgrade {
      * @param int $version con la versión a actualizar
      * @returns bool
      */
-    private static function upgradeTo($version) {
+    private static function upgradeTo($version)
+    {
         $result['action'] = _('Actualizar BBDD');
 
         switch ($version) {
             case 110:
-                $queries[] = "ALTER TABLE `accFiles` CHANGE COLUMN `accfile_name` `accfile_name` VARCHAR(100) NOT NULL";
-                $queries[] = "ALTER TABLE `accounts` ADD COLUMN `account_otherGroupEdit` BIT(1) NULL DEFAULT 0 AFTER `account_dateEdit`, ADD COLUMN `account_otherUserEdit` BIT(1) NULL DEFAULT 0 AFTER `account_otherGroupEdit`;";
-                $queries[] = "CREATE TABLE `accUsers` (`accuser_id` INT NOT NULL AUTO_INCREMENT,`accuser_accountId` INT(10) UNSIGNED NOT NULL,`accuser_userId` INT(10) UNSIGNED NOT NULL, PRIMARY KEY (`accuser_id`), INDEX `idx_account` (`accuser_accountId` ASC));";
-                $queries[] = "ALTER TABLE `accHistory` ADD COLUMN `accHistory_otherUserEdit` BIT NULL AFTER `acchistory_mPassHash`, ADD COLUMN `accHistory_otherGroupEdit` VARCHAR(45) NULL AFTER `accHistory_otherUserEdit`;";
-                $queries[] = "ALTER TABLE `accFiles` CHANGE COLUMN `accfile_type` `accfile_type` VARCHAR(100) NOT NULL ;";
+                $queries[] = 'ALTER TABLE `accFiles` CHANGE COLUMN `accfile_name` `accfile_name` VARCHAR(100) NOT NULL';
+                $queries[] = 'ALTER TABLE `accounts` ADD COLUMN `account_otherGroupEdit` BIT(1) NULL DEFAULT 0 AFTER `account_dateEdit`, ADD COLUMN `account_otherUserEdit` BIT(1) NULL DEFAULT 0 AFTER `account_otherGroupEdit`;';
+                $queries[] = 'CREATE TABLE `accUsers` (`accuser_id` INT NOT NULL AUTO_INCREMENT,`accuser_accountId` INT(10) UNSIGNED NOT NULL,`accuser_userId` INT(10) UNSIGNED NOT NULL, PRIMARY KEY (`accuser_id`), INDEX `idx_account` (`accuser_accountId` ASC));';
+                $queries[] = 'ALTER TABLE `accHistory` ADD COLUMN `accHistory_otherUserEdit` BIT NULL AFTER `acchistory_mPassHash`, ADD COLUMN `accHistory_otherGroupEdit` VARCHAR(45) NULL AFTER `accHistory_otherUserEdit`;';
+                $queries[] = 'ALTER TABLE `accFiles` CHANGE COLUMN `accfile_type` `accfile_type` VARCHAR(100) NOT NULL ;';
                 break;
             case 1121:
-                $queries[] = "ALTER TABLE `categories` ADD COLUMN `category_description` VARCHAR(255) NULL AFTER `category_name`;";
-                $queries[] = "ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_pAppMgmtMenu` BIT(1) NULL DEFAULT b'0' AFTER `userProfile_pUsersMenu`,CHANGE COLUMN `userProfile_pConfigCategories` `userProfile_pAppMgmtCategories` BIT(1) NULL DEFAULT b'0' AFTER `userProfile_pAppMgmtMenu`,ADD COLUMN `userProfile_pAppMgmtCustomers` BIT(1) NULL DEFAULT b'0' AFTER `userProfile_pAppMgmtCategories`;";
+                $queries[] = 'ALTER TABLE `categories` ADD COLUMN `category_description` VARCHAR(255) NULL AFTER `category_name`;';
+                $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_pAppMgmtMenu` BIT(1) NULL DEFAULT b\'0\' AFTER `userProfile_pUsersMenu`,CHANGE COLUMN `userProfile_pConfigCategories` `userProfile_pAppMgmtCategories` BIT(1) NULL DEFAULT b\'0\' AFTER `userProfile_pAppMgmtMenu`,ADD COLUMN `userProfile_pAppMgmtCustomers` BIT(1) NULL DEFAULT b\'0\' AFTER `userProfile_pAppMgmtCategories`;';
                 break;
             case 1122:
-                $queries[] = "ALTER TABLE `usrData` CHANGE COLUMN `user_login` `user_login` VARCHAR(50) NOT NULL ,CHANGE COLUMN `user_email` `user_email` VARCHAR(80) NULL DEFAULT NULL ;";
+                $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_login` `user_login` VARCHAR(50) NOT NULL ,CHANGE COLUMN `user_email` `user_email` VARCHAR(80) NULL DEFAULT NULL ;';
+                break;
+            case 1123:
+                $queries[] = 'CREATE TABLE `usrPassRecover` (`userpassr_id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userpassr_userId` SMALLINT UNSIGNED NOT NULL,`userpassr_hash` VARBINARY(40) NOT NULL,`userpassr_date` INT UNSIGNED NOT NULL,`userpassr_used` BIT(1) NOT NULL DEFAULT b\'0\', PRIMARY KEY (`userpassr_id`),INDEX `IDX_userId` (`userpassr_userId` ASC, `userpassr_date` ASC)) DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;';
+                $queries[] = 'ALTER TABLE `log` ADD COLUMN `log_ipAddress` VARCHAR(45) NOT NULL AFTER `log_userId`;';
+                $queries[] = 'ALTER TABLE `usrData` ADD COLUMN `user_isChangePass` BIT(1) NULL DEFAULT b\'0\' AFTER `user_isMigrate`;';
                 break;
             default :
                 $result['text'][] = _('No es necesario actualizar la Base de Datos.');
-                return TRUE;
+                return true;
         }
 
         foreach ($queries as $query) {
-            if (DB::doQuery($query, __FUNCTION__) === FALSE && DB::$numError != 1060 && DB::$numError != 1050) {
+            if (DB::doQuery($query, __FUNCTION__) === false && DB::$numError != 1060 && DB::$numError != 1050) {
                 $result['text'][] = _('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')';
-                $result['text'][] = 'ERROR: '.DB::$txtError.' ('.DB::$numError.')';
-                SP_Common::wrLogInfo($result);
-                return FALSE;
+                $result['text'][] = 'ERROR: ' . DB::$txtError . ' (' . DB::$numError . ')';
+                SP_Log::wrLogInfo($result);
+                return false;
             }
         }
 
         $result['text'][] = _('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')';
-        SP_Common::wrLogInfo($result);
-        
-        return TRUE;
+        SP_Log::wrLogInfo($result);
+
+        return true;
+    }
+
+    /**
+     * @brief Comprueba si es necesario actualizar la BBDD
+     * @param int $version con el número de versión actual
+     * @returns bool
+     */
+    public static function needUpgrade($version)
+    {
+        return (in_array($version, self::$upgrade));
     }
 }

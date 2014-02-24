@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,8 +23,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -33,7 +34,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
@@ -43,6 +44,10 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
 $frmSaveType = SP_Common::parseParams('p', 'type', 0);
 $frmAction = SP_Common::parseParams('p', 'action', 0);
 $frmItemId = SP_Common::parseParams('p', 'id', 0);
+$frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
+$frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
+
+$doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
 
 if ($frmSaveType == 1 || $frmSaveType == 2) {
     $objUser = new SP_Users;
@@ -57,9 +62,10 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     $frmUsrNotes = SP_Common::parseParams('p', 'notes');
     $frmUsrPass = SP_Common::parseParams('p', 'pass');
     $frmUsrPassV = SP_Common::parseParams('p', 'passv');
-    $frmAdminApp = SP_Common::parseParams('p', 'adminapp', 0, FALSE, 1);
-    $frmAdminAcc = SP_Common::parseParams('p', 'adminacc', 0, FALSE, 1);
-    $frmDisabled = SP_Common::parseParams('p', 'disabled', 0, FALSE, 1);
+    $frmAdminApp = SP_Common::parseParams('p', 'adminapp', 0, false, 1);
+    $frmAdminAcc = SP_Common::parseParams('p', 'adminacc', 0, false, 1);
+    $frmDisabled = SP_Common::parseParams('p', 'disabled', 0, false, 1);
+    $frmChangePass = SP_Common::parseParams('p', 'changepass', 0, false, 1);
 
     // Nuevo usuario o editar
     if ($frmAction == 1 OR $frmAction == 2) {
@@ -93,6 +99,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         $objUser->userIsAdminApp = $frmAdminApp;
         $objUser->userIsAdminAcc = $frmAdminAcc;
         $objUser->userIsDisabled = $frmDisabled;
+        $objUser->userChangePass = $frmChangePass;
         $objUser->userPass = $frmUsrPass;
 
         switch ($objUser->checkUserExist()) {
@@ -114,35 +121,21 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             }
 
             if ($objUser->addUser()) {
-                $message['action'] = _('Nuevo Usuario');
-                $message['text'][] = _('Nombre') . ': ' . $frmUsrName . ' (' . $frmUsrLogin . ')';
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Usuario creado'), 0);
+                SP_Common::printJSON(_('Usuario creado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al crear el usuario'));
         } elseif ($frmAction == 2) {
             if ($objUser->updateUser()) {
-                $message['action'] = _('Modificar Usuario');
-                $message['text'][] = _('Nombre') . ': ' . $frmUsrName . ' (' . $frmUsrLogin . ')';
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Usuario actualizado'), 0);
+                SP_Common::printJSON(_('Usuario actualizado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al actualizar el usuario'));
         }
-        // Cambio de clave
+    // Cambio de clave
     } elseif ($frmAction == 3) {
-        $userLogin = $objUser->getUserLoginById($frmItemId);
-
         if (SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo') {
-            SP_Common::printJSON(_('Acción Inválida') . '(DEMO)');
+            SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
         }
 
         if (!$frmUsrPass || !$frmUsrPassV) {
@@ -157,23 +150,14 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         $objUser->userPass = $frmUsrPass;
 
         if ($objUser->updateUserPass()) {
-            $message['action'] = _('Modificar Clave Usuario');
-            $message['text'][] = _('Login') . ': ' . $userLogin;
-
-            SP_Common::wrLogInfo($message);
-            SP_Common::sendEmail($message);
-
             SP_Common::printJSON(_('Clave actualizada'), 0);
         }
 
         SP_Common::printJSON(_('Error al modificar la clave'));
-        // Eliminar usuario
+    // Eliminar usuario
     } elseif ($frmAction == 4) {
-
-        $userLogin = $objUser->getUserLoginById($frmItemId);
-
         if (SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo') {
-            SP_Common::printJSON(_('Acción Inválida') . '(DEMO)');
+            SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
         }
 
         $objUser->userId = $frmItemId;
@@ -183,13 +167,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         }
 
         if ($objUser->deleteUser()) {
-            $message['action'] = _('Eliminar Usuario');
-            $message['text'][] = _('Login') . ': ' . $userLogin;
-
-            SP_Common::wrLogInfo($message);
-            SP_Common::sendEmail($message);
-
-            SP_Common::printJSON(_('Usuario eliminado'), 0);
+            SP_Common::printJSON(_('Usuario eliminado'), 0, $doActionOnClose);
         }
 
         SP_Common::printJSON(_('Error al eliminar el usuario'));
@@ -217,31 +195,19 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($frmAction == 1) {
             if (SP_Groups::addGroup()) {
-                $message['action'] = _('Nuevo Grupo');
-                $message['text'][] = _('Nombre') . ': ' . $frmGrpName;
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Grupo creado'), 0);
+                SP_Common::printJSON(_('Grupo creado'), 0, $doActionOnClose);
             } else {
                 SP_Common::printJSON(_('Error al crear el grupo'));
             }
         } else if ($frmAction == 2) {
             if (SP_Groups::updateGroup()) {
-                $message['action'] = _('Modificar Grupo');
-                $message['text'][] = _('Nombre') . ': ' . $frmGrpName;
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Grupo actualizado'), 0);
+                SP_Common::printJSON(_('Grupo actualizado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al actualizar el grupo'));
         }
 
-        // Eliminar grupo
+    // Eliminar grupo
     } elseif ($frmAction == 4) {
         SP_Groups::$groupId = $frmItemId;
 
@@ -261,13 +227,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             $groupName = SP_Groups::getGroupNameById($frmItemId);
 
             if (SP_Groups::deleteGroup()) {
-                $message['action'] = _('Eliminar Grupo');
-                $message['text'][] = _('Nombre') . ': ' . $groupName;
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Grupo eliminado'), 0);
+                SP_Common::printJSON(_('Grupo eliminado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al eliminar el grupo'));
@@ -283,23 +243,23 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     SP_Profiles::$profileId = $frmItemId;
 
     // Profile properties Array
-    $profileProp["pAccView"] = SP_Common::parseParams('p', 'profile_accview', 0, FALSE, 1);
-    $profileProp["pAccViewPass"] = SP_Common::parseParams('p', 'profile_accviewpass', 0, FALSE, 1);
-    $profileProp["pAccViewHistory"] = SP_Common::parseParams('p', 'profile_accviewhistory', 0, FALSE, 1);
-    $profileProp["pAccEdit"] = SP_Common::parseParams('p', 'profile_accedit', 0, FALSE, 1);
-    $profileProp["pAccEditPass"] = SP_Common::parseParams('p', 'profile_acceditpass', 0, FALSE, 1);
-    $profileProp["pAccAdd"] = SP_Common::parseParams('p', 'profile_accadd', 0, FALSE, 1);
-    $profileProp["pAccDel"] = SP_Common::parseParams('p', 'profile_accdel', 0, FALSE, 1);
-    $profileProp["pAccFiles"] = SP_Common::parseParams('p', 'profile_accfiles', 0, FALSE, 1);
-    $profileProp["pConfig"] = SP_Common::parseParams('p', 'profile_config', 0, FALSE, 1);
-    $profileProp["pAppMgmtCat"] = SP_Common::parseParams('p', 'profile_categories', 0, FALSE, 1);
-    $profileProp["pAppMgmtCust"] = SP_Common::parseParams('p', 'profile_customers', 0, FALSE, 1);
-    $profileProp["pConfigMpw"] = SP_Common::parseParams('p', 'profile_configmpw', 0, FALSE, 1);
-    $profileProp["pConfigBack"] = SP_Common::parseParams('p', 'profile_configback', 0, FALSE, 1);
-    $profileProp["pUsers"] = SP_Common::parseParams('p', 'profile_users', 0, FALSE, 1);
-    $profileProp["pGroups"] = SP_Common::parseParams('p', 'profile_groups', 0, FALSE, 1);
-    $profileProp["pProfiles"] = SP_Common::parseParams('p', 'profile_profiles', 0, FALSE, 1);
-    $profileProp["pEventlog"] = SP_Common::parseParams('p', 'profile_eventlog', 0, FALSE, 1);
+    $profileProp["pAccView"] = SP_Common::parseParams('p', 'profile_accview', 0, false, 1);
+    $profileProp["pAccViewPass"] = SP_Common::parseParams('p', 'profile_accviewpass', 0, false, 1);
+    $profileProp["pAccViewHistory"] = SP_Common::parseParams('p', 'profile_accviewhistory', 0, false, 1);
+    $profileProp["pAccEdit"] = SP_Common::parseParams('p', 'profile_accedit', 0, false, 1);
+    $profileProp["pAccEditPass"] = SP_Common::parseParams('p', 'profile_acceditpass', 0, false, 1);
+    $profileProp["pAccAdd"] = SP_Common::parseParams('p', 'profile_accadd', 0, false, 1);
+    $profileProp["pAccDel"] = SP_Common::parseParams('p', 'profile_accdel', 0, false, 1);
+    $profileProp["pAccFiles"] = SP_Common::parseParams('p', 'profile_accfiles', 0, false, 1);
+    $profileProp["pConfig"] = SP_Common::parseParams('p', 'profile_config', 0, false, 1);
+    $profileProp["pAppMgmtCat"] = SP_Common::parseParams('p', 'profile_categories', 0, false, 1);
+    $profileProp["pAppMgmtCust"] = SP_Common::parseParams('p', 'profile_customers', 0, false, 1);
+    $profileProp["pConfigMpw"] = SP_Common::parseParams('p', 'profile_configmpw', 0, false, 1);
+    $profileProp["pConfigBack"] = SP_Common::parseParams('p', 'profile_configback', 0, false, 1);
+    $profileProp["pUsers"] = SP_Common::parseParams('p', 'profile_users', 0, false, 1);
+    $profileProp["pGroups"] = SP_Common::parseParams('p', 'profile_groups', 0, false, 1);
+    $profileProp["pProfiles"] = SP_Common::parseParams('p', 'profile_profiles', 0, false, 1);
+    $profileProp["pEventlog"] = SP_Common::parseParams('p', 'profile_eventlog', 0, false, 1);
 
     // Nuevo perfil o editar
     if ($frmAction == 1 OR $frmAction == 2) {
@@ -315,31 +275,19 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($frmAction == 1) {
             if (SP_Profiles::addProfile($profileProp)) {
-                $message['action'] = _('Nuevo Perfil');
-                $message['text'][] = _('Nombre') . ': ' . $frmProfileName;
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Perfil creado'), 0);
+                SP_Common::printJSON(_('Perfil creado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al crear el perfil'));
         } else if ($frmAction == 2) {
             if (SP_Profiles::updateProfile($profileProp)) {
-                $message['action'] = _('Modificar Perfil');
-                $message['text'][] = _('Nombre') . ': ' . $frmProfileName;
-
-                SP_Common::wrLogInfo($message);
-                SP_Common::sendEmail($message);
-
-                SP_Common::printJSON(_('Perfil actualizado'), 0);
+                SP_Common::printJSON(_('Perfil actualizado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al actualizar el perfil'));
         }
 
-        // Eliminar perfil
+    // Eliminar perfil
     } elseif ($frmAction == 4) {
         $resProfileUse = SP_Profiles::checkProfileInUse();
 
@@ -352,12 +300,12 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
             if (SP_Profiles::deleteProfile()) {
                 $message['action'] = _('Eliminar Perfil');
-                $message['text'][] = _('Nombre') . ': ' . $profileName;
+                $message['text'][] = SP_Html::strongText(_('Perfil') . ': ') . $profileName;
 
-                SP_Common::wrLogInfo($message);
+                SP_Log::wrLogInfo($message);
                 SP_Common::sendEmail($message);
 
-                SP_Common::printJSON(_('Perfil eliminado'), 0);
+                SP_Common::printJSON(_('Perfil eliminado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al eliminar el perfil'));
@@ -385,19 +333,19 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($frmAction == 1) {
             if (SP_Customer::addCustomer()) {
-                SP_Common::printJSON(_('Cliente creado'), 0);
+                SP_Common::printJSON(_('Cliente creado'), 0, $doActionOnClose);
             } else {
                 SP_Common::printJSON(_('Error al crear el cliente'));
             }
         } else if ($frmAction == 2) {
             if (SP_Customer::updateCustomer($frmItemId)) {
-                SP_Common::printJSON(_('Cliente actualizado'), 0);
+                SP_Common::printJSON(_('Cliente actualizado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al actualizar el cliente'));
         }
 
-        // Eliminar cliente
+    // Eliminar cliente
     } elseif ($frmAction == 4) {
         $resCustomerUse = SP_Customer::checkCustomerInUse($frmItemId);
 
@@ -408,7 +356,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         } else {
 
             if (SP_Customer::delCustomer($frmItemId)) {
-                SP_Common::printJSON(_('Cliente eliminado'), 0);
+                SP_Common::printJSON(_('Cliente eliminado'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al eliminar el cliente'));
@@ -436,28 +384,28 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($frmAction == 1) {
             if (SP_Category::addCategory()) {
-                SP_Common::printJSON(_('Categpría creada'), 0);
+                SP_Common::printJSON(_('Categpría creada'), 0, $doActionOnClose);
             } else {
                 SP_Common::printJSON(_('Error al crear la categoría'));
             }
         } else if ($frmAction == 2) {
             if (SP_Category::updateCategory($frmItemId)) {
-                SP_Common::printJSON(_('Categoría actualizada'), 0);
+                SP_Common::printJSON(_('Categoría actualizada'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al actualizar la categoría'));
         }
 
-        // Eliminar categoría
+    // Eliminar categoría
     } elseif ($frmAction == 4) {
         $resCategoryUse = SP_Category::checkCategoryInUse($frmItemId);
 
-        if ($resCategoryUse !== TRUE) {
+        if ($resCategoryUse !== true) {
             SP_Common::printJSON(_('No es posible eliminar') . ';;' . _('Categoría en uso por:') . ';;' . $resCategoryUse);
         } else {
 
             if (SP_Category::delCategory($frmItemId)) {
-                SP_Common::printJSON(_('Categoría eliminada'), 0);
+                SP_Common::printJSON(_('Categoría eliminada'), 0, $doActionOnClose);
             }
 
             SP_Common::printJSON(_('Error al eliminar la categoría'));

@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('GET');
 
@@ -34,10 +34,10 @@ if ( ! SP_Init::isLoggedIn() ) {
 
 if ( SP_Config::getValue('filesenabled') == 0 ){
     echo _('Gestión de archivos deshabilitada');
-    return FALSE;              
+    return false;
 }
 
-$sk = SP_Common::parseParams('g', 'sk', FALSE);
+$sk = SP_Common::parseParams('g', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printXML(_('CONSULTA INVÁLIDA'));

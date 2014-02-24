@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $action = $data['action'];
-$activeTab = $data['active'];
+$activeTab = $data['activeTab'];
 
 SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
@@ -66,10 +66,11 @@ $lastBackupTime = ( file_exists($backupFile['absolute']) ) ? _('Último backup')
 </table>
 
 <form method="post" name="frmBackup" id="frmBackup">
-	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+	<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
 	<input type="hidden" name="backup" value="1" />
+	<input type="hidden" name="isAjax" value="1" />
 	<input type="hidden" name="action" value="backup" />
-	<input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
+	<input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
 </form>
 
 <div class="action">

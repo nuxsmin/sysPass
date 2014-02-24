@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -29,26 +29,30 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */
-class InstallerException extends Exception {
-
+class InstallerException extends Exception
+{
     private $type;
     private $hint;
 
-    public function __construct($type, $message, $hint, $code = 0, Exception $previous = null) {
+    public function __construct($type, $message, $hint, $code = 0, Exception $previous = null)
+    {
         $this->type = $type;
         $this->hint = $hint;
         parent::__construct($message, $code, $previous);
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return __CLASS__ . ": [{$this->code}]: {$this->message} ({$this->hint})\n";
     }
 
-    public function getHint() {
+    public function getHint()
+    {
         return $this->hint;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -57,8 +61,8 @@ class InstallerException extends Exception {
 /**
  * Esta clase es la encargada de instalar sysPass.
  */
-class SP_Installer {
-
+class SP_Installer
+{
     private static $dbuser;
     private static $dbname;
     private static $dbhost;
@@ -72,8 +76,9 @@ class SP_Installer {
      * @brief Iniciar instalación
      * @param array $options datos de instalación
      * @return array resultado del proceso
-     */    
-    public static function install($options) {
+     */
+    public static function install($options)
+    {
         $error = array();
 
         if (empty($options['adminlogin'])) {
@@ -144,13 +149,13 @@ class SP_Installer {
             //generate a random salt that is used to salt the local user passwords
             $salt = SP_Util::generate_random_bytes(30);
             SP_Config::setValue('passwordsalt', $salt);
-            SP_Config::setValue('version', implode(SP_Util::getVersion(TRUE)));
+            SP_Config::setValue('version', implode(SP_Util::getVersion(true)));
 
             $dbadmin = $options['dbuser'];
             $dbpass = $options['dbpass'];
             $dbhost = $options['dbhost'];
-            
-            self::$isHostingMode = ( isset($options['hostingmode']) ) ? 1: 0;
+
+            self::$isHostingMode = (isset($options['hostingmode'])) ? 1 : 0;
 
             // Save DB connection info
             SP_Config::setValue('dbhost', $dbhost);
@@ -165,14 +170,14 @@ class SP_Installer {
                 self::createAdminAccount();
             } catch (InstallerException $e) {
                 $error[] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
-                return($error);
+                return ($error);
             }
 
-            SP_Config::setConfigValue('version', implode(SP_Util::getVersion(TRUE)));
+            SP_Config::setConfigValue('version', implode(SP_Util::getVersion(true)));
             SP_Config::setValue('installed', 1);
         }
 
-        return($error);
+        return ($error);
     }
 
     /**
@@ -180,39 +185,43 @@ class SP_Installer {
      * @param string $dbhost host de conexión
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass clave de conexión
+     * @throws InstallerException
      * @return none
      *
      * Comprobar si la conexión con la base de datos para sysPass es posible con
      * los datos facilitados.
      */
-    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass) {
+    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass)
+    {
         self::$dbc = new mysqli($dbhost, $dbadmin, $dbpass);
 
         if (self::$dbc->connect_errno) {
             throw new InstallerException('critical'
-            , _('El usuario/clave de MySQL no es correcto')
-            , _('Verifique el usuario de conexión con la Base de Datos'));
+                , _('El usuario/clave de MySQL no es correcto')
+                , _('Verifique el usuario de conexión con la Base de Datos'));
         }
     }
 
     /**
      * @brief Configurar la base de datos
+     * @throws InstallerException
      * @return none
      *
      * Esta función crea la base de datos y el usuario necesario para sysPass.
      */
-    private static function setupMySQLDatabase() {
+    private static function setupMySQLDatabase()
+    {
         $oldUser = SP_Config::getValue('dbuser', false);
 
         //this should be enough to check for admin rights in mysql
         $query = "SELECT user "
-                . "FROM mysql.user "
-                . "WHERE user='" . self::$username . "' and host='" . self::$dbhost . "';";
+            . "FROM mysql.user "
+            . "WHERE user='" . self::$username . "' and host='" . self::$dbhost . "';";
 
         // Hash DB connection password
-        $dbpassword = ( ! self::$isHostingMode ) ? md5(time() . self::$password) : self::$password;
-        
-        self::$dbuser = ( ! self::$isHostingMode ) ? substr('sp_' . self::$username, 0, 16) : self::$username;
+        $dbpassword = (!self::$isHostingMode) ? md5(time() . self::$password) : self::$password;
+
+        self::$dbuser = (!self::$isHostingMode) ? substr('sp_' . self::$username, 0, 16) : self::$username;
 
         if (!self::$dbc->query($query)) {
             if (self::$dbuser != $oldUser) {
@@ -234,22 +243,79 @@ class SP_Installer {
             self::createDBStructure();
         } else {
             throw new InstallerException('critical'
-            , _('La BBDD ya existe')
-            , _('Indique una nueva Base de Datos o elimine la existente'));
+                , _('La BBDD ya existe')
+                , _('Indique una nueva Base de Datos o elimine la existente'));
         }
-        
+
 //        self::$dbc->close();
+    }
+
+    /**
+     * @brief Crear el usuario para conectar con la base de datos.
+     * @param string $dbpassword clave del usuario de sysPass
+     * @throws InstallerException
+     * @return none
+     *
+     * Esta función crea el usuario para conectar con la base de datos.
+     * Si se marca en modo hosting, no se crea el usuario.
+     */
+    private static function createDBUser($dbpassword)
+    {
+        if (self::$isHostingMode) {
+            return;
+        }
+
+        $query = "CREATE USER '" . self::$dbuser . "'@'localhost' IDENTIFIED BY '" . $dbpassword . "'";
+
+        if (!self::$dbc->query($query)) {
+            throw new InstallerException('critical'
+                , _('El usuario de MySQL ya existe') . " (" . self::$dbuser . ")"
+                , _('Indique un nuevo usuario o elimine el existente'));
+        }
+    }
+
+    /**
+     * @brief Crear la base de datos
+     * @param string $dbpassword clave del usuario de sysPass
+     * @throws InstallerException
+     * @return none
+     *
+     * Esta función crea la base de datos y asigna los permisos para el usuario de sysPass.
+     * Si se marca el modo hosting, no se establecen los permisos.
+     */
+    private static function createMySQLDatabase($dbpassword)
+    {
+        $query = "CREATE DATABASE IF NOT EXISTS  `" . self::$dbname . "`";
+
+        if (!self::$dbc->query($query)) {
+            throw new InstallerException('critical'
+                , _('Error al crear la BBDD') . " (" . self::$dbc->error . ")"
+                , _('Verifique los permisos del usuario de la Base de Datos'));
+        }
+
+        if (!self::$isHostingMode) {
+            $query = "GRANT ALL PRIVILEGES ON `" . self::$dbname . "`.* TO '" . self::$dbuser . "'@'" . self::$dbhost . "' IDENTIFIED BY '$dbpassword';";
+
+            self::$dbc->query($query);
+
+            if (!self::$dbc->query($query)) {
+                throw new InstallerException('critical'
+                    , _('Error al establecer permisos de la BBDD') . " (" . self::$dbc->error . ")"
+                    , _('Verifique los permisos del usuario de la Base de Datos'));
+            }
+        }
     }
 
     /**
      * @brief Comprobar si la base de datos indicada existe
      * @return bool
      */
-    private static function checkDatabaseExist() {
+    private static function checkDatabaseExist()
+    {
         $query = "SELECT COUNT(*) "
-                . "FROM information_schema.tables "
-                . "WHERE table_schema = '" . self::$dbname . "' "
-                . "AND table_name = 'usrData';";
+            . "FROM information_schema.tables "
+            . "WHERE table_schema = '" . self::$dbname . "' "
+            . "AND table_name = 'usrData';";
 
         $resquery = self::$dbc->query($query);
 
@@ -265,77 +331,27 @@ class SP_Installer {
     }
 
     /**
-     * @brief Crear la base de datos
-     * @param string $dbpassword clave del usuario de sysPass
-     * @return none
-     *
-     * Esta función crea la base de datos y asigna los permisos para el usuario de sysPass.
-     * Si se marca el modo hosting, no se establecen los permisos.
-     */
-    private static function createMySQLDatabase($dbpassword) {
-        $query = "CREATE DATABASE IF NOT EXISTS  `" . self::$dbname . "`";
-
-        if (!self::$dbc->query($query)) {
-            throw new InstallerException('critical'
-            , _('Error al crear la BBDD') . " (" . self::$dbc->error . ")"
-            , _('Verifique los permisos del usuario de la Base de Datos'));
-        }
-
-        if ( ! self::$isHostingMode ){
-            $query = "GRANT ALL PRIVILEGES ON `" . self::$dbname . "`.* TO '" . self::$dbuser . "'@'" . self::$dbhost . "' IDENTIFIED BY '$dbpassword';";
-
-            self::$dbc->query($query);
-
-            if (!self::$dbc->query($query)) {
-                throw new InstallerException('critical'
-                , _('Error al establecer permisos de la BBDD') . " (" . self::$dbc->error . ")"
-                , _('Verifique los permisos del usuario de la Base de Datos'));
-            }
-        }
-    }
-
-    /**
-     * @brief Crear el usuario para conectar con la base de datos.
-     * @param string $dbpassword clave del usuario de sysPass
-     * @return none
-     *
-     * Esta función crea el usuario para conectar con la base de datos.
-     * Si se marca en modo hosting, no se crea el usuario.
-     */
-    private static function createDBUser($dbpassword) {
-        if ( self::$isHostingMode ){
-            return;
-        }
-        
-        $query = "CREATE USER '" . self::$dbuser . "'@'localhost' IDENTIFIED BY '" . $dbpassword . "'";
-
-        if (!self::$dbc->query($query)) {
-            throw new InstallerException('critical'
-            , _('El usuario de MySQL ya existe') . " (" . self::$dbuser . ")"
-            , _('Indique un nuevo usuario o elimine el existente'));
-        }
-    }
-
-    /**
      * @brief Crear la estructura de la base de datos
+     * @throws InstallerException
      * @return none
      *
      * Esta función crea la estructura de la base de datos a partir del archivo dbsctructure.sql.
      */
-    private static function createDBStructure() {
+    private static function createDBStructure()
+    {
         $fileName = dirname(__FILE__) . '/dbstructure.sql';
 
         if (!file_exists($fileName)) {
             throw new InstallerException('critical'
-            , _('El archivo de estructura de la BBDD no existe')
-            , _('No es posible crear la BBDD de la aplicación. Descárguela de nuevo.'));
+                , _('El archivo de estructura de la BBDD no existe')
+                , _('No es posible crear la BBDD de la aplicación. Descárguela de nuevo.'));
         }
 
         // Usar la base de datos de sysPass
         if (!self::$dbc->select_db(self::$dbname)) {
             throw new InstallerException('critical'
-            , _('Error al seleccionar la BBDD') . " '" . self::$dbname . "' (" . self::$dbc->error . ")"
-            , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
+                , _('Error al seleccionar la BBDD') . " '" . self::$dbname . "' (" . self::$dbc->error . ")"
+                , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
         }
 
         // Leemos el archivo SQL para crear las tablas de la BBDD
@@ -349,8 +365,8 @@ class SP_Installer {
                         // drop database on error
                         self::$dbc->query("DROP DATABASE " . self::$dbname . ";");
                         throw new InstallerException('critical'
-                        , _('Error al crear la BBDD')
-                        , _('Error al crear la estructura de la Base de Datos.'));
+                            , _('Error al crear la BBDD')
+                            , _('Error al crear la estructura de la Base de Datos.'));
                     }
                 }
             }
@@ -359,11 +375,13 @@ class SP_Installer {
 
     /**
      * @brief Crear el usuario admin de sysPass.
+     * @throws InstallerException
      * @return none
      *
      * Esta función crea el grupo, perfil y usuario 'admin' para utilizar sysPass.
      */
-    private static function createAdminAccount() {
+    private static function createAdminAccount()
+    {
         $user = new SP_Users;
 
         // Datos del grupo
@@ -374,30 +392,30 @@ class SP_Installer {
             self::rollback();
 
             throw new InstallerException("critical"
-            , _('Error al crear el grupo "admin"')
-            , _('Informe al desarrollador'));
+                , _('Error al crear el grupo "admin"')
+                , _('Informe al desarrollador'));
         }
 
         // Establecer el id de grupo del usuario al recién creado
         $user->userGroupId = SP_Groups::$queryLastId;
 
-        $profileProp = array("pAccView" => 1
-            , "pAccViewPass" => 1
-            , "pAccViewHistory" => 1
-            , "pAccEdit" => 1
-            , "pAccEditPass" => 1
-            , "pAccAdd" => 1
-            , "pAccDel" => 1
-            , "pAccFiles" => 1
-            , "pConfig" => 1
-            , "pConfigMpw" => 1
-            , "pConfigBack" => 1
-            , "pAppMgmtCat" => 1
-            , "pAppMgmtCust" => 1
-            , "pUsers" => 1
-            , "pGroups" => 1
-            , "pProfiles" => 1
-            , "pEventlog" => 1);
+        $profileProp = array("pAccView" => 1,
+            "pAccViewPass" => 1,
+            "pAccViewHistory" => 1,
+            "pAccEdit" => 1,
+            "pAccEditPass" => 1,
+            "pAccAdd" => 1,
+            "pAccDel" => 1,
+            "pAccFiles" => 1,
+            "pConfig" => 1,
+            "pConfigMpw" => 1,
+            "pConfigBack" => 1,
+            "pAppMgmtCat" => 1,
+            "pAppMgmtCust" => 1,
+            "pUsers" => 1,
+            "pGroups" => 1,
+            "pProfiles" => 1,
+            "pEventlog" => 1);
 
 
         SP_Profiles::$profileName = 'Admin';
@@ -406,13 +424,13 @@ class SP_Installer {
             self::rollback();
 
             throw new InstallerException("critical"
-            , _('Error al crear el perfil "admin"')
-            , _('Informe al desarrollador'));
+                , _('Error al crear el perfil "admin"')
+                , _('Informe al desarrollador'));
         }
 
         // Establecer el id de perfil del usuario al recién creado
         $user->userProfileId = SP_Profiles::$queryLastId;
-        
+
         // Datos del usuario
         $user->userLogin = self::$username;
         $user->userPass = self::$password;
@@ -424,23 +442,23 @@ class SP_Installer {
             self::rollback();
 
             throw new InstallerException('critical'
-            , _('Error al crear el usuario "admin"')
-            , _('Informe al desarrollador'));
+                , _('Error al crear el usuario "admin"')
+                , _('Informe al desarrollador'));
         }
 
         // Guardar el hash de la clave maestra
         SP_Config::$arrConfigValue["masterPwd"] = SP_Crypt::mkHashPassword(self::$masterPassword);
         SP_Config::$arrConfigValue["lastupdatempass"] = time();
-        SP_Config::writeConfig(TRUE);
+        SP_Config::writeConfig(true);
 
         $user->userId = $user->queryLastId; // Needed for update user's master password
 
-        if (!$user->updateUserMPass(self::$masterPassword, FALSE)) {
+        if (!$user->updateUserMPass(self::$masterPassword, false)) {
             self::rollback();
 
             throw new InstallerException('critical'
-            , _('Error al actualizar la clave maestra del usuario "admin"')
-            , _('Informe al desarrollador'));
+                , _('Error al actualizar la clave maestra del usuario "admin"')
+                , _('Informe al desarrollador'));
         }
     }
 
@@ -450,7 +468,8 @@ class SP_Installer {
      *
      * Esta función elimina la base de datos y el usuario de sysPass
      */
-    private static function rollback() {
+    private static function rollback()
+    {
         self::$dbc->query("DROP DATABASE IF EXISTS " . self::$dbname . ";");
         self::$dbc->query("DROP USER '" . self::$dbuser . "'@'" . self::$dbhost . "';");
         self::$dbc->query("DROP USER '" . self::$dbuser . "'@'%';");

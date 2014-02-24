@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,11 +24,11 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('GET');
 
-$checkVersion = SP_Common::parseParams('s', 'UPDATED', FALSE, TRUE);
+$checkVersion = SP_Common::parseParams('s', 'UPDATED', false, true);
 
 // Una vez por sesión
 if ( ! $checkVersion ){
@@ -39,8 +39,8 @@ session_write_close();
 
 if ( is_array($checkVersion) ){
     echo '<a href="'.$checkVersion['url'].'" target="_blank" title="'._('Descargar nueva versión').'"><img src="imgs/update.png" />&nbsp;'.$checkVersion['version'].'</a>';
-} elseif ( $checkVersion == TRUE ){
+} elseif ( $checkVersion == true ){
     echo '<img src="imgs/ok.png" title="'._('Actualizado').'"/>';
-} elseif ( $checkVersion == FALSE ){
+} elseif ( $checkVersion == false ){
     echo '!';
 }

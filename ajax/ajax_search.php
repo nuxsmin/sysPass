@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,7 +32,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
    die('<div class="error round">'._('CONSULTA INVÁLIDA').'</div>');
@@ -47,7 +47,7 @@ $wikiEnabled = SP_Config::getValue('wikienabled');
 $wikiSearchUrl = SP_Config::getValue('wikisearchurl');
 $wikiFilter = explode(',',SP_Config::getValue('wikifilter'));
 $wikiPageUrl = SP_Config::getValue('wikipageurl');
-$requestEnabled = SP_Config::getValue('mailrequestsenabled', FALSE);
+$requestEnabled = SP_Config::getValue('mailrequestsenabled', false);
 
 $sortKey = SP_Common::parseParams('p', 'skey', 0);
 $sortOrder = SP_Common::parseParams('p', 'sorder', 0);
@@ -55,13 +55,13 @@ $customerId = SP_Common::parseParams('p', 'customer', 0);
 $categoryId = SP_Common::parseParams('p', 'category', 0);
 $searchTxt = SP_Common::parseParams('p', 'search', '');
 $limitStart = SP_Common::parseParams('p', 'start', 0);
-$globalSearch = SP_Common::parseParams('p', 'gsearch', 0, FALSE, 1);
+$globalSearch = SP_Common::parseParams('p', 'gsearch', 0, false, 1);
 
 $userGroupId = SP_Common::parseParams('s', 'ugroup', 0);
 $userProfileId = SP_Common::parseParams('s', 'uprofile', 0);
 $userId = SP_Common::parseParams('s', 'uid', 0);
 
-$filterOn = ( $sortKey > 1 || $customerId || $categoryId || $searchTxt ) ? TRUE : FALSE;
+$filterOn = ( $sortKey > 1 || $customerId || $categoryId || $searchTxt ) ? true : false;
 
 $objAccount = new SP_Account;
 $arrSearchFilter = array("txtSearch" => $searchTxt,
@@ -224,7 +224,7 @@ foreach ( $resQuery as $account ){
         echo '<div class="account-info">';
         echo '<img src="imgs/btn_group.png" title="'.$secondaryAccesses.'" />';
         
-        echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',TRUE)).'" />' : '';
+        echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',true)).'" />' : '';
    
         if ( $filesEnabled == 1 ){
             $intNumFiles = SP_Files::countFiles($account->account_id);

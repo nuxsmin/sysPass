@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -32,13 +32,13 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
     if (count($resInstall) == 0) {
         $resInstall[] = array('type' => 'ok',
             'description' => _('Instalación finalizada'),
-            'hint' => 'Pulse <a href="index.php" title="Acceder"> aquí</a> para acceder');
+            'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder'));
         $isCompleted = 1;
     }
 }
 ?>
 
-<div id="install" align="center">
+<div id="actions" align="center">
     <div id="logo">
         <img src="imgs/logo_full.png" alt="sysPass logo"/>
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>

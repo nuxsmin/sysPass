@@ -5,7 +5,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -23,12 +23,13 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
-if (!SP_Common::parseParams('p', 'login', FALSE)) {
+if (!SP_Common::parseParams('p', 'login', false)) {
     return;
 }
 
@@ -57,7 +58,7 @@ if ($resLdap == 1) {
         // Creamos el usuario de LDAP en MySQL
         if (!$objUser->newUserLDAP()) {
             $message['text'][] = _('Error al guardar los datos de LDAP');
-            SP_Common::wrLogInfo($message);
+            SP_Log::wrLogInfo($message);
 
             SP_Common::printJSON(_('Error interno'));
         }
@@ -65,7 +66,7 @@ if ($resLdap == 1) {
         // Actualizamos la clave del usuario en MySQL
         if (!$objUser->updateLDAPUserInDB()) {
             $message['text'][] = _('Error al actualizar la clave del usuario en la BBDD');
-            SP_Common::wrLogInfo($message);
+            SP_Log::wrLogInfo($message);
 
             SP_Common::printJSON(_('Error interno'));
         }
@@ -74,8 +75,7 @@ if ($resLdap == 1) {
     $message['action'] = _('Inicio sesión (LDAP)');
     $message['text'][] = _('Login incorrecto');
     $message['text'][] = _('Usuario') . ": " . $userLogin;
-    $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
-    SP_Common::wrLogInfo($message);
+    SP_Log::wrLogInfo($message);
 
     SP_Common::printJSON(_('Usuario/Clave incorrectos'));
 } else { // Autentificamos por MySQL (ha fallado LDAP)
@@ -85,19 +85,17 @@ if ($resLdap == 1) {
     if (!SP_Auth::authUserMySQL($userLogin,$userPass)) {
         $message['text'][] = _('Login incorrecto');
         $message['text'][] = _('Usuario') . ": " . $userLogin;
-        $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
 
         SP_Common::printJSON(_('Usuario/Clave incorrectos'));
     }
 }
 
 // Comprobar si el usuario está deshabilitado
-if (SP_Auth::checkUserIsDisabled($userLogin)) {
+if (SP_Users::checkUserIsDisabled($userLogin)) {
     $message['text'][] = _('Usuario deshabilitado');
     $message['text'][] = _('Usuario') . ": " . $userLogin;
-    $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
-    SP_Common::wrLogInfo($message);
+    SP_Log::wrLogInfo($message);
 
     SP_Common::printJSON(_('Usuario deshabilitado'));
 }
@@ -105,7 +103,7 @@ if (SP_Auth::checkUserIsDisabled($userLogin)) {
 // Obtenemos los datos del usuario
 if (!$objUser->getUserInfo()) {
     $message['text'][] = _('Error al obtener los datos del usuario de la BBDD');
-    SP_Common::wrLogInfo($message);
+    SP_Log::wrLogInfo($message);
 
     SP_Common::printJSON(_('Error interno'));
 }
@@ -116,9 +114,19 @@ if (!$masterPass && (!$objUser->checkUserMPass() || !SP_Users::checkUserUpdateMP
 } elseif ($masterPass) {
     if (!$objUser->updateUserMPass($masterPass)) {
         $message['text'][] = _('Clave maestra incorrecta');
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
 
         SP_Common::printJSON(_('Clave maestra incorrecta'), 4);
+    }
+}
+
+// Comprobar si se ha forzado un cambio de clave
+if ($objUser->userChangePass){
+    $hash = SP_Util::generate_random_bytes();
+
+    if (SP_Users::addPassRecover($userLogin, $hash)){
+        $url = SP_Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time();
+        SP_Common::printJSON($url, 0);
     }
 }
 
@@ -127,11 +135,11 @@ if ($objUser->getUserMPass()) {
     // Establecemos las variables de sesión
     $objUser->setUserSession();
 
-    $message['text'][] = _('Usuario') . ": " . $_SESSION['uname'];
-    $message['text'][] = _('Perfil') . ": " . $_SESSION['uprofile'];
-    $message['text'][] = _('Grupo') . ": " . $_SESSION['ugroup'];
-    $message['text'][] = _('IP') . ": " . $_SERVER['REMOTE_ADDR'];
-    SP_Common::wrLogInfo($message);
+    $message['text'][] = _('Usuario') . ": " . $userLogin;
+    $message['text'][] = _('Perfil') . ": " . SP_Profiles::getProfileNameById($objUser->userProfileId);
+    $message['text'][] = _('Grupo') . ": " . SP_Groups::getGroupNameById($objUser->userGroupId);
+
+    SP_Log::wrLogInfo($message);
     
     // Comprobar si existen parámetros adicionales en URL via GET
     foreach ($_POST as $param => $value){

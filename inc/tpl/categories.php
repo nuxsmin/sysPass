@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -26,7 +26,8 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $category = SP_Category::getCategoryData($data['itemid']);
-$activeTab = $data['active'];
+$onCloseAction = $data['onCloseAction'];
+$activeTab = $data['activeTab'];
 ?>
 
 <div id="fancyContainer" align="center">
@@ -49,13 +50,13 @@ $activeTab = $data['active'];
             </tbody>
         </table>
         
-		<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+		<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
+        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
         <input type="hidden" name="id" value="<?php echo $category["category_id"]; ?>" />
         <input type="hidden" name="action" value="<?php echo $category["action"] ?>" />
-        <input type="hidden" name="nextaction" value="<?php echo $data["nextaction"] ?>" />
         <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
-        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE) ?>">
-        <input type="hidden" name="is_ajax" value="1">
+        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true) ?>">
+        <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">

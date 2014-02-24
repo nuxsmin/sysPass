@@ -874,6 +874,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
 #boxLogin #boxData input:active, 
 #boxLogin #boxData input:focus{border: 1px solid #5897fb;}
 
+#boxLogin #boxActions {float: left; width: 100%; padding: .5em; text-align: right;}
+#boxLogin #boxActions a{color: #c9c9c9;}
+
 #boxLogout{
     width: 250px;
     margin: 0 auto;
@@ -905,15 +908,15 @@ fieldset.warning {
 fieldset.warning legend { color:#b94a48 !important; }
 fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
 
-/*Install Page*/
-#install, #error{
+/*Actions and Errors Page*/
+#actions{
     width: 100%;
     margin: auto;
     margin-bottom: 50px;
     line-height: 2em;
 }
 
-#install #logo, #error #logo{
+#actions #logo{
     width: 100%;
     margin-bottom: 30px;
     font-size: 18px;
@@ -926,14 +929,14 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     -moz-box-shadow: 0px 8px 6px -6px #a9a9a9;
 }
 
-#install #logo #pageDesc{
+#actions #logo #pageDesc{
     position: relative;
     top: 30px;
     left: -100px;
     text-shadow: 3px 3px #fff;
 }
 
-#install ul.errors, #error ul.errors{
+#actions ul.errors{
     max-width: 40%;
     margin: 0 auto;
     list-style: none;
@@ -941,32 +944,32 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     text-align: left;
 }
 
-#install ul.errors>li, #error ul.errors>li{
+#actions ul.errors>li{
     margin: 1.5em auto;
     border-radius:5px;
     padding: 0.5em;
 }
 
-#install ul.errors>li.err_critical, #error ul.errors>li.err_critical{
+#actions ul.errors>li.err_critical{
     color:#b94a48;
     background:#fed7d7; 
     border:1px solid #f00;
 }
 
-#install ul.errors>li.err_warning, #error ul.errors>li.err_warning{
+#actions ul.errors>li.err_warning{
     color: orange;
     background: #FFF2D9;
     border: #ffe5b3 1px solid;
 }
 
-#install ul.errors>li.err_ok, #error ul.errors>li.err_ok{
+#actions ul.errors>li.err_ok{
     color: green;
     background: #ecfde4;
     border: #dbfdcb 1px solid;
     font-weight: bold;
 }
 
-#install ul.errors>li>p.hint, #error ul.errors>li>p.hint{
+#actions ul.errors>li>p.hint{
     background-image:url('../imgs/info.png');
     background-repeat:no-repeat;
     color:#777777;
@@ -975,7 +978,7 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     font-size: 12px;
 }
 
-#install form fieldset legend{
+#actions form fieldset legend{
     width:100%; 
     margin-top: 1em;
     text-align:center;
@@ -985,9 +988,9 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     font-size: 14px;
 }
 
-#install input[type="text"],
-#install input[type="password"],
-#install input[type="email"] {
+#actions input[type="text"],
+#actions input[type="password"],
+#actions input[type="email"]{
     margin-top: 0.5em;
     border: 1px solid #a9a9a9;
     font-size: 14px;
@@ -996,11 +999,13 @@ fieldset.warning a { color:#b94a48 !important; font-weight:bold; }
     box-shadow: 0 1px 0 rgba(255,255,255,.15), 0 1px 1px rgba(0,0,0,.25) inset;
 }
 
-#install form input[type="checkbox"]+label { position:relative; margin:0; font-size:1em; text-shadow:#fff 0 1px 0; }
+#actions form input[type="checkbox"]+label { position:relative; margin:0; font-size:1em; text-shadow:#fff 0 1px 0; }
 
-#install .button{
+#actions .button{
+    display: inline-block;
     width: 150px;
     margin: 15px;
+    padding: 5px;
     text-align: center;
     border: 1px solid #d9d9d9;
     background-color: #777;

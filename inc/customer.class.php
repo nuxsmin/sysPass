@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2014 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,12 +23,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los clientes de sysPass
  */
-class SP_Customer {
+class SP_Customer
+{
 
     public static $customerName;
     public static $customerDescription;
@@ -36,122 +38,39 @@ class SP_Customer {
     public static $customerHash;
 
     /**
-     * @brief Obtener el listado de clientes
-     * @param int $customerId con el Id del cliente
-     * @param bool $retAssocArray para devolver un array asociativo
-     * @return array con el id de cliente como clave y el nombre como valor
-     */
-    public static function getCustomers($customerId = NULL, $retAssocArray = FALSE) {
-        $query = "SELECT customer_id,"
-                . "customer_name, "
-                . "customer_description "
-                . "FROM customers ";
-
-        if (!is_null($customerId)) {
-            $query .= "WHERE customer_id = " . (int) $customerId . " LIMIT 1";
-        } else {
-            $query .= "ORDER BY customer_name";
-        }
-
-        $queryRes = DB::getResults($query, __FUNCTION__, TRUE);
-
-        if ($queryRes === FALSE) {
-            return array();
-        }
-
-        if ($retAssocArray) {
-            $resCustomers = array();
-
-            foreach ($queryRes as $customer) {
-                $resCustomers[$customer->customer_id] = $customer->customer_name;
-            }
-
-            return $resCustomers;
-        }
-
-        return $queryRes;
-    }
-
-    /**
      * @brief Crear un nuevo cliente en la BBDD
      * @return bool
      */
-    public static function addCustomer() {
+    public static function addCustomer()
+    {
         $query = "INSERT INTO customers "
-                . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
-                . "customer_hash = '" . self::mkCustomerHash() . "'";
+            . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
+            . "customer_hash = '" . self::mkCustomerHash() . "'";
 
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
         }
 
         self::$customerLastId = DB::$lastId;
 
         $message['action'] = _('Nuevo Cliente');
-        $message['text'][] = _('Nombre') . ': ' . self::$customerName;
+        $message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . self::$customerName;
 
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
         SP_Common::sendEmail($message);
 
-        return TRUE;
-    }
-
-    /**
-     * @brief Actualizar un cliente en la BBDD
-     * @return bool
-     */
-    public static function updateCustomer($id) {
-        $query = "UPDATE customers "
-                . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
-                . "customer_description = '" . DB::escape(self::$customerDescription) . "',"
-                . "customer_hash = '" . self::mkCustomerHash() . "' "
-                . "WHERE customer_id = " . (int) $id;
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        $message['action'] = _('Actualizar Cliente');
-        $message['text'][] = _('Nombre') . ': ' . self::$customerName;
-
-        SP_Common::wrLogInfo($message);
-        SP_Common::sendEmail($message);
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Eliminar un cliente de la BBDD
-     * @param int $id con el Id del cliente a eliminar
-     * @return bool
-     */
-    public static function delCustomer($id) {
-        $customerName = self::getCustomerById($id);
-
-        $query = "DELETE FROM customers "
-                . "WHERE customer_id = " . (int) $id . " LIMIT 1";
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        $message['action'] = _('Eliminar Cliente');
-        $message['text'][] = _('Nombre') . ': ' . $customerName;
-
-        SP_Common::wrLogInfo($message);
-        SP_Common::sendEmail($message);
-
-        return TRUE;
+        return true;
     }
 
     /**
      * @brief Crear un hash con el nombre del cliente
      * @return string con el hash generado
-     * 
+     *
      * Esta función crear un hash para detectar clientes duplicados mediante
      * la eliminación de carácteres especiales y capitalización
      */
-    private static function mkCustomerHash() {
+    private static function mkCustomerHash()
+    {
         $charsSrc = array(
             ".", " ", "_", ", ", "-", ";
                 ", "'", "\"", ":", "(", ")", "|", "/");
@@ -162,46 +81,56 @@ class SP_Customer {
     }
 
     /**
-     * @brief Comprobar si existe un cliente duplicado comprobando el hash
+     * @brief Actualizar un cliente en la BBDD
+     * @param int $id con el Id del cliente
      * @return bool
      */
-    public static function checkDupCustomer($id = NULL) {
-        if ($id === NULL) {
-            $query = "SELECT customer_id "
-                    . "FROM customers "
-                    . "WHERE customer_hash = '" . self::mkCustomerHash() . "'";
-        } else {
-            $query = "SELECT customer_id "
-                    . "FROM customers "
-                    . "WHERE customer_hash = '" . self::mkCustomerHash() . "' AND customer_id <> " . $id;
-        }
-        
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
+    public static function updateCustomer($id)
+    {
+        $customerName = self::getCustomerById($id);
+
+        $query = "UPDATE customers "
+            . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
+            . "customer_description = '" . DB::escape(self::$customerDescription) . "',"
+            . "customer_hash = '" . self::mkCustomerHash() . "' "
+            . "WHERE customer_id = " . (int)$id;
+
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
         }
 
-        if (count(DB::$last_result) >= 1) {
-            return FALSE;
-        }
+        $message['action'] = _('Actualizar Cliente');
+        $message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName;
 
-        return TRUE;
+        SP_Log::wrLogInfo($message);
+        SP_Common::sendEmail($message);
+
+        return true;
     }
 
     /**
-     * @brief Obtener el Id de un cliente por su nombre
-     * @return int con el Id del cliente
+     * @brief Eliminar un cliente de la BBDD
+     * @param int $id con el Id del cliente a eliminar
+     * @return bool
      */
-    public static function getCustomerByName() {
-        $query = "SELECT customer_id "
-                . "FROM customers "
-                . "WHERE customer_hash = '" . self::mkCustomerHash() . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+    public static function delCustomer($id)
+    {
+        $customerName = self::getCustomerById($id);
 
-        if ($queryRes === FALSE) {
-            return FALSE;
+        $query = "DELETE FROM customers "
+            . "WHERE customer_id = " . (int)$id . " LIMIT 1";
+
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
         }
 
-        return $queryRes->customer_id;
+        $message['action'] = _('Eliminar Cliente');
+        $message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . $customerName;
+
+        SP_Log::wrLogInfo($message);
+        SP_Common::sendEmail($message);
+
+        return true;
     }
 
     /**
@@ -209,17 +138,64 @@ class SP_Customer {
      * @param int $id con el Id del cliente
      * @return string con el nombre del cliente
      */
-    public static function getCustomerById($id) {
+    public static function getCustomerById($id)
+    {
         $query = "SELECT customer_name "
-                . "FROM customers "
-                . "WHERE customer_id = " . (int) $id . " LIMIT 1";
+            . "FROM customers "
+            . "WHERE customer_id = " . (int)$id . " LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE) {
-            return FALSE;
+        if ($queryRes === false) {
+            return false;
         }
 
         return $queryRes->customer_name;
+    }
+
+    /**
+     * @brief Comprobar si existe un cliente duplicado comprobando el hash
+     * @param int $id opcional con el Id del cliente
+     * @return bool
+     */
+    public static function checkDupCustomer($id = NULL)
+    {
+        if ($id === NULL) {
+            $query = "SELECT customer_id "
+                . "FROM customers "
+                . "WHERE customer_hash = '" . self::mkCustomerHash() . "'";
+        } else {
+            $query = "SELECT customer_id "
+                . "FROM customers "
+                . "WHERE customer_hash = '" . self::mkCustomerHash() . "' AND customer_id <> " . $id;
+        }
+
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
+        }
+
+        if (count(DB::$last_result) >= 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @brief Obtener el Id de un cliente por su nombre
+     * @return int con el Id del cliente
+     */
+    public static function getCustomerByName()
+    {
+        $query = "SELECT customer_id "
+            . "FROM customers "
+            . "WHERE customer_hash = '" . self::mkCustomerHash() . "' LIMIT 1";
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->customer_id;
     }
 
     /**
@@ -227,7 +203,8 @@ class SP_Customer {
      * @param int $id con el Id del cliente a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
-    public static function getCustomerData($id = 0) {
+    public static function getCustomerData($id = 0)
+    {
         $customer = array('customer_id' => 0,
             'customer_name' => '',
             'customer_description' => '',
@@ -248,13 +225,52 @@ class SP_Customer {
     }
 
     /**
+     * @brief Obtener el listado de clientes
+     * @param int $customerId con el Id del cliente
+     * @param bool $retAssocArray para devolver un array asociativo
+     * @return array con el id de cliente como clave y el nombre como valor
+     */
+    public static function getCustomers($customerId = NULL, $retAssocArray = false)
+    {
+        $query = "SELECT customer_id,"
+            . "customer_name, "
+            . "customer_description "
+            . "FROM customers ";
+
+        if (!is_null($customerId)) {
+            $query .= "WHERE customer_id = " . (int)$customerId . " LIMIT 1";
+        } else {
+            $query .= "ORDER BY customer_name";
+        }
+
+        $queryRes = DB::getResults($query, __FUNCTION__, true);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        if ($retAssocArray) {
+            $resCustomers = array();
+
+            foreach ($queryRes as $customer) {
+                $resCustomers[$customer->customer_id] = $customer->customer_name;
+            }
+
+            return $resCustomers;
+        }
+
+        return $queryRes;
+    }
+
+    /**
      * @brief Comprobar si un cliente está en uso
      * @param int $id con el Id del cliente a consultar
      * @return bool
-     * 
+     *
      * Esta función comprueba si un cliente está en uso por cuentas.
      */
-    public static function checkCustomerInUse($id) {
+    public static function checkCustomerInUse($id)
+    {
         $count['accounts'] = self::getCustomerInAccounts($id);
         return $count;
     }
@@ -264,15 +280,16 @@ class SP_Customer {
      * @param int $id con el Id del cliente a consultar
      * @return integer con el número total de cuentas
      */
-    private static function getCustomerInAccounts($id) {
+    private static function getCustomerInAccounts($id)
+    {
         $query = "SELECT COUNT(*) as uses "
-                . "FROM accounts "
-                . "WHERE account_customerId = " . (int) $id;
+            . "FROM accounts "
+            . "WHERE account_customerId = " . (int)$id;
 
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ($queryRes === FALSE) {
-            return FALSE;
+        if ($queryRes === false) {
+            return false;
         }
 
         return $queryRes->uses;

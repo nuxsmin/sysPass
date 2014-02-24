@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -25,7 +25,7 @@
 
 ?>
 
-<div id="error" align="center">
+<div id="actions" align="center">
     
 <?php if ( isset($data['showlogo']) ): ?>
     <div id="logo">

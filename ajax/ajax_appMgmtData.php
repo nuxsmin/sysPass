@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,10 +32,10 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-if ( SP_Common::parseParams('p', 'id', FALSE, TRUE) && SP_Common::parseParams('p', 'type', FALSE, TRUE) ) {
+if ( SP_Common::parseParams('p', 'id', false, true) && SP_Common::parseParams('p', 'type', false, true) ) {
     $tplvars['itemid'] = SP_Common::parseParams('p', 'id', 0);
     $itemType = $tplvars['itemtype'] = SP_Common::parseParams('p', 'type', 0);
-    $tplvars['active'] = SP_Common::parseParams('p', 'active', 0);
+    $tplvars['activeTab'] = SP_Common::parseParams('p', 'active', 0);
     $tplvars['view'] = SP_Common::parseParams('p', 'view', 0);
 } else {
     return;
@@ -44,42 +44,52 @@ if ( SP_Common::parseParams('p', 'id', FALSE, TRUE) && SP_Common::parseParams('p
 switch ($itemType) {
     case 1:
         $tplvars['header'] = _('Editar Usuario');
+        $tplvars['onCloseAction'] = 'usersmenu';
         $template = 'users';
         break;
     case 2:
         $tplvars['header'] = _('Nuevo Usuario');
+        $tplvars['onCloseAction'] = 'usersmenu';
         $template = 'users';
         break;
     case 3:
         $tplvars['header'] = _('Editar Grupo');
+        $tplvars['onCloseAction'] = 'usersmenu';
         $template = 'groups';
         break;
     case 4:
         $tplvars['header'] = _('Nuevo Grupo');
+        $tplvars['onCloseAction'] = 'usersmenu';
         $template = 'groups';
         break;
     case 5:
         $tplvars['header'] = _('Editar Perfil');
+        $tplvars['onCloseAction'] = 'usersmenu';
         $template = 'profiles';
         break;
     case 6:
         $tplvars['header'] = _('Nuevo Perfil');
+        $tplvars['onCloseAction'] = 'usersmenu';
         $template = 'profiles';
         break;
     case 7:
         $tplvars['header'] = _('Editar Cliente');
+        $tplvars['onCloseAction'] = 'appmgmtmenu';
         $template = 'customers';
         break;
     case 8:
         $tplvars['header'] = _('Nuevo Cliente');
+        $tplvars['onCloseAction'] = 'appmgmtmenu';
         $template = 'customers';
         break;
     case 9:
         $tplvars['header'] = _('Editar Categoría');
+        $tplvars['onCloseAction'] = 'appmgmtmenu';
         $template = 'categories';
         break;
     case 10:
         $tplvars['header'] = _('Nueva Categoría');
+        $tplvars['onCloseAction'] = 'appmgmtmenu';
         $template = 'categories';
         break;
     default :

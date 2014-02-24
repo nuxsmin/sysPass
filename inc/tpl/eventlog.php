@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -61,6 +61,9 @@ $numRows = SP_Log::$numRows;
                 <th>
                     <?php echo _('Usuario'); ?>
                 </th>
+                <th>
+                    <?php echo _('IP'); ?>
+                </th>
                 <th class="cell-description">
                     <?php echo _('Descripción'); ?>
                 </th>
@@ -86,6 +89,9 @@ $numRows = SP_Log::$numRows;
                     <td class="cell">
                         <?php echo strtoupper($log->log_login); ?>
                     </td>
+                    <td class="cell">
+                        <?php echo $log->log_ipAddress; ?>
+                    </td>
                     <td class="cell-description">
                         <?php
                         $descriptions = explode(';;', $description);
@@ -97,7 +103,7 @@ $numRows = SP_Log::$numRows;
                             }
                             
                             if (strlen($text) >= 150) {
-                                echo wordwrap($text, 150, '<br>', TRUE);
+                                echo wordwrap($text, 150, '<br>', true);
                             } else {
                                 echo $text . '<br>';
                             }

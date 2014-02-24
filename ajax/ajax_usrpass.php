@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('GET');
 
@@ -32,7 +32,7 @@ if ( ! SP_Init::isLoggedIn() ){
     SP_Util::logout();
 }
 
-$userId = SP_Common::parseParams('g', 'usrid', FALSE);
+$userId = SP_Common::parseParams('g', 'usrid', false);
 
 if ( ! $userId ) {
     return;
@@ -79,7 +79,7 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
     <div class="action-in-box">
         <ul>
             <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
+                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
             </li>
         </ul>
     </div>

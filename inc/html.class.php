@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2014 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,15 +23,16 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de mostrar el HTML
  */
-class SP_Html {
-
-    private static $htmlPage = array();
+class SP_Html
+{
     public static $htmlBodyOpts = "";
+    private static $htmlPage = array();
 
     /**
      * @brief Crear un elemento del tipo SELECT
@@ -42,14 +43,15 @@ class SP_Html {
      *
      * Esta función genera un elemento SELECT con las propiedades y valores pasados.
      */
-    public static function printSelect($arrValues, $arrSelectProp, $useValue = TRUE) {
+    public static function printSelect($arrValues, $arrSelectProp, $useValue = true)
+    {
 
         if (!is_array($arrSelectProp)) {
             return;
         }
 
-        $strAttrs = ( is_array($arrSelectProp["attribs"]) ) ? implode(" ", $arrSelectProp["attribs"]) : "";
-        $strClass = ( $arrSelectProp["class"] ) ? 'class="' . $arrSelectProp["class"] . '"' : "";
+        $strAttrs = (is_array($arrSelectProp["attribs"])) ? implode(" ", $arrSelectProp["attribs"]) : "";
+        $strClass = ($arrSelectProp["class"]) ? 'class="' . $arrSelectProp["class"] . '"' : "";
 
         if (!is_array($arrValues)) {
             echo '<label for=' . $arrSelectProp["id"] . '">' . $arrSelectProp["label"] . '</label>';
@@ -66,14 +68,14 @@ class SP_Html {
         echo '<select name="' . $arrSelectProp["name"] . '" id="' . $arrSelectProp["id"] . '" ' . $strClass . ' size="' . $arrSelectProp["size"] . '" ' . $arrSelectProp["js"] . ' ' . $strAttrs . ' >';
         echo '<option value="0">' . $arrSelectProp["default"] . '</option>';
 
-        $selectedId = ( isset($arrSelectProp["selected"]) ) ? $arrSelectProp["selected"] : "";
+        $selectedId = (isset($arrSelectProp["selected"])) ? $arrSelectProp["selected"] : "";
 
         foreach ($arrValues as $valueId => $valueName) {
             if ($useValue) {
-                $selected = ( $valueId == $selectedId ) ? "SELECTED" : "";
+                $selected = ($valueId == $selectedId) ? "SELECTED" : "";
                 echo '<option value="' . $valueId . '" ' . $selected . '>' . $valueName . '</option>';
             } else {
-                $selected = ( $valueName == $selectedId ) ? "SELECTED" : "";
+                $selected = ($valueName == $selectedId) ? "SELECTED" : "";
                 echo '<option ' . $selected . '>' . $valueName . '</option>';
             }
         }
@@ -89,7 +91,8 @@ class SP_Html {
      *
      * Esta función es la encargada de devolver el código HTML al navegador.
      */
-    public static function render($page = "main", $err = NULL) {
+    public static function render($page = "main", $err = NULL)
+    {
         $data['showlogo'] = 1;
 
         // UTF8 Headers
@@ -123,7 +126,8 @@ class SP_Html {
      *
      * Esta función crea la cabecera de una página HTML
      */
-    private static function makeHeader() {
+    private static function makeHeader()
+    {
         $info = self::getAppInfo();
 
         self::$htmlPage[] = '<head>';
@@ -136,12 +140,102 @@ class SP_Html {
     }
 
     /**
+     * @brief Devuelve información sobre la aplicación
+     * @param string $index con la key a devolver
+     * @return array con las propiedades de la aplicación
+     */
+    public static function getAppInfo($index = NULL)
+    {
+        $appinfo = array(
+            'appname' => 'sysPass',
+            'appdesc' => 'Sysadmin Password Manager',
+            'appwebsite' => 'http://www.syspass.org',
+            'appblog' => 'http://www.cygnux.org',
+            'appdoc' => 'http://wiki.syspass.org',
+            'appupdates' => 'http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/20/rss',
+            'apphelp' => 'help.syspass.org',
+            'appchangelog' => '');
+
+        if (!is_null($index) && array_key_exists($index, $appinfo)) {
+            return $appinfo[$index];
+        }
+
+        return $appinfo;
+    }
+
+    /**
+     * @brief Establece los enlaces CSS de la página HTML
+     * @return none
+     */
+    public static function setCss()
+    {
+        $versionParameter = '?v=' . md5(implode(SP_Util::getVersion()));
+
+        $cssProp = array(
+            array("href" => "css/reset.css", "media" => ""),
+            array("href" => "css/smoothness/jquery-ui.css", "media" => "screen"),
+            array("href" => "css/jquery.powertip.css", "media" => "screen"),
+            array("href" => "css/jquery.powertip-yellow.min.css", "media" => "screen"),
+            array("href" => "css/chosen.css", "media" => "screen"),
+            array("href" => "css/alertify.core.css", "media" => "screen"),
+            array("href" => "css/alertify.default.css", "media" => "screen"),
+            array("href" => "css/jquery.tagsinput.css", "media" => "screen"),
+            array("href" => "js/fancybox/jquery.fancybox.css", "media" => "screen"),
+            array("href" => "css/styles.css", "media" => ""));
+
+        foreach ($cssProp as $css) {
+            self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . "/" . $css["href"] . $versionParameter . '" media="' . $css["media"] . '" />';
+        }
+    }
+
+    /**
+     * @brief Establece los enlaces JAVASCRIPT de la página HTML
+     * @return none
+     */
+    public static function setJs()
+    {
+        $versionParameter = md5(implode(SP_Util::getVersion()));
+
+        $js_files = self::getJs();
+
+        foreach ($js_files as $js) {
+            self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . '?v=' . $versionParameter . $js["params"] . '"></script>';
+        }
+    }
+
+    /**
+     * @brief Devuelve un array con los archivos JS a incluir
+     * @return array con los archivos js y parámetros
+     */
+    public static function getJs()
+    {
+
+        $jsProp = array(
+            array("src" => "js/jquery.js", "params" => ""),
+            array("src" => "js/jquery.placeholder.js", "params" => ""),
+            array("src" => "js/jquery-ui.js", "params" => ""),
+            array("src" => "js/fancybox/jquery.fancybox.pack.js", "params" => ""),
+            array("src" => "js/jquery.powertip.min.js", "params" => ""),
+            array("src" => "js/chosen.jquery.min.js", "params" => ""),
+            array("src" => "js/alertify.js", "params" => ""),
+            array("src" => "js/jquery.fileDownload.js", "params" => ""),
+            array("src" => "js/jquery.filedrop.js", "params" => ""),
+            array("src" => "js/jquery.tagsinput.js", "params" => ""),
+            array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . urlencode(base64_encode(SP_Init::$WEBROOT)))
+        );
+
+        return $jsProp;
+    }
+
+    /**
      * @brief Crear el body en HTML
+     * @param string $page con la página a cargar
      * @return none
      *
      * Esta función crea el cuerpo de una página HTML
      */
-    private static function makeBody($page) {
+    private static function makeBody($page)
+    {
         self::$htmlPage[] = '<body ' . self::$htmlBodyOpts . '>';
         self::$htmlPage[] = '<div id="wrap">';
         self::$htmlPage[] = '<noscript><div id="nojs">' . _('Javascript es necesario para el correcto funcionamiento') . '</div></noscript>';
@@ -162,7 +256,8 @@ class SP_Html {
      *
      * Esta función crea el pie de página en HTML
      */
-    public static function makeFooter($page = "main") {
+    public static function makeFooter($page = "main")
+    {
         $info = self::getAppInfo();
 
         self::$htmlPage[] = '<div id="footer">';
@@ -177,6 +272,23 @@ class SP_Html {
     }
 
     /**
+     * @brief Cargar un archivo de plantilla
+     * @param string $template con el nombre de la plantilla
+     * @param array $tplvars con los datos a pasar a la plantilla
+     * @return none
+     */
+    public static function getTemplate($template, $tplvars = array())
+    {
+        $tpl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $template . '.php';
+
+        if (file_exists($tpl)) {
+            $data = $tplvars;
+            include_once $tpl;
+            //self::$htmlPage[] = array('include' => $tpl);
+        }
+    }
+
+    /**
      * @brief Crea la barra de navegación para búsqueda de cuentas
      * @param int $intSortKey con el número de campo del filro
      * @param int $intCur con el número de página actual
@@ -186,17 +298,18 @@ class SP_Html {
      * @param bool $filterOn opcional con el estado del filtrado
      * @return none
      */
-    public static function printQuerySearchNavBar($intSortKey, $intCur, $intTotal, $intLimit, $intTime, $filterOn = FALSE) {
+    public static function printQuerySearchNavBar($intSortKey, $intCur, $intTotal, $intLimit, $intTime, $filterOn = false)
+    {
         $firstPage = ceil(($intCur + 1) / $intLimit);
         $lastPage = ceil($intTotal / $intLimit);
-        $globalOn = SP_Common::parseParams('p', 'gsearch', 0, FALSE, 1);
+        $globalOn = SP_Common::parseParams('p', 'gsearch', 0, false, 1);
 
         echo '<div id="pageNav" class="round shadow">';
         echo '<div id="pageNavLeft">';
         echo $intTotal . ' @ ' . abs($intTime) . ' s ';
-        echo ( $filterOn ) ? '<span class="filterOn round">' . _('Filtro ON') . '</span>' : '';
+        echo ($filterOn) ? '<span class="filterOn round">' . _('Filtro ON') . '</span>' : '';
         echo '&nbsp;';
-        echo ( $globalOn ) ? '<span class="globalOn round">' . _('Global ON') . '</span>' : '';
+        echo ($globalOn) ? '<span class="globalOn round">' . _('Global ON') . '</span>' : '';
         echo '</div>';
         echo '<div id="pageNavRight">';
 
@@ -208,7 +321,7 @@ class SP_Html {
         echo "&nbsp; $firstPage / $lastPage &nbsp;";
 
         if ($intCur < $intTotal && $firstPage != $lastPage) {
-            $intLimitLast = ( ($intTotal % $intLimit) == 0 ) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
+            $intLimitLast = (($intTotal % $intLimit) == 0) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
             echo '<img src="imgs/arrow_right.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur + $intLimit) . ',1);" title="' . _('Página siguiente') . '" />';
             echo '<img src="imgs/arrow_last.png" onClick="searchSort(' . $intSortKey . ',' . $intLimitLast . ',1);" title="' . _('Última página') . '" />';
         }
@@ -223,7 +336,8 @@ class SP_Html {
      * @param int $intTime con el tiempo de carga de los resultados
      * @return none
      */
-    public static function printQueryLogNavBar($intCur, $intTotal, $intTime = 0) {
+    public static function printQueryLogNavBar($intCur, $intTotal, $intTime = 0)
+    {
         $intLimit = 50;
         $firstPage = ceil(($intCur + 1) / $intLimit);
         $lastPage = ceil($intTotal / $intLimit);
@@ -240,7 +354,7 @@ class SP_Html {
         echo "&nbsp; $firstPage / $lastPage &nbsp;";
 
         if ($intCur < $intTotal && $firstPage != $lastPage) {
-            $intLimitLast = ( ($intTotal % $intLimit) == 0 ) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
+            $intLimitLast = (($intTotal % $intLimit) == 0) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
             echo '<img src="imgs/arrow_right.png" onClick="navLog(' . ($intCur + $intLimit) . ',' . $intCur . ');" title="' . _('Página siguiente') . '" />';
             echo '<img src="imgs/arrow_last.png" onClick="navLog(' . $intLimitLast . ',' . $intCur . ');" title="' . _('Última página') . '" />';
         }
@@ -253,9 +367,10 @@ class SP_Html {
      * @param string $data con los datos a limpiar
      * @return string con los datos limpiados
      */
-    public static function sanitize(&$data) {
+    public static function sanitize(&$data)
+    {
         if (!$data) {
-            return FALSE;
+            return false;
         }
 
         if (is_array($data)) {
@@ -295,95 +410,13 @@ class SP_Html {
     }
 
     /**
-     * @brief Establece los enlaces CSS de la página HTML
-     * @return none
-     */
-    public static function setCss() {
-        $versionParameter = '?v=' . md5(implode(SP_Util::getVersion()));
-
-        $cssProp = array(
-            array("href" => "css/reset.css", "media" => ""),
-            array("href" => "css/smoothness/jquery-ui.css", "media" => "screen"),
-            array("href" => "css/jquery.powertip.css", "media" => "screen"),
-            array("href" => "css/jquery.powertip-yellow.min.css", "media" => "screen"),
-            array("href" => "css/chosen.css", "media" => "screen"),
-            array("href" => "css/alertify.core.css", "media" => "screen"),
-            array("href" => "css/alertify.default.css", "media" => "screen"),
-            array("href" => "css/jquery.tagsinput.css", "media" => "screen"),
-            array("href" => "js/fancybox/jquery.fancybox.css", "media" => "screen"),
-            array("href" => "css/styles.css", "media" => ""));
-
-        foreach ($cssProp as $css) {
-            self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . "/" . $css["href"] . $versionParameter . '" media="' . $css["media"] . '" />';
-        }
-    }
-
-    /**
-     * @brief Establece los enlaces JAVASCRIPT de la página HTML
-     * @return none
-     */
-    public static function setJs() {
-        $versionParameter = md5(implode(SP_Util::getVersion()));
-
-        $js_files = self::getJs();
-
-        foreach ($js_files as $js) {
-            self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . '?v=' . $versionParameter . $js["params"] . '"></script>';
-        }
-    }
-
-    /**
-     * @brief Devuelve un array con los archivos JS a incluir
-     * @return array con los archivos js y parámetros
-     */
-    public static function getJs() {
-
-        $jsProp = array(
-            array("src" => "js/jquery.js", "params" => ""),
-            array("src" => "js/jquery.placeholder.js", "params" => ""),
-            array("src" => "js/jquery-ui.js", "params" => ""),
-            array("src" => "js/fancybox/jquery.fancybox.pack.js", "params" => ""),
-            array("src" => "js/jquery.powertip.min.js", "params" => ""),
-            array("src" => "js/chosen.jquery.min.js", "params" => ""),
-            array("src" => "js/alertify.min.js", "params" => ""),
-            array("src" => "js/jquery.fileDownload.js", "params" => ""),
-            array("src" => "js/jquery.filedrop.js", "params" => ""),
-            array("src" => "js/jquery.tagsinput.js", "params" => ""),
-            array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . urlencode(base64_encode(SP_Init::$WEBROOT)))
-        );
-
-        return $jsProp;
-    }
-
-    /**
-     * @brief Devuelve información sobre la aplicación
-     * @return array con las propiedades de la aplicación
-     */
-    public static function getAppInfo($index = NULL) {
-        $appinfo = array(
-            'appname' => 'sysPass',
-            'appdesc' => 'Sysadmin Password Manager',
-            'appwebsite' => 'http://www.syspass.org',
-            'appblog' => 'http://www.cygnux.org',
-            'appdoc' => 'http://wiki.syspass.org',
-            'appupdates' => 'http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/20/rss',
-            'apphelp' => 'help.syspass.org',
-            'appchangelog' => '');
-
-        if (!is_null($index) && array_key_exists($index, $appinfo)) {
-            return $appinfo[$index];
-        }
-
-        return $appinfo;
-    }
-
-    /**
      * @brief Muestra una barra de información con los registros y tiempo de la consulta
      * @param int $intTotal con el total de registros devueltos
      * @param int $startTime con el tiempo de inicio de la consulta
      * @return none
      */
-    public static function printQueryInfoBar($intTotal, $startTime) {
+    public static function printQueryInfoBar($intTotal, $startTime)
+    {
         $endTime = microtime();
         $totalTime = round($endTime - $startTime, 5);
 
@@ -394,9 +427,12 @@ class SP_Html {
 
     /**
      * @brief Truncar un texto a una determinada longitud
+     * @param string $str con la cadena a truncar
+     * @param int $len con la longitud máxima de la cadena
      * @return string con el texto truncado
      */
-    public static function truncate($str, $len) {
+    public static function truncate($str, $len)
+    {
         $tail = max(0, $len - 10);
         $truncate = substr($str, 0, $tail);
         $truncate .= strrev(preg_replace('~^..+?[\s,:]\b|^...~', '...', strrev(substr($str, $tail, $len - $tail))));
@@ -405,29 +441,14 @@ class SP_Html {
     }
 
     /**
-     * @brief Cargar un archivo de plantilla
-     * @param string $template con el nombre de la plantilla
-     * @param array $tplvars con los datos a pasar a la plantilla
-     * @return none
-     */
-    public static function getTemplate($template, $tplvars = array()) {
-        $tpl = dirname(__FILE__) . '/tpl/' . $template . '.php';
-
-        if (file_exists($tpl)) {
-            $data = $tplvars;
-            include_once $tpl;
-            //self::$htmlPage[] = array('include' => $tpl);
-        }
-    }
-
-    /**
      * @brief Devolver errores comunes
      * @param string $code con el código de error a mostrar
      * @return none
-     * 
+     *
      * Esta función muestra la página de error con el error indicado.
      */
-    public static function showCommonError($code) {
+    public static function showCommonError($code)
+    {
         $commonErrors = array(
             'unavailable' => array('txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')),
             'noaccpermission' => array('txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')),
@@ -444,27 +465,15 @@ class SP_Html {
         exit();
     }
 
-    private static function minifier($files) {
-        if (!is_array($files)) {
-            return FALSE;
-        }
-
-        foreach ($files as $file) {
-            //$output_min .= file_get_contents($file['src']);
-            include_once SP_Init::$SERVERROOT . '/' . $file['src'];
-        }
-
-        //return $output_min;
-    }
-
     /**
      * @brief Convertir un color RGB a HEX
      * @param array $rgb con color en RGB
      * @return string
-     * 
+     *
      * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
      */
-    public static function rgb2hex($rgb) {
+    public static function rgb2hex($rgb)
+    {
         $hex = "#";
         $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
         $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
@@ -476,14 +485,16 @@ class SP_Html {
     /**
      * @brief Devolver una tabla con el resultado de una consulta y acciones
      * @param array $arrTableProp con las propiedades de la tabla
+     * @param array $queryItems con los resultados de la consulta
      * @return none
      */
-    public static function getQueryTable($arrTableProp, $queryItems) {
-        $sk = SP_Common::getSessionKey(TRUE);
+    public static function getQueryTable($arrTableProp, $queryItems)
+    {
+        $sk = SP_Common::getSessionKey(true);
 
         echo '<div class="action fullWidth">';
         echo '<ul>';
-        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" OnClick="' . $arrTableProp["actions"]['edit'] . '(0,' . $arrTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrTableProp["active"] . ',0,\'' . $arrTableProp["nextaction"] . '\');" /></LI>';
+        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" OnClick="' . $arrTableProp["actions"]['edit'] . '(0,' . $arrTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrTableProp["activeTab"] . ',0);" /></LI>';
         echo '</ul>';
         echo '</div>';
 
@@ -514,7 +525,7 @@ class SP_Html {
             $intId = $item->$arrTableProp["tblRowSrcId"];
             $action_check = array();
             $numActions = count($arrTableProp["actions"]);
-            $classActionsOptional = ( $numActions > 2 ) ? 'actions-optional' : '';
+            $classActionsOptional = ($numActions > 2) ? 'actions-optional' : '';
 
             echo '<ul>';
 
@@ -531,7 +542,7 @@ class SP_Html {
                     echo '</li>';
                 } else {
                     echo '<li class="cell-data" style="width: ' . $cellWidth . '%;">';
-                    echo ( $item->$rowSrc ) ? $item->$rowSrc : '&nbsp;'; // Fix height
+                    echo ($item->$rowSrc) ? $item->$rowSrc : '&nbsp;'; // Fix height
                     echo '</li>';
                 }
             }
@@ -541,13 +552,13 @@ class SP_Html {
             foreach ($arrTableProp["actions"] as $action => $function) {
                 switch ($action) {
                     case "view":
-                        echo '<img src="imgs/view.png" title="' . _('Ver Detalles') . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['view'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["active"] . ',1,\'' . $arrTableProp["nextaction"] . '\');" />';
+                        echo '<img src="imgs/view.png" title="' . _('Ver Detalles') . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['view'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',1);" />';
                         break;
                     case "edit":
-                        echo '<img src="imgs/edit.png" title="' . _('Editar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['edit'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["active"] . ',0,\'' . $arrTableProp["nextaction"] . '\');" />';
+                        echo '<img src="imgs/edit.png" title="' . _('Editar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['edit'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',0);" />';
                         break;
                     case "del":
-                        echo '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['del'] . '(' . $arrTableProp["active"] . ', 1,' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\',\'' . $arrTableProp["nextaction"] . '\');" />';
+                        echo '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['del'] . '(' . $arrTableProp["activeTab"] . ',1,' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', \'' . $arrTableProp["onCloseAction"] . '\');" />';
                         break;
                     case "pass":
                         if (isset($action_check['user_isLdap'])) {
@@ -558,7 +569,7 @@ class SP_Html {
                         break;
                 }
             }
-            echo ($numActions > 2 ) ? '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />' : '';
+            echo ($numActions > 2) ? '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />' : '';
             echo '</li>';
             echo '</ul>';
         }
@@ -566,4 +577,45 @@ class SP_Html {
         echo '</div></form>';
     }
 
+    /**
+     * @brief Devolver una cadena con el tag HTML strong
+     * @param string $text con la cadena de texto
+     * @return string
+     */
+    public static function strongText($text)
+    {
+        return ('<strong>' . $text . '</strong>');
+    }
+
+    /**
+     * @brief Devolver un link HTML
+     * @param string $text con la cadena de texto
+     * @param string $link con el destino del enlace
+     * @param string $title con el título del enlace
+     * @param string $attribs con atributos del enlace
+     * @return string
+     */
+    public static function anchorText($text, $link = '', $title = '', $attribs = '')
+    {
+        $alink = (!empty($link)) ? $link : $text;
+        $atitle = (!empty($title)) ? $title : '';
+
+        $anchor = '<a href="' . $alink . '" title="' . $atitle . '" ' . $attribs . '>' . $text . '</a>';
+
+        return $anchor;
+    }
+
+    private static function minifier($files)
+    {
+        if (!is_array($files)) {
+            return false;
+        }
+
+        foreach ($files as $file) {
+            //$output_min .= file_get_contents($file['src']);
+            include_once SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . $file['src'];
+        }
+
+        //return $output_min;
+    }
 }

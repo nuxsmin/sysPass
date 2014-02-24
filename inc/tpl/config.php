@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -26,14 +26,16 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $action = $data['action'];
-$activeTab = $data['active'];
+$activeTab = $data['activeTab'];
+$onCloseAction = $data['onCloseAction'];
 
 SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         
-$arrLangAvailable = array('es_ES','en_US');
-$isDemoMode = SP_Config::getValue('demoenabled',0);
-
+$arrLangAvailable = array('Español' => 'es_ES','English' => 'en_US');
 $arrAccountCount = array(6,9,12,15,21,27,30,51,99);
+$mailSecurity = array('SSL','TLS');
+
+$isDemoMode = SP_Config::getValue('demoenabled',0);
 
 $txtDisabled = ( $isDemoMode ) ? "DISABLED" : "";
 $chkLog = ( SP_Config::getValue('logenabled') ) ? 'checked="checked"' : '';
@@ -63,9 +65,9 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         <td class="valField">
             <select name="sitelang" id="sel-sitelang" size="1">
                 <?php 
-                foreach ( $arrLangAvailable as $langOption ){
-                    $selected = ( SP_Config::getValue('sitelang') == $langOption ) ?  "SELECTED" : "";
-                    echo "<option $selected>$langOption</option>";
+                foreach ( $arrLangAvailable as $langName => $langValue ){
+                    $selected = ( SP_Config::getValue('sitelang') == $langValue ) ?  "SELECTED" : "";
+                    echo "<option value='$langValue' $selected>$langName</option>";
                 }
                 ?>
             </select>
@@ -330,7 +332,47 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Servidor'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailserver" size="20" value="<?php echo SP_Config::getValue('mailserver'); ?>" maxlength="128" />
+            <input type="text" name="mailserver" size="20" value="<?php echo SP_Config::getValue('mailserver','localhost'); ?>" maxlength="128" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Puerto'); ?>
+        </td>
+        <td class="valField">
+            <input type="text" name="mailport" size="20" value="<?php echo SP_Config::getValue('mailport',25); ?>" maxlength="5" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Usuario'); ?>
+        </td>
+        <td class="valField">
+            <input type="text" name="mailuser" size="20" value="<?php echo SP_Config::getValue('mailuser'); ?>" maxlength="50" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Clave'); ?>
+        </td>
+        <td class="valField">
+            <input type="password" name="mailpass" size="20" value="<?php echo SP_Config::getValue('mailpass'); ?>" maxlength="50" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Seguridad'); ?>
+        </td>
+        <td class="valField">
+            <select name="mailsecurity" id="sel-mailsecurity" size="1">
+                <option></option>
+                <?php
+                foreach ( $mailSecurity as $security ){
+                    $selected = ( SP_Config::getValue('mailsecurity') == $security ) ?  "SELECTED" : "";
+                    echo "<option $selected>$security</option>";
+                }
+                ?>
+            </select>
         </td>
     </tr>
     <tr>
@@ -357,10 +399,11 @@ $allowedExts = SP_Config::getValue('allowed_exts');
     <input type="hidden" name="filesenabled" value="1" />
     <input type="hidden" name="wikienabled" value="1" />
 <?php endif; ?>
-    <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
+    <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
     <input type="hidden" name="action" value="config" />
-    <input type="hidden" name="is_ajax" value="1" />
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="isAjax" value="1" />
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
 </form>
 
 <div class="action">
@@ -372,11 +415,9 @@ $allowedExts = SP_Config::getValue('allowed_exts');
 </div>
 
 <script>
-    $("#sel-sitelang").chosen({disable_search : true});
-    $("#sel-account_link").chosen({disable_search : true});
-    $("#sel-account_count").chosen({disable_search : true});
-    $('#frmConfig .checkbox').button();
-    $('#frmConfig .ui-button').click(function(){
+    $("#sel-sitelang,#sel-account_link,#sel-account_count,#sel-mailsecurity").chosen({disable_search : true});
+    $('#frmConfig').find('.checkbox').button();
+    $('#frmConfig').find('.ui-button').click(function(){
         // El cambio de clase se produce durante el evento de click
         // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
         if ( $(this).hasClass('ui-state-active') ){

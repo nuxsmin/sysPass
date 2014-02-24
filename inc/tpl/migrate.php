@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -23,10 +23,10 @@
  *
  */
  
- defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-$activeTab = $data['active'];
-
+$activeTab = $data['activeTab'];
+$onCloseAction = $data['onCloseAction'];
 ?>
 
 <div id="title" class="midroundup titleNormal">
@@ -84,9 +84,11 @@ $activeTab = $data['active'];
         </tr>
     </table>
 
-	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+	<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
     <input type="hidden" name="action" value="migrate" />
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="isAjax" value="1" />
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
 </form>
 
 <div class="action">
@@ -130,5 +132,5 @@ $activeTab = $data['active'];
             $(this).children().html('<?php echo _('SI'); ?>');
         }
     });
-    importFile('<?php echo SP_Common::getSessionKey(TRUE); ?>');
+    importFile('<?php echo SP_Common::getSessionKey(true); ?>');
 </script>

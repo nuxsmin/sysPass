@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -68,8 +68,8 @@ $accountData= $account->getAccount();
     </table>
     <input type="hidden" name="savetyp" value="4" />
     <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>" />
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
-    <input type="hidden" name="is_ajax" value="1">
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
+    <input type="hidden" name="isAjax" value="1">
 </form>
 
 <div class="action">

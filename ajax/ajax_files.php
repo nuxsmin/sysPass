@@ -5,7 +5,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@
 // TODO: comprobar permisos para eliminar archivos
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -34,7 +34,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     die(_('CONSULTA INVÁLIDA'));
@@ -98,7 +98,7 @@ if ($action == 'upload') {
         $message['action'] = _('Subir Archivo');
         $message['text'][] = _('Error interno al leer el archivo');
 
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
 
         exit(_('Error interno al leer el archivo'));
     }
@@ -119,7 +119,7 @@ if ($action == 'download' || $action == 'view') {
         exit(_('No es un ID de archivo válido'));
     }
 
-    $isView = ( $action == 'view' ) ? TRUE : FALSE;
+    $isView = ( $action == 'view' ) ? true : false;
 
     $file = SP_Files::fileDownload($fileId);
 
@@ -140,7 +140,7 @@ if ($action == 'download' || $action == 'view') {
     $message['text'][] = _('Tamaño') . ": " . round($fileSize / 1024, 2) . " KB";
 
     if (!$isView) {
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
         
         // Enviamos el archivo al navegador
         header('Set-Cookie: fileDownload=true; path=/');
@@ -155,14 +155,14 @@ if ($action == 'download' || $action == 'view') {
     } else {
         $extsOkImg = array("JPG", "GIF", "PNG");
         if (in_array(strtoupper($fileExt), $extsOkImg)) {
-            SP_Common::wrLogInfo($message);
+            SP_Log::wrLogInfo($message);
             
             $imgData = chunk_split(base64_encode($fileData));
             exit('<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($fileExt) == "TXT") {
-            SP_Common::wrLogInfo($message);
+            SP_Log::wrLogInfo($message);
             
             exit('<div id="fancyView" class="backGrey"><pre>' . $fileData . '</pre></div>');
         } else {

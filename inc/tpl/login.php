@@ -42,7 +42,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
         <?php endif; ?>
             <input type="image" id="btnLogin" src="imgs/login.png" title="<?php echo _('Acceder') ?>"/>
             <input type="hidden" name="login" value="1" />
-            <input type="hidden" name="is_ajax" value="1" />
+            <input type="hidden" name="isAjax" value="1" />
         <?php if ( count($_GET) > 0 ): ?>
             <?php foreach( $_GET as $param => $value ): ?>
             <input type="hidden" name="g_<?php echo $param; ?>" value="<?php echo $value; ?>" />
@@ -50,13 +50,16 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
         <?php endif; ?>
         </form>
     </div><!-- Close boxData -->
+    <div id="boxActions">
+        <a href="index.php?a=passreset"><?php echo _('¿Olvidó su clave?'); ?></a>
+    </div>
 </div><!-- Close boxLogin -->
 
-<?php if( SP_Common::parseParams('g', 'logout', FALSE, TRUE) ): ?>
+<?php if( SP_Common::parseParams('g', 'logout', false, true) ): ?>
 <div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
 <script>$('#boxLogout').fadeOut(1500, function(){ location.href = 'index.php';});</script>
 <?php endif; ?>
 
-<?php if( SP_Init::$UPDATED === TRUE ): ?>
+<?php if( SP_Init::$UPDATED === true ): ?>
 <div id="boxUpdated" class="round5"><?php echo _('Aplicación actualizada correctamente'); ?></div>
 <?php endif; ?>

@@ -26,7 +26,7 @@ CREATE TABLE `accFiles` (
   `accfile_extension` varchar(10) NOT NULL,
   PRIMARY KEY (`accfile_id`),
   KEY `IDX_accountId` (`accfile_accountId`)
-) ENGINE=MyISAM AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `accGroups` (
   `accgroup_groupId` int(10) unsigned NOT NULL,
   PRIMARY KEY (`accgroup_id`),
   KEY `IDX_accountId` (`accgroup_accountId`)
-) ENGINE=MyISAM AUTO_INCREMENT=69 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `accHistory` (
   `accHistory_otherGroupEdit` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`)
-) ENGINE=MyISAM AUTO_INCREMENT=285 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `accUsers` (
   `accuser_userId` int(10) unsigned NOT NULL,
   PRIMARY KEY (`accuser_id`),
   KEY `idx_account` (`accuser_accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `accounts` (
   KEY `IDX_userId` (`account_userGroupId`,`account_userId`),
   KEY `IDX_customerId` (`account_customerId`),
   FULLTEXT KEY `IDX_searchTxt` (`account_name`,`account_login`,`account_url`,`account_notes`)
-) ENGINE=MyISAM AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,7 +142,7 @@ CREATE TABLE `categories` (
   `category_name` varchar(50) NOT NULL,
   `category_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +173,7 @@ CREATE TABLE `customers` (
   `customer_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   KEY `IDX_name` (`customer_name`,`customer_hash`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,10 +188,11 @@ CREATE TABLE `log` (
   `log_date` int(10) unsigned NOT NULL,
   `log_login` varchar(25) NOT NULL,
   `log_userId` tinyint(3) unsigned NOT NULL,
+  `log_ipAddress` varchar(45) NOT NULL,
   `log_action` varchar(50) NOT NULL,
   `log_description` text NOT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=640 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,11 +207,11 @@ CREATE TABLE `usrData` (
   `user_name` varchar(80) NOT NULL,
   `user_groupId` tinyint(3) unsigned NOT NULL,
   `user_secGroupId` tinyint(3) unsigned DEFAULT NULL,
-  `user_login` varchar(30) NOT NULL,
+  `user_login` varchar(50) NOT NULL,
   `user_pass` varbinary(40) NOT NULL,
   `user_mPass` varbinary(32) NOT NULL,
   `user_mIV` varbinary(32) NOT NULL,
-  `user_email` varchar(50) DEFAULT NULL,
+  `user_email` varchar(80) DEFAULT NULL,
   `user_notes` text,
   `user_count` int(10) unsigned NOT NULL DEFAULT '0',
   `user_profileId` tinyint(4) NOT NULL,
@@ -223,10 +224,11 @@ CREATE TABLE `usrData` (
   `user_isDisabled` bit(1) NOT NULL DEFAULT b'0',
   `user_hashSalt` varbinary(40) NOT NULL,
   `user_isMigrate` bit(1) DEFAULT b'0',
+  `user_isChangePass` bit(1) DEFAULT b'0',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `IDX_login` (`user_login`),
   KEY `IDX_pass` (`user_pass`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,7 +243,25 @@ CREATE TABLE `usrGroups` (
   `usergroup_name` varchar(50) NOT NULL,
   `usergroup_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`usergroup_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `usrPassRecover`
+--
+
+DROP TABLE IF EXISTS `usrPassRecover`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usrPassRecover` (
+  `userpassr_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userpassr_userId` smallint(5) unsigned NOT NULL,
+  `userpassr_hash` varbinary(40) NOT NULL,
+  `userpassr_date` int(10) unsigned NOT NULL,
+  `userpassr_used` bit(1) NOT NULL,
+  PRIMARY KEY (`userpassr_id`),
+  KEY `IDX_userId` (`userpassr_userId`,`userpassr_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,7 +295,7 @@ CREATE TABLE `usrProfiles` (
   `userProfile_pAppMgmtCategories` bit(1) DEFAULT b'0',
   `userProfile_pAppMgmtCustomers` bit(1) DEFAULT b'0',
   PRIMARY KEY (`userprofile_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

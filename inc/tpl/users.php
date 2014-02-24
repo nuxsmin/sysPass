@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -25,7 +25,8 @@
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-$activeTab = $data['active'];
+$activeTab = $data['activeTab'];
+$onCloseAction = $data['onCloseAction'];
 $isView = $data['view'];
 
 $user = SP_Users::getUserData($data['itemid']);
@@ -160,8 +161,11 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                                 <label for="usradminacc" title="<?php echo _('Administrador de cuentas') ?>"><?php echo _('Admin. Cuentas') ?></label>
                                 <input type="checkbox" id="usradminacc" name="adminacc" <?php echo $user['checks']['user_isAdminAcc'] . ' ' . $isDisabled; ?> />
                             <?php endif; ?>
+                            <br>
                             <label for="usrdisabled" title="<?php echo _('Deshabilitado'); ?>"><?php echo _('Deshabilitado'); ?></label>
                             <input type="checkbox" id="usrdisabled" name="disabled" <?php echo $user['checks']['user_isDisabled'] . ' ' . $isDisabled; ?>/>
+                            <label for="usrchangepass" title="<?php echo _('Forzar cambio de clave'); ?>"><?php echo _('Cambio Clave'); ?></label>
+                            <input type="checkbox" id="usrchangepass" name="changepass" <?php echo $user['checks']['user_isChangePass'] . ' ' . $isDisabled; ?>/>
                         </div>
                     </td>
                 </tr>
@@ -189,13 +193,14 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
             </tbody>
         </table>
         <?php if ( ! $isView ): ?>
-            <input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+            <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
+            <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
             <input type="hidden" name="ldap" value="<?php echo $user['user_isLdap']; ?>" />
             <input type="hidden" name="id" value="<?php echo $user['user_id']; ?>" />
             <input type="hidden" name="action" value="<?php echo $user['action']; ?>" />
             <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
-            <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE) ?>">
-            <input type="hidden" name="is_ajax" value="1">
+            <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true) ?>">
+            <input type="hidden" name="isAjax" value="1">
         <?php endif; ?>
     </form>
     

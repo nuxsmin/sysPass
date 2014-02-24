@@ -5,7 +5,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -23,8 +23,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,44 +33,53 @@ if (!SP_Init::isLoggedIn()) {
     SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
+// Variables POST del formulario
 $frmAction =  SP_Common::parseParams('p', 'action');
+$frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
+$frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
+
+$doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
 
 if ($frmAction == "config") {
     $frmSiteLang = SP_Common::parseParams('p', 'sitelang');
     $frmSessionTimeout = SP_Common::parseParams('p', 'session_timeout', 300);
-    $frmLog = SP_Common::parseParams('p', 'logenabled', 0, FALSE, 1);
-    $frmDebug = SP_Common::parseParams('p', 'debug', 0, FALSE, 1);
-    $frmMaintenance = SP_Common::parseParams('p', 'maintenance', 0, FALSE, 1);
-    $frmCheckUpdates = SP_Common::parseParams('p', 'updates', 0, FALSE, 1);
-    $frmFiles = SP_Common::parseParams('p', 'filesenabled', 0, FALSE, 1);
-    $frmGlobalSearch = SP_Common::parseParams('p', 'globalsearch', 0, FALSE, 1);
-    $frmAccountLink = SP_Common::parseParams('p', 'account_link', 0, FALSE, 1);
+    $frmLog = SP_Common::parseParams('p', 'logenabled', 0, false, 1);
+    $frmDebug = SP_Common::parseParams('p', 'debug', 0, false, 1);
+    $frmMaintenance = SP_Common::parseParams('p', 'maintenance', 0, false, 1);
+    $frmCheckUpdates = SP_Common::parseParams('p', 'updates', 0, false, 1);
+    $frmFiles = SP_Common::parseParams('p', 'filesenabled', 0, false, 1);
+    $frmGlobalSearch = SP_Common::parseParams('p', 'globalsearch', 0, false, 1);
+    $frmAccountLink = SP_Common::parseParams('p', 'account_link', 0, false, 1);
     $frmAccountCount = SP_Common::parseParams('p', 'account_count', 10);
     $frmAllowedSize = SP_Common::parseParams('p', 'allowed_size', 1024);
     $frmAllowedExts = SP_Common::parseParams('p', 'allowed_exts');
 
-    $frmWiki = SP_Common::parseParams('p', 'wikienabled', 0, FALSE, 1);
+    $frmWiki = SP_Common::parseParams('p', 'wikienabled', 0, false, 1);
     $frmWikiSearchUrl = SP_Common::parseParams('p', 'wikisearchurl');
     $frmWikiPageUrl = SP_Common::parseParams('p', 'wikipageurl');
     $frmWikiFilter = SP_Common::parseParams('p', 'wikifilter');
 
-    $frmLdap = SP_Common::parseParams('p', 'ldapenabled', 0, FALSE, 1);
+    $frmLdap = SP_Common::parseParams('p', 'ldapenabled', 0, false, 1);
     $frmLdapServer = SP_Common::parseParams('p', 'ldapserver');
     $frmLdapBase = SP_Common::parseParams('p', 'ldapbase');
     $frmLdapGroup = SP_Common::parseParams('p', 'ldapgroup');
     $frmLdapBindUser = SP_Common::parseParams('p', 'ldapbinduser');
     $frmLdapBindPass = SP_Common::parseParams('p', 'ldapbindpass');
 
-    $frmMail = SP_Common::parseParams('p', 'mailenabled', 0, FALSE, 1);
+    $frmMail = SP_Common::parseParams('p', 'mailenabled', 0, false, 1);
     $frmMailServer = SP_Common::parseParams('p', 'mailserver');
+    $frmMailPort = SP_Common::parseParams('p', 'mailport',25);
+    $frmMailUser = SP_Common::parseParams('p', 'mailuser');
+    $frmMailPass = SP_Common::parseParams('p', 'mailpass');
+    $frmMailSecurity = SP_Common::parseParams('p', 'mailsecurity');
     $frmMailFrom = SP_Common::parseParams('p', 'mailfrom');
-    $frmMailRequests = SP_Common::parseParams('p', 'mailrequestsenabled', 0, FALSE, 1);
+    $frmMailRequests = SP_Common::parseParams('p', 'mailrequestsenabled', 0, false, 1);
 
     if ($frmAccountCount == "all") {
         $intAccountCount = 99;
@@ -107,6 +117,10 @@ if ($frmAction == "config") {
         SP_Config::setValue("mailenabled", 1);
         SP_Config::setValue("mailrequestsenabled", $frmMailRequests);
         SP_Config::setValue("mailserver", $frmMailServer);
+        SP_Config::setValue("mailport", $frmMailPort);
+        SP_Config::setValue("mailuser", $frmMailUser);
+        SP_Config::setValue("mailpass", $frmMailPass);
+        SP_Config::setValue("mailsecurity", $frmMailSecurity);
         SP_Config::setValue("mailfrom", $frmMailFrom);
     } else {
         SP_Config::setValue("mailenabled", 0);
@@ -131,21 +145,20 @@ if ($frmAction == "config") {
     SP_Config::setValue("allowed_size", $frmAllowedSize);
 
     $message['action'] = _('Modificar Configuración');
-    $message['text'][] = '';
 
-    SP_Common::wrLogInfo($message);
+    SP_Log::wrLogInfo($message);
     SP_Common::sendEmail($message);
 
-    SP_Common::printJSON(_('Configuración actualizada'), 0);
+    SP_Common::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
 } elseif ($frmAction == "crypt") {
     $currentMasterPass = SP_Common::parseParams('p', 'curMasterPwd');
     $newMasterPass = SP_Common::parseParams('p', 'newMasterPwd');
     $newMasterPassR = SP_Common::parseParams('p', 'newMasterPwdR');
-    $confirmPassChange = SP_Common::parseParams('p', 'confirmPassChange', 0, FALSE, 1);
-    $noAccountPassChange = SP_Common::parseParams('p', 'chkNoAccountChange', 0, FALSE, 1);
+    $confirmPassChange = SP_Common::parseParams('p', 'confirmPassChange', 0, false, 1);
+    $noAccountPassChange = SP_Common::parseParams('p', 'chkNoAccountChange', 0, false, 1);
 
     if (!SP_Users::checkUserUpdateMPass()) {
-        SP_Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+        SP_Common::printJSON(_('Clave maestra actualizada') . ';;' . _('Reinicie la sesión para cambiarla'));
     }
 
     if ($newMasterPass == "" && $currentMasterPass == "") {
@@ -181,7 +194,7 @@ if ($frmAction == "config") {
     }
 
     if (SP_Config::getValue('demoenabled', 0)) {
-        SP_Common::printJSON(_('DEMO'));
+        SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
     }
 
     SP_Config::$arrConfigValue["masterPwd"] = $hashMPass;
@@ -189,7 +202,6 @@ if ($frmAction == "config") {
     
     if (SP_Config::writeConfig()) {
         $message['action'] = _('Actualizar Clave Maestra');
-        $message['text'] = '';
 
         SP_Common::sendEmail($message);
         SP_Common::printJSON(_('Clave maestra cambiada'), 0);
