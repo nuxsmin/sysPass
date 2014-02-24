@@ -1,6 +1,8 @@
 === ** v1.0.7 ** ===
 
 * [BUG] Corregido error en la selección del código de caráteres del lenguaje
+* [BUG] Corregido error al actualizar desde phpPMS
+* [BUG] Corregido error al cambiar la clave del usuario, el botón no funcionada.
 
 === ** v1.0.6 ** ===
 
@@ -173,6 +175,8 @@
 === ** v1.0.7 ** ===
 
 * [BUG] Fixed error on language charset selection
+* [BUG] Fixed upgrading from phpPMS
+* [BUG] Fixed save button not running on user password change
 
 === ** v1.0.6 ** ===
 
