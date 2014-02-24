@@ -1,3 +1,7 @@
+=== ** v1.0.7 ** ===
+
+* [BUG] Corregido error en la selección del código de caráteres del lenguaje
+
 === ** v1.0.6 ** ===
 
 * [BUG] Corregido error al crear un usuario de LDAP.
@@ -165,6 +169,10 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.7 ** ===
+
+* [BUG] Fixed error on language charset selection
 
 === ** v1.0.6 ** ===
 
