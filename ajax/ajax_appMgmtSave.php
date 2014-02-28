@@ -384,7 +384,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         if ($frmAction == 1) {
             if (SP_Category::addCategory()) {
-                SP_Common::printJSON(_('Categpría creada'), 0, $doActionOnClose);
+                SP_Common::printJSON(_('Categoría creada'), 0, $doActionOnClose);
             } else {
                 SP_Common::printJSON(_('Error al crear la categoría'));
             }

@@ -255,7 +255,7 @@ foreach ( $resQuery as $account ){
         }
 
         if ( $accViewPass  ){
-            echo '<img src="imgs/user-pass.png" title="'._('Ver clave').'" onClick="viewPass('.$account->account_id.', 1)" />';
+            echo '<img src="imgs/user-pass.png" title="'._('Ver Clave').'" onClick="viewPass('.$account->account_id.', 1)" />';
         } 
 
         if ( $accEdit || $accCopy || $accDel ){

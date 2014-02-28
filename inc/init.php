@@ -126,6 +126,12 @@ class SP_Init
 
         // Cargar el lenguaje
         self::selectLang();
+
+        // Comprobar si es necesario inicialización
+        if (self::checkInitSourceInclude()){
+            return;
+        }
+
         // Comprobar la configuración
         self::checkConfig();
         // Comprobar si está instalado
@@ -257,9 +263,10 @@ class SP_Init
     {
         $browserLang = str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
         $configLang = SP_Config::getValue('sitelang');
+        $localesDir = self::$SERVERROOT . DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'locales';
 
         // Establecer a en_US si no existe la traducción o no es español
-        if (!file_exists(self::$SERVERROOT . '/inc/locales/' . $browserLang)
+        if (!file_exists($localesDir . DIRECTORY_SEPARATOR . $browserLang)
             && !preg_match('/^es_.*/i', $browserLang)
             && !$configLang
         ) {
@@ -273,7 +280,7 @@ class SP_Init
         putenv("LANG=" . self::$LANG);
         setlocale(LC_MESSAGES, self::$LANG);
         setlocale(LC_ALL, self::$LANG);
-        bindtextdomain("messages", self::$SERVERROOT . "/inc/locales");
+        bindtextdomain("messages", $localesDir);
         textdomain("messages");
         bind_textdomain_codeset("messages", 'UTF-8');
     }
@@ -387,7 +394,7 @@ class SP_Init
 
         if ($databaseVersion < $appVersion && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0) {
             if (SP_Upgrade::needUpgrade($appVersion) && !self::checkMaintenanceMode(true)) {
-                self::initError(_('La aplicación necesita actualizarse'), _('Contacte con el administrador'));
+                self::initError(_('La aplicación necesita actualizarse'), _('Consulte con el administrador'));
             }
 
             if (SP_Upgrade::doUpgrade($databaseVersion)) {
@@ -431,7 +438,7 @@ class SP_Init
             $errors[] = array(
                 'type' => 'critical',
                 'description' => _('La sesión no puede ser inicializada'),
-                'hint' => _('Contacte con el administrador'));
+                'hint' => _('Consulte con el administrador'));
 
             SP_Html::render('error', $errors);
             exit();
@@ -551,6 +558,17 @@ class SP_Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
+    }
+
+    /**
+     * @brief Comprobar el archivo que realiza el include necesita inicialización
+     * @returns bool
+     */
+    private static function checkInitSourceInclude(){
+        $srcScript = pathinfo($_SERVER["SCRIPT_NAME"],PATHINFO_BASENAME);
+        $skipInit = array('functions.php');
+
+        return ( in_array($srcScript,$skipInit) );
     }
 }
 

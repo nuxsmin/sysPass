@@ -145,7 +145,7 @@ switch ($frmSaveType) {
             }
 
             if (!SP_Customer::addCustomer()) {
-                SP_Common::printJSON(_('Error al crear cliente'));
+                SP_Common::printJSON(_('Error al crear el cliente'));
             }
 
             $account->accountCustomerId = SP_Customer::$customerLastId;
@@ -194,7 +194,7 @@ switch ($frmSaveType) {
             }
 
             if (!SP_Customer::addCustomer()) {
-                SP_Common::printJSON(_('Error al crear cliente'));
+                SP_Common::printJSON(_('Error al crear el cliente'));
             }
 
             $account->accountCustomerId = SP_Customer::$customerLastId;

@@ -23,6 +23,9 @@
 *
 */
 
+define('APP_ROOT', '..');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
+
 $offset = 3600 * 24;
 $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
 
@@ -30,66 +33,29 @@ header("content-type: application/x-javascript");
 header($expire);
 header('Cache-Control: max-age=3600, must-revalidate');
 
-define('APP_ROOT', '..');
+$arrJsLang = array(_('Error en la consulta'),
+    _('Ha ocurrido un error'),
+    _('Sesión finalizada'),
+    _('Borrar la cuenta?'),
+    _('Borrar el usuario?'),
+    _('Guarde la configuración para que sea efectiva'),
+    _('Clave Generada'),
+    _('Nivel alto'),
+    _('Nivel medio'),
+    _('Nivel bajo'),
+    _('Nivel muy alto'),
+    _('Utilizar al menos 8 caracteres'),
+    _('Borrar elemento?'),
+    _('Página no encontrada'),
+    _('Archivo no soportado para visualizar'),
+    _('Eliminar archivo?'),
+    _('Su navegador no soporta subir archivos con HTML5'),
+    _('Demasiados archivos'),
+    _('No es posible guardar el archivo.<br>Tamaño máximo:'),
+    _('Extensión no permitida'),
+    _('Vaciar el registro de eventos?'));
 
-if ( isset($_GET["l"]) && isset($_GET["r"]) ){
-    $appLang = strtolower($_GET["l"]);
-    $appRoot = base64_decode(urldecode($_GET["r"]));
-} else{
-    return;
-}
-
-$locale= array(
-    "es_es.utf8" => array('Error en la consulta',
-                    'Ha ocurrido un error',
-                    'Sesión finalizada',
-                    'Borrar la cuenta?',
-                    'Borrar el usuario?',
-                    'Guarde la configuración para que sea efectiva',
-                    'Clave Generada',
-                    'Nivel alto',
-                    'Nivel medio',
-                    'Nivel bajo',
-                    'Nivel muy alto',
-                    'Utilizar al menos 8 caracteres',
-                    'Borrar elemento?',
-                    'Página no encontrada',
-                    'Archivo no soportado para visualizar',
-                    'Eliminar archivo?',
-                    'Su navegador no soporta subir archivos con HTML5',
-                    'Demasiados archivos',
-                    'No es posible guardar el archivo.<br>Tamaño máximo:',
-                    'Extensión no permitida',
-                    'Vaciar el registro de eventos?'),
-    "en_us.utf8" => array('Query error',
-                    'There was an error',
-                    'Session ended',
-                    'Delete account?',
-                    'Delete user?',
-                    'You should save configuration in order to take effect',
-                    'Generated Password',
-                    'High level',
-                    'Average level',
-                    'Low level',
-                    'Very high level',
-                    'You should use at least 8 characters',
-                    'Delete item?',
-                    'Page not found',
-                    'File not supported for preview',
-                    'Delete file?',
-                    'Your browser does not support HTML5 file uploads',
-                    'Too many files',
-                    'Unable to save file.<br>Max file size:',
-                    'Extension not allowed',
-                    'Clear event log?'));
-
-$arrJsLang = array();
-
-foreach ( $locale[$appLang] as $langIndex => $langDesc ){
-    $arrJsLang[] = "'".$langDesc."'";
-}
-
-echo "// i18n language array from PHP. Detected language: $appLang\n";
-echo "var LANG = [".implode(",",$arrJsLang)."]; \n\n";
-echo "var APP_ROOT = '$appRoot';\n";
+echo "// i18n language array from PHP. Detected language: ".SP_Init::$LANG."\n";
+echo "var LANG = ['".implode("','",$arrJsLang)."']; \n";
+echo "var APP_ROOT = '".SP_Init::$WEBROOT."';\n\n";
 include_once 'functions.js';

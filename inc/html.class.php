@@ -221,7 +221,7 @@ class SP_Html
             array("src" => "js/jquery.fileDownload.js", "params" => ""),
             array("src" => "js/jquery.filedrop.js", "params" => ""),
             array("src" => "js/jquery.tagsinput.js", "params" => ""),
-            array("src" => "js/functions.php", "params" => "&l=" . SP_Init::$LANG . "&r=" . urlencode(base64_encode(SP_Init::$WEBROOT)))
+            array("src" => "js/functions.php", "params" => "")
         );
 
         return $jsProp;
@@ -565,7 +565,7 @@ class SP_Html
                             break;
                         }
 
-                        echo '<img src="imgs/key.png" title="' . _('Cambiar clave') . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['pass'] . '(' . $intId . ');" />';
+                        echo '<img src="imgs/key.png" title="' . _('Cambiar Clave') . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['pass'] . '(' . $intId . ');" />';
                         break;
                 }
             }

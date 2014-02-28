@@ -78,7 +78,7 @@ class SP_Log
         }
 
         $message['action'] = _('Vaciar Eventos');
-        $message['text'][] = _('Vaciar registro de eventos.');
+        $message['text'][] = _('Vaciar registro de eventos');
         self::wrLogInfo($message);
         SP_Common::sendEmail($message);
 

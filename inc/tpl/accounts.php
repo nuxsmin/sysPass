@@ -483,7 +483,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
 
         <?php if ($showViewPass): ?>
             <li>
-                <img src="imgs/user-pass.png" title="<?php echo _('Ver clave'); ?>"
+                <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
                      onClick="viewPass(<?php echo $account->accountId; ?>,1,<?php echo $account->accountIsHistory; ?>)"
                      class="inputImg"/>
             </li>

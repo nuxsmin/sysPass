@@ -80,7 +80,7 @@ if (!$isHistory) {
     $account->incrementDecryptCounter();
 }
 
-$message['action'] = _('Ver clave');
+$message['action'] = _('Ver Clave');
 $message['text'][] = _('ID') . ': ' . $accountId;
 $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
 $message['text'][] = _('IP') . ': ' . $_SERVER['REMOTE_ADDR'];

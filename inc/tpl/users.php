@@ -164,7 +164,7 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                             <br>
                             <label for="usrdisabled" title="<?php echo _('Deshabilitado'); ?>"><?php echo _('Deshabilitado'); ?></label>
                             <input type="checkbox" id="usrdisabled" name="disabled" <?php echo $user['checks']['user_isDisabled'] . ' ' . $isDisabled; ?>/>
-                            <label for="usrchangepass" title="<?php echo _('Forzar cambio de clave'); ?>"><?php echo _('Cambio Clave'); ?></label>
+                            <label for="usrchangepass" title="<?php echo _('Forzar cambio de clave'); ?>"><?php echo _('Cambio de Clave'); ?></label>
                             <input type="checkbox" id="usrchangepass" name="changepass" <?php echo $user['checks']['user_isChangePass'] . ' ' . $isDisabled; ?>/>
                         </div>
                     </td>
