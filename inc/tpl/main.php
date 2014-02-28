@@ -63,7 +63,7 @@ $chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img
                     continue;
                 }
             }
-            if ($action['name'] == 'eventlog' && !SP_Config::getValue('logenabled', false)) {
+            if ($action['name'] == 'eventlog' && !SP_Config::getValue('log_enabled', false)) {
                 continue;
             }
 

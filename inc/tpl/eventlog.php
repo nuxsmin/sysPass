@@ -27,7 +27,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 $startTime = microtime();
 $rowClass = "row_even";
-$isDemoMode = SP_Config::getValue('demoenabled', 0);
+$isDemoMode = SP_Config::getValue('demo_enabled', false);
 $start = ( isset($data['start']) ) ? (int) $data['start'] : 0;
 
 $events = SP_Log::getEvents($start);
@@ -73,7 +73,7 @@ $numRows = SP_Log::$numRows;
             <?php
             foreach ($events as $log) {
                 $rowClass = ( $rowClass == "row_even" ) ? "row_odd" : "row_even";
-                $description = ( $isDemoMode === 0 ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
+                $description = ( $isDemoMode === false ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
             ?>
 
                 <tr class="<?php echo $rowClass; ?>">

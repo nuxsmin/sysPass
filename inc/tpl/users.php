@@ -31,7 +31,7 @@ $isView = $data['view'];
 
 $user = SP_Users::getUserData($data['itemid']);
 
-$isDemo = SP_Config::getValue('demoenabled', 0);
+$isDemo = SP_Config::getValue('demo_enabled', false);
 $isDisabled = ( $isDemo || $isView ) ? 'disabled' : '';
 
 $profilesSelProp = array('name' => 'profileid',

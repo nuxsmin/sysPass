@@ -42,12 +42,12 @@ $startTime = microtime();
 
 $accountLink = SP_Config::getValue('account_link',0);
 $accountCount = ( isset($_POST["rpp"]) && $_POST["rpp"] > 0 ) ? (int)$_POST["rpp"] : SP_Config::getValue('account_count',10);
-$filesEnabled = SP_Config::getValue('filesenabled');
-$wikiEnabled = SP_Config::getValue('wikienabled');
-$wikiSearchUrl = SP_Config::getValue('wikisearchurl');
-$wikiFilter = explode(',',SP_Config::getValue('wikifilter'));
-$wikiPageUrl = SP_Config::getValue('wikipageurl');
-$requestEnabled = SP_Config::getValue('mailrequestsenabled', false);
+$filesEnabled = SP_Config::getValue('files_enabled', false);
+$wikiEnabled = SP_Config::getValue('wiki_enabled', false);
+$wikiSearchUrl = SP_Config::getValue('wiki_searchurl', false);
+$wikiFilter = explode(',',SP_Config::getValue('wiki_filter'));
+$wikiPageUrl = SP_Config::getValue('wiki_pageurl');
+$requestEnabled = SP_Config::getValue('mail_requestsenabled', false);
 
 $sortKey = SP_Common::parseParams('p', 'skey', 0);
 $sortOrder = SP_Common::parseParams('p', 'sorder', 0);
@@ -226,7 +226,7 @@ foreach ( $resQuery as $account ){
         
         echo ( $strAccNotes ) ? '<img src="imgs/notes.png" title="'._('Notas').': <br><br>'.  nl2br(wordwrap(htmlspecialchars($strAccNotes),50,'<br>',true)).'" />' : '';
    
-        if ( $filesEnabled == 1 ){
+        if ( $filesEnabled === true ){
             $intNumFiles = SP_Files::countFiles($account->account_id);
             echo ($intNumFiles) ? '<img src="imgs/attach.png" title="'._('Archivos adjuntos').': '.$intNumFiles.'" />' : ''; 
         }

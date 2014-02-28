@@ -294,12 +294,14 @@ class SP_Config
             return true;
         }
 
-        if (!file_exists(SP_Init::$SERVERROOT . "/config/config.php")) {
+        $configFile = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'config.php';
+
+        if (!file_exists($configFile)) {
             return false;
         }
 
         // Include the file, save the data from $CONFIG
-        include SP_Init::$SERVERROOT . "/config/config.php";
+        include $configFile;
 
         if (isset($CONFIG) && is_array($CONFIG)) {
             self::$cache = $CONFIG;
@@ -394,26 +396,26 @@ class SP_Config
      */
     public static function setDefaultValues()
     {
-        self::setValue('logenabled', 1);
+        self::setValue('log_enabled', 1);
         self::setValue('debug', 0);
-        self::setValue('ldapenabled', 0);
-        self::setValue('mailenabled', 0);
-        self::setValue('wikienabled', 0);
-        self::setValue('demoenabled', 0);
+        self::setValue('ldap_enabled', 0);
+        self::setValue('mail_enabled', 0);
+        self::setValue('wiki_enabled', 0);
+        self::setValue('demo_enabled', 0);
 
-        self::setValue('allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
-        self::setValue('allowed_size', 1024);
-        self::setValue('wikisearchurl', '');
-        self::setValue('wikipageurl', '');
-        self::setValue('wikifilter', '');
-        self::setValue('ldapserver', '');
-        self::setValue('ldapbase', '');
-        self::setValue('ldapgroup', '');
-        self::setValue('ldapuserattr', '');
-        self::setValue('mailserver', '');
-        self::setValue('mailfrom', '');
-        self::setValue('wikifilter', '');
-        self::setValue('sitelang', 'es_ES');
+        self::setValue('files_allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
+        self::setValue('files_allowed_size', 1024);
+        self::setValue('wiki_searchurl', '');
+        self::setValue('wiki_pageurl', '');
+        self::setValue('wiki_filter', '');
+        self::setValue('ldap_server', '');
+        self::setValue('ldap_base', '');
+        self::setValue('ldap_group', '');
+        self::setValue('ldap_userattr', '');
+        self::setValue('mail_server', '');
+        self::setValue('mail_from', '');
+        self::setValue('wiki_filter', '');
+        self::setValue('site_lang', SP_Init::$LANG);
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 12);

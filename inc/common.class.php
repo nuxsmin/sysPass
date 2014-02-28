@@ -39,7 +39,7 @@ class SP_Common
      */
     public static function sendEmail($message, $mailTo = '', $isEvent = true)
     {
-        if (SP_Config::getValue('mailenabled', 0) === 0) {
+        if (SP_Config::getValue('mail_enabled', false) === false) {
             return false;
         }
 
@@ -61,7 +61,7 @@ class SP_Common
             $body[] = SP_Html::strongText(_('Acción') . ": ") . $message['action'];
             $body[] = SP_Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
 
-            $mail->addCC(SP_Config::getValue('mailfrom'));
+            $mail->addCC(SP_Config::getValue('mail_from'));
         }
 
         $body[] = (is_array($message['text'])) ? implode($newline, $message['text']) : '';
@@ -85,7 +85,7 @@ class SP_Common
 
         $log['text'][] = '';
         $log['text'][] = _('Destinatario') . ": $mailTo";
-        $log['text'][] = ($isEvent === true) ? _('CC') . ": " . SP_Config::getValue('mailfrom') : '';
+        $log['text'][] = ($isEvent === true) ? _('CC') . ": " . SP_Config::getValue('mail_from') : '';
 
         $log['action'] = _('Enviar Email');
 
@@ -102,11 +102,15 @@ class SP_Common
     public static function getEmailObject($mailTo, $action)
     {
         $appName = SP_Html::getAppInfo('appname');
-        $mailFrom = SP_Config::getValue('mailfrom');
-        $mailServer = SP_Config::getValue('mailserver');
-        $mailPort = SP_Config::getValue('mailport', 25);
-        $mailUser = SP_Config::getValue('mailuser');
-        $mailPass = SP_Config::getValue('mailpass');
+        $mailFrom = SP_Config::getValue('mail_from');
+        $mailServer = SP_Config::getValue('mail_server');
+        $mailPort = SP_Config::getValue('mail_port', 25);
+        $mailAuth = SP_Config::getValue('mail_authenabled', FALSE);
+
+        if ($mailAuth){
+            $mailUser = SP_Config::getValue('mail_user');
+            $mailPass = SP_Config::getValue('mail_pass');
+        }
 
         if (!$mailServer) {
             return false;
@@ -124,12 +128,12 @@ class SP_Common
 
         $mail->isSMTP();
         $mail->CharSet = 'utf-8';
-        $mail->SMTPAuth = true;
+        $mail->SMTPAuth = $mailAuth;
         $mail->Host = $mailServer;
         $mail->Port = $mailPort;
         $mail->Username = $mailUser;
         $mail->Password = $mailPass;
-        $mail->SMTPSecure = strtolower(SP_Config::getValue('mailsecurity'));
+        $mail->SMTPSecure = strtolower(SP_Config::getValue('mail_security'));
         //$mail->SMTPDebug = 2;
         //$mail->Debugoutput = 'error_log';
 

@@ -222,11 +222,11 @@ class SP_LDAP
      */
     public static function checkLDAPParams()
     {
-        self::$searchBase = SP_Config::getValue('ldapbase');
-        self::$ldapServer = SP_Config::getValue('ldapserver');
-        self::$bindDN = SP_Config::getValue('ldapbinduser');
-        self::$bindPass = SP_Config::getValue('ldapbindpass');
-        self::$ldapGroup = SP_Config::getValue('ldapgroup');
+        self::$searchBase = SP_Config::getValue('ldap_base');
+        self::$ldapServer = SP_Config::getValue('ldap_server');
+        self::$bindDN = SP_Config::getValue('ldap_binduser');
+        self::$bindPass = SP_Config::getValue('ldap_bindpass');
+        self::$ldapGroup = SP_Config::getValue('ldap_group');
 
         if (!self::$searchBase || !self::$ldapServer || !self::$ldapGroup || !self::$bindDN || !self::$bindPass) {
             $message['action'] = __FUNCTION__;
@@ -335,7 +335,7 @@ class SP_LDAP
     {
         $message['action'] = __FUNCTION__;
 
-        self::$ldapGroup = SP_Config::getValue('ldapgroup');
+        self::$ldapGroup = SP_Config::getValue('ldap_group');
 
         if (!$groupDN = self::searchGroupDN()) {
             return false;

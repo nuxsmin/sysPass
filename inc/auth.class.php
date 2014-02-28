@@ -42,7 +42,7 @@ class SP_Auth
      */
     public static function authUserLDAP($userLogin, $userPass)
     {
-        if (!SP_Util::ldapIsAvailable() || !SP_Config::getValue('ldapenabled', false) || !SP_LDAP::checkLDAPParams()) {
+        if (!SP_Util::ldapIsAvailable() || !SP_Config::getValue('ldap_enabled', false) || !SP_LDAP::checkLDAPParams()) {
             return false;
         }
 
@@ -122,7 +122,7 @@ class SP_Auth
      */
     private static function checkLDAPGroup($group)
     {
-        $ldapgroup = SP_Config::getValue('ldapgroup');
+        $ldapgroup = SP_Config::getValue('ldap_group');
         $groupName = array();
 
         preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);

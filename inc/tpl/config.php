@@ -35,21 +35,22 @@ $arrLangAvailable = array('Español' => 'es_ES','English' => 'en_US', 'Deutsch' 
 $arrAccountCount = array(6,9,12,15,21,27,30,51,99);
 $mailSecurity = array('SSL','TLS');
 
-$isDemoMode = SP_Config::getValue('demoenabled',0);
+$isDemoMode = SP_Config::getValue('demo_enabled',false);
 
 $txtDisabled = ( $isDemoMode ) ? "DISABLED" : "";
-$chkLog = ( SP_Config::getValue('logenabled') ) ? 'checked="checked"' : '';
+$chkLog = ( SP_Config::getValue('log_enabled') ) ? 'checked="checked"' : '';
 $chkDebug = ( SP_Config::getValue('debug') ) ? 'checked="checked"' : '';
 $chkMaintenance = ( SP_Config::getValue('maintenance') ) ? 'checked="checked"' : '';
 $chkUpdates = ( SP_Config::getValue('checkupdates') ) ? 'checked="checked"' : '';
 $chkGlobalSearch = ( SP_Config::getValue('globalsearch') ) ? 'checked="checked"' : '';
 $chkAccountLink = ( SP_Config::getValue('account_link') ) ? 'checked="checked"' : '';
-$chkFiles = ( SP_Config::getValue('filesenabled') ) ? 'checked="checked"' : '';
-$chkWiki = ( SP_Config::getValue('wikienabled') ) ? 'checked="checked"' : '';
-$chkLdap = ( SP_Config::getValue('ldapenabled') ) ? 'checked="checked"' : '';
-$chkMail = ( SP_Config::getValue('mailenabled') ) ? 'checked="checked"' : '';
-$chkMailRequests = ( SP_Config::getValue('mailrequestsenabled') ) ? 'checked="checked"' : '';
-$allowedExts = SP_Config::getValue('allowed_exts');
+$chkFiles = ( SP_Config::getValue('files_enabled') ) ? 'checked="checked"' : '';
+$chkWiki = ( SP_Config::getValue('wiki_enabled') ) ? 'checked="checked"' : '';
+$chkLdap = ( SP_Config::getValue('ldap_enabled') ) ? 'checked="checked"' : '';
+$chkMail = ( SP_Config::getValue('mail_enabled') ) ? 'checked="checked"' : '';
+$chkMailRequests = ( SP_Config::getValue('mail_requestsenabled') ) ? 'checked="checked"' : '';
+$chkMailAuth = ( SP_Config::getValue('mail_authenabled') ) ? 'checked="checked"' : '';
+$allowedExts = SP_Config::getValue('files_allowed_exts');
 ?>        
         
 <div id="title" class="midroundup titleNormal">
@@ -88,7 +89,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <label for="logenabled"><?php echo ($chkLog) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="logenabled" id="logenabled" class="checkbox" <?php echo $chkLog.' '.$txtDisabled; ?> />
+            <input type="checkbox" name="log_enabled" id="logenabled" class="checkbox" <?php echo $chkLog.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -138,7 +139,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <label for="filesenabled"><?php echo ($chkFiles) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="filesenabled" id="filesenabled" class="checkbox" <?php echo $chkFiles.' '.$txtDisabled; ?> />
+            <input type="checkbox" name="files_enabled" id="filesenabled" class="checkbox" <?php echo $chkFiles.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -157,7 +158,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 22); ?>
         </td>
         <td class="valField">
-            <input type="text" name="allowed_exts" id="allowed_exts" value="<?php echo $allowedExts; ?>"/>
+            <input type="text" name="files_allowed_exts" id="allowed_exts" value="<?php echo $allowedExts; ?>"/>
         </td>
     </tr>
     <tr>
@@ -166,7 +167,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 6); ?>
         </td>
         <td class="valField">
-            <input type="text" name="allowed_size" value="<?php echo SP_Config::getValue('allowed_size'); ?>" maxlength="5" <?php echo $txtDisabled; ?> />
+            <input type="text" name="files_allowed_size" value="<?php echo SP_Config::getValue('files_allowed_size'); ?>" maxlength="5" <?php echo $txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -200,7 +201,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <label for="wikienabled"><?php echo ($chkWiki) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="wikienabled" id="wikienabled" class="checkbox" <?php echo $chkWiki.' '.$txtDisabled; ?> />
+            <input type="checkbox" name="wiki_enabled" id="wikienabled" class="checkbox" <?php echo $chkWiki.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -209,7 +210,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 8); ?>
         </td>
         <td class="valField">
-            <input type="text" name="wikisearchurl" class="txtLong" value="<?php echo SP_Config::getValue('wikisearchurl'); ?>" maxlength="128" />
+            <input type="text" name="wiki_searchurl" class="txtLong" value="<?php echo SP_Config::getValue('wiki_searchurl'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -218,7 +219,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 9); ?>
         </td>
         <td class="valField">
-            <input type="text" name="wikipageurl" class="txtLong" value="<?php echo SP_Config::getValue('wikipageurl'); ?>" maxlength="128" />
+            <input type="text" name="wiki_pageurl" class="txtLong" value="<?php echo SP_Config::getValue('wiki_pageurl'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -227,7 +228,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 10); ?>
         </td>
         <td class="valField">
-            <input type="text" name="wikifilter" id="wikifilter" value="<?php echo SP_Config::getValue('wikifilter'); ?>" />
+            <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo SP_Config::getValue('wiki_filter'); ?>" />
         </td>
     </tr>
 </table>
@@ -247,7 +248,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <label for="ldapenabled"><?php echo ($chkLdap) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="ldapenabled" id="ldapenabled" class="checkbox" <?php echo $chkLdap.' '.$txtDisabled; ?> />
+            <input type="checkbox" name="ldap_enabled" id="ldapenabled" class="checkbox" <?php echo $chkLdap.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -256,7 +257,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 15); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldapserver" value="<?php echo SP_Config::getValue('ldapserver'); ?>" maxlength="128" />
+            <input type="text" name="ldap_server" value="<?php echo SP_Config::getValue('ldap_server'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -265,7 +266,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 12); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldapbinduser" value="<?php echo SP_Config::getValue('ldapbinduser'); ?>" maxlength="128" />
+            <input type="text" name="ldap_binduser" value="<?php echo SP_Config::getValue('ldap_binduser'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -274,7 +275,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 17); ?>
         </td>
         <td class="valField">
-            <input type="password" name="ldapbindpass" value="<?php echo SP_Config::getValue('ldapbindpass'); ?>" maxlength="128" />
+            <input type="password" name="ldap_bindpass" value="<?php echo SP_Config::getValue('ldap_bindpass'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -283,7 +284,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         <?php SP_Common::printHelpButton("config", 13); ?>
     </td>
         <td class="valField">
-            <input type="text" name="ldapbase" class="txtLong" value="<?php echo SP_Config::getValue('ldapbase'); ?>" maxlength="128" />
+            <input type="text" name="ldap_base" class="txtLong" value="<?php echo SP_Config::getValue('ldap_base'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -292,7 +293,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php SP_Common::printHelpButton("config", 14); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldapgroup" class="txtLong" value="<?php echo SP_Config::getValue('ldapgroup'); ?>" maxlength="128" />
+            <input type="text" name="ldap_group" class="txtLong" value="<?php echo SP_Config::getValue('ldap_group'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -324,7 +325,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <label for="mailenabled"><?php echo ($chkMail) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="mailenabled" id="mailenabled" class="checkbox" <?php echo $chkMail.' '.$txtDisabled; ?> />
+            <input type="checkbox" name="mail_enabled" id="mailenabled" class="checkbox" <?php echo $chkMail.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -332,7 +333,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Servidor'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailserver" size="20" value="<?php echo SP_Config::getValue('mailserver','localhost'); ?>" maxlength="128" />
+            <input type="text" name="mail_server" size="20" value="<?php echo SP_Config::getValue('mail_server','localhost'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -340,7 +341,16 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Puerto'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailport" size="20" value="<?php echo SP_Config::getValue('mailport',25); ?>" maxlength="5" />
+            <input type="text" name="mail_port" size="20" value="<?php echo SP_Config::getValue('mail_port',25); ?>" maxlength="5" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Habilitar Autentificación'); ?>
+        </td>
+        <td class="valField">
+            <label for="mailauthenabled"><?php echo ($chkMailAuth) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="mail_authenabled" id="mailauthenabled" class="checkbox" <?php echo $chkMailAuth.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -348,7 +358,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Usuario'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailuser" size="20" value="<?php echo SP_Config::getValue('mailuser'); ?>" maxlength="50" />
+            <input type="text" name="mail_user" size="20" value="<?php echo SP_Config::getValue('mail_user'); ?>" maxlength="50" />
         </td>
     </tr>
     <tr>
@@ -356,7 +366,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Clave'); ?>
         </td>
         <td class="valField">
-            <input type="password" name="mailpass" size="20" value="<?php echo SP_Config::getValue('mailpass'); ?>" maxlength="50" />
+            <input type="password" name="mail_pass" size="20" value="<?php echo SP_Config::getValue('mail_pass'); ?>" maxlength="50" />
         </td>
     </tr>
     <tr>
@@ -364,11 +374,11 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Seguridad'); ?>
         </td>
         <td class="valField">
-            <select name="mailsecurity" id="sel-mailsecurity" size="1">
+            <select name="mail_security" id="sel-mailsecurity" size="1">
                 <option></option>
                 <?php
                 foreach ( $mailSecurity as $security ){
-                    $selected = ( SP_Config::getValue('mailsecurity') == $security ) ?  "SELECTED" : "";
+                    $selected = ( SP_Config::getValue('mail_security') == $security ) ?  "SELECTED" : "";
                     echo "<option $selected>$security</option>";
                 }
                 ?>
@@ -380,7 +390,7 @@ $allowedExts = SP_Config::getValue('allowed_exts');
             <?php echo _('Dirección de correo de envío'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="mailfrom" size="20" value="<?php echo SP_Config::getValue('mailfrom'); ?>" maxlength="128" />
+            <input type="text" name="mail_from" size="20" value="<?php echo SP_Config::getValue('mail_from'); ?>" maxlength="128" />
         </td>
     </tr>
     <tr>
@@ -389,15 +399,15 @@ $allowedExts = SP_Config::getValue('allowed_exts');
         </td>
         <td class="valField">
             <label for="mailrequestsenabled"><?php echo ($chkMailRequests) ? 'ON' : 'OFF'; ?></label>
-            <input type="checkbox" name="mailrequestsenabled" id="mailrequestsenabled" class="checkbox" <?php echo $chkMailRequests.' '.$txtDisabled; ?> />
+            <input type="checkbox" name="mail_requestsenabled" id="mailrequestsenabled" class="checkbox" <?php echo $chkMailRequests.' '.$txtDisabled; ?> />
         </td>
     </tr>
 </table> 
 
 <?php if ( $isDemoMode ): ?>
-    <input type="hidden" name="logenabled" value="1" />
-    <input type="hidden" name="filesenabled" value="1" />
-    <input type="hidden" name="wikienabled" value="1" />
+    <input type="hidden" name="log_enabled" value="1" />
+    <input type="hidden" name="files_enabled" value="1" />
+    <input type="hidden" name="wiki_enabled" value="1" />
 <?php endif; ?>
     <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
     <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />

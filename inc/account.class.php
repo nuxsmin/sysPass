@@ -715,7 +715,7 @@ class SP_Account
         $accountsOk = array();
         $userId = $_SESSION["uid"];
         $errorCount = 0;
-        $demoEnabled = SP_Config::getValue('demoenabled', 0);
+        $demoEnabled = SP_Config::getValue('demo_enabled', false);
 
         $message['action'] = _('Actualizar Clave Maestra');
         $message['text'][] = _('Inicio');
@@ -867,7 +867,7 @@ class SP_Account
     {
         $idOk = array();
         $errorCount = 0;
-        $demoEnabled = SP_Config::getValue('demoenabled', 0);
+        $demoEnabled = SP_Config::getValue('demo_enabled', false);
 
         $message['action'] = _('Actualizar Clave Maestra (H)');
         $message['text'][] = _('Inicio');

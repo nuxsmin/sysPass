@@ -32,7 +32,7 @@ if ( ! SP_Init::isLoggedIn() ) {
     return;
 }
 
-if ( SP_Config::getValue('filesenabled') == 0 ){
+if ( SP_Config::getValue('files_enabled', false) === false ){
     echo _('Gestión de archivos deshabilitada');
     return false;
 }

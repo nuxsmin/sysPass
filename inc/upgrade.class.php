@@ -31,7 +31,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Upgrade
 {
-    private static $upgrade = array(110, 1121, 1122, 1123);
+    private static $dbUpgrade = array(110, 1121, 1122, 1123);
+    private static $cfgUpgrade = array(1124);
 
     /**
      * @brief Inicia el proceso de actualización de la BBDD
@@ -40,7 +41,7 @@ class SP_Upgrade
      */
     public static function doUpgrade($version)
     {
-        foreach (self::$upgrade as $upgradeVersion) {
+        foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
                 error_log($upgradeVersion);
 
@@ -109,8 +110,67 @@ class SP_Upgrade
      * @param int $version con el número de versión actual
      * @returns bool
      */
-    public static function needUpgrade($version)
+    public static function needDBUpgrade($version)
     {
-        return (in_array($version, self::$upgrade));
+        return (in_array($version, self::$dbUpgrade));
+    }
+
+    /**
+     * @brief Comprueba si es necesario actualizar la configuración
+     * @param int $version con el número de versión actual
+     * @returns bool
+     */
+    public static function needConfigUpgrade($version)
+    {
+        return (in_array($version, self::$cfgUpgrade));
+    }
+
+    /**
+     * @brief Migrar valores de configuración
+     * @param int $version con el número de versión
+     * @return bool
+     */
+    public static function upgradeConfig($version)
+    {
+        $mapParams = array(
+            'files_allowed_exts' => 'allowed_exts',
+            'files_allowed_size' => 'allowed_size',
+            'demo_enabled' => 'demoenabled',
+            'file_senabled' => 'filesenabled',
+            'ldap_base' => 'ldapbase',
+            'ldap_bindpass' => 'ldapbindpass',
+            'ldap_binduser' => 'ldapbinduser',
+            'ldap_enabled' => 'ldapenabled',
+            'ldap_group' => 'ldapgroup',
+            'ldap_server' => 'ldapserver',
+            'log_enabled' => 'logenabled',
+            'mail_enabled' => 'mailenabled',
+            'mail_from' => 'mailfrom',
+            'mail_pass' => 'mailpass',
+            'mail_port' => 'mailport',
+            'mail_requestsenabled' => 'mailrequestsenabled',
+            'mail_security' => 'mailsecurity',
+            'mail_server' => 'mailserver',
+            'mail_user' => 'mailuser',
+            'wiki_enabled' => 'wikienabled',
+            'wiki_filter' => 'wikifilter',
+            'wiki_pageurl' => 'wikipageurl',
+            'wiki_searchurl' => 'wikisearchurl'
+        );
+
+        $currData = SP_Config::getKeys(true);
+
+        foreach ( $mapParams as $newParam => $oldParam){
+            if ( array_key_exists($oldParam,$currData)){
+                SP_Config::setValue($newParam,$currData[$oldParam]);
+                SP_Config::deleteKey($oldParam);
+            }
+        }
+
+        $result['action'] = _('Actualizar Configuración');
+        $result['text'][] = _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')';
+        SP_Log::wrLogInfo($result);
+
+        return true;
     }
 }

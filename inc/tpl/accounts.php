@@ -133,7 +133,7 @@ $showHistory = (($action == 'accview' || $action == 'accviewhistory') && SP_ACL:
 $showDetails = ($action == 'accview' || $action == 'accviewhistory' || $action == 'accdelete');
 $showPass = ($action == "accnew" || $action == 'acccopy');
 $showFiles = (($action == "accedit" || $action == "accview" || $action == "accviewhistory")
-    && (SP_Config::getValue('filesenabled') == 1 && SP_ACL::checkUserAccess("accfiles")));
+    && (SP_Config::getValue('files_enabled', false) === true && SP_ACL::checkUserAccess("accfiles")));
 $showViewPass = (($action == "accview" || $action == "accviewhistory")
     && (SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) && SP_ACL::checkUserAccess("accviewpass")));
 $showSave = ($action == "accedit" || $action == "accnew" || $action == "acccopy");
@@ -150,7 +150,7 @@ $showDelete = ($action == "accdelete"
     && SP_ACL::checkUserAccess("accdelete"));
 $filesDelete = ($action == 'accedit') ? 1 : 0;
 $skey = SP_Common::getSessionKey(true);
-$maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
+$maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 ?>
 
 <div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
@@ -351,7 +351,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                 <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
                     <input type="file" id="inFile" name="inFile"/>
                 </form>
-                <div id="dropzone" class="round" data-files-ext="<?php echo SP_Config::getValue('allowed_exts'); ?>"
+                <div id="dropzone" class="round" data-files-ext="<?php echo SP_Config::getValue('files_allowed_exts'); ?>"
                      title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
                     <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                 </div>
@@ -508,7 +508,7 @@ $maxFileSize = round(SP_Config::getValue('allowed_size') / 1024, 1);
                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg"
                      OnClick="doAction('accedit','accview',<?php echo $account->accountId; ?>)"/>
             </li>
-        <?php elseif (!$showEdit && $action == 'accview' && SP_Config::getValue('mailrequestsenabled', false)): ?>
+        <?php elseif (!$showEdit && $action == 'accview' && SP_Config::getValue('mail_requestsenabled', false)): ?>
             <li>
                 <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>" class="inputImg"
                      OnClick="doAction('accrequest','accview',<?php echo $account->accountId; ?>)"/>

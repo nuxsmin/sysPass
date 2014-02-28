@@ -64,7 +64,7 @@ $message['text'][] = SP_Html::strongText(_('Descripción') . ': ') . $frmDescrip
 $mailto = implode(',', $recipients);
 
 if ($mailto
-    && SP_Config::getValue('mailrequestsenabled', false)
+    && SP_Config::getValue('mail_requestsenabled', false)
     && SP_Common::sendEmail($message, $mailto)
 ) {
     SP_Log::wrLogInfo($message);

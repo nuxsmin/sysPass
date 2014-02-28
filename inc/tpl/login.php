@@ -31,7 +31,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
     <div id="boxLogo"><img id="imgLogo" src="imgs/logo.png" title="sysPass"/></div>
     <div id="boxData">
         <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
-        <?php if ( SP_Config::getValue("demoenabled",0) ): ?>
+        <?php if ( SP_Config::getValue("demo_enabled",false) ): ?>
             <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value="" title="> demo <"/><br />
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" title="> syspass <"/><br />
             <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave maestra'); ?>" value="" title="> 01234567890 <" disabled/><br /></span>
@@ -50,9 +50,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
         <?php endif; ?>
         </form>
     </div><!-- Close boxData -->
+    <?php if (SP_Config::getValue('mail_enabled', false)): ?>
     <div id="boxActions">
         <a href="index.php?a=passreset"><?php echo _('¿Olvidó su clave?'); ?></a>
     </div>
+    <?php endif; ?>
 </div><!-- Close boxLogin -->
 
 <?php if( SP_Common::parseParams('g', 'logout', false, true) ): ?>

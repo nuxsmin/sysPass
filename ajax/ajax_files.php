@@ -40,7 +40,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     die(_('CONSULTA INVÁLIDA'));
 }
 
-if (SP_Config::getValue('filesenabled', 0) == 0) {
+if (SP_Config::getValue('files_enabled', false) == false) {
     exit(_('Gestión de archivos deshabilitada'));
 }
 
@@ -53,8 +53,8 @@ if ($action == 'upload') {
         exit();
     }
 
-    $allowedExts = strtoupper(SP_Config::getValue('allowed_exts'));
-    $allowedSize = SP_Config::getValue('allowed_size');
+    $allowedExts = strtoupper(SP_Config::getValue('files_allowed_exts'));
+    $allowedSize = SP_Config::getValue('files_allowed_size');
 
     if ($allowedExts) {
         // Extensiones aceptadas

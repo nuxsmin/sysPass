@@ -134,7 +134,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         }
     // Cambio de clave
     } elseif ($frmAction == 3) {
-        if (SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo') {
+        if (SP_Config::getValue('demo_enabled', false) && $userLogin == 'demo') {
             SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
         }
 
@@ -156,7 +156,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         SP_Common::printJSON(_('Error al modificar la clave'));
     // Eliminar usuario
     } elseif ($frmAction == 4) {
-        if (SP_Config::getValue('demoenabled', 0) && $userLogin == 'demo') {
+        if (SP_Config::getValue('demo_enabled', false) && $userLogin == 'demo') {
             SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
         }
 
