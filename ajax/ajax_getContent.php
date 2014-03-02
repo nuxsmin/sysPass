@@ -24,7 +24,7 @@
  *
  */
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -104,7 +104,6 @@ switch ($action) {
 
         if (SP_ACL::checkUserAccess("users")) {
             $arrUsersTableProp = array(
-                'itemName' => _('Usuario'),
                 'tblId' => 'tblUsers',
                 'header' => '',
                 'tblHeaders' => array(
@@ -117,8 +116,7 @@ switch ($action) {
                     'user_name',
                     'user_login',
                     'userprofile_name',
-                    'usergroup_name',
-                    array(
+                    'usergroup_name', array(
                         'user_isAdminApp' => array('img_file' => 'check_blue.png', 'img_title' => _('Admin Aplicación')),
                         'user_isAdminAcc' => array('img_file' => 'check_orange.png', 'img_title' => _('Admin Cuentas')),
                         'user_isLdap' => array('img_file' => 'ldap.png', 'img_title' => _('Usuario de LDAP')),
@@ -131,7 +129,14 @@ switch ($action) {
                 'actionId' => 1,
                 'newActionId' => 2,
                 'activeTab' => $activeTab++,
-                'actions' => array('view' => 'appMgmtData', 'edit' => 'appMgmtData', 'del' => 'appMgmtSave', 'pass' => 'usrUpdPass'));
+                'actions' => array(
+                    'new' => array('title' => _('Nuevo Usuario'), 'action' => 'appMgmtData'),
+                    'view' => array('title' => _('Ver Detalles de Usuario'), 'action' => 'appMgmtData'),
+                    'edit' => array('title' => _('Editar Usuario'), 'action' => 'appMgmtData'),
+                    'del' => array('title' => _('Eliminar Usuario'), 'action' => 'appMgmtSave'),
+                    'pass' => array('title' => _('Cambiar Clave de Usuario'), 'action' => 'usrUpdPass')
+                )
+            );
 
             echo '<DIV ID="tabs-1">';
             $startTime = microtime();
@@ -146,7 +151,6 @@ switch ($action) {
 
         if (SP_ACL::checkUserAccess("groups")) {
             $arrGroupsTableProp = array(
-                'itemName' => _('Grupo'),
                 'tblId' => 'tblGroups',
                 'header' => '',
                 'tblHeaders' => array(_('Nombre'), _('Descripción')),
@@ -157,7 +161,12 @@ switch ($action) {
                 'actionId' => 3,
                 'newActionId' => 4,
                 'activeTab' => $activeTab++,
-                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave'));
+                'actions' => array(
+                    'new' => array('title' => _('Nuevo Grupo'), 'action' => 'appMgmtData'),
+                    'edit' => array('title' => _('Editar Grupo'), 'action' => 'appMgmtData'),
+                    'del' => array('title' => _('Eliminar Grupo'), 'action' => 'appMgmtSave')
+                )
+            );
 
             echo '<DIV ID="tabs-2">';
 
@@ -174,7 +183,6 @@ switch ($action) {
 
         if (SP_ACL::checkUserAccess("profiles")) {
             $arrProfilesTableProp = array(
-                'itemName' => _('Perfil'),
                 'tblId' => 'tblProfiles',
                 'header' => '',
                 'tblHeaders' => array(_('Nombre')),
@@ -185,7 +193,12 @@ switch ($action) {
                 'actionId' => 5,
                 'newActionId' => 6,
                 'activeTab' => $activeTab++,
-                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave'));
+                'actions' => array(
+                    'new' => array('title' => _('Nuevo Perfil'), 'action' => 'appMgmtData'),
+                    'edit' => array('title' => _('Editar Perfil'), 'action' => 'appMgmtData'),
+                    'del' => array('title' => _('Eliminar Perfil'), 'action' => 'appMgmtSave')
+                )
+            );
 
             echo '<DIV ID="tabs-3">';
 
@@ -223,7 +236,6 @@ switch ($action) {
 
         if (SP_ACL::checkUserAccess("categories")) {
             $arrCategoriesTableProp = array(
-                'itemName' => _('Categoría'),
                 'tblId' => 'tblCategories',
                 'header' => '',
                 'tblHeaders' => array(_('Nombre'), _('Descripción')),
@@ -234,7 +246,11 @@ switch ($action) {
                 'actionId' => 9,
                 'newActionId' => 10,
                 'activeTab' => $activeTab++,
-                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave')
+                'actions' => array(
+                    'new' => array('title' => _('Nueva Categoría'), 'action' => 'appMgmtData'),
+                    'edit' => array('title' => _('Editar Categoría'), 'action' => 'appMgmtData'),
+                    'del' => array('title' => _('Eliminar Categoría'), 'action' => 'appMgmtSave')
+                )
             );
 
             echo '<DIV ID="tabs-1">';
@@ -252,7 +268,6 @@ switch ($action) {
 
         if (SP_ACL::checkUserAccess("customers")) {
             $arrCustomersTableProp = array(
-                'itemName' => _('Cliente'),
                 'tblId' => 'tblCustomers',
                 'header' => '',
                 'tblHeaders' => array(_('Nombre'), _('Descripción')),
@@ -263,7 +278,11 @@ switch ($action) {
                 'actionId' => 7,
                 'newActionId' => 8,
                 'activeTab' => $activeTab++,
-                'actions' => array('edit' => 'appMgmtData', 'del' => 'appMgmtSave')
+                'actions' => array(
+                    'new' => array('title' => _('Nuevo Cliente'), 'action' => 'appMgmtData'),
+                    'edit' => array('title' => _('Editar Cliente'), 'action' => 'appMgmtData'),
+                    'del' => array('title' => _('Eliminar Cliente'), 'action' => 'appMgmtSave')
+                )
             );
 
             echo '<DIV ID="tabs-2">';

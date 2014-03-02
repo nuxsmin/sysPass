@@ -491,10 +491,11 @@ class SP_Html
     public static function getQueryTable($arrTableProp, $queryItems)
     {
         $sk = SP_Common::getSessionKey(true);
+        $maxNumActions = 3;
 
         echo '<div class="action fullWidth">';
         echo '<ul>';
-        echo '<LI><img src="imgs/add.png" title="' . _('Nuevo') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" OnClick="' . $arrTableProp["actions"]['edit'] . '(0,' . $arrTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrTableProp["activeTab"] . ',0);" /></LI>';
+        echo '<LI><img src="imgs/add.png" title="' . $arrTableProp["actions"]['new']['title'] . '" class="inputImg" OnClick="' . $arrTableProp["actions"]['new']['action'] . '(0,' . $arrTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrTableProp["activeTab"] . ',0);" /></LI>';
         echo '</ul>';
         echo '</div>';
 
@@ -525,7 +526,7 @@ class SP_Html
             $intId = $item->$arrTableProp["tblRowSrcId"];
             $action_check = array();
             $numActions = count($arrTableProp["actions"]);
-            $classActionsOptional = ($numActions > 2) ? 'actions-optional' : '';
+            $classActionsOptional = ($numActions > $maxNumActions) ? 'actions-optional' : '';
 
             echo '<ul>';
 
@@ -552,24 +553,24 @@ class SP_Html
             foreach ($arrTableProp["actions"] as $action => $function) {
                 switch ($action) {
                     case "view":
-                        echo '<img src="imgs/view.png" title="' . _('Ver Detalles') . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['view'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',1);" />';
+                        echo '<img src="imgs/view.png" title="' . $arrTableProp['actions']['view']['title'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['view']['action'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',1);" />';
                         break;
                     case "edit":
-                        echo '<img src="imgs/edit.png" title="' . _('Editar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['edit'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',0);" />';
+                        echo '<img src="imgs/edit.png" title="' . $arrTableProp['actions']['edit']['title'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['edit']['action'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',0);" />';
                         break;
                     case "del":
-                        echo '<img src="imgs/delete.png" title="' . _('Eliminar') . ' ' . $arrTableProp['itemName'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['del'] . '(' . $arrTableProp["activeTab"] . ',1,' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', \'' . $arrTableProp["onCloseAction"] . '\');" />';
+                        echo '<img src="imgs/delete.png" title="' . $arrTableProp['actions']['del']['title'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['del']['action'] . '(' . $arrTableProp["activeTab"] . ',1,' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', \'' . $arrTableProp["onCloseAction"] . '\');" />';
                         break;
                     case "pass":
                         if (isset($action_check['user_isLdap'])) {
                             break;
                         }
 
-                        echo '<img src="imgs/key.png" title="' . _('Cambiar Clave') . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['pass'] . '(' . $intId . ');" />';
+                        echo '<img src="imgs/key.png" title="' . $arrTableProp['actions']['pass']['title'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['pass']['action'] . '(' . $intId . ');" />';
                         break;
                 }
             }
-            echo ($numActions > 2) ? '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />' : '';
+            echo ($numActions > $maxNumActions) ? '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />' : '';
             echo '</li>';
             echo '</ul>';
         }
