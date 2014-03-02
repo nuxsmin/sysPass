@@ -31,7 +31,11 @@ $onCloseAction = $data['onCloseAction'];
 
 SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         
-$arrLangAvailable = array('Español' => 'es_ES','English' => 'en_US', 'Deutsch' => 'de_DE');
+$arrLangAvailable = array(
+    'Español' => 'es_ES',
+    'English' => 'en_US',
+    'Deutsch' => 'de_DE',
+    'Magyar' => 'hu_HU');
 $arrAccountCount = array(6,9,12,15,21,27,30,51,99);
 $mailSecurity = array('SSL','TLS');
 
