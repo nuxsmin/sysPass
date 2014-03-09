@@ -39,41 +39,43 @@ $passReset =  ( $action === 'passreset' && $hash && $time );
         </div>
     <?php endif; ?>
 
-    <form id="passreset" action="" method="post" onsubmit="sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
-        <fieldset id="resetdata">
-            <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
-            <?php if ( ! $passReset ): ?>
-            <p>
-                <input type="text" name="login" id="login" title="<?php echo _('Login del Usuario'); ?>" placeholder="<?php echo _('Usuario'); ?> " value="<?php echo SP_Util::init_var('login'); ?>" autocomplete="off" autofocus required />
-                <img class="svg" src="<?php //p(image_path('', 'actions/user.svg'));  ?>" alt="" />
-            </p>
-            <p>
-                <input type="text" name="email" id="email" title="<?php echo _('Email del Usuario'); ?>" placeholder="<?php echo _('Email'); ?>  " value="<?php echo SP_Util::init_var('email'); ?>" autocomplete="off" autofocus required />
-                <img class="svg" src="<?php //p(image_path('', 'actions/user.svg'));  ?>" alt="" />
-            </p>
-            <?php else: ?>
-            <p>
-                <input type="password" name="pass" id="pass" title="<?php echo _('Nueva Clave'); ?>" placeholder="<?php echo _('Clave'); ?>" value="<?php echo SP_Util::init_var('pass'); ?>" required/>
-                <img class="svg" id="adminpass-icon" src="<?php //print_unescaped(image_path('', 'actions/password.svg'));  ?>" alt="" />
-            </p>
-            <p>
-                <input type="password" name="passv" id="passv" title="<?php echo _('Nueva Clave (Verificar)'); ?>" placeholder="<?php echo _('Clave (Verificar)'); ?>" value="<?php echo SP_Util::init_var('passv'); ?>" required/>
-                <img class="svg" id="adminpass-icon" src="<?php //print_unescaped(image_path('', 'actions/password.svg'));  ?>" alt="" />
-            </p>
-            <input type="hidden" name="time" value="<?php echo $time; ?>">
-            <input type="hidden" name="hash" value="<?php echo $hash; ?>">
-            <?php endif; ?>
-            <input type="hidden" name="isAjax" value="1">
-            <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
-        </fieldset>
+    <?php if (SP_Util::mailIsEnabled()){ ?>
+        <form id="passreset" action="" method="post" onsubmit="sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
+            <fieldset id="resetdata">
+                <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
+                <?php if ( ! $passReset ): ?>
+                <p>
+                    <input type="text" name="login" id="login" title="<?php echo _('Login del Usuario'); ?>" placeholder="<?php echo _('Usuario'); ?> " value="<?php echo SP_Util::init_var('login'); ?>" autocomplete="off" autofocus required />
+                    <img class="svg" src="<?php //p(image_path('', 'actions/user.svg'));  ?>" alt="" />
+                </p>
+                <p>
+                    <input type="text" name="email" id="email" title="<?php echo _('Email del Usuario'); ?>" placeholder="<?php echo _('Email'); ?>  " value="<?php echo SP_Util::init_var('email'); ?>" autocomplete="off" autofocus required />
+                    <img class="svg" src="<?php //p(image_path('', 'actions/user.svg'));  ?>" alt="" />
+                </p>
+                <?php else: ?>
+                <p>
+                    <input type="password" name="pass" id="pass" title="<?php echo _('Nueva Clave'); ?>" placeholder="<?php echo _('Clave'); ?>" value="<?php echo SP_Util::init_var('pass'); ?>" required/>
+                    <img class="svg" id="adminpass-icon" src="<?php //print_unescaped(image_path('', 'actions/password.svg'));  ?>" alt="" />
+                </p>
+                <p>
+                    <input type="password" name="passv" id="passv" title="<?php echo _('Nueva Clave (Verificar)'); ?>" placeholder="<?php echo _('Clave (Verificar)'); ?>" value="<?php echo SP_Util::init_var('passv'); ?>" required/>
+                    <img class="svg" id="adminpass-icon" src="<?php //print_unescaped(image_path('', 'actions/password.svg'));  ?>" alt="" />
+                </p>
+                <input type="hidden" name="time" value="<?php echo $time; ?>">
+                <input type="hidden" name="hash" value="<?php echo $hash; ?>">
+                <?php endif; ?>
+                <input type="hidden" name="isAjax" value="1">
+                <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
+            </fieldset>
 
-        <div class="buttons">
-            <?php echo SP_Html::anchorText(_('Volver'),'index.php',_('Volver a iniciar sesión'),'class="button round5"'); ?>
-            <?php if ( ! $passReset ): ?>
-                <input type="submit" class="button round5" value="<?php echo _('Solicitar'); ?>" title="<?php echo _('Solicitar cambio de clave'); ?>" />
-            <?php else: ?>
-                <input type="submit" class="button round5" value="<?php echo _('Cambiar'); ?>" title="<?php echo _('Cambiar Clave'); ?>" />
-            <?php endif; ?>
-        </div>
-    </form>
+            <div class="buttons">
+                <?php echo SP_Html::anchorText(_('Volver'),'index.php',_('Volver a iniciar sesión'),'class="button round5"'); ?>
+                <?php if ( ! $passReset ): ?>
+                    <input type="submit" class="button round5" value="<?php echo _('Solicitar'); ?>" title="<?php echo _('Solicitar cambio de clave'); ?>" />
+                <?php else: ?>
+                    <input type="submit" class="button round5" value="<?php echo _('Cambiar'); ?>" title="<?php echo _('Cambiar Clave'); ?>" />
+                <?php endif; ?>
+            </div>
+        </form>
+    <?php } else{ SP_Html::showCommonError('unavailable');} ?>
 </div>

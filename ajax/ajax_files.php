@@ -40,7 +40,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     die(_('CONSULTA INVÁLIDA'));
 }
 
-if (SP_Config::getValue('files_enabled', false) == false) {
+if (!SP_Util::fileIsEnabled()) {
     exit(_('Gestión de archivos deshabilitada'));
 }
 

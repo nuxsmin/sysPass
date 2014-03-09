@@ -92,7 +92,7 @@ class SP_Log
      */
     public static function wrLogInfo($message)
     {
-        if (SP_Config::getValue('log_enabled', false) === false || !is_array($message)) {
+        if (!SP_Util::logIsEnabled() || !is_array($message)) {
             return false;
         }
 

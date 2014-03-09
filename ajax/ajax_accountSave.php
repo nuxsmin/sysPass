@@ -108,6 +108,10 @@ if ($frmSaveType == 1) {
     if ($frmPassword != $frmPasswordV) {
         SP_Common::printJSON(_('Las claves no coinciden'));
     }
+} elseif ($frmSaveType == 5) {
+    if (!$frmAccountId) {
+        SP_Common::printJSON(_('Id inválido'));
+    }
 } else {
     SP_Common::printJSON(_('Acción Inválida'));
 }
@@ -233,6 +237,32 @@ switch ($frmSaveType) {
             SP_Common::printJSON(_('Clave actualizada'), 0);
         }
         SP_Common::printJSON(_('Error al actualizar la clave'));
+        break;
+    case 5:
+        $account->accountId = $frmAccountId;
+        $accountHistData = $account->getAccountHistory();
+
+        $account->accountId = $accountHistData->account_id;
+        $account->accountName = $accountHistData->account_name;
+        $account->accountCategoryId = $accountHistData->account_categoryId;
+        $account->accountCustomerId = $accountHistData->account_customerId;
+        $account->accountLogin = $accountHistData->account_login;
+        $account->accountUrl = $accountHistData->account_url;
+        $account->accountPass = $accountHistData->account_pass;
+        $account->accountIV = $accountHistData->account_IV;
+        $account->accountNotes = $accountHistData->account_notes;
+        $account->accountUserId = $accountHistData->account_userId;
+        $account->accountUserGroupId = $accountHistData->account_userGroupId;
+        $account->accountOtherUserEdit = $accountHistData->account_otherUserEdit;
+        $account->accountOtherGroupEdit = $accountHistData->account_otherGroupEdit;
+        $account->accountUserEditId = $userId;
+
+        // Restaurar cuenta y clave
+        if ($account->updateAccount(true) && $account->updateAccountPass(false,true)) {
+            SP_Common::printJSON(_('Cuenta restaurada'), 0);
+        }
+
+        SP_Common::printJSON(_('Error al restaurar cuenta'));
         break;
     default:
         SP_Common::printJSON(_('Acción Inválida'));

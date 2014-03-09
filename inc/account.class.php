@@ -272,15 +272,17 @@ class SP_Account
             . "acchistory_dateAdd as account_dateAdd,"
             . "acchistory_dateEdit as account_dateEdit,"
             . "acchistory_userId as account_userId,"
-            . "acchistory_userGroupId as account_useGroupId,"
+            . "acchistory_userGroupId as account_userGroupId,"
             . "acchistory_userEditId as account_userEditId,"
             . "acchistory_isModify,"
             . "acchistory_isDeleted,"
             . "acchistory_otherUserEdit as account_otherUserEdit,"
             . "acchistory_otherGroupEdit as account_otherGroupEdit,"
             . "u1.user_name,"
+            . "u1.user_login,"
             . "usergroup_name,"
             . "u2.user_name as user_editName,"
+            . "u2.user_login as user_editLogin,"
             . "category_name, customer_name "
             . "FROM accHistory "
             . "LEFT JOIN categories ON acchistory_categoryId = category_id "
@@ -296,19 +298,20 @@ class SP_Account
             return false;
         }
 
-        $this->accountUserId = $queryRes->acchistory_userId;
-        $this->accountUserGroupId = $queryRes->acchistory_userGroupId;
-        $this->accountOtherUserEdit = $queryRes->acchistory_otherUserEdit;
-        $this->accountOtherGroupEdit = $queryRes->acchistory_otherGroupEdit;
+        $this->accountUserId = $queryRes->account_userId;
+        $this->accountUserGroupId = $queryRes->account_userGroupId;
+        $this->accountOtherUserEdit = $queryRes->account_otherUserEdit;
+        $this->accountOtherGroupEdit = $queryRes->account_otherGroupEdit;
 
         return $queryRes;
     }
 
     /**
      * @brief Actualiza los datos de una cuenta en la BBDD
+     * @param bool $isRestore si es una restauración de cuenta
      * @return bool
      */
-    public function updateAccount()
+    public function updateAccount($isRestore = false)
     {
         $message['action'][] = __FUNCTION__;
 
@@ -319,20 +322,26 @@ class SP_Account
             return false;
         }
 
-        if (!SP_Groups::updateGroupsForAccount($this->accountId, $this->accountUserGroupsId)) {
-            $message['text'][] = _('Error al actualizar los grupos secundarios');
-            SP_Log::wrLogInfo($message);
-            $message['text'] = array();
-        }
+        if ( ! $isRestore ){
+            $message['action'] = _('Actualizar Cuenta');
 
-        if (!SP_Users::updateUsersForAccount($this->accountId, $this->accountUsersId)) {
-            $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
-            SP_Log::wrLogInfo($message);
-            $message['text'] = array();
+            if (!SP_Groups::updateGroupsForAccount($this->accountId, $this->accountUserGroupsId)) {
+                $message['text'][] = _('Error al actualizar los grupos secundarios');
+                SP_Log::wrLogInfo($message);
+                $message['text'] = array();
+            }
+
+            if (!SP_Users::updateUsersForAccount($this->accountId, $this->accountUsersId)) {
+                $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
+                SP_Log::wrLogInfo($message);
+                $message['text'] = array();
+            }
+        } else {
+            $message['action'] = _('Restaurar Cuenta');
         }
 
         $query = "UPDATE accounts SET "
-            . "account_customerId = '" . DB::escape($this->accountCustomerId) . "',"
+            . "account_customerId = " . (int)$this->accountCustomerId . ","
             . "account_categoryId = " . (int)$this->accountCategoryId . ","
             . "account_name = '" . DB::escape($this->accountName) . "',"
             . "account_login = '" . DB::escape($this->accountLogin) . "',"
@@ -379,6 +388,7 @@ class SP_Account
 
         $query = "INSERT INTO accHistory SET "
             . "acchistory_accountId = " . $objAccountHist->accountId . ","
+            . "acchistory_categoryId = " . $accountData->account_categoryId . ","
             . "acchistory_customerId = " . $accountData->account_customerId . ","
             . "acchistory_name = '" . DB::escape($accountData->account_name) . "',"
             . "acchistory_login = '" . DB::escape($accountData->account_login) . "',"
@@ -433,11 +443,13 @@ class SP_Account
             . "account_dateEdit,"
             . "account_otherUserEdit,"
             . "account_otherGroupEdit,"
-            . "u1.user_name as user_name,"
+            . "u1.user_name,"
+            . "u1.user_login,"
             . "u2.user_name as user_editName,"
+            . "u2.user_login as user_editLogin,"
             . "usergroup_name,"
             . "customer_name, "
-            . "CONCAT(account_name,account_categoryId,account_customerId,account_login,account_url,account_notes) as modHash "
+            . "CONCAT(account_name,account_categoryId,account_customerId,account_login,account_url,account_notes,BIN(account_otherUserEdit),BIN(account_otherGroupEdit)) as modHash "
             . "FROM accounts "
             . "LEFT JOIN categories ON account_categoryId = category_id "
             . "LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id "
@@ -715,7 +727,7 @@ class SP_Account
         $accountsOk = array();
         $userId = $_SESSION["uid"];
         $errorCount = 0;
-        $demoEnabled = SP_Config::getValue('demo_enabled', false);
+        $demoEnabled = SP_Util::demoIsEnabled();
 
         $message['action'] = _('Actualizar Clave Maestra');
         $message['text'][] = _('Inicio');
@@ -812,14 +824,15 @@ class SP_Account
     /**
      * @brief Actualiza la clave de una cuenta en la BBDD
      * @param bool $isMassive para no actualizar el histórico ni enviar mensajes
+     * @param bool $isRestore indica si es una restauración
      * @return bool
      */
-    public function updateAccountPass($isMassive = false)
+    public function updateAccountPass($isMassive = false, $isRestore = false)
     {
         $message['action'] = __FUNCTION__;
 
-        // No actualizar el histórico si es por cambio de clave maestra
-        if (!$isMassive) {
+        // No actualizar el histórico si es por cambio de clave maestra o restauración
+        if (!$isMassive && !$isRestore) {
             // Guardamos una copia de la cuenta en el histórico
             if (!$this->addHistory($this->accountId, $this->accountUserEditId, false)) {
                 $message['text'][] = _('Error al actualizar el historial');
@@ -840,8 +853,8 @@ class SP_Account
         }
 
         // No escribir en el log ni enviar correos si la actualización es
-        // por cambio de clave maestra...
-        if (!$isMassive) {
+        // por cambio de clave maestra o restauración
+        if (!$isMassive && !$isRestore) {
             $accountInfo = array('customer_name', 'account_name');
             $this->getAccountInfoById($accountInfo);
 
@@ -867,7 +880,7 @@ class SP_Account
     {
         $idOk = array();
         $errorCount = 0;
-        $demoEnabled = SP_Config::getValue('demo_enabled', false);
+        $demoEnabled = SP_Util::demoIsEnabled();
 
         $message['action'] = _('Actualizar Clave Maestra (H)');
         $message['text'][] = _('Inicio');
@@ -1059,6 +1072,8 @@ class SP_Account
                 $this->accountLogin.
                 $this->accountUrl.
                 $this->accountNotes.
+                $this->accountOtherUserEdit.
+                $this->accountOtherGroupEdit.
                 (int)$users.
                 (int)$groups;
             //error_log("HASH PHP: ".$hashItems);
@@ -1069,12 +1084,15 @@ class SP_Account
 
     /**
      * @brief Devolver datos de la cuenta para comprobación de accesos
+     * @param int $accountId con el id de la cuenta
      * @return array con los datos de la cuenta
      */
-    public function getAccountDataForACL()
+    public function getAccountDataForACL($accountId = null)
     {
+        $accId = (!is_null($accountId)) ? $accountId : $this->accountId;
+
         return array(
-            'id' => $this->accountId,
+            'id' => $accId,
             'user_id' => $this->accountUserId,
             'group_id' => $this->accountUserGroupId,
             'users_id' => $this->getUsersAccount(),
@@ -1102,18 +1120,16 @@ class SP_Account
             }
         }
 
-        $query = "SELECT accuser_userId "
-            . "FROM accUsers "
-            . "WHERE accuser_accountId = " . (int)$accId;
+        //error_log('Users cache MISS '.$accId);
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $users = SP_Users::getUsersForAccount($accId);
 
-        if ($queryRes === false) {
+        if (!is_array($users)) {
             return array();
         }
 
-        foreach ($queryRes as $users) {
-            $this->accountCacheUsersId[$accId][] = $users->accuser_userId;
+        foreach ($users as $user) {
+            $this->accountCacheUsersId[$accId][] = $user->accuser_userId;
         }
 
         return $this->accountCacheUsersId[$accId];

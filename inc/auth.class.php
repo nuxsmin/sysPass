@@ -42,7 +42,7 @@ class SP_Auth
      */
     public static function authUserLDAP($userLogin, $userPass)
     {
-        if (!SP_Util::ldapIsAvailable() || !SP_Config::getValue('ldap_enabled', false) || !SP_LDAP::checkLDAPParams()) {
+        if (!SP_Util::ldapIsAvailable() || !SP_Util::ldapIsEnabled() || !SP_LDAP::checkLDAPParams()) {
             return false;
         }
 

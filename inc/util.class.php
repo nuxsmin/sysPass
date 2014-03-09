@@ -302,4 +302,67 @@ class SP_Util
 
         SP_Log::wrLogInfo($message);
     }
+
+    /**
+     * @brief Comprobar si está en modo DEMO
+     * @return bool
+     */
+    public static function demoIsEnabled()
+    {
+        return SP_Config::getValue('demo_enabled', false);
+    }
+
+    /**
+     * @brief Comprobar si está habilitada la gestión de archivos
+     * @return bool
+     */
+    public static function fileIsEnabled()
+    {
+        return SP_Config::getValue('files_enabled', false);
+    }
+
+    /**
+     * @brief Comprobar si están habilitadas las notificaciones por correo
+     * @return bool
+     */
+    public static function mailIsEnabled()
+    {
+        return SP_Config::getValue('mail_enabled', false);
+    }
+
+    /**
+     * @brief Comprobar si está habilitada la Wiki
+     * @return bool
+     */
+    public static function wikiIsEnabled()
+    {
+        return SP_Config::getValue('wiki_enabled', false);
+    }
+
+    /**
+     * @brief Comprobar si están habilitadas las peticiones por correo
+     * @return bool
+     */
+    public static function mailrequestIsEnabled()
+    {
+        return SP_Config::getValue('mail_requestsenabled', false);
+    }
+
+    /**
+     * @brief Comprobar si está habilitado LDAP
+     * @return bool
+     */
+    public static function ldapIsEnabled()
+    {
+        return SP_Config::getValue('ldap_enabled', false);
+    }
+
+    /**
+     * @brief Comprobar si está habilitado el log de eventos
+     * @return bool
+     */
+    public static function logIsEnabled()
+    {
+        return SP_Config::getValue('log_enabled', false);
+    }
 }

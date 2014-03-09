@@ -136,7 +136,7 @@ class SP_Upgrade
             'files_allowed_exts' => 'allowed_exts',
             'files_allowed_size' => 'allowed_size',
             'demo_enabled' => 'demoenabled',
-            'file_senabled' => 'filesenabled',
+            'files_enabled' => 'filesenabled',
             'ldap_base' => 'ldapbase',
             'ldap_bindpass' => 'ldapbindpass',
             'ldap_binduser' => 'ldapbinduser',

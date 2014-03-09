@@ -27,7 +27,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 $startTime = microtime();
 $rowClass = "row_even";
-$isDemoMode = SP_Config::getValue('demo_enabled', false);
+$isDemoMode = SP_Util::demoIsEnabled();
 $start = ( isset($data['start']) ) ? (int) $data['start'] : 0;
 
 $events = SP_Log::getEvents($start);

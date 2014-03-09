@@ -314,13 +314,6 @@ function saveAccount(frm) {
     var savetyp = $('input[name="savetyp"]').val();
     var action = $('input[name="next"]').val();
 
-    switch (savetyp) {
-        case "1":
-            break;
-        case "2":
-            break;
-    }
-
     $('#btnGuardar').attr('disabled', true);
     $.fancybox.showLoading();
 

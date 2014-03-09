@@ -49,38 +49,38 @@ $doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
 if ($frmAction == "config") {
     $frmSiteLang = SP_Common::parseParams('p', 'sitelang');
     $frmSessionTimeout = SP_Common::parseParams('p', 'session_timeout', 300);
-    $frmLog = SP_Common::parseParams('p', 'log_enabled', 0, false, 1);
-    $frmDebug = SP_Common::parseParams('p', 'debug', 0, false, 1);
-    $frmMaintenance = SP_Common::parseParams('p', 'maintenance', 0, false, 1);
-    $frmCheckUpdates = SP_Common::parseParams('p', 'updates', 0, false, 1);
-    $frmFiles = SP_Common::parseParams('p', 'files_enabled', 0, false, 1);
-    $frmGlobalSearch = SP_Common::parseParams('p', 'globalsearch', 0, false, 1);
-    $frmAccountLink = SP_Common::parseParams('p', 'account_link', 0, false, 1);
+    $frmLog = SP_Common::parseParams('p', 'log_enabled', false, false, true);
+    $frmDebug = SP_Common::parseParams('p', 'debug', false, false, true);
+    $frmMaintenance = SP_Common::parseParams('p', 'maintenance', false, false, true);
+    $frmCheckUpdates = SP_Common::parseParams('p', 'updates', false, false, true);
+    $frmFiles = SP_Common::parseParams('p', 'files_enabled', false, false, true);
+    $frmGlobalSearch = SP_Common::parseParams('p', 'globalsearch', false, false, true);
+    $frmAccountLink = SP_Common::parseParams('p', 'account_link', false, false, true);
     $frmAccountCount = SP_Common::parseParams('p', 'account_count', 10);
     $frmAllowedSize = SP_Common::parseParams('p', 'files_allowed_size', 1024);
     $frmAllowedExts = SP_Common::parseParams('p', 'files_allowed_exts');
 
-    $frmWiki = SP_Common::parseParams('p', 'wiki_enabled', 0, false, 1);
+    $frmWiki = SP_Common::parseParams('p', 'wiki_enabled', false, false, true);
     $frmWikiSearchUrl = SP_Common::parseParams('p', 'wiki_searchurl');
     $frmWikiPageUrl = SP_Common::parseParams('p', 'wiki_pageurl');
     $frmWikiFilter = SP_Common::parseParams('p', 'wiki_filter');
 
-    $frmLdap = SP_Common::parseParams('p', 'ldap_enabled', 0, false, 1);
+    $frmLdap = SP_Common::parseParams('p', 'ldap_enabled', false, false, true);
     $frmLdapServer = SP_Common::parseParams('p', 'ldap_server');
     $frmLdapBase = SP_Common::parseParams('p', 'ldap_base');
     $frmLdapGroup = SP_Common::parseParams('p', 'ldap_group');
     $frmLdapBindUser = SP_Common::parseParams('p', 'ldap_binduser');
     $frmLdapBindPass = SP_Common::parseParams('p', 'ldap_bindpass');
 
-    $frmMail = SP_Common::parseParams('p', 'mail_enabled', 0, false, 1);
+    $frmMail = SP_Common::parseParams('p', 'mail_enabled', false, false, true);
     $frmMailServer = SP_Common::parseParams('p', 'mail_server');
     $frmMailPort = SP_Common::parseParams('p', 'mail_port',25);
     $frmMailUser = SP_Common::parseParams('p', 'mail_user');
     $frmMailPass = SP_Common::parseParams('p', 'mail_pass');
     $frmMailSecurity = SP_Common::parseParams('p', 'mail_security');
     $frmMailFrom = SP_Common::parseParams('p', 'mail_from');
-    $frmMailRequests = SP_Common::parseParams('p', 'mail_requestsenabled', 0, false, 1);
-    $frmMailAuth = SP_Common::parseParams('p', 'mail_authenabled', 0, false, 1);
+    $frmMailRequests = SP_Common::parseParams('p', 'mail_requestsenabled', false, false, true);
+    $frmMailAuth = SP_Common::parseParams('p', 'mail_authenabled', false, false, true);
 
     if ($frmAccountCount == "all") {
         $intAccountCount = 99;
@@ -199,7 +199,7 @@ if ($frmAction == "config") {
         $objAccount->updateAllAccountsHistoryMPass($currentMasterPass, $newMasterPass, $hashMPass);
     }
 
-    if (SP_Config::getValue('demo_enabled', false)) {
+    if (SP_Util::demoIsEnabled()) {
         SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
     }
 

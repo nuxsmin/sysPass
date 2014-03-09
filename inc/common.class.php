@@ -39,7 +39,7 @@ class SP_Common
      */
     public static function sendEmail($message, $mailTo = '', $isEvent = true)
     {
-        if (SP_Config::getValue('mail_enabled', false) === false) {
+        if (!SP_Util::mailIsEnabled()) {
             return false;
         }
 

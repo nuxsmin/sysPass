@@ -39,7 +39,7 @@ $arrLangAvailable = array(
 $arrAccountCount = array(6,9,12,15,21,27,30,51,99);
 $mailSecurity = array('SSL','TLS');
 
-$isDemoMode = SP_Config::getValue('demo_enabled',false);
+$isDemoMode = SP_Util::demoIsEnabled();
 
 $txtDisabled = ( $isDemoMode ) ? "DISABLED" : "";
 $chkLog = ( SP_Config::getValue('log_enabled') ) ? 'checked="checked"' : '';
@@ -379,8 +379,9 @@ $allowedExts = SP_Config::getValue('files_allowed_exts');
         </td>
         <td class="valField">
             <select name="mail_security" id="sel-mailsecurity" size="1">
-                <option></option>
+
                 <?php
+                echo '<option>'._('Deshabilitada').'</option>';
                 foreach ( $mailSecurity as $security ){
                     $selected = ( SP_Config::getValue('mail_security') == $security ) ?  "SELECTED" : "";
                     echo "<option $selected>$security</option>";
