@@ -184,8 +184,8 @@ class SP_Auth
         ) {
             $hash = SP_Util::generate_random_bytes();
 
-            $message['action'] = _('Recuperación de Clave');
-            $message['text'][] = SP_Html::strongText(_('Se ha solicitado la recuperación de su clave de usuario.'));
+            $message['action'] = _('Cambio de Clave');
+            $message['text'][] = SP_Html::strongText(_('Se ha solicitado el cambio de su clave de usuario.'));
             $message['text'][] = '';
             $message['text'][] = _('Para completar el proceso es necesario que acceda a la siguiente URL:');
             $message['text'][] = '';

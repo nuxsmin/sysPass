@@ -785,6 +785,12 @@ class SP_Users
         $message['action'] = _('Nuevo Usuario');
         $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
+        if ($this->userChangePass){
+            if ( ! SP_Auth::mailPassRecover(DB::escape($this->userLogin),DB::escape($this->userEmail)) ){
+                $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
+            }
+        }
+
         SP_Log::wrLogInfo($message);
         SP_Common::sendEmail($message);
 
@@ -819,6 +825,12 @@ class SP_Users
 
         $message['action'] = _('Modificar Usuario');
         $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
+
+        if ($this->userChangePass){
+            if ( ! SP_Auth::mailPassRecover(DB::escape($this->userLogin),DB::escape($this->userEmail)) ){
+                $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
+            }
+        }
 
         SP_Log::wrLogInfo($message);
         SP_Common::sendEmail($message);
