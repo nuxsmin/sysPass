@@ -38,11 +38,11 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmLdapServer = SP_Common::parseParams('p', 'ldapserver');
-$frmLdapBase = SP_Common::parseParams('p', 'ldapbase');
-$frmLdapGroup = SP_Common::parseParams('p', 'ldapgroup');
-$frmLdapBindUser = SP_Common::parseParams('p', 'ldapbinduser');
-$frmLdapBindPass = SP_Common::parseParams('p', 'ldapbindpass');
+$frmLdapServer = SP_Common::parseParams('p', 'ldap_server');
+$frmLdapBase = SP_Common::parseParams('p', 'ldap_base');
+$frmLdapGroup = SP_Common::parseParams('p', 'ldap_group');
+$frmLdapBindUser = SP_Common::parseParams('p', 'ldap_binduser');
+$frmLdapBindPass = SP_Common::parseParams('p', 'ldap_bindpass');
 
 $resCheckLdap = SP_LDAP::checkLDAPConn($frmLdapServer,$frmLdapBindUser,$frmLdapBindPass,$frmLdapBase,$frmLdapGroup);
 

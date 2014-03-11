@@ -930,13 +930,13 @@ function resMsg(type, txt, url, action) {
 
 // Función para comprobar la conexión con LDAP
 function checkLdapConn() {
-    var ldapServer = $('#frmConfig').find('[name=ldapserver]').val();
-    var ldapBase = $('#frmConfig').find('[name=ldapbase]').val();
-    var ldapGroup = $('#frmConfig').find('[name=ldapgroup]').val();
-    var ldapBindUser = $('#frmConfig').find('[name=ldapbinduser]').val();
-    var ldapBindPass = $('#frmConfig').find('[name=ldapbindpass]').val();
+    var ldapServer = $('#frmConfig').find('[name=ldap_server]').val();
+    var ldapBase = $('#frmConfig').find('[name=ldap_base]').val();
+    var ldapGroup = $('#frmConfig').find('[name=ldap_group]').val();
+    var ldapBindUser = $('#frmConfig').find('[name=ldap_binduser]').val();
+    var ldapBindPass = $('#frmConfig').find('[name=ldap_bindpass]').val();
     var sk = $('#frmConfig').find('[name=sk]').val();
-    var data = {'ldapserver': ldapServer, 'ldapbase': ldapBase, 'ldapgroup': ldapGroup, 'ldapbinduser': ldapBindUser, 'ldapbindpass': ldapBindPass, 'isAjax': 1, 'sk': sk};
+    var data = {'ldap_server': ldapServer, 'ldap_base': ldapBase, 'ldap_group': ldapGroup, 'ldap_binduser': ldapBindUser, 'ldap_bindpass': ldapBindPass, 'isAjax': 1, 'sk': sk};
 
     sendAjax(data,'/ajax/ajax_checkLdap.php');
 }
