@@ -70,13 +70,13 @@ if ($frmAction == "config") {
     $frmLdapBase = SP_Common::parseParams('p', 'ldap_base');
     $frmLdapGroup = SP_Common::parseParams('p', 'ldap_group');
     $frmLdapBindUser = SP_Common::parseParams('p', 'ldap_binduser');
-    $frmLdapBindPass = SP_Common::parseParams('p', 'ldap_bindpass');
+    $frmLdapBindPass = SP_Common::parseParams('p', 'ldap_bindpass', '', false, false, false);
 
     $frmMail = SP_Common::parseParams('p', 'mail_enabled', false, false, true);
     $frmMailServer = SP_Common::parseParams('p', 'mail_server');
     $frmMailPort = SP_Common::parseParams('p', 'mail_port',25);
     $frmMailUser = SP_Common::parseParams('p', 'mail_user');
-    $frmMailPass = SP_Common::parseParams('p', 'mail_pass');
+    $frmMailPass = SP_Common::parseParams('p', 'mail_pass', '', false, false, false);
     $frmMailSecurity = SP_Common::parseParams('p', 'mail_security');
     $frmMailFrom = SP_Common::parseParams('p', 'mail_from');
     $frmMailRequests = SP_Common::parseParams('p', 'mail_requestsenabled', false, false, true);
@@ -157,9 +157,9 @@ if ($frmAction == "config") {
 
     SP_Common::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
 } elseif ($frmAction == "crypt") {
-    $currentMasterPass = SP_Common::parseParams('p', 'curMasterPwd');
-    $newMasterPass = SP_Common::parseParams('p', 'newMasterPwd');
-    $newMasterPassR = SP_Common::parseParams('p', 'newMasterPwdR');
+    $currentMasterPass = SP_Common::parseParams('p', 'curMasterPwd', '', false, false, false);
+    $newMasterPass = SP_Common::parseParams('p', 'newMasterPwd', '', false, false, false);
+    $newMasterPassR = SP_Common::parseParams('p', 'newMasterPwdR', '', false, false, false);
     $confirmPassChange = SP_Common::parseParams('p', 'confirmPassChange', 0, false, 1);
     $noAccountPassChange = SP_Common::parseParams('p', 'chkNoAccountChange', 0, false, 1);
 

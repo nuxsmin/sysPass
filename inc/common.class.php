@@ -272,9 +272,10 @@ class SP_Common
      * @param mixed $default opcional, valor por defecto a devolver
      * @param bool $onlyCHeck opcional, comprobar si el parámetro está presente
      * @param mixed $force opcional, valor devuelto si el parámeto está definido
+     * @param bool $sanitize opcional, escapar/eliminar carácteres especiales
      * @return bool|string si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
-    public static function parseParams($method, $param, $default = '', $onlyCHeck = false, $force = false)
+    public static function parseParams($method, $param, $default = '', $onlyCHeck = false, $force = false, $sanitize = true)
     {
         $out = '';
 
@@ -314,7 +315,7 @@ class SP_Common
         }
 
         if (is_string($out)) {
-            return ($method != 's') ? SP_Html::sanitize($out) : $out;
+            return ($method != 's' && $sanitize === true) ? SP_Html::sanitize($out) : $out;
         }
 
         if (is_array($out)) {

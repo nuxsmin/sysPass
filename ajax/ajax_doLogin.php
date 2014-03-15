@@ -34,7 +34,7 @@ if (!SP_Common::parseParams('p', 'login', false)) {
 }
 
 $userLogin = SP_Common::parseParams('p', 'user');
-$userPass = SP_Common::parseParams('p', 'pass');
+$userPass = SP_Common::parseParams('p', 'pass', '', false, false, false);
 $masterPass = SP_Common::parseParams('p', 'mpass');
 
 if (!$userLogin || !$userPass) {

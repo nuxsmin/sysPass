@@ -60,8 +60,8 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
     $frmUsrGroup = SP_Common::parseParams('p', 'groupid', 0);
     $frmUsrEmail = SP_Common::parseParams('p', 'email');
     $frmUsrNotes = SP_Common::parseParams('p', 'notes');
-    $frmUsrPass = SP_Common::parseParams('p', 'pass');
-    $frmUsrPassV = SP_Common::parseParams('p', 'passv');
+    $frmUsrPass = SP_Common::parseParams('p', 'pass', '', false, false, false);
+    $frmUsrPassV = SP_Common::parseParams('p', 'passv', '', false, false, false);
     $frmAdminApp = SP_Common::parseParams('p', 'adminapp', 0, false, 1);
     $frmAdminAcc = SP_Common::parseParams('p', 'adminacc', 0, false, 1);
     $frmDisabled = SP_Common::parseParams('p', 'disabled', 0, false, 1);
