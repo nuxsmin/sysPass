@@ -215,7 +215,7 @@ class SP_Common {
      * @param mixed $force opcional, valor devuelto si el parámeto está definido
      * @return boo|string si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
-    public static function parseParams($method, $param, $default = '', $onlyCHeck = FALSE, $force = FALSE){
+    public static function parseParams($method, $param, $default = '', $onlyCHeck = FALSE, $force = FALSE, $sanitize = TRUE){
         $out = '';
         
         switch ($method){
@@ -254,7 +254,7 @@ class SP_Common {
         }
 
         if (is_string($out)){
-            return ( $method != 's' ) ? SP_Html::sanitize($out) : $out;
+            return ( $method != 's' && $sanitize === TRUE ) ? SP_Html::sanitize($out) : $out;
         }
         
         if (is_array($out)){

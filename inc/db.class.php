@@ -167,13 +167,13 @@ class DB {
                 ." WHERE table_schema='".SP_Config::getValue("dbname")."' "
                 . "AND table_name = 'usrData';";
         
-        $resquery = self::$_db->query($query);
+        $resQuery = self::$_db->query($query);
         
-        if( $resquery ) {
-            $row = $resquery->fetch_row();
+        if( $resQuery ) {
+            $row = $resQuery->fetch_row();
         }
         
-        if( ! $resquery || $row[0] == 0) {
+        if( ! $resQuery || $row[0] == 0) {
             return false;
         }
         

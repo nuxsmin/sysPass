@@ -37,11 +37,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
         <?php if ( SP_Config::getValue("demoenabled",0) ): ?>
             <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value="" title="> demo <"/><br />
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" title="> syspass <"/><br />
-            <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave maestra'); ?>" value="" title="> 01234567890 <" disabled/><br /></span>
+            <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave Maestra'); ?>" value="" title="> 01234567890 <" disabled/><br /></span>
         <?php else: ?>
             <input type="text" name="user" id="user" placeholder="<?php echo  _('Usuario'); ?>" value="" /><br />
             <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value="" /><br />
-            <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave maestra'); ?>" value="" disabled/><br /></span>
+            <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass" placeholder="<?php echo _('Clave Maestra'); ?>" value="" disabled/><br /></span>
         <?php endif; ?>
 
             <input id="btnLogin" type="image" src="imgs/login.png" name="login" title="<?php echo _('Acceder') ?>" />

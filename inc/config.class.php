@@ -391,7 +391,9 @@ class SP_Config{
         self::setValue('mailenabled', 0);
         self::setValue('wikienabled', 0);
         self::setValue('demoenabled', 0);
-        
+        self::setValue('filesenabled', 1);
+        self::setValue('checkupdates', 1);
+
         self::setValue('allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
         self::setValue('allowed_size', 1024);
         self::setValue('wikisearchurl', '');
@@ -404,7 +406,7 @@ class SP_Config{
         self::setValue('mailserver', '');
         self::setValue('mailfrom', '');
         self::setValue('wikifilter', '');
-        self::setValue('sitelang', 'es_ES');
+        self::setValue('sitelang', str_replace('.utf8','',SP_Init::$LANG));
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 10);

@@ -1,3 +1,10 @@
+=== ** v1.0.8 ** ===
+
+* [BUG] Corregido error al guardar claves con carácteres especiales
+* [BUG] Corregido error al guardar el idioma tras la instalación
+* [MOD] Verificación de versión de PHP en la instalación
+* [MOD] Actualización de traducciones
+
 === ** v1.0.7 ** ===
 
 * [BUG] Corregido error en la selección del código de caráteres del lenguaje
@@ -171,6 +178,13 @@
 * [NUEVO] Versión inicial
 
 ---
+
+=== ** v1.0.8 ** ===
+
+* [BUG] Fixed error on saving passwords with special characters. Thanks to @chadrempp
+* [BUG] Fixed error on saving detected browser language after installing
+* [MOD] PHP version is verified on installation process
+* [MOD] Translations updates
 
 === ** v1.0.7 ** ===
 

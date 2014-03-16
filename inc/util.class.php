@@ -99,15 +99,18 @@ class SP_Util {
      * @return bool
      */
     public static function checkPhpVersion(){
-        preg_match("/(^\d\.\d)\..*/",PHP_VERSION, $version);
+        $error = array();
 
-        if ( $version[1] >= 5.1 ){
-            $this->printMsg(_('Versión PHP')." '".$version[0]."'");
-            return TRUE;
-        } else {
-            $this->printMsg(_('Versión PHP')." '".$version[0]."'", 1);
-            return FALSE;
-        }    
+        $version = explode('.', PHP_VERSION);
+        $versionId = ($version[0] * 10000 + $version[1] * 100 + $version[2]);
+
+        if ( $versionId < 50100 ){
+            $error[] = array('type' => 'critical',
+                'description' => _('Versión de PHP requerida >= 5.1'),
+                'hint' => _('Actualice la versión de PHP para que la aplicación funcione correctamente'));
+        }
+
+        return $error;
     }
 
     /**
@@ -169,7 +172,7 @@ class SP_Util {
      * @return array con el número de versión
      */
     public static function getVersion() {
-        return array(1, 00, 07);
+        return array(1, 0, 8);
     }
     
     /**
@@ -177,7 +180,7 @@ class SP_Util {
      * @return string con la versión
      */
     public static function getVersionString() {
-        return '1.0-7';
+        return '1.0-8';
     }
     
     /**
@@ -224,9 +227,6 @@ class SP_Util {
                 }
             }
             
-            
-            
-                    
             if ( is_array($pubVer) && SP_Init::isLoggedIn() ){
                 $appVersion = implode('',self::getVersion());
                 $pubVersion = $pubVer[1].$pubVer[2].$pubVer[3];
