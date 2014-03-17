@@ -285,7 +285,7 @@ class SP_Installer
      */
     private static function createMySQLDatabase($dbpassword)
     {
-        $query = "CREATE DATABASE IF NOT EXISTS  `" . self::$dbname . "`";
+        $query = "CREATE DATABASE IF NOT EXISTS `" . self::$dbname . "`";
 
         if (!self::$dbc->query($query)) {
             throw new InstallerException('critical'

@@ -43,8 +43,6 @@ class SP_Upgrade
     {
         foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
-                error_log($upgradeVersion);
-
                 if (self::upgradeTo($upgradeVersion) === false) {
                     SP_Init::initError(
                         _('Error al aplicar la actualización de la Base de Datos'),

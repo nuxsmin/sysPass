@@ -136,7 +136,7 @@ class SP_Migrate
         if (self::$dbc->connect_errno) {
             throw new MigrateException('critical',
                 _('El usuario/clave de MySQL no es correcto'),
-                _('Verifique el usuario de conexión para la Base de Datos'));
+                _('Verifique el usuario de conexión con la Base de Datos'));
         }
     }
 

@@ -105,15 +105,18 @@ class SP_Util
      */
     public static function checkPhpVersion()
     {
-        preg_match("/(^\d\.\d)\..*/", PHP_VERSION, $version);
+        $error = array();
 
-        if ($version[1] >= 5.1) {
-            self::printMsg(_('Versión PHP') . " '" . $version[0] . "'");
-            return true;
-        } else {
-            self::printMsg(_('Versión PHP') . " '" . $version[0] . "'", 1);
-            return false;
+        $version = explode('.', PHP_VERSION);
+        $versionId = ($version[0] * 10000 + $version[1] * 100 + $version[2]);
+
+        if ($versionId < 50100) {
+            $error[] = array('type' => 'critical',
+                'description' => _('Versión de PHP requerida >= 5.1'),
+                'hint' => _('Actualice la versión de PHP para que la aplicación funcione correctamente'));
         }
+
+        return $error;
     }
 
     /**

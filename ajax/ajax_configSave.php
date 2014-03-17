@@ -210,7 +210,7 @@ if ($frmAction == "config") {
         $message['action'] = _('Actualizar Clave Maestra');
 
         SP_Common::sendEmail($message);
-        SP_Common::printJSON(_('Clave maestra cambiada'), 0);
+        SP_Common::printJSON(_('Clave maestra actualizada'), 0);
     }
     
     SP_Common::printJSON(_('Error al guardar el hash de la clave maestra'));
