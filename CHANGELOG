@@ -1,3 +1,8 @@
+=== ** v1.0.9 ** ===
+
+* [BUG] Corregido error al mostrar claves con carácteres especiales
+* [BUG] Corregido error al guardar claves de usuarios
+
 === ** v1.0.8 ** ===
 
 * [BUG] Corregido error al guardar claves con carácteres especiales
@@ -178,6 +183,10 @@
 * [NUEVO] Versión inicial
 
 ---
+=== ** v1.0.9 ** ===
+
+* [BUG] Fixed error on showing passwords with special characters. Thanks again to @chadrempp
+* [BUG] Fixed error on updating user's password. Thanks to @Chuclucillo
 
 === ** v1.0.8 ** ===
 

@@ -94,10 +94,10 @@ if ($fullTxt) {
         </tr>
         <tr>
             <td><span class="altTxtBlue">' . _('Clave') . '</span></td>
-            <td>' . trim($accountClearPass) . '</td>
+            <td>' . htmlentities(trim($accountClearPass)) . '</td>
         </tr>
         </table>';
     echo '</div>';
 } else {
-    echo trim($accountClearPass);
+    echo htmlentities(trim($accountClearPass));
 }
