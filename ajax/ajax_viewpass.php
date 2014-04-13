@@ -97,12 +97,12 @@ if ($fullTxt) {
             </tr>
             <tr>
                 <td><span class="altTxtBlue"><?php echo _('Clave'); ?></span></td>
-                <td><?php echo trim($accountClearPass); ?></td>
+                <td><?php echo htmlentities(trim($accountClearPass)); ?></td>
             </tr>
         </table>
     </div>
     <?php
 } else {
-    echo trim($accountClearPass);
+    echo htmlentities(trim($accountClearPass));
 }
 ?>
