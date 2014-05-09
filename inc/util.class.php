@@ -254,7 +254,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 4;
+        $build = 5;
         $version = array(1, 1, 2);
 
         if ($retBuild) {
