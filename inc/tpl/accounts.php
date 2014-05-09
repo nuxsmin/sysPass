@@ -341,7 +341,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
     </form>
 <?php endif; ?>
 
-    <!--Files boxes-->
+<!--Files boxes-->
 <?php if ($showFiles): ?>
     <tr>
         <td class="descField"><?php echo _('Archivos'); ?></td>
@@ -501,7 +501,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 
             <?php if ($showRestore): ?>
                 <li>
-                    <img SRC="imgs/restore.png" title="<?php echo _('Restaurar cuenta desde este punto'); ?>" class="inputImg" id="btnRestore"
+                    <img src="imgs/restore.png" title="<?php echo _('Restaurar cuenta desde este punto'); ?>" class="inputImg" id="btnRestore"
                          OnClick="saveAccount('frmAccount');"/>
                 </li>
             <?php endif; ?>
@@ -511,6 +511,12 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                     <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
                          onClick="viewPass(<?php echo $account->accountId; ?>,1,<?php echo $account->accountIsHistory; ?>)"
                          class="inputImg"/>
+                </li>
+                <li>
+                    <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
+                         onmouseover="viewPass(<?php echo $account->accountId; ?>,0,<?php echo $account->accountIsHistory; ?>)"
+                         data-clipboard-target="clip_pass_text"
+                         class="inputImg clip_pass_button"/>
                 </li>
             <?php endif; ?>
 
@@ -578,5 +584,28 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 $(this).children().html('<?php echo _('SI'); ?>');
             }
         });
+    </script>
+<?php endif; ?>
+
+<?php if ($showViewPass): ?>
+    <div id="clip_pass_text" style="visibility: hidden"></div>
+
+    <script>
+        passToClip = 0;
+
+        var client = new ZeroClipboard( $('.clip_pass_button'), {
+            moviePath: "js/ZeroClipboard.swf",
+            debug: true
+        } );
+
+        //client.setText(data);
+        client.on( 'load', function(client) {
+            $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
+        } );
+
+        client.on( "complete", function(client, args) {
+            resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+            //console.log("Copied text to clipboard: " + args.text );
+        } );
     </script>
 <?php endif; ?>

@@ -57,7 +57,7 @@ $searchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
         <tr>
             <td id="toolsLeft">
                 <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="Clear('frmSearch', 1); accSearch(0);" />
-                <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1)" value="<?php echo SP_Common::parseParams('s', 'accountSearchTxt'); ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
+                <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1,event)" value="<?php echo SP_Common::parseParams('s', 'accountSearchTxt'); ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
                 <?php if ( $globalSearch && ! $isAdmin ): ?>
                 <input type="checkbox" name="gsearch" id="gsearch" class="checkbox" <?php echo ($chkGlobalSearch) ? 'checked="checked"' : ''; ?>/>
                 <label for="gsearch" title="<?php echo _('Búsqueda global');?>"><?php echo ($chkGlobalSearch) ? 'ON' : 'OFF'; ?></label>

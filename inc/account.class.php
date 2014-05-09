@@ -178,10 +178,10 @@ class SP_Account
             . "LEFT JOIN accGroups ON accgroup_accountId = account_id";
 
         if ($searchFilter["txtSearch"]) {
-            $arrFilterCommon[] = "account_name LIKE '%" . $searchFilter["txtSearch"] . "%'";
-            $arrFilterCommon[] = "account_login LIKE '%" . $searchFilter["txtSearch"] . "%'";
-            $arrFilterCommon[] = "account_url LIKE '%" . $searchFilter["txtSearch"] . "%'";
-            $arrFilterCommon[] = "account_notes LIKE '%" . $searchFilter["txtSearch"] . "%'";
+            $arrFilterCommon[] = "account_name LIKE '%" . DB::escape($searchFilter["txtSearch"]) . "%'";
+            $arrFilterCommon[] = "account_login LIKE '%" . DB::escape($searchFilter["txtSearch"]) . "%'";
+            $arrFilterCommon[] = "account_url LIKE '%" . DB::escape($searchFilter["txtSearch"]) . "%'";
+            $arrFilterCommon[] = "account_notes LIKE '%" . DB::escape($searchFilter["txtSearch"]) . "%'";
         }
 
         if ($searchFilter["categoryId"] != 0) {
@@ -201,7 +201,7 @@ class SP_Account
         }
 
         if (!$isAdmin && !$globalSearch) {
-            $arrFilterUser[] = "account_userGroupId = " . $searchFilter["groupId"];
+            $arrFilterUser[] = "account_userGroupId = " . (int) $searchFilter["groupId"];
             $arrFilterUser[] = "account_userId = " . $searchFilter["userId"];
             $arrFilterUser[] = "accgroup_groupId = " . $searchFilter["groupId"];
             $arrFilterUser[] = "accuser_userId = " . $searchFilter["userId"];

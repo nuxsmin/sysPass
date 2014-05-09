@@ -221,6 +221,7 @@ class SP_Html
             array("src" => "js/jquery.fileDownload.js", "params" => ""),
             array("src" => "js/jquery.filedrop.js", "params" => ""),
             array("src" => "js/jquery.tagsinput.js", "params" => ""),
+            array("src" => "js/ZeroClipboard.min.js", "params" => ""),
             array("src" => "js/functions.php", "params" => "")
         );
 

@@ -261,6 +261,7 @@ foreach ($resQuery as $account) {
 
         if ($accViewPass) {
             echo '<img src="imgs/user-pass.png" title="' . _('Ver Clave') . '" onClick="viewPass(' . $account->account_id . ', 1)" />';
+            echo '<img src="imgs/clipboard.png" title="' . _('Copiar Clave en Portapapeles') . '" onmouseover="viewPass(' . $account->account_id . ', 0)" onmouseout="passToClip = 0;" class="clip_pass_button" data-clipboard-target="clip_pass_text" />';
         }
 
         if ($accEdit || $accCopy || $accDel) {
@@ -298,3 +299,25 @@ $totalTime = round($endTime - $startTime, 5);
 SP_Html::printQuerySearchNavBar($sortKey, $arrSearchFilter["limitStart"], $objAccount->queryNumRows, $arrSearchFilter["limitCount"], $totalTime, $filterOn);
 
 //echo $objAccount->query;
+?>
+
+<div id="clip_pass_text" style="visibility: hidden"></div>
+
+<script>
+    passToClip = 0;
+
+    var client = new ZeroClipboard( $('.clip_pass_button'), {
+        moviePath: "js/ZeroClipboard.swf",
+        debug: true
+    } );
+
+    //client.setText(data);
+    client.on( 'load', function(client) {
+        $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
+    } );
+
+    client.on( "complete", function(client, args) {
+        resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+        //console.log("Copied text to clipboard: " + args.text );
+    } );
+</script>

@@ -5,6 +5,8 @@ var order = {};
 order.key = 0;
 order.dir = 0;
 
+var passToClip = 0;
+
 var strPassword;
 var charPassword;
 var minPasswordLength = 8;
@@ -112,8 +114,10 @@ function mkChosen(options) {
 }
 
 // Función para realizar una búsqueda
-function accSearch(continous) {
+function accSearch(continous, event) {
     var lenTxtSearch = $('#txtSearch').val().length;
+
+    if ( typeof (event) != 'undefined' && (event.keyCode < 48 || (event.keyCode > 105 && event.keyCode < 123)) ) return;
 
     if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen) return;
 
@@ -220,16 +224,30 @@ function navLog(start, current) {
 
 // Función para ver la clave de una cuenta
 function viewPass(id, full, history) {
-    $.post(APP_ROOT + '/ajax/ajax_viewpass.php',
-        {'accountid': id, 'full': full, 'isHistory': history},
-        function (data) {
+    // Comprobamos si la clave ha sido ya obtenida para copiar
+    if ( passToClip === 1 && full === 0){
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: APP_ROOT + '/ajax/ajax_viewpass.php',
+        async: false,
+        data: {'accountid': id, 'full': full, 'isHistory': history},
+        success: function(data){
             if (data.length === 0) {
                 doLogout();
             } else {
-                resMsg("none", data);
+                if ( full === 0 ){
+                    // Copiamos la clave en el objeto que tiene acceso al portapapeles
+                    $('#clip_pass_text').html(data);
+                    passToClip = 1;
+                } else {
+                    resMsg("none", data);
+                }
             }
         }
-    );
+    });
 }
 
 // Función para las variables de la URL y parsearlas a un array.
