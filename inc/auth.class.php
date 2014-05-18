@@ -61,12 +61,12 @@ class SP_Auth
         $userDN = SP_LDAP::$ldapSearchData[0]['dn'];
         // Mapeo de los atributos
         $attribsMap = array(
-            'groupmembership' => 'group',
-            'memberof' => 'group',
+            'groupMembership' => 'group',
+            'memberOf' => 'group',
             'displayname' => 'name',
             'fullname' => 'name',
             'mail' => 'mail',
-            'lockouttime' => 'expire');
+            'lockoutTime' => 'expire');
 
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
@@ -109,7 +109,7 @@ class SP_Auth
             SP_Log::wrLogInfo($message);
         }
 
-        self::$userName = $attribs['name'];
+        self::$userName = ($attribs['name']) ? $attribs['name'] : $userLogin;
         self::$userEmail = $attribs['mail'];
 
         return $ldapAccess;
@@ -122,12 +122,12 @@ class SP_Auth
      */
     private static function checkLDAPGroup($group)
     {
-        $ldapgroup = SP_Config::getValue('ldap_group');
+        $ldapGroup = strtolower(SP_Config::getValue('ldap_group'));
         $groupName = array();
 
         preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);
 
-        if ($groupName[1] == $ldapgroup || $group == $ldapgroup) {
+        if (strtolower($groupName[1]) == $ldapGroup || strtolower($group) == $ldapGroup) {
             return true;
         }
 

@@ -341,7 +341,7 @@ class SP_LDAP
             return false;
         }
 
-        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)))';
+        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
         $filterAttr = array("member", "uniqueMember");
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
