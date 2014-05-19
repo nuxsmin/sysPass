@@ -29,7 +29,7 @@ require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 SP_Util::checkReferer('POST');
 
 if (!SP_Init::isLoggedIn()) {
-    return;
+    return -1;
 }
 
 $accountId = SP_Common::parseParams('p', 'accountid', false);
@@ -75,17 +75,15 @@ $crypt = new SP_Crypt;
 $masterPass = $crypt->getSessionMasterPass();
 $accountClearPass = $crypt->decrypt($accountData->account_pass, $masterPass, $accountData->account_IV);
 
-
-if (!$isHistory) {
+if (!$isHistory && $fullTxt) {
     $account->incrementDecryptCounter();
+
+    $message['action'] = _('Ver Clave');
+    $message['text'][] = _('ID') . ': ' . $accountId;
+    $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
+
+    SP_Log::wrLogInfo($message);
 }
-
-$message['action'] = _('Ver Clave');
-$message['text'][] = _('ID') . ': ' . $accountId;
-$message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
-$message['text'][] = _('IP') . ': ' . $_SERVER['REMOTE_ADDR'];
-
-SP_Log::wrLogInfo($message);
 
 if ($fullTxt) {
     ?>

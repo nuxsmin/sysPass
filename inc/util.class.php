@@ -254,7 +254,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 5;
+        $build = 7;
         $version = array(1, 1, 2);
 
         if ($retBuild) {
@@ -367,5 +367,37 @@ class SP_Util
     public static function logIsEnabled()
     {
         return SP_Config::getValue('log_enabled', false);
+    }
+
+    /**
+     * @brief Comprobar si está habilitado el formato de tarjeta en los resultados
+     * @return bool
+     */
+    public static function resultsCardsIsEnabled()
+    {
+        return SP_Config::getValue('resultsascards', false);
+    }
+
+    /**
+     * @brief Establecer variable de sesión para recargar la aplicación
+     * @return none
+     */
+    public static function reload()
+    {
+        if (!isset($_SESSION["reload"]) || $_SESSION["reload"] === 0) {
+            $_SESSION["reload"] = 1;
+        }
+    }
+
+    /**
+     * @brief Comprobar si se necesita recargar la aplicación
+     * @return none
+     */
+    public static function checkReload()
+    {
+        if (isset($_SESSION["reload"]) && $_SESSION["reload"] === 1) {
+            $_SESSION["reload"] = 0;
+            exit("<script>window.location.href = 'index.php';</script>");
+        }
     }
 }

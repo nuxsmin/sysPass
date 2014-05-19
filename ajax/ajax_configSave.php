@@ -59,6 +59,7 @@ if ($frmAction == "config") {
     $frmAccountCount = SP_Common::parseParams('p', 'account_count', 10);
     $frmAllowedSize = SP_Common::parseParams('p', 'files_allowed_size', 1024);
     $frmAllowedExts = SP_Common::parseParams('p', 'files_allowed_exts');
+    $frmResultsAsCards = SP_Common::parseParams('p', 'resultsascards', false, false, true);
 
     $frmWiki = SP_Common::parseParams('p', 'wiki_enabled', false, false, true);
     $frmWikiSearchUrl = SP_Common::parseParams('p', 'wiki_searchurl');
@@ -147,6 +148,7 @@ if ($frmAction == "config") {
     SP_Config::setValue("maintenance", $frmMaintenance);
     SP_Config::setValue("checkupdates", $frmCheckUpdates);
     SP_Config::setValue("files_enabled", $frmFiles);
+    SP_Config::setValue("resultsascards", $frmResultsAsCards);
     SP_Config::setValue("globalsearch", $frmGlobalSearch);
     SP_Config::setValue("files_allowed_size", $frmAllowedSize);
 
@@ -154,6 +156,9 @@ if ($frmAction == "config") {
 
     SP_Log::wrLogInfo($message);
     SP_Common::sendEmail($message);
+
+    // Recargar la aplicación completa para establecer nuevos valores
+    SP_Util::reload();
 
     SP_Common::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
 } elseif ($frmAction == "crypt") {

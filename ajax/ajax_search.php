@@ -51,6 +51,7 @@ if ($wikiEnabled) {
     $wikiPageUrl = SP_Config::getValue('wiki_pageurl');
 }
 $requestEnabled = SP_Util::mailrequestIsEnabled();
+$maxTextLength = (SP_Util::resultsCardsIsEnabled()) ? 30 : 60;
 
 // Valores POST
 $sortKey = SP_Common::parseParams('p', 'skey', 0);
@@ -67,6 +68,26 @@ $userProfileId = SP_Common::parseParams('s', 'uprofile', 0);
 $userId = SP_Common::parseParams('s', 'uid', 0);
 
 $filterOn = ($sortKey > 1 || $customerId || $categoryId || $searchTxt) ? true : false;
+
+$colors = array(
+    'FF66CC',
+    'FF99FF',
+    'CC99FF',
+    '9999FF',
+    '6699FF',
+    '3399FF',
+    '0099FF',
+    '6699FF',
+    '3399FF',
+    '00CC66',
+    '00CC66',
+    '00CC99',
+    '00CCCC',
+    'FFCC66',
+    'FF9999',
+    'FF6699',
+    'FF99CC'
+);
 
 $objAccount = new SP_Account;
 $arrSearchFilter = array("txtSearch" => $searchTxt,
@@ -133,23 +154,24 @@ foreach ($resQuery as $account) {
 
     $show = ($accView || $accViewPass || $accEdit || $accCopy || $accDel);
 
-    $randomRGB = array(rand(150, 210), rand(150, 210), rand(150, 210));
-    $color = array($account->account_customerId => array(SP_Html::rgb2hex($randomRGB), $randomRGB));
+    //$randomRGB = array(rand(150, 210), rand(150, 210), rand(150, 210));
+    //$color = array($account->account_customerId => array(SP_Html::rgb2hex($randomRGB), $randomRGB));
+    $color = array_rand($colors);
 
     if (!isset($customerColor)) {
-        $customerColor = $color;
+        $customerColor[$account->account_customerId] = '#'.$colors[$color];
     } elseif (isset($customerColor) && !array_key_exists($account->account_customerId, $customerColor)) {
-        $customerColor = $color;
+        $customerColor[$account->account_customerId] = '#'.$colors[$color];
     }
 
-    $hexColor = $customerColor[$account->account_customerId][0];
-    //$rgbaColor = implode(',',$customerColor[$account->account_customerId][1]).',0.1';
+    //$hexColor = $customerColor[$account->account_customerId][0];
+    $hexColor = $customerColor[$account->account_customerId];
 
     if ($wikiEnabled) {
         $wikiLink = $wikiSearchUrl . $account->customer_name;
-        $customerName = '<a href="' . $wikiLink . '" target="blank" title="' . _('Buscar en Wiki') . '<br><br>' . $account->customer_name . '">' . SP_Html::truncate($account->customer_name, 31) . '</a>';
+        $customerName = '<a href="' . $wikiLink . '" target="blank" title="' . _('Buscar en Wiki') . '<br><br>' . $account->customer_name . '">' . SP_Html::truncate($account->customer_name, $maxTextLength) . '</a>';
     } else {
-        $customerName = SP_Html::truncate($account->customer_name, 31);
+        $customerName = SP_Html::truncate($account->customer_name, $maxTextLength);
     }
 
     if ($accountLink && $show) {
@@ -163,14 +185,15 @@ foreach ($resQuery as $account) {
         $accountName = $account->account_name;
     }
 
+    // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
     if ($show) {
-        $vacLogin = (strlen($account->account_login) >= 31) ? SP_Html::truncate($account->account_login, 31) : $account->account_login;
+        $vacLogin = (strlen($account->account_login) >= $maxTextLength) ? SP_Html::truncate($account->account_login, $maxTextLength) : $account->account_login;
 
         $strAccUrl = $account->account_url;
         $urlIsLink = ($strAccUrl && preg_match("#^https?://.*#i", $strAccUrl));
 
-        if (strlen($strAccUrl) >= 31) {
-            $strAccUrl_short = SP_Html::truncate($strAccUrl, 31);
+        if (strlen($strAccUrl) >= $maxTextLength) {
+            $strAccUrl_short = SP_Html::truncate($strAccUrl, $maxTextLength);
 
             $strAccUrl = ($urlIsLink) ? '<a href="' . $strAccUrl . '" target="_blank" title="' . _('Abrir enlace a') . ': ' . $strAccUrl . '">' . $strAccUrl_short . '</a>' : $strAccUrl_short;
         } else {
@@ -200,28 +223,29 @@ foreach ($resQuery as $account) {
     //echo '<div class="account-label round shadow" onMouseOver="this.style.backgroundColor=\'RGBA('.$rgbaColor.')\'" onMouseOut="this.style.backgroundColor=\'#FFFFFF\'" >';
     echo '<div class="account-label round shadow">';
 
-    echo '<div class="label-field">';
+    echo '<div class="field-customer label-field">';
     echo '<div class="field-name">' . _('Cliente') . '</div>';
     echo '<div class="field-text round5 no-link" style="background-color: ' . $hexColor . ';">' . $customerName . '</div>';
     echo '</div>';
 
-    echo '<div class="label-field">';
+    echo '<div class="field-account label-field">';
     echo '<div class="field-name">' . _('Nombre') . '</div>';
     echo '<div class="field-text">' . $accountName . '</div>';
     echo '</div>';
 
-    echo '<div class="label-field">';
+    echo '<div class="field-category label-field">';
     echo '<div class="field-name">' . _('Categoría') . '</div>';
     echo '<div class="field-text">' . $account->category_name . '</div>';
     echo '</div>';
 
+    // Mostramos datos si el usuario tiene acceso a los datos de la cuenta
     if ($show) {
-        echo '<div class="label-field">';
+        echo '<div class="field-user label-field">';
         echo '<div class="field-name">' . _('Usuario') . '</div>';
         echo '<div class="field-text">' . $vacLogin . '</div>';
         echo '</div>';
 
-        echo '<div class="label-field">';
+        echo '<div class="field-url label-field">';
         echo '<div class="field-name">' . _('URL / IP') . '</div>';
         echo '<div class="field-text">' . $strAccUrl . '</div>';
         echo '</div>';
@@ -261,10 +285,10 @@ foreach ($resQuery as $account) {
 
         if ($accViewPass) {
             echo '<img src="imgs/user-pass.png" title="' . _('Ver Clave') . '" onClick="viewPass(' . $account->account_id . ', 1)" />';
-            echo '<img src="imgs/clipboard.png" title="' . _('Copiar Clave en Portapapeles') . '" onmouseover="viewPass(' . $account->account_id . ', 0)" onmouseout="passToClip = 0;" class="clip_pass_button" data-clipboard-target="clip_pass_text" />';
+            echo '<img src="imgs/clipboard.png" title="' . _('Copiar Clave en Portapapeles') . '" onmouseover="viewPass(' . $account->account_id . ', 0)" onmouseout="passToClip = 0;" class="actions-optional clip_pass_button" data-clipboard-target="clip_pass_text" />';
         }
 
-        if ($accEdit || $accCopy || $accDel) {
+        if ($accEdit || $accCopy || $accDel || $accViewPass) {
             echo '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />';
         }
 
@@ -308,16 +332,15 @@ SP_Html::printQuerySearchNavBar($sortKey, $arrSearchFilter["limitStart"], $objAc
 
     var client = new ZeroClipboard( $('.clip_pass_button'), {
         moviePath: "js/ZeroClipboard.swf",
-        debug: true
-    } );
+        debug: false
+    });
 
     //client.setText(data);
     client.on( 'load', function(client) {
         $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
-    } );
+    });
 
     client.on( "complete", function(client, args) {
         resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-        //console.log("Copied text to clipboard: " + args.text );
-    } );
+    });
 </script>

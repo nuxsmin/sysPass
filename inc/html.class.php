@@ -183,6 +183,10 @@ class SP_Html
             array("href" => "js/fancybox/jquery.fancybox.css", "media" => "screen"),
             array("href" => "css/styles.css", "media" => ""));
 
+        if ( ! SP_Util::resultsCardsIsEnabled() ){
+            array_push($cssProp,array("href" => "css/search-grid.css", "media" => ""));
+        }
+
         foreach ($cssProp as $css) {
             self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . "/" . $css["href"] . $versionParameter . '" media="' . $css["media"] . '" />';
         }
@@ -261,14 +265,14 @@ class SP_Html
     {
         $info = self::getAppInfo();
 
-        self::$htmlPage[] = '<div id="footer">';
+        self::$htmlPage[] = '<footer>';
         self::$htmlPage[] = '<div id="updates"></div>';
         self::$htmlPage[] = '<div id="project">';
         self::$htmlPage[] = '<a href="' . $info['appwebsite'] . '" target="_blank" title="' . _('Ayuda :: FAQ :: Changelog') . '">' . $info['appname'] . ' ' . SP_Util::getVersionString() . '</a> ';
         self::$htmlPage[] = '&nbsp;::&nbsp;';
         self::$htmlPage[] = '<a href="' . $info['appblog'] . '" target="_blank" title="' . _('Un proyecto de cygnux.org') . '" >cygnux.org</a>';
         self::$htmlPage[] = '</div> <!-- Close Project -->';
-        self::$htmlPage[] = '</div> <!-- Close footer -->';
+        self::$htmlPage[] = '</footer> <!-- Close footer -->';
         self::$htmlPage[] = '<script>$(\'input[type="text"], select, textarea\').placeholder().mouseenter(function(){ $(this).focus(); });</script>';
     }
 

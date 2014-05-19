@@ -226,6 +226,8 @@ class SP_Common
         $msgHelp[21] = _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)');
         $msgHelp[22] = _('Extensiones de máximo 4 caracteres.') . "<br><br>" . _('Escribir extensión y pulsar intro para añadir.');
         $msgHelp[23] = _('Importar desde un archivo CSV con el formato') . ":<br><br>" . _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas') . "<br><br>" . _('Si el cliente o la categoría no están creados, se crean automáticamente.');
+        $msgHelp[24] = _('Permite que las cuentas sin acceso sean visibles sólo para las búsquedas.');
+        $msgHelp[25] = _('Muestra los resultados de búsqueda de cuentas en formato tarjeta.');
 
         if (array_key_exists($id, $msgHelp)) {
             echo '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';

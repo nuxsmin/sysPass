@@ -54,6 +54,7 @@ $chkLdap = ( SP_Config::getValue('ldap_enabled') ) ? 'checked="checked"' : '';
 $chkMail = ( SP_Config::getValue('mail_enabled') ) ? 'checked="checked"' : '';
 $chkMailRequests = ( SP_Config::getValue('mail_requestsenabled') ) ? 'checked="checked"' : '';
 $chkMailAuth = ( SP_Config::getValue('mail_authenabled') ) ? 'checked="checked"' : '';
+$chkResultsAsCards = ( SP_Config::getValue('resultsascards') ) ? 'checked="checked"' : '';
 $allowedExts = SP_Config::getValue('files_allowed_exts');
 ?>        
         
@@ -188,6 +189,16 @@ $allowedExts = SP_Config::getValue('files_allowed_exts');
                 }
                 ?>
             </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Resultados en Tarjetas'); ?>
+            <?php SP_Common::printHelpButton("config", 25); ?>
+        </td>
+        <td class="valField">
+            <label for="resultsascards"><?php echo ($chkResultsAsCards) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="resultsascards" id="resultsascards" class="checkbox" <?php echo $chkResultsAsCards.' '.$txtDisabled; ?> />
         </td>
     </tr>
 </table>

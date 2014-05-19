@@ -5,7 +5,10 @@ var order = {};
 order.key = 0;
 order.dir = 0;
 
+// Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
 var passToClip = 0;
+// Variable para el ajuste óptimo del contenido a la altura del documento
+var windowAdjustSize = 350;
 
 var strPassword;
 var charPassword;
@@ -45,11 +48,13 @@ $(document).ready(function () {
     $("[title]").powerTip(powertipOptions);
     $('input, textarea').placeholder();
     setContentSize();
+    setWindowAdjustSize();
 }).ajaxComplete(function () {
     $("[title]").powerTip(powertipOptions);
     $('input, textarea').placeholder();
 });
 
+// Función para cargar el contenido de la acción del menú seleccionada
 function doAction(action, lastAction, id) {
     var data = {'action': action, 'lastAction': lastAction, 'id': id, isAjax: 1};
 
@@ -75,16 +80,26 @@ function doAction(action, lastAction, id) {
     });
 }
 
+// Función para establecer la altura del contenedor ajax
 function setContentSize() {
     // Calculate total height for full body resize
     var totalHeight = $("#content").height() + 100;
     //var totalWidth = $("#wrap").width();
 
-//    alert(totalWidth + 'x' + totalHeight);
     $("#container").css("height", totalHeight);
-//    $("#wrap").css("width",totalWidth);
 }
 
+// Función para establecer la variable de ajuste óptimo de altura
+function setWindowAdjustSize() {
+    var browser = getBrowser();
+
+    if ( browser == "MSIE" ){
+        windowAdjustSize = 150;
+    }
+    console.log(windowAdjustSize);
+}
+
+// Función para retornar el scroll a la posición inicial
 function scrollUp() {
     $('html, body').animate({ scrollTop: 0 }, 'slow');
 }
@@ -100,6 +115,8 @@ function Clear(id, search) {
         $('#frmSearch').find('input[name="skey"]').val(0);
         $('#frmSearch').find('input[name="sorder"]').val(0);
         $(".select-box").val('').trigger("chosen:updated");
+        order.key = 0;
+        order.dir = 0;
     }
 }
 
@@ -113,7 +130,7 @@ function mkChosen(options) {
     });
 }
 
-// Función para realizar una búsqueda
+// Función para la búsqueda de cuentas mediante filtros
 function accSearch(continous, event) {
     var lenTxtSearch = $('#txtSearch').val().length;
 
@@ -127,32 +144,12 @@ function accSearch(continous, event) {
 
     window.lastlen = lenTxtSearch;
 
-    var datos = $("#frmSearch").serialize();
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'html',
-        url: APP_ROOT + '/ajax/ajax_search.php',
-        data: datos,
-        success: function (response) {
-            $('#resBuscar').html(response);
-            $('#data-search').css("max-height", $('html').height() - 300);
-        },
-        error: function () {
-            $('#resBuscar').html(resMsg("nofancyerror"));
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
-        }
-    });
+    doSearch();
 }
 
-// Función para buscar con la ordenación por campos
+// Función para la búsqueda de cuentas mediante ordenación
 function searchSort(skey, start, nav) {
     if (typeof(skey) === "undefined" || typeof(start) === "undefined") return false;
-
-    var sorder = 0;
 
     if (order.key > 0 && order.key != skey) {
         order.key = skey;
@@ -164,14 +161,18 @@ function searchSort(skey, start, nav) {
             order.dir = 0;
         } else {
             order.dir = 1;
-            sorder = 1;
         }
     }
 
-    $('#frmSearch').find('input[name="skey"]').val(skey);
-    $('#frmSearch').find('input[name="sorder"]').val(sorder);
+    $('#frmSearch').find('input[name="skey"]').val(order.key);
+    $('#frmSearch').find('input[name="sorder"]').val(order.dir);
     $('#frmSearch').find('input[name="start"]').val(start);
 
+    doSearch();
+}
+
+// Función para la búsqueda de cuentas
+function doSearch(){
     var frmData = $("#frmSearch").serialize();
 
     $.fancybox.showLoading();
@@ -183,12 +184,15 @@ function searchSort(skey, start, nav) {
         data: frmData,
         success: function (response) {
             $('#resBuscar').html(response);
-            $('#data-search').css("max-height", $('html').height() - 300);
-            $('#search-sort-' + skey).addClass('filterOn');
-            if (order.dir == 0) {
-                $('#search-sort-' + skey).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
-            } else {
-                $('#search-sort-' + skey).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
+            $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
+
+            if ( order.key ){
+                $('#search-sort-' + order.key).addClass('filterOn');
+                if (order.dir == 0) {
+                    $('#search-sort-' + order.key).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
+                } else {
+                    $('#search-sort-' + order.key).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
+                }
             }
         },
         error: function () {
@@ -201,7 +205,7 @@ function searchSort(skey, start, nav) {
     });
 }
 
-// Función para buscar con la ordenación por campos
+// Función para navegar por el log de eventos
 function navLog(start, current) {
     if (typeof(start) === "undefined") return false;
 
@@ -239,7 +243,7 @@ function viewPass(id, full, history) {
         async: false,
         data: {'accountid': id, 'full': full, 'isHistory': history},
         success: function(data){
-            if (data.length === 0) {
+            if (data === "-1") {
                 doLogout();
             } else {
                 if ( full === 0 ){
@@ -254,7 +258,7 @@ function viewPass(id, full, history) {
     });
 }
 
-// Función para las variables de la URL y parsearlas a un array.
+// Función para obtener las variables de la URL y parsearlas a un array.
 function getUrlVars() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -311,6 +315,7 @@ function doLogin() {
     return false;
 }
 
+// Función para salir de la sesión
 function doLogout() {
     var url = window.location.search;
 
@@ -321,6 +326,7 @@ function doLogout() {
     }
 }
 
+// Función para comprobar si se ha salido de la sesión
 function checkLogout() {
     var session = getUrlVars()["session"];
 
@@ -498,6 +504,7 @@ function delFile(id, sk, accid) {
     });
 }
 
+// Función para activar el Drag&Drop de archivos en las cuentas
 function dropFile(accountId, sk, maxsize) {
     var dropfiles = $('#dropzone');
     var file_exts_ok = dropfiles.attr('data-files-ext').toLowerCase().split(',');
@@ -547,6 +554,7 @@ function dropFile(accountId, sk, maxsize) {
     });
 }
 
+// Función para activar el Drag&Drop de archivos en la importación de cuentas
 function importFile(sk) {
     var dropfiles = $('#dropzone');
     var file_exts_ok = ['csv'];
@@ -602,7 +610,7 @@ function importFile(sk) {
     });
 }
 
-// Función para realizar la petición ajax
+// Función para realizar una petición ajax
 function sendAjax(data, url) {
     $.fancybox.showLoading();
 
@@ -902,7 +910,7 @@ function outputResult(dstId) {
     }
 }
 
-// Función para mostrar mensaje con Fancybox
+// Función para mostrar mensaje con alertify
 function resMsg(type, txt, url, action) {
     if (typeof(url) !== "undefined") {
         $.ajax({ url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
@@ -916,15 +924,12 @@ function resMsg(type, txt, url, action) {
 
     switch (type) {
         case "ok":
-            //html = '<div id="fancyMsg" class="msgOk">' + txt + '</div>';
             alertify.set({ beforeCloseAction: action });
             return alertify.success(txt);
         case "error":
-            //html = '<div id="fancyMsg" class="msgError">' + txt + '</div>';
             alertify.set({ beforeCloseAction: action });
             return alertify.error(txt);
         case "warn":
-            //html = '<div id="fancyMsg" class="msgWarn">' + txt + '</div>';
             alertify.set({ beforeCloseAction: action });
             return alertify.log(txt);
         case "info":
@@ -938,7 +943,6 @@ function resMsg(type, txt, url, action) {
             return html;
             break;
         default:
-            //html = '<div id="fancyMsg" class="msgError">Oops...<br /' + LANG[1] + '</div>';
             alertify.set({ beforeCloseAction: action });
             return alertify.error(txt);
     }
@@ -966,4 +970,19 @@ function checkLdapConn() {
 // Función para volver al login
 function goLogin() {
     setTimeout(function () { location.href = "index.php";}, 2000);
+}
+
+// Función para obtener el navegador usado
+function getBrowser()
+{
+    var version = -1; // Return value assumes failure.
+    var ua = navigator.userAgent;
+    var re  = new RegExp("(MSIE|Firefox)[ /]?([0-9]{1,}[\.0-9]{0,})", "i");
+    if (re.exec(ua) != null) {
+        var browser = RegExp.$1;
+        //version = parseFloat( RegExp.$2 );
+    }
+
+    return browser;
+    //return version;
 }

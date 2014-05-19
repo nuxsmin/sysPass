@@ -32,6 +32,8 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
+SP_Util::checkReload();
+
 if (SP_Common::parseParams('p', 'action', '', true)) {
     $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
     $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);

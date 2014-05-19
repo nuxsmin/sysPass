@@ -235,9 +235,9 @@ A:focus {text-decoration: none;	color: #FF0000;}
 
 #content TD.valField, #fancyContainer TD.valField { padding-left:20px; width: 100%;}
 
-#content #tblTools{min-width: 875px; height: 5em; padding-left: 15px;padding: 5px;}
+#content #tblTools{min-width: 875px; height: 5em; padding: 5px; padding-left: 15px;}
 
-#content #resBuscar{ min-width: 875px; min-height: 450px;}
+#content #resBuscar{ min-width: 875px; min-height: 450px; margin-bottom: 50px;}
 #content #resBuscar IMG {vertical-align:middle;}
 
 #content #pageNav {
@@ -615,14 +615,15 @@ A:focus {text-decoration: none;	color: #FF0000;}
 .fancydata {min-width: 400px; border: none; text-align: left;}
 .fancydata .descField{min-width: 100px; font-weight: bold;}
 
-#footer{
+footer{
     position: fixed;
     bottom: 0;
     z-index: 100;
     float:left;
     width:100%;
-    margin:0 auto;
-    padding: 1em 0;
+    height: 1.5em;
+    margin: 0 auto;
+    padding: .5em 0;
     background-color: #F5F5F5;
     color:#b9b9b9;
     font-size:13px;
@@ -631,14 +632,14 @@ A:focus {text-decoration: none;	color: #FF0000;}
     -moz-box-shadow: 0px -8px 6px -6px #c9c9c9;
 }
 
-#footer #project{float: right;width: 40%;text-align:right; padding-right: 20px;}
-#footer #updates{float: left;width: 20%;text-align:left; padding-left: 20px;}
-#footer #status{float: left;width: 20%;text-align:left;color: #ffbbb4;}
+footer #project{float: right;width: 40%;text-align:right; padding-right: 20px;}
+footer #updates{float: left;width: 20%;text-align:left; padding-left: 20px;}
+footer #status{float: left;width: 20%;text-align:left;color: #ffbbb4;}
 
-#footer A{color:#b9b9b9;}
-#footer #project A:hover{color:#a9c1d7;border-bottom: 1px solid #a9c1d7;}
-#footer #updates A:hover{color:#a9c1d7;}
-#footer IMG{border: none;width: 16px;height: 16px;vertical-align: middle;}
+footer a, footer a:visited{color:#b9b9b9;}
+footer #project a:hover{color:#a9c1d7;border-bottom: 1px solid #a9c1d7;}
+footer #updates a:hover{color:#a9c1d7;}
+footer img{border: none;width: 16px;height: 16px;vertical-align: middle;}
 
 
 /* GENERIC CLASSES */
