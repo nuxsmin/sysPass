@@ -51,7 +51,8 @@ if ($wikiEnabled) {
     $wikiPageUrl = SP_Config::getValue('wiki_pageurl');
 }
 $requestEnabled = SP_Util::mailrequestIsEnabled();
-$maxTextLength = (SP_Util::resultsCardsIsEnabled()) ? 30 : 60;
+$maxTextLength = (SP_Util::resultsCardsIsEnabled()) ? 40 : 60;
+$isDemoMode = SP_Util::demoIsEnabled();
 
 // Valores POST
 $sortKey = SP_Common::parseParams('p', 'skey', 0);
@@ -305,9 +306,9 @@ foreach ($resQuery as $account) {
         }
 
         echo '</div>';
-    } elseif ($requestEnabled) {
+    } elseif ($requestEnabled || $isDemoMode) {
         echo '<div class="account-spacer"></div>';
-        echo '<div class="account-actions">';
+        echo '<div class="account-actions round">';
         echo '<img src="imgs/request.png" title="' . _('Solicitar Modificación') . '" class="inputImg" OnClick="doAction(\'accrequest\',\'accsearch\',' . $account->account_id . ')" />';
         echo '</div>';
     }

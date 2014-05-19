@@ -21,9 +21,8 @@
 #content #data-search .account-label .field-text a{color: #4895FA}
 #content #data-search .account-label .no-link a{color: white; font-weight: bold;}
 
-#content #data-search .field-customer .field-text{height: 2.5em}
-
-#content #data-search .field-category{width: 10% !important;}
+#content #data-search .account-label .field-customer .field-text{height: 2.5em; width: 95%;}
+#content #data-search .account-label .field-category{width: 10% !important;}
 
 #content #data-search .account-info{
     float: left;
@@ -51,4 +50,4 @@
 }
 #content #data-search .account-actions img{margin:3px 5px;}
 #content .actions-optional{display: none;}
-#content #data-search .account-spacer{width: 100%; height: 8em;}
+#content #data-search .account-spacer{float: left; clear: left; height: 2em; width: 20%}
