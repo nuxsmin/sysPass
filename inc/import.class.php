@@ -150,7 +150,7 @@ class SP_Import
         foreach (self::$fileContent as $data) {
             $fields = explode(';', $data);
 
-            if (count($fields) < 7) {
+            if (count($fields) != 7) {
                 throw new ImportException('critical', _('El número de campos es incorrecto'), _('Compruebe el formato del archivo CSV'));
             }
 
@@ -165,7 +165,7 @@ class SP_Import
             }
 
             $categoryId = SP_Category::getCategoryIdByName($categoryName);
-            if ($categoryId == 0) {
+            if ($categoryId === 0 || $categoryId === false) {
                 SP_Category::$categoryName = $categoryName;
                 SP_Category::addCategory($categoryName);
                 $categoryId = SP_Category::$categoryLastId;
