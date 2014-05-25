@@ -550,16 +550,20 @@ class SP_Account
 
         $message['action'] = __FUNCTION__;
 
-        if (!SP_Groups::addGroupsForAccount($this->accountId, $this->accountUserGroupsId)) {
-            $message['text'][] = _('Error al actualizar los grupos secundarios');
-            SP_Log::wrLogInfo($message);
-            $message['text'] = array();
+        if ( is_array($this->accountUserGroupsId) ){
+            if (!SP_Groups::addGroupsForAccount($this->accountId, $this->accountUserGroupsId)) {
+                $message['text'][] = _('Error al actualizar los grupos secundarios');
+                SP_Log::wrLogInfo($message);
+                $message['text'] = array();
+            }
         }
 
-        if (!SP_Users::addUsersForAccount($this->accountId, $this->accountUsersId)) {
-            $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
-            SP_Log::wrLogInfo($message);
-            $message['text'] = array();
+        if ( is_array($this->accountUsersId) ){
+            if (!SP_Users::addUsersForAccount($this->accountId, $this->accountUsersId)) {
+                $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
+                SP_Log::wrLogInfo($message);
+                $message['text'] = array();
+            }
         }
 
         $accountInfo = array('customer_name');

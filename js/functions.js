@@ -557,7 +557,7 @@ function dropFile(accountId, sk, maxsize) {
 // Función para activar el Drag&Drop de archivos en la importación de cuentas
 function importFile(sk) {
     var dropfiles = $('#dropzone');
-    var file_exts_ok = ['csv'];
+    var file_exts_ok = ['csv','xml'];
 
     dropfiles.filedrop({
         fallback_id: 'inFile',

@@ -100,7 +100,7 @@ $onCloseAction = $data['onCloseAction'];
 </div>
 
 <div id="title" class="midroundup titleNormal">
-    <?php echo _('Importar CSV'); ?>
+    <?php echo _('Importar CSV/XML'); ?>
 </div>
 
 

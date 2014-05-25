@@ -218,7 +218,10 @@ foreach ($resQuery as $account) {
             }
         }
 
-        $strAccNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
+        if ($account->account_notes){
+            $strAccNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
+            $strAccNotes = nl2br(wordwrap(htmlspecialchars($strAccNotes), 50, '<br>', true));
+        }
     }
 
     //echo '<div class="account-label round shadow" onMouseOver="this.style.backgroundColor=\'RGBA('.$rgbaColor.')\'" onMouseOut="this.style.backgroundColor=\'#FFFFFF\'" >';
@@ -254,7 +257,7 @@ foreach ($resQuery as $account) {
         echo '<div class="account-info">';
         echo '<img src="imgs/btn_group.png" title="' . $secondaryAccesses . '" />';
 
-        echo ($strAccNotes) ? '<img src="imgs/notes.png" title="' . _('Notas') . ': <br><br>' . nl2br(wordwrap(htmlspecialchars($strAccNotes), 50, '<br>', true)) . '" />' : '';
+        echo ($strAccNotes) ? '<img src="imgs/notes.png" title="' . _('Notas') . ': <br><br>' . $strAccNotes . '" />' : '';
 
         if ($filesEnabled) {
             $intNumFiles = SP_Files::countFiles($account->account_id);
