@@ -226,6 +226,10 @@ class SP_Import
      */
     private static function encryptPass($password)
     {
+        if (empty($password)){
+            return array('pass' => '', 'IV' => '');
+        }
+
         $crypt = new SP_Crypt;
 
         // Comprobar el módulo de encriptación
@@ -236,7 +240,7 @@ class SP_Import
         // Encriptar clave
         $data['pass'] = $crypt->mkEncrypt($password);
 
-        if ($data['pass'] === false || is_null($data['pass'])) {
+        if (!empty($password) && ($data['pass'] === false || is_null($data['pass']))) {
             throw new ImportException('critical', _('Error interno'), _('Error al generar datos cifrados'));
         }
 

@@ -458,6 +458,7 @@ a:focus {text-decoration: none;	color: #FF0000;}
 #content #data-search .account-label .field-url {height: 2.5em;}
 
 #content #data-search .account-label .field-text a{color: #4895FA}
+#content #data-search .account-label .no-link,
 #content #data-search .account-label .no-link a{color: white; font-weight: bold;}
 
 #content #data-search .account-info{

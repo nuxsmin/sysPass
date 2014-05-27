@@ -52,11 +52,11 @@ class SP_KeePassXImport
     private static function getEntryData($entries, $groupName)
     {
         foreach ( $entries as $entry ){
-            $notes = $entry->comment;
-            $password = $entry->password;
-            $name = $entry->title;
-            $url = $entry->url;
-            $username = $entry->username;
+            $notes = (isset($entry->comment)) ? (string) $entry->comment : '';
+            $password = (isset($entry->password)) ? (string) $entry->password : '';
+            $name = (isset($entry->title)) ? (string) $entry->title : '';
+            $url = (isset($entry->url)) ? (string) $entry->url : '' ;
+            $username = (isset($entry->username)) ? (string) $entry->username : '';
 
             $accountData = array($name,'KeePassX',$groupName,$url,$username,$password,$notes);
             SP_Import::addAccountData($accountData);

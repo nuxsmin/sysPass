@@ -19,6 +19,7 @@
 #content #data-search .account-label .header .field-name{color: white; font-weight: bold}
 
 #content #data-search .account-label .field-text a{color: #4895FA}
+#content #data-search .account-label .no-link,
 #content #data-search .account-label .no-link a{color: white; font-weight: bold;}
 
 #content #data-search .account-label .field-customer .field-text{height: 2.5em; width: 95%;}

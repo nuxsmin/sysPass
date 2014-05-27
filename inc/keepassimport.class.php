@@ -53,21 +53,22 @@ class SP_KeePassImport
     {
         foreach ( $entries as $entry ){
             foreach ( $entry->String as $account ){
+                $value = (isset($account->Value)) ? (string) $account->Value : '';
                 switch ($account->Key){
                     case 'Notes':
-                        $notes = $account->Value;
+                        $notes = $value;
                         break;
                     case 'Password':
-                        $password = $account->Value;
+                        $password = $value;
                         break;
                     case 'Title':
-                        $name = $account->Value;
+                        $name = $value;
                         break;
-                    case 'url':
-                        $url = $account->Value;
+                    case 'URL':
+                        $url = $value;
                         break;
                     case 'UserName':
-                        $username = $account->Value;
+                        $username = $value;
                         break;
                 }
             }
