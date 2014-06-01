@@ -326,7 +326,7 @@ class SP_LDAP
     }
 
     /**
-     * @brief Bustar al usuario en un grupo
+     * @brief Buscar al usuario en un grupo
      * @param string $userDN con el RDN del usuario
      * @throws Exception
      * @return bool
@@ -340,6 +340,8 @@ class SP_LDAP
         if (!$groupDN = self::searchGroupDN()) {
             return false;
         }
+
+        $userDN = self::escapeLdapDN($userDN);
 
         $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
         $filterAttr = array("member", "uniqueMember");
@@ -367,5 +369,16 @@ class SP_LDAP
         }
 
         return true;
+    }
+
+    /**
+     * @brief Escapar carácteres especiales en el RDN de LDAP
+     * @param string $dn con el RDN del usuario
+     * @return string
+     */
+    private static function escapeLdapDN($dn)
+    {
+        $chars = array('/(,)(?!cn|ou|dc)/', '/(?<!cn|ou|dc)(=)/', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
+        return preg_replace($chars, '\\\$1', $dn);
     }
 }
