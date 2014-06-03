@@ -1,4 +1,3 @@
-var gsorder = 0;
 var lastlen = 0;
 
 var order = {};
@@ -96,7 +95,7 @@ function setWindowAdjustSize() {
     if ( browser == "MSIE" ){
         windowAdjustSize = 150;
     }
-    console.log(windowAdjustSize);
+    //console.log(windowAdjustSize);
 }
 
 // Función para retornar el scroll a la posición inicial
@@ -105,19 +104,21 @@ function scrollUp() {
 }
 
 // Función para limpiar un formulario
-function Clear(id, search) {
-    if (search !== 1) {
-    } else {
-        document.frmSearch.search.value = "";
-        document.frmSearch.customer.selectedIndex = 0;
-        document.frmSearch.category.selectedIndex = 0;
+function clearSearch(clearStart) {
+    if ( clearStart === 1 ){
         $('#frmSearch').find('input[name="start"]').val(0);
-        $('#frmSearch').find('input[name="skey"]').val(0);
-        $('#frmSearch').find('input[name="sorder"]').val(0);
-        $(".select-box").val('').trigger("chosen:updated");
-        order.key = 0;
-        order.dir = 0;
+        return;
     }
+
+    document.frmSearch.search.value = "";
+    document.frmSearch.customer.selectedIndex = 0;
+    document.frmSearch.category.selectedIndex = 0;
+    $('#frmSearch').find('input[name="start"]').val(0);
+    $('#frmSearch').find('input[name="skey"]').val(0);
+    $('#frmSearch').find('input[name="sorder"]').val(0);
+    $(".select-box").val('').trigger("chosen:updated");
+    order.key = 0;
+    order.dir = 0;
 }
 
 // Funcion para crear un desplegable con opciones
@@ -241,9 +242,9 @@ function viewPass(id, full, history) {
         type: 'POST',
         url: APP_ROOT + '/ajax/ajax_viewpass.php',
         async: false,
-        data: {'accountid': id, 'full': full, 'isHistory': history},
+        data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
         success: function(data){
-            if (data === "-1") {
+            if (data == "-1") {
                 doLogout();
             } else {
                 if ( full === 0 ){

@@ -37,6 +37,7 @@ class DB
     static $txtError;
     static $numError;
     static $num_rows;
+    static $num_fields;
     private static $_db;
 
     /**
@@ -98,6 +99,11 @@ class DB
                 return false;
             }
         }
+
+        if (!self::$_db->set_charset("utf8")){
+            SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . self::$_db->connect_errno . ': ' . self::$_db->connect_error);
+        }
+
         return true;
     }
 
@@ -167,7 +173,7 @@ class DB
      * @brief Realizar una consulta a la BBDD
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @return bool|int devuleve bool si hay un error. Devuelve int con el número de registros
+     * @return bool|int devuelve bool si hay un error. Devuelve int con el número de registros
      */
     public static function doQuery($query, $querySource)
     {
@@ -207,6 +213,7 @@ class DB
             }
 
             self::$num_rows = $queryRes->num_rows;
+            self::$num_fields = $queryRes->field_count;
 
             $queryRes->close();
         }

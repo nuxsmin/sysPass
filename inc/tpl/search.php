@@ -32,7 +32,7 @@ $customersSelProp = array("name" => "customer",
     "label" => "",
     "selected" => SP_Common::parseParams('s', 'accountSearchCustomer', 0),
     "default" => "",
-    "js" => 'OnChange="accSearch(0)"',
+    "js" => 'OnChange="clearSearch(1); accSearch(0)"',
     "attribs" => "");
 
 $categoriesSelProp = array("name" => "category",
@@ -42,7 +42,7 @@ $categoriesSelProp = array("name" => "category",
     "label" => "",
     "selected" => SP_Common::parseParams('s', 'accountSearchCategory', 0),
     "default" => "",
-    "js" => 'OnChange="accSearch(0)"',
+    "js" => 'OnChange="clearSearch(1); accSearch(0)"',
     "attribs" => "");
 
 $isAdmin = ($_SESSION["uisadminapp"] || $_SESSION["uisadminacc"]);
@@ -56,7 +56,7 @@ $searchOrder = SP_Common::parseParams('s', 'accountSearchOrder', 0);
     <table id="tblTools" class="round shadow">
         <tr>
             <td id="toolsLeft">
-                <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="Clear('frmSearch', 1); accSearch(0);" />
+                <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="clearSearch(); accSearch(0);" />
                 <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1,event)" value="<?php echo SP_Common::parseParams('s', 'accountSearchTxt'); ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
                 <?php if ( $globalSearch && ! $isAdmin ): ?>
                 <input type="checkbox" name="gsearch" id="gsearch" class="checkbox" <?php echo ($chkGlobalSearch) ? 'checked="checked"' : ''; ?>/>

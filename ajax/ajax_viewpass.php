@@ -29,7 +29,7 @@ require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 SP_Util::checkReferer('POST');
 
 if (!SP_Init::isLoggedIn()) {
-    return -1;
+    SP_Util::logout();
 }
 
 $accountId = SP_Common::parseParams('p', 'accountid', false);
@@ -85,6 +85,8 @@ if (!$isHistory && $fullTxt) {
     SP_Log::wrLogInfo($message);
 }
 
+$accountPass = htmlentities(trim($accountClearPass),ENT_COMPAT,'UTF-8');
+
 if ($fullTxt) {
     ?>
     <div id="fancyMsg" class="msgInfo">
@@ -95,12 +97,12 @@ if ($fullTxt) {
             </tr>
             <tr>
                 <td><span class="altTxtBlue"><?php echo _('Clave'); ?></span></td>
-                <td><?php echo htmlentities(trim($accountClearPass)); ?></td>
+                <td><?php echo $accountPass; ?></td>
             </tr>
         </table>
     </div>
     <?php
 } else {
-    echo htmlentities(trim($accountClearPass));
+    echo $accountPass;
 }
 ?>
