@@ -41,10 +41,10 @@ class SP_Files
     {
         $query = "INSERT INTO accFiles "
             . "SET accfile_accountId = " . (int)$accountId . ","
-            . "accfile_name = '" . $fileData['name'] . "',"
+            . "accfile_name = '" . DB::escape($fileData['name']) . "',"
             . "accfile_type = '" . $fileData['type'] . "',"
             . "accfile_size = '" . $fileData['size'] . "',"
-            . "accfile_content = '" . $fileData['content'] . "',"
+            . "accfile_content = '" . DB::escape($fileData['content']) . "',"
             . "accfile_extension = '" . DB::escape($fileData['extension']) . "'";
 
         if (DB::doQuery($query, __FUNCTION__) !== false) {

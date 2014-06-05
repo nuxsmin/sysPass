@@ -54,7 +54,7 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
             </td>
             <td class="valField">
                 <input type="password" id="usrpass" name="pass" title="<?php echo _('Clave'); ?>" class="txtpass" OnFocus="$('#passLevel').show(); $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value, 'fancyContainer')" />
-                <img src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="$('#resFancyAccion').hide(); password(11,true,false,'fancyContainer');" />
+                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
             </td>
         </tr>
         <tr>
@@ -84,3 +84,9 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
         </ul>
     </div>
 </div>
+<script>
+    $('#passGen').click(function(){
+        $('#resFancyAccion').hide();
+        password(11, true, false, 'fancyContainer');
+    });
+</script>

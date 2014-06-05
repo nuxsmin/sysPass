@@ -92,9 +92,9 @@ if ($action == 'upload') {
     }
 
     // Leemos el archivo a una variable
-    $fileHandle = fopen($tmpName, 'r');
+    $fileData['content'] = file_get_contents($tmpName);
 
-    if (!$fileHandle) {
+    if ($fileData['content'] === false) {
         $message['action'] = _('Subir Archivo');
         $message['text'][] = _('Error interno al leer el archivo');
 
@@ -102,9 +102,6 @@ if ($action == 'upload') {
 
         exit(_('Error interno al leer el archivo'));
     }
-
-    $fileData['content'] = addslashes(fread($fileHandle, filesize($tmpName)));
-    fclose($fileHandle);
 
     if (SP_Files::fileUpload($accountId, $fileData)) {
         exit(_('Archivo guardado'));

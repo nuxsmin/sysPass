@@ -130,8 +130,7 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
                         <td class="valField">
                             <input type="password" id="usrpass" name="pass" class="txtpass" maxlength="50" OnFocus="$('#passLevel').show();
                                     $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value)" />
-                            <img src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria') ?>" class="inputImg" OnClick="$('#resFancyAccion').hide();
-                                    password(11, true);" />
+                            <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria') ?>" class="inputImg" />
                         </td>
                     </tr>
 
@@ -224,5 +223,9 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
             placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>", 
             disable_search_threshold: 10,
             no_results_text: "<?php echo _('Sin resultados'); ?>"
+    });
+    $('#passGen').click(function(){
+        $('#resFancyAccion').hide();
+        password(11, true, true);
     });
 </script>

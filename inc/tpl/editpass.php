@@ -56,7 +56,7 @@ $accountData= $account->getAccount();
                 <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)">
                 <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>" class="inputImg" id="viewPass" />
                 &nbsp;&nbsp;
-                <img src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" OnClick="password(11, true, true);" />
+                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
             </td>
         </tr>
         <tr>
@@ -82,4 +82,7 @@ $accountData= $account->getAccount();
         </li>
     </ul>
 </div>
-<script>$('input:password:visible:first').focus();</script>
+<script>
+    $('input:password:visible:first').focus();
+    $('#passGen').click(function(){password(11, true, true);});
+</script>

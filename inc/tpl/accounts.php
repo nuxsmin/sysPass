@@ -252,8 +252,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
             <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
                  class="inputImg" id="viewPass"/>
             &nbsp;&nbsp;
-            <img src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg"
-                 OnClick="password(11, true, true);"/>
+            <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
         </td>
     </tr>
     <tr>
@@ -584,6 +583,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 $(this).children().html('<?php echo _('SI'); ?>');
             }
         });
+
+        $('#passGen').click(function(){password(11, true, true);});
     </script>
 <?php endif; ?>
 
