@@ -317,7 +317,7 @@ class SP_Init
         $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
 
         if (!SP_Util::runningOnWindows() && $configPerms != "750") {
-            self::initError(_('Los permisos del directorio "/config" son incorrectos'), $configPerms);
+            self::initError(_('Los permisos del directorio "/config" son incorrectos'), _('Actual:') . ' ' . $configPerms . ' - ' . _('Necesario: 750'));
         }
     }
 

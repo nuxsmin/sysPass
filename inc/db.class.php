@@ -81,15 +81,25 @@ class DB
             return true;
         }
 
+        $isInstalled = SP_Config::getValue('installed');
+
         $dbhost = SP_Config::getValue("dbhost");
         $dbuser = SP_Config::getValue("dbuser");
         $dbpass = SP_Config::getValue("dbpass");
         $dbname = SP_Config::getValue("dbname");
 
+        if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
+            if ($isInstalled) {
+                SP_Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
+            } else {
+                return false;
+            }
+        }
+
         self::$_db = @new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 
         if (self::$_db->connect_errno) {
-            if (SP_Config::getValue("installed")) {
+            if ($isInstalled) {
                 if (self::$_db->connect_errno === 1049) {
                     SP_Config::setValue('installed', '0');
                 }
@@ -100,7 +110,7 @@ class DB
             }
         }
 
-        if (!self::$_db->set_charset("utf8")){
+        if (!self::$_db->set_charset("utf8")) {
             SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . self::$_db->connect_errno . ': ' . self::$_db->connect_error);
         }
 
@@ -146,12 +156,13 @@ class DB
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
      * @param bool $retArray devolver un array si la consulta tiene esultados
+     * @param bool $unbuffered devolver el resultado registro a registro
      * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
-    public static function getResults($query, $querySource, $retArray = false)
+    public static function getResults($query, $querySource, $retArray = false, $unbuffered = false)
     {
         if ($query) {
-            self::doQuery($query, $querySource);
+            self::doQuery($query, $querySource, $unbuffered);
         }
 
         if (self::$numError || self::$num_rows === 0) {
@@ -173,9 +184,10 @@ class DB
      * @brief Realizar una consulta a la BBDD
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
+     * @param bool $unbuffered realizar la consulta para obtener registro a registro
      * @return bool|int devuelve bool si hay un error. Devuelve int con el número de registros
      */
-    public static function doQuery($query, $querySource)
+    public static function doQuery($query, $querySource, $unbuffered = false)
     {
         if (!self::connection()) {
             return false;
@@ -183,10 +195,17 @@ class DB
 
         $isSelect = preg_match("/^.*(select|show)\s/i", $query);
 
-        // Limpiar valores de caché
+        // Limpiar valores de caché y errores
         self::$last_result = array();
+        self::$numError = 0;
+        self::$txtError = '';
 
-        $queryRes = self::$_db->query($query);
+        // Comprobamos si la consulta debe de ser devuelta completa o por registro
+        if (!$unbuffered) {
+            $queryRes = self::$_db->query($query);
+        } else {
+            $queryRes = self::$_db->real_query($query);
+        }
 
         if (!$queryRes) {
             self::$numError = self::$_db->errno;
@@ -201,27 +220,32 @@ class DB
         }
 
         if ($isSelect) {
-            if ($queryRes->num_rows == 1) {
-                self::$last_result = @$queryRes->fetch_object();
-            } else {
-                $num_row = 0;
+            //self::$num_rows = $queryRes->num_rows;
+            self::$num_rows = self::$_db->affected_rows;
 
-                while ($row = @$queryRes->fetch_object()) {
-                    self::$last_result[$num_row] = $row;
-                    $num_row++;
+            if (!$unbuffered) {
+                self::$num_fields = self::$_db->field_count;
+
+                if (self::$num_rows === 1) {
+                    self::$last_result = @$queryRes->fetch_object();
+                } else {
+                    $num_row = 0;
+
+                    while ($row = @$queryRes->fetch_object()) {
+                        self::$last_result[$num_row] = $row;
+                        $num_row++;
+                    }
                 }
+
+                $queryRes->close();
+            } else {
+                self::$last_result = self::$_db->use_result();
             }
-
-            self::$num_rows = $queryRes->num_rows;
-            self::$num_fields = $queryRes->field_count;
-
-            $queryRes->close();
         }
 
         self::$lastId = self::$_db->insert_id;
-        $numRows = self::$_db->affected_rows;
 
-        return $numRows;
+        return self::$num_rows;
     }
 
     /**
