@@ -125,8 +125,8 @@ class SP_Util
      */
     public static function checkModules()
     {
-        $modsAvail = get_loaded_extensions();
-        $modsNeed = array("mysql", "ldap", "mcrypt", "curl", "SimpleXML");
+        $modsAvail = array_map('strtolower', get_loaded_extensions());
+        $modsNeed = array("mysqli", "ldap", "mcrypt", "curl", "simplexml", "phar", "json", "xml");
         $modsErr = array();
 
         foreach ($modsNeed as $module) {
@@ -254,7 +254,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 10;
+        $build = 11;
         $version = array(1, 1, 2);
 
         if ($retBuild) {

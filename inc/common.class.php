@@ -228,6 +228,7 @@ class SP_Common
         $msgHelp[23] = _('Importar desde KeePass o KeePassX. El nombre del cliente será igual a KeePass o KeePassX')."<br><br>"._('Importar desde un archivo CSV con el formato') . ":<br><br>" . _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas') . "<br><br>" . _('Si el cliente o la categoría no están creados, se crean automáticamente.');
         $msgHelp[24] = _('Permite que las cuentas sin acceso sean visibles sólo para las búsquedas.');
         $msgHelp[25] = _('Muestra los resultados de búsqueda de cuentas en formato tarjeta.');
+        $msgHelp[26] = _('Habilita el modo de conexión con LDAP de Active Directory.');
 
         if (array_key_exists($id, $msgHelp)) {
             echo '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';

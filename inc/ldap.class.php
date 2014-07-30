@@ -31,7 +31,12 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_LDAP
 {
+    // Variabla que contiene los datos de una búsqueda
     public static $ldapSearchData;
+
+    // Variable para determinar si conecta con Active Directory
+    private static $isADS = false;
+    // Variables de conexión con LDAP
     private static $ldapConn;
     private static $ldapServer;
     private static $searchBase;
@@ -139,7 +144,7 @@ class SP_LDAP
     {
         $message['action'] = __FUNCTION__;
 
-        $groupDN = self::searchGroupDN();
+        $groupDN = (!empty(self::$ldapGroup)) ? self::searchGroupDN() : '*';
         $filter = '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
         $filterAttr = array("dn");
 
@@ -226,9 +231,10 @@ class SP_LDAP
         self::$ldapServer = SP_Config::getValue('ldap_server');
         self::$bindDN = SP_Config::getValue('ldap_binduser');
         self::$bindPass = SP_Config::getValue('ldap_bindpass');
-        self::$ldapGroup = SP_Config::getValue('ldap_group');
+        self::$ldapGroup = SP_Config::getValue('ldap_group', '*');
+        self::$isADS = SP_Config::getValue('ldap_ads', false);
 
-        if (!self::$searchBase || !self::$ldapServer || !self::$ldapGroup || !self::$bindDN || !self::$bindPass) {
+        if (!self::$searchBase || !self::$ldapServer || !self::$bindDN || !self::$bindPass) {
             $message['action'] = __FUNCTION__;
             $message['text'][] = _('Los parámetros de LDAP no están configurados');
 
@@ -250,7 +256,14 @@ class SP_LDAP
     {
         $message['action'] = __FUNCTION__;
 
-        $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        error_log('ADS:' . self::$isADS);
+
+        if (self::$isADS === true) {
+            $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
+        } else {
+            $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        }
+
         $filterAttr = array("dn", "displayname", "samaccountname", "mail", "memberof", "lockouttime", "fullname", "groupmembership", "mail");
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
@@ -335,15 +348,21 @@ class SP_LDAP
     {
         $message['action'] = __FUNCTION__;
 
-        self::$ldapGroup = SP_Config::getValue('ldap_group');
+        $ldapGroup = SP_Config::getValue('ldap_group');
 
+        // El filtro de grupo no está establecido
+        if (empty($ldapGroup)){
+            return true;
+        }
+
+        // Obtenemos el DN del grupo
         if (!$groupDN = self::searchGroupDN()) {
             return false;
         }
 
         $userDN = self::escapeLdapDN($userDN);
 
-        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+        $filter = '(&(' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
         $filterAttr = array("member", "uniqueMember");
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);

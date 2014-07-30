@@ -50,7 +50,7 @@ $objUser->userName = SP_Auth::$userName;
 $objUser->userEmail = SP_Auth::$userEmail;
 
 // Autentificamos por LDAP
-if ($resLdap == 1) {
+if ($resLdap === true) {
     $message['action'] = _('Inicio sesión (LDAP)');
 
     // Verificamos si el usuario existe en la BBDD
@@ -74,6 +74,20 @@ if ($resLdap == 1) {
 } else if ($resLdap == 49) {
     $message['action'] = _('Inicio sesión (LDAP)');
     $message['text'][] = _('Login incorrecto');
+    $message['text'][] = _('Usuario') . ": " . $userLogin;
+    SP_Log::wrLogInfo($message);
+
+    SP_Common::printJSON(_('Usuario/Clave incorrectos'));
+} else if ($resLdap === 701) {
+    $message['action'] = _('Inicio sesión (LDAP)');
+    $message['text'][] = _('Cuenta expirada');
+    $message['text'][] = _('Usuario') . ": " . $userLogin;
+    SP_Log::wrLogInfo($message);
+
+    SP_Common::printJSON(_('Cuenta expirada'));
+} else if ($resLdap === 702) {
+    $message['action'] = _('Inicio sesión (LDAP)');
+    $message['text'][] = _('El usuario no tiene grupos asociados');
     $message['text'][] = _('Usuario') . ": " . $userLogin;
     SP_Log::wrLogInfo($message);
 

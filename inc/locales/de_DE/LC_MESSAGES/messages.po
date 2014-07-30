@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-30 15:35+0100\n"
-"PO-Revision-Date: 2014-07-30 15:40+0100\n"
+"POT-Creation-Date: 2014-07-30 22:23+0100\n"
+"PO-Revision-Date: 2014-07-30 22:24+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -118,7 +118,7 @@ msgstr "Fehler beim Ändern des Benutzers"
 # Ey, this is a DEMO!!
 #: ../../../../ajax/ajax_appMgmtSave.php:138
 #: ../../../../ajax/ajax_appMgmtSave.php:160
-#: ../../../../ajax/ajax_import.php:1 ../../../../ajax/ajax_configSave.php:208
+#: ../../../../ajax/ajax_import.php:1 ../../../../ajax/ajax_configSave.php:210
 #: ../../../../ajax/ajax_migrate.php:1
 msgid "Ey, esto es una DEMO!!"
 msgstr "Hey, dies ist eine DEMO!!"
@@ -159,7 +159,7 @@ msgstr "Fehler beim Löschen eines Benutzers"
 #: ../../../../ajax/ajax_appMgmtSave.php:415
 #: ../../../../ajax/ajax_accountSave.php:116
 #: ../../../../ajax/ajax_accountSave.php:268
-#: ../../../../ajax/ajax_configSave.php:223
+#: ../../../../ajax/ajax_configSave.php:225
 msgid "Acción Inválida"
 msgstr "Ungültige Aktion"
 
@@ -274,7 +274,7 @@ msgstr "Profil löschen"
 # Profile
 #: ../../../../ajax/ajax_appMgmtSave.php:303
 #: ../../../../ajax/ajax_getContent.php:114
-#: ../../../../ajax/ajax_doLogin.php:139
+#: ../../../../ajax/ajax_doLogin.php:146
 #: ../../../../inc/profiles.class.php:203
 #: ../../../../inc/profiles.class.php:254 ../../../../inc/tpl/users.php:98
 msgid "Perfil"
@@ -562,88 +562,88 @@ msgid "Error al vaciar el registro de eventos"
 msgstr "Fehler beim Löschen des Protokols"
 
 # Missing Wiki parameters
-#: ../../../../ajax/ajax_configSave.php:93
+#: ../../../../ajax/ajax_configSave.php:94
 msgid "Faltan parámetros de Wiki"
 msgstr "Fehlender Wiki-Parameter"
 
 # Missing LDAP parameters
-#: ../../../../ajax/ajax_configSave.php:104
+#: ../../../../ajax/ajax_configSave.php:105
 msgid "Faltan parámetros de LDAP"
 msgstr "Fehlender LDAP-Parameter"
 
 # Missing Mail parameters
-#: ../../../../ajax/ajax_configSave.php:117
+#: ../../../../ajax/ajax_configSave.php:119
 msgid "Faltan parámetros de Correo"
 msgstr "Fehlender Mail-Parameter"
 
 # Maximum file upload size in 16MB
-#: ../../../../ajax/ajax_configSave.php:138
+#: ../../../../ajax/ajax_configSave.php:140
 msgid "El tamaño máximo de archivo es de 16MB"
 msgstr "Maximale Dateigröße beim Upload ist 16MB"
 
 # Edit Configuration
-#: ../../../../ajax/ajax_configSave.php:155
+#: ../../../../ajax/ajax_configSave.php:157
 msgid "Modificar Configuración"
 msgstr "Konfiguration ändern"
 
 # Configuration updated
-#: ../../../../ajax/ajax_configSave.php:163
+#: ../../../../ajax/ajax_configSave.php:165
 msgid "Configuración actualizada"
 msgstr "Konfiguration aktualisiert"
 
 # Master Password updated
-#: ../../../../ajax/ajax_configSave.php:172
-#: ../../../../ajax/ajax_configSave.php:218
+#: ../../../../ajax/ajax_configSave.php:174
+#: ../../../../ajax/ajax_configSave.php:220
 #: ../../../../ajax/ajax_viewpass.php:68 ../../../../ajax/ajax_viewpass.php:70
 #: ../../../../inc/html.class.php:461
 msgid "Clave maestra actualizada"
 msgstr "Master-Passwort aktualisiert"
 
 # Restart session to update
-#: ../../../../ajax/ajax_configSave.php:172
+#: ../../../../ajax/ajax_configSave.php:174
 #: ../../../../ajax/ajax_viewpass.php:68 ../../../../ajax/ajax_viewpass.php:70
 #: ../../../../inc/html.class.php:461
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Neue Sitzung beginnen"
 
 # Master Password needed
-#: ../../../../ajax/ajax_configSave.php:176
+#: ../../../../ajax/ajax_configSave.php:178
 msgid "Clave maestra no indicada"
 msgstr "Master-Passwort notwendig"
 
 # Password update must be confirmed
-#: ../../../../ajax/ajax_configSave.php:180
+#: ../../../../ajax/ajax_configSave.php:182
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "Passwort muss bestätigt werden"
 
 # Password are the same
-#: ../../../../ajax/ajax_configSave.php:184
+#: ../../../../ajax/ajax_configSave.php:186
 msgid "Las claves son idénticas"
 msgstr "Passwörter sind identisch"
 
 # Master passwords mismatch
-#: ../../../../ajax/ajax_configSave.php:188
+#: ../../../../ajax/ajax_configSave.php:190
 msgid "Las claves maestras no coinciden"
 msgstr "Master-Passwort stimmt nicht"
 
 # Current master password mismatch
-#: ../../../../ajax/ajax_configSave.php:192
+#: ../../../../ajax/ajax_configSave.php:194
 msgid "La clave maestra actual no coincide"
 msgstr "Aktuelles Master-Passwort stimmt nicht"
 
 # Error on updating accounts' passwords
-#: ../../../../ajax/ajax_configSave.php:201
+#: ../../../../ajax/ajax_configSave.php:203
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Fehler beim Ändern der Passwörter eines Kontos"
 
 # Update Master Password
-#: ../../../../ajax/ajax_configSave.php:215
+#: ../../../../ajax/ajax_configSave.php:217
 #: ../../../../inc/account.class.php:736
 msgid "Actualizar Clave Maestra"
 msgstr "Master-Passwort ändern"
 
 # Error on saving master password's hash
-#: ../../../../ajax/ajax_configSave.php:221
+#: ../../../../ajax/ajax_configSave.php:223
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Fehler beim Speichern des Hash für das Master-Passwort"
 
@@ -690,9 +690,9 @@ msgstr "Anmeldung"
 
 # Group
 #: ../../../../ajax/ajax_getContent.php:115
-#: ../../../../ajax/ajax_doLogin.php:140 ../../../../inc/groups.class.php:151
+#: ../../../../ajax/ajax_doLogin.php:147 ../../../../inc/groups.class.php:151
 #: ../../../../inc/groups.class.php:179 ../../../../inc/groups.class.php:205
-#: ../../../../inc/tpl/config.php:307 ../../../../inc/tpl/users.php:105
+#: ../../../../inc/tpl/config.php:308 ../../../../inc/tpl/users.php:105
 msgid "Grupo"
 msgstr "Gruppe"
 
@@ -807,18 +807,30 @@ msgstr "Importiere Konto aus externer Quelle"
 msgid "Importar Cuentas"
 msgstr "Importiere Konten"
 
-# Make Backup
-#: ../../../../ajax/ajax_backup.php:46 ../../../../inc/tpl/backup.php:79
-msgid "Realizar Backup"
-msgstr "Backup erstellen"
-
 # Error while doing backup
-#: ../../../../ajax/ajax_backup.php:54
+#: ../../../../ajax/ajax_backup.php:45
 msgid "Error al realizar el backup"
 msgstr "Fehler beim Ausführen des Backups"
 
+# Please, check the event log for more details
+#: ../../../../ajax/ajax_backup.php:45 ../../../../ajax/ajax_checkLdap.php:54
+#: ../../../../inc/migrate.class.php:115 ../../../../inc/import.class.php:89
+msgid "Revise el registro de eventos para más detalles"
+msgstr "Bitte schauen Sie in das Protokol für weitere Details"
+
+# Make Backup
+#: ../../../../ajax/ajax_backup.php:48 ../../../../inc/tpl/backup.php:80
+msgid "Realizar Backup"
+msgstr "Backup erstellen"
+
+# Application and database backup successfully done
+#: ../../../../ajax/ajax_backup.php:49
+#, fuzzy
+msgid "Copia de la aplicación y base de datos realizada correctamente"
+msgstr "Application and database backup successfully done"
+
 # Backup process finished
-#: ../../../../ajax/ajax_backup.php:57
+#: ../../../../ajax/ajax_backup.php:54
 msgid "Proceso de backup finalizado"
 msgstr "Backup beendet"
 
@@ -1009,15 +1021,15 @@ msgstr "Konto"
 # User
 #: ../../../../ajax/ajax_viewpass.php:95 ../../../../ajax/ajax_search.php:131
 #: ../../../../ajax/ajax_search.php:248 ../../../../ajax/ajax_doLogin.php:77
-#: ../../../../ajax/ajax_doLogin.php:87 ../../../../ajax/ajax_doLogin.php:97
-#: ../../../../ajax/ajax_doLogin.php:138 ../../../../res/test.php:64
-#: ../../../../inc/init.php:513 ../../../../inc/users.class.php:788
-#: ../../../../inc/users.class.php:829 ../../../../inc/tpl/passreset.php:48
-#: ../../../../inc/tpl/request.php:49 ../../../../inc/tpl/login.php:35
-#: ../../../../inc/tpl/login.php:44 ../../../../inc/tpl/install.php:89
-#: ../../../../inc/tpl/install.php:90 ../../../../inc/tpl/editpass.php:50
-#: ../../../../inc/tpl/accounts.php:231 ../../../../inc/tpl/config.php:373
-#: ../../../../inc/tpl/eventlog.php:62
+#: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:94
+#: ../../../../ajax/ajax_doLogin.php:104 ../../../../ajax/ajax_doLogin.php:145
+#: ../../../../res/test.php:64 ../../../../inc/init.php:513
+#: ../../../../inc/users.class.php:788 ../../../../inc/users.class.php:829
+#: ../../../../inc/tpl/passreset.php:48 ../../../../inc/tpl/request.php:49
+#: ../../../../inc/tpl/login.php:35 ../../../../inc/tpl/login.php:44
+#: ../../../../inc/tpl/install.php:89 ../../../../inc/tpl/install.php:90
+#: ../../../../inc/tpl/editpass.php:50 ../../../../inc/tpl/accounts.php:231
+#: ../../../../inc/tpl/config.php:384 ../../../../inc/tpl/eventlog.php:62
 msgid "Usuario"
 msgstr "Benutzer"
 
@@ -1025,9 +1037,9 @@ msgstr "Benutzer"
 #: ../../../../ajax/ajax_viewpass.php:99 ../../../../ajax/ajax_usrpass.php:53
 #: ../../../../ajax/ajax_usrpass.php:56 ../../../../inc/tpl/passreset.php:57
 #: ../../../../inc/tpl/login.php:37 ../../../../inc/tpl/login.php:45
-#: ../../../../inc/tpl/install.php:100 ../../../../inc/tpl/editpass.php:54
-#: ../../../../inc/tpl/accounts.php:248 ../../../../inc/tpl/config.php:381
-#: ../../../../inc/tpl/users.php:129
+#: ../../../../inc/tpl/install.php:99 ../../../../inc/tpl/install.php:100
+#: ../../../../inc/tpl/editpass.php:54 ../../../../inc/tpl/accounts.php:248
+#: ../../../../inc/tpl/config.php:392 ../../../../inc/tpl/users.php:129
 msgid "Clave"
 msgstr "Passwort"
 
@@ -1185,7 +1197,7 @@ msgid "No tiene permisos para realizar esta operación"
 msgstr "Sie haben keine Erlaubnis für diese Aktion"
 
 # Password Change
-#: ../../../../ajax/ajax_usrpass.php:48 ../../../../inc/auth.class.php:187
+#: ../../../../ajax/ajax_usrpass.php:48 ../../../../inc/auth.class.php:186
 #: ../../../../inc/tpl/users.php:166
 msgid "Cambio de Clave"
 msgstr "Passwortänderung"
@@ -1214,12 +1226,12 @@ msgstr "Passwortstärke"
 #: ../../../../inc/tpl/groups.php:64 ../../../../inc/tpl/customers.php:64
 #: ../../../../inc/tpl/profiles.php:134 ../../../../inc/tpl/editpass.php:81
 #: ../../../../inc/tpl/accounts.php:524 ../../../../inc/tpl/categories.php:64
-#: ../../../../inc/tpl/config.php:438 ../../../../inc/tpl/users.php:210
+#: ../../../../inc/tpl/config.php:449 ../../../../inc/tpl/users.php:210
 msgid "Guardar"
 msgstr "Speichern"
 
 # LDAP parameters are not set
-#: ../../../../ajax/ajax_checkLdap.php:48 ../../../../inc/ldap.class.php:233
+#: ../../../../ajax/ajax_checkLdap.php:48 ../../../../inc/ldap.class.php:239
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "LDAP-Parameter sind nicht gesetzt"
 
@@ -1227,12 +1239,6 @@ msgstr "LDAP-Parameter sind nicht gesetzt"
 #: ../../../../ajax/ajax_checkLdap.php:54
 msgid "Error de conexión a LDAP"
 msgstr "LDAP Verbindungsfehler"
-
-# Please, check the event log for more details
-#: ../../../../ajax/ajax_checkLdap.php:54
-#: ../../../../inc/migrate.class.php:115 ../../../../inc/import.class.php:89
-msgid "Revise el registro de eventos para más detalles"
-msgstr "Bitte schauen Sie in das Protokol für weitere Details"
 
 # LDAP connection OK
 #: ../../../../ajax/ajax_checkLdap.php:56
@@ -1261,6 +1267,7 @@ msgstr "Keine Benutzername/Passwort eingegeben"
 
 # Session start (LDAP)
 #: ../../../../ajax/ajax_doLogin.php:54 ../../../../ajax/ajax_doLogin.php:75
+#: ../../../../ajax/ajax_doLogin.php:82
 msgid "Inicio sesión (LDAP)"
 msgstr "Sitzungsbeginn (LDAP)"
 
@@ -1271,7 +1278,7 @@ msgstr "Fehler beim Speichern der LDAP-Benutzerdaten"
 
 # Internal error
 #: ../../../../ajax/ajax_doLogin.php:63 ../../../../ajax/ajax_doLogin.php:71
-#: ../../../../ajax/ajax_doLogin.php:108 ../../../../inc/import.class.php:237
+#: ../../../../ajax/ajax_doLogin.php:115 ../../../../inc/import.class.php:237
 #: ../../../../inc/import.class.php:244 ../../../../inc/import.class.php:262
 msgid "Error interno"
 msgstr "Interner Fehler"
@@ -1282,37 +1289,43 @@ msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr "Fehler beim Ändern des Benutzer-Passworts in der BD"
 
 # Incorrect login
-#: ../../../../ajax/ajax_doLogin.php:76 ../../../../ajax/ajax_doLogin.php:86
+#: ../../../../ajax/ajax_doLogin.php:76 ../../../../ajax/ajax_doLogin.php:93
 msgid "Login incorrecto"
 msgstr "Fehlerhafte Anmeldung"
 
 # Wrong user/pass
-#: ../../../../ajax/ajax_doLogin.php:80 ../../../../ajax/ajax_doLogin.php:90
+#: ../../../../ajax/ajax_doLogin.php:80 ../../../../ajax/ajax_doLogin.php:97
 msgid "Usuario/Clave incorrectos"
 msgstr "Falscher/s Benutzername/Passwort"
 
+# Account added
+#: ../../../../ajax/ajax_doLogin.php:83 ../../../../ajax/ajax_doLogin.php:87
+#, fuzzy
+msgid "Cuenta expirada"
+msgstr "Konto hinzugefügt"
+
 # Session start (MySQL)
-#: ../../../../ajax/ajax_doLogin.php:82
+#: ../../../../ajax/ajax_doLogin.php:89
 msgid "Inicio sesión (MySQL)"
 msgstr "Sitzungsbeginn (MySQL)"
 
 # User disabled
-#: ../../../../ajax/ajax_doLogin.php:96 ../../../../ajax/ajax_doLogin.php:100
+#: ../../../../ajax/ajax_doLogin.php:103 ../../../../ajax/ajax_doLogin.php:107
 msgid "Usuario deshabilitado"
 msgstr "Benutzer gespert"
 
 # Error on retrieving user data from DB
-#: ../../../../ajax/ajax_doLogin.php:105
+#: ../../../../ajax/ajax_doLogin.php:112
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr "Fehler beim Laden der Benutzerdaten aus der Datenbank"
 
 # The master password not saved or is incorrect
-#: ../../../../ajax/ajax_doLogin.php:113
+#: ../../../../ajax/ajax_doLogin.php:120
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "Master-Passwort ist nicht sicher oder stimmt nicht"
 
 # Invalid Master Password
-#: ../../../../ajax/ajax_doLogin.php:116 ../../../../ajax/ajax_doLogin.php:119
+#: ../../../../ajax/ajax_doLogin.php:123 ../../../../ajax/ajax_doLogin.php:126
 msgid "Clave maestra incorrecta"
 msgstr "Ungültiges Master-Passwort"
 
@@ -1469,7 +1482,7 @@ msgstr ""
 "zu können."
 
 # Module unavilable
-#: ../../../../inc/util.class.php:136 ../../../../inc/tpl/config.php:325
+#: ../../../../inc/util.class.php:136 ../../../../inc/tpl/config.php:336
 msgid "Módulo no disponible"
 msgstr "Modul verfügbar"
 
@@ -1553,72 +1566,66 @@ msgid "No tiene permisos para acceder a esta página"
 msgstr "Sie haben keine Erlaubnis auf diese Seite zuzugreifen"
 
 # This operation is only available on Linux environments
-#: ../../../../inc/backup.class.php:44 ../../../../inc/config.class.php:210
+#: ../../../../inc/backup.class.php:155
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Diese Funktion is nur in einer Linux-Umgebung verfügbar"
 
-# Unable to create backup directory
-#: ../../../../inc/backup.class.php:59 ../../../../inc/backup.class.php:62
-#: ../../../../inc/config.class.php:225 ../../../../inc/config.class.php:228
-msgid "No es posible crear el directorio de backups"
-msgstr "Verzeichnis für Backups kann nicht angelegt werden"
-
-# Database Backup
-#: ../../../../inc/backup.class.php:61 ../../../../inc/backup.class.php:75
-#: ../../../../inc/config.class.php:227 ../../../../inc/config.class.php:241
-msgid "Copia BBDD"
-msgstr "Datenbank-Backup"
+# Error while doing backup in compatibility mode
+#: ../../../../inc/backup.class.php:159
+#, fuzzy
+msgid "Error al realizar backup en modo compatibilidad"
+msgstr "Error while doing backup in compatibility mode"
 
 # Check backup directory permissions
-#: ../../../../inc/backup.class.php:70 ../../../../inc/config.class.php:236
+#: ../../../../inc/backup.class.php:217
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Bitte überprüfen Sie die Zugriffsrechte des Backup₋Verzeichnisses"
 
 # Unable to connect to LDAP server
-#: ../../../../inc/ldap.class.php:92 ../../../../inc/ldap.class.php:97
+#: ../../../../inc/ldap.class.php:97 ../../../../inc/ldap.class.php:102
 msgid "No es posible conectar con el servidor de LDAP"
 msgstr "Verbindung zum LDAP-Server kann nicht hergestellt werden"
 
 # Connection error (BIND)
-#: ../../../../inc/ldap.class.php:121 ../../../../inc/ldap.class.php:127
+#: ../../../../inc/ldap.class.php:126 ../../../../inc/ldap.class.php:132
 msgid "Error al conectar (BIND)"
 msgstr "LDAP-Verbindungsfehler (BIND)"
 
 # Error on searching objects in base DN
-#: ../../../../inc/ldap.class.php:149 ../../../../inc/ldap.class.php:155
+#: ../../../../inc/ldap.class.php:154 ../../../../inc/ldap.class.php:160
 msgid "Error al buscar objetos en DN base"
 msgstr "Fehler beim Suchen nach Objekten in der Base-DN"
 
 # Error on searching group RDN
-#: ../../../../inc/ldap.class.php:182 ../../../../inc/ldap.class.php:188
-#: ../../../../inc/ldap.class.php:195 ../../../../inc/ldap.class.php:200
-#: ../../../../inc/ldap.class.php:210 ../../../../inc/ldap.class.php:215
+#: ../../../../inc/ldap.class.php:187 ../../../../inc/ldap.class.php:193
+#: ../../../../inc/ldap.class.php:200 ../../../../inc/ldap.class.php:205
+#: ../../../../inc/ldap.class.php:215 ../../../../inc/ldap.class.php:220
 msgid "Error al buscar RDN de grupo"
 msgstr "Fehler beim Suchen nach Gruppen RDN"
 
 # Group RDN found
-#: ../../../../inc/ldap.class.php:203
+#: ../../../../inc/ldap.class.php:208
 msgid "RDN de grupo encontrado"
 msgstr "Gruppen-RDN gefunden"
 
 # Error on searching user DN
-#: ../../../../inc/ldap.class.php:259 ../../../../inc/ldap.class.php:265
-#: ../../../../inc/ldap.class.php:280 ../../../../inc/ldap.class.php:285
+#: ../../../../inc/ldap.class.php:272 ../../../../inc/ldap.class.php:278
+#: ../../../../inc/ldap.class.php:293 ../../../../inc/ldap.class.php:298
 msgid "Error al buscar el DN del usuario"
 msgstr "Fehler beim Suchen nach Benutzer DN"
 
 # Error on searching user on LDAP
-#: ../../../../inc/ldap.class.php:272 ../../../../inc/ldap.class.php:277
+#: ../../../../inc/ldap.class.php:285 ../../../../inc/ldap.class.php:290
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Fehler beim Suchen des Benutzers in LDAP"
 
 # Error on searching users group
-#: ../../../../inc/ldap.class.php:353 ../../../../inc/ldap.class.php:359
+#: ../../../../inc/ldap.class.php:366 ../../../../inc/ldap.class.php:372
 msgid "Error al buscar el grupo de usuarios"
 msgstr "Fehler beim Suchen nach Benutzergruppe"
 
 # No group found with that name
-#: ../../../../inc/ldap.class.php:363 ../../../../inc/ldap.class.php:369
+#: ../../../../inc/ldap.class.php:376 ../../../../inc/ldap.class.php:382
 msgid "No se encontró el grupo con ese nombre"
 msgstr "Keine Gruppe mit dem Namen gefunden"
 
@@ -1638,12 +1645,12 @@ msgid "Valor"
 msgstr "Wert"
 
 # Unable to write on configuration file
-#: ../../../../inc/config.class.php:380
+#: ../../../../inc/config.class.php:312
 msgid "No es posible escribir el archivo de configuración"
 msgstr "Konfigurationsdatei kann nicht geschrieben werden"
 
 # Please, check 'config' directory permissions
-#: ../../../../inc/config.class.php:381
+#: ../../../../inc/config.class.php:313
 msgid "Compruebe los permisos del directorio \"config\""
 msgstr "Bitte überprüfen Sie Zugriffsrechte auf das Verzeichnis \"config\""
 
@@ -1908,6 +1915,12 @@ msgstr "Allows to show the non-permission accounts only for searches."
 #, fuzzy
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr "Enables to show account's search results like a card format."
+
+# Enables Active Directory LDAP connection mode.
+#: ../../../../inc/common.class.php:231
+#, fuzzy
+msgid "Habilita el modo de conexión con LDAP de Active Directory."
+msgstr "Enables Active Directory LDAP connection mode."
 
 # Error on updating history
 #: ../../../../inc/account.class.php:320 ../../../../inc/account.class.php:842
@@ -2638,23 +2651,23 @@ msgid "No es posible detectar la aplicación que exportó los datos"
 msgstr "Unable to detect the application the data was exported from"
 
 # The user have no associated groups
-#: ../../../../inc/auth.class.php:108
+#: ../../../../inc/auth.class.php:107
 msgid "El usuario no tiene grupos asociados"
 msgstr "Der Benutzer hat keine zugewiesene Gruppe"
 
 # A request for changing your user password has been done.
-#: ../../../../inc/auth.class.php:188
+#: ../../../../inc/auth.class.php:187
 #, fuzzy
 msgid "Se ha solicitado el cambio de su clave de usuario."
 msgstr "Ein Anfrage zum Ändern ihres Benutzerpassworts wurde begonnen."
 
 # In order to complete the process, please go to this URL:
-#: ../../../../inc/auth.class.php:190
+#: ../../../../inc/auth.class.php:189
 msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
 msgstr "Zum Abschluss dieses Vorgangs, gehen Sie bitte zu der URL: "
 
 # If you have not requested this action, please dismiss this message.
-#: ../../../../inc/auth.class.php:194
+#: ../../../../inc/auth.class.php:193
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr ""
 "Wenn Sie diese Aktion nicht ausgelöst haben, dann ignorieren Sie bitte diese "
@@ -2752,27 +2765,27 @@ msgid "Enviar"
 msgstr "Senden"
 
 # Last backup
-#: ../../../../inc/tpl/backup.php:40
+#: ../../../../inc/tpl/backup.php:41
 msgid "Último backup"
 msgstr "Letztes Backup"
 
 # There're no backups available
-#: ../../../../inc/tpl/backup.php:40
+#: ../../../../inc/tpl/backup.php:41
 msgid "No se encontraron backups"
 msgstr "Es existieren keine Backups"
 
 # Result
-#: ../../../../inc/tpl/backup.php:46
+#: ../../../../inc/tpl/backup.php:47
 msgid "Resultado"
 msgstr "Ergebnis"
 
 # Download Current
-#: ../../../../inc/tpl/backup.php:54
+#: ../../../../inc/tpl/backup.php:55
 msgid "Descargar Actual"
 msgstr "Herunterladen"
 
 # There're no backups for download
-#: ../../../../inc/tpl/backup.php:62
+#: ../../../../inc/tpl/backup.php:63
 msgid "No hay backups para descargar"
 msgstr "Es existieren keine Backups zum Herunterladen"
 
@@ -3224,12 +3237,6 @@ msgstr "sysPass administrator's login"
 msgid "Mostrar Clave"
 msgstr "Show Password"
 
-# sysPass administrator's password
-#: ../../../../inc/tpl/install.php:99
-#, fuzzy
-msgid "Clave de administrador de sysPass"
-msgstr "sysPass administrator's password"
-
 # DB Configuration
 #: ../../../../inc/tpl/install.php:118
 msgid "Configurar BBDD"
@@ -3325,7 +3332,7 @@ msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
 msgstr "Dateien hier fallen lassen (max. 5) oder zum selektieren anklicken"
 
 # Maximum file size
-#: ../../../../inc/tpl/accounts.php:359 ../../../../inc/tpl/config.php:171
+#: ../../../../inc/tpl/accounts.php:359 ../../../../inc/tpl/config.php:172
 msgid "Tamaño máximo de archivo"
 msgstr "Maximale Dateigröße"
 
@@ -3420,192 +3427,198 @@ msgid "Descripción de la categoría"
 msgstr "Beschreibung der Kategorie"
 
 # Site
-#: ../../../../inc/tpl/config.php:62
+#: ../../../../inc/tpl/config.php:63
 msgid "Sitio"
 msgstr "Site"
 
 # Language
-#: ../../../../inc/tpl/config.php:70
+#: ../../../../inc/tpl/config.php:71
 msgid "Idioma"
 msgstr "Sprache"
 
 # Session timeout (s)
-#: ../../../../inc/tpl/config.php:84
+#: ../../../../inc/tpl/config.php:85
 msgid "Timeout de sesión (s)"
 msgstr "Ablauf der Sitzung (s)"
 
 # Enable event log
-#: ../../../../inc/tpl/config.php:92
+#: ../../../../inc/tpl/config.php:93
 msgid "Habilitar log de eventos"
 msgstr "Protokol einschalten"
 
 # Enable debug
-#: ../../../../inc/tpl/config.php:102
+#: ../../../../inc/tpl/config.php:103
 msgid "Habilitar depuración"
 msgstr "Debugging einschalten"
 
 # Maintenance mode.
-#: ../../../../inc/tpl/config.php:112
+#: ../../../../inc/tpl/config.php:113
 msgid "Modo mantenimiento"
 msgstr "Wartungsmodus"
 
 # Check for updates
-#: ../../../../inc/tpl/config.php:122
+#: ../../../../inc/tpl/config.php:123
 msgid "Comprobar actualizaciones"
 msgstr "Nach Updates schauen"
 
 # Account name as link
-#: ../../../../inc/tpl/config.php:132
+#: ../../../../inc/tpl/config.php:133
 msgid "Nombre de cuenta como enlace"
 msgstr "Kontoname als Link"
 
 # Files management
-#: ../../../../inc/tpl/config.php:142
+#: ../../../../inc/tpl/config.php:143
 msgid "Gestión de archivos"
 msgstr "Dateiverwaltung"
 
 # Global searches
-#: ../../../../inc/tpl/config.php:152
+#: ../../../../inc/tpl/config.php:153
 msgid "Búsquedas globales"
 msgstr "Globale Suchen"
 
 # Allowed file extensions
-#: ../../../../inc/tpl/config.php:162
+#: ../../../../inc/tpl/config.php:163
 msgid "Extensiones de archivos permitidas"
 msgstr "Erlaubte Dateiendungen"
 
 # Results per page
-#: ../../../../inc/tpl/config.php:180
+#: ../../../../inc/tpl/config.php:181
 msgid "Resultados por página"
 msgstr "Treffer pro Seite"
 
 # Results as Cards
-#: ../../../../inc/tpl/config.php:196
+#: ../../../../inc/tpl/config.php:197
 msgid "Resultados en Tarjetas"
 msgstr "Results as Cards"
 
 # Wiki
-#: ../../../../inc/tpl/config.php:208
+#: ../../../../inc/tpl/config.php:209
 msgid "Wiki"
 msgstr "Wiki"
 
 # Enable Wiki links
-#: ../../../../inc/tpl/config.php:214
+#: ../../../../inc/tpl/config.php:215
 msgid "Habilitar enlaces Wiki"
 msgstr "Wike-Links einschalten"
 
 # Wiki search URL
-#: ../../../../inc/tpl/config.php:224
+#: ../../../../inc/tpl/config.php:225
 msgid "URL de búsqueda Wiki"
 msgstr "Wiki Such-URL"
 
 # Wiki page URL
-#: ../../../../inc/tpl/config.php:233
+#: ../../../../inc/tpl/config.php:234
 msgid "URL de página en Wiki"
 msgstr "Wike URL"
 
 # Account name preffix
-#: ../../../../inc/tpl/config.php:242
+#: ../../../../inc/tpl/config.php:243
 msgid "Prefijo para nombre de cuenta"
 msgstr "Präfix eines Kontonamens"
 
 # LDAP
-#: ../../../../inc/tpl/config.php:254
+#: ../../../../inc/tpl/config.php:255
 msgid "LDAP"
 msgstr "LDAP"
 
 # Enable LDAP
-#: ../../../../inc/tpl/config.php:261
+#: ../../../../inc/tpl/config.php:262
 msgid "Habilitar LDAP"
 msgstr "LDAP verwenden"
 
 # Server
-#: ../../../../inc/tpl/config.php:271 ../../../../inc/tpl/config.php:348
+#: ../../../../inc/tpl/config.php:272 ../../../../inc/tpl/config.php:359
 msgid "Servidor"
 msgstr "Server"
 
 # Bind User
-#: ../../../../inc/tpl/config.php:280
+#: ../../../../inc/tpl/config.php:281
 msgid "Usuario de conexión"
 msgstr "Benutzer für Bind"
 
 # Bind Password
-#: ../../../../inc/tpl/config.php:289
+#: ../../../../inc/tpl/config.php:290
 msgid "Clave de conexión"
 msgstr "LDAP-Passwort"
 
 # Search base
-#: ../../../../inc/tpl/config.php:298
+#: ../../../../inc/tpl/config.php:299
 msgid "Base de búsqueda"
 msgstr "Suchpräfix"
 
+# Active Directory
+#: ../../../../inc/tpl/config.php:317
+#, fuzzy
+msgid "Active Directory"
+msgstr "Active Directory"
+
 # Check
-#: ../../../../inc/tpl/config.php:316
+#: ../../../../inc/tpl/config.php:327
 msgid "Comprobar"
 msgstr "Überprüfung"
 
 # Check LDAP connection
-#: ../../../../inc/tpl/config.php:319
+#: ../../../../inc/tpl/config.php:330
 msgid "Comprobar conexión con LDAP"
 msgstr "LDAP-Verbindung prüfen"
 
 # Mail
-#: ../../../../inc/tpl/config.php:333
+#: ../../../../inc/tpl/config.php:344
 msgid "Correo"
 msgstr "E-Mail"
 
 # Enable email notifications
-#: ../../../../inc/tpl/config.php:339
+#: ../../../../inc/tpl/config.php:350
 msgid "Habilitar notificaciones de correo"
 msgstr "E-Mail-Benachrichtigung einschalten"
 
 # Port
-#: ../../../../inc/tpl/config.php:356
+#: ../../../../inc/tpl/config.php:367
 msgid "Puerto"
 msgstr "Port"
 
 # Enable Authentication
-#: ../../../../inc/tpl/config.php:364
+#: ../../../../inc/tpl/config.php:375
 msgid "Habilitar Autentificación"
 msgstr "aktivieren Sie Authentifizierung"
 
 # Security
-#: ../../../../inc/tpl/config.php:389
+#: ../../../../inc/tpl/config.php:400
 msgid "Seguridad"
 msgstr "Sicherheit"
 
 # Disabled
-#: ../../../../inc/tpl/config.php:395
+#: ../../../../inc/tpl/config.php:406
 msgid "Deshabilitada"
 msgstr "Inaktiv"
 
 # Recipient email address
-#: ../../../../inc/tpl/config.php:406
+#: ../../../../inc/tpl/config.php:417
 msgid "Dirección de correo de envío"
 msgstr "E-Mail-Adresse des Empfängers"
 
 # Enable requests by email
-#: ../../../../inc/tpl/config.php:414
+#: ../../../../inc/tpl/config.php:425
 msgid "Habilitar peticiones por correo"
 msgstr "Erlaube Anfragen per E-Mail"
 
 # Add extension
-#: ../../../../inc/tpl/config.php:457
+#: ../../../../inc/tpl/config.php:468
 msgid "Añadir extensión"
 msgstr "Endung hinzufügen"
 
 # Delete extension
-#: ../../../../inc/tpl/config.php:458
+#: ../../../../inc/tpl/config.php:469
 msgid "Eliminar extensión"
 msgstr "Endung löschen"
 
 # Add filter
-#: ../../../../inc/tpl/config.php:486
+#: ../../../../inc/tpl/config.php:497
 msgid "Añadir filtro"
 msgstr "Filter hinzufügen"
 
 # Delete filter
-#: ../../../../inc/tpl/config.php:487
+#: ../../../../inc/tpl/config.php:498
 msgid "Eliminar filtro"
 msgstr "Filter löschen"
 
@@ -3693,3 +3706,16 @@ msgstr "Ereignis"
 #: ../../../../inc/tpl/eventlog.php:65
 msgid "IP"
 msgstr "IP"
+
+# Unable to create backup directory
+#~ msgid "No es posible crear el directorio de backups"
+#~ msgstr "Verzeichnis für Backups kann nicht angelegt werden"
+
+# Database Backup
+#~ msgid "Copia BBDD"
+#~ msgstr "Datenbank-Backup"
+
+# sysPass administrator's password
+#, fuzzy
+#~ msgid "Clave de administrador de sysPass"
+#~ msgstr "sysPass administrator's password"

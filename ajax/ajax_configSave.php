@@ -67,6 +67,7 @@ if ($frmAction == "config") {
     $frmWikiFilter = SP_Common::parseParams('p', 'wiki_filter');
 
     $frmLdap = SP_Common::parseParams('p', 'ldap_enabled', false, false, true);
+    $frmLdapADS = SP_Common::parseParams('p', 'ldap_ads', false, false, true);
     $frmLdapServer = SP_Common::parseParams('p', 'ldap_server');
     $frmLdapBase = SP_Common::parseParams('p', 'ldap_base');
     $frmLdapGroup = SP_Common::parseParams('p', 'ldap_group');
@@ -100,10 +101,11 @@ if ($frmAction == "config") {
         SP_Config::setValue("wiki_enabled", false);
     }
 
-    if ($frmLdap && (!$frmLdapServer || !$frmLdapBase || !$frmLdapGroup || !$frmLdapBindUser )) {
+    if ($frmLdap && (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser )) {
         SP_Common::printJSON(_('Faltan parámetros de LDAP'));
     } elseif ($frmLdap) {
         SP_Config::setValue("ldap_enabled", true);
+        SP_Config::setValue("ldap_ads", $frmLdapADS);
         SP_Config::setValue("ldap_server", $frmLdapServer);
         SP_Config::setValue("ldap_base", $frmLdapBase);
         SP_Config::setValue("ldap_group", $frmLdapGroup);

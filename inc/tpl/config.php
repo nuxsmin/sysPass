@@ -51,6 +51,7 @@ $chkAccountLink = ( SP_Config::getValue('account_link') ) ? 'checked="checked"' 
 $chkFiles = ( SP_Config::getValue('files_enabled') ) ? 'checked="checked"' : '';
 $chkWiki = ( SP_Config::getValue('wiki_enabled') ) ? 'checked="checked"' : '';
 $chkLdap = ( SP_Config::getValue('ldap_enabled') ) ? 'checked="checked"' : '';
+$chkLdapADS = ( SP_Config::getValue('ldap_ads') ) ? 'checked="checked"' : '';
 $chkMail = ( SP_Config::getValue('mail_enabled') ) ? 'checked="checked"' : '';
 $chkMailRequests = ( SP_Config::getValue('mail_requestsenabled') ) ? 'checked="checked"' : '';
 $chkMailAuth = ( SP_Config::getValue('mail_authenabled') ) ? 'checked="checked"' : '';
@@ -309,6 +310,16 @@ $allowedExts = SP_Config::getValue('files_allowed_exts');
         </td>
         <td class="valField">
             <input type="text" name="ldap_group" class="txtLong" value="<?php echo SP_Config::getValue('ldap_group'); ?>" maxlength="128" />
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo _('Active Directory'); ?>
+            <?php SP_Common::printHelpButton("config", 26); ?>
+        </td>
+        <td class="valField">
+            <label for="ldap_ads"><?php echo ($chkLdapADS) ? 'ON' : 'OFF'; ?></label>
+            <input type="checkbox" name="ldap_ads" id="ldap_ads" class="checkbox" <?php echo $chkLdapADS.' '.$txtDisabled; ?> />
         </td>
     </tr>
     <tr>

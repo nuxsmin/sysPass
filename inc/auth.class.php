@@ -46,7 +46,7 @@ class SP_Auth
             return false;
         }
 
-        $ldapAccess = false;
+        $ldapGroupAccess = false;
         $message['action'] = __FUNCTION__;
 
         // Conectamos al servidor realizamos la conexión con el usuario proxy
@@ -71,7 +71,6 @@ class SP_Auth
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
             SP_LDAP::ldapBind($userDN, $userPass);
-            //SP_LDAP::unbind();
             $attribs = SP_LDAP::getLDAPAttr($attribsMap);
         } catch (Exception $e) {
             return ldap_errno(SP_LDAP::getConn());
@@ -79,7 +78,7 @@ class SP_Auth
 
         // Comprobamos si la cuenta está bloqueada o expirada
         if (isset($attribs['expire']) && $attribs['expire'] > 0) {
-            return false;
+            return 701;
         }
 
         // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del usuario
@@ -92,27 +91,26 @@ class SP_Auth
 
                     // Comprobamos que el usuario está en el grupo indicado
                     if (self::checkLDAPGroup($group)) {
-                        $ldapAccess = true;
+                        $ldapGroupAccess = true;
                         break;
                     }
                 }
             } else {
-                $ldapAccess = self::checkLDAPGroup($attribs['group']);
+                $ldapGroupAccess = self::checkLDAPGroup($attribs['group']);
             }
             // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
         } else {
-            $ldapAccess = SP_LDAP::searchUserInGroup($userDN);
+            $ldapGroupAccess = SP_LDAP::searchUserInGroup($userDN);
         }
 
-        if ($ldapAccess == false) {
-            $message['text'][] = _('El usuario no tiene grupos asociados');
-            SP_Log::wrLogInfo($message);
+        if ($ldapGroupAccess == false) {
+            return 702;
         }
 
         self::$userName = ($attribs['name']) ? $attribs['name'] : $userLogin;
         self::$userEmail = $attribs['mail'];
 
-        return $ldapAccess;
+        return true;
     }
 
     /**
