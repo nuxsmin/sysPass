@@ -781,7 +781,7 @@ footer img{border: none;width: 16px;height: 16px;vertical-align: middle;}
     font-weight: normal;
 }
 
-.valField .ui-state-active, #tblTools .ui-state-active{
+.valField .ui-state-active, #tblTools .ui-state-active, #frmInstall .ui-state-active{
     background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
 }
 

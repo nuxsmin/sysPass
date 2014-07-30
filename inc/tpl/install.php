@@ -39,13 +39,14 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
 }
 ?>
 
+
 <div id="actions" align="center">
     <div id="logo">
         <img src="imgs/logo_full.png" alt="sysPass logo"/>
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>
     </div>
 
-    <form action="index.php" method="post">
+    <form id="frmInstall" action="index.php" method="post">
         <input type="hidden" name="install" value="true"/>
 
         <?php
@@ -83,13 +84,19 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
         <fieldset id="adminaccount">
             <legend><?php echo _('Crear cuenta de admin de sysPass'); ?></legend>
             <p>
+                <img src="imgs/help.png" class="inputImg"
+                     title="<?php echo _('Login del usuario administrador de sysPass'); ?>"/>
                 <input type="text" name="adminlogin" id="adminlogin" title="<?php echo _('Usuario'); ?>"
                        placeholder="<?php echo _('Usuario'); ?>"
-                       value="<?php echo SP_Util::init_var('adminlogin'); ?>" autocomplete="off" autofocus required/>
+                       value="<?php echo SP_Util::init_var('adminlogin'); ?>" autocomplete="off" autofocus
+                       required/>
             </p>
 
             <p>
-                <input type="password" name="adminpass" id="adminpass" title="<?php echo _('Clave'); ?>"
+                <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                     alt="<?php echo _('Mostrar Clave'); ?>"/>
+                <input type="password" name="adminpass" id="adminpass"
+                       title="<?php echo _('Clave'); ?>"
                        placeholder="<?php echo _('Clave'); ?>"
                        value="<?php echo SP_Util::init_var('adminpass'); ?>" autocomplete="off" required/>
             </p>
@@ -98,6 +105,8 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
         <fieldset id="masterpwd">
             <legend><?php echo _('Clave Maestra'); ?></legend>
             <p>
+                <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                     alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <input type="password" name="masterpassword" id="masterpassword"
                        title="<?php echo _('Clave Maestra'); ?>  "
                        placeholder="<?php echo _('Clave Maestra'); ?>"
@@ -111,18 +120,24 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
             <input type="hidden" id="dbtype" name="dbtype" value="mysql"/>
 
             <p>
+                <img src="imgs/help.png" class="inputImg"
+                     title="<?php echo _('Login de usuario con permisos de administrador de MySQL'); ?>"/>
                 <input type="text" name="dbuser" id="dbuser" title="<?php echo _('Usuario BBDD'); ?>"
                        placeholder="<?php echo _('Usuario BBDD'); ?>"
                        value="<?php echo SP_Util::init_var('dbuser', 'root'); ?>" autocomplete=off" required/>
             </p>
 
             <p>
+                <img class="showpass inputImg " src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                     alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <input type="password" name="dbpass" id="dbpass" title="<?php echo _('Clave BBDD'); ?>"
                        placeholder="<?php echo _('Clave BBDD'); ?>"
                        value="<?php echo SP_Util::init_var('dbpass'); ?>" required/>
             </p>
 
             <p>
+                <img src="imgs/help.png" class="inputImg"
+                     title="<?php echo _('Nombre de la base de datos para sysPass'); ?>"/>
                 <input type="text" name="dbname" id="dbname" title="<?php echo _('Nombre BBDD'); ?>"
                        placeholder="<?php echo _('Nombre BBDD'); ?>"
                        value="<?php echo SP_Util::init_var('dbname', 'syspass'); ?>" autocomplete=off"
@@ -130,17 +145,22 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
             </p>
 
             <p>
+                <img src="imgs/help.png" class="inputImg"
+                     title="<?php echo _('Nombre del servidor de la base de datos de sysPass'); ?>"/>
                 <input type="text" name="dbhost" id="dbhost" title="<?php echo _('Servidor BBDD'); ?>"
                        placeholder="<?php echo _('Servidor BBDD'); ?>"
                        value="<?php echo SP_Util::init_var('dbhost', 'localhost'); ?>" required/>
             </p>
 
+            <br>
+
             <p>
-                <label for="hostingmode"><?php echo _('Modo Hosting'); ?></label>
-                <img src="imgs/help.png" class="iconMini"
+                <img src="imgs/help.png" class="inputImg"
                      title="<?php echo _('No crea ni verifica los permisos del usuario sobre la BBDD'); ?>"/>
+                <label
+                    for="hostingmode"><?php echo (SP_Util::init_var('hostingmode')) ? _('Modo Hosting') . ' ON' : _('Modo Hosting') . ' OFF'; ?></label>
                 <input type="checkbox" name="hostingmode"
-                       id="hostingmode" <?php echo SP_Util::init_var('hostingmode', ''); ?> />
+                       id="hostingmode" class="checkbox" <?php echo SP_Util::init_var('hostingmode', ''); ?> />
             </p>
         </fieldset>
 
@@ -148,3 +168,25 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
     </form>
     <?php endif; ?>
 </div>
+
+<script>
+    $('#frmInstall').find('.checkbox').button();
+    $('#frmInstall').find('.ui-button').click(function () {
+        // El cambio de clase se produce durante el evento de click
+        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+        if ($(this).hasClass('ui-state-active')) {
+            $(this).children().html('<?php echo _('Modo Hosting');?> OFF');
+        } else {
+            $(this).children().html('<?php echo _('Modo Hosting');?> ON');
+        }
+    });
+    $('.showpass').click(function () {
+        var passInput = $(this).next();
+
+        if (passInput.attr('type') == 'password') {
+            passInput.get(0).type = 'text';
+        } else {
+            passInput.get(0).type = 'password';
+        }
+    })
+</script>

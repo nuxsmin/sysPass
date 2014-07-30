@@ -193,9 +193,9 @@ class SP_Installer
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass)
     {
-        self::$dbc = new mysqli($dbhost, $dbadmin, $dbpass);
+        self::$dbc = @new mysqli($dbhost, $dbadmin, $dbpass);
 
-        if (self::$dbc->connect_errno) {
+        if (!is_object(self::$dbc) || self::$dbc->connect_errno) {
             throw new InstallerException('critical'
                 , _('El usuario/clave de MySQL no es correcto')
                 , _('Verifique el usuario de conexión con la Base de Datos'));

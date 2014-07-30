@@ -768,6 +768,8 @@ class SP_Users
             . "user_notes = '" . DB::escape($this->userNotes) . "',"
             . "user_groupId = " . (int)$this->userGroupId . ","
             . "user_profileId = " . (int)$this->userProfileId . ","
+            . "user_mPass = '',"
+            . "user_mIV = '',"
             . "user_isAdminApp = " . (int)$this->userIsAdminApp . ","
             . "user_isAdminAcc = " . (int)$this->userIsAdminAcc . ","
             . "user_isDisabled = " . (int)$this->userIsDisabled . ","

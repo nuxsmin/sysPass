@@ -404,7 +404,6 @@ class SP_Config
         self::setValue('demo_enabled', 0);
         self::setValue('files_enabled', 1);
         self::setValue('checkupdates', 1);
-
         self::setValue('files_allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
         self::setValue('files_allowed_size', 1024);
         self::setValue('wiki_searchurl', '');
@@ -416,7 +415,6 @@ class SP_Config
         self::setValue('ldap_userattr', '');
         self::setValue('mail_server', '');
         self::setValue('mail_from', '');
-        self::setValue('wiki_filter', '');
         self::setValue('site_lang', str_replace('.utf8','',SP_Init::$LANG));
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);

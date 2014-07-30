@@ -77,7 +77,7 @@ class DB
      */
     private static function connection()
     {
-        if (self::$_db) {
+        if (is_object(self::$_db)) {
             return true;
         }
 
@@ -98,7 +98,7 @@ class DB
 
         self::$_db = @new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 
-        if (self::$_db->connect_errno) {
+        if (!is_object(self::$_db) || self::$_db->connect_errno) {
             if ($isInstalled) {
                 if (self::$_db->connect_errno === 1049) {
                     SP_Config::setValue('installed', '0');
