@@ -312,7 +312,7 @@ class SP_Common
             return $force;
         }
 
-        if (is_numeric($out) && is_numeric($default)) {
+        if (is_numeric($out) || is_numeric($default)) {
             return (int)$out;
         }
 

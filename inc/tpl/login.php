@@ -52,7 +52,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
                 <input type="hidden" name="isAjax" value="1"/>
                 <?php if (count($_GET) > 0): ?>
                     <?php foreach ($_GET as $param => $value): ?>
-                        <input type="hidden" name="g_<?php echo $param; ?>" value="<?php echo $value; ?>"/>
+                        <input type="hidden" name="g_<?php echo SP_Html::sanitize($param); ?>" value="<?php echo SP_Html::sanitize($value); ?>"/>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </form>
