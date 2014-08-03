@@ -395,7 +395,7 @@ class SP_LDAP
      */
     private static function escapeLdapDN($dn)
     {
-        $chars = array('/(,)(?!cn|ou|dc)/', '/(?<!cn|ou|dc)(=)/', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
+        $chars = array('/(,)(?!uid|cn|ou|dc)/', '/(?<!uid|cn|ou|dc)(=)/', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
         return preg_replace($chars, '\\\$1', $dn);
     }
 }
