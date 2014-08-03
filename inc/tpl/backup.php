@@ -27,6 +27,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 $action = $data['action'];
 $activeTab = $data['activeTab'];
+$onCloseAction = $data['onCloseAction'];
 
 SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
@@ -38,7 +39,7 @@ $backupFile = array('absolute' => $backupDir . DIRECTORY_SEPARATOR . $siteName .
 );
 $backupDbFile = array('absolute' => $backupDir . DIRECTORY_SEPARATOR . $siteName . '_db.sql', 'relative' => $backupPath . '/' . $siteName . '_db.sql');
 
-$lastBackupTime = (file_exists($backupFile['absolute'])) ? _('Último backup') . ": " . date("F d Y H:i:s.", filemtime($backupFile['absolute'])) : _('No se encontraron backups');
+$lastBackupTime = (file_exists($backupFile['absolute'])) ? _('Último backup') . ": " . date("r", filemtime($backupFile['absolute'])) : _('No se encontraron backups');
 ?>
 
 <table class="data round">
@@ -67,6 +68,7 @@ $lastBackupTime = (file_exists($backupFile['absolute'])) ? _('Último backup') .
 </table>
 
 <form method="post" name="frmBackup" id="frmBackup">
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
     <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
     <input type="hidden" name="backup" value="1"/>
     <input type="hidden" name="isAjax" value="1"/>

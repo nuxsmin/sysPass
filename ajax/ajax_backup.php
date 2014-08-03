@@ -39,6 +39,10 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
 }
 
 $doBackup = SP_Common::parseParams('p', 'backup', 0);
+$frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
+$frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
+
+$doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
 
 if ($doBackup) {
     if (!SP_Backup::doBackup()) {
@@ -51,5 +55,5 @@ if ($doBackup) {
     SP_Log::wrLogInfo($message);
     SP_Common::sendEmail($message);
 
-    SP_Common::printJSON(_('Proceso de backup finalizado'), 0);
+    SP_Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
 }
