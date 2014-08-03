@@ -256,8 +256,6 @@ class SP_LDAP
     {
         $message['action'] = __FUNCTION__;
 
-        error_log('ADS:' . self::$isADS);
-
         if (self::$isADS === true) {
             $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
         } else {

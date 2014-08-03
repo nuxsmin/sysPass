@@ -99,7 +99,11 @@ class SP_Log
         $login = (isset($_SESSION["ulogin"])) ? $_SESSION["ulogin"] : "-";
         $userId = (isset($_SESSION['uid'])) ? $_SESSION['uid'] : 0;
         $action = strip_tags(utf8_encode($message['action']));
-        $description = strip_tags(utf8_encode(implode(';;', $message['text'])));
+        $description = (isset($message['text'])) ? strip_tags(utf8_encode(implode(';;', $message['text']))) : '';
+
+        if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
+            error_log('Action: ' . $action . ' -- Description: ' . $description);
+        }
 
         $query = "INSERT INTO log SET " .
             "log_date = UNIX_TIMESTAMP()," .

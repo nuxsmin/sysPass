@@ -888,27 +888,35 @@ function calcComplexity() {
 }
 
 function outputResult(dstId) {
-    var complexity;
+    var complexity, selector = '.passLevel';
 
     if (dstId) {
-        complexity = $('#' + dstId + ' #passLevel');
-    } else {
-        complexity = $('#passLevel');
+        selector = '#' + dstId + ' .passLevel';
     }
 
+    complexity = $(selector);
+    complexity.removeClass("weak good strong strongest");
+
     if (charPassword.length == 0) {
-        complexity.empty().removeClass("weak good strong strongest");
+        complexity.attr('title','').empty();
     } else if (charPassword.length < minPasswordLength) {
-        complexity.html(LANG[11]).removeClass("good strong strongest").addClass("weak");
+        //complexity.html(LANG[11]).removeClass("good strong strongest").addClass("weak");
+        complexity.attr('title',LANG[11]).addClass("weak");
     } else if (score < 50) {
-        complexity.html(LANG[9]).removeClass("good strong strongest").addClass("weak");
+        //complexity.html(LANG[9]).removeClass("good strong strongest").addClass("weak");
+        complexity.attr('title',LANG[9]).addClass("weak");
     } else if (score >= 50 && score < 75) {
-        complexity.html(LANG[8]).removeClass("weak strong strongest").addClass("good");
+        //complexity.html(LANG[8]).removeClass("weak strong strongest").addClass("good");
+        complexity.attr('title',LANG[8]).addClass("good");
     } else if (score >= 75 && score < 100) {
-        complexity.html(LANG[7]).removeClass("weak good strongest").addClass("strong");
+        //complexity.html(LANG[7]).removeClass("weak good strongest").addClass("strong");
+        complexity.attr('title',LANG[7]).addClass("strong");
     } else if (score >= 100) {
-        complexity.html(LANG[10]).removeClass("weak good strong").addClass("strongest");
+        //complexity.html(LANG[10]).removeClass("weak good strong").addClass("strongest");
+        complexity.attr('title',LANG[10]).addClass("strongest");
     }
+
+    $('.passLevel').powerTip(powertipOptions);
 }
 
 // Función para mostrar mensaje con alertify

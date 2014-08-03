@@ -100,6 +100,8 @@ switch ($action) {
         return;
 }
 
+$gotData = (isset($accountData) && is_object($accountData));
+
 if ($data['id'] > 0) {
     // Comprobar permisos de acceso
     SP_ACL::checkAccountAccess($action, $account->getAccountDataForACL()) || SP_Html::showCommonError('noaccpermission');
@@ -114,7 +116,7 @@ $customersSelProp = array("name" => "customerId",
     "class" => "",
     "size" => 1,
     "label" => "",
-    "selected" => $accountData->account_customerId,
+    "selected" => ($gotData) ? $accountData->account_customerId : '',
     "default" => "",
     "js" => "",
     "attribs" => "");
@@ -124,12 +126,12 @@ $categoriesSelProp = array("name" => "categoryId",
     "class" => "",
     "size" => 1,
     "label" => "",
-    "selected" => $accountData->account_categoryId,
+    "selected" => ($gotData) ? $accountData->account_categoryId : '',
     "default" => "",
     "js" => "",
     "attribs" => "");
 
-$isModified = ($accountData->account_dateEdit && $accountData->account_dateEdit <> '0000-00-00 00:00:00');
+$isModified = ($gotData && $accountData->account_dateEdit && $accountData->account_dateEdit <> '0000-00-00 00:00:00');
 $showHistory = (($action == 'accview' || $action == 'accviewhistory') && SP_ACL::checkUserAccess("accviewhistory") && ($isModified || $action == 'accviewhistory'));
 $showDetails = ($action == 'accview' || $action == 'accviewhistory' || $action == 'accdelete');
 $showPass = ($action == "accnew" || $action == 'acccopy');
@@ -174,7 +176,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 ?>
                 <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required
                        maxlength="50"
-                       value="<?php echo ($action != 'accnew') ? $accountData->account_name : ''; ?>">
+                       value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
             <?php
             } else {
                 echo $accountData->account_name;
@@ -219,7 +221,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 ?>
                 <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>"
                        maxlength="255"
-                       value="<?php echo ($action != 'accnew') ? $accountData->account_url : ''; ?>">
+                       value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
             <?php
             } else {
                 echo $accountData->account_url;
@@ -235,7 +237,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 ?>
                 <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>"
                        maxlength="50"
-                       value="<?php echo ($action != 'accnew') ? $accountData->account_login : ''; ?>">
+                       value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
             <?php
             } else {
                 echo $accountData->account_login;
@@ -259,7 +261,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
         <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
         <td class="valField">
             <input name="password2" type="password" maxlength="255">
-            <span id="passLevel" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
+            <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
         </td>
     </tr>
 <?php endif; ?>
@@ -267,7 +269,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
         <td class="descField"><?php echo _('Notas'); ?></td>
         <td class="valField">
             <textarea name="notice" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>"
-                      maxlength="1000" <?php echo (!$showform) ? 'READONLY' : ''; ?> ><?php echo ($action != 'accnew') ? $accountData->account_notes : ''; ?></textarea>
+                      maxlength="1000" <?php echo (!$showform) ? 'READONLY' : ''; ?> ><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
         </td>
     </tr>
 <?php if ($showform): ?>
@@ -284,9 +286,14 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                         foreach ($users as $otherUserName => $otherUserId) {
                             $userSelected = '';
 
-                            if ($otherUserId != $accountData->account_userId) {
+                            if ($gotData && $otherUserId != $accountData->account_userId) {
                                 if (isset($accountUsers) && is_array($accountUsers)) {
                                     $userSelected = (in_array($otherUserId, $accountUsers)) ? "selected" : "";
+                                }
+                                echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
+                            } else{
+                                if ($userId === $otherUserId){
+                                    continue;
                                 }
                                 echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
                             }
@@ -310,9 +317,14 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                         foreach ($groups as $otherGroupName => $otherGroupId) {
                             $uGroupSelected = '';
 
-                            if ($otherGroupId != $accountData->account_userGroupId) {
+                            if ($gotData && $otherGroupId != $accountData->account_userGroupId) {
                                 if (isset($accountGroups) && is_array($accountGroups)) {
                                     $uGroupSelected = (in_array($otherGroupId, $accountGroups)) ? "selected" : "";
+                                }
+                                echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
+                            } else{
+                                if ($userGroupId === $otherGroupId){
+                                    continue;
                                 }
                                 echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
                             }
@@ -488,7 +500,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
         <ul>
             <?php if ($account->accountIsHistory): ?>
                 <li>
-                    <img SRC="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack"
+                    <img src="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack"
                          OnClick="doAction('accview','accsearch',<?php echo $account->accountParentId; ?>)"/>
                 </li>
             <?php else: ?>

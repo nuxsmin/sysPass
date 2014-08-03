@@ -40,7 +40,7 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
 ?>
 
 
-<div id="actions" align="center">
+<div id="actions" class="installer" align="center">
     <div id="logo">
         <img src="imgs/logo_full.png" alt="sysPass logo"/>
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>
@@ -79,7 +79,7 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
             echo '</ul>';
         }
 
-        if ($isCompleted == 0):
+        if ($isCompleted === 0):
         ?>
         <fieldset id="adminaccount">
             <legend><?php echo _('Crear cuenta de admin de sysPass'); ?></legend>
@@ -98,7 +98,10 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
                 <input type="password" name="adminpass" id="adminpass"
                        title="<?php echo _('Clave'); ?>"
                        placeholder="<?php echo _('Clave'); ?>"
-                       value="<?php echo SP_Util::init_var('adminpass'); ?>" autocomplete="off" required/>
+                       value="<?php echo SP_Util::init_var('adminpass'); ?>" autocomplete="off"
+                       onKeyUp="checkPassLevel(this.value,'adminaccount')" required/>
+                <span class="passLevel passLevel-float fullround"
+                      title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </p>
         </fieldset>
 
@@ -110,7 +113,10 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
                 <input type="password" name="masterpassword" id="masterpassword"
                        title="<?php echo _('Clave Maestra'); ?>  "
                        placeholder="<?php echo _('Clave Maestra'); ?>"
-                       value="<?php echo SP_Util::init_var('masterpassword'); ?>" autocomplete="off" required/>
+                       value="<?php echo SP_Util::init_var('masterpassword'); ?>" autocomplete="off"
+                       onKeyUp="checkPassLevel(this.value,'masterpwd')" required/>
+                <span class="passLevel passLevel-float fullround"
+                      title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </p>
         </fieldset>
 
@@ -160,7 +166,8 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
                 <label
                     for="hostingmode"><?php echo (SP_Util::init_var('hostingmode')) ? _('Modo Hosting') . ' ON' : _('Modo Hosting') . ' OFF'; ?></label>
                 <input type="checkbox" name="hostingmode"
-                       id="hostingmode" class="checkbox" <?php echo SP_Util::init_var('hostingmode', ''); ?> />
+                       id="hostingmode"
+                       class="checkbox" <?php echo (SP_Util::init_var('hostingmode')) ? 'checked' : ''; ?> />
             </p>
         </fieldset>
 

@@ -71,6 +71,8 @@ if ($frmAction == "config") {
     $frmLdapServer = SP_Common::parseParams('p', 'ldap_server');
     $frmLdapBase = SP_Common::parseParams('p', 'ldap_base');
     $frmLdapGroup = SP_Common::parseParams('p', 'ldap_group');
+    $frmLdapDefaultGroup = SP_Common::parseParams('p', 'ldap_defaultgroup');
+    $frmLdapDefaultProfile = SP_Common::parseParams('p', 'ldap_defaultprofile');
     $frmLdapBindUser = SP_Common::parseParams('p', 'ldap_binduser');
     $frmLdapBindPass = SP_Common::parseParams('p', 'ldap_bindpass', '', false, false, false);
 
@@ -109,6 +111,8 @@ if ($frmAction == "config") {
         SP_Config::setValue("ldap_server", $frmLdapServer);
         SP_Config::setValue("ldap_base", $frmLdapBase);
         SP_Config::setValue("ldap_group", $frmLdapGroup);
+        SP_Config::setValue("ldap_defaultgroup", $frmLdapDefaultGroup);
+        SP_Config::setValue("ldap_defaultprofile", $frmLdapDefaultProfile);
         SP_Config::setValue("ldap_binduser", $frmLdapBindUser);
         SP_Config::setValue("ldap_bindpass", $frmLdapBindPass);
     } else {

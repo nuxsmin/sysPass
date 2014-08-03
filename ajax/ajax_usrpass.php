@@ -62,6 +62,7 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
                 <?php echo _('Clave (repetir)'); ?></td>
             <td class="valField">
                 <input type="password" id="usrpassv" name="passv" title="<?php echo _('Clave (repetir)'); ?>" class="txtpassv" />
+                <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>" ></span>
             </td>
         </tr>
     </table>
@@ -72,8 +73,6 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
 </form>
 
     <div id="resCheck">
-        <span id="passLevel" title="<?php echo _('Nivel de fortaleza de la clave'); ?>" ></span>
-        <BR><BR>
         <span id="resFancyAccion"></span>
     </div>
     <div class="action-in-box">

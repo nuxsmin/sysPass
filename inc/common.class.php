@@ -229,6 +229,8 @@ class SP_Common
         $msgHelp[24] = _('Permite que las cuentas sin acceso sean visibles sólo para las búsquedas.');
         $msgHelp[25] = _('Muestra los resultados de búsqueda de cuentas en formato tarjeta.');
         $msgHelp[26] = _('Habilita el modo de conexión con LDAP de Active Directory.');
+        $msgHelp[27] = _('Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP.');
+        $msgHelp[28] = _('Define el perfil de usuario por defecto para los nuevos usuarios de LDAP.');
 
         if (array_key_exists($id, $msgHelp)) {
             echo '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';
@@ -313,7 +315,7 @@ class SP_Common
             return $force;
         }
 
-        if (is_numeric($out) || is_numeric($default)) {
+        if ((is_numeric($out) && !is_string($default))|| is_numeric($default)) {
             return (int)$out;
         }
 

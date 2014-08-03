@@ -379,7 +379,6 @@ if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
     $time_stop = SP_Init::microtime_float();
     $time = ($time_stop - $time_start);
     $memEnd = memory_get_usage();
-    //$crypt = new SP_Crypt;
 
     $debugTxt[] = "<div ID= 'debuginfo' class='round'>";
     $debugTxt[] = "<h3>DEBUG INFO</h3>";
@@ -392,7 +391,6 @@ if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
     $debugTxt[] = "<li>CONFIG:<pre>";
     $debugTxt[] = "<pre>" . print_r(SP_Config::getKeys(true), true) . "</pre>";
     $debugTxt[] = "</li>";
-    //$debugTxt[] = '<li>'.$crypt->getSessionMasterPass().'</li>';
     $debugTxt[] = "</div>";
 
     foreach ($debugTxt as $out) {

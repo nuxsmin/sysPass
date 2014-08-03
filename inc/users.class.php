@@ -729,15 +729,15 @@ class SP_Users
 
         $query = "INSERT INTO usrData SET "
             . "user_name = '" . DB::escape($this->userName) . "',"
-            . "user_groupId = 0,"
+            . "user_groupId = " . SP_Config::getValue('ldap_defaultgroup', 0) . ","
             . "user_login = '" . DB::escape($this->userLogin) . "',"
             . "user_pass = '" . $passdata['pass'] . "',"
             . "user_hashSalt = '" . $passdata['salt'] . "',"
             . "user_email = '" . DB::escape($this->userEmail) . "',"
             . "user_notes = 'LDAP',"
-            . "user_profileId = 0,"
+            . "user_profileId = " . SP_Config::getValue('ldap_defaultprofile', 0) . ","
             . "user_isLdap = 1,"
-            . "user_isDisabled = 1";
+            . "user_isDisabled = 0";
 
         if (DB::doQuery($query, __FUNCTION__) === false) {
             return false;
