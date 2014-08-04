@@ -174,7 +174,7 @@ class SP_Util
      */
     public static function curlIsAvailable()
     {
-        return (function_exists(curl_init));
+        return (function_exists('curl_init'));
     }
 
     /**
@@ -187,63 +187,69 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si hay actualizaciones de sysPass disponibles desde internet (sourceforge.net)
+     * @brief Comprobar si hay actualizaciones de sysPass disponibles desde internet (github.com)
      * @return array|bool
      *
-     * Esta función comprueba el feed RSS de sourceforge.net y lo parsea para verificar si la aplicación está actualizada
+     * Esta función hace una petición a GitHub y parsea el JSON devuelto para verificar si la aplicación está actualizada
      */
     public static function checkUpdates()
     {
-        //if ( ! self::curlIsAvailable() || ! SP_Config::getValue('checkupdates') ){
-        if (!SP_Config::getValue('checkupdates')) {
+        if (! self::curlIsAvailable() || !SP_Config::getValue('checkupdates')) {
             return false;
         }
 
-//        $ch = curl_init("http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/1/rss");
-//
-//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//        curl_setopt($ch, CURLOPT_HEADER, 0);
-//
-//        if ( ! $data = curl_exec($ch) ) return false;
-//
-//        curl_close($ch);
+        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases';
+        $ch = curl_init($githubUrl);
 
-        $feedUrl = 'https://sourceforge.net/api/file/index/project-id/1257402/mtime/desc/limit/20/rss';
-        $feed = file_get_contents($feedUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass App Updater");
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
-        if ($feed) {
-            $xmlUpd = new SimpleXMLElement($feed, LIBXML_NOCDATA);
+        $data = curl_exec($ch);
+
+        if ($data === false) {
+            return false;
+            echo 'Curl error: ' . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        $updateInfo = json_decode($data);
+
+        // $updateInfo[0]->tag_name
+        // $updateInfo[0]->name
+        // $updateInfo[0]->body
+        // $updateInfo[0]->tarball_url
+        // $updateInfo[0]->zipball_url
+        // $updateInfo[0]->published_at
+        // $updateInfo[0]->html_url
+
+        $version = $updateInfo[0]->tag_name;
+        $url = $updateInfo[0]->html_url;
+        $title = $updateInfo[0]->name;
+        $description = $updateInfo[0]->body;
+        $date = $updateInfo[0]->published_at;
+
+        preg_match("/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/", $version, $realVer);
+
+        if (is_array($realVer) && SP_Init::isLoggedIn()) {
+            $appVersion = implode('', self::getVersion(true));
+            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
+
+            if ($pubVersion > $appVersion) {
+                return array(
+                    'version' => $version,
+                    'url' => $url,
+                    'title' => $title,
+                    'description' => $description,
+                    'date' => $date);
+            } else {
+                return true;
+            }
         } else {
             return false;
-        }
-
-        if ($xmlUpd->channel->item->title) {
-
-            $pubVer = '';
-
-            foreach ($xmlUpd->channel->item as $item) {
-                $url = (string)$item->link;
-                $title = (string)$item->title;
-                $description = (string)$item->description;
-
-                if (preg_match("/.*\/sysPass_(\d)\.(\d{1,})\.(\d{1,})(\-[a-z0-9]+)?\.(tar\.gz|zip)$/", $title, $pubVer)) {
-                    break;
-                }
-            }
-
-            if (is_array($pubVer) && SP_Init::isLoggedIn()) {
-                $appVersion = implode('', self::getVersion());
-                $pubVersion = $pubVer[1] . $pubVer[2] . $pubVer[3];
-
-                if ($pubVersion > $appVersion) {
-                    $version = $pubVer[1] . '.' . $pubVer[2] . '.' . $pubVer[3];
-                    return array('version' => $version, 'url' => $url);
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
         }
     }
 

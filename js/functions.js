@@ -731,7 +731,7 @@ function checkUpds() {
         type: 'GET',
         dataType: 'html',
         url: APP_ROOT + '/ajax/ajax_checkUpds.php',
-        timeout: 5000,
+        timeout: 10000,
         success: function (response) {
             $('#updates').html(response);
         },
