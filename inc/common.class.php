@@ -303,6 +303,12 @@ class SP_Common
                 }
                 $out = $_SESSION[$param];
                 break;
+            case 'r':
+                if (!isset($_REQUEST[$param])) {
+                    return $default;
+                }
+                $out = $_REQUEST[$param];
+                break;
             default :
                 return false;
         }

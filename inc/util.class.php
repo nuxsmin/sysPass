@@ -210,8 +210,12 @@ class SP_Util
         $data = curl_exec($ch);
 
         if ($data === false) {
+            $message['action'] = __FUNCTION__;
+            $message['text'][] = curl_error($ch);
+
+            SP_Log::wrLogInfo($message);
+
             return false;
-            echo 'Curl error: ' . curl_error($ch);
         }
 
         curl_close($ch);

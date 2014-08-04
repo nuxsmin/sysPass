@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-03 22:44+0100\n"
-"PO-Revision-Date: 2014-08-03 22:45+0100\n"
+"POT-Creation-Date: 2014-08-04 18:39+0100\n"
+"PO-Revision-Date: 2014-08-04 18:39+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team:  <nuxsmin@gmail.com>\n"
 "Language: en_US\n"
@@ -380,7 +380,7 @@ msgstr "New Category"
 msgid "Descargar nueva versión"
 msgstr "Download new version"
 
-#: ../../../../ajax/ajax_checkUpds.php:43
+#: ../../../../ajax/ajax_checkUpds.php:44
 msgid "Actualizado"
 msgstr "Updated"
 
@@ -671,24 +671,24 @@ msgstr "Import accounts from external sources"
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
 
-#: ../../../../ajax/ajax_backup.php:45
+#: ../../../../ajax/ajax_backup.php:49
 msgid "Error al realizar el backup"
 msgstr "Error on doing backup"
 
-#: ../../../../ajax/ajax_backup.php:45 ../../../../ajax/ajax_checkLdap.php:54
+#: ../../../../ajax/ajax_backup.php:49 ../../../../ajax/ajax_checkLdap.php:54
 #: ../../../../inc/migrate.class.php:115 ../../../../inc/import.class.php:89
 msgid "Revise el registro de eventos para más detalles"
 msgstr "Please, check the event log for more details"
 
-#: ../../../../ajax/ajax_backup.php:48 ../../../../inc/tpl/backup.php:80
+#: ../../../../ajax/ajax_backup.php:52 ../../../../inc/tpl/backup.php:82
 msgid "Realizar Backup"
 msgstr "Make Backup"
 
-#: ../../../../ajax/ajax_backup.php:49
+#: ../../../../ajax/ajax_backup.php:53
 msgid "Copia de la aplicación y base de datos realizada correctamente"
 msgstr "Application and database backup successfully done"
 
-#: ../../../../ajax/ajax_backup.php:54
+#: ../../../../ajax/ajax_backup.php:58
 msgid "Proceso de backup finalizado"
 msgstr "Backup process finished"
 
@@ -846,7 +846,7 @@ msgstr "Account"
 #: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:91
 #: ../../../../ajax/ajax_doLogin.php:101 ../../../../ajax/ajax_doLogin.php:111
 #: ../../../../ajax/ajax_doLogin.php:152 ../../../../res/test.php:64
-#: ../../../../inc/init.php:516 ../../../../inc/users.class.php:788
+#: ../../../../inc/init.php:531 ../../../../inc/users.class.php:788
 #: ../../../../inc/users.class.php:829 ../../../../inc/tpl/passreset.php:50
 #: ../../../../inc/tpl/request.php:49 ../../../../inc/tpl/login.php:35
 #: ../../../../inc/tpl/login.php:44 ../../../../inc/tpl/install.php:89
@@ -1190,7 +1190,7 @@ msgid "Vaciar el registro de eventos?"
 msgstr "Clear event log?"
 
 #: ../../../../inc/groups.class.php:27 ../../../../inc/util.class.php:26
-#: ../../../../inc/util.class.php:278 ../../../../inc/db.class.php:27
+#: ../../../../inc/util.class.php:288 ../../../../inc/db.class.php:27
 #: ../../../../inc/html.class.php:27 ../../../../inc/files.class.php:27
 #: ../../../../inc/backup.class.php:26 ../../../../inc/ldap.class.php:27
 #: ../../../../inc/config.class.php:26 ../../../../inc/profiles.class.php:27
@@ -1286,8 +1286,7 @@ msgid "Opción no disponible"
 msgstr "Option unavailable"
 
 #: ../../../../inc/html.class.php:458 ../../../../inc/html.class.php:459
-#: ../../../../inc/html.class.php:460 ../../../../inc/init.php:414
-#: ../../../../inc/init.php:461
+#: ../../../../inc/html.class.php:460 ../../../../inc/init.php:476
 msgid "Consulte con el administrador"
 msgstr "Please, contact to the administrator"
 
@@ -1712,39 +1711,47 @@ msgstr "Application in maintenance"
 msgid "En breve estará operativa"
 msgstr "It will be running in short"
 
-#: ../../../../inc/init.php:414
+#: ../../../../inc/init.php:419
 msgid "La aplicación necesita actualizarse"
 msgstr "The application needs to be updated"
 
-#: ../../../../inc/init.php:432
+#: ../../../../inc/init.php:419
+msgid "Si es un administrador pulse en el enlace:"
+msgstr "If you are an administrator, click on the link:"
+
+#: ../../../../inc/init.php:419 ../../../../inc/tpl/upgrade.php:54
+msgid "Actualizar"
+msgstr "Update"
+
+#: ../../../../inc/init.php:447
 msgid "Actualización"
 msgstr "Update"
 
-#: ../../../../inc/init.php:433
+#: ../../../../inc/init.php:448
 msgid "Actualización de versión realizada."
 msgstr "Version updating done."
 
-#: ../../../../inc/init.php:434
+#: ../../../../inc/init.php:449
 msgid "Versión"
 msgstr "Version"
 
-#: ../../../../inc/init.php:455
+#: ../../../../inc/init.php:470
 msgid "Sesion"
 msgstr "Session"
 
-#: ../../../../inc/init.php:455 ../../../../inc/init.php:460
+#: ../../../../inc/init.php:470 ../../../../inc/init.php:475
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
-#: ../../../../inc/init.php:515
+#: ../../../../inc/init.php:530
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../../inc/init.php:517
+#: ../../../../inc/init.php:532
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../../inc/init.php:518
+#: ../../../../inc/init.php:533
 msgid "Tiempo total"
 msgstr "Total time"
 
@@ -2260,23 +2267,23 @@ msgstr "Back"
 msgid "Enviar"
 msgstr "Send"
 
-#: ../../../../inc/tpl/backup.php:41
+#: ../../../../inc/tpl/backup.php:42
 msgid "Último backup"
 msgstr "Last backup"
 
-#: ../../../../inc/tpl/backup.php:41
+#: ../../../../inc/tpl/backup.php:42
 msgid "No se encontraron backups"
 msgstr "There are no backups available"
 
-#: ../../../../inc/tpl/backup.php:47
+#: ../../../../inc/tpl/backup.php:48
 msgid "Resultado"
 msgstr "Result"
 
-#: ../../../../inc/tpl/backup.php:55
+#: ../../../../inc/tpl/backup.php:56
 msgid "Descargar Actual"
 msgstr "Download Current"
 
-#: ../../../../inc/tpl/backup.php:63
+#: ../../../../inc/tpl/backup.php:64
 msgid "No hay backups para descargar"
 msgstr "There are no backups for download"
 
@@ -3005,6 +3012,22 @@ msgstr "Last Access"
 #: ../../../../inc/tpl/users.php:188
 msgid "Fecha Clave Maestra"
 msgstr "Master Password Date"
+
+#: ../../../../inc/tpl/upgrade.php:42
+msgid "Actualización de BBDD"
+msgstr "DB Update"
+
+#: ../../../../inc/tpl/upgrade.php:44
+msgid "Introducir Código de Seguridad"
+msgstr "Enter Security Code"
+
+#: ../../../../inc/tpl/upgrade.php:45
+msgid "Código de Seguridad"
+msgstr "Security Code"
+
+#: ../../../../inc/tpl/upgrade.php:55
+msgid "Iniciar Actualización"
+msgstr "Start Update"
 
 #: ../../../../inc/tpl/eventlog.php:56
 msgid "Fecha / Hora"

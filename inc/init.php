@@ -375,9 +375,9 @@ class SP_Init
     {
         if (SP_Config::getValue('maintenance', false)) {
             if ($check === true
-                || $_REQUEST['isAjax'] == 1
-                || $_REQUEST['upgrade'] == 1
-                || $_REQUEST['nodbupgrade'] == 1
+                || SP_Common::parseParams('r', 'isAjax', 0) === 1
+                || SP_Common::parseParams('g', 'upgrade', 0) === 1
+                || SP_Common::parseParams('g', 'nodbupgrade', 0) === 1
             ) {
                 return true;
             }
@@ -411,12 +411,27 @@ class SP_Init
             && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0
         ) {
             if (SP_Upgrade::needDBUpgrade($appVersion) && !self::checkMaintenanceMode(true)) {
-                self::initError(_('La aplicación necesita actualizarse'), _('Consulte con el administrador'));
+                if (SP_Config::getValue('upgrade_key', 0) === 0) {
+                    SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
+                    SP_Config::setValue('maintenance', true);
+                }
+
+                self::initError(_('La aplicación necesita actualizarse'), _('Si es un administrador pulse en el enlace:') . ' <a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>');
             }
 
-            if (SP_Upgrade::doUpgrade($databaseVersion)) {
-                SP_Config::setConfigValue('version', $appVersion);
-                $update = true;
+            $action = SP_Common::parseParams('g', 'a');
+            $hash = SP_Common::parseParams('g', 'h');
+
+            if ($action === 'upgrade' && $hash === SP_Config::getValue('upgrade_key', 0)) {
+                if (SP_Upgrade::doUpgrade($databaseVersion)) {
+                    SP_Config::setConfigValue('version', $appVersion);
+                    SP_Config::setValue('maintenance', false);
+                    SP_Config::deleteKey('upgrade_key');
+                    $update = true;
+                }
+            } else {
+                SP_Html::render('upgrade');
+                exit();
             }
         }
 
@@ -526,11 +541,11 @@ class SP_Init
      */
     public static function checkRequestActions()
     {
-        if (!isset($_REQUEST['a'])) {
+        if (!SP_Common::parseParams('r', 'a', '', true)) {
             return;
         }
 
-        $action = $_REQUEST['a'];
+        $action = SP_Common::parseParams('r', 'a');
 
         switch ($action) {
             case 'passreset':
@@ -561,7 +576,7 @@ class SP_Init
      */
     public static function isLoggedIn()
     {
-        if (isset($_SESSION['ulogin']) AND $_SESSION['ulogin']) {
+        if (SP_Common::parseParams('s', 'ulogin')) {
             // TODO: refrescar variables de sesión.
             return true;
         }

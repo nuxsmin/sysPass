@@ -859,7 +859,8 @@ function analyzeString() {
         if (charPassword[i].match(/[0-9]/g)) {
             num.Numbers++;
         }
-        if (charPassword[i].match(/(.*[!,@,#,$,%,^,&,*,?,_,~])/)) {
+        //if (charPassword[i].match(/(.*[!,@,#,$,%,^,&,*,?,_,~])/)) {
+        if (charPassword[i].match(/(.*[!,@,#,$,%,&,*,?,%,_])/)) {
             num.Symbols++;
         }
     }
