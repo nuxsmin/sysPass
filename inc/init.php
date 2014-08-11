@@ -416,28 +416,30 @@ class SP_Init
         if ($databaseVersion < $appVersion
             && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0
         ) {
-            if (SP_Upgrade::needDBUpgrade($appVersion) && !self::checkMaintenanceMode(true)) {
-                if (SP_Config::getValue('upgrade_key', 0) === 0) {
-                    SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
-                    SP_Config::setValue('maintenance', true);
+            if (SP_Upgrade::needDBUpgrade($appVersion)){
+                if(!self::checkMaintenanceMode(true)) {
+                    if (SP_Config::getValue('upgrade_key', 0) === 0) {
+                        SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
+                        SP_Config::setValue('maintenance', true);
+                    }
+
+                    self::initError(_('La aplicación necesita actualizarse'), _('Si es un administrador pulse en el enlace:') . ' <a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>');
                 }
 
-                self::initError(_('La aplicación necesita actualizarse'), _('Si es un administrador pulse en el enlace:') . ' <a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>');
-            }
+                $action = SP_Common::parseParams('g', 'a');
+                $hash = SP_Common::parseParams('g', 'h');
 
-            $action = SP_Common::parseParams('g', 'a');
-            $hash = SP_Common::parseParams('g', 'h');
-
-            if ($action === 'upgrade' && $hash === SP_Config::getValue('upgrade_key', 0)) {
-                if (SP_Upgrade::doUpgrade($databaseVersion)) {
-                    SP_Config::setConfigValue('version', $appVersion);
-                    SP_Config::setValue('maintenance', false);
-                    SP_Config::deleteKey('upgrade_key');
-                    $update = true;
+                if ($action === 'upgrade' && $hash === SP_Config::getValue('upgrade_key', 0)) {
+                    if (SP_Upgrade::doUpgrade($databaseVersion)) {
+                        SP_Config::setConfigValue('version', $appVersion);
+                        SP_Config::setValue('maintenance', false);
+                        SP_Config::deleteKey('upgrade_key');
+                        $update = true;
+                    }
+                } else {
+                    SP_Html::render('upgrade');
+                    exit();
                 }
-            } else {
-                SP_Html::render('upgrade');
-                exit();
             }
         }
 
