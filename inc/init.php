@@ -416,7 +416,7 @@ class SP_Init
         if ($databaseVersion < $appVersion
             && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0
         ) {
-            if (SP_Upgrade::needDBUpgrade($appVersion)){
+            if (SP_Upgrade::needDBUpgrade($databaseVersion)){
                 if(!self::checkMaintenanceMode(true)) {
                     if (SP_Config::getValue('upgrade_key', 0) === 0) {
                         SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
