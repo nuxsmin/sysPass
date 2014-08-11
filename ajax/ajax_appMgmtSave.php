@@ -40,6 +40,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
     SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
+
 // Variables POST del formulario
 $frmSaveType = SP_Common::parseParams('p', 'type', 0);
 $frmAction = SP_Common::parseParams('p', 'action', 0);
@@ -48,6 +49,8 @@ $frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
 $frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
 
 $doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
+
+$userLogin = SP_Users::getUserLoginById($frmItemId);
 
 if ($frmSaveType == 1 || $frmSaveType == 2) {
     $objUser = new SP_Users;

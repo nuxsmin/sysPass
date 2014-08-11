@@ -42,17 +42,19 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
                                                                    disabled/><br/></span>
                 <?php else: ?>
                     <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value=""/><br/>
-                    <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value=""/><br/>
+                    <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value=""
+                           autocomplete="off"/><br/>
                     <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass"
                                                                    placeholder="<?php echo _('Clave Maestra'); ?>"
-                                                                   value="" disabled/><br/></span>
+                                                                   value="" autocomplete="off" disabled/><br/></span>
                 <?php endif; ?>
                 <input type="image" id="btnLogin" src="imgs/login.png" title="<?php echo _('Acceder') ?>"/>
                 <input type="hidden" name="login" value="1"/>
                 <input type="hidden" name="isAjax" value="1"/>
                 <?php if (count($_GET) > 0): ?>
                     <?php foreach ($_GET as $param => $value): ?>
-                        <input type="hidden" name="g_<?php echo SP_Html::sanitize($param); ?>" value="<?php echo SP_Html::sanitize($value); ?>"/>
+                        <input type="hidden" name="g_<?php echo SP_Html::sanitize($param); ?>"
+                               value="<?php echo SP_Html::sanitize($value); ?>"/>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </form>

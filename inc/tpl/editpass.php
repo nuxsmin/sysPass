@@ -56,7 +56,7 @@ $accountData = $account->getAccount();
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)">
+                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)" autocomplete="off">
                 <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
                      class="inputImg" id="viewPass"/>
                 &nbsp;&nbsp;
@@ -66,13 +66,14 @@ $accountData = $account->getAccount();
         </tr>
         <tr>
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
-            <td class="valField"><INPUT type="password" MAXLENGTH="255" name="password2">
+            <td class="valField"><INPUT type="password" MAXLENGTH="255" name="password2" autocomplete="off">
                 <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </td>
         </tr>
     </table>
     <input type="hidden" name="savetyp" value="4"/>
     <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
+    <input type="hidden" name="next" value="acceditpass">
     <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
     <input type="hidden" name="isAjax" value="1">
 </form>

@@ -250,7 +250,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
         <td class="descField"><?php echo _('Clave'); ?></td>
         <td class="valField">
             <input name="password" type="password" id="txtPass" maxlength="255"
-                   OnKeyUp="checkPassLevel(this.value)">
+                   OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
             <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
                  class="inputImg" id="viewPass"/>
             &nbsp;&nbsp;
@@ -260,7 +260,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
     <tr>
         <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
         <td class="valField">
-            <input name="password2" type="password" maxlength="255">
+            <input name="password2" type="password" maxlength="255" autocomplete="off">
             <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
         </td>
     </tr>

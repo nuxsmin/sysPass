@@ -90,7 +90,7 @@ $numRows = SP_Log::$numRows;
                         <?php echo strtoupper($log->log_login); ?>
                     </td>
                     <td class="cell">
-                        <?php echo ($isDemoMode) ? preg_replace('/\d+','*',$log->log_ipAddress) : $log->log_ipAddress; ?>
+                        <?php echo ($isDemoMode) ? preg_replace('#\d+#','*',$log->log_ipAddress) : $log->log_ipAddress; ?>
                     </td>
                     <td class="cell-description">
                         <?php
