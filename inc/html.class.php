@@ -98,6 +98,10 @@ class SP_Html
         // UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
 
+        // Cache Control
+        header("Cache-Control: public, no-cache, max-age=0, must-revalidate");
+        header("Pragma: public; max-age=0");
+
         if (!is_null($err) && is_array($err) && count($err) > 0) {
             $data['errors'] = $err;
         }
@@ -169,27 +173,10 @@ class SP_Html
      */
     public static function setCss()
     {
-        $versionParameter = '?v=' . md5(implode(SP_Util::getVersion()));
+        $visualStyle = SP_Util::resultsCardsIsEnabled();
+        $versionParameter = md5(implode(SP_Util::getVersion()).$visualStyle);
 
-        $cssProp = array(
-            array("href" => "css/reset.css", "media" => ""),
-            array("href" => "css/smoothness/jquery-ui.css", "media" => "screen"),
-            array("href" => "css/jquery.powertip.css", "media" => "screen"),
-            array("href" => "css/jquery.powertip-yellow.min.css", "media" => "screen"),
-            array("href" => "css/chosen.css", "media" => "screen"),
-            array("href" => "css/alertify.core.css", "media" => "screen"),
-            array("href" => "css/alertify.default.css", "media" => "screen"),
-            array("href" => "css/jquery.tagsinput.css", "media" => "screen"),
-            array("href" => "js/fancybox/jquery.fancybox.css", "media" => "screen"),
-            array("href" => "css/styles.css", "media" => ""));
-
-        if ( ! SP_Util::resultsCardsIsEnabled() ){
-            array_push($cssProp,array("href" => "css/search-grid.css", "media" => ""));
-        }
-
-        foreach ($cssProp as $css) {
-            self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . "/" . $css["href"] . $versionParameter . '" media="' . $css["media"] . '" />';
-        }
+        self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . '/css/css.php?v=' . $versionParameter . '" />';
     }
 
     /**
@@ -200,36 +187,7 @@ class SP_Html
     {
         $versionParameter = md5(implode(SP_Util::getVersion()));
 
-        $js_files = self::getJs();
-
-        foreach ($js_files as $js) {
-            self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . "/" . $js["src"] . '?v=' . $versionParameter . $js["params"] . '"></script>';
-        }
-    }
-
-    /**
-     * @brief Devuelve un array con los archivos JS a incluir
-     * @return array con los archivos js y parámetros
-     */
-    public static function getJs()
-    {
-
-        $jsProp = array(
-            array("src" => "js/jquery.js", "params" => ""),
-            array("src" => "js/jquery.placeholder.js", "params" => ""),
-            array("src" => "js/jquery-ui.js", "params" => ""),
-            array("src" => "js/fancybox/jquery.fancybox.pack.js", "params" => ""),
-            array("src" => "js/jquery.powertip.min.js", "params" => ""),
-            array("src" => "js/chosen.jquery.min.js", "params" => ""),
-            array("src" => "js/alertify.js", "params" => ""),
-            array("src" => "js/jquery.fileDownload.js", "params" => ""),
-            array("src" => "js/jquery.filedrop.js", "params" => ""),
-            array("src" => "js/jquery.tagsinput.js", "params" => ""),
-            array("src" => "js/ZeroClipboard.min.js", "params" => ""),
-            array("src" => "js/functions.php", "params" => "")
-        );
-
-        return $jsProp;
+        self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . '/js/js.php?v=' . $versionParameter . '"></script>';
     }
 
     /**

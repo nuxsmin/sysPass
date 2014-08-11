@@ -170,7 +170,8 @@
     $.fn.tagExist = function(val) {
         var id = $(this).attr('id');
         var tagslist = $(this).val().split(delimiter[id]);
-        return (jQuery.inArray(val, tagslist) >= 0); //true when tag exists, false when not
+        //true when tag exists, false when not
+        return (jQuery.inArray(val, tagslist) >= 0);
     };
 
     // clear all existing tags and import new ones from a string
@@ -178,7 +179,7 @@
         id = $(this).attr('id');
         $('#' + id + '_tagsinput .tag').remove();
         $.fn.tagsInput.importTags(this, str);
-    }
+    };
 
     $.fn.tagsInput = function(options) {
         var settings = jQuery.extend({
@@ -334,7 +335,8 @@
                         }
                     });
                 }
-            } // if settings.interactive
+            }
+            // if settings.interactive
             $(data.holder).animate({scrollTop: $(data.holder).height()});
         });
         

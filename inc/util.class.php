@@ -169,21 +169,12 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si el módulo CURL está instalado
-     * @return bool
-     */
-    public static function curlIsAvailable()
-    {
-        return (function_exists('curl_init'));
-    }
-
-    /**
      * @brief Devuelve la versión de sysPass
      * @return string con la versión
      */
     public static function getVersionString()
     {
-        return '1.1b';
+        return '1.1-rc1';
     }
 
     /**
@@ -194,7 +185,7 @@ class SP_Util
      */
     public static function checkUpdates()
     {
-        if (! self::curlIsAvailable() || !SP_Config::getValue('checkupdates')) {
+        if (!self::curlIsAvailable() || !SP_Config::getValue('checkupdates')) {
             return false;
         }
 
@@ -258,13 +249,22 @@ class SP_Util
     }
 
     /**
+     * @brief Comprobar si el módulo CURL está instalado
+     * @return bool
+     */
+    public static function curlIsAvailable()
+    {
+        return (function_exists('curl_init'));
+    }
+
+    /**
      * @brief Devuelve la versión de sysPass
      * @param bool $retBuild devolver el número de compilación
      * @return array con el número de versión
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 13;
+        $build = 14;
         $version = array(1, 1, 2);
 
         if ($retBuild) {
@@ -322,7 +322,14 @@ class SP_Util
      */
     public static function demoIsEnabled()
     {
-        return SP_Config::getValue('demo_enabled', false);
+        $enabled = SP_Common::parseParams('s', 'demo_enabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['demo_enabled'] = SP_Config::getValue('demo_enabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -331,7 +338,14 @@ class SP_Util
      */
     public static function fileIsEnabled()
     {
-        return SP_Config::getValue('files_enabled', false);
+        $enabled = SP_Common::parseParams('s', 'files_enabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['files_enabled'] = SP_Config::getValue('files_enabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -340,7 +354,14 @@ class SP_Util
      */
     public static function mailIsEnabled()
     {
-        return SP_Config::getValue('mail_enabled', false);
+        $enabled = SP_Common::parseParams('s', 'mail_enabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['mail_enabled'] = SP_Config::getValue('mail_enabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -349,7 +370,14 @@ class SP_Util
      */
     public static function wikiIsEnabled()
     {
-        return SP_Config::getValue('wiki_enabled', false);
+        $enabled = SP_Common::parseParams('s', 'wiki_enabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['wiki_enabled'] = SP_Config::getValue('wiki_enabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -358,7 +386,14 @@ class SP_Util
      */
     public static function mailrequestIsEnabled()
     {
-        return SP_Config::getValue('mail_requestsenabled', false);
+        $enabled = SP_Common::parseParams('s', 'mail_requestsenabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['mail_requestsenabled'] = SP_Config::getValue('mail_requestsenabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -367,7 +402,14 @@ class SP_Util
      */
     public static function ldapIsEnabled()
     {
-        return SP_Config::getValue('ldap_enabled', false);
+        $enabled = SP_Common::parseParams('s', 'ldap_enabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['ldap_enabled'] = SP_Config::getValue('ldap_enabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -376,7 +418,14 @@ class SP_Util
      */
     public static function logIsEnabled()
     {
-        return SP_Config::getValue('log_enabled', false);
+        $enabled = SP_Common::parseParams('s', 'log_enabled', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['log_enabled'] = SP_Config::getValue('log_enabled', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -385,7 +434,14 @@ class SP_Util
      */
     public static function resultsCardsIsEnabled()
     {
-        return SP_Config::getValue('resultsascards', false);
+        $enabled = SP_Common::parseParams('s', 'resultsascards', 0);
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($enabled === 0 || $reload === 1) {
+            $enabled = $_SESSION['resultsascards'] = SP_Config::getValue('resultsascards', false);
+        }
+
+        return self::boolval($enabled);
     }
 
     /**
@@ -394,7 +450,9 @@ class SP_Util
      */
     public static function reload()
     {
-        if (!isset($_SESSION["reload"]) || $_SESSION["reload"] === 0) {
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($reload === 0) {
             $_SESSION["reload"] = 1;
         }
     }
@@ -405,9 +463,174 @@ class SP_Util
      */
     public static function checkReload()
     {
-        if (isset($_SESSION["reload"]) && $_SESSION["reload"] === 1) {
-            $_SESSION["reload"] = 0;
-            exit("<script>window.location.href = 'index.php';</script>");
+        $reload = SP_Common::parseParams('s', 'reload', 0);
+
+        if ($reload === 1) {
+            $_SESSION['reload'] = 0;
+            //exit("<script>window.location.href = 'index.php';</script>");
+            exit("<script>location.reload();</script>");
         }
+    }
+
+    /**
+     * @brief Devolver al navegador archivos CSS y JS comprimidos
+     * @param string $type tipo de recurso a devolver
+     * @param array $files archivos a parsear
+     * @return none
+     *
+     * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
+     * devuelve el código HTTP/304
+     */
+    public static function getMinified($type, &$files)
+    {
+        $offset = 3600 * 24 * 30;
+        $nextCheck = time() + $offset;
+        $expire = 'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', $nextCheck);
+        //$etag = md5(implode(SP_Util::getVersion()));
+        $etag = self::getEtag($files);
+        $etagMatch = self::getRequestHeaders('If-None-Match');
+        $cacheControl = self::getRequestHeaders('Cache-Control');
+        $pragma = self::getRequestHeaders('Pragma');
+
+        header('Etag: ' . $etag);
+        header("Cache-Control: public, max-age={$offset}, must-revalidate");
+        header("Pragma: public; maxage={$offset}");
+        header($expire);
+
+        // Devolver código 304 si la versión es la misma y no se solicita refrescar
+        if ($etag == $etagMatch && !($cacheControl == 'no-cache' || $pragma == 'no-cache')) {
+            header($_SERVER["SERVER_PROTOCOL"] . " 304 Not Modified");
+            exit;
+        }
+
+        $path = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR;
+
+        if ($type == 'js') {
+            header("Content-type: application/x-javascript; charset: UTF-8");
+        } elseif ($type == 'css') {
+            header("Content-type: text/css; charset: UTF-8");
+        }
+
+        flush();
+        ob_start('ob_gzhandler');
+
+        foreach ($files as $file) {
+            $filePath = $path . $file['href'];
+
+            if ($file['min'] === true) {
+                echo '/* MINIFIED FILE: ' . $file['href'] . ' */' . PHP_EOL;
+                if ($type == 'js') {
+                    echo self::jsCompress(file_get_contents($filePath));
+                } elseif ($type == 'css') {
+                    require_once EXTENSIONS_DIR . DIRECTORY_SEPARATOR . 'cssmin' . DIRECTORY_SEPARATOR . 'class.cssmin.php';
+                    echo CssMin::minify(file_get_contents($filePath));
+                }
+            } else {
+                echo '/* FILE: ' . $file['href'] . ' */' . PHP_EOL;
+                echo file_get_contents($filePath);
+            }
+
+            echo PHP_EOL;
+        }
+
+        ob_end_flush();
+    }
+
+    /**
+     * @brief Calcular el hash MD5 de varios archivos
+     * @param array $files archivos a calcular
+     * @return string
+     */
+    private static function getEtag(&$files)
+    {
+        $md5Sum = '';
+        $path = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR;
+
+        foreach ($files as $file) {
+            $md5Sum .= md5_file($path . $file['href']);
+        }
+
+        return md5($md5Sum);
+    }
+
+    /**
+     * @brief Devolver las cabeceras enviadas desde el cliente
+     * @param string $header nombre de la cabecera a devolver
+     * @return array
+     */
+    public static function getRequestHeaders($header = '')
+    {
+        if (!function_exists('apache_request_headers')) {
+            function apache_request_headers()
+            {
+                foreach ($_SERVER as $key => $value) {
+                    if (substr($key, 0, 5) == "HTTP_") {
+                        $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
+                        $headers[$key] = $value;
+                    } else {
+                        $headers[$key] = $value;
+                    }
+                }
+            }
+        } else {
+            $headers = apache_request_headers();
+        }
+
+        if (!empty($header) && array_key_exists($header, $headers)) {
+            return $headers[$header];
+        } elseif (!empty($header)) {
+            return false;
+        }
+
+        return $headers;
+    }
+
+    /**
+     * @brief Comprimir código javascript
+     * @param string $buffer código a comprimir
+     * @return string
+     */
+    private static function jsCompress($buffer)
+    {
+        $regexReplace = array(
+            '#/\*[^*]*\*+([^/][^*]*\*+)*/#',
+            '#^[\s\t]*//.*$#m',
+            '#[\s\t]+$#m',
+            '#^[\s\t]+#m',
+            '#\s*//\s.*$#m'
+        );
+        $buffer = preg_replace($regexReplace, '', $buffer);
+        // remove tabs, spaces, newlines, etc.
+        $buffer = str_replace(array("\r\n", "\r", "\n", "\t"), '', $buffer);
+        return $buffer;
+    }
+
+    /** Checks a variable to see if it should be considered a boolean true or false.
+     *     Also takes into account some text-based representations of true of false,
+     *     such as 'false','N','yes','on','off', etc.
+     * @author Samuel Levy <sam+nospam@samuellevy.com>
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
+     *                     be true.
+     * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
+     */
+    public static function boolval($in, $strict = false)
+    {
+        $out = null;
+        $in = (is_string($in) ? strtolower($in) : $in);
+        // if not strict, we only have to check if something is false
+        if (in_array($in, array('false', 'no', 'n', '0', 'off', false, 0), true) || !$in) {
+            $out = false;
+        } else if ($strict) {
+            // if strict, check the equivalent true values
+            if (in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
+                $out = true;
+            }
+        } else {
+            // not strict? let the regular php bool check figure it out (will
+            // largely default to true)
+            $out = ($in ? true : false);
+        }
+        return $out;
     }
 }

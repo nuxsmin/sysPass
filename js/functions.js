@@ -10,7 +10,6 @@ var passToClip = 0;
 var windowAdjustSize = 350;
 
 var strPassword;
-var charPassword;
 var minPasswordLength = 8;
 var baseScore = 0, score = 0;
 
@@ -39,22 +38,30 @@ jQuery.extend(jQuery.fancybox.defaults, {
     padding: 0,
     helpers: {overlay: { css: { 'background': 'rgba(0, 0, 0, 0.1)'}}},
     afterShow: function () {
+        "use strict";
+
         $('#fancyContainer').find('input:visible:first').focus();
     }
 });
 
 $(document).ready(function () {
+    "use strict";
+
     $("[title]").powerTip(powertipOptions);
     $('input, textarea').placeholder();
     setContentSize();
     setWindowAdjustSize();
 }).ajaxComplete(function () {
+    "use strict";
+
     $("[title]").powerTip(powertipOptions);
     $('input, textarea').placeholder();
 });
 
 // Función para cargar el contenido de la acción del menú seleccionada
 function doAction(action, lastAction, id) {
+    "use strict";
+
     var data = {'action': action, 'lastAction': lastAction, 'id': id, isAjax: 1};
 
     $('#content').fadeOut(function () {
@@ -81,6 +88,8 @@ function doAction(action, lastAction, id) {
 
 // Función para establecer la altura del contenedor ajax
 function setContentSize() {
+    "use strict";
+
     // Calculate total height for full body resize
     var totalHeight = $("#content").height() + 100;
     //var totalWidth = $("#wrap").width();
@@ -90,9 +99,11 @@ function setContentSize() {
 
 // Función para establecer la variable de ajuste óptimo de altura
 function setWindowAdjustSize() {
+    "use strict";
+
     var browser = getBrowser();
 
-    if ( browser == "MSIE" ){
+    if (browser === "MSIE") {
         windowAdjustSize = 150;
     }
     //console.log(windowAdjustSize);
@@ -100,12 +111,16 @@ function setWindowAdjustSize() {
 
 // Función para retornar el scroll a la posición inicial
 function scrollUp() {
+    "use strict";
+
     $('html, body').animate({ scrollTop: 0 }, 'slow');
 }
 
 // Función para limpiar un formulario
 function clearSearch(clearStart) {
-    if ( clearStart === 1 ){
+    "use strict";
+
+    if (clearStart === 1) {
         $('#frmSearch').find('input[name="start"]').val(0);
         return;
     }
@@ -123,6 +138,8 @@ function clearSearch(clearStart) {
 
 // Funcion para crear un desplegable con opciones
 function mkChosen(options) {
+    "use strict";
+
     $('#' + options.id).chosen({
         allow_single_deselect: true,
         placeholder_text_single: options.placeholder,
@@ -133,15 +150,17 @@ function mkChosen(options) {
 
 // Función para la búsqueda de cuentas mediante filtros
 function accSearch(continous, event) {
+    "use strict";
+
     var lenTxtSearch = $('#txtSearch').val().length;
 
-    if ( typeof (event) != 'undefined'
-        && ((event.keyCode < 48 && event.keyCode != 13) || (event.keyCode > 105 && event.keyCode < 123)) ) return;
+    if (typeof (event) !== 'undefined' && ((event.keyCode < 48 && event.keyCode !== 13) || (event.keyCode > 105 && event.keyCode < 123))) {
+        return;
+    }
 
-    if (lenTxtSearch < 3
-        && continous === 1
-        && lenTxtSearch > window.lastlen
-        && event.keyCode != 13) return;
+    if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode != 13) {
+        return;
+    }
 
     window.lastlen = lenTxtSearch;
 
@@ -150,6 +169,8 @@ function accSearch(continous, event) {
 
 // Función para la búsqueda de cuentas mediante ordenación
 function searchSort(skey, start, nav) {
+    "use strict";
+
     if (typeof(skey) === "undefined" || typeof(start) === "undefined") return false;
 
     if (order.key > 0 && order.key != skey) {
@@ -173,7 +194,9 @@ function searchSort(skey, start, nav) {
 }
 
 // Función para la búsqueda de cuentas
-function doSearch(){
+function doSearch() {
+    "use strict";
+
     var frmData = $("#frmSearch").serialize();
 
     $.fancybox.showLoading();
@@ -187,9 +210,9 @@ function doSearch(){
             $('#resBuscar').html(response);
             $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
 
-            if ( order.key ){
+            if (order.key) {
                 $('#search-sort-' + order.key).addClass('filterOn');
-                if (order.dir == 0) {
+                if (order.dir === 0) {
                     $('#search-sort-' + order.key).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
                 } else {
                     $('#search-sort-' + order.key).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
@@ -208,6 +231,8 @@ function doSearch(){
 
 // Función para navegar por el log de eventos
 function navLog(start, current) {
+    "use strict";
+
     if (typeof(start) === "undefined") return false;
 
     $.fancybox.showLoading();
@@ -233,8 +258,10 @@ function navLog(start, current) {
 
 // Función para ver la clave de una cuenta
 function viewPass(id, full, history) {
+    "use strict";
+
     // Comprobamos si la clave ha sido ya obtenida para copiar
-    if ( passToClip === 1 && full === 0){
+    if (passToClip === 1 && full === 0) {
         return;
     }
 
@@ -243,11 +270,11 @@ function viewPass(id, full, history) {
         url: APP_ROOT + '/ajax/ajax_viewpass.php',
         async: false,
         data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
-        success: function(data){
-            if (data == "-1") {
+        success: function (data) {
+            if (data === "-1") {
                 doLogout();
             } else {
-                if ( full === 0 ){
+                if (full === 0) {
                     // Copiamos la clave en el objeto que tiene acceso al portapapeles
                     $('#clip_pass_text').html(data);
                     passToClip = 1;
@@ -261,6 +288,8 @@ function viewPass(id, full, history) {
 
 // Función para obtener las variables de la URL y parsearlas a un array.
 function getUrlVars() {
+    "use strict";
+
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
     for (var i = 0; i < hashes.length; i++) {
@@ -273,6 +302,8 @@ function getUrlVars() {
 
 // Función para autentificar usuarios
 function doLogin() {
+    "use strict";
+
     $.fancybox.showLoading();
 
     var data = $('#frmLogin').serialize();
@@ -318,6 +349,8 @@ function doLogin() {
 
 // Función para salir de la sesión
 function doLogout() {
+    "use strict";
+
     var url = window.location.search;
 
     if (url.length > 0) {
@@ -329,15 +362,19 @@ function doLogout() {
 
 // Función para comprobar si se ha salido de la sesión
 function checkLogout() {
+    "use strict";
+
     var session = getUrlVars()["session"];
 
-    if (session == 0) {
+    if (session === 0) {
         resMsg("warn", LANG[2], '', "location.search = ''");
     }
 }
 
 // Función para añadir/editar una cuenta
 function saveAccount(frm) {
+    "use strict";
+
     var data = $("#" + frm).serialize();
     var id = $('input[name="accountid"]').val();
     var savetyp = $('input[name="savetyp"]').val();
@@ -358,7 +395,7 @@ function saveAccount(frm) {
             if (status === 0) {
                 resMsg("ok", description);
 
-                if (savetyp == 1) {
+                if (savetyp === 1) {
                     $('#btnSave').hide();
                 } else {
                     $('#btnSave').attr('disabled', true);
@@ -386,35 +423,43 @@ function saveAccount(frm) {
 
 // Función para eliminar una cuenta
 function delAccount(id, action, sk) {
+    "use strict";
+
     var data = {accountid: id, savetyp: action, sk: sk};
     var atext = '<div id="alert"><p id="alert-text">' + LANG[3] + '</p></div>';
     var url = '/ajax/ajax_accountSave.php';
 
     alertify.confirm(atext, function (e) {
         if (e) {
-            sendAjax(data,url);
+            sendAjax(data, url);
         }
     });
 }
 
 // Función para enviar una solicitud de modificación de cuenta
 function sendRequest() {
+    "use strict";
+
     var url = '/ajax/ajax_sendRequest.php';
     var data = $('#frmRequestModify').serialize();
 
-    sendAjax(data,url);
+    sendAjax(data, url);
 }
 
 // Función para guardar la configuración
 function configMgmt(action) {
+    "use strict";
+
+    var frm, url;
+
     switch (action) {
         case "saveconfig":
             frm = 'frmConfig';
-            var url = '/ajax/ajax_configSave.php';
+            url = '/ajax/ajax_configSave.php';
             break;
         case "savempwd":
             frm = 'frmCrypt';
-            var url = '/ajax/ajax_configSave.php';
+            url = '/ajax/ajax_configSave.php';
             break;
         case "backup":
             frm = 'frmBackup';
@@ -422,7 +467,7 @@ function configMgmt(action) {
             break;
         case "migrate":
             frm = 'frmMigrate';
-            var url = '/ajax/ajax_migrate.php';
+            url = '/ajax/ajax_migrate.php';
             break;
         default:
             return;
@@ -435,6 +480,8 @@ function configMgmt(action) {
 
 // Función para descargar/ver archivos de una cuenta
 function downFile(id, sk, action) {
+    "use strict";
+
     var data = {'fileId': id, 'sk': sk, 'action': action};
 
     if (action === 'view') {
@@ -468,6 +515,8 @@ function downFile(id, sk, action) {
 
 // Función para obtener la lista de archivos de una cuenta
 function getFiles(id, isDel, sk) {
+    "use strict";
+
     var data = {'id': id, 'del': isDel, 'sk': sk};
 
     $.ajax({
@@ -486,6 +535,8 @@ function getFiles(id, isDel, sk) {
 
 // Función para eliminar archivos de una cuenta
 function delFile(id, sk, accid) {
+    "use strict";
+
     var atext = '<div id="alert"><p id="alert-text">' + LANG[15] + '</p></div>';
 
     alertify.confirm(atext, function (e) {
@@ -507,14 +558,16 @@ function delFile(id, sk, accid) {
 
 // Función para activar el Drag&Drop de archivos en las cuentas
 function dropFile(accountId, sk, maxsize) {
+    "use strict";
+
     var dropfiles = $('#dropzone');
     var file_exts_ok = dropfiles.attr('data-files-ext').toLowerCase().split(',');
 
     dropfiles.filedrop({
         fallback_id: 'inFile',
-        paramname: 'inFile', // $_FILES name
+        paramname: 'inFile',
         maxfiles: 5,
-        maxfilesize: maxsize, // in mb
+        maxfilesize: maxsize,
         allowedfileextensions: file_exts_ok,
         url: APP_ROOT + '/ajax/ajax_files.php',
         data: {
@@ -526,7 +579,7 @@ function dropFile(accountId, sk, maxsize) {
         uploadFinished: function (i, file, response) {
             $.fancybox.hideLoading();
 
-            var sk = $('input:[name=sk]').val();
+            var sk = $('input[name="sk"]').val();
             $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accountId + "&del=1&isAjax=1&sk=" + sk);
 
             resMsg("ok", response);
@@ -557,14 +610,16 @@ function dropFile(accountId, sk, maxsize) {
 
 // Función para activar el Drag&Drop de archivos en la importación de cuentas
 function importFile(sk) {
+    "use strict";
+
     var dropfiles = $('#dropzone');
-    var file_exts_ok = ['csv','xml'];
+    var file_exts_ok = ['csv', 'xml'];
 
     dropfiles.filedrop({
         fallback_id: 'inFile',
-        paramname: 'inFile', // $_FILES name
+        paramname: 'inFile',
         maxfiles: 1,
-        maxfilesize: 1, // in mb
+        maxfilesize: 1,
         allowedfileextensions: file_exts_ok,
         url: APP_ROOT + '/ajax/ajax_import.php',
         data: {
@@ -613,6 +668,8 @@ function importFile(sk) {
 
 // Función para realizar una petición ajax
 function sendAjax(data, url) {
+    "use strict";
+
     $.fancybox.showLoading();
 
     $.ajax({
@@ -660,6 +717,8 @@ function sendAjax(data, url) {
 
 // Función para mostrar el formulario para cambio de clave de usuario
 function usrUpdPass(id, usrlogin) {
+    "use strict";
+
     var data = {'usrid': id, 'usrlogin': usrlogin, 'isAjax': 1};
 
     $.fancybox.showLoading();
@@ -681,6 +740,8 @@ function usrUpdPass(id, usrlogin) {
 
 // Función para mostrar los datos de un registro
 function appMgmtData(id, type, sk, active, view) {
+    "use strict";
+
     var data = {'id': id, 'type': type, 'sk': sk, 'active': active, 'view': view, 'isAjax': 1};
     var url = APP_ROOT + '/ajax/ajax_appMgmtData.php';
 
@@ -706,11 +767,13 @@ function appMgmtData(id, type, sk, active, view) {
 
 // Función para editar los datos de un registro
 function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
+    "use strict";
+
     var data;
     var url = '/ajax/ajax_appMgmtSave.php';
 
     if (isDel === 1) {
-        var data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction };
+        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction };
         var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
 
         alertify.confirm(atext, function (e) {
@@ -720,13 +783,14 @@ function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
         });
     } else {
         data = $("#" + frmId).serialize();
-
         sendAjax(data, url);
     }
 }
 
 // Función para verificar si existen actualizaciones
 function checkUpds() {
+    "use strict";
+
     $.ajax({
         type: 'GET',
         dataType: 'html',
@@ -743,6 +807,8 @@ function checkUpds() {
 
 // Función para limpiar el log de eventos
 function clearEventlog(sk) {
+    "use strict";
+
     var atext = '<div id="alert"><p id="alert-text">' + LANG[20] + '</p></div>';
 
     alertify.confirm(atext, function (e) {
@@ -750,13 +816,15 @@ function clearEventlog(sk) {
             var data = { 'clear': 1, 'sk': sk, 'isAjax': 1};
             var url = '/ajax/ajax_eventlog.php';
 
-            sendAjax(data,url);
+            sendAjax(data, url);
         }
     });
 }
 
 // Función para mostrar los botones de acción en los resultados de búsqueda
 function showOptional(me) {
+    "use strict";
+
     $(me).hide();
     //$(me).parent().css('width','15em');
     //var actions =  $(me).closest('.account-actions').children('.actions-optional');
@@ -766,19 +834,23 @@ function showOptional(me) {
 
 // Función para obtener el tiempo actual en milisegundos
 function getTime() {
-    t = new Date();
+    "use strict";
+
+    var t = new Date();
     return t.getTime();
 }
 
 // Función para generar claves aleatorias. 
 // By Uzbekjon from  http://jquery-howto.blogspot.com.es
 function password(length, special, fancy, dstId) {
+    "use strict";
+
     var iteration = 0;
-    var password = "";
+    var genPassword = '';
     var randomNumber;
 
-    if (special == undefined) {
-        var special = false;
+    if (typeof special === 'undefined') {
+        special = false;
     }
 
     while (iteration < length) {
@@ -798,33 +870,34 @@ function password(length, special, fancy, dstId) {
             }
         }
         iteration++;
-        password += String.fromCharCode(randomNumber);
+        genPassword += String.fromCharCode(randomNumber);
     }
 
-    if (fancy == true) {
-        $("#viewPass").attr("title", password);
+    if (fancy === true) {
+        $("#viewPass").attr("title", genPassword);
         //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
     } else {
-        alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
+        alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + genPassword + '</p>');
     }
 
     if (dstId) {
-        checkPassLevel(password);
-        $('#' + dstId + '  input:password').val(password);
+        checkPassLevel(genPassword);
+        $('#' + dstId + ' input:password').val(genPassword);
         $('#' + dstId + ' #passLevel').show(500);
     } else {
-        checkPassLevel(password);
-        $('input:password').val(password);
+        checkPassLevel(genPassword);
+        $('input:password').val(genPassword);
         $('#passLevel').show(500);
     }
     //return password;
 }
 
-// Funciónes para analizar al fortaleza de una clave
+// Funciones para analizar al fortaleza de una clave
 // From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
 function checkPassLevel(password, dstId) {
+    "use strict";
+
     strPassword = password;
-    charPassword = strPassword.split("");
 
     num.Excess = 0;
     num.Upper = 0;
@@ -836,7 +909,7 @@ function checkPassLevel(password, dstId) {
     baseScore = 0;
     score = 0;
 
-    if (charPassword.length >= minPasswordLength) {
+    if (password.length >= minPasswordLength) {
         baseScore = 50;
         analyzeString();
         calcComplexity();
@@ -852,20 +925,23 @@ function checkPassLevel(password, dstId) {
 }
 
 function analyzeString() {
-    for (i = 0; i < charPassword.length; i++) {
-        if (charPassword[i].match(/[A-Z]/g)) {
+    "use strict";
+
+    var chars = strPassword.split('');
+
+    for (var i = 0; i < strPassword.length; i++) {
+        if (chars[i].match(/[A-Z]/g)) {
             num.Upper++;
         }
-        if (charPassword[i].match(/[0-9]/g)) {
+        if (chars[i].match(/[0-9]/g)) {
             num.Numbers++;
         }
-        //if (charPassword[i].match(/(.*[!,@,#,$,%,^,&,*,?,_,~])/)) {
-        if (charPassword[i].match(/(.*[!,@,#,$,%,&,*,?,%,_])/)) {
+        if (chars[i].match(/(.*[!,@,#,$,%,&,*,?,%,_])/)) {
             num.Symbols++;
         }
     }
 
-    num.Excess = charPassword.length - minPasswordLength;
+    num.Excess = strPassword.length - minPasswordLength;
 
     if (num.Upper && num.Numbers && num.Symbols) {
         bonus.Combo = 25;
@@ -885,10 +961,14 @@ function analyzeString() {
 }
 
 function calcComplexity() {
+    "use strict";
+
     score = baseScore + (num.Excess * bonus.Excess) + (num.Upper * bonus.Upper) + (num.Numbers * bonus.Numbers) + (num.Symbols * bonus.Symbols) + bonus.Combo + bonus.FlatLower + bonus.FlatNumber;
 }
 
 function outputResult(dstId) {
+    "use strict";
+
     var complexity, selector = '.passLevel';
 
     if (dstId) {
@@ -898,23 +978,18 @@ function outputResult(dstId) {
     complexity = $(selector);
     complexity.removeClass("weak good strong strongest");
 
-    if (charPassword.length == 0) {
-        complexity.attr('title','').empty();
-    } else if (charPassword.length < minPasswordLength) {
-        //complexity.html(LANG[11]).removeClass("good strong strongest").addClass("weak");
-        complexity.attr('title',LANG[11]).addClass("weak");
+    if (strPassword.length === 0) {
+        complexity.attr('title', '').empty();
+    } else if (strPassword.length < minPasswordLength) {
+        complexity.attr('title', LANG[11]).addClass("weak");
     } else if (score < 50) {
-        //complexity.html(LANG[9]).removeClass("good strong strongest").addClass("weak");
-        complexity.attr('title',LANG[9]).addClass("weak");
+        complexity.attr('title', LANG[9]).addClass("weak");
     } else if (score >= 50 && score < 75) {
-        //complexity.html(LANG[8]).removeClass("weak strong strongest").addClass("good");
-        complexity.attr('title',LANG[8]).addClass("good");
+        complexity.attr('title', LANG[8]).addClass("good");
     } else if (score >= 75 && score < 100) {
-        //complexity.html(LANG[7]).removeClass("weak good strongest").addClass("strong");
-        complexity.attr('title',LANG[7]).addClass("strong");
+        complexity.attr('title', LANG[7]).addClass("strong");
     } else if (score >= 100) {
-        //complexity.html(LANG[10]).removeClass("weak good strong").addClass("strongest");
-        complexity.attr('title',LANG[10]).addClass("strongest");
+        complexity.attr('title', LANG[10]).addClass("strongest");
     }
 
     $('.passLevel').powerTip(powertipOptions);
@@ -922,7 +997,9 @@ function outputResult(dstId) {
 
 // Función para mostrar mensaje con alertify
 function resMsg(type, txt, url, action) {
-    if (typeof(url) !== "undefined") {
+    "use strict";
+
+    if (typeof url !== "undefined") {
         $.ajax({ url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
             txt = data;
         }});
@@ -951,7 +1028,6 @@ function resMsg(type, txt, url, action) {
         case "nofancyerror":
             html = '<P CLASS="error round">Oops...<BR />' + LANG[1] + '<BR />' + txt + '</P>';
             return html;
-            break;
         default:
             alertify.set({ beforeCloseAction: action });
             return alertify.error(txt);
@@ -960,12 +1036,16 @@ function resMsg(type, txt, url, action) {
     $.fancybox(html, {afterLoad: function () {
         $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({'border-radius': '25px', '-moz-border-radius': '25px', '-webkit-border-radius': '25px'});
     }, afterClose: function () {
-        if (typeof(action) !== "undefined") eval(action);
+        if (typeof action !== "undefined") {
+            eval(action);
+        }
     } });
 }
 
 // Función para comprobar la conexión con LDAP
 function checkLdapConn() {
+    "use strict";
+
     var ldapServer = $('#frmConfig').find('[name=ldap_server]').val();
     var ldapBase = $('#frmConfig').find('[name=ldap_base]').val();
     var ldapGroup = $('#frmConfig').find('[name=ldap_group]').val();
@@ -974,25 +1054,29 @@ function checkLdapConn() {
     var sk = $('#frmConfig').find('[name=sk]').val();
     var data = {'ldap_server': ldapServer, 'ldap_base': ldapBase, 'ldap_group': ldapGroup, 'ldap_binduser': ldapBindUser, 'ldap_bindpass': ldapBindPass, 'isAjax': 1, 'sk': sk};
 
-    sendAjax(data,'/ajax/ajax_checkLdap.php');
+    sendAjax(data, '/ajax/ajax_checkLdap.php');
 }
 
 // Función para volver al login
 function goLogin() {
-    setTimeout(function () { location.href = "index.php";}, 2000);
+    "use strict";
+
+    setTimeout(function () {
+        location.href = "index.php";
+    }, 2000);
 }
 
 // Función para obtener el navegador usado
-function getBrowser()
-{
-    var version = -1; // Return value assumes failure.
+function getBrowser() {
+    "use strict";
+
+    var browser;
     var ua = navigator.userAgent;
-    var re  = new RegExp("(MSIE|Firefox)[ /]?([0-9]{1,}[\.0-9]{0,})", "i");
-    if (re.exec(ua) != null) {
-        var browser = RegExp.$1;
+    var re = new RegExp("(MSIE|Firefox)[ /]?([0-9]{1,}[\.0-9]{0,})", "i");
+    if (re.exec(ua) !== null) {
+        browser = RegExp.$1;
         //version = parseFloat( RegExp.$2 );
     }
 
     return browser;
-    //return version;
 }

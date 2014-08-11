@@ -37,7 +37,7 @@ SP_Util::checkReload();
 if (SP_Common::parseParams('p', 'action', '', true)) {
     $action = $tplvars['action'] = SP_Common::parseParams('p', 'action');
     $itemId = $tplvars['id'] = SP_Common::parseParams('p', 'id', 0);
-    $tplvars['lastaction'] = SP_Common::parseParams('p', 'lastAction', 'accsearch');
+    $tplvars['lastaction'] = filter_var(SP_Common::parseParams('p', 'lastAction', 'accsearch', false, false, false), FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
 } else {
     die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
 }

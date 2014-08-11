@@ -173,7 +173,7 @@ class SP_Init
                             continue;
                         }
 
-                        $params[] = $param . '=' . $value;
+                        $params[] = SP_Html::sanitize($param) . '=' . SP_Html::sanitize($value);
                     }
 
                     header("Location: " . self::$WEBROOT . '/index.php?' . implode('&', $params));
@@ -231,19 +231,25 @@ class SP_Init
         self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
 
         $scriptName = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+
         if (substr($scriptName, -1) == '/') {
             $scriptName .= 'index.php';
             // Asegurar que suburi sigue las mismas reglas que scriptName
             if (substr(self::$SUBURI, -9) != 'index.php') {
                 if (substr(self::$SUBURI, -1) != '/') {
-                    self::$SUBURI = self::$SUBURI . '/';
+                    self::$SUBURI .= '/';
                 }
-                self::$SUBURI = self::$SUBURI . 'index.php';
+                self::$SUBURI .= 'index.php';
             }
         }
 
-        //self::$WEBROOT = substr($scriptName, 0, strlen($scriptName) - strlen(self::$SUBURI) + 1);
-        self::$WEBROOT = substr($scriptName, 0, strpos($scriptName, self::$SUBURI));
+        $pos = strpos($scriptName, self::$SUBURI);
+
+        if ($pos === false) {
+            $pos = strpos($scriptName, '?');
+        }
+
+        self::$WEBROOT = substr($scriptName, 0, $pos);
 
         if (self::$WEBROOT != '' and self::$WEBROOT[0] !== '/') {
             self::$WEBROOT = '/' . self::$WEBROOT;
@@ -292,7 +298,7 @@ class SP_Init
     private static function checkInitSourceInclude()
     {
         $srcScript = pathinfo($_SERVER["SCRIPT_NAME"], PATHINFO_BASENAME);
-        $skipInit = array('functions.php');
+        $skipInit = array('js.php', 'css.php');
 
         return (in_array($srcScript, $skipInit));
     }
@@ -515,7 +521,13 @@ class SP_Init
      */
     private static function getSessionLifeTime()
     {
-        return SP_Config::getValue('session_timeout', 60 * 60 * 24);
+        $timeout = SP_Common::parseParams('s', 'session_timeout', 0);
+
+        if ($timeout === 0) {
+            $timeout = $_SESSION['session_timeout'] = SP_Config::getValue('session_timeout', 60 * 5);
+        }
+
+        return $timeout;
     }
 
     /**
@@ -526,9 +538,10 @@ class SP_Init
     {
         $inactiveTime = round(((time() - $_SESSION['LAST_ACTIVITY']) / 60), 2);
         $totalTime = round(((time() - $_SESSION['START_ACTIVITY']) / 60), 2);
+        $ulogin = SP_Common::parseParams('s', 'ulogin');
 
         $message['action'] = _('Finalizar sesión');
-        $message['text'][] = _('Usuario') . ": " . $_SESSION['ulogin'];
+        $message['text'][] = _('Usuario') . ": " . $ulogin;
         $message['text'][] = _('Tiempo inactivo') . ": " . $inactiveTime . " min.";
         $message['text'][] = _('Tiempo total') . ": " . $totalTime . " min.";
 
