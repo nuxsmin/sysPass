@@ -114,7 +114,9 @@ class SP_Upgrade
      */
     public static function needDBUpgrade($version)
     {
-        return (in_array($version, self::$dbUpgrade));
+        $upgrades = array_filter(self::$dbUpgrade, function ($uVersions) use ($version){ return ($uVersions >= $version); } );
+
+        return (count($upgrades) > 0);
     }
 
     /**
