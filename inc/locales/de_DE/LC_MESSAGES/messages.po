@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-04 18:39+0100\n"
-"PO-Revision-Date: 2014-08-04 18:39+0100\n"
-"Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
+"PO-Revision-Date: 2014-09-30 11:31+0100\n"
+"Last-Translator: Chefkeks <chefkeks@gmail.com>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.9\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
 # Session not started or timeout
@@ -825,9 +825,8 @@ msgstr "Backup erstellen"
 
 # Application and database backup successfully done
 #: ../../../../ajax/ajax_backup.php:53
-#, fuzzy
 msgid "Copia de la aplicación y base de datos realizada correctamente"
-msgstr "Application and database backup successfully done"
+msgstr "Sicherung der Applikation und der Datenbank erfolgreich durchgeführt"
 
 # Backup process finished
 #: ../../../../ajax/ajax_backup.php:58
@@ -1136,9 +1135,8 @@ msgstr "Verweis zum Wiki"
 # Copy Password to Clipboard
 #: ../../../../ajax/ajax_search.php:292 ../../../../ajax/ajax_search.php:344
 #: ../../../../inc/tpl/accounts.php:527 ../../../../inc/tpl/accounts.php:616
-#, fuzzy
 msgid "Copiar Clave en Portapapeles"
-msgstr "Copy to Clipboard Passwort"
+msgstr "Passwort in die Zwischenablage kopieren"
 
 # More Actions
 #: ../../../../ajax/ajax_search.php:296 ../../../../inc/html.class.php:578
@@ -1168,9 +1166,8 @@ msgstr "Änderung initiiert"
 
 # Password Copied to Clipboard
 #: ../../../../ajax/ajax_search.php:348 ../../../../inc/tpl/accounts.php:620
-#, fuzzy
 msgid "Clave Copiada al Portapapeles"
-msgstr "Passwort Copied to Clipboard"
+msgstr "Passwort in die Zwischenablage kopiert"
 
 # Description is needed
 #: ../../../../ajax/ajax_sendRequest.php:45
@@ -1305,9 +1302,8 @@ msgstr "Falscher/s Benutzername/Passwort"
 
 # Account expired
 #: ../../../../ajax/ajax_doLogin.php:83 ../../../../ajax/ajax_doLogin.php:87
-#, fuzzy
 msgid "Cuenta expirada"
-msgstr "Account expired"
+msgstr "Konto abgelaufen"
 
 # The user have no associated groups
 #: ../../../../ajax/ajax_doLogin.php:90
@@ -1478,13 +1474,11 @@ msgstr "Gruppe ändern"
 
 # Required PHP version >= 5.1
 #: ../../../../inc/util.class.php:115
-#, fuzzy
 msgid "Versión de PHP requerida >= 5.1"
 msgstr "Erforderliche PHP-Version >= 5.1"
 
 # Please update PHP version to run sysPass in a secure way
 #: ../../../../inc/util.class.php:116
-#, fuzzy
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr ""
@@ -1509,9 +1503,8 @@ msgstr "Verbindung zum Datenbank-Server kann nicht hergestellt werden"
 
 # Please, check connection parameters
 #: ../../../../inc/db.class.php:93
-#, fuzzy
 msgid "Compruebe los datos de conexión"
-msgstr "Please, check connection parameters"
+msgstr "Bitte überprüfen Sie Ihre Verbindungseinstellungen"
 
 # Javascript is needed in order to run correctly
 #: ../../../../inc/html.class.php:246
@@ -1581,9 +1574,8 @@ msgstr "Diese Funktion is nur in einer Linux-Umgebung verfügbar"
 
 # Error while doing backup in compatibility mode
 #: ../../../../inc/backup.class.php:159
-#, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
-msgstr "Error while doing backup in compatibility mode"
+msgstr "Fehler während der Durchführung der Sicherung im Kompatibilitätsmodus"
 
 # Check backup directory permissions
 #: ../../../../inc/backup.class.php:217
@@ -1886,13 +1878,12 @@ msgstr "Tragen Sie die Endung ein und drücken Sie Enter zum Hinzufügen"
 
 # Import from KeePass or KeePassX. The customer name will be KeePass or KeePassX.
 #: ../../../../inc/common.class.php:228
-#, fuzzy
 msgid ""
 "Importar desde KeePass o KeePassX. El nombre del cliente será igual a "
 "KeePass o KeePassX"
 msgstr ""
-"Import from KeePass or KeePassX. The customer name will be KeePass or "
-"KeePassX."
+"Import von KeePass oder KeePassX. Der Kundenname wird KeePass oder KeePassX "
+"sein."
 
 # Import form a CSV file with the format
 #: ../../../../inc/common.class.php:228
@@ -1914,36 +1905,31 @@ msgstr ""
 
 # Allows to show the non-permission accounts only for searches.
 #: ../../../../inc/common.class.php:229
-#, fuzzy
 msgid ""
 "Permite que las cuentas sin acceso sean visibles sólo para las búsquedas."
-msgstr "Allows to show the non-permission accounts only for searches."
+msgstr "Erlaubt es Konten ohne Berechtigungen die globale Suche zu verwenden."
 
 # Enables to show account's search results like a card format.
 #: ../../../../inc/common.class.php:230
-#, fuzzy
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
-msgstr "Enables to show account's search results like a card format."
+msgstr "Zeigt die Ergebnisse einer Konten-Suche im Visitenkarten-Format an."
 
 # Enables Active Directory LDAP connection mode.
 #: ../../../../inc/common.class.php:231
-#, fuzzy
 msgid "Habilita el modo de conexión con LDAP de Active Directory."
-msgstr "Enables Active Directory LDAP connection mode."
+msgstr "Aktiviert den Active Directory LDAP Verbindungsmodus."
 
 # Define the default users group for new LDAP users
 #: ../../../../inc/common.class.php:232
-#, fuzzy
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
-msgstr "Define the default users group for new LDAP users"
+msgstr "Legen Sie die Standard-Gruppe für neue LDAP-Benutzer fest"
 
 # Define the default users profile for new LDAP users
 #: ../../../../inc/common.class.php:233
-#, fuzzy
 msgid ""
 "Define el perfil de usuario por defecto para los nuevos usuarios de LDAP."
-msgstr "Define the default users profile for new LDAP users"
+msgstr "Legen Sie das Standard-Profile für neue LDAP-Benutzer fest"
 
 # Error on updating history
 #: ../../../../inc/account.class.php:320 ../../../../inc/account.class.php:842
@@ -2073,15 +2059,13 @@ msgstr "\"/config\"-Verzeichnis hat falsche Zugriffsrechte"
 
 # Current:
 #: ../../../../inc/init.php:323
-#, fuzzy
 msgid "Actual:"
-msgstr "Current:"
+msgstr "Aktuell:"
 
 # Needed: 750
 #: ../../../../inc/init.php:323
-#, fuzzy
 msgid "Necesario: 750"
-msgstr "Needed: 750"
+msgstr "Erforderlich: 750"
 
 # Application in maintenance
 #: ../../../../inc/init.php:389
@@ -2100,15 +2084,13 @@ msgstr "Die Anwendung muss aktualisiert werden"
 
 # If you are an administrator, click on the link:
 #: ../../../../inc/init.php:419
-#, fuzzy
 msgid "Si es un administrador pulse en el enlace:"
-msgstr "If you are an administrator, click on the link:"
+msgstr "Wenn Sie ein Administrator sind, klicken Sie auf diesen Link:"
 
 # Update
 #: ../../../../inc/init.php:419 ../../../../inc/tpl/upgrade.php:54
-#, fuzzy
 msgid "Actualizar"
-msgstr "Update"
+msgstr "Aktualisierung"
 
 # Update
 #: ../../../../inc/init.php:447
@@ -2586,7 +2568,6 @@ msgstr "Sie bekommen in Kürze eine Bestätigungs-Mail"
 
 # Could not perform the password change request.
 #: ../../../../inc/users.class.php:792 ../../../../inc/users.class.php:833
-#, fuzzy
 msgid "No se pudo realizar la petición de cambio de clave."
 msgstr "Die Passwortänderung Anfrage konnte nicht ausgeführt werden."
 
@@ -2642,13 +2623,11 @@ msgstr "Bitte überprüfen Sie die Zugriffsrechte des temporären Verzeichnisses
 
 # Mime type not supported
 #: ../../../../inc/import.class.php:139
-#, fuzzy
 msgid "Tipo mime no soportado"
-msgstr "Mime type not supported"
+msgstr "Mimetype wird nicht unterstützt"
 
 # Please, check the file format
 #: ../../../../inc/import.class.php:139
-#, fuzzy
 msgid "Compruebe el formato del archivo"
 msgstr "Bitte überprüfen Sie das Format der Datei"
 
@@ -2669,25 +2648,23 @@ msgstr "Fehler beim Importieren des Kontos"
 
 # Unable to process XML file
 #: ../../../../inc/import.class.php:262
-#, fuzzy
 msgid "No es posible procesar el archivo XML"
-msgstr "Unable to process XML file"
+msgstr "XML-Datei kann nicht verarbeitet werden"
 
 # XML file not supported
 #: ../../../../inc/import.class.php:289
-#, fuzzy
 msgid "Archivo XML no soportado"
-msgstr "XML file not supported"
+msgstr "XML-Datei wird nicht unterstützt"
 
 # Unable to detect the application the data was exported from
 #: ../../../../inc/import.class.php:289
-#, fuzzy
 msgid "No es posible detectar la aplicación que exportó los datos"
-msgstr "Unable to detect the application the data was exported from"
+msgstr ""
+"Die Anwendung von der die Daten exportiert wurden, kann nicht festgestellt "
+"werden"
 
 # A request for changing your user password has been done.
 #: ../../../../inc/auth.class.php:186
-#, fuzzy
 msgid "Se ha solicitado el cambio de su clave de usuario."
 msgstr "Ein Anfrage zum Ändern ihres Benutzerpassworts wurde begonnen."
 
@@ -3250,23 +3227,20 @@ msgstr ""
 
 # Create admin account
 #: ../../../../inc/tpl/install.php:85
-#, fuzzy
 msgid "Crear cuenta de admin de sysPass"
 msgstr "Administrator-Konto anlegen"
 
 # sysPass administrator's login
 #: ../../../../inc/tpl/install.php:88
-#, fuzzy
 msgid "Login del usuario administrador de sysPass"
-msgstr "sysPass administrator's login"
+msgstr "sysPass Administrator Anmeldung"
 
 # Show Password
 #: ../../../../inc/tpl/install.php:96 ../../../../inc/tpl/install.php:97
 #: ../../../../inc/tpl/install.php:111 ../../../../inc/tpl/install.php:112
 #: ../../../../inc/tpl/install.php:137 ../../../../inc/tpl/install.php:138
-#, fuzzy
 msgid "Mostrar Clave"
-msgstr "Show Password"
+msgstr "Passwort anzeigen"
 
 # DB Configuration
 #: ../../../../inc/tpl/install.php:124
@@ -3275,19 +3249,16 @@ msgstr "Datenbank-Konfiguration"
 
 # User login with with database administrative rights
 #: ../../../../inc/tpl/install.php:130
-#, fuzzy
 msgid "Login de usuario con permisos de administrador de MySQL"
-msgstr "User login with with database administrative rights"
+msgstr "Benutzer-Anmeldung mit administrativen Datenbank-Rechten"
 
 # sysPass database name
 #: ../../../../inc/tpl/install.php:146
-#, fuzzy
 msgid "Nombre de la base de datos para sysPass"
-msgstr "Name der sysPass-Datenbank eingeben"
+msgstr "Name der sysPass-Datenbank"
 
 # sysPass database server name
 #: ../../../../inc/tpl/install.php:155
-#, fuzzy
 msgid "Nombre del servidor de la base de datos de sysPass"
 msgstr "Server der sysPass-Datenbank eingeben"
 
@@ -3579,19 +3550,16 @@ msgstr "Suchpräfix"
 
 # Default Group
 #: ../../../../inc/tpl/config.php:337
-#, fuzzy
 msgid "Grupo por Defecto"
-msgstr "Default Group"
+msgstr "Standard-Gruppe"
 
 # Default Profile
 #: ../../../../inc/tpl/config.php:346
-#, fuzzy
 msgid "Perfil por Defecto"
-msgstr "Default Profile"
+msgstr "Standard-Profil"
 
 # Active Directory
 #: ../../../../inc/tpl/config.php:355
-#, fuzzy
 msgid "Active Directory"
 msgstr "Active Directory"
 
@@ -3737,27 +3705,23 @@ msgstr "Datum des Master-Passworts"
 
 # DB Update
 #: ../../../../inc/tpl/upgrade.php:42
-#, fuzzy
 msgid "Actualización de BBDD"
-msgstr "DB Update"
+msgstr "Datenbank-Update"
 
 # Enter Security Code
 #: ../../../../inc/tpl/upgrade.php:44
-#, fuzzy
 msgid "Introducir Código de Seguridad"
-msgstr "Enter Security Code"
+msgstr "Sicherheitscode eingeben"
 
 # Security Code
 #: ../../../../inc/tpl/upgrade.php:45
-#, fuzzy
 msgid "Código de Seguridad"
-msgstr "Security Code"
+msgstr "Sicherheitscode"
 
 # Start Update
 #: ../../../../inc/tpl/upgrade.php:55
-#, fuzzy
 msgid "Iniciar Actualización"
-msgstr "Start Update"
+msgstr "Aktualisierung starten"
 
 # Date / Time
 #: ../../../../inc/tpl/eventlog.php:56
