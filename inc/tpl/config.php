@@ -35,7 +35,8 @@ $arrLangAvailable = array(
     'Español' => 'es_ES',
     'English' => 'en_US',
     'Deutsch' => 'de_DE',
-    'Magyar' => 'hu_HU');
+    'Magyar' => 'hu_HU',
+    'Français' => 'fr_FR');
 $arrAccountCount = array(6,9,12,15,21,27,30,51,99);
 $mailSecurity = array('SSL','TLS');
 

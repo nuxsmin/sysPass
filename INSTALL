@@ -1,76 +1,44 @@
-/** 
-* sysPass
-* 
-* @author nuxsmin
-* @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
-*  
-* This file is part of sysPass.
-*
-* sysPass is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* sysPass is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
-## Instalación sysPass ##
+Instalación y preguntas frecuentes en http://wiki.syspass.org
 
-1. ** Prerequisitos **
-    * Servidor web (Apache/Lighttpd) con SSL habilitado.
-    * MySQL 5
-    * PHP 5 >= 5.1.2
-    * Módulo PHP mysql
-    * Módulo PHP mcrypt
-    * Módulo PHP ldap
-    * Módulo PHP SimpleXML
+---
 
-2. ** Instalación **
+Installation and Frequently Asked Questions at at http://wiki.syspass.org
 
-    Instalación de paquetes en Debian GNU/Linux:
+---
 
-    # apt-get install apache2 php5-mcrypt php5-mysql php5-ldap php5-curl mysql-server
-    # /etc/init.d/apache2 restart
-    
-2.1. ** Configuración de directorios y permisos **
+Installation und häufig gestellte Fragen zu http://wiki.syspass.org
 
-Crear un directorio para la aplicación en la raíz del servidor web:
+---
 
-    # mkdir /var/www/sysPass
+Telepítés és gyakran feltett kérdésekre http://wiki.syspass.org
 
-Copiar y descomprimir el archivo sysPass en el directorio creado:
-    
-    # cp sysPass.tar.gz /var/www/sysPass
-    # cd /var/www/sysPass
-    # tar xzf sysPass.tar.gz
+---
 
-Cambiar el propietario del directorio 'sysPass/config'.
-Ha de coincidir con el usuario del servidor web:
+Installation et Foire aux questions du http://wiki.syspass.org
 
-    # chown www-data /var/www/sysPass/config
+---
 
-Cambiar el propietario del directorio 'sysPass/backup':
-
-    # chown www-data /var/www/sysPass/backup
-
-2.2. ** Configuración del entorno **
-
-Abir un navegador y escribir la URL:
-
-https://IP_O_NOMBRE_SERVIDOR/sysPass/index.php
-
-Seguir los pasos del instalador.
-
-Tras la correcta finalización, ya es posible acceder al sistema.
-
-3. ** Notas**
-
-    * Si un usuario accede desde LDAP, estará inactivo hasta que el administrador le asigne un grupo correcto.

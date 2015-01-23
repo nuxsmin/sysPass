@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-04 18:39+0100\n"
-"PO-Revision-Date: 2014-08-04 18:39+0100\n"
+"POT-Creation-Date: 2015-01-17 11:24+0100\n"
+"PO-Revision-Date: 2015-01-17 11:24+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team:  <nuxsmin@gmail.com>\n"
 "Language: en_US\n"
@@ -42,194 +42,194 @@ msgstr "Session not started or timed out"
 msgid "CONSULTA INVÁLIDA"
 msgstr "INVALID QUERY"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:73
+#: ../../../../ajax/ajax_appMgmtSave.php:76
 msgid "Es necesario un nombre de usuario"
 msgstr "An username is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:77
+#: ../../../../ajax/ajax_appMgmtSave.php:80
 msgid "Es necesario un login"
 msgstr "A login is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:81
+#: ../../../../ajax/ajax_appMgmtSave.php:84
 msgid "Es necesario un perfil"
 msgstr "A profile is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:85
+#: ../../../../ajax/ajax_appMgmtSave.php:88
 msgid "Es necesario un grupo"
 msgstr "A group is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:89
+#: ../../../../ajax/ajax_appMgmtSave.php:92
 msgid "Es necesario un email"
 msgstr "An email is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:107
+#: ../../../../ajax/ajax_appMgmtSave.php:110
 msgid "Login de usuario duplicado"
 msgstr "Duplicated user login "
 
-#: ../../../../ajax/ajax_appMgmtSave.php:110
+#: ../../../../ajax/ajax_appMgmtSave.php:113
 msgid "Email de usuario duplicado"
 msgstr "Duplicated user email"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:116
-#: ../../../../ajax/ajax_appMgmtSave.php:142
+#: ../../../../ajax/ajax_appMgmtSave.php:119
+#: ../../../../ajax/ajax_appMgmtSave.php:145
 #: ../../../../ajax/ajax_accountSave.php:105
 msgid "La clave no puede estar en blanco"
 msgstr "Password cannot be blank"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:120
-#: ../../../../ajax/ajax_appMgmtSave.php:146
+#: ../../../../ajax/ajax_appMgmtSave.php:123
+#: ../../../../ajax/ajax_appMgmtSave.php:149
 #: ../../../../ajax/ajax_accountSave.php:83
 #: ../../../../ajax/ajax_accountSave.php:109
 msgid "Las claves no coinciden"
 msgstr "The passwords do not match"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:124
+#: ../../../../ajax/ajax_appMgmtSave.php:127
 msgid "Usuario creado"
 msgstr "User added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:127
+#: ../../../../ajax/ajax_appMgmtSave.php:130
 msgid "Error al crear el usuario"
 msgstr "Error on creating user"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:130
+#: ../../../../ajax/ajax_appMgmtSave.php:133
 #: ../../../../inc/users.class.php:224
 msgid "Usuario actualizado"
 msgstr "User updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:133
+#: ../../../../ajax/ajax_appMgmtSave.php:136
 msgid "Error al actualizar el usuario"
 msgstr "Error on user update"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:138
-#: ../../../../ajax/ajax_appMgmtSave.php:160
+#: ../../../../ajax/ajax_appMgmtSave.php:141
+#: ../../../../ajax/ajax_appMgmtSave.php:163
 #: ../../../../ajax/ajax_import.php:1 ../../../../ajax/ajax_configSave.php:214
 #: ../../../../ajax/ajax_migrate.php:1
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, this is a DEMO!!"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:153
+#: ../../../../ajax/ajax_appMgmtSave.php:156
 #: ../../../../ajax/ajax_accountSave.php:237
 #: ../../../../ajax/ajax_passReset.php:79
 msgid "Clave actualizada"
 msgstr "Password updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:156
+#: ../../../../ajax/ajax_appMgmtSave.php:159
 #: ../../../../ajax/ajax_passReset.php:83
 msgid "Error al modificar la clave"
 msgstr "Error on updating password"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:166
+#: ../../../../ajax/ajax_appMgmtSave.php:169
 msgid "No es posible eliminar, usuario en uso"
 msgstr "Unable to delete, user in use"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:170
+#: ../../../../ajax/ajax_appMgmtSave.php:173
 msgid "Usuario eliminado"
 msgstr "User deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:173
+#: ../../../../ajax/ajax_appMgmtSave.php:176
 msgid "Error al eliminar el usuario"
 msgstr "Error on user deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:176
-#: ../../../../ajax/ajax_appMgmtSave.php:237
-#: ../../../../ajax/ajax_appMgmtSave.php:315
-#: ../../../../ajax/ajax_appMgmtSave.php:366
-#: ../../../../ajax/ajax_appMgmtSave.php:415
+#: ../../../../ajax/ajax_appMgmtSave.php:179
+#: ../../../../ajax/ajax_appMgmtSave.php:240
+#: ../../../../ajax/ajax_appMgmtSave.php:318
+#: ../../../../ajax/ajax_appMgmtSave.php:369
+#: ../../../../ajax/ajax_appMgmtSave.php:418
 #: ../../../../ajax/ajax_accountSave.php:116
 #: ../../../../ajax/ajax_accountSave.php:268
 #: ../../../../ajax/ajax_configSave.php:229
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:185
+#: ../../../../ajax/ajax_appMgmtSave.php:188
 msgid "Es necesario un nombre de grupo"
 msgstr "A group name is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:193
+#: ../../../../ajax/ajax_appMgmtSave.php:196
 msgid "Nombre de grupo duplicado"
 msgstr "Duplicated group name"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:198
+#: ../../../../ajax/ajax_appMgmtSave.php:201
 msgid "Grupo creado"
 msgstr "Group added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:200
+#: ../../../../ajax/ajax_appMgmtSave.php:203
 msgid "Error al crear el grupo"
 msgstr "Error on group creation"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:204
+#: ../../../../ajax/ajax_appMgmtSave.php:207
 msgid "Grupo actualizado"
 msgstr "Group updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:207
+#: ../../../../ajax/ajax_appMgmtSave.php:210
 msgid "Error al actualizar el grupo"
 msgstr "Error on updating group"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:218
-#: ../../../../ajax/ajax_appMgmtSave.php:295
+#: ../../../../ajax/ajax_appMgmtSave.php:221
+#: ../../../../ajax/ajax_appMgmtSave.php:298
 #: ../../../../inc/tpl/profiles.php:88 ../../../../inc/tpl/accounts.php:281
 msgid "Usuarios"
 msgstr "Users"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:222
-#: ../../../../ajax/ajax_appMgmtSave.php:353
+#: ../../../../ajax/ajax_appMgmtSave.php:225
+#: ../../../../ajax/ajax_appMgmtSave.php:356
 #: ../../../../inc/category.class.php:265 ../../../../inc/tpl/profiles.php:45
 msgid "Cuentas"
 msgstr "Accounts"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:225
-#: ../../../../ajax/ajax_appMgmtSave.php:297
-#: ../../../../ajax/ajax_appMgmtSave.php:355
-#: ../../../../ajax/ajax_appMgmtSave.php:404
+#: ../../../../ajax/ajax_appMgmtSave.php:228
+#: ../../../../ajax/ajax_appMgmtSave.php:300
+#: ../../../../ajax/ajax_appMgmtSave.php:358
+#: ../../../../ajax/ajax_appMgmtSave.php:407
 msgid "No es posible eliminar"
 msgstr "Unable to delete"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:225
+#: ../../../../ajax/ajax_appMgmtSave.php:228
 msgid "Grupo en uso por:"
 msgstr "Group in use by:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:230
+#: ../../../../ajax/ajax_appMgmtSave.php:233
 msgid "Grupo eliminado"
 msgstr "Group deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:233
+#: ../../../../ajax/ajax_appMgmtSave.php:236
 msgid "Error al eliminar el grupo"
 msgstr "Error on group deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:267
+#: ../../../../ajax/ajax_appMgmtSave.php:270
 msgid "Es necesario un nombre de perfil"
 msgstr "A profile name is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:273
+#: ../../../../ajax/ajax_appMgmtSave.php:276
 msgid "Nombre de perfil duplicado"
 msgstr "Duplicated profile name"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:278
+#: ../../../../ajax/ajax_appMgmtSave.php:281
 msgid "Perfil creado"
 msgstr "Profile added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:281
+#: ../../../../ajax/ajax_appMgmtSave.php:284
 msgid "Error al crear el perfil"
 msgstr "Error on creating profile"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:284
+#: ../../../../ajax/ajax_appMgmtSave.php:287
 msgid "Perfil actualizado"
 msgstr "Profile updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:287
+#: ../../../../ajax/ajax_appMgmtSave.php:290
 msgid "Error al actualizar el perfil"
 msgstr "Error on updating profile"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:297
+#: ../../../../ajax/ajax_appMgmtSave.php:300
 msgid "Perfil en uso por:"
 msgstr "Profiles in use by:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:302
+#: ../../../../ajax/ajax_appMgmtSave.php:305
 #: ../../../../ajax/ajax_getContent.php:201
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:303
+#: ../../../../ajax/ajax_appMgmtSave.php:306
 #: ../../../../ajax/ajax_getContent.php:114
 #: ../../../../ajax/ajax_doLogin.php:153
 #: ../../../../inc/profiles.class.php:203
@@ -237,87 +237,87 @@ msgstr "Delete Profile"
 msgid "Perfil"
 msgstr "Profile"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:308
+#: ../../../../ajax/ajax_appMgmtSave.php:311
 msgid "Perfil eliminado"
 msgstr "Profile deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:311
+#: ../../../../ajax/ajax_appMgmtSave.php:314
 msgid "Error al eliminar el perfil"
 msgstr "Error on profile deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:324
+#: ../../../../ajax/ajax_appMgmtSave.php:327
 #: ../../../../ajax/ajax_accountSave.php:71
 #: ../../../../ajax/ajax_accountSave.php:88
 msgid "Es necesario un nombre de cliente"
 msgstr "A customer name needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:331
+#: ../../../../ajax/ajax_appMgmtSave.php:334
 msgid "Nombre de cliente duplicado"
 msgstr "Duplicated customer name"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:336
+#: ../../../../ajax/ajax_appMgmtSave.php:339
 msgid "Cliente creado"
 msgstr "Customer added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:338
+#: ../../../../ajax/ajax_appMgmtSave.php:341
 #: ../../../../ajax/ajax_accountSave.php:152
 #: ../../../../ajax/ajax_accountSave.php:201
 msgid "Error al crear el cliente"
 msgstr "Error on creating customer"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:342
+#: ../../../../ajax/ajax_appMgmtSave.php:345
 msgid "Cliente actualizado"
 msgstr "Customer updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:345
+#: ../../../../ajax/ajax_appMgmtSave.php:348
 msgid "Error al actualizar el cliente"
 msgstr "Error on updating customer"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:355
+#: ../../../../ajax/ajax_appMgmtSave.php:358
 msgid "Cliente en uso por:"
 msgstr "Customer in use by:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:359
+#: ../../../../ajax/ajax_appMgmtSave.php:362
 msgid "Cliente eliminado"
 msgstr "Customer deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:362
+#: ../../../../ajax/ajax_appMgmtSave.php:365
 msgid "Error al eliminar el cliente"
 msgstr "Error on customer deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:375
+#: ../../../../ajax/ajax_appMgmtSave.php:378
 msgid "Es necesario un nombre de categoría"
 msgstr "A category name needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:382
+#: ../../../../ajax/ajax_appMgmtSave.php:385
 msgid "Nombre de categoría duplicado"
 msgstr "Duplicated category name"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:387
+#: ../../../../ajax/ajax_appMgmtSave.php:390
 msgid "Categoría creada"
 msgstr "Category added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:389
+#: ../../../../ajax/ajax_appMgmtSave.php:392
 msgid "Error al crear la categoría"
 msgstr "Error on creating category"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:393
+#: ../../../../ajax/ajax_appMgmtSave.php:396
 msgid "Categoría actualizada"
 msgstr "Category updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:396
+#: ../../../../ajax/ajax_appMgmtSave.php:399
 msgid "Error al actualizar la categoría"
 msgstr "Error on updating category"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:404
+#: ../../../../ajax/ajax_appMgmtSave.php:407
 msgid "Categoría en uso por:"
 msgstr "Category in use by:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:408
+#: ../../../../ajax/ajax_appMgmtSave.php:411
 msgid "Categoría eliminada"
 msgstr "Category deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:411
+#: ../../../../ajax/ajax_appMgmtSave.php:414
 msgid "Error al eliminar la categoría"
 msgstr "Error on category deletion"
 
@@ -494,13 +494,13 @@ msgstr "Configuration updated"
 #: ../../../../ajax/ajax_configSave.php:178
 #: ../../../../ajax/ajax_configSave.php:224
 #: ../../../../ajax/ajax_viewpass.php:68 ../../../../ajax/ajax_viewpass.php:70
-#: ../../../../inc/html.class.php:461
+#: ../../../../inc/html.class.php:419
 msgid "Clave maestra actualizada"
 msgstr "Master Password updated"
 
 #: ../../../../ajax/ajax_configSave.php:178
 #: ../../../../ajax/ajax_viewpass.php:68 ../../../../ajax/ajax_viewpass.php:70
-#: ../../../../inc/html.class.php:461
+#: ../../../../inc/html.class.php:419
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Restart session to update"
 
@@ -575,7 +575,7 @@ msgstr "Login"
 #: ../../../../ajax/ajax_getContent.php:115
 #: ../../../../ajax/ajax_doLogin.php:154 ../../../../inc/groups.class.php:151
 #: ../../../../inc/groups.class.php:179 ../../../../inc/groups.class.php:205
-#: ../../../../inc/tpl/config.php:328 ../../../../inc/tpl/users.php:105
+#: ../../../../inc/tpl/config.php:329 ../../../../inc/tpl/users.php:105
 msgid "Grupo"
 msgstr "Group"
 
@@ -651,7 +651,7 @@ msgid "Configuración"
 msgstr "Configuration"
 
 #: ../../../../ajax/ajax_getContent.php:320 ../../../../inc/tpl/login.php:40
-#: ../../../../inc/tpl/login.php:47 ../../../../inc/tpl/profiles.php:76
+#: ../../../../inc/tpl/login.php:48 ../../../../inc/tpl/profiles.php:76
 #: ../../../../inc/tpl/install.php:109 ../../../../inc/tpl/install.php:114
 #: ../../../../inc/tpl/install.php:115
 msgid "Clave Maestra"
@@ -821,7 +821,7 @@ msgid "Es necesario un nombre de host"
 msgstr "A host name is needed"
 
 #: ../../../../ajax/ajax_viewpass.php:52 ../../../../ajax/ajax_viewpass.php:58
-#: ../../../../inc/html.class.php:459
+#: ../../../../inc/html.class.php:417
 msgid "No tiene permisos para acceder a esta cuenta"
 msgstr "You don't have permission to access to this account"
 
@@ -846,12 +846,12 @@ msgstr "Account"
 #: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:91
 #: ../../../../ajax/ajax_doLogin.php:101 ../../../../ajax/ajax_doLogin.php:111
 #: ../../../../ajax/ajax_doLogin.php:152 ../../../../res/test.php:64
-#: ../../../../inc/init.php:531 ../../../../inc/users.class.php:788
+#: ../../../../inc/init.php:546 ../../../../inc/users.class.php:788
 #: ../../../../inc/users.class.php:829 ../../../../inc/tpl/passreset.php:50
 #: ../../../../inc/tpl/request.php:49 ../../../../inc/tpl/login.php:35
 #: ../../../../inc/tpl/login.php:44 ../../../../inc/tpl/install.php:89
 #: ../../../../inc/tpl/install.php:90 ../../../../inc/tpl/editpass.php:53
-#: ../../../../inc/tpl/accounts.php:233 ../../../../inc/tpl/config.php:422
+#: ../../../../inc/tpl/accounts.php:233 ../../../../inc/tpl/config.php:423
 #: ../../../../inc/tpl/eventlog.php:62
 msgid "Usuario"
 msgstr "User"
@@ -861,7 +861,7 @@ msgstr "User"
 #: ../../../../inc/tpl/login.php:37 ../../../../inc/tpl/login.php:45
 #: ../../../../inc/tpl/install.php:99 ../../../../inc/tpl/install.php:100
 #: ../../../../inc/tpl/editpass.php:57 ../../../../inc/tpl/accounts.php:250
-#: ../../../../inc/tpl/config.php:430 ../../../../inc/tpl/users.php:129
+#: ../../../../inc/tpl/config.php:431 ../../../../inc/tpl/users.php:129
 msgid "Clave"
 msgstr "Password"
 
@@ -944,7 +944,7 @@ msgstr "Link to Wiki"
 msgid "Copiar Clave en Portapapeles"
 msgstr "Copy Password to Clipboard"
 
-#: ../../../../ajax/ajax_search.php:296 ../../../../inc/html.class.php:578
+#: ../../../../ajax/ajax_search.php:296 ../../../../inc/html.class.php:536
 msgid "Más Acciones"
 msgstr "More Actions"
 
@@ -1015,9 +1015,9 @@ msgstr "Password strength level"
 
 #: ../../../../ajax/ajax_usrpass.php:81 ../../../../inc/tpl/masterpass.php:113
 #: ../../../../inc/tpl/groups.php:64 ../../../../inc/tpl/customers.php:64
-#: ../../../../inc/tpl/profiles.php:134 ../../../../inc/tpl/editpass.php:87
+#: ../../../../inc/tpl/profiles.php:134 ../../../../inc/tpl/editpass.php:88
 #: ../../../../inc/tpl/accounts.php:536 ../../../../inc/tpl/categories.php:64
-#: ../../../../inc/tpl/config.php:487 ../../../../inc/tpl/users.php:210
+#: ../../../../inc/tpl/config.php:488 ../../../../inc/tpl/users.php:210
 msgid "Guardar"
 msgstr "Save"
 
@@ -1105,87 +1105,87 @@ msgstr "The master password not saved or is wrong"
 msgid "Clave maestra incorrecta"
 msgstr "Invalid Master Password"
 
-#: ../../../../js/functions.php:36
+#: ../../../../js/js.php:44
 msgid "Error en la consulta"
 msgstr "Error on query"
 
-#: ../../../../js/functions.php:37
+#: ../../../../js/js.php:45
 msgid "Ha ocurrido un error"
 msgstr "There was an error"
 
-#: ../../../../js/functions.php:38 ../../../../inc/tpl/login.php:69
+#: ../../../../js/js.php:46 ../../../../inc/tpl/login.php:71
 msgid "Sesión finalizada"
 msgstr "Session finished"
 
-#: ../../../../js/functions.php:39
+#: ../../../../js/js.php:47
 msgid "Borrar la cuenta?"
 msgstr "Delete account?"
 
-#: ../../../../js/functions.php:40
+#: ../../../../js/js.php:48
 msgid "Borrar el usuario?"
 msgstr "Delete user?"
 
-#: ../../../../js/functions.php:41
+#: ../../../../js/js.php:49
 msgid "Guarde la configuración para que sea efectiva"
 msgstr "You should save configuration in order to take effect"
 
-#: ../../../../js/functions.php:42
+#: ../../../../js/js.php:50
 msgid "Clave Generada"
 msgstr "Generated Password"
 
-#: ../../../../js/functions.php:43
+#: ../../../../js/js.php:51
 msgid "Nivel alto"
 msgstr "High level"
 
-#: ../../../../js/functions.php:44
+#: ../../../../js/js.php:52
 msgid "Nivel medio"
 msgstr "Average level"
 
-#: ../../../../js/functions.php:45
+#: ../../../../js/js.php:53
 msgid "Nivel bajo"
 msgstr "Low level"
 
-#: ../../../../js/functions.php:46
+#: ../../../../js/js.php:54
 msgid "Nivel muy alto"
 msgstr "Very high level"
 
-#: ../../../../js/functions.php:47
+#: ../../../../js/js.php:55
 msgid "Utilizar al menos 8 caracteres"
 msgstr "You should use at least 8 characters"
 
-#: ../../../../js/functions.php:48
+#: ../../../../js/js.php:56
 msgid "Borrar elemento?"
 msgstr "Delete item?"
 
-#: ../../../../js/functions.php:49
+#: ../../../../js/js.php:57
 msgid "Página no encontrada"
 msgstr "Page not found"
 
-#: ../../../../js/functions.php:50
+#: ../../../../js/js.php:58
 msgid "Archivo no soportado para visualizar"
 msgstr "File not supported for preview"
 
-#: ../../../../js/functions.php:51
+#: ../../../../js/js.php:59
 msgid "Eliminar archivo?"
 msgstr "Delete file?"
 
-#: ../../../../js/functions.php:52
+#: ../../../../js/js.php:60
 msgid "Su navegador no soporta subir archivos con HTML5"
 msgstr "Your browser does not support HTML5 file uploads"
 
-#: ../../../../js/functions.php:53
+#: ../../../../js/js.php:61
 msgid "Demasiados archivos"
 msgstr "Too many files"
 
-#: ../../../../js/functions.php:54
+#: ../../../../js/js.php:62
 msgid "No es posible guardar el archivo.<br>Tamaño máximo:"
 msgstr "Unable to save the file.<br>Max file size:"
 
-#: ../../../../js/functions.php:55
+#: ../../../../js/js.php:63
 msgid "Extensión no permitida"
 msgstr "Extension not allowed"
 
-#: ../../../../js/functions.php:56
+#: ../../../../js/js.php:64
 msgid "Vaciar el registro de eventos?"
 msgstr "Clear event log?"
 
@@ -1228,7 +1228,7 @@ msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Please update the PHP version to run sysPass"
 
-#: ../../../../inc/util.class.php:136 ../../../../inc/tpl/config.php:374
+#: ../../../../inc/util.class.php:136 ../../../../inc/tpl/config.php:375
 msgid "Módulo no disponible"
 msgstr "Module unavilable"
 
@@ -1245,52 +1245,52 @@ msgstr "Unable to connect to the DB"
 msgid "Compruebe los datos de conexión"
 msgstr "Please, check connection parameters"
 
-#: ../../../../inc/html.class.php:246
+#: ../../../../inc/html.class.php:204
 msgid "Javascript es necesario para el correcto funcionamiento"
 msgstr "Javascript is needed in order to run correctly"
 
-#: ../../../../inc/html.class.php:271
+#: ../../../../inc/html.class.php:229
 msgid "Ayuda :: FAQ :: Changelog"
 msgstr "Help :: FAQ :: Changelog"
 
-#: ../../../../inc/html.class.php:273
+#: ../../../../inc/html.class.php:231
 msgid "Un proyecto de cygnux.org"
 msgstr "A cygnux.org project"
 
-#: ../../../../inc/html.class.php:315
+#: ../../../../inc/html.class.php:273
 msgid "Filtro ON"
 msgstr "Filter ON"
 
-#: ../../../../inc/html.class.php:317
+#: ../../../../inc/html.class.php:275
 msgid "Global ON"
 msgstr "Global ON"
 
-#: ../../../../inc/html.class.php:322 ../../../../inc/html.class.php:355
+#: ../../../../inc/html.class.php:280 ../../../../inc/html.class.php:313
 msgid "Primera página"
 msgstr "First page"
 
-#: ../../../../inc/html.class.php:323 ../../../../inc/html.class.php:356
+#: ../../../../inc/html.class.php:281 ../../../../inc/html.class.php:314
 msgid "Página anterior"
 msgstr "Previous page"
 
-#: ../../../../inc/html.class.php:330 ../../../../inc/html.class.php:363
+#: ../../../../inc/html.class.php:288 ../../../../inc/html.class.php:321
 msgid "Página siguiente"
 msgstr "Next page"
 
-#: ../../../../inc/html.class.php:331 ../../../../inc/html.class.php:364
+#: ../../../../inc/html.class.php:289 ../../../../inc/html.class.php:322
 msgid "Última página"
 msgstr "Last page"
 
-#: ../../../../inc/html.class.php:458
+#: ../../../../inc/html.class.php:416
 msgid "Opción no disponible"
 msgstr "Option unavailable"
 
-#: ../../../../inc/html.class.php:458 ../../../../inc/html.class.php:459
-#: ../../../../inc/html.class.php:460 ../../../../inc/init.php:476
+#: ../../../../inc/html.class.php:416 ../../../../inc/html.class.php:417
+#: ../../../../inc/html.class.php:418 ../../../../inc/init.php:484
 msgid "Consulte con el administrador"
 msgstr "Please, contact to the administrator"
 
-#: ../../../../inc/html.class.php:460
+#: ../../../../inc/html.class.php:418
 msgid "No tiene permisos para acceder a esta página"
 msgstr "You don't have permission to access to this page"
 
@@ -1683,75 +1683,75 @@ msgstr "Records updated"
 msgid "Error en la verificación de la base de datos"
 msgstr "Error on checking database"
 
-#: ../../../../inc/init.php:310
+#: ../../../../inc/init.php:316
 msgid "El directorio \"/config\" no existe"
 msgstr "The \"/config\" directory does not exist."
 
-#: ../../../../inc/init.php:315
+#: ../../../../inc/init.php:321
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Unable to write into the \"/config\" directory"
 
-#: ../../../../inc/init.php:323
+#: ../../../../inc/init.php:329
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "The \"/config\" directory permissions are incorrect"
 
-#: ../../../../inc/init.php:323
+#: ../../../../inc/init.php:329
 msgid "Actual:"
 msgstr "Current:"
 
-#: ../../../../inc/init.php:323
+#: ../../../../inc/init.php:329
 msgid "Necesario: 750"
 msgstr "Needed: 750"
 
-#: ../../../../inc/init.php:389
+#: ../../../../inc/init.php:395
 msgid "Aplicación en mantenimiento"
 msgstr "Application in maintenance"
 
-#: ../../../../inc/init.php:389
+#: ../../../../inc/init.php:395
 msgid "En breve estará operativa"
 msgstr "It will be running in short"
 
-#: ../../../../inc/init.php:419
+#: ../../../../inc/init.php:426
 msgid "La aplicación necesita actualizarse"
 msgstr "The application needs to be updated"
 
-#: ../../../../inc/init.php:419
+#: ../../../../inc/init.php:426
 msgid "Si es un administrador pulse en el enlace:"
 msgstr "If you are an administrator, click on the link:"
 
-#: ../../../../inc/init.php:419 ../../../../inc/tpl/upgrade.php:54
+#: ../../../../inc/init.php:426 ../../../../inc/tpl/upgrade.php:54
 msgid "Actualizar"
 msgstr "Update"
 
-#: ../../../../inc/init.php:447
+#: ../../../../inc/init.php:455
 msgid "Actualización"
 msgstr "Update"
 
-#: ../../../../inc/init.php:448
+#: ../../../../inc/init.php:456
 msgid "Actualización de versión realizada."
 msgstr "Version updating done."
 
-#: ../../../../inc/init.php:449
+#: ../../../../inc/init.php:457
 msgid "Versión"
 msgstr "Version"
 
-#: ../../../../inc/init.php:470
+#: ../../../../inc/init.php:478
 msgid "Sesion"
 msgstr "Session"
 
-#: ../../../../inc/init.php:470 ../../../../inc/init.php:475
+#: ../../../../inc/init.php:478 ../../../../inc/init.php:483
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
-#: ../../../../inc/init.php:530
+#: ../../../../inc/init.php:545
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../../inc/init.php:532
+#: ../../../../inc/init.php:547
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../../inc/init.php:533
+#: ../../../../inc/init.php:548
 msgid "Tiempo total"
 msgstr "Total time"
 
@@ -1767,7 +1767,7 @@ msgstr "Error on updating database"
 msgid "Compruebe el registro de eventos para más detalles"
 msgstr "Please, check the event log for more details"
 
-#: ../../../../inc/upgrade.class.php:49 ../../../../inc/tpl/login.php:50
+#: ../../../../inc/upgrade.class.php:49 ../../../../inc/tpl/login.php:51
 msgid "Acceder"
 msgstr "Sign in"
 
@@ -1787,11 +1787,11 @@ msgstr "Error on updating database."
 msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Database updating was done successfully."
 
-#: ../../../../inc/upgrade.class.php:172
+#: ../../../../inc/upgrade.class.php:174
 msgid "Actualizar Configuración"
 msgstr "Update Configuration"
 
-#: ../../../../inc/upgrade.class.php:173
+#: ../../../../inc/upgrade.class.php:175
 msgid "Actualización de la Configuración realizada correctamente."
 msgstr "Configuration updating was done successfully."
 
@@ -2258,7 +2258,7 @@ msgstr "Request"
 msgid "Descripción de la petición"
 msgstr "Request description"
 
-#: ../../../../inc/tpl/request.php:68 ../../../../inc/tpl/editpass.php:83
+#: ../../../../inc/tpl/request.php:68 ../../../../inc/tpl/editpass.php:84
 #: ../../../../inc/tpl/accounts.php:508
 msgid "Atrás"
 msgstr "Back"
@@ -2393,11 +2393,11 @@ msgstr "CSV/XML Import"
 msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Drop files here or click to select"
 
-#: ../../../../inc/tpl/login.php:63
+#: ../../../../inc/tpl/login.php:65
 msgid "¿Olvidó su clave?"
 msgstr "Lost your password?"
 
-#: ../../../../inc/tpl/login.php:76
+#: ../../../../inc/tpl/login.php:78
 msgid "Aplicación actualizada correctamente"
 msgstr "Application successfully updated"
 
@@ -2591,7 +2591,7 @@ msgstr "Select Customer"
 
 #: ../../../../inc/tpl/search.php:84 ../../../../inc/tpl/search.php:85
 #: ../../../../inc/tpl/accounts.php:574 ../../../../inc/tpl/accounts.php:579
-#: ../../../../inc/tpl/config.php:566 ../../../../inc/tpl/config.php:571
+#: ../../../../inc/tpl/config.php:567 ../../../../inc/tpl/config.php:572
 #: ../../../../inc/tpl/users.php:220 ../../../../inc/tpl/users.php:225
 msgid "Sin resultados"
 msgstr "No results"
@@ -2717,7 +2717,7 @@ msgstr "Enable Edit"
 msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
 msgstr "Drop files here (max. 5) or click to select"
 
-#: ../../../../inc/tpl/accounts.php:371 ../../../../inc/tpl/config.php:192
+#: ../../../../inc/tpl/accounts.php:371 ../../../../inc/tpl/config.php:193
 msgid "Tamaño máximo de archivo"
 msgstr "Maximum file size"
 
@@ -2793,175 +2793,175 @@ msgstr "Category name"
 msgid "Descripción de la categoría"
 msgstr "Category description"
 
-#: ../../../../inc/tpl/config.php:83
+#: ../../../../inc/tpl/config.php:84
 msgid "Sitio"
 msgstr "Site"
 
-#: ../../../../inc/tpl/config.php:91
+#: ../../../../inc/tpl/config.php:92
 msgid "Idioma"
 msgstr "Language"
 
-#: ../../../../inc/tpl/config.php:105
+#: ../../../../inc/tpl/config.php:106
 msgid "Timeout de sesión (s)"
 msgstr "Session timeout (s)"
 
-#: ../../../../inc/tpl/config.php:113
+#: ../../../../inc/tpl/config.php:114
 msgid "Habilitar log de eventos"
 msgstr "Enable event log"
 
-#: ../../../../inc/tpl/config.php:123
+#: ../../../../inc/tpl/config.php:124
 msgid "Habilitar depuración"
 msgstr "Enable debug"
 
-#: ../../../../inc/tpl/config.php:133
+#: ../../../../inc/tpl/config.php:134
 msgid "Modo mantenimiento"
 msgstr "Maintenance mode"
 
-#: ../../../../inc/tpl/config.php:143
+#: ../../../../inc/tpl/config.php:144
 msgid "Comprobar actualizaciones"
 msgstr "Check for updates"
 
-#: ../../../../inc/tpl/config.php:153
+#: ../../../../inc/tpl/config.php:154
 msgid "Nombre de cuenta como enlace"
 msgstr "Account name as link"
 
-#: ../../../../inc/tpl/config.php:163
+#: ../../../../inc/tpl/config.php:164
 msgid "Gestión de archivos"
 msgstr "Files management"
 
-#: ../../../../inc/tpl/config.php:173
+#: ../../../../inc/tpl/config.php:174
 msgid "Búsquedas globales"
 msgstr "Global searches"
 
-#: ../../../../inc/tpl/config.php:183
+#: ../../../../inc/tpl/config.php:184
 msgid "Extensiones de archivos permitidas"
 msgstr "Allowed file extensions"
 
-#: ../../../../inc/tpl/config.php:201
+#: ../../../../inc/tpl/config.php:202
 msgid "Resultados por página"
 msgstr "Results per page"
 
-#: ../../../../inc/tpl/config.php:217
+#: ../../../../inc/tpl/config.php:218
 msgid "Resultados en Tarjetas"
 msgstr "Results like Cards"
 
-#: ../../../../inc/tpl/config.php:229
+#: ../../../../inc/tpl/config.php:230
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../inc/tpl/config.php:235
+#: ../../../../inc/tpl/config.php:236
 msgid "Habilitar enlaces Wiki"
 msgstr "Enable Wiki links"
 
-#: ../../../../inc/tpl/config.php:245
+#: ../../../../inc/tpl/config.php:246
 msgid "URL de búsqueda Wiki"
 msgstr "Wiki search URL"
 
-#: ../../../../inc/tpl/config.php:254
+#: ../../../../inc/tpl/config.php:255
 msgid "URL de página en Wiki"
 msgstr "Wiki page URL"
 
-#: ../../../../inc/tpl/config.php:263
+#: ../../../../inc/tpl/config.php:264
 msgid "Prefijo para nombre de cuenta"
 msgstr "Account name preffix"
 
-#: ../../../../inc/tpl/config.php:275
+#: ../../../../inc/tpl/config.php:276
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../inc/tpl/config.php:282
+#: ../../../../inc/tpl/config.php:283
 msgid "Habilitar LDAP"
 msgstr "Enable LDAP"
 
-#: ../../../../inc/tpl/config.php:292 ../../../../inc/tpl/config.php:397
+#: ../../../../inc/tpl/config.php:293 ../../../../inc/tpl/config.php:398
 msgid "Servidor"
 msgstr "Server"
 
-#: ../../../../inc/tpl/config.php:301
+#: ../../../../inc/tpl/config.php:302
 msgid "Usuario de conexión"
 msgstr "Bind User"
 
-#: ../../../../inc/tpl/config.php:310
+#: ../../../../inc/tpl/config.php:311
 msgid "Clave de conexión"
 msgstr "Bind Password"
 
-#: ../../../../inc/tpl/config.php:319
+#: ../../../../inc/tpl/config.php:320
 msgid "Base de búsqueda"
 msgstr "Search base"
 
-#: ../../../../inc/tpl/config.php:337
+#: ../../../../inc/tpl/config.php:338
 msgid "Grupo por Defecto"
 msgstr "Default Group"
 
-#: ../../../../inc/tpl/config.php:346
+#: ../../../../inc/tpl/config.php:347
 msgid "Perfil por Defecto"
 msgstr "Default Profile"
 
-#: ../../../../inc/tpl/config.php:355
+#: ../../../../inc/tpl/config.php:356
 msgid "Active Directory"
 msgstr "Active Directory"
 
-#: ../../../../inc/tpl/config.php:365
+#: ../../../../inc/tpl/config.php:366
 msgid "Comprobar"
 msgstr "Check"
 
-#: ../../../../inc/tpl/config.php:368
+#: ../../../../inc/tpl/config.php:369
 msgid "Comprobar conexión con LDAP"
 msgstr "Check LDAP connection"
 
-#: ../../../../inc/tpl/config.php:382
+#: ../../../../inc/tpl/config.php:383
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../../inc/tpl/config.php:388
+#: ../../../../inc/tpl/config.php:389
 msgid "Habilitar notificaciones de correo"
 msgstr "Enable email notifications"
 
-#: ../../../../inc/tpl/config.php:405
+#: ../../../../inc/tpl/config.php:406
 msgid "Puerto"
 msgstr "Port"
 
-#: ../../../../inc/tpl/config.php:413
+#: ../../../../inc/tpl/config.php:414
 msgid "Habilitar Autentificación"
 msgstr "Enable Authentication"
 
-#: ../../../../inc/tpl/config.php:438
+#: ../../../../inc/tpl/config.php:439
 msgid "Seguridad"
 msgstr "Security"
 
-#: ../../../../inc/tpl/config.php:444
+#: ../../../../inc/tpl/config.php:445
 msgid "Deshabilitada"
 msgstr "Disabled"
 
-#: ../../../../inc/tpl/config.php:455
+#: ../../../../inc/tpl/config.php:456
 msgid "Dirección de correo de envío"
 msgstr "Recipient email address"
 
-#: ../../../../inc/tpl/config.php:463
+#: ../../../../inc/tpl/config.php:464
 msgid "Habilitar peticiones por correo"
 msgstr "Enable requests by email"
 
-#: ../../../../inc/tpl/config.php:506
+#: ../../../../inc/tpl/config.php:507
 msgid "Añadir extensión"
 msgstr "Add extension"
 
-#: ../../../../inc/tpl/config.php:507
+#: ../../../../inc/tpl/config.php:508
 msgid "Eliminar extensión"
 msgstr "Delete extension"
 
-#: ../../../../inc/tpl/config.php:535
+#: ../../../../inc/tpl/config.php:536
 msgid "Añadir filtro"
 msgstr "Add filter"
 
-#: ../../../../inc/tpl/config.php:536
+#: ../../../../inc/tpl/config.php:537
 msgid "Eliminar filtro"
 msgstr "Delete filter"
 
-#: ../../../../inc/tpl/config.php:564 ../../../../inc/tpl/users.php:223
+#: ../../../../inc/tpl/config.php:565 ../../../../inc/tpl/users.php:223
 msgid "Seleccionar Grupo"
 msgstr "Select Group"
 
-#: ../../../../inc/tpl/config.php:569 ../../../../inc/tpl/users.php:218
+#: ../../../../inc/tpl/config.php:570 ../../../../inc/tpl/users.php:218
 msgid "Seleccionar Perfil"
 msgstr "Select Profile"
 
@@ -3040,18 +3040,3 @@ msgstr "Event"
 #: ../../../../inc/tpl/eventlog.php:65
 msgid "IP"
 msgstr "IP"
-
-#~ msgid "No es posible crear el directorio de backups"
-#~ msgstr "Unable to create the backup directory"
-
-#~ msgid "Copia BBDD"
-#~ msgstr "Database Backup"
-
-#~ msgid "Clave de administrador de sysPass"
-#~ msgstr "sysPass administrator's password"
-
-#~ msgid "Modo Hosting OFF"
-#~ msgstr "Hosting Mode OFF"
-
-#~ msgid "Versión PHP"
-#~ msgstr "PHP version"

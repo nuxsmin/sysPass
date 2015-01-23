@@ -174,7 +174,7 @@ class SP_Util
      */
     public static function getVersionString()
     {
-        return '1.1-rc1';
+        return '1.1-rc2';
     }
 
     /**
@@ -264,7 +264,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 15;
+        $build = 16;
         $version = array(1, 1, 2);
 
         if ($retBuild) {
@@ -632,5 +632,15 @@ class SP_Util
             $out = ($in ? true : false);
         }
         return $out;
+    }
+
+    /**
+     * @brief Recorrer un array y escapar los carácteres no válidos en Javascript
+     * @param $array
+     * @return array
+     */
+    public static function arrayJSEscape(&$array){
+        array_walk($array, function(&$value, $index) {$value = str_replace(array("'", '"'), "\\'", $value);});
+        return $array;
     }
 }

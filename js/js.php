@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -41,7 +41,8 @@ $jsFiles = array(
     array("href" => "js/functions.js", "min" => true)
 );
 
-$arrJsLang = array(_('Error en la consulta'),
+$arrJsLang = array(
+    _('Error en la consulta'),
     _('Ha ocurrido un error'),
     _('Sesión finalizada'),
     _('Borrar la cuenta?'),
@@ -61,10 +62,11 @@ $arrJsLang = array(_('Error en la consulta'),
     _('Demasiados archivos'),
     _('No es posible guardar el archivo.<br>Tamaño máximo:'),
     _('Extensión no permitida'),
-    _('Vaciar el registro de eventos?'));
+    _('Vaciar el registro de eventos?')
+);
 
 //$js = "// i18n language array from PHP. Detected language: " . SP_Init::$LANG . "\n";
-echo "var LANG = ['" . implode("','", $arrJsLang) . "'];";
+echo "var LANG = ['" . implode("','", SP_Util::arrayJSEscape($arrJsLang)) . "'];";
 echo "var APP_ROOT = '" . SP_Init::$WEBROOT . "';\n";
 
 SP_Util::getMinified('js', $jsFiles);
