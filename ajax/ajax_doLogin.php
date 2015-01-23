@@ -139,7 +139,7 @@ if ($objUser->userChangePass){
     $hash = SP_Util::generate_random_bytes();
 
     if (SP_Users::addPassRecover($userLogin, $hash)){
-        $url = SP_Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time();
+        $url = SP_Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1';
         SP_Common::printJSON($url, 0);
     }
 }

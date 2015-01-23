@@ -27,6 +27,7 @@
 $action = SP_Common::parseParams('g', 'a');
 $hash = SP_Common::parseParams('g', 'h');
 $time = SP_Common::parseParams('g', 't');
+$forced = SP_Common::parseParams('g', 'f', 0);
 
 $passReset = ($action === 'passreset' && $hash && $time);
 ?>
@@ -39,7 +40,7 @@ $passReset = ($action === 'passreset' && $hash && $time);
         </div>
     <?php endif; ?>
 
-    <?php if (SP_Util::mailIsEnabled()) { ?>
+    <?php if (SP_Util::mailIsEnabled() || $forced === 1) { ?>
         <form id="passreset" action="" method="post"
               onsubmit="sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
             <fieldset id="resetdata">
