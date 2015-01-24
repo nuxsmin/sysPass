@@ -257,7 +257,7 @@ foreach ($resQuery as $account) {
         echo '<div class="account-info">';
         echo '<img src="imgs/btn_group.png" title="' . $secondaryAccesses . '" />';
 
-        echo ($strAccNotes) ? '<img src="imgs/notes.png" title="' . _('Notas') . ': <br><br>' . $strAccNotes . '" />' : '';
+        echo (isset($strAccNotes)) ? '<img src="imgs/notes.png" title="' . _('Notas') . ': <br><br>' . $strAccNotes . '" />' : '';
 
         if ($filesEnabled) {
             $intNumFiles = SP_Files::countFiles($account->account_id);
