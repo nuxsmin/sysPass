@@ -122,7 +122,7 @@ class SP_Import
             throw new ImportException('critical', _('Error interno al leer el archivo'), _('Compruebe la configuración de PHP para subir archivos'));
         }
 
-        if ($fileData['type'] === 'text/csv'){
+        if ($fileData['type'] === 'text/csv' || $fileData['type'] === 'application/vnd.ms-excel'){
             // Leemos el archivo a un array
             self::$fileContent = file($tmpName);
 
