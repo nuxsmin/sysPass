@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -112,7 +112,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Habilitar log de eventos'); ?>
-            <?php SP_Common::printHelpButton("config", 20); ?>
+            <?php echo SP_Common::printHelpButton("config", 20); ?>
         </td>
         <td class="valField">
             <label for="logenabled"><?php echo ($chkLog) ? 'ON' : 'OFF'; ?></label>
@@ -122,7 +122,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Habilitar depuración'); ?>
-            <?php SP_Common::printHelpButton("config", 19); ?>
+            <?php echo SP_Common::printHelpButton("config", 19); ?>
         </td>
         <td class="valField">
             <label for="debug"><?php echo ($chkDebug) ? 'ON' : 'OFF'; ?></label>
@@ -132,7 +132,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Modo mantenimiento'); ?>
-            <?php SP_Common::printHelpButton("config", 18); ?>
+            <?php echo SP_Common::printHelpButton("config", 18); ?>
         </td>
         <td class="valField">
             <label for="maintenance"><?php echo ($chkMaintenance) ? 'ON' : 'OFF'; ?></label>
@@ -142,7 +142,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Comprobar actualizaciones'); ?>
-            <?php SP_Common::printHelpButton("config", 21); ?>
+            <?php echo SP_Common::printHelpButton("config", 21); ?>
         </td>
         <td class="valField">
             <label for="updates"><?php echo ($chkUpdates) ? 'ON' : 'OFF'; ?></label>
@@ -152,7 +152,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Nombre de cuenta como enlace'); ?>
-            <?php SP_Common::printHelpButton("config", 3); ?>
+            <?php echo SP_Common::printHelpButton("config", 3); ?>
         </td>
         <td class="valField">
             <label for="account_link"><?php echo ($chkAccountLink) ? 'ON' : 'OFF'; ?></label>
@@ -162,7 +162,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Gestión de archivos'); ?>
-            <?php SP_Common::printHelpButton("config", 5); ?>
+            <?php echo SP_Common::printHelpButton("config", 5); ?>
         </td>
         <td class="valField">
             <label for="filesenabled"><?php echo ($chkFiles) ? 'ON' : 'OFF'; ?></label>
@@ -172,7 +172,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Búsquedas globales'); ?>
-            <?php SP_Common::printHelpButton("config", 24); ?>
+            <?php echo SP_Common::printHelpButton("config", 24); ?>
         </td>
         <td class="valField">
             <label for="globalsearch"><?php echo ($chkGlobalSearch) ? 'ON' : 'OFF'; ?></label>
@@ -182,7 +182,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Extensiones de archivos permitidas'); ?>
-            <?php SP_Common::printHelpButton("config", 22); ?>
+            <?php echo SP_Common::printHelpButton("config", 22); ?>
         </td>
         <td class="valField">
             <input type="text" name="files_allowed_exts" id="allowed_exts" value="<?php echo $allowedExts; ?>"/>
@@ -191,7 +191,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Tamaño máximo de archivo'); ?>
-            <?php SP_Common::printHelpButton("config", 6); ?>
+            <?php echo SP_Common::printHelpButton("config", 6); ?>
         </td>
         <td class="valField">
             <input type="text" name="files_allowed_size" value="<?php echo SP_Config::getValue('files_allowed_size'); ?>" maxlength="5" <?php echo $isDisabled; ?> />
@@ -200,7 +200,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Resultados por página'); ?>
-            <?php SP_Common::printHelpButton("config", 4); ?>
+            <?php echo SP_Common::printHelpButton("config", 4); ?>
         </td>
         <td class="valField">
             <select name="account_count" id="sel-account_count" size="1">
@@ -216,7 +216,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Resultados en Tarjetas'); ?>
-            <?php SP_Common::printHelpButton("config", 25); ?>
+            <?php echo SP_Common::printHelpButton("config", 25); ?>
         </td>
         <td class="valField">
             <label for="resultsascards"><?php echo ($chkResultsAsCards) ? 'ON' : 'OFF'; ?></label>
@@ -234,7 +234,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Habilitar enlaces Wiki'); ?>
-            <?php SP_Common::printHelpButton("config", 7); ?>
+            <?php echo SP_Common::printHelpButton("config", 7); ?>
         </td>
         <td class="valField">
             <label for="wikienabled"><?php echo ($chkWiki) ? 'ON' : 'OFF'; ?></label>
@@ -244,7 +244,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('URL de búsqueda Wiki'); ?>
-            <?php SP_Common::printHelpButton("config", 8); ?>
+            <?php echo SP_Common::printHelpButton("config", 8); ?>
         </td>
         <td class="valField">
             <input type="text" name="wiki_searchurl" class="txtLong" value="<?php echo SP_Config::getValue('wiki_searchurl'); ?>" maxlength="128" />
@@ -253,7 +253,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('URL de página en Wiki'); ?>
-            <?php SP_Common::printHelpButton("config", 9); ?>
+            <?php echo SP_Common::printHelpButton("config", 9); ?>
         </td>
         <td class="valField">
             <input type="text" name="wiki_pageurl" class="txtLong" value="<?php echo SP_Config::getValue('wiki_pageurl'); ?>" maxlength="128" />
@@ -262,7 +262,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Prefijo para nombre de cuenta'); ?>
-            <?php SP_Common::printHelpButton("config", 10); ?>
+            <?php echo SP_Common::printHelpButton("config", 10); ?>
         </td>
         <td class="valField">
             <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo SP_Config::getValue('wiki_filter'); ?>" />
@@ -277,11 +277,11 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
 </div>
 
 <table id="tblLdap" class="data tblConfig round">
-<?php if ( SP_Util::ldapIsAvailable() && ! $isDemoMode ): ?>
+<?php if ( SP_Util::ldapIsAvailable() || $isDemoMode ): ?>
     <tr>
         <td class="descField">
             <?php echo _('Habilitar LDAP'); ?>
-            <?php SP_Common::printHelpButton("config", 11); ?>
+            <?php echo SP_Common::printHelpButton("config", 11); ?>
         </td>
         <td class="valField">
             <label for="ldapenabled"><?php echo ($chkLdap) ? 'ON' : 'OFF'; ?></label>
@@ -291,52 +291,52 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Servidor'); ?>
-            <?php SP_Common::printHelpButton("config", 15); ?>
+            <?php echo SP_Common::printHelpButton("config", 15); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldap_server" value="<?php echo SP_Config::getValue('ldap_server'); ?>" maxlength="128" />
+            <input type="text" name="ldap_server" value="<?php echo SP_Config::getValue('ldap_server'); ?>" maxlength="128" <?php echo $isDisabled; ?>/>
         </td>
     </tr>
     <tr>
         <td class="descField">
             <?php echo _('Usuario de conexión'); ?>
-            <?php SP_Common::printHelpButton("config", 12); ?>
+            <?php echo SP_Common::printHelpButton("config", 12); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldap_binduser" value="<?php echo SP_Config::getValue('ldap_binduser'); ?>" maxlength="128" />
+            <input type="text" name="ldap_binduser" value="<?php echo SP_Config::getValue('ldap_binduser'); ?>" maxlength="128" <?php echo $isDisabled; ?>/>
         </td>
     </tr>
     <tr>
         <td class="descField">
             <?php echo _('Clave de conexión'); ?>
-            <?php SP_Common::printHelpButton("config", 17); ?>
+            <?php echo SP_Common::printHelpButton("config", 17); ?>
         </td>
         <td class="valField">
-            <input type="password" name="ldap_bindpass" value="<?php echo SP_Config::getValue('ldap_bindpass'); ?>" maxlength="128" />
+            <input type="password" name="ldap_bindpass" value="<?php echo SP_Config::getValue('ldap_bindpass'); ?>" maxlength="128" <?php echo $isDisabled; ?>/>
         </td>
     </tr>
     <tr>
     <td class="descField">
         <?php echo _('Base de búsqueda'); ?>
-        <?php SP_Common::printHelpButton("config", 13); ?>
+        <?php echo SP_Common::printHelpButton("config", 13); ?>
     </td>
         <td class="valField">
-            <input type="text" name="ldap_base" class="txtLong" value="<?php echo SP_Config::getValue('ldap_base'); ?>" maxlength="128" />
+            <input type="text" name="ldap_base" class="txtLong" value="<?php echo SP_Config::getValue('ldap_base'); ?>" maxlength="128" <?php echo $isDisabled; ?>/>
         </td>
     </tr>
     <tr>
         <td class="descField">
             <?php echo _('Grupo'); ?>
-            <?php SP_Common::printHelpButton("config", 14); ?>
+            <?php echo SP_Common::printHelpButton("config", 14); ?>
         </td>
         <td class="valField">
-            <input type="text" name="ldap_group" class="txtLong" value="<?php echo SP_Config::getValue('ldap_group'); ?>" maxlength="128" />
+            <input type="text" name="ldap_group" class="txtLong" value="<?php echo SP_Config::getValue('ldap_group'); ?>" maxlength="128" <?php echo $isDisabled; ?>/>
         </td>
     </tr>
     <tr>
         <td class="descField">
             <?php echo _('Grupo por Defecto'); ?>
-            <?php SP_Common::printHelpButton("config", 27); ?>
+            <?php echo SP_Common::printHelpButton("config", 27); ?>
         </td>
         <td class="valField">
             <?php SP_Html::printSelect(DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'), $groupsSelProp); ?>
@@ -345,7 +345,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Perfil por Defecto'); ?>
-            <?php SP_Common::printHelpButton("config", 28); ?>
+            <?php echo SP_Common::printHelpButton("config", 28); ?>
         </td>
         <td class="valField">
             <?php  SP_Html::printSelect(DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'), $profilesSelProp); ?>
@@ -354,7 +354,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
     <tr>
         <td class="descField">
             <?php echo _('Active Directory'); ?>
-            <?php SP_Common::printHelpButton("config", 26); ?>
+            <?php echo SP_Common::printHelpButton("config", 26); ?>
         </td>
         <td class="valField">
             <label for="ldap_ads"><?php echo ($chkLdapADS) ? 'ON' : 'OFF'; ?></label>

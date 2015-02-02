@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,8 @@ class SP_Category
     public static $categoryLastId;
 
     /**
-     * @brief Obtener el id de una categoría por el nombre
+     * Obtener el id de una categoría por el nombre.
+     *
      * @param string $categoryName con el nombre de la categoría
      * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int
      */
@@ -59,7 +60,8 @@ class SP_Category
     }
 
     /**
-     * @brief Crear una nueva categoría en la BBDD
+     * Crear una nueva categoría en la BBDD.
+     *
      * @return bool
      */
     public static function addCategory()
@@ -84,7 +86,8 @@ class SP_Category
     }
 
     /**
-     * @brief Comprobar si existe una categoría duplicada
+     * Comprobar si existe una categoría duplicada.
+     *
      * @param int $id con el Id de la categoría a consultar
      * @return bool
      */
@@ -113,7 +116,8 @@ class SP_Category
     }
 
     /**
-     * @brief Eliminar una categoría de la BBDD
+     * Eliminar una categoría de la BBDD.
+     *
      * @param int $id con el id de la categoría
      * @return bool
      */
@@ -138,9 +142,10 @@ class SP_Category
     }
 
     /**
-     * @brief Obtiene el nombre de la categoría a partir del Id
+     * Obtiene el nombre de la categoría a partir del Id.
+     *
      * @param int $id con el Id de la categoría a consultar
-     * @return string con el nombre de la categoría
+     * @return false|string con el nombre de la categoría
      */
     public static function getCategoryNameById($id)
     {
@@ -157,7 +162,8 @@ class SP_Category
     }
 
     /**
-     * @brief Actualizar una categoría en la BBDD con el id
+     * Actualizar una categoría en la BBDD con el id.
+     *
      * @param int $id con el Id de la categoría a consultar
      * @return bool
      */
@@ -184,7 +190,8 @@ class SP_Category
     }
 
     /**
-     * @brief Obtener los datos de una categoría
+     * Obtener los datos de una categoría.
+     *
      * @param int $id con el Id de la categoría a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -210,7 +217,8 @@ class SP_Category
     }
 
     /**
-     * @brief Obtiene el listado de categorías
+     * Obtiene el listado de categorías.
+     *
      * @param int $id con el Id de la categoría
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con en id de categorioa como clave y en nombre como valor
@@ -248,15 +256,13 @@ class SP_Category
     }
 
     /**
-     * @brief Comprobar si una categoría está en uso
-     * @param int $id con el Id de la categoría a consultar
-     * @return bool
+     * Comprobar si una categoría está en uso por cuentas.
      *
-     * Esta función comprueba si una categoría está en uso por cuentas.
+     * @param int $id con el Id de la categoría a consultar
+     * @return bool|string
      */
     public static function checkCategoryInUse($id)
     {
-
         $numAccounts = self::getCategoriesInAccounts($id);
 
         $out = '';
@@ -273,9 +279,10 @@ class SP_Category
     }
 
     /**
-     * @brief Obtener el número de cuentas que usan una categoría
+     * Obtener el número de cuentas que usan una categoría.
+     *
      * @param int $id con el Id de la categoría a consultar
-     * @return integer con el número total de cuentas
+     * @return false|integer con el número total de cuentas
      */
     private static function getCategoriesInAccounts($id)
     {

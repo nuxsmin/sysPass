@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -62,7 +62,7 @@ class MigrateException extends Exception
  */
 class SP_Migrate
 {
-    private static $dbuser;
+//    private static $dbuser;
     private static $dbname;
     private static $dbhost;
     private static $dbc; // Database connection
@@ -72,11 +72,10 @@ class SP_Migrate
     private static $oldConfig = array();
 
     /**
-     * @brief Iniciar migración
+     * Iniciar migración desde phpPMS.
+     *
      * @param array $options datos de conexión
      * @return array resultado del proceso
-     *
-     * Iniciar el proceso de migración desde phpPMS
      */
     public static function migrate($options)
     {
@@ -118,16 +117,14 @@ class SP_Migrate
     }
 
     /**
-     * @brief Comprobar si la conexión con la BBDD.
+     * Comprobar si la conexión con la BBDD de phpPMS es posible.
+     *
      * @param string $dbhost host de conexión
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass clave de conexión
      * @param string $dbname nombre de la base de datos
      * @throws MigrateException
      * @return none
-     *
-     * Comprobar si la conexión con la base de datos de phpPMS es posible con
-     * los datos facilitados.
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname)
     {
@@ -141,11 +138,9 @@ class SP_Migrate
     }
 
     /**
-     * @brief Comprobar si la BBDD existe
-     * @return none
+     * Comprobar si la BBDD existe.
      *
-     * Comprobar si la conexión con la base de datos de phpPMS es posible con
-     * los datos facilitados.
+     * @return none
      */
     private static function checkDatabaseExist()
     {
@@ -168,7 +163,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Comprobar la versión de phpPMS
+     * Comprobar la versión de phpPMS.
+     *
      * @throws MigrateException
      * @return none
      */
@@ -186,7 +182,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Obtener la configuración desde desde phpPMS
+     * Obtener la configuración desde desde phpPMS.
+     *
      * @throws MigrateException
      * @return none
      */
@@ -209,9 +206,10 @@ class SP_Migrate
     }
 
     /**
-     * @brief Parsear los valores de configuración y adaptarlos
+     * Parsear los valores de configuración de phpPMS y adaptarlos a sysPass.
+     *
      * @param array $config con los datos de configuración
-     * @return none
+     * @return bool
      */
     private static function parseSourceConfig($config)
     {
@@ -232,11 +230,11 @@ class SP_Migrate
     }
 
     /**
-     * @brief Limpiar los datos de sysPass
+     * Limpiar los datos de sysPass.
+     * Limpiar las tablas de la base de sysPass para la importación.
+     *
      * @throws MigrateException
      * @return none
-     *
-     * Limpiar las tablas de la base de sysPass para la importación.
      */
     private static function cleanCurrentDB()
     {
@@ -274,7 +272,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Comprobar si el usuario actual es administrador de la aplicación
+     * Comprobar si el usuario actual es administrador de la aplicación.
+     *
      * @param int $currentUserId con el Id del usuario de la sesión actual
      * @return bool
      */
@@ -293,7 +292,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar los clientes desde phpPMS
+     * Migrar los clientes desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -329,7 +329,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Obtener los clientes desde phpPMS
+     * Obtener los clientes desde phpPMS.
+     *
      * @throws MigrateException
      * @return array con los clientes
      */
@@ -352,7 +353,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar las cuentas desde phpPMS
+     * Migrar las cuentas desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -401,7 +403,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar una cuenta en sysPass
+     * Insertar una cuenta en sysPass.
+     *
      * @param array $account con los datos de la cuenta
      * @throws MigrateException
      * @return bool
@@ -452,7 +455,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar las grupos secundarios de las cuentas desde phpPMS
+     * Migrar las grupos secundarios de las cuentas desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -487,7 +491,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar los grupos secundarios de una cuenta en sysPass
+     * Insertar los grupos secundarios de una cuenta en sysPass.
+     *
      * @param array $accountGroup con los datos de los grupos secundarios
      * @throws MigrateException
      * @return bool
@@ -508,7 +513,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar el historail de las cuentas desde phpPMS
+     * Migrar el historail de las cuentas desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -560,7 +566,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar el historial de una cuenta en sysPass
+     * Insertar el historial de una cuenta en sysPass.
+     *
      * @param array $accountHistory con los datos del historial de la cuenta
      * @throws MigrateException
      * @return bool
@@ -610,7 +617,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar los archivos de de las cuentas desde phpPMS
+     * Migrar los archivos de de las cuentas desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -650,7 +658,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar los archivos de una cuenta en sysPass
+     * Insertar los archivos de una cuenta en sysPass.
+     *
      * @param array $accountFile con los datos del archivo
      * @throws MigrateException
      * @return bool
@@ -675,7 +684,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar las categorías de las cuentas desde phpPMS
+     * Migrar las categorías de las cuentas desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -711,7 +721,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar las categorías en sysPass
+     * Insertar las categorías en sysPass.
+     *
      * @param array $accountCategory con los datos de la categoría
      * @throws MigrateException
      * @return bool
@@ -732,7 +743,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar los usuarios desde desde phpPMS
+     * Migrar los usuarios desde desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -785,7 +797,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar los usuarios en sysPass
+     * Insertar los usuarios en sysPass.
+     *
      * @param array $users con los datos del usuario
      * @throws MigrateException
      * @return bool
@@ -825,7 +838,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar los grupos de usuarios desde desde phpPMS
+     * Migrar los grupos de usuarios desde desde phpPMS.
+     *
      * @throws MigrateException
      * @return array resultado
      */
@@ -862,7 +876,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Insertar los grupos de usuarios en sysPass
+     * Insertar los grupos de usuarios en sysPass.
+     *
      * @param array $usersGroups con los datos del grupo
      * @throws MigrateException
      * @return bool
@@ -884,7 +899,8 @@ class SP_Migrate
     }
 
     /**
-     * @brief Migrar la configuración desde phpPMS
+     * Migrar la configuración desde phpPMS.
+     *
      * @return array resultado
      */
     private static function migrateConfig()

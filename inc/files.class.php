@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class SP_Files
 {
     /**
-     * @brief Guardar un archivo en la BBDD
+     * Guardar un archivo en la BBDD.
+     *
      * @param int $accountId
      * @param array $fileData con los datos y el contenido del archivo
      * @return bool
@@ -64,11 +65,11 @@ class SP_Files
     }
 
     /**
-     * @brief Obtener un archivo desde la BBDD
-     * @param int $fileId con el Id del archivo
-     * @return object con los datos del archivo
-     *
+     * Obtener un archivo desde la BBDD.
      * Función para obtener un archivo y pasarlo al navegador como descarga o imagen en línea
+     *
+     * @param int $fileId con el Id del archivo
+     * @return false|object con los datos del archivo
      */
     public static function fileDownload($fileId)
     {
@@ -89,7 +90,8 @@ class SP_Files
     }
 
     /**
-     * @brief Eliminar un archivo de la BBDD
+     * Eliminar un archivo de la BBDD.
+     *
      * @param int $fileId con el Id del archivo
      * @return bool
      */
@@ -119,9 +121,10 @@ class SP_Files
     }
 
     /**
-     * @brief Obtener información de un archivo almacenado en la BBDD
+     * Obtener información de un archivo almacenado en la BBDD.
+     *
      * @param int $fileId con el Id del archivo
-     * @return object con el resultado de la consulta
+     * @return false|object con el resultado de la consulta
      */
     public static function getFileInfo($fileId)
     {
@@ -145,9 +148,10 @@ class SP_Files
     }
 
     /**
-     * @brief Obtener el listado de archivos de una cuenta
+     * Obtener el listado de archivos de una cuenta.
+     *
      * @param int $accountId con el Id de la cuenta
-     * @return array con los archivos de la cuenta.
+     * @return false|array con los archivos de la cuenta.
      */
     public static function getFileList($accountId)
     {
@@ -176,9 +180,10 @@ class SP_Files
     }
 
     /**
-     * @brief Obtener el número de archivo de una cuenta
+     * Obtener el número de archivo de una cuenta.
+     *
      * @param int $accountId con el Id de la cuenta
-     * @return int con el número de archivos
+     * @return false|int con el número de archivos
      */
     public static function countFiles($accountId)
     {
@@ -196,7 +201,8 @@ class SP_Files
 
 
     /**
-     * @brief Elimina los archivos de una cuenta en la BBDD
+     * Elimina los archivos de una cuenta en la BBDD.
+     *
      * @param int $accountId con el Id de la cuenta
      * @return bool
      */

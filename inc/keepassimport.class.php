@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,9 +33,9 @@ class SP_KeePassImport
 {
 
     /**
-     * @brief Iniciar la importación desde KeePass
+     * Iniciar la importación desde KeePass
      * @param object $xml
-     * @return bool
+     * @return none
      */
     public static function addKeepassAccounts($xml)
     {
@@ -43,11 +43,12 @@ class SP_KeePassImport
     }
 
     /**
-     * @brief Obtener los datos de las entradas de KeePass
+     * Obtener los datos de las entradas de KeePass.
+     *
      * @param object $entries con el objeto XML con las entradas
      * @param string $groupName con nombre del grupo a procesar
      * @throws ImportException
-     * @return bool
+     * @return none
      */
     private static function getEntryData($entries, $groupName)
     {
@@ -79,10 +80,11 @@ class SP_KeePassImport
     }
 
     /**
-     * @brief Obtener los grupos y procesar lan entradas de KeePass
+     * Obtener los grupos y procesar lan entradas de KeePass.
+     *
      * @param object $xml con objeto XML del archivo de KeePass
      * @throws ImportException
-     * @return bool
+     * @return none
      */
     private static function getGroups($xml)
     {

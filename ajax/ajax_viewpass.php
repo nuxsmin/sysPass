@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -71,9 +71,8 @@ if (!SP_Users::checkUserUpdateMPass()) {
     }
 }
 
-$crypt = new SP_Crypt;
-$masterPass = $crypt->getSessionMasterPass();
-$accountClearPass = $crypt->decrypt($accountData->account_pass, $masterPass, $accountData->account_IV);
+$masterPass = SP_Crypt::getSessionMasterPass();
+$accountClearPass = SP_Crypt::getDecrypt($accountData->account_pass, $masterPass, $accountData->account_IV);
 
 if (!$isHistory && $fullTxt) {
     $account->incrementDecryptCounter();

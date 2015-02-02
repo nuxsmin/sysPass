@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class SP_Util
 {
     /**
-     * @brief Comprobar si la función de números aleatorios está disponible
+     * Comprobar si la función de números aleatorios está disponible.
+     *
      * @return bool
      */
     public static function secureRNG_available()
@@ -54,7 +55,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si sysPass se ejecuta en W$indows
+     * Comprobar si sysPass se ejecuta en W$indows.
+     *
      * @return bool
      */
     public static function runningOnWindows()
@@ -63,7 +65,8 @@ class SP_Util
     }
 
     /**
-     * @brief Generar una cadena aleatoria usuando criptografía
+     * Generar una cadena aleatoria usuando criptografía.
+     *
      * @param int $length opcional, con la longitud de la cadena
      * @return string
      */
@@ -100,7 +103,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar la versión de PHP
+     * Comprobar la versión de PHP.
+     *
      * @return bool
      */
     public static function checkPhpVersion()
@@ -120,7 +124,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar los módulos necesarios
+     * Comprobar los módulos necesarios.
+     *
      * @return array con los módulos no disponibles
      */
     public static function checkModules()
@@ -144,7 +149,8 @@ class SP_Util
     }
 
     /**
-     * @brief Devuelve el valor de la variable enviada por un formulario
+     * Devuelve el valor de la variable enviada por un formulario.
+     *
      * @param string $s con el nombre de la variable
      * @param string $d con el valor por defecto
      * @return string con el valor de la variable
@@ -160,7 +166,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si el módulo de LDAP está instalado
+     * Comprobar si el módulo de LDAP está instalado.
+     *
      * @return bool
      */
     public static function ldapIsAvailable()
@@ -169,7 +176,8 @@ class SP_Util
     }
 
     /**
-     * @brief Devuelve la versión de sysPass
+     * Devuelve la versión de sysPass.
+     *
      * @return string con la versión
      */
     public static function getVersionString()
@@ -178,10 +186,11 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si hay actualizaciones de sysPass disponibles desde internet (github.com)
-     * @return array|bool
+     * Comprobar si hay actualizaciones de sysPass disponibles desde internet (github.com)
+     * Esta función hace una petición a GitHub y parsea el JSON devuelto para verificar
+     * si la aplicación está actualizada
      *
-     * Esta función hace una petición a GitHub y parsea el JSON devuelto para verificar si la aplicación está actualizada
+     * @return array|bool
      */
     public static function checkUpdates()
     {
@@ -249,7 +258,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si el módulo CURL está instalado
+     * Comprobar si el módulo CURL está instalado.
+     *
      * @return bool
      */
     public static function curlIsAvailable()
@@ -258,7 +268,8 @@ class SP_Util
     }
 
     /**
-     * @brief Devuelve la versión de sysPass
+     * Devuelve la versión de sysPass.
+     *
      * @param bool $retBuild devolver el número de compilación
      * @return array con el número de versión
      */
@@ -275,7 +286,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar el método utilizado para enviar un formulario
+     * Comprobar el método utilizado para enviar un formulario.
+     *
      * @param string $method con el método utilizado.
      * @return none
      */
@@ -291,7 +303,8 @@ class SP_Util
     }
 
     /**
-     * @brief Realiza el proceso de logout
+     * Realiza el proceso de logout.
+     *
      * @return none
      */
     public static function logout()
@@ -300,7 +313,8 @@ class SP_Util
     }
 
     /**
-     * @brief Obtener el tamaño máximo de subida de PHP
+     * Obtener el tamaño máximo de subida de PHP.
+     *
      * @return none
      */
     public static function getMaxUpload()
@@ -317,7 +331,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si está en modo DEMO
+     * Comprobar si está en modo DEMO.
+     *
      * @return bool
      */
     public static function demoIsEnabled()
@@ -325,23 +340,25 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'demo_enabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
-            $enabled = $_SESSION['demo_enabled'] = SP_Config::getValue('demo_enabled', false);
+        if (!isset($_SESSION["demo_enabled"]) || $reload === 1) {
+            $enabled = $_SESSION['demo_enabled'] = SP_Config::getValue('demo_enabled', 0);
         }
 
         return self::boolval($enabled);
     }
 
     /**
-     * @brief Comprobar si está habilitada la gestión de archivos
+     * Comprobar si está habilitada la gestión de archivos.
+     *
      * @return bool
      */
     public static function fileIsEnabled()
     {
+        $check = SP_Common::parseParams('s', 'files_enabled', false, true);
         $enabled = SP_Common::parseParams('s', 'files_enabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["files_enabled"]) || $reload === 1) {
             $enabled = $_SESSION['files_enabled'] = SP_Config::getValue('files_enabled', false);
         }
 
@@ -349,7 +366,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si están habilitadas las notificaciones por correo
+     * Comprobar si están habilitadas las notificaciones por correo.
+     *
      * @return bool
      */
     public static function mailIsEnabled()
@@ -357,7 +375,7 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'mail_enabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["mail_enabled"]) || $reload === 1) {
             $enabled = $_SESSION['mail_enabled'] = SP_Config::getValue('mail_enabled', false);
         }
 
@@ -365,7 +383,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si está habilitada la Wiki
+     * Comprobar si está habilitada la Wiki.
+     *
      * @return bool
      */
     public static function wikiIsEnabled()
@@ -373,7 +392,7 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'wiki_enabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["wiki_enabled"]) || $reload === 1) {
             $enabled = $_SESSION['wiki_enabled'] = SP_Config::getValue('wiki_enabled', false);
         }
 
@@ -381,7 +400,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si están habilitadas las peticiones por correo
+     * Comprobar si están habilitadas las peticiones por correo.
+     *
      * @return bool
      */
     public static function mailrequestIsEnabled()
@@ -389,7 +409,7 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'mail_requestsenabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["mail_requestsenabled"]) || $reload === 1) {
             $enabled = $_SESSION['mail_requestsenabled'] = SP_Config::getValue('mail_requestsenabled', false);
         }
 
@@ -397,7 +417,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si está habilitado LDAP
+     * Comprobar si está habilitado LDAP.
+     *
      * @return bool
      */
     public static function ldapIsEnabled()
@@ -405,7 +426,7 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'ldap_enabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["ldap_enabled"]) || $reload === 1) {
             $enabled = $_SESSION['ldap_enabled'] = SP_Config::getValue('ldap_enabled', false);
         }
 
@@ -413,7 +434,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si está habilitado el log de eventos
+     * Comprobar si está habilitado el log de eventos.
+     *
      * @return bool
      */
     public static function logIsEnabled()
@@ -421,7 +443,7 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'log_enabled', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["log_enabled"]) || $reload === 1) {
             $enabled = $_SESSION['log_enabled'] = SP_Config::getValue('log_enabled', false);
         }
 
@@ -429,7 +451,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si está habilitado el formato de tarjeta en los resultados
+     * Comprobar si está habilitado el formato de tarjeta en los resultados.
+     *
      * @return bool
      */
     public static function resultsCardsIsEnabled()
@@ -437,7 +460,7 @@ class SP_Util
         $enabled = SP_Common::parseParams('s', 'resultsascards', 0);
         $reload = SP_Common::parseParams('s', 'reload', 0);
 
-        if ($enabled === 0 || $reload === 1) {
+        if (!isset($_SESSION["resultsascards"]) || $reload === 1) {
             $enabled = $_SESSION['resultsascards'] = SP_Config::getValue('resultsascards', false);
         }
 
@@ -445,7 +468,8 @@ class SP_Util
     }
 
     /**
-     * @brief Establecer variable de sesión para recargar la aplicación
+     * Establecer variable de sesión para recargar la aplicación.
+     *
      * @return none
      */
     public static function reload()
@@ -458,7 +482,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprobar si se necesita recargar la aplicación
+     * Comprobar si se necesita recargar la aplicación.
+     *
      * @return none
      */
     public static function checkReload()
@@ -473,13 +498,13 @@ class SP_Util
     }
 
     /**
-     * @brief Devolver al navegador archivos CSS y JS comprimidos
+     * Devolver al navegador archivos CSS y JS comprimidos
+     * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
+     * devuelve el código HTTP/304
+     *
      * @param string $type tipo de recurso a devolver
      * @param array $files archivos a parsear
      * @return none
-     *
-     * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
-     * devuelve el código HTTP/304
      */
     public static function getMinified($type, &$files)
     {
@@ -537,9 +562,10 @@ class SP_Util
     }
 
     /**
-     * @brief Calcular el hash MD5 de varios archivos
+     * Calcular el hash MD5 de varios archivos.
+     *
      * @param array $files archivos a calcular
-     * @return string
+     * @return string Con el hash
      */
     private static function getEtag(&$files)
     {
@@ -554,7 +580,8 @@ class SP_Util
     }
 
     /**
-     * @brief Devolver las cabeceras enviadas desde el cliente
+     * Devolver las cabeceras enviadas desde el cliente.
+     *
      * @param string $header nombre de la cabecera a devolver
      * @return array
      */
@@ -586,7 +613,8 @@ class SP_Util
     }
 
     /**
-     * @brief Comprimir código javascript
+     * Comprimir código javascript.
+     *
      * @param string $buffer código a comprimir
      * @return string
      */
@@ -605,9 +633,11 @@ class SP_Util
         return $buffer;
     }
 
-    /** Checks a variable to see if it should be considered a boolean true or false.
-     *     Also takes into account some text-based representations of true of false,
-     *     such as 'false','N','yes','on','off', etc.
+    /**
+     * Checks a variable to see if it should be considered a boolean true or false.
+     * Also takes into account some text-based representations of true of false,
+     * such as 'false','N','yes','on','off', etc.
+     *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
      * @param mixed $in The variable to check
      * @param bool $strict If set to false, consider everything that is not false to
@@ -635,7 +665,8 @@ class SP_Util
     }
 
     /**
-     * @brief Recorrer un array y escapar los carácteres no válidos en Javascript
+     * Recorrer un array y escapar los carácteres no válidos en Javascript.
+     *
      * @param $array
      * @return array
      */

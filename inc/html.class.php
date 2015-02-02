@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,13 +35,13 @@ class SP_Html
     private static $htmlPage = array();
 
     /**
-     * @brief Crear un elemento del tipo SELECT
+     * Crear un elemento del tipo SELECT.
+     * Esta función genera un elemento SELECT con las propiedades y valores pasados.
+     *
      * @param array $arrValues con los valores del select
      * @param array $arrSelectProp con las propiedades del select
      * @param bool $useValue para usar el Id como valor
      * @return none
-     *
-     * Esta función genera un elemento SELECT con las propiedades y valores pasados.
      */
     public static function printSelect($arrValues, $arrSelectProp, $useValue = true)
     {
@@ -84,12 +84,12 @@ class SP_Html
     }
 
     /**
-     * @brief Mostrar la página HTML
+     * Mostrar la página HTML.
+     * Esta función es la encargada de devolver el código HTML al navegador.
+     *
      * @param string $page opcional con la página a mostar
      * @param array $err con los errores generados
      * @return none
-     *
-     * Esta función es la encargada de devolver el código HTML al navegador.
      */
     public static function render($page = "main", $err = NULL)
     {
@@ -125,10 +125,10 @@ class SP_Html
     }
 
     /**
-     * @brief Crear el header en HTML
-     * @return none
-     *
+     * Crear el header en HTML.
      * Esta función crea la cabecera de una página HTML
+     *
+     * @return none
      */
     private static function makeHeader()
     {
@@ -144,7 +144,8 @@ class SP_Html
     }
 
     /**
-     * @brief Devuelve información sobre la aplicación
+     * Devuelve información sobre la aplicación.
+     *
      * @param string $index con la key a devolver
      * @return array con las propiedades de la aplicación
      */
@@ -168,7 +169,8 @@ class SP_Html
     }
 
     /**
-     * @brief Establece los enlaces CSS de la página HTML
+     * Establece los enlaces CSS de la página HTML.
+     *
      * @return none
      */
     public static function setCss()
@@ -180,7 +182,8 @@ class SP_Html
     }
 
     /**
-     * @brief Establece los enlaces JAVASCRIPT de la página HTML
+     * Establece los enlaces JAVASCRIPT de la página HTML.
+     *
      * @return none
      */
     public static function setJs()
@@ -191,11 +194,11 @@ class SP_Html
     }
 
     /**
-     * @brief Crear el body en HTML
+     * Crear el body en HTML.
+     * Esta función crea el cuerpo de una página HTML
+     *
      * @param string $page con la página a cargar
      * @return none
-     *
-     * Esta función crea el cuerpo de una página HTML
      */
     private static function makeBody($page)
     {
@@ -213,11 +216,10 @@ class SP_Html
     }
 
     /**
-     * @brief Crear el pie de la página HTML
+     * Crear el pie de la página HTML.
+     *
      * @param string $page opcional con la paǵina a mostrar
      * @return none
-     *
-     * Esta función crea el pie de página en HTML
      */
     public static function makeFooter($page = "main")
     {
@@ -235,7 +237,8 @@ class SP_Html
     }
 
     /**
-     * @brief Cargar un archivo de plantilla
+     * Cargar un archivo de plantilla.
+     *
      * @param string $template con el nombre de la plantilla
      * @param array $tplvars con los datos a pasar a la plantilla
      * @return none
@@ -252,7 +255,8 @@ class SP_Html
     }
 
     /**
-     * @brief Crea la barra de navegación para búsqueda de cuentas
+     * Crea la barra de navegación para búsqueda de cuentas.
+     *
      * @param int $intSortKey con el número de campo del filro
      * @param int $intCur con el número de página actual
      * @param int $intTotal con el número total de páginas
@@ -293,7 +297,8 @@ class SP_Html
     }
 
     /**
-     * @brief Crea la barra de navegación para el registro de eventos
+     * Crea la barra de navegación para el registro de eventos.
+     *
      * @param int $intCur con el número de página actual
      * @param int $intTotal con el número total de páginas
      * @param int $intTime con el tiempo de carga de los resultados
@@ -326,9 +331,10 @@ class SP_Html
     }
 
     /**
-     * @brief Limpia los datos recibidos de un formulario
+     * Limpia los datos recibidos de un formulario.
+     *
      * @param string $data con los datos a limpiar
-     * @return string con los datos limpiados
+     * @return false|string con los datos limpiados
      */
     public static function sanitize(&$data)
     {
@@ -373,7 +379,8 @@ class SP_Html
     }
 
     /**
-     * @brief Muestra una barra de información con los registros y tiempo de la consulta
+     * Muestra una barra de información con los registros y tiempo de la consulta.
+     *
      * @param int $intTotal con el total de registros devueltos
      * @param int $startTime con el tiempo de inicio de la consulta
      * @return none
@@ -389,7 +396,8 @@ class SP_Html
     }
 
     /**
-     * @brief Truncar un texto a una determinada longitud
+     * Truncar un texto a una determinada longitud.
+     *
      * @param string $str con la cadena a truncar
      * @param int $len con la longitud máxima de la cadena
      * @return string con el texto truncado
@@ -404,11 +412,11 @@ class SP_Html
     }
 
     /**
-     * @brief Devolver errores comunes
+     * Devolver errores comunes.
+     * Esta función muestra la página de error con el error indicado.
+     *
      * @param string $code con el código de error a mostrar
      * @return none
-     *
-     * Esta función muestra la página de error con el error indicado.
      */
     public static function showCommonError($code)
     {
@@ -429,11 +437,11 @@ class SP_Html
     }
 
     /**
-     * @brief Convertir un color RGB a HEX
+     * Convertir un color RGB a HEX
+     * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
+     *
      * @param array $rgb con color en RGB
      * @return string
-     *
-     * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
      */
     public static function rgb2hex($rgb)
     {
@@ -446,7 +454,8 @@ class SP_Html
     }
 
     /**
-     * @brief Devolver una tabla con el resultado de una consulta y acciones
+     * Devolver una tabla con el resultado de una consulta y acciones.
+     *
      * @param array $arrTableProp con las propiedades de la tabla
      * @param array $queryItems con los resultados de la consulta
      * @return none
@@ -542,7 +551,8 @@ class SP_Html
     }
 
     /**
-     * @brief Devolver una cadena con el tag HTML strong
+     * Devolver una cadena con el tag HTML strong.
+     *
      * @param string $text con la cadena de texto
      * @return string
      */
@@ -552,7 +562,8 @@ class SP_Html
     }
 
     /**
-     * @brief Devolver un link HTML
+     * Devolver un link HTML.
+     *
      * @param string $text con la cadena de texto
      * @param string $link con el destino del enlace
      * @param string $title con el título del enlace
@@ -567,19 +578,5 @@ class SP_Html
         $anchor = '<a href="' . $alink . '" title="' . $atitle . '" ' . $attribs . '>' . $text . '</a>';
 
         return $anchor;
-    }
-
-    private static function minifier($files)
-    {
-        if (!is_array($files)) {
-            return false;
-        }
-
-        foreach ($files as $file) {
-            //$output_min .= file_get_contents($file['src']);
-            include_once SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . $file['src'];
-        }
-
-        //return $output_min;
     }
 }

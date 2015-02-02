@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,7 +35,8 @@ class SP_Upgrade
     private static $cfgUpgrade = array(1124);
 
     /**
-     * @brief Inicia el proceso de actualización de la BBDD
+     * Inicia el proceso de actualización de la BBDD.
+     *
      * @param int $version con la versión de la BBDD actual
      * @returns bool
      */
@@ -55,7 +56,8 @@ class SP_Upgrade
     }
 
     /**
-     * @brief Actualiza la BBDD según la versión
+     * Actualiza la BBDD según la versión.
+     *
      * @param int $version con la versión a actualizar
      * @returns bool
      */
@@ -108,7 +110,8 @@ class SP_Upgrade
     }
 
     /**
-     * @brief Comprueba si es necesario actualizar la BBDD
+     * Comprueba si es necesario actualizar la BBDD.
+     *
      * @param int $version con el número de versión actual
      * @returns bool
      */
@@ -120,7 +123,8 @@ class SP_Upgrade
     }
 
     /**
-     * @brief Comprueba si es necesario actualizar la configuración
+     * Comprueba si es necesario actualizar la configuración.
+     *
      * @param int $version con el número de versión actual
      * @returns bool
      */
@@ -130,7 +134,8 @@ class SP_Upgrade
     }
 
     /**
-     * @brief Migrar valores de configuración
+     * Migrar valores de configuración.
+     *
      * @param int $version con el número de versión
      * @return bool
      */

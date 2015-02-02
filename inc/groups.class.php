@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,8 @@ class SP_Groups
     static $queryLastId;
 
     /**
-     * @brief Obtener los datos de un grupo
+     * Obtener los datos de un grupo.
+     *
      * @param int $id con el Id del grupo a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -64,10 +65,11 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtener los grupos de usuarios
+     * Obtener los grupos de usuarios.
+     *
      * @param int $groupId opcional, con el Id del grupo a consultar
      * @param bool $returnArray opcional, si se debe de devolver un array asociativo
-     * @return array con la lista de grupos
+     * @return false|array con la lista de grupos
      */
     public static function getGroups($groupId = NULL, $returnArray = false)
     {
@@ -101,7 +103,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Comprobar si un grupo existe en la BBDD
+     * Comprobar si un grupo existe en la BBDD.
+     *
      * @return bool
      */
     public static function checkGroupExist()
@@ -132,7 +135,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Añadir un nuevo grupo
+     * Añadir un nuevo grupo.
+     *
      * @return bool
      */
     public static function addGroup()
@@ -157,7 +161,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Modificar un grupo
+     * Modificar un grupo.
+     *
      * @return bool
      */
     public static function updateGroup()
@@ -185,7 +190,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Eliminar un grupo
+     * Eliminar un grupo.
+     *
      * @return bool
      */
     public static function deleteGroup()
@@ -211,10 +217,9 @@ class SP_Groups
     }
 
     /**
-     * @brief Comprobar si un grupo está en uso
-     * @return array con el número de usuarios/cuentas que usan el grupo
+     * Comprobar si un grupo está en uso por usuarios o cuentas.
      *
-     * Esta función comprueba si un grupo está en uso por usuarios o cuentas.
+     * @return array con el número de usuarios/cuentas que usan el grupo
      */
     public static function checkGroupInUse()
     {
@@ -224,8 +229,9 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtener el número de usuarios que usan un grupo
-     * @return int con el número total de cuentas
+     * Obtener el número de usuarios que usan un grupo.
+     *
+     * @return false|int con el número total de cuentas
      */
     private static function getGroupInUsers()
     {
@@ -243,8 +249,9 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtener el número de cuentas que usan un grupo como primario
-     * @return integer con el número total de cuentas
+     * Obtener el número de cuentas que usan un grupo como primario.
+     *
+     * @return false|int con el número total de cuentas
      */
     private static function getGroupInAccounts()
     {
@@ -262,8 +269,9 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtener el número de cuentas que usan un grupo como secundario
-     * @return integer con el número total de cuentas
+     * Obtener el número de cuentas que usan un grupo como secundario.
+     *
+     * @return false|int con el número total de cuentas
      */
     private static function getGroupInAccountsSec()
     {
@@ -281,9 +289,10 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtener el nombre de un grupo por a partir del Id
+     * Obtener el nombre de un grupo por a partir del Id.
+     *
      * @param int $id con el Id del grupo
-     * @return string con el nombre del grupo
+     * @return false|string con el nombre del grupo
      */
     public static function getGroupNameById($id)
     {
@@ -301,9 +310,10 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtiene el listado con el nombre de los grupos de una cuenta
+     * Obtiene el listado con el nombre de los grupos de una cuenta.
+     *
      * @param int $accountId con el Id de la cuenta
-     * @return array con los nombres de los grupos ordenados
+     * @return false|array con los nombres de los grupos ordenados
      */
     public static function getGroupsNameForAccount($accountId)
     {
@@ -329,7 +339,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Actualizar la asociación de grupos con cuentas
+     * Actualizar la asociación de grupos con cuentas.
+     *
      * @param int $accountId con el Id de la cuenta
      * @param array $groupsId con los grupos de la cuenta
      * @return bool
@@ -344,7 +355,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Eliminar la asociación de grupos con cuentas
+     * Eliminar la asociación de grupos con cuentas.
+     *
      * @param int $accountId con el Id de la cuenta
      * @param array $groupsId opcional con los grupos de la cuenta
      * @return bool
@@ -371,7 +383,8 @@ class SP_Groups
     }
 
     /**
-     * @brief Crear asociación de grupos con cuentas
+     * Crear asociación de grupos con cuentas.
+     *
      * @param int $accountId con el Id de la cuenta
      * @param array $groupsId con los grupos de la cuenta
      * @return bool
@@ -413,9 +426,10 @@ class SP_Groups
     }
 
     /**
-     * @brief Obtiene el listado de grupos de una cuenta
+     * Obtiene el listado de grupos de una cuenta.
+     *
      * @param int $accountId con el Id de la cuenta
-     * @return array con el Id de grupo
+     * @return false|array con el Id de grupo
      */
     public static function getGroupsForAccount($accountId)
     {

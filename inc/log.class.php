@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,9 +33,10 @@ class SP_Log
     static $numRows;
 
     /**
-     * @brief Obtener los eventos guardados
+     * Obtener los eventos guardados.
+     *
      * @param int $start con el número de registro desde el que empezar
-     * @return array con el resultado de la consulta
+     * @return false|array con el resultado de la consulta
      */
     public static function getEvents($start)
     {
@@ -64,7 +65,8 @@ class SP_Log
     }
 
     /**
-     * @brief Limpiar el registro de eventos
+     * Limpiar el registro de eventos.
+     *
      * @return bool con el resultado
      */
     public static function clearEvents()
@@ -86,7 +88,8 @@ class SP_Log
     }
 
     /**
-     * @brief Crear un nuevo registro en el registro de eventos
+     * Crear un nuevo registro en el registro de eventos.
+     *
      * @param array $message con el nombre de la accióm y el texto del mensaje
      * @return bool
      */

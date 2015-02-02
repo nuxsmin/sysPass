@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class SP_Common
 {
     /**
-     * @brief Enviar un email
+     * Enviar un email utilizando la clase PHPMailer.
+     *
      * @param array $message con el nombre de la accióm y el texto del mensaje
      * @param string $mailTo con el destinatario
      * @param bool $isEvent para indicar si es um
@@ -94,10 +95,11 @@ class SP_Common
     }
 
     /**
-     * @brief Inicializar la clase PHPMailer
+     * Inicializar la clase PHPMailer.
+     *
      * @param string $mailTo con la dirección del destinatario
      * @param string $action con la acción realizada
-     * @return object
+     * @return false|object
      */
     public static function getEmailObject($mailTo, $action)
     {
@@ -147,10 +149,11 @@ class SP_Common
     }
 
     /**
-     * @brief Devuelve una respuesta en formato XML con el estado y el mensaje
+     * Devuelve una respuesta en formato XML con el estado y el mensaje.
+     *
      * @param string $description mensaje a devolver
      * @param int $status devuelve el estado
-     * @return string documento XML
+     * @return bool
      */
     public static function printXML($description, $status = 1)
     {
@@ -171,11 +174,12 @@ class SP_Common
     }
 
     /**
-     * @brief Devuelve una respuesta en formato JSON con el estado y el mensaje
+     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     *
      * @param string $description mensaje a devolver
      * @param int $status devuelve el estado
      * @param string $action con la accion a realizar
-     * @return string respuesta JSON
+     * @return bool
      */
     public static function printJSON($description, $status = 1, $action = '')
     {
@@ -195,10 +199,11 @@ class SP_Common
     }
 
     /**
-     * @brief Devuelve un icono de ayuda con el mensaje
+     * Devuelve un icono de ayuda con el mensaje.
+     *
      * @param int $type tipo de mensaje
      * @param int $id id del mensaje
-     * @return string con la etiqueta html <img>
+     * @return string Con la etiqueta html del icono de ayuda
      */
     public static function printHelpButton($type, $id)
     {
@@ -233,21 +238,22 @@ class SP_Common
         $msgHelp[28] = _('Define el perfil de usuario por defecto para los nuevos usuarios de LDAP.');
 
         if (array_key_exists($id, $msgHelp)) {
-            echo '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';
+            return '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';
         }
     }
 
     /**
-     * @brief Devuelve un hash para verificación de formularios
+     * Devuelve un hash para verificación de formularios.
+     * Esta función genera un hash que permite verificar la autenticidad de un formulario
+     *
      * @param bool $new si es necesrio regenerar el hash
      * @return string con el hash de verificación
-     *
-     * Esta función genera un hash que permite verificar la autenticidad de un formulario
      */
     public static function getSessionKey($new = false)
     {
         $hash = sha1(time());
 
+        // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
         if (!isset($_SESSION["sk"]) || $new === true) {
             $_SESSION["sk"] = $hash;
             return $hash;
@@ -257,7 +263,8 @@ class SP_Common
     }
 
     /**
-     * @brief Comprobar el hash de verificación de formularios
+     * Comprobar el hash de verificación de formularios.
+     *
      * @param string $key con el hash a comprobar
      * @return bool|string si no es correcto el hash devuelve bool. Si lo es, devuelve el hash actual.
      */
@@ -271,7 +278,9 @@ class SP_Common
     }
 
     /**
-     * @brief Obtener los valores de peticiones GET o POST y devolver limpios
+     * Obtener los valores de variables $_GET, $_POST, $_REQUEST o $_SESSION
+     * y devolverlos limpios con el tipo correcto o esperado.
+     *
      * @param string $method con el método a utilizar
      * @param string $param con el parámetro a consultar
      * @param mixed $default opcional, valor por defecto a devolver

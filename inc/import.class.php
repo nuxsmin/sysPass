@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -68,7 +68,8 @@ class SP_Import
     private static $tmpFile;
 
     /**
-     * @brief Iniciar la importación de cuentas
+     * Iniciar la importación de cuentas.
+     *
      * @param array $fileData con los datos del archivo
      * @return array resultado del proceso
      */
@@ -92,7 +93,8 @@ class SP_Import
     }
 
     /**
-     * @brief Leer los datos del archivo
+     * Leer los datos del archivo.
+     *
      * @param array $fileData con los datos del archivo
      * @throws ImportException
      * @return bool
@@ -143,7 +145,8 @@ class SP_Import
     }
 
     /**
-     * @brief Leer los datos importados y formatearlos
+     * Leer los datos importados y formatearlos.
+     *
      * @throws ImportException
      * @return bool
      */
@@ -169,7 +172,8 @@ class SP_Import
     }
 
     /**
-     * @brief Crear una cuenta con los datos obtenidos
+     * Crear una cuenta con los datos obtenidos.
+     *
      * @param array $data con los datos de la cuenta
      * @throws ImportException
      * @return bool
@@ -219,7 +223,8 @@ class SP_Import
     }
 
     /**
-     * @brief Encriptar la clave de una cuenta
+     * Encriptar la clave de una cuenta.
+     *
      * @param string $password con la clave de la cuenta
      * @throws ImportException
      * @return array con la clave y el IV
@@ -230,29 +235,28 @@ class SP_Import
             return array('pass' => '', 'IV' => '');
         }
 
-        $crypt = new SP_Crypt;
-
         // Comprobar el módulo de encriptación
         if (!SP_Crypt::checkCryptModule()) {
             throw new ImportException('critical', _('Error interno'), _('No se puede usar el módulo de encriptación'));
         }
 
         // Encriptar clave
-        $data['pass'] = $crypt->mkEncrypt($password);
+        $data['pass'] = SP_Crypt::mkEncrypt($password);
 
         if (!empty($password) && ($data['pass'] === false || is_null($data['pass']))) {
             throw new ImportException('critical', _('Error interno'), _('Error al generar datos cifrados'));
         }
 
-        $data['IV'] = $crypt->strInitialVector;
+        $data['IV'] = SP_Crypt::$strInitialVector;
 
         return $data;
     }
 
     /**
-     * @brief Leer el archivo de KeePass a un objeto XML
+     * Leer el archivo de KeePass a un objeto XML.
+     *
      * @throws ImportException
-     * @return bool
+     * @return object Con los datos del archivo XML
      */
     private static function readXMLFile()
     {
@@ -264,9 +268,10 @@ class SP_Import
     }
 
     /**
-     * @brief Detectar la aplicación que generó el XML
+     * Detectar la aplicación que generó el XML.
+     *
      * @throws ImportException
-     * @return bool
+     * @return none
      */
     private static function detectXMLFormat()
     {
@@ -291,7 +296,8 @@ class SP_Import
     }
 
     /**
-     * @brief Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas
+     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
+     *
      * @return bool
      */
     private static function parseFileHeader()

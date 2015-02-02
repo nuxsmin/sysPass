@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ $onCloseAction = $data['onCloseAction'];
         <tr>
             <td class="descField">
                 <?php echo _('Usuario BBDD'); ?>
-                <?php SP_Common::printHelpButton("config", 0); ?>
+                <?php echo SP_Common::printHelpButton("config", 0); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbuser" value="" />
@@ -55,7 +55,7 @@ $onCloseAction = $data['onCloseAction'];
         <tr>
             <td class="descField">
                 <?php echo _('Nombre BBDD'); ?>
-                <?php SP_Common::printHelpButton("config", 1); ?>
+                <?php echo SP_Common::printHelpButton("config", 1); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbname" value="phppms" />
@@ -64,7 +64,7 @@ $onCloseAction = $data['onCloseAction'];
         <tr>
             <td class="descField">
                 <?php echo _('Servidor BBDD'); ?>
-                <?php SP_Common::printHelpButton("config", 2); ?>
+                <?php echo SP_Common::printHelpButton("config", 2); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbhost" value="localhost" />
@@ -108,7 +108,7 @@ $onCloseAction = $data['onCloseAction'];
     <tr>
         <td class="descField">
             <?php echo _('Archivo'); ?>
-            <?php SP_Common::printHelpButton("config", 23); ?>
+            <?php echo SP_Common::printHelpButton("config", 23); ?>
         </td>
         <td class="valField">
             <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">

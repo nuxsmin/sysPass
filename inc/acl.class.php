@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,14 +35,14 @@ class SP_ACL
     static $accountCacheUserGroupsId;
 
     /**
-     * @brief Comprobar los permisos de acceso del usuario a los módulos de la aplicación
-     * @param string $strAction con el nombre de la acción
-     * @param int $userId opcional, con el Id del usuario
-     * @return bool
-     *
+     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
      * Esta función comprueba los permisos del usuario para realizar una acción.
      * Si los permisos ya han sido obtenidos desde la BBDD, se utiliza el objeto creado
      * en la variable de sesión.
+     *
+     * @param string $strAction con el nombre de la acción
+     * @param int $userId opcional, con el Id del usuario
+     * @return bool
      */
     public static function checkUserAccess($strAction, $userId = 0)
     {
@@ -109,7 +109,8 @@ class SP_ACL
     }
 
     /**
-     * @brief Comprueba los permisos de acceso a una cuenta
+     * Comprueba los permisos de acceso a una cuenta.
+     *
      * @param string $action con la acción realizada
      * @param array $accountData con los datos de la cuenta a verificar
      * @return bool

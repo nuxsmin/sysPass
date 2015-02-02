@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -117,23 +117,19 @@ if ($frmSaveType == 1) {
 }
 
 if ($frmSaveType == 1 || $frmSaveType == 4) {
-    $crypt = new SP_Crypt;
-
     // Comprobar el módulo de encriptación
     if (!SP_Crypt::checkCryptModule()) {
         SP_Common::printJSON(_('No se puede usar el módulo de encriptación'));
     }
 
     // Encriptar clave de cuenta
-    $accountPass = $crypt->mkEncrypt($frmPassword);
-    //$accountURL = $crypt->mkEncrypt($frmUrl, $crypt->getSessionMasterPass());
-    //$accountNotes = $crypt->mkEncrypt($frmNotes, $crypt->getSessionMasterPass());
+    $accountPass = SP_Crypt::mkEncrypt($frmPassword);
 
     if ($accountPass === false || is_null($accountPass)) {
         SP_Common::printJSON(_('Error al generar datos cifrados'));
     }
 
-    $accountIV = $crypt->strInitialVector;
+    $accountIV = SP_Crypt::$strInitialVector;
 }
 
 $account = new SP_Account;

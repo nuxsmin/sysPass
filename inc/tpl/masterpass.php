@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -74,7 +74,7 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
         <tr>
             <td class="descField">
                 <?php echo _('No modificar cuentas'); ?>
-                <?php SP_Common::printHelpButton("config", 16); ?>
+                <?php echo SP_Common::printHelpButton("config", 16); ?>
             </td>
             <td class="valField">
                 <label for="chkNoAccountChange"><?php echo _('NO'); ?></label>

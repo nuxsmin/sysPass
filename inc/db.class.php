@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -41,7 +41,8 @@ class DB
     private static $_db;
 
     /**
-     * @brief Comprobar que la base de datos existe
+     * Comprobar que la base de datos existe.
+     *
      * @return bool
      */
     public static function checkDatabaseExist()
@@ -69,11 +70,11 @@ class DB
     }
 
     /**
-     * @brief Realizar la conexión con la BBDD
-     * @return bool
-     *
+     * Realizar la conexión con la BBDD.
      * Esta función utiliza mysqli para conectar con la base de datos.
      * Guarda el objeto creado en la variable $_db de la clase
+     *
+     * @return bool
      */
     private static function connection()
     {
@@ -118,13 +119,14 @@ class DB
     }
 
     /**
-     * @brief Obtener los datos para generar un select
+     * Obtener los datos para generar un select.
+     *
      * @param string $tblName con el nombre de la tabla a cunsultar
      * @param string $tblColId con el nombre de la columna del tipo Id a mostrar
      * @param string $tblColName con el nombre de la columna del tipo Name a mostrar
      * @param array $arrFilter con las columnas a filtrar
      * @param array $arrOrder con el orden de las columnas
-     * @return array con los valores del select con el Id como clave y el nombre como valor
+     * @return false|array con los valores del select con el Id como clave y el nombre como valor
      */
     public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
     {
@@ -152,7 +154,8 @@ class DB
     }
 
     /**
-     * @brief Obtener los resultados de una consulta
+     * Obtener los resultados de una consulta.
+     *
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
      * @param bool $retArray devolver un array si la consulta tiene esultados
@@ -181,11 +184,12 @@ class DB
     }
 
     /**
-     * @brief Realizar una consulta a la BBDD
+     * Realizar una consulta a la BBDD.
+     *
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
      * @param bool $unbuffered realizar la consulta para obtener registro a registro
-     * @return bool|int devuelve bool si hay un error. Devuelve int con el número de registros
+     * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
      */
     public static function doQuery($query, $querySource, $unbuffered = false)
     {
@@ -249,11 +253,10 @@ class DB
     }
 
     /**
-     * @brief Escapar una cadena de texto
+     * Escapar una cadena de texto con funciones de mysqli.
+     *
      * @param string $str con la cadena a escapar
      * @return string con la cadena escapada
-     *
-     * Esta función utiliza mysqli para escapar cadenas de texto.
      */
     public static function escape($str)
     {

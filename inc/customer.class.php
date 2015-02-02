@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,8 @@ class SP_Customer
     public static $customerHash;
 
     /**
-     * @brief Crear un nuevo cliente en la BBDD
+     * Crear un nuevo cliente en la BBDD.
+     *
      * @return bool
      */
     public static function addCustomer()
@@ -63,17 +64,17 @@ class SP_Customer
     }
 
     /**
-     * @brief Crear un hash con el nombre del cliente
-     * @return string con el hash generado
-     *
+     * Crear un hash con el nombre del cliente.
      * Esta función crear un hash para detectar clientes duplicados mediante
      * la eliminación de carácteres especiales y capitalización
+     *
+     * @return string con el hash generado
      */
     private static function mkCustomerHash()
     {
         $charsSrc = array(
-            ".", " ", "_", ", ", "-", ";
-                ", "'", "\"", ":", "(", ")", "|", "/");
+            ".", " ", "_", ", ", "-", ";",
+            "'", "\"", ":", "(", ")", "|", "/");
         $newValue = strtolower(str_replace($charsSrc, '', DB::escape(self::$customerName)));
         $hashValue = md5($newValue);
 
@@ -81,7 +82,8 @@ class SP_Customer
     }
 
     /**
-     * @brief Actualizar un cliente en la BBDD
+     * Actualizar un cliente en la BBDD.
+     *
      * @param int $id con el Id del cliente
      * @return bool
      */
@@ -109,7 +111,8 @@ class SP_Customer
     }
 
     /**
-     * @brief Eliminar un cliente de la BBDD
+     * Eliminar un cliente de la BBDD.
+     *
      * @param int $id con el Id del cliente a eliminar
      * @return bool
      */
@@ -134,9 +137,10 @@ class SP_Customer
     }
 
     /**
-     * @brief Obtener el Nombre de un cliente por su Id
+     * Obtener el Nombre de un cliente por su Id.
+     *
      * @param int $id con el Id del cliente
-     * @return string con el nombre del cliente
+     * @return false|string con el nombre del cliente
      */
     public static function getCustomerById($id)
     {
@@ -153,7 +157,8 @@ class SP_Customer
     }
 
     /**
-     * @brief Comprobar si existe un cliente duplicado comprobando el hash
+     * Comprobar si existe un cliente duplicado comprobando el hash.
+     *
      * @param int $id opcional con el Id del cliente
      * @return bool
      */
@@ -181,8 +186,9 @@ class SP_Customer
     }
 
     /**
-     * @brief Obtener el Id de un cliente por su nombre
-     * @return int con el Id del cliente
+     * Obtener el Id de un cliente por su nombre
+     *
+     * @return false|int Con el Id del cliente
      */
     public static function getCustomerByName()
     {
@@ -199,7 +205,8 @@ class SP_Customer
     }
 
     /**
-     * @brief Obtener los datos de un cliente
+     * Obtener los datos de un cliente.
+     *
      * @param int $id con el Id del cliente a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -225,7 +232,8 @@ class SP_Customer
     }
 
     /**
-     * @brief Obtener el listado de clientes
+     * Obtener el listado de clientes.
+     *
      * @param int $customerId con el Id del cliente
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con el id de cliente como clave y el nombre como valor
@@ -263,11 +271,11 @@ class SP_Customer
     }
 
     /**
-     * @brief Comprobar si un cliente está en uso
-     * @param int $id con el Id del cliente a consultar
-     * @return bool
-     *
+     * Comprobar si un cliente está en uso.
      * Esta función comprueba si un cliente está en uso por cuentas.
+     *
+     * @param int $id con el Id del cliente a consultar
+     * @return int Con el número de cuentas
      */
     public static function checkCustomerInUse($id)
     {
@@ -276,9 +284,10 @@ class SP_Customer
     }
 
     /**
-     * @brief Obtener el número de cuentas que usan un cliente
+     * Obtener el número de cuentas que usan un cliente.
+     *
      * @param int $id con el Id del cliente a consultar
-     * @return integer con el número total de cuentas
+     * @return false|int con el número total de cuentas
      */
     private static function getCustomerInAccounts($id)
     {

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -67,9 +67,10 @@ class SP_Account
     var $cacheParams;
 
     /**
-     * @brief Obtener los datos de usuario y modificador de una cuenta
+     * Obtener los datos de usuario y modificador de una cuenta.
+     *
      * @param int $accountId con el Id de la cuenta
-     * @return object con el id de usuario y modificador.
+     * @return false|object con el id de usuario y modificador.
      */
     public static function getAccountRequestData($accountId)
     {
@@ -90,9 +91,10 @@ class SP_Account
     }
 
     /**
-     * @brief Obtiene el listado con el nombre de los usuaios de una cuenta
+     * Obtiene el listado con el nombre de los usuaios de una cuenta.
+     *
      * @param int $accountId con el Id de la cuenta
-     * @return array con los nombres de los usuarios ordenados
+     * @return false|array con los nombres de los usuarios ordenados
      */
     public static function getAccountUsersName($accountId)
     {
@@ -121,9 +123,10 @@ class SP_Account
     }
 
     /**
-     * @brief Obtener las cuentas de una búsqueda
-     * @param array $searchFilter filtros de búsqueda
-     * @return array resultado de la consulta
+     * Obtener las cuentas de una búsqueda.
+     *
+     * @param array $searchFilter Filtros de búsqueda
+     * @return bool Resultado de la consulta
      */
     public function getAccounts($searchFilter)
     {
@@ -251,10 +254,11 @@ class SP_Account
     }
 
     /**
-     * @brief Obtener los datos del histórico de una cuenta
-     * @return none
+     * Obtener los datos del histórico de una cuenta.
+     * Esta funcion realiza la consulta a la BBDD y guarda los datos del histórico
+     * en las variables de la clase.
      *
-     * Esta funcion realiza la consulta a la BBDD y guarda los datos del histórico en las variables de la clase.
+     * @return false|object
      */
     public function getAccountHistory()
     {
@@ -307,7 +311,8 @@ class SP_Account
     }
 
     /**
-     * @brief Actualiza los datos de una cuenta en la BBDD
+     * Actualiza los datos de una cuenta en la BBDD.
+     *
      * @param bool $isRestore si es una restauración de cuenta
      * @return bool
      */
@@ -372,7 +377,8 @@ class SP_Account
     }
 
     /**
-     * @brief Crear un nuevo registro de histório de cuenta en la BBDD
+     * Crear un nuevo registro de histório de cuenta en la BBDD.
+     *
      * @param bool $isDelete indica que la cuenta es eliminada
      * @return bool
      */
@@ -417,10 +423,10 @@ class SP_Account
     }
 
     /**
-     * @brief Obtener los datos de una cuenta
-     * @return none
-     *
+     * Obtener los datos de una cuenta.
      * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
+     *
+     * @return object|false
      */
     public function getAccount()
     {
@@ -474,12 +480,12 @@ class SP_Account
     }
 
     /**
-     * @brief Obtener los datos de una cuenta con el id
-     * @param array $params con los campos de la BBDD a obtener
-     * @return bool
-     *
+     * Obtener los datos de una cuenta con el id.
      * Se guardan los datos en la variable $cacheParams de la clase para consultarlos
      * posteriormente.
+     *
+     * @param array $params con los campos de la BBDD a obtener
+     * @return bool
      */
     private function getAccountInfoById($params)
     {
@@ -522,7 +528,8 @@ class SP_Account
     }
 
     /**
-     * @brief Crea una nueva cuenta en la BBDD
+     * Crea una nueva cuenta en la BBDD
+     *
      * @return bool
      */
     public function createAccount()
@@ -580,7 +587,8 @@ class SP_Account
     }
 
     /**
-     * @brief Elimina los datos de una cuenta en la BBDD
+     * Elimina los datos de una cuenta en la BBDD.
+     *
      * @return bool
      */
     public function deleteAccount()
@@ -621,8 +629,9 @@ class SP_Account
     }
 
     /**
-     * @brief Obtiene el listado del histórico de una cuenta
-     * @return array con los registros con id como clave y fecha - usuario como valor
+     * Obtiene el listado del histórico de una cuenta.
+     *
+     * @return false|array Con los registros con id como clave y fecha - usuario como valor
      */
     public function getAccountHistoryList()
     {
@@ -657,7 +666,8 @@ class SP_Account
     }
 
     /**
-     * @brief Incrementa el contador de visitas de una cuenta en la BBDD
+     * Incrementa el contador de visitas de una cuenta en la BBDD
+     *
      * @return bool
      */
     public function incrementViewCounter()
@@ -674,7 +684,8 @@ class SP_Account
     }
 
     /**
-     * @brief Incrementa el contador de vista de clave de una cuenta en la BBDD
+     * Incrementa el contador de vista de clave de una cuenta en la BBDD
+     *
      * @return bool
      */
     public function incrementDecryptCounter()
@@ -690,8 +701,9 @@ class SP_Account
     }
 
     /**
-     * @brief Obtiene el número de cuentas que un usuario puede ver
-     * @return int con el número de registros
+     * Obtiene el número de cuentas que un usuario puede ver.
+     *
+     * @return false|int con el número de registros
      */
     public function getAccountMax()
     {
@@ -721,7 +733,8 @@ class SP_Account
     }
 
     /**
-     * @brief Actualiza las claves de todas las cuentas con la nueva clave maestra
+     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
+     *
      * @param string $currentMasterPass con la clave maestra actual
      * @param string $newMasterPass con la nueva clave maestra
      * @return bool
@@ -740,8 +753,6 @@ class SP_Account
 
         // Limpiar 'text' para los próximos mensajes
         $message['text'] = array();
-
-        $crypt = new SP_Crypt();
 
         if (!SP_Crypt::checkCryptModule()) {
             $message['text'][] = _('Error en el módulo de encriptación');
@@ -767,9 +778,9 @@ class SP_Account
                 continue;
             }
 
-            $decryptedPass = $crypt->decrypt($account->account_pass, $currentMasterPass, $account->account_IV);
-            $this->accountPass = $crypt->mkEncrypt($decryptedPass, $newMasterPass);
-            $this->accountIV = $crypt->strInitialVector;
+            $decryptedPass = SP_Crypt::getDecrypt($account->account_pass, $currentMasterPass, $account->account_IV);
+            $this->accountPass = SP_Crypt::mkEncrypt($decryptedPass, $newMasterPass);
+            $this->accountIV = SP_Crypt::$strInitialVector;
 
             if ($this->accountPass === false) {
                 $errorCount++;
@@ -807,8 +818,9 @@ class SP_Account
     }
 
     /**
-     * @brief Obtener los datos relativos a la clave de todas las cuentas
-     * @return array con los datos de la clave
+     * Obtener los datos relativos a la clave de todas las cuentas.
+     *
+     * @return false|array Con los datos de la clave
      */
     private function getAccountsPassData()
     {
@@ -826,7 +838,8 @@ class SP_Account
     }
 
     /**
-     * @brief Actualiza la clave de una cuenta en la BBDD
+     * Actualiza la clave de una cuenta en la BBDD.
+     *
      * @param bool $isMassive para no actualizar el histórico ni enviar mensajes
      * @param bool $isRestore indica si es una restauración
      * @return bool
@@ -874,7 +887,8 @@ class SP_Account
     }
 
     /**
-     * @brief Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra
+     * Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra.
+     *
      * @param string $currentMasterPass con la clave maestra actual
      * @param string $newMasterPass con la nueva clave maestra
      * @param string $newHash con el nuevo hash de la clave maestra
@@ -893,8 +907,6 @@ class SP_Account
 
         // Limpiar 'text' para los próximos mensajes
         $message['text'] = array();
-
-        $crypt = new SP_Crypt();
 
         if (!SP_Crypt::checkCryptModule()) {
             $message['text'][] = _('Error en el módulo de encriptación');
@@ -923,10 +935,10 @@ class SP_Account
                 continue;
             }
 
-            $decryptedPass = $crypt->decrypt($account->acchistory_pass, $currentMasterPass, $account->acchistory_IV);
+            $decryptedPass = SP_Crypt::getDecrypt($account->acchistory_pass, $currentMasterPass, $account->acchistory_IV);
 
-            $this->accountPass = $crypt->mkEncrypt($decryptedPass, $newMasterPass);
-            $this->accountIV = $crypt->strInitialVector;
+            $this->accountPass = SP_Crypt::mkEncrypt($decryptedPass, $newMasterPass);
+            $this->accountIV = SP_Crypt::$strInitialVector;
 
             if ($this->accountPass === false) {
                 $errorCount++;
@@ -964,8 +976,9 @@ class SP_Account
     }
 
     /**
-     * @brief Obtener los datos relativo a la clave de todas las cuentas del histórico
-     * @return array con los datos de la clave
+     * Obtener los datos relativo a la clave de todas las cuentas del histórico.
+     *
+     * @return false|array con los datos de la clave
      */
     private function getAccountsHistoryPassData()
     {
@@ -983,7 +996,8 @@ class SP_Account
     }
 
     /**
-     * @brief Comprueba el hash de la clave maestra del registro de histórico de una cuenta
+     * Comprueba el hash de la clave maestra del registro de histórico de una cuenta.
+     *
      * @param int $id opcional, con el Id del registro a comprobar
      * @return bool
      */
@@ -1010,7 +1024,8 @@ class SP_Account
     }
 
     /**
-     * @brief Actualiza la clave del histórico de una cuenta en la BBDD
+     * Actualiza la clave del histórico de una cuenta en la BBDD.
+     *
      * @param int $id con el id del registro a actualizar
      * @param string $newHash con el hash de la clave maestra
      * @return bool
@@ -1031,11 +1046,11 @@ class SP_Account
     }
 
     /**
-     * @brief Calcular el hash de los datos de una cuenta
-     * @return string con el hash
-     *
+     * Calcular el hash de los datos de una cuenta.
      * Esta función se utiliza para verificar si los datos de un formulario han sido cambiados
      * con respecto a los guardados
+     *
+     * @return string con el hash
      */
     public function calcChangesHash()
     {
@@ -1087,7 +1102,8 @@ class SP_Account
     }
 
     /**
-     * @brief Devolver datos de la cuenta para comprobación de accesos
+     * Devolver datos de la cuenta para comprobación de accesos.
+     *
      * @param int $accountId con el id de la cuenta
      * @return array con los datos de la cuenta
      */
@@ -1107,8 +1123,9 @@ class SP_Account
     }
 
     /**
-     * @brief Obtiene el listado usuarios con acceso a una cuenta
-     * @return array con los registros con id de cuenta como clave e id de usuario como valor
+     * Obtiene el listado usuarios con acceso a una cuenta.
+     *
+     * @return array Con los registros con id de cuenta como clave e id de usuario como valor
      */
     public function getUsersAccount()
     {
@@ -1140,7 +1157,8 @@ class SP_Account
     }
 
     /**
-     * @brief Obtiene el listado de grupos secundarios de una cuenta
+     * Obtiene el listado de grupos secundarios de una cuenta.
+     *
      * @return array con los registros con id de cuenta como clave e id de grupo como valor
      */
     public function getGroupsAccount()

@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -45,7 +45,8 @@ class SP_LDAP
     private static $ldapGroup;
 
     /**
-     * @brief Obtener el recurso de conexión a LDAP
+     * Obtener el recurso de conexión a LDAP.
+     *
      * @return resource
      */
     public static function getConn()
@@ -56,13 +57,14 @@ class SP_LDAP
     }
 
     /**
-     * @brief Comprobar la conexión al servidor de LDAP
+     * Comprobar la conexión al servidor de LDAP.
+     *
      * @param string $ldapServer con la dirección del servidor
      * @param string $bindDN con el usuario de conexión
      * @param string $bindPass con la clave del usuario de conexión
      * @param string $searchBase con la base para las búsquedas
      * @param string $ldapGroup con el grupo con los usuarios de acceso
-     * @return bool
+     * @return false|int Con el número de entradas encontradas
      */
     public static function checkLDAPConn($ldapServer, $bindDN, $bindPass, $searchBase, $ldapGroup)
     {
@@ -84,7 +86,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Realizar la conexión al servidor de LDAP
+     * Realizar la conexión al servidor de LDAP.
+     *
      * @throws Exception
      * @return bool
      */
@@ -109,7 +112,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Realizar la autentificación con el servidor de LDAP
+     * Realizar la autentificación con el servidor de LDAP.
+     *
      * @param string $userDN con el DN del usuario
      * @param string $userPass con la clave del usuario
      * @throws Exception
@@ -136,7 +140,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Realizar una búsqueda de objetos en la ruta indicada
+     * Realizar una búsqueda de objetos en la ruta indicada.
+     *
      * @throws Exception
      * @return int con el número de resultados
      */
@@ -164,7 +169,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Obtener el RDN del grupo
+     * Obtener el RDN del grupo.
+     *
      * @throws Exception
      * @return string con el RDN del grupo
      */
@@ -222,7 +228,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Comprobar si los parámetros necesario de LDAP están establecidos
+     * Comprobar si los parámetros necesario de LDAP están establecidos.
+     *
      * @return bool
      */
     public static function checkLDAPParams()
@@ -247,7 +254,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Obtener el RDN del usuario que realiza el login
+     * Obtener el RDN del usuario que realiza el login.
+     *
      * @param string $userLogin con el login del usuario
      * @throws Exception
      * @return none
@@ -298,7 +306,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Realizar la desconexión del servidor de LDAP
+     * Realizar la desconexión del servidor de LDAP.
+     *
      * @return none
      */
     public static function unbind()
@@ -307,7 +316,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Obtener los atributos del usuario
+     * Obtener los atributos del usuario.
+     *
      * @param array $attribs con los atributos a obtener
      * @return array con los atributos disponibles y sus valores
      */
@@ -337,7 +347,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Buscar al usuario en un grupo
+     * Buscar al usuario en un grupo.
+     *
      * @param string $userDN con el RDN del usuario
      * @throws Exception
      * @return bool
@@ -389,7 +400,8 @@ class SP_LDAP
     }
 
     /**
-     * @brief Escapar carácteres especiales en el RDN de LDAP
+     * Escapar carácteres especiales en el RDN de LDAP.
+     *
      * @param string $dn con el RDN del usuario
      * @return string
      */

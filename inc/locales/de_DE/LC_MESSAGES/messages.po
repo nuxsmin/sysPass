@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 22:33+0100\n"
-"PO-Revision-Date: 2015-01-23 22:34+0100\n"
+"POT-Creation-Date: 2015-01-25 15:35+0100\n"
+"PO-Revision-Date: 2015-01-25 16:00+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -2935,6 +2935,102 @@ msgstr "Passwort vergessen?"
 #: ../../../../inc/tpl/login.php:78
 msgid "Aplicación actualizada correctamente"
 msgstr "Anwendung erfolgreich aktualisiert"
+
+# New search interface with list or card like styles
+#: ../../../../inc/tpl/login.php:84
+#, fuzzy
+msgid "Nuevo interface de búsqueda con estilo de lista o tipo tarjeta"
+msgstr "New search interface with list or card like styles"
+
+# Users and groups selection for account access
+#: ../../../../inc/tpl/login.php:85
+#, fuzzy
+msgid "Selección de grupos y usuarios de acceso a cuentas"
+msgstr "Users and groups selection for account access"
+
+# Drag&Drop for files uploading
+#: ../../../../inc/tpl/login.php:86
+#, fuzzy
+msgid "Drag&Drop para subida de archivos"
+msgstr "Drag&Drop for files uploading"
+
+# Copy Password to Clipboard
+#: ../../../../inc/tpl/login.php:87
+#, fuzzy
+msgid "Copiar clave al portapapeles"
+msgstr "Copy password to clipboard"
+
+# Accounts history and restore points
+#: ../../../../inc/tpl/login.php:88
+#, fuzzy
+msgid "Historial de cuentas y restauración"
+msgstr "Accounts history and restore points"
+
+# New categories and customers management
+#: ../../../../inc/tpl/login.php:89
+#, fuzzy
+msgid "Nueva gestión de categorías y clientes"
+msgstr "New categories and customers management"
+
+# Reset password function for users
+#: ../../../../inc/tpl/login.php:90
+#, fuzzy
+msgid "Función de olvido de claves para usuarios"
+msgstr "Reset password function for users"
+
+# Improved Active Directory and LDAP integration
+#: ../../../../inc/tpl/login.php:91
+#, fuzzy
+msgid "Integración con Active Directory y LDAP mejorada"
+msgstr "Improved Active Directory and LDAP integration"
+
+# Email notifications with authentication
+#: ../../../../inc/tpl/login.php:92
+#, fuzzy
+msgid "Autentificación para notificaciones por correo"
+msgstr "Email notifications with authentication"
+
+# Global account searching for unprivileged users
+#: ../../../../inc/tpl/login.php:93
+#, fuzzy
+msgid "Búsqueda global de cuentas para usuarios sin permisos"
+msgstr "Global account searching for unprivileged users"
+
+# Request for Account Modification
+#: ../../../../inc/tpl/login.php:94
+#, fuzzy
+msgid "Solicitudes de modificación de cuentas para usuarios sin permisos"
+msgstr "Requests for account modification for unprivileged users"
+
+# Accounts import from KeePass, KeePassX and CSV
+#: ../../../../inc/tpl/login.php:95
+#, fuzzy
+msgid "Importación de cuentas desde KeePass, KeePassX y CSV"
+msgstr "Accounts import from KeePass, KeePassX and CSV"
+
+# Clone account function
+#: ../../../../inc/tpl/login.php:96
+#, fuzzy
+msgid "Función de copiar cuentas"
+msgstr "Clone account function"
+
+# Code optimization and faster loading
+#: ../../../../inc/tpl/login.php:97
+#, fuzzy
+msgid "Optimización del código y mayor rapidez de carga"
+msgstr "Code optimization and faster loading"
+
+# Improved security to prevent XSS and SQL injection
+#: ../../../../inc/tpl/login.php:98
+#, fuzzy
+msgid "Mejoras de seguridad en XSS e inyección SQL"
+msgstr "Improved security to prevent XSS and SQL injection"
+
+# New Features
+#: ../../../../inc/tpl/login.php:101 ../../../../inc/tpl/login.php:102
+#, fuzzy
+msgid "Nuevas Características"
+msgstr "New Features"
 
 # Customer name
 #: ../../../../inc/tpl/customers.php:41

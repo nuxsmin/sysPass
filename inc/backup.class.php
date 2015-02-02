@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,11 +31,9 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class SP_Backup
 {
     /**
-     * @brief Realizar backup de la BBDD y aplicación
-     * @return array resultado
+     * Realizar backup de la BBDD y aplicación.
      *
-     * Realizar un backup completo de la BBDD y de la aplicación.
-     * Sólo es posible en entornos Linux
+     * @return bool
      */
     public static function doBackup()
     {
@@ -64,8 +62,9 @@ class SP_Backup
     }
 
     /**
-     * @brief Backup de las tablas de la BBDD
+     * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
+     *
      * @param string $tables
      * @param string $backupFile
      * @throws Exception
@@ -143,7 +142,8 @@ class SP_Backup
     }
 
     /**
-     * @brief Realizar un backup de la aplicación y comprimirlo
+     * Realizar un backup de la aplicación y comprimirlo.
+     *
      * @param string $backupFile nombre del archivo de backup
      * @throws Exception
      * @return bool
@@ -182,10 +182,10 @@ class SP_Backup
     }
 
     /**
-     * @brief Realizar un backup de la aplicación y comprimirlo usando aplicaciones del SO Linux
+     * Realizar un backup de la aplicación y comprimirlo usando aplicaciones del SO Linux.
+     *
      * @param string $backupFile nombre del archivo de backup
-     * @throws Exception
-     * @return bool
+     * @return int Con el código de salida del comando ejecutado
      */
     private static function backupAppLegacyLinux($backupFile)
     {
@@ -200,7 +200,8 @@ class SP_Backup
     }
 
     /**
-     * @brief Comprobar y crear el directorio de backups
+     * Comprobar y crear el directorio de backups.
+     *
      * @param string $backupDir ruta del directorio de backup
      * @throws Exception
      * @return bool

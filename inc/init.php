@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,11 +38,11 @@ class SP_Init
     private static $SUBURI = '';
 
     /**
-     * @brief Inicializar la aplicación
-     * @return none
-     *
+     * Inicializar la aplicación.
      * Esta función inicializa las variables de la aplicación y muestra la página
      * según el estado en el que se encuentre.
+     *
+     * @return none
      */
     public static function init()
     {
@@ -197,7 +197,8 @@ class SP_Init
     }
 
     /**
-     * SPL autoload
+     * SPL autoload.
+     * Cargador de clases
      */
     public static function sysPassAutoload($classname)
     {
@@ -212,11 +213,11 @@ class SP_Init
     }
 
     /**
-     * @brief Establecer las rutas de la aplicación
-     * @return none
-     *
-     * Esta función establece las rutasdel sistema de archivos y web de la aplicación.
+     * Establecer las rutas de la aplicación.
+     * Esta función establece las rutas del sistema de archivos y web de la aplicación.
      * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
+
+     * @return none
      */
     private static function setPaths()
     {
@@ -260,10 +261,10 @@ class SP_Init
     }
 
     /**
-     * @brief Establece el lenguaje de la aplicación
-     * @returns none
+     * Establece el lenguaje de la aplicación.
+     * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
      *
-     * Esta función establece el lenguaje según esté definidi en la configuración o en el navegador.
+     * @returns none
      */
     private static function selectLang()
     {
@@ -292,7 +293,8 @@ class SP_Init
     }
 
     /**
-     * @brief Comprobar el archivo que realiza el include necesita inicialización
+     * Comprobar el archivo que realiza el include necesita inicialización.
+     *
      * @returns bool
      */
     private static function checkInitSourceInclude()
@@ -304,10 +306,10 @@ class SP_Init
     }
 
     /**
-     * @brief Comprobar el archivo de configuración.
-     * @return none
-     *
+     * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
+     *
+     * @return none
      */
     private static function checkConfig()
     {
@@ -331,7 +333,8 @@ class SP_Init
     }
 
     /**
-     * @brief Devuelve un eror utilizando la plantilla de rror
+     * Devuelve un eror utilizando la plantilla de rror.
+     *
      * @param string $str con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      * @returns none
@@ -348,10 +351,10 @@ class SP_Init
     }
 
     /**
-     * @brief Comprueba que la aplicación esté instalada
-     * @return none
-     *
+     * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
+     *
+     * @return none
      */
     private static function checkInstalled()
     {
@@ -370,12 +373,12 @@ class SP_Init
     }
 
     /**
-     * @brief Comprobar si el modo mantenimeinto está activado
-     * @param bool $check sólo comprobar si está activado el modo
-     * @return bool
-     *
+     * Comprobar si el modo mantenimeinto está activado
      * Esta función comprueba si el modo mantenimiento está activado.
      * Devuelve un error 503 y un reintento de 120s al cliente.
+     *
+     * @param bool $check sólo comprobar si está activado el modo
+     * @return bool
      */
     public static function checkMaintenanceMode($check = false)
     {
@@ -399,7 +402,8 @@ class SP_Init
     }
 
     /**
-     * @brief Comrpueba y actualiza la versión de la aplicación
+     * Comrpueba y actualiza la versión de la aplicación.
+     *
      * @returns none
      */
     private static function checkVersion()
@@ -464,7 +468,8 @@ class SP_Init
     }
 
     /**
-     * @brief Inicialiar la sesión de usuario
+     * Inicialiar la sesión de usuario
+     *
      * @return none
      */
     private static function initSession()
@@ -518,8 +523,9 @@ class SP_Init
     }
 
     /**
-     * @brief Obtener el timeout de sesión desde la configuración
-     * @returns int con el tiempo en segundos
+     * Obtener el timeout de sesión desde la configuración.
+     *
+     * @return int con el tiempo en segundos
      */
     private static function getSessionLifeTime()
     {
@@ -533,7 +539,8 @@ class SP_Init
     }
 
     /**
-     * @brief Escribir la información de logout en el registro de eventos
+     * Escribir la información de logout en el registro de eventos.
+     *
      * @return none
      */
     private static function wrLogoutInfo()
@@ -551,8 +558,9 @@ class SP_Init
     }
 
     /**
-     * @brief Comprobar si hay que ejecutar acciones de URL
-     * @return bool
+     * Comprobar si hay que ejecutar acciones de URL.
+     *
+     * @return bool|none
      */
     public static function checkRequestActions()
     {
@@ -574,7 +582,8 @@ class SP_Init
     }
 
     /**
-     * @brief Deslogar el usuario actual y eliminar la información de sesión
+     * Deslogar el usuario actual y eliminar la información de sesión.
+     *
      * @return none
      */
     private static function logout()
@@ -586,7 +595,8 @@ class SP_Init
     }
 
     /**
-     * @brief Comprobar si el usuario está logado
+     * Comprobar si el usuario está logado.
+     *
      * @returns bool
      */
     public static function isLoggedIn()
@@ -599,10 +609,10 @@ class SP_Init
     }
 
     /**
-     * @brief Devuelve el tiempo actual en coma flotante
-     * @returns float con el tiempo actual
-     *
+     * Devuelve el tiempo actual en coma flotante.
      * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
+     *
+     * @returns float con el tiempo actual
      */
     public static function microtime_float()
     {

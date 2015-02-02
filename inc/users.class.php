@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -59,7 +59,8 @@ class SP_Users
     var $queryLastId;
 
     /**
-     * @brief Obtener los datos de un usuario
+     * Obtener los datos de un usuario.
+     *
      * @param int $id con el Id del usuario a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -117,9 +118,10 @@ class SP_Users
     }
 
     /**
-     * @brief Establecer las variables para la consulta de usuarios
+     * Establecer las variables para la consulta de usuarios.
+     *
      * @param int $itemId opcional, con el Id del usuario a consultar
-     * @return array con la lista de usuarios
+     * @return false|array con la lista de usuarios
      */
     public static function getUsers($itemId = NULL)
     {
@@ -172,7 +174,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si un usuario está migrado desde phpPMS
+     * Comprobar si un usuario está migrado desde phpPMS.
+     *
      * @param string $userLogin con el login del usuario
      * @return bool
      */
@@ -195,7 +198,8 @@ class SP_Users
     }
 
     /**
-     * @brief Actualizar la clave de un usuario desde phpPMS
+     * Actualizar la clave de un usuario desde phpPMS.
+     *
      * @param string $userLogin con el login del usuario
      * @param string $userPass con la clave del usuario
      * @return bool
@@ -229,7 +233,8 @@ class SP_Users
     }
 
     /**
-     * @brief Crear la clave de un usuario
+     * Crear la clave de un usuario.
+     *
      * @param string $userPass con la clave del usuario
      * @return array con la clave y salt del usuario
      */
@@ -242,7 +247,8 @@ class SP_Users
     }
 
     /**
-     * @brief Obtener el login de usuario a partir del Id
+     * Obtener el login de usuario a partir del Id.
+     *
      * @param int $id con el id del usuario
      * @return string con el login del usuario
      */
@@ -262,7 +268,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si el usuario tiene actualizada la clave maestra actual
+     * Comprobar si el usuario tiene actualizada la clave maestra actual.
+     *
      * @param string $login opcional con el login del usuario
      * @return bool
      */
@@ -303,9 +310,10 @@ class SP_Users
     }
 
     /**
-     * @brief Obtener el Id de usuario a partir del login
+     * Obtener el Id de usuario a partir del login.
+     *
      * @param string $login con el login del usuario
-     * @return int con el Id del usuario
+     * @return false|int con el Id del usuario
      */
     public static function getUserIdByLogin($login)
     {
@@ -323,9 +331,10 @@ class SP_Users
     }
 
     /**
-     * @brief Obtiene el listado con el nombre de los usuarios de una cuenta
+     * Obtiene el listado con el nombre de los usuarios de una cuenta.
+     *
      * @param int $accountId con el id de la cuenta
-     * @return array con los nombres de los usuarios ordenados
+     * @return false|array con los nombres de los usuarios ordenados
      */
     public static function getUsersNameForAccount($accountId)
     {
@@ -351,7 +360,8 @@ class SP_Users
     }
 
     /**
-     * @brief Actualizar la asociación de grupos con cuentas
+     * Actualizar la asociación de grupos con cuentas.
+     *
      * @param int $accountId con el Id de la cuenta
      * @param array $usersId con los usuarios de la cuenta
      * @return bool
@@ -366,7 +376,8 @@ class SP_Users
     }
 
     /**
-     * @brief Eliminar la asociación de grupos con cuentas
+     * Eliminar la asociación de grupos con cuentas.
+     *
      * @param int $accountId con el Id de la cuenta
      * @param array $usersId opcional con los grupos de la cuenta
      * @return bool
@@ -393,7 +404,8 @@ class SP_Users
     }
 
     /**
-     * @brief Crear asociación de grupos con cuentas
+     * Crear asociación de grupos con cuentas.
+     *
      * @param int $accountId con el Id de la cuenta
      * @param array $usersId con los grupos de la cuenta
      * @return bool
@@ -435,7 +447,8 @@ class SP_Users
     }
 
     /**
-     * @brief Obtiene el listado de grupos de una cuenta
+     * Obtiene el listado de grupos de una cuenta.
+     *
      * @param int $accountId con el id de la cuenta
      * @return object con el Id de grupo
      */
@@ -455,7 +468,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si un usuario y email existen
+     * Comprobar si un usuario y email existen.
+     *
      * @param string $login con el login del usuario
      * @param string $email con el email del usuario
      * @return bool
@@ -468,7 +482,8 @@ class SP_Users
     }
 
     /**
-     * @brief Obtener el email de un usuario
+     * Obtener el email de un usuario.
+     *
      * @param int $userId con el Id del usuario
      * @return string con el email del usuario
      */
@@ -488,7 +503,8 @@ class SP_Users
     }
 
     /**
-     * @brief Insertar un registro de recuperación de clave
+     * Insertar un registro de recuperación de clave.
+     *
      * @param string $login con el login del usuario
      * @param string $hash con el hash para el cambio
      * @return bool
@@ -511,7 +527,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si un usuario está deshabilitado
+     * Comprobar si un usuario está deshabilitado.
+     *
      * @param string $userLogin con el login del usuario
      * @return bool
      */
@@ -534,7 +551,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si un usuario autentifica mediante LDAP
+     * Comprobar si un usuario autentifica mediante LDAP
+     * .
      * @param string $userLogin con el login del usuario
      * @return bool
      */
@@ -557,7 +575,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar el hash de recuperación de clave
+     * Comprobar el hash de recuperación de clave.
+     *
      * @param string $hash con el hash de recuperación
      * @return int con el Id del usuario
      */
@@ -579,7 +598,8 @@ class SP_Users
     }
 
     /**
-     * @brief Marcar como usado el hash de recuperación de clave
+     * Marcar como usado el hash de recuperación de clave.
+     *
      * @param string $hash con el hash de recuperación
      * @return bool
      */
@@ -596,7 +616,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar el límite de recuperaciones de clave
+     * Comprobar el límite de recuperaciones de clave.
+     *
      * @param string $login con el login del usuario
      * @return bool
      */
@@ -618,10 +639,10 @@ class SP_Users
     }
 
     /**
-     * @brief Obtener los datos de un usuario desde la BBDD
-     * @return bool
-     *
+     * Obtener los datos de un usuario desde la BBDD.
      * Esta función obtiene los datos de un usuario y los guarda en las variables de la clase.
+     *
+     * @return bool
      */
     public function getUserInfo()
     {
@@ -664,8 +685,9 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si un usuario/email existen en la BBDD
-     * @return bool|int Devuelve bool si error y int si existe el usuario/email
+     * Comprobar si un usuario/email existen en la BBDD.
+     *
+     * @return false|int Devuelve bool si error y int si existe el usuario/email
      */
     public function checkUserExist()
     {
@@ -696,7 +718,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprobar si los datos del usuario de LDAP están en la BBDD
+     * Comprobar si los datos del usuario de LDAP están en la BBDD.
+     *
      * @return bool
      */
     public function checkLDAPUserInDB()
@@ -717,11 +740,11 @@ class SP_Users
     }
 
     /**
-     * @brief Crear un nuevo usuario en la BBDD con los datos de LDAP
-     * @return bool
-     *
-     * Esta función crea los unusario de LDAP en la BBDD para almacenar infomación del mismo
+     * Crear un nuevo usuario en la BBDD con los datos de LDAP.
+     * Esta función crea los usuarios de LDAP en la BBDD para almacenar infomación del mismo
      * y utilizarlo en caso de fallo de LDAP
+     *
+     * @return bool
      */
     public function newUserLDAP()
     {
@@ -754,7 +777,8 @@ class SP_Users
     }
 
     /**
-     * @brief Crear un usuario
+     * Crear un usuario.
+     *
      * @return bool
      */
     public function addUser()
@@ -800,7 +824,8 @@ class SP_Users
     }
 
     /**
-     * @brief Modificar un usuario
+     * Modificar un usuario.
+     *
      * @return bool
      */
     public function updateUser()
@@ -841,7 +866,8 @@ class SP_Users
     }
 
     /**
-     * @brief Modificar la clave de un usuario
+     * Modificar la clave de un usuario.
+     *
      * @return bool
      */
     public function updateUserPass()
@@ -872,7 +898,8 @@ class SP_Users
     }
 
     /**
-     * @brief Eliminar un usuario
+     * Eliminar un usuario.
+     *
      * @return bool
      */
     public function deleteUser()
@@ -898,7 +925,8 @@ class SP_Users
     }
 
     /**
-     * @brief Actualiza los datos de los usuarios de LDAP en la BBDD
+     * Actualiza los datos de los usuarios de LDAP en la BBDD.
+     *
      * @return bool
      */
     public function updateLDAPUserInDB()
@@ -922,7 +950,8 @@ class SP_Users
     }
 
     /**
-     * @brief Establece las variables de sesión del usuario
+     * Establece las variables de sesión del usuario.
+     *
      * @return none
      */
     public function setUserSession()
@@ -943,7 +972,8 @@ class SP_Users
     }
 
     /**
-     * @brief Actualiza el último inicio de sesión del usuario en la BBDD
+     * Actualiza el último inicio de sesión del usuario en la BBDD.
+     *
      * @return bool
      */
     private function setUserLastLogin()
@@ -961,7 +991,8 @@ class SP_Users
     }
 
     /**
-     * @brief Comprueba la clave maestra del usuario
+     * Comprueba la clave maestra del usuario.
+     *
      * @return bool
      */
     public function checkUserMPass()
@@ -983,9 +1014,10 @@ class SP_Users
     }
 
     /**
-     * @brief Desencriptar la clave maestra del usuario para la sesión
+     * Desencriptar la clave maestra del usuario para la sesión.
+     *
      * @param bool $showPass opcional, para devolver la clave desencriptada
-     * @return bool|string Devuelve bool se hay error o string si se devuelve la clave
+     * @return false|string Devuelve bool se hay error o string si se devuelve la clave
      */
     public function getUserMPass($showPass = false)
     {
@@ -999,8 +1031,7 @@ class SP_Users
         }
 
         if ($queryRes->user_mPass && $queryRes->user_mIV) {
-            $crypt = new SP_Crypt;
-            $clearMasterPass = $crypt->decrypt($queryRes->user_mPass, $this->getCypherPass(), $queryRes->user_mIV);
+            $clearMasterPass = SP_Crypt::getDecrypt($queryRes->user_mPass, $this->getCypherPass(), $queryRes->user_mIV);
 
             if (!$clearMasterPass) {
                 return false;
@@ -1011,7 +1042,7 @@ class SP_Users
             } else {
                 $_SESSION['mPassPwd'] = substr(sha1(uniqid()), 0, 32);
 
-                $sessionMasterPass = $crypt->mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
+                $sessionMasterPass = SP_Crypt::mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
 
                 $_SESSION['mPass'] = $sessionMasterPass[0];
                 $_SESSION['mPassIV'] = $sessionMasterPass[1];
@@ -1022,7 +1053,8 @@ class SP_Users
     }
 
     /**
-     * @brief Obtener una clave de cifrado basada en la clave del usuario y un salt
+     * Obtener una clave de cifrado basada en la clave del usuario y un salt.
+     *
      * @return string con la clave de cifrado
      */
     private function getCypherPass()
@@ -1034,7 +1066,8 @@ class SP_Users
     }
 
     /**
-     * @brief Actualizar la clave maestra del usuario en la BBDD
+     * Actualizar la clave maestra del usuario en la BBDD.
+     *
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
@@ -1047,8 +1080,7 @@ class SP_Users
         }
 
         if (SP_Crypt::checkHashPass($masterPwd, $configMPass)) {
-            $crypt = new SP_Crypt;
-            $strUserMPwd = $crypt->mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
+            $strUserMPwd = SP_Crypt::mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
 
             if (!$strUserMPwd) {
                 return false;

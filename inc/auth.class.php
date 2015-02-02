@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,10 +35,11 @@ class SP_Auth
     static $userEmail;
 
     /**
-     * @brief Autentificación de usuarios con LDAP
+     * Autentificación de usuarios con LDAP.
+     *
      * @param string $userLogin con el login del usuario
      * @param string $userPass con la clave del usuario
-     * @return bool
+     * @return int|bool Número de error o boolean
      */
     public static function authUserLDAP($userLogin, $userPass)
     {
@@ -114,7 +115,8 @@ class SP_Auth
     }
 
     /**
-     * @brief Comprobar si el grupo de LDAP está habilitado
+     * Comprobar si el grupo de LDAP está habilitado.
+     *
      * @param string $group con el nombre del grupo
      * @return bool
      */
@@ -133,13 +135,14 @@ class SP_Auth
     }
 
     /**
-     * @brief Autentificación de usuarios con MySQL
-     * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
-     * @return bool
+     * Autentificación de usuarios con MySQL.
      *
      * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado desde phpPMS,
      * se ejecuta el proceso para actualizar la clave.
+     *
+     * @param string $userLogin con el login del usuario
+     * @param string $userPass con la clave del usuario
+     * @return bool
      */
     public static function authUserMySQL($userLogin, $userPass)
     {
@@ -168,7 +171,8 @@ class SP_Auth
     }
 
     /**
-     * @brief Proceso para la recuperación de clave
+     * Proceso para la recuperación de clave.
+     *
      * @param string $login con el login del usuario
      * @param string $email con el email del usuario
      * @return bool

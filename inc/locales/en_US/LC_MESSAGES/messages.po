@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Rubén D. <nuxsmin@syspass.org>, 2012-2014
+# Rubén D. <nuxsmin@syspass.org>, 2012-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-17 11:24+0100\n"
-"PO-Revision-Date: 2015-01-17 11:24+0100\n"
+"POT-Creation-Date: 2015-01-25 15:19+0100\n"
+"PO-Revision-Date: 2015-01-25 15:19+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team:  <nuxsmin@gmail.com>\n"
 "Language: en_US\n"
@@ -847,7 +847,7 @@ msgstr "Account"
 #: ../../../../ajax/ajax_doLogin.php:101 ../../../../ajax/ajax_doLogin.php:111
 #: ../../../../ajax/ajax_doLogin.php:152 ../../../../res/test.php:64
 #: ../../../../inc/init.php:546 ../../../../inc/users.class.php:788
-#: ../../../../inc/users.class.php:829 ../../../../inc/tpl/passreset.php:50
+#: ../../../../inc/users.class.php:829 ../../../../inc/tpl/passreset.php:51
 #: ../../../../inc/tpl/request.php:49 ../../../../inc/tpl/login.php:35
 #: ../../../../inc/tpl/login.php:44 ../../../../inc/tpl/install.php:89
 #: ../../../../inc/tpl/install.php:90 ../../../../inc/tpl/editpass.php:53
@@ -857,7 +857,7 @@ msgid "Usuario"
 msgstr "User"
 
 #: ../../../../ajax/ajax_viewpass.php:99 ../../../../ajax/ajax_usrpass.php:53
-#: ../../../../ajax/ajax_usrpass.php:56 ../../../../inc/tpl/passreset.php:61
+#: ../../../../ajax/ajax_usrpass.php:56 ../../../../inc/tpl/passreset.php:62
 #: ../../../../inc/tpl/login.php:37 ../../../../inc/tpl/login.php:45
 #: ../../../../inc/tpl/install.php:99 ../../../../inc/tpl/install.php:100
 #: ../../../../inc/tpl/editpass.php:57 ../../../../inc/tpl/accounts.php:250
@@ -1005,8 +1005,8 @@ msgstr "Generate random password"
 msgid "Clave (repetir)"
 msgstr "Password (repeat)"
 
-#: ../../../../ajax/ajax_usrpass.php:65 ../../../../inc/tpl/passreset.php:64
-#: ../../../../inc/tpl/passreset.php:72 ../../../../inc/tpl/masterpass.php:63
+#: ../../../../ajax/ajax_usrpass.php:65 ../../../../inc/tpl/passreset.php:65
+#: ../../../../inc/tpl/passreset.php:73 ../../../../inc/tpl/masterpass.php:63
 #: ../../../../inc/tpl/install.php:104 ../../../../inc/tpl/install.php:119
 #: ../../../../inc/tpl/editpass.php:70 ../../../../inc/tpl/accounts.php:264
 #: ../../../../inc/tpl/users.php:141
@@ -1105,87 +1105,87 @@ msgstr "The master password not saved or is wrong"
 msgid "Clave maestra incorrecta"
 msgstr "Invalid Master Password"
 
-#: ../../../../js/js.php:44
+#: ../../../../js/js.php:45
 msgid "Error en la consulta"
 msgstr "Error on query"
 
-#: ../../../../js/js.php:45
+#: ../../../../js/js.php:46
 msgid "Ha ocurrido un error"
 msgstr "There was an error"
 
-#: ../../../../js/js.php:46 ../../../../inc/tpl/login.php:71
+#: ../../../../js/js.php:47 ../../../../inc/tpl/login.php:71
 msgid "Sesión finalizada"
 msgstr "Session finished"
 
-#: ../../../../js/js.php:47
+#: ../../../../js/js.php:48
 msgid "Borrar la cuenta?"
 msgstr "Delete account?"
 
-#: ../../../../js/js.php:48
+#: ../../../../js/js.php:49
 msgid "Borrar el usuario?"
 msgstr "Delete user?"
 
-#: ../../../../js/js.php:49
+#: ../../../../js/js.php:50
 msgid "Guarde la configuración para que sea efectiva"
 msgstr "You should save configuration in order to take effect"
 
-#: ../../../../js/js.php:50
+#: ../../../../js/js.php:51
 msgid "Clave Generada"
 msgstr "Generated Password"
 
-#: ../../../../js/js.php:51
+#: ../../../../js/js.php:52
 msgid "Nivel alto"
 msgstr "High level"
 
-#: ../../../../js/js.php:52
+#: ../../../../js/js.php:53
 msgid "Nivel medio"
 msgstr "Average level"
 
-#: ../../../../js/js.php:53
+#: ../../../../js/js.php:54
 msgid "Nivel bajo"
 msgstr "Low level"
 
-#: ../../../../js/js.php:54
+#: ../../../../js/js.php:55
 msgid "Nivel muy alto"
 msgstr "Very high level"
 
-#: ../../../../js/js.php:55
+#: ../../../../js/js.php:56
 msgid "Utilizar al menos 8 caracteres"
 msgstr "You should use at least 8 characters"
 
-#: ../../../../js/js.php:56
+#: ../../../../js/js.php:57
 msgid "Borrar elemento?"
 msgstr "Delete item?"
 
-#: ../../../../js/js.php:57
+#: ../../../../js/js.php:58
 msgid "Página no encontrada"
 msgstr "Page not found"
 
-#: ../../../../js/js.php:58
+#: ../../../../js/js.php:59
 msgid "Archivo no soportado para visualizar"
 msgstr "File not supported for preview"
 
-#: ../../../../js/js.php:59
+#: ../../../../js/js.php:60
 msgid "Eliminar archivo?"
 msgstr "Delete file?"
 
-#: ../../../../js/js.php:60
+#: ../../../../js/js.php:61
 msgid "Su navegador no soporta subir archivos con HTML5"
 msgstr "Your browser does not support HTML5 file uploads"
 
-#: ../../../../js/js.php:61
+#: ../../../../js/js.php:62
 msgid "Demasiados archivos"
 msgstr "Too many files"
 
-#: ../../../../js/js.php:62
+#: ../../../../js/js.php:63
 msgid "No es posible guardar el archivo.<br>Tamaño máximo:"
 msgstr "Unable to save the file.<br>Max file size:"
 
-#: ../../../../js/js.php:63
+#: ../../../../js/js.php:64
 msgid "Extensión no permitida"
 msgstr "Extension not allowed"
 
-#: ../../../../js/js.php:64
+#: ../../../../js/js.php:65
 msgid "Vaciar el registro de eventos?"
 msgstr "Clear event log?"
 
@@ -2194,55 +2194,55 @@ msgstr "In order to complete the process, please go to this URL:"
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr "If you have not requested this action, please dismiss this message."
 
-#: ../../../../inc/tpl/passreset.php:46
+#: ../../../../inc/tpl/passreset.php:47
 msgid "Solicitud de Cambio de Clave"
 msgstr "Request Password Change"
 
-#: ../../../../inc/tpl/passreset.php:49
+#: ../../../../inc/tpl/passreset.php:50
 msgid "Login del Usuario"
 msgstr "User login"
 
-#: ../../../../inc/tpl/passreset.php:54
+#: ../../../../inc/tpl/passreset.php:55
 msgid "Email del Usuario"
 msgstr "User's Email"
 
-#: ../../../../inc/tpl/passreset.php:55 ../../../../inc/tpl/users.php:112
+#: ../../../../inc/tpl/passreset.php:56 ../../../../inc/tpl/users.php:112
 msgid "Email"
 msgstr "Email"
 
-#: ../../../../inc/tpl/passreset.php:60
+#: ../../../../inc/tpl/passreset.php:61
 msgid "Nueva Clave"
 msgstr "New Password"
 
-#: ../../../../inc/tpl/passreset.php:68
+#: ../../../../inc/tpl/passreset.php:69
 msgid "Nueva Clave (Verificar)"
 msgstr "New Password (Verify)"
 
-#: ../../../../inc/tpl/passreset.php:69
+#: ../../../../inc/tpl/passreset.php:70
 msgid "Clave (Verificar)"
 msgstr "Password (Verify)"
 
-#: ../../../../inc/tpl/passreset.php:82
+#: ../../../../inc/tpl/passreset.php:83
 msgid "Volver"
 msgstr "Back"
 
-#: ../../../../inc/tpl/passreset.php:82
+#: ../../../../inc/tpl/passreset.php:83
 msgid "Volver a iniciar sesión"
 msgstr "Go back to login"
 
-#: ../../../../inc/tpl/passreset.php:84
+#: ../../../../inc/tpl/passreset.php:85
 msgid "Solicitar"
 msgstr "Request"
 
-#: ../../../../inc/tpl/passreset.php:85
+#: ../../../../inc/tpl/passreset.php:86
 msgid "Solicitar cambio de clave"
 msgstr "Request password change"
 
-#: ../../../../inc/tpl/passreset.php:87
+#: ../../../../inc/tpl/passreset.php:88
 msgid "Cambiar"
 msgstr "Change"
 
-#: ../../../../inc/tpl/passreset.php:88
+#: ../../../../inc/tpl/passreset.php:89
 msgid "Cambiar Clave"
 msgstr "Change password"
 
@@ -2400,6 +2400,70 @@ msgstr "Lost your password?"
 #: ../../../../inc/tpl/login.php:78
 msgid "Aplicación actualizada correctamente"
 msgstr "Application successfully updated"
+
+#: ../../../../inc/tpl/login.php:84
+msgid "Nuevo interface de búsqueda con estilo de lista o tipo tarjeta"
+msgstr "New search interface with list or card like styles"
+
+#: ../../../../inc/tpl/login.php:85
+msgid "Selección de grupos y usuarios de acceso a cuentas"
+msgstr "Users and groups selection for account access"
+
+#: ../../../../inc/tpl/login.php:86
+msgid "Drag&Drop para subida de archivos"
+msgstr "Drag&Drop for files uploading"
+
+#: ../../../../inc/tpl/login.php:87
+msgid "Copiar clave al portapapeles"
+msgstr "Copy password to clipboard"
+
+#: ../../../../inc/tpl/login.php:88
+msgid "Historial de cuentas y restauración"
+msgstr "Accounts history and restore points"
+
+#: ../../../../inc/tpl/login.php:89
+msgid "Nueva gestión de categorías y clientes"
+msgstr "New categories and customers management"
+
+#: ../../../../inc/tpl/login.php:90
+msgid "Función de olvido de claves para usuarios"
+msgstr "Reset password function for users"
+
+#: ../../../../inc/tpl/login.php:91
+msgid "Integración con Active Directory y LDAP mejorada"
+msgstr "Improved Active Directory and LDAP integration"
+
+#: ../../../../inc/tpl/login.php:92
+msgid "Autentificación para notificaciones por correo"
+msgstr "Email notifications with authentication"
+
+#: ../../../../inc/tpl/login.php:93
+msgid "Búsqueda global de cuentas para usuarios sin permisos"
+msgstr "Global account searching for unprivileged users"
+
+#: ../../../../inc/tpl/login.php:94
+msgid "Solicitudes de modificación de cuentas para usuarios sin permisos"
+msgstr "Requests for account modification for unprivileged users"
+
+#: ../../../../inc/tpl/login.php:95
+msgid "Importación de cuentas desde KeePass, KeePassX y CSV"
+msgstr "Accounts import from KeePass, KeePassX and CSV"
+
+#: ../../../../inc/tpl/login.php:96
+msgid "Función de copiar cuentas"
+msgstr "Clone account function"
+
+#: ../../../../inc/tpl/login.php:97
+msgid "Optimización del código y mayor rapidez de carga"
+msgstr "Code optimization and faster loading"
+
+#: ../../../../inc/tpl/login.php:98
+msgid "Mejoras de seguridad en XSS e inyección SQL"
+msgstr "Improved security to prevent XSS and SQL injection"
+
+#: ../../../../inc/tpl/login.php:101 ../../../../inc/tpl/login.php:102
+msgid "Nuevas Características"
+msgstr "New Features"
 
 #: ../../../../inc/tpl/customers.php:41
 msgid "Nombre del cliente"

@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,7 +36,7 @@ class SP_Profiles
     static $queryLastId;
 
     /**
-     * @brief Obtener los datos de un perfil
+     * Obtener los datos de un perfil
      * @param int $id con el Id del perfil a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -84,7 +84,7 @@ class SP_Profiles
     }
 
     /**
-     * @brief Obtener los datos de un perfil
+     * Obtener los datos de un perfil
      * @param int $profileId opcional, con el Id del perfil a consultar
      * @return array con la lista de perfiles
      */
@@ -129,7 +129,7 @@ class SP_Profiles
     }
 
     /**
-     * @brief Comprobar si un perfil existe
+     * Comprobar si un perfil existe
      * @return bool
      */
     public static function checkProfileExist()
@@ -160,7 +160,7 @@ class SP_Profiles
     }
 
     /**
-     * @brief Añadir un nuevo perfil
+     * Añadir un nuevo perfil
      * @param array $profileProp con las propiedades del perfil
      * @return bool
      */
@@ -209,7 +209,8 @@ class SP_Profiles
     }
 
     /**
-     * @brief Modificar un perfil
+     * Modificar un perfil.
+     *
      * @param array $profileProp con las propiedades del perfil
      * @return bool
      */
@@ -260,7 +261,8 @@ class SP_Profiles
     }
 
     /**
-     * @brief Eliminar un perfil
+     * Eliminar un perfil.
+     *
      * @return bool
      */
     public static function deleteProfile()
@@ -278,8 +280,9 @@ class SP_Profiles
     }
 
     /**
-     * @brief Comprobar si un perfil está en uso
-     * @return mixed string con el número de usuarios, o bool si no está en uso
+     * Comprobar si un perfil está en uso.
+     *
+     * @return bool|int Cadena con el número de usuarios, o bool si no está en uso
      */
     public static function checkProfileInUse()
     {
@@ -288,8 +291,9 @@ class SP_Profiles
     }
 
     /**
-     * @brief Obtener el número de usuarios que usan un perfil
-     * @return int con el número total de cuentas
+     * Obtener el número de usuarios que usan un perfil.
+     *
+     * @return false|int con el número total de cuentas
      */
     private static function getProfileInUsers()
     {
@@ -307,9 +311,10 @@ class SP_Profiles
     }
 
     /**
-     * @brief Obtener el nombre de un perfil por a partir del Id
+     * Obtener el nombre de un perfil por a partir del Id.
+     *
      * @param int $id con el Id del perfil
-     * @return string con el nombre del perfil
+     * @return false|string con el nombre del perfil
      */
     public static function getProfileNameById($id)
     {
@@ -327,11 +332,11 @@ class SP_Profiles
     }
 
     /**
-     * @brief Obtener el perfil de un usuario
-     * @param int $userId opcional con el Id del usuario
-     * @return object con los permisos del perfil del usuario
-     *
+     * Obtener el perfil de un usuario.
      * Si el usuario no es indicado, se obtiene el perfil del suuario de la sesión actual
+     *
+     * @param int $userId opcional con el Id del usuario
+     * @return false|object con los permisos del perfil del usuario
      */
     public static function getProfileForUser($userId = 0)
     {

@@ -5,7 +5,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -75,7 +75,8 @@ class SP_Installer
     private static $isHostingMode;
 
     /**
-     * @brief Iniciar instalación
+     * Iniciar instalación.
+     *
      * @param array $options datos de instalación
      * @return array resultado del proceso
      */
@@ -183,15 +184,15 @@ class SP_Installer
     }
 
     /**
-     * @brief Comprobar la conexión con la BBDD.
+     * Comprobar la conexión con la BBDD.
+     * Comprobar si la conexión con la base de datos para sysPass es posible con
+     * los datos facilitados.
+     *
      * @param string $dbhost host de conexión
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass clave de conexión
      * @throws InstallerException
      * @return none
-     *
-     * Comprobar si la conexión con la base de datos para sysPass es posible con
-     * los datos facilitados.
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass)
     {
@@ -205,11 +206,11 @@ class SP_Installer
     }
 
     /**
-     * @brief Configurar la base de datos
+     * Configurar la base de datos.
+     * Esta función crea la base de datos y el usuario necesario para sysPass.
+     *
      * @throws InstallerException
      * @return none
-     *
-     * Esta función crea la base de datos y el usuario necesario para sysPass.
      */
     private static function setupMySQLDatabase()
     {
@@ -253,13 +254,13 @@ class SP_Installer
     }
 
     /**
-     * @brief Crear el usuario para conectar con la base de datos.
+     * Crear el usuario para conectar con la base de datos.
+     * Esta función crea el usuario para conectar con la base de datos.
+     * Si se marca en modo hosting, no se crea el usuario.
+     *
      * @param string $dbpassword clave del usuario de sysPass
      * @throws InstallerException
      * @return none
-     *
-     * Esta función crea el usuario para conectar con la base de datos.
-     * Si se marca en modo hosting, no se crea el usuario.
      */
     private static function createDBUser($dbpassword)
     {
@@ -277,13 +278,11 @@ class SP_Installer
     }
 
     /**
-     * @brief Crear la base de datos
+     * Crear la base de datos.
+     *
      * @param string $dbpassword clave del usuario de sysPass
      * @throws InstallerException
      * @return none
-     *
-     * Esta función crea la base de datos y asigna los permisos para el usuario de sysPass.
-     * Si se marca el modo hosting, no se establecen los permisos.
      */
     private static function createMySQLDatabase($dbpassword)
     {
@@ -309,7 +308,8 @@ class SP_Installer
     }
 
     /**
-     * @brief Comprobar si la base de datos indicada existe
+     * Comprobar si la base de datos indicada existe.
+     *
      * @return bool
      */
     private static function checkDatabaseExist()
@@ -333,11 +333,11 @@ class SP_Installer
     }
 
     /**
-     * @brief Crear la estructura de la base de datos
+     * Crear la estructura de la base de datos.
+     * Esta función crea la estructura de la base de datos a partir del archivo dbsctructure.sql.
+     *
      * @throws InstallerException
      * @return none
-     *
-     * Esta función crea la estructura de la base de datos a partir del archivo dbsctructure.sql.
      */
     private static function createDBStructure()
     {
@@ -376,11 +376,11 @@ class SP_Installer
     }
 
     /**
-     * @brief Crear el usuario admin de sysPass.
+     * Crear el usuario admin de sysPass.
+     * Esta función crea el grupo, perfil y usuario 'admin' para utilizar sysPass.
+     *
      * @throws InstallerException
      * @return none
-     *
-     * Esta función crea el grupo, perfil y usuario 'admin' para utilizar sysPass.
      */
     private static function createAdminAccount()
     {
@@ -418,7 +418,6 @@ class SP_Installer
             "pGroups" => 1,
             "pProfiles" => 1,
             "pEventlog" => 1);
-
 
         SP_Profiles::$profileName = 'Admin';
 
@@ -465,10 +464,10 @@ class SP_Installer
     }
 
     /**
-     * @brief Deshacer la instalación en caso de fallo
-     * @return none
-     *
+     * Deshacer la instalación en caso de fallo.
      * Esta función elimina la base de datos y el usuario de sysPass
+     *
+     * @return none
      */
     private static function rollback()
     {

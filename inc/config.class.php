@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -49,11 +49,10 @@ class SP_Config
     private static $init = false; // La caché está llena??
 
     /**
-     * @brief Obtiene un valor desde la configuración en la BBDD
-     * @param string $param con el parámetro de configuración
-     * @return string con el valor
+     * Obtiene un valor desde la configuración en la BBDD.
      *
-     * Obtener el valor de un parámetro almacenado en la BBDD
+     * @param string $param con el parámetro de configuración
+     * @return false|string con el valor
      */
     public static function getConfigValue($param)
     {
@@ -70,9 +69,9 @@ class SP_Config
     }
 
     /**
-     * @brief Obtener array con la configuración
+     * Obtener un array con la configuración almacenada en la BBDD.
      *
-     * Obtener un array con la configuración almacenada en la BBDD
+     * @return bool
      */
     public static function getConfig()
     {
@@ -89,16 +88,14 @@ class SP_Config
             $strKey = $config->config_parameter;
             $strValue = $config->config_value;
             self::$arrConfigValue[$strKey] = $strValue;
-
         }
     }
 
     /**
-     * @brief Guardar la configuración
+     * Guardar la configuración en la BBDD.
+     *
      * @param bool $mkInsert realizar un 'insert'?
      * @return bool
-     *
-     * Guardar la configuración en la BBDD
      */
     public static function writeConfig($mkInsert = false)
     {
@@ -131,7 +128,8 @@ class SP_Config
     }
 
     /**
-     * @brief Guardar un parámetro de configuración
+     * Guardar un parámetro de configuración en la BBDD.
+     *
      * @param string $param con el parámetro a guardar
      * @param string $value con el calor a guardar
      * @return bool
@@ -159,11 +157,10 @@ class SP_Config
     }
 
     /**
-     * @brief Cargar la configuración desde la BBDD
+     * Cargar la configuración desde la BBDD a variable global $CFG.
+     *
      * @param bool $force reescribir la variable global $CFG?
      * @return bool
-     *
-     * Cargar la configuración desde la BBDD y guardarla en una variable global $CFG
      */
     public static function getDBConfig($force = false)
     {
@@ -197,13 +194,11 @@ class SP_Config
     }
 
     /**
-     * @brief Obtiene un valor desde config.php
+     * Obtiene un valor de configuración desde el archivo config.php
+     *
      * @param string $key clave
      * @param string $default = null valor por defecto
      * @return string el valor o $default
-     *
-     * Esta función obtiene un valor desde config.php. Si no existe,
-     * $default será defuelto.
      */
     public static function getValue($key, $default = null)
     {
@@ -215,10 +210,9 @@ class SP_Config
     }
 
     /**
-     * @brief Carga el archivo de configuración
-     * @return bool
+     * Carga el archivo de configuración y lo guarda en caché.
      *
-     * Lee el archivo de configuración y lo guarda en caché
+     * @return bool
      */
     private static function readData()
     {
@@ -246,11 +240,10 @@ class SP_Config
     }
 
     /**
-     * @brief Lista todas las claves de configuración
+     * Lista todas las claves de configuración guardadas en config.php.
+     *
      * @param bool $full obtener todas las claves y sus valores
      * @return array con nombres de claves
-     *
-     * Esta función devuelve todas las claves guardadas en config.php.
      */
     public static function getKeys($full = false)
     {
@@ -264,12 +257,12 @@ class SP_Config
     }
 
     /**
-     * @brief Elimina una clave de la configuración
-     * @param string $key clave
-     * @return bool
-     *
+     * Elimina una clave de la configuración.
      * Esta función elimina una clave de config.php. Si no tiene permiso
      * de escritura en config.php, devolverá false.
+     *
+     * @param string $key clave
+     * @return bool
      */
     public static function deleteKey($key)
     {
@@ -287,7 +280,8 @@ class SP_Config
     }
 
     /**
-     * @brief Escribe en archivo de configuración
+     * Escribe en archivo de configuración.
+     *
      * @return bool
      */
     public static function writeData()
@@ -323,8 +317,7 @@ class SP_Config
     }
 
     /**
-     * @brief Establece los valores de configuración por defecto en config.php
-     * @return none
+     * Establece los valores de configuración por defecto en config.php
      */
     public static function setDefaultValues()
     {
@@ -354,13 +347,13 @@ class SP_Config
     }
 
     /**
-     * @brief Establece un valor
+     * Establece un valor en el archivo de configuración.
+     * Esta función establece el valor y reescribe config.php. Si el archivo
+     * no se puede escribir, devolverá false.
+     *
      * @param string $key clave
      * @param string $value valor
      * @return bool
-     *
-     * Esta función establece el valor y reescribe config.php. Si el archivo
-     * no se puede escribir, devolverá false.
      */
     public static function setValue($key, $value)
     {

@@ -77,3 +77,37 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 <?php if (SP_Init::$UPDATED === true): ?>
     <div id="boxUpdated" class="round5"><?php echo _('Aplicación actualizada correctamente'); ?></div>
 <?php endif; ?>
+
+<?php
+if ( SP_Util::demoIsEnabled() ) {
+    $newFeatures = array(
+        _('Nuevo interface de búsqueda con estilo de lista o tipo tarjeta'),
+        _('Selección de grupos y usuarios de acceso a cuentas'),
+        _('Drag&Drop para subida de archivos'),
+        _('Copiar clave al portapapeles'),
+        _('Historial de cuentas y restauración'),
+        _('Nueva gestión de categorías y clientes'),
+        _('Función de olvido de claves para usuarios'),
+        _('Integración con Active Directory y LDAP mejorada'),
+        _('Autentificación para notificaciones por correo'),
+        _('Búsqueda global de cuentas para usuarios sin permisos'),
+        _('Solicitudes de modificación de cuentas para usuarios sin permisos'),
+        _('Importación de cuentas desde KeePass, KeePassX y CSV'),
+        _('Función de copiar cuentas'),
+        _('Optimización del código y mayor rapidez de carga'),
+        _('Mejoras de seguridad en XSS e inyección SQL')
+    );
+    echo '<div id="whatsNewIcon">';
+    echo '<img src="imgs/gearscolorful.png" title="' . _('Nuevas Características') . '" alt="'. _('Nuevas Características').'" onclick="$(\'#whatsNew\').show(500);"/>';
+    echo '<h2>' . _('Nuevas Características') . '</h2>';
+    echo '</div>';
+
+    echo '<div id="whatsNew" class="round5 shadow">';
+    echo '<ul>';
+    foreach ( $newFeatures as $feature) {
+        echo '<li>' . $feature . '</li>';
+    }
+    echo '</ul>';
+    echo '</div>';
+}
+?>

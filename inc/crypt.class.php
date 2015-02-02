@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2014 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,39 +30,35 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Crypt
 {
-
-    public $strInitialVector;
+    public static $strInitialVector;
 
     /**
-     * @brief Comprobar si el módulo de encriptación está disponible
+     * Comprobar si el módulo de encriptación está disponible.
+     *
      * @return bool
      */
     public static function checkCryptModule()
     {
-        $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-
-        if ($resEncDes == false) {
-            return false;
-        } else {
-            return true;
-        }
+        return mcrypt_module_self_test(MCRYPT_RIJNDAEL_256);
     }
 
     /**
-     * @brief Generar un hash de una clave utilizando un salt
+     * Generar un hash de una clave utilizando un salt.
+     *
      * @param string $pwd con la clave a 'hashear'
      * @return string con el hash de la clave
      */
     public static function mkHashPassword($pwd)
     {
-        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); // Obtenemos 256 bits aleatorios en hexadecimal
+        $salt = bin2hex(self::getIV()); // Obtenemos 256 bits aleatorios en hexadecimal
         $hash = hash("sha256", $salt . $pwd); // Añadimos el salt a la clave y rehacemos el hash
         $hashPwd = $salt . $hash;
         return $hashPwd;
     }
 
     /**
-     * @brief Comprobar el hash de una clave
+     * Comprobar el hash de una clave.
+     *
      * @param string $pwd con la clave a comprobar
      * @param string $correctHash con el hash a comprobar
      * @return bool
@@ -86,165 +82,129 @@ class SP_Crypt
     }
 
     /**
-     * @brief Crear un salt
+     * Crear un salt utilizando mcrypt.
+     *
      * @return string con el salt creado
      */
     public static function makeHashSalt()
     {
-        do {
-            $cryptIV = self::createIV();
-            $blnCheckIv = self::checkIV($cryptIV);
-        } while ($blnCheckIv == false);
-
-        return $cryptIV;
+        return self::getIV();
     }
 
     /**
-     * @brief Generar una clave encriptada
+     * Generar una clave encriptada.
+     * Esta función llama a los métodos privados para encriptar datos.
+     *
      * @param string $pwd con la clave a encriptar
      * @param string $masterPwd con la clave maestra
      * @return bool
-     *
-     * Esta función llama a los métodos privados para encriptar datos.
      */
-    public function mkEncrypt($pwd, $masterPwd = "")
+    public static function mkEncrypt($pwd, $masterPwd = "")
     {
-        $masterPwd = (!$masterPwd) ? $this->getSessionMasterPass() : $masterPwd;
+        $masterPwd = (!$masterPwd) ? self::getSessionMasterPass() : $masterPwd;
 
-        do {
-            do {
-                $cryptIV = SP_Crypt::createIV();
-                $blnCheckIv = SP_Crypt::checkIV($cryptIV);
-            } while ($blnCheckIv == false);
-
-            $this->strInitialVector = $cryptIV;
-
-            $cryptValue = $this->encrypt($pwd, $masterPwd, $cryptIV);
-            $blnCheckEncrypted = $this->checkEncryptedPass($cryptValue);
-        } while ($blnCheckEncrypted == false);
+        self::$strInitialVector = self::getIV();
+        $cryptValue = self::encrypt($pwd, $masterPwd, self::$strInitialVector);
 
         return $cryptValue;
     }
 
     /**
-     * @brief Desencriptar la clave maestra de la sesión
+     * Desencriptar la clave maestra de la sesión.
+     *
      * @return string con la clave maestra
      */
-    public function getSessionMasterPass()
+    public static function getSessionMasterPass()
     {
-        return $this->decrypt($_SESSION["mPass"], $_SESSION['mPassPwd'], $_SESSION['mPassIV']);
+        return self::getDecrypt($_SESSION["mPass"], $_SESSION['mPassPwd'], $_SESSION['mPassIV']);
     }
 
     /**
-     * @brief Desencriptar datos con la clave maestra
+     * Desencriptar datos con la clave maestra.
+     *
      * @param string $strEncrypted con los datos a desencriptar
      * @param string $strPassword con la clave maestra
      * @param string $cryptIV con el IV
      * @return string con los datos desencriptados
      */
-    public function decrypt($strEncrypted, $strPassword, $cryptIV)
+    public static function getDecrypt($strEncrypted, $strPassword, $cryptIV)
     {
-        $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-        mcrypt_generic_init($resEncDes, $strPassword, $cryptIV);
-        $strDecrypted = trim(mdecrypt_generic($resEncDes, $strEncrypted));
+        $mcryptRes = self::getMcryptResource();
+        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
+        $strDecrypted = trim(mdecrypt_generic($mcryptRes, $strEncrypted));
 
-        mcrypt_generic_deinit($resEncDes);
-        mcrypt_module_close($resEncDes);
+        mcrypt_generic_deinit($mcryptRes);
+        mcrypt_module_close($mcryptRes);
 
         return $strDecrypted;
     }
 
     /**
-     * @brief Crear el vector de inicialización
+     * Crear el vector de inicialización.
+     *
      * @return string con el IV
      */
-    private static function createIV()
+    private static function getIV()
     {
-        $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
+        $source = MCRYPT_DEV_URANDOM;
+        $mcryptRes = self::getMcryptResource();
+
         if (SP_Util::runningOnWindows() && (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300)) {
-            $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_RAND);
-        } else {
-            $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($resEncDes), MCRYPT_DEV_URANDOM);
+            $source = MCRYPT_RAND;
         }
-        mcrypt_module_close($resEncDes);
+
+        // Crear el IV y asegurar que tiene una longitud de 32 bytes
+        do {
+            $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($mcryptRes), $source);
+        } while (strlen($cryptIV) < 32);
+
+        mcrypt_module_close($mcryptRes);
 
         return $cryptIV;
     }
 
     /**
-     * @brief Comprobar si el vector de inicialización tiene la longitud correcta
-     * @param string $cryptIV con el IV
-     * @return bool
-     */
-    private static function checkIV($cryptIV)
-    {
-        $strEscapeInitialVector = DB::escape($cryptIV);
-
-        if (strlen($strEscapeInitialVector) != 32) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * @brief Encriptar datos con la clave maestra
+     * Encriptar datos con la clave maestra.
+     *
      * @param string $strValue con los datos a encriptar
      * @param string $strPassword con la clave maestra
      * @param string $cryptIV con el IV
      * @return string con los datos encriptados
      */
-    private function encrypt($strValue, $strPassword, $cryptIV)
+    private static function encrypt($strValue, $strPassword, $cryptIV)
     {
-        $resEncDes = mcrypt_module_open('rijndael-256', '', 'cbc', '');
-        mcrypt_generic_init($resEncDes, $strPassword, $cryptIV);
-        $strEncrypted = mcrypt_generic($resEncDes, $strValue);
-        mcrypt_generic_deinit($resEncDes);
+        $mcryptRes = self::getMcryptResource();
+
+        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
+        $strEncrypted = mcrypt_generic($mcryptRes, $strValue);
+        mcrypt_generic_deinit($mcryptRes);
 
         return $strEncrypted;
     }
 
     /**
-     * @brief Comprobar datos encriptados
-     * @param string $strEncryptedPass con los datos encriptados
-     * @return bool
+     * Generar la clave maestra encriptada con la clave del usuario.
      *
-     * Esta función comprueba la longitud de los datos encriptados despues de
-     * escaparlos con mysqli
-     */
-    private function checkEncryptedPass($strEncryptedPass)
-    {
-        $strEscapedEncryptedPass = DB::escape($strEncryptedPass);
-
-        if (strlen($strEscapedEncryptedPass) != strlen($strEncryptedPass)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * @brief Generar la clave maestra encriptada con la clave del usuario
      * @param string $customPwd con la clave a encriptar
      * @param string $masterPwd con la clave maestra
      * @return string con la clave encriptada
-     *
-     * Esta función llama a los métodos privados para encriptar datos.
      */
-    public function mkCustomMPassEncrypt($customPwd, $masterPwd)
+    public static function mkCustomMPassEncrypt($customPwd, $masterPwd)
     {
-        do {
-            do {
-                $cryptIV = SP_Crypt::createIV();
-                $blnCheckIv = SP_Crypt::CheckIV($cryptIV);
-            } while ($blnCheckIv == false);
-
-            $cryptValue = $this->encrypt($masterPwd, $customPwd, $cryptIV);
-            $blnCheckEncrypted = $this->checkEncryptedPass($cryptValue);
-        } while ($blnCheckEncrypted == false);
-
+        $cryptIV = self::getIV();
+        $cryptValue = self::encrypt($masterPwd, $customPwd, $cryptIV);
         $dataCrypt = array($cryptValue, $cryptIV);
 
         return $dataCrypt;
+    }
+
+    /**
+     * Método para obtener un recurso del módulo mcrypt.
+     * Se utiliza el algoritmo RIJNDAEL_256 en modo CBC
+     *
+     * @return resource
+     */
+    private static function getMcryptResource(){
+        return mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_CBC, '');
     }
 }
