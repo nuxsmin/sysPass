@@ -131,7 +131,7 @@ class SP_Util
     public static function checkModules()
     {
         $modsAvail = array_map('strtolower', get_loaded_extensions());
-        $modsNeed = array("mysqli", "ldap", "mcrypt", "curl", "simplexml", "phar", "json", "xml");
+        $modsNeed = array('mysqli', 'ldap', 'mcrypt', 'curl', 'simplexml', 'phar', 'json', 'xml');
         $modsErr = array();
 
         foreach ($modsNeed as $module) {
