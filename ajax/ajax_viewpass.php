@@ -1,11 +1,10 @@
 <?php
-
 /**
  * sysPass
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -23,20 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
 if (!SP_Init::isLoggedIn()) {
-    return;
+    SP_Util::logout();
 }
 
-$accountId = SP_Common::parseParams('p', 'accountid', FALSE);
+$accountId = SP_Common::parseParams('p', 'accountid', false);
 $fullTxt = SP_Common::parseParams('p', 'full', 0);
 $isHistory = SP_Common::parseParams('p', 'isHistory', 0);
 
-if ( ! $accountId) {
+if (!$accountId) {
     return;
 }
 
@@ -46,14 +46,17 @@ $account->accountId = $accountId;
 $account->accountIsHistory = $isHistory;
 
 if (!$isHistory) {
-    $account->getAccount();
-    if (!$account->checkAccountAccess("accviewpass") || !SP_Users::checkUserAccess("accviewpass"))
+    $accountData = $account->getAccount();
+
+    if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
         die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
+    }
 } else {
     if ($account->checkAccountMPass()) {
-        $account->getAccountHistory();
-        if (!$account->checkAccountAccess("accviewpass") || !SP_Users::checkUserAccess("accviewpass"))
+        $accountData = $account->getAccountHistory();
+        if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
             die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
+        }
     } else {
         echo '<div id="fancyMsg" class="msgError">' . _('La clave maestra no coincide') . '</div>';
         return;
@@ -61,43 +64,44 @@ if (!$isHistory) {
 }
 
 if (!SP_Users::checkUserUpdateMPass()) {
-    if ( $fullTxt ){
-        echo '<div id="fancyMsg" class="msgError">' . _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla') . '</div>';
+    if ($fullTxt) {
+        die('<div id="fancyMsg" class="msgError">' . _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla') . '</div>');
     } else {
-        echo _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla');
+        die(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
     }
-    return;
 }
 
-$crypt = new SP_Crypt;
-$masterPass = $crypt->getSessionMasterPass();
-$accountClearPass = $crypt->decrypt($account->accountPass, $masterPass, $account->accountIV);
+$masterPass = SP_Crypt::getSessionMasterPass();
+$accountClearPass = SP_Crypt::getDecrypt($accountData->account_pass, $masterPass, $accountData->account_IV);
 
-
-if (!$isHistory){
+if (!$isHistory && $fullTxt) {
     $account->incrementDecryptCounter();
+
+    $message['action'] = _('Ver Clave');
+    $message['text'][] = _('ID') . ': ' . $accountId;
+    $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
+
+    SP_Log::wrLogInfo($message);
 }
 
-$message['action'] = _('Ver clave');
-$message['text'][] = _('ID') . ': ' . $accountId;
-$message['text'][] = _('Cuenta') . ': ' . $account->accountCustomerName . " / " . $account->accountName;
-$message['text'][] = _('IP') . ': ' . $_SERVER['REMOTE_ADDR'];
-
-SP_Common::wrLogInfo($message);
+$accountPass = htmlentities(trim($accountClearPass),ENT_COMPAT,'UTF-8');
 
 if ($fullTxt) {
-    echo '<div id="fancyMsg" class="msgInfo">';
-    echo '<table>
-        <tr>
-            <td><span class="altTxtBlue">' . _('Usuario') . '</span></td>
-            <td>' . $account->accountLogin . '</td>
-        </tr>
-        <tr>
-            <td><span class="altTxtBlue">' . _('Clave') . '</span></td>
-            <td>' . htmlentities(trim($accountClearPass)) . '</td>
-        </tr>
-        </table>';
-    echo '</div>';
+    ?>
+    <div id="fancyMsg" class="msgInfo">
+        <table>
+            <tr>
+                <td><span class="altTxtBlue"><?php echo _('Usuario'); ?></span></td>
+                <td><?php echo $accountData->account_login; ?></td>
+            </tr>
+            <tr>
+                <td><span class="altTxtBlue"><?php echo _('Clave'); ?></span></td>
+                <td><?php echo $accountPass; ?></td>
+            </tr>
+        </table>
+    </div>
+    <?php
 } else {
-    echo htmlentities(trim($accountClearPass));
+    echo $accountPass;
 }
+?>

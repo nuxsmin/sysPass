@@ -1,3 +1,11 @@
+#### ACTUALIZAR / UPDATE
+
+Para actualizar desde 1.0 seguir los pasos en http://wiki.syspass.org/doku.php/es:actualizar
+
+In order to update from 1.0 you need to follow the steps at http://wiki.syspass.org/doku.php/en:upgrade
+
+----------------
+
 ### sysPass - Sysadmin Password Manager
 
 ----------------
@@ -18,8 +26,7 @@ Installation instructions and changelog at Wiki
 
 ----------------
 
-#### Wiki: http://wiki.syspass.org
-
-http://sourceforge.net/projects/syspass
-
 http://syspass.org
+http://demo.syspass.org
+http://wiki.syspass.org
+http://sourceforge.net/projects/syspass

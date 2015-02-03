@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -25,7 +25,7 @@
 
 ?>
 
-<div id="error" align="center">
+<div id="actions" align="center">
     
 <?php if ( isset($data['showlogo']) ): ?>
     <div id="logo">
@@ -34,20 +34,20 @@
 <?php endif; ?>
     
 <?php
-    $errors = $data['errors'];
-    
-    if( count($errors) > 0){
-        echo '<ul class="errors round">';
-        
-        foreach($errors as $err){ 
-            if( is_array($err) ){
-                echo '<li class="err_'.$err["type"].'">';
-                echo '<strong>'.$err['description'].'</strong>';
-                echo ( $err['hint'] ) ? '<p class="hint">'.$err['hint'].'</p>' : '';
-                echo '</li>';
-            }
+$errors = $data['errors'];
+
+if( count($errors) > 0){
+    echo '<ul class="errors round">';
+
+    foreach($errors as $err){ 
+        if( is_array($err) ){
+            echo '<li class="err_'.$err["type"].'">';
+            echo '<strong>'.$err['description'].'</strong>';
+            echo ( $err['hint'] ) ? '<p class="hint">'.$err['hint'].'</p>' : '';
+            echo '</li>';
         }
-        echo '</ul>';
-    } 
+    }
+    echo '</ul>';
+} 
 ?>
 </div>

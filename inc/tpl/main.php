@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -29,8 +29,8 @@ $startTime = microtime();
 
 $adminApp = ( isset($_SESSION["uisadminapp"]) && $_SESSION["uisadminapp"] == 1 ) ? "<span title=\""._('Admin Aplicación')."\">(A+)</span>" : "";
 $userId = ( isset($_SESSION["uid"]) ) ? $_SESSION["uid"] : 0;
-$userLogin = ( isset($_SESSION["ulogin"]) ) ? $_SESSION["ulogin"] : '';
-$userName = ( isset($_SESSION["uname"]) ) ? $_SESSION["uname"] : $userLogin;
+$userLogin = ( isset($_SESSION["ulogin"]) && ! empty($_SESSION["ulogin"])) ? strtoupper($_SESSION["ulogin"]) : '';
+$userName = ( isset($_SESSION["uname"]) && ! empty($_SESSION["uname"])) ? $_SESSION["uname"] : strtoupper($userLogin);
 $userGroup = ( isset($_SESSION["ugroupn"]) ) ? $_SESSION["ugroupn"] : '';
 
 $strUser = "$userName ($userGroup) " . $adminApp;
@@ -52,17 +52,18 @@ $chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img
             array('name' => 'accsearch', 'title' => _('Buscar'), 'img' => 'search.png', 'checkaccess' => 0),
             array('name' => 'accnew', 'title' => _('Nueva Cuenta'), 'img' => 'add.png', 'checkaccess' => 1),
             array('name' => 'usersmenu', 'title' => _('Gestión de Usuarios'), 'img' => 'users.png', 'checkaccess' => 1),
+            array('name' => 'appmgmtmenu', 'title' => _('Gestión de Clientes y Categorías'), 'img' => 'appmgmt.png', 'checkaccess' => 1),
             array('name' => 'configmenu', 'title' => _('Configuración'), 'img' => 'config.png', 'checkaccess' => 1),
             array('name' => 'eventlog', 'title' => _('Registro de Eventos'), 'img' => 'log.png', 'checkaccess' => 1)
         );
 
         foreach ($actions as $action) {
             if ($action['checkaccess']) {
-                if (!SP_Users::checkUserAccess($action['name'])) {
+                if (!SP_ACL::checkUserAccess($action['name'])) {
                     continue;
                 }
             }
-            if ($action['name'] == 'eventlog' && !SP_Config::getValue('logenabled', false)) {
+            if ($action['name'] == 'eventlog' && !SP_Util::logIsEnabled()) {
                 continue;
             }
 

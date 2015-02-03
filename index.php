@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '.');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Html::$htmlBodyOpts = 'OnLoad="doAction(\'accsearch\')"';
 SP_Html::render("main");

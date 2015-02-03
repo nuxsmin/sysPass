@@ -1,0 +1,3848 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Uwe Steinmann <uwe@steinmann.cx>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: sysPass\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-25 15:35+0100\n"
+"PO-Revision-Date: 2015-01-25 16:00+0100\n"
+"Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
+"Language-Team:  <language@syspass.org>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: ../../../..\n"
+
+# Session not started or timeout
+#: ../../../../ajax/ajax_appMgmtSave.php:34
+#: ../../../../ajax/ajax_accountSave.php:33 ../../../../ajax/ajax_import.php:1
+#: ../../../../ajax/ajax_configSave.php:33 ../../../../ajax/ajax_backup.php:32
+#: ../../../../ajax/ajax_migrate.php:1
+#: ../../../../ajax/ajax_sendRequest.php:32
+#: ../../../../ajax/ajax_checkLdap.php:32
+msgid "La sesión no se ha iniciado o ha caducado"
+msgstr "Sitzung konnte nicht gestartet werden oder ist abgelaufen"
+
+# INVALID QUERY
+#: ../../../../ajax/ajax_appMgmtSave.php:40
+#: ../../../../ajax/ajax_accountSave.php:39 ../../../../ajax/ajax_import.php:1
+#: ../../../../ajax/ajax_configSave.php:39 ../../../../ajax/ajax_backup.php:38
+#: ../../../../ajax/ajax_passReset.php:34 ../../../../ajax/ajax_files.php:40
+#: ../../../../ajax/ajax_migrate.php:1 ../../../../ajax/ajax_search.php:38
+#: ../../../../ajax/ajax_sendRequest.php:38
+#: ../../../../ajax/ajax_checkLdap.php:38
+#: ../../../../ajax/ajax_getFiles.php:43
+msgid "CONSULTA INVÁLIDA"
+msgstr "Ungültige Anfrage"
+
+# Username required
+#: ../../../../ajax/ajax_appMgmtSave.php:76
+msgid "Es necesario un nombre de usuario"
+msgstr "Benutzername ist notwendig"
+
+# Login required
+#: ../../../../ajax/ajax_appMgmtSave.php:80
+msgid "Es necesario un login"
+msgstr "Login ist notwendig"
+
+# Profile required
+#: ../../../../ajax/ajax_appMgmtSave.php:84
+msgid "Es necesario un perfil"
+msgstr "Profil ist notwendig"
+
+# Group required
+#: ../../../../ajax/ajax_appMgmtSave.php:88
+msgid "Es necesario un grupo"
+msgstr "Gruppe ist notwendig"
+
+# Email required
+#: ../../../../ajax/ajax_appMgmtSave.php:92
+msgid "Es necesario un email"
+msgstr "E-Mail ist notwendig"
+
+# Duplicated user login
+#: ../../../../ajax/ajax_appMgmtSave.php:110
+msgid "Login de usuario duplicado"
+msgstr "Dupbliziertes Benutzer-Anmeldung "
+
+# Duplicated user email
+#: ../../../../ajax/ajax_appMgmtSave.php:113
+msgid "Email de usuario duplicado"
+msgstr "Bereits verwendete Benutzer-E-Mail"
+
+# Password cannot be blank
+#: ../../../../ajax/ajax_appMgmtSave.php:119
+#: ../../../../ajax/ajax_appMgmtSave.php:145
+#: ../../../../ajax/ajax_accountSave.php:105
+msgid "La clave no puede estar en blanco"
+msgstr "Passwort darf nicht leer sein"
+
+# Passwords mismatch
+#: ../../../../ajax/ajax_appMgmtSave.php:123
+#: ../../../../ajax/ajax_appMgmtSave.php:149
+#: ../../../../ajax/ajax_accountSave.php:83
+#: ../../../../ajax/ajax_accountSave.php:109
+msgid "Las claves no coinciden"
+msgstr "Passwörter stimmen nicht"
+
+# User added
+#: ../../../../ajax/ajax_appMgmtSave.php:127
+msgid "Usuario creado"
+msgstr "Benutzer hinzugefügt"
+
+# Error on creating user
+#: ../../../../ajax/ajax_appMgmtSave.php:130
+msgid "Error al crear el usuario"
+msgstr "Fehler beim Anlegen des Benutzers"
+
+# User updated
+#: ../../../../ajax/ajax_appMgmtSave.php:133
+#: ../../../../inc/users.class.php:224
+msgid "Usuario actualizado"
+msgstr "Benutzer aktualisiert"
+
+# Error on user update
+#: ../../../../ajax/ajax_appMgmtSave.php:136
+msgid "Error al actualizar el usuario"
+msgstr "Fehler beim Ändern des Benutzers"
+
+# Ey, this is a DEMO!!
+#: ../../../../ajax/ajax_appMgmtSave.php:141
+#: ../../../../ajax/ajax_appMgmtSave.php:163
+#: ../../../../ajax/ajax_import.php:1 ../../../../ajax/ajax_configSave.php:214
+#: ../../../../ajax/ajax_migrate.php:1
+msgid "Ey, esto es una DEMO!!"
+msgstr "Hey, dies ist eine DEMO!!"
+
+# Password updated
+#: ../../../../ajax/ajax_appMgmtSave.php:156
+#: ../../../../ajax/ajax_accountSave.php:237
+#: ../../../../ajax/ajax_passReset.php:79
+msgid "Clave actualizada"
+msgstr "Passwort aktualisiert"
+
+# Error on updating password
+#: ../../../../ajax/ajax_appMgmtSave.php:159
+#: ../../../../ajax/ajax_passReset.php:83
+msgid "Error al modificar la clave"
+msgstr "Fehler beim Ändern des Passworts"
+
+# Unable to delete, user in use
+#: ../../../../ajax/ajax_appMgmtSave.php:169
+msgid "No es posible eliminar, usuario en uso"
+msgstr "Benutzer kann nicht gelöscht werden, wird noch benutzt"
+
+# User deleted
+#: ../../../../ajax/ajax_appMgmtSave.php:173
+msgid "Usuario eliminado"
+msgstr "Benutzer gelöscht"
+
+# Error on user deletion
+#: ../../../../ajax/ajax_appMgmtSave.php:176
+msgid "Error al eliminar el usuario"
+msgstr "Fehler beim Löschen eines Benutzers"
+
+# Invalid Action
+#: ../../../../ajax/ajax_appMgmtSave.php:179
+#: ../../../../ajax/ajax_appMgmtSave.php:240
+#: ../../../../ajax/ajax_appMgmtSave.php:318
+#: ../../../../ajax/ajax_appMgmtSave.php:369
+#: ../../../../ajax/ajax_appMgmtSave.php:418
+#: ../../../../ajax/ajax_accountSave.php:116
+#: ../../../../ajax/ajax_accountSave.php:268
+#: ../../../../ajax/ajax_configSave.php:229
+msgid "Acción Inválida"
+msgstr "Ungültige Aktion"
+
+# Group name required
+#: ../../../../ajax/ajax_appMgmtSave.php:188
+msgid "Es necesario un nombre de grupo"
+msgstr "Gruppename ist notwendig"
+
+# Duplicated group name
+#: ../../../../ajax/ajax_appMgmtSave.php:196
+msgid "Nombre de grupo duplicado"
+msgstr "Duplizierter Gruppenname"
+
+# Group added
+#: ../../../../ajax/ajax_appMgmtSave.php:201
+msgid "Grupo creado"
+msgstr "Gruppe hinzugefügt"
+
+# Error on group creation
+#: ../../../../ajax/ajax_appMgmtSave.php:203
+msgid "Error al crear el grupo"
+msgstr "Fehler beim Anlegen des Kunden"
+
+# Group updated
+#: ../../../../ajax/ajax_appMgmtSave.php:207
+msgid "Grupo actualizado"
+msgstr "Gruppe aktualisiert"
+
+# Error on updating group
+#: ../../../../ajax/ajax_appMgmtSave.php:210
+msgid "Error al actualizar el grupo"
+msgstr "Fehler beim Ändern der Gruppe"
+
+# Users
+#: ../../../../ajax/ajax_appMgmtSave.php:221
+#: ../../../../ajax/ajax_appMgmtSave.php:298
+#: ../../../../inc/tpl/profiles.php:88 ../../../../inc/tpl/accounts.php:281
+msgid "Usuarios"
+msgstr "Benutzer"
+
+# Accounts
+#: ../../../../ajax/ajax_appMgmtSave.php:225
+#: ../../../../ajax/ajax_appMgmtSave.php:356
+#: ../../../../inc/category.class.php:265 ../../../../inc/tpl/profiles.php:45
+msgid "Cuentas"
+msgstr "Konten"
+
+# Unable to delete
+#: ../../../../ajax/ajax_appMgmtSave.php:228
+#: ../../../../ajax/ajax_appMgmtSave.php:300
+#: ../../../../ajax/ajax_appMgmtSave.php:358
+#: ../../../../ajax/ajax_appMgmtSave.php:407
+msgid "No es posible eliminar"
+msgstr "Kann nicht gelöscht werden"
+
+# Group in use by:
+#: ../../../../ajax/ajax_appMgmtSave.php:228
+msgid "Grupo en uso por:"
+msgstr "Gruppe in Benutzung durch:"
+
+# Group deleted
+#: ../../../../ajax/ajax_appMgmtSave.php:233
+msgid "Grupo eliminado"
+msgstr "Gruppe gelöscht"
+
+# Error on group deletion
+#: ../../../../ajax/ajax_appMgmtSave.php:236
+msgid "Error al eliminar el grupo"
+msgstr "Fehler beim Löschen einer Gruppe"
+
+# Profile name needed
+#: ../../../../ajax/ajax_appMgmtSave.php:270
+msgid "Es necesario un nombre de perfil"
+msgstr "Profil ist notwendig"
+
+# Duplicated profile name
+#: ../../../../ajax/ajax_appMgmtSave.php:276
+msgid "Nombre de perfil duplicado"
+msgstr "Duplizierter Profilname"
+
+# Profile added
+#: ../../../../ajax/ajax_appMgmtSave.php:281
+msgid "Perfil creado"
+msgstr "Profil hinzugefügt"
+
+# Error on creating profile
+#: ../../../../ajax/ajax_appMgmtSave.php:284
+msgid "Error al crear el perfil"
+msgstr "Fehler beim Anlegen des Profils"
+
+# Profile updated
+#: ../../../../ajax/ajax_appMgmtSave.php:287
+msgid "Perfil actualizado"
+msgstr "Profil aktualisiert"
+
+# Error on updating profile
+#: ../../../../ajax/ajax_appMgmtSave.php:290
+msgid "Error al actualizar el perfil"
+msgstr "Fehler beim Ändern des Profils"
+
+# Profiles in use by:
+#: ../../../../ajax/ajax_appMgmtSave.php:300
+msgid "Perfil en uso por:"
+msgstr "Profil wird benutzt durch: "
+
+# Delete Profile
+#: ../../../../ajax/ajax_appMgmtSave.php:305
+#: ../../../../ajax/ajax_getContent.php:201
+msgid "Eliminar Perfil"
+msgstr "Profil löschen"
+
+# Profile
+#: ../../../../ajax/ajax_appMgmtSave.php:306
+#: ../../../../ajax/ajax_getContent.php:114
+#: ../../../../ajax/ajax_doLogin.php:153
+#: ../../../../inc/profiles.class.php:203
+#: ../../../../inc/profiles.class.php:254 ../../../../inc/tpl/users.php:98
+msgid "Perfil"
+msgstr "Profil"
+
+# Profile deleted
+#: ../../../../ajax/ajax_appMgmtSave.php:311
+msgid "Perfil eliminado"
+msgstr "Profil gelöscht"
+
+# Error on profile deletion
+#: ../../../../ajax/ajax_appMgmtSave.php:314
+msgid "Error al eliminar el perfil"
+msgstr "Fehler beim Löschen eines Profils"
+
+# Customer name needed
+#: ../../../../ajax/ajax_appMgmtSave.php:327
+#: ../../../../ajax/ajax_accountSave.php:71
+#: ../../../../ajax/ajax_accountSave.php:88
+msgid "Es necesario un nombre de cliente"
+msgstr "Kunde ist notwendig"
+
+# Duplicated customer name
+#: ../../../../ajax/ajax_appMgmtSave.php:334
+msgid "Nombre de cliente duplicado"
+msgstr "Duplizierter Kundenname"
+
+# Customer added
+#: ../../../../ajax/ajax_appMgmtSave.php:339
+msgid "Cliente creado"
+msgstr "Kunde hinzugefügt"
+
+# Error on creating customer
+#: ../../../../ajax/ajax_appMgmtSave.php:341
+#: ../../../../ajax/ajax_accountSave.php:152
+#: ../../../../ajax/ajax_accountSave.php:201
+msgid "Error al crear el cliente"
+msgstr "Fehler beim Anlegen des Kunden"
+
+# Customer updated
+#: ../../../../ajax/ajax_appMgmtSave.php:345
+msgid "Cliente actualizado"
+msgstr "Kunde aktualisiert"
+
+# Error on updating customer
+#: ../../../../ajax/ajax_appMgmtSave.php:348
+msgid "Error al actualizar el cliente"
+msgstr "Fehler beim Ändern des Kunden"
+
+# Customer in use by:
+#: ../../../../ajax/ajax_appMgmtSave.php:358
+msgid "Cliente en uso por:"
+msgstr "Kunde wird verwendet von:"
+
+# Customer deleted
+#: ../../../../ajax/ajax_appMgmtSave.php:362
+msgid "Cliente eliminado"
+msgstr "Kunde gelöscht"
+
+# Error on customer deletion
+#: ../../../../ajax/ajax_appMgmtSave.php:365
+msgid "Error al eliminar el cliente"
+msgstr "Fehler beim Löschen eines Kunden"
+
+# Category name needed
+#: ../../../../ajax/ajax_appMgmtSave.php:378
+msgid "Es necesario un nombre de categoría"
+msgstr "Kategoriename ist notwendig"
+
+# Category name duplicated
+#: ../../../../ajax/ajax_appMgmtSave.php:385
+msgid "Nombre de categoría duplicado"
+msgstr "Kategoriename dupliziert"
+
+# Category added
+#: ../../../../ajax/ajax_appMgmtSave.php:390
+msgid "Categoría creada"
+msgstr "Kategorie hinzugefügt"
+
+# Error on creating category
+#: ../../../../ajax/ajax_appMgmtSave.php:392
+msgid "Error al crear la categoría"
+msgstr "Fehler beim Anlegen der Kategorie"
+
+# Category updated
+#: ../../../../ajax/ajax_appMgmtSave.php:396
+msgid "Categoría actualizada"
+msgstr "Kategorie aktualisiert"
+
+# Error on updating category
+#: ../../../../ajax/ajax_appMgmtSave.php:399
+msgid "Error al actualizar la categoría"
+msgstr "Fehler beim Ändern der Kategorie"
+
+# Category in use by:
+#: ../../../../ajax/ajax_appMgmtSave.php:407
+msgid "Categoría en uso por:"
+msgstr "Kategorie wird verwendet von:"
+
+# Category deleted
+#: ../../../../ajax/ajax_appMgmtSave.php:411
+msgid "Categoría eliminada"
+msgstr "Kategorie gelöscht"
+
+# Error on category deletion
+#: ../../../../ajax/ajax_appMgmtSave.php:414
+msgid "Error al eliminar la categoría"
+msgstr "Fehler beim Löschen einer Kategorie"
+
+# Edit User
+#: ../../../../ajax/ajax_appMgmtData.php:46
+#: ../../../../ajax/ajax_getContent.php:137
+msgid "Editar Usuario"
+msgstr "Benutzer ändern"
+
+# New User
+#: ../../../../ajax/ajax_appMgmtData.php:51
+#: ../../../../ajax/ajax_getContent.php:135
+#: ../../../../inc/users.class.php:787
+msgid "Nuevo Usuario"
+msgstr "Neuer Benutzer"
+
+# Edit Group
+#: ../../../../ajax/ajax_appMgmtData.php:56
+#: ../../../../ajax/ajax_getContent.php:168
+msgid "Editar Grupo"
+msgstr "Gruppe ändern"
+
+# New Group
+#: ../../../../ajax/ajax_appMgmtData.php:61
+#: ../../../../ajax/ajax_getContent.php:167
+#: ../../../../inc/groups.class.php:150
+msgid "Nuevo Grupo"
+msgstr "Neue Gruppe"
+
+# Edit Profile
+#: ../../../../ajax/ajax_appMgmtData.php:66
+#: ../../../../ajax/ajax_getContent.php:200
+msgid "Editar Perfil"
+msgstr "Profil ändern"
+
+# New Profile
+#: ../../../../ajax/ajax_appMgmtData.php:71
+#: ../../../../ajax/ajax_getContent.php:199
+#: ../../../../inc/profiles.class.php:202
+msgid "Nuevo Perfil"
+msgstr "Neues Profil"
+
+# Edit Customer
+#: ../../../../ajax/ajax_appMgmtData.php:76
+#: ../../../../ajax/ajax_getContent.php:285
+msgid "Editar Cliente"
+msgstr "Kunde ändern"
+
+# New Customer
+#: ../../../../ajax/ajax_appMgmtData.php:81
+#: ../../../../ajax/ajax_getContent.php:284
+#: ../../../../inc/customer.class.php:56
+msgid "Nuevo Cliente"
+msgstr "Neuer Kunde"
+
+# Edit Category
+#: ../../../../ajax/ajax_appMgmtData.php:86
+#: ../../../../ajax/ajax_getContent.php:253
+msgid "Editar Categoría"
+msgstr "Kategorie ändern"
+
+# New Category
+#: ../../../../ajax/ajax_appMgmtData.php:91
+#: ../../../../ajax/ajax_getContent.php:252
+#: ../../../../inc/category.class.php:77
+msgid "Nueva Categoría"
+msgstr "Neue Kategorie"
+
+# Download new version
+#: ../../../../ajax/ajax_checkUpds.php:41
+msgid "Descargar nueva versión"
+msgstr "Neu Version herunterladen"
+
+# Updated
+#: ../../../../ajax/ajax_checkUpds.php:44
+msgid "Actualizado"
+msgstr "Aktualisiert"
+
+# Account name needed
+#: ../../../../ajax/ajax_accountSave.php:67
+#: ../../../../ajax/ajax_accountSave.php:92
+msgid "Es necesario un nombre de cuenta"
+msgstr "Kontoname ist notwendig"
+
+# Username needed
+#: ../../../../ajax/ajax_accountSave.php:75
+#: ../../../../ajax/ajax_accountSave.php:96
+msgid "Es necesario un usuario"
+msgstr "Benutzername ist notwendig"
+
+# Password needed
+#: ../../../../ajax/ajax_accountSave.php:79
+msgid "Es necesario una clave"
+msgstr "Passwort ist notwendig"
+
+# Invalid Id
+#: ../../../../ajax/ajax_accountSave.php:100
+#: ../../../../ajax/ajax_accountSave.php:113
+msgid "Id inválido"
+msgstr "Ungültige ID"
+
+# Crypto module can't be loaded
+#: ../../../../ajax/ajax_accountSave.php:124
+#: ../../../../inc/import.class.php:237
+msgid "No se puede usar el módulo de encriptación"
+msgstr "Kryptographie-Modul konnte nicht geladen werden"
+
+# Error on creating encryption data
+#: ../../../../ajax/ajax_accountSave.php:133
+#: ../../../../inc/import.class.php:244
+msgid "Error al generar datos cifrados"
+msgstr "Fehler beim Erzeugen der verschlüsselten Daten"
+
+# Duplicated customer
+#: ../../../../ajax/ajax_accountSave.php:148
+#: ../../../../ajax/ajax_accountSave.php:197
+msgid "Cliente duplicado"
+msgstr "Doppelter Kunde"
+
+# Account added
+#: ../../../../ajax/ajax_accountSave.php:176
+msgid "Cuenta creada"
+msgstr "Konto hinzugefügt"
+
+# Error on account creation
+#: ../../../../ajax/ajax_accountSave.php:178
+msgid "Error al crear la cuenta"
+msgstr "Fehler beim Anlegen des Kontos"
+
+# No changes
+#: ../../../../ajax/ajax_accountSave.php:211
+msgid "Sin cambios"
+msgstr "Keine Änderungen"
+
+# Account updated
+#: ../../../../ajax/ajax_accountSave.php:216
+#: ../../../../inc/account.class.php:364
+msgid "Cuenta actualizada"
+msgstr "Konto aktualisiert"
+
+# Error on updating account
+#: ../../../../ajax/ajax_accountSave.php:218
+msgid "Error al modificar la cuenta"
+msgstr "Fehler beim Änderns des Kontos"
+
+# Account deleted
+#: ../../../../ajax/ajax_accountSave.php:225
+msgid "Cuenta eliminada"
+msgstr "Konto gelöscht"
+
+# Error on account deletion
+#: ../../../../ajax/ajax_accountSave.php:227
+msgid "Error al eliminar la cuenta"
+msgstr "Fehler beim Löschen eines Kontos"
+
+# Error on updating password
+#: ../../../../ajax/ajax_accountSave.php:239
+msgid "Error al actualizar la clave"
+msgstr "Fehler beim Ändern des Passworts"
+
+# Account restored
+#: ../../../../ajax/ajax_accountSave.php:262
+msgid "Cuenta restaurada"
+msgstr "Konto wiederhergestellt"
+
+# Error on restoring account
+#: ../../../../ajax/ajax_accountSave.php:265
+msgid "Error al restaurar cuenta"
+msgstr "Fehler bei der Wiederherstellung der Rechnung"
+
+# Event log cleared
+#: ../../../../ajax/ajax_eventlog.php:43
+msgid "Registro de eventos vaciado"
+msgstr "Protokol gelöscht"
+
+# Error on clearing event log
+#: ../../../../ajax/ajax_eventlog.php:45
+msgid "Error al vaciar el registro de eventos"
+msgstr "Fehler beim Löschen des Protokols"
+
+# Missing Wiki parameters
+#: ../../../../ajax/ajax_configSave.php:96
+msgid "Faltan parámetros de Wiki"
+msgstr "Fehlender Wiki-Parameter"
+
+# Missing LDAP parameters
+#: ../../../../ajax/ajax_configSave.php:107
+msgid "Faltan parámetros de LDAP"
+msgstr "Fehlender LDAP-Parameter"
+
+# Missing Mail parameters
+#: ../../../../ajax/ajax_configSave.php:123
+msgid "Faltan parámetros de Correo"
+msgstr "Fehlender Mail-Parameter"
+
+# Maximum file upload size in 16MB
+#: ../../../../ajax/ajax_configSave.php:144
+msgid "El tamaño máximo de archivo es de 16MB"
+msgstr "Maximale Dateigröße beim Upload ist 16MB"
+
+# Edit Configuration
+#: ../../../../ajax/ajax_configSave.php:161
+msgid "Modificar Configuración"
+msgstr "Konfiguration ändern"
+
+# Configuration updated
+#: ../../../../ajax/ajax_configSave.php:169
+msgid "Configuración actualizada"
+msgstr "Konfiguration aktualisiert"
+
+# Master Password updated
+#: ../../../../ajax/ajax_configSave.php:178
+#: ../../../../ajax/ajax_configSave.php:224
+#: ../../../../ajax/ajax_viewpass.php:68 ../../../../ajax/ajax_viewpass.php:70
+#: ../../../../inc/html.class.php:419
+msgid "Clave maestra actualizada"
+msgstr "Master-Passwort aktualisiert"
+
+# Restart session to update
+#: ../../../../ajax/ajax_configSave.php:178
+#: ../../../../ajax/ajax_viewpass.php:68 ../../../../ajax/ajax_viewpass.php:70
+#: ../../../../inc/html.class.php:419
+msgid "Reinicie la sesión para cambiarla"
+msgstr "Neue Sitzung beginnen"
+
+# Master Password needed
+#: ../../../../ajax/ajax_configSave.php:182
+msgid "Clave maestra no indicada"
+msgstr "Master-Passwort notwendig"
+
+# Password update must be confirmed
+#: ../../../../ajax/ajax_configSave.php:186
+msgid "Se ha de confirmar el cambio de clave"
+msgstr "Passwort muss bestätigt werden"
+
+# Password are the same
+#: ../../../../ajax/ajax_configSave.php:190
+msgid "Las claves son idénticas"
+msgstr "Passwörter sind identisch"
+
+# Master passwords mismatch
+#: ../../../../ajax/ajax_configSave.php:194
+msgid "Las claves maestras no coinciden"
+msgstr "Master-Passwort stimmt nicht"
+
+# Current master password mismatch
+#: ../../../../ajax/ajax_configSave.php:198
+msgid "La clave maestra actual no coincide"
+msgstr "Aktuelles Master-Passwort stimmt nicht"
+
+# Error on updating accounts' passwords
+#: ../../../../ajax/ajax_configSave.php:207
+msgid "Errores al actualizar las claves de las cuentas"
+msgstr "Fehler beim Ändern der Passwörter eines Kontos"
+
+# Update Master Password
+#: ../../../../ajax/ajax_configSave.php:221
+#: ../../../../inc/account.class.php:736
+msgid "Actualizar Clave Maestra"
+msgstr "Master-Passwort ändern"
+
+# Error on saving master password's hash
+#: ../../../../ajax/ajax_configSave.php:227
+msgid "Error al guardar el hash de la clave maestra"
+msgstr "Fehler beim Speichern des Hash für das Master-Passwort"
+
+# Incorrect parameters
+#: ../../../../ajax/ajax_getContent.php:42
+msgid "Parámetros incorrectos"
+msgstr "Fehlerhafter Parameter"
+
+# Users Management
+#: ../../../../ajax/ajax_getContent.php:100 ../../../../inc/tpl/main.php:54
+msgid "Gestión de Usuarios"
+msgstr "Benutzerverwaltung"
+
+# Groups Management
+#: ../../../../ajax/ajax_getContent.php:101
+msgid "Gestión de Grupos"
+msgstr "Gruppenverwaltung"
+
+# Profiles Management
+#: ../../../../ajax/ajax_getContent.php:102
+msgid "Gestión de Perfiles"
+msgstr "Profilverwaltung"
+
+# Name
+#: ../../../../ajax/ajax_getContent.php:112
+#: ../../../../ajax/ajax_getContent.php:158
+#: ../../../../ajax/ajax_getContent.php:190
+#: ../../../../ajax/ajax_getContent.php:243
+#: ../../../../ajax/ajax_getContent.php:275
+#: ../../../../ajax/ajax_search.php:125 ../../../../ajax/ajax_search.php:236
+#: ../../../../inc/tpl/request.php:38 ../../../../inc/tpl/groups.php:39
+#: ../../../../inc/tpl/customers.php:39 ../../../../inc/tpl/profiles.php:39
+#: ../../../../inc/tpl/editpass.php:40 ../../../../inc/tpl/accounts.php:172
+#: ../../../../inc/tpl/categories.php:39 ../../../../inc/tpl/users.php:66
+msgid "Nombre"
+msgstr "Name"
+
+# Login
+#: ../../../../ajax/ajax_getContent.php:113
+#: ../../../../ajax/ajax_passReset.php:74 ../../../../inc/users.class.php:866
+#: ../../../../inc/users.class.php:892 ../../../../inc/tpl/users.php:81
+msgid "Login"
+msgstr "Anmeldung"
+
+# Group
+#: ../../../../ajax/ajax_getContent.php:115
+#: ../../../../ajax/ajax_doLogin.php:154 ../../../../inc/groups.class.php:151
+#: ../../../../inc/groups.class.php:179 ../../../../inc/groups.class.php:205
+#: ../../../../inc/tpl/config.php:329 ../../../../inc/tpl/users.php:105
+msgid "Grupo"
+msgstr "Gruppe"
+
+# Properties
+#: ../../../../ajax/ajax_getContent.php:116
+msgid "Propiedades"
+msgstr "Eigenschaften"
+
+# Application Admin
+#: ../../../../ajax/ajax_getContent.php:122 ../../../../inc/tpl/main.php:30
+msgid "Admin Aplicación"
+msgstr "Anwendungs-Administrator"
+
+# Account Admin
+#: ../../../../ajax/ajax_getContent.php:123
+msgid "Admin Cuentas"
+msgstr "Konto-Administrator"
+
+# LDAP User
+#: ../../../../ajax/ajax_getContent.php:124 ../../../../inc/tpl/users.php:87
+msgid "Usuario de LDAP"
+msgstr "LDAP-Benutzer"
+
+# Disabled
+#: ../../../../ajax/ajax_getContent.php:125 ../../../../inc/tpl/users.php:164
+msgid "Deshabilitado"
+msgstr "inaktiv"
+
+# View User Details
+#: ../../../../ajax/ajax_getContent.php:136
+msgid "Ver Detalles de Usuario"
+msgstr "Benutzerdetails anzeigen"
+
+# Delete User
+#: ../../../../ajax/ajax_getContent.php:138
+#: ../../../../inc/users.class.php:891
+msgid "Eliminar Usuario"
+msgstr "Benutzer löschen"
+
+# Change user password
+#: ../../../../ajax/ajax_getContent.php:139
+msgid "Cambiar Clave de Usuario"
+msgstr "Benutzerpasswort Ändern"
+
+# Description
+#: ../../../../ajax/ajax_getContent.php:158
+#: ../../../../ajax/ajax_getContent.php:243
+#: ../../../../ajax/ajax_getContent.php:275
+#: ../../../../ajax/ajax_sendRequest.php:62 ../../../../inc/tpl/groups.php:46
+#: ../../../../inc/tpl/customers.php:46 ../../../../inc/tpl/categories.php:46
+#: ../../../../inc/tpl/eventlog.php:68
+msgid "Descripción"
+msgstr "Beschreibung"
+
+# Delete Group
+#: ../../../../ajax/ajax_getContent.php:169
+#: ../../../../inc/groups.class.php:204
+msgid "Eliminar Grupo"
+msgstr "Gruppe löschen"
+
+# Categories management
+#: ../../../../ajax/ajax_getContent.php:233
+msgid "Gestión de Categorías"
+msgstr "Kategorienverwaltung"
+
+# Customers Management
+#: ../../../../ajax/ajax_getContent.php:234
+msgid "Gestión de Clientes"
+msgstr "Kundenverwaltung"
+
+# Delete Category
+#: ../../../../ajax/ajax_getContent.php:254
+#: ../../../../inc/category.class.php:131
+msgid "Eliminar Categoría"
+msgstr "Kategorie löschen"
+
+# Delete Customer
+#: ../../../../ajax/ajax_getContent.php:286
+#: ../../../../inc/customer.class.php:127
+msgid "Eliminar Cliente"
+msgstr "Kunde löschen"
+
+# Configuration
+#: ../../../../ajax/ajax_getContent.php:319
+#: ../../../../inc/config.class.php:124 ../../../../inc/config.class.php:150
+#: ../../../../inc/tpl/main.php:56 ../../../../inc/tpl/profiles.php:71
+msgid "Configuración"
+msgstr "Konfiguration"
+
+# Master Password
+#: ../../../../ajax/ajax_getContent.php:320 ../../../../inc/tpl/login.php:40
+#: ../../../../inc/tpl/login.php:48 ../../../../inc/tpl/profiles.php:76
+#: ../../../../inc/tpl/install.php:109 ../../../../inc/tpl/install.php:114
+#: ../../../../inc/tpl/install.php:115
+msgid "Clave Maestra"
+msgstr "Master-Passwort"
+
+# Backup
+#: ../../../../ajax/ajax_getContent.php:321
+msgid "Copia de Seguridad"
+msgstr "Sicherung"
+
+# Import accounts from external sources
+#: ../../../../ajax/ajax_getContent.php:322
+msgid "Importar cuentas desde fuentes externas"
+msgstr "Importiere Konto aus externer Quelle"
+
+# Import Accounts
+#: ../../../../ajax/ajax_getContent.php:322
+#: ../../../../inc/migrate.class.php:394 ../../../../inc/import.class.php:80
+#: ../../../../inc/import.class.php:160
+msgid "Importar Cuentas"
+msgstr "Importiere Konten"
+
+# Error while doing backup
+#: ../../../../ajax/ajax_backup.php:49
+msgid "Error al realizar el backup"
+msgstr "Fehler beim Ausführen des Backups"
+
+# Please, check the event log for more details
+#: ../../../../ajax/ajax_backup.php:49 ../../../../ajax/ajax_checkLdap.php:54
+#: ../../../../inc/migrate.class.php:115 ../../../../inc/import.class.php:89
+msgid "Revise el registro de eventos para más detalles"
+msgstr "Bitte schauen Sie in das Protokol für weitere Details"
+
+# Make Backup
+#: ../../../../ajax/ajax_backup.php:52 ../../../../inc/tpl/backup.php:82
+msgid "Realizar Backup"
+msgstr "Backup erstellen"
+
+# Application and database backup successfully done
+#: ../../../../ajax/ajax_backup.php:53
+msgid "Copia de la aplicación y base de datos realizada correctamente"
+msgstr "Sicherung der Applikation und der Datenbank erfolgreich durchgeführt"
+
+# Backup process finished
+#: ../../../../ajax/ajax_backup.php:58
+msgid "Proceso de backup finalizado"
+msgstr "Backup beendet"
+
+# Password Recovery
+#: ../../../../ajax/ajax_passReset.php:44
+msgid "Recuperación de Clave"
+msgstr "Wiederherstellung des Passworts"
+
+# Requested for
+#: ../../../../ajax/ajax_passReset.php:48
+#: ../../../../ajax/ajax_passReset.php:55
+msgid "Solicitado para"
+msgstr "Anfrage für"
+
+# Request sent
+#: ../../../../ajax/ajax_passReset.php:52
+#: ../../../../ajax/ajax_sendRequest.php:71
+msgid "Solicitud enviada"
+msgstr "Anfrage verschickt."
+
+# You will receive an email to complete the request in short.
+#: ../../../../ajax/ajax_passReset.php:52
+msgid "En breve recibirá un correo para completar la solicitud."
+msgstr "Sie bekommen in Kürze eine E-Mail, um die Anfrage zu beenden"
+
+# The request can't be done. Please contact with the administrator
+#: ../../../../ajax/ajax_passReset.php:59
+msgid "No se ha podido realizar la solicitud. Consulte con el administrador."
+msgstr ""
+"Anfrage konnte nicht ausgeführt werden. Bitte Administrator benachrichtigen."
+
+# Edit User Password
+#: ../../../../ajax/ajax_passReset.php:73 ../../../../inc/users.class.php:865
+msgid "Modificar Clave Usuario"
+msgstr "Benutzer-Passwort ändern"
+
+# The password is incorrect or not the same
+#: ../../../../ajax/ajax_passReset.php:85
+msgid "La clave es incorrecta o no coincide"
+msgstr "Das Passwort is falsch oder nicht gleich"
+
+# Files management disabled
+#: ../../../../ajax/ajax_files.php:44 ../../../../ajax/ajax_getFiles.php:36
+msgid "Gestión de archivos deshabilitada"
+msgstr "Dateiverwaltung gesperrt"
+
+# There are no allowed extensions
+#: ../../../../ajax/ajax_files.php:63
+msgid "No hay extensiones permitidas"
+msgstr "Es gibt keine erlaubten Dateiendungen"
+
+# File type not allowed
+#: ../../../../ajax/ajax_files.php:71 ../../../../inc/import.class.php:111
+msgid "Tipo de archivo no soportado"
+msgstr "Dateityp nicht erlaubt"
+
+# Invalid file
+#: ../../../../ajax/ajax_files.php:74
+msgid "Archivo inválido"
+msgstr "Ungültige Datei"
+
+# Internal error while reading file
+#: ../../../../ajax/ajax_files.php:87 ../../../../ajax/ajax_files.php:99
+#: ../../../../ajax/ajax_files.php:103 ../../../../inc/import.class.php:122
+#: ../../../../inc/import.class.php:130
+msgid "Error interno al leer el archivo"
+msgstr "Interner Fehler beim Lesen der Datei"
+
+# File is bigger than
+#: ../../../../ajax/ajax_files.php:91
+msgid "El archivo es mayor de "
+msgstr "Datei ist größer als"
+
+# Upload File
+#: ../../../../ajax/ajax_files.php:98 ../../../../inc/files.class.php:51
+msgid "Subir Archivo"
+msgstr "Datei hochladen"
+
+# File saved
+#: ../../../../ajax/ajax_files.php:107
+msgid "Archivo guardado"
+msgstr "Datei gespeichert"
+
+# Error on file save
+#: ../../../../ajax/ajax_files.php:109
+msgid "No se pudo guardar el archivo"
+msgstr "Fehler beim Speichern der Datei"
+
+# Invalid file ID
+#: ../../../../ajax/ajax_files.php:116 ../../../../ajax/ajax_files.php:174
+msgid "No es un ID de archivo válido"
+msgstr "Ungültige Datei-ID"
+
+# File doesn't exist
+#: ../../../../ajax/ajax_files.php:124 ../../../../inc/files.class.php:140
+msgid "El archivo no existe"
+msgstr "Datei existiert nicht"
+
+# Download File
+#: ../../../../ajax/ajax_files.php:133 ../../../../ajax/ajax_getFiles.php:67
+msgid "Descargar Archivo"
+msgstr "Datei herunterladen"
+
+# ID
+#: ../../../../ajax/ajax_files.php:134 ../../../../ajax/ajax_viewpass.php:82
+#: ../../../../inc/files.class.php:107 ../../../../inc/tpl/eventlog.php:53
+msgid "ID"
+msgstr "ID"
+
+# File
+#: ../../../../ajax/ajax_files.php:135 ../../../../inc/files.class.php:53
+#: ../../../../inc/files.class.php:108 ../../../../inc/tpl/migrate.php:110
+msgid "Archivo"
+msgstr "Datei"
+
+# Type
+#: ../../../../ajax/ajax_files.php:136 ../../../../inc/files.class.php:54
+#: ../../../../inc/files.class.php:109
+msgid "Tipo"
+msgstr "Typ"
+
+# Size
+#: ../../../../ajax/ajax_files.php:137 ../../../../inc/files.class.php:55
+#: ../../../../inc/files.class.php:110
+msgid "Tamaño"
+msgstr "Größe"
+
+# File deleted
+#: ../../../../ajax/ajax_files.php:178
+msgid "Archivo eliminado"
+msgstr "Datei gelöscht"
+
+# Error on file deletion
+#: ../../../../ajax/ajax_files.php:180
+msgid "Error al eliminar el archivo"
+msgstr "Fehler beim Löschen einer Datei"
+
+# Confirm account import
+#: ../../../../ajax/ajax_migrate.php:1
+msgid "Confirmar la importación de cuentas"
+msgstr "Import der Konten bestätigen"
+
+# Connection username needed
+#: ../../../../ajax/ajax_migrate.php:1
+msgid "Es necesario un usuario de conexión"
+msgstr "Benutzername der Verbindung ist notwendig"
+
+# Connection password needed
+#: ../../../../ajax/ajax_migrate.php:1
+msgid "Es necesaria una clave de conexión"
+msgstr "Verbindungs-Passwort wird benötigt"
+
+# Database name needed
+#: ../../../../ajax/ajax_migrate.php:1
+msgid "Es necesario el nombre de la BBDD"
+msgstr "Datenbank ist notwendig"
+
+# Host name needed
+#: ../../../../ajax/ajax_migrate.php:1
+msgid "Es necesario un nombre de host"
+msgstr "Hostname ist notwendig"
+
+# You don't have permission to access to this account
+#: ../../../../ajax/ajax_viewpass.php:52 ../../../../ajax/ajax_viewpass.php:58
+#: ../../../../inc/html.class.php:417
+msgid "No tiene permisos para acceder a esta cuenta"
+msgstr "Sie haben keine Erlaubnis auf dieses Konto zuzugreifen"
+
+# Master password mismatch
+#: ../../../../ajax/ajax_viewpass.php:61
+msgid "La clave maestra no coincide"
+msgstr "Master-Passwort stimmt nicht"
+
+# View password
+#: ../../../../ajax/ajax_viewpass.php:81 ../../../../ajax/ajax_search.php:291
+#: ../../../../inc/tpl/profiles.php:50 ../../../../inc/tpl/accounts.php:522
+msgid "Ver Clave"
+msgstr "Passwort anzeigen"
+
+# Account
+#: ../../../../ajax/ajax_viewpass.php:83
+#: ../../../../ajax/ajax_sendRequest.php:60 ../../../../inc/files.class.php:52
+#: ../../../../inc/account.class.php:366 ../../../../inc/account.class.php:574
+#: ../../../../inc/account.class.php:596 ../../../../inc/account.class.php:867
+msgid "Cuenta"
+msgstr "Konto"
+
+# User
+#: ../../../../ajax/ajax_viewpass.php:95 ../../../../ajax/ajax_search.php:131
+#: ../../../../ajax/ajax_search.php:248 ../../../../ajax/ajax_doLogin.php:77
+#: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:91
+#: ../../../../ajax/ajax_doLogin.php:101 ../../../../ajax/ajax_doLogin.php:111
+#: ../../../../ajax/ajax_doLogin.php:152 ../../../../res/test.php:64
+#: ../../../../inc/init.php:546 ../../../../inc/users.class.php:788
+#: ../../../../inc/users.class.php:829 ../../../../inc/tpl/passreset.php:51
+#: ../../../../inc/tpl/request.php:49 ../../../../inc/tpl/login.php:35
+#: ../../../../inc/tpl/login.php:44 ../../../../inc/tpl/install.php:89
+#: ../../../../inc/tpl/install.php:90 ../../../../inc/tpl/editpass.php:53
+#: ../../../../inc/tpl/accounts.php:233 ../../../../inc/tpl/config.php:423
+#: ../../../../inc/tpl/eventlog.php:62
+msgid "Usuario"
+msgstr "Benutzer"
+
+# Password
+#: ../../../../ajax/ajax_viewpass.php:99 ../../../../ajax/ajax_usrpass.php:53
+#: ../../../../ajax/ajax_usrpass.php:56 ../../../../inc/tpl/passreset.php:62
+#: ../../../../inc/tpl/login.php:37 ../../../../inc/tpl/login.php:45
+#: ../../../../inc/tpl/install.php:99 ../../../../inc/tpl/install.php:100
+#: ../../../../inc/tpl/editpass.php:57 ../../../../inc/tpl/accounts.php:250
+#: ../../../../inc/tpl/config.php:431 ../../../../inc/tpl/users.php:129
+msgid "Clave"
+msgstr "Passwort"
+
+# No records found
+#: ../../../../ajax/ajax_search.php:108 ../../../../inc/tpl/eventlog.php:42
+msgid "No se encontraron registros"
+msgstr "Keine Datensätze gefunden"
+
+# Sort by Customer
+#: ../../../../ajax/ajax_search.php:122
+msgid "Ordenar por Cliente"
+msgstr "Nach Kunde sortieren"
+
+# Customer
+#: ../../../../ajax/ajax_search.php:122 ../../../../ajax/ajax_search.php:231
+#: ../../../../ajax/ajax_sendRequest.php:61
+#: ../../../../inc/account.class.php:365 ../../../../inc/account.class.php:573
+#: ../../../../inc/account.class.php:595 ../../../../inc/account.class.php:866
+#: ../../../../inc/customer.class.php:57
+#: ../../../../inc/customer.class.php:103
+#: ../../../../inc/customer.class.php:128 ../../../../inc/tpl/request.php:41
+#: ../../../../inc/tpl/editpass.php:44 ../../../../inc/tpl/accounts.php:188
+msgid "Cliente"
+msgstr "Kunde"
+
+# Sort by Name
+#: ../../../../ajax/ajax_search.php:125
+msgid "Ordenar por Nombre"
+msgstr "Nach Name sortieren"
+
+# Sort by Category
+#: ../../../../ajax/ajax_search.php:128
+msgid "Ordenar por Categoría"
+msgstr "Nach Kategorie sortieren"
+
+# Category
+#: ../../../../ajax/ajax_search.php:128 ../../../../ajax/ajax_search.php:241
+#: ../../../../inc/category.class.php:78
+#: ../../../../inc/category.class.php:132
+#: ../../../../inc/category.class.php:178 ../../../../inc/tpl/accounts.php:205
+msgid "Categoría"
+msgstr "Kategorie"
+
+# Sort by Username
+#: ../../../../ajax/ajax_search.php:131
+msgid "Ordenar por Usuario"
+msgstr "Nach Benutzername sortieren"
+
+# Sort by URL / IP
+#: ../../../../ajax/ajax_search.php:134
+msgid "Ordenar por URL / IP"
+msgstr "Nach URL/IP sortieren"
+
+# URL / IP
+#: ../../../../ajax/ajax_search.php:134 ../../../../ajax/ajax_search.php:253
+#: ../../../../inc/tpl/request.php:45 ../../../../inc/tpl/editpass.php:48
+#: ../../../../inc/tpl/accounts.php:217
+msgid "URL / IP"
+msgstr "URL/IP"
+
+# Search in Wiki
+#: ../../../../ajax/ajax_search.php:173
+msgid "Buscar en Wiki"
+msgstr "Im Wiki suchen"
+
+# Account Details
+#: ../../../../ajax/ajax_search.php:181 ../../../../ajax/ajax_search.php:287
+#: ../../../../inc/tpl/accounts.php:80 ../../../../inc/tpl/accounts.php:91
+msgid "Detalles de Cuenta"
+msgstr "Kontodetails"
+
+# Open link to
+#: ../../../../ajax/ajax_search.php:199 ../../../../ajax/ajax_search.php:201
+msgid "Abrir enlace a"
+msgstr "Öffne Verweis nach"
+
+# Notes
+#: ../../../../ajax/ajax_search.php:260 ../../../../inc/tpl/accounts.php:269
+#: ../../../../inc/tpl/users.php:147
+msgid "Notas"
+msgstr "Bemerkungen"
+
+# Attachments
+#: ../../../../ajax/ajax_search.php:264
+msgid "Archivos adjuntos"
+msgstr "Anhänge"
+
+# Link to Wiki
+#: ../../../../ajax/ajax_search.php:275
+msgid "Enlace a Wiki"
+msgstr "Verweis zum Wiki"
+
+# Copy Password to Clipboard
+#: ../../../../ajax/ajax_search.php:292 ../../../../ajax/ajax_search.php:344
+#: ../../../../inc/tpl/accounts.php:527 ../../../../inc/tpl/accounts.php:616
+msgid "Copiar Clave en Portapapeles"
+msgstr "Passwort in die Zwischenablage kopieren"
+
+# More Actions
+#: ../../../../ajax/ajax_search.php:296 ../../../../inc/html.class.php:536
+msgid "Más Acciones"
+msgstr "Weitere Aktionen"
+
+# Edit Account
+#: ../../../../ajax/ajax_search.php:300 ../../../../inc/tpl/accounts.php:550
+msgid "Modificar Cuenta"
+msgstr "Konto ändern"
+
+# Copy Account
+#: ../../../../ajax/ajax_search.php:304 ../../../../inc/tpl/accounts.php:53
+msgid "Copiar Cuenta"
+msgstr "Konto kopieren"
+
+# Delete Account
+#: ../../../../ajax/ajax_search.php:308 ../../../../inc/account.class.php:594
+#: ../../../../inc/tpl/accounts.php:73 ../../../../inc/tpl/accounts.php:562
+msgid "Eliminar Cuenta"
+msgstr "Konto löschen"
+
+# Request Modification
+#: ../../../../ajax/ajax_search.php:315 ../../../../inc/tpl/accounts.php:555
+msgid "Solicitar Modificación"
+msgstr "Änderung initiiert"
+
+# Password Copied to Clipboard
+#: ../../../../ajax/ajax_search.php:348 ../../../../inc/tpl/accounts.php:620
+msgid "Clave Copiada al Portapapeles"
+msgstr "Passwort in die Zwischenablage kopiert"
+
+# Description is needed
+#: ../../../../ajax/ajax_sendRequest.php:45
+msgid "Es necesaria una descripción"
+msgstr "Beschreibung ist notwendig"
+
+# Request for Account Modification
+#: ../../../../ajax/ajax_sendRequest.php:58
+msgid "Solicitud de Modificación de Cuenta"
+msgstr "Kontoänderung initiiert"
+
+# Requester
+#: ../../../../ajax/ajax_sendRequest.php:59
+msgid "Solicitante"
+msgstr "Anfrager"
+
+# Error on sending request
+#: ../../../../ajax/ajax_sendRequest.php:74
+msgid "Error al enviar la solicitud"
+msgstr "Fehler beim Senden der Anfrage"
+
+# You don't have permission to do this operation
+#: ../../../../ajax/ajax_usrpass.php:41
+msgid "No tiene permisos para realizar esta operación"
+msgstr "Sie haben keine Erlaubnis für diese Aktion"
+
+# Password Change
+#: ../../../../ajax/ajax_usrpass.php:48 ../../../../inc/auth.class.php:185
+#: ../../../../inc/tpl/users.php:166
+msgid "Cambio de Clave"
+msgstr "Passwortänderung"
+
+# Generate random password
+#: ../../../../ajax/ajax_usrpass.php:57 ../../../../inc/tpl/editpass.php:63
+#: ../../../../inc/tpl/accounts.php:257 ../../../../inc/tpl/users.php:133
+msgid "Generar clave aleatoria"
+msgstr "Zufälliges Passwort erzeugen"
+
+# Password (repeat)
+#: ../../../../ajax/ajax_usrpass.php:62 ../../../../ajax/ajax_usrpass.php:64
+#: ../../../../inc/tpl/editpass.php:68 ../../../../inc/tpl/accounts.php:261
+#: ../../../../inc/tpl/users.php:138
+msgid "Clave (repetir)"
+msgstr "Passwort (Wiederholung)"
+
+# Password strength level
+#: ../../../../ajax/ajax_usrpass.php:65 ../../../../inc/tpl/passreset.php:65
+#: ../../../../inc/tpl/passreset.php:73 ../../../../inc/tpl/masterpass.php:63
+#: ../../../../inc/tpl/install.php:104 ../../../../inc/tpl/install.php:119
+#: ../../../../inc/tpl/editpass.php:70 ../../../../inc/tpl/accounts.php:264
+#: ../../../../inc/tpl/users.php:141
+msgid "Nivel de fortaleza de la clave"
+msgstr "Passwortstärke"
+
+# Save
+#: ../../../../ajax/ajax_usrpass.php:81 ../../../../inc/tpl/masterpass.php:113
+#: ../../../../inc/tpl/groups.php:64 ../../../../inc/tpl/customers.php:64
+#: ../../../../inc/tpl/profiles.php:134 ../../../../inc/tpl/editpass.php:88
+#: ../../../../inc/tpl/accounts.php:536 ../../../../inc/tpl/categories.php:64
+#: ../../../../inc/tpl/config.php:488 ../../../../inc/tpl/users.php:210
+msgid "Guardar"
+msgstr "Speichern"
+
+# LDAP parameters are not set
+#: ../../../../ajax/ajax_checkLdap.php:48 ../../../../inc/ldap.class.php:239
+msgid "Los parámetros de LDAP no están configurados"
+msgstr "LDAP-Parameter sind nicht gesetzt"
+
+# LDAP connection error
+#: ../../../../ajax/ajax_checkLdap.php:54
+msgid "Error de conexión a LDAP"
+msgstr "LDAP Verbindungsfehler"
+
+# LDAP connection OK
+#: ../../../../ajax/ajax_checkLdap.php:56
+msgid "Conexión a LDAP correcta"
+msgstr "LDAP-Verbindung ist OK"
+
+# Objects found
+#: ../../../../ajax/ajax_checkLdap.php:56
+msgid "Objetos encontrados"
+msgstr "Objekte gefunden"
+
+# Delete File
+#: ../../../../ajax/ajax_getFiles.php:63 ../../../../inc/files.class.php:106
+msgid "Eliminar Archivo"
+msgstr "Datei löschen"
+
+# View file
+#: ../../../../ajax/ajax_getFiles.php:70
+msgid "Ver Archivo"
+msgstr "Datei ansehen"
+
+# User/Pass not entered
+#: ../../../../ajax/ajax_doLogin.php:41
+msgid "Usuario/Clave no introducidos"
+msgstr "Keine Benutzername/Passwort eingegeben"
+
+# Session start (LDAP)
+#: ../../../../ajax/ajax_doLogin.php:54 ../../../../ajax/ajax_doLogin.php:75
+#: ../../../../ajax/ajax_doLogin.php:82 ../../../../ajax/ajax_doLogin.php:89
+msgid "Inicio sesión (LDAP)"
+msgstr "Sitzungsbeginn (LDAP)"
+
+# Error on saving LDAP user data
+#: ../../../../ajax/ajax_doLogin.php:60
+msgid "Error al guardar los datos de LDAP"
+msgstr "Fehler beim Speichern der LDAP-Benutzerdaten"
+
+# Internal error
+#: ../../../../ajax/ajax_doLogin.php:63 ../../../../ajax/ajax_doLogin.php:71
+#: ../../../../ajax/ajax_doLogin.php:122 ../../../../inc/import.class.php:237
+#: ../../../../inc/import.class.php:244 ../../../../inc/import.class.php:262
+msgid "Error interno"
+msgstr "Interner Fehler"
+
+# Error on updating user password in BD
+#: ../../../../ajax/ajax_doLogin.php:68
+msgid "Error al actualizar la clave del usuario en la BBDD"
+msgstr "Fehler beim Ändern des Benutzer-Passworts in der BD"
+
+# Incorrect login
+#: ../../../../ajax/ajax_doLogin.php:76 ../../../../ajax/ajax_doLogin.php:100
+msgid "Login incorrecto"
+msgstr "Fehlerhafte Anmeldung"
+
+# Wrong user/pass
+#: ../../../../ajax/ajax_doLogin.php:80 ../../../../ajax/ajax_doLogin.php:94
+#: ../../../../ajax/ajax_doLogin.php:104
+msgid "Usuario/Clave incorrectos"
+msgstr "Falscher/s Benutzername/Passwort"
+
+# Account expired
+#: ../../../../ajax/ajax_doLogin.php:83 ../../../../ajax/ajax_doLogin.php:87
+msgid "Cuenta expirada"
+msgstr "Konto abgelaufen"
+
+# The user have no associated groups
+#: ../../../../ajax/ajax_doLogin.php:90
+msgid "El usuario no tiene grupos asociados"
+msgstr "Der Benutzer hat keine zugewiesene Gruppe"
+
+# Session start (MySQL)
+#: ../../../../ajax/ajax_doLogin.php:96
+msgid "Inicio sesión (MySQL)"
+msgstr "Sitzungsbeginn (MySQL)"
+
+# User disabled
+#: ../../../../ajax/ajax_doLogin.php:110 ../../../../ajax/ajax_doLogin.php:114
+msgid "Usuario deshabilitado"
+msgstr "Benutzer gespert"
+
+# Error on retrieving user data from DB
+#: ../../../../ajax/ajax_doLogin.php:119
+msgid "Error al obtener los datos del usuario de la BBDD"
+msgstr "Fehler beim Laden der Benutzerdaten aus der Datenbank"
+
+# The master password not saved or is incorrect
+#: ../../../../ajax/ajax_doLogin.php:127
+msgid "La clave maestra no ha sido guardada o es incorrecta"
+msgstr "Master-Passwort ist nicht sicher oder stimmt nicht"
+
+# Invalid Master Password
+#: ../../../../ajax/ajax_doLogin.php:130 ../../../../ajax/ajax_doLogin.php:133
+msgid "Clave maestra incorrecta"
+msgstr "Ungültiges Master-Passwort"
+
+# Query error
+#: ../../../../js/js.php:45
+msgid "Error en la consulta"
+msgstr "Abfrage-Fehler"
+
+# An error has occured
+#: ../../../../js/js.php:46
+msgid "Ha ocurrido un error"
+msgstr "Ein Fehler ist aufgetreten"
+
+# Session finished
+#: ../../../../js/js.php:47 ../../../../inc/tpl/login.php:71
+msgid "Sesión finalizada"
+msgstr "Sitzung beendet"
+
+# Delete account?
+#: ../../../../js/js.php:48
+msgid "Borrar la cuenta?"
+msgstr "Account löschen?"
+
+# Delete user?
+#: ../../../../js/js.php:49
+msgid "Borrar el usuario?"
+msgstr "Benutzer löschen?"
+
+# Please save the configuration in order to take effect
+#: ../../../../js/js.php:50
+msgid "Guarde la configuración para que sea efectiva"
+msgstr "Bitte speichern Sie die Konfiguration, um wirksam"
+
+# Generated Password
+#: ../../../../js/js.php:51
+msgid "Clave Generada"
+msgstr "Generiertes Passwort"
+
+# High level
+#: ../../../../js/js.php:52
+msgid "Nivel alto"
+msgstr "Hohe"
+
+# Average level
+#: ../../../../js/js.php:53
+msgid "Nivel medio"
+msgstr "Mittelstufe"
+
+# Low level
+#: ../../../../js/js.php:54
+msgid "Nivel bajo"
+msgstr "Low-Pegel"
+
+# Very high level
+#: ../../../../js/js.php:55
+msgid "Nivel muy alto"
+msgstr "Sehr hohes Niveau"
+
+# You should use at least 8 characters
+#: ../../../../js/js.php:56
+msgid "Utilizar al menos 8 caracteres"
+msgstr "Verwenden Sie mindestens 8 Zeichen"
+
+# Delete item?
+#: ../../../../js/js.php:57
+msgid "Borrar elemento?"
+msgstr "Artikel löschen?"
+
+# Page not found
+#: ../../../../js/js.php:58
+msgid "Página no encontrada"
+msgstr "Seite nicht gefunden"
+
+# File not supported for preview
+#: ../../../../js/js.php:59
+msgid "Archivo no soportado para visualizar"
+msgstr "Die Datei, nicht unterstützt"
+
+# Delete file?
+#: ../../../../js/js.php:60
+msgid "Eliminar archivo?"
+msgstr "Datei löschen?"
+
+# Your browser does not support HTML 5 file uploads
+#: ../../../../js/js.php:61
+msgid "Su navegador no soporta subir archivos con HTML5"
+msgstr "Ihr Browser unterstützt keine Hochladen von Dateien in HTML5"
+
+# Too many files
+#: ../../../../js/js.php:62
+msgid "Demasiados archivos"
+msgstr "Zu viele Dateien"
+
+# Unable to save file.<br>Max file size:
+#: ../../../../js/js.php:63
+msgid "No es posible guardar el archivo.<br>Tamaño máximo:"
+msgstr "Datei konnte nicht gespeichert <br> Max. Dateigröße.:"
+
+# Extension not allowed
+#: ../../../../js/js.php:64
+msgid "Extensión no permitida"
+msgstr "Erweiterung nicht erlaubt"
+
+# Clear event log?
+#: ../../../../js/js.php:65
+msgid "Vaciar el registro de eventos?"
+msgstr "Klar Ereignisprotokoll?"
+
+# Unable to access to this file directly
+#: ../../../../inc/groups.class.php:27 ../../../../inc/util.class.php:26
+#: ../../../../inc/util.class.php:288 ../../../../inc/db.class.php:27
+#: ../../../../inc/html.class.php:27 ../../../../inc/files.class.php:27
+#: ../../../../inc/backup.class.php:26 ../../../../inc/ldap.class.php:27
+#: ../../../../inc/config.class.php:26 ../../../../inc/profiles.class.php:27
+#: ../../../../inc/common.class.php:26 ../../../../inc/account.class.php:26
+#: ../../../../inc/init.php:26 ../../../../inc/acl.class.php:27
+#: ../../../../inc/upgrade.class.php:27 ../../../../inc/migrate.class.php:26
+#: ../../../../inc/keepassimport.class.php:27
+#: ../../../../inc/installer.class.php:27
+#: ../../../../inc/keepassximport.class.php:27
+#: ../../../../inc/users.class.php:27 ../../../../inc/log.class.php:26
+#: ../../../../inc/crypt.class.php:26 ../../../../inc/customer.class.php:27
+#: ../../../../inc/category.class.php:27 ../../../../inc/import.class.php:27
+#: ../../../../inc/auth.class.php:27 ../../../../inc/tpl/request.php:25
+#: ../../../../inc/tpl/backup.php:26 ../../../../inc/tpl/masterpass.php:26
+#: ../../../../inc/tpl/groups.php:26 ../../../../inc/tpl/migrate.php:26
+#: ../../../../inc/tpl/login.php:26 ../../../../inc/tpl/customers.php:26
+#: ../../../../inc/tpl/main.php:26 ../../../../inc/tpl/profiles.php:26
+#: ../../../../inc/tpl/search.php:26 ../../../../inc/tpl/editpass.php:25
+#: ../../../../inc/tpl/accounts.php:26 ../../../../inc/tpl/categories.php:26
+#: ../../../../inc/tpl/config.php:26 ../../../../inc/tpl/users.php:26
+#: ../../../../inc/tpl/eventlog.php:26
+msgid "No es posible acceder directamente a este archivo"
+msgstr "Auf diese Datei darf nicht direkt zugegriffen werden"
+
+# Edit Group
+#: ../../../../inc/groups.class.php:178
+msgid "Modificar Grupo"
+msgstr "Gruppe ändern"
+
+# Required PHP version >= 5.1
+#: ../../../../inc/util.class.php:115
+msgid "Versión de PHP requerida >= 5.1"
+msgstr "Erforderliche PHP-Version >= 5.1"
+
+# Please update PHP version to run sysPass in a secure way
+#: ../../../../inc/util.class.php:116
+msgid ""
+"Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgstr ""
+"Bitte aktualisieren Sie ihre PHP Installation, um sysPass sicher betreiben "
+"zu können."
+
+# Module unavilable
+#: ../../../../inc/util.class.php:136 ../../../../inc/tpl/config.php:375
+msgid "Módulo no disponible"
+msgstr "Modul verfügbar"
+
+# Without this module the application couldn't run correctly
+#: ../../../../inc/util.class.php:137
+msgid "Sin este módulo la aplicación puede no funcionar correctamente."
+msgstr "Ohne dieses Modul wird die Anwendung nicht korrekt funktionieren."
+
+# Unable to connect to DB
+#: ../../../../inc/db.class.php:93 ../../../../inc/db.class.php:107
+#: ../../../../inc/db.class.php:114
+msgid "No es posible conectar con la BD"
+msgstr "Verbindung zum Datenbank-Server kann nicht hergestellt werden"
+
+# Please, check connection parameters
+#: ../../../../inc/db.class.php:93
+msgid "Compruebe los datos de conexión"
+msgstr "Bitte überprüfen Sie Ihre Verbindungseinstellungen"
+
+# Javascript is needed in order to run correctly
+#: ../../../../inc/html.class.php:204
+msgid "Javascript es necesario para el correcto funcionamiento"
+msgstr "Javascript muss eingeschaltet sein."
+
+# Help :: FAQ :: Changelog
+#: ../../../../inc/html.class.php:229
+msgid "Ayuda :: FAQ :: Changelog"
+msgstr "Hilfe :: FAQ :: Changelog"
+
+# A cygnux.org project
+#: ../../../../inc/html.class.php:231
+msgid "Un proyecto de cygnux.org"
+msgstr "Ein cygnux.org Projekt"
+
+# Filter ON
+#: ../../../../inc/html.class.php:273
+msgid "Filtro ON"
+msgstr "Filter Eingeschaltet"
+
+# Global ON
+#: ../../../../inc/html.class.php:275
+msgid "Global ON"
+msgstr "Global eingeschaltet"
+
+# First page
+#: ../../../../inc/html.class.php:280 ../../../../inc/html.class.php:313
+msgid "Primera página"
+msgstr "Erste Seite"
+
+# Previous page
+#: ../../../../inc/html.class.php:281 ../../../../inc/html.class.php:314
+msgid "Página anterior"
+msgstr "Vorherige Seite"
+
+# Next page
+#: ../../../../inc/html.class.php:288 ../../../../inc/html.class.php:321
+msgid "Página siguiente"
+msgstr "Nächste Seite"
+
+# Last page
+#: ../../../../inc/html.class.php:289 ../../../../inc/html.class.php:322
+msgid "Última página"
+msgstr "Letzte Seite"
+
+# Option unavilable
+#: ../../../../inc/html.class.php:416
+msgid "Opción no disponible"
+msgstr "Option nicht verfügbar"
+
+# Please, contact to administrator
+#: ../../../../inc/html.class.php:416 ../../../../inc/html.class.php:417
+#: ../../../../inc/html.class.php:418 ../../../../inc/init.php:484
+msgid "Consulte con el administrador"
+msgstr "Bitte kontaktieren Sie den Administrator"
+
+# You don't have permission to access to this page
+#: ../../../../inc/html.class.php:418
+msgid "No tiene permisos para acceder a esta página"
+msgstr "Sie haben keine Erlaubnis auf diese Seite zuzugreifen"
+
+# This operation is only available on Linux environments
+#: ../../../../inc/backup.class.php:155
+msgid "Esta operación sólo es posible en entornos Linux"
+msgstr "Diese Funktion is nur in einer Linux-Umgebung verfügbar"
+
+# Error while doing backup in compatibility mode
+#: ../../../../inc/backup.class.php:159
+msgid "Error al realizar backup en modo compatibilidad"
+msgstr "Fehler während der Durchführung der Sicherung im Kompatibilitätsmodus"
+
+# Check backup directory permissions
+#: ../../../../inc/backup.class.php:217
+msgid "Compruebe los permisos del directorio de backups"
+msgstr "Bitte überprüfen Sie die Zugriffsrechte des Backup₋Verzeichnisses"
+
+# Unable to connect to LDAP server
+#: ../../../../inc/ldap.class.php:97 ../../../../inc/ldap.class.php:102
+msgid "No es posible conectar con el servidor de LDAP"
+msgstr "Verbindung zum LDAP-Server kann nicht hergestellt werden"
+
+# Connection error (BIND)
+#: ../../../../inc/ldap.class.php:126 ../../../../inc/ldap.class.php:132
+msgid "Error al conectar (BIND)"
+msgstr "LDAP-Verbindungsfehler (BIND)"
+
+# Error on searching objects in base DN
+#: ../../../../inc/ldap.class.php:154 ../../../../inc/ldap.class.php:160
+msgid "Error al buscar objetos en DN base"
+msgstr "Fehler beim Suchen nach Objekten in der Base-DN"
+
+# Error on searching group RDN
+#: ../../../../inc/ldap.class.php:187 ../../../../inc/ldap.class.php:193
+#: ../../../../inc/ldap.class.php:200 ../../../../inc/ldap.class.php:205
+#: ../../../../inc/ldap.class.php:215 ../../../../inc/ldap.class.php:220
+msgid "Error al buscar RDN de grupo"
+msgstr "Fehler beim Suchen nach Gruppen RDN"
+
+# Group RDN found
+#: ../../../../inc/ldap.class.php:208
+msgid "RDN de grupo encontrado"
+msgstr "Gruppen-RDN gefunden"
+
+# Error on searching user DN
+#: ../../../../inc/ldap.class.php:270 ../../../../inc/ldap.class.php:276
+#: ../../../../inc/ldap.class.php:291 ../../../../inc/ldap.class.php:296
+msgid "Error al buscar el DN del usuario"
+msgstr "Fehler beim Suchen nach Benutzer DN"
+
+# Error on searching user on LDAP
+#: ../../../../inc/ldap.class.php:283 ../../../../inc/ldap.class.php:288
+msgid "Error al localizar el usuario en LDAP"
+msgstr "Fehler beim Suchen des Benutzers in LDAP"
+
+# Error on searching users group
+#: ../../../../inc/ldap.class.php:369 ../../../../inc/ldap.class.php:375
+msgid "Error al buscar el grupo de usuarios"
+msgstr "Fehler beim Suchen nach Benutzergruppe"
+
+# No group found with that name
+#: ../../../../inc/ldap.class.php:379 ../../../../inc/ldap.class.php:385
+msgid "No se encontró el grupo con ese nombre"
+msgstr "Keine Gruppe mit dem Namen gefunden"
+
+# Update Configuration
+#: ../../../../inc/config.class.php:125 ../../../../inc/config.class.php:151
+msgid "Modificar configuración"
+msgstr "Konfiguration ändern"
+
+# Parameter
+#: ../../../../inc/config.class.php:152
+msgid "Parámetro"
+msgstr "Parameter"
+
+# Value
+#: ../../../../inc/config.class.php:153
+msgid "Valor"
+msgstr "Wert"
+
+# Unable to write on configuration file
+#: ../../../../inc/config.class.php:312
+msgid "No es posible escribir el archivo de configuración"
+msgstr "Konfigurationsdatei kann nicht geschrieben werden"
+
+# Please, check 'config' directory permissions
+#: ../../../../inc/config.class.php:313
+msgid "Compruebe los permisos del directorio \"config\""
+msgstr "Bitte überprüfen Sie Zugriffsrechte auf das Verzeichnis \"config\""
+
+# Edit Profile
+#: ../../../../inc/profiles.class.php:253
+msgid "Modificar Perfil"
+msgstr "Profil ändern"
+
+# N/A
+#: ../../../../inc/common.class.php:60 ../../../../inc/users.class.php:107
+msgid "N/D"
+msgstr "N/A"
+
+# Action
+#: ../../../../inc/common.class.php:61
+msgid "Acción"
+msgstr "Aktion"
+
+# Performed by
+#: ../../../../inc/common.class.php:62
+msgid "Realizado por"
+msgstr "Ausgeführt durch"
+
+# Email sent
+#: ../../../../inc/common.class.php:80
+msgid "Correo enviado"
+msgstr "E-Mail gesendet"
+
+# Error on sending email
+#: ../../../../inc/common.class.php:82
+msgid "Error al enviar correo"
+msgstr "Fehler beim Sender der Mail"
+
+# Recipient
+#: ../../../../inc/common.class.php:87
+msgid "Destinatario"
+msgstr "Empfänger"
+
+# CC
+#: ../../../../inc/common.class.php:88
+msgid "CC"
+msgstr "CC"
+
+# Send Email
+#: ../../../../inc/common.class.php:90
+msgid "Enviar Email"
+msgstr "E-Mail senden"
+
+# Warning
+#: ../../../../inc/common.class.php:144
+msgid "Aviso"
+msgstr "Warnung"
+
+# Enter phpPMS database connection user
+#: ../../../../inc/common.class.php:205
+msgid "Indicar el usuario de conexión a la base de datos de phpPMS"
+msgstr "Bentuzername der phpPMS-Datenbank eingeben"
+
+# Enter phpPMS database name
+#: ../../../../inc/common.class.php:206
+msgid "Indicar el nombre de la base de datos de phpPMS"
+msgstr "Name der phpPMS-Datenbank eingeben"
+
+# Enter phpPMS database server name
+#: ../../../../inc/common.class.php:207
+msgid "Indicar el servidor de la base de datos de phpPMS"
+msgstr "Server der phpPMS-Datenbank eingeben"
+
+# Enables account name as a link to account details in search page.
+#: ../../../../inc/common.class.php:208
+msgid ""
+"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
+"de la cuenta"
+msgstr "Verwende Kontoname als Link zu den Kontodetails im Suchergebnis"
+
+# Number of results that are shown per page when searching
+#: ../../../../inc/common.class.php:209
+msgid "Número de resultados por página a mostrar, al realizar una búsqueda"
+msgstr "Anzahl der Treffer pro Seite im Suchergebnis"
+
+# Enables upload/download accounts files.
+#: ../../../../inc/common.class.php:210
+msgid "Habilita la subida/descarga de archivos para las cuentas"
+msgstr "Erlaube Upload/Download von Kontodateien"
+
+# Sets up the max upload file size.
+#: ../../../../inc/common.class.php:211
+msgid "Establece el tamaño máximo para subir archivos"
+msgstr "Setzt die maximale Größe beim Hochladen von Dateien"
+
+# The absolute maximum is 16MB.
+#: ../../../../inc/common.class.php:211
+msgid "El máximo absuluto es de 16MB"
+msgstr "Die maximale Größe ist 16MB."
+
+# Enables the option to add an external Wiki link for accounts search results.
+#: ../../../../inc/common.class.php:212
+msgid ""
+"Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
+"la búsqueda"
+msgstr ""
+"Erlaube das Hinzufügen eines externen Wiki-Links für Konten im Suchergebnis"
+
+# URL that wiki uses to do a page search on it.
+#: ../../../../inc/common.class.php:213
+msgid ""
+"URL que utiliza la wiki para realizar una búsqueda de una página en esta"
+msgstr "URL zum Suchen im Wiki"
+
+# It uses customer name as parameter.
+#: ../../../../inc/common.class.php:213
+msgid "Como parámetro se utiliza el nombre del cliente"
+msgstr "Benutzt den Kundennamen als Parameter"
+
+# Example
+#: ../../../../inc/common.class.php:213 ../../../../inc/common.class.php:214
+#: ../../../../inc/common.class.php:217 ../../../../inc/common.class.php:218
+#: ../../../../inc/common.class.php:219
+msgid "Ejemplo"
+msgstr "Beispiel"
+
+# URL that wiki uses to access to page details on it.
+#: ../../../../inc/common.class.php:214
+msgid ""
+"URL que utiliza la wiki para acceder a los detalles de una página de ésta"
+msgstr "URL mit Details im Wiki"
+
+# The account name is used as wiki search variable parameter.
+#: ../../../../inc/common.class.php:214
+msgid ""
+"El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
+"de la Wiki"
+msgstr "Der Kontoname wird als Parameter in der Wiki-Suche verwendet"
+
+# Preffix to select what accounts have a wiki page link.
+#: ../../../../inc/common.class.php:215
+msgid ""
+"Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki"
+msgstr "Präfix um Konten mit Wiki-Link zu selektieren."
+
+# Examples
+#: ../../../../inc/common.class.php:215
+msgid "Ejemplos"
+msgstr "Beispiele"
+
+# Enables LDAP authentication
+#: ../../../../inc/common.class.php:216
+msgid "Habilita de autentificación mediante servidor LDAP"
+msgstr "LDAP-Authentifizierung einschalten"
+
+# This method will switch to MySQL on failure
+#: ../../../../inc/common.class.php:216
+msgid "Este método utilizará MySQL en caso de fallo"
+msgstr "Diese Methode wechselt im Fehlerfall zu MySQL"
+
+# User to connect LDAP server
+#: ../../../../inc/common.class.php:217
+msgid "Usuario para conectar con el servicio de LDAP"
+msgstr "Benutzer für Verbindung zum LDAP-Server"
+
+# LDAP base to do users searches.
+#: ../../../../inc/common.class.php:218
+msgid "Base en la que realizar la búsqueda de usuarios de LDAP"
+msgstr "LDAP Base bei der Benutzersuche"
+
+# LDAP group that users belong to for access permission
+#: ../../../../inc/common.class.php:219
+msgid ""
+"Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso"
+msgstr "LDAP-Gruppe zu der der Benutzer gehört für Zugriffsrechte verwenden."
+
+# LDAP server hostname or IP address
+#: ../../../../inc/common.class.php:220
+msgid "Nombre o dirección IP del servidor de LDAP"
+msgstr "Hostname oder IP des LDAP-Servers"
+
+# Sets a new master password without re-encrypt the accounts.
+#: ../../../../inc/common.class.php:221
+msgid "Establece una nueva clave maestra sin re-encriptar las cuentas"
+msgstr "Setze Master-Passwort ohne die Konten neu zu verschlüsseln"
+
+# LDAP bind user password
+#: ../../../../inc/common.class.php:222
+msgid "Clave del usuario de conexión a LDAP"
+msgstr "LDAP Benutzerpasswort"
+
+# In this mode you cannot login to application. To disable it, you need to modify configuration file.
+#: ../../../../inc/common.class.php:223
+msgid ""
+"En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
+"necesario modificar el archivo de configuración"
+msgstr ""
+"In diesem Modus können Sie sich nicht anmelden. Um dies zu ändern, müssen "
+"Sie die Konfigurationsdatei anpassen."
+
+# Shows some information about application and performance.
+#: ../../../../inc/common.class.php:224
+msgid ""
+"Muestra información relativa a la configuración de la aplicación y "
+"rendimiento"
+msgstr "Zeige Informationen über die Anwendung"
+
+# It saves the actions done by the application.
+#: ../../../../inc/common.class.php:225
+msgid "Guarda las acciones realizadas en la aplicación"
+msgstr "Sichert die Aktionen der Anwendung"
+
+# Check for application updates (only for administrators).
+#: ../../../../inc/common.class.php:226
+msgid ""
+"Comprobar actualizaciones de la aplicación (sólo para los usuarios "
+"administradores)"
+msgstr "Nach Anwendungs-Updates schauen (nur Adminstratoren)."
+
+# Extensions max length is 4 characters.
+#: ../../../../inc/common.class.php:227
+msgid "Extensiones de máximo 4 caracteres."
+msgstr "Länge der Endung ist maximal 4 Zeichen."
+
+# Write extension and press enter to add.
+#: ../../../../inc/common.class.php:227
+msgid "Escribir extensión y pulsar intro para añadir."
+msgstr "Tragen Sie die Endung ein und drücken Sie Enter zum Hinzufügen"
+
+# Import from KeePass or KeePassX. The customer name will be KeePass or KeePassX.
+#: ../../../../inc/common.class.php:228
+msgid ""
+"Importar desde KeePass o KeePassX. El nombre del cliente será igual a "
+"KeePass o KeePassX"
+msgstr ""
+"Import von KeePass oder KeePassX. Der Kundenname wird KeePass oder KeePassX "
+"sein."
+
+# Import form a CSV file with the format
+#: ../../../../inc/common.class.php:228
+msgid "Importar desde un archivo CSV con el formato"
+msgstr "Importiere CSV-Datei mit vorgegebenen Format"
+
+# account_name;customer;category;url;user;password;notes
+#: ../../../../inc/common.class.php:228
+msgid "nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas"
+msgstr "konto_name;kunde;kategorie;url;benutzer;passwort;bemerkungen"
+
+# If the customer or category are not created, they will be automatically created.
+#: ../../../../inc/common.class.php:228
+msgid ""
+"Si el cliente o la categoría no están creados, se crean automáticamente."
+msgstr ""
+"Wenn der Kunde oder die Kategorie nicht erzeugt wurden, werde sie nun "
+"automatisch erzeugt."
+
+# Allows to show the non-permission accounts only for searches.
+#: ../../../../inc/common.class.php:229
+msgid ""
+"Permite que las cuentas sin acceso sean visibles sólo para las búsquedas."
+msgstr "Erlaubt es Konten ohne Berechtigungen die globale Suche zu verwenden."
+
+# Enables to show account's search results like a card format.
+#: ../../../../inc/common.class.php:230
+msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
+msgstr "Zeigt die Ergebnisse einer Konten-Suche im Visitenkarten-Format an."
+
+# Enables Active Directory LDAP connection mode.
+#: ../../../../inc/common.class.php:231
+msgid "Habilita el modo de conexión con LDAP de Active Directory."
+msgstr "Aktiviert den Active Directory LDAP Verbindungsmodus."
+
+# Define the default users group for new LDAP users
+#: ../../../../inc/common.class.php:232
+msgid ""
+"Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
+msgstr "Legen Sie die Standard-Gruppe für neue LDAP-Benutzer fest"
+
+# Define the default users profile for new LDAP users
+#: ../../../../inc/common.class.php:233
+msgid ""
+"Define el perfil de usuario por defecto para los nuevos usuarios de LDAP."
+msgstr "Legen Sie das Standard-Profile für neue LDAP-Benutzer fest"
+
+# Error on updating history
+#: ../../../../inc/account.class.php:320 ../../../../inc/account.class.php:842
+msgid "Error al actualizar el historial"
+msgstr "Fehler beim Ändern der Historie"
+
+# Update Account
+#: ../../../../inc/account.class.php:326
+msgid "Actualizar Cuenta"
+msgstr "Konto ändern"
+
+# Error on updating secondary groups
+#: ../../../../inc/account.class.php:329 ../../../../inc/account.class.php:555
+msgid "Error al actualizar los grupos secundarios"
+msgstr "Fehler beim Ändern der Gruppe"
+
+# Error on updating account's users
+#: ../../../../inc/account.class.php:335 ../../../../inc/account.class.php:563
+msgid "Error al actualizar los usuarios de la cuenta"
+msgstr "Fehler beim Ändern der Benutzer eines Kontos"
+
+# Restore Account
+#: ../../../../inc/account.class.php:340
+msgid "Restaurar Cuenta"
+msgstr "Wiederherstellen Konto"
+
+# New Account
+#: ../../../../inc/account.class.php:572 ../../../../inc/tpl/main.php:53
+#: ../../../../inc/tpl/accounts.php:47
+msgid "Nueva Cuenta"
+msgstr "Neues Konto"
+
+# ERROR: Operation failed
+#: ../../../../inc/account.class.php:589
+msgid "ERROR: Error en la operación."
+msgstr "Fehler: Operation fehlgeschlagen"
+
+# Error on deleting account's groups
+#: ../../../../inc/account.class.php:606
+msgid "Error al eliminar grupos asociados a la cuenta"
+msgstr "Fehler beim Löschen der Guppen eines Kontos"
+
+# Error on deleting account's users
+#: ../../../../inc/account.class.php:610
+msgid "Error al eliminar usuarios asociados a la cuenta"
+msgstr "Fehler beim Löschen der Benutzer eines Kontos"
+
+# Error on deleting account's files
+#: ../../../../inc/account.class.php:614
+msgid "Error al eliminar archivos asociados a la cuenta"
+msgstr "Fehler beim Löschen der Dateien eines Kontos"
+
+# Start
+#: ../../../../inc/account.class.php:737 ../../../../inc/account.class.php:890
+msgid "Inicio"
+msgstr "Start"
+
+# Error on encryption module
+#: ../../../../inc/account.class.php:747 ../../../../inc/account.class.php:900
+msgid "Error en el módulo de encriptación"
+msgstr "Fehler im Verschlüsselungsmodul"
+
+# Error on retrieving accounts' passwords
+#: ../../../../inc/account.class.php:755 ../../../../inc/account.class.php:908
+msgid "Error al obtener las claves de las cuentas"
+msgstr "Fehler beim Laden der Konto-Passwörter"
+
+# Error on updating account's password
+#: ../../../../inc/account.class.php:781
+msgid "Fallo al actualizar la clave de la cuenta"
+msgstr "Fehler beim Ändern des Passworts eines Kontos "
+
+# Accounts updated:
+#: ../../../../inc/account.class.php:793
+msgid "Cuentas actualizadas:"
+msgstr "Konten aktualisiert"
+
+# End
+#: ../../../../inc/account.class.php:798 ../../../../inc/account.class.php:956
+msgid "Fin"
+msgstr "Ende"
+
+# Update Password
+#: ../../../../inc/account.class.php:865
+msgid "Modificar Clave"
+msgstr "Passwort ändern"
+
+# Update Master Password (H)
+#: ../../../../inc/account.class.php:889
+msgid "Actualizar Clave Maestra (H)"
+msgstr "Master-Passwort (H) ändern"
+
+# Record's Master password mismatch
+#: ../../../../inc/account.class.php:922
+msgid "La clave maestra del registro no coincide"
+msgstr "Master-Passwort stimmt nicht"
+
+# Error on updating history's master password
+#: ../../../../inc/account.class.php:938
+msgid "Fallo al actualizar la clave del histórico"
+msgstr "Fehler beim Ändern des Master-Passworts"
+
+# Records updated
+#: ../../../../inc/account.class.php:951
+msgid "Registros actualizados:"
+msgstr "Datensätze aktualisiert"
+
+# Error on checking database
+#: ../../../../inc/init.php:127
+msgid "Error en la verificación de la base de datos"
+msgstr "Fehler beim der Datenbanküberprüfung"
+
+# \"/config\" directory doesn't exist.
+#: ../../../../inc/init.php:316
+msgid "El directorio \"/config\" no existe"
+msgstr "\"/config\" Verzeichnis existiert nicht."
+
+# Unable to write into \"/config\" directory
+#: ../../../../inc/init.php:321
+msgid "No es posible escribir en el directorio \"config\""
+msgstr "In das Verzeichnis \"/config\" kann nicht geschrieben werden"
+
+# \"/config\" directory permissions are incorrect
+#: ../../../../inc/init.php:329
+msgid "Los permisos del directorio \"/config\" son incorrectos"
+msgstr "\"/config\"-Verzeichnis hat falsche Zugriffsrechte"
+
+# Current:
+#: ../../../../inc/init.php:329
+msgid "Actual:"
+msgstr "Aktuell:"
+
+# Needed: 750
+#: ../../../../inc/init.php:329
+msgid "Necesario: 750"
+msgstr "Erforderlich: 750"
+
+# Application in maintenance
+#: ../../../../inc/init.php:395
+msgid "Aplicación en mantenimiento"
+msgstr "Anwendung im Wartungsmodus"
+
+# It will be running in short
+#: ../../../../inc/init.php:395
+msgid "En breve estará operativa"
+msgstr "Es wird in Kürze gestartet"
+
+# The application needs to be updated
+#: ../../../../inc/init.php:426
+msgid "La aplicación necesita actualizarse"
+msgstr "Die Anwendung muss aktualisiert werden"
+
+# If you are an administrator, click on the link:
+#: ../../../../inc/init.php:426
+msgid "Si es un administrador pulse en el enlace:"
+msgstr "Wenn Sie ein Administrator sind, klicken Sie auf diesen Link:"
+
+# Update
+#: ../../../../inc/init.php:426 ../../../../inc/tpl/upgrade.php:54
+msgid "Actualizar"
+msgstr "Aktualisierung"
+
+# Update
+#: ../../../../inc/init.php:455
+msgid "Actualización"
+msgstr "Aktualisierung"
+
+# Version updating done.
+#: ../../../../inc/init.php:456
+msgid "Actualización de versión realizada."
+msgstr "Version aktualisiert"
+
+# Version
+#: ../../../../inc/init.php:457
+msgid "Versión"
+msgstr "Version"
+
+# Session
+#: ../../../../inc/init.php:478
+msgid "Sesion"
+msgstr "Sitzung"
+
+# Session cannot be initialized.
+#: ../../../../inc/init.php:478 ../../../../inc/init.php:483
+msgid "La sesión no puede ser inicializada"
+msgstr "Sitzung konnte nicht initialisiert werden"
+
+# Logout session
+#: ../../../../inc/init.php:545
+msgid "Finalizar sesión"
+msgstr "Aus Sitzung ausloggen"
+
+# Inactive time
+#: ../../../../inc/init.php:547
+msgid "Tiempo inactivo"
+msgstr "Zeit ohne Aktivität"
+
+# Total time
+#: ../../../../inc/init.php:548
+msgid "Tiempo total"
+msgstr "Gesamtzeit"
+
+# Access denied to
+#: ../../../../inc/acl.class.php:104
+msgid "Denegado acceso a"
+msgstr "Zugriff verweigert auf"
+
+# Error on updating database
+#: ../../../../inc/upgrade.class.php:48
+msgid "Error al aplicar la actualización de la Base de Datos"
+msgstr "Fehler beim Ändern der Datenbank"
+
+# Please, check the event log for more details
+#: ../../../../inc/upgrade.class.php:49
+msgid "Compruebe el registro de eventos para más detalles"
+msgstr "Bitte schauen Sie in das Protokol für weitere Details"
+
+# Login
+#: ../../../../inc/upgrade.class.php:49 ../../../../inc/tpl/login.php:51
+msgid "Acceder"
+msgstr "Anmeldung"
+
+# Update DB
+#: ../../../../inc/upgrade.class.php:64
+msgid "Actualizar BBDD"
+msgstr "DB aktualisieren"
+
+# Database update not needed.
+#: ../../../../inc/upgrade.class.php:91
+msgid "No es necesario actualizar la Base de Datos."
+msgstr "Keine Datenbankaktualisierung notwendig"
+
+# Error on updating database.
+#: ../../../../inc/upgrade.class.php:97
+msgid "Error al aplicar la actualización de la Base de Datos."
+msgstr "Fehler beim Ändern der Datenbank"
+
+# Database updating was done successfully.
+#: ../../../../inc/upgrade.class.php:104
+msgid "Actualización de la Base de Datos realizada correctamente."
+msgstr "Aktualisierung der Datenbank war erfolgreich."
+
+# Update Configuration
+#: ../../../../inc/upgrade.class.php:174
+msgid "Actualizar Configuración"
+msgstr "Konfiguration aktualisieren"
+
+# Configuration updating successfully done.
+#: ../../../../inc/upgrade.class.php:175
+msgid "Actualización de la Configuración realizada correctamente."
+msgstr "Configuration Aktualisierung erfolgreich durchgeführt."
+
+# Missing parameters
+#: ../../../../inc/migrate.class.php:85
+msgid "Faltan parámetros"
+msgstr "Fehlender Parameter"
+
+# Import finished
+#: ../../../../inc/migrate.class.php:114 ../../../../inc/import.class.php:88
+msgid "Importación finalizada"
+msgstr "Import beendet"
+
+# Wrong MySQL user/pass
+#: ../../../../inc/migrate.class.php:138
+#: ../../../../inc/installer.class.php:202
+msgid "El usuario/clave de MySQL no es correcto"
+msgstr "Falsche MySQL Zugangsdaten"
+
+# Please, check database connection user
+#: ../../../../inc/migrate.class.php:139
+#: ../../../../inc/installer.class.php:203
+msgid "Verifique el usuario de conexión con la Base de Datos"
+msgstr "Bitte überprüfen Sie den Datenbankbenutzer"
+
+# Incompatible version
+#: ../../../../inc/migrate.class.php:183
+msgid "La versión no es compatible"
+msgstr "Inkompatible Version"
+
+# Please, update to last version of phpPMS
+#: ../../../../inc/migrate.class.php:184
+msgid "Actualice a la última versión de phpPMS"
+msgstr "Bitte aktualisieren Sie auf die letzte Version von phpPMS."
+
+# Error on retrieving configuration
+#: ../../../../inc/migrate.class.php:202
+msgid "Error al obtener la configuración"
+msgstr "Fehler beim Laden der Konfiguration"
+
+# Error on cleaning table
+#: ../../../../inc/migrate.class.php:252 ../../../../inc/migrate.class.php:266
+msgid "Error al vaciar tabla"
+msgstr "Fehler beim Leeren der Tabelle"
+
+# Current user is not application administrator
+#: ../../../../inc/migrate.class.php:271
+msgid "Usuario actual no es administrador de la aplicación"
+msgstr "Angemeldeter Benutzer ist nicht Administrator"
+
+# Unable to create customer
+#: ../../../../inc/migrate.class.php:317
+msgid "No es posible crear el cliente"
+msgstr "Kunde kann nicht angelegt werden"
+
+# Please, contact to developer
+#: ../../../../inc/migrate.class.php:318
+msgid "Contacte con el desarrollador"
+msgstr "Bitte kontaktieren Sie den Entwickler"
+
+# Import Customers
+#: ../../../../inc/migrate.class.php:322
+msgid "Importar Clientes"
+msgstr "Importiere Kunden"
+
+# Records
+#: ../../../../inc/migrate.class.php:324 ../../../../inc/migrate.class.php:396
+#: ../../../../inc/migrate.class.php:483 ../../../../inc/migrate.class.php:555
+#: ../../../../inc/migrate.class.php:645 ../../../../inc/migrate.class.php:706
+#: ../../../../inc/migrate.class.php:780 ../../../../inc/migrate.class.php:857
+#: ../../../../inc/migrate.class.php:926
+msgid "Registros"
+msgstr "Datensätze"
+
+# Error on retrieving customer
+#: ../../../../inc/migrate.class.php:343
+msgid "Error al obtener los clientes"
+msgstr "Fehler beim Laden des Kunden"
+
+# Error on retrieving accounts
+#: ../../../../inc/migrate.class.php:381
+msgid "Error al obtener cuentas"
+msgstr "Fehler beim Laden des Kontos"
+
+# Customer not found
+#: ../../../../inc/migrate.class.php:421
+msgid "Cliente no encontrado"
+msgstr "Kunde nicht gefunden"
+
+# Error on importing account
+#: ../../../../inc/migrate.class.php:447
+msgid "Error al migrar cuenta"
+msgstr "Fehler beim Importieren des Kontos"
+
+# Error on retrieving accounts groups
+#: ../../../../inc/migrate.class.php:468
+msgid "Error al obtener los grupos de cuentas"
+msgstr "Fehler beim Laden der Gruppen eines Kontos"
+
+# Import Accounts Groups
+#: ../../../../inc/migrate.class.php:481
+msgid "Importar Grupos de Cuentas"
+msgstr "Importiere Kontogruppen"
+
+# Error on accounts groups creation
+#: ../../../../inc/migrate.class.php:503
+msgid "Error al crear grupos de cuentas"
+msgstr "Fehler beim Anlegen der Gruppen eines Kontos"
+
+# Error on retrieving accounts history
+#: ../../../../inc/migrate.class.php:540
+msgid "Error al obtener el historico de cuentas"
+msgstr "Fehler beim Laden der Konto-Historie"
+
+# Import Accounts History
+#: ../../../../inc/migrate.class.php:553
+msgid "Importar Histórico de Cuentas"
+msgstr "Importiere Konten-Historie"
+
+# Error on creating accounts history
+#: ../../../../inc/migrate.class.php:605
+msgid "Error al crear historico de cuentas"
+msgstr "Fehler beim Anlegen der Konto-Historie"
+
+# Error on retrieving accounts files
+#: ../../../../inc/migrate.class.php:630
+msgid "Error al obtener los archivos de cuentas"
+msgstr "Fehler beim Laden der Konto-Dateien"
+
+# Import Accounts Files
+#: ../../../../inc/migrate.class.php:643
+msgid "Importar Archivos de Cuentas"
+msgstr "Importiere Konto-Dateien"
+
+# Error on creating accounts files
+#: ../../../../inc/migrate.class.php:670
+msgid "Error al crear archivos de cuentas"
+msgstr "Fehler beim Anlegen der Kontodateien"
+
+# Error on retrieving accounts categories
+#: ../../../../inc/migrate.class.php:691
+msgid "Error al obtener las categorías de cuentas"
+msgstr "Fehler beim Holen der Konto-Kategorien"
+
+# Import Accounts Categories
+#: ../../../../inc/migrate.class.php:704
+msgid "Importar Categorías de Cuentas"
+msgstr "Importiere Kontokategorien"
+
+# Error on retrieving accounts categories
+#: ../../../../inc/migrate.class.php:727
+msgid "Error al crear categorías de cuentas"
+msgstr "Fehler beim Holen der Konto-Kategorien"
+
+# Error on retrieving users
+#: ../../../../inc/migrate.class.php:765
+msgid "Error al obtener los usuarios"
+msgstr "Fehler beim Laden der Benutzer"
+
+# Import Users
+#: ../../../../inc/migrate.class.php:778
+msgid "Importar Usuarios"
+msgstr "Importiere Benutzer"
+
+# Error on creating users
+#: ../../../../inc/migrate.class.php:820
+msgid "Error al crear usuarios"
+msgstr "Fehler beim Anlegen der Benutzer"
+
+# Error on retrieving users groups
+#: ../../../../inc/migrate.class.php:842
+msgid "Error al obtener los grupos de usuarios"
+msgstr "Fehler beim Laden der Gruppen eines Benutzers"
+
+# Import Users Groups
+#: ../../../../inc/migrate.class.php:855
+msgid "Importar Grupos de Usuarios"
+msgstr "Importiere Benutzergruppen"
+
+# Error on adding users groups
+#: ../../../../inc/migrate.class.php:879
+msgid "Error al crear los grupos de usuarios"
+msgstr "Fehler beim Hinzufügen Gruppen eines Benutzers"
+
+# Import Configuration
+#: ../../../../inc/migrate.class.php:924
+msgid "Importar Configuración"
+msgstr "Importiere Konfiguration"
+
+# Enter admin username
+#: ../../../../inc/installer.class.php:89
+msgid "Indicar nombre de usuario admin"
+msgstr "Benutzername des Administrators eingeben"
+
+# Admin user to login to application
+#: ../../../../inc/installer.class.php:90
+msgid "Usuario admin para acceso a la aplicación"
+msgstr "Administrator der Anwendung"
+
+# Enter admin password
+#: ../../../../inc/installer.class.php:95
+msgid "Indicar la clave de admin"
+msgstr "Administrator-Passwort eingeben"
+
+# Application administrator's password
+#: ../../../../inc/installer.class.php:96
+msgid "Clave del usuario admin de la aplicación"
+msgstr "Administrationspasswort der Anwendung"
+
+# Enter master password
+#: ../../../../inc/installer.class.php:102
+msgid "Indicar la clave maestra"
+msgstr "Master-Passwort eingeben"
+
+# Master password to encrypt the passwords
+#: ../../../../inc/installer.class.php:103
+msgid "Clave maestra para encriptar las claves"
+msgstr "Master-Passwords zum Verschlüsseln der Passwörter"
+
+# Master password too short
+#: ../../../../inc/installer.class.php:108
+msgid "Clave maestra muy corta"
+msgstr "Master-Passwort zu kurz"
+
+# Master password length need to be at least 11 characters
+#: ../../../../inc/installer.class.php:109
+msgid "La longitud de la clave maestra ha de ser mayor de 11 caracteres"
+msgstr "Master-Password muss mindestens 11 Zeichen lang sein"
+
+# Enter database user
+#: ../../../../inc/installer.class.php:115
+msgid "Indicar el usuario de la BBDD"
+msgstr "Datenbankbenutzer eingeben"
+
+# An user with database administrative rights
+#: ../../../../inc/installer.class.php:116
+msgid "Usuario con permisos de administrador de la Base de Datos"
+msgstr "Ein Benutzer mit administrativen Rechten in der Datenbank"
+
+# Enter database password
+#: ../../../../inc/installer.class.php:121
+msgid "Indicar la clave de la BBDD"
+msgstr "Datenbankpasswort eingeben"
+
+# Database administartor's password
+#: ../../../../inc/installer.class.php:122
+msgid "Clave del usuario administrador de la Base de Datos"
+msgstr "Administrationspasswort der Datenbank"
+
+# Enter database name
+#: ../../../../inc/installer.class.php:127
+msgid "Indicar el nombre de la BBDD"
+msgstr "Datenbankname eingeben"
+
+# Application database name. eg. syspass
+#: ../../../../inc/installer.class.php:128
+msgid "Nombre para la BBDD de la aplicación pej. syspass"
+msgstr "Datenbankname der Anwendung, z.B. syspass"
+
+# Database name can't contains \".\"
+#: ../../../../inc/installer.class.php:133
+msgid "El nombre de la BBDD no puede contener \".\""
+msgstr "Name der Datenbank darf keine \".\" enthalten"
+
+# Please, remove dots on database name
+#: ../../../../inc/installer.class.php:134
+msgid "Elimine los puntos del nombre de la Base de Datos"
+msgstr "Bitte entfernen Sie den Punkt aus dem Datenbanknamen"
+
+# Enter database server
+#: ../../../../inc/installer.class.php:140
+msgid "Indicar el servidor de la BBDD"
+msgstr "Datenbank-Server eingeben"
+
+# Server where the database will be installed
+#: ../../../../inc/installer.class.php:141
+msgid "Servidor donde se instalará la Base de Datos"
+msgstr "Server auf dem die Datenbank installiert wird"
+
+# Database already exist
+#: ../../../../inc/installer.class.php:248
+msgid "La BBDD ya existe"
+msgstr "Datenbank existiert bereits"
+
+# Enter a new database or delete the existing one
+#: ../../../../inc/installer.class.php:249
+msgid "Indique una nueva Base de Datos o elimine la existente"
+msgstr "Neuen Datenbanknamen eingeben oder bestehende Datenbank löschen"
+
+# MySQL user already exist
+#: ../../../../inc/installer.class.php:274
+msgid "El usuario de MySQL ya existe"
+msgstr "MySQL Benutzer wird schon benutzt"
+
+# Enter a new username or delete the existing one
+#: ../../../../inc/installer.class.php:275
+msgid "Indique un nuevo usuario o elimine el existente"
+msgstr "Neuen Benutzernamen eingeben oder bestehenden Benutzer löschen"
+
+# Error on DB creation
+#: ../../../../inc/installer.class.php:294
+#: ../../../../inc/installer.class.php:370
+msgid "Error al crear la BBDD"
+msgstr "Fehler beim Anlegen der Datenbank"
+
+# Please, check database user permissions
+#: ../../../../inc/installer.class.php:295
+#: ../../../../inc/installer.class.php:306
+msgid "Verifique los permisos del usuario de la Base de Datos"
+msgstr "Bitte überprüfen Sie die Datenbank-Zugriffsberechtigungen"
+
+# Error on setting database permissions
+#: ../../../../inc/installer.class.php:305
+msgid "Error al establecer permisos de la BBDD"
+msgstr "Fehler beim Setzen der Datenbank-Berechtigungen"
+
+# Database structure file doesn't exist
+#: ../../../../inc/installer.class.php:348
+msgid "El archivo de estructura de la BBDD no existe"
+msgstr "Datei mit Datenbank-Schema existiert nicht"
+
+# Unable to create application database. Please, download it again.
+#: ../../../../inc/installer.class.php:349
+msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
+msgstr ""
+"Anwendungsdatenbank kann nicht angelegt werden. Bitte erneut herunterladen"
+
+# Error on selecting database.
+#: ../../../../inc/installer.class.php:355
+msgid "Error al seleccionar la BBDD"
+msgstr "Fehler beim Auswählen der Datenbank"
+
+# Unable to use the database to create the structure. Check permissions and it doesn't exist.
+#: ../../../../inc/installer.class.php:356
+msgid ""
+"No es posible usar la Base de Datos para crear la estructura. Compruebe los "
+"permisos y que no exista."
+msgstr "Datenbank kann nicht gefunden werden. Überprüfen Sie die Berechtigung."
+
+# Error on creating database structure.
+#: ../../../../inc/installer.class.php:371
+msgid "Error al crear la estructura de la Base de Datos."
+msgstr "Fehler beim Anlegen der Datenbankstruktur"
+
+# Error on creating \"admin\" group
+#: ../../../../inc/installer.class.php:397
+msgid "Error al crear el grupo \"admin\""
+msgstr "Fehler beim Anlegen der \"admin\" Gruppe"
+
+# Warn to developer
+#: ../../../../inc/installer.class.php:398
+#: ../../../../inc/installer.class.php:430
+#: ../../../../inc/installer.class.php:448
+#: ../../../../inc/installer.class.php:463
+msgid "Informe al desarrollador"
+msgstr "Warnung an Entwickler"
+
+# Error on creating \"admin\" profile
+#: ../../../../inc/installer.class.php:429
+msgid "Error al crear el perfil \"admin\""
+msgstr "Fehler beim Anlegen des \"admin\" Profils"
+
+# Error on creating \"admin\" user
+#: ../../../../inc/installer.class.php:447
+msgid "Error al crear el usuario \"admin\""
+msgstr "Fehler beim Anlegen des \"admin\" Benutzers"
+
+# Error on updating master password for user \"admin\"
+#: ../../../../inc/installer.class.php:462
+msgid "Error al actualizar la clave maestra del usuario \"admin\""
+msgstr "Fehler beim Ändern des Master-Passworts des Benutzers \"admin\""
+
+# Account Activation
+#: ../../../../inc/users.class.php:746
+msgid "Activación Cuenta"
+msgstr "Kontoaktivierung"
+
+# Your account activation is pending.
+#: ../../../../inc/users.class.php:747
+msgid "Su cuenta está pendiente de activación."
+msgstr "Ihre Kontoaktivierung ist anhängig"
+
+# You will receive a confirmation email in short.
+#: ../../../../inc/users.class.php:748
+msgid "En breve recibirá un email de confirmación."
+msgstr "Sie bekommen in Kürze eine Bestätigungs-Mail"
+
+# Could not perform the password change request.
+#: ../../../../inc/users.class.php:792 ../../../../inc/users.class.php:833
+msgid "No se pudo realizar la petición de cambio de clave."
+msgstr "Die Passwortänderung Anfrage konnte nicht ausgeführt werden."
+
+# Edit User
+#: ../../../../inc/users.class.php:828
+msgid "Modificar Usuario"
+msgstr "Benutzer ändern"
+
+# Clear Events
+#: ../../../../inc/log.class.php:80
+msgid "Vaciar Eventos"
+msgstr "Protokol löschen"
+
+# Clear event log
+#: ../../../../inc/log.class.php:81 ../../../../inc/tpl/eventlog.php:129
+msgid "Vaciar registro de eventos"
+msgstr "Protokol löschen"
+
+# Update Customer
+#: ../../../../inc/customer.class.php:102
+msgid "Actualizar Cliente"
+msgstr "Kunde ändern"
+
+# Category Edit
+#: ../../../../inc/category.class.php:177
+msgid "Modificar Categoría"
+msgstr "Kategorie ändern"
+
+# File successfully uploaded
+#: ../../../../inc/import.class.php:103
+msgid "Archivo no subido correctamente"
+msgstr "Datei erfolgreich hochgeladen"
+
+# Please, check the web server's user permissions
+#: ../../../../inc/import.class.php:103
+msgid "Verifique los permisos del usuario del servidor web"
+msgstr "Bitte überprüfen Sie die Zugriffsberechtigungen des Web-Servers"
+
+# Please, check file extension
+#: ../../../../inc/import.class.php:111
+msgid "Compruebe la extensión del archivo"
+msgstr "Bitte überprüfen Sie die Dateiendung"
+
+# Please, check PHP configuration for upload files
+#: ../../../../inc/import.class.php:122
+msgid "Compruebe la configuración de PHP para subir archivos"
+msgstr "Bitte überprüfen Sie die PHP-Konfiguration zum Hochladen von Dateien"
+
+# Please, check temporary directory permissions
+#: ../../../../inc/import.class.php:130
+msgid "Compruebe los permisos del directorio temporal"
+msgstr "Bitte überprüfen Sie die Zugriffsrechte des temporären Verzeichnisses"
+
+# Mime type not supported
+#: ../../../../inc/import.class.php:139
+msgid "Tipo mime no soportado"
+msgstr "Mimetype wird nicht unterstützt"
+
+# Please, check the file format
+#: ../../../../inc/import.class.php:139
+msgid "Compruebe el formato del archivo"
+msgstr "Bitte überprüfen Sie das Format der Datei"
+
+# The number of fields is incorrect
+#: ../../../../inc/import.class.php:156
+msgid "El número de campos es incorrecto"
+msgstr "Die Anzahl der Felder ist falsch"
+
+# Please, check the CSV file format
+#: ../../../../inc/import.class.php:156
+msgid "Compruebe el formato del archivo CSV"
+msgstr "Bitte überprüfen Sie das Format der CSV-Datei"
+
+# Error on importing account
+#: ../../../../inc/import.class.php:161
+msgid "Error importando cuenta"
+msgstr "Fehler beim Importieren des Kontos"
+
+# Unable to process XML file
+#: ../../../../inc/import.class.php:262
+msgid "No es posible procesar el archivo XML"
+msgstr "XML-Datei kann nicht verarbeitet werden"
+
+# XML file not supported
+#: ../../../../inc/import.class.php:289
+msgid "Archivo XML no soportado"
+msgstr "XML-Datei wird nicht unterstützt"
+
+# Unable to detect the application the data was exported from
+#: ../../../../inc/import.class.php:289
+msgid "No es posible detectar la aplicación que exportó los datos"
+msgstr ""
+"Die Anwendung von der die Daten exportiert wurden, kann nicht festgestellt "
+"werden"
+
+# A request for changing your user password has been done.
+#: ../../../../inc/auth.class.php:186
+msgid "Se ha solicitado el cambio de su clave de usuario."
+msgstr "Ein Anfrage zum Ändern ihres Benutzerpassworts wurde begonnen."
+
+# In order to complete the process, please go to this URL:
+#: ../../../../inc/auth.class.php:188
+msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
+msgstr "Zum Abschluss dieses Vorgangs, gehen Sie bitte zu der URL: "
+
+# If you have not requested this action, please dismiss this message.
+#: ../../../../inc/auth.class.php:192
+msgid "Si no ha solicitado esta acción, ignore este mensaje."
+msgstr ""
+"Wenn Sie diese Aktion nicht ausgelöst haben, dann ignorieren Sie bitte diese "
+"Meldung"
+
+# Request Password Change
+#: ../../../../inc/tpl/passreset.php:47
+msgid "Solicitud de Cambio de Clave"
+msgstr "Passwortänderung initiiert."
+
+# User login
+#: ../../../../inc/tpl/passreset.php:50
+msgid "Login del Usuario"
+msgstr "Benutzer-Anmeldung"
+
+# User Email
+#: ../../../../inc/tpl/passreset.php:55
+msgid "Email del Usuario"
+msgstr "Benutzer-E-Mail"
+
+# Email
+#: ../../../../inc/tpl/passreset.php:56 ../../../../inc/tpl/users.php:112
+msgid "Email"
+msgstr "E-Mail"
+
+# New Password
+#: ../../../../inc/tpl/passreset.php:61
+msgid "Nueva Clave"
+msgstr "Neues Passwort"
+
+# New Password (Verify)
+#: ../../../../inc/tpl/passreset.php:69
+msgid "Nueva Clave (Verificar)"
+msgstr "Neues Passwort (Wіederholung)"
+
+# Password (Verify)
+#: ../../../../inc/tpl/passreset.php:70
+msgid "Clave (Verificar)"
+msgstr "Passwort (Wiederholung)"
+
+# Back
+#: ../../../../inc/tpl/passreset.php:83
+msgid "Volver"
+msgstr "Zurück"
+
+# Go back to login
+#: ../../../../inc/tpl/passreset.php:83
+msgid "Volver a iniciar sesión"
+msgstr "Zurück zur Anmeldung"
+
+# Request
+#: ../../../../inc/tpl/passreset.php:85
+msgid "Solicitar"
+msgstr "Anfrage"
+
+# Request password change
+#: ../../../../inc/tpl/passreset.php:86
+msgid "Solicitar cambio de clave"
+msgstr "Starte Passwortänderung"
+
+# Change
+#: ../../../../inc/tpl/passreset.php:88
+msgid "Cambiar"
+msgstr "Ändern"
+
+# Change password
+#: ../../../../inc/tpl/passreset.php:89
+msgid "Cambiar Clave"
+msgstr "Passwort ändern"
+
+# Request Account Modification
+#: ../../../../inc/tpl/request.php:33
+msgid "Solicitar Modificación de Cuenta"
+msgstr "Kontoänderung initiiert"
+
+# Request
+#: ../../../../inc/tpl/request.php:54
+msgid "Petición"
+msgstr "Anfrage"
+
+# Request description
+#: ../../../../inc/tpl/request.php:56
+msgid "Descripción de la petición"
+msgstr "Beschreibung der Anfrage"
+
+# Back
+#: ../../../../inc/tpl/request.php:68 ../../../../inc/tpl/editpass.php:84
+#: ../../../../inc/tpl/accounts.php:508
+msgid "Atrás"
+msgstr "Zurück"
+
+# Send
+#: ../../../../inc/tpl/request.php:71
+msgid "Enviar"
+msgstr "Senden"
+
+# Last backup
+#: ../../../../inc/tpl/backup.php:42
+msgid "Último backup"
+msgstr "Letztes Backup"
+
+# There're no backups available
+#: ../../../../inc/tpl/backup.php:42
+msgid "No se encontraron backups"
+msgstr "Es existieren keine Backups"
+
+# Result
+#: ../../../../inc/tpl/backup.php:48
+msgid "Resultado"
+msgstr "Ergebnis"
+
+# Download Current
+#: ../../../../inc/tpl/backup.php:56
+msgid "Descargar Actual"
+msgstr "Herunterladen"
+
+# There're no backups for download
+#: ../../../../inc/tpl/backup.php:64
+msgid "No hay backups para descargar"
+msgstr "Es existieren keine Backups zum Herunterladen"
+
+# Last Change
+#: ../../../../inc/tpl/masterpass.php:42
+msgid "Último cambio"
+msgstr "Letzte Änderung"
+
+# Current Master Password
+#: ../../../../inc/tpl/masterpass.php:51
+msgid "Clave Maestra actual"
+msgstr "Aktuelles Master-Passwort"
+
+# New Master Password
+#: ../../../../inc/tpl/masterpass.php:59
+msgid "Nueva Clave Maestra"
+msgstr "Neues Master-Passwort"
+
+# New Master Password (repeat)
+#: ../../../../inc/tpl/masterpass.php:68
+msgid "Nueva Clave Maestra (repetir)"
+msgstr "Neues Master-Passwort (Wiederholung)"
+
+# Don't modify accounts
+#: ../../../../inc/tpl/masterpass.php:76
+msgid "No modificar cuentas"
+msgstr "Konten nicht verändern"
+
+# NO
+#: ../../../../inc/tpl/masterpass.php:80 ../../../../inc/tpl/masterpass.php:99
+#: ../../../../inc/tpl/masterpass.php:125 ../../../../inc/tpl/migrate.php:81
+#: ../../../../inc/tpl/migrate.php:130 ../../../../inc/tpl/accounts.php:305
+#: ../../../../inc/tpl/accounts.php:336 ../../../../inc/tpl/accounts.php:593
+msgid "NO"
+msgstr "Nein"
+
+# Confirm Change
+#: ../../../../inc/tpl/masterpass.php:86
+msgid "Confirmar cambio"
+msgstr "Änderung bestätigen"
+
+# Warning
+#: ../../../../inc/tpl/masterpass.php:89 ../../../../inc/tpl/masterpass.php:92
+#: ../../../../inc/tpl/masterpass.php:95 ../../../../inc/tpl/migrate.php:78
+msgid "Atención"
+msgstr "Warnung"
+
+# You should save the new password on a secure place
+#: ../../../../inc/tpl/masterpass.php:90
+msgid "Guarde la nueva clave en un lugar seguro."
+msgstr "Sie sollten das neue Passwort an einem sicheren Ort aufbewahren"
+
+# All accounts passwords will be encrypted again.
+#: ../../../../inc/tpl/masterpass.php:93
+msgid "Se volverán a encriptar las claves de todas las cuentas."
+msgstr "Alle Passwörter der Konten werden neu verschlüsselt."
+
+# All users must re-enter the new master password.
+#: ../../../../inc/tpl/masterpass.php:96
+msgid "Los usuarios deberán de introducir la nueva clave maestra."
+msgstr "All Benutzer müssen das neue Master-Passwort eingeben."
+
+# YES
+#: ../../../../inc/tpl/masterpass.php:127 ../../../../inc/tpl/migrate.php:132
+#: ../../../../inc/tpl/accounts.php:305 ../../../../inc/tpl/accounts.php:336
+#: ../../../../inc/tpl/accounts.php:595
+msgid "SI"
+msgstr "Ja"
+
+# Group name
+#: ../../../../inc/tpl/groups.php:41
+msgid "Nombre del grupo"
+msgstr "Gruppenname"
+
+# Group description
+#: ../../../../inc/tpl/groups.php:47
+msgid "Descripción del grupo"
+msgstr "Beschreibung der Gruppe"
+
+# phpPMS Import
+#: ../../../../inc/tpl/migrate.php:33
+msgid "Importar phpPMS"
+msgstr "phpPMS Import"
+
+# DB Username
+#: ../../../../inc/tpl/migrate.php:40 ../../../../inc/tpl/install.php:131
+#: ../../../../inc/tpl/install.php:132
+msgid "Usuario BBDD"
+msgstr "Datenbankbenutzer"
+
+# DB Password
+#: ../../../../inc/tpl/migrate.php:49 ../../../../inc/tpl/install.php:139
+#: ../../../../inc/tpl/install.php:140
+msgid "Clave BBDD"
+msgstr "Datenbank-Passwort"
+
+# DB Name
+#: ../../../../inc/tpl/migrate.php:57 ../../../../inc/tpl/install.php:147
+#: ../../../../inc/tpl/install.php:148
+msgid "Nombre BBDD"
+msgstr "Datenbankname"
+
+# DB Server
+#: ../../../../inc/tpl/migrate.php:66 ../../../../inc/tpl/install.php:156
+#: ../../../../inc/tpl/install.php:157
+msgid "Servidor BBDD"
+msgstr "Datenbank-Server"
+
+# Confirm
+#: ../../../../inc/tpl/migrate.php:75
+msgid "Confirmar"
+msgstr "Bestätigen"
+
+# Current data will be removed (except current user)
+#: ../../../../inc/tpl/migrate.php:79
+msgid "Los datos actuales serán borrados (excepto el usuario actual)"
+msgstr "Daten werden gelöscht (mit Ausnahme des aktuellen Benutzers)"
+
+# Start
+#: ../../../../inc/tpl/migrate.php:97
+msgid "Iniciar"
+msgstr "Start"
+
+# CSV Import
+#: ../../../../inc/tpl/migrate.php:103
+msgid "Importar CSV/XML"
+msgstr "CSV/XML Import"
+
+# Drop files here or click to select
+#: ../../../../inc/tpl/migrate.php:117
+msgid "Soltar archivo aquí o click para seleccionar"
+msgstr "Dateien hier fallen lassen oder zum selektieren anklicken"
+
+# Lost your password?
+#: ../../../../inc/tpl/login.php:65
+msgid "¿Olvidó su clave?"
+msgstr "Passwort vergessen?"
+
+# Application successfully updated
+#: ../../../../inc/tpl/login.php:78
+msgid "Aplicación actualizada correctamente"
+msgstr "Anwendung erfolgreich aktualisiert"
+
+# New search interface with list or card like styles
+#: ../../../../inc/tpl/login.php:84
+#, fuzzy
+msgid "Nuevo interface de búsqueda con estilo de lista o tipo tarjeta"
+msgstr "New search interface with list or card like styles"
+
+# Users and groups selection for account access
+#: ../../../../inc/tpl/login.php:85
+#, fuzzy
+msgid "Selección de grupos y usuarios de acceso a cuentas"
+msgstr "Users and groups selection for account access"
+
+# Drag&Drop for files uploading
+#: ../../../../inc/tpl/login.php:86
+#, fuzzy
+msgid "Drag&Drop para subida de archivos"
+msgstr "Drag&Drop for files uploading"
+
+# Copy Password to Clipboard
+#: ../../../../inc/tpl/login.php:87
+#, fuzzy
+msgid "Copiar clave al portapapeles"
+msgstr "Copy password to clipboard"
+
+# Accounts history and restore points
+#: ../../../../inc/tpl/login.php:88
+#, fuzzy
+msgid "Historial de cuentas y restauración"
+msgstr "Accounts history and restore points"
+
+# New categories and customers management
+#: ../../../../inc/tpl/login.php:89
+#, fuzzy
+msgid "Nueva gestión de categorías y clientes"
+msgstr "New categories and customers management"
+
+# Reset password function for users
+#: ../../../../inc/tpl/login.php:90
+#, fuzzy
+msgid "Función de olvido de claves para usuarios"
+msgstr "Reset password function for users"
+
+# Improved Active Directory and LDAP integration
+#: ../../../../inc/tpl/login.php:91
+#, fuzzy
+msgid "Integración con Active Directory y LDAP mejorada"
+msgstr "Improved Active Directory and LDAP integration"
+
+# Email notifications with authentication
+#: ../../../../inc/tpl/login.php:92
+#, fuzzy
+msgid "Autentificación para notificaciones por correo"
+msgstr "Email notifications with authentication"
+
+# Global account searching for unprivileged users
+#: ../../../../inc/tpl/login.php:93
+#, fuzzy
+msgid "Búsqueda global de cuentas para usuarios sin permisos"
+msgstr "Global account searching for unprivileged users"
+
+# Request for Account Modification
+#: ../../../../inc/tpl/login.php:94
+#, fuzzy
+msgid "Solicitudes de modificación de cuentas para usuarios sin permisos"
+msgstr "Requests for account modification for unprivileged users"
+
+# Accounts import from KeePass, KeePassX and CSV
+#: ../../../../inc/tpl/login.php:95
+#, fuzzy
+msgid "Importación de cuentas desde KeePass, KeePassX y CSV"
+msgstr "Accounts import from KeePass, KeePassX and CSV"
+
+# Clone account function
+#: ../../../../inc/tpl/login.php:96
+#, fuzzy
+msgid "Función de copiar cuentas"
+msgstr "Clone account function"
+
+# Code optimization and faster loading
+#: ../../../../inc/tpl/login.php:97
+#, fuzzy
+msgid "Optimización del código y mayor rapidez de carga"
+msgstr "Code optimization and faster loading"
+
+# Improved security to prevent XSS and SQL injection
+#: ../../../../inc/tpl/login.php:98
+#, fuzzy
+msgid "Mejoras de seguridad en XSS e inyección SQL"
+msgstr "Improved security to prevent XSS and SQL injection"
+
+# New Features
+#: ../../../../inc/tpl/login.php:101 ../../../../inc/tpl/login.php:102
+#, fuzzy
+msgid "Nuevas Características"
+msgstr "New Features"
+
+# Customer name
+#: ../../../../inc/tpl/customers.php:41
+msgid "Nombre del cliente"
+msgstr "Kundenname"
+
+# Customer description
+#: ../../../../inc/tpl/customers.php:47
+msgid "Descripción del cliente"
+msgstr "Beschreibung des Kunden"
+
+# Change user password
+#: ../../../../inc/tpl/main.php:37
+msgid "Cambiar clave de usuario"
+msgstr "Benutzerpasswort ändern"
+
+# Logout
+#: ../../../../inc/tpl/main.php:44
+msgid "Salir"
+msgstr "Abmelden"
+
+# Search
+#: ../../../../inc/tpl/main.php:52
+msgid "Buscar"
+msgstr "Suchen"
+
+# Customer and Categories management
+#: ../../../../inc/tpl/main.php:55
+msgid "Gestión de Clientes y Categorías"
+msgstr "Kunden- und Kategorienverwaltung"
+
+# Event Log
+#: ../../../../inc/tpl/main.php:57 ../../../../inc/tpl/eventlog.php:37
+msgid "Registro de Eventos"
+msgstr "Protokol"
+
+# Profile name
+#: ../../../../inc/tpl/profiles.php:41
+msgid "Nombre del perfil"
+msgstr "Profilname"
+
+# View account details
+#: ../../../../inc/tpl/profiles.php:48
+msgid "Ver detalles de cuenta"
+msgstr "Kontodetails anzeigen"
+
+# View
+#: ../../../../inc/tpl/profiles.php:48
+msgid "Ver"
+msgstr "Ansehen"
+
+# View account password
+#: ../../../../inc/tpl/profiles.php:50
+msgid "Ver clave de cuenta"
+msgstr "Passwort anzeigen"
+
+# View account history
+#: ../../../../inc/tpl/profiles.php:53
+msgid "Ver historial de cuenta"
+msgstr "Konto-Historie anzeigen"
+
+# View History
+#: ../../../../inc/tpl/profiles.php:53
+msgid "Ver Historial"
+msgstr "Protokol ansehen"
+
+# Edit account
+#: ../../../../inc/tpl/profiles.php:55
+msgid "Editar cuenta"
+msgstr "Konto ändern"
+
+# Edit
+#: ../../../../inc/tpl/profiles.php:55
+msgid "Editar"
+msgstr "Ändern"
+
+# Edit account password
+#: ../../../../inc/tpl/profiles.php:58
+msgid "Editar clave de cuenta"
+msgstr "Passwort des Kontos ändern"
+
+# Edit Password
+#: ../../../../inc/tpl/profiles.php:58
+msgid "Editar Clave"
+msgstr "Passwort ändern"
+
+# Add new account
+#: ../../../../inc/tpl/profiles.php:60
+msgid "Añadir nueva cuenta"
+msgstr "Konto hinzufügen"
+
+# Add
+#: ../../../../inc/tpl/profiles.php:60
+msgid "Añadir"
+msgstr "Hinzufügen"
+
+# Delete account
+#: ../../../../inc/tpl/profiles.php:63
+msgid "Borrar cuenta"
+msgstr "Konto löschen"
+
+# Delete
+#: ../../../../inc/tpl/profiles.php:63
+msgid "Borrar"
+msgstr "Löschen"
+
+# View account files
+#: ../../../../inc/tpl/profiles.php:65
+msgid "Ver archivos de cuenta"
+msgstr "Dateien des Kontos anzeigen"
+
+# Files
+#: ../../../../inc/tpl/profiles.php:65 ../../../../inc/tpl/accounts.php:358
+msgid "Archivos"
+msgstr "Dateien"
+
+# General configuration
+#: ../../../../inc/tpl/profiles.php:74
+msgid "Configuración general"
+msgstr "Allgemeine Konfiguration"
+
+# General
+#: ../../../../inc/tpl/profiles.php:74
+msgid "General"
+msgstr "Allgemein"
+
+# Change master password
+#: ../../../../inc/tpl/profiles.php:76
+msgid "Cambiar clave maestra"
+msgstr "Master-Passwort ändern"
+
+# Make backup
+#: ../../../../inc/tpl/profiles.php:79
+msgid "Realizar copia de seguridad"
+msgstr "Backup erstellen"
+
+# Backup
+#: ../../../../inc/tpl/profiles.php:79
+msgid "Backup"
+msgstr "Sicherung"
+
+# Management
+#: ../../../../inc/tpl/profiles.php:85
+msgid "Gestión"
+msgstr "Verwaltung"
+
+# Users management
+#: ../../../../inc/tpl/profiles.php:88
+msgid "Gestión de usuarios"
+msgstr "Benutzerverwaltung"
+
+# Groups management
+#: ../../../../inc/tpl/profiles.php:90
+msgid "Gestión de grupos"
+msgstr "Gruppenverwaltung"
+
+# Groups
+#: ../../../../inc/tpl/profiles.php:90 ../../../../inc/tpl/accounts.php:312
+msgid "Grupos"
+msgstr "Gruppen"
+
+# Profiles management
+#: ../../../../inc/tpl/profiles.php:93
+msgid "Gestión de perfiles"
+msgstr "Profilverwaltung"
+
+# Profiles
+#: ../../../../inc/tpl/profiles.php:93
+msgid "Perfiles"
+msgstr "Profile"
+
+# Categories management
+#: ../../../../inc/tpl/profiles.php:95
+msgid "Gestión de categorías"
+msgstr "Kategorienverwaltung"
+
+# Categories
+#: ../../../../inc/tpl/profiles.php:95
+msgid "Categorías"
+msgstr "Kategorien"
+
+# Customers Management
+#: ../../../../inc/tpl/profiles.php:98
+msgid "Gestión de clientes"
+msgstr "Kundenverwaltung"
+
+# Customers
+#: ../../../../inc/tpl/profiles.php:98
+msgid "Clientes"
+msgstr "Kunden"
+
+# Others
+#: ../../../../inc/tpl/profiles.php:104
+msgid "Otros"
+msgstr "Andere"
+
+# View event log
+#: ../../../../inc/tpl/profiles.php:107
+msgid "Ver log de eventos"
+msgstr "Protokol anzeigen"
+
+# Event Log
+#: ../../../../inc/tpl/profiles.php:107
+msgid "Log de Eventos"
+msgstr "Protokol"
+
+# Clear
+#: ../../../../inc/tpl/search.php:59
+msgid "Limpiar"
+msgstr "Löschen"
+
+# Text to search
+#: ../../../../inc/tpl/search.php:60
+msgid "Texto a buscar"
+msgstr "Suchbegriff"
+
+# Global search
+#: ../../../../inc/tpl/search.php:63
+msgid "Búsqueda global"
+msgstr "Globale Suche"
+
+# Accounts Per Page
+#: ../../../../inc/tpl/search.php:77
+msgid "CPP"
+msgstr "KPS"
+
+# Accounts per page
+#: ../../../../inc/tpl/search.php:77
+msgid "Cuentas por página"
+msgstr "Konten pro Seite"
+
+# Select Customer
+#: ../../../../inc/tpl/search.php:84 ../../../../inc/tpl/accounts.php:572
+msgid "Seleccionar Cliente"
+msgstr "Kunde auswählen"
+
+# No results
+#: ../../../../inc/tpl/search.php:84 ../../../../inc/tpl/search.php:85
+#: ../../../../inc/tpl/accounts.php:574 ../../../../inc/tpl/accounts.php:579
+#: ../../../../inc/tpl/config.php:567 ../../../../inc/tpl/config.php:572
+#: ../../../../inc/tpl/users.php:220 ../../../../inc/tpl/users.php:225
+msgid "Sin resultados"
+msgstr "Kein Ergebnis"
+
+# Select category
+#: ../../../../inc/tpl/search.php:85 ../../../../inc/tpl/accounts.php:577
+msgid "Seleccionar Categoría"
+msgstr "Kategorie auswählen"
+
+# Installation finished
+#: ../../../../inc/tpl/install.php:35
+msgid "Instalación finalizada"
+msgstr "Installation beendet"
+
+# Click <a href=\"index.php\" title=\"Login\">here</a> to access
+#: ../../../../inc/tpl/install.php:36
+msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
+msgstr ""
+"Klicken Sie <a href=\"index.php\" title=\"Acceder\">hier</a> für den Zugriff"
+
+# Installation
+#: ../../../../inc/tpl/install.php:46
+msgid "Instalación "
+msgstr "Installation"
+
+# This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)
+#: ../../../../inc/tpl/install.php:57
+msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
+msgstr "Die PHP-Version is verwundbar für 'NULL Byte attack (CVE-2006-7243)'"
+
+# Please update PHP version to run sysPass in a secure way
+#: ../../../../inc/tpl/install.php:58
+msgid "Actualice la versión de PHP para usar sysPass de forma segura"
+msgstr ""
+"Bitte aktualisieren Sie ihre PHP Installation, um sysPass sicher betreiben "
+"zu können."
+
+# Cannot find random number generator.
+#: ../../../../inc/tpl/install.php:62
+msgid "No se encuentra el generador de números aleatorios."
+msgstr "Zufallszahlengenerator konnte nicht gefunden werden"
+
+# Without this function, an attacker could take your account on password reset.
+#: ../../../../inc/tpl/install.php:63
+msgid ""
+"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgstr ""
+"Ohne diese Funktion könnte an Angreifer Ihren Zugang oder Ihr Passwort "
+"zurücksetzen."
+
+# Create admin account
+#: ../../../../inc/tpl/install.php:85
+msgid "Crear cuenta de admin de sysPass"
+msgstr "Administrator-Konto anlegen"
+
+# sysPass administrator's login
+#: ../../../../inc/tpl/install.php:88
+msgid "Login del usuario administrador de sysPass"
+msgstr "sysPass Administrator Anmeldung"
+
+# Show Password
+#: ../../../../inc/tpl/install.php:96 ../../../../inc/tpl/install.php:97
+#: ../../../../inc/tpl/install.php:111 ../../../../inc/tpl/install.php:112
+#: ../../../../inc/tpl/install.php:137 ../../../../inc/tpl/install.php:138
+msgid "Mostrar Clave"
+msgstr "Passwort anzeigen"
+
+# DB Configuration
+#: ../../../../inc/tpl/install.php:124
+msgid "Configurar BBDD"
+msgstr "Datenbank-Konfiguration"
+
+# User login with with database administrative rights
+#: ../../../../inc/tpl/install.php:130
+msgid "Login de usuario con permisos de administrador de MySQL"
+msgstr "Benutzer-Anmeldung mit administrativen Datenbank-Rechten"
+
+# sysPass database name
+#: ../../../../inc/tpl/install.php:146
+msgid "Nombre de la base de datos para sysPass"
+msgstr "Name der sysPass-Datenbank"
+
+# sysPass database server name
+#: ../../../../inc/tpl/install.php:155
+msgid "Nombre del servidor de la base de datos de sysPass"
+msgstr "Server der sysPass-Datenbank eingeben"
+
+# It does not create or verify the user's permissions on the DB
+#: ../../../../inc/tpl/install.php:165
+msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
+msgstr "Zugangsberechtigungen zur DB werden weder angelegt nocht überprüft"
+
+# Hosting Mode
+#: ../../../../inc/tpl/install.php:167 ../../../../inc/tpl/install.php:185
+#: ../../../../inc/tpl/install.php:187
+msgid "Modo Hosting"
+msgstr "Hosting-Modus"
+
+# Install
+#: ../../../../inc/tpl/install.php:174
+msgid "Instalar"
+msgstr "Installieren"
+
+# Edit Account Password
+#: ../../../../inc/tpl/editpass.php:35 ../../../../inc/tpl/accounts.php:543
+msgid "Modificar Clave de Cuenta"
+msgstr "Konto-Passwort ändern"
+
+# The generated password will be shown here
+#: ../../../../inc/tpl/editpass.php:60 ../../../../inc/tpl/accounts.php:254
+msgid "La clave generada se mostrará aquí"
+msgstr "Das erzeugte Passwort wird hier gezeigt"
+
+# Edit Account
+#: ../../../../inc/tpl/accounts.php:63
+msgid "Editar Cuenta"
+msgstr "Konto ändern"
+
+# Account name
+#: ../../../../inc/tpl/accounts.php:177
+msgid "Nombre de cuenta"
+msgstr "Kontoname"
+
+# Search down or enter
+#: ../../../../inc/tpl/accounts.php:196
+msgid "Buscar en desplegable o introducir"
+msgstr "Weitersuchen"
+
+# Access URL or IP
+#: ../../../../inc/tpl/accounts.php:222
+msgid "URL o IP de acceso"
+msgstr "Auf URL/IP zugreifen"
+
+# Access user
+#: ../../../../inc/tpl/accounts.php:238
+msgid "Usuario de acceso"
+msgstr "Benutzer für Zugriff"
+
+# Notes about the account
+#: ../../../../inc/tpl/accounts.php:271
+msgid "Notas sobre la cuenta"
+msgstr "Bemerkungen zum Konto"
+
+# Permissions
+#: ../../../../inc/tpl/accounts.php:277
+msgid "Permisos"
+msgstr "Berechtigungen"
+
+# Enable Edit
+#: ../../../../inc/tpl/accounts.php:304 ../../../../inc/tpl/accounts.php:335
+msgid "Hablitar edición"
+msgstr "Erlaube Änderungen"
+
+# Drop files here (max. 5) or click to select
+#: ../../../../inc/tpl/accounts.php:371
+msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
+msgstr "Dateien hier fallen lassen (max. 5) oder zum selektieren anklicken"
+
+# Maximum file size
+#: ../../../../inc/tpl/accounts.php:371 ../../../../inc/tpl/config.php:193
+msgid "Tamaño máximo de archivo"
+msgstr "Maximale Dateigröße"
+
+# History
+#: ../../../../inc/tpl/accounts.php:383
+msgid "Historial"
+msgstr "Protokol"
+
+# Select date
+#: ../../../../inc/tpl/accounts.php:398
+msgid "Seleccionar fecha"
+msgstr "Datum auswählen"
+
+# Last Modification
+#: ../../../../inc/tpl/accounts.php:405 ../../../../inc/tpl/users.php:183
+msgid "Última Modificación"
+msgstr "Letzte Änderung"
+
+# by
+#: ../../../../inc/tpl/accounts.php:407
+msgid "por"
+msgstr "durch"
+
+# Visits
+#: ../../../../inc/tpl/accounts.php:417
+msgid "Visitas"
+msgstr "Besuche"
+
+# Date Added
+#: ../../../../inc/tpl/accounts.php:421
+msgid "Fecha Alta"
+msgstr "Datum hinzugefügt"
+
+# Creator
+#: ../../../../inc/tpl/accounts.php:425
+msgid "Creador"
+msgstr "Erzeuger"
+
+# Main Group
+#: ../../../../inc/tpl/accounts.php:429
+msgid "Grupo Principal"
+msgstr "Hauptgruppe"
+
+# Secondary Users
+#: ../../../../inc/tpl/accounts.php:434
+msgid "Usuarios Secundarios"
+msgstr "Unter-Benutzer"
+
+# Secondary Groups
+#: ../../../../inc/tpl/accounts.php:455
+msgid "Grupos Secundarios"
+msgstr "Untergruppe"
+
+# Date Modified
+#: ../../../../inc/tpl/accounts.php:477
+msgid "Fecha Edición"
+msgstr "Änderungsdatum"
+
+# Editor
+#: ../../../../inc/tpl/accounts.php:481
+msgid "Editor"
+msgstr "Editor"
+
+# View Current
+#: ../../../../inc/tpl/accounts.php:503
+msgid "Ver Actual"
+msgstr "Ansehen"
+
+# Restore account from this point
+#: ../../../../inc/tpl/accounts.php:515
+msgid "Restaurar cuenta desde este punto"
+msgstr "Wiederherstellen Konto von diesem Punkt"
+
+# Select secondary groups
+#: ../../../../inc/tpl/accounts.php:582
+msgid "Seleccionar grupos secundarios"
+msgstr "Untergruppe auswählen"
+
+# Select users
+#: ../../../../inc/tpl/accounts.php:585
+msgid "Seleccionar usuarios"
+msgstr "Benutzer auswählen"
+
+# Category name
+#: ../../../../inc/tpl/categories.php:41
+msgid "Nombre de la categoría"
+msgstr "Kategoriename"
+
+# Category description
+#: ../../../../inc/tpl/categories.php:47
+msgid "Descripción de la categoría"
+msgstr "Beschreibung der Kategorie"
+
+# Site
+#: ../../../../inc/tpl/config.php:84
+msgid "Sitio"
+msgstr "Site"
+
+# Language
+#: ../../../../inc/tpl/config.php:92
+msgid "Idioma"
+msgstr "Sprache"
+
+# Session timeout (s)
+#: ../../../../inc/tpl/config.php:106
+msgid "Timeout de sesión (s)"
+msgstr "Ablauf der Sitzung (s)"
+
+# Enable event log
+#: ../../../../inc/tpl/config.php:114
+msgid "Habilitar log de eventos"
+msgstr "Protokol einschalten"
+
+# Enable debug
+#: ../../../../inc/tpl/config.php:124
+msgid "Habilitar depuración"
+msgstr "Debugging einschalten"
+
+# Maintenance mode.
+#: ../../../../inc/tpl/config.php:134
+msgid "Modo mantenimiento"
+msgstr "Wartungsmodus"
+
+# Check for updates
+#: ../../../../inc/tpl/config.php:144
+msgid "Comprobar actualizaciones"
+msgstr "Nach Updates schauen"
+
+# Account name as link
+#: ../../../../inc/tpl/config.php:154
+msgid "Nombre de cuenta como enlace"
+msgstr "Kontoname als Link"
+
+# Files management
+#: ../../../../inc/tpl/config.php:164
+msgid "Gestión de archivos"
+msgstr "Dateiverwaltung"
+
+# Global searches
+#: ../../../../inc/tpl/config.php:174
+msgid "Búsquedas globales"
+msgstr "Globale Suchen"
+
+# Allowed file extensions
+#: ../../../../inc/tpl/config.php:184
+msgid "Extensiones de archivos permitidas"
+msgstr "Erlaubte Dateiendungen"
+
+# Results per page
+#: ../../../../inc/tpl/config.php:202
+msgid "Resultados por página"
+msgstr "Treffer pro Seite"
+
+# Results as Cards
+#: ../../../../inc/tpl/config.php:218
+msgid "Resultados en Tarjetas"
+msgstr "Results as Cards"
+
+# Wiki
+#: ../../../../inc/tpl/config.php:230
+msgid "Wiki"
+msgstr "Wiki"
+
+# Enable Wiki links
+#: ../../../../inc/tpl/config.php:236
+msgid "Habilitar enlaces Wiki"
+msgstr "Wike-Links einschalten"
+
+# Wiki search URL
+#: ../../../../inc/tpl/config.php:246
+msgid "URL de búsqueda Wiki"
+msgstr "Wiki Such-URL"
+
+# Wiki page URL
+#: ../../../../inc/tpl/config.php:255
+msgid "URL de página en Wiki"
+msgstr "Wike URL"
+
+# Account name preffix
+#: ../../../../inc/tpl/config.php:264
+msgid "Prefijo para nombre de cuenta"
+msgstr "Präfix eines Kontonamens"
+
+# LDAP
+#: ../../../../inc/tpl/config.php:276
+msgid "LDAP"
+msgstr "LDAP"
+
+# Enable LDAP
+#: ../../../../inc/tpl/config.php:283
+msgid "Habilitar LDAP"
+msgstr "LDAP verwenden"
+
+# Server
+#: ../../../../inc/tpl/config.php:293 ../../../../inc/tpl/config.php:398
+msgid "Servidor"
+msgstr "Server"
+
+# Bind User
+#: ../../../../inc/tpl/config.php:302
+msgid "Usuario de conexión"
+msgstr "Benutzer für Bind"
+
+# Bind Password
+#: ../../../../inc/tpl/config.php:311
+msgid "Clave de conexión"
+msgstr "LDAP-Passwort"
+
+# Search base
+#: ../../../../inc/tpl/config.php:320
+msgid "Base de búsqueda"
+msgstr "Suchpräfix"
+
+# Default Group
+#: ../../../../inc/tpl/config.php:338
+msgid "Grupo por Defecto"
+msgstr "Standard-Gruppe"
+
+# Default Profile
+#: ../../../../inc/tpl/config.php:347
+msgid "Perfil por Defecto"
+msgstr "Standard-Profil"
+
+# Active Directory
+#: ../../../../inc/tpl/config.php:356
+msgid "Active Directory"
+msgstr "Active Directory"
+
+# Check
+#: ../../../../inc/tpl/config.php:366
+msgid "Comprobar"
+msgstr "Überprüfung"
+
+# Check LDAP connection
+#: ../../../../inc/tpl/config.php:369
+msgid "Comprobar conexión con LDAP"
+msgstr "LDAP-Verbindung prüfen"
+
+# Mail
+#: ../../../../inc/tpl/config.php:383
+msgid "Correo"
+msgstr "E-Mail"
+
+# Enable email notifications
+#: ../../../../inc/tpl/config.php:389
+msgid "Habilitar notificaciones de correo"
+msgstr "E-Mail-Benachrichtigung einschalten"
+
+# Port
+#: ../../../../inc/tpl/config.php:406
+msgid "Puerto"
+msgstr "Port"
+
+# Enable Authentication
+#: ../../../../inc/tpl/config.php:414
+msgid "Habilitar Autentificación"
+msgstr "aktivieren Sie Authentifizierung"
+
+# Security
+#: ../../../../inc/tpl/config.php:439
+msgid "Seguridad"
+msgstr "Sicherheit"
+
+# Disabled
+#: ../../../../inc/tpl/config.php:445
+msgid "Deshabilitada"
+msgstr "Inaktiv"
+
+# Recipient email address
+#: ../../../../inc/tpl/config.php:456
+msgid "Dirección de correo de envío"
+msgstr "E-Mail-Adresse des Empfängers"
+
+# Enable requests by email
+#: ../../../../inc/tpl/config.php:464
+msgid "Habilitar peticiones por correo"
+msgstr "Erlaube Anfragen per E-Mail"
+
+# Add extension
+#: ../../../../inc/tpl/config.php:507
+msgid "Añadir extensión"
+msgstr "Endung hinzufügen"
+
+# Delete extension
+#: ../../../../inc/tpl/config.php:508
+msgid "Eliminar extensión"
+msgstr "Endung löschen"
+
+# Add filter
+#: ../../../../inc/tpl/config.php:536
+msgid "Añadir filtro"
+msgstr "Filter hinzufügen"
+
+# Delete filter
+#: ../../../../inc/tpl/config.php:537
+msgid "Eliminar filtro"
+msgstr "Filter löschen"
+
+# Select Group
+#: ../../../../inc/tpl/config.php:565 ../../../../inc/tpl/users.php:223
+msgid "Seleccionar Grupo"
+msgstr "Gruppe auswählen"
+
+# Select Profile
+#: ../../../../inc/tpl/config.php:570 ../../../../inc/tpl/users.php:218
+msgid "Seleccionar Perfil"
+msgstr "Profil auswählen"
+
+# Full username
+#: ../../../../inc/tpl/users.php:71
+msgid "Nombre de usuario completo"
+msgstr "Volständiger Benutzername"
+
+# Session login
+#: ../../../../inc/tpl/users.php:85
+msgid "Login de inicio de sesión"
+msgstr "Sitzungs-Anmeldung"
+
+# Email address
+#: ../../../../inc/tpl/users.php:117
+msgid "Dirección de correo"
+msgstr "E-Mail-Adresse"
+
+# Options
+#: ../../../../inc/tpl/users.php:154
+msgid "Opciones"
+msgstr "Optionen"
+
+# Application administrator
+#: ../../../../inc/tpl/users.php:158
+msgid "Administrador de la aplicación"
+msgstr "Anwendungs-Administrator"
+
+# Application Admin
+#: ../../../../inc/tpl/users.php:158
+msgid "Admin. Aplicación"
+msgstr "Anwendungs-Administrator"
+
+# Accounts administrator
+#: ../../../../inc/tpl/users.php:160
+msgid "Administrador de cuentas"
+msgstr "Anwendungs-Administrator"
+
+# Accounts Admin
+#: ../../../../inc/tpl/users.php:160
+msgid "Admin. Cuentas"
+msgstr "Konto-Administrator"
+
+# Force password change
+#: ../../../../inc/tpl/users.php:166
+msgid "Forzar cambio de clave"
+msgstr "Erzwinge Passwortänderung"
+
+# Entries
+#: ../../../../inc/tpl/users.php:173
+msgid "Entradas"
+msgstr "Einträge"
+
+# Last Access
+#: ../../../../inc/tpl/users.php:178
+msgid "Último Acceso"
+msgstr "Letzter Zugriff"
+
+# Master Password Date
+#: ../../../../inc/tpl/users.php:188
+msgid "Fecha Clave Maestra"
+msgstr "Datum des Master-Passworts"
+
+# DB Update
+#: ../../../../inc/tpl/upgrade.php:42
+msgid "Actualización de BBDD"
+msgstr "Datenbank-Update"
+
+# Enter Security Code
+#: ../../../../inc/tpl/upgrade.php:44
+msgid "Introducir Código de Seguridad"
+msgstr "Sicherheitscode eingeben"
+
+# Security Code
+#: ../../../../inc/tpl/upgrade.php:45
+msgid "Código de Seguridad"
+msgstr "Sicherheitscode"
+
+# Start Update
+#: ../../../../inc/tpl/upgrade.php:55
+msgid "Iniciar Actualización"
+msgstr "Aktualisierung starten"
+
+# Date / Time
+#: ../../../../inc/tpl/eventlog.php:56
+msgid "Fecha / Hora"
+msgstr "Datum/Zeit"
+
+# Event
+#: ../../../../inc/tpl/eventlog.php:59
+msgid "Evento"
+msgstr "Ereignis"
+
+# IP
+#: ../../../../inc/tpl/eventlog.php:65
+msgid "IP"
+msgstr "IP"
+
+# Unable to create backup directory
+#~ msgid "No es posible crear el directorio de backups"
+#~ msgstr "Verzeichnis für Backups kann nicht angelegt werden"
+
+# Database Backup
+#~ msgid "Copia BBDD"
+#~ msgstr "Datenbank-Backup"
+
+# sysPass administrator's password
+#, fuzzy
+#~ msgid "Clave de administrador de sysPass"
+#~ msgstr "sysPass administrator's password"

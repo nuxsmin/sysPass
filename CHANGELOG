@@ -1,188 +1,77 @@
-=== ** v1.0.9 ** ===
+=== ** v1.1.2.16-rc2 ===
 
-* [BUG] Corregido error al mostrar claves con carácteres especiales
-* [BUG] Corregido error al guardar claves de usuarios
+* Updated header and PHPdoc syntax
+* Improved session cache's config parameters to reduce config file queries
+* Removed unused methods
+* Changed some SP_Crypt class methods to static and factorized some functions
+* Added some stuff to demo mode
+* Closes #68 and Closes #67
+* Closes #66
+* Fixed csv file import mimetype detection error from windows.
+* Closes #76. Fixed password reset when notifications are disabled and user is forced to change it.
+* Updated german translation
+* Translated to French. Big thanks to Cyril
+* Fixed some bugs on javascript translations
+* Fixed error when default LDAP group/profile is not set.
+* Fixes for demo mode
+* Improved forced integer variable value on saving forms.
+* Disable autocomplete on password fields (HTML5).
+* Fixed error on upgrade handling.
+* Improved browser response by minimizing CSS an JS files and joining into one resource per type.
+* Added class CssMin for minimizing CSSs.
+* Cached some config values in session to avoid config file readings.
+* Improved URL handling.
+* New upgrade process with security code for DB upgrades. See wiki for more details
+* LDAP escape RDN fixed.
+* Fixed reload on backup completion.
+* Fixed master password change not running when zeros are used on left or right.
+* Fixed some notice events on error log.
+* Closes #47. Default group&profile can be selected for new LDAP users
+* Closes #48. Database fields modified for STRICT sql mode
+* Installer now logs errors to web server error log
+* Closes #41. LDAP group membership is no longer required for users login.
+* Closes #45. LDAP users without group membership or expired and already saved data in MySQL, are not allowed to log in.
+* New backup functionality without running external commands. Windows installations are supported. PHP Phar module required.
+* New Active Directory mode for LDAP searches.
+* Fixed XSS on login page because of unsanitized input values. Thanks to Daniele
+* Closes #48. Passwords fields can be shown to check password characters.
+* Fixes #52. User data query fit to required fields.
+* .PO files added to CVS
+* Additional checks for database connection errors.
+* Closes #46. Shows additional info about config directory permissions errors.
+* Fixes error on password generator in Chrome browser.
+* Improved file upload (HTML5).
+* Force UTF-8 charset in database connection.
+* Fixed password view when it contains some special characters.
+* Fixed search filtering when selected result page was >1
+* Fixed logout when viewing password.
+* Closes #40. Error while importing blank passwords.
+* Cast values to string while importing accounts data.
+* Fixed customer name text color on searches.
+* Closes 40. Accounts can be imported from KeePass or KeePassX XML file format.
+* New switcheable grid visual style for searches. Closes #38
+* Fixed wrong height for search results in IE 10.
+* Force page reload on configuration changes.
+* CLoses #20. Copy account's password to clipboard (using Flash).
+* Prevent to do searches by clicking non alphanumeric keys.
+* CLoses #30. Fixed error on viewing passwords with special characters. Thanks to @chadrempp
+* Passwords were "sanitized" and hence some characters were removed from saved string
+* Closes #26. Send email to the user when he was requested (forced) for a password reset.
+* Enable account restoration from history.
+* Translated to Hungarian language. Thanks to Tóth Tamás
+* Enable/Disable authentication on mail.
+* German translation. Thanks to Uwe Steinmann.
+* Closes #26. Enable users password reset by email and forced by an admin.
+* Improved email handling by using phpmailer class. All emails are sent in HTML format and security and authentication are available.
+* Improved javascript code by code refactoring.
+* Client IP address is logged in event log.
+* Fixes #29
+* Fixed others users/groups are not saved when account is being edited by foreign user
+* Improved LDAP group membership detection. The user doesn't need to have a group reference attribute.
+* Improved database upgrading path detection.
+* Increase 'user_login' field length
+* Set correct charset on some tables
 
-=== ** v1.0.8 ** ===
-
-* [BUG] Corregido error al guardar claves con carácteres especiales
-* [BUG] Corregido error al guardar el idioma tras la instalación
-* [MOD] Verificación de versión de PHP en la instalación
-* [MOD] Actualización de traducciones
-
-=== ** v1.0.7 ** ===
-
-* [BUG] Corregido error en la selección del código de caráteres del lenguaje
-* [BUG] Corregido error al actualizar desde phpPMS
-* [BUG] Corregido error al cambiar la clave del usuario, el botón no funcionada.
-
-=== ** v1.0.6 ** ===
-
-* [BUG] Corregido error al crear un usuario de LDAP.
-* [MOD] No comprobar los permisos del directorio "config" en Windows.
-
-=== ** v1.0.5 ** ===
-
-* [BUG] Corregido error que no mostraba la configuración. El archivo de plantilla config.php no se encontraba por un error en el empaquetado.
-* [MOD] Algunas etiquetas de apertura de PHP no estaban bien definidas para la versión 5.3 de PHP.
-* [MOD] Modificados bloques de control que usaban el formato abreviado y no funcionaban la versión 5.0 de PHP.
-
-=== ** v1.0.4 ** ===
-
-* [MOD] Modificadas etiquetas de inicio de código php.
-* [MOD] Ajustes de visualización de barra de búsquedas.
-* [MOD] No se muestra el icono de filtro de orden si no se usa.
-* [MOD] Si el lenguaje del navegador no tiene traducción, ni está configurado en la aplicación, ni es ninguna varinte del español, se utiliza inglés.
-* [MOD] Mostrar tamaño máximo de archivo permitido para subir al editar cuenta.
-
-=== ** v1.0.3 ** ===
-
-* [BUG] Corregido fallo al guardar filtro de búsqueda en la sesión.
-* [BUG] Corregido fallo al resetear campos de búsqueda.
-* [MOD] En el historial de una cuenta se muestra el desplegable para seleccionar otra fecha.
-* [MOD] Eliminada barra de scroll en resultado de búsqueda.
-* [MOD] Mejor visibilidad en botones de activación de opciones de usuarios y perfiles.
-* [MOD] Mejora en búsqueda de actualizaciones.
-
-=== ** v1.0.2 ** ===
-
-* [BUG] Corregido el resultado de la búsqueda con registros "duplicados" para las cuentas con varios grupos secundarios.
-* [BUG] Corregido fallo al mostrar las notas con carácteres especiales.
-
-=== ** v1.0.1 ** ===
-
-* [BUG] Corregido mensaje al eliminar cuentas/usuarios/grupos/perfiles.
-* [BUG] Corregido fallo al obtener el perfil de usuario tras finalizar la sesión.
-* [MOD] Dar el foco a los "inputs" tras cargar el contenido.
-* [MOD] Revisión de traducción.
-
-=== ** v1.0 ** ===
-
-* [NUEVO] Se muestran los grupos secundarios en el menú contextual de los resultados de búsqueda.
-* [BUG] Corregido fallo de permisos al visualizar cuenta. La caché de permisos no refrescaba correctamente.
-* [BUG] Corregido fallo al gestionar categorias por usuarios no administradores.
-* [BUG] Corregido fallo al descargar archivos después de visualizarlos.
-* [MOD] Modificado mensaje de error al subir archivos.
-
-=== ** v1.0rc3 ** ===
-
-* [BUG] Corregidos fallos en la comprobación de actualizaciones.
-* [BUG] Corregido error al borrar grupos.
-* [MOD] Cambio de fancybox por alertify para los mensajes que no requieren de bloqueo.
-* [MOD] Ecribir versión en BD y archivo de configuración.
-* [MOD] Añadir scroll en resultados de cuentas, usuarios, grupos y perfiles.
-* [MOD] Actualizadas las traducciones.
-
-=== ** v1.0rc2 ** ===
-
-* [MOD] Mejor manejo de peticiones GET/POST.
-* [MOD] Los errores durante el backup son mostrados.
-* [MOD] Volver a la pestaña activa cuando se realiza una acción en las pestañas de configuración.
-* [MOD] Actualizar traducciones.
-
-=== ** v1.0rc1 ** ===
-
-* [NUEVO] Nuevo nombre: phpPMS es ahora sysPass, Sysadmin Password Manager.
-* [NUEVO] Instalación en un solo paso.
-* [NUEVO] Nueva interface basada en HTML5 y Ajax, con redistribución de elementos y menús para aprovechar el espacio en pantalla.
-* [NUEVO] Seguridad mejorada con encriptación de clave maestra en sesión y formularios con token de identificación única.
-* [NUEVO] Gestión de perfiles avanzada con 16 niveles de acceso.
-* [NUEVO] Gestión de usuarios mejorada y simplificada.
-* [NUEVO] Autentificación con OpenLDAP y Active Directory.
-* [NUEVO] Visor del histórico de cambios en cuentas.
-* [NUEVO] Registro de eventos con navegación.
-* [MOD] Refactorización de métodos y reescritura de código.
-* [MOD] Reorganización de la BBDD.
-
-=== ** v0.971b ** ===
-
-* [BUG] Corregidos fallo al actualizar la BBDD.
-* [MOD] Cambios visuales.
-
-=== ** v0.97b ** ===
-
-* [BUG] Corregidos fallos de la aplicación.
-* [MOD] Optimización de código.
-* [MOD] Cambios visuales.
-
-=== ** v0.962b ** ===
-
-* [MOD] El módulo LDAP es opcional.
-
-=== ** v0.961b ** ===
-
-* [BUG] Corrección de fallos críticos de funcionalidad.
-* [NUEVO] Añadidos roles de administrador de cuentas (A) y administrador de aplicación (A+). Se suprime el grupo 1 como administradores.
-* [MOD] Supresión de avisos de PHP. Se adapta el código a E_STRICT.
-* [MOD] Mejoras en el timeout de sesión.
-* [MOD] Mejoras en el instalador.
-
-=== ** v0.96b **  ===
-
-* [BUG] Si se cambia la clave maestra, los usuarios que están logados no tienen permitido cambiar claves.
-* [BUG] Corrección de fallos menores.
-* [NUEVO] Nuevo generador de claves seguras.
-* [NUEVO] Nuevo indicador de fortaleza de una clave.
-* [MOD] Simplicación de opciones de instalación.
-
-=== ** v0.954b **  ===
-
-* [BUG] Corrección de fallos en el instalador cuando se trata de actualizar.
-
-=== ** v0.953b **  ===
-
-* [BUG] Corrección de fallos menores.
-* [NUEVO] Nuevas opciones de configuración.
-* [NUEVO] Ayuda a parámetros de configuración.
-* [MOD] Mejoras en el instalador.
-* [MOD] Retoques en el diseño.
-
-=== ** v0.952b **  ===
-
-* [BUG] Corregidos fallos en el instalador.
-* [NUEVO] Aplicación de actualizaciones de la BBDD según versiones.
-
-=== ** v0.951b **  ===
-
-* [BUG] Corrección de fallos.
-* [MOD] Completada traducción a inglés.
-
-=== ** v0.95b **  ===
-
-* [BUG] Corrección de fallos.
-* [NUEVO] Instalador reescrito. Ahora es posible crear/actualizar la BBDD desde el navegador. También es posible modificar la configuración.
-* [NUEVO] Soporte i18n (localización).
-
-=== ** v0.94b **  ===
-
-* [BUG] Corregido fallo en la comprobación de actualizaciones.
-* [BUG] Corrección de fallos.
-* [MOD] Instalador mejorado.
-* [MOD] Cambios en el diseño.
-
-=== ** v0.93b **  ===
-
-* [BUG] Corrección de fallos.
-
-=== ** v0.92b **  ===
-
-* [BUG] Corrección de fallos.
-* [NUEVO] Gestión de opciones de configuración.
-* [NUEVO] Comprobación de actualizaciones.
-* [NUEVO] Los archivos adjuntos del tipo texto o imagen se pueden previsualizar.
-
-=== ** v0.91b **  ===
-
-* [BUG] Corrección de fallos en consulta ajax con sesión caducada.
-* [NUEVO] Carga de configuración en la BBDD. No es necesario archivo config.ini (puede ser visible desde el navegador si el servidor no tiene deshabilitado este tipo de archivos). En próximas versiones se dispondrá de interface para configurar dichas opciones.
-* [MOD] Mejoras de seguridad en consultas a la BBDD.
-* [MOD] Cambios estéticos.
-
-=== ** v0.9b **  ===
-
-* [NUEVO] Versión inicial
-
----
 === ** v1.0.9 ** ===
 
 * [BUG] Fixed error on showing passwords with special characters. Thanks again to @chadrempp

@@ -5,7 +5,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@
 // TODO: comprobar permisos para eliminar archivos
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT . "/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -34,13 +34,13 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-$sk = SP_Common::parseParams('p', 'sk', FALSE);
+$sk = SP_Common::parseParams('p', 'sk', false);
 
 if (!$sk || !SP_Common::checkSessionKey($sk)) {
     die(_('CONSULTA INVÁLIDA'));
 }
 
-if (SP_Config::getValue('filesenabled', 0) == 0) {
+if (!SP_Util::fileIsEnabled()) {
     exit(_('Gestión de archivos deshabilitada'));
 }
 
@@ -53,8 +53,8 @@ if ($action == 'upload') {
         exit();
     }
 
-    $allowedExts = strtoupper(SP_Config::getValue('allowed_exts'));
-    $allowedSize = SP_Config::getValue('allowed_size');
+    $allowedExts = strtoupper(SP_Config::getValue('files_allowed_exts'));
+    $allowedSize = SP_Config::getValue('files_allowed_size');
 
     if ($allowedExts) {
         // Extensiones aceptadas
@@ -82,7 +82,7 @@ if ($action == 'upload') {
 
     if (!file_exists($tmpName)) {
         // Registramos el máximo tamaño permitido por PHP
-        SP_Files::getMaxUpload();
+        SP_Util::getMaxUpload();
 
         exit(_('Error interno al leer el archivo'));
     }
@@ -92,19 +92,16 @@ if ($action == 'upload') {
     }
 
     // Leemos el archivo a una variable
-    $fileHandle = fopen($tmpName, 'r');
+    $fileData['content'] = file_get_contents($tmpName);
 
-    if (!$fileHandle) {
+    if ($fileData['content'] === false) {
         $message['action'] = _('Subir Archivo');
         $message['text'][] = _('Error interno al leer el archivo');
 
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
 
         exit(_('Error interno al leer el archivo'));
     }
-
-    $fileData['content'] = addslashes(fread($fileHandle, filesize($tmpName)));
-    fclose($fileHandle);
 
     if (SP_Files::fileUpload($accountId, $fileData)) {
         exit(_('Archivo guardado'));
@@ -119,7 +116,7 @@ if ($action == 'download' || $action == 'view') {
         exit(_('No es un ID de archivo válido'));
     }
 
-    $isView = ( $action == 'view' ) ? TRUE : FALSE;
+    $isView = ( $action == 'view' ) ? true : false;
 
     $file = SP_Files::fileDownload($fileId);
 
@@ -140,9 +137,11 @@ if ($action == 'download' || $action == 'view') {
     $message['text'][] = _('Tamaño') . ": " . round($fileSize / 1024, 2) . " KB";
 
     if (!$isView) {
-        SP_Common::wrLogInfo($message);
+        SP_Log::wrLogInfo($message);
         
         // Enviamos el archivo al navegador
+        header('Set-Cookie: fileDownload=true; path=/');
+        header('Cache-Control: max-age=60, must-revalidate');
         header("Content-length: $fileSize");
         header("Content-type: $fileType");
         header("Content-Disposition: attachment; filename=\"$fileName\"");
@@ -153,14 +152,14 @@ if ($action == 'download' || $action == 'view') {
     } else {
         $extsOkImg = array("JPG", "GIF", "PNG");
         if (in_array(strtoupper($fileExt), $extsOkImg)) {
-            SP_Common::wrLogInfo($message);
+            SP_Log::wrLogInfo($message);
             
             $imgData = chunk_split(base64_encode($fileData));
             exit('<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($fileExt) == "TXT") {
-            SP_Common::wrLogInfo($message);
+            SP_Log::wrLogInfo($message);
             
             exit('<div id="fancyView" class="backGrey"><pre>' . $fileData . '</pre></div>');
         } else {

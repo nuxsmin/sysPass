@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -23,22 +23,22 @@
  *
  */
  
- defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-$activeTab = $data['active'];
-
+$activeTab = $data['activeTab'];
+$onCloseAction = $data['onCloseAction'];
 ?>
 
 <div id="title" class="midroundup titleNormal">
     <?php echo _('Importar phpPMS'); ?>
 </div>
 
-<form METHOD="post" name="frmMigrate" id="frmMigrate">
+<form method="post" name="frmMigrate" id="frmMigrate">
     <table class="data round">
         <tr>
             <td class="descField">
                 <?php echo _('Usuario BBDD'); ?>
-                <?php SP_Common::printHelpButton("config", 0); ?>
+                <?php echo SP_Common::printHelpButton("config", 0); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbuser" value="" />
@@ -55,7 +55,7 @@ $activeTab = $data['active'];
         <tr>
             <td class="descField">
                 <?php echo _('Nombre BBDD'); ?>
-                <?php SP_Common::printHelpButton("config", 1); ?>
+                <?php echo SP_Common::printHelpButton("config", 1); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbname" value="phppms" />
@@ -64,7 +64,7 @@ $activeTab = $data['active'];
         <tr>
             <td class="descField">
                 <?php echo _('Servidor BBDD'); ?>
-                <?php SP_Common::printHelpButton("config", 2); ?>
+                <?php echo SP_Common::printHelpButton("config", 2); ?>
             </td>
             <td class="valField">
                 <input type="text" name="dbhost" value="localhost" />
@@ -75,17 +75,20 @@ $activeTab = $data['active'];
                 <?php echo _('Confirmar'); ?>
             </td>
             <td class="valField">
-                <input type="checkbox" name="chkmigrate" class="checkbox" />
-                <br>
                 <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini" />
                 <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
+                <br><br>
+                <label for="chkmigrate"><?php echo _('NO'); ?></label>
+                <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox" />
             </td>
         </tr>
     </table>
 
-	<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+	<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
     <input type="hidden" name="action" value="migrate" />
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE); ?>">
+    <input type="hidden" name="isAjax" value="1" />
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
 </form>
 
 <div class="action">
@@ -95,3 +98,39 @@ $activeTab = $data['active'];
         </li>
     </ul>
 </div>
+
+<div id="title" class="midroundup titleNormal">
+    <?php echo _('Importar CSV/XML'); ?>
+</div>
+
+
+<table class="data round">
+    <tr>
+        <td class="descField">
+            <?php echo _('Archivo'); ?>
+            <?php echo SP_Common::printHelpButton("config", 23); ?>
+        </td>
+        <td class="valField">
+            <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
+                <input type="file" id="inFile" name="inFile" />
+            </form>
+            <div id="dropzone" class="round" title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
+                <img src="imgs/upload.png" alt="upload" class="opacity50"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script>
+    $('#frmMigrate .checkbox').button();
+    $('#frmMigrate .ui-button').click(function(){
+        // El cambio de clase se produce durante el evento de click
+        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+        if ( $(this).hasClass('ui-state-active') ){
+            $(this).children().html('<?php echo _('NO'); ?>');
+        } else{
+            $(this).children().html('<?php echo _('SI'); ?>');
+        }
+    });
+    importFile('<?php echo SP_Common::getSessionKey(true); ?>');
+</script>

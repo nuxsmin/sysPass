@@ -4,7 +4,7 @@
  * 
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *  
  * This file is part of sysPass.
  *
@@ -25,8 +25,9 @@
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-$group = SP_Users::getGroupData($data['itemid']);
-$activeTab = $data['active'];
+$group = SP_Groups::getGroupData($data['itemid']);
+$onCloseAction = $data['onCloseAction'];
+$activeTab = $data['activeTab'];
 ?>
 
 <div id="fancyContainer" align="center">
@@ -49,17 +50,18 @@ $activeTab = $data['active'];
             </tbody>
         </table>
         
-		<input type="hidden" name="active" value="<?php echo $activeTab ?>" />
+		<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
+		<input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
         <input type="hidden" name="id" value="<?php echo $group["usergroup_id"]; ?>" />
         <input type="hidden" name="action" value="<?php echo $group["action"] ?>" />
         <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
-        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(TRUE) ?>">
-        <input type="hidden" name="is_ajax" value="1">
+        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true) ?>">
+        <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="usersMgmt('frmGroups');" /></li>
+            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmGroups');" /></li>
         </ul>
     </div>
 </div>

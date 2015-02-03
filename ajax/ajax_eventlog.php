@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
+* @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-include_once (APP_ROOT."/inc/init.php");
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,9 +32,19 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-SP_Users::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
+SP_ACL::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
 
 $start = SP_Common::parseParams('p', 'start', 0);
+$clear = SP_Common::parseParams('p', 'clear', 0);
+$sk = SP_Common::parseParams('p', 'sk', false);
+
+if ( $clear && $sk && SP_Common::checkSessionKey($sk) ){
+    if ( SP_Log::clearEvents() ){
+        SP_Common::printJSON(_('Registro de eventos vaciado'), 0, "doAction('eventlog');scrollUp();");
+    } else{
+        SP_Common::printJSON(_('Error al vaciar el registro de eventos'));
+    }
+}
 
 $tplvars = array('start' => $start);
 SP_Html::getTemplate('eventlog', $tplvars);

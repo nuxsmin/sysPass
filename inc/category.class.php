@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
+ *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
- *  
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -29,130 +29,274 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de realizar las operaciones sobre las categorías de sysPass.
  */
-class SP_Category {
+class SP_Category
+{
+    public static $categoryName;
+    public static $categoryDescription;
+    public static $categoryLastId;
 
     /**
-     * @brief Obtener el id de una categoría por el nombre
+     * Obtener el id de una categoría por el nombre.
+     *
      * @param string $categoryName con el nombre de la categoría
-     * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int 
-     */ 
-    public static function getCategoryIdByName($categoryName) {
+     * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int
+     */
+    public static function getCategoryIdByName($categoryName)
+    {
         $query = "SELECT category_id "
-                . "FROM categories "
-                . "WHERE category_name = '" . DB::escape($categoryName) . "' LIMIT 1";
+            . "FROM categories "
+            . "WHERE category_name = '" . DB::escape($categoryName) . "' LIMIT 1";
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if (!$queryRes && !is_array($queryRes)) {
-            return FALSE;
+        if ($queryRes === false) {
+            return false;
         }
 
-        if (count(DB::$last_result) == 0) {
-            return 0;
+        if (DB::$num_rows == 0) {
+            return false;
         } else {
-            return $queryRes[0]->intCategoryId;
+            return $queryRes->category_id;
         }
     }
 
     /**
-     * @brief Crear una nueva categoría en la BBDD
-     * @param string $categoryName con el nombre de la categoría
-     * @return bool
-     */ 
-    public static function categoryAdd($categoryName) {
-        $query = "INSERT INTO categories SET "
-                . "category_name = '" . DB::escape($categoryName) . "'";
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * @brief Comprobar si una categoría está en uso por alguna cuenta
-     * @param int $categoryId con el id de la categoría
-     * @return bool
-     */ 
-    public static function isCategoryInUse($categoryId) {
-        $query = "SELECT account_categoryId "
-                . "FROM accounts "
-                . "WHERE account_categoryId = " . (int) $categoryId;
-
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
-        }
-
-        return ( count(DB::$last_result) > 0 ) ? TRUE : FALSE;
-    }
-
-    /**
-     * @brief Eliminar una categoría de la BBDD
-     * @param int $categoryId con el id de la categoría
+     * Crear una nueva categoría en la BBDD.
+     *
      * @return bool
      */
-    public static function categoryDel($categoryId) {
+    public static function addCategory()
+    {
+        $query = "INSERT INTO categories "
+            . "SET category_name = '" . DB::escape(self::$categoryName) . "',"
+            . "category_description = '" . DB::escape(self::$categoryDescription) . "'";
+
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
+        }
+
+        self::$categoryLastId = DB::$lastId;
+
+        $message['action'] = _('Nueva Categoría');
+        $message['text'][] = SP_Html::strongText(_('Categoría') . ': ') . self::$categoryName;
+
+        SP_Log::wrLogInfo($message);
+        SP_Common::sendEmail($message);
+
+        return true;
+    }
+
+    /**
+     * Comprobar si existe una categoría duplicada.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return bool
+     */
+    public static function checkDupCategory($id = NULL)
+    {
+
+        if ($id === NULL) {
+            $query = "SELECT category_id "
+                . "FROM categories "
+                . "WHERE category_name = '" . DB::escape(self::$categoryName) . "'";
+        } else {
+            $query = "SELECT category_id "
+                . "FROM categories "
+                . "WHERE category_name = '" . DB::escape(self::$categoryName) . "' AND category_id <> " . $id;
+        }
+
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
+        }
+
+        if (count(DB::$last_result) >= 1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Eliminar una categoría de la BBDD.
+     *
+     * @param int $id con el id de la categoría
+     * @return bool
+     */
+    public static function delCategory($id)
+    {
+        $categoryName = self::getCategoryNameById($id);
+
         $query = "DELETE FROM categories "
-                . "WHERE category_id = $categoryId LIMIT 1";
+            . "WHERE category_id = " . (int)$id . " LIMIT 1";
 
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
         }
 
-        return TRUE;
+        $message['action'] = _('Eliminar Categoría');
+        $message['text'][] = SP_Html::strongText(_('Categoría') . ': ') . $categoryName . ' (' . $id . ')';
+
+        SP_Log::wrLogInfo($message);
+        SP_Common::sendEmail($message);
+
+        return true;
     }
 
     /**
-     * @brief Actualizar una categoría en la BBDD con el id
-     * @param int $categoryId con el id de la categoría
-     * @param int $categoryNameNew con el nombre nuevo de la categoría
+     * Obtiene el nombre de la categoría a partir del Id.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return false|string con el nombre de la categoría
+     */
+    public static function getCategoryNameById($id)
+    {
+        $query = "SELECT category_name "
+            . "FROM categories "
+            . "WHERE category_id = " . (int)$id;
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->category_name;
+    }
+
+    /**
+     * Actualizar una categoría en la BBDD con el id.
+     *
+     * @param int $id con el Id de la categoría a consultar
      * @return bool
      */
-    public static function editCategoryById($categoryId, $categoryNameNew) {
-        $query = "UPDATE categories SET "
-                . "category_name = '" . DB::escape($categoryNameNew) . "' "
-                . "WHERE category_id = " . (int) $categoryId . " LIMIT 1";
+    public static function updateCategory($id)
+    {
+        $categoryName = self::getCategoryNameById($id);
 
-        if (DB::doQuery($query, __FUNCTION__) === FALSE) {
-            return FALSE;
+        $query = "UPDATE categories "
+            . "SET category_name = '" . DB::escape(self::$categoryName) . "',"
+            . "category_description = '" . DB::escape(self::$categoryDescription) . "' "
+            . "WHERE category_id = " . (int)$id . " LIMIT 1";
+
+        if (DB::doQuery($query, __FUNCTION__) === false) {
+            return false;
         }
 
-        return TRUE;
+        $message['action'] = _('Modificar Categoría');
+        $message['text'][] = SP_Html::strongText(_('Categoría') . ': ') . $categoryName . ' > ' . self::$categoryName;
+
+        SP_Log::wrLogInfo($message);
+        SP_Common::sendEmail($message);
+
+        return true;
     }
 
     /**
-     * @brief Obtiene el listado de categorías
+     * Obtener los datos de una categoría.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return array con el nombre de la columna como clave y los datos como valor
+     */
+    public static function getCategoryData($id = 0)
+    {
+        $category = array('category_id' => 0,
+            'category_name' => '',
+            'category_description' => '',
+            'action' => 1);
+
+        if ($id > 0) {
+            $categories = self::getCategories($id);
+
+            if ($categories) {
+                foreach ($categories[0] as $name => $value) {
+                    $category[$name] = $value;
+                }
+                $category['action'] = 2;
+            }
+        }
+
+        return $category;
+    }
+
+    /**
+     * Obtiene el listado de categorías.
+     *
+     * @param int $id con el Id de la categoría
+     * @param bool $retAssocArray para devolver un array asociativo
      * @return array con en id de categorioa como clave y en nombre como valor
-     */ 
-    public static function getCategories(){
-        $query = "SELECT category_id, category_name FROM categories ORDER BY category_name";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+     */
+    public static function getCategories($id = NULL, $retAssocArray = false)
+    {
+        $query = "SELECT category_id,"
+            . "category_name,"
+            . "category_description "
+            . "FROM categories ";
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
-            return FALSE;
-        }
-        
-        $resCategories = array();
-        
-        foreach ( $queryRes as $category ){
-            $resCategories[$category->category_id] = $category->category_name;
+        if (!is_null($id)) {
+            $query .= "WHERE category_id = " . (int)$id . " LIMIT 1";
+        } else {
+            $query .= "ORDER BY category_name";
         }
 
-        return $resCategories;
+        $queryRes = DB::getResults($query, __FUNCTION__, true);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        if ($retAssocArray) {
+            $resCategories = array();
+
+            foreach ($queryRes as $category) {
+                $resCategories[$category->category_id] = $category->category_name;
+            }
+
+            return $resCategories;
+        }
+
+        return $queryRes;
     }
-    
+
     /**
-     * @brief Obtiene el nombre de la categoría a partir del Id
-     * @return string con el nombre de la categoría
-     */ 
-    public static function getCategoryNameById($id){
-        $query = "SELECT category_name FROM categories WHERE category_id = ".(int)$id;
+     * Comprobar si una categoría está en uso por cuentas.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return bool|string
+     */
+    public static function checkCategoryInUse($id)
+    {
+        $numAccounts = self::getCategoriesInAccounts($id);
+
+        $out = '';
+
+        if ($numAccounts) {
+            $out[] = _('Cuentas') . " (" . $numAccounts . ")";
+        }
+
+        if (is_array($out)) {
+            return implode('<br>', $out);
+        }
+
+        return true;
+    }
+
+    /**
+     * Obtener el número de cuentas que usan una categoría.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return false|integer con el número total de cuentas
+     */
+    private static function getCategoriesInAccounts($id)
+    {
+        $query = "SELECT COUNT(*) as uses "
+            . "FROM accounts "
+            . "WHERE account_categoryId = " . (int)$id;
+
         $queryRes = DB::getResults($query, __FUNCTION__);
 
-        if ( $queryRes === FALSE || ! is_array($queryRes) ){
-            return FALSE;
+        if ($queryRes === false) {
+            return false;
         }
-        
-        return $queryRes[0]->category_name;
+
+        return $queryRes->uses;
     }
+
 }
