@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
- * @author nuxsmin
- * @link http://syspass.org
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *  
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -40,7 +40,7 @@ if (!$sk || !SP_Common::checkSessionKey($sk)) {
 }
 
 // Variables POST del formulario
-$frmAction =  SP_Common::parseParams('p', 'action');
+$frmAction = SP_Common::parseParams('p', 'action');
 $frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
 $frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
 
@@ -78,7 +78,7 @@ if ($frmAction == "config") {
 
     $frmMail = SP_Common::parseParams('p', 'mail_enabled', false, false, true);
     $frmMailServer = SP_Common::parseParams('p', 'mail_server');
-    $frmMailPort = SP_Common::parseParams('p', 'mail_port',25);
+    $frmMailPort = SP_Common::parseParams('p', 'mail_port', 25);
     $frmMailUser = SP_Common::parseParams('p', 'mail_user');
     $frmMailPass = SP_Common::parseParams('p', 'mail_pass', '', false, false, false);
     $frmMailSecurity = SP_Common::parseParams('p', 'mail_security');
@@ -92,7 +92,7 @@ if ($frmAction == "config") {
         $intAccountCount = $frmAccountCount;
     }
 
-    if ($frmWiki && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !$frmWikiFilter )) {
+    if ($frmWiki && (!$frmWikiSearchUrl || !$frmWikiPageUrl || !$frmWikiFilter)) {
         SP_Common::printJSON(_('Faltan parámetros de Wiki'));
     } elseif ($frmWiki) {
         SP_Config::setValue("wiki_enabled", true);
@@ -103,7 +103,7 @@ if ($frmAction == "config") {
         SP_Config::setValue("wiki_enabled", false);
     }
 
-    if ($frmLdap && (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser )) {
+    if ($frmLdap && (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser)) {
         SP_Common::printJSON(_('Faltan parámetros de LDAP'));
     } elseif ($frmLdap) {
         SP_Config::setValue("ldap_enabled", true);
@@ -119,7 +119,7 @@ if ($frmAction == "config") {
         SP_Config::setValue("ldap_enabled", false);
     }
 
-    if ($frmMail && (!$frmMailServer || !$frmMailFrom )) {
+    if ($frmMail && (!$frmMailServer || !$frmMailFrom)) {
         SP_Common::printJSON(_('Faltan parámetros de Correo'));
     } elseif ($frmMail) {
         SP_Config::setValue("mail_enabled", true);
@@ -129,7 +129,7 @@ if ($frmAction == "config") {
         SP_Config::setValue("mail_security", $frmMailSecurity);
         SP_Config::setValue("mail_from", $frmMailFrom);
 
-        if ( $frmMailAuth ){
+        if ($frmMailAuth) {
             SP_Config::setValue("mail_authenabled", $frmMailAuth);
             SP_Config::setValue("mail_user", $frmMailUser);
             SP_Config::setValue("mail_pass", $frmMailPass);
@@ -142,7 +142,7 @@ if ($frmAction == "config") {
 
     if ($frmAllowedSize > 16384) {
         SP_Common::printJSON(_('El tamaño máximo de archivo es de 16MB'));
-    } 
+    }
 
     SP_Config::setValue("allowed_exts", $frmAllowedExts);
     SP_Config::setValue("account_link", $frmAccountLink);
@@ -199,14 +199,14 @@ if ($frmAction == "config") {
     }
 
     $hashMPass = SP_Crypt::mkHashPassword($newMasterPass);
-    
+
     if (!$noAccountPassChange) {
         $objAccount = new SP_Account;
 
         if (!$objAccount->updateAllAccountsMPass($currentMasterPass, $newMasterPass)) {
             SP_Common::printJSON(_('Errores al actualizar las claves de las cuentas'));
         }
-        
+
         $objAccount->updateAllAccountsHistoryMPass($currentMasterPass, $newMasterPass, $hashMPass);
     }
 
@@ -216,14 +216,14 @@ if ($frmAction == "config") {
 
     SP_Config::$arrConfigValue["masterPwd"] = $hashMPass;
     SP_Config::$arrConfigValue["lastupdatempass"] = time();
-    
+
     if (SP_Config::writeConfig()) {
         $message['action'] = _('Actualizar Clave Maestra');
 
         SP_Common::sendEmail($message);
         SP_Common::printJSON(_('Clave maestra actualizada'), 0);
     }
-    
+
     SP_Common::printJSON(_('Error al guardar el hash de la clave maestra'));
 } else {
     SP_Common::printJSON(_('Acción Inválida'));

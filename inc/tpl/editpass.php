@@ -56,7 +56,8 @@ $accountData = $account->getAccount();
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)"
+                       autocomplete="off">
                 <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
                      class="inputImg" id="viewPass"/>
                 &nbsp;&nbsp;

@@ -25,9 +25,9 @@
  * --
  *
  * @package        CssMin
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -38,9 +38,9 @@
  * Every token has to extend this class.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -58,9 +58,9 @@ abstract class aCssToken
  * Abstract definition of a for a ruleset start token.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -73,9 +73,9 @@ abstract class aCssRulesetStartToken extends aCssToken
  * Abstract definition of a for ruleset end token.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -99,9 +99,9 @@ abstract class aCssRulesetEndToken extends aCssToken
  * stylesheet.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -129,7 +129,7 @@ abstract class aCssParserPlugin
     /**
      * Constructor.
      *
-     * @param CssParser $parser The CssParser object of this plugin.
+     * @param CssParser $parser    The CssParser object of this plugin.
      * @param array $configuration Plugin configuration [optional]
      * @return void
      */
@@ -156,8 +156,8 @@ abstract class aCssParserPlugin
     /**
      * Parser routine of the plugin.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -171,9 +171,9 @@ abstract class aCssParserPlugin
  * extend this class.
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -196,7 +196,7 @@ abstract class aCssMinifierPlugin
      * Constructor.
      *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
-     * @param array $configuration Plugin configuration [optional]
+     * @param array $configuration  Plugin configuration [optional]
      * @return void
      */
     public function __construct(CssMinifier $minifier, array $configuration = array())
@@ -228,9 +228,9 @@ abstract class aCssMinifierPlugin
  * has to extend this class.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -253,7 +253,7 @@ abstract class aCssMinifierFilter
      * Constructor.
      *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
-     * @param array $configuration Filter configuration [optional]
+     * @param array $configuration  Filter configuration [optional]
      * @return void
      */
     public function __construct(CssMinifier $minifier, array $configuration = array())
@@ -277,9 +277,9 @@ abstract class aCssMinifierFilter
  * Every formatter have to extend this class.
  *
  * @package        CssMin/Formatter
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -307,8 +307,8 @@ abstract class aCssFormatter
     /**
      * Constructor.
      *
-     * @param array $tokens Array of CssToken
-     * @param string $indent Indent string [optional]
+     * @param array $tokens    Array of CssToken
+     * @param string $indent   Indent string [optional]
      * @param integer $padding Declaration value padding [optional]
      */
     public function __construct(array $tokens, $indent = null, $padding = null)
@@ -330,9 +330,9 @@ abstract class aCssFormatter
  * Abstract definition of a ruleset declaration token.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -366,10 +366,10 @@ abstract class aCssDeclarationToken extends aCssToken
     /**
      * Set the properties of the @font-face declaration.
      *
-     * @param string $property Property of the declaration
-     * @param string $value Value of the declaration
+     * @param string $property     Property of the declaration
+     * @param string $value        Value of the declaration
      * @param boolean $isImportant Is the !important flag is set?
-     * @param boolean $IsLast Is the declaration the last one of the block?
+     * @param boolean $IsLast      Is the declaration the last one of the block?
      * @return void
      */
     public function __construct($property, $value, $isImportant = false, $isLast = false)
@@ -395,9 +395,9 @@ abstract class aCssDeclarationToken extends aCssToken
  * Abstract definition of a for at-rule block start token.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -410,9 +410,9 @@ abstract class aCssAtBlockStartToken extends aCssToken
  * Abstract definition of a for at-rule block end token.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -433,9 +433,9 @@ abstract class aCssAtBlockEndToken extends aCssToken
  * {@link aCssFromatter Formatter} returning the CSS source in {@link http://goo.gl/etzLs Whitesmiths indent style}.
  *
  * @package        CssMin/Formatter
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -522,12 +522,13 @@ class CssWhitesmithsFormatter extends aCssFormatter
  *
  * Example:
  * <code>
+ *
  * @variables
- *        {
- *        defaultColor: black;
- *        }
- * color: var(defaultColor);
- * </code>
+ *                 {
+ *                 defaultColor: black;
+ *                 }
+ *                 color: var(defaultColor);
+ *                 </code>
  *
  * Will get converted to:
  * <code>
@@ -535,9 +536,9 @@ class CssWhitesmithsFormatter extends aCssFormatter
  * </code>
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -630,9 +631,9 @@ class CssVariablesMinifierPlugin extends aCssMinifierPlugin
  * declaration.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -707,9 +708,9 @@ class CssVariablesMinifierFilter extends aCssMinifierFilter
  * This plugin return no {@link aCssToken CssToken} but ensures that url() values will get parsed properly.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -738,8 +739,8 @@ class CssUrlParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -776,9 +777,9 @@ class CssUrlParserPlugin extends aCssParserPlugin
  * This plugin return no {@link aCssToken CssToken} but ensures that string values will get parsed properly.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -814,8 +815,8 @@ class CssStringParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -867,9 +868,9 @@ class CssStringParserPlugin extends aCssParserPlugin
  * This {@link aCssMinifierFilter minifier filter} sorts the ruleset declarations of a ruleset by name.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Rowan Beentje <http://assanka.net>
- * @copyright    Rowan Beentje <http://assanka.net>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Rowan Beentje <http://assanka.net>
+ * @copyright      Rowan Beentje <http://assanka.net>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -960,9 +961,9 @@ class CssSortRulesetPropertiesMinifierFilter extends aCssMinifierFilter
  * This {@link aCssToken CSS token} represents the start of a ruleset.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1004,9 +1005,9 @@ class CssRulesetStartToken extends aCssRulesetStartToken
  * parser; including declarations as {@link CssRulesetDeclarationToken}.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1042,8 +1043,8 @@ class CssRulesetParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -1112,9 +1113,9 @@ class CssRulesetParserPlugin extends aCssParserPlugin
  *  This {@link aCssToken CSS token} represents the end of a ruleset.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1127,9 +1128,9 @@ class CssRulesetEndToken extends aCssRulesetEndToken
  * This {@link aCssToken CSS token} represents a ruleset declaration.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1145,11 +1146,11 @@ class CssRulesetDeclarationToken extends aCssDeclarationToken
     /**
      * Set the properties of a ddocument- or at-rule @media level declaration.
      *
-     * @param string $property Property of the declaration
-     * @param string $value Value of the declaration
-     * @param mixed $mediaTypes Media types of the declaration
+     * @param string $property     Property of the declaration
+     * @param string $value        Value of the declaration
+     * @param mixed $mediaTypes    Media types of the declaration
      * @param boolean $isImportant Is the !important flag is set
-     * @param boolean $isLast Is the declaration the last one of the ruleset
+     * @param boolean $isLast      Is the declaration the last one of the ruleset
      * @return void
      */
     public function __construct($property, $value, $mediaTypes = null, $isImportant = false, $isLast = false)
@@ -1161,13 +1162,14 @@ class CssRulesetDeclarationToken extends aCssDeclarationToken
 
 /**
  * This {@link aCssMinifierFilter minifier filter} sets the IsLast property of any last declaration in a ruleset,
- * @font-face at-rule or @page at-rule block. If the property IsLast is TRUE the decrations will get stringified
- * without tailing semicolon.
+ *
+ * @font-face      at-rule or @page at-rule block. If the property IsLast is TRUE the decrations will get stringified
+ *                 without tailing semicolon.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1200,9 +1202,9 @@ class CssRemoveLastDelarationSemiColonMinifierFilter extends aCssMinifierFilter
  * rulesets).
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1238,9 +1240,9 @@ class CssRemoveEmptyRulesetsMinifierFilter extends aCssMinifierFilter
  * at-rule blocks.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1277,9 +1279,9 @@ class CssRemoveEmptyAtBlocksMinifierFilter extends aCssMinifierFilter
  * This {@link aCssMinifierFilter minifier filter} will remove any comments from the array of parsed tokens.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1308,9 +1310,9 @@ class CssRemoveCommentsMinifierFilter extends aCssMinifierFilter
  * CSS Parser.
  *
  * @package        CssMin/Parser
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1445,9 +1447,9 @@ class CssParser
         $source = str_replace("\r", "\n", $source); // Mac to Unix line endings
         $this->source = $source;
         // Variables
-        $buffer = & $this->buffer;
-        $exclusive = & $this->stateExclusive;
-        $state = & $this->state;
+        $buffer = &$this->buffer;
+        $exclusive = &$this->stateExclusive;
+        $state = &$this->state;
         $c = $p = null;
         // --
         for ($i = 0, $l = strlen($source); $i < $l; $i++) {
@@ -1528,7 +1530,7 @@ class CssParser
     /**
      * Returns and clear the current buffer.
      *
-     * @param string $trim Chars to use to trim the returned buffer
+     * @param string $trim     Chars to use to trim the returned buffer
      * @param boolean $tolower if TRUE the returned buffer will get converted to lower case
      * @return string
      */
@@ -1542,7 +1544,7 @@ class CssParser
     /**
      * Returns the current buffer.
      *
-     * @param string $trim Chars to use to trim the returned buffer
+     * @param string $trim     Chars to use to trim the returned buffer
      * @param boolean $tolower if TRUE the returned buffer will get converted to lower case
      * @return string
      */
@@ -1724,9 +1726,9 @@ class CssParser
  * {@link aCssFromatter Formatter} returning the CSS source in {@link http://goo.gl/j4XdU OTBS indent style} (The One True Brace Style).
  *
  * @package        CssMin/Formatter
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1803,9 +1805,9 @@ class CssOtbsFormatter extends aCssFormatter
  * This {@link aCssToken CSS token} is a utility token that extends {@link aNullToken} and returns only a empty string.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -1826,9 +1828,9 @@ class CssNullToken extends aCssToken
  * CSS Minifier.
  *
  * @package        CssMin/Minifier
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2038,9 +2040,9 @@ class CssMinifier
  * --
  *
  * @package        CssMin
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2201,9 +2203,9 @@ CssMin::initialise();
  * current stylesheet.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2368,9 +2370,9 @@ class CssImportImportsMinifierFilter extends aCssMinifierFilter
  * properly.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2412,8 +2414,8 @@ class CssExpressionParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -2445,9 +2447,9 @@ class CssExpressionParserPlugin extends aCssParserPlugin
  * CSS Error.
  *
  * @package        CssMin
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2482,7 +2484,7 @@ class CssError
      * Constructor triggering the error.
      *
      * @param string $message Error message
-     * @param string $source Corresponding line [optional]
+     * @param string $source  Corresponding line [optional]
      * @return void
      */
     public function __construct($file, $line, $message, $source = "")
@@ -2518,9 +2520,9 @@ class CssError
  * </code>
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2586,9 +2588,9 @@ class CssConvertRgbColorsMinifierPlugin extends aCssMinifierPlugin
  * </code>
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -2759,7 +2761,7 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin
      * based on the {@link CssConvertNamedColorsMinifierPlugin::$transformation transformation table}.
      *
      * @param CssMinifier $minifier The CssMinifier object of this plugin.
-     * @param array $configuration Plugin configuration [optional]
+     * @param array $configuration  Plugin configuration [optional]
      * @return void
      */
     public function __construct(CssMinifier $minifier, array $configuration = array())
@@ -2808,9 +2810,9 @@ class CssConvertNamedColorsMinifierPlugin extends aCssMinifierPlugin
  * with browser-specific properties.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3102,7 +3104,7 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter
     public function apply(array &$tokens)
     {
         $r = 0;
-        $transformations = & $this->transformations;
+        $transformations = &$this->transformations;
         for ($i = 0, $l = count($tokens); $i < $l; $i++) {
             if (get_class($tokens[$i]) === "CssRulesetDeclarationToken") {
                 $tProperty = $tokens[$i]->Property;
@@ -3138,9 +3140,9 @@ class CssConvertLevel3PropertiesMinifierFilter extends aCssMinifierFilter
  * This {@link aCssMinifierFilter minifier filter} will convert @keyframes at-rule block to browser specific counterparts.
  *
  * @package        CssMin/Minifier/Filters
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3206,9 +3208,9 @@ class CssConvertLevel3AtKeyframesMinifierFilter extends aCssMinifierFilter
  * </code>
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3240,9 +3242,9 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin
      *
      * Based on: {@link http://www.easyrgb.com/index.php?X=MATH&H=19#text19}.
      *
-     * @param integer $hue Hue
+     * @param integer $hue        Hue
      * @param integer $saturation Saturation
-     * @param integer $lightness Lightnesss
+     * @param integer $lightness  Lightnesss
      * @return string
      */
     private function hsl2hex($hue, $saturation, $lightness)
@@ -3271,8 +3273,8 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin
     /**
      * Apply hue to a rgb color value.
      *
-     * @param integer $v1 Value 1
-     * @param integer $v2 Value 2
+     * @param integer $v1  Value 1
+     * @param integer $v2  Value 2
      * @param integer $hue Hue
      * @return integer
      */
@@ -3328,9 +3330,9 @@ class CssConvertHslColorsMinifierPlugin extends aCssMinifierPlugin
  * </code>
  *
  * @package        CssMin/Minifier/Pluginsn
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3435,9 +3437,9 @@ class CssConvertFontWeightMinifierPlugin extends aCssMinifierPlugin
  * --
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3500,9 +3502,9 @@ class CssCompressUnitValuesMinifierPlugin extends aCssMinifierPlugin
  * already included or loadable via {@link http://goo.gl/JrW54 PHP autoloading}.
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3556,9 +3558,9 @@ class CssCompressExpressionValuesMinifierPlugin extends aCssMinifierPlugin
  * </code>
  *
  * @package        CssMin/Minifier/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3608,9 +3610,9 @@ class CssCompressColorValuesMinifierPlugin extends aCssMinifierPlugin
  * This {@link aCssToken CSS token} represents a CSS comment.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3651,9 +3653,9 @@ class CssCommentToken extends aCssToken
  * Adds a {@link CssCommentToken} to the parser if a comment was found.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3689,8 +3691,8 @@ class CssCommentParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -3716,9 +3718,9 @@ class CssCommentParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the start of a @variables at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3760,9 +3762,9 @@ class CssAtVariablesStartToken extends aCssAtBlockStartToken
  * parser; including declarations as {@link CssAtVariablesDeclarationToken}.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3791,8 +3793,8 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -3848,9 +3850,9 @@ class CssAtVariablesParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the end of a @variables at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3871,9 +3873,9 @@ class CssAtVariablesEndToken extends aCssAtBlockEndToken
  * This {@link aCssToken CSS token} represents a declaration of a @variables at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3894,9 +3896,9 @@ class CssAtVariablesDeclarationToken extends aCssDeclarationToken
  * This {@link aCssToken CSS token} represents the start of a @page at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3938,9 +3940,9 @@ class CssAtPageStartToken extends aCssAtBlockStartToken
  * parser; including declarations as {@link CssAtPageDeclarationToken}.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -3969,8 +3971,8 @@ class CssAtPageParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -4031,9 +4033,9 @@ class CssAtPageParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the end of a @page at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4046,9 +4048,9 @@ class CssAtPageEndToken extends aCssAtBlockEndToken
  * This {@link aCssToken CSS token} represents a declaration of a @page at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4061,9 +4063,9 @@ class CssAtPageDeclarationToken extends aCssDeclarationToken
  * This {@link aCssToken CSS token} represents the start of a @media at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4099,9 +4101,9 @@ class CssAtMediaStartToken extends aCssAtBlockStartToken
  * {@link CssParser::unsetMediaTypes()}.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4130,8 +4132,8 @@ class CssAtMediaParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -4162,9 +4164,9 @@ class CssAtMediaParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the end of a @media at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4177,9 +4179,9 @@ class CssAtMediaEndToken extends aCssAtBlockEndToken
  * This {@link aCssToken CSS token} represents the start of a @keyframes at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4227,9 +4229,9 @@ class CssAtKeyframesStartToken extends aCssAtBlockStartToken
  * This {@link aCssToken CSS token} represents the start of a ruleset of a @keyframes at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4268,9 +4270,9 @@ class CssAtKeyframesRulesetStartToken extends aCssRulesetStartToken
  * This {@link aCssToken CSS token} represents the end of a ruleset of a @keyframes at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4283,9 +4285,9 @@ class CssAtKeyframesRulesetEndToken extends aCssRulesetEndToken
  * This {@link aCssToken CSS token} represents a ruleset declaration of a @keyframes at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4298,9 +4300,9 @@ class CssAtKeyframesRulesetDeclarationToken extends aCssDeclarationToken
  * {@link aCssParserPlugin Parser plugin} for parsing @keyframes at-rule blocks, rulesets and declarations.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4340,8 +4342,8 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -4433,9 +4435,9 @@ class CssAtKeyframesParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the end of a @keyframes at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4448,9 +4450,9 @@ class CssAtKeyframesEndToken extends aCssAtBlockEndToken
  * This {@link aCssToken CSS token} represents a @import at-rule.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1.b1 (2001-02-22)
  */
@@ -4472,7 +4474,7 @@ class CssAtImportToken extends aCssToken
     /**
      * Set the properties of a @import at-rule token.
      *
-     * @param string $import Import path
+     * @param string $import    Import path
      * @param array $mediaTypes Media types
      * @return void
      */
@@ -4499,9 +4501,9 @@ class CssAtImportToken extends aCssToken
  * If a @import at-rule was found this plugin will add a {@link CssAtImportToken} to the parser.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4530,8 +4532,8 @@ class CssAtImportParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -4572,9 +4574,9 @@ class CssAtImportParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the start of a @font-face at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4598,9 +4600,9 @@ class CssAtFontFaceStartToken extends aCssAtBlockStartToken
  * parser; including declarations as {@link CssAtFontFaceDeclarationToken}.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4629,8 +4631,8 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */
@@ -4690,9 +4692,9 @@ class CssAtFontFaceParserPlugin extends aCssParserPlugin
  * This {@link aCssToken CSS token} represents the end of a @font-face at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4705,9 +4707,9 @@ class CssAtFontFaceEndToken extends aCssAtBlockEndToken
  * This {@link aCssToken CSS token} represents a declaration of a @font-face at-rule block.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4720,9 +4722,9 @@ class CssAtFontFaceDeclarationToken extends aCssDeclarationToken
  * This {@link aCssToken CSS token} represents a @charset at-rule.
  *
  * @package        CssMin/Tokens
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4763,9 +4765,9 @@ class CssAtCharsetToken extends aCssToken
  * If a @charset at-rule was found this plugin will add a {@link CssAtCharsetToken} to the parser.
  *
  * @package        CssMin/Parser/Plugins
- * @link        http://code.google.com/p/cssmin/
- * @author        Joe Scylla <joe.scylla@gmail.com>
- * @copyright    2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
+ * @link           http://code.google.com/p/cssmin/
+ * @author         Joe Scylla <joe.scylla@gmail.com>
+ * @copyright      2008 - 2011 Joe Scylla <joe.scylla@gmail.com>
  * @license        http://opensource.org/licenses/mit-license.php MIT License
  * @version        3.0.1
  */
@@ -4794,8 +4796,8 @@ class CssAtCharsetParserPlugin extends aCssParserPlugin
     /**
      * Implements {@link aCssParserPlugin::parse()}.
      *
-     * @param integer $index Current index
-     * @param string $char Current char
+     * @param integer $index       Current index
+     * @param string $char         Current char
      * @param string $previousChar Previous char
      * @return mixed TRUE will break the processing; FALSE continue with the next plugin; integer set a new index and break the processing
      */

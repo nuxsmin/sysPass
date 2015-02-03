@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 $activeTab = $data['activeTab'];
@@ -79,15 +79,15 @@ $onCloseAction = $data['onCloseAction'];
                 <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
                 <br><br>
                 <label for="chkmigrate"><?php echo _('NO'); ?></label>
-                <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox" />
+                <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox"/>
             </td>
         </tr>
     </table>
 
-	<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
-    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
+    <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
     <input type="hidden" name="action" value="migrate" />
-    <input type="hidden" name="isAjax" value="1" />
+    <input type="hidden" name="isAjax" value="1"/>
     <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
 </form>
 
@@ -112,7 +112,7 @@ $onCloseAction = $data['onCloseAction'];
         </td>
         <td class="valField">
             <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
-                <input type="file" id="inFile" name="inFile" />
+                <input type="file" id="inFile" name="inFile"/>
             </form>
             <div id="dropzone" class="round" title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
                 <img src="imgs/upload.png" alt="upload" class="opacity50"/>
@@ -123,12 +123,12 @@ $onCloseAction = $data['onCloseAction'];
 
 <script>
     $('#frmMigrate .checkbox').button();
-    $('#frmMigrate .ui-button').click(function(){
+    $('#frmMigrate .ui-button').click(function () {
         // El cambio de clase se produce durante el evento de click
         // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-        if ( $(this).hasClass('ui-state-active') ){
+        if ($(this).hasClass('ui-state-active')) {
             $(this).children().html('<?php echo _('NO'); ?>');
-        } else{
+        } else {
             $(this).children().html('<?php echo _('SI'); ?>');
         }
     });

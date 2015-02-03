@@ -165,84 +165,84 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 <?php endif; ?>
 <?php if ($account->accountIsHistory): ?>
     <table class="data round tblIcon">
-    <?php else: ?>
+<?php else: ?>
     <table class="data round">
 <?php endif; ?>
     <tr>
         <td class="descField"><?php echo _('Nombre'); ?></td>
         <td class="valField">
             <?php
-            if ($showform) {
-                ?>
-                <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required
-                       maxlength="50"
-                       value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
-            <?php
-            } else {
-                echo $accountData->account_name;
-            }
-            ?>
+if ($showform) {
+    ?>
+    <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required
+           maxlength="50"
+           value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
+<?php
+} else {
+    echo $accountData->account_name;
+}
+?>
         </td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Cliente'); ?></td>
         <td class="valField">
             <?php
-            if ($showform) {
-                SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
-                ?>
-                <br><br>
-                <input type="text" name="customer_new" maxlength="50"
-                       placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>"/>
-            <?php
-            } else {
-                echo $accountData->customer_name;
-            }
-            ?>
+if ($showform) {
+    SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
+    ?>
+    <br><br>
+    <input type="text" name="customer_new" maxlength="50"
+           placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>"/>
+<?php
+} else {
+    echo $accountData->customer_name;
+}
+?>
         </td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Categoría'); ?></td>
         <td class="valField">
             <?php
-            if ($showform) {
-                SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
-            } else {
-                echo $accountData->category_name;
-            }
-            ?>
+if ($showform) {
+    SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
+} else {
+    echo $accountData->category_name;
+}
+?>
         </td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('URL / IP'); ?></td>
         <td class="valField">
             <?php
-            if ($showform) {
-                ?>
-                <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>"
-                       maxlength="255"
-                       value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
-            <?php
-            } else {
-                echo $accountData->account_url;
-            }
-            ?>
+if ($showform) {
+    ?>
+    <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>"
+           maxlength="255"
+           value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
+<?php
+} else {
+    echo $accountData->account_url;
+}
+?>
         </td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Usuario'); ?></td>
         <td class="valField">
             <?php
-            if ($showform) {
-                ?>
-                <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>"
-                       maxlength="50"
-                       value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
-            <?php
-            } else {
-                echo $accountData->account_login;
-            }
-            ?>
+if ($showform) {
+    ?>
+    <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>"
+           maxlength="50"
+           value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
+<?php
+} else {
+    echo $accountData->account_login;
+}
+?>
         </td>
     </tr>
 <?php if ($showPass): ?>
@@ -254,7 +254,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
             <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
                  class="inputImg" id="viewPass"/>
             &nbsp;&nbsp;
-            <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
+            <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
+                 class="inputImg"/>
         </td>
     </tr>
     <tr>
@@ -291,8 +292,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                                     $userSelected = (in_array($otherUserId, $accountUsers)) ? "selected" : "";
                                 }
                                 echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
-                            } else{
-                                if ($userId === $otherUserId){
+                            } else {
+                                if ($userId === $otherUserId) {
                                     continue;
                                 }
                                 echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
@@ -322,8 +323,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                                     $uGroupSelected = (in_array($otherGroupId, $accountGroups)) ? "selected" : "";
                                 }
                                 echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
-                            } else{
-                                if ($userGroupId === $otherGroupId){
+                            } else {
+                                if ($userGroupId === $otherGroupId) {
                                     continue;
                                 }
                                 echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
@@ -395,7 +396,10 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 
             SP_Html::printSelect($account->getAccountHistoryList(), $arrSelectProp);
             ?>
-            <script>$("#sel-history").chosen({disable_search: true, placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"});</script>
+            <script>$("#sel-history").chosen({
+                    disable_search: true,
+                    placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"
+                });</script>
         </td>
     </tr>
 <?php endif; ?>
@@ -479,7 +483,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Editor'); ?></td>
-                <td class="valField"><?php echo ($accountData->user_editName) ? $accountData->user_editName : $accountData->user_editLogin ; ?></td>
+                <td class="valField"><?php echo ($accountData->user_editName) ? $accountData->user_editName : $accountData->user_editLogin; ?></td>
             </tr>
         <?php endif; ?>
     </table>
@@ -499,70 +503,71 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
     <div class="action">
         <ul>
             <?php if ($account->accountIsHistory): ?>
-                <li>
-                    <img src="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack"
-                         OnClick="doAction('accview','accsearch',<?php echo $account->accountParentId; ?>)"/>
-                </li>
-            <?php else: ?>
-                <li>
-                    <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                         OnClick="doAction('<?php echo $account->lastAction; ?>', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)"/>
-                </li>
+    <li>
+        <img src="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack"
+             OnClick="doAction('accview','accsearch',<?php echo $account->accountParentId; ?>)"/>
+    </li>
+<?php else: ?>
+    <li>
+        <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
+             OnClick="doAction('<?php echo $account->lastAction; ?>', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)"/>
+    </li>
             <?php endif; ?>
 
-            <?php if ($showRestore): ?>
-                <li>
-                    <img src="imgs/restore.png" title="<?php echo _('Restaurar cuenta desde este punto'); ?>" class="inputImg" id="btnRestore"
-                         OnClick="saveAccount('frmAccount');"/>
-                </li>
+<?php if ($showRestore): ?>
+    <li>
+        <img src="imgs/restore.png" title="<?php echo _('Restaurar cuenta desde este punto'); ?>" class="inputImg"
+             id="btnRestore"
+             OnClick="saveAccount('frmAccount');"/>
+    </li>
             <?php endif; ?>
 
-            <?php if ($showViewPass): ?>
-                <li>
-                    <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
-                         onClick="viewPass(<?php echo $account->accountId; ?>,1,<?php echo $account->accountIsHistory; ?>)"
-                         class="inputImg"/>
-                </li>
-                <li>
-                    <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                         onmouseover="viewPass(<?php echo $account->accountId; ?>,0,<?php echo $account->accountIsHistory; ?>)"
-                         data-clipboard-target="clip_pass_text"
-                         class="inputImg clip_pass_button"/>
-                </li>
+<?php if ($showViewPass): ?>
+    <li>
+        <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
+             onClick="viewPass(<?php echo $account->accountId; ?>,1,<?php echo $account->accountIsHistory; ?>)"
+             class="inputImg"/>
+    </li>
+    <li>
+        <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
+             onmouseover="viewPass(<?php echo $account->accountId; ?>,0,<?php echo $account->accountIsHistory; ?>)"
+             data-clipboard-target="clip_pass_text"
+             class="inputImg clip_pass_button"/>
+    </li>
             <?php endif; ?>
 
-            <?php if ($showSave): ?>
-                <li>
-                    <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"
-                         OnClick="saveAccount('frmAccount');"/>
-                </li>
+<?php if ($showSave): ?>
+    <li>
+        <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"
+             OnClick="saveAccount('frmAccount');"/>
+    </li>
             <?php endif; ?>
 
-            <?php if ($showEditPass): ?>
-                <li>
-                    <img src="imgs/key.png" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="inputImg"
-                         OnClick="doAction('acceditpass', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)"/>
-                </li>
+<?php if ($showEditPass): ?>
+    <li>
+        <img src="imgs/key.png" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="inputImg"
+             OnClick="doAction('acceditpass', '<?php echo $action; ?>',<?php echo $account->accountId; ?>)"/>
+    </li>
             <?php endif; ?>
 
-            <?php if ($showEdit): ?>
-                <li>
-                    <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg"
-                         OnClick="doAction('accedit','accview',<?php echo $account->accountId; ?>)"/>
-                </li>
-            <?php elseif (!$showEdit && $action == 'accview' && SP_Util::mailrequestIsEnabled()): ?>
-                <li>
-                    <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>" class="inputImg"
-                         OnClick="doAction('accrequest','accview',<?php echo $account->accountId; ?>)"/>
-                </li>
+<?php if ($showEdit): ?>
+    <li>
+        <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg"
+             OnClick="doAction('accedit','accview',<?php echo $account->accountId; ?>)"/>
+    </li>
+<?php elseif (!$showEdit && $action == 'accview' && SP_Util::mailrequestIsEnabled()): ?>
+    <li>
+        <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>" class="inputImg"
+             OnClick="doAction('accrequest','accview',<?php echo $account->accountId; ?>)"/>
+    </li>
             <?php endif; ?>
 
-            <?php if ($showDelete): ?>
+<?php if ($showDelete): ?>
                 <li>
                     <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>" class="inputImg"
                          OnClick="delAccount(<?php echo $account->accountId; ?>,3,'<?php echo $skey; ?>');"/>
                 </li>
-            <?php endif; ?>
+<?php endif; ?>
         </ul>
     </div>
 
@@ -596,7 +601,9 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
             }
         });
 
-        $('#passGen').click(function(){password(11, true, true);});
+        $('#passGen').click(function () {
+            password(11, true, true);
+        });
     </script>
 <?php endif; ?>
 
@@ -606,19 +613,19 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
     <script>
         passToClip = 0;
 
-        var client = new ZeroClipboard( $('.clip_pass_button'), {
+        var client = new ZeroClipboard($('.clip_pass_button'), {
             moviePath: "js/ZeroClipboard.swf",
             debug: true
-        } );
+        });
 
         //client.setText(data);
-        client.on( 'load', function(client) {
+        client.on('load', function (client) {
             $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
-        } );
+        });
 
-        client.on( "complete", function(client, args) {
+        client.on("complete", function (client, args) {
             resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
             //console.log("Copied text to clipboard: " + args.text );
-        } );
+        });
     </script>
 <?php endif; ?>

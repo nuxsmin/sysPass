@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -639,7 +639,7 @@ class SP_Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in The variable to check
+     * @param mixed $in    The variable to check
      * @param bool $strict If set to false, consider everything that is not false to
      *                     be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
@@ -670,8 +670,11 @@ class SP_Util
      * @param $array
      * @return array
      */
-    public static function arrayJSEscape(&$array){
-        array_walk($array, function(&$value, $index) {$value = str_replace(array("'", '"'), "\\'", $value);});
+    public static function arrayJSEscape(&$array)
+    {
+        array_walk($array, function (&$value, $index) {
+            $value = str_replace(array("'", '"'), "\\'", $value);
+        });
         return $array;
     }
 }

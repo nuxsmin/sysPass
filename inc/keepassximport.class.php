@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -46,21 +46,21 @@ class SP_KeePassXImport
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param object $entries con el objeto XML con las entradas
+     * @param object $entries   con el objeto XML con las entradas
      * @param string $groupName con nombre del grupo a procesar
      * @throws ImportException
      * @return none
      */
     private static function getEntryData($entries, $groupName)
     {
-        foreach ( $entries as $entry ){
-            $notes = (isset($entry->comment)) ? (string) $entry->comment : '';
-            $password = (isset($entry->password)) ? (string) $entry->password : '';
-            $name = (isset($entry->title)) ? (string) $entry->title : '';
-            $url = (isset($entry->url)) ? (string) $entry->url : '' ;
-            $username = (isset($entry->username)) ? (string) $entry->username : '';
+        foreach ($entries as $entry) {
+            $notes = (isset($entry->comment)) ? (string)$entry->comment : '';
+            $password = (isset($entry->password)) ? (string)$entry->password : '';
+            $name = (isset($entry->title)) ? (string)$entry->title : '';
+            $url = (isset($entry->url)) ? (string)$entry->url : '';
+            $username = (isset($entry->username)) ? (string)$entry->username : '';
 
-            $accountData = array($name,'KeePassX',$groupName,$url,$username,$password,$notes);
+            $accountData = array($name, 'KeePassX', $groupName, $url, $username, $password, $notes);
             SP_Import::addAccountData($accountData);
         }
     }
@@ -74,27 +74,27 @@ class SP_KeePassXImport
      */
     private static function getGroups($xml)
     {
-        foreach($xml as $node){
-            if ( $node->group ){
-                foreach ( $node->group as $group ){
+        foreach ($xml as $node) {
+            if ($node->group) {
+                foreach ($node->group as $group) {
                     $groupName = $group->title;
                     // Analizar grupo
-                    if ( $node->group->entry ){
+                    if ($node->group->entry) {
                         // Obtener entradas
-                        self::getEntryData($group->entry,$groupName);
+                        self::getEntryData($group->entry, $groupName);
                     }
 
-                    if ( $group->group ){
+                    if ($group->group) {
                         // Analizar subgrupo
                         self::getGroups($group);
                     }
                 }
             }
 
-            if ( $node->entry ){
+            if ($node->entry) {
                 $groupName = $node->title;
                 // Obtener entradas
-                self::getEntryData($node->entry,$groupName);
+                self::getEntryData($node->entry, $groupName);
             }
         }
     }

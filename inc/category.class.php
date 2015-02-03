@@ -219,7 +219,7 @@ class SP_Category
     /**
      * Obtiene el listado de categorías.
      *
-     * @param int $id con el Id de la categoría
+     * @param int $id             con el Id de la categoría
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con en id de categorioa como clave y en nombre como valor
      */

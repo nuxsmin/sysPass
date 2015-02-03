@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -56,6 +56,7 @@ class SP_Init
         } else {
             /**
              * Fall back to traditional autoload for old PHP versions
+             *
              * @param string $classname The name of the class to load
              */
             function __autoload($classname)
@@ -216,7 +217,7 @@ class SP_Init
      * Establecer las rutas de la aplicación.
      * Esta función establece las rutas del sistema de archivos y web de la aplicación.
      * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
-
+     *
      * @return none
      */
     private static function setPaths()
@@ -335,7 +336,7 @@ class SP_Init
     /**
      * Devuelve un eror utilizando la plantilla de rror.
      *
-     * @param string $str con la descripción del error
+     * @param string $str  con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      * @returns none
      */
@@ -420,8 +421,8 @@ class SP_Init
         if ($databaseVersion < $appVersion
             && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0
         ) {
-            if (SP_Upgrade::needDBUpgrade($databaseVersion)){
-                if(!self::checkMaintenanceMode(true)) {
+            if (SP_Upgrade::needDBUpgrade($databaseVersion)) {
+                if (!self::checkMaintenanceMode(true)) {
                     if (SP_Config::getValue('upgrade_key', 0) === 0) {
                         SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
                         SP_Config::setValue('maintenance', true);

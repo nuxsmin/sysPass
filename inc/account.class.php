@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -204,7 +204,7 @@ class SP_Account
         }
 
         if (!$isAdmin && !$globalSearch) {
-            $arrFilterUser[] = "account_userGroupId = " . (int) $searchFilter["groupId"];
+            $arrFilterUser[] = "account_userGroupId = " . (int)$searchFilter["groupId"];
             $arrFilterUser[] = "account_userId = " . $searchFilter["userId"];
             $arrFilterUser[] = "accgroup_groupId = " . $searchFilter["groupId"];
             $arrFilterUser[] = "accuser_userId = " . $searchFilter["userId"];
@@ -327,7 +327,7 @@ class SP_Account
             return false;
         }
 
-        if ( ! $isRestore ){
+        if (!$isRestore) {
             $message['action'] = _('Actualizar Cuenta');
 
             if (!SP_Groups::updateGroupsForAccount($this->accountId, $this->accountUserGroupsId)) {
@@ -557,7 +557,7 @@ class SP_Account
 
         $message['action'] = __FUNCTION__;
 
-        if ( is_array($this->accountUserGroupsId) ){
+        if (is_array($this->accountUserGroupsId)) {
             if (!SP_Groups::addGroupsForAccount($this->accountId, $this->accountUserGroupsId)) {
                 $message['text'][] = _('Error al actualizar los grupos secundarios');
                 SP_Log::wrLogInfo($message);
@@ -565,7 +565,7 @@ class SP_Account
             }
         }
 
-        if ( is_array($this->accountUsersId) ){
+        if (is_array($this->accountUsersId)) {
             if (!SP_Users::addUsersForAccount($this->accountId, $this->accountUsersId)) {
                 $message['text'][] = _('Error al actualizar los usuarios de la cuenta');
                 SP_Log::wrLogInfo($message);
@@ -1026,7 +1026,7 @@ class SP_Account
     /**
      * Actualiza la clave del histórico de una cuenta en la BBDD.
      *
-     * @param int $id con el id del registro a actualizar
+     * @param int $id         con el id del registro a actualizar
      * @param string $newHash con el hash de la clave maestra
      * @return bool
      */
@@ -1081,19 +1081,19 @@ class SP_Account
             }
         }
 
-        if ( ! empty($this->accountModHash) ){
-            $hashItems = $this->accountModHash.(int)$users.(int)$groups;
+        if (!empty($this->accountModHash)) {
+            $hashItems = $this->accountModHash . (int)$users . (int)$groups;
             //error_log("HASH MySQL: ".$hashItems);
-        } else{
-            $hashItems = $this->accountName.
-                $this->accountCategoryId.
-                $this->accountCustomerId.
-                $this->accountLogin.
-                $this->accountUrl.
-                $this->accountNotes.
-                $this->accountOtherUserEdit.
-                $this->accountOtherGroupEdit.
-                (int)$users.
+        } else {
+            $hashItems = $this->accountName .
+                $this->accountCategoryId .
+                $this->accountCustomerId .
+                $this->accountLogin .
+                $this->accountUrl .
+                $this->accountNotes .
+                $this->accountOtherUserEdit .
+                $this->accountOtherGroupEdit .
+                (int)$users .
                 (int)$groups;
             //error_log("HASH PHP: ".$hashItems);
         }

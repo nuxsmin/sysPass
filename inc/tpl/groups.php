@@ -49,9 +49,9 @@ $activeTab = $data['activeTab'];
                 </tr>
             </tbody>
         </table>
-        
-		<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
-		<input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
+
+        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
+        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
         <input type="hidden" name="id" value="<?php echo $group["usergroup_id"]; ?>" />
         <input type="hidden" name="action" value="<?php echo $group["action"] ?>" />
         <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
@@ -61,7 +61,8 @@ $activeTab = $data['activeTab'];
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmGroups');" /></li>
+            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
+                     OnClick="appMgmtSave('frmGroups');"/></li>
         </ul>
     </div>
 </div>

@@ -51,7 +51,7 @@
                 //
                 //Requires jQuery UI: options to pass into jQuery UI Dialog
                 //
-                dialogOptions: { modal: true },
+                dialogOptions: {modal: true},
 
                 //
                 //a function to call while the dowload is being prepared before the browser's dialog appears

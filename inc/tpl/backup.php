@@ -68,7 +68,7 @@ $lastBackupTime = (file_exists($backupFile['absolute'])) ? _('Último backup') .
 </table>
 
 <form method="post" name="frmBackup" id="frmBackup">
-    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
     <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
     <input type="hidden" name="backup" value="1"/>
     <input type="hidden" name="isAjax" value="1"/>

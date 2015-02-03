@@ -1750,11 +1750,22 @@ fieldset.warning a {
     text-align: center;
 }
 
-#whatsNewIcon {text-align: center;}
-#whatsNewIcon img{width: 64px; height: 64px;}
-#whatsNewIcon h2{display: inline-block; color: #555; font-size: 16px;}
+#whatsNewIcon {
+    text-align: center;
+}
 
-#whatsNew{
+#whatsNewIcon img {
+    width: 64px;
+    height: 64px;
+}
+
+#whatsNewIcon h2 {
+    display: inline-block;
+    color: #555;
+    font-size: 16px;
+}
+
+#whatsNew {
     margin: 0 auto;
     width: 500px;
     background-color: #fffde1;
@@ -1767,7 +1778,11 @@ fieldset.warning a {
     display: none;
 }
 
-#whatsNew ul{padding: 0; border: none;}
+#whatsNew ul {
+    padding: 0;
+    border: none;
+}
+
 #whatsNew li {
     padding-left: 37px;
     background: url("../imgs/arrow-list.png") left center no-repeat;

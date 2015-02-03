@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -160,9 +160,9 @@ foreach ($resQuery as $account) {
     $color = array_rand($colors);
 
     if (!isset($customerColor)) {
-        $customerColor[$account->account_customerId] = '#'.$colors[$color];
+        $customerColor[$account->account_customerId] = '#' . $colors[$color];
     } elseif (isset($customerColor) && !array_key_exists($account->account_customerId, $customerColor)) {
-        $customerColor[$account->account_customerId] = '#'.$colors[$color];
+        $customerColor[$account->account_customerId] = '#' . $colors[$color];
     }
 
     //$hexColor = $customerColor[$account->account_customerId][0];
@@ -218,7 +218,7 @@ foreach ($resQuery as $account) {
             }
         }
 
-        if ($account->account_notes){
+        if ($account->account_notes) {
             $strAccNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
             $strAccNotes = nl2br(wordwrap(htmlspecialchars($strAccNotes), 50, '<br>', true));
         }
@@ -334,17 +334,17 @@ SP_Html::printQuerySearchNavBar($sortKey, $arrSearchFilter["limitStart"], $objAc
 <script>
     passToClip = 0;
 
-    var client = new ZeroClipboard( $('.clip_pass_button'), {
+    var client = new ZeroClipboard($('.clip_pass_button'), {
         moviePath: "js/ZeroClipboard.swf",
         debug: false
     });
 
     //client.setText(data);
-    client.on( 'load', function(client) {
+    client.on('load', function (client) {
         $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
     });
 
-    client.on( "complete", function(client, args) {
+    client.on("complete", function (client, args) {
         resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
     });
 </script>

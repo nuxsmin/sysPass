@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -38,7 +38,7 @@ class SP_Auth
      * Autentificación de usuarios con LDAP.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return int|bool Número de error o boolean
      */
     public static function authUserLDAP($userLogin, $userPass)
@@ -141,7 +141,7 @@ class SP_Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return bool
      */
     public static function authUserMySQL($userLogin, $userPass)

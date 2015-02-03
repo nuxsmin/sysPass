@@ -26,7 +26,7 @@
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-define('IS_INSTALLER',1);
+define('IS_INSTALLER', 1);
 
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes

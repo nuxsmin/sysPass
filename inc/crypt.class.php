@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -59,7 +59,7 @@ class SP_Crypt
     /**
      * Comprobar el hash de una clave.
      *
-     * @param string $pwd con la clave a comprobar
+     * @param string $pwd         con la clave a comprobar
      * @param string $correctHash con el hash a comprobar
      * @return bool
      */
@@ -95,7 +95,7 @@ class SP_Crypt
      * Generar una clave encriptada.
      * Esta función llama a los métodos privados para encriptar datos.
      *
-     * @param string $pwd con la clave a encriptar
+     * @param string $pwd       con la clave a encriptar
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
@@ -166,9 +166,9 @@ class SP_Crypt
     /**
      * Encriptar datos con la clave maestra.
      *
-     * @param string $strValue con los datos a encriptar
+     * @param string $strValue    con los datos a encriptar
      * @param string $strPassword con la clave maestra
-     * @param string $cryptIV con el IV
+     * @param string $cryptIV     con el IV
      * @return string con los datos encriptados
      */
     private static function encrypt($strValue, $strPassword, $cryptIV)
@@ -204,7 +204,8 @@ class SP_Crypt
      *
      * @return resource
      */
-    private static function getMcryptResource(){
+    private static function getMcryptResource()
+    {
         return mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_CBC, '');
     }
 }

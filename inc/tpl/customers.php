@@ -1,11 +1,11 @@
 <?php
 /**
  * sysPass
- * 
- * @author nuxsmin
- * @link http://syspass.org
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *  
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -32,36 +32,41 @@ $activeTab = $data['activeTab'];
 
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $data['header']; ?></H2>
+
     <form method="post" name="frmCustomers" id="frmCustomers">
         <table class="fancydata">
             <tbody>
-                <tr>
-                    <td class="descField"><?php echo _('Nombre'); ?></td>
-                    <td class="valField">
-                        <input type="text" id="grpname" name="name" title="<?php echo _('Nombre del cliente'); ?>" value="<?php echo $customer["customer_name"] ?>" />
-                    </td>
-                </tr>
+            <tr>
+                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="valField">
+                    <input type="text" id="grpname" name="name" title="<?php echo _('Nombre del cliente'); ?>"
+                           value="<?php echo $customer["customer_name"] ?>"/>
+                </td>
+            </tr>
 
-                <tr>
-                    <td class="descField"><?php echo _('Descripción'); ?></td>
-                        <td class="valField"><input type="text" id="grpdesc" name="description" title="<?php echo _('Descripción del cliente'); ?>" value="<?php echo $customer["customer_description"]; ?>" />
-                    </td>
-                </tr>
+            <tr>
+                <td class="descField"><?php echo _('Descripción'); ?></td>
+                <td class="valField"><input type="text" id="grpdesc" name="description"
+                                            title="<?php echo _('Descripción del cliente'); ?>"
+                                            value="<?php echo $customer["customer_description"]; ?>"/>
+                </td>
+            </tr>
             </tbody>
         </table>
-        
-		<input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
-		<input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
-        <input type="hidden" name="id" value="<?php echo $customer["customer_id"]; ?>" />
-        <input type="hidden" name="action" value="<?php echo $customer["action"] ?>" />
-        <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
+
+        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
+        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
+        <input type="hidden" name="id" value="<?php echo $customer["customer_id"]; ?>"/>
+        <input type="hidden" name="action" value="<?php echo $customer["action"] ?>"/>
+        <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>"/>
         <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true) ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmCustomers');" /></li>
+            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
+                     OnClick="appMgmtSave('frmCustomers');"/></li>
         </ul>
     </div>
 </div>

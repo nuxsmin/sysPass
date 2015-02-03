@@ -36,7 +36,7 @@ jQuery.extend(jQuery.fancybox.defaults, {
     autoHeight: 'true',
     minHeight: 50,
     padding: 0,
-    helpers: {overlay: { css: { 'background': 'rgba(0, 0, 0, 0.1)'}}},
+    helpers: {overlay: {css: {'background': 'rgba(0, 0, 0, 0.1)'}}},
     afterShow: function () {
         "use strict";
 
@@ -341,7 +341,8 @@ function doLogin() {
             404: function () {
                 var txt = LANG[1] + '<p>' + LANG[13] + '</p>';
                 resMsg("error", txt);
-            }}
+            }
+        }
     });
 
     return false;
@@ -773,7 +774,7 @@ function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
     var url = '/ajax/ajax_appMgmtSave.php';
 
     if (isDel === 1) {
-        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction };
+        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction};
         var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
 
         alertify.confirm(atext, function (e) {
@@ -813,7 +814,7 @@ function clearEventlog(sk) {
 
     alertify.confirm(atext, function (e) {
         if (e) {
-            var data = { 'clear': 1, 'sk': sk, 'isAjax': 1};
+            var data = {'clear': 1, 'sk': sk, 'isAjax': 1};
             var url = '/ajax/ajax_eventlog.php';
 
             sendAjax(data, url);
@@ -1000,9 +1001,11 @@ function resMsg(type, txt, url, action) {
     "use strict";
 
     if (typeof url !== "undefined") {
-        $.ajax({ url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
-            txt = data;
-        }});
+        $.ajax({
+            url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
+                txt = data;
+            }
+        });
     }
 
     var html;
@@ -1011,13 +1014,13 @@ function resMsg(type, txt, url, action) {
 
     switch (type) {
         case "ok":
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.success(txt);
         case "error":
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.error(txt);
         case "warn":
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.log(txt);
         case "info":
             html = '<div id="fancyMsg" class="msgInfo">' + txt + '</div>';
@@ -1029,17 +1032,23 @@ function resMsg(type, txt, url, action) {
             html = '<P CLASS="error round">Oops...<BR />' + LANG[1] + '<BR />' + txt + '</P>';
             return html;
         default:
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.error(txt);
     }
 
-    $.fancybox(html, {afterLoad: function () {
-        $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({'border-radius': '25px', '-moz-border-radius': '25px', '-webkit-border-radius': '25px'});
-    }, afterClose: function () {
-        if (typeof action !== "undefined") {
-            eval(action);
+    $.fancybox(html, {
+        afterLoad: function () {
+            $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({
+                'border-radius': '25px',
+                '-moz-border-radius': '25px',
+                '-webkit-border-radius': '25px'
+            });
+        }, afterClose: function () {
+            if (typeof action !== "undefined") {
+                eval(action);
         }
-    } });
+        }
+    });
 }
 
 // Función para comprobar la conexión con LDAP
@@ -1052,7 +1061,15 @@ function checkLdapConn() {
     var ldapBindUser = $('#frmConfig').find('[name=ldap_binduser]').val();
     var ldapBindPass = $('#frmConfig').find('[name=ldap_bindpass]').val();
     var sk = $('#frmConfig').find('[name=sk]').val();
-    var data = {'ldap_server': ldapServer, 'ldap_base': ldapBase, 'ldap_group': ldapGroup, 'ldap_binduser': ldapBindUser, 'ldap_bindpass': ldapBindPass, 'isAjax': 1, 'sk': sk};
+    var data = {
+        'ldap_server': ldapServer,
+        'ldap_base': ldapBase,
+        'ldap_group': ldapGroup,
+        'ldap_binduser': ldapBindUser,
+        'ldap_bindpass': ldapBindPass,
+        'isAjax': 1,
+        'sk': sk
+    };
 
     sendAjax(data, '/ajax/ajax_checkLdap.php');
 }

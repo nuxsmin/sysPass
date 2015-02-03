@@ -26,7 +26,7 @@
 // TODO: comprobar permisos para eliminar archivos
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -116,7 +116,7 @@ if ($action == 'download' || $action == 'view') {
         exit(_('No es un ID de archivo válido'));
     }
 
-    $isView = ( $action == 'view' ) ? true : false;
+    $isView = ($action == 'view') ? true : false;
 
     $file = SP_Files::fileDownload($fileId);
 

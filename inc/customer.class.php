@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -234,7 +234,7 @@ class SP_Customer
     /**
      * Obtener el listado de clientes.
      *
-     * @param int $customerId con el Id del cliente
+     * @param int $customerId     con el Id del cliente
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con el id de cliente como clave y el nombre como valor
      */

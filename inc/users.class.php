@@ -201,7 +201,7 @@ class SP_Users
      * Actualizar la clave de un usuario desde phpPMS.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return bool
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
@@ -506,7 +506,7 @@ class SP_Users
      * Insertar un registro de recuperación de clave.
      *
      * @param string $login con el login del usuario
-     * @param string $hash con el hash para el cambio
+     * @param string $hash  con el hash para el cambio
      * @return bool
      */
     public static function addPassRecover($login, $hash)
@@ -553,6 +553,7 @@ class SP_Users
     /**
      * Comprobar si un usuario autentifica mediante LDAP
      * .
+     *
      * @param string $userLogin con el login del usuario
      * @return bool
      */
@@ -811,8 +812,8 @@ class SP_Users
         $message['action'] = _('Nuevo Usuario');
         $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
-        if ($this->userChangePass){
-            if ( ! SP_Auth::mailPassRecover(DB::escape($this->userLogin),DB::escape($this->userEmail)) ){
+        if ($this->userChangePass) {
+            if (!SP_Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
                 $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
             }
         }
@@ -853,8 +854,8 @@ class SP_Users
         $message['action'] = _('Modificar Usuario');
         $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
-        if ($this->userChangePass){
-            if ( ! SP_Auth::mailPassRecover(DB::escape($this->userLogin),DB::escape($this->userEmail)) ){
+        if ($this->userChangePass) {
+            if (!SP_Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
                 $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
             }
         }

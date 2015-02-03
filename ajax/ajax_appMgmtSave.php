@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,7 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -135,7 +135,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
             SP_Common::printJSON(_('Error al actualizar el usuario'));
         }
-    // Cambio de clave
+        // Cambio de clave
     } elseif ($frmAction == 3) {
         if (SP_Util::demoIsEnabled() && $userLogin == 'demo') {
             SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
@@ -157,7 +157,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         }
 
         SP_Common::printJSON(_('Error al modificar la clave'));
-    // Eliminar usuario
+        // Eliminar usuario
     } elseif ($frmAction == 4) {
         if (SP_Util::demoIsEnabled() && $userLogin == 'demo') {
             SP_Common::printJSON(_('Ey, esto es una DEMO!!'));
@@ -210,7 +210,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printJSON(_('Error al actualizar el grupo'));
         }
 
-    // Eliminar grupo
+        // Eliminar grupo
     } elseif ($frmAction == 4) {
         SP_Groups::$groupId = $frmItemId;
 
@@ -290,7 +290,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printJSON(_('Error al actualizar el perfil'));
         }
 
-    // Eliminar perfil
+        // Eliminar perfil
     } elseif ($frmAction == 4) {
         $resProfileUse = SP_Profiles::checkProfileInUse();
 
@@ -348,7 +348,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printJSON(_('Error al actualizar el cliente'));
         }
 
-    // Eliminar cliente
+        // Eliminar cliente
     } elseif ($frmAction == 4) {
         $resCustomerUse = SP_Customer::checkCustomerInUse($frmItemId);
 
@@ -399,7 +399,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
             SP_Common::printJSON(_('Error al actualizar la categoría'));
         }
 
-    // Eliminar categoría
+        // Eliminar categoría
     } elseif ($frmAction == 4) {
         $resCategoryUse = SP_Category::checkCategoryInUse($frmItemId);
 

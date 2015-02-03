@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -26,28 +26,28 @@
 ?>
 
 <div id="actions" align="center">
-    
-<?php if ( isset($data['showlogo']) ): ?>
-    <div id="logo">
-        <img src="<?php echo SP_Init::$WEBROOT; ?>/imgs/logo_full.png" alt="sysPass logo"/>
-    </div>
-<?php endif; ?>
-    
-<?php
-$errors = $data['errors'];
 
-if( count($errors) > 0){
-    echo '<ul class="errors round">';
+    <?php if (isset($data['showlogo'])): ?>
+        <div id="logo">
+            <img src="<?php echo SP_Init::$WEBROOT; ?>/imgs/logo_full.png" alt="sysPass logo"/>
+        </div>
+    <?php endif; ?>
 
-    foreach($errors as $err){ 
-        if( is_array($err) ){
-            echo '<li class="err_'.$err["type"].'">';
-            echo '<strong>'.$err['description'].'</strong>';
-            echo ( $err['hint'] ) ? '<p class="hint">'.$err['hint'].'</p>' : '';
-            echo '</li>';
+    <?php
+    $errors = $data['errors'];
+
+    if (count($errors) > 0) {
+        echo '<ul class="errors round">';
+
+        foreach ($errors as $err) {
+            if (is_array($err)) {
+                echo '<li class="err_' . $err["type"] . '">';
+                echo '<strong>' . $err['description'] . '</strong>';
+                echo ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : '';
+                echo '</li>';
+            }
         }
+        echo '</ul>';
     }
-    echo '</ul>';
-} 
-?>
+    ?>
 </div>

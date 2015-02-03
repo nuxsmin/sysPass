@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -220,7 +220,7 @@ class SP_Config
             return true;
         }
 
-        $configFile = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'config.php';
+        $configFile = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
 
         if (!file_exists($configFile)) {
             return false;
@@ -340,7 +340,7 @@ class SP_Config
         self::setValue('ldap_userattr', '');
         self::setValue('mail_server', '');
         self::setValue('mail_from', '');
-        self::setValue('site_lang', str_replace('.utf8','',SP_Init::$LANG));
+        self::setValue('site_lang', str_replace('.utf8', '', SP_Init::$LANG));
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 12);
@@ -351,7 +351,7 @@ class SP_Config
      * Esta función establece el valor y reescribe config.php. Si el archivo
      * no se puede escribir, devolverá false.
      *
-     * @param string $key clave
+     * @param string $key   clave
      * @param string $value valor
      * @return bool
      */

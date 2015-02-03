@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -38,10 +38,10 @@ $start = SP_Common::parseParams('p', 'start', 0);
 $clear = SP_Common::parseParams('p', 'clear', 0);
 $sk = SP_Common::parseParams('p', 'sk', false);
 
-if ( $clear && $sk && SP_Common::checkSessionKey($sk) ){
-    if ( SP_Log::clearEvents() ){
+if ($clear && $sk && SP_Common::checkSessionKey($sk)) {
+    if (SP_Log::clearEvents()) {
         SP_Common::printJSON(_('Registro de eventos vaciado'), 0, "doAction('eventlog');scrollUp();");
-    } else{
+    } else {
         SP_Common::printJSON(_('Error al vaciar el registro de eventos'));
     }
 }

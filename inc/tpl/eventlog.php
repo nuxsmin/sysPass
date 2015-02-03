@@ -28,7 +28,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 $startTime = microtime();
 $rowClass = "row_even";
 $isDemoMode = SP_Util::demoIsEnabled();
-$start = ( isset($data['start']) ) ? (int) $data['start'] : 0;
+$start = (isset($data['start'])) ? (int)$data['start'] : 0;
 
 $events = SP_Log::getEvents($start);
 ?>
@@ -70,48 +70,48 @@ $numRows = SP_Log::$numRows;
             </tr>
         </thead>
         <tbody id="resSearch">
-            <?php
-            foreach ($events as $log) {
-                $rowClass = ( $rowClass == "row_even" ) ? "row_odd" : "row_even";
-                $description = ( $isDemoMode === false ) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
+        <?php
+        foreach ($events as $log) {
+            $rowClass = ($rowClass == "row_even") ? "row_odd" : "row_even";
+            $description = ($isDemoMode === false) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description));
             ?>
 
-                <tr class="<?php echo $rowClass; ?>">
-                    <td class="cell">
-                        <?php echo $log->log_id; ?>
-                    </td>
-                    <td class="cell">
-                        <?php echo $log->date; ?>
-                    </td>
-                    <td class="cell">
-                        <?php echo utf8_decode($log->log_action); ?>
-                    </td>
-                    <td class="cell">
-                        <?php echo strtoupper($log->log_login); ?>
-                    </td>
-                    <td class="cell">
-                        <?php echo ($isDemoMode) ? preg_replace('#\d+#','*',$log->log_ipAddress) : $log->log_ipAddress; ?>
-                    </td>
-                    <td class="cell-description">
-                        <?php
-                        $descriptions = explode(';;', $description);
+            <tr class="<?php echo $rowClass; ?>">
+                <td class="cell">
+                    <?php echo $log->log_id; ?>
+                </td>
+                <td class="cell">
+                    <?php echo $log->date; ?>
+                </td>
+                <td class="cell">
+                    <?php echo utf8_decode($log->log_action); ?>
+                </td>
+                <td class="cell">
+                    <?php echo strtoupper($log->log_login); ?>
+                </td>
+                <td class="cell">
+                    <?php echo ($isDemoMode) ? preg_replace('#\d+#', '*', $log->log_ipAddress) : $log->log_ipAddress; ?>
+                </td>
+                <td class="cell-description">
+                    <?php
+                    $descriptions = explode(';;', $description);
 
-                        foreach ($descriptions as $text) {
-                            if (preg_match('/^SQL.*/', $text)){
-                                $text = preg_replace('/([[:alpha:]_]+),/', '\\1,<br>', $text);
-                                $text = preg_replace('/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/', '<br>\\1', $text);
-                            }
-                            
-                            if (strlen($text) >= 150) {
-                                echo wordwrap($text, 150, '<br>', true);
-                            } else {
-                                echo $text . '<br>';
-                            }
+                    foreach ($descriptions as $text) {
+                        if (preg_match('/^SQL.*/', $text)) {
+                            $text = preg_replace('/([[:alpha:]_]+),/', '\\1,<br>', $text);
+                            $text = preg_replace('/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/', '<br>\\1', $text);
                         }
-                        ?>
-                    </td>
-                </tr>
-            <?php } ?>
+
+                        if (strlen($text) >= 150) {
+                            echo wordwrap($text, 150, '<br>', true);
+                        } else {
+                            echo $text . '<br>';
+                        }
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php } ?>
         </tbody>
     </table>
 </div>
@@ -126,7 +126,8 @@ SP_Html::printQueryLogNavBar($start, $numRows, $totalTime);
 <div class="action fullWidth">
     <ul>
         <li>
-            <img src="imgs/clear.png" title="<?php echo _('Vaciar registro de eventos'); ?>" class="inputImg" OnClick="clearEventlog('<?php echo SP_Common::getSessionKey(); ?>');" />
+            <img src="imgs/clear.png" title="<?php echo _('Vaciar registro de eventos'); ?>" class="inputImg"
+                 OnClick="clearEventlog('<?php echo SP_Common::getSessionKey(); ?>');"/>
         </li>
     </ul>
 </div>

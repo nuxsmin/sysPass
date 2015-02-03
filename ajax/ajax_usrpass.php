@@ -4,7 +4,7 @@
 * 
 * @author nuxsmin
 * @link http://syspass.org
-* @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
 *  
 * This file is part of sysPass.
 *
@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('GET');
 
@@ -40,7 +40,7 @@ if ( ! $userId ) {
 
 $strError = '<div id="fancyView" class="msgError">'._('No tiene permisos para realizar esta operación').'</div>';
 
-SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
+SP_ACL::checkUserAccess("acceditpass", $userId) || die ($strError);
 
 ?>
 
@@ -54,7 +54,8 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
             </td>
             <td class="valField">
                 <input type="password" id="usrpass" name="pass" title="<?php echo _('Clave'); ?>" class="txtpass" OnFocus="$('#passLevel').show(); $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value, 'fancyContainer')" />
-                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
+                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
+                     class="inputImg"/>
             </td>
         </tr>
         <tr>
@@ -62,7 +63,7 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
                 <?php echo _('Clave (repetir)'); ?></td>
             <td class="valField">
                 <input type="password" id="usrpassv" name="passv" title="<?php echo _('Clave (repetir)'); ?>" class="txtpassv" />
-                <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>" ></span>
+                <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </td>
         </tr>
     </table>
@@ -78,13 +79,14 @@ SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
     <div class="action-in-box">
         <ul>
             <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
+                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
+                     OnClick="appMgmtSave('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
             </li>
         </ul>
     </div>
 </div>
 <script>
-    $('#passGen').click(function(){
+    $('#passGen').click(function () {
         $('#resFancyAccion').hide();
         password(11, true, false, 'fancyContainer');
     });

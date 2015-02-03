@@ -35,7 +35,7 @@ class SP_Common
      *
      * @param array $message con el nombre de la accióm y el texto del mensaje
      * @param string $mailTo con el destinatario
-     * @param bool $isEvent para indicar si es um
+     * @param bool $isEvent  para indicar si es um
      * @return bool
      */
     public static function sendEmail($message, $mailTo = '', $isEvent = true)
@@ -177,8 +177,8 @@ class SP_Common
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
      * @param string $description mensaje a devolver
-     * @param int $status devuelve el estado
-     * @param string $action con la accion a realizar
+     * @param int $status         devuelve el estado
+     * @param string $action      con la accion a realizar
      * @return bool
      */
     public static function printJSON($description, $status = 1, $action = '')

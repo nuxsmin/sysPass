@@ -29,8 +29,8 @@ $startTime = microtime();
 
 $adminApp = ( isset($_SESSION["uisadminapp"]) && $_SESSION["uisadminapp"] == 1 ) ? "<span title=\""._('Admin Aplicación')."\">(A+)</span>" : "";
 $userId = ( isset($_SESSION["uid"]) ) ? $_SESSION["uid"] : 0;
-$userLogin = ( isset($_SESSION["ulogin"]) && ! empty($_SESSION["ulogin"])) ? strtoupper($_SESSION["ulogin"]) : '';
-$userName = ( isset($_SESSION["uname"]) && ! empty($_SESSION["uname"])) ? $_SESSION["uname"] : strtoupper($userLogin);
+$userLogin = (isset($_SESSION["ulogin"]) && !empty($_SESSION["ulogin"])) ? strtoupper($_SESSION["ulogin"]) : '';
+$userName = (isset($_SESSION["uname"]) && !empty($_SESSION["uname"])) ? $_SESSION["uname"] : strtoupper($userLogin);
 $userGroup = ( isset($_SESSION["ugroupn"]) ) ? $_SESSION["ugroupn"] : '';
 
 $strUser = "$userName ($userGroup) " . $adminApp;

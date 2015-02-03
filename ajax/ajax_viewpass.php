@@ -24,7 +24,7 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -84,7 +84,7 @@ if (!$isHistory && $fullTxt) {
     SP_Log::wrLogInfo($message);
 }
 
-$accountPass = htmlentities(trim($accountClearPass),ENT_COMPAT,'UTF-8');
+$accountPass = htmlentities(trim($accountClearPass), ENT_COMPAT, 'UTF-8');
 
 if ($fullTxt) {
     ?>
@@ -100,7 +100,7 @@ if ($fullTxt) {
             </tr>
         </table>
     </div>
-    <?php
+<?php
 } else {
     echo $accountPass;
 }

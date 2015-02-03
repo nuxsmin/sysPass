@@ -92,11 +92,15 @@ $activeTab = $data['activeTab'];
                             <br>
                             <label for="profile_profiles" title="<?php echo _('Gestión de perfiles'); ?>"><?php echo _('Perfiles'); ?></label>
                             <input type="checkbox" id="profile_profiles" name="profile_profiles" <?php echo $profile['userProfile_pProfiles']; ?> />
-                            <label for="profile_categories" title="<?php echo _('Gestión de categorías'); ?>"><?php echo _('Categorías'); ?></label>
-                            <input type="checkbox" id="profile_categories" name="profile_categories" <?php echo $profile['userProfile_pAppMgmtCategories']; ?> />
+                            <label for="profile_categories"
+                                   title="<?php echo _('Gestión de categorías'); ?>"><?php echo _('Categorías'); ?></label>
+                            <input type="checkbox" id="profile_categories"
+                                   name="profile_categories" <?php echo $profile['userProfile_pAppMgmtCategories']; ?> />
                             <br>
-                            <label for="profile_customers" title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></label>
-                            <input type="checkbox" id="profile_customers" name="profile_customers" <?php echo $profile['userProfile_pAppMgmtCustomers']; ?> />
+                            <label for="profile_customers"
+                                   title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></label>
+                            <input type="checkbox" id="profile_customers"
+                                   name="profile_customers" <?php echo $profile['userProfile_pAppMgmtCustomers']; ?> />
                         </div>
                     </td>
                 </tr>
@@ -111,9 +115,9 @@ $activeTab = $data['activeTab'];
                 </tr>
             </tbody>
         </table>
-		
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
-        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
+
+        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
+        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
         <input type="hidden" name="id" value="<?php echo $profile['userprofile_id']; ?>" />
         <input type="hidden" name="action" value="<?php echo $profile["action"] ?>" />
         <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
@@ -131,7 +135,8 @@ $activeTab = $data['activeTab'];
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmProfiles');" /></li>
+            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
+                     OnClick="appMgmtSave('frmProfiles');"/></li>
         </ul>
     </div>
 </div>

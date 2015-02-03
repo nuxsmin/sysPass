@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -155,11 +155,11 @@ class SP_Backup
     private static function backupApp($backupFile)
     {
         if (!class_exists('PharData')) {
-            if(SP_Util::runningOnWindows()){
+            if (SP_Util::runningOnWindows()) {
                 throw new Exception(_('Esta operación sólo es posible en entornos Linux'));
             }
 
-            if(!self::backupAppLegacyLinux($backupFile)){
+            if (!self::backupAppLegacyLinux($backupFile)) {
                 throw new Exception(_('Error al realizar backup en modo compatibilidad'));
             }
 
@@ -169,7 +169,7 @@ class SP_Backup
         $compressedFile = $backupFile . '.gz';
 
         try {
-            if (file_exists($compressedFile)){
+            if (file_exists($compressedFile)) {
                 unlink($compressedFile);
             }
 

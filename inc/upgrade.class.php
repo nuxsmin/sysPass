@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Upgrade
 {
-    private static $dbUpgrade = array(110, 1121, 1122, 1123,11213);
+    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213);
     private static $cfgUpgrade = array(1124);
 
     /**
@@ -117,7 +117,9 @@ class SP_Upgrade
      */
     public static function needDBUpgrade($version)
     {
-        $upgrades = array_filter(self::$dbUpgrade, function ($uVersions) use ($version){ return ($uVersions >= $version); } );
+        $upgrades = array_filter(self::$dbUpgrade, function ($uVersions) use ($version) {
+            return ($uVersions >= $version);
+        });
 
         return (count($upgrades) > 0);
     }
@@ -169,9 +171,9 @@ class SP_Upgrade
 
         $currData = SP_Config::getKeys(true);
 
-        foreach ( $mapParams as $newParam => $oldParam){
-            if ( array_key_exists($oldParam,$currData)){
-                SP_Config::setValue($newParam,$currData[$oldParam]);
+        foreach ($mapParams as $newParam => $oldParam) {
+            if (array_key_exists($oldParam, $currData)) {
+                SP_Config::setValue($newParam, $currData[$oldParam]);
                 SP_Config::deleteKey($oldParam);
             }
         }

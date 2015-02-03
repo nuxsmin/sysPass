@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -121,11 +121,11 @@ class DB
     /**
      * Obtener los datos para generar un select.
      *
-     * @param string $tblName con el nombre de la tabla a cunsultar
-     * @param string $tblColId con el nombre de la columna del tipo Id a mostrar
+     * @param string $tblName    con el nombre de la tabla a cunsultar
+     * @param string $tblColId   con el nombre de la columna del tipo Id a mostrar
      * @param string $tblColName con el nombre de la columna del tipo Name a mostrar
-     * @param array $arrFilter con las columnas a filtrar
-     * @param array $arrOrder con el orden de las columnas
+     * @param array $arrFilter   con las columnas a filtrar
+     * @param array $arrOrder    con el orden de las columnas
      * @return false|array con los valores del select con el Id como clave y el nombre como valor
      */
     public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
@@ -158,7 +158,7 @@ class DB
      *
      * @param string $query con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param bool $retArray devolver un array si la consulta tiene esultados
+     * @param bool $retArray   devolver un array si la consulta tiene esultados
      * @param bool $unbuffered devolver el resultado registro a registro
      * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
@@ -186,9 +186,9 @@ class DB
     /**
      * Realizar una consulta a la BBDD.
      *
-     * @param string $query con la consulta a realizar
+     * @param string $query       con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param bool $unbuffered realizar la consulta para obtener registro a registro
+     * @param bool $unbuffered    realizar la consulta para obtener registro a registro
      * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
      */
     public static function doQuery($query, $querySource, $unbuffered = false)

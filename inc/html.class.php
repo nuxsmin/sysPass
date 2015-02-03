@@ -176,7 +176,7 @@ class SP_Html
     public static function setCss()
     {
         $visualStyle = SP_Util::resultsCardsIsEnabled();
-        $versionParameter = md5(implode(SP_Util::getVersion()).$visualStyle);
+        $versionParameter = md5(implode(SP_Util::getVersion()) . $visualStyle);
 
         self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . '/css/css.php?v=' . $versionParameter . '" />';
     }
@@ -240,7 +240,7 @@ class SP_Html
      * Cargar un archivo de plantilla.
      *
      * @param string $template con el nombre de la plantilla
-     * @param array $tplvars con los datos a pasar a la plantilla
+     * @param array $tplvars   con los datos a pasar a la plantilla
      * @return none
      */
     public static function getTemplate($template, $tplvars = array())
@@ -399,7 +399,7 @@ class SP_Html
      * Truncar un texto a una determinada longitud.
      *
      * @param string $str con la cadena a truncar
-     * @param int $len con la longitud máxima de la cadena
+     * @param int $len    con la longitud máxima de la cadena
      * @return string con el texto truncado
      */
     public static function truncate($str, $len)
@@ -457,7 +457,7 @@ class SP_Html
      * Devolver una tabla con el resultado de una consulta y acciones.
      *
      * @param array $arrTableProp con las propiedades de la tabla
-     * @param array $queryItems con los resultados de la consulta
+     * @param array $queryItems   con los resultados de la consulta
      * @return none
      */
     public static function getQueryTable($arrTableProp, $queryItems)
@@ -564,9 +564,9 @@ class SP_Html
     /**
      * Devolver un link HTML.
      *
-     * @param string $text con la cadena de texto
-     * @param string $link con el destino del enlace
-     * @param string $title con el título del enlace
+     * @param string $text    con la cadena de texto
+     * @param string $link    con el destino del enlace
+     * @param string $title   con el título del enlace
      * @param string $attribs con atributos del enlace
      * @return string
      */

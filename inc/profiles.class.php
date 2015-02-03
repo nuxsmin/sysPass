@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -37,6 +37,7 @@ class SP_Profiles
 
     /**
      * Obtener los datos de un perfil
+     *
      * @param int $id con el Id del perfil a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -85,6 +86,7 @@ class SP_Profiles
 
     /**
      * Obtener los datos de un perfil
+     *
      * @param int $profileId opcional, con el Id del perfil a consultar
      * @return array con la lista de perfiles
      */
@@ -130,6 +132,7 @@ class SP_Profiles
 
     /**
      * Comprobar si un perfil existe
+     *
      * @return bool
      */
     public static function checkProfileExist()
@@ -161,6 +164,7 @@ class SP_Profiles
 
     /**
      * Añadir un nuevo perfil
+     *
      * @param array $profileProp con las propiedades del perfil
      * @return bool
      */

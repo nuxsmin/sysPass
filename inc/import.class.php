@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -124,7 +124,7 @@ class SP_Import
             throw new ImportException('critical', _('Error interno al leer el archivo'), _('Compruebe la configuración de PHP para subir archivos'));
         }
 
-        if ($fileData['type'] === 'text/csv' || $fileData['type'] === 'application/vnd.ms-excel'){
+        if ($fileData['type'] === 'text/csv' || $fileData['type'] === 'application/vnd.ms-excel') {
             // Leemos el archivo a un array
             self::$fileContent = file($tmpName);
 
@@ -133,11 +133,11 @@ class SP_Import
             }
             // Obtenemos las cuentas desde el archivo CSV
             self::parseFileData();
-        } elseif ($fileData['type'] === 'text/xml'){
+        } elseif ($fileData['type'] === 'text/xml') {
             self::$tmpFile = $tmpName;
             // Analizamos el XML y seleccionamos el formato a importar
             self::detectXMLFormat();
-        } else{
+        } else {
             throw new ImportException('critical', _('Tipo mime no soportado'), _('Compruebe el formato del archivo'));
         }
 
@@ -159,7 +159,7 @@ class SP_Import
                 throw new ImportException('critical', _('El número de campos es incorrecto'), _('Compruebe el formato del archivo CSV'));
             }
 
-            if (!self::addAccountData($fields)){
+            if (!self::addAccountData($fields)) {
                 $message['action'] = _('Importar Cuentas');
                 $message['text'][] = _('Error importando cuenta');
                 $message['text'][] = $data;
@@ -231,7 +231,7 @@ class SP_Import
      */
     private static function encryptPass($password)
     {
-        if (empty($password)){
+        if (empty($password)) {
             return array('pass' => '', 'IV' => '');
         }
 
@@ -260,9 +260,9 @@ class SP_Import
      */
     private static function readXMLFile()
     {
-        if ($xmlFile = simplexml_load_file(self::$tmpFile)){
+        if ($xmlFile = simplexml_load_file(self::$tmpFile)) {
             return $xmlFile;
-        } else{
+        } else {
             throw new ImportException('critical', _('Error interno'), _('No es posible procesar el archivo XML'));
         }
     }
@@ -277,9 +277,9 @@ class SP_Import
     {
         $xml = self::readXMLFile();
 
-        if ( $xml->Meta->Generator == 'KeePass' ){
+        if ($xml->Meta->Generator == 'KeePass') {
             SP_KeePassImport::addKeepassAccounts($xml);
-        } else if ($xmlApp = self::parseFileHeader()){
+        } else if ($xmlApp = self::parseFileHeader()) {
             switch ($xmlApp) {
                 case 'keepassx_database':
                     SP_KeePassXImport::addKeepassXAccounts($xml);
@@ -290,7 +290,7 @@ class SP_Import
                 default:
                     break;
             }
-        } else{
+        } else {
             throw new ImportException('critical', _('Archivo XML no soportado'), _('No es posible detectar la aplicación que exportó los datos'));
         }
     }
@@ -305,13 +305,13 @@ class SP_Import
         $handle = @fopen(self::$tmpFile, "r");
         $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
 
-        if ( $handle ){
+        if ($handle) {
             // No. de líneas a leer como máximo
             $maxLines = 5;
             $count = 0;
 
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines){
-                if ( preg_match($headersRegex,$buffer,$app) ){
+            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
+                if (preg_match($headersRegex, $buffer, $app)) {
                     fclose($handle);
                     return strtolower($app[0]);
                 }

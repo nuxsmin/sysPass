@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -34,6 +34,7 @@ class SP_KeePassImport
 
     /**
      * Iniciar la importación desde KeePass
+     *
      * @param object $xml
      * @return none
      */
@@ -45,17 +46,17 @@ class SP_KeePassImport
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param object $entries con el objeto XML con las entradas
+     * @param object $entries   con el objeto XML con las entradas
      * @param string $groupName con nombre del grupo a procesar
      * @throws ImportException
      * @return none
      */
     private static function getEntryData($entries, $groupName)
     {
-        foreach ( $entries as $entry ){
-            foreach ( $entry->String as $account ){
-                $value = (isset($account->Value)) ? (string) $account->Value : '';
-                switch ($account->Key){
+        foreach ($entries as $entry) {
+            foreach ($entry->String as $account) {
+                $value = (isset($account->Value)) ? (string)$account->Value : '';
+                switch ($account->Key) {
                     case 'Notes':
                         $notes = $value;
                         break;
@@ -74,7 +75,7 @@ class SP_KeePassImport
                 }
             }
 
-            $accountData = array($name,'KeePass',$groupName,$url,$username,$password,$notes);
+            $accountData = array($name, 'KeePass', $groupName, $url, $username, $password, $notes);
             SP_Import::addAccountData($accountData);
         }
     }
@@ -88,27 +89,27 @@ class SP_KeePassImport
      */
     private static function getGroups($xml)
     {
-        foreach($xml as $node){
-            if ( $node->Group ){
-                foreach ( $node->Group as $group ){
+        foreach ($xml as $node) {
+            if ($node->Group) {
+                foreach ($node->Group as $group) {
                     $groupName = $group->Name;
                     // Analizar grupo
-                    if ( $node->Group->Entry ){
+                    if ($node->Group->Entry) {
                         // Obtener entradas
-                        self::getEntryData($group->Entry,$groupName);
+                        self::getEntryData($group->Entry, $groupName);
                     }
 
-                    if ( $group->Group ){
+                    if ($group->Group) {
                         // Analizar subgrupo
                         self::getGroups($group);
                     }
                 }
             }
 
-            if ( $node->Entry ){
+            if ($node->Entry) {
                 $groupName = $node->Name;
                 // Obtener entradas
-                self::getEntryData($node->Entry,$groupName);
+                self::getEntryData($node->Entry, $groupName);
             }
         }
     }

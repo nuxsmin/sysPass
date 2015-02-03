@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -254,7 +254,7 @@ switch ($frmSaveType) {
         $account->accountUserEditId = $userId;
 
         // Restaurar cuenta y clave
-        if ($account->updateAccount(true) && $account->updateAccountPass(false,true)) {
+        if ($account->updateAccount(true) && $account->updateAccountPass(false, true)) {
             SP_Common::printJSON(_('Cuenta restaurada'), 0);
         }
 

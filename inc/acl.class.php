@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -41,7 +41,7 @@ class SP_ACL
      * en la variable de sesión.
      *
      * @param string $strAction con el nombre de la acción
-     * @param int $userId opcional, con el Id del usuario
+     * @param int $userId       opcional, con el Id del usuario
      * @return bool
      */
     public static function checkUserAccess($strAction, $userId = 0)
@@ -111,7 +111,7 @@ class SP_ACL
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string $action con la acción realizada
+     * @param string $action     con la acción realizada
      * @param array $accountData con los datos de la cuenta a verificar
      * @return bool
      */

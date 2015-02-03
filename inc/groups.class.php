@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -67,7 +67,7 @@ class SP_Groups
     /**
      * Obtener los grupos de usuarios.
      *
-     * @param int $groupId opcional, con el Id del grupo a consultar
+     * @param int $groupId      opcional, con el Id del grupo a consultar
      * @param bool $returnArray opcional, si se debe de devolver un array asociativo
      * @return false|array con la lista de grupos
      */
@@ -341,7 +341,7 @@ class SP_Groups
     /**
      * Actualizar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $accountId  con el Id de la cuenta
      * @param array $groupsId con los grupos de la cuenta
      * @return bool
      */
@@ -357,7 +357,7 @@ class SP_Groups
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $accountId  con el Id de la cuenta
      * @param array $groupsId opcional con los grupos de la cuenta
      * @return bool
      */
@@ -385,7 +385,7 @@ class SP_Groups
     /**
      * Crear asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $accountId  con el Id de la cuenta
      * @param array $groupsId con los grupos de la cuenta
      * @return bool
      */
