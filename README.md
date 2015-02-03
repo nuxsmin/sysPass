@@ -1,9 +1,3 @@
-### ATENCION / WARNING
-
-Esta versión está en desarrollo, pruébala con precaución.
-
-This version is under development, try it with caution.
-
 #### ACTUALIZAR / UPDATE
 
 Para actualizar desde 1.0 seguir los pasos en http://wiki.syspass.org/doku.php/es:actualizar
@@ -32,6 +26,7 @@ Installation instructions and changelog at Wiki
 
 ----------------
 
-http://sourceforge.net/projects/syspass
-
 http://syspass.org
+http://demo.syspass.org
+http://wiki.syspass.org
+http://sourceforge.net/projects/syspass
