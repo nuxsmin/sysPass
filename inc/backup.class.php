@@ -83,18 +83,21 @@ class SP_Backup
                 $resTables = is_array($tables) ? $tables : explode(',', $tables);
             }
 
-            $sqlOut = '--- sysPass DB dump generated on ' . time() . ' (start)' . PHP_EOL;
-            $sqlOut .= '---' . PHP_EOL;
-            $sqlOut .= '--- Please, do not alter this file, it could break your DB' . PHP_EOL;
-            $sqlOut .= '---' . PHP_EOL . PHP_EOL;
+            $sqlOut = '--' . PHP_EOL;
+            $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (START)' . PHP_EOL;
+            $sqlOut .= '--' . PHP_EOL;
+            $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
+            $sqlOut .= '--' . PHP_EOL . PHP_EOL;
             $sqlOut .= 'CREATE DATABASE IF NOT EXISTS `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
             $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
             fwrite($handle, $sqlOut);
 
             // Recorrer las tablas y almacenar los datos
             foreach ($resTables as $table) {
-                $sqlOut = '';
                 $tableName = $table->{'Tables_in_' . $dbname};
+                $sqlOut = '-- ' . PHP_EOL;
+                $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
+                $sqlOut .= '-- ' . PHP_EOL;
 
                 // Consulta para crear la tabla
                 $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
@@ -127,10 +130,11 @@ class SP_Backup
                 fwrite($handle, PHP_EOL . PHP_EOL);
             }
 
-            $sqlOut = '--- sysPass DB dump generated on ' . time() . ' (end)' . PHP_EOL;
-            $sqlOut .= '---' . PHP_EOL;
-            $sqlOut .= '--- Please, do not alter this file, it could break your DB' . PHP_EOL;
-            $sqlOut .= '---' . PHP_EOL . PHP_EOL;
+            $sqlOut = '--' . PHP_EOL;
+            $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;
+            $sqlOut .= '--' . PHP_EOL;
+            $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
+            $sqlOut .= '--' . PHP_EOL . PHP_EOL;
             fwrite($handle, $sqlOut);
 
             fclose($handle);
