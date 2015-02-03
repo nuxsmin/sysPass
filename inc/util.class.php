@@ -182,7 +182,7 @@ class SP_Util
      */
     public static function getVersionString()
     {
-        return '1.1-rc2';
+        return '1.1';
     }
 
     /**
@@ -275,7 +275,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = 16;
+        $build = 17;
         $version = array(1, 1, 2);
 
         if ($retBuild) {
