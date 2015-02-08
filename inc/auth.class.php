@@ -47,8 +47,9 @@ class SP_Auth
             return false;
         }
 
-        $ldapGroupAccess = false;
         $message['action'] = __FUNCTION__;
+
+        $ldapGroupAccess = false;
 
         // Conectamos al servidor realizamos la conexión con el usuario proxy
         try {
@@ -62,12 +63,12 @@ class SP_Auth
         $userDN = SP_LDAP::$ldapSearchData[0]['dn'];
         // Mapeo de los atributos
         $attribsMap = array(
-            'groupMembership' => 'group',
-            'memberOf' => 'group',
+            'groupmembership' => 'group',
+            'memberof' => 'group',
             'displayname' => 'name',
             'fullname' => 'name',
             'mail' => 'mail',
-            'lockoutTime' => 'expire');
+            'lockouttime' => 'expire');
 
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
@@ -101,10 +102,14 @@ class SP_Auth
             }
             // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
         } else {
-            $ldapGroupAccess = SP_LDAP::searchUserInGroup($userDN);
+            try {
+                SP_LDAP::searchUserInGroup($userDN);
+            } catch (Exception $e){
+                $ldapGroupAccess = false;
+            }
         }
 
-        if ($ldapGroupAccess == false) {
+        if ($ldapGroupAccess === false){
             return 702;
         }
 
