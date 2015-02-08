@@ -1,3 +1,11 @@
+=== ** v1.1.2.18 ===
+
+* Fixed LDAP group membership. Thanks to @danislav
+* Fixed LDAP email attribute retrieving. Thanks to @danislav
+* Updated translations
+* Fixed accounts list notes showed for accounts that don't have.
+* Fixed LDAP users' password salt saving.
+
 === ** v1.1.2.16-rc2 ===
 
 * Updated header and PHPdoc syntax

@@ -1,3 +1,11 @@
+=== ** v1.1.2.18 ===
+
+* Corregido error al verificar pertenencia a grupos de LDAP. Gracias a @danislav
+* Corregido error al obtener el atributo email de LDAP. Gracias to @danislav
+* Traducciones actualizadas
+* Corregido error al mostrar las notas de las cuentas en la búsqueda
+* Corregido error al guardar el salt de la clave de usuarios de LDAP
+
 === ** v1.1.2.16-rc2 ===
 
 * Actualizada cabecera y sintáxis de PHPdoc
