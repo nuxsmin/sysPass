@@ -109,7 +109,7 @@ class SP_Auth
         }
 
         self::$userName = (isset($attribs['name'])) ? $attribs['name'] : $userLogin;
-        self::$userEmail = (isset($attribs['mail'])) ? $attribs['email'] : '';
+        self::$userEmail = (isset($attribs['mail'])) ? $attribs['mail'] : '';
 
         return true;
     }
