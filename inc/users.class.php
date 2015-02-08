@@ -241,9 +241,9 @@ class SP_Users
     private static function makeUserPass($userPass)
     {
         $salt = SP_Crypt::makeHashSalt();
-        $userPass = DB::escape(sha1($salt . DB::escape($userPass)));
+        $userPass = sha1($salt . $userPass);
 
-        return array('salt' => $salt, 'pass' => $userPass);
+        return array('salt' => DB::escape($salt), 'pass' => DB::escape($userPass));
     }
 
     /**
