@@ -329,7 +329,7 @@ class SP_LDAP
             if (is_array($entryValue)) {
                 foreach ($entryValue as $entryAttr => $attrValue) {
                     if (is_array($attrValue)) {
-                        if (array_key_exists($entryAttr, $attribs)) {
+                        if (array_key_exists(strtolower($entryAttr), $attribs)) {
                             if ($attrValue['count'] > 1) {
                                 // Almacenamos un array de valores
                                 $res[$attribs[$entryAttr]] = $attrValue;
@@ -372,7 +372,7 @@ class SP_LDAP
         $userDN = self::escapeLdapDN($userDN);
 
         $filter = '(&(' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
-        $filterAttr = array("member", "uniqueMember");
+        $filterAttr = array('member', 'uniqueMember');
 
         $searchRes = @ldap_search(self::$ldapConn, self::$searchBase, $filter, $filterAttr);
 
@@ -386,14 +386,16 @@ class SP_LDAP
             throw new Exception(_('Error al buscar el grupo de usuarios'));
         }
 
-        if (!@ldap_count_entries(self::$ldapConn, $searchRes) === 1) {
-            $message['text'][] = _('No se encontró el grupo con ese nombre');
+        $numEntries = ldap_count_entries(self::$ldapConn, $searchRes);
+
+        if ($numEntries === 0) {
+            $message['text'][] = _('El usuario no pertenece al grupo');
             $message['text'][] = 'LDAP ERROR: ' . ldap_error(self::$ldapConn) . '(' . ldap_errno(self::$ldapConn) . ')';
             $message['text'][] = 'LDAP FILTER: ' . $filter;
 
             SP_Log::wrLogInfo($message);
 
-            throw new Exception(_('No se encontró el grupo con ese nombre'));
+            throw new Exception(_('El usuario no pertenece al grupo'));
         }
 
         return true;
