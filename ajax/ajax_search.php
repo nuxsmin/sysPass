@@ -218,6 +218,8 @@ foreach ($resQuery as $account) {
             }
         }
 
+        unset($strAccNotes);
+
         if ($account->account_notes) {
             $strAccNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
             $strAccNotes = nl2br(wordwrap(htmlspecialchars($strAccNotes), 50, '<br>', true));
