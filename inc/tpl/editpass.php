@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -56,7 +56,8 @@ $accountData = $account->getAccount();
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)"
+                       autocomplete="off">
                 <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
                      class="inputImg" id="viewPass"/>
                 &nbsp;&nbsp;
@@ -73,7 +74,7 @@ $accountData = $account->getAccount();
     </table>
     <input type="hidden" name="savetyp" value="4"/>
     <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
-    <input type="hidden" name="next" value="acceditpass">
+    <input type="hidden" name="next" value="accview">
     <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
     <input type="hidden" name="isAjax" value="1">
 </form>

@@ -54,18 +54,18 @@ switch ($action) {
         $showform = true;
         $nextaction = 'acccopy';
 
-        $accountUsers = $account->getUsersAccount();
-        $accountGroups = $account->getGroupsAccount();
+        $account->accountUsersId  = SP_Users::getUsersForAccount($account->accountId);
+        $account->accountUserGroupsId = SP_Groups::getGroupsForAccount($account->accountId);
         $accountData = $account->getAccount();
         break;
     case "accedit":
         $savetype = 2;
         $title = array('class' => 'titleOrange', 'name' => _('Editar Cuenta'));
         $showform = true;
-        $nextaction = 'accedit';
+        $nextaction = 'accview';
 
-        $accountUsers = $account->getUsersAccount();
-        $accountGroups = $account->getGroupsAccount();
+        $account->accountUsersId  = SP_Users::getUsersForAccount($account->accountId);
+        $account->accountUserGroupsId = SP_Groups::getGroupsForAccount($account->accountId);
         $accountData = $account->getAccount();
         break;
     case "accdelete":
@@ -82,8 +82,8 @@ switch ($action) {
 
         $_SESSION["accParentId"] = $data['id'];
         $account->incrementViewCounter();
-        $accountUsers = $account->getUsersAccount();
-        $accountGroups = $account->getGroupsAccount();
+        $account->accountUsersId  = SP_Users::getUsersForAccount($account->accountId);
+        $account->accountUserGroupsId = SP_Groups::getGroupsForAccount($account->accountId);
         $accountData = $account->getAccount();
         break;
     case "accviewhistory":
@@ -92,8 +92,8 @@ switch ($action) {
         $showform = false;
 
         $account->accountIsHistory = true;
-        $accountUsers = $account->getUsersAccount();
-        $accountGroups = $account->getGroupsAccount();
+        $account->accountUsersId  = SP_Users::getUsersForAccount($account->accountId);
+        $account->accountUserGroupsId = SP_Groups::getGroupsForAccount($account->accountId);
         $accountData = $account->getAccountHistory();
         break;
     default :
@@ -287,8 +287,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                             $userSelected = '';
 
                             if ($gotData && $otherUserId != $accountData->account_userId) {
-                                if (isset($accountUsers) && is_array($accountUsers)) {
-                                    $userSelected = (in_array($otherUserId, $accountUsers)) ? "selected" : "";
+                                if (isset($account->accountUsersId ) && is_array($account->accountUsersId )) {
+                                    $userSelected = (in_array($otherUserId, $account->accountUsersId )) ? "selected" : "";
                                 }
                                 echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
                             } else{
@@ -318,8 +318,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                             $uGroupSelected = '';
 
                             if ($gotData && $otherGroupId != $accountData->account_userGroupId) {
-                                if (isset($accountGroups) && is_array($accountGroups)) {
-                                    $uGroupSelected = (in_array($otherGroupId, $accountGroups)) ? "selected" : "";
+                                if (isset($account->accountUserGroupsId) && is_array($account->accountUserGroupsId)) {
+                                    $uGroupSelected = (in_array($otherGroupId, $account->accountUserGroupsId)) ? "selected" : "";
                                 }
                                 echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
                             } else{
@@ -429,7 +429,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
             <td class="descField"><?php echo _('Grupo Principal'); ?></td>
             <td class="valField"><?php echo $accountData->usergroup_name; ?></td>
         </tr>
-        <?php if (count($accountUsers) > 0): ?>
+        <?php if (isset($account->accountUsersId) && $account->accountUsersId !== false): ?>
             <tr>
                 <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
                 <td class="valField">
@@ -438,7 +438,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 
                     foreach ($users as $userId => $userName) {
                         if ($userId != $accountData->account_userId) {
-                            if (in_array($userId, $accountUsers)) {
+                            if (in_array($userId, $account->accountUsersId )) {
                                 $accUsers[] = $userName;
                             }
                         }
@@ -450,7 +450,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 </td>
             </tr>
         <?php endif; ?>
-        <?php if (count($accountGroups) > 0): ?>
+        <?php if (isset($account->accountUserGroupsId) && $account->accountUserGroupsId !== false): ?>
             <tr>
                 <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
                 <td class="valField">
@@ -459,7 +459,7 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 
                     foreach ($groups as $groupId => $groupName) {
                         if ($groupId != $accountData->account_userGroupId) {
-                            if (in_array($groupId, $accountGroups)) {
+                            if (in_array($groupId, $account->accountUserGroupsId)) {
                                 $accGroups[] = $groupName;
                             }
                         }
@@ -486,9 +486,8 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 <?php endif; ?>
 
 <?php if ($account->accountIsHistory): ?>
-    <form METHOD="post" name="frmaccount" id="frmAccount">
+    <form method="post" name="frmaccount" id="frmAccount">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
-        <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
         <input type="hidden" name="savetyp" value="<?php echo $savetype; ?>">
         <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $skey; ?>">

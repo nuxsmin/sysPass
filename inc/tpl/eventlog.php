@@ -81,7 +81,7 @@ $numRows = SP_Log::$numRows;
                         <?php echo $log->log_id; ?>
                     </td>
                     <td class="cell">
-                        <?php echo $log->date; ?>
+                        <?php echo $log->log_date; ?>
                     </td>
                     <td class="cell">
                         <?php echo utf8_decode($log->log_action); ?>

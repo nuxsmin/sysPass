@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -56,10 +56,11 @@ class SP_Config
      */
     public static function getConfigValue($param)
     {
-        $query = "SELECT config_value "
-            . "FROM config "
-            . "WHERE config_parameter = '$param'";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT config_value FROM config WHERE config_parameter = :parameter LIMIT 1';
+
+        $data['parameter'] = $param;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -75,10 +76,9 @@ class SP_Config
      */
     public static function getConfig()
     {
-        $query = "SELECT config_parameter,"
-            . "config_value "
-            . "FROM config";
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $query = 'SELECT config_parameter, config_value FROM config';
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
             return false;
@@ -99,21 +99,19 @@ class SP_Config
      */
     public static function writeConfig($mkInsert = false)
     {
-        foreach (self::$arrConfigValue as $key => $value) {
-            $key = DB::escape($key);
-            $value = DB::escape($value);
-
+        foreach (self::$arrConfigValue as $param => $value) {
             if ($mkInsert) {
-                $query = "INSERT INTO config "
-                    . "VALUES ('$key','$value') "
-                    . "ON DUPLICATE KEY UPDATE config_value = '$value' ";
+                $query = 'INSERT INTO config VALUES (:param,:value) ON DUPLICATE KEY UPDATE config_value = :valuedup';
+
+                $data['valuedup'] = $value;
             } else {
-                $query = "UPDATE config SET "
-                    . "config_value = '$value' "
-                    . "WHERE config_parameter = '$key'";
+                $query = 'UPDATE config SET config_value = :value WHERE config_parameter = :param';
             }
 
-            if (DB::doQuery($query, __FUNCTION__) === false) {
+            $data['param'] = $param;
+            $data['value'] = $value;
+
+            if (DB::getQuery($query, __FUNCTION__, $data) === false) {
                 return false;
             }
         }
@@ -137,11 +135,15 @@ class SP_Config
     public static function setConfigValue($param, $value)
     {
         $query = "INSERT INTO config "
-            . "SET config_parameter = '" . DB::escape($param) . "',"
-            . "config_value = '" . DB::escape($value) . "'"
-            . "ON DUPLICATE KEY UPDATE config_value = '" . DB::escape($value) . "' ";
+            . "SET config_parameter = :param,"
+            . "config_value = :value "
+            . "ON DUPLICATE KEY UPDATE config_value = :valuedup";
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['param'] = $param;
+        $data['value'] = $value;
+        $data['valuedup'] = $value;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -170,10 +172,9 @@ class SP_Config
             return true;
         }
 
-        $query = "SELECT config_parameter,"
-            . "config_value "
-            . "FROM config";
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $query = 'SELECT config_parameter, config_value FROM config';
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
             return false;
@@ -196,7 +197,7 @@ class SP_Config
     /**
      * Obtiene un valor de configuración desde el archivo config.php
      *
-     * @param string $key clave
+     * @param string $key     clave
      * @param string $default = null valor por defecto
      * @return string el valor o $default
      */
@@ -220,7 +221,7 @@ class SP_Config
             return true;
         }
 
-        $configFile = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config'. DIRECTORY_SEPARATOR . 'config.php';
+        $configFile = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
 
         if (!file_exists($configFile)) {
             return false;
@@ -340,7 +341,7 @@ class SP_Config
         self::setValue('ldap_userattr', '');
         self::setValue('mail_server', '');
         self::setValue('mail_from', '');
-        self::setValue('site_lang', str_replace('.utf8','',SP_Init::$LANG));
+        self::setValue('site_lang', str_replace('.utf8', '', SP_Init::$LANG));
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 12);
@@ -351,7 +352,7 @@ class SP_Config
      * Esta función establece el valor y reescribe config.php. Si el archivo
      * no se puede escribir, devolverá false.
      *
-     * @param string $key clave
+     * @param string $key   clave
      * @param string $value valor
      * @return bool
      */

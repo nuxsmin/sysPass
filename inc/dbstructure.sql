@@ -73,8 +73,8 @@ CREATE TABLE `accHistory` (
   `acchistory_isModify` bit(1) DEFAULT NULL,
   `acchistory_isDeleted` bit(1) DEFAULT NULL,
   `acchistory_mPassHash` varbinary(128) NOT NULL,
-  `accHistory_otherUserEdit` bit(1) DEFAULT NULL,
-  `accHistory_otherGroupEdit` varchar(45) DEFAULT NULL,
+  `accHistory_otherUserEdit` bit(1) DEFAULT b'0',
+  `accHistory_otherGroupEdit` bit(1) DEFAULT b'0',
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

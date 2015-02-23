@@ -71,23 +71,20 @@ $userId = SP_Common::parseParams('s', 'uid', 0);
 $filterOn = ($sortKey > 1 || $customerId || $categoryId || $searchTxt) ? true : false;
 
 $colors = array(
-    'FF66CC',
-    'FF99FF',
-    'CC99FF',
-    '9999FF',
-    '6699FF',
-    '3399FF',
-    '0099FF',
-    '6699FF',
-    '3399FF',
-    '00CC66',
-    '00CC66',
-    '00CC99',
-    '00CCCC',
-    'FFCC66',
-    'FF9999',
-    'FF6699',
-    'FF99CC'
+    'ef5350',
+    'ec407a',
+    'ab47bc',
+    '7e57c2',
+    '5c6bc0',
+    '42a5f5',
+    '29b6f6',
+    '26c6da',
+    '26a69a',
+    '66bb6a',
+    '9ccc65',
+    'ff7043',
+    '8d6e63',
+    '78909c'
 );
 
 $objAccount = new SP_Account;

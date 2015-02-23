@@ -31,7 +31,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Upgrade
 {
-    private static $dbUpgrade = array(110, 1121, 1122, 1123,11213);
+    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 12001);
     private static $cfgUpgrade = array(1124);
 
     /**
@@ -89,15 +89,22 @@ class SP_Upgrade
                 $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(32) NULL DEFAULT NULL ,CHANGE COLUMN `user_lastLogin` `user_lastLogin` DATETIME NULL DEFAULT NULL ,CHANGE COLUMN `user_lastUpdate` `user_lastUpdate` DATETIME NULL DEFAULT NULL, CHANGE COLUMN `user_mIV` `user_mIV` VARBINARY(32) NULL ;';
                 $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_login` `account_login` VARCHAR(50) NULL DEFAULT NULL ;';
                 break;
+            case 12001:
+                $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_userEditId` `account_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL;';
+                $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_userEditId` `acchistory_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `acchistory_dateEdit` `acchistory_dateEdit` DATETIME NULL DEFAULT NULL;';
+                $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';';
+                break;
             default :
                 $result['text'][] = _('No es necesario actualizar la Base de Datos.');
                 return true;
         }
 
         foreach ($queries as $query) {
-            if (DB::doQuery($query, __FUNCTION__) === false && DB::$numError != 1060 && DB::$numError != 1050) {
+            try{
+                DB::getQuery($query, __FUNCTION__);
+            } catch(SPDatabaseException $e){
                 $result['text'][] = _('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')';
-                $result['text'][] = 'ERROR: ' . DB::$txtError . ' (' . DB::$numError . ')';
+                $result['text'][] = 'ERROR: ' . $e->getMessage() . ' (' . $e->getCode() . ')';
                 SP_Log::wrLogInfo($result);
                 return false;
             }

@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -27,105 +27,144 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
+ * Class DBConnectionFactory
+ *
+ * Esta clase se encarga de crear las conexiones a la BD
+ */
+class DBConnectionFactory
+{
+    private static $factory;
+    private $db;
+
+    public static function getFactory()
+    {
+        if (!self::$factory) {
+//             FIXME
+//            error_log('NEW FACTORY');
+            self::$factory = new DBConnectionFactory();
+        }
+
+        return self::$factory;
+    }
+
+    /**
+     * Realizar la conexión con la BBDD.
+     * Esta función utiliza PDO para conectar con la base de datos.
+     *
+     * @throws Exception
+     * @return object|bool
+     */
+
+    public function getConnection()
+    {
+        if (!$this->db) {
+//             FIXME
+//            error_log('NEW DB_CONNECTION');
+            $isInstalled = SP_Config::getValue('installed');
+
+            $dbhost = SP_Config::getValue("dbhost");
+            $dbuser = SP_Config::getValue("dbuser");
+            $dbpass = SP_Config::getValue("dbpass");
+            $dbname = SP_Config::getValue("dbname");
+
+            if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
+                if ($isInstalled) {
+                    SP_Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
+                } else {
+                    throw new SPDatabaseException(_('No es posible conectar con la BD'), 1);
+                }
+            }
+
+            try {
+                $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';charset=utf8';
+//                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
+                $this->db = new PDO($dsn, $dbuser, $dbpass);
+            } catch (PDOException $e) {
+                if ($isInstalled) {
+                    if ($this->db->connect_errno === 1049) {
+                        SP_Config::setValue('installed', '0');
+                    }
+
+                    SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . $this->db->errorCode() . ': ' . $this->db->errorInfo());
+                } else {
+                    throw new SPDatabaseException($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $this->db;
+    }
+}
+
+/**
+ * Class SPDatabaseException
+ *
+ * Clase para excepciones de BD de sysPass
+ */
+class SPDatabaseException extends Exception
+{
+}
+
+/**
  * Esta clase es la encargada de realizar las operaciones con la BBDD de sysPass.
  */
 class DB
 {
-    static $last_result;
-    static $affected_rows;
-    static $lastId;
-    static $txtError;
-    static $numError;
-    static $num_rows;
-    static $num_fields;
-    private static $_db;
+    static $txtError = '';
+    static $numError = 0;
+    static $last_num_rows = 0;
+    static $lastId = null;
+    private static $retArray = false;
+    private static $unbuffered = false;
+    private static $fullRowCount = false;
+
+    public $num_rows = 0;
+    public $num_fields = 0;
+    private $last_result = null;
+    private $querySource;
+
+    /**
+     * Datos para el objeto PDOStatement
+     *
+     * @var array
+     */
+    private $stData;
 
     /**
      * Comprobar que la base de datos existe.
      *
      * @return bool
+     * @throws SPDatabaseException
      */
     public static function checkDatabaseExist()
     {
-        if (!self::connection()) {
-            return false;
-        }
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
 
-        $query = 'SELECT COUNT(*) '
-            . 'FROM information_schema.tables'
-            . " WHERE table_schema='" . SP_Config::getValue("dbname") . "' "
-            . "AND table_name = 'usrData';";
+            $query = 'SELECT COUNT(*) '
+                . 'FROM information_schema.tables '
+                . 'WHERE table_schema=\'' . SP_Config::getValue("dbname") . '\' '
+                . 'AND table_name = \'usrData\'';
 
-        $resquery = self::$_db->query($query);
-
-        if ($resquery) {
-            $row = $resquery->fetch_row();
-        }
-
-        if (!$resquery || $row[0] == 0) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Realizar la conexión con la BBDD.
-     * Esta función utiliza mysqli para conectar con la base de datos.
-     * Guarda el objeto creado en la variable $_db de la clase
-     *
-     * @return bool
-     */
-    private static function connection()
-    {
-        if (is_object(self::$_db)) {
-            return true;
-        }
-
-        $isInstalled = SP_Config::getValue('installed');
-
-        $dbhost = SP_Config::getValue("dbhost");
-        $dbuser = SP_Config::getValue("dbuser");
-        $dbpass = SP_Config::getValue("dbpass");
-        $dbname = SP_Config::getValue("dbname");
-
-        if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
-            if ($isInstalled) {
-                SP_Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
-            } else {
-                return false;
+            if ($db->query($query)->fetchColumn() !== 0) {
+                return true;
             }
+        } catch (PDOException $e) {
+            throw new SPDatabaseException($e->getMessage(), $e->getCode());
         }
 
-        self::$_db = @new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-
-        if (!is_object(self::$_db) || self::$_db->connect_errno) {
-            if ($isInstalled) {
-                if (self::$_db->connect_errno === 1049) {
-                    SP_Config::setValue('installed', '0');
-                }
-
-                SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . self::$_db->connect_errno . ': ' . self::$_db->connect_error);
-            } else {
-                return false;
-            }
-        }
-
-        if (!self::$_db->set_charset("utf8")) {
-            SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . self::$_db->connect_errno . ': ' . self::$_db->connect_error);
-        }
-
-        return true;
+        return false;
     }
 
     /**
      * Obtener los datos para generar un select.
      *
-     * @param string $tblName con el nombre de la tabla a cunsultar
-     * @param string $tblColId con el nombre de la columna del tipo Id a mostrar
+     * @param string $tblName    con el nombre de la tabla a cunsultar
+     * @param string $tblColId   con el nombre de la columna del tipo Id a mostrar
      * @param string $tblColName con el nombre de la columna del tipo Name a mostrar
-     * @param array $arrFilter con las columnas a filtrar
-     * @param array $arrOrder con el orden de las columnas
+     * @param array $arrFilter   con las columnas a filtrar
+     * @param array $arrOrder    con el orden de las columnas
      * @return false|array con los valores del select con el Id como clave y el nombre como valor
      */
     public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
@@ -138,7 +177,9 @@ class DB
         $strOrder = (is_array($arrOrder)) ? " ORDER BY " . implode(",", $arrOrder) : 'ORDER BY ' . $tblColName . ' ASC';
 
         $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter $strOrder";
-        $queryRes = self::getResults($query, __FUNCTION__, true);
+
+        self::setReturnArray();
+        $queryRes = self::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
             return false;
@@ -153,103 +194,217 @@ class DB
         return $arrValues;
     }
 
+    public static function setReturnArray()
+    {
+        self::$retArray = true;
+    }
+
     /**
      * Obtener los resultados de una consulta.
      *
-     * @param string $query con la consulta a realizar
+     * @param string $query       con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param bool $retArray devolver un array si la consulta tiene esultados
-     * @param bool $unbuffered devolver el resultado registro a registro
+     * @param array $data        con los datos de la consulta
      * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
-    public static function getResults($query, $querySource, $retArray = false, $unbuffered = false)
+    public static function getResults($query, $querySource, &$data = null)
     {
-        if ($query) {
-            self::doQuery($query, $querySource, $unbuffered);
-        }
-
-        if (self::$numError || self::$num_rows === 0) {
+        if (empty($query)) {
+            self::resetVars();
             return false;
         }
 
-        if (is_null(self::$numError) && count(self::$last_result) === 0) {
-            return true;
+        try {
+            $db = new DB();
+            $db->querySource = $querySource;
+            $db->stData = $data;
+            $doQuery = $db->doQuery($query, $querySource, self::$unbuffered);
+        } catch (SPDatabaseException $e) {
+            $db->logDBException($query, $e->getMessage(), $e->getCode());
+            return false;
         }
 
-        if ($retArray === true && is_object(self::$last_result)) {
-            return array(self::$last_result);
+        if (self::$unbuffered && is_object($doQuery) && get_class($doQuery) == "PDOStatement"){
+            return $doQuery;
         }
 
-        return self::$last_result;
+        DB::$last_num_rows = (self::$fullRowCount === false) ? $db->num_rows : $db->getFullRowCount($query);
+
+        if ($db->num_rows == 0) {
+            self::resetVars();
+            return false;
+        }
+
+        if ($db->num_rows == 1 && self::$retArray === false) {
+            self::resetVars();
+            return $db->last_result[0];
+        }
+
+        self::resetVars();
+        return $db->last_result;
     }
 
     /**
      * Realizar una consulta a la BBDD.
      *
-     * @param string $query con la consulta a realizar
+     * @param string $query       con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param bool $unbuffered realizar la consulta para obtener registro a registro
+     * @param bool $unbuffered    realizar la consulta para obtener registro a registro
      * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
+     * @throws SPDatabaseException
      */
-    public static function doQuery($query, $querySource, $unbuffered = false)
+    public function doQuery(&$query, $querySource, $unbuffered = false)
     {
-        if (!self::connection()) {
-            return false;
-        }
-
-        $isSelect = preg_match("/^.*(select|show)\s/i", $query);
+        $isSelect = preg_match("/^(select|show)\s/i", $query);
 
         // Limpiar valores de caché y errores
-        self::$last_result = array();
-        self::$numError = 0;
-        self::$txtError = '';
+        $this->last_result = array();
 
-        // Comprobamos si la consulta debe de ser devuelta completa o por registro
-        if (!$unbuffered) {
-            $queryRes = self::$_db->query($query);
-        } else {
-            $queryRes = self::$_db->real_query($query);
-        }
-
-        if (!$queryRes) {
-            self::$numError = self::$_db->errno;
-            self::$txtError = self::$_db->error;
-
-            $message['action'] = $querySource;
-            $message['text'][] = self::$_db->error . '(' . self::$_db->errno . ')';
-            $message['text'][] = "SQL: " . self::escape($query);
-
-            SP_Log::wrLogInfo($message);
-            return false;
+        try {
+            $queryRes = $this->prepareQueryData($query);
+        } catch (SPDatabaseException $e) {
+            throw new SPDatabaseException($e->getMessage(), $e->getCode());
         }
 
         if ($isSelect) {
-            //self::$num_rows = $queryRes->num_rows;
-            self::$num_rows = self::$_db->affected_rows;
-
             if (!$unbuffered) {
-                self::$num_fields = self::$_db->field_count;
-
-                if (self::$num_rows === 1) {
-                    self::$last_result = @$queryRes->fetch_object();
-                } else {
-                    $num_row = 0;
-
-                    while ($row = @$queryRes->fetch_object()) {
-                        self::$last_result[$num_row] = $row;
-                        $num_row++;
-                    }
-                }
-
-                $queryRes->close();
-            } else {
-                self::$last_result = self::$_db->use_result();
+                $this->num_fields = $queryRes->columnCount();
+                $this->last_result = $queryRes->fetchAll(PDO::FETCH_OBJ);
+            } else{
+                return $queryRes;
             }
+
+            $queryRes->closeCursor();
+
+//            $this->num_rows = $this->getFullRowCount($query);
+            $this->num_rows = count($this->last_result);
+
+//            return $this->num_rows;
+        }
+    }
+
+    /**
+     * Asociar los parámetros de la consulta utilizando el tipo adecuado
+     *
+     * @param &$query
+     * @param $isCount
+     * @return bool
+     * @throws SPDatabaseException
+     */
+    private function prepareQueryData(&$query, $isCount = false)
+    {
+        if ($isCount === true) {
+            // No incluimos en el array de parámetros de posición los valores
+            // utilizados para LIMIT
+            preg_match_all('/(\?|:)/', $query, $count);
+
+            // Indice a partir del cual no se incluyen valores
+            $paramMaxIndex = (count($count[1]) > 0) ? count($count[1]) : 0;
         }
 
-        self::$lastId = self::$_db->insert_id;
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
 
-        return self::$num_rows;
+            if (is_array($this->stData)) {
+                $sth = $db->prepare($query);
+                $paramIndex = 0;
+
+                foreach ($this->stData as $param => $value) {
+                    // Si la clave es un número utilizamos marcadores de posición "?" en
+                    // la consulta. En caso contrario marcadores de nombre
+                    $param = (is_int($param)) ? $param + 1 : ':' . $param;
+
+                    if ($isCount === true && count($count) > 0 && $paramIndex >= $paramMaxIndex) {
+                        continue;
+                    }
+
+                    if ($param == 'blobcontent'){
+                        $sth->bindValue($param, $value, PDO::PARAM_LOB);
+                    } elseif (is_int($value)) {
+                        //error_log("INT: " . $param . " -> " . $value);
+                        $sth->bindValue($param, $value, PDO::PARAM_INT);
+                    } else {
+                        //error_log("STR: " . $param . " -> " . $value);
+                        $sth->bindValue($param, $value, PDO::PARAM_STR);
+                    }
+
+                    $paramIndex++;
+                }
+
+                $sth->execute();
+            } else {
+                $sth = $db->query($query);
+            }
+
+            DB::$lastId = $db->lastInsertId();
+
+            return $sth;
+        } catch (PDOException $e) {
+            error_log("Exception: " . $e->getMessage());
+            throw new SPDatabaseException($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtener el número de filas de una consulta realizada
+     *
+     * @return int Número de files de la consulta
+     * @throws SPDatabaseException
+     */
+    public function getFullRowCount(&$query)
+    {
+        if (empty($query)) {
+            return 0;
+        }
+
+        $patterns = array('/(LIMIT|ORDER BY).*/i', '/SELECT.*FROM/i');
+        $replace = array('', 'SELECT COUNT(*) FROM');
+
+        $query = preg_replace($patterns, $replace, $query);
+
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
+
+            if (!is_array($this->stData)) {
+                $queryRes = $db->query($query);
+                $num = intval($queryRes->fetchColumn());
+            } else {
+                if ($queryRes = $this->prepareQueryData($query, true)) {
+                    $num = intval($queryRes->fetchColumn());
+                }
+            }
+
+            // FIXME
+            //error_log("numrows: " . $num);
+
+            $queryRes->closeCursor();
+
+            return $num;
+        } catch (PDOException $e) {
+            error_log("Exception: " . $e->getMessage());
+            throw new SPDatabaseException($e->getMessage());
+        }
+
+        return 0;
+    }
+
+    /**
+     * Método para registar los eventos de BD en el log
+     *
+     * @param $query
+     * @param $errorMsg
+     * @param $errorCode
+     */
+    private function logDBException($query, $errorMsg, $errorCode)
+    {
+        $message['action'] = $this->querySource;
+        $message['text'][] = $errorMsg . '(' . $errorCode . ')';
+        $message['text'][] = "SQL: " . DB::escape($query);
+
+        error_log($query);
+        error_log($errorMsg);
     }
 
     /**
@@ -260,10 +415,71 @@ class DB
      */
     public static function escape($str)
     {
-        if (self::connection()) {
-            return self::$_db->real_escape_string(trim($str));
-        } else {
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
+
+            return $db->quote(trim($str));
+        } catch (SPDatabaseException $e) {
             return $str;
         }
+    }
+
+    /**
+     * Realizar una consulta y devolver el resultado sin datos
+     *
+     * @param $query
+     * @param $querySource
+     * @param bool $unbuffered
+     * @return bool
+     */
+    public static function getQuery($query, $querySource, &$data = null, $unbuffered = false)
+    {
+        if (empty($query)) {
+            return false;
+        }
+
+        try {
+            $db = new DB();
+            $db->querySource = $querySource;
+            $db->stData = $data;
+            $db->doQuery($query, $querySource, $unbuffered);
+            DB::$last_num_rows = $db->num_rows;
+        } catch (SPDatabaseException $e) {
+            $db->logDBException($query, $e->getMessage(), $e->getCode());
+
+            DB::$txtError = $e->getMessage();
+            DB::$numError = $e->getCode();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function setUnbuffered($on = true)
+    {
+        self::$unbuffered = (bool)$on;
+    }
+
+    public static function setFullRowCount()
+    {
+        self::$fullRowCount = true;
+    }
+
+    private static function resetVars()
+    {
+        self::$unbuffered = false;
+        self::$fullRowCount = false;
+        self::$retArray = false;
+    }
+
+    /**
+     * Establecer los parámetos de la consulta preparada
+     *
+     * @param &$data array Con los datos de los parámetros de la consulta
+     */
+    public function setParamData(&$data)
+    {
+        $this->stData = $data;
     }
 }

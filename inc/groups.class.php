@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -67,25 +67,29 @@ class SP_Groups
     /**
      * Obtener los grupos de usuarios.
      *
-     * @param int $groupId opcional, con el Id del grupo a consultar
+     * @param int $groupId      opcional, con el Id del grupo a consultar
      * @param bool $returnArray opcional, si se debe de devolver un array asociativo
      * @return false|array con la lista de grupos
      */
-    public static function getGroups($groupId = NULL, $returnArray = false)
+    public static function getGroups($groupId = null, $returnArray = false)
     {
         $query = "SELECT usergroup_id,"
             . "usergroup_name,"
             . "usergroup_description "
             . "FROM usrGroups ";
 
+        $data = null;
 
         if (!is_null($groupId)) {
-            $query .= "WHERE usergroup_id = " . (int)$groupId . " LIMIT 1";
+            $query .= "WHERE usergroup_id = :id LIMIT 1";
+            $data['id'] = $groupId;
         } else {
             $query .= "ORDER BY usergroup_name";
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -113,25 +117,15 @@ class SP_Groups
         $groupName = strtoupper(self::$groupName);
 
         if ($groupId) {
-            $query = "SELECT usergroup_name 
-                        FROM usrGroups
-                        WHERE UPPER(usergroup_name) = '" . DB::escape($groupName) . "' 
-                        AND usergroup_id != " . (int)$groupId;
+            $query = "SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = :name AND usergroup_id != :id";
+            $data['id'] = $groupId;
         } else {
-            $query = "SELECT usergroup_name 
-                        FROM usrGroups
-                        WHERE UPPER(usergroup_name) = '" . DB::escape($groupName) . "'";
+            $query = "SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = :name";
         }
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['name'] = $groupName;
 
-        if (count(DB::$last_result) >= 1) {
-            return false;
-        }
-
-        return true;
+        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$last_num_rows >= 1);
     }
 
     /**
@@ -141,11 +135,12 @@ class SP_Groups
      */
     public static function addGroup()
     {
-        $query = "INSERT INTO usrGroups SET
-                    usergroup_name = '" . DB::escape(self::$groupName) . "',
-                    usergroup_description = '" . DB::escape(self::$groupDescription) . "'";
+        $query = 'INSERT INTO usrGroups SET usergroup_name = :name, usergroup_description = :description';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = self::$groupName;
+        $data['description'] = self::$groupDescription;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -169,12 +164,13 @@ class SP_Groups
     {
         $groupName = self::getGroupNameById(self::$groupId);
 
-        $query = "UPDATE usrGroups SET 
-                    usergroup_name = '" . DB::escape(self::$groupName) . "',
-                    usergroup_description = '" . DB::escape(self::$groupDescription) . "' 
-                    WHERE usergroup_id = " . (int)self::$groupId;
+        $query = 'UPDATE usrGroups SET usergroup_name = :name, usergroup_description = :description WHERE usergroup_id = :id';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = self::$groupName;
+        $data['description'] = self::$groupDescription;
+        $data['id'] = self::$groupId;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -190,6 +186,27 @@ class SP_Groups
     }
 
     /**
+     * Obtener el nombre de un grupo por a partir del Id.
+     *
+     * @param int $id con el Id del grupo
+     * @return false|string con el nombre del grupo
+     */
+    public static function getGroupNameById($id)
+    {
+        $query = 'SELECT usergroup_name FROM usrGroups WHERE usergroup_id = :id LIMIT 1';
+
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->usergroup_name;
+    }
+
+    /**
      * Eliminar un grupo.
      *
      * @return bool
@@ -198,10 +215,11 @@ class SP_Groups
     {
         $groupName = self::getGroupNameById(self::$groupId);
 
-        $query = "DELETE FROM usrGroups "
-            . "WHERE usergroup_id = " . (int)self::$groupId . " LIMIT 1";
+        $query = 'DELETE FROM usrGroups WHERE usergroup_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = self::$groupId;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -231,41 +249,33 @@ class SP_Groups
     /**
      * Obtener el número de usuarios que usan un grupo.
      *
-     * @return false|int con el número total de cuentas
+     * @return int con el número total de cuentas
      */
     private static function getGroupInUsers()
     {
-        $query = "SELECT COUNT(*) as uses "
-            . "FROM usrData "
-            . "WHERE user_groupId = " . (int)self::$groupId;
+        $query = 'SELECT user_groupId FROM usrData WHERE user_groupId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = self::$groupId;
 
-        if ($queryRes === false) {
-            return false;
-        }
+        DB::getQuery($query, __FUNCTION__, $data);
 
-        return $queryRes->uses;
+        return DB::$last_num_rows;
     }
 
     /**
      * Obtener el número de cuentas que usan un grupo como primario.
      *
-     * @return false|int con el número total de cuentas
+     * @return int con el número total de cuentas
      */
     private static function getGroupInAccounts()
     {
-        $query = "SELECT COUNT(*) as uses "
-            . "FROM accounts "
-            . "WHERE account_userGroupId = " . (int)self::$groupId;
+        $query = 'SELECT account_userGroupId FROM accounts WHERE account_userGroupId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = self::$groupId;
 
-        if ($queryRes === false) {
-            return false;
-        }
+        DB::getQuery($query, __FUNCTION__, $data);
 
-        return $queryRes->uses;
+        return DB::$last_num_rows;
     }
 
     /**
@@ -275,38 +285,13 @@ class SP_Groups
      */
     private static function getGroupInAccountsSec()
     {
-        $query = "SELECT COUNT(*) as uses "
-            . "FROM accGroups "
-            . "WHERE accgroup_groupId = " . (int)self::$groupId;
+        $query = 'SELECT accgroup_groupId FROM accGroups WHERE accgroup_groupId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = self::$groupId;
 
-        if ($queryRes === false) {
-            return false;
-        }
+        DB::getQuery($query, __FUNCTION__, $data);
 
-        return $queryRes->uses;
-    }
-
-    /**
-     * Obtener el nombre de un grupo por a partir del Id.
-     *
-     * @param int $id con el Id del grupo
-     * @return false|string con el nombre del grupo
-     */
-    public static function getGroupNameById($id)
-    {
-        $query = "SELECT usergroup_name "
-            . "FROM usrGroups "
-            . "WHERE usergroup_id = " . (int)$id . " LIMIT 1";
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->usergroup_name;
+        return DB::$last_num_rows;
     }
 
     /**
@@ -317,13 +302,17 @@ class SP_Groups
      */
     public static function getGroupsNameForAccount($accountId)
     {
-        $query = "SELECT usergroup_id,"
-            . "usergroup_name "
-            . "FROM accGroups "
-            . "JOIN usrGroups ON accgroup_groupId = usergroup_id "
-            . "WHERE accgroup_accountId = " . (int)$accountId;
+        $query = 'SELECT usergroup_id,'
+            . 'usergroup_name '
+            . 'FROM accGroups '
+            . 'JOIN usrGroups ON accgroup_groupId = usergroup_id '
+            . 'WHERE accgroup_accountId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $data['id'] = $accountId;
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -341,7 +330,7 @@ class SP_Groups
     /**
      * Actualizar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $accountId  con el Id de la cuenta
      * @param array $groupsId con los grupos de la cuenta
      * @return bool
      */
@@ -357,72 +346,62 @@ class SP_Groups
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $accountId  con el Id de la cuenta
      * @param array $groupsId opcional con los grupos de la cuenta
      * @return bool
      */
-    public static function deleteGroupsForAccount($accountId, $groupsId = NULL)
+    public static function deleteGroupsForAccount($accountId, $groupsId = null)
     {
         $queryExcluded = '';
 
         // Excluimos los grupos actuales
         if (is_array($groupsId)) {
-            $queryExcluded = ' AND accgroup_groupId NOT IN (' . implode(',', $groupsId) . ')';
+            array_map('intval', $groupsId);
+
+            $queryExcluded = 'AND accgroup_groupId NOT IN (' . implode(',', $groupsId) . ')';
         }
 
-        $query = 'DELETE FROM accGroups '
-            . 'WHERE accgroup_accountId = ' . (int)$accountId . $queryExcluded;
+        $query = 'DELETE FROM accGroups WHERE accgroup_accountId = :id ' . $queryExcluded;
 
-        //error_log($query);
+        $data['id'] = $accountId;
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 
     /**
      * Crear asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $accountId  con el Id de la cuenta
      * @param array $groupsId con los grupos de la cuenta
      * @return bool
      */
     public static function addGroupsForAccount($accountId, $groupsId)
     {
+        if(!is_array($groupsId)){
+            return true;
+        }
+
         $values = '';
 
         // Obtenemos los grupos actuales
-        $currentGroups = self::getGroupsForAccount($accountId);
-
-        if (is_array($currentGroups)) {
-            foreach ($currentGroups as $group) {
-                $groupsExcluded[] = $group->accgroup_groupId;
-            }
-        }
+        $groupsExcluded = self::getGroupsForAccount($accountId);
 
         foreach ($groupsId as $groupId) {
             // Excluimos los grupos actuales
-            if (is_array($groupsExcluded) && in_array($groupId, $groupsExcluded)) {
+            if (isset($groupsExcluded) && is_array($groupsExcluded) && in_array($groupId, $groupsExcluded)) {
                 continue;
             }
 
-            $values[] = '(' . $accountId . ',' . $groupId . ')';
+            $values[] = '(' . (int)$accountId . ',' . (int)$groupId . ')';
         }
 
         if (!is_array($values)) {
             return true;
         }
 
-        $query = 'INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) '
-            . 'VALUES ' . implode(',', $values);
+        $query = 'INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) VALUES ' . implode(',', $values);
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($query, __FUNCTION__);
     }
 
     /**
@@ -433,17 +412,23 @@ class SP_Groups
      */
     public static function getGroupsForAccount($accountId)
     {
-        $query = "SELECT accgroup_groupId "
-            . "FROM accGroups "
-            . "WHERE accgroup_accountId = " . (int)$accountId;
+        $query = 'SELECT accgroup_groupId FROM accGroups WHERE accgroup_accountId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $data['id'] = $accountId;
 
-        if ($queryRes === false) {
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false){
             return false;
         }
 
-        return $queryRes;
+        foreach ($queryRes as $group) {
+            $groups[]= $group->accgroup_groupId;
+        }
+
+        return $groups;
     }
 
 }

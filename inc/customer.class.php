@@ -44,11 +44,12 @@ class SP_Customer
      */
     public static function addCustomer()
     {
-        $query = "INSERT INTO customers "
-            . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
-            . "customer_hash = '" . self::mkCustomerHash() . "'";
+        $query = 'INSERT INTO customers SET customer_name = :name,customer_hash = :hash';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = self::$customerName;
+        $data['hash'] = self::mkCustomerHash();
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -92,12 +93,17 @@ class SP_Customer
         $customerName = self::getCustomerById($id);
 
         $query = "UPDATE customers "
-            . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
-            . "customer_description = '" . DB::escape(self::$customerDescription) . "',"
-            . "customer_hash = '" . self::mkCustomerHash() . "' "
-            . "WHERE customer_id = " . (int)$id;
+            . "SET customer_name = :name,"
+            . "customer_description = :description,"
+            . "customer_hash = :hash "
+            . "WHERE customer_id = :id";
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = self::$customerName;
+        $data['description'] = self::$customerDescription;
+        $data['hash'] = self::mkCustomerHash();
+        $data['id'] = $id;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -120,10 +126,11 @@ class SP_Customer
     {
         $customerName = self::getCustomerById($id);
 
-        $query = "DELETE FROM customers "
-            . "WHERE customer_id = " . (int)$id . " LIMIT 1";
+        $query = 'DELETE FROM customers WHERE customer_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $id;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -144,10 +151,11 @@ class SP_Customer
      */
     public static function getCustomerById($id)
     {
-        $query = "SELECT customer_name "
-            . "FROM customers "
-            . "WHERE customer_id = " . (int)$id . " LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT customer_name FROM customers WHERE customer_id = :id LIMIT 1';
+
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -165,24 +173,18 @@ class SP_Customer
     public static function checkDupCustomer($id = NULL)
     {
         if ($id === NULL) {
-            $query = "SELECT customer_id "
-                . "FROM customers "
-                . "WHERE customer_hash = '" . self::mkCustomerHash() . "'";
+            $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash';
         } else {
-            $query = "SELECT customer_id "
-                . "FROM customers "
-                . "WHERE customer_hash = '" . self::mkCustomerHash() . "' AND customer_id <> " . $id;
+            $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash AND customer_id <> :id';
+
+            $data['id'] = $id;
         }
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['hash'] = self::mkCustomerHash();
 
-        if (count(DB::$last_result) >= 1) {
-            return false;
-        }
+        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$last_num_rows >= 1);
 
-        return true;
+//        return ($db->getFullRowCount($query) >= 1);
     }
 
     /**
@@ -192,10 +194,11 @@ class SP_Customer
      */
     public static function getCustomerByName()
     {
-        $query = "SELECT customer_id "
-            . "FROM customers "
-            . "WHERE customer_hash = '" . self::mkCustomerHash() . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash LIMIT 1';
+
+        $data['hash'] = self::mkCustomerHash();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -238,20 +241,21 @@ class SP_Customer
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con el id de cliente como clave y el nombre como valor
      */
-    public static function getCustomers($customerId = NULL, $retAssocArray = false)
+    public static function getCustomers($customerId = null, $retAssocArray = false)
     {
-        $query = "SELECT customer_id,"
-            . "customer_name, "
-            . "customer_description "
-            . "FROM customers ";
+        $query = 'SELECT customer_id, customer_name, customer_description FROM customers ';
+        $data = null;
 
         if (!is_null($customerId)) {
-            $query .= "WHERE customer_id = " . (int)$customerId . " LIMIT 1";
+            $query .= "WHERE customer_id = :id LIMIT 1";
+            $data['id'] = $customerId;
         } else {
             $query .= "ORDER BY customer_name";
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return array();
@@ -287,20 +291,16 @@ class SP_Customer
      * Obtener el número de cuentas que usan un cliente.
      *
      * @param int $id con el Id del cliente a consultar
-     * @return false|int con el número total de cuentas
+     * @return int con el número total de cuentas
      */
     private static function getCustomerInAccounts($id)
     {
-        $query = "SELECT COUNT(*) as uses "
-            . "FROM accounts "
-            . "WHERE account_customerId = " . (int)$id;
+        $query = 'SELECT account_id FROM accounts WHERE account_customerId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = $id;
 
-        if ($queryRes === false) {
-            return false;
-        }
+        DB::getQuery($query, __FUNCTION__, $data);
 
-        return $queryRes->uses;
+        return DB::$last_num_rows;
     }
 }

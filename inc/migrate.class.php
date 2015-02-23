@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -119,47 +119,38 @@ class SP_Migrate
     /**
      * Comprobar si la conexión con la BBDD de phpPMS es posible.
      *
-     * @param string $dbhost host de conexión
+     * @param string $dbhost  host de conexión
      * @param string $dbadmin usuario de conexión
-     * @param string $dbpass clave de conexión
-     * @param string $dbname nombre de la base de datos
+     * @param string $dbpass  clave de conexión
+     * @param string $dbname  nombre de la base de datos
      * @throws MigrateException
      * @return none
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname)
     {
-        self::$dbc = new mysqli($dbhost, $dbadmin, $dbpass, $dbname);
-
-        if (self::$dbc->connect_errno) {
-            throw new MigrateException('critical',
-                _('El usuario/clave de MySQL no es correcto'),
-                _('Verifique el usuario de conexión con la Base de Datos'));
+        try {
+            $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';charset=utf8';
+            self::$dbc = new PDO($dsn, $dbadmin, $dbpass);
+        } catch (PDOException $e) {
+            throw new MigrateException('critical'
+                , _('El usuario/clave de MySQL no es correcto')
+                , _('Verifique el usuario de conexión con la Base de Datos'));
         }
     }
 
     /**
      * Comprobar si la BBDD existe.
      *
-     * @return none
+     * @return int
      */
     private static function checkDatabaseExist()
     {
-        $query = "SELECT COUNT(*) "
-            . "FROM information_schema.tables "
-            . "WHERE table_schema='" . self::$dbname . "' "
-            . "AND table_name = 'users';";
+        $query = 'SELECT COUNT(*) '
+            . 'FROM information_schema.tables '
+            . 'WHERE table_schema = \'' . self::$dbname . '\' '
+            . 'AND table_name = \'usrData\' LIMIT 1';
 
-        $queryRes = self::$dbc->query($query);
-
-        if ($queryRes) {
-            $row = $queryRes->fetch_row();
-        }
-
-        if (!$queryRes || $row[0] == 0) {
-            return false;
-        }
-
-        return true;
+        return (intval(self::$dbc->query($query)->fetchColumn()) === 0);
     }
 
     /**
@@ -189,19 +180,15 @@ class SP_Migrate
      */
     private static function getSourceConfig()
     {
-        $query = 'SELECT vacValue as value,'
-            . 'vacParameter as parameter '
-            . 'FROM config';
-        $queryRes = self::$dbc->query($query);
+        $query = 'SELECT vacValue as value,vacParameter as parameter FROM config';
 
-        if (!$queryRes) {
+        try {
+            self::parseSourceConfig(self::$dbc->query($query));
+        } catch (PDOException $e) {
+
             throw new MigrateException('critical',
                 _('Error al obtener la configuración'),
-                self::$dbc->error);
-        }
-
-        while ($row = @$queryRes->fetch_assoc()) {
-            self::parseSourceConfig($row);
+                $e->getMessage());
         }
     }
 
@@ -225,8 +212,6 @@ class SP_Migrate
 
         // Guardar la configuración anterior
         self::$oldConfig[$config['parameter']] = $value;
-
-        //error_log($config['parameter'].' >> '.$value);
     }
 
     /**
@@ -243,9 +228,8 @@ class SP_Migrate
         // Limpiar datos de las tablas
         foreach ($tables as $table) {
             $query = 'TRUNCATE TABLE ' . $table;
-            $queryRes = DB::doQuery($query, __FUNCTION__);
 
-            if ($queryRes === false) {
+            if (DB::getQuery($query, __FUNCTION__) === false) {
                 throw new MigrateException('critical',
                     _('Error al vaciar tabla') . ' (' . $table . ')',
                     DB::$txtError);
@@ -257,17 +241,15 @@ class SP_Migrate
         // Limpiar datos de usuarios manteniendo el usuario actual
         if (self::checkAdminAccount($currentUserId)) {
             $query = 'DELETE FROM usrData WHERE user_id != ' . $currentUserId;
-            $queryRes = DB::doQuery($query, __FUNCTION__);
 
-            if ($queryRes === false) {
+            if (DB::getQuery($query, __FUNCTION__) === false) {
                 throw new MigrateException('critical',
                     _('Error al vaciar tabla') . ' (' . $table . ')',
                     DB::$txtError);
             }
         } else {
             throw new MigrateException('critical',
-                _('Usuario actual no es administrador de la aplicación'),
-                DB::$txtError);
+                _('Usuario actual no es administrador de la aplicación'), 1);
         }
     }
 
@@ -279,16 +261,14 @@ class SP_Migrate
      */
     private static function checkAdminAccount($currentUserId)
     {
-        $query = 'SELECT COUNT(*) '
-            . 'FROM usrData '
-            . 'WHERE user_id = ' . $currentUserId . ' AND user_isAdminApp = 1';
-        $queryRes = DB::doQuery($query, __FUNCTION__);
+        $query = 'SELECT user_id FROM usrData WHERE user_id = :id AND user_isAdminApp = 1 LIMIT 1';
 
-        if ($queryRes !== 1) {
-            return false;
-        }
+        $data['id'] = $currentUserId;
 
-        return true;
+        $db = new DB();
+        $db->setParamData($data);
+
+        return ($db->getFullRowCount($query) === 0);
     }
 
     /**
@@ -307,7 +287,7 @@ class SP_Migrate
         foreach ($customers as $customer) {
             SP_Customer::$customerName = $customer;
 
-            if (!SP_Customer::checkDupCustomer()) {
+            if (SP_Customer::checkDupCustomer()) {
                 $num++;
                 continue;
             }
@@ -324,8 +304,6 @@ class SP_Migrate
         $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Clientes')." - $num / $totalRecords";
     }
 
     /**
@@ -337,19 +315,18 @@ class SP_Migrate
     private static function getCustomers()
     {
         $query = 'SELECT DISTINCT vacCliente FROM accounts';
-        $queryRes = self::$dbc->query($query);
 
-        if (!$queryRes) {
+        try {
+            foreach (self::$dbc->query($query) as $row) {
+                $customers[] = trim($row['vacCliente']);
+            }
+
+            return $customers;
+        } catch (PDOException $e) {
             throw new MigrateException('critical',
                 _('Error al obtener los clientes'),
-                self::$dbc->error);
+                $e->getMessage());
         }
-
-        while ($row = @$queryRes->fetch_row()) {
-            $customers[] = trim($row[0]);
-        }
-
-        return $customers;
     }
 
     /**
@@ -376,30 +353,28 @@ class SP_Migrate
             . 'intCountDecrypt,'
             . 'datAdded,datChanged '
             . 'FROM accounts ';
-        $queryRes = self::$dbc->query($query);
 
-        if (!$queryRes) {
-            throw new MigrateException('critical',
-                _('Error al obtener cuentas'),
-                self::$dbc->error);
-        }
-
-        $totalRecords = $queryRes->num_rows;
+        $totalRecords = 0;
         $num = 0;
 
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertAccounts($row)) {
-                $num++;
+        try {
+            foreach (self::$dbc->query($query) as $row) {
+                if (self::insertAccounts($row)) {
+                    $num++;
+                }
+                $totalRecords++;
             }
+        } catch (PDOException $e) {
+            throw new MigrateException('critical',
+                _('Error al obtener cuentas'),
+                $e->getMessage());
         }
 
         $message['action'] = _('Importar Cuentas');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Cuentas')." - $num / $totalRecords";
     }
 
     /**
@@ -426,25 +401,42 @@ class SP_Migrate
             return false;
         }
 
-        $query = "INSERT INTO accounts SET
-                    account_id = " . $account['intAccountId'] . ",
-                    account_userGroupId = " . $account['intUGroupFId'] . ",
-                    account_userId = " . $account['intUserFId'] . ",
-                    account_userEditId = " . $account['intUEditFId'] . ",
-                    account_customerId = " . $customerId . ",
-                    account_name = '" . DB::escape($account['vacName']) . "',
-                    account_categoryId = " . $account['intCategoryFid'] . ",
-                    account_login = '" . DB::escape($account['vacLogin']) . "',
-                    account_url = '" . DB::escape($account['vacUrl']) . "',
-                    account_pass = '" . $account['vacPassword'] . "',
-                    account_IV = '" . $account['vacInitialValue'] . "',
-                    account_notes = '" . DB::escape($account['txtNotice']) . "',
-                    account_countView = " . $account['intCountView'] . ",
-                    account_countDecrypt = " . $account['intCountDecrypt'] . ",
-                    account_dateAdd = '" . $account['datAdded'] . "',
-                    account_dateEdit = '" . $account['datChanged'] . "'";
+        $query = 'INSERT INTO accounts SET ' .
+            'account_id = :id,' .
+            'account_userGroupId = :userGroupId,' .
+            'account_userId = :userId,' .
+            'account_userEditId = :userEditId,' .
+            'account_customerId = :customerId,' .
+            'account_name = :name,' .
+            'account_categoryId = :categoryId,' .
+            'account_login = :login,' .
+            'account_url = :url,' .
+            'account_pass = :pass,' .
+            'account_IV = :iv,' .
+            'account_notes = :notes,' .
+            'account_countView = :countView,' .
+            'account_countDecrypt = :countDecrypt,' .
+            'account_dateAdd = :dateAdd,' .
+            'account_dateEdit = :dateEdit';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $account['intAccountId'];
+        $data['userGroupId'] = $account['intUGroupFId'];
+        $data['userId'] = $account['intUserFId'];
+        $data['userEditId'] = $account['intUEditFId'];
+        $data['customerId'] = $customerId;
+        $data['name'] = $account['vacName'];
+        $data['categoryId'] = $account['intCategoryFid'];
+        $data['login'] = $account['vacLogin'];
+        $data['url'] = $account['vacUrl'];
+        $data['pass'] = $account['vacPassword'];
+        $data['iv'] = $account['vacInitialValue'];
+        $data['notes'] = $account['txtNotice'];
+        $data['countView'] = $account['intCountView'];
+        $data['countDecrypt'] = $account['intCountDecrypt'];
+        $data['dateAdd'] = $account['datAdded'];
+        $data['dateEdit'] = $account['datChanged'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             self::$currentQuery = DB::escape($query);
             throw new MigrateException('critical',
                 _('Error al migrar cuenta'),
@@ -462,32 +454,29 @@ class SP_Migrate
      */
     private static function migrateAccountsGroups()
     {
-        $query = 'SELECT intAccId,'
-            . 'intUGroupId '
-            . 'FROM acc_usergroups';
-        $queryRes = self::$dbc->query($query);
+        $query = 'SELECT intAccId,intUGroupId FROM acc_usergroups';
 
-        if (!$queryRes) {
-            throw new MigrateException('critical',
-                _('Error al obtener los grupos de cuentas'),
-                self::$dbc->error);
-        }
-
-        $totalRecords = $queryRes->num_rows;
+        $totalRecords = 0;
         $num = 0;
 
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertAccountsGroups($row)) {
-                $num++;
+        try {
+            foreach(self::$dbc->query($query) as $row){
+                if (self::insertAccountsGroups($row)) {
+                    $num++;
+                }
+                $totalRecords++;
             }
+        } catch(PDOException $e){
+            throw new MigrateException('critical',
+                _('Error al obtener los grupos de cuentas'),
+                $e->getMessage());
         }
 
         $message['action'] = _('Importar Grupos de Cuentas');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-//        self::$result['ok'][] = _('Importar Grupos de Cuentas')." - $num / $totalRecords";
     }
 
     /**
@@ -499,11 +488,12 @@ class SP_Migrate
      */
     private static function insertAccountsGroups($accountGroup)
     {
-        $query = "INSERT INTO accGroups "
-            . "SET accgroup_accountId = " . $accountGroup['intAccId'] . ","
-            . "accgroup_groupId = " . $accountGroup['intUGroupId'];
+        $query = 'INSERT INTO accGroups SET accgroup_accountId = :accountId,accgroup_groupId = :groudId';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['accountId'] = $accountGroup['intAccId'];
+        $data['groupId'] = $accountGroup['intUGroupId'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             throw new MigrateException('critical',
                 _('Error al crear grupos de cuentas'),
                 DB::$txtError);
@@ -539,30 +529,28 @@ class SP_Migrate
             . 'blnModificada,'
             . 'blnEliminada '
             . 'FROM acc_history';
-        $queryRes = self::$dbc->query($query);
 
-        if (!$queryRes) {
+        $totalRecords = 0;
+        $num = 0;
+
+        try {
+            foreach(self::$dbc->query($query) as $row){
+                if (self::insertAccountsHistory($row)) {
+                    $num++;
+                }
+                $totalRecords++;
+            }
+        } catch(PDOException $e){
             throw new MigrateException('critical',
                 _('Error al obtener el historico de cuentas'),
                 self::$dbc->error);
         }
 
-        $totalRecords = $queryRes->num_rows;
-        $num = 0;
-
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertAccountsHistory($row)) {
-                $num++;
-            }
-        }
-
         $message['action'] = _('Importar Histórico de Cuentas');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Histórico de Cuentas')." - $num / $totalRecords";
     }
 
     /**
@@ -575,7 +563,7 @@ class SP_Migrate
     private static function insertAccountsHistory($accountHistory)
     {
         if (!is_array(self::$customersByName)) {
-            $customers = SP_Customer::getCustomers(NULL, true);
+            $customers = SP_Customer::getCustomers(null, true);
             self::$customersByName = array_flip($customers);
         }
 
@@ -587,27 +575,46 @@ class SP_Migrate
             return false;
         }
 
-        $query = "INSERT INTO accHistory SET
-                    acchistory_accountId = " . $accountHistory['intAccountId'] . ",
-                    acchistory_userGroupId = " . $accountHistory['intUGroupFId'] . ",
-                    acchistory_userId = " . $accountHistory['intUserFId'] . ",
-                    acchistory_userEditId = " . $accountHistory['intUEditFId'] . ",
-                    acchistory_customerId = " . $customerId . ",
-                    acchistory_name = '" . DB::escape($accountHistory['vacName']) . "',
-                    acchistory_categoryId = " . $accountHistory['intCategoryFid'] . ",
-                    acchistory_login = '" . DB::escape($accountHistory['vacLogin']) . "',
-                    acchistory_url = '" . DB::escape($accountHistory['vacUrl']) . "',
-                    acchistory_pass = '" . $accountHistory['vacPassword'] . "',
-                    acchistory_IV = '" . $accountHistory['vacInitialValue'] . "',
-                    acchistory_notes = '" . DB::escape($accountHistory['txtNotice']) . "',
-                    acchistory_countView = " . $accountHistory['intCountView'] . ",
-                    acchistory_countDecrypt = " . $accountHistory['intCountDecrypt'] . ",
-                    acchistory_dateAdd = '" . $accountHistory['datAdded'] . "',
-                    acchistory_dateEdit = '" . $accountHistory['datChanged'] . "',
-                    acchistory_isModify = " . $accountHistory['blnModificada'] . ",
-                    acchistory_isDeleted = " . $accountHistory['blnEliminada'];
+        $query = 'INSERT INTO accHistory SET ' .
+            'acchistory_accountId = :id,' .
+            'acchistory_userGroupId = :userGroupId,' .
+            'acchistory_userId = :userId,' .
+            'acchistory_userEditId = :userEditId,' .
+            'acchistory_customerId = :customerId,' .
+            'acchistory_name = :name,' .
+            'acchistory_categoryId = :categoryId,' .
+            'acchistory_login = :login,' .
+            'acchistory_url = :url,' .
+            'acchistory_pass = :pass,' .
+            'acchistory_IV = :iv,' .
+            'acchistory_notes = :notes,' .
+            'acchistory_countView = :countView,' .
+            'acchistory_countDecrypt = :countDecrypt,' .
+            'acchistory_dateAdd = :dateAdd,' .
+            'acchistory_dateEdit = :dateEdit,' .
+            'acchistory_isModify = :isModify,' .
+            'acchistory_isDeleted = :isDeleted';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $accountHistory['intAccountId'];
+        $data['userGroupId'] = $accountHistory['intUGroupFId'];
+        $data['userId'] = $accountHistory['intUserFId'];
+        $data['userEditId'] = $accountHistory['intUEditFId'];
+        $data['customerId'] = $customerId;
+        $data['name'] = $accountHistory['vacName'];
+        $data['categoryId'] = $accountHistory['intCategoryFid'];
+        $data['login'] = $accountHistory['vacLogin'];
+        $data['url'] = $accountHistory['vacUrl'];
+        $data['pass'] = $accountHistory['vacPassword'];
+        $data['iv'] = $accountHistory['vacInitialValue'];
+        $data['notes'] = $accountHistory['txtNotice'];
+        $data['countView'] = $accountHistory['intCountView'];
+        $data['countDecrypt'] = $accountHistory['intCountDecrypt'];
+        $data['dateAdd'] = $accountHistory['datAdded'];
+        $data['dateEdit'] = $accountHistory['datChanged'];
+        $data['isModify'] = $accountHistory['blnModificada'];
+        $data['isDeleted'] = $accountHistory['blnEliminada'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             throw new MigrateException('critical',
                 _('Error al crear historico de cuentas'),
                 DB::$txtError);
@@ -631,30 +638,28 @@ class SP_Migrate
             . 'blobContent,'
             . 'vacExtension '
             . 'FROM files';
-        $queryRes = self::$dbc->query($query);
 
-        if (!$queryRes) {
+        $totalRecords = 0;
+        $num = 0;
+
+        try {
+            foreach(self::$dbc->query($query) as $row){
+                if (self::insertAccountsFiles($row)) {
+                    $num++;
+                }
+                $totalRecords++;
+            }
+        } catch(PDOException $e){
             throw new MigrateException('critical',
                 _('Error al obtener los archivos de cuentas'),
                 self::$dbc->error);
         }
 
-        $totalRecords = $queryRes->num_rows;
-        $num = 0;
-
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertAccountsFiles($row)) {
-                $num++;
-            }
-        }
-
         $message['action'] = _('Importar Archivos de Cuentas');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Archivos de Cuentas')." - $num / $totalRecords";
     }
 
     /**
@@ -666,15 +671,22 @@ class SP_Migrate
      */
     private static function insertAccountsFiles($accountFile)
     {
-        $query = "INSERT INTO accFiles "
-            . "SET accfile_accountId = " . $accountFile['intAccountId'] . ","
-            . "accfile_name = '" . DB::escape($accountFile['vacName']) . "',"
-            . "accfile_type = '" . DB::escape($accountFile['vacType']) . "',"
-            . "accfile_size = " . $accountFile['intSize'] . ","
-            . "accfile_content = '" . DB::escape($accountFile['blobContent']) . "',"
-            . "accfile_extension = '" . DB::escape($accountFile['vacExtension']) . "'";
+        $query = 'INSERT INTO accFiles '
+            . 'SET accfile_accountId = :id,'
+            . 'accfile_name = :name,'
+            . 'accfile_type = :type,'
+            . 'accfile_size = :size,'
+            . 'accfile_content = :blobcontent,'
+            . 'accfile_extension = :extension';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $accountFile['intAccountId'];
+        $data['name'] = $accountFile['vacName'];
+        $data['type'] = $accountFile['vacType'];
+        $data['size'] = $accountFile['intSize'];
+        $data['blobcontent'] = $accountFile['blobContent'];
+        $data['extension'] = $accountFile['vacExtension'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             throw new MigrateException('critical',
                 _('Error al crear archivos de cuentas'),
                 DB::$txtError);
@@ -691,33 +703,29 @@ class SP_Migrate
      */
     private static function migrateAccountsCategories()
     {
-        $query = 'SELECT intCategoryId,'
-            . 'vacCategoryName '
-            . 'FROM categories';
-        $queryRes = self::$dbc->query($query);
+        $query = 'SELECT intCategoryId,vacCategoryName FROM categories';
 
-        if (!$queryRes) {
+        $totalRecords = 0;
+        $num = 0;
+
+        try {
+            foreach(self::$dbc->query($query) as $row){
+                if (self::insertAccountsCategories($row)) {
+                    $num++;
+                }
+                $totalRecords++;
+            }
+        } catch(PDOException $e){
             throw new MigrateException('critical',
                 _('Error al obtener las categorías de cuentas'),
                 self::$dbc->error);
         }
 
-        $totalRecords = $queryRes->num_rows;
-        $num = 0;
-
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertAccountsCategories($row)) {
-                $num++;
-            }
-        }
-
         $message['action'] = _('Importar Categorías de Cuentas');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Categorías de Cuentas')." - $num / $totalRecords";
     }
 
     /**
@@ -729,11 +737,12 @@ class SP_Migrate
      */
     private static function insertAccountsCategories($accountCategory)
     {
-        $query = "INSERT INTO categories "
-            . "SET category_id = " . $accountCategory['intCategoryId'] . ","
-            . "category_name = '" . DB::escape($accountCategory['vacCategoryName']) . "'";
+        $query = 'INSERT INTO categories SET category_id = :id,category_name = :name';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $accountCategory['intCategoryId'];
+        $data['name'] = $accountCategory['vacCategoryName'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             throw new MigrateException('critical',
                 _('Error al crear categorías de cuentas'),
                 DB::$txtError);
@@ -770,30 +779,28 @@ class SP_Migrate
             . 'blnDisabled '
             . 'FROM users '
             . 'WHERE intUserId <> ' . $_SESSION['uid'];
-        $queryRes = self::$dbc->query($query);
 
-        if (!$queryRes) {
+        $totalRecords = 0;
+        $num = 0;
+
+        try {
+            foreach(self::$dbc->query($query) as $row){
+                if (self::insertUsers($row)) {
+                    $num++;
+                }
+                $totalRecords++;
+            }
+        } catch(PDOException $e){
             throw new MigrateException('critical',
                 _('Error al obtener los usuarios'),
                 self::$dbc->error);
         }
 
-        $totalRecords = $queryRes->num_rows;
-        $num = 0;
-
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertUsers($row)) {
-                $num++;
-            }
-        }
-
         $message['action'] = _('Importar Usuarios');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Usuarios')." - $num / $totalRecords";
     }
 
     /**
@@ -807,28 +814,45 @@ class SP_Migrate
      */
     private static function insertUsers($users)
     {
-        $query = "INSERT INTO usrData "
-            . "SET user_id = " . $users['intUserId'] . ","
-            . "user_name = '" . DB::escape($users['vacUName']) . "',"
-            . "user_groupId = " . $users['intUGroupFid'] . ","
-            . "user_login = '" . DB::escape($users['vacULogin']) . "',"
-            . "user_pass = '" . DB::escape($users['vacUPassword']) . "',"
-            . "user_mPass = '" . DB::escape($users['vacUserMPwd']) . "',"
-            . "user_mIV = '" . DB::escape($users['vacUserMIv']) . "',"
-            . "user_email = '" . DB::escape($users['vacUEmail']) . "',"
-            . "user_notes = '" . DB::escape($users['txtUNotes']) . "',"
-            . "user_count = " . $users['intUCount'] . ","
-            . "user_profileId = 0,"
-            . "user_lastLogin = '" . $users['datULastLogin'] . "',"
-            . "user_lastUpdate = '" . $users['datULastUpdate'] . "',"
-            . "user_lastUpdateMPass = " . $users['datUserLastUpdateMPass'] . ","
-            . "user_isAdminApp = " . $users['blnIsAdminApp'] . ","
-            . "user_isAdminAcc = " . $users['blnIsAdminAcc'] . ","
-            . "user_isLdap = " . $users['blnFromLdap'] . ","
-            . "user_isDisabled = 1,"
-            . "user_isMigrate = 1";
+        $query = 'INSERT INTO usrData '
+            . 'SET user_id = :id,'
+            . 'user_name = :name,'
+            . 'user_groupId = :goupId,'
+            . 'user_login = :login,'
+            . 'user_pass = :pass,'
+            . 'user_mPass = :mpass,'
+            . 'user_mIV = :miv,'
+            . 'user_email = :email,'
+            . 'user_notes = :notes,'
+            . 'user_count = :count,'
+            . 'user_profileId = 0,'
+            . 'user_lastLogin = :lastLogin,'
+            . 'user_lastUpdate = :lastUpdate,'
+            . 'user_lastUpdateMPass = :lastUpdateMPass,'
+            . 'user_isAdminApp = :isAdminApp,'
+            . 'user_isAdminAcc = :isAdminAcc,'
+            . 'user_isLdap = :isLdap,'
+            . 'user_isDisabled = 1,'
+            . 'user_isMigrate = 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $users['intUserId'];
+        $data['name'] = $users['vacUName'];
+        $data['groupId'] = $users['intUGroupFid'];
+        $data['login'] = $users['vacULogin'];
+        $data['pass'] = $users['vacUPassword'];
+        $data['mpass'] = $users['vacUserMPwd'];
+        $data['miv'] = $users['vacUserMIv'];
+        $data['email'] = $users['vacUEmail'];
+        $data['notes'] = $users['txtUNotes'];
+        $data['count'] = $users['intUCount'];
+        $data['lastLogin'] = $users['datULastLogin'];
+        $data['lastUpdate'] = $users['datULastUpdate'];
+        $data['lastUpdateMPass'] = $users['datUserLastUpdateMPass'];
+        $data['isAdminApp'] = $users['blnIsAdminApp'];
+        $data['isAdminAcc'] = $users['blnIsAdminAcc'];
+        $data['isLdap'] = $users['blnFromLdap'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             throw new MigrateException('critical',
                 _('Error al crear usuarios'),
                 DB::$txtError);
@@ -845,34 +869,29 @@ class SP_Migrate
      */
     private static function migrateUsersGroups()
     {
-        $query = 'SELECT intUGroupId,'
-            . 'vacUGroupName,'
-            . 'vacUGroupDesc '
-            . 'FROM usergroups';
-        $queryRes = self::$dbc->query($query);
+        $query = 'SELECT intUGroupId,vacUGroupName,vacUGroupDesc FROM usergroups';
 
-        if (!$queryRes) {
+        $totalRecords = 0;
+        $num = 0;
+
+        try {
+            foreach(self::$dbc->query($query) as $row){
+                if (self::insertUsersGroups($row)) {
+                    $num++;
+                }
+                $totalRecords++;
+            }
+        } catch(PDOException $e){
             throw new MigrateException('critical',
                 _('Error al obtener los grupos de usuarios'),
                 self::$dbc->error);
         }
 
-        $totalRecords = $queryRes->num_rows;
-        $num = 0;
-
-        while ($row = @$queryRes->fetch_assoc()) {
-            if (self::insertUsersGroups($row)) {
-                $num++;
-            }
-        }
-
         $message['action'] = _('Importar Grupos de Usuarios');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Grupos de Usuarios')." - $num / $totalRecords";
     }
 
     /**
@@ -884,12 +903,16 @@ class SP_Migrate
      */
     private static function insertUsersGroups($usersGroups)
     {
-        $query = "INSERT INTO usrGroups "
-            . "SET usergroup_id = " . $usersGroups['intUGroupId'] . ","
-            . "usergroup_name = '" . DB::escape($usersGroups['vacUGroupName']) . "',"
-            . "usergroup_description = '" . DB::escape($usersGroups['vacUGroupDesc']) . "'";
+        $query = 'INSERT INTO usrGroups '
+            . 'SET usergroup_id = :id,'
+            . 'usergroup_name = :name,'
+            . 'usergroup_description = :description';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $usersGroups['intUGroupId'];
+        $data['name'] = $usersGroups['vacUGroupName'];
+        $data['description'] = $usersGroups['vacUGroupDesc'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             throw new MigrateException('critical',
                 _('Error al crear los grupos de usuarios'),
                 DB::$txtError);
@@ -923,7 +946,6 @@ class SP_Migrate
             'password_show',
             'lastupdatempass',
             'passwordsalt');
-        //$savedConfig = array_diff_key($skip, SP_Config::getKeys());
 
         $totalParams = count(self::$oldConfig);
         $num = 0;
@@ -939,10 +961,8 @@ class SP_Migrate
 
         $message['action'] = _('Importar Configuración');
         $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalParams;
+        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalParams;
 
         SP_Log::wrLogInfo($message);
-
-//        self::$result['ok'][] = _('Importar Configuración')." - $num / $totalParams";
     }
 }

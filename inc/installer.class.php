@@ -172,7 +172,10 @@ class SP_Installer
                 self::setupMySQLDatabase();
                 self::createAdminAccount();
             } catch (InstallerException $e) {
-                $error[] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
+                $error[] = array(
+                    'type' => $e->getType(),
+                    'description' => $e->getMessage(),
+                    'hint' => $e->getHint());
                 return ($error);
             }
 
@@ -196,9 +199,10 @@ class SP_Installer
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass)
     {
-        self::$dbc = @new mysqli($dbhost, $dbadmin, $dbpass);
-
-        if (!is_object(self::$dbc) || self::$dbc->connect_errno) {
+        try {
+            $dsn = 'mysql:host=' . $dbhost . ';charset=utf8';
+            self::$dbc = new PDO($dsn, $dbadmin, $dbpass);
+        } catch (PDOException $e){
             throw new InstallerException('critical'
                 , _('El usuario/clave de MySQL no es correcto')
                 , _('Verifique el usuario de conexión con la Base de Datos'));
@@ -270,7 +274,9 @@ class SP_Installer
 
         $query = "CREATE USER '" . self::$dbuser . "'@'localhost' IDENTIFIED BY '" . $dbpassword . "'";
 
-        if (!self::$dbc->query($query)) {
+        try {
+            self::$dbc->query($query);
+        } catch (PDOException $e){
             throw new InstallerException('critical'
                 , _('El usuario de MySQL ya existe') . " (" . self::$dbuser . ")"
                 , _('Indique un nuevo usuario o elimine el existente'));
@@ -288,20 +294,22 @@ class SP_Installer
     {
         $query = "CREATE DATABASE IF NOT EXISTS `" . self::$dbname . "`";
 
-        if (!self::$dbc->query($query)) {
+        try {
+            self::$dbc->query($query);
+        } catch (PDOException $e){
             throw new InstallerException('critical'
-                , _('Error al crear la BBDD') . " (" . self::$dbc->error . ")"
+                , _('Error al crear la BBDD') . " (" . $e->getMessage() . ")"
                 , _('Verifique los permisos del usuario de la Base de Datos'));
         }
 
         if (!self::$isHostingMode) {
             $query = "GRANT ALL PRIVILEGES ON `" . self::$dbname . "`.* TO '" . self::$dbuser . "'@'" . self::$dbhost . "' IDENTIFIED BY '$dbpassword';";
 
-            self::$dbc->query($query);
-
-            if (!self::$dbc->query($query)) {
+            try {
+                self::$dbc->query($query);
+            } catch (PDOException $e){
                 throw new InstallerException('critical'
-                    , _('Error al establecer permisos de la BBDD') . " (" . self::$dbc->error . ")"
+                    , _('Error al establecer permisos de la BBDD') . " (" . $e->getMessage() . ")"
                     , _('Verifique los permisos del usuario de la Base de Datos'));
             }
         }
@@ -317,19 +325,9 @@ class SP_Installer
         $query = "SELECT COUNT(*) "
             . "FROM information_schema.tables "
             . "WHERE table_schema = '" . self::$dbname . "' "
-            . "AND table_name = 'usrData';";
+            . "AND table_name = 'usrData' LIMIT 1";
 
-        $resquery = self::$dbc->query($query);
-
-        if ($resquery) {
-            $row = $resquery->fetch_row();
-        }
-
-        if (!$resquery || $row[0] == 0) {
-            return false;
-        }
-
-        return true;
+        return (intval(self::$dbc->query($query)->fetchColumn()) === 0);
     }
 
     /**
@@ -350,9 +348,11 @@ class SP_Installer
         }
 
         // Usar la base de datos de sysPass
-        if (!self::$dbc->select_db(self::$dbname)) {
+        try {
+            self::$dbc->query('USE ' . self::$dbname);
+        } catch (PDOException $e){
             throw new InstallerException('critical'
-                , _('Error al seleccionar la BBDD') . " '" . self::$dbname . "' (" . self::$dbc->error . ")"
+                , _('Error al seleccionar la BBDD') . " '" . self::$dbname . "' (" . $e->getMessage() . ")"
                 , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
         }
 
@@ -363,11 +363,14 @@ class SP_Installer
             while (!feof($handle)) {
                 $buffer = stream_get_line($handle, 1000000, ";\n");
                 if (strlen(trim($buffer)) > 0) {
-                    if (!self::$dbc->query($buffer)) {
+                    try {
+                        self::$dbc->query($buffer);
+                    } catch (PDOException $e) {
                         // drop database on error
                         self::$dbc->query("DROP DATABASE " . self::$dbname . ";");
+
                         throw new InstallerException('critical'
-                            , _('Error al crear la BBDD')
+                            , _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')'
                             , _('Error al crear la estructura de la Base de Datos.'));
                     }
                 }
@@ -471,11 +474,14 @@ class SP_Installer
      */
     private static function rollback()
     {
-        self::$dbc->query("DROP DATABASE IF EXISTS " . self::$dbname . ";");
-        self::$dbc->query("DROP USER '" . self::$dbuser . "'@'" . self::$dbhost . "';");
-        self::$dbc->query("DROP USER '" . self::$dbuser . "'@'%';");
-        SP_Config::deleteKey('dbuser');
-        SP_Config::deleteKey('dbpass');
+        try {
+            self::$dbc->query("DROP DATABASE IF EXISTS " . self::$dbname . ";");
+            self::$dbc->query("DROP USER '" . self::$dbuser . "'@'" . self::$dbhost . "';");
+            self::$dbc->query("DROP USER '" . self::$dbuser . "'@'%';");
+        } catch(PDOException $e){
+            SP_Config::deleteKey('dbuser');
+            SP_Config::deleteKey('dbpass');
+        }
     }
 
 }

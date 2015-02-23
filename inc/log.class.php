@@ -40,26 +40,32 @@ class SP_Log
      */
     public static function getEvents($start)
     {
-        $query = 'SELECT SQL_CALC_FOUND_ROWS ' .
+        $query = 'SELECT ' .
             'log_id,' .
-            'FROM_UNIXTIME(log_date) as date,' .
+            'FROM_UNIXTIME(log_date) as log_date,' .
             'log_action,' .
             'log_login,' .
             'log_ipAddress,' .
             'log_description ' .
             'FROM log ' .
             'ORDER BY log_id DESC ' .
-            'LIMIT ' . $start . ', 50';
+            'LIMIT :start, 50';
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $data['start'] = $start;
+
+        // Obtenemos el número total de registros
+        DB::setFullRowCount();
+
+        // Devolver un array siempre
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
         }
 
-        $numRows = DB::getResults("SELECT FOUND_ROWS() as numRows", __FUNCTION__);
-
-        self::$numRows = $numRows->numRows;
+        self::$numRows = DB::$last_num_rows;
 
         return $queryRes;
     }
@@ -73,14 +79,13 @@ class SP_Log
     {
         $query = 'TRUNCATE TABLE log';
 
-        $queryRes = DB::doQuery($query, __FUNCTION__);
-
-        if ($queryRes === false) {
+        if (DB::getQuery($query, __FUNCTION__) === false) {
             return false;
         }
 
         $message['action'] = _('Vaciar Eventos');
         $message['text'][] = _('Vaciar registro de eventos');
+
         self::wrLogInfo($message);
         SP_Common::sendEmail($message);
 
@@ -108,16 +113,20 @@ class SP_Log
             error_log('Action: ' . $action . ' -- Description: ' . $description);
         }
 
-        $query = "INSERT INTO log SET " .
-            "log_date = UNIX_TIMESTAMP()," .
-            "log_login = '" . DB::escape($login) . "'," .
-            "log_userId = " . $userId . "," .
-            "log_ipAddress = '" . DB::escape($_SERVER['REMOTE_ADDR']) . "'," .
-            "log_action = '" . DB::escape($action) . "'," .
-            "log_description = '" . DB::escape($description) . "'";
+        $query = 'INSERT INTO log SET ' .
+            'log_date = UNIX_TIMESTAMP(),' .
+            'log_login = :login,' .
+            'log_userId = :userId,' .
+            'log_ipAddress = :ipAddress,' .
+            'log_action = :action,' .
+            'log_description = :description';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['login'] = $login;
+        $data['userId'] = $userId;
+        $data['ipAddress'] = $_SERVER['REMOTE_ADDR'];
+        $data['action'] = $action;
+        $data['description'] = $description;
+
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 }

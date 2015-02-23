@@ -152,22 +152,16 @@ class SP_Auth
             }
         }
 
-        $query = "SELECT user_login,"
-            . "user_pass "
-            . "FROM usrData "
-            . "WHERE user_login = '" . DB::escape($userLogin) . "' "
-            . "AND user_isMigrate = 0 "
-            . "AND user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($userPass) . "')) LIMIT 1";
+        $query = 'SELECT user_login, user_pass '
+            . 'FROM usrData '
+            . 'WHERE user_login = :login AND user_isMigrate = 0 '
+            . 'AND user_pass = SHA1(CONCAT(user_hashSalt, :pass)) LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['login'] = $userLogin;
+        $data['pass'] = $userPass;
 
-        if (count(DB::$last_result) == 0) {
-            return false;
-        }
-
-        return true;
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows === 1);
+//        return ($db->getFullRowCount($query) === 1);
     }
 
     /**

@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -61,7 +61,7 @@ $frmChangesHash = SP_Common::parseParams('p', 'hash');
 $userId = SP_Common::parseParams('s', 'uid', 0);
 $groupId = SP_Common::parseParams('s', 'ugroup', 0);
 
-if ($frmSaveType == 1) {
+if ($frmSaveType == 1) { // Nueva Cuenta
     // Comprobaciones para nueva cuenta
     if (!$frmName) {
         SP_Common::printJSON(_('Es necesario un nombre de cuenta'));
@@ -82,7 +82,7 @@ if ($frmSaveType == 1) {
     if ($frmPassword != $frmPasswordV) {
         SP_Common::printJSON(_('Las claves no coinciden'));
     }
-} elseif ($frmSaveType == 2) {
+} elseif ($frmSaveType == 2) { // Modificar Cuenta
     // Comprobaciones para modificación de cuenta
     if (!$frmSelCustomer && !$frmNewCustomer) {
         SP_Common::printJSON(_('Es necesario un nombre de cliente'));
@@ -95,11 +95,11 @@ if ($frmSaveType == 1) {
     if (!$frmLogin) {
         SP_Common::printJSON(_('Es necesario un usuario'));
     }
-} elseif ($frmSaveType == 3) {
+} elseif ($frmSaveType == 3) { // Eliminar Cuenta
     if (!$frmAccountId) {
         SP_Common::printJSON(_('Id inválido'));
     }
-} elseif ($frmSaveType == 4) {
+} elseif ($frmSaveType == 4) { // Modificar Clave
     // Comprobaciones para modficación de clave
     if (!$frmPassword && !$frmPasswordV) {
         SP_Common::printJSON(_('La clave no puede estar en blanco'));
@@ -108,7 +108,7 @@ if ($frmSaveType == 1) {
     if ($frmPassword != $frmPasswordV) {
         SP_Common::printJSON(_('Las claves no coinciden'));
     }
-} elseif ($frmSaveType == 5) {
+} elseif ($frmSaveType == 5) { // Restaurar Cuenta
     if (!$frmAccountId) {
         SP_Common::printJSON(_('Id inválido'));
     }
@@ -135,12 +135,12 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
 $account = new SP_Account;
 
 switch ($frmSaveType) {
-    case 1:
+    case 1: // Nueva Cuenta
         SP_Customer::$customerName = $frmNewCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {
-            if (!SP_Customer::checkDupCustomer()) {
+            if (SP_Customer::checkDupCustomer()) {
                 SP_Common::printJSON(_('Cliente duplicado'));
             }
 
@@ -171,9 +171,10 @@ switch ($frmSaveType) {
         if ($account->createAccount()) {
             SP_Common::printJSON(_('Cuenta creada'), 0);
         }
+
         SP_Common::printJSON(_('Error al crear la cuenta'), 0);
         break;
-    case 2:
+    case 2: // Modificar Cuenta
         SP_Customer::$customerName = $frmNewCustomer;
         $account->accountId = $frmAccountId;
         $account->accountName = $frmName;
@@ -189,7 +190,7 @@ switch ($frmSaveType) {
 
         // Comprobar si se ha introducido un nuevo cliente
         if ($frmNewCustomer) {
-            if (!SP_Customer::checkDupCustomer()) {
+            if (SP_Customer::checkDupCustomer()) {
                 SP_Common::printJSON(_('Cliente duplicado'));
             }
 
@@ -211,9 +212,10 @@ switch ($frmSaveType) {
         if ($account->updateAccount()) {
             SP_Common::printJSON(_('Cuenta actualizada'), 0);
         }
+
         SP_Common::printJSON(_('Error al modificar la cuenta'));
         break;
-    case 3:
+    case 3: // Eliminar Cuenta
         $account->accountId = $frmAccountId;
 
         // Eliminar cuenta
@@ -222,7 +224,7 @@ switch ($frmSaveType) {
         }
         SP_Common::printJSON(_('Error al eliminar la cuenta'));
         break;
-    case 4:
+    case 4: // Modificar Clave
         $account->accountId = $frmAccountId;
         $account->accountPass = $accountPass;
         $account->accountIV = $accountIV;
@@ -232,9 +234,10 @@ switch ($frmSaveType) {
         if ($account->updateAccountPass()) {
             SP_Common::printJSON(_('Clave actualizada'), 0);
         }
+
         SP_Common::printJSON(_('Error al actualizar la clave'));
         break;
-    case 5:
+    case 5: // Restaurar Cuenta
         $account->accountId = $frmAccountId;
         $accountHistData = $account->getAccountHistory();
 
@@ -254,7 +257,7 @@ switch ($frmSaveType) {
         $account->accountUserEditId = $userId;
 
         // Restaurar cuenta y clave
-        if ($account->updateAccount(true) && $account->updateAccountPass(false,true)) {
+        if ($account->updateAccount(true) && $account->updateAccountPass(false, true)) {
             SP_Common::printJSON(_('Cuenta restaurada'), 0);
         }
 

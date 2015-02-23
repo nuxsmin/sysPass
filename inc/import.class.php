@@ -165,6 +165,8 @@ class SP_Import
                 $message['text'][] = $data;
 
                 SP_Log::wrLogInfo($message);
+
+                unset($message);
             }
         }
 
@@ -189,7 +191,7 @@ class SP_Import
 
         // Comprobamos si existe el cliente o lo creamos
         SP_Customer::$customerName = $customerName;
-        if (!SP_Customer::checkDupCustomer()) {
+        if (SP_Customer::checkDupCustomer()) {
             $customerId = SP_Customer::getCustomerByName();
         } else {
             SP_Customer::addCustomer();

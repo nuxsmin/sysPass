@@ -192,7 +192,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         SP_Groups::$groupName = $frmGrpName;
         SP_Groups::$groupDescription = $frmGrpDesc;
 
-        if (!SP_Groups::checkGroupExist()) {
+        if (SP_Groups::checkGroupExist()) {
             SP_Common::printJSON(_('Nombre de grupo duplicado'), 2);
         }
 
@@ -272,7 +272,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
 
         SP_Profiles::$profileName = $frmProfileName;
 
-        if (!SP_Profiles::checkProfileExist()) {
+        if (SP_Profiles::checkProfileExist()) {
             SP_Common::printJSON(_('Nombre de perfil duplicado'), 2);
         }
 
@@ -330,7 +330,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         SP_Customer::$customerName = $frmCustomerName;
         SP_Customer::$customerDescription = $frmCustomerDesc;
 
-        if (!SP_Customer::checkDupCustomer($frmItemId)) {
+        if (SP_Customer::checkDupCustomer($frmItemId)) {
             SP_Common::printJSON(_('Nombre de cliente duplicado'), 2);
         }
 
@@ -381,7 +381,7 @@ if ($frmSaveType == 1 || $frmSaveType == 2) {
         SP_Category::$categoryName = $frmCategoryName;
         SP_Category::$categoryDescription = $frmCategoryDesc;
 
-        if (!SP_Category::checkDupCategory($frmItemId)) {
+        if (SP_Category::checkDupCategory($frmItemId)) {
             SP_Common::printJSON(_('Nombre de categoría duplicado'), 2);
         }
 

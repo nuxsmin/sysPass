@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -123,54 +123,54 @@ class SP_Users
      * @param int $itemId opcional, con el Id del usuario a consultar
      * @return false|array con la lista de usuarios
      */
-    public static function getUsers($itemId = NULL)
+    public static function getUsers($itemId = null)
     {
+        $data = null;
+
         if (!is_null($itemId)) {
-            $query = "SELECT user_id,"
-                . "user_name,"
-                . "user_login,"
-                . "user_profileId,"
-                . "user_groupId,"
-                . "user_email,"
-                . "user_notes,"
-                . "user_isAdminApp,"
-                . "user_isAdminAcc,"
-                . "user_isLdap,"
-                . "user_isDisabled,"
-                . "user_isChangePass,"
-                . "user_count,"
-                . "user_lastLogin,"
-                . "user_lastUpdate, "
-                . "FROM_UNIXTIME(user_lastUpdateMPass) as user_lastUpdateMPass "
-                . "FROM usrData "
-                . "LEFT JOIN usrProfiles ON user_profileId = userprofile_id "
-                . "LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id "
-                . "WHERE user_id = " . (int)$itemId . " LIMIT 1";
+            $query = 'SELECT user_id,'
+                . 'user_name,'
+                . 'user_login,'
+                . 'user_profileId,'
+                . 'user_groupId,'
+                . 'user_email,'
+                . 'user_notes,'
+                . 'BIN(user_isAdminApp) AS user_isAdminApp,'
+                . 'BIN(user_isAdminAcc) AS user_isAdminAcc,'
+                . 'BIN(user_isLdap) AS user_isLdap,'
+                . 'BIN(user_isDisabled) AS user_isDisabled,'
+                . 'BIN(user_isChangePass) AS user_isChangePass,'
+                . 'user_count,'
+                . 'user_lastLogin,'
+                . 'user_lastUpdate, '
+                . 'FROM_UNIXTIME(user_lastUpdateMPass) as user_lastUpdateMPass '
+                . 'FROM usrData '
+                . 'LEFT JOIN usrProfiles ON user_profileId = userprofile_id '
+                . 'LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id '
+                . 'WHERE user_id = :id LIMIT 1';
+
+            $data['id'] = $itemId;
         } else {
-            $query = "SELECT user_id,"
-                . "user_name,"
-                . "user_login,"
-                . "userprofile_name,"
-                . "usergroup_name,"
-                . "user_isAdminApp,"
-                . "user_isAdminAcc,"
-                . "user_isLdap,"
-                . "user_isDisabled,"
-                . "user_isChangePass "
-                . "FROM usrData "
-                . "LEFT JOIN usrProfiles ON user_profileId = userprofile_id "
-                . "LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id ";
+            $query = 'SELECT user_id,'
+                . 'user_name,'
+                . 'user_login,'
+                . 'userprofile_name,'
+                . 'usergroup_name,'
+                . 'BIN(user_isAdminApp) AS user_isAdminApp,'
+                . 'BIN(user_isAdminAcc) AS user_isAdminAcc,'
+                . 'BIN(user_isLdap) AS user_isLdap,'
+                . 'BIN(user_isDisabled) AS user_isDisabled,'
+                . 'BIN(user_isChangePass) AS user_isChangePass '
+                . 'FROM usrData '
+                . 'LEFT JOIN usrProfiles ON user_profileId = userprofile_id '
+                . 'LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id ';
 
-            $query .= ($_SESSION["uisadminapp"] == 0) ? "WHERE user_isAdminApp = 0 ORDER BY user_name" : "ORDER BY user_name";
+            $query .= ($_SESSION['uisadminapp'] == 0) ? 'WHERE user_isAdminApp = 0 ORDER BY user_name' : 'ORDER BY user_name';
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        DB::setReturnArray();
 
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes;
+        return DB::getResults($query, __FUNCTION__, $data);
     }
 
     /**
@@ -181,27 +181,20 @@ class SP_Users
      */
     public static function checkUserIsMigrate($userLogin)
     {
-        $query = "SELECT user_isMigrate "
-            . "FROM usrData "
-            . "WHERE user_login = '" . DB::escape($userLogin) . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT BIN(user_isMigrate) AS user_isMigrate FROM usrData WHERE user_login = :login LIMIT 1';
 
-        if ($queryRes === false) {
-            return false;
-        }
+        $data['login'] = $userLogin;
 
-        if ($queryRes->user_isMigrate == 0) {
-            return false;
-        }
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return true;
+        return ($queryRes !== false && $queryRes->user_isMigrate == 1);
     }
 
     /**
      * Actualizar la clave de un usuario desde phpPMS.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return bool
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
@@ -210,17 +203,23 @@ class SP_Users
     {
         $passdata = SP_Users::makeUserPass($userPass);
 
-        $query = "UPDATE usrData SET "
-            . "user_pass = '" . $passdata['pass'] . "',"
-            . "user_hashSalt = '" . $passdata['salt'] . "',"
-            . "user_lastUpdate = NOW(),"
-            . "user_isMigrate = 0 "
-            . "WHERE user_login = '" . DB::escape($userLogin) . "' "
-            . "AND user_isMigrate = 1 "
-            . "AND (user_pass = SHA1(CONCAT(user_hashSalt,'" . DB::escape($userPass) . "')) "
-            . "OR user_pass = MD5('" . DB::escape($userPass) . "')) LIMIT 1";
+        $query = 'UPDATE usrData SET '
+            . 'user_pass = :pass,'
+            . 'user_hashSalt = :salt,'
+            . 'user_lastUpdate = NOW(),'
+            . 'user_isMigrate = 0 '
+            . 'WHERE user_login = :login '
+            . 'AND user_isMigrate = 1 '
+            . 'AND (user_pass = SHA1(CONCAT(user_hashSalt,:passOld)) '
+            . 'OR user_pass = MD5(:passOldMd5)) LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['pass'] = $passdata['pass'];
+        $data['salt'] = $passdata['salt'];
+        $data['login'] = $userLogin;
+        $data['passOld'] = $userPass;
+        $data['passOldMd5'] = $userPass;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -241,30 +240,9 @@ class SP_Users
     private static function makeUserPass($userPass)
     {
         $salt = SP_Crypt::makeHashSalt();
-        $userPass = DB::escape(sha1($salt . DB::escape($userPass)));
+        $userPass = sha1($salt . $userPass);
 
         return array('salt' => $salt, 'pass' => $userPass);
-    }
-
-    /**
-     * Obtener el login de usuario a partir del Id.
-     *
-     * @param int $id con el id del usuario
-     * @return string con el login del usuario
-     */
-    public static function getUserLoginById($id)
-    {
-        $query = "SELECT user_login "
-            . "FROM usrData "
-            . "WHERE user_id = " . (int)$id . " LIMIT 1";
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->user_login;
     }
 
     /**
@@ -293,20 +271,14 @@ class SP_Users
             return false;
         }
 
-        $query = 'SELECT user_lastUpdateMPass '
-            . 'FROM usrData '
-            . 'WHERE user_id = ' . (int)$userId . ' LIMIT 1';
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = :id LIMIT 1';
 
-        if ($queryRes === false) {
-            return false;
-        }
+        $data['id'] = $userId;
 
-        if ($configMPassTime > $queryRes->user_lastUpdateMPass) {
-            return false;
-        }
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return true;
+        return ($queryRes !== false && $queryRes->user_lastUpdateMPass > $configMPassTime);
+
     }
 
     /**
@@ -317,11 +289,11 @@ class SP_Users
      */
     public static function getUserIdByLogin($login)
     {
-        $query = "SELECT user_id "
-            . "FROM usrData "
-            . "WHERE user_login = '" . DB::escape($login) . "' LIMIT 1";
+        $query = 'SELECT user_id FROM usrData WHERE user_login = :login LIMIT 1';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data = array('login' => $login);
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -338,13 +310,17 @@ class SP_Users
      */
     public static function getUsersNameForAccount($accountId)
     {
-        $query = "SELECT user_id,"
-            . "user_login "
-            . "FROM accUsers "
-            . "JOIN usrData ON user_Id = accuser_userId "
-            . "WHERE accuser_accountId = " . (int)$accountId;
+        $query = 'SELECT user_id,'
+            . 'user_login '
+            . 'FROM accUsers '
+            . 'JOIN usrData ON user_Id = accuser_userId '
+            . 'WHERE accuser_accountId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $data['id'] = $accountId;
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -382,25 +358,21 @@ class SP_Users
      * @param array $usersId opcional con los grupos de la cuenta
      * @return bool
      */
-    public static function deleteUsersForAccount($accountId, $usersId = NULL)
+    public static function deleteUsersForAccount($accountId, $usersId = null)
     {
         $queryExcluded = '';
 
-        // Excluimos los grupos actuales
+        // Excluimos los usuarios actuales
         if (is_array($usersId)) {
-            $queryExcluded = ' AND accuser_userId NOT IN (' . implode(',', $usersId) . ')';
+            array_map('intval', $usersId);
+            $queryExcluded = 'AND accuser_userId NOT IN (' . implode(',', $usersId) . ')';
         }
 
-        $query = 'DELETE FROM accUsers '
-            . 'WHERE accuser_accountId = ' . (int)$accountId . $queryExcluded;
+        $query = 'DELETE FROM accUsers WHERE accuser_accountId = :id ' . $queryExcluded;
 
-        //error_log($query);
+        $data['id'] = $accountId;
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 
     /**
@@ -412,38 +384,31 @@ class SP_Users
      */
     public static function addUsersForAccount($accountId, $usersId)
     {
+        if (!is_array($usersId)) {
+            return true;
+        }
+
         $values = '';
 
         // Obtenemos los grupos actuales
-        $currentUsers = self::getUsersForAccount($accountId);
-
-        if (is_array($currentUsers)) {
-            foreach ($currentUsers as $user) {
-                $usersExcluded[] = $user->accuser_userId;
-            }
-        }
+        $usersExcluded = self::getUsersForAccount($accountId);
 
         foreach ($usersId as $userId) {
             // Excluimos los usuarios actuales
-            if (is_array($usersExcluded) && in_array($userId, $usersExcluded)) {
+            if (isset($usersExcluded) && is_array($usersExcluded) && in_array($userId, $usersExcluded)) {
                 continue;
             }
 
-            $values[] = '(' . $accountId . ',' . $userId . ')';
+            $values[] = '(' . (int)$accountId . ',' . (int)$userId . ')';
         }
 
         if (!is_array($values)) {
             return true;
         }
 
-        $query = 'INSERT INTO accUsers (accuser_accountId, accuser_userId) '
-            . 'VALUES ' . implode(',', $values);
+        $query = 'INSERT INTO accUsers (accuser_accountId, accuser_userId) VALUES ' . implode(',', $values);
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($query, __FUNCTION__);
     }
 
     /**
@@ -454,17 +419,23 @@ class SP_Users
      */
     public static function getUsersForAccount($accountId)
     {
-        $query = "SELECT accuser_userId "
-            . "FROM accUsers "
-            . "WHERE accuser_accountId = " . (int)$accountId;
+        $query = 'SELECT accuser_userId FROM accUsers WHERE accuser_accountId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $data['id'] = $accountId;
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
         }
 
-        return $queryRes;
+        foreach ($queryRes as $user) {
+            $users[] = $user->accuser_userId;
+        }
+
+        return $users;
     }
 
     /**
@@ -476,9 +447,15 @@ class SP_Users
      */
     public static function checkUserMail($login, $email)
     {
-        $userId = self::getUserIdByLogin($login);
+        $query = 'SELECT user_id FROM usrData WHERE user_login = :login AND user_email = :email LIMIT 1';
 
-        return ($userId && self::getUserEmail($userId) == $email);
+        $data['login'] = $login;
+        $data['email'] = $email;
+
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows === 1);
+
+//        $userId = self::getUserIdByLogin($login);
+//        return ($userId && self::getUserEmail($userId) == $email);
     }
 
     /**
@@ -489,11 +466,11 @@ class SP_Users
      */
     public static function getUserEmail($userId)
     {
-        $query = "SELECT user_email "
-            . "FROM usrData "
-            . "WHERE user_id = " . (int)$userId . " "
-            . "AND user_email IS NOT NULL LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT user_email FROM usrData WHERE user_id = :id AND user_email IS NOT NULL LIMIT 1';
+
+        $data['id'] = $userId;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -506,24 +483,21 @@ class SP_Users
      * Insertar un registro de recuperación de clave.
      *
      * @param string $login con el login del usuario
-     * @param string $hash con el hash para el cambio
+     * @param string $hash  con el hash para el cambio
      * @return bool
      */
     public static function addPassRecover($login, $hash)
     {
-        $userId = self::getUserIdByLogin($login);
+        $query = 'INSERT INTO usrPassRecover SET '
+            . 'userpassr_userId = :userId,'
+            . 'userpassr_hash = :hash,'
+            . 'userpassr_date = UNIX_TIMESTAMP(),'
+            . 'userpassr_used = 0';
 
-        $query = "INSERT INTO usrPassRecover SET "
-            . "userpassr_userId = " . $userId . ","
-            . "userpassr_hash = '" . DB::escape($hash) . "',"
-            . "userpassr_date = UNIX_TIMESTAMP(),"
-            . "userpassr_used = 0";
+        $data['userId'] = self::getUserIdByLogin($login);
+        $data['hash'] = $hash;
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 
     /**
@@ -534,44 +508,31 @@ class SP_Users
      */
     public static function checkUserIsDisabled($userLogin)
     {
-        $query = "SELECT user_isDisabled "
-            . "FROM usrData "
-            . "WHERE user_login = '" . DB::escape($userLogin) . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT BIN(user_isDisabled) AS user_isDisabled FROM usrData WHERE user_login = :login LIMIT 1';
 
-        if ($queryRes === false) {
-            return false;
-        }
+        $data['login'] = $userLogin;
 
-        if ($queryRes->user_isDisabled == 0) {
-            return false;
-        }
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return true;
+        return ($queryRes !== false && intval($queryRes->user_isDisabled) === 1);
     }
 
     /**
      * Comprobar si un usuario autentifica mediante LDAP
      * .
+     *
      * @param string $userLogin con el login del usuario
      * @return bool
      */
     public static function checkUserIsLDAP($userLogin)
     {
-        $query = "SELECT user_isLdap "
-            . "FROM usrData "
-            . "WHERE user_login = '" . DB::escape($userLogin) . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT BIN(user_isLdap) AS user_isLdap FROM usrData WHERE user_login = :login LIMIT 1';
 
-        if ($queryRes === false) {
-            return false;
-        }
+        $data['login'] = $userLogin;
 
-        if ($queryRes->user_isLdap == 0) {
-            return false;
-        }
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return true;
+        return ($queryRes !== false && intval($queryRes->user_isLdap) === 1);
     }
 
     /**
@@ -582,13 +543,16 @@ class SP_Users
      */
     public static function checkHashPassRecover($hash)
     {
-        $query = "SELECT userpassr_userId FROM usrPassRecover "
-            . "WHERE userpassr_hash = '" . DB::escape($hash) . "' "
-            . "AND userpassr_used = 0 "
-            . "AND userpassr_date >= " . (time() - self::MAX_PASS_RECOVER_TIME) . " "
-            . "ORDER BY userpassr_date DESC LIMIT 1";
+        $query = 'SELECT userpassr_userId FROM usrPassRecover '
+            . 'WHERE userpassr_hash = :hash '
+            . 'AND userpassr_used = 0 '
+            . 'AND userpassr_date >= :date '
+            . 'ORDER BY userpassr_date DESC LIMIT 1';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['hash'] = $hash;
+        $data['date'] = time() - self::MAX_PASS_RECOVER_TIME;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -605,14 +569,11 @@ class SP_Users
      */
     public static function updateHashPassRecover($hash)
     {
-        $query = "UPDATE usrPassRecover SET userpassr_used = 1 " .
-            "WHERE userpassr_hash = '" . DB::escape($hash) . "'";
+        $query = 'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = :hash';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['hash'] = $hash;
 
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 
     /**
@@ -623,19 +584,20 @@ class SP_Users
      */
     public static function checkPassRecoverLimit($login)
     {
-        $query = "SELECT COUNT(*) as requests " .
-            "FROM usrPassRecover " .
-            "WHERE userpassr_userId = " . self::getUserIdByLogin($login) . " " .
-            "AND userpassr_used = 0 " .
-            "AND userpassr_date >= " . (time() - self::MAX_PASS_RECOVER_TIME);
+        $query = 'SELECT userpassr_userId ' .
+            'FROM usrPassRecover ' .
+            'WHERE userpassr_userId = :id ' .
+            'AND userpassr_used = 0 ' .
+            'AND userpassr_date >= :date';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['login'] = self::getUserIdByLogin($login);
+        $data['date'] = time() - self::MAX_PASS_RECOVER_TIME;
 
-        if ($queryRes === false) {
-            return false;
-        }
+        $db = new DB();
+        $db->setParamData($data);
 
-        return ($queryRes->requests >= self::MAX_PASS_RECOVER_LIMIT);
+        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$last_num_rows >= self::MAX_PASS_RECOVER_LIMIT);
+        //return ($db->getFullRowCount($query) >= self::MAX_PASS_RECOVER_LIMIT);
     }
 
     /**
@@ -646,40 +608,43 @@ class SP_Users
      */
     public function getUserInfo()
     {
-        $query = "SELECT user_id,"
-            . "user_name,"
-            . "user_groupId,"
-            . "user_login,"
-            . "user_email,"
-            . "user_notes,"
-            . "user_count,"
-            . "user_profileId,"
-            . "usergroup_name,"
-            . "user_isAdminApp,"
-            . "user_isAdminAcc,"
-            . "user_isLdap,"
-            . "user_isDisabled,"
-            . "user_isChangePass "
-            . "FROM usrData "
-            . "LEFT JOIN usrGroups ON user_groupId = usergroup_id "
-            . "LEFT JOIN usrProfiles ON user_profileId = userprofile_id "
-            . "WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT user_id,'
+            . 'user_name,'
+            . 'user_groupId,'
+            . 'user_login,'
+            . 'user_email,'
+            . 'user_notes,'
+            . 'user_count,'
+            . 'user_profileId,'
+            . 'usergroup_name,'
+            . 'BIN(user_isAdminApp) AS user_isAdminApp,'
+            . 'BIN(user_isAdminAcc) AS user_isAdminAcc,'
+            . 'BIN(user_isLdap) AS user_isLdap,'
+            . 'BIN(user_isDisabled) AS user_isDisabled,'
+            . 'BIN(user_isChangePass) AS user_isChangePass '
+            . 'FROM usrData '
+            . 'LEFT JOIN usrGroups ON user_groupId = usergroup_id '
+            . 'LEFT JOIN usrProfiles ON user_profileId = userprofile_id '
+            . 'WHERE user_login = :login LIMIT 1';
+
+        $data['login'] = $this->userLogin;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
         }
 
-        $this->userId = (int)$queryRes->user_id;
+        $this->userId = intval($queryRes->user_id);
         $this->userName = $queryRes->user_name;
-        $this->userGroupId = (int)$queryRes->user_groupId;
+        $this->userGroupId = intval($queryRes->user_groupId);
         $this->userGroupName = $queryRes->usergroup_name;
         $this->userEmail = $queryRes->user_email;
-        $this->userProfileId = (int)$queryRes->user_profileId;
-        $this->userIsAdminApp = (int)$queryRes->user_isAdminApp;
-        $this->userIsAdminAcc = (int)$queryRes->user_isAdminAcc;
-        $this->userIsLdap = (int)$queryRes->user_isLdap;
-        $this->userChangePass = (int)$queryRes->user_isChangePass;
+        $this->userProfileId = intval($queryRes->user_profileId);
+        $this->userIsAdminApp = intval($queryRes->user_isAdminApp);
+        $this->userIsAdminAcc = intval($queryRes->user_isAdminAcc);
+        $this->userIsLdap = intval($queryRes->user_isLdap);
+        $this->userChangePass = intval($queryRes->user_isChangePass);
 
         return true;
     }
@@ -694,12 +659,19 @@ class SP_Users
         $userLogin = strtoupper($this->userLogin);
         $userEmail = strtoupper($this->userEmail);
 
-        $query = "SELECT user_login, user_email "
-            . "FROM usrData "
-            . "WHERE (UPPER(user_login) = '" . DB::escape($userLogin) . "' "
-            . "OR UPPER(user_email) = '" . DB::escape($userEmail) . "') "
-            . "AND user_id != " . (int)$this->userId;
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        $query = 'SELECT user_login, user_email '
+            . 'FROM usrData '
+            . 'WHERE (UPPER(user_login) = :login '
+            . 'OR UPPER(user_email) = :email) '
+            . 'AND user_id != :id';
+
+        $data['login'] = $userLogin;
+        $data['email'] = $userEmail;
+        $data['id'] = $this->userId;
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -724,19 +696,12 @@ class SP_Users
      */
     public function checkLDAPUserInDB()
     {
-        $query = "SELECT user_login "
-            . "FROM usrData "
-            . "WHERE user_login = '" . DB::escape($this->userLogin) . "' LIMIT 1";
+        $query = 'SELECT user_login FROM usrData WHERE user_login = :login LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['login'] = $this->userLogin;
 
-        if (count(DB::$last_result) == 0) {
-            return false;
-        }
-
-        return true;
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows === 1);
+//        return ($queryRes === true && $db->getFullRowCount($query) === 1);
     }
 
     /**
@@ -750,19 +715,28 @@ class SP_Users
     {
         $passdata = SP_Users::makeUserPass($this->userPass);
 
-        $query = "INSERT INTO usrData SET "
-            . "user_name = '" . DB::escape($this->userName) . "',"
-            . "user_groupId = " . SP_Config::getValue('ldap_defaultgroup', 0) . ","
-            . "user_login = '" . DB::escape($this->userLogin) . "',"
-            . "user_pass = '" . $passdata['pass'] . "',"
-            . "user_hashSalt = '" . $passdata['salt'] . "',"
-            . "user_email = '" . DB::escape($this->userEmail) . "',"
-            . "user_notes = 'LDAP',"
-            . "user_profileId = " . SP_Config::getValue('ldap_defaultprofile', 0) . ","
-            . "user_isLdap = 1,"
-            . "user_isDisabled = 0";
+        $query = 'INSERT INTO usrData SET '
+            . 'user_name = :name,'
+            . 'user_groupId = :groupId,'
+            . 'user_login = :login,'
+            . 'user_pass = :pass,'
+            . 'user_hashSalt = :hashSalt,'
+            . 'user_email = :email,'
+            . 'user_notes = :notes,'
+            . 'user_profileId = :profileId,'
+            . 'user_isLdap = 1,'
+            . 'user_isDisabled = 0';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = $this->userName;
+        $data['login'] = $this->userLogin;
+        $data['pass'] = $passdata['pass'];
+        $data['hashSalt'] = $passdata['hash'];
+        $data['email'] = $this->userEmail;
+        $data['notes'] = 'LDAP';
+        $data['groupId'] = SP_Config::getValue('ldap_defaultgroup', 0);
+        $data['profileId'] = SP_Config::getValue('ldap_defaultprofile', 0);
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -785,24 +759,37 @@ class SP_Users
     {
         $passdata = SP_Users::makeUserPass($this->userPass);
 
-        $query = "INSERT INTO usrData SET "
-            . "user_name = '" . DB::escape($this->userName) . "',"
-            . "user_login = '" . DB::escape($this->userLogin) . "',"
-            . "user_email = '" . DB::escape($this->userEmail) . "',"
-            . "user_notes = '" . DB::escape($this->userNotes) . "',"
-            . "user_groupId = " . (int)$this->userGroupId . ","
-            . "user_profileId = " . (int)$this->userProfileId . ","
-            . "user_mPass = '',"
-            . "user_mIV = '',"
-            . "user_isAdminApp = " . (int)$this->userIsAdminApp . ","
-            . "user_isAdminAcc = " . (int)$this->userIsAdminAcc . ","
-            . "user_isDisabled = " . (int)$this->userIsDisabled . ","
-            . "user_isChangePass = " . (int)$this->userChangePass . ","
-            . "user_pass = '" . $passdata['pass'] . "',"
-            . "user_hashSalt = '" . $passdata['salt'] . "',"
-            . "user_isLdap = 0";
+        $query = 'INSERT INTO usrData SET '
+            . 'user_name = :name,'
+            . 'user_login = :login,'
+            . 'user_email = :email,'
+            . 'user_notes = :notes,'
+            . 'user_groupId = :groupId,'
+            . 'user_profileId = :profileId,'
+            . 'user_mPass = \'\','
+            . 'user_mIV = \'\','
+            . 'user_isAdminApp = :isAdminApp,'
+            . 'user_isAdminAcc = :isAdminAcc,'
+            . 'user_isDisabled = :isDisabled,'
+            . 'user_isChangePass = :isChangePass,'
+            . 'user_pass = :pass,'
+            . 'user_hashSalt = :salt,'
+            . 'user_isLdap = 0';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = $this->userName;
+        $data['login'] = $this->userLogin;
+        $data['email'] = $this->userEmail;
+        $data['notes'] = $this->userNotes;
+        $data['groupId'] = $this->userGroupId;
+        $data['profileId'] = $this->userProfileId;
+        $data['isAdminApp'] = $this->userIsAdminApp;
+        $data['isAdminAcc'] = $this->userIsAdminAcc;
+        $data['isDisabled'] = $this->userIsDisabled;
+        $data['isChangePass'] = $this->userChangePass;
+        $data['pass'] = $passdata['pass'];
+        $data['salt'] = $passdata['salt'];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -811,8 +798,8 @@ class SP_Users
         $message['action'] = _('Nuevo Usuario');
         $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
-        if ($this->userChangePass){
-            if ( ! SP_Auth::mailPassRecover(DB::escape($this->userLogin),DB::escape($this->userEmail)) ){
+        if ($this->userChangePass) {
+            if (!SP_Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
                 $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
             }
         }
@@ -830,21 +817,33 @@ class SP_Users
      */
     public function updateUser()
     {
-        $query = "UPDATE usrData SET "
-            . "user_name = '" . DB::escape($this->userName) . "',"
-            . "user_login = '" . DB::escape($this->userLogin) . "',"
-            . "user_email = '" . DB::escape($this->userEmail) . "',"
-            . "user_notes = '" . DB::escape($this->userNotes) . "',"
-            . "user_groupId = " . (int)$this->userGroupId . ","
-            . "user_profileId = " . (int)$this->userProfileId . ","
-            . "user_isAdminApp = " . (int)$this->userIsAdminApp . ","
-            . "user_isAdminAcc = " . (int)$this->userIsAdminAcc . ","
-            . "user_isDisabled = " . (int)$this->userIsDisabled . ","
-            . "user_isChangePass = " . (int)$this->userChangePass . ","
-            . "user_lastUpdate = NOW() "
-            . "WHERE user_id = " . (int)$this->userId . " LIMIT 1";
+        $query = 'UPDATE usrData SET '
+            . 'user_name = :name,'
+            . 'user_login = :login,'
+            . 'user_email = :email,'
+            . 'user_notes = :notes,'
+            . 'user_groupId = :groupId,'
+            . 'user_profileId = :profileId,'
+            . 'user_isAdminApp = :isAdminApp,'
+            . 'user_isAdminAcc = :isAdminAcc,'
+            . 'user_isDisabled = :isDisabled,'
+            . 'user_isChangePass = :isChangePass,'
+            . 'user_lastUpdate = NOW() '
+            . 'WHERE user_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = $this->userName;
+        $data['login'] = $this->userLogin;
+        $data['email'] = $this->userEmail;
+        $data['notes'] = $this->userNotes;
+        $data['groupId'] = $this->userGroupId;
+        $data['profileId'] = $this->userProfileId;
+        $data['isAdminApp'] = $this->userIsAdminApp;
+        $data['isAdminAcc'] = $this->userIsAdminAcc;
+        $data['isDisabled'] = $this->userIsDisabled;
+        $data['isChangePass'] = $this->userChangePass;
+        $data['id'] = $this->userId;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -853,8 +852,8 @@ class SP_Users
         $message['action'] = _('Modificar Usuario');
         $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
-        if ($this->userChangePass){
-            if ( ! SP_Auth::mailPassRecover(DB::escape($this->userLogin),DB::escape($this->userEmail)) ){
+        if ($this->userChangePass) {
+            if (!SP_Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
                 $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
             }
         }
@@ -875,14 +874,18 @@ class SP_Users
         $passdata = SP_Users::makeUserPass($this->userPass);
         $userLogin = $this->getUserLoginById($this->userId);
 
-        $query = "UPDATE usrData SET "
-            . "user_pass = '" . $passdata['pass'] . "',"
-            . "user_hashSalt = '" . $passdata['salt'] . "',"
-            . "user_isChangePass = 0,"
-            . "user_lastUpdate = NOW() "
-            . "WHERE user_id = " . (int)$this->userId . " LIMIT 1";
+        $query = 'UPDATE usrData SET '
+            . 'user_pass = :pass,'
+            . 'user_hashSalt = :salt,'
+            . 'user_isChangePass = 0,'
+            . 'user_lastUpdate = NOW() '
+            . 'WHERE user_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['pass'] = $passdata['pass'];
+        $data['salt'] = $passdata['salt'];
+        $data['id'] = $this->userId;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -898,6 +901,27 @@ class SP_Users
     }
 
     /**
+     * Obtener el login de usuario a partir del Id.
+     *
+     * @param int $id con el id del usuario
+     * @return string con el login del usuario
+     */
+    public static function getUserLoginById($id)
+    {
+        $query = 'SELECT user_login FROM usrData WHERE user_id = :id LIMIT 1';
+
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->user_login;
+    }
+
+    /**
      * Eliminar un usuario.
      *
      * @return bool
@@ -906,10 +930,11 @@ class SP_Users
     {
         $userLogin = $this->getUserLoginById($this->userId);
 
-        $query = "DELETE FROM usrData "
-            . "WHERE user_id = " . (int)$this->userId . " LIMIT 1";
+        $query = 'DELETE FROM usrData WHERE user_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = $this->userId;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -933,20 +958,22 @@ class SP_Users
     {
         $passdata = SP_Users::makeUserPass($this->userPass);
 
-        $query = "UPDATE usrData SET "
-            . "user_pass = '" . $passdata['pass'] . "',"
-            . "user_hashSalt = '" . $passdata['salt'] . "',"
-            . "user_name = '" . DB::escape($this->userName) . "',"
-            . "user_email = '" . DB::escape($this->userEmail) . "',"
-            . "user_lastUpdate = NOW(),"
-            . "user_isLdap = 1 "
-            . "WHERE user_id = " . $this->getUserIdByLogin($this->userLogin) . " LIMIT 1";
+        $query = 'UPDATE usrData SET '
+            . 'user_pass = :pass,'
+            . 'user_hashSalt = :hashSalt,'
+            . 'user_name = :name,'
+            . 'user_email = :email,'
+            . 'user_lastUpdate = NOW(),'
+            . 'user_isLdap = 1 '
+            . 'WHERE user_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['pass'] = $passdata['pass'];
+        $data['hashSalt'] = $passdata['salt'];
+        $data['name'] = $this->userName;
+        $data['email'] = $this->userEmail;
+        $data['id'] = $this->getUserIdByLogin($this->userLogin);
 
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 
     /**
@@ -978,16 +1005,11 @@ class SP_Users
      */
     private function setUserLastLogin()
     {
-        $query = "UPDATE usrData SET "
-            . "user_lastLogin = NOW(),"
-            . "user_count = user_count + 1 "
-            . "WHERE user_id = " . (int)$this->userId . " LIMIT 1";
+        $query = 'UPDATE usrData SET user_lastLogin = NOW(),user_count = user_count + 1 WHERE user_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['id'] = $this->userId;
 
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 
     /**
@@ -1021,10 +1043,11 @@ class SP_Users
      */
     public function getUserMPass($showPass = false)
     {
-        $query = "SELECT user_mPass, user_mIV "
-            . "FROM usrData "
-            . "WHERE user_id = " . (int)$this->userId . " LIMIT 1";
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $query = 'SELECT user_mPass, user_mIV FROM usrData WHERE user_id = :id LIMIT 1';
+
+        $data['id'] = $this->userId;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -1049,6 +1072,7 @@ class SP_Users
                 return true;
             }
         }
+
         return false;
     }
 
@@ -1089,16 +1113,16 @@ class SP_Users
             return false;
         }
 
-        $query = "UPDATE usrData SET "
-            . "user_mPass = '" . DB::escape($strUserMPwd[0]) . "',"
-            . "user_mIV = '" . DB::escape($strUserMPwd[1]) . "',"
-            . "user_lastUpdateMPass = UNIX_TIMESTAMP() "
-            . "WHERE user_id = " . (int)$this->userId . " LIMIT 1";
+        $query = 'UPDATE usrData SET '
+            . 'user_mPass = :mPass,'
+            . 'user_mIV = :mIV,'
+            . 'user_lastUpdateMPass = UNIX_TIMESTAMP() '
+            . 'WHERE user_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['mPass'] = $strUserMPwd[0];
+        $data['mIV'] = $strUserMPwd[1];
+        $data['id'] = $this->userId;
 
-        return true;
+        return DB::getQuery($query, __FUNCTION__, $data);
     }
 }

@@ -43,25 +43,25 @@ class SP_Profiles
     public static function getProfileData($id = 0)
     {
 
-        $profile = array('userprofile_id' => 0,
-            'userprofile_name' => '',
-            'userProfile_pView' => 0,
-            'userProfile_pViewPass' => 0,
-            'userProfile_pViewHistory' => 0,
-            'userProfile_pEdit' => 0,
-            'userProfile_pEditPass' => 0,
-            'userProfile_pAdd' => 0,
-            'userProfile_pDelete' => 0,
-            'userProfile_pFiles' => 0,
-            'userProfile_pConfig' => 0,
-            'userProfile_pConfigMasterPass' => 0,
-            'userProfile_pConfigBackup' => 0,
-            'userProfile_pAppMgmtCategories' => 0,
-            'userProfile_pAppMgmtCustomers' => 0,
-            'userProfile_pUsers' => 0,
-            'userProfile_pGroups' => 0,
-            'userProfile_pProfiles' => 0,
-            'userProfile_pEventlog' => 0,
+        $profile = array('id' => 0,
+            'name' => '',
+            'pView' => 0,
+            'pViewPass' => 0,
+            'pViewHistory' => 0,
+            'pEdit' => 0,
+            'pEditPass' => 0,
+            'pAdd' => 0,
+            'pDelete' => 0,
+            'pFiles' => 0,
+            'pConfig' => 0,
+            'pConfigMasterPass' => 0,
+            'pConfigBackup' => 0,
+            'pAppMgmtCategories' => 0,
+            'pAppMgmtCustomers' => 0,
+            'pUsers' => 0,
+            'pGroups' => 0,
+            'pProfiles' => 0,
+            'pEventlog' => 0,
             'action' => 1);
 
         if ($id > 0) {
@@ -69,8 +69,8 @@ class SP_Profiles
 
             if ($usersProfiles) {
                 foreach ($usersProfiles[0] as $name => $value) {
-                    if (preg_match('/^.*_p[A-Z].*$/', $name)) {
-                        $profile[$name] = ((int)$value === 1) ? "CHECKED" : "";
+                    if (preg_match('/^p[A-Za-z].*$/', $name)) {
+                        $profile[$name] = (intval($value) === 1) ? "CHECKED" : "";
                     } else {
                         $profile[$name] = $value;
                     }
@@ -88,30 +88,34 @@ class SP_Profiles
      * @param int $profileId opcional, con el Id del perfil a consultar
      * @return array con la lista de perfiles
      */
-    public static function getProfiles($profileId = NULL)
+    public static function getProfiles($profileId = null)
     {
+        $data = null;
+
         if (!is_null($profileId)) {
-            $query = 'SELECT userprofile_id,'
-                . 'userprofile_name,'
-                . 'userProfile_pView,'
-                . 'userProfile_pViewPass,'
-                . 'userProfile_pViewHistory,'
-                . 'userProfile_pEdit,'
-                . 'userProfile_pEditPass,'
-                . 'userProfile_pAdd,'
-                . 'userProfile_pDelete,'
-                . 'userProfile_pFiles,'
-                . 'userProfile_pConfig,'
-                . 'userProfile_pConfigMasterPass,'
-                . 'userProfile_pConfigBackup,'
-                . 'userProfile_pAppMgmtCategories,'
-                . 'userProfile_pAppMgmtCustomers,'
-                . 'userProfile_pUsers,'
-                . 'userProfile_pGroups,'
-                . 'userProfile_pProfiles,'
-                . 'userProfile_pEventlog '
+            $query = 'SELECT userprofile_id AS id,'
+                . 'userprofile_name AS name,'
+                . 'BIN(userProfile_pView) AS pView,'
+                . 'BIN(userProfile_pViewPass) AS pViewPass,'
+                . 'BIN(userProfile_pViewHistory) AS pViewHistory,'
+                . 'BIN(userProfile_pEdit) AS pEdit,'
+                . 'BIN(userProfile_pEditPass) AS pEditPass,'
+                . 'BIN(userProfile_pAdd) AS pAdd,'
+                . 'BIN(userProfile_pDelete) AS pDelete,'
+                . 'BIN(userProfile_pFiles) AS pFiles,'
+                . 'BIN(userProfile_pConfig) AS pConfig,'
+                . 'BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,'
+                . 'BIN(userProfile_pConfigBackup) AS pConfigBackup,'
+                . 'BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,'
+                . 'BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,'
+                . 'BIN(userProfile_pUsers) AS pUsers,'
+                . 'BIN(userProfile_pGroups) AS pGroups,'
+                . 'BIN(userProfile_pProfiles) AS pProfiles,'
+                . 'BIN(userProfile_pEventlog) AS pEventlog '
                 . 'FROM usrProfiles '
-                . 'WHERE userprofile_id = ' . (int)$profileId . ' LIMIT 1';
+                . 'WHERE userprofile_id = :id LIMIT 1';
+
+            $data['id'] = $profileId;
         } else {
             $query = 'SELECT userprofile_id,'
                 . 'userprofile_name '
@@ -119,13 +123,9 @@ class SP_Profiles
                 . 'ORDER BY userprofile_name';
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, true);
+        DB::setReturnArray();
 
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes;
+        return DB::getResults($query, __FUNCTION__, $data);
     }
 
     /**
@@ -138,25 +138,21 @@ class SP_Profiles
         $profileName = strtoupper(self::$profileName);
 
         if ($profileId) {
-            $query = "SELECT userprofile_name "
-                . "FROM usrProfiles "
-                . "WHERE UPPER(userprofile_name) = '" . DB::escape($profileName) . "' "
-                . "AND userprofile_id != " . $profileId;
+            $query = 'SELECT userprofile_name '
+                . 'FROM usrProfiles '
+                . 'WHERE UPPER(userprofile_name) = :name '
+                . 'AND userprofile_id != :id';
+
+            $data['id'] = $profileId;
         } else {
-            $query = "SELECT userprofile_name "
-                . "FROM usrProfiles "
-                . "WHERE UPPER(userprofile_name) = '" . DB::escape($profileName) . "'";
+            $query = 'SELECT userprofile_name '
+                . 'FROM usrProfiles '
+                . 'WHERE UPPER(userprofile_name) = :name';
         }
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
-            return false;
-        }
+        $data['name'] = $profileName;
 
-        if (count(DB::$last_result) >= 1) {
-            return false;
-        }
-
-        return true;
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows >= 1);
     }
 
     /**
@@ -164,36 +160,58 @@ class SP_Profiles
      * @param array $profileProp con las propiedades del perfil
      * @return bool
      */
-    public static function addProfile($profileProp = NULL)
+    public static function addProfile(&$profileProp)
     {
-        $enableConfig = (int)($profileProp["pConfig"] || $profileProp["pConfigCat"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
+        $enableConfig = (int)($profileProp["pConfig"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
         $enableAppMgmt = (int)($profileProp["pAppMgmt"] || $profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
         $enableUsers = (int)($profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
 
-        $query = "INSERT INTO usrProfiles SET "
-            . "userprofile_name = '" . DB::escape(self::$profileName) . "',"
-            . "userProfile_pView = " . $profileProp["pAccView"] . ","
-            . "userProfile_pViewPass = " . $profileProp["pAccViewPass"] . ","
-            . "userProfile_pViewHistory = " . $profileProp["pAccViewHistory"] . ","
-            . "userProfile_pEdit = " . $profileProp["pAccEdit"] . ","
-            . "userProfile_pEditPass = " . $profileProp["pAccEditPass"] . ","
-            . "userProfile_pAdd = " . $profileProp["pAccAdd"] . ","
-            . "userProfile_pDelete = " . $profileProp["pAccDel"] . ","
-            . "userProfile_pFiles = " . $profileProp["pAccFiles"] . ","
-            . "userProfile_pConfigMenu = " . $enableConfig . ","
-            . "userProfile_pConfig = " . $profileProp["pConfig"] . ","
-            . "userProfile_pConfigMasterPass = " . $profileProp["pConfigMpw"] . ","
-            . "userProfile_pConfigBackup = " . $profileProp["pConfigBack"] . ","
-            . "userProfile_pAppMgmtMenu = " . $enableAppMgmt . ","
-            . "userProfile_pAppMgmtCategories = " . $profileProp["pAppMgmtCat"] . ","
-            . "userProfile_pAppMgmtCustomers = " . $profileProp["pAppMgmtCust"] . ","
-            . "userProfile_pUsersMenu = " . $enableUsers . ","
-            . "userProfile_pUsers = " . $profileProp["pUsers"] . ","
-            . "userProfile_pGroups = " . $profileProp["pGroups"] . ","
-            . "userProfile_pProfiles = " . $profileProp["pProfiles"] . ","
-            . "userProfile_pEventlog = " . $profileProp["pEventlog"];
+        $query = 'INSERT INTO usrProfiles SET '
+            . 'userprofile_name = :name,'
+            . 'userProfile_pView = :pView,'
+            . 'userProfile_pViewPass = :pViewPass,'
+            . 'userProfile_pViewHistory = :pViewHistory,'
+            . 'userProfile_pEdit = :pEdit,'
+            . 'userProfile_pEditPass = :pEditPass,'
+            . 'userProfile_pAdd = :pAdd,'
+            . 'userProfile_pDelete = :pDelete,'
+            . 'userProfile_pFiles = :pFiles,'
+            . 'userProfile_pConfigMenu = :pConfigMenu,'
+            . 'userProfile_pConfig = :pConfig,'
+            . 'userProfile_pConfigMasterPass = :pConfigMasterPass,'
+            . 'userProfile_pConfigBackup = :pConfigBackup,'
+            . 'userProfile_pAppMgmtMenu = :pAppMgmtMenu,'
+            . 'userProfile_pAppMgmtCategories = :pAppMgmtCategories,'
+            . 'userProfile_pAppMgmtCustomers = :pAppMgmtCustomers,'
+            . 'userProfile_pUsersMenu = :pUsersMenu,'
+            . 'userProfile_pUsers = :pUsers,'
+            . 'userProfile_pGroups = :pGroups,'
+            . 'userProfile_pProfiles = :pProfiles,'
+            . 'userProfile_pEventlog = :pEventlog';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['name'] = self::$profileName;
+        $data['pView'] = $profileProp["pAccView"];
+        $data['pViewPass'] = $profileProp["pAccViewPass"];
+        $data['pViewHistory'] = $profileProp["pAccViewHistory"];
+        $data['pEdit'] = $profileProp["pAccEdit"];
+        $data['pEditPass'] = $profileProp["pAccEditPass"];
+        $data['pAdd'] = $profileProp["pAccAdd"];
+        $data['pDelete'] = $profileProp["pAccDel"];
+        $data['pFiles'] = $profileProp["pAccFiles"];
+        $data['pConfigMenu'] = $enableConfig;
+        $data['pConfig'] = $profileProp["pConfig"];
+        $data['pConfigMasterPass'] = $profileProp["pConfigMpw"];
+        $data['pConfigBackup'] = $profileProp["pConfigBack"];
+        $data['pAppMgmtMenu'] = $enableAppMgmt;
+        $data['pAppMgmtCategories'] = $profileProp["pAppMgmtCat"];
+        $data['pAppMgmtCustomers'] = $profileProp["pAppMgmtCust"];
+        $data['pUsersMenu'] = $enableUsers;
+        $data['pUsers'] = $profileProp["pUsers"];
+        $data['pGroups'] = $profileProp["pGroups"];
+        $data['pProfiles'] = $profileProp["pProfiles"];
+        $data['pEventlog'] = $profileProp["pEventlog"];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -214,38 +232,61 @@ class SP_Profiles
      * @param array $profileProp con las propiedades del perfil
      * @return bool
      */
-    public static function updateProfile($profileProp = NULL)
+    public static function updateProfile(&$profileProp)
     {
         $enableConfig = (int)($profileProp["pConfig"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
         $enableAppMgmt = (int)($profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
         $enableUsers = (int)($profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
         $profileName = self::getProfileNameById(self::$profileId);
 
-        $query = "UPDATE usrProfiles SET "
-            . "userprofile_name = '" . DB::escape(self::$profileName) . "',"
-            . "userProfile_pView = " . $profileProp["pAccView"] . ","
-            . "userProfile_pViewPass = " . $profileProp["pAccViewPass"] . ","
-            . "userProfile_pViewHistory = " . $profileProp["pAccViewHistory"] . ","
-            . "userProfile_pEdit = " . $profileProp["pAccEdit"] . ","
-            . "userProfile_pEditPass = " . $profileProp["pAccEditPass"] . ","
-            . "userProfile_pAdd = " . $profileProp["pAccAdd"] . ","
-            . "userProfile_pDelete = " . $profileProp["pAccDel"] . ","
-            . "userProfile_pFiles = " . $profileProp["pAccFiles"] . ","
-            . "userProfile_pConfigMenu = " . $enableConfig . ","
-            . "userProfile_pConfig = " . $profileProp["pConfig"] . ","
-            . "userProfile_pConfigMasterPass = " . $profileProp["pConfigMpw"] . ","
-            . "userProfile_pConfigBackup = " . $profileProp["pConfigBack"] . ","
-            . "userProfile_pAppMgmtMenu = " . $enableAppMgmt . ","
-            . "userProfile_pAppMgmtCategories = " . $profileProp["pAppMgmtCat"] . ","
-            . "userProfile_pAppMgmtCustomers = " . $profileProp["pAppMgmtCust"] . ","
-            . "userProfile_pUsersMenu = " . $enableUsers . ","
-            . "userProfile_pUsers = " . $profileProp["pUsers"] . ","
-            . "userProfile_pGroups = " . $profileProp["pGroups"] . ","
-            . "userProfile_pProfiles = " . $profileProp["pProfiles"] . ","
-            . "userProfile_pEventlog = " . $profileProp["pEventlog"] . " "
-            . "WHERE userprofile_id = " . (int)self::$profileId . " LIMIT 1";
+        $query = 'UPDATE usrProfiles SET '
+            . 'userprofile_name = :name,'
+            . 'userProfile_pView = :pView,'
+            . 'userProfile_pViewPass = :pViewPass,'
+            . 'userProfile_pViewHistory = :pViewHistory,'
+            . 'userProfile_pEdit = :pEdit,'
+            . 'userProfile_pEditPass = :pEditPass,'
+            . 'userProfile_pAdd = :pAdd,'
+            . 'userProfile_pDelete = :pDelete,'
+            . 'userProfile_pFiles = :pFiles,'
+            . 'userProfile_pConfigMenu = :pConfigMenu,'
+            . 'userProfile_pConfig = :pConfig,'
+            . 'userProfile_pConfigMasterPass = :pConfigMasterPass,'
+            . 'userProfile_pConfigBackup = :pConfigBackup,'
+            . 'userProfile_pAppMgmtMenu = :pAppMgmtMenu,'
+            . 'userProfile_pAppMgmtCategories = :pAppMgmtCategories,'
+            . 'userProfile_pAppMgmtCustomers = :pAppMgmtCustomers,'
+            . 'userProfile_pUsersMenu = :pUsersMenu,'
+            . 'userProfile_pUsers = :pUsers,'
+            . 'userProfile_pGroups = :pGroups,'
+            . 'userProfile_pProfiles = :pProfiles,'
+            . 'userProfile_pEventlog = :pEventlog '
+            . 'WHERE userprofile_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = self::$profileId;
+        $data['name'] = self::$profileName;
+        $data['pView'] = $profileProp["pAccView"];
+        $data['pViewPass'] = $profileProp["pAccViewPass"];
+        $data['pViewHistory'] = $profileProp["pAccViewHistory"];
+        $data['pEdit'] = $profileProp["pAccEdit"];
+        $data['pEditPass'] = $profileProp["pAccEditPass"];
+        $data['pAdd'] = $profileProp["pAccAdd"];
+        $data['pDelete'] = $profileProp["pAccDel"];
+        $data['pFiles'] = $profileProp["pAccFiles"];
+        $data['pConfigMenu'] = $enableConfig;
+        $data['pConfig'] = $profileProp["pConfig"];
+        $data['pConfigMasterPass'] = $profileProp["pConfigMpw"];
+        $data['pConfigBackup'] = $profileProp["pConfigBack"];
+        $data['pAppMgmtMenu'] = $enableAppMgmt;
+        $data['pAppMgmtCategories'] = $profileProp["pAppMgmtCat"];
+        $data['pAppMgmtCustomers'] = $profileProp["pAppMgmtCust"];
+        $data['pUsersMenu'] = $enableUsers;
+        $data['pUsers'] = $profileProp["pUsers"];
+        $data['pGroups'] = $profileProp["pGroups"];
+        $data['pProfiles'] = $profileProp["pProfiles"];
+        $data['pEventlog'] = $profileProp["pEventlog"];
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -267,10 +308,11 @@ class SP_Profiles
      */
     public static function deleteProfile()
     {
-        $query = "DELETE FROM usrProfiles "
-            . "WHERE userprofile_id = " . (int)self::$profileId . " LIMIT 1";
+        $query = 'DELETE FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
 
-        if (DB::doQuery($query, __FUNCTION__) === false) {
+        $data['id'] = self::$profileId;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
 
@@ -297,17 +339,13 @@ class SP_Profiles
      */
     private static function getProfileInUsers()
     {
-        $query = "SELECT COUNT(*) as uses "
-            . "FROM usrData "
-            . "WHERE user_profileId = " . (int)self::$profileId;
+        $query = 'SELECT user_profileId FROM usrData WHERE user_profileId = :id';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = self::$profileId;
 
-        if ($queryRes === false) {
-            return false;
-        }
+        DB::getQuery($query, __FUNCTION__, $data);
 
-        return $queryRes->uses;
+        return DB::$last_num_rows;
     }
 
     /**
@@ -318,11 +356,11 @@ class SP_Profiles
      */
     public static function getProfileNameById($id)
     {
-        $query = "SELECT userprofile_name "
-            . "FROM usrProfiles "
-            . "WHERE userprofile_id = " . (int)$id . " LIMIT 1";
+        $query = 'SELECT userprofile_name FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
             return false;
@@ -346,37 +384,30 @@ class SP_Profiles
             return false;
         }
 
-        $query = "SELECT user_profileId,"
-            . "userProfile_pView,"
-            . "userProfile_pViewPass,"
-            . "userProfile_pViewHistory,"
-            . "userProfile_pEdit,"
-            . "userProfile_pEditPass,"
-            . "userProfile_pAdd,"
-            . "userProfile_pDelete,"
-            . "userProfile_pFiles,"
-            . "userProfile_pConfigMenu,"
-            . "userProfile_pConfig,"
-            . "userProfile_pConfigMasterPass,"
-            . "userProfile_pConfigBackup,"
-            . "userProfile_pAppMgmtMenu,"
-            . 'userProfile_pAppMgmtCategories,'
-            . 'userProfile_pAppMgmtCustomers,'
-            . "userProfile_pUsersMenu,"
-            . "userProfile_pUsers,"
-            . "userProfile_pGroups,"
-            . "userProfile_pProfiles,"
-            . "userProfile_pEventlog "
-            . "FROM usrData "
-            . "JOIN usrProfiles ON userProfile_Id = user_profileId "
-            . "WHERE user_id = " . $userId . " LIMIT 1";
+        $query = 'SELECT user_profileId,'
+            . 'BIN(userProfile_pView) AS pView,'
+            . 'BIN(userProfile_pViewPass) AS pViewPass,'
+            . 'BIN(userProfile_pViewHistory) AS pViewHistory,'
+            . 'BIN(userProfile_pEdit) AS pEdit,'
+            . 'BIN(userProfile_pEditPass) AS pEditPass,'
+            . 'BIN(userProfile_pAdd) AS pAdd,'
+            . 'BIN(userProfile_pDelete) AS pDelete,'
+            . 'BIN(userProfile_pFiles) AS pFiles,'
+            . 'BIN(userProfile_pConfig) AS pConfig,'
+            . 'BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,'
+            . 'BIN(userProfile_pConfigBackup) AS pConfigBackup,'
+            . 'BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,'
+            . 'BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,'
+            . 'BIN(userProfile_pUsers) AS pUsers,'
+            . 'BIN(userProfile_pGroups) AS pGroups,'
+            . 'BIN(userProfile_pProfiles) AS pProfiles,'
+            . 'BIN(userProfile_pEventlog) AS pEventlog '
+            . 'FROM usrData '
+            . 'JOIN usrProfiles ON userProfile_Id = user_profileId '
+            . 'WHERE user_id = :id LIMIT 1';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $data['id'] = $userId;
 
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes;
+        return DB::getResults($query, __FUNCTION__, $data);
     }
 }

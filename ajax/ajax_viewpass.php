@@ -34,7 +34,7 @@ if (!SP_Init::isLoggedIn()) {
 
 $accountId = SP_Common::parseParams('p', 'accountid', false);
 $fullTxt = SP_Common::parseParams('p', 'full', 0);
-$isHistory = SP_Common::parseParams('p', 'isHistory', 0);
+$isHistory = SP_Common::parseParams('p', 'isHistory', false);
 
 if (!$accountId) {
     return;
@@ -43,24 +43,19 @@ if (!$accountId) {
 $account = new SP_Account;
 $account->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : "";
 $account->accountId = $accountId;
-$account->accountIsHistory = $isHistory;
+//$account->accountIsHistory = $isHistory;
 
-if (!$isHistory) {
-    $accountData = $account->getAccount();
+$accountData = $account->getAccountPass($isHistory);
 
-    if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
-        die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
-    }
-} else {
-    if ($account->checkAccountMPass()) {
-        $accountData = $account->getAccountHistory();
-        if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
-            die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
-        }
-    } else {
-        echo '<div id="fancyMsg" class="msgError">' . _('La clave maestra no coincide') . '</div>';
-        return;
-    }
+if ($isHistory && !$account->checkAccountMPass()){
+    echo '<div id="fancyMsg" class="msgError">' . _('La clave maestra no coincide') . '</div>';
+    return;
+}
+
+$accountData = $account->getAccountPass($isHistory);
+
+if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
+    die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
 }
 
 if (!SP_Users::checkUserUpdateMPass()) {
@@ -72,14 +67,14 @@ if (!SP_Users::checkUserUpdateMPass()) {
 }
 
 $masterPass = SP_Crypt::getSessionMasterPass();
-$accountClearPass = SP_Crypt::getDecrypt($accountData->account_pass, $masterPass, $accountData->account_IV);
+$accountClearPass = SP_Crypt::getDecrypt($accountData->pass, $masterPass, $accountData->iv);
 
 if (!$isHistory && $fullTxt) {
     $account->incrementDecryptCounter();
 
     $message['action'] = _('Ver Clave');
     $message['text'][] = _('ID') . ': ' . $accountId;
-    $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
+    $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->name;
 
     SP_Log::wrLogInfo($message);
 }
@@ -92,7 +87,7 @@ if ($fullTxt) {
         <table>
             <tr>
                 <td><span class="altTxtBlue"><?php echo _('Usuario'); ?></span></td>
-                <td><?php echo $accountData->account_login; ?></td>
+                <td><?php echo $accountData->login; ?></td>
             </tr>
             <tr>
                 <td><span class="altTxtBlue"><?php echo _('Clave'); ?></span></td>

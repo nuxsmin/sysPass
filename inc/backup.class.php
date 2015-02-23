@@ -105,10 +105,14 @@ class SP_Backup
                 $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
                 fwrite($handle, $sqlOut);
 
-                // Consulta para obtener los registros de la tabla
-                $queryRes = DB::getResults('SELECT * FROM ' . $tableName, __FUNCTION__, false, true);
+                DB::setUnbuffered();
 
-                while ($row = $queryRes->fetch_row()) {
+                // Consulta para obtener los registros de la tabla
+                $queryRes = DB::getResults('SELECT * FROM ' . $tableName, __FUNCTION__);
+
+                $numColumns = $queryRes->columnCount();
+
+                while ($row = $queryRes->fetch(PDO::FETCH_NUM)) {
                     fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
 
                     $field = 1;
@@ -116,10 +120,10 @@ class SP_Backup
                         if (is_numeric($value)) {
                             fwrite($handle, $value);
                         } else {
-                            fwrite($handle, '"' . DB::escape($value) . '"');
+                            fwrite($handle, DB::escape($value));
                         }
 
-                        if ($field < $queryRes->field_count) {
+                        if ($field < $numColumns) {
                             fwrite($handle, ',');
                         }
 
@@ -128,6 +132,8 @@ class SP_Backup
                     fwrite($handle, ');' . PHP_EOL);
                 }
                 fwrite($handle, PHP_EOL . PHP_EOL);
+
+                DB::setUnbuffered(false);
             }
 
             $sqlOut = '--' . PHP_EOL;
