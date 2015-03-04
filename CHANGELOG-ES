@@ -1,3 +1,12 @@
+=== ** v1.1.2.19 ===
+
+* Corregidos algunos mensajes de PHP
+* Se utiliza la ip del servidor de origen para conexión a base de datos remota
+* La longitud de la clave de cuenta se aumenta a 255 caracteres
+* Se elimina clave de array que no era usada
+* Corregido error al guardar clave en la importación de cuentas
+* Actualizada versión de compilación. Necesita actualización de la BD (ver http://wiki.syspass.org/es/actualizar)
+
 === ** v1.1.2.18 ===
 
 * Corregido error al verificar pertenencia a grupos de LDAP. Gracias a @danislav
