@@ -353,14 +353,18 @@ class DB
      * @return int Número de files de la consulta
      * @throws SPDatabaseException
      */
-    public function getFullRowCount(&$query)
+    private function getFullRowCount(&$query)
     {
         if (empty($query)) {
             return 0;
         }
 
-        $patterns = array('/(LIMIT|ORDER BY).*/i', '/SELECT.*FROM/i');
-        $replace = array('', 'SELECT COUNT(*) FROM');
+        $patterns = array(
+            '/(LIMIT|ORDER BY|GROUP BY).*/i',
+            '/SELECT DISTINCT\s([\w_]+),.* FROM/i',
+            '/SELECT [\w_]+,.* FROM/i'
+        );
+        $replace = array('','SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM');
 
         $query = preg_replace($patterns, $replace, $query);
 
@@ -375,9 +379,6 @@ class DB
                     $num = intval($queryRes->fetchColumn());
                 }
             }
-
-            // FIXME
-            //error_log("numrows: " . $num);
 
             $queryRes->closeCursor();
 

@@ -265,10 +265,9 @@ class SP_Migrate
 
         $data['id'] = $currentUserId;
 
-        $db = new DB();
-        $db->setParamData($data);
+        DB::getQuery($query, __FUNCTION__, $data);
 
-        return ($db->getFullRowCount($query) === 0);
+        return (DB::$last_num_rows === 0);
     }
 
     /**

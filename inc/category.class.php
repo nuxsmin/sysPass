@@ -287,9 +287,9 @@ class SP_Category
 
         $data['id'] = $id;
 
-        $db = new DB();
-        $db->setParamData($data);
-        return $db->getFullRowCount($query);
+        DB::getQuery($query, __FUNCTION__, $data);
+
+        return DB::$last_num_rows;
     }
 
 }
