@@ -146,17 +146,17 @@ class SP_Installer
             self::$username = htmlspecialchars_decode($options['adminlogin']);
             self::$password = htmlspecialchars_decode($options['adminpass']);
             self::$masterPassword = htmlspecialchars_decode($options['masterpassword']);
-            self::$dbname = $options['dbname'];
-            self::$dbhost = $options['dbhost'];
+            self::$dbname = trim($options['dbname']);
+            self::$dbhost = trim($options['dbhost']);
 
             //generate a random salt that is used to salt the local user passwords
             $salt = SP_Util::generate_random_bytes(30);
             SP_Config::setValue('passwordsalt', $salt);
             SP_Config::setValue('version', implode(SP_Util::getVersion(true)));
 
-            $dbadmin = $options['dbuser'];
-            $dbpass = $options['dbpass'];
-            $dbhost = $options['dbhost'];
+            $dbadmin = trim($options['dbuser']);
+            $dbpass = trim($options['dbpass']);
+            $dbhost = trim($options['dbhost']);
 
             self::$isHostingMode = (isset($options['hostingmode'])) ? 1 : 0;
 
@@ -295,7 +295,8 @@ class SP_Installer
         }
 
         if (!self::$isHostingMode) {
-            $query = "GRANT ALL PRIVILEGES ON `" . self::$dbname . "`.* TO '" . self::$dbuser . "'@'" . self::$dbhost . "' IDENTIFIED BY '$dbpassword';";
+            $dbhost = (!preg_match('/(127\.0\.0\.1|localhost)/i', self::$dbhost)) ? $_SERVER['SERVER_ADDR'] : self::$dbhost;
+            $query = "GRANT ALL PRIVILEGES ON `" . self::$dbname . "`.* TO '" . self::$dbuser . "'@'$dbhost' IDENTIFIED BY '$dbpassword';";
 
             self::$dbc->query($query);
 
