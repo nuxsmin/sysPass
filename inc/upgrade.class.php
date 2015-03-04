@@ -31,7 +31,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Upgrade
 {
-    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213);
+    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219);
     private static $cfgUpgrade = array(1124);
 
     /**
@@ -88,6 +88,10 @@ class SP_Upgrade
             case 11213:
                 $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(32) NULL DEFAULT NULL ,CHANGE COLUMN `user_lastLogin` `user_lastLogin` DATETIME NULL DEFAULT NULL ,CHANGE COLUMN `user_lastUpdate` `user_lastUpdate` DATETIME NULL DEFAULT NULL, CHANGE COLUMN `user_mIV` `user_mIV` VARBINARY(32) NULL ;';
                 $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_login` `account_login` VARCHAR(50) NULL DEFAULT NULL ;';
+                break;
+            case 11219:
+                $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_pass` `account_pass` VARBINARY(255) NOT NULL ;';
+                $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_pass` `acchistory_pass` VARBINARY(255) NOT NULL ;';
                 break;
             default :
                 $result['text'][] = _('No es necesario actualizar la Base de Datos.');
