@@ -171,7 +171,7 @@ class SP_Profiles
     public static function addProfile($profileProp = NULL)
     {
         $enableConfig = (int)($profileProp["pConfig"] || $profileProp["pConfigCat"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
-        $enableAppMgmt = (int)($profileProp["pAppMgmt"] || $profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
+        $enableAppMgmt = (int)($profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
         $enableUsers = (int)($profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
 
         $query = "INSERT INTO usrProfiles SET "
