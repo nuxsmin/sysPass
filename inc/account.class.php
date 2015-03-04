@@ -540,7 +540,7 @@ class SP_Account
             . "account_name = '" . DB::escape($this->accountName) . "',"
             . "account_login = '" . DB::escape($this->accountLogin) . "',"
             . "account_url = '" . DB::escape($this->accountUrl) . "',"
-            . "account_pass = '$this->accountPass',"
+            . "account_pass = '" . DB::escape($this->accountPass). "',"
             . "account_IV = '" . DB::escape($this->accountIV) . "',"
             . "account_notes = '" . DB::escape($this->accountNotes) . "',"
             . "account_dateAdd = NOW(),"
