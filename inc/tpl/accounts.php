@@ -62,7 +62,7 @@ switch ($action) {
         $savetype = 2;
         $title = array('class' => 'titleOrange', 'name' => _('Editar Cuenta'));
         $showform = true;
-        $nextaction = 'accedit';
+        $nextaction = 'accview';
 
         $accountUsers = $account->getUsersAccount();
         $accountGroups = $account->getGroupsAccount();
@@ -90,6 +90,7 @@ switch ($action) {
         $savetype = 5;
         $title = array('class' => 'titleNormal', 'name' => _('Detalles de Cuenta'));
         $showform = false;
+        $nextaction = 'accview';
 
         $account->accountIsHistory = true;
         $accountUsers = $account->getUsersAccount();
@@ -433,7 +434,7 @@ if ($showform) {
             <td class="descField"><?php echo _('Grupo Principal'); ?></td>
             <td class="valField"><?php echo $accountData->usergroup_name; ?></td>
         </tr>
-        <?php if (count($accountUsers) > 0): ?>
+        <?php if (isset($accountUsers) && count($accountUsers) > 0): ?>
             <tr>
                 <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
                 <td class="valField">
@@ -454,7 +455,7 @@ if ($showform) {
                 </td>
             </tr>
         <?php endif; ?>
-        <?php if (count($accountGroups) > 0): ?>
+        <?php if (isset($accountGroups) && count($accountGroups) > 0): ?>
             <tr>
                 <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
                 <td class="valField">

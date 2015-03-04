@@ -412,6 +412,10 @@ class SP_Users
      */
     public static function addUsersForAccount($accountId, $usersId)
     {
+        if (!is_array($usersId)){
+            return true;
+        }
+
         $values = '';
 
         // Obtenemos los grupos actuales

@@ -391,6 +391,10 @@ class SP_Groups
      */
     public static function addGroupsForAccount($accountId, $groupsId)
     {
+        if (!is_array($groupsId)){
+            return true;
+        }
+
         $values = '';
 
         // Obtenemos los grupos actuales
