@@ -225,6 +225,17 @@ if ($frmAction == "config") {
     }
     
     SP_Common::printJSON(_('Error al guardar el hash de la clave maestra'));
+} elseif ($frmAction == "tmpass") {
+    $tempMasterMaxTime = SP_Common::parseParams('p', 'tmpass_maxtime', 3600);
+    $tempMasterPass = SP_Config::setTempMasterPass($tempMasterMaxTime);
+
+    if (!empty($tempMasterPass)){
+        $message['action'] = _('Generar Clave Temporal');
+        $message['text'][] = SP_Html::strongText(_('Clave') . ': ') . $tempMasterPass;
+
+        SP_Common::sendEmail($message);
+        SP_Common::printJSON(_('Clave Temporal Generada'), 0, $doActionOnClose);
+    }
 } else {
     SP_Common::printJSON(_('Acción Inválida'));
 }

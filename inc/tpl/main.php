@@ -67,7 +67,7 @@ $chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img
                 continue;
             }
 
-            echo '<li class="round"><img src="' . SP_Init::$WEBROOT . '/imgs/' . $action['img'] . '" title="' . _($action['title']) . '" OnClick="doAction(\'' . $action['name'] . '\')" /></li>';
+            echo '<li class="round" title="' . _($action['title']) . '" OnClick="doAction(\'' . $action['name'] . '\')"><img src="' . SP_Init::$WEBROOT . '/imgs/' . $action['img'] . '"/></li>';
         }
         ?>
     </ul>

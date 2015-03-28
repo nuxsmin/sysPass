@@ -506,7 +506,7 @@ class SP_Util
      * @param array $files archivos a parsear
      * @return none
      */
-    public static function getMinified($type, &$files)
+    public static function getMinified($type, &$files, $disableMinify = false)
     {
         $offset = 3600 * 24 * 30;
         $nextCheck = time() + $offset;
@@ -542,7 +542,7 @@ class SP_Util
         foreach ($files as $file) {
             $filePath = $path . $file['href'];
 
-            if ($file['min'] === true) {
+            if ($file['min'] === true && $disableMinify === false) {
                 echo '/* MINIFIED FILE: ' . $file['href'] . ' */' . PHP_EOL;
                 if ($type == 'js') {
                     echo self::jsCompress(file_get_contents($filePath));

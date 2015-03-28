@@ -524,9 +524,9 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
                 </li>
                 <li>
                     <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                         onmouseover="viewPass(<?php echo $account->accountId; ?>,0,<?php echo $account->accountIsHistory; ?>)"
-                         data-clipboard-target="clip_pass_text"
-                         class="inputImg clip_pass_button"/>
+                         onmousedown="viewPass(<?php echo $account->accountId; ?>, false, <?php echo $account->accountIsHistory; ?>)"
+                         data-clipboard-target="clip-pass-text"
+                         class="inputImg clip-pass-button"/>
                 </li>
             <?php endif; ?>
 
@@ -600,24 +600,27 @@ $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
 <?php endif; ?>
 
 <?php if ($showViewPass): ?>
-    <div id="clip_pass_text" style="visibility: hidden"></div>
+    <div id="clip-pass-text" style="visibility: hidden"></div>
 
     <script>
         passToClip = 0;
 
-        var client = new ZeroClipboard( $('.clip_pass_button'), {
-            moviePath: "js/ZeroClipboard.swf",
-            debug: true
-        } );
+        function clipboard() {
+            var client = new ZeroClipboard($('.clip-pass-button'), {
+                swfPath: "js/ZeroClipboard.swf",
+                debug: false,
+                title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
+            });
 
-        //client.setText(data);
-        client.on( 'load', function(client) {
-            $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
-        } );
+            client.on("aftercopy", function (e) {
+                resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+            });
 
-        client.on( "complete", function(client, args) {
-            resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-            //console.log("Copied text to clipboard: " + args.text );
-        } );
+            client.on("error", function (e) {
+                ZeroClipboard.destroy();
+            });
+        }
+
+        clipboard();
     </script>
 <?php endif; ?>

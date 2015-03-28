@@ -73,26 +73,29 @@ input, select, textarea {
     background-color: #fffef0;
     color: black;
     font-size: 11px;
+    padding: 5px;
+}
+
+td>input, td>select, td>textarea {
     border: 1px solid #dfdfdf;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.075) inset;
-    padding: 5px;
 }
 
 input:hover, select:hover, textarea:hover {
     background-color: #fffccd;
 }
 
-input:active, select:hover, textarea:active {
+td>input:active, td>select:hover, td>textarea:active {
     background-color: #fffde1;
     color: #045FB4;
     border: 1px solid #5897fb;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset, 0 0 5px rgba(88, 151, 251, 0.5);
 }
 
-input:focus, select:hover, textarea:focus {
+td>input:focus, td>select:hover, td>textarea:focus {
     background-color: #fffccd;
     color: #045FB4;
     border: 1px solid #5897fb;
@@ -1478,6 +1481,16 @@ footer img {
     font-weight: bold;
 }
 
+.dialog-pass-text{padding: .5em; border: transparent 1px solid; text-align: center; min-width: 200px; }
+.dialog-buttons{text-align: center; padding: .5em; border-top: 1px solid #c9c9c9; line-height: 2.5em;}
+.dialog-clip-pass-copy {
+    background-color: #ecfde4;;
+    color: green;
+    border: #dbfdcb 1px solid;
+}
+
+.help-text{text-align: justify; line-height: 1.5em; margin-top: 1em;}
+
 /*Login Page*/
 #boxLogin {
     width: 450px;
@@ -1750,11 +1763,22 @@ fieldset.warning a {
     text-align: center;
 }
 
-#whatsNewIcon {text-align: center;}
-#whatsNewIcon img{width: 64px; height: 64px;}
-#whatsNewIcon h2{display: inline-block; color: #555; font-size: 16px;}
+#whatsNewIcon {
+    text-align: center;
+}
 
-#whatsNew{
+#whatsNewIcon img {
+    width: 64px;
+    height: 64px;
+}
+
+#whatsNewIcon h2 {
+    display: inline-block;
+    color: #555;
+    font-size: 16px;
+}
+
+#whatsNew {
     margin: 0 auto;
     width: 500px;
     background-color: #fffde1;
@@ -1767,7 +1791,11 @@ fieldset.warning a {
     display: none;
 }
 
-#whatsNew ul{padding: 0; border: none;}
+#whatsNew ul {
+    padding: 0;
+    border: none;
+}
+
 #whatsNew li {
     padding-left: 37px;
     background: url("../imgs/arrow-list.png") left center no-repeat;

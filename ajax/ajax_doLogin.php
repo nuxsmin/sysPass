@@ -126,6 +126,10 @@ if (!$objUser->getUserInfo()) {
 if (!$masterPass && (!$objUser->checkUserMPass() || !SP_Users::checkUserUpdateMPass($userLogin) )) {
     SP_Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
+    if(SP_Config::checkTempMasterPass($masterPass)){
+        $masterPass = SP_Config::getTempMasterPass($masterPass);
+    }
+
     if (!$objUser->updateUserMPass($masterPass)) {
         $message['text'][] = _('Clave maestra incorrecta');
         SP_Log::wrLogInfo($message);

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -35,7 +35,7 @@ class SP_Common
      *
      * @param array $message con el nombre de la accióm y el texto del mensaje
      * @param string $mailTo con el destinatario
-     * @param bool $isEvent para indicar si es um
+     * @param bool $isEvent  para indicar si es um
      * @return bool
      */
     public static function sendEmail($message, $mailTo = '', $isEvent = true)
@@ -152,7 +152,7 @@ class SP_Common
      * Devuelve una respuesta en formato XML con el estado y el mensaje.
      *
      * @param string $description mensaje a devolver
-     * @param int $status devuelve el estado
+     * @param int $status         devuelve el estado
      * @return bool
      */
     public static function printXML($description, $status = 1)
@@ -176,23 +176,37 @@ class SP_Common
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param string $description mensaje a devolver
-     * @param int $status devuelve el estado
-     * @param string $action con la accion a realizar
+     * @param string|array $data mensaje a devolver
+     * @param int $status        devuelve el estado
+     * @param string $action     con la accion a realizar
      * @return bool
      */
-    public static function printJSON($description, $status = 1, $action = '')
+    public static function printJSON($data, $status = 1, $action = '')
     {
-        if (!is_string($description)) {
+        if (!is_string($data) && !is_array($data)) {
             return false;
         }
 
         $arrStrFrom = array("\\", '"', "'");
         $arrStrTo = array("\\", '\"', "\'");
 
-        $cleanDescription = str_replace($arrStrFrom, $arrStrTo, $description);
+        if (!is_array($data)) {
+            $json = array(
+                'status' => $status,
+                'description' => str_replace($arrStrFrom, $arrStrTo, $data),
+                'action' => $action
+            );
+        } else {
+            array_walk($data,
+                function (&$value, &$key, $arrStrFrom, $arrStrTo) {
+                    return str_replace($arrStrFrom, $arrStrTo, $value);
+                }
+            );
 
-        $json = array('status' => $status, 'description' => $cleanDescription, 'action' => $action);
+            $data['status'] = $status;
+            $data['action'] = $action;
+            $json = $data;
+        }
 
         header('Content-type: application/json');
         exit(json_encode($json));
@@ -202,7 +216,7 @@ class SP_Common
      * Devuelve un icono de ayuda con el mensaje.
      *
      * @param int $type tipo de mensaje
-     * @param int $id id del mensaje
+     * @param int $id   id del mensaje
      * @return string Con la etiqueta html del icono de ayuda
      */
     public static function printHelpButton($type, $id)
@@ -281,12 +295,12 @@ class SP_Common
      * Obtener los valores de variables $_GET, $_POST, $_REQUEST o $_SESSION
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $method con el método a utilizar
-     * @param string $param con el parámetro a consultar
-     * @param mixed $default opcional, valor por defecto a devolver
+     * @param string $method  con el método a utilizar
+     * @param string $param   con el parámetro a consultar
+     * @param mixed $default  opcional, valor por defecto a devolver
      * @param bool $onlyCHeck opcional, comprobar si el parámetro está presente
-     * @param mixed $force opcional, valor devuelto si el parámeto está definido
-     * @param bool $sanitize opcional, escapar/eliminar carácteres especiales
+     * @param mixed $force    opcional, valor devuelto si el parámeto está definido
+     * @param bool $sanitize  opcional, escapar/eliminar carácteres especiales
      * @return bool|string si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
     public static function parseParams($method, $param, $default = '', $onlyCHeck = false, $force = false, $sanitize = true)

@@ -82,5 +82,19 @@ $lastBackupTime = (file_exists($backupFile['absolute'])) ? _('Último backup') .
             <img src="imgs/backup.png" title="<?php echo _('Realizar Backup'); ?>" class="inputImg"
                  OnClick="configMgmt('backup');"/>
         </li>
+        <li>
+            <img id="help_backup_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg" />
+            <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
+                <p class="help-text"><?php echo _('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
+                <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
+            </div>
+        </li>
     </ul>
 </div>
+
+<script>
+    $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>'});
+    $("#help_backup_button").click(function() {
+        $("#help_backup").dialog("open");
+    });
+</script>

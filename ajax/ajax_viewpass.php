@@ -33,7 +33,6 @@ if (!SP_Init::isLoggedIn()) {
 }
 
 $accountId = SP_Common::parseParams('p', 'accountid', false);
-$fullTxt = SP_Common::parseParams('p', 'full', 0);
 $isHistory = SP_Common::parseParams('p', 'isHistory', false);
 
 if (!$accountId) {
@@ -48,28 +47,23 @@ $account->accountId = $accountId;
 $accountData = $account->getAccountPass($isHistory);
 
 if ($isHistory && !$account->checkAccountMPass()){
-    echo '<div id="fancyMsg" class="msgError">' . _('La clave maestra no coincide') . '</div>';
-    return;
+    SP_Common::printJSON(_('La clave maestra no coincide'));
 }
 
 $accountData = $account->getAccountPass($isHistory);
 
 if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
-    die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
+    SP_Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
 }
 
 if (!SP_Users::checkUserUpdateMPass()) {
-    if ($fullTxt) {
-        die('<div id="fancyMsg" class="msgError">' . _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla') . '</div>');
-    } else {
-        die(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
-    }
+    SP_Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
 $masterPass = SP_Crypt::getSessionMasterPass();
 $accountClearPass = SP_Crypt::getDecrypt($accountData->pass, $masterPass, $accountData->iv);
 
-if (!$isHistory && $fullTxt) {
+if (!$isHistory) {
     $account->incrementDecryptCounter();
 
     $message['action'] = _('Ver Clave');
@@ -81,22 +75,10 @@ if (!$isHistory && $fullTxt) {
 
 $accountPass = htmlentities(trim($accountClearPass),ENT_COMPAT,'UTF-8');
 
-if ($fullTxt) {
-    ?>
-    <div id="fancyMsg" class="msgInfo">
-        <table>
-            <tr>
-                <td><span class="altTxtBlue"><?php echo _('Usuario'); ?></span></td>
-                <td><?php echo $accountData->login; ?></td>
-            </tr>
-            <tr>
-                <td><span class="altTxtBlue"><?php echo _('Clave'); ?></span></td>
-                <td><?php echo $accountPass; ?></td>
-            </tr>
-        </table>
-    </div>
-    <?php
-} else {
-    echo $accountPass;
-}
-?>
+$data = array(
+    'title' => _('Clave de Cuenta'),
+//    'acclogin' => _('Usuario') . ': ' . $accountData->login,
+    'accpass' => $accountPass
+);
+
+SP_Common::printJSON($data, 0);

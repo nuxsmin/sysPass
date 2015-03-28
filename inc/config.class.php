@@ -130,9 +130,10 @@ class SP_Config
      *
      * @param string $param con el parámetro a guardar
      * @param string $value con el calor a guardar
+     * @param bool $email enviar email?
      * @return bool
      */
-    public static function setConfigValue($param, $value)
+    public static function setConfigValue($param, $value, $email = true)
     {
         $query = "INSERT INTO config "
             . "SET config_parameter = :param,"
@@ -153,7 +154,10 @@ class SP_Config
         $message['text'][] = _('Valor') . ': ' . $value;
 
         SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+
+        if ($email === true) {
+            SP_Common::sendEmail($message);
+        }
 
         return true;
     }
@@ -366,5 +370,74 @@ class SP_Config
         // Write changes
         self::writeData();
         return true;
+    }
+
+    /**
+     * Crea una clave temporal para encriptar la clave maestra y guardarla.
+     *
+     * @return bool|string
+     */
+    public static function setTempMasterPass($maxTime = 14400)
+    {
+        // Encriptar la clave maestra con hash aleatorio generado
+        $randomHash = SP_Util::generate_random_bytes(32);
+        $pass = SP_Crypt::mkCustomMPassEncrypt($randomHash, SP_Crypt::getSessionMasterPass());
+
+        if (!is_array($pass)){
+            return false;
+        }
+
+        self::setConfigValue('tempmaster_pass', bin2hex($pass[0]), false);
+        self::setConfigValue('tempmaster_passiv', bin2hex($pass[1]), false);
+        self::setConfigValue('tempmaster_passhash', sha1($randomHash), false);
+        self::setConfigValue('tempmaster_passtime', time(), false);
+        self::setConfigValue('tempmaster_maxtime', time() + $maxTime, false);
+        self::setConfigValue('tempmaster_attempts', 0, false);
+
+        return $randomHash;
+    }
+
+    /**
+     * Comprueba si la clave temporal es válida
+     *
+     * @param string $pass clave a comprobar
+     * @return bool
+     */
+    public static function checkTempMasterPass($pass)
+    {
+        $passTime = self::getConfigValue('tempmaster_passtime');
+        $passMaxTime = self::getConfigValue('tempmaster_maxtime');
+        $attempts = self::getConfigValue('tempmaster_attempts');
+
+        // Comprobar si el tiempo de validez se ha superado
+        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5){
+            self::setConfigValue('tempmaster_pass', '', false);
+            self::setConfigValue('tempmaster_passiv', '', false);
+            self::setConfigValue('tempmaster_passhash', '', false);
+
+            return false;
+        }
+
+        $isValid = (self::getConfigValue('tempmaster_passhash') == sha1($pass));
+
+        if (!$isValid){
+            self::setConfigValue('tempmaster_attempts', $attempts + 1, false);
+        }
+
+        return $isValid;
+    }
+
+    /**
+     * Devuelve la clave maestra que ha sido encriptada con la clave temporal
+     *
+     * @param $pass con la clave utilizada para encriptar
+     * @return string con la clave maestra desencriptada
+     */
+    public static function getTempMasterPass($pass)
+    {
+        $passLogin = hex2bin(self::getConfigValue('tempmaster_pass'));
+        $passLoginIV = hex2bin(self::getConfigValue('tempmaster_passiv'));
+
+        return SP_Crypt::getDecrypt($passLogin, $pass, $passLoginIV);
     }
 }

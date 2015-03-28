@@ -106,7 +106,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
             <?php echo _('Timeout de sesión (s)'); ?>
         </td>
         <td class="valField">
-            <input type="text" name="session_timeout" value="<?php echo SP_Config::getValue('session_timeout'); ?>" maxlength="4" <?php echo $isDisabled; ?> />
+            <input type="text" name="session_timeout" id="session_timeout" value="<?php echo SP_Config::getValue('session_timeout'); ?>" maxlength="4" <?php echo $isDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -194,7 +194,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
             <?php echo SP_Common::printHelpButton("config", 6); ?>
         </td>
         <td class="valField">
-            <input type="text" name="files_allowed_size" value="<?php echo SP_Config::getValue('files_allowed_size'); ?>" maxlength="5" <?php echo $isDisabled; ?> />
+            <input type="text" name="files_allowed_size" id="files_allowed_size" value="<?php echo SP_Config::getValue('files_allowed_size'); ?>" maxlength="5" <?php echo $isDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -203,14 +203,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
             <?php echo SP_Common::printHelpButton("config", 4); ?>
         </td>
         <td class="valField">
-            <select name="account_count" id="sel-account_count" size="1">
-                <?php 
-                foreach ($arrAccountCount as $num ){
-                    $selected = ( SP_Config::getValue('account_count') == $num) ? 'SELECTED' : '';
-                    echo "<option $selected>$num</option>";
-                }
-                ?>
-            </select>
+            <input type="text" name="account_count" id="sel-account_count" value="<?php echo SP_Config::getValue('account_count'); ?>" maxlength="5" <?php echo $isDisabled; ?> />
         </td>
     </tr>
     <tr>
@@ -491,7 +484,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
 </div>
 
 <script>
-    $("#sel-sitelang,#sel-account_link,#sel-account_count,#sel-mailsecurity").chosen({disable_search : true});
+    $("#sel-sitelang,#sel-account_link,#sel-mailsecurity").chosen({disable_search : true});
     $('#frmConfig').find('.checkbox').button();
     $('#frmConfig').find('.ui-button').click(function(){
         // El cambio de clase se produce durante el evento de click
@@ -513,21 +506,17 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
             // Fix scrolling to bottom
             var $tagsbox = $(this).next();
             $tagsbox.animate({scrollTop: $tagsbox.height()});
-            
+
             if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
-                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '" />');
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '" />');
             }
         },
-        'onRemoveTag' : function(){           
+        'onRemoveTag' : function(){
             var $tagsbox = $(this).next();
-            
+
             if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
-                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '"/>');
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
             }
-        },
-        onChange : function(){
-            // Fix tooltip on refresh the tags list
-            $(this + '[title]').powerTip(powertipOptions);
         }
     });
     $('#wikifilter').tagsInput({
@@ -540,25 +529,22 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
             // Fix scrolling to bottom
             var $tagsbox = $(this).next();
             $tagsbox.animate({scrollTop: $tagsbox.height()});
-            
+
             if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
-                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '"/>');
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
             }
         },
         onRemoveTag : function(){
             var $tagsbox = $(this).next();
-            
+
             if ( $tagsbox.find('img:last').attr('alt') != 'warning' ){
-                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[13] + '"/>');
+                $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
             }
         },
         onChange : function(){
             var $tagsbox = $(this).next();
-            last_width = $tagsbox.find("span:last").width() + 10;
+            var last_width = $tagsbox.find("span:last").width() + 10;
             $tagsbox.find(".tag:last").css('width', last_width);
-            
-            // Fix tooltip on refresh the tags list
-            $(this + '[title]').powerTip(powertipOptions);
         }
     });
     $("#ldap_defaultgroup").chosen({
@@ -571,4 +557,7 @@ $profilesSelProp = array('name' => 'ldap_defaultprofile',
         disable_search_threshold: 10,
         no_results_text: "<?php echo _('Sin resultados'); ?>"
     });
+    $("#session_timeout").spinner({step: 300, min: 300, numberFormat: "n"});
+    $("#files_allowed_size").spinner({step: 1024, min: 1024, numberFormat: "n"});
+    $("#sel-account_count").spinner({step: 6, max: 100, min: 6, numberFormat: "n"});
 </script>

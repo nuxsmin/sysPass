@@ -27,7 +27,9 @@ define('APP_ROOT', '..');
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
 $jsFiles = array(
-    array("href" => "js/jquery.js", "min" => false),
+//    array("href" => "js/jquery.js", "min" => false),
+    array("href" => "js/jquery-1.11.2.min.js", "min" => false),
+    array("href" => "js/jquery-migrate-1.2.1.min.js", "min" => false),
     array("href" => "js/jquery.placeholder.js", "min" => true),
     array("href" => "js/jquery-ui.js", "min" => false),
     array("href" => "js/fancybox/jquery.fancybox.pack.js", "min" => false),
@@ -69,4 +71,4 @@ $arrJsLang = array(
 echo "var LANG = ['" . implode("','", SP_Util::arrayJSEscape($arrJsLang)) . "'];";
 echo "var APP_ROOT = '" . SP_Init::$WEBROOT . "';\n";
 
-SP_Util::getMinified('js', $jsFiles);
+SP_Util::getMinified('js', $jsFiles, true);

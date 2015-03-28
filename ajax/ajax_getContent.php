@@ -317,7 +317,7 @@ switch ($action) {
         echo '<DIV ID="tabs">';
         echo '<UL>';
         echo (SP_ACL::checkUserAccess("config")) ? '<LI><A HREF="#tabs-1" TITLE="' . _('Configuración') . '">' . _('Configuración') . '</A></LI>' : '';
-        echo (SP_ACL::checkUserAccess("masterpass")) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Clave Maestra') . '">' . _('Clave Maestra') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("masterpass")) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Encriptación') . '">' . _('Encriptación') . '</A></LI>' : '';
         echo (SP_ACL::checkUserAccess("backup")) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
         echo (SP_ACL::checkUserAccess("config")) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
         echo '</UL>';
@@ -388,6 +388,7 @@ if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
     $debugTxt[] = "<li>SESSION:";
     $debugTxt[] = "<pre>" . print_r($_SESSION, true) . "</pre";
     $debugTxt[] = "</li>";
+//    $debugTxt[] = "<li>Master Pass: " . SP_Crypt::getSessionMasterPass() ."</li>";
     $debugTxt[] = "<li>CONFIG:<pre>";
     $debugTxt[] = "<pre>" . print_r(SP_Config::getKeys(true), true) . "</pre>";
     $debugTxt[] = "</li>";

@@ -1063,7 +1063,7 @@ class SP_Users
             if ($showPass == true) {
                 return $clearMasterPass;
             } else {
-                $_SESSION['mPassPwd'] = substr(sha1(uniqid()), 0, 32);
+                $_SESSION['mPassPwd'] = SP_Util::generate_random_bytes(32);
 
                 $sessionMasterPass = SP_Crypt::mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
 

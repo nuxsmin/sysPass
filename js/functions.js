@@ -8,6 +8,8 @@ order.dir = 0;
 var passToClip = 0;
 // Variable para el ajuste óptimo del contenido a la altura del documento
 var windowAdjustSize = 350;
+// Variable para almacena la llamada a setTimeout()
+var timeout;
 
 var strPassword;
 var minPasswordLength = 8;
@@ -36,7 +38,7 @@ jQuery.extend(jQuery.fancybox.defaults, {
     autoHeight: 'true',
     minHeight: 50,
     padding: 0,
-    helpers: {overlay: { css: { 'background': 'rgba(0, 0, 0, 0.1)'}}},
+    helpers: {overlay: {css: {'background': 'rgba(0, 0, 0, 0.1)'}}},
     afterShow: function () {
         "use strict";
 
@@ -57,6 +59,31 @@ $(document).ready(function () {
     $("[title]").powerTip(powertipOptions);
     $('input, textarea').placeholder();
 });
+
+//$(function() {
+//    "use strict";
+//
+//    $.ajaxSetup({
+//        error: function(jqXHR, exception) {
+//            if (jqXHR.status === 0) {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//            } else if (jqXHR.status == 404) {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//            } else if (jqXHR.status == 500) {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//            } else if (exception === 'parsererror') {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//            } else if (exception === 'timeout') {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//            } else if (exception === 'abort') {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//            } else {
+//                $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+//                //alert('Uncaught Error.n' + jqXHR.responseText);
+//            }
+//        }
+//    });
+//});
 
 // Función para cargar el contenido de la acción del menú seleccionada
 function doAction(action, lastAction, id) {
@@ -113,7 +140,7 @@ function setWindowAdjustSize() {
 function scrollUp() {
     "use strict";
 
-    $('html, body').animate({ scrollTop: 0 }, 'slow');
+    $('html, body').animate({scrollTop: 0}, 'slow');
 }
 
 // Función para limpiar un formulario
@@ -268,20 +295,78 @@ function viewPass(id, full, history) {
     $.ajax({
         type: 'POST',
         url: APP_ROOT + '/ajax/ajax_viewpass.php',
+        dataType: "json",
         async: false,
         data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
-        success: function (data) {
-            if (data === "-1") {
-                doLogout();
-            } else {
-                if (full === 0) {
-                    // Copiamos la clave en el objeto que tiene acceso al portapapeles
-                    $('#clip_pass_text').html(data);
-                    passToClip = 1;
-                } else {
-                    resMsg("none", data);
-                }
+        success: function (json) {
+            if (full === false) {
+                // Copiamos la clave en el objeto que tiene acceso al portapapeles
+                $('#clip-pass-text').html(json.accpass);
+                passToClip = 1;
+                return;
             }
+
+            $('<div></div>').dialog({
+                modal: true,
+                title: json.title,
+                width: 'auto',
+                open: function () {
+                    var content;
+
+                    if (json.status === 0) {
+                        content = '<p class="dialog-pass-text">' + json.accpass + '</p>' +
+                        '<br>' +
+                        '<div class="dialog-buttons">' +
+                        '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                        '<span class="ui-button-text">Copiar</span>' +
+                        '</button>' +
+                        '</div>';
+                    } else {
+                        content = '<span class="altTxtRed">' + json.description + '</span>';
+
+                        $(this).dialog("option", "buttons",
+                            [{
+                                text: "Ok",
+                                icons: {primary: "ui-icon-close"}, click: function () {
+                                    $(this).dialog("close");
+                                }
+                            }]
+                        );
+                    }
+
+                    $(this).html(content);
+
+                    // Recentrar después de insertar el contenido
+                    $(this).dialog('option', 'position', 'center');
+
+                    // Carga de objeto flash para copiar al portapapeles
+                    var client = new ZeroClipboard($("#dialog-clip-pass-button-" + id), {swfPath: "js/ZeroClipboard.swf"});
+
+                    client.on('ready', function (e) {
+                        $("#dialog-clip-pass-button-" + id).attr("data-clip", 1);
+
+                        client.on('copy', function (e) {
+                            e.clipboardData.setData('text/plain', json.accpass);
+                        });
+                        client.on('aftercopy', function (e) {
+                            $('.dialog-pass-text').addClass('dialog-clip-pass-copy round');
+                        });
+                    });
+                    client.on('error', function (e) {
+                        ZeroClipboard.destroy();
+                    });
+
+                    // Timeout del mensaje
+                    var $this = $(this);
+                    timeout = setTimeout(function(){$this.dialog('close');}, 30000);
+                },
+                // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
+                close: function () {
+                    clearTimeout(timeout);
+                    $(this).dialog("destroy");
+                }
+            });
         }
     });
 }
@@ -341,7 +426,8 @@ function doLogin() {
             404: function () {
                 var txt = LANG[1] + '<p>' + LANG[13] + '</p>';
                 resMsg("error", txt);
-            }}
+            }
+        }
     });
 
     return false;
@@ -459,6 +545,10 @@ function configMgmt(action) {
             break;
         case "savempwd":
             frm = 'frmCrypt';
+            url = '/ajax/ajax_configSave.php';
+            break;
+        case "gentmpass":
+            frm = 'frmTempMasterPass';
             url = '/ajax/ajax_configSave.php';
             break;
         case "backup":
@@ -773,7 +863,7 @@ function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
     var url = '/ajax/ajax_appMgmtSave.php';
 
     if (isDel === 1) {
-        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction };
+        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction};
         var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
 
         alertify.confirm(atext, function (e) {
@@ -813,7 +903,7 @@ function clearEventlog(sk) {
 
     alertify.confirm(atext, function (e) {
         if (e) {
-            var data = { 'clear': 1, 'sk': sk, 'isAjax': 1};
+            var data = {'clear': 1, 'sk': sk, 'isAjax': 1};
             var url = '/ajax/ajax_eventlog.php';
 
             sendAjax(data, url);
@@ -1000,9 +1090,11 @@ function resMsg(type, txt, url, action) {
     "use strict";
 
     if (typeof url !== "undefined") {
-        $.ajax({ url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
-            txt = data;
-        }});
+        $.ajax({
+            url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
+                txt = data;
+            }
+        });
     }
 
     var html;
@@ -1011,13 +1103,13 @@ function resMsg(type, txt, url, action) {
 
     switch (type) {
         case "ok":
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.success(txt);
         case "error":
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.error(txt);
         case "warn":
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.log(txt);
         case "info":
             html = '<div id="fancyMsg" class="msgInfo">' + txt + '</div>';
@@ -1026,20 +1118,26 @@ function resMsg(type, txt, url, action) {
             html = txt;
             break;
         case "nofancyerror":
-            html = '<P CLASS="error round">Oops...<BR />' + LANG[1] + '<BR />' + txt + '</P>';
+            html = '<p class="error round">Oops...<br>' + LANG[1] + '<br>' + txt + '</p>';
             return html;
         default:
-            alertify.set({ beforeCloseAction: action });
+            alertify.set({beforeCloseAction: action});
             return alertify.error(txt);
     }
 
-    $.fancybox(html, {afterLoad: function () {
-        $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({'border-radius': '25px', '-moz-border-radius': '25px', '-webkit-border-radius': '25px'});
-    }, afterClose: function () {
-        if (typeof action !== "undefined") {
-            eval(action);
+    $.fancybox(html, {
+        afterLoad: function () {
+            $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({
+                'border-radius': '25px',
+                '-moz-border-radius': '25px',
+                '-webkit-border-radius': '25px'
+            });
+        }, afterClose: function () {
+            if (typeof action !== "undefined") {
+                eval(action);
+            }
         }
-    } });
+    });
 }
 
 // Función para comprobar la conexión con LDAP
@@ -1052,7 +1150,15 @@ function checkLdapConn() {
     var ldapBindUser = $('#frmConfig').find('[name=ldap_binduser]').val();
     var ldapBindPass = $('#frmConfig').find('[name=ldap_bindpass]').val();
     var sk = $('#frmConfig').find('[name=sk]').val();
-    var data = {'ldap_server': ldapServer, 'ldap_base': ldapBase, 'ldap_group': ldapGroup, 'ldap_binduser': ldapBindUser, 'ldap_bindpass': ldapBindPass, 'isAjax': 1, 'sk': sk};
+    var data = {
+        'ldap_server': ldapServer,
+        'ldap_base': ldapBase,
+        'ldap_group': ldapGroup,
+        'ldap_binduser': ldapBindUser,
+        'ldap_bindpass': ldapBindPass,
+        'isAjax': 1,
+        'sk': sk
+    };
 
     sendAjax(data, '/ajax/ajax_checkLdap.php');
 }

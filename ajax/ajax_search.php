@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -157,9 +157,9 @@ foreach ($resQuery as $account) {
     $color = array_rand($colors);
 
     if (!isset($customerColor)) {
-        $customerColor[$account->account_customerId] = '#'.$colors[$color];
+        $customerColor[$account->account_customerId] = '#' . $colors[$color];
     } elseif (isset($customerColor) && !array_key_exists($account->account_customerId, $customerColor)) {
-        $customerColor[$account->account_customerId] = '#'.$colors[$color];
+        $customerColor[$account->account_customerId] = '#' . $colors[$color];
     }
 
     //$hexColor = $customerColor[$account->account_customerId][0];
@@ -215,7 +215,7 @@ foreach ($resQuery as $account) {
             }
         }
 
-        if ($account->account_notes){
+        if ($account->account_notes) {
             $strAccNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
             $strAccNotes = nl2br(wordwrap(htmlspecialchars($strAccNotes), 50, '<br>', true));
         }
@@ -286,7 +286,8 @@ foreach ($resQuery as $account) {
 
         if ($accViewPass) {
             echo '<img src="imgs/user-pass.png" title="' . _('Ver Clave') . '" onClick="viewPass(' . $account->account_id . ', 1)" />';
-            echo '<img src="imgs/clipboard.png" title="' . _('Copiar Clave en Portapapeles') . '" onmouseover="viewPass(' . $account->account_id . ', 0)" onmouseout="passToClip = 0;" class="actions-optional clip_pass_button" data-clipboard-target="clip_pass_text" />';
+//            echo '<img src="imgs/clipboard.png" title="' . _('Copiar Clave en Portapapeles') . '" onmouseover="viewPass(' . $account->account_id . ', true)" onmouseout="passToClip = 0;" class="actions-optional clip-pass-button" data-clipboard-target="clip-pass-text" />';
+            echo '<img src="imgs/clipboard.png" title="' . _('Copiar Clave en Portapapeles') . '" onmousedown="viewPass(' . $account->account_id . ', false)" class="actions-optional clip-pass-button" data-clipboard-target="clip-pass-text" />';
         }
 
         if ($accEdit || $accCopy || $accDel || $accViewPass) {
@@ -326,22 +327,26 @@ SP_Html::printQuerySearchNavBar($sortKey, $arrSearchFilter["limitStart"], $objAc
 //echo $objAccount->query;
 ?>
 
-<div id="clip_pass_text" style="visibility: hidden"></div>
+<div id="clip-pass-text" style="visibility: hidden"></div>
 
 <script>
     passToClip = 0;
 
-    var client = new ZeroClipboard( $('.clip_pass_button'), {
-        moviePath: "js/ZeroClipboard.swf",
-        debug: false
-    });
+    function clipboard() {
+        var client = new ZeroClipboard($('.clip-pass-button'), {
+            swfPath: "js/ZeroClipboard.swf",
+            debug: false,
+            title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
+        });
 
-    //client.setText(data);
-    client.on( 'load', function(client) {
-        $('#global-zeroclipboard-html-bridge').attr('rel', 'tooltip').attr('title', '<?php echo _('Copiar Clave en Portapapeles'); ?>');
-    });
+        client.on("aftercopy", function (e) {
+            resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+        });
 
-    client.on( "complete", function(client, args) {
-        resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-    });
+        client.on("error", function (e) {
+            ZeroClipboard.destroy();
+        });
+    }
+
+    clipboard();
 </script>
