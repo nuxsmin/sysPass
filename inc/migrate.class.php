@@ -62,9 +62,6 @@ class MigrateException extends Exception
  */
 class SP_Migrate
 {
-//    private static $dbuser;
-    private static $dbname;
-    private static $dbhost;
     private static $dbc; // Database connection
     private static $customersByName;
     private static $currentQuery;
@@ -85,15 +82,22 @@ class SP_Migrate
             return $result;
         }
 
-        self::$dbname = $dbname = $options['dbname'];
-        self::$dbhost = $dbhost = $options['dbhost'];
+        $dbname = $options['dbname'];
+
+        if (preg_match('/(.*):(\d{1,5})/', $options['dbhost'], $match)){
+            $dbhost = $match[1];
+            $dbport = $match[2];
+        } else {
+            $dbhost = $options['dbhost'];
+            $dbport = 3306;
+        }
 
         $dbadmin = $options['dbuser'];
         $dbpass = $options['dbpass'];
 
         try {
-            self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname);
-            self::checkDatabaseExist();
+            self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname, $dbport);
+            self::checkDatabaseExist($dbname);
             self::checkSourceVersion();
             self::cleanCurrentDB();
             self::migrateCustomers();
@@ -123,12 +127,13 @@ class SP_Migrate
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass clave de conexión
      * @param string $dbname nombre de la base de datos
+     * @param string $dbport puerto de conexión a la base de datos
      * @throws MigrateException
      * @return none
      */
-    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname)
+    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname, $dbport)
     {
-        self::$dbc = new mysqli($dbhost, $dbadmin, $dbpass, $dbname);
+        self::$dbc = new mysqli($dbhost, $dbadmin, $dbpass, $dbname, $dbport);
 
         if (self::$dbc->connect_errno) {
             throw new MigrateException('critical',
@@ -140,13 +145,14 @@ class SP_Migrate
     /**
      * Comprobar si la BBDD existe.
      *
+     * @param string $dbname nombre de la base de datos
      * @return none
      */
-    private static function checkDatabaseExist()
+    private static function checkDatabaseExist($dbname)
     {
         $query = "SELECT COUNT(*) "
             . "FROM information_schema.tables "
-            . "WHERE table_schema='" . self::$dbname . "' "
+            . "WHERE table_schema='" . $dbname . "' "
             . "AND table_name = 'users';";
 
         $queryRes = self::$dbc->query($query);

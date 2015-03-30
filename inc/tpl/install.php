@@ -25,20 +25,21 @@
 $modulesErrors = SP_Util::checkModules();
 $versionErrors = SP_Util::checkPhpVersion();
 $resInstall = array();
-$isCompleted = 0;
+$isCompleted = false;
 
-if (isset($_POST['install']) AND $_POST['install'] == 'true') {
+if (isset($_POST['install']) && $_POST['install'] == 'true') {
     $resInstall = SP_Installer::install($_POST);
 
     if (count($resInstall) == 0) {
-        $resInstall[] = array('type' => 'ok',
+        $resInstall[] = array(
+            'type' => 'ok',
             'description' => _('Instalación finalizada'),
-            'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder'));
-        $isCompleted = 1;
+            'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder')
+        );
+        $isCompleted = true;
     }
 }
 ?>
-
 
 <div id="actions" class="installer" align="center">
     <div id="logo">
@@ -46,41 +47,43 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>
     </div>
 
+    <?php
+    $securityErrors = array();
+
+    if (@file_exists(__FILE__ . "\0Nullbyte")) {
+        $securityErrors[] = array('type' => 'warning',
+            'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
+            'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura'));
+    }
+    if (!SP_Util::secureRNG_available()) {
+        $securityErrors[] = array('type' => 'warning',
+            'description' => _('No se encuentra el generador de números aleatorios.'),
+            'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave'));
+    }
+
+    $errors = array_merge($modulesErrors, $securityErrors, $resInstall);
+
+    if (count($errors) > 0) {
+        echo '<ul class="errors round">';
+
+        foreach ($errors as $err) {
+            if (is_array($err)) {
+                echo '<li class="err_' . $err["type"] . '">';
+                echo '<strong>' . $err['description'] . '</strong>';
+                echo ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : '';
+                echo '</li>';
+            }
+        }
+        echo '</ul>';
+    }
+
+    if ($isCompleted === false):
+    ?>
+
     <form id="frmInstall" action="index.php" method="post">
         <input type="hidden" name="install" value="true"/>
 
-        <?php
-        $securityErrors = array();
 
-        if (@file_exists(__FILE__ . "\0Nullbyte")) {
-            $securityErrors[] = array('type' => 'warning',
-                'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
-                'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura'));
-        }
-        if (!SP_Util::secureRNG_available()) {
-            $securityErrors[] = array('type' => 'warning',
-                'description' => _('No se encuentra el generador de números aleatorios.'),
-                'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave'));
-        }
-
-        $errors = array_merge($modulesErrors, $securityErrors, $resInstall);
-
-        if (count($errors) > 0) {
-            echo '<ul class="errors round">';
-
-            foreach ($errors as $err) {
-                if (is_array($err)) {
-                    echo '<li class="err_' . $err["type"] . '">';
-                    echo '<strong>' . $err['description'] . '</strong>';
-                    echo ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : '';
-                    echo '</li>';
-                }
-            }
-            echo '</ul>';
-        }
-
-        if ($isCompleted === 0):
-        ?>
         <fieldset id="adminaccount">
             <legend><?php echo _('Crear cuenta de admin de sysPass'); ?></legend>
             <p>
@@ -177,13 +180,17 @@ if (isset($_POST['install']) AND $_POST['install'] == 'true') {
 </div>
 
 <script>
+    var hostingmode = <?php echo SP_Util::init_var('hostingmode', 0); ?>;
+
     $('#frmInstall').find('.checkbox').button();
     $('#frmInstall').find('.ui-button').click(function () {
         // El cambio de clase se produce durante el evento de click
         // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-        if ($(this).hasClass('ui-state-active')) {
+        if (hostingmode == 1) {
+            hostingmode = 0;
             $(this).children().html('<?php echo _('Modo Hosting');?> OFF');
         } else {
+            hostingmode = 1;
             $(this).children().html('<?php echo _('Modo Hosting');?> ON');
         }
     });

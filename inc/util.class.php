@@ -158,6 +158,7 @@ class SP_Util
     public static function init_var($s, $d = "")
     {
         $r = $d;
+
         if (isset($_REQUEST[$s]) && !empty($_REQUEST[$s])) {
             $r = SP_Html::sanitize($_REQUEST[$s]);
         }
@@ -275,7 +276,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '19';
+        $build = '20';
         $version = array(1, 1, 2);
 
         if ($retBuild) {

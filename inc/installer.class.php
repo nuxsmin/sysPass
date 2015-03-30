@@ -156,19 +156,27 @@ class SP_Installer
 
             $dbadmin = trim($options['dbuser']);
             $dbpass = trim($options['dbpass']);
-            $dbhost = trim($options['dbhost']);
+
+            if (preg_match('/(.*):(\d{1,5})/', trim($options['dbhost']), $match)){
+                $dbhost = $match[1];
+                $dbport = $match[2];
+            } else {
+                $dbhost = trim($options['dbhost']);
+                $dbport = 3306;
+            }
 
             self::$isHostingMode = (isset($options['hostingmode'])) ? 1 : 0;
 
             // Save DB connection info
             SP_Config::setValue('dbhost', $dbhost);
             SP_Config::setValue('dbname', self::$dbname);
+            SP_Config::setValue('dbport', $dbport);
 
             // Set some basic configuration options
             SP_Config::setDefaultValues();
 
             try {
-                self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass);
+                self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbport);
                 self::setupMySQLDatabase();
                 self::createAdminAccount();
             } catch (InstallerException $e) {
@@ -191,17 +199,20 @@ class SP_Installer
      * @param string $dbhost host de conexión
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass clave de conexión
+     * @param int $dbport puerto de conexión a la BD
      * @throws InstallerException
      * @return none
      */
-    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass)
+    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbport)
     {
-        self::$dbc = @new mysqli($dbhost, $dbadmin, $dbpass);
+        self::$dbc = @new mysqli($dbhost, $dbadmin, $dbpass, '', $dbport);
 
         if (!is_object(self::$dbc) || self::$dbc->connect_errno) {
-            throw new InstallerException('critical'
-                , _('El usuario/clave de MySQL no es correcto')
-                , _('Verifique el usuario de conexión con la Base de Datos'));
+            error_log('MySQL Error: ' . self::$dbc->connect_error . ' (' . self::$dbc->connect_errno . ')');
+
+            throw new InstallerException('critical',
+                _('No es posible conectar con la BD'),
+                _('Compruebe los datos de conexión') . '<br>' . self::$dbc->connect_error);
         }
     }
 

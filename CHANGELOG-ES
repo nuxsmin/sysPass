@@ -1,3 +1,9 @@
+=== ** v1.1.2.20 ===
+
+* Añadido puerto de conexión a la base de datos
+* Corregidos varios errores en UI
+* Corregido bucle infinito cuando ocurre un error de conexión a la BD (necesita más pruebas)
+
 === ** v1.1.2.19 ===
 
 * Corregidos algunos mensajes de PHP

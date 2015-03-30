@@ -1,3 +1,8 @@
+=== ** v1.1.2.20 ===
+* Added database connection port
+* Fixed some UI errors
+* Fixed error recursion on database connection error (needs more testing)
+
 === ** v1.1.2.19 ===
 
 * Closes #88. Some notices messages are removed

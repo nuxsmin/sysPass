@@ -1740,7 +1740,7 @@ fieldset.warning a {
     margin-bottom: 1em;
 }
 
-#actions.installer form p {
+#actions.installer form fieldset p {
     width: 300px;
     margin: 0 auto;
 }

@@ -84,10 +84,11 @@ class DB
 
         $isInstalled = SP_Config::getValue('installed');
 
-        $dbhost = SP_Config::getValue("dbhost");
-        $dbuser = SP_Config::getValue("dbuser");
-        $dbpass = SP_Config::getValue("dbpass");
-        $dbname = SP_Config::getValue("dbname");
+        $dbhost = SP_Config::getValue('dbhost');
+        $dbuser = SP_Config::getValue('dbuser');
+        $dbpass = SP_Config::getValue('dbpass');
+        $dbname = SP_Config::getValue('dbname');
+        $dbport = SP_Config::getValue('dbport', 3306);
 
         if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
             if ($isInstalled) {
@@ -97,7 +98,7 @@ class DB
             }
         }
 
-        self::$_db = @new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        self::$_db = @new mysqli($dbhost, $dbuser, $dbpass, $dbname, $dbport);
 
         if (!is_object(self::$_db) || self::$_db->connect_errno) {
             if ($isInstalled) {
@@ -193,7 +194,7 @@ class DB
      */
     public static function doQuery($query, $querySource, $unbuffered = false)
     {
-        if (!self::connection()) {
+        if (!self::connection() || !is_object(self::$_db)) {
             return false;
         }
 
