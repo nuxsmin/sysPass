@@ -111,7 +111,7 @@ $onCloseAction = $data['onCloseAction'];
             <?php echo SP_Common::printHelpButton("config", 23); ?>
         </td>
         <td class="valField">
-            <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
+            <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUpload">
                 <input type="file" id="inFile" name="inFile" />
             </form>
             <div id="dropzone" class="round" title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">

@@ -62,10 +62,11 @@ class DBConnectionFactory
 //            error_log('NEW DB_CONNECTION');
             $isInstalled = SP_Config::getValue('installed');
 
-            $dbhost = SP_Config::getValue("dbhost");
-            $dbuser = SP_Config::getValue("dbuser");
-            $dbpass = SP_Config::getValue("dbpass");
-            $dbname = SP_Config::getValue("dbname");
+            $dbhost = SP_Config::getValue('dbhost');
+            $dbuser = SP_Config::getValue('dbuser');
+            $dbpass = SP_Config::getValue('dbpass');
+            $dbname = SP_Config::getValue('dbname');
+            $dbport = SP_Config::getValue('dbport', 3306);
 
             if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
                 if ($isInstalled) {
@@ -76,7 +77,7 @@ class DBConnectionFactory
             }
 
             try {
-                $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';charset=utf8';
+                $dsn = 'mysql:host=' . $dbhost . ';port=' . $dbport . ';dbname=' . $dbname . ';charset=utf8';
 //                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
                 $this->db = new PDO($dsn, $dbuser, $dbpass);
             } catch (PDOException $e) {
@@ -85,7 +86,7 @@ class DBConnectionFactory
                         SP_Config::setValue('installed', '0');
                     }
 
-                    SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . $this->db->errorCode() . ': ' . $this->db->errorInfo());
+                    SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . $e->getCode() . ': ' . $e->getMessage());
                 } else {
                     throw new SPDatabaseException($e->getMessage(), $e->getCode());
                 }
@@ -204,7 +205,7 @@ class DB
      *
      * @param string $query       con la consulta a realizar
      * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param array $data        con los datos de la consulta
+     * @param array $data         con los datos de la consulta
      * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
     public static function getResults($query, $querySource, &$data = null)
@@ -224,7 +225,7 @@ class DB
             return false;
         }
 
-        if (self::$unbuffered && is_object($doQuery) && get_class($doQuery) == "PDOStatement"){
+        if (self::$unbuffered && is_object($doQuery) && get_class($doQuery) == "PDOStatement") {
             return $doQuery;
         }
 
@@ -242,6 +243,13 @@ class DB
 
         self::resetVars();
         return $db->last_result;
+    }
+
+    private static function resetVars()
+    {
+        self::$unbuffered = false;
+        self::$fullRowCount = false;
+        self::$retArray = false;
     }
 
     /**
@@ -270,7 +278,7 @@ class DB
             if (!$unbuffered) {
                 $this->num_fields = $queryRes->columnCount();
                 $this->last_result = $queryRes->fetchAll(PDO::FETCH_OBJ);
-            } else{
+            } else {
                 return $queryRes;
             }
 
@@ -318,7 +326,7 @@ class DB
                         continue;
                     }
 
-                    if ($param == 'blobcontent'){
+                    if ($param == 'blobcontent') {
                         $sth->bindValue($param, $value, PDO::PARAM_LOB);
                     } elseif (is_int($value)) {
                         //error_log("INT: " . $param . " -> " . $value);
@@ -345,50 +353,6 @@ class DB
         }
 
         return false;
-    }
-
-    /**
-     * Obtener el número de filas de una consulta realizada
-     *
-     * @return int Número de files de la consulta
-     * @throws SPDatabaseException
-     */
-    private function getFullRowCount(&$query)
-    {
-        if (empty($query)) {
-            return 0;
-        }
-
-        $patterns = array(
-            '/(LIMIT|ORDER BY|GROUP BY).*/i',
-            '/SELECT DISTINCT\s([\w_]+),.* FROM/i',
-            '/SELECT [\w_]+,.* FROM/i'
-        );
-        $replace = array('','SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM');
-
-        $query = preg_replace($patterns, $replace, $query);
-
-        try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
-
-            if (!is_array($this->stData)) {
-                $queryRes = $db->query($query);
-                $num = intval($queryRes->fetchColumn());
-            } else {
-                if ($queryRes = $this->prepareQueryData($query, true)) {
-                    $num = intval($queryRes->fetchColumn());
-                }
-            }
-
-            $queryRes->closeCursor();
-
-            return $num;
-        } catch (PDOException $e) {
-            error_log("Exception: " . $e->getMessage());
-            throw new SPDatabaseException($e->getMessage());
-        }
-
-        return 0;
     }
 
     /**
@@ -423,6 +387,50 @@ class DB
         } catch (SPDatabaseException $e) {
             return $str;
         }
+    }
+
+    /**
+     * Obtener el número de filas de una consulta realizada
+     *
+     * @return int Número de files de la consulta
+     * @throws SPDatabaseException
+     */
+    private function getFullRowCount(&$query)
+    {
+        if (empty($query)) {
+            return 0;
+        }
+
+        $patterns = array(
+            '/(LIMIT|ORDER BY|GROUP BY).*/i',
+            '/SELECT DISTINCT\s([\w_]+),.* FROM/i',
+            '/SELECT [\w_]+,.* FROM/i'
+        );
+        $replace = array('', 'SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM');
+
+        $query = preg_replace($patterns, $replace, $query);
+
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
+
+            if (!is_array($this->stData)) {
+                $queryRes = $db->query($query);
+                $num = intval($queryRes->fetchColumn());
+            } else {
+                if ($queryRes = $this->prepareQueryData($query, true)) {
+                    $num = intval($queryRes->fetchColumn());
+                }
+            }
+
+            $queryRes->closeCursor();
+
+            return $num;
+        } catch (PDOException $e) {
+            error_log("Exception: " . $e->getMessage());
+            throw new SPDatabaseException($e->getMessage());
+        }
+
+        return 0;
     }
 
     /**
@@ -467,11 +475,34 @@ class DB
         self::$fullRowCount = true;
     }
 
-    private static function resetVars()
+    /**
+     * Obtener la información del servidor de base de datos
+     *
+     * @return array
+     */
+    public static function getDBinfo()
     {
-        self::$unbuffered = false;
-        self::$fullRowCount = false;
-        self::$retArray = false;
+        $dbinfo = array();
+
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
+
+            $attributes = array(
+                'SERVER_VERSION',
+                'CLIENT_VERSION',
+                'SERVER_INFO',
+                'CONNECTION_STATUS',
+            );
+
+            foreach ($attributes as $val) {
+                $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
+            }
+
+        } catch (SPDatabaseException $e) {
+            return $dbinfo;
+        }
+
+        return $dbinfo;
     }
 
     /**

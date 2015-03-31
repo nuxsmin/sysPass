@@ -63,8 +63,6 @@ class MigrateException extends Exception
 class SP_Migrate
 {
 //    private static $dbuser;
-    private static $dbname;
-    private static $dbhost;
     private static $dbc; // Database connection
     private static $customersByName;
     private static $currentQuery;
@@ -85,15 +83,22 @@ class SP_Migrate
             return $result;
         }
 
-        self::$dbname = $dbname = $options['dbname'];
-        self::$dbhost = $dbhost = $options['dbhost'];
+        $dbname = $options['dbname'];
+
+        if (preg_match('/(.*):(\d{1,5})/', $options['dbhost'], $match)){
+            $dbhost = $match[1];
+            $dbport = $match[2];
+        } else {
+            $dbhost = $options['dbhost'];
+            $dbport = 3306;
+        }
 
         $dbadmin = $options['dbuser'];
         $dbpass = $options['dbpass'];
 
         try {
-            self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname);
-            self::checkDatabaseExist();
+            self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname, $dbport);
+            self::checkDatabaseExist($dbname);
             self::checkSourceVersion();
             self::cleanCurrentDB();
             self::migrateCustomers();
@@ -106,7 +111,11 @@ class SP_Migrate
             self::migrateUsersGroups();
             self::migrateConfig();
         } catch (MigrateException $e) {
-            self::$result['error'][] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
+            self::$result['error'][] = array(
+                'type' => $e->getType(),
+                'description' => $e->getMessage(),
+                'hint' => $e->getHint()
+            );
             return (self::$result);
         }
 
@@ -123,31 +132,33 @@ class SP_Migrate
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass  clave de conexión
      * @param string $dbname  nombre de la base de datos
+     * @param string $dbport  puerto de conexión
      * @throws MigrateException
      * @return none
      */
-    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname)
+    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname, $dbport)
     {
         try {
-            $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';charset=utf8';
+            $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';dbport=' . $dbport . ';charset=utf8';
             self::$dbc = new PDO($dsn, $dbadmin, $dbpass);
         } catch (PDOException $e) {
             throw new MigrateException('critical'
-                , _('El usuario/clave de MySQL no es correcto')
-                , _('Verifique el usuario de conexión con la Base de Datos'));
+                , _('No es posible conectar con la BD')
+                , _('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
         }
     }
 
     /**
      * Comprobar si la BBDD existe.
      *
-     * @return int
+     * @param string $dbname  nombre de la base de datos
+     * @return bool
      */
-    private static function checkDatabaseExist()
+    private static function checkDatabaseExist($dbname)
     {
         $query = 'SELECT COUNT(*) '
             . 'FROM information_schema.tables '
-            . 'WHERE table_schema = \'' . self::$dbname . '\' '
+            . 'WHERE table_schema = \'' . $dbname . '\' '
             . 'AND table_name = \'usrData\' LIMIT 1';
 
         return (intval(self::$dbc->query($query)->fetchColumn()) === 0);

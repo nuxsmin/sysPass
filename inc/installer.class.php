@@ -156,7 +156,14 @@ class SP_Installer
 
             $dbadmin = $options['dbuser'];
             $dbpass = $options['dbpass'];
-            $dbhost = $options['dbhost'];
+
+            if (preg_match('/(.*):(\d{1,5})/', $options['dbhost'], $match)){
+                $dbhost = $match[1];
+                $dbport = $match[2];
+            } else {
+                $dbhost = $options['dbhost'];
+                $dbport = 3306;
+            }
 
             self::$isHostingMode = (isset($options['hostingmode'])) ? 1 : 0;
 
@@ -168,7 +175,7 @@ class SP_Installer
             SP_Config::setDefaultValues();
 
             try {
-                self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass);
+                self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbport);
                 self::setupMySQLDatabase();
                 self::createAdminAccount();
             } catch (InstallerException $e) {
@@ -194,18 +201,19 @@ class SP_Installer
      * @param string $dbhost host de conexión
      * @param string $dbadmin usuario de conexión
      * @param string $dbpass clave de conexión
+     * @param string $dbport puerto de conexión
      * @throws InstallerException
      * @return none
      */
-    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass)
+    private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbport)
     {
         try {
-            $dsn = 'mysql:host=' . $dbhost . ';charset=utf8';
+            $dsn = 'mysql:host=' . $dbhost . ';dbport=' . $dbport . ';charset=utf8';
             self::$dbc = new PDO($dsn, $dbadmin, $dbpass);
         } catch (PDOException $e){
             throw new InstallerException('critical'
-                , _('El usuario/clave de MySQL no es correcto')
-                , _('Verifique el usuario de conexión con la Base de Datos'));
+                , _('No es posible conectar con la BD')
+                , _('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
         }
     }
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -32,21 +32,30 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
         <div id="boxData">
             <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
                 <?php if (SP_Util::demoIsEnabled()): ?>
-                    <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value=""
+                    <input type="text" name="user" id="user" class="round5" placeholder="<?php echo _('Usuario'); ?>"
+                           value=""
                            title="> demo <"/><br/>
-                    <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value=""
+                    <input type="password" name="pass" id="pass" class="round5" placeholder="<?php echo _('Clave'); ?>"
+                           value=""
                            title="> syspass <"/><br/>
-                    <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass"
-                                                                   placeholder="<?php echo _('Clave Maestra'); ?>"
-                                                                   value="" title="> 01234567890 <"
-                                                                   disabled/><br/></span>
+                    <span id="smpass" style="display: none">
+                        <input type="password" name="mpass" id="mpass" class="round5"
+                               placeholder="<?php echo _('Clave Maestra'); ?>"
+                               value="" title="> 01234567890 <" disabled/>
+                        <br/>
+                    </span>
                 <?php else: ?>
-                    <input type="text" name="user" id="user" placeholder="<?php echo _('Usuario'); ?>" value=""/><br/>
-                    <input type="password" name="pass" id="pass" placeholder="<?php echo _('Clave'); ?>" value=""
+                    <input type="text" name="user" id="user" class="round5" placeholder="<?php echo _('Usuario'); ?>"
+                           value=""/><br/>
+                    <input type="password" name="pass" id="pass" class="round5" placeholder="<?php echo _('Clave'); ?>"
+                           value=""
                            autocomplete="off"/><br/>
-                    <span id="smpass" style="display: none"><input type="password" name="mpass" id="mpass"
-                                                                   placeholder="<?php echo _('Clave Maestra'); ?>"
-                                                                   value="" autocomplete="off" disabled/><br/></span>
+                    <span id="smpass" style="display: none">
+                        <input type="password" name="mpass" id="mpass" class="round5"
+                               placeholder="<?php echo _('Clave Maestra'); ?>"
+                               value="" autocomplete="off" disabled/>
+                        <br/>
+                    </span>
                 <?php endif; ?>
                 <input type="image" id="btnLogin" src="imgs/login.png" title="<?php echo _('Acceder') ?>"/>
                 <input type="hidden" name="login" value="1"/>
@@ -79,7 +88,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 <?php endif; ?>
 
 <?php
-if ( SP_Util::demoIsEnabled() ) {
+if (SP_Util::demoIsEnabled()) {
     $newFeatures = array(
         _('Nuevo interface de búsqueda con estilo de lista o tipo tarjeta'),
         _('Selección de grupos y usuarios de acceso a cuentas'),
@@ -98,13 +107,13 @@ if ( SP_Util::demoIsEnabled() ) {
         _('Mejoras de seguridad en XSS e inyección SQL')
     );
     echo '<div id="whatsNewIcon">';
-    echo '<img src="imgs/gearscolorful.png" title="' . _('Nuevas Características') . '" alt="'. _('Nuevas Características').'" onclick="$(\'#whatsNew\').show(500);"/>';
+    echo '<img src="imgs/gearscolorful.png" title="' . _('Nuevas Características') . '" alt="' . _('Nuevas Características') . '" onclick="$(\'#whatsNew\').show(500);"/>';
     echo '<h2>' . _('Nuevas Características') . '</h2>';
     echo '</div>';
 
     echo '<div id="whatsNew" class="round5 shadow">';
     echo '<ul>';
-    foreach ( $newFeatures as $feature) {
+    foreach ($newFeatures as $feature) {
         echo '<li>' . $feature . '</li>';
     }
     echo '</ul>';

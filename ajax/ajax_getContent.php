@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -320,6 +320,7 @@ switch ($action) {
         echo (SP_ACL::checkUserAccess("masterpass")) ? '<LI><A HREF="#tabs-2" TITLE="' . _('Encriptación') . '">' . _('Encriptación') . '</A></LI>' : '';
         echo (SP_ACL::checkUserAccess("backup")) ? '<LI><A HREF="#tabs-3" TITLE="' . _('Copia de Seguridad') . '">' . _('Copia de Seguridad') . '</A></LI>' : '';
         echo (SP_ACL::checkUserAccess("config")) ? '<LI><A HREF="#tabs-4" TITLE="' . _('Importar cuentas desde fuentes externas') . '">' . _('Importar Cuentas') . '</A></LI>' : '';
+        echo (SP_ACL::checkUserAccess("config")) ? '<LI><A HREF="#tabs-5" TITLE="' . _('Información de la aplicación') . '">' . _('Información') . '</A></LI>' : '';
         echo '</UL>';
 
         $tplvars['activeTab'] = 0;
@@ -351,22 +352,33 @@ switch ($action) {
             $tplvars['activeTab']++;
 
             echo '<DIV ID="tabs-4">';
-            SP_Html::getTemplate('migrate', $tplvars);
+            SP_Html::getTemplate('import', $tplvars);
+            echo '</DIV>';
+        }
+
+        if (SP_ACL::checkUserAccess("config")) {
+            $tplvars['activeTab']++;
+
+            echo '<DIV ID="tabs-5">';
+            SP_Html::getTemplate('info', $tplvars);
             echo '</DIV>';
         }
 
         echo '</DIV>';
-
-        echo '<script>
+        ?>
+        <script>
             $("#tabs").tabs({
-                active: ' . $itemId . ',
-                create: function( event, ui ) {$("input:visible:first").focus();},
-                activate: function( event, ui ) {
+                active: <?php echo $itemId ?>,
+                create: function (event, ui) {
+                    $("input:visible:first").focus();
+                },
+                activate: function (event, ui) {
                     setContentSize();
                     $("input:visible:first").focus();
                 }
             });
-            </script>';
+        </script>
+        <?php
         break;
     case "eventlog":
         SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
