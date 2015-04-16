@@ -538,7 +538,8 @@ class SP_Util
         }
 
         flush();
-        ob_start('ob_gzhandler');
+//        ob_start('ob_gzhandler');
+        if(!ob_start("ob_gzhandler")) ob_start();
 
         foreach ($files as $file) {
             $filePath = $path . $file['href'];
