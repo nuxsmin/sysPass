@@ -1734,6 +1734,10 @@ fieldset.warning a {
     text-align: left;
 }
 
+#actions.installer form fieldset{
+    border: none;
+}
+
 #actions.installer form legend {
     text-align: left;
     border-bottom: 1px solid #DFDFDF;

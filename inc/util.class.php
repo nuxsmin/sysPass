@@ -276,7 +276,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '20';
+        $build = '21';
         $version = array(1, 1, 2);
 
         if ($retBuild) {
@@ -532,14 +532,15 @@ class SP_Util
         $path = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR;
 
         if ($type == 'js') {
-            header("Content-type: application/x-javascript; charset: UTF-8");
+            header("Content-type: application/javascript; charset: UTF-8");
         } elseif ($type == 'css') {
             header("Content-type: text/css; charset: UTF-8");
         }
 
         flush();
-//        ob_start('ob_gzhandler');
-        if(!ob_start("ob_gzhandler")) ob_start();
+        if(self::checkZlib() || !ob_start("ob_gzhandler")) {
+            ob_start();
+        }
 
         foreach ($files as $file) {
             $filePath = $path . $file['href'];
@@ -678,5 +679,15 @@ class SP_Util
             $value = str_replace(array("'", '"'), "\\'", $value);
         });
         return $array;
+    }
+
+    /**
+     * Comprobar si la salida comprimida en con zlib está activada.
+     * No es compatible con ob_gzhandler()
+     *
+     * @return bool
+     */
+    public static function checkZlib(){
+        return self::boolval(ini_get('zlib.output_compression'));
     }
 }

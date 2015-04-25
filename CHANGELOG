@@ -1,4 +1,11 @@
+=== ** v1.1.2.21 ===
+
+* Fixed javascript compression behaviour with zlib module. Thanks to @tejadon
+* Fixed javascript header
+* Fixed UI on installation template style
+
 === ** v1.1.2.20 ===
+
 * Added database connection port
 * Fixed some UI errors
 * Fixed error recursion on database connection error (needs more testing)
