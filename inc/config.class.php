@@ -340,7 +340,7 @@ class SP_Config
         self::setValue('ldap_userattr', '');
         self::setValue('mail_server', '');
         self::setValue('mail_from', '');
-        self::setValue('site_lang', str_replace('.utf8', '', SP_Init::$LANG));
+        self::setValue('sitelang', SP_Util::getLanguage(true));
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 12);

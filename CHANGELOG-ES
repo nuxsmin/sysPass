@@ -1,3 +1,12 @@
+=== ** v1.1.2.22 ===
+
+* Añadida detección de cookies habilitadas
+* Añadida traducción al Ruso. Gracias a @TitovLab
+* Añadida caché de configuración de lenguaje
+* Los avisos de PHP no se muestran. Espero que no haya más repuestas de javascript rotas
+* Corrección de fallos menores
+* Añadida documentación de javascript
+
 === ** v1.1.2.21 ===
 
 * Corregido conflicto con módulo de compresión zlib. Gracias a @tejadon

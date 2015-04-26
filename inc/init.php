@@ -25,6 +25,7 @@
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 define ('EXTENSIONS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ext');
+define('DEBUG', false);
 
 class SP_Init
 {
@@ -65,10 +66,19 @@ class SP_Init
             }
         }
 
-        error_reporting(E_ALL | E_STRICT);
+        // Establecer el modo debug si una sesión de xdebug está activa
+        if (isset($_COOKIE['XDEBUG_SESSION']) && (!defined('DEBUG') || !DEBUG)) {
+            define('DEBUG', true);
+        }
 
+        // Establecer el nivel de logging
         if (defined('DEBUG') && DEBUG) {
-            ini_set('display_errors', 1);
+//            error_log('sysPass DEBUG');
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'On');
+        } else {
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            ini_set('display_errors', 'Off');
         }
 
         date_default_timezone_set('UTC');
@@ -101,14 +111,11 @@ class SP_Init
             $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
         }
 
-        self::setPaths();
+        // Inicar la sesión de PHP
+        self::startSession();
 
-        // Establecer el modo debug si una sesión de xdebug está activa
-        if (!defined('DEBUG') || !DEBUG) {
-            if (isset($_COOKIE['XDEBUG_SESSION'])) {
-                define('DEBUG', true);
-            }
-        }
+        // Establecer las rutas de la aplicación
+        self::setPaths();
 
         // Cargar el lenguaje
         self::selectLang();
@@ -120,6 +127,7 @@ class SP_Init
 
         // Comprobar la configuración
         self::checkConfig();
+
         // Comprobar si está instalado
         self::checkInstalled();
 
@@ -130,15 +138,18 @@ class SP_Init
 
         // Comprobar si el modo mantenimiento está activado
         self::checkMaintenanceMode();
+
         // Comprobar la versión y actualizarla
         self::checkVersion();
-        // Inicializar la sesión
+
+        // Inicializar las variables de sesión de usuario
         self::initSession();
+
         // Comprobar acciones en URL
         self::checkRequestActions();
 
         // Intentar establecer el tiempo de vida de la sesión en PHP
-        $sessionLifeTime = self::getSessionLifeTime();
+        $sessionLifeTime = SP_Util::getSessionLifeTime();
         @ini_set('gc_maxlifetime', (string)$sessionLifeTime);
 
         if (!SP_Config::getValue("installed", false)) {
@@ -269,8 +280,15 @@ class SP_Init
      */
     private static function selectLang()
     {
-        $browserLang = str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
-        $configLang = SP_Config::getValue('sitelang');
+        // Comprobamos si el lenguaje ha sido establecido. Si es necesario recargar
+        // la configuración, se continúa.
+        if (!isset($_SESSION['language']) || SP_Common::parseParams('s', 'reload', 0)){
+            $browserLang = str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+            $configLang = SP_Config::getValue('sitelang');
+        } else {
+            $browserLang = $configLang = $_SESSION['language'];
+        }
+
         $localesDir = self::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'locales';
 
         // Establecer a en_US si no existe la traducción o no es español
@@ -283,14 +301,20 @@ class SP_Init
             self::$LANG = ($configLang) ? $configLang : $browserLang;
         }
 
-        self::$LANG = self::$LANG . ".utf8";
+        self::$LANG .= '.utf8';
 
-        putenv("LANG=" . self::$LANG);
-        setlocale(LC_MESSAGES, self::$LANG);
-        setlocale(LC_ALL, self::$LANG);
-        bindtextdomain("messages", $localesDir);
-        textdomain("messages");
-        bind_textdomain_codeset("messages", 'UTF-8');
+        putenv('LANG=' . self::$LANG);
+
+        if (defined('LC_MESSAGES')){
+            setlocale(LC_MESSAGES, self::$LANG);
+        } else {
+            putenv('LC_ALL=' . self::$LANG);
+            setlocale(LC_ALL, self::$LANG);
+        }
+
+        bindtextdomain('messages', $localesDir);
+        textdomain('messages');
+        bind_textdomain_codeset('messages', 'UTF-8');
     }
 
     /**
@@ -469,31 +493,13 @@ class SP_Init
     }
 
     /**
-     * Inicialiar la sesión de usuario
+     * Inicializar las variables de la sesión de usuario
      *
      * @return none
      */
     private static function initSession()
     {
-        // Evita que javascript acceda a las cookis de sesion de PHP
-        ini_set('session.cookie_httponly', '1;');
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-
-            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
-
-            header('HTTP/1.1 500 Internal Server Error');
-            $errors[] = array(
-                'type' => 'critical',
-                'description' => _('La sesión no puede ser inicializada'),
-                'hint' => _('Consulte con el administrador'));
-
-            SP_Html::render('error', $errors);
-            exit();
-        }
-
-        $sessionLifeTime = self::getSessionLifeTime();
+        $sessionLifeTime = SP_Util::getSessionLifeTime();
 
         // Regenerar el Id de sesión periódicamente para evitar fijación
         if (!isset($_SESSION['SID_CREATED'])) {
@@ -521,22 +527,6 @@ class SP_Init
         }
 
         $_SESSION['LAST_ACTIVITY'] = time();
-    }
-
-    /**
-     * Obtener el timeout de sesión desde la configuración.
-     *
-     * @return int con el tiempo en segundos
-     */
-    private static function getSessionLifeTime()
-    {
-        $timeout = SP_Common::parseParams('s', 'session_timeout', 0);
-
-        if ($timeout === 0) {
-            $timeout = $_SESSION['session_timeout'] = SP_Config::getValue('session_timeout', 60 * 5);
-        }
-
-        return $timeout;
     }
 
     /**
@@ -619,6 +609,29 @@ class SP_Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
+    }
+
+    /**
+     * Iniciar la sesión PHP
+     */
+    private static function startSession(){
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+
+            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
+
+            header('HTTP/1.1 500 Internal Server Error');
+            $errors[] = array(
+                'type' => 'critical',
+                'description' => _('La sesión no puede ser inicializada'),
+                'hint' => _('Consulte con el administrador'));
+
+            SP_Html::render('error', $errors);
+            exit();
+        }
     }
 }
 

@@ -51,6 +51,9 @@ $(document).ready(function () {
     $('input, textarea').placeholder();
     setContentSize();
     setWindowAdjustSize();
+    if(!checkCookies()){
+        alert('Cookies are needed for this application, please enable them.');
+    }
 }).ajaxComplete(function () {
     "use strict";
 
@@ -58,7 +61,34 @@ $(document).ready(function () {
     $('input, textarea').placeholder();
 });
 
-// Función para cargar el contenido de la acción del menú seleccionada
+/**
+ * Función para comprobar si las cookies están habilitadas.
+ *
+ * @returns {boolean}
+ */
+function checkCookies(){
+    "use strict";
+    if (navigator.cookieEnabled){
+        return true;
+    }
+
+    // set and read cookie
+    document.cookie = "checkcookie=1";
+    var ret = document.cookie.indexOf("checkcookie=") != -1;
+
+    // delete cookie
+    document.cookie = "checkcookie=1; expires=Thu, 01-Jan-1970 00:00:01 GMT";
+
+    return ret;
+}
+
+/**
+ * Función para cargar el contenido de la acción del menú seleccionada
+ *
+ * @param action
+ * @param lastAction
+ * @param id
+ */
 function doAction(action, lastAction, id) {
     "use strict";
 
@@ -86,7 +116,9 @@ function doAction(action, lastAction, id) {
     });
 }
 
-// Función para establecer la altura del contenedor ajax
+/**
+ * Función para establecer la altura del contenedor ajax
+ */
 function setContentSize() {
     "use strict";
 
@@ -97,7 +129,9 @@ function setContentSize() {
     $("#container").css("height", totalHeight);
 }
 
-// Función para establecer la variable de ajuste óptimo de altura
+/**
+ * Función para establecer la variable de ajuste óptimo de altura
+ */
 function setWindowAdjustSize() {
     "use strict";
 
@@ -109,14 +143,20 @@ function setWindowAdjustSize() {
     //console.log(windowAdjustSize);
 }
 
-// Función para retornar el scroll a la posición inicial
+/**
+ * Función para retornar el scroll a la posición inicial
+ */
 function scrollUp() {
     "use strict";
 
     $('html, body').animate({ scrollTop: 0 }, 'slow');
 }
 
-// Función para limpiar un formulario
+/**
+ * Función para limpiar un formulario
+ *
+ * @param clearStart
+ */
 function clearSearch(clearStart) {
     "use strict";
 
@@ -136,7 +176,11 @@ function clearSearch(clearStart) {
     order.dir = 0;
 }
 
-// Funcion para crear un desplegable con opciones
+/**
+ * Función para crear un desplegable con opciones
+ *
+ * @param options
+ */
 function mkChosen(options) {
     "use strict";
 
@@ -148,7 +192,12 @@ function mkChosen(options) {
     });
 }
 
-// Función para la búsqueda de cuentas mediante filtros
+/**
+ * Función para la búsqueda de cuentas mediante filtros
+ *
+ * @param continous
+ * @param event
+ */
 function accSearch(continous, event) {
     "use strict";
 
@@ -167,7 +216,14 @@ function accSearch(continous, event) {
     doSearch();
 }
 
-// Función para la búsqueda de cuentas mediante ordenación
+/**
+ * Función para relizar la búsqueda de cuentas mediante ordenación
+ *
+ * @param skey
+ * @param start
+ * @param nav
+ * @returns {boolean}
+ */
 function searchSort(skey, start, nav) {
     "use strict";
 
@@ -193,7 +249,9 @@ function searchSort(skey, start, nav) {
     doSearch();
 }
 
-// Función para la búsqueda de cuentas
+/**
+ * Función para la búsqueda de cuentas
+ */
 function doSearch() {
     "use strict";
 
@@ -229,7 +287,13 @@ function doSearch() {
     });
 }
 
-// Función para navegar por el log de eventos
+/**
+ * Función para navegar por el log de eventos
+ *
+ * @param start
+ * @param current
+ * @returns {boolean}
+ */
 function navLog(start, current) {
     "use strict";
 
@@ -256,7 +320,13 @@ function navLog(start, current) {
     });
 }
 
-// Función para ver la clave de una cuenta
+/**
+ * Función para ver la clave de una cuenta
+ *
+ * @param id
+ * @param full
+ * @param history
+ */
 function viewPass(id, full, history) {
     "use strict";
 
@@ -286,7 +356,11 @@ function viewPass(id, full, history) {
     });
 }
 
-// Función para obtener las variables de la URL y parsearlas a un array.
+/**
+ * Función para obtener las variables de la URL y parsearlas a un array.
+ *
+ * @returns {Array}
+ */
 function getUrlVars() {
     "use strict";
 
@@ -300,7 +374,11 @@ function getUrlVars() {
     return vars;
 }
 
-// Función para autentificar usuarios
+/**
+ * Función para autentificar usuarios
+ *
+ * @returns {boolean}
+ */
 function doLogin() {
     "use strict";
 
@@ -348,7 +426,9 @@ function doLogin() {
     return false;
 }
 
-// Función para salir de la sesión
+/**
+ * Función para salir de la sesión
+ */
 function doLogout() {
     "use strict";
 
@@ -361,7 +441,9 @@ function doLogout() {
     }
 }
 
-// Función para comprobar si se ha salido de la sesión
+/**
+ * Función para comprobar si se ha salido de la sesión
+ */
 function checkLogout() {
     "use strict";
 
@@ -372,7 +454,11 @@ function checkLogout() {
     }
 }
 
-// Función para añadir/editar una cuenta
+/**
+ * Función para añadir/editar una cuenta
+ *
+ * @param frm
+ */
 function saveAccount(frm) {
     "use strict";
 
@@ -422,7 +508,13 @@ function saveAccount(frm) {
     });
 }
 
-// Función para eliminar una cuenta
+/**
+ * Función para eliminar una cuenta
+ *
+ * @param id
+ * @param action
+ * @param sk
+ */
 function delAccount(id, action, sk) {
     "use strict";
 
@@ -437,7 +529,9 @@ function delAccount(id, action, sk) {
     });
 }
 
-// Función para enviar una solicitud de modificación de cuenta
+/**
+ * Función para enviar una solicitud de modificación de cuenta
+ */
 function sendRequest() {
     "use strict";
 
@@ -447,7 +541,11 @@ function sendRequest() {
     sendAjax(data, url);
 }
 
-// Función para guardar la configuración
+/**
+ * Función para guardar la configuración
+ *
+ * @param action
+ */
 function configMgmt(action) {
     "use strict";
 
@@ -479,7 +577,13 @@ function configMgmt(action) {
     sendAjax(data, url);
 }
 
-// Función para descargar/ver archivos de una cuenta
+/**
+ * Función para descargar/ver archivos de una cuenta
+ *
+ * @param id
+ * @param sk
+ * @param action
+ */
 function downFile(id, sk, action) {
     "use strict";
 
@@ -514,7 +618,13 @@ function downFile(id, sk, action) {
     }
 }
 
-// Función para obtener la lista de archivos de una cuenta
+/**
+ * Función para obtener la lista de archivos de una cuenta
+ *
+ * @param id
+ * @param isDel
+ * @param sk
+ */
 function getFiles(id, isDel, sk) {
     "use strict";
 
@@ -534,7 +644,13 @@ function getFiles(id, isDel, sk) {
     });
 }
 
-// Función para eliminar archivos de una cuenta
+/**
+ * Función para eliminar archivos de una cuenta
+ *
+ * @param id
+ * @param sk
+ * @param accid
+ */
 function delFile(id, sk, accid) {
     "use strict";
 
@@ -557,7 +673,13 @@ function delFile(id, sk, accid) {
     });
 }
 
-// Función para activar el Drag&Drop de archivos en las cuentas
+/**
+ * Función para activar el Drag&Drop de archivos en las cuentas
+ *
+ * @param accountId
+ * @param sk
+ * @param maxsize
+ */
 function dropFile(accountId, sk, maxsize) {
     "use strict";
 
@@ -609,7 +731,11 @@ function dropFile(accountId, sk, maxsize) {
     });
 }
 
-// Función para activar el Drag&Drop de archivos en la importación de cuentas
+/**
+ * Función para activar el Drag&Drop de archivos en la importación de cuentas
+ *
+ * @param sk
+ */
 function importFile(sk) {
     "use strict";
 
@@ -667,7 +793,12 @@ function importFile(sk) {
     });
 }
 
-// Función para realizar una petición ajax
+/**
+ * Función para realizar una petición ajax
+ *
+ * @param data
+ * @param url
+ */
 function sendAjax(data, url) {
     "use strict";
 
@@ -716,7 +847,12 @@ function sendAjax(data, url) {
     });
 }
 
-// Función para mostrar el formulario para cambio de clave de usuario
+/**
+ * Función para mostrar el formulario para cambio de clave de usuario
+ *
+ * @param id
+ * @param usrlogin
+ */
 function usrUpdPass(id, usrlogin) {
     "use strict";
 
@@ -739,7 +875,15 @@ function usrUpdPass(id, usrlogin) {
     });
 }
 
-// Función para mostrar los datos de un registro
+/**
+ * Función para mostrar los datos de un registro
+ *
+ * @param id
+ * @param type
+ * @param sk
+ * @param active
+ * @param view
+ */
 function appMgmtData(id, type, sk, active, view) {
     "use strict";
 
@@ -766,7 +910,16 @@ function appMgmtData(id, type, sk, active, view) {
     });
 }
 
-// Función para editar los datos de un registro
+/**
+ * Función para editar los datos de un registro
+ *
+ * @param frmId
+ * @param isDel
+ * @param id
+ * @param type
+ * @param sk
+ * @param nextaction
+ */
 function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
     "use strict";
 
@@ -788,7 +941,9 @@ function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
     }
 }
 
-// Función para verificar si existen actualizaciones
+/**
+ * Función para verificar si existen actualizaciones
+ */
 function checkUpds() {
     "use strict";
 
@@ -806,7 +961,11 @@ function checkUpds() {
     });
 }
 
-// Función para limpiar el log de eventos
+/**
+ * Función para limpiar el log de eventos
+ *
+ * @param sk
+ */
 function clearEventlog(sk) {
     "use strict";
 
@@ -822,7 +981,11 @@ function clearEventlog(sk) {
     });
 }
 
-// Función para mostrar los botones de acción en los resultados de búsqueda
+/**
+ * Función para mostrar los botones de acción en los resultados de búsqueda
+ *
+ * @param me
+ */
 function showOptional(me) {
     "use strict";
 
@@ -833,7 +996,11 @@ function showOptional(me) {
     actions.show(250);
 }
 
-// Función para obtener el tiempo actual en milisegundos
+/**
+ * Función para obtener el tiempo actual en milisegundos
+ *
+ * @returns {number}
+ */
 function getTime() {
     "use strict";
 
@@ -841,8 +1008,15 @@ function getTime() {
     return t.getTime();
 }
 
-// Función para generar claves aleatorias. 
-// By Uzbekjon from  http://jquery-howto.blogspot.com.es
+/**
+ * Función para generar claves aleatorias.
+ * By Uzbekjon from  http://jquery-howto.blogspot.com.es
+ *
+ * @param length
+ * @param special
+ * @param fancy
+ * @param dstId
+ */
 function password(length, special, fancy, dstId) {
     "use strict";
 
@@ -893,8 +1067,13 @@ function password(length, special, fancy, dstId) {
     //return password;
 }
 
-// Funciones para analizar al fortaleza de una clave
-// From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
+/**
+ * Funciones para analizar al fortaleza de una clave
+ * From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
+ *
+ * @param password
+ * @param dstId
+ */
 function checkPassLevel(password, dstId) {
     "use strict";
 
@@ -925,6 +1104,9 @@ function checkPassLevel(password, dstId) {
     }
 }
 
+/**
+ * Función para analizar la complejidad de una clave
+ */
 function analyzeString() {
     "use strict";
 
@@ -961,12 +1143,20 @@ function analyzeString() {
     }
 }
 
+/**
+ * Función para calcular la complejidad de una clave
+ */
 function calcComplexity() {
     "use strict";
 
     score = baseScore + (num.Excess * bonus.Excess) + (num.Upper * bonus.Upper) + (num.Numbers * bonus.Numbers) + (num.Symbols * bonus.Symbols) + bonus.Combo + bonus.FlatLower + bonus.FlatNumber;
 }
 
+/**
+ * Función para mostrar el resultado de complejidad de una clave
+ *
+ * @param dstId
+ */
 function outputResult(dstId) {
     "use strict";
 
@@ -996,7 +1186,15 @@ function outputResult(dstId) {
     $('.passLevel').powerTip(powertipOptions);
 }
 
-// Función para mostrar mensaje con alertify
+/**
+ * Función para mostrar mensaje con alertify
+ *
+ * @param type
+ * @param txt
+ * @param url
+ * @param action
+ * @returns {*}
+ */
 function resMsg(type, txt, url, action) {
     "use strict";
 
@@ -1051,7 +1249,9 @@ function resMsg(type, txt, url, action) {
     });
 }
 
-// Función para comprobar la conexión con LDAP
+/**
+ * Función para comprobar la conexión con LDAP
+ */
 function checkLdapConn() {
     "use strict";
 
@@ -1074,7 +1274,9 @@ function checkLdapConn() {
     sendAjax(data, '/ajax/ajax_checkLdap.php');
 }
 
-// Función para volver al login
+/**
+ * Función para volver al login
+ */
 function goLogin() {
     "use strict";
 
@@ -1083,7 +1285,11 @@ function goLogin() {
     }, 2000);
 }
 
-// Función para obtener el navegador usado
+/**
+ * Función para obtener el navegador usado
+ *
+ * @returns {*}
+ */
 function getBrowser() {
     "use strict";
 

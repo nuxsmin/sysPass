@@ -1634,10 +1634,12 @@ fieldset.warning a {
     -moz-box-shadow: 0px 8px 6px -6px #a9a9a9;
 }
 
+#actions #logo img{display: inline-block;}
+
 #actions #logo #pageDesc {
     position: relative;
     top: 30px;
-    left: -100px;
+    left: -10em;
     text-shadow: 3px 3px #fff;
 }
 

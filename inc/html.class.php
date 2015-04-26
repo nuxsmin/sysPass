@@ -108,7 +108,7 @@ class SP_Html
 
         // Start the page
         self::$htmlPage[] = '<!DOCTYPE html>';
-        self::$htmlPage[] = '<html lang="es">';
+        self::$htmlPage[] = '<html lang="' . SP_Util::getLanguage(true) . '">';
 
         self::makeHeader();
         self::makeBody($page);

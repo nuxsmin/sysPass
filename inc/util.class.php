@@ -276,7 +276,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '21';
+        $build = '22';
         $version = array(1, 1, 2);
 
         if ($retBuild) {
@@ -346,6 +346,37 @@ class SP_Util
         }
 
         return self::boolval($enabled);
+    }
+
+    /**
+     * Checks a variable to see if it should be considered a boolean true or false.
+     * Also takes into account some text-based representations of true of false,
+     * such as 'false','N','yes','on','off', etc.
+     *
+     * @author Samuel Levy <sam+nospam@samuellevy.com>
+     * @param mixed $in    The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
+     *                     be true.
+     * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
+     */
+    public static function boolval($in, $strict = false)
+    {
+        $out = null;
+        $in = (is_string($in) ? strtolower($in) : $in);
+        // if not strict, we only have to check if something is false
+        if (in_array($in, array('false', 'no', 'n', '0', 'off', false, 0), true) || !$in) {
+            $out = false;
+        } else if ($strict) {
+            // if strict, check the equivalent true values
+            if (in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
+                $out = true;
+            }
+        } else {
+            // not strict? let the regular php bool check figure it out (will
+            // largely default to true)
+            $out = ($in ? true : false);
+        }
+        return $out;
     }
 
     /**
@@ -538,7 +569,9 @@ class SP_Util
         }
 
         flush();
-        if(self::checkZlib() || !ob_start("ob_gzhandler")) {
+
+
+        if (self::checkZlib() || !ob_start("ob_gzhandler")) {
             ob_start();
         }
 
@@ -616,6 +649,17 @@ class SP_Util
     }
 
     /**
+     * Comprobar si la salida comprimida en con zlib está activada.
+     * No es compatible con ob_gzhandler()
+     *
+     * @return bool
+     */
+    public static function checkZlib()
+    {
+        return self::boolval(ini_get('zlib.output_compression'));
+    }
+
+    /**
      * Comprimir código javascript.
      *
      * @param string $buffer código a comprimir
@@ -637,37 +681,6 @@ class SP_Util
     }
 
     /**
-     * Checks a variable to see if it should be considered a boolean true or false.
-     * Also takes into account some text-based representations of true of false,
-     * such as 'false','N','yes','on','off', etc.
-     *
-     * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in    The variable to check
-     * @param bool $strict If set to false, consider everything that is not false to
-     *                     be true.
-     * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
-     */
-    public static function boolval($in, $strict = false)
-    {
-        $out = null;
-        $in = (is_string($in) ? strtolower($in) : $in);
-        // if not strict, we only have to check if something is false
-        if (in_array($in, array('false', 'no', 'n', '0', 'off', false, 0), true) || !$in) {
-            $out = false;
-        } else if ($strict) {
-            // if strict, check the equivalent true values
-            if (in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
-                $out = true;
-            }
-        } else {
-            // not strict? let the regular php bool check figure it out (will
-            // largely default to true)
-            $out = ($in ? true : false);
-        }
-        return $out;
-    }
-
-    /**
      * Recorrer un array y escapar los carácteres no válidos en Javascript.
      *
      * @param $array
@@ -682,12 +695,47 @@ class SP_Util
     }
 
     /**
-     * Comprobar si la salida comprimida en con zlib está activada.
-     * No es compatible con ob_gzhandler()
+     * Comprobar si las cookies están disponibles.
      *
      * @return bool
      */
-    public static function checkZlib(){
-        return self::boolval(ini_get('zlib.output_compression'));
+    public static function checkCookies()
+    {
+        if (isset($_COOKIE['check'])) {
+            return true;
+        } else {
+            return (setcookie('check', 1, time() + self::getSessionLifeTime()));
+        }
+    }
+
+    /**
+     * Obtener el timeout de sesión desde la configuración.
+     *
+     * @return int con el tiempo en segundos
+     */
+    public static function getSessionLifeTime()
+    {
+        $timeout = SP_Common::parseParams('s', 'session_timeout', 0);
+
+        if ($timeout === 0) {
+            $timeout = $_SESSION['session_timeout'] = SP_Config::getValue('session_timeout', 60 * 5);
+        }
+
+        return $timeout;
+    }
+
+    /**
+     * Devolver el lenguaje detectado o definido
+     *
+     * @param bool $short si se tiene que devolver en formato de 2 caracteres
+     * @return string con el lenguaje en formato xx_XX ó xx
+     */
+    public static function getLanguage($short = true)
+    {
+        if ($short) {
+            return (substr(SP_Init::$LANG, 0, 2));
+        }
+
+        return SP_Init::$LANG;
     }
 }

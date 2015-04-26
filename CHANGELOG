@@ -1,3 +1,12 @@
+=== ** v1.1.2.22 ===
+
+* Added cookies enabled detection
+* Added Russian translation. Big thanks to @TitovLab
+* Added javascript doc
+* Added cached language settings
+* PHP warnings|notices|deprecated are not displayed. Hope no more javascript response breaks
+* Minor bugfixes
+
 === ** v1.1.2.21 ===
 
 * Fixed javascript compression behaviour with zlib module. Thanks to @tejadon

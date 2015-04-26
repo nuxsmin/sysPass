@@ -37,7 +37,7 @@ $jsFiles = array(
     array("href" => "js/jquery.fileDownload.js", "min" => true),
     array("href" => "js/jquery.filedrop.js", "min" => true),
     array("href" => "js/jquery.tagsinput.js", "min" => true),
-    array("href" => "js/ZeroClipboard.min.js", "min" => false),
+    array("href" => "js/ZeroClipboard.min.js", "min" => true),
     array("href" => "js/functions.js", "min" => true)
 );
 
