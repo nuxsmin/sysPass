@@ -1,114 +1,118 @@
+=== ** v1.1.2.23 ===
+
+* [FIX] Customer description not being added when it was created. Thanks to @tejadon
+
 === ** v1.1.2.22 ===
 
-* Added cookies enabled detection
-* Added Russian translation. Big thanks to @TitovLab
-* Added javascript doc
-* Added cached language settings
-* PHP warnings|notices|deprecated are not displayed. Hope no more javascript response breaks
-* Minor bugfixes
+* [ADD] Added cookies enabled detection
+* [ADD] Added Russian translation. Big thanks to @TitovLab
+* [ADD] Added javascript doc
+* [ADD] Added cached language settings
+* [MOD] PHP warnings|notices|deprecated are not displayed. Hope no more javascript response breaks
+* [FIX] Minor bugfixes
 
 === ** v1.1.2.21 ===
 
-* Fixed javascript compression behaviour with zlib module. Thanks to @tejadon
-* Fixed javascript header
-* Fixed UI on installation template style
+* [FIX] Javascript compression behaviour with zlib module. Thanks to @tejadon
+* [FIX] Javascript header
+* [FIX] UI on installation template style
 
 === ** v1.1.2.20 ===
 
-* Added database connection port
-* Fixed some UI errors
-* Fixed error recursion on database connection error (needs more testing)
+* [ADD] Database connection port
+* [FIX] Some UI errors
+* [FIX] Error recursion on database connection error (needs more testing)
 
 === ** v1.1.2.19 ===
 
-* Closes #88. Some notices messages are removed
-* Closes #92. Source host ip address used for remote database installations
-* Closes #95. Accounts' password length set to 255 characters
-* Closes #88. Removed array key that wasn't used anymore.
-* Fixes #96. Account password not saved when importing some accounts.
-* Updated build version. Needs DB upgrade (see http://wiki.syspass.org/en/upgrade)
+* [FIX] Closes #88. Some notices messages are removed
+* [MOD] Closes #92. Source host ip address used for remote database installations
+* [MOD] Closes #95. Accounts' password length set to 255 characters
+* [MOD] Closes #88. Removed array key that wasn't used anymore.
+* [FIX] Fixes #96. Account password not saved when importing some accounts.
+* [MOD] Updated build version. Needs DB upgrade (see http://wiki.syspass.org/en/upgrade)
 
 === ** v1.1.2.18 ===
 
-* Fixed LDAP group membership. Thanks to @danislav
-* Fixed LDAP email attribute retrieving. Thanks to @danislav
-* Updated translations
-* Fixed accounts list notes showed for accounts that don't have.
-* Fixed LDAP users' password salt saving.
+* [FIX] LDAP group membership. Thanks to @danislav
+* [FIX] LDAP email attribute retrieving. Thanks to @danislav
+* [MOD] Updated translations
+* [FIX] Accounts list notes showed for accounts that don't have.
+* [FIX] LDAP users' password salt saving.
 
 === ** v1.1.2.16-rc2 ===
 
-* Updated header and PHPdoc syntax
-* Improved session cache's config parameters to reduce config file queries
-* Removed unused methods
-* Changed some SP_Crypt class methods to static and factorized some functions
-* Added some stuff to demo mode
-* Closes #68 and Closes #67
-* Closes #66
-* Fixed csv file import mimetype detection error from windows.
-* Closes #76. Fixed password reset when notifications are disabled and user is forced to change it.
-* Updated german translation
-* Translated to French. Big thanks to Cyril
-* Fixed some bugs on javascript translations
-* Fixed error when default LDAP group/profile is not set.
-* Fixes for demo mode
-* Improved forced integer variable value on saving forms.
-* Disable autocomplete on password fields (HTML5).
-* Fixed error on upgrade handling.
-* Improved browser response by minimizing CSS an JS files and joining into one resource per type.
-* Added class CssMin for minimizing CSSs.
-* Cached some config values in session to avoid config file readings.
-* Improved URL handling.
-* New upgrade process with security code for DB upgrades. See wiki for more details
-* LDAP escape RDN fixed.
-* Fixed reload on backup completion.
-* Fixed master password change not running when zeros are used on left or right.
-* Fixed some notice events on error log.
-* Closes #47. Default group&profile can be selected for new LDAP users
-* Closes #48. Database fields modified for STRICT sql mode
-* Installer now logs errors to web server error log
-* Closes #41. LDAP group membership is no longer required for users login.
-* Closes #45. LDAP users without group membership or expired and already saved data in MySQL, are not allowed to log in.
-* New backup functionality without running external commands. Windows installations are supported. PHP Phar module required.
-* New Active Directory mode for LDAP searches.
-* Fixed XSS on login page because of unsanitized input values. Thanks to Daniele
-* Closes #48. Passwords fields can be shown to check password characters.
-* Fixes #52. User data query fit to required fields.
-* .PO files added to CVS
-* Additional checks for database connection errors.
-* Closes #46. Shows additional info about config directory permissions errors.
-* Fixes error on password generator in Chrome browser.
-* Improved file upload (HTML5).
-* Force UTF-8 charset in database connection.
-* Fixed password view when it contains some special characters.
-* Fixed search filtering when selected result page was >1
-* Fixed logout when viewing password.
-* Closes #40. Error while importing blank passwords.
-* Cast values to string while importing accounts data.
-* Fixed customer name text color on searches.
-* Closes 40. Accounts can be imported from KeePass or KeePassX XML file format.
-* New switcheable grid visual style for searches. Closes #38
-* Fixed wrong height for search results in IE 10.
-* Force page reload on configuration changes.
-* CLoses #20. Copy account's password to clipboard (using Flash).
-* Prevent to do searches by clicking non alphanumeric keys.
-* CLoses #30. Fixed error on viewing passwords with special characters. Thanks to @chadrempp
-* Passwords were "sanitized" and hence some characters were removed from saved string
-* Closes #26. Send email to the user when he was requested (forced) for a password reset.
-* Enable account restoration from history.
-* Translated to Hungarian language. Thanks to Tóth Tamás
-* Enable/Disable authentication on mail.
-* German translation. Thanks to Uwe Steinmann.
-* Closes #26. Enable users password reset by email and forced by an admin.
-* Improved email handling by using phpmailer class. All emails are sent in HTML format and security and authentication are available.
-* Improved javascript code by code refactoring.
-* Client IP address is logged in event log.
-* Fixes #29
-* Fixed others users/groups are not saved when account is being edited by foreign user
-* Improved LDAP group membership detection. The user doesn't need to have a group reference attribute.
-* Improved database upgrading path detection.
-* Increase 'user_login' field length
-* Set correct charset on some tables
+* [MOD] Updated header and PHPdoc syntax
+* [MOD] Improved session cache's config parameters to reduce config file queries
+* [MOD] Removed unused methods
+* [MOD] Changed some SP_Crypt class methods to static and factorized some functions
+* [ADD] Some stuff to demo mode
+* [ADD] Closes #68 and Closes #67
+* [ADD] Closes #66
+* [FIX] CSV file import mimetype detection error from windows.
+* [FIX] Closes #76. Fixed password reset when notifications are disabled and user is forced to change it.
+* [MOD] Updated german translation
+* [ADD] Translated to French. Big thanks to Cyril
+* [FIX] Some bugs on javascript translations
+* [FIX] Error when default LDAP group/profile is not set.
+* [FIX] Fixes for demo mode
+* [MOD] Improved forced integer variable value on saving forms.
+* [MOD] Disabled autocomplete on password fields (HTML5).
+* [FIX] Error on upgrade handling.
+* [ADD] Improved browser response by minimizing CSS an JS files and joining into one resource per type.
+* [ADD] Class CssMin for minimizing CSSs.
+* [ADD] Cached some config values in session to avoid config file readings.
+* [ADD] Improved URL handling.
+* [ADD] New upgrade process with security code for DB upgrades. See wiki for more details
+* [FIX] LDAP escape RDN fixed.
+* [FIX] Reload on backup completion.
+* [FIX] Master password change not running when zeros are used on left or right.
+* [FIX] Some notice events on error log.
+* [ADD] Closes #47. Default group&profile can be selected for new LDAP users
+* [MOD] Closes #48. Database fields modified for STRICT sql mode
+* [ADD] Installer now logs errors to web server error log
+* [MOD] Closes #41. LDAP group membership is no longer required for users login.
+* [MOD] Closes #45. LDAP users without group membership or expired and already saved data in MySQL, are not allowed to log in.
+* [ADD] New backup functionality without running external commands. Windows installations are supported. PHP Phar module required.
+* [ADD] New Active Directory mode for LDAP searches.
+* [FIX] Fixed XSS on login page because of unsanitized input values. Thanks to Daniele
+* [ADD] Closes #48. Passwords fields can be shown to check password characters.
+* [FIX] Fixes #52. User data query fit to required fields.
+* [ADD] .PO files added to CVS
+* [ADD] Additional checks for database connection errors.
+* [ADD] Closes #46. Shows additional info about config directory permissions errors.
+* [FIX] Error on password generator in Chrome browser.
+* [ADD] Improved file upload (HTML5).
+* [MOD] Force UTF-8 charset in database connection.
+* [FIX] Password view when it contains some special characters.
+* [FIX] Search filtering when selected result page was >1
+* [FIX] Logout when viewing password.
+* [FIX] Closes #40. Error while importing blank passwords.
+* [MOD] Cast values to string while importing accounts data.
+* [FIX] Customer name text color on searches.
+* [ADD] Closes 40. Accounts can be imported from KeePass or KeePassX XML file format.
+* [ADD] New switcheable grid visual style for searches. Closes #38
+* [FIX] Wrong height for search results in IE 10.
+* [ADD] Force page reload on configuration changes.
+* [ADD] Closes #20. Copy account's password to clipboard (using Flash).
+* [MOD] Prevent to do searches by clicking non alphanumeric keys.
+* [FIX] Closes #30. Error on viewing passwords with special characters. Thanks to @chadrempp
+* [FIX] Passwords were "sanitized" and hence some characters were removed from saved string
+* [ADD] Closes #26. Send email to the user when he was requested (forced) for a password reset.
+* [ADD] Enable account restoration from history.
+* [ADD] Translated to Hungarian language. Thanks to Tóth Tamás
+* [ADD] Enable/Disable authentication on mail.
+* [ADD] German translation. Thanks to Uwe Steinmann.
+* [ADD] Closes #26. Enable users password reset by email and forced by an admin.
+* [ADD] Improved email handling by using phpmailer class. All emails are sent in HTML format and security and authentication are available.
+* [ADD] Improved javascript code by code refactoring.
+* [ADD] Client IP address is logged in event log.
+* [FIX] Fixes #29
+* [FIX] Others users/groups are not saved when account is being edited by foreign user
+* [MOD] Improved LDAP group membership detection. The user doesn't need to have a group reference attribute.
+* [MOD] Improved database upgrading path detection.
+* [MOD] Increase 'user_login' field length
+* [MOD] Set correct charset on some tables
 
 === ** v1.0.9 ** ===
 

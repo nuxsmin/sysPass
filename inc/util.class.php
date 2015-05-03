@@ -199,7 +199,7 @@ class SP_Util
             return false;
         }
 
-        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases';
+        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
         $ch = curl_init($githubUrl);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -276,7 +276,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '22';
+        $build = '23';
         $version = array(1, 1, 2);
 
         if ($retBuild) {

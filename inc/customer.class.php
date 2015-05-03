@@ -46,6 +46,7 @@ class SP_Customer
     {
         $query = "INSERT INTO customers "
             . "SET customer_name = '" . DB::escape(self::$customerName) . "',"
+            . "customer_description = '" . DB::escape(self::$customerDescription) . "',"
             . "customer_hash = '" . self::mkCustomerHash() . "'";
 
         if (DB::doQuery($query, __FUNCTION__) === false) {
