@@ -560,6 +560,10 @@ function configMgmt(action) {
             frm = 'frmCrypt';
             url = '/ajax/ajax_configSave.php';
             break;
+        case "genflpass":
+            frm = 'frmFirstLoginPass';
+            url = '/ajax/ajax_configSave.php';
+            break;
         case "backup":
             frm = 'frmBackup';
             url = '/ajax/ajax_backup.php';

@@ -388,6 +388,7 @@ if (isset($_SESSION["uisadminapp"]) && SP_Config::getValue('debug')) {
     $debugTxt[] = "<li>SESSION:";
     $debugTxt[] = "<pre>" . print_r($_SESSION, true) . "</pre";
     $debugTxt[] = "</li>";
+//    $debugTxt[] = "<li>Master Pass: " . SP_Crypt::getSessionMasterPass() ."</li>";
     $debugTxt[] = "<li>CONFIG:<pre>";
     $debugTxt[] = "<pre>" . print_r(SP_Config::getKeys(true), true) . "</pre>";
     $debugTxt[] = "</li>";

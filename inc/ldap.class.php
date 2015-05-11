@@ -60,10 +60,10 @@ class SP_LDAP
      * Comprobar la conexión al servidor de LDAP.
      *
      * @param string $ldapServer con la dirección del servidor
-     * @param string $bindDN     con el usuario de conexión
-     * @param string $bindPass   con la clave del usuario de conexión
+     * @param string $bindDN con el usuario de conexión
+     * @param string $bindPass con la clave del usuario de conexión
      * @param string $searchBase con la base para las búsquedas
-     * @param string $ldapGroup  con el grupo con los usuarios de acceso
+     * @param string $ldapGroup con el grupo con los usuarios de acceso
      * @return false|int Con el número de entradas encontradas
      */
     public static function checkLDAPConn($ldapServer, $bindDN, $bindPass, $searchBase, $ldapGroup)
@@ -114,7 +114,7 @@ class SP_LDAP
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $userDN   con el DN del usuario
+     * @param string $userDN con el DN del usuario
      * @param string $userPass con la clave del usuario
      * @throws Exception
      * @return bool

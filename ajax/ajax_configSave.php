@@ -225,6 +225,16 @@ if ($frmAction == "config") {
     }
 
     SP_Common::printJSON(_('Error al guardar el hash de la clave maestra'));
+} elseif ($frmAction == "flpass") {
+    $passLogin = SP_Config::setFirstLoginPass();
+
+    if (!empty($passLogin)){
+        $message['action'] = _('Generar Clave Temporal');
+        $message['text'][] = SP_Html::strongText(_('Clave') . ": ") . $passLogin;
+
+        SP_Common::sendEmail($message);
+        SP_Common::printJSON(_('Clave Temporal Generada'), 0, $doActionOnClose);
+    }
 } else {
     SP_Common::printJSON(_('Acción Inválida'));
 }

@@ -32,6 +32,7 @@ $onCloseAction = $data['onCloseAction'];
 SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
 $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
+$lastUpdateFirstLoginPass = SP_Config::getConfigValue("firstlogin_passtime");
 ?>
 
 <form method="post" name="frmCrypt" id="frmCrypt">
@@ -112,6 +113,56 @@ $lastUpdateMPass = SP_Config::getConfigValue("lastupdatempass");
         <li>
             <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
                  OnClick="configMgmt('savempwd');"/>
+        </li>
+    </ul>
+</div>
+
+<div id="title" class="midroundup titleNormal">
+    <?php echo _('Clave Temporal'); ?>
+</div>
+
+<form method="post" name="frmFirstLoginPass" id="frmFirstLoginPass">
+    <table class="data tblConfig round">
+        <tr>
+            <td class="descField">
+                <?php echo _('Último cambio'); ?>
+            </td>
+            <td class="valField">
+                <?php
+                    if ($lastUpdateFirstLoginPass > 0) {
+                        echo date("r", $lastUpdateFirstLoginPass);
+                    } else {
+                        echo _('No generada');
+                    }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField">
+                <?php echo _('Válido hasta'); ?>
+            </td>
+            <td class="valField">
+                <?php
+                    if ($lastUpdateFirstLoginPass > 0) {
+                        echo date("r", $lastUpdateFirstLoginPass + (24 * 3600));
+                    } else {
+                        echo _('No generada');
+                    }
+                ?>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
+    <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
+    <input type="hidden" name="action" value="flpass"/>
+    <input type="hidden" name="isAjax" value="1"/>
+    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(); ?>">
+</form>
+<div class="action">
+    <ul>
+        <li>
+            <img src="imgs/check.png" title="<?php echo _('Generar'); ?>" class="inputImg"
+                 OnClick="configMgmt('genflpass');"/>
         </li>
     </ul>
 </div>

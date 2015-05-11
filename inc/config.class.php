@@ -132,9 +132,10 @@ class SP_Config
      *
      * @param string $param con el parámetro a guardar
      * @param string $value con el calor a guardar
+     * @param bool $email enviar email?
      * @return bool
      */
-    public static function setConfigValue($param, $value)
+    public static function setConfigValue($param, $value, $email = true)
     {
         $query = "INSERT INTO config "
             . "SET config_parameter = '" . DB::escape($param) . "',"
@@ -151,7 +152,10 @@ class SP_Config
         $message['text'][] = _('Valor') . ': ' . $value;
 
         SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+
+        if ($email === true) {
+            SP_Common::sendEmail($message);
+        }
 
         return true;
     }
@@ -365,5 +369,62 @@ class SP_Config
         // Write changes
         self::writeData();
         return true;
+    }
+
+    /**
+     * Crea una clave para encriptar la clave maestra y guardarla.
+     *
+     * @return bool|string
+     */
+    public static function setFirstLoginPass()
+    {
+        $randomHash = md5(uniqid());
+        $pass = SP_Crypt::mkCustomMPassEncrypt($randomHash, SP_Crypt::getSessionMasterPass());
+
+        if (!is_array($pass)){
+            return false;
+        }
+
+        self::setConfigValue('firstlogin_pass', bin2hex($pass[0]), false);
+        self::setConfigValue('firstlogin_passiv', bin2hex($pass[1]), false);
+        self::setConfigValue('firstlogin_passhash', sha1($randomHash), false);
+        self::setConfigValue('firstlogin_passtime', time(), false);
+
+        return $randomHash;
+    }
+
+    /**
+     * Comprueba si la clave de primer inicio es válida
+     *
+     * @return bool
+     */
+    public static function checkFirstLoginPass($pass)
+    {
+        $passLoginTime = self::getConfigValue('firstlogin_passtime');
+
+        if ($passLoginTime !== false && time() - $passLoginTime > (24 * 3600)){
+            self::setConfigValue('firstlogin_pass', '', false);
+            self::setConfigValue('firstlogin_passiv', '', false);
+            self::setConfigValue('firstlogin_passhash', '', false);
+            self::setConfigValue('firstlogin_passtime', '', false);
+
+            return false;
+        }
+
+        return (self::getConfigValue('firstlogin_passhash') == sha1($pass));
+    }
+
+    /**
+     * Devuelve la clave maestra que ha sido encriptada para primer inicio de sesión
+     *
+     * @param $pass con la clave utilizada para encriptar
+     * @return string
+     */
+    public static function getFirstLoginPass($pass)
+    {
+        $passLogin = hex2bin(self::getConfigValue('firstlogin_pass'));
+        $passLoginIV = hex2bin(self::getConfigValue('firstlogin_passiv'));
+
+        return SP_Crypt::getDecrypt($passLogin, $pass, $passLoginIV);
     }
 }
