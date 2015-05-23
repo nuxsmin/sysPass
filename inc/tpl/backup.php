@@ -29,7 +29,7 @@ $action = $data['action'];
 $activeTab = $data['activeTab'];
 $onCloseAction = $data['onCloseAction'];
 
-SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+SP_Acl::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
 
 $siteName = SP_Html::getAppInfo('appname');
 $backupDir = SP_Init::$SERVERROOT . '/backup';

@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -32,7 +32,7 @@ if (!SP_Init::isLoggedIn()) {
     SP_Util::logout();
 }
 
-SP_ACL::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
+SP_Acl::checkUserAccess('eventlog') || SP_Html::showCommonError('unavailable');
 
 $start = SP_Common::parseParams('p', 'start', 0);
 $clear = SP_Common::parseParams('p', 'clear', 0);

@@ -59,7 +59,7 @@ $chpass = ( ! isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0 ) ? '<img
 
         foreach ($actions as $action) {
             if ($action['checkaccess']) {
-                if (!SP_ACL::checkUserAccess($action['name'])) {
+                if (!SP_Acl::checkUserAccess($action['name'])) {
                     continue;
                 }
             }

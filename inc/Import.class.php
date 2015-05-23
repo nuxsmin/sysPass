@@ -280,11 +280,11 @@ class SP_Import
         $xml = self::readXMLFile();
 
         if ( $xml->Meta->Generator == 'KeePass' ){
-            SP_KeePassImport::addKeepassAccounts($xml);
+            SP_KeepassImport::addKeepassAccounts($xml);
         } else if ($xmlApp = self::parseFileHeader()){
             switch ($xmlApp) {
                 case 'keepassx_database':
-                    SP_KeePassXImport::addKeepassXAccounts($xml);
+                    SP_KeepassXImport::addKeepassXAccounts($xml);
                     break;
                 case 'revelationdata':
                     error_log('REVELATION');

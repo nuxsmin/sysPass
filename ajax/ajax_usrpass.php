@@ -24,7 +24,7 @@
 */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
 SP_Util::checkReferer('GET');
 
@@ -40,7 +40,7 @@ if ( ! $userId ) {
 
 $strError = '<div id="fancyView" class="msgError">'._('No tiene permisos para realizar esta operación').'</div>';
 
-SP_ACL::checkUserAccess("acceditpass",$userId) || die ($strError);
+SP_Acl::checkUserAccess("acceditpass",$userId) || die ($strError);
 
 ?>
 

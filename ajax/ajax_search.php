@@ -24,7 +24,7 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -144,11 +144,11 @@ foreach ($resQuery as $account) {
     $objAccount->accountOtherUserEdit = $account->account_otherUserEdit;
     $objAccount->accountOtherGroupEdit = $account->account_otherGroupEdit;
 
-    $accView = (SP_ACL::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accview"));
-    $accViewPass = (SP_ACL::checkAccountAccess("accviewpass", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accviewpass"));
-    $accEdit = (SP_ACL::checkAccountAccess("accedit", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accedit"));
-    $accCopy = (SP_ACL::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accnew"));
-    $accDel = (SP_ACL::checkAccountAccess("accdelete", $objAccount->getAccountDataForACL()) && SP_ACL::checkUserAccess("accdelete"));
+    $accView = (SP_Acl::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_Acl::checkUserAccess("accview"));
+    $accViewPass = (SP_Acl::checkAccountAccess("accviewpass", $objAccount->getAccountDataForACL()) && SP_Acl::checkUserAccess("accviewpass"));
+    $accEdit = (SP_Acl::checkAccountAccess("accedit", $objAccount->getAccountDataForACL()) && SP_Acl::checkUserAccess("accedit"));
+    $accCopy = (SP_Acl::checkAccountAccess("accview", $objAccount->getAccountDataForACL()) && SP_Acl::checkUserAccess("accnew"));
+    $accDel = (SP_Acl::checkAccountAccess("accdelete", $objAccount->getAccountDataForACL()) && SP_Acl::checkUserAccess("accdelete"));
 
     $show = ($accView || $accViewPass || $accEdit || $accCopy || $accDel);
 

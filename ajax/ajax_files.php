@@ -26,7 +26,7 @@
 // TODO: comprobar permisos para eliminar archivos
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
 SP_Util::checkReferer('POST');
 

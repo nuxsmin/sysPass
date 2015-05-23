@@ -537,7 +537,10 @@ class SP_Util
         }
 
         flush();
-        ob_start('ob_gzhandler');
+
+        if(self::checkZlib() || !ob_start('ob_gzhandler')){
+            ob_start();
+        }
 
         foreach ($files as $file) {
             $filePath = $path . $file['href'];
@@ -673,5 +676,16 @@ class SP_Util
     public static function arrayJSEscape(&$array){
         array_walk($array, function(&$value, $index) {$value = str_replace(array("'", '"'), "\\'", $value);});
         return $array;
+    }
+
+    /**
+     * Comprobar si la salida comprimida en con zlib está activada.
+     * No es compatible con ob_gzhandler()
+     *
+     * @return bool
+     */
+    public static function checkZlib()
+    {
+        return self::boolval(ini_get('zlib.output_compression'));
     }
 }

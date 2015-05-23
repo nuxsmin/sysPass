@@ -43,7 +43,7 @@ class SP_Auth
      */
     public static function authUserLDAP($userLogin, $userPass)
     {
-        if (!SP_Util::ldapIsAvailable() || !SP_Util::ldapIsEnabled() || !SP_LDAP::checkLDAPParams()) {
+        if (!SP_Util::ldapIsAvailable() || !SP_Util::ldapIsEnabled() || !SP_Ldap::checkLDAPParams()) {
             return false;
         }
 
@@ -52,14 +52,14 @@ class SP_Auth
 
         // Conectamos al servidor realizamos la conexión con el usuario proxy
         try {
-            SP_LDAP::ldapConnect();
-            SP_LDAP::ldapBind();
-            SP_LDAP::getUserDN($userLogin);
+            SP_Ldap::ldapConnect();
+            SP_Ldap::ldapBind();
+            SP_Ldap::getUserDN($userLogin);
         } catch (Exception $e) {
             return false;
         }
 
-        $userDN = SP_LDAP::$ldapSearchData[0]['dn'];
+        $userDN = SP_Ldap::$ldapSearchData[0]['dn'];
         // Mapeo de los atributos
         $attribsMap = array(
             'groupMembership' => 'group',
@@ -71,10 +71,10 @@ class SP_Auth
 
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
-            SP_LDAP::ldapBind($userDN, $userPass);
-            $attribs = SP_LDAP::getLDAPAttr($attribsMap);
+            SP_Ldap::ldapBind($userDN, $userPass);
+            $attribs = SP_Ldap::getLDAPAttr($attribsMap);
         } catch (Exception $e) {
-            return ldap_errno(SP_LDAP::getConn());
+            return ldap_errno(SP_Ldap::getConn());
         }
 
         // Comprobamos si la cuenta está bloqueada o expirada
@@ -101,7 +101,7 @@ class SP_Auth
             }
             // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
         } else {
-            $ldapGroupAccess = SP_LDAP::searchUserInGroup($userDN);
+            $ldapGroupAccess = SP_Ldap::searchUserInGroup($userDN);
         }
 
         if ($ldapGroupAccess == false) {

@@ -29,7 +29,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
  */
-class SP_LDAP
+class SP_Ldap
 {
     // Variabla que contiene los datos de una búsqueda
     public static $ldapSearchData;

@@ -100,14 +100,26 @@ class SP_Init
             $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
         }
 
-        self::setPaths();
-
         // Establecer el modo debug si una sesión de xdebug está activa
-        if (!defined('DEBUG') || !DEBUG) {
-            if (isset($_COOKIE['XDEBUG_SESSION'])) {
-                define('DEBUG', true);
-            }
+        if (isset($_COOKIE['XDEBUG_SESSION']) && (!defined('DEBUG') || !DEBUG)) {
+            define('DEBUG', true);
         }
+
+        // Establecer el nivel de logging
+        if (defined('DEBUG') && DEBUG) {
+//            error_log('sysPass DEBUG');
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'On');
+        } else {
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            ini_set('display_errors', 'Off');
+        }
+
+        // Iniciar la sesión de PHP
+        self::startSession();
+
+        //  Establecer las rutas de la aplicación
+        self::setPaths();
 
         // Cargar el lenguaje
         self::selectLang();
@@ -123,7 +135,7 @@ class SP_Init
         self::checkInstalled();
 
         // Comprobar si la Base de datos existe
-        if (!db::checkDatabaseExist()) {
+        if (!DB::checkDatabaseExist()) {
             self::initError(_('Error en la verificación de la base de datos'));
         }
 
@@ -202,8 +214,8 @@ class SP_Init
      */
     public static function sysPassAutoload($classname)
     {
-        $class = str_replace("sp_", '', strtolower($classname));
-        $classfile = dirname(__FILE__) . DIRECTORY_SEPARATOR . $class . ".class.php";
+        $class = str_ireplace('sp_', '', $classname);
+        $classfile = dirname(__FILE__) . DIRECTORY_SEPARATOR . $class . '.class.php';
 
         if (is_readable($classfile)) {
             require $classfile;
@@ -474,24 +486,6 @@ class SP_Init
      */
     private static function initSession()
     {
-        // Evita que javascript acceda a las cookis de sesion de PHP
-        ini_set('session.cookie_httponly', '1;');
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-
-            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
-
-            header('HTTP/1.1 500 Internal Server Error');
-            $errors[] = array(
-                'type' => 'critical',
-                'description' => _('La sesión no puede ser inicializada'),
-                'hint' => _('Consulte con el administrador'));
-
-            SP_Html::render('error', $errors);
-            exit();
-        }
-
         $sessionLifeTime = self::getSessionLifeTime();
 
         // Regenerar el Id de sesión periódicamente para evitar fijación
@@ -618,6 +612,29 @@ class SP_Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
+    }
+
+    /**
+     * Iniciar la sesión PHP
+     */
+    private static function startSession(){
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+
+            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
+
+            header('HTTP/1.1 500 Internal Server Error');
+            $errors[] = array(
+                'type' => 'critical',
+                'description' => _('La sesión no puede ser inicializada'),
+                'hint' => _('Consulte con el administrador'));
+
+            SP_Html::render('error', $errors);
+            exit();
+        }
     }
 }
 

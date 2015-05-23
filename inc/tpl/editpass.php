@@ -29,7 +29,7 @@ $account->accountId = $data['id'];
 $account->lastAction = $data['lastaction'];
 $accountData = $account->getAccount();
 
-(!SP_ACL::checkAccountAccess("acceditpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("acceditpass")) && SP_Html::showCommonError('noaccpermission');
+(!SP_Acl::checkAccountAccess("acceditpass", $account->getAccountDataForACL()) || !SP_Acl::checkUserAccess("acceditpass")) && SP_Html::showCommonError('noaccpermission');
 ?>
 
 <div id="title" class="midroundup titleOrange"><?php echo _('Modificar Clave de Cuenta'); ?></div>

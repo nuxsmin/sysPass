@@ -29,7 +29,7 @@ $action = $data['action'];
 $activeTab = $data['activeTab'];
 $onCloseAction = $data['onCloseAction'];
 
-SP_ACL::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
+SP_Acl::checkUserAccess($action) || SP_Html::showCommonError('unavailable');
         
 $arrLangAvailable = array(
     'Español' => 'es_ES',

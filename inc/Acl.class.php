@@ -29,7 +29,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class SP_ACL
+class SP_Acl
 {
 
     static $accountCacheUserGroupsId;

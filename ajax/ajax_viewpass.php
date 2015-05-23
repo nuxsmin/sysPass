@@ -24,7 +24,7 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'init.php';
+require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -52,7 +52,7 @@ if ($isHistory && !$account->checkAccountMPass()){
 
 $accountData = $account->getAccountPass($isHistory);
 
-if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
+if (!SP_Acl::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_Acl::checkUserAccess("accviewpass")) {
     SP_Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
 }
 

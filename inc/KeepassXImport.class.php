@@ -27,19 +27,20 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Esta clase es la encargada de importar cuentas desde KeePass
+ * Esta clase es la encargada de importar cuentas desde KeePassX
  */
-class SP_KeePassImport
+class SP_KeepassXImport
 {
 
     /**
-     * Iniciar la importación desde KeePass
+     * Iniciar la importación desde KeePass.
+     *
      * @param object $xml
      * @return none
      */
-    public static function addKeepassAccounts($xml)
+    public static function addKeepassXAccounts($xml)
     {
-        self::getGroups($xml->Root->Group);
+        self::getGroups($xml);
     }
 
     /**
@@ -53,28 +54,13 @@ class SP_KeePassImport
     private static function getEntryData($entries, $groupName)
     {
         foreach ( $entries as $entry ){
-            foreach ( $entry->String as $account ){
-                $value = (isset($account->Value)) ? (string) $account->Value : '';
-                switch ($account->Key){
-                    case 'Notes':
-                        $notes = $value;
-                        break;
-                    case 'Password':
-                        $password = $value;
-                        break;
-                    case 'Title':
-                        $name = $value;
-                        break;
-                    case 'URL':
-                        $url = $value;
-                        break;
-                    case 'UserName':
-                        $username = $value;
-                        break;
-                }
-            }
+            $notes = (isset($entry->comment)) ? (string) $entry->comment : '';
+            $password = (isset($entry->password)) ? (string) $entry->password : '';
+            $name = (isset($entry->title)) ? (string) $entry->title : '';
+            $url = (isset($entry->url)) ? (string) $entry->url : '' ;
+            $username = (isset($entry->username)) ? (string) $entry->username : '';
 
-            $accountData = array($name,'KeePass',$groupName,$url,$username,$password,$notes);
+            $accountData = array($name,'KeePassX',$groupName,$url,$username,$password,$notes);
             SP_Import::addAccountData($accountData);
         }
     }
@@ -89,26 +75,26 @@ class SP_KeePassImport
     private static function getGroups($xml)
     {
         foreach($xml as $node){
-            if ( $node->Group ){
-                foreach ( $node->Group as $group ){
-                    $groupName = $group->Name;
+            if ( $node->group ){
+                foreach ( $node->group as $group ){
+                    $groupName = $group->title;
                     // Analizar grupo
-                    if ( $node->Group->Entry ){
+                    if ( $node->group->entry ){
                         // Obtener entradas
-                        self::getEntryData($group->Entry,$groupName);
+                        self::getEntryData($group->entry,$groupName);
                     }
 
-                    if ( $group->Group ){
+                    if ( $group->group ){
                         // Analizar subgrupo
                         self::getGroups($group);
                     }
                 }
             }
 
-            if ( $node->Entry ){
-                $groupName = $node->Name;
+            if ( $node->entry ){
+                $groupName = $node->title;
                 // Obtener entradas
-                self::getEntryData($node->Entry,$groupName);
+                self::getEntryData($node->entry,$groupName);
             }
         }
     }

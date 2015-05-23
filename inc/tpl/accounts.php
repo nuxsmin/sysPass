@@ -104,7 +104,7 @@ $gotData = (isset($accountData) && is_object($accountData));
 
 if ($data['id'] > 0) {
     // Comprobar permisos de acceso
-    SP_ACL::checkAccountAccess($action, $account->getAccountDataForACL()) || SP_Html::showCommonError('noaccpermission');
+    SP_Acl::checkAccountAccess($action, $account->getAccountDataForACL()) || SP_Html::showCommonError('noaccpermission');
 
     $changesHash = $account->calcChangesHash();
     $chkUserEdit = ($accountData->account_otherUserEdit) ? 'checked' : '';
@@ -132,28 +132,28 @@ $categoriesSelProp = array("name" => "categoryId",
     "attribs" => "");
 
 $isModified = ($gotData && $accountData->account_dateEdit && $accountData->account_dateEdit <> '0000-00-00 00:00:00');
-$showHistory = (($action == 'accview' || $action == 'accviewhistory') && SP_ACL::checkUserAccess("accviewhistory") && ($isModified || $action == 'accviewhistory'));
+$showHistory = (($action == 'accview' || $action == 'accviewhistory') && SP_Acl::checkUserAccess("accviewhistory") && ($isModified || $action == 'accviewhistory'));
 $showDetails = ($action == 'accview' || $action == 'accviewhistory' || $action == 'accdelete');
 $showPass = ($action == "accnew" || $action == 'acccopy');
 $showFiles = (($action == "accedit" || $action == "accview" || $action == "accviewhistory")
-    && (SP_Util::fileIsEnabled() && SP_ACL::checkUserAccess("accfiles")));
+    && (SP_Util::fileIsEnabled() && SP_Acl::checkUserAccess("accfiles")));
 $showViewPass = (($action == "accview" || $action == "accviewhistory")
-    && (SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) && SP_ACL::checkUserAccess("accviewpass")));
+    && (SP_Acl::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) && SP_Acl::checkUserAccess("accviewpass")));
 $showSave = ($action == "accedit" || $action == "accnew" || $action == "acccopy");
 $showEdit = ($action == "accview"
-    && SP_ACL::checkAccountAccess("accedit", $account->getAccountDataForACL())
-    && SP_ACL::checkUserAccess("accedit")
+    && SP_Acl::checkAccountAccess("accedit", $account->getAccountDataForACL())
+    && SP_Acl::checkUserAccess("accedit")
     && !$account->accountIsHistory);
 $showEditPass = ($action == "accedit"
-    && SP_ACL::checkAccountAccess("acceditpass", $account->getAccountDataForACL())
-    && SP_ACL::checkUserAccess("acceditpass")
+    && SP_Acl::checkAccountAccess("acceditpass", $account->getAccountDataForACL())
+    && SP_Acl::checkUserAccess("acceditpass")
     && !$account->accountIsHistory);
 $showDelete = ($action == "accdelete"
-    && SP_ACL::checkAccountAccess("accdelete", $account->getAccountDataForACL())
-    && SP_ACL::checkUserAccess("accdelete"));
+    && SP_Acl::checkAccountAccess("accdelete", $account->getAccountDataForACL())
+    && SP_Acl::checkUserAccess("accdelete"));
 $showRestore = ($action == "accviewhistory"
-    && SP_ACL::checkAccountAccess("accedit", $account->getAccountDataForACL($account->accountParentId))
-    && SP_ACL::checkUserAccess("accedit"));
+    && SP_Acl::checkAccountAccess("accedit", $account->getAccountDataForACL($account->accountParentId))
+    && SP_Acl::checkUserAccess("accedit"));
 $filesDelete = ($action == 'accedit') ? 1 : 0;
 $skey = SP_Common::getSessionKey(true);
 $maxFileSize = round(SP_Config::getValue('files_allowed_size') / 1024, 1);
