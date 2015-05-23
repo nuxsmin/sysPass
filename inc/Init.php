@@ -29,12 +29,39 @@ define ('EXTENSIONS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ext');
 class SP_Init
 {
 
-    public static $CLASSPATH = array(); // Associative array for autoloading. classname => filename
-    public static $SERVERROOT = ''; // The installation path on the server (e.g. /srv/www/syspass)
-    public static $WEBROOT = ''; // The current request path relative to the sysPass root (e.g. files/index.php)
-    public static $WEBURI = ''; // The sysPass root path for http requests (e.g. syspass/)
+    /**
+     * @var array Associative array for autoloading. classname => filename
+     */
+    public static $CLASSPATH = array();
+
+    /**
+     * @var string The installation path on the server (e.g. /srv/www/syspass)
+     */
+    public static $SERVERROOT = '';
+
+    /**
+     * @var string The current request path relative to the sysPass root (e.g. files/index.php)
+     */
+    public static $WEBROOT = '';
+
+    /**
+     * @var string The sysPass root path for http requests (e.g. syspass/)
+     */
+    public static $WEBURI = '';
+
+    /**
+     * @var string Language used/detected
+     */
     public static $LANG = '';
+
+    /**
+     * @var bool True if sysPass has been updated. Only for notices.
+     */
     public static $UPDATED = false;
+
+    /**
+     * @var string
+     */
     private static $SUBURI = '';
 
     /**
@@ -264,7 +291,7 @@ class SP_Init
 
         self::$WEBROOT = substr($scriptName, 0, $pos);
 
-        if (self::$WEBROOT != '' and self::$WEBROOT[0] !== '/') {
+        if (self::$WEBROOT != '' && self::$WEBROOT[0] !== '/') {
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
