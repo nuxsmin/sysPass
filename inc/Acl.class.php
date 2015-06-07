@@ -29,79 +29,82 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class SP_Acl
+class SP_Acl implements \Controller\ActionsInterface
 {
-
-    static $accountCacheUserGroupsId;
-
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
      * Esta función comprueba los permisos del usuario para realizar una acción.
      * Si los permisos ya han sido obtenidos desde la BBDD, se utiliza el objeto creado
      * en la variable de sesión.
      *
-     * @param string $strAction con el nombre de la acción
+     * @param string $action con el nombre de la acción
      * @param int $userId opcional, con el Id del usuario
      * @return bool
      */
-    public static function checkUserAccess($strAction, $userId = 0)
+    public static function checkUserAccess($action, $userId = 0)
     {
         // Comprobamos si la cache de permisos está inicializada
         if (!isset($_SESSION["usrprofile"]) || !is_object($_SESSION["usrprofile"])) {
+//            error_log('ACL_CACHE_MISS');
             return false;
         }
 
-        $blnUIsAdminApp = $_SESSION["uisadminapp"];
-        $blnUIsAdminAcc = $_SESSION["uisadminacc"];
-        $profile = $_SESSION["usrprofile"];
+        $curUserIsAdminApp = SP_Session::getUserIsAdminApp();
+        $curUserIsAdminAcc = SP_Session::getUserIsAdminAcc();
+        $curUserProfile = SP_Session::getUserProfileId();
+        $curUserId = SP_Session::getUserId();
 
-        switch ($strAction) {
-            case "accview":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pView);
-            case "accviewpass":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pViewPass);
-            case "accviewhistory":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pViewHistory);
-            case "accedit":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pEdit);
-            case "acceditpass":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pEditPass || $userId == $_SESSION["uid"]);
-            case "accnew":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pAdd);
-            case "acccopy":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || ($profile->userProfile_pAdd && $profile->userProfile_pView));
-            case "accdelete":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pDelete);
-            case "accfiles":
-                return ($blnUIsAdminApp || $blnUIsAdminAcc || $profile->userProfile_pFiles);
-            case "appmgmtmenu":
-                return ($blnUIsAdminApp || $profile->userProfile_pAppMgmtMenu);
-            case "configmenu":
-                return ($blnUIsAdminApp || $profile->userProfile_pConfigMenu);
-            case "config":
-                return ($blnUIsAdminApp || $profile->userProfile_pConfig);
-            case "categories":
-                return ($blnUIsAdminApp || $profile->userProfile_pAppMgmtCategories);
-            case "customers":
-                return ($blnUIsAdminApp || $profile->userProfile_pAppMgmtCustomers);
-            case "masterpass":
-                return ($blnUIsAdminApp || $profile->userProfile_pConfigMasterPass);
-            case "backup":
-                return ($blnUIsAdminApp || $profile->userProfile_pConfigBackup);
-            case "usersmenu":
-                return ($blnUIsAdminApp || $profile->userProfile_pUsersMenu);
-            case "users":
-                return ($blnUIsAdminApp || $profile->userProfile_pUsers);
-            case "groups":
-                return ($blnUIsAdminApp || $profile->userProfile_pGroups);
-            case "profiles":
-                return ($blnUIsAdminApp || $profile->userProfile_pProfiles);
-            case "eventlog":
-                return ($blnUIsAdminApp || $profile->userProfile_pEventlog);
+        switch ($action) {
+            case self::ACTION_ACC_VIEW:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pView);
+            case self::ACTION_ACC_VIEW_PASS:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pViewPass);
+            case self::ACTION_ACC_VIEW_HISTORY:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pViewHistory);
+            case self::ACTION_ACC_EDIT:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pEdit);
+            case self::ACTION_ACC_EDIT_PASS:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pEditPass || $userId == $_SESSION["uid"]);
+            case self::ACTION_ACC_NEW:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pAdd);
+            case self::ACTION_ACC_COPY:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || ($curUserProfile->userProfile_pAdd && $curUserProfile->userProfile_pView));
+            case self::ACTION_ACC_DELETE:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pDelete);
+            case self::ACTION_ACC_FILES:
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pFiles);
+            case self::ACTION_MGM:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pAppMgmtMenu);
+            case self::ACTION_CFG:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfigMenu);
+            case self::ACTION_CFG_GENERAL:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfig);
+            case self::ACTION_CFG_IMPORT:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfig);
+            case self::ACTION_MGM_CATEGORIES:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pAppMgmtCategories);
+            case self::ACTION_MGM_CUSTOMERS:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pAppMgmtCustomers);
+            case self::ACTION_CFG_ENCRYPTION:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfigMasterPass);
+            case self::ACTION_CFG_BACKUP:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfigBackup);
+            case self::ACTION_USR:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pUsersMenu);
+            case self::ACTION_USR_USERS:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pUsers);
+            case self::ACTION_USR_USERS_EDITPASS:
+                return ($userId == $curUserId || $curUserIsAdminApp || $curUserProfile->userProfile_pUsers);
+            case self::ACTION_USR_GROUPS:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pGroups);
+            case self::ACTION_USR_PROFILES:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pProfiles);
+            case self::ACTION_EVL:
+                return ($curUserIsAdminApp || $curUserProfile->userProfile_pEventlog);
         }
 
-        $message['action'][] = __FUNCTION__;
-        $message['text'][] = _('Denegado acceso a') . " '" . $strAction . "'";
+        $message['action'] = __FUNCTION__;
+        $message['text'][] = _('Denegado acceso a') . " '" . self::getActionName($action) . "'";
 
         SP_Log::wrLogInfo($message);
 
@@ -111,69 +114,89 @@ class SP_Acl
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string $action con la acción realizada
+     * @param string $module con la acción realizada
      * @param array $accountData con los datos de la cuenta a verificar
      * @return bool
      */
-    public static function checkAccountAccess($action, $accountData)
+    public static function checkAccountAccess($module, $accountData)
     {
-        $userGroupId = $_SESSION["ugroup"];
-        $userId = $_SESSION["uid"];
-        $userIsAdminApp = $_SESSION["uisadminapp"];
-        $userIsAdminAcc = $_SESSION["uisadminacc"];
+        $userGroupId = SP_Session::getUserGroupId();
+        $userId = SP_Session::getUserId();
+        $userIsAdminApp = SP_Session::getUserIsAdminApp();
+        $userIsAdminAcc = SP_Session::getUserIsAdminAcc();
 
-        switch ($action) {
-            case "accview":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || in_array($userId, $accountData['users_id'])
-                    || in_array($userGroupId, $accountData['groups_id'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
-            case "accviewpass":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || in_array($userId, $accountData['users_id'])
-                    || in_array($userGroupId, $accountData['groups_id'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
-            case "accviewhistory":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || in_array($userId, $accountData['users_id'])
-                    || in_array($userGroupId, $accountData['groups_id'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
-            case "accedit":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-                    || (in_array($userGroupId, $accountData['groups_id']) && $accountData['othergroup_edit'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
-            case "accdelete":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-                    || (in_array($userGroupId, $accountData['groups_id']) && $accountData['othergroup_edit'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
-            case "acceditpass":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-                    || (in_array($userGroupId, $accountData['groups_id']) && $accountData['othergroup_edit'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
-            case "acccopy":
-                return ($userId == $accountData['user_id']
-                    || $userGroupId == $accountData['group_id']
-                    || in_array($userId, $accountData['users_id'])
-                    || in_array($userGroupId, $accountData['groups_id'])
-                    || $userIsAdminApp
-                    || $userIsAdminAcc);
+        $okView = ($userId == $accountData['user_id']
+            || $userGroupId == $accountData['group_id']
+            || in_array($userId, $accountData['users_id'])
+            || in_array($userGroupId, $accountData['groups_id'])
+            || $userIsAdminApp
+            || $userIsAdminAcc);
+
+        $okEdit = ($userId == $accountData['user_id']
+            || $userGroupId == $accountData['group_id']
+            || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
+            || (in_array($userGroupId, $accountData['groups_id']) && $accountData['othergroup_edit'])
+            || $userIsAdminApp
+            || $userIsAdminAcc);
+
+        switch ($module) {
+            case self::ACTION_ACC_VIEW:
+                return $okView;
+            case self::ACTION_ACC_VIEW_PASS:
+                return $okView;;
+            case self::ACTION_ACC_VIEW_HISTORY:
+                return $okView;
+            case self::ACTION_ACC_EDIT:
+                return $okEdit;
+            case self::ACTION_ACC_DELETE:
+                return $okEdit;
+            case self::ACTION_ACC_EDIT_PASS:
+                return $okEdit;
+            case self::ACTION_ACC_COPY:
+                return $okView;
         }
 
         return false;
+    }
+
+    /**
+     * Obtener el nombre de la acción indicada
+     *
+     * @param int $action El id de la acción
+     * @return string
+     */
+    public static function getActionName($action){
+        $actionName = array(
+            self::ACTION_ACC_SEARCH => 'acc_search',
+            self::ACTION_ACC_VIEW => 'acc_view',
+            self::ACTION_ACC_COPY => 'acc_copy',
+            self::ACTION_ACC_NEW => 'acc_new',
+            self::ACTION_ACC_EDIT => 'acc_edit',
+            self::ACTION_ACC_EDIT_PASS => 'acc_editpass',
+            self::ACTION_ACC_VIEW_HISTORY => 'acc_viewhist',
+            self::ACTION_ACC_VIEW_PASS => 'acc_viewpass',
+            self::ACTION_ACC_DELETE => 'acc_delete',
+            self::ACTION_ACC_FILES => 'acc_files',
+            self::ACTION_ACC_REQUEST => 'acc_request',
+            self::ACTION_MGM => 'mgm',
+            self::ACTION_MGM_CATEGORIES => 'mgm_categories',
+            self::ACTION_MGM_CUSTOMERS => 'mgm_customers',
+            self::ACTION_USR => 'usr',
+            self::ACTION_USR_USERS => 'usr_users',
+            self::ACTION_USR_GROUPS => 'usr_groups',
+            self::ACTION_USR_PROFILES => 'usr_profiles',
+            self::ACTION_CFG => 'cfg',
+            self::ACTION_CFG_GENERAL => 'cfg_general',
+            self::ACTION_CFG_ENCRYPTION => 'cfg_encryption',
+            self::ACTION_CFG_BACKUP => 'cfg_backup',
+            self::ACTION_CFG_IMPORT => 'cfg_import',
+            self::ACTION_EVL => 'evl'
+        );
+
+        if (!isset($actionName[$action])){
+            return 'action';
+        }
+
+        return $actionName[$action];
     }
 }

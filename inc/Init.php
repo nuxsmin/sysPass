@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -76,13 +76,14 @@ class SP_Init
         if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
             // Registro del cargador de clases (PHP >= 5.1.2)
             if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-                spl_autoload_register(array('SP_Init', 'sysPassAutoload'), true, true);
+                spl_autoload_register(array('SP_Init', 'sysPassAutoload'), true);
             } else {
                 spl_autoload_register(array('SP_Init', 'sysPassAutoload'));
             }
         } else {
             /**
              * Fall back to traditional autoload for old PHP versions
+             *
              * @param string $classname The name of the class to load
              */
             function __autoload($classname)
@@ -229,7 +230,9 @@ class SP_Init
                 return;
             }
 
-            SP_Html::render('login');
+            $controller = new \Controller\MainC();
+            $controller->getLogin();
+            $controller->view();
             exit();
         }
 
@@ -241,13 +244,53 @@ class SP_Init
      */
     public static function sysPassAutoload($classname)
     {
+        $classFound = false;
         $class = str_ireplace('sp_', '', $classname);
+        $class = (strrpos($class, '\\')) ? substr($class, strrpos($class, '\\') + 1) : $class;
         $classfile = dirname(__FILE__) . DIRECTORY_SEPARATOR . $class . '.class.php';
 
-        if (is_readable($classfile)) {
-            require $classfile;
+//        error_log($class);
+//        error_log($classfile);
+
+        if (!is_readable($classfile)) {
+            $includePaths = explode(':', get_include_path());
+
+            foreach ($includePaths as $path) {
+                $classfile = $path . DIRECTORY_SEPARATOR . $class . '.class.php';
+                if (is_readable($classfile)) {
+                    $classFound = true;
+                    break;
+                }
+            }
         } else {
+            $classFound = true;
+        }
+
+
+        if ($classFound === false) {
             error_log('Class Autoloader Error: ' . $classfile);
+            return false;
+        }
+
+        require_once $classfile;
+    }
+
+    /**
+     * Iniciar la sesión PHP
+     */
+    private static function startSession()
+    {
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+
+            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
+
+            header('HTTP/1.1 500 Internal Server Error');
+
+            self::initError(_('La sesión no puede ser inicializada'), _('Consulte con el administrador'));
         }
     }
 
@@ -255,7 +298,7 @@ class SP_Init
      * Establecer las rutas de la aplicación.
      * Esta función establece las rutas del sistema de archivos y web de la aplicación.
      * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
-
+     *
      * @return none
      */
     private static function setPaths()
@@ -265,7 +308,7 @@ class SP_Init
 
         // Establecer la ruta include correcta
         set_include_path(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . PATH_SEPARATOR .
-            self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . PATH_SEPARATOR .
+            self::$SERVERROOT . DIRECTORY_SEPARATOR . 'web' . PATH_SEPARATOR .
             get_include_path() . PATH_SEPARATOR . self::$SERVERROOT);
 
         self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
@@ -374,18 +417,17 @@ class SP_Init
     /**
      * Devuelve un eror utilizando la plantilla de rror.
      *
-     * @param string $str con la descripción del error
+     * @param string $str  con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      * @returns none
      */
     public static function initError($str, $hint = '')
     {
-        $errors[] = array(
-            'type' => 'critical',
-            'description' => $str,
-            'hint' => $hint);
-
-        SP_Html::render('error', $errors);
+        $tpl = new SP_Template();
+        $tpl->append('errors', array('type' => 'critical', 'description' => $str, 'hint' => $hint));
+        $controller = new \Controller\MainC($tpl);
+        $controller->getError(true);
+        $controller->view();
         exit();
     }
 
@@ -405,7 +447,9 @@ class SP_Init
         } elseif (!SP_Config::getValue('installed', false) && self::$SUBURI == '/index.php') {
             // Comprobar si sysPass está instalada o en modo mantenimiento
             if (!SP_Config::getValue('installed', false)) {
-                SP_Html::render('install');
+                $controller = new \Controller\MainC();
+                $controller->getInstaller();
+                $controller->view();
                 exit();
             }
         }
@@ -453,14 +497,14 @@ class SP_Init
 
         $update = false;
         $configVersion = (int)str_replace('.', '', SP_Config::getValue('version'));
-        $databaseVersion = (int)str_replace('.', '', SP_Config::getConfigValue('version'));
+        $databaseVersion = (int)str_replace('.', '', SP_Config::getConfigDbValue('version'));
         $appVersion = (int)implode(SP_Util::getVersion(true));
 
         if ($databaseVersion < $appVersion
             && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0
         ) {
-            if (SP_Upgrade::needDBUpgrade($databaseVersion)){
-                if(!self::checkMaintenanceMode(true)) {
+            if (SP_Upgrade::needDBUpgrade($databaseVersion)) {
+                if (!self::checkMaintenanceMode(true)) {
                     if (SP_Config::getValue('upgrade_key', 0) === 0) {
                         SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
                         SP_Config::setValue('maintenance', true);
@@ -474,13 +518,15 @@ class SP_Init
 
                 if ($action === 'upgrade' && $hash === SP_Config::getValue('upgrade_key', 0)) {
                     if (SP_Upgrade::doUpgrade($databaseVersion)) {
-                        SP_Config::setConfigValue('version', $appVersion);
+                        SP_Config::setConfigDbValue('version', $appVersion);
                         SP_Config::setValue('maintenance', false);
                         SP_Config::deleteKey('upgrade_key');
                         $update = true;
                     }
                 } else {
-                    SP_Html::render('upgrade');
+                    $controller = new \Controller\MainC();
+                    $controller->getUpgrade();
+                    $controller->view();
                     exit();
                 }
             }
@@ -590,10 +636,12 @@ class SP_Init
         }
 
         $action = SP_Common::parseParams('r', 'a');
+        $controller = new \Controller\MainC();
 
         switch ($action) {
             case 'passreset':
-                SP_Html::render('passreset');
+                $controller->getPassReset();
+                $controller->view();
                 break;
             default:
                 return false;
@@ -640,34 +688,11 @@ class SP_Init
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
     }
-
-    /**
-     * Iniciar la sesión PHP
-     */
-    private static function startSession(){
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        ini_set('session.cookie_httponly', '1');
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-
-            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
-
-            header('HTTP/1.1 500 Internal Server Error');
-            $errors[] = array(
-                'type' => 'critical',
-                'description' => _('La sesión no puede ser inicializada'),
-                'hint' => _('Consulte con el administrador'));
-
-            SP_Html::render('error', $errors);
-            exit();
-        }
-    }
 }
 
 // Empezar a calcular el tiempo y memoria utilizados
 $memInit = memory_get_usage();
-$time_start = SP_Init::microtime_float();
+$timeStart = SP_Init::microtime_float();
 
 // Inicializar sysPass
 SP_Init::init();

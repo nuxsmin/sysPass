@@ -1,90 +1,42 @@
-<?php
-/**
- * sysPass
- *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *
- * This file is part of sysPass.
- *
- * sysPass is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sysPass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-$modulesErrors = SP_Util::checkModules();
-$versionErrors = SP_Util::checkPhpVersion();
-$resInstall = array();
-$isCompleted = false;
-
-if (isset($_POST['install']) && $_POST['install'] == 'true') {
-    $resInstall = SP_Installer::install($_POST);
-
-    if (count($resInstall) == 0) {
-        $resInstall[] = array(
-            'type' => 'ok',
-            'description' => _('Instalación finalizada'),
-            'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder')
-        );
-        $isCompleted = true;
-    }
-}
-?>
-
-
 <div id="actions" class="installer" align="center">
     <div id="logo">
         <img src="imgs/logo_full.png" alt="sysPass logo"/>
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>
     </div>
 
-    <?php
-    $securityErrors = array();
-
-    if (@file_exists(__FILE__ . "\0Nullbyte")) {
-        $securityErrors[] = array('type' => 'warning',
+    <?php if (@file_exists(__FILE__ . "\0Nullbyte")): ?>
+        <?php $securityErrors[] = array('type' => 'warning',
             'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
-            'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura'));
-    }
-    if (!SP_Util::secureRNG_available()) {
-        $securityErrors[] = array('type' => 'warning',
+            'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura')); ?>
+    <?php endif; ?>
+
+    <?php if (!SP_Util::secureRNG_available()): ?>
+        <?php $securityErrors[] = array('type' => 'warning',
             'description' => _('No se encuentra el generador de números aleatorios.'),
-            'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave'));
-    }
+            'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')); ?>
+    <?php endif; ?>
 
-    $errors = array_merge($modulesErrors, $securityErrors, $resInstall);
+    <?php $errors = array_merge($modulesErrors, $securityErrors, $resInstall); ?>
 
-    if (count($errors) > 0) {
-        echo '<ul class="errors round">';
+    <?php if (count($errors) > 0): ?>
 
-        foreach ($errors as $err) {
-            if (is_array($err)) {
-                echo '<li class="err_' . $err["type"] . '">';
-                echo '<strong>' . $err['description'] . '</strong>';
-                echo ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : '';
-                echo '</li>';
-            }
-        }
-        echo '</ul>';
-    }
-    ?>
+        <ul class="errors round">
+
+            <?php foreach ($errors as $err): ?>
+                <?php if (is_array($err)): ?>
+                    <li class="err_<?php echo $err['type']; ?>">
+                        <strong><?php echo $err['description']; ?></strong>
+                        <?php ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : ''; ?>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
 
     <form id="frmInstall" action="index.php" method="post">
         <input type="hidden" name="install" value="true"/>
 
-        <?php
-        if ($isCompleted === false):
-        ?>
+        <?php if ($isCompleted === false): ?>
         <fieldset id="adminaccount">
             <legend><?php echo _('Crear cuenta de admin de sysPass'); ?></legend>
             <p>

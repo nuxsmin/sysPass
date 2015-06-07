@@ -186,7 +186,7 @@ class SP_Installer
                 return ($error);
             }
 
-            SP_Config::setConfigValue('version', implode(SP_Util::getVersion(true)));
+            SP_Config::setConfigDbValue('version', implode(SP_Util::getVersion(true)));
             SP_Config::setValue('installed', 1);
         }
 
@@ -461,7 +461,7 @@ class SP_Installer
         // Guardar el hash de la clave maestra
         SP_Config::$arrConfigValue["masterPwd"] = SP_Crypt::mkHashPassword(self::$masterPassword);
         SP_Config::$arrConfigValue["lastupdatempass"] = time();
-        SP_Config::writeConfig(true);
+        SP_Config::writeConfigDb(true);
 
         $user->userId = $user->queryLastId; // Needed for update user's master password
 

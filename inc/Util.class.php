@@ -389,14 +389,14 @@ class SP_Util
      */
     public static function wikiIsEnabled()
     {
-        $enabled = SP_Common::parseParams('s', 'wiki_enabled', 0);
-        $reload = SP_Common::parseParams('s', 'reload', 0);
+//        $enabled = SP_Common::parseParams('s', 'wiki_enabled', 0);
+//        $reload = SP_Common::parseParams('s', 'reload', 0);
+//
+//        if (!isset($_SESSION["wiki_enabled"]) || $reload === 1) {
+//            $enabled = $_SESSION['wiki_enabled'] = SP_Config::getValue('wiki_enabled', false);
+//        }
 
-        if (!isset($_SESSION["wiki_enabled"]) || $reload === 1) {
-            $enabled = $_SESSION['wiki_enabled'] = SP_Config::getValue('wiki_enabled', false);
-        }
-
-        return self::boolval($enabled);
+        return SP_Config::getValue('wiki_enabled', false);
     }
 
     /**
@@ -406,14 +406,14 @@ class SP_Util
      */
     public static function mailrequestIsEnabled()
     {
-        $enabled = SP_Common::parseParams('s', 'mail_requestsenabled', 0);
-        $reload = SP_Common::parseParams('s', 'reload', 0);
+//        $enabled = SP_Common::parseParams('s', 'mail_requestsenabled', 0);
+//        $reload = SP_Common::parseParams('s', 'reload', 0);
+//
+//        if (!isset($_SESSION["mail_requestsenabled"]) || $reload === 1) {
+//            $enabled = $_SESSION['mail_requestsenabled'] = SP_Config::getValue('mail_requestsenabled', false);
+//        }
 
-        if (!isset($_SESSION["mail_requestsenabled"]) || $reload === 1) {
-            $enabled = $_SESSION['mail_requestsenabled'] = SP_Config::getValue('mail_requestsenabled', false);
-        }
-
-        return self::boolval($enabled);
+        return self::boolval(SP_Config::getValue('mail_requestsenabled', false));
     }
 
     /**
@@ -423,14 +423,14 @@ class SP_Util
      */
     public static function ldapIsEnabled()
     {
-        $enabled = SP_Common::parseParams('s', 'ldap_enabled', 0);
-        $reload = SP_Common::parseParams('s', 'reload', 0);
+//        $enabled = SP_Common::parseParams('s', 'ldap_enabled', 0);
+//        $reload = SP_Common::parseParams('s', 'reload', 0);
+//
+//        if (!isset($_SESSION["ldap_enabled"]) || $reload === 1) {
+//            $enabled = $_SESSION['ldap_enabled'] = SP_Config::getValue('ldap_enabled', false);
+//        }
 
-        if (!isset($_SESSION["ldap_enabled"]) || $reload === 1) {
-            $enabled = $_SESSION['ldap_enabled'] = SP_Config::getValue('ldap_enabled', false);
-        }
-
-        return self::boolval($enabled);
+        return self::boolval(SP_Config::getValue('ldap_enabled', false));
     }
 
     /**
@@ -440,14 +440,14 @@ class SP_Util
      */
     public static function logIsEnabled()
     {
-        $enabled = SP_Common::parseParams('s', 'log_enabled', 0);
-        $reload = SP_Common::parseParams('s', 'reload', 0);
+//        $enabled = SP_Common::parseParams('s', 'log_enabled', 0);
+//        $reload = SP_Common::parseParams('s', 'reload', 0);
+//
+//        if (!isset($_SESSION["log_enabled"]) || $reload === 1) {
+//            $enabled = $_SESSION['log_enabled'] = SP_Config::getValue('log_enabled', false);
+//        }
 
-        if (!isset($_SESSION["log_enabled"]) || $reload === 1) {
-            $enabled = $_SESSION['log_enabled'] = SP_Config::getValue('log_enabled', false);
-        }
-
-        return self::boolval($enabled);
+        return self::boolval(SP_Config::getValue('log_enabled', false));
     }
 
     /**
@@ -457,14 +457,14 @@ class SP_Util
      */
     public static function resultsCardsIsEnabled()
     {
-        $enabled = SP_Common::parseParams('s', 'resultsascards', 0);
-        $reload = SP_Common::parseParams('s', 'reload', 0);
+//        $enabled = SP_Common::parseParams('s', 'resultsascards', 0);
+//        $reload = SP_Common::parseParams('s', 'reload', 0);
+//
+//        if (!isset($_SESSION["resultsascards"]) || $reload === 1) {
+//            $enabled = $_SESSION['resultsascards'] = SP_Config::getValue('resultsascards', false);
+//        }
 
-        if (!isset($_SESSION["resultsascards"]) || $reload === 1) {
-            $enabled = $_SESSION['resultsascards'] = SP_Config::getValue('resultsascards', false);
-        }
-
-        return self::boolval($enabled);
+        return self::boolval(SP_Config::getValue('resultsascards', false));
     }
 
     /**
@@ -492,7 +492,6 @@ class SP_Util
 
         if ($reload === 1) {
             $_SESSION['reload'] = 0;
-            //exit("<script>window.location.href = 'index.php';</script>");
             exit("<script>location.reload();</script>");
         }
     }
@@ -687,5 +686,30 @@ class SP_Util
     public static function checkZlib()
     {
         return self::boolval(ini_get('zlib.output_compression'));
+    }
+
+    /**
+     * Devuelve información sobre la aplicación.
+     *
+     * @param string $index con la key a devolver
+     * @return array con las propiedades de la aplicación
+     */
+    public static function getAppInfo($index = NULL)
+    {
+        $appinfo = array(
+            'appname' => 'sysPass',
+            'appdesc' => 'Sysadmin Password Manager',
+            'appwebsite' => 'http://www.syspass.org',
+            'appblog' => 'http://www.cygnux.org',
+            'appdoc' => 'http://wiki.syspass.org',
+            'appupdates' => 'http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/20/rss',
+            'apphelp' => 'help.syspass.org',
+            'appchangelog' => '');
+
+        if (!is_null($index) && array_key_exists($index, $appinfo)) {
+            return $appinfo[$index];
+        }
+
+        return $appinfo;
     }
 }

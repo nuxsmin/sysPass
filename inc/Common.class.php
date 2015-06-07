@@ -68,7 +68,7 @@ class SP_Common
         $body[] = (is_array($message['text'])) ? implode($newline, $message['text']) : '';
         $body[] = '';
         $body[] = '--';
-        $body[] = SP_Html::getAppInfo('appname') . ' - ' . SP_Html::getAppInfo('appdesc');
+        $body[] = SP_Util::getAppInfo('appname') . ' - ' . SP_Util::getAppInfo('appdesc');
         $body[] = SP_Html::anchorText(SP_Init::$WEBURI);
 
 
@@ -103,7 +103,7 @@ class SP_Common
      */
     public static function getEmailObject($mailTo, $action)
     {
-        $appName = SP_Html::getAppInfo('appname');
+        $appName = SP_Util::getAppInfo('appname');
         $mailFrom = SP_Config::getValue('mail_from');
         $mailServer = SP_Config::getValue('mail_server');
         $mailPort = SP_Config::getValue('mail_port', 25);

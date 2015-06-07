@@ -208,7 +208,7 @@ class SP_Import
 
         $pass = self::encryptPass($password);
 
-        $account = new SP_Account;
+        $account = new SP_Accounts;
         $account->accountName = $accountName;
         $account->accountCustomerId = $customerId;
         $account->accountCategoryId = $categoryId;

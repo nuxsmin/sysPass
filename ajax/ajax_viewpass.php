@@ -39,7 +39,7 @@ if (!$accountId) {
     return;
 }
 
-$account = new SP_Account;
+$account = new SP_Accounts;
 $account->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : "";
 $account->accountId = $accountId;
 //$account->accountIsHistory = $isHistory;
@@ -52,7 +52,7 @@ if ($isHistory && !$account->checkAccountMPass()){
 
 $accountData = $account->getAccountPass($isHistory);
 
-if (!SP_Acl::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_Acl::checkUserAccess("accviewpass")) {
+if (!SP_Acl::checkAccountAccess(SP_Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP_Acl::checkUserAccess(SP_Acl::ACTION_ACC_VIEW_PASS)) {
     SP_Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
 }
 

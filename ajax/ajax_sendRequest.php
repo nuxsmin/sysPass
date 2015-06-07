@@ -45,7 +45,7 @@ if (!$frmDescription) {
     SP_Common::printJSON(_('Es necesaria una descripción'));
 }
 
-$accountRequestData = SP_Account::getAccountRequestData($frmAccountId);
+$accountRequestData = SP_Accounts::getAccountRequestData($frmAccountId);
 
 $recipients = array(
     SP_Users::getUserEmail($accountRequestData->account_userId),

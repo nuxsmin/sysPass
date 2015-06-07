@@ -236,15 +236,6 @@ function doSearch() {
         success: function (response) {
             $('#resBuscar').html(response);
             $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
-
-            if (order.key) {
-                $('#search-sort-' + order.key).addClass('filterOn');
-                if (order.dir === 0) {
-                    $('#search-sort-' + order.key).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
-                } else {
-                    $('#search-sort-' + order.key).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
-                }
-            }
         },
         error: function () {
             $('#resBuscar').html(resMsg("nofancyerror"));
@@ -254,6 +245,20 @@ function doSearch() {
             $.fancybox.hideLoading();
         }
     });
+}
+
+// Mostrar el orden de campo y orden de búsqueda utilizados
+function showSearchOrder() {
+    "use strict";
+
+    if (order.key) {
+        $('#search-sort-' + order.key).addClass('filterOn');
+        if (order.dir === 0) {
+            $('#search-sort-' + order.key).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
+        } else {
+            $('#search-sort-' + order.key).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
+        }
+    }
 }
 
 // Función para navegar por el log de eventos
@@ -359,7 +364,9 @@ function viewPass(id, full, history) {
 
                     // Timeout del mensaje
                     var $this = $(this);
-                    timeout = setTimeout(function(){$this.dialog('close');}, 30000);
+                    timeout = setTimeout(function () {
+                        $this.dialog('close');
+                    }, 30000);
                 },
                 // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
                 close: function () {
@@ -806,10 +813,12 @@ function sendAjax(data, url) {
 }
 
 // Función para mostrar el formulario para cambio de clave de usuario
-function usrUpdPass(id, usrlogin) {
+function usrUpdPass(object, actionId, sk) {
     "use strict";
 
-    var data = {'usrid': id, 'usrlogin': usrlogin, 'isAjax': 1};
+    var userId = $(object).attr("data-itemid");
+
+    var data = {'userId': userId, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
 
     $.fancybox.showLoading();
 
@@ -829,10 +838,13 @@ function usrUpdPass(id, usrlogin) {
 }
 
 // Función para mostrar los datos de un registro
-function appMgmtData(id, type, sk, active, view) {
+function appMgmtData(obj, actionId, sk) {
     "use strict";
 
-    var data = {'id': id, 'type': type, 'sk': sk, 'active': active, 'view': view, 'isAjax': 1};
+    var itemId = $(obj).attr('data-itemid');
+    var activeTab = $(obj).attr('data-activetab');
+
+    var data = {'itemId': itemId, 'actionId': actionId, 'sk': sk, 'activeTab': activeTab, 'isAjax': 1};
     var url = APP_ROOT + '/ajax/ajax_appMgmtData.php';
 
     $.fancybox.showLoading();
@@ -855,26 +867,39 @@ function appMgmtData(id, type, sk, active, view) {
     });
 }
 
-// Función para editar los datos de un registro
-function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
+// Función para borrar un registro
+function appMgmtDelete(obj, actionId, sk) {
     "use strict";
 
-    var data;
+    var itemId = $(obj).attr('data-itemid');
+    var activeTab = $(obj).attr('data-activetab');
+    var nextActionId = $(obj).attr('data-nextactionid');
+    var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
+
     var url = '/ajax/ajax_appMgmtSave.php';
+    var data = {
+        'itemId': itemId,
+        'actionId': actionId,
+        'sk': sk,
+        'activeTab': activeTab,
+        'onCloseAction': nextActionId
+    };
 
-    if (isDel === 1) {
-        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction};
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
+    alertify.confirm(atext, function (e) {
+        if (e) {
+            sendAjax(data, url);
+        }
+    });
+}
 
-        alertify.confirm(atext, function (e) {
-            if (e) {
-                sendAjax(data, url);
-            }
-        });
-    } else {
-        data = $("#" + frmId).serialize();
-        sendAjax(data, url);
-    }
+// Función para editar los datos de un registro
+function appMgmtSave(frmId) {
+    "use strict";
+
+    var url = '/ajax/ajax_appMgmtSave.php';
+    var data = $("#" + frmId).serialize();
+
+    sendAjax(data, url);
 }
 
 // Función para verificar si existen actualizaciones

@@ -1,9 +1,26 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Rubén Domínguez
- * Date: 16/05/15
- * Time: 11:24
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 /**
@@ -13,9 +30,9 @@
  *
  * Idea original de http://www.sitepoint.com/author/agervasio/
  * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
- * y modificada por Rubén Domínguez
+ *
  */
-class Template {
+class SP_Template {
     /**
      * @var array Variable con los archivos de plantilla a cargar
      */
@@ -24,6 +41,10 @@ class Template {
      * @var array Variable con las variables a incluir en la plantilla
      */
     private $vars = array();
+    /**
+     * @var null Variable con el controlador a usar
+     */
+    private $controllers = array();
 
     /**
      * @param null $file Archivo de plantilla a añadir
@@ -58,10 +79,11 @@ class Template {
      * @throws InvalidArgumentException
      */
     public function __get($name) {
-        if (!isset($this->vars[$name])) {
+        if (!array_key_exists($name, $this->vars)) {
             throw new InvalidArgumentException('No es posible obtener la variable "' . $name . '"');
         }
-        return null;
+
+        return $this->vars[$name];
     }
 
     /**
@@ -72,7 +94,7 @@ class Template {
      * @return bool
      */
     public function __isset($name) {
-        return isset($this->vars[$name]);
+        return array_key_exists($name, $this->vars);
     }
 
     /**
@@ -101,10 +123,18 @@ class Template {
     public function render() {
         extract($this->vars);
 
+        // Añadimos los controladores necesarios
+        foreach ( $this->controllers as $controller) {
+//            error_log('CTRL: ' . $controller->controller);
+            include_once $controller->controller;
+        }
+
         ob_start();
 
+        // Añadimos las plantillas
         foreach ( $this->file as $template) {
-            include $template;
+//            error_log('TPL: ' . $template);
+            include_once $template;
         }
 
         return ob_get_clean();
@@ -117,7 +147,7 @@ class Template {
      * @throws InvalidArgumentException
      */
     private function checkTemplate($file){
-        $template = __DIR__ . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $file;
+        $template = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $file . '.inc';
 
         if (!is_file($template) || !is_readable($template)) {
             throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file .'"');
@@ -155,5 +185,60 @@ class Template {
         if (!is_null($file) && $this->checkTemplate($file)){
             $this->setTemplate($file);
         }
+    }
+
+    public function setController(SP_Controller $controller){
+        $this->controllers[] = $controller;
+    }
+
+    /**
+     * Crear la variable y asignarle un valor en el array de variables
+     *
+     * @param $name string nombre de la variable
+     * @param $value mixed valor de la variable
+     * @param null $scope string ámbito de la variable
+     */
+    public function assign($name, $value, $scope = null){
+        if(!is_null($scope)){
+            $name = $scope . '_' . $name;
+        }
+
+//        error_log('SET: ' . $name . ' -> ' . $value);
+
+        $this->vars[$name] = $value;
+    }
+
+    /**
+     * Anexar el valor de la variable al array de la misma en el array de variables
+     *
+     * @param $name string nombre de la variable
+     * @param $value mixed valor de la variable
+     * @param $index string índice del array
+     * @param null $scope string ámbito de la variable
+     */
+    public function append($name, $value, $scope = null, $index = null){
+        if(!is_null($scope)){
+            $name = $scope . '_' . $name;
+        }
+
+        if (!is_null($index)){
+            $this->vars[$name][$index] = $value;
+        } else {
+            $this->vars[$name][] = $value;
+        }
+    }
+
+    /**
+     * Reset de las plantillas añadidas
+     */
+    public function resetTemplates(){
+        $this->file = array();
+    }
+
+    /**
+     * Reset de las plantillas añadidas
+     */
+    public function resetVariables(){
+        $this->vars = array();
     }
 }

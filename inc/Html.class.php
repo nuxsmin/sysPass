@@ -31,9 +31,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SP_Html
 {
-    public static $htmlBodyOpts = "";
-    private static $htmlPage = array();
-
     /**
      * Crear un elemento del tipo SELECT.
      * Esta función genera un elemento SELECT con las propiedades y valores pasados.
@@ -84,177 +81,6 @@ class SP_Html
     }
 
     /**
-     * Mostrar la página HTML.
-     * Esta función es la encargada de devolver el código HTML al navegador.
-     *
-     * @param string $page opcional con la página a mostar
-     * @param array $err con los errores generados
-     * @return none
-     */
-    public static function render($page = "main", $err = NULL)
-    {
-        $data['showlogo'] = 1;
-
-        // UTF8 Headers
-        header("Content-Type: text/html; charset=UTF-8");
-
-        // Cache Control
-        header("Cache-Control: public, no-cache, max-age=0, must-revalidate");
-        header("Pragma: public; max-age=0");
-
-        if (!is_null($err) && is_array($err) && count($err) > 0) {
-            $data['errors'] = $err;
-        }
-
-        // Start the page
-        self::$htmlPage[] = '<!DOCTYPE html>';
-        self::$htmlPage[] = '<html lang="es">';
-
-        self::makeHeader();
-        self::makeBody($page);
-
-        self::$htmlPage[] = '</html>';
-
-        foreach (self::$htmlPage as $html) {
-            if (is_array($html) && array_key_exists('include', $html)) {
-                self::getTemplate($html['include'], $data);
-            } else {
-                echo $html . PHP_EOL;
-            }
-        }
-    }
-
-    /**
-     * Crear el header en HTML.
-     * Esta función crea la cabecera de una página HTML
-     *
-     * @return none
-     */
-    private static function makeHeader()
-    {
-        $info = self::getAppInfo();
-
-        self::$htmlPage[] = '<head>';
-        self::$htmlPage[] = '<title>' . $info['appname'] . ' :: ' . $info['appdesc'] . '</title>';
-        self::$htmlPage[] = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-        self::$htmlPage[] = '<link rel="icon" TYPE="image/png" href="' . SP_Init::$WEBROOT . '/imgs/logo.png">';
-        self::setCss();
-        self::setJs();
-        self::$htmlPage[] = '</head>';
-    }
-
-    /**
-     * Devuelve información sobre la aplicación.
-     *
-     * @param string $index con la key a devolver
-     * @return array con las propiedades de la aplicación
-     */
-    public static function getAppInfo($index = NULL)
-    {
-        $appinfo = array(
-            'appname' => 'sysPass',
-            'appdesc' => 'Sysadmin Password Manager',
-            'appwebsite' => 'http://www.syspass.org',
-            'appblog' => 'http://www.cygnux.org',
-            'appdoc' => 'http://wiki.syspass.org',
-            'appupdates' => 'http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/20/rss',
-            'apphelp' => 'help.syspass.org',
-            'appchangelog' => '');
-
-        if (!is_null($index) && array_key_exists($index, $appinfo)) {
-            return $appinfo[$index];
-        }
-
-        return $appinfo;
-    }
-
-    /**
-     * Establece los enlaces CSS de la página HTML.
-     *
-     * @return none
-     */
-    public static function setCss()
-    {
-        $visualStyle = SP_Util::resultsCardsIsEnabled();
-        $versionParameter = md5(implode(SP_Util::getVersion()).$visualStyle);
-
-        self::$htmlPage[] = '<link rel="stylesheet" href="' . SP_Init::$WEBROOT . '/css/css.php?v=' . $versionParameter . '" />';
-    }
-
-    /**
-     * Establece los enlaces JAVASCRIPT de la página HTML.
-     *
-     * @return none
-     */
-    public static function setJs()
-    {
-        $versionParameter = md5(implode(SP_Util::getVersion()));
-
-        self::$htmlPage[] = '<script type="text/javascript" src="' . SP_Init::$WEBROOT . '/js/js.php?v=' . $versionParameter . '"></script>';
-    }
-
-    /**
-     * Crear el body en HTML.
-     * Esta función crea el cuerpo de una página HTML
-     *
-     * @param string $page con la página a cargar
-     * @return none
-     */
-    private static function makeBody($page)
-    {
-        self::$htmlPage[] = '<body ' . self::$htmlBodyOpts . '>';
-        self::$htmlPage[] = '<div id="wrap">';
-        self::$htmlPage[] = '<noscript><div id="nojs">' . _('Javascript es necesario para el correcto funcionamiento') . '</div></noscript>';
-        self::$htmlPage[] = '<div id="container" class="' . $page . '">';
-
-        self::$htmlPage[] = array('include' => $page);
-
-        self::$htmlPage[] = '</div> <!-- Close container -->';
-        self::makeFooter($page);
-        self::$htmlPage[] = '</div> <!-- Close wrap -->';
-        self::$htmlPage[] = '</body>';
-    }
-
-    /**
-     * Crear el pie de la página HTML.
-     *
-     * @param string $page opcional con la paǵina a mostrar
-     * @return none
-     */
-    public static function makeFooter($page = "main")
-    {
-        $info = self::getAppInfo();
-
-        self::$htmlPage[] = '<footer>';
-        self::$htmlPage[] = '<div id="updates"></div>';
-        self::$htmlPage[] = '<div id="project">';
-        self::$htmlPage[] = '<a href="' . $info['appwebsite'] . '" target="_blank" title="' . _('Ayuda :: FAQ :: Changelog') . '">' . $info['appname'] . ' ' . SP_Util::getVersionString() . '</a> ';
-        self::$htmlPage[] = '&nbsp;::&nbsp;';
-        self::$htmlPage[] = '<a href="' . $info['appblog'] . '" target="_blank" title="' . _('Un proyecto de cygnux.org') . '" >cygnux.org</a>';
-        self::$htmlPage[] = '</div> <!-- Close Project -->';
-        self::$htmlPage[] = '</footer> <!-- Close footer -->';
-        self::$htmlPage[] = '<script>$(\'input[type="text"], select, textarea\').placeholder().mouseenter(function(){ $(this).focus(); });</script>';
-    }
-
-    /**
-     * Cargar un archivo de plantilla.
-     *
-     * @param string $template con el nombre de la plantilla
-     * @param array $tplvars con los datos a pasar a la plantilla
-     * @return none
-     */
-    public static function getTemplate($template, $tplvars = array())
-    {
-        $tpl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $template . '.php';
-
-        if (file_exists($tpl)) {
-            $data = $tplvars;
-            include_once $tpl;
-            //self::$htmlPage[] = array('include' => $tpl);
-        }
-    }
-
-    /**
      * Crea la barra de navegación para búsqueda de cuentas.
      *
      * @param int $intSortKey con el número de campo del filro
@@ -267,6 +93,8 @@ class SP_Html
      */
     public static function printQuerySearchNavBar($intSortKey, $intCur, $intTotal, $intLimit, $intTime, $filterOn = false)
     {
+//    SP_Html::printQuerySearchNavBar($sortKey, $limitStart, SP_Accounts::$queryNumRows, $limitCount, $totalTime, $filterOn);
+
         $firstPage = ceil(($intCur + 1) / $intLimit);
         $lastPage = ceil($intTotal / $intLimit);
         $globalOn = SP_Common::parseParams('p', 'gsearch', 0, false, 1);
@@ -409,31 +237,6 @@ class SP_Html
         $truncate .= strrev(preg_replace('~^..+?[\s,:]\b|^...~', '...', strrev(substr($str, $tail, $len - $tail))));
 
         return $truncate;
-    }
-
-    /**
-     * Devolver errores comunes.
-     * Esta función muestra la página de error con el error indicado.
-     *
-     * @param string $code con el código de error a mostrar
-     * @return none
-     */
-    public static function showCommonError($code)
-    {
-        $commonErrors = array(
-            'unavailable' => array('txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')),
-            'noaccpermission' => array('txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')),
-            'nopermission' => array('txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')),
-            'updatempass' => array('txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla'))
-        );
-
-        $data['errors'][] = array(
-            'type' => 'critical',
-            'description' => $commonErrors[$code]['txt'],
-            'hint' => $commonErrors[$code]['hint']);
-
-        self::getTemplate('error', $data);
-        exit();
     }
 
     /**

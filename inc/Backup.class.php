@@ -37,7 +37,7 @@ class SP_Backup
      */
     public static function doBackup()
     {
-        $siteName = SP_Html::getAppInfo('appname');
+        $siteName = SP_Util::getAppInfo('appname');
         $backupDir = SP_Init::$SERVERROOT;
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
         $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '.tar';

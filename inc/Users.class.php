@@ -265,7 +265,7 @@ class SP_Users
             return false;
         }
 
-        $configMPassTime = SP_Config::getConfigValue('lastupdatempass');
+        $configMPassTime = SP_Config::getConfigDbValue('lastupdatempass');
 
         if ($configMPassTime === false) {
             return false;
@@ -983,17 +983,17 @@ class SP_Users
      */
     public function setUserSession()
     {
-        $_SESSION['ulogin'] = $this->userLogin;
-        $_SESSION['uprofile'] = $this->userProfileId;
-        $_SESSION['uname'] = $this->userName;
-        $_SESSION['ugroup'] = $this->userGroupId;
-        $_SESSION['ugroupn'] = $this->userGroupName;
-        $_SESSION['uid'] = $this->userId;
-        $_SESSION['uemail'] = $this->userEmail;
-        $_SESSION['uisadminapp'] = $this->userIsAdminApp;
-        $_SESSION['uisadminacc'] = $this->userIsAdminAcc;
-        $_SESSION['uisldap'] = $this->userIsLdap;
-        $_SESSION['usrprofile'] = SP_Profiles::getProfileForUser();
+        SP_Session::setUserLogin($this->userLogin);
+        SP_Session::setUserProfileId($this->userProfileId);
+        SP_Session::setUserName($this->userName);
+        SP_Session::setUserGroupId($this->userGroupId);
+        SP_Session::setUserGroupName($this->userGroupName);
+        SP_Session::setUserId($this->userId);
+        SP_Session::setUserEMail($this->userEmail);
+        SP_Session::setUserIsAdminApp($this->userIsAdminApp);
+        SP_Session::setUserIsAdminAcc($this->userIsAdminAcc);
+        SP_Session::setUserIsLdap($this->userIsLdap);
+        SP_Session::setUserProfile(SP_Profiles::getProfileForUser());
 
         $this->setUserLastLogin();
     }
@@ -1025,7 +1025,7 @@ class SP_Users
             return false;
         }
 
-        $configMPass = SP_Config::getConfigValue('masterPwd');
+        $configMPass = SP_Config::getConfigDbValue('masterPwd');
 
         if ($configMPass === false) {
             return false;
@@ -1083,7 +1083,7 @@ class SP_Users
      */
     private function getCypherPass()
     {
-        $configSalt = SP_Config::getConfigValue('passwordsalt');
+        $configSalt = SP_Config::getConfigDbValue('passwordsalt');
         $cypherPass = substr(sha1($configSalt . $this->userPass), 0, 32);
 
         return $cypherPass;
@@ -1097,7 +1097,7 @@ class SP_Users
      */
     public function updateUserMPass($masterPwd)
     {
-        $configMPass = SP_Config::getConfigValue('masterPwd');
+        $configMPass = SP_Config::getConfigDbValue('masterPwd');
 
         if (!$configMPass) {
             return false;

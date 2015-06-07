@@ -378,7 +378,7 @@ class SP_Profiles
      */
     public static function getProfileForUser($userId = 0)
     {
-        $userId = SP_Common::parseParams('s', 'uid', 0);
+        $userId = SP_Session::getUserId();
 
         if (!$userId) {
             return false;

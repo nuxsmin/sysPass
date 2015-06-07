@@ -49,32 +49,11 @@ class SP_Config
     private static $init = false; // La caché está llena??
 
     /**
-     * Obtiene un valor desde la configuración en la BBDD.
-     *
-     * @param string $param con el parámetro de configuración
-     * @return false|string con el valor
-     */
-    public static function getConfigValue($param)
-    {
-        $query = 'SELECT config_value FROM config WHERE config_parameter = :parameter LIMIT 1';
-
-        $data['parameter'] = $param;
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->config_value;
-    }
-
-    /**
      * Obtener un array con la configuración almacenada en la BBDD.
      *
      * @return bool
      */
-    public static function getConfig()
+    public static function getConfigDb()
     {
         $query = 'SELECT config_parameter, config_value FROM config';
 
@@ -97,7 +76,7 @@ class SP_Config
      * @param bool $mkInsert realizar un 'insert'?
      * @return bool
      */
-    public static function writeConfig($mkInsert = false)
+    public static function writeConfigDb($mkInsert = false)
     {
         foreach (self::$arrConfigValue as $param => $value) {
             if ($mkInsert) {
@@ -121,43 +100,6 @@ class SP_Config
 
         SP_Log::wrLogInfo($message);
         SP_Common::sendEmail($message);
-
-        return true;
-    }
-
-    /**
-     * Guardar un parámetro de configuración en la BBDD.
-     *
-     * @param string $param con el parámetro a guardar
-     * @param string $value con el calor a guardar
-     * @param bool $email enviar email?
-     * @return bool
-     */
-    public static function setConfigValue($param, $value, $email = true)
-    {
-        $query = "INSERT INTO config "
-            . "SET config_parameter = :param,"
-            . "config_value = :value "
-            . "ON DUPLICATE KEY UPDATE config_value = :valuedup";
-
-        $data['param'] = $param;
-        $data['value'] = $value;
-        $data['valuedup'] = $value;
-
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
-        }
-
-        $message['action'] = _('Configuración');
-        $message['text'][] = _('Modificar configuración');
-        $message['text'][] = _('Parámetro') . ': ' . $param;
-        $message['text'][] = _('Valor') . ': ' . $value;
-
-        SP_Log::wrLogInfo($message);
-
-        if ($email === true) {
-            SP_Common::sendEmail($message);
-        }
 
         return true;
     }
@@ -207,41 +149,13 @@ class SP_Config
      */
     public static function getValue($key, $default = null)
     {
-        self::readData();
+        $param = SP_Cache::getSessionCacheConfigValue($key);
 
-        if (array_key_exists($key, self::$cache)) return self::$cache[$key];
+        if (!is_null($param)) {
+            return $param;
+        }
 
         return $default;
-    }
-
-    /**
-     * Carga el archivo de configuración y lo guarda en caché.
-     *
-     * @return bool
-     */
-    private static function readData()
-    {
-        if (self::$init) {
-            return true;
-        }
-
-        $configFile = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
-
-        if (!file_exists($configFile)) {
-            return false;
-        }
-
-        // Include the file, save the data from $CONFIG
-        include $configFile;
-
-        if (isset($CONFIG) && is_array($CONFIG)) {
-            self::$cache = $CONFIG;
-        }
-
-        // We cached everything
-        self::$init = true;
-
-        return true;
     }
 
     /**
@@ -262,9 +176,39 @@ class SP_Config
     }
 
     /**
+     * Carga el archivo de configuración y lo guarda en caché.
+     *
+     * @return bool
+     */
+    private static function readData()
+    {
+        if (self::$init) {
+            return true;
+        }
+
+        $configFile = self::getConfigFile();;
+
+        if (!file_exists($configFile)) {
+            return false;
+        }
+
+        // Include the file, save the data from $CONFIG
+        include_once $configFile;
+
+        if (isset($CONFIG) && is_array($CONFIG)) {
+            self::$cache = $CONFIG;
+        }
+
+        // We cached everything
+        self::$init = true;
+
+        return true;
+    }
+
+    /**
      * Elimina una clave de la configuración.
-     * Esta función elimina una clave de config.php. Si no tiene permiso
-     * de escritura en config.php, devolverá false.
+     * Esta función elimina una clave de configmgmt.php. Si no tiene permiso
+     * de escritura en configmgmt.php, devolverá false.
      *
      * @param string $key clave
      * @return bool
@@ -273,11 +217,11 @@ class SP_Config
     {
         self::readData();
 
-        if (array_key_exists($key, self::$cache)) {
-            // Delete key from cache
+        if (isset(self::$cache[$key])) {
+            // Eliminar la clave de la caché
             unset(self::$cache[$key]);
 
-            // Write changes
+            // Guardar los cambios en la configuración
             self::writeData();
         }
 
@@ -291,6 +235,7 @@ class SP_Config
      */
     public static function writeData()
     {
+        // Ordenar las claves de la configuración
         ksort(self::$cache);
 
         $content = "<?php\n";
@@ -300,23 +245,20 @@ class SP_Config
         $content .= trim(var_export(self::$cache, true), ',');
         $content .= ";\n";
 
-        $filename = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
+        $configFile = self::getConfigFile();
 
-        // Write the file
-        $result = @file_put_contents($filename, $content);
+        // Escribir el archivo de configuración
+        $result = @file_put_contents($configFile, $content);
 
         if (!$result) {
-            $errors[] = array(
-                'type' => 'critical',
-                'description' => _('No es posible escribir el archivo de configuración'),
-                'hint' => _('Compruebe los permisos del directorio "config"'));
-
-            SP_Html::render('error', $errors);
-            exit();
+            SP_Init::initError(_('No es posible escribir el archivo de configuración'), _('Compruebe los permisos del directorio "config"'));
         }
 
-        // Prevent others not to read the config
-        @chmod($filename, 0640);
+        // Establecer los permisos del archivo de configuración
+        @chmod($configFile, 0640);
+
+        // Actualizar la caché de configuración de la sesión
+        SP_Cache::setSessionCacheConfig();
 
         return true;
     }
@@ -353,7 +295,7 @@ class SP_Config
 
     /**
      * Establece un valor en el archivo de configuración.
-     * Esta función establece el valor y reescribe config.php. Si el archivo
+     * Esta función establece el valor y reescribe configmgmt.php. Si el archivo
      * no se puede escribir, devolverá false.
      *
      * @param string $key   clave
@@ -364,11 +306,14 @@ class SP_Config
     {
         self::readData();
 
-        // Add change
+        // Añadir/Modificar el parámetro
         self::$cache[$key] = $value;
+        // Generar el hash de la configuración
+        self::$cache['config_hash'] = md5(implode(self::$cache));
 
-        // Write changes
+        // Guardar los cambios
         self::writeData();
+
         return true;
     }
 
@@ -383,18 +328,55 @@ class SP_Config
         $randomHash = SP_Util::generate_random_bytes(32);
         $pass = SP_Crypt::mkCustomMPassEncrypt($randomHash, SP_Crypt::getSessionMasterPass());
 
-        if (!is_array($pass)){
+        if (!is_array($pass)) {
             return false;
         }
 
-        self::setConfigValue('tempmaster_pass', bin2hex($pass[0]), false);
-        self::setConfigValue('tempmaster_passiv', bin2hex($pass[1]), false);
-        self::setConfigValue('tempmaster_passhash', sha1($randomHash), false);
-        self::setConfigValue('tempmaster_passtime', time(), false);
-        self::setConfigValue('tempmaster_maxtime', time() + $maxTime, false);
-        self::setConfigValue('tempmaster_attempts', 0, false);
+        self::setConfigDbValue('tempmaster_pass', bin2hex($pass[0]), false);
+        self::setConfigDbValue('tempmaster_passiv', bin2hex($pass[1]), false);
+        self::setConfigDbValue('tempmaster_passhash', sha1($randomHash), false);
+        self::setConfigDbValue('tempmaster_passtime', time(), false);
+        self::setConfigDbValue('tempmaster_maxtime', time() + $maxTime, false);
+        self::setConfigDbValue('tempmaster_attempts', 0, false);
 
         return $randomHash;
+    }
+
+    /**
+     * Guardar un parámetro de configuración en la BBDD.
+     *
+     * @param string $param con el parámetro a guardar
+     * @param string $value con el calor a guardar
+     * @param bool $email   enviar email?
+     * @return bool
+     */
+    public static function setConfigDbValue($param, $value, $email = true)
+    {
+        $query = "INSERT INTO config "
+            . "SET config_parameter = :param,"
+            . "config_value = :value "
+            . "ON DUPLICATE KEY UPDATE config_value = :valuedup";
+
+        $data['param'] = $param;
+        $data['value'] = $value;
+        $data['valuedup'] = $value;
+
+        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+            return false;
+        }
+
+        $message['action'] = _('Configuración');
+        $message['text'][] = _('Modificar configuración');
+        $message['text'][] = _('Parámetro') . ': ' . $param;
+        $message['text'][] = _('Valor') . ': ' . $value;
+
+        SP_Log::wrLogInfo($message);
+
+        if ($email === true) {
+            SP_Common::sendEmail($message);
+        }
+
+        return true;
     }
 
     /**
@@ -405,26 +387,47 @@ class SP_Config
      */
     public static function checkTempMasterPass($pass)
     {
-        $passTime = self::getConfigValue('tempmaster_passtime');
-        $passMaxTime = self::getConfigValue('tempmaster_maxtime');
-        $attempts = self::getConfigValue('tempmaster_attempts');
+        $passTime = self::getConfigDbValue('tempmaster_passtime');
+        $passMaxTime = self::getConfigDbValue('tempmaster_maxtime');
+        $attempts = self::getConfigDbValue('tempmaster_attempts');
 
         // Comprobar si el tiempo de validez se ha superado
-        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5){
-            self::setConfigValue('tempmaster_pass', '', false);
-            self::setConfigValue('tempmaster_passiv', '', false);
-            self::setConfigValue('tempmaster_passhash', '', false);
+        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5) {
+            self::setConfigDbValue('tempmaster_pass', '', false);
+            self::setConfigDbValue('tempmaster_passiv', '', false);
+            self::setConfigDbValue('tempmaster_passhash', '', false);
 
             return false;
         }
 
-        $isValid = (self::getConfigValue('tempmaster_passhash') == sha1($pass));
+        $isValid = (self::getConfigDbValue('tempmaster_passhash') == sha1($pass));
 
-        if (!$isValid){
-            self::setConfigValue('tempmaster_attempts', $attempts + 1, false);
+        if (!$isValid) {
+            self::setConfigDbValue('tempmaster_attempts', $attempts + 1, false);
         }
 
         return $isValid;
+    }
+
+    /**
+     * Obtiene un valor desde la configuración en la BBDD.
+     *
+     * @param string $param con el parámetro de configuración
+     * @return false|string con el valor
+     */
+    public static function getConfigDbValue($param)
+    {
+        $query = 'SELECT config_value FROM config WHERE config_parameter = :parameter LIMIT 1';
+
+        $data['parameter'] = $param;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->config_value;
     }
 
     /**
@@ -435,9 +438,32 @@ class SP_Config
      */
     public static function getTempMasterPass($pass)
     {
-        $passLogin = hex2bin(self::getConfigValue('tempmaster_pass'));
-        $passLoginIV = hex2bin(self::getConfigValue('tempmaster_passiv'));
+        $passLogin = hex2bin(self::getConfigDbValue('tempmaster_pass'));
+        $passLoginIV = hex2bin(self::getConfigDbValue('tempmaster_passiv'));
 
         return SP_Crypt::getDecrypt($passLogin, $pass, $passLoginIV);
+    }
+
+    /**
+     * Obtener la configuración de sysPass
+     *
+     * @return array|bool
+     */
+    public static function getConfig()
+    {
+        if (self::readData()) {
+            return self::$cache;
+        }
+
+        return false;
+    }
+
+    /**
+     * Devolver la ruta al archivo de configuración
+     *
+     * @return string Con la ruta
+     */
+    private static function getConfigFile(){
+        return SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
     }
 }

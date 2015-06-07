@@ -104,8 +104,8 @@ class SP_Log
             return false;
         }
 
-        $login = (isset($_SESSION["ulogin"])) ? $_SESSION["ulogin"] : "-";
-        $userId = (isset($_SESSION['uid'])) ? $_SESSION['uid'] : 0;
+        $login = SP_Session::getUserLogin();
+        $userId = SP_Session::getUserId();
         $action = strip_tags(utf8_encode($message['action']));
         $description = (isset($message['text'])) ? strip_tags(utf8_encode(implode(';;', $message['text']))) : '';
 

@@ -32,60 +32,14 @@ if ( ! SP_Init::isLoggedIn() ){
     SP_Util::logout();
 }
 
-$userId = SP_Common::parseParams('g', 'usrid', false);
+$userId = SP_Common::parseParams('g', 'userId', false);
 
 if ( ! $userId ) {
     return;
 }
 
-$strError = '<div id="fancyView" class="msgError">'._('No tiene permisos para realizar esta operación').'</div>';
-
-SP_Acl::checkUserAccess("acceditpass",$userId) || die ($strError);
-
-?>
-
-<div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo _('Cambio de Clave'); ?></h2>
-    <form method="post" name="updUsrPass" id="frmUpdUsrPass">
-        <table class="fancydata">
-        <tr>
-            <td class="descField">
-                <?php echo _('Clave'); ?>
-            </td>
-            <td class="valField">
-                <input type="password" id="usrpass" name="pass" title="<?php echo _('Clave'); ?>" class="txtpass" OnFocus="$('#passLevel').show(); $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value, 'fancyContainer')" />
-                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <?php echo _('Clave (repetir)'); ?></td>
-            <td class="valField">
-                <input type="password" id="usrpassv" name="passv" title="<?php echo _('Clave (repetir)'); ?>" class="txtpassv" />
-                <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>" ></span>
-            </td>
-        </tr>
-    </table>
-    <input type="hidden" name="id" value="<?php echo $userId; ?>" />
-    <input type="hidden" name="type" value="1" />
-    <input type="hidden" name="action" value="3" />
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(); ?>">
-</form>
-
-    <div id="resCheck">
-        <span id="resFancyAccion"></span>
-    </div>
-    <div class="action-in-box">
-        <ul>
-            <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" OnClick="appMgmtSave('frmUpdUsrPass')" alt="<?php echo _('Guardar'); ?>"/>
-            </li>
-        </ul>
-    </div>
-</div>
-<script>
-    $('#passGen').click(function(){
-        $('#resFancyAccion').hide();
-        password(11, true, false, 'fancyContainer');
-    });
-</script>
+$tpl = new SP_Template();
+$tpl->assign('userId', $userId);
+$controller = new \Controller\UsersMgmtC($tpl);
+$controller->getUserPass();
+$controller->view();

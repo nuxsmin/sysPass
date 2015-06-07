@@ -46,7 +46,7 @@ $frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
 
 $doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
 
-if ($frmAction == "config") {
+if ($frmAction == SP_Acl::ACTION_CFG_GENERAL) {
     $frmSiteLang = SP_Common::parseParams('p', 'sitelang');
     $frmSessionTimeout = SP_Common::parseParams('p', 'session_timeout', 300);
     $frmLog = SP_Common::parseParams('p', 'log_enabled', false, false, true);
@@ -78,7 +78,7 @@ if ($frmAction == "config") {
 
     $frmMail = SP_Common::parseParams('p', 'mail_enabled', false, false, true);
     $frmMailServer = SP_Common::parseParams('p', 'mail_server');
-    $frmMailPort = SP_Common::parseParams('p', 'mail_port',25);
+    $frmMailPort = SP_Common::parseParams('p', 'mail_port', 25);
     $frmMailUser = SP_Common::parseParams('p', 'mail_user');
     $frmMailPass = SP_Common::parseParams('p', 'mail_pass', '', false, false, false);
     $frmMailSecurity = SP_Common::parseParams('p', 'mail_security');
@@ -167,7 +167,7 @@ if ($frmAction == "config") {
     SP_Util::reload();
 
     SP_Common::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
-} elseif ($frmAction == "crypt") {
+} elseif ($frmAction == SP_Acl::ACTION_CFG_ENCRYPTION) {
     $currentMasterPass = SP_Common::parseParams('p', 'curMasterPwd', '', false, false, false);
     $newMasterPass = SP_Common::parseParams('p', 'newMasterPwd', '', false, false, false);
     $newMasterPassR = SP_Common::parseParams('p', 'newMasterPwdR', '', false, false, false);
@@ -194,14 +194,14 @@ if ($frmAction == "config") {
         SP_Common::printJSON(_('Las claves maestras no coinciden'));
     }
 
-    if (!SP_Crypt::checkHashPass($currentMasterPass, SP_Config::getConfigValue("masterPwd"))) {
+    if (!SP_Crypt::checkHashPass($currentMasterPass, SP_Config::getConfigDbValue("masterPwd"))) {
         SP_Common::printJSON(_('La clave maestra actual no coincide'));
     }
 
     $hashMPass = SP_Crypt::mkHashPassword($newMasterPass);
     
     if (!$noAccountPassChange) {
-        $objAccount = new SP_Account;
+        $objAccount = new SP_Accounts;
 
         if (!$objAccount->updateAllAccountsMPass($currentMasterPass, $newMasterPass)) {
             SP_Common::printJSON(_('Errores al actualizar las claves de las cuentas'));
@@ -217,7 +217,7 @@ if ($frmAction == "config") {
     SP_Config::$arrConfigValue["masterPwd"] = $hashMPass;
     SP_Config::$arrConfigValue["lastupdatempass"] = time();
     
-    if (SP_Config::writeConfig()) {
+    if (SP_Config::writeConfigDb()) {
         $message['action'] = _('Actualizar Clave Maestra');
 
         SP_Common::sendEmail($message);
@@ -225,11 +225,11 @@ if ($frmAction == "config") {
     }
     
     SP_Common::printJSON(_('Error al guardar el hash de la clave maestra'));
-} elseif ($frmAction == "tmpass") {
+} elseif ($frmAction == SP_Acl::ACTION_CFG_ENCRYPTION_TEMPPASS) {
     $tempMasterMaxTime = SP_Common::parseParams('p', 'tmpass_maxtime', 3600);
     $tempMasterPass = SP_Config::setTempMasterPass($tempMasterMaxTime);
 
-    if (!empty($tempMasterPass)){
+    if (!empty($tempMasterPass)) {
         $message['action'] = _('Generar Clave Temporal');
         $message['text'][] = SP_Html::strongText(_('Clave') . ': ') . $tempMasterPass;
 

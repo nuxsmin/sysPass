@@ -28,14 +28,9 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de realizar las operaciones sobre las cuentas de sysPass.
  */
-class SP_Account
+class SP_Accounts
 {
-    static $accountSearchTxt;
-    static $accountSearchCustomer;
-    static $accountSearchCategory;
-    static $accountSearchOrder;
-    static $accountSearchKey;
-
+    static $queryNumRows;
     var $accountId;
     var $accountParentId;
     var $accountUserId;
@@ -54,17 +49,29 @@ class SP_Account
     var $accountOtherUserEdit;
     var $accountOtherGroupEdit;
     var $accountModHash;
-
     var $lastAction;
-    var $lastId;
-    var $query; // Variable de consulta
-    var $queryNumRows;
+    var $lastId; // Variable de consulta
+    var $query;
     var $accountIsHistory = 0; // Variable para indicar si la cuenta es desde el histórico
     var $accountCacheUserGroupsId; // Cache para grupos de usuarios de las cuentas
     var $accountCacheUsersId; // Cache para usuarios de las cuentas
 
     // Variable para la caché de parámetros
     var $cacheParams;
+
+    /**
+     * Constructor
+     *
+     * @param int $id            con el Id de la cuenta a obtener
+     * @param string $lastAction con la accion anterior
+     */
+    public function __construct($id = null, $lastAction = null)
+    {
+        if (!is_null($id)) {
+            $this->accountId = $id;
+            $this->lastAction = $lastAction;
+        }
+    }
 
     /**
      * Obtener los datos de usuario y modificador de una cuenta.
@@ -133,7 +140,7 @@ class SP_Account
      * @param array $searchFilter Filtros de búsqueda
      * @return bool Resultado de la consulta
      */
-    public function getAccounts($searchFilter)
+    public static function getAccounts($searchFilter)
     {
         $isAdmin = ($_SESSION['uisadminapp'] || $_SESSION['uisadminacc']);
         $globalSearch = ($searchFilter['globalSearch'] === 1 && SP_Config::getValue('globalsearch', 0));
@@ -157,7 +164,7 @@ class SP_Account
                 $orderKey = 'account_url';
                 break;
             case 5:
-                $orderKey = 'account_customerId';
+                $orderKey = 'customer_name';
                 break;
             default :
                 $orderKey = 'customer_name, account_name';
@@ -249,7 +256,7 @@ class SP_Account
             $query = $querySelect . ' ' . $queryOrder . ' ' . $queryLimit;
         }
 
-        $this->query = $query;
+//        $this->query = $query;
 
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();
@@ -268,7 +275,7 @@ class SP_Account
 
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
-        $this->queryNumRows = DB::$last_num_rows;
+        self::$queryNumRows = DB::$last_num_rows;
 
         $_SESSION["accountSearchTxt"] = $searchFilter["txtSearch"];
         $_SESSION["accountSearchCustomer"] = $searchFilter["customerId"];
@@ -287,7 +294,8 @@ class SP_Account
      * Esta funcion realiza la consulta a la BBDD y guarda los datos del histórico
      * en las variables de la clase.
      *
-     * @return false|object
+     * @return object
+     * @throws Exception
      */
     public function getAccountHistory()
     {
@@ -330,7 +338,8 @@ class SP_Account
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
-            return false;
+            throw new Exception(_('No se pudieron obtener los datos de la cuenta'));
+//            return false;
         }
 
         $this->accountUserId = $queryRes->account_userId;
@@ -473,7 +482,7 @@ class SP_Account
         $data['account_id'] = $this->accountId;
         $data['isModify'] = ($isDelete === false) ? 1 : 0;
         $data['isDelete'] = ($isDelete === false) ? 0 : 1;
-        $data['masterPwd'] = SP_Config::getConfigValue('masterPwd');
+        $data['masterPwd'] = SP_Config::getConfigDbValue('masterPwd');
 
         return DB::getQuery($query, __FUNCTION__, $data);
     }
@@ -581,7 +590,8 @@ class SP_Account
      * Obtener los datos de una cuenta.
      * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
      *
-     * @return object|false
+     * @return object
+     * @throws Exception
      */
     public function getAccount()
     {
@@ -624,7 +634,8 @@ class SP_Account
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
-            return false;
+            throw new Exception(_('No se pudieron obtener los datos de la cuenta'));
+//            return false;
         }
 
         $this->accountUserId = $queryRes->account_userId;
@@ -784,7 +795,7 @@ class SP_Account
         foreach ($queryRes as $history) {
             // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
             if ($history->acchistory_dateEdit === null || $history->acchistory_dateEdit == '0000-00-00 00:00:00') {
-                    $arrHistory[$history->acchistory_id] = $history->acchistory_dateAdd . ' - ' . $history->user_add;
+                $arrHistory[$history->acchistory_id] = $history->acchistory_dateAdd . ' - ' . $history->user_add;
             } else {
                 $arrHistory[$history->acchistory_id] = $history->acchistory_dateEdit . ' - ' . $history->user_edit;
             }
@@ -906,7 +917,7 @@ class SP_Account
                 continue;
             }
 
-            if (strlen($account->account_IV) < 32){
+            if (strlen($account->account_IV) < 32) {
                 $errorCount++;
                 $message['text'][] = _('IV de encriptación incorrecto') . " (" . $account->account_id . ")";
                 continue;
@@ -1069,7 +1080,7 @@ class SP_Account
                 continue;
             }
 
-            if (strlen($account->acchistory_IV) < 32){
+            if (strlen($account->acchistory_IV) < 32) {
                 $errorCount++;
                 $message['text'][] = _('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ')';
                 continue;
@@ -1143,7 +1154,7 @@ class SP_Account
             'WHERE acchistory_id = :id AND acchistory_mPassHash = :mPassHash';
 
         $data['id'] = (is_null($id)) ? $this->accountId : $id;
-        $data['mPassHash'] = SP_Config::getConfigValue('masterPwd');
+        $data['mPassHash'] = SP_Config::getConfigDbValue('masterPwd');
 
         return (DB::getResults($query, __FUNCTION__, $data) !== false);
     }
@@ -1265,8 +1276,8 @@ class SP_Account
         }
 
         if (!isset($cacheUsers[$accId])
-            || time() > $cacheUsers['expires'])
-        {
+            || time() > $cacheUsers['expires']
+        ) {
             $cacheUsers[$accId] = SP_Users::getUsersForAccount($accId);
             $cacheUsers['expires'] = time() + 300;
         }
@@ -1292,8 +1303,8 @@ class SP_Account
         }
 
         if (!isset($cacheUserGroups[$accId])
-            || time() > $cacheUserGroups['expires'])
-        {
+            || time() > $cacheUserGroups['expires']
+        ) {
             $cacheUserGroups[$accId] = SP_Groups::getGroupsForAccount($accId);
             $cacheUserGroups['expires'] = time() + 300;
         }

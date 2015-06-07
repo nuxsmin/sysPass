@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -44,9 +44,10 @@ class SP_Customer
      */
     public static function addCustomer()
     {
-        $query = 'INSERT INTO customers SET customer_name = :name,customer_hash = :hash';
+        $query = 'INSERT INTO customers SET customer_name = :name, customer_description = :description, customer_hash = :hash';
 
         $data['name'] = self::$customerName;
+        $data['description'] = self::$customerDescription;
         $data['hash'] = self::mkCustomerHash();
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
@@ -117,6 +118,27 @@ class SP_Customer
     }
 
     /**
+     * Obtener el Nombre de un cliente por su Id.
+     *
+     * @param int $id con el Id del cliente
+     * @return false|string con el nombre del cliente
+     */
+    public static function getCustomerById($id)
+    {
+        $query = 'SELECT customer_name FROM customers WHERE customer_id = :id LIMIT 1';
+
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->customer_name;
+    }
+
+    /**
      * Eliminar un cliente de la BBDD.
      *
      * @param int $id con el Id del cliente a eliminar
@@ -141,27 +163,6 @@ class SP_Customer
         SP_Common::sendEmail($message);
 
         return true;
-    }
-
-    /**
-     * Obtener el Nombre de un cliente por su Id.
-     *
-     * @param int $id con el Id del cliente
-     * @return false|string con el nombre del cliente
-     */
-    public static function getCustomerById($id)
-    {
-        $query = 'SELECT customer_name FROM customers WHERE customer_id = :id LIMIT 1';
-
-        $data['id'] = $id;
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->customer_name;
     }
 
     /**
@@ -237,7 +238,7 @@ class SP_Customer
     /**
      * Obtener el listado de clientes.
      *
-     * @param int $customerId con el Id del cliente
+     * @param int $customerId     con el Id del cliente
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con el id de cliente como clave y el nombre como valor
      */

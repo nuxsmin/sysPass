@@ -330,7 +330,7 @@ a:focus {
 
 #container #content {
     float: left;
-    width: 85%;
+    width: 88%;
     min-height: 500px;
     margin: 50px auto;
     margin-bottom: 80px;
@@ -368,9 +368,9 @@ a:focus {
 }
 
 #content #pageNav {
-    float: left;
-    clear: both;
-    width: 98%;
+    /*float: left;*/
+    /*clear: both;*/
+    width: 100%;
     margin-top: 15px;
     height: 1.5em;
     padding: 5px 10px 5px 10px;
@@ -625,6 +625,11 @@ a:focus {
 
 #content .row_odd > td {
     background-color: white;
+}
+
+#content .data-header {
+    width: 100%;
+    margin: 0 auto;
 }
 
 #content .data-header ul {
@@ -975,6 +980,8 @@ a:focus {
     border: #d9d9d9 1px solid;
     font-size: 14px;
 }
+
+#fancyView ul {list-style: none;}
 
 #fancyView.msgError {
     margin: 5px;

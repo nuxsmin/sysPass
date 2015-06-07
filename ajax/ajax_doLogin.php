@@ -2,11 +2,11 @@
 
 /**
  * sysPass
- * 
- * @author nuxsmin
- * @link http://syspass.org
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *  
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
 SP_Util::checkReferer('POST');
 
@@ -41,7 +41,7 @@ if (!$userLogin || !$userPass) {
     SP_Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
-$resLdap = SP_Auth::authUserLDAP($userLogin,$userPass);
+$resLdap = SP_Auth::authUserLDAP($userLogin, $userPass);
 
 $objUser = new SP_Users;
 $objUser->userLogin = $userLogin;
@@ -96,7 +96,7 @@ if ($resLdap === true) {
     $message['action'] = _('Inicio sesión (MySQL)');
 
     // Autentificamos con la BBDD
-    if (!SP_Auth::authUserMySQL($userLogin,$userPass)) {
+    if (!SP_Auth::authUserMySQL($userLogin, $userPass)) {
         $message['text'][] = _('Login incorrecto');
         $message['text'][] = _('Usuario') . ": " . $userLogin;
         SP_Log::wrLogInfo($message);
@@ -123,10 +123,12 @@ if (!$objUser->getUserInfo()) {
 }
 
 // Comprobamos que la clave maestra del usuario es correcta y está actualizada
-if (!$masterPass && (!$objUser->checkUserMPass() || !SP_Users::checkUserUpdateMPass($userLogin) )) {
+if (!$masterPass && (!$objUser->checkUserMPass()
+    || !SP_Users::checkUserUpdateMPass($userLogin))
+) {
     SP_Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
-    if(SP_Config::checkTempMasterPass($masterPass)){
+    if (SP_Config::checkTempMasterPass($masterPass)) {
         $masterPass = SP_Config::getTempMasterPass($masterPass);
     }
 
@@ -139,10 +141,10 @@ if (!$masterPass && (!$objUser->checkUserMPass() || !SP_Users::checkUserUpdateMP
 }
 
 // Comprobar si se ha forzado un cambio de clave
-if ($objUser->userChangePass){
+if ($objUser->userChangePass) {
     $hash = SP_Util::generate_random_bytes();
 
-    if (SP_Users::addPassRecover($userLogin, $hash)){
+    if (SP_Users::addPassRecover($userLogin, $hash)) {
         $url = SP_Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1';
         SP_Common::printJSON($url, 0);
     }
@@ -158,15 +160,15 @@ if ($objUser->getUserMPass()) {
     $message['text'][] = _('Grupo') . ": " . SP_Groups::getGroupNameById($objUser->userGroupId);
 
     SP_Log::wrLogInfo($message);
-    
+
     // Comprobar si existen parámetros adicionales en URL via GET
-    foreach ($_POST as $param => $value){
-        if(preg_match('/g_.*/', $param)){
-            $params[] = substr($param,2).'='.$value;
+    foreach ($_POST as $param => $value) {
+        if (preg_match('/g_.*/', $param)) {
+            $params[] = substr($param, 2) . '=' . $value;
         }
     }
-    
-    $urlParams = isset($params) ? '?'.implode('&', $params) : '';
-    
-    SP_Common::printJSON('index.php'.$urlParams, 0);
+
+    $urlParams = isset($params) ? '?' . implode('&', $params) : '';
+
+    SP_Common::printJSON('index.php' . $urlParams, 0);
 }

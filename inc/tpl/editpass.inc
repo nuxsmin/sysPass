@@ -1,38 +1,4 @@
-<?php
-/**
- * sysPass
- *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *
- * This file is part of sysPass.
- *
- * sysPass is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sysPass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-
-$account = new SP_Account;
-$account->accountId = $data['id'];
-$account->lastAction = $data['lastaction'];
-$accountData = $account->getAccount();
-
-(!SP_Acl::checkAccountAccess("acceditpass", $account->getAccountDataForACL()) || !SP_Acl::checkUserAccess("acceditpass")) && SP_Html::showCommonError('noaccpermission');
-?>
-
-<div id="title" class="midroundup titleOrange"><?php echo _('Modificar Clave de Cuenta'); ?></div>
+<div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
 <form method="post" name="editpass" id="frmEditPass">
     <table class="data round">
@@ -74,8 +40,8 @@ $accountData = $account->getAccount();
     </table>
     <input type="hidden" name="savetyp" value="4"/>
     <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
-    <input type="hidden" name="next" value="accview">
-    <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true); ?>">
+    <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
+    <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     <input type="hidden" name="isAjax" value="1">
 </form>
 
@@ -83,7 +49,7 @@ $accountData = $account->getAccount();
     <ul>
         <li>
             <img SRC="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                 OnClick="doAction('<?php echo $account->lastAction; ?>', 'accsearch',<?php echo $account->accountId; ?>)"/>
+                 OnClick="doAction(<?php echo $lastAction; ?>, <?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account->accountId; ?>)"/>
         </li>
         <li>
             <img SRC="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"

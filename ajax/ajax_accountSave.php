@@ -58,8 +58,8 @@ $frmUserEditEnabled = SP_Common::parseParams('p', 'ueditenabled', 0, false, 1);
 $frmChangesHash = SP_Common::parseParams('p', 'hash');
 
 // Datos del Usuario
-$userId = SP_Common::parseParams('s', 'uid', 0);
-$groupId = SP_Common::parseParams('s', 'ugroup', 0);
+$userId = SP_Session::getUserId();
+$groupId = SP_Session::getUserGroupId();
 
 if ($frmSaveType == 1) { // Nueva Cuenta
     // Comprobaciones para nueva cuenta
@@ -132,7 +132,7 @@ if ($frmSaveType == 1 || $frmSaveType == 4) {
     $accountIV = SP_Crypt::$strInitialVector;
 }
 
-$account = new SP_Account;
+$account = new SP_Accounts;
 
 switch ($frmSaveType) {
     case 1: // Nueva Cuenta
