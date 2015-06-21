@@ -33,40 +33,193 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class AccountSearch
 {
     /**
+     * Constantes de ordenación
+     */
+    const SORT_NAME = 1;
+    const SORT_CATEGORY = 2;
+    const SORT_LOGIN = 3;
+    const SORT_URL = 4;
+    const SORT_CUSTOMER = 5;
+
+    /**
      * @var int El número de registros de la última consulta
      */
     public static $queryNumRows;
 
+    private $_globalSearch = false;
+    private $_txtSearch = '';
+    private $_customerId = 0;
+    private $_categoryId = 0;
+    private $_sortOrder = 0;
+    private $_sortKey = 0;
+    private $_limitStart = 0;
+    private $_limitCount = 12;
+
+    /**
+     * Constructor
+     */
+    function __construct()
+    {
+        $this->setLimitCount(Config::getValue('account_count'));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isGlobalSearch()
+    {
+        return $this->_globalSearch;
+    }
+
+    /**
+     * @param boolean $globalSearch
+     */
+    public function setGlobalSearch($globalSearch)
+    {
+        $this->_globalSearch = $globalSearch;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTxtSearch()
+    {
+        return $this->_txtSearch;
+    }
+
+    /**
+     * @param string $txtSearch
+     */
+    public function setTxtSearch($txtSearch)
+    {
+        $this->_txtSearch = $txtSearch;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerId()
+    {
+        return $this->_customerId;
+    }
+
+    /**
+     * @param int $customerId
+     */
+    public function setCustomerId($customerId)
+    {
+        $this->_customerId = $customerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCategoryId()
+    {
+        return $this->_categoryId;
+    }
+
+    /**
+     * @param int $categoryId
+     */
+    public function setCategoryId($categoryId)
+    {
+        $this->_categoryId = $categoryId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder()
+    {
+        return $this->_sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder
+     */
+    public function setSortOrder($sortOrder)
+    {
+        $this->_sortOrder = $sortOrder;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortKey()
+    {
+        return $this->_sortKey;
+    }
+
+    /**
+     * @param int $sortKey
+     */
+    public function setSortKey($sortKey)
+    {
+        $this->_sortKey = $sortKey;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimitStart()
+    {
+        return $this->_limitStart;
+    }
+
+    /**
+     * @param int $limitStart
+     */
+    public function setLimitStart($limitStart)
+    {
+        $this->_limitStart = $limitStart;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimitCount()
+    {
+        return $this->_limitCount;
+    }
+
+    /**
+     * @param int $limitCount
+     */
+    public function setLimitCount($limitCount)
+    {
+        $this->_limitCount = $limitCount;
+    }
+
     /**
      * Obtener las cuentas de una búsqueda.
      *
-     * @param array $searchFilter Filtros de búsqueda
      * @return bool Resultado de la consulta
      */
-    public static function getAccounts($searchFilter)
+    public function getAccounts()
     {
-        $isAdmin = ($_SESSION['uisadminapp'] || $_SESSION['uisadminacc']);
-        $globalSearch = ($searchFilter['globalSearch'] === 1 && Config::getValue('globalsearch', 0));
+        $isAdmin = (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc());
+        $globalSearch = ($this->isGlobalSearch() && Config::getValue('globalsearch', 0));
 
         $arrFilterCommon = array();
         $arrFilterSelect = array();
         $arrFilterUser = array();
         $arrQueryWhere = array();
 
-        switch ($searchFilter['keyId']) {
-            case 1:
+        switch ($this->getSortKey()) {
+            case self::SORT_NAME:
                 $orderKey = 'account_name';
                 break;
-            case 2:
+            case self::SORT_CATEGORY:
                 $orderKey = 'category_name';
                 break;
-            case 3:
+            case self::SORT_LOGIN:
                 $orderKey = 'account_login';
                 break;
-            case 4:
+            case self::SORT_URL:
                 $orderKey = 'account_url';
                 break;
-            case 5:
+            case self::SORT_CUSTOMER:
                 $orderKey = 'customer_name';
                 break;
             default :
@@ -95,27 +248,27 @@ class AccountSearch
             . 'LEFT JOIN accUsers ON accuser_accountId = account_id '
             . 'LEFT JOIN accGroups ON accgroup_accountId = account_id';
 
-        if ($searchFilter['txtSearch']) {
+        if ($this->getTxtSearch()) {
             $arrFilterCommon[] = 'account_name LIKE :name';
             $arrFilterCommon[] = 'account_login LIKE :login';
             $arrFilterCommon[] = 'account_url LIKE :url';
             $arrFilterCommon[] = 'account_notes LIKE :notes';
 
-            $data['name'] = '%' . $searchFilter['txtSearch'] . '%';
-            $data['login'] = '%' . $searchFilter['txtSearch'] . '%';
-            $data['url'] = '%' . $searchFilter['txtSearch'] . '%';
-            $data['notes'] = '%' . $searchFilter['txtSearch'] . '%';
+            $data['name'] = '%' . $this->getTxtSearch() . '%';
+            $data['login'] = '%' . $this->getTxtSearch() . '%';
+            $data['url'] = '%' . $this->getTxtSearch() . '%';
+            $data['notes'] = '%' . $this->getTxtSearch() . '%';
         }
 
-        if ($searchFilter['categoryId'] != 0) {
+        if ($this->getCategoryId() !== 0) {
             $arrFilterSelect[] = 'category_id = :categoryId';
 
-            $data['categoryId'] = $searchFilter['categoryId'];
+            $data['categoryId'] = $this->getCategoryId();
         }
-        if ($searchFilter['customerId'] != 0) {
+        if ($this->getCustomerId() !== 0) {
             $arrFilterSelect[] = 'account_customerId = :customerId';
 
-            $data['customerId'] = $searchFilter['customerId'];
+            $data['customerId'] = $this->getCustomerId();
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -132,23 +285,25 @@ class AccountSearch
             $arrFilterUser[] = 'accgroup_groupId = :accgroup_groupId';
             $arrFilterUser[] = 'accuser_userId = :accuser_userId';
 
-            $data['userGroupId'] = $searchFilter['groupId'];
-            $data['userId'] = $searchFilter['userId'];
-            $data['accgroup_groupId'] = $searchFilter['groupId'];
-            $data['accuser_userId'] = $searchFilter['userId'];
+            // Usuario/Grupo principal de la cuenta
+            $data['userId'] = Session::getUserId();
+            $data['accuser_userId'] = Session::getUserId();
 
-            //$arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
+            // Usuario/Grupo secundario de la cuenta
+            $data['userGroupId'] = Session::getUserGroupId();
+            $data['accgroup_groupId'] = Session::getUserGroupId();
+
             $arrQueryWhere[] = implode(' OR ', $arrFilterUser);
         }
 
-        $orderDir = ($searchFilter["txtOrder"] == 0) ? 'ASC' : 'DESC';
+        $orderDir = ($this->getSortOrder() === 0) ? 'ASC' : 'DESC';
         $queryOrder = 'ORDER BY ' . $orderKey . ' ' . $orderDir;
 
-        if ($searchFilter['limitCount'] != 99) {
+        if ($this->getLimitCount() != 99) {
             $queryLimit = 'LIMIT :limitStart,:limitCount';
 
-            $data['limitStart'] = $searchFilter['limitStart'];
-            $data['limitCount'] = $searchFilter['limitCount'];
+            $data['limitStart'] = $this->getLimitStart();
+            $data['limitCount'] = $this->getLimitCount();
         }
 
         if (count($arrQueryWhere) === 1) {
@@ -177,14 +332,8 @@ class AccountSearch
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         self::$queryNumRows = DB::$last_num_rows;
 
-        $_SESSION["accountSearchTxt"] = $searchFilter["txtSearch"];
-        $_SESSION["accountSearchCustomer"] = $searchFilter["customerId"];
-        $_SESSION["accountSearchCategory"] = $searchFilter["categoryId"];
-        $_SESSION["accountSearchOrder"] = $searchFilter["txtOrder"];
-        $_SESSION["accountSearchKey"] = $searchFilter["keyId"];
-        $_SESSION["accountSearchStart"] = $searchFilter["limitStart"];
-        $_SESSION["accountSearchLimit"] = $searchFilter["limitCount"];
-        $_SESSION["accountGlobalSearch"] = $searchFilter["globalSearch"];
+        // Establecer el filtro de búsqueda en la sesión como un objeto
+        Session::setSearchFilters($this);
 
         return $queryRes;
     }

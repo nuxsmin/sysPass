@@ -174,9 +174,6 @@ class AccountC extends Controller implements ActionsInterface
         if ($this->isGotData()) {
             $this->view->assign('accountParentId', $this->getAccount()->getAccountParentId());
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
-            $this->view->assign('accountCategories', \SP\DB::getValuesForSelect('categories', 'category_id', 'category_name'));
-            $this->view->assign('otherUsers', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
-            $this->view->assign('otherGroups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
             $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountUsersId());
             $this->view->assign('accountOtherUsersName', \SP\Users::getUsersNameForAccount($this->getId()));
             $this->view->assign('accountOtherGroups', $this->getAccount()->getAccountUserGroupsId());
@@ -184,46 +181,17 @@ class AccountC extends Controller implements ActionsInterface
             $this->view->assign('changesHash', $this->getAccount()->calcChangesHash());
             $this->view->assign('chkUserEdit', ($this->view->accountData->account_otherUserEdit) ? 'checked' : '');
             $this->view->assign('chkGroupEdit', ($this->view->accountData->account_otherGroupEdit) ? 'checked' : '');
+            $this->view->assign('historyData', \SP\AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
+            $this->view->assign('isModified', ($this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit <> '0000-00-00 00:00:00'));
+            $this->view->assign('maxFileSize', round(\SP\Config::getValue('files_allowed_size') / 1024, 1));
+            $this->view->assign('filesAllowedExts', \SP\Config::getValue('files_allowed_exts'));
+            $this->view->assign('filesDelete', ($this->_action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
         }
 
-        $this->view->assign('customersSelProp', array("name" => "customerId",
-            "id" => "selCustomer",
-            "class" => "",
-            "size" => 1,
-            "label" => "",
-            "selected" => ($this->_gotData) ? $this->view->accountData->account_customerId : '',
-            "default" => "",
-            "js" => "",
-            "attribs" => ""
-        ));
-
-        $this->view->assign('categoriesSelProp', array("name" => "categoryId",
-            "id" => "selCategory",
-            "class" => "",
-            "size" => 1,
-            "label" => "",
-            "selected" => ($this->_gotData) ? $this->view->accountData->account_categoryId : '',
-            "default" => "",
-            "js" => "",
-            "attribs" => ""
-        ));
-
-        $this->view->assign('historySelProp', array("name" => "historyId",
-            "id" => "sel-history",
-            "class" => "",
-            "size" => 1,
-            "label" => "",
-            "selected" => ($this->_gotData && $this->_account->getAccountIsHistory()) ? $this->getId() : '',
-            "default" => "",
-            "js" => "OnChange=\"if ( $('#sel-history').val() > 0 ) doAction(" . self::ACTION_ACC_VIEW_HISTORY . "," . self::ACTION_ACC_VIEW . ", $('#sel-history').val());\"",
-            "attribs" => ''
-        ));
-
-        $this->view->assign('isModified', ($this->_gotData && $this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit <> '0000-00-00 00:00:00'));
-        $this->view->assign('filesDelete', ($this->_action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
-        $this->view->assign('maxFileSize', round(\SP\Config::getValue('files_allowed_size') / 1024, 1));
-        $this->view->assign('historyData', \SP\AccountHistory::getAccountList($this->getId()));
-        $this->view->assign('filesAllowedExts', \SP\Config::getValue('files_allowed_exts'));
+        $this->view->assign('categories', \SP\DB::getValuesForSelect('categories', 'category_id', 'category_name'));
+        $this->view->assign('customers', \SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'));
+        $this->view->assign('otherUsers', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
+        $this->view->assign('otherGroups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
     }
 
     /**
@@ -291,7 +259,7 @@ class AccountC extends Controller implements ActionsInterface
         try {
             $this->setAccount(new Account());
             $this->_account->setAccountId($this->getId());
-            $this->_account->setAccountParentId(Common::parseParams('s', 'accParentId', 0));
+            $this->_account->setAccountParentId(\SP\Session::getAccountParentId());
 
             $this->view->assign('accountId', $this->getId());
             $this->view->assign('accountData', $this->getAccount()->getAccountData());
@@ -377,7 +345,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->assign('title', array('class' => 'titleNormal', 'name' => _('Detalles de Cuenta')));
         $this->view->assign('showform', false);
 
-        $_SESSION["accParentId"] = $this->getId();
+        \SP\Session::setAccountParentId($this->getId());
         $this->_account->incrementViewCounter();
 
         $this->setCommonData();
@@ -418,7 +386,7 @@ class AccountC extends Controller implements ActionsInterface
         try {
             $this->setAccount(new AccountHistory());
             $this->_account->setAccountId($this->getId());
-            $this->_account->setAccountParentId(Common::parseParams('s', 'accParentId', 0));
+            $this->_account->setAccountParentId(\SP\Session::getAccountParentId());
 
             $this->view->assign('accountId', $this->getId());
             $this->view->assign('accountData', $this->getAccount()->getAccountData());

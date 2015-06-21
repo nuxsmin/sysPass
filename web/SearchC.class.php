@@ -26,6 +26,7 @@
 namespace SP\Controller;
 
 use SP\AccountSearch;
+use SP\Session;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -36,15 +37,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class SearchC extends Controller implements ActionsInterface
 {
-    /**
-     * Constantes de ordenación
-     */
-    const SORT_NAME = 1;
-    const SORT_CATEGORY = 2;
-    const SORT_USER = 3;
-    const SORT_URL = 4;
-    const SORT_CUSTOMER = 5;
-
     /**
      * Constructor
      *
@@ -63,18 +55,26 @@ class SearchC extends Controller implements ActionsInterface
      */
     private function setVars()
     {
-        $this->view->assign('isAdmin', ($_SESSION["uisadminapp"] || $_SESSION["uisadminacc"]));
+        $this->view->assign('isAdmin', (\SP\Session::getUserIsAdminApp() || \SP\Session::getUserIsAdminAcc()));
         $this->view->assign('globalSearch', \SP\Config::getValue('globalsearch', 0));
 
+        // Comprobar si está creado el objeto de búsqueda en la sesión
+        if (!is_object(Session::getSearchFilters())) {
+            Session::setSearchFilters(new AccountSearch());
+        }
+
+        // Obtener el filtro de búsqueda desde la sesión
+        $filters = Session::getSearchFilters();
+
         // Valores POST
-        $this->view->assign('searchKey', \SP\Common::parseParams('p', 'skey', \SP\Common::parseParams('s', 'accountSearchKey', 0)));
-        $this->view->assign('searchOrder', \SP\Common::parseParams('p', 'sorder', \SP\Common::parseParams('s', 'accountSearchOrder', 0)));
-        $this->view->assign('searchCustomer', \SP\Common::parseParams('p', 'customer', \SP\Common::parseParams('s', 'accountSearchCustomer', 0)));
-        $this->view->assign('searchCategory', \SP\Common::parseParams('p', 'category', \SP\Common::parseParams('s', 'accountSearchCategory', 0)));
-        $this->view->assign('searchTxt', \SP\Common::parseParams('p', 'search', \SP\Common::parseParams('s', 'accountSearchTxt')));
-        $this->view->assign('searchGlobal', \SP\Common::parseParams('p', 'gsearch', \SP\Common::parseParams('s', 'accountGlobalSearch', 0), false, 1));
-        $this->view->assign('limitStart', \SP\Common::parseParams('p', 'start', \SP\Common::parseParams('s', 'accountSearchStart', 0)));
-        $this->view->assign('limitCount', \SP\Common::parseParams('p', 'rpp', \SP\Common::parseParams('s', 'accountSearchLimit', \SP\Config::getValue('account_count', 10))));
+        $this->view->assign('searchKey', \SP\Common::parseParams('p', 'skey', $filters->getSortKey()));
+        $this->view->assign('searchOrder', \SP\Common::parseParams('p', 'sorder', $filters->getSortOrder()));
+        $this->view->assign('searchCustomer', \SP\Common::parseParams('p', 'customer', $filters->getCustomerId()));
+        $this->view->assign('searchCategory', \SP\Common::parseParams('p', 'category', $filters->getCategoryId()));
+        $this->view->assign('searchTxt', \SP\Common::parseParams('p', 'search', $filters->getTxtSearch()));
+        $this->view->assign('searchGlobal', \SP\Common::parseParams('p', 'gsearch', $filters->isGlobalSearch(), false, 1));
+        $this->view->assign('limitStart', \SP\Common::parseParams('p', 'start', $filters->getLimitStart()));
+        $this->view->assign('limitCount', \SP\Common::parseParams('p', 'rpp', $filters->getLimitCount()));
     }
 
     /**
@@ -84,29 +84,8 @@ class SearchC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('searchbox');
 
-        $this->view->assign('customersSelProp',
-            array("name" => "customer",
-                "id" => "selCustomer",
-                "class" => "select-box",
-                "size" => 1,
-                "label" => "",
-                "selected" => $this->view->searchCustomer,
-                "default" => "",
-                "js" => 'OnChange="clearSearch(1); accSearch(0)"',
-                "attribs" => "")
-        );
-
-        $this->view->assign('categoriesSelProp',
-            array("name" => "category",
-                "id" => "selCategory",
-                "class" => "select-box",
-                "size" => 1,
-                "label" => "",
-                "selected" => $this->view->searchCategory,
-                "default" => "",
-                "js" => 'OnChange="clearSearch(1); accSearch(0)"',
-                "attribs" => "")
-        );
+        $this->view->assign('customers', \SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'));
+        $this->view->assign('categories', \SP\DB::getValuesForSelect('categories', 'category_id', 'category_name'));
     }
 
     public function getSearch()
@@ -115,20 +94,18 @@ class SearchC extends Controller implements ActionsInterface
 
         $this->view->assign('queryTimeStart', microtime());
 
-        $searchFilter = array(
-            'txtSearch' => $this->view->searchTxt,
-            'userId' => \SP\Common::parseParams('s', 'uid', 0),
-            'groupId' => \SP\Common::parseParams('s', 'ugroup', 0),
-            'categoryId' => $this->view->searchCategory,
-            'customerId' => $this->view->searchCustomer,
-            'keyId' => $this->view->searchKey,
-            'txtOrder' => $this->view->searchOrder,
-            'limitStart' => $this->view->limitStart,
-            'limitCount' => $this->view->limitCount,
-            'globalSearch' => $this->view->globalSearch
-        );
+        $search = new AccountSearch();
 
-        $resQuery = AccountSearch::getAccounts($searchFilter);
+        $search->setGlobalSearch($this->view->globalSearch);
+        $search->setTxtSearch($this->view->searchTxt);
+        $search->setCategoryId($this->view->searchCategory);
+        $search->setCustomerId($this->view->searchCustomer);
+        $search->setSortKey($this->view->searchKey);
+        $search->setSortOrder($this->view->searchOrder);
+        $search->setLimitStart($this->view->limitStart);
+        $search->setLimitCount($this->view->limitCount);
+
+        $resQuery = $search->getAccounts();
 
         if (!$resQuery) {
             $this->view->assign('accounts', false);
@@ -282,34 +259,34 @@ class SearchC extends Controller implements ActionsInterface
     {
         $this->view->assign('sortFields', array(
             array(
-                'key' => self::SORT_CUSTOMER,
+                'key' => AccountSearch::SORT_CUSTOMER,
                 'title' => _('Ordenar por Cliente'),
                 'name' => _('Cliente'),
-                'function' => 'searchSort(' . self::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . AccountSearch::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => self::SORT_NAME,
+                'key' => AccountSearch::SORT_NAME,
                 'title' => _('Ordenar por Nombre'),
                 'name' => _('Nombre'),
-                'function' => 'searchSort(' . self::SORT_NAME . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . AccountSearch::SORT_NAME . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => self::SORT_CATEGORY,
+                'key' => AccountSearch::SORT_CATEGORY,
                 'title' => _('Ordenar por Categoría'),
                 'name' => _('Categoría'),
-                'function' => 'searchSort(' . self::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . AccountSearch::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => self::SORT_USER,
+                'key' => AccountSearch::SORT_LOGIN,
                 'title' => _('Ordenar por Usuario'),
                 'name' => _('Usuario'),
-                'function' => 'searchSort(' . self::SORT_USER . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . AccountSearch::SORT_LOGIN . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => self::SORT_URL,
+                'key' => AccountSearch::SORT_URL,
                 'title' => _('Ordenar por URL / IP'),
                 'name' => _('URL / IP'),
-                'function' => 'searchSort(' . self::SORT_URL . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . AccountSearch::SORT_URL . ',' . $this->view->limitStart . ')'
             )
         ));
     }

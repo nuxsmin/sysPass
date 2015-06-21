@@ -251,4 +251,39 @@ class Session
     {
         $_SESSION["usrprofile"] = $profile;
     }
+
+    /**
+     * @return \SP\AccountSearch
+     */
+    public static function getSearchFilters()
+    {
+        return $_SESSION["search"];
+    }
+
+    /**
+     * @param \SP\AccountSearch $search
+     */
+    public static function setSearchFilters(\SP\AccountSearch $search)
+    {
+        $_SESSION["search"] = $search;
+    }
+
+    /**
+     * Establece la cuenta primaria para el histórico
+     *
+     * @param $id int El id de la cuenta
+     */
+    public static function setAccountParentId($id){
+        $_SESSION["accParentId"] = (int) $id;
+    }
+
+    /**
+     * Devuelve la cuenta primaria para el histórico
+     *
+     * @return int
+     */
+    public static function getAccountParentId()
+    {
+        return $_SESSION["accParentId"];
+    }
 }

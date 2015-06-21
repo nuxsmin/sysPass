@@ -1,12 +1,12 @@
 <div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 <?php if ($showform): ?>
-    <form method="post" name="frmaccount" id="frmAccount">
-<?php endif; ?>
-    <?php if ($gotData && $accountIsHistory): ?>
-        <table class="data round tblIcon">
-    <?php else: ?>
-        <table class="data round">
+<form method="post" name="frmaccount" id="frmAccount">
     <?php endif; ?>
+    <?php if ($gotData && $accountIsHistory): ?>
+    <table class="data round tblIcon">
+        <?php else: ?>
+        <table class="data round">
+            <?php endif; ?>
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
@@ -15,7 +15,7 @@
                                maxlength="50"
                                value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
                     <?php else: ?>
-                    <?php echo $accountData->account_name; ?>
+                        <?php echo $accountData->account_name; ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -23,12 +23,18 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <?php \SP\Html::printSelect(\SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);?>
+                        <select id="selCustomer" name="customerId" class="select-box">
+                            <option value="0"></option>
+                            <?php foreach ($customers as $id => $name): ?>
+                                <option
+                                    value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                         <br><br>
                         <input type="text" name="customer_new" maxlength="50"
                                placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>"/>
                     <?php else: ?>
-                    <?php echo $accountData->customer_name; ?>
+                        <?php echo $accountData->customer_name; ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -36,9 +42,15 @@
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <?php \SP\Html::printSelect($accountCategories, $categoriesSelProp); ?>
+                        <select id="selCategory" name="categoryId" class="select-box">
+                            <option value="0"></option>
+                            <?php foreach ($categories as $id => $name): ?>
+                                <option
+                                    value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     <?php else: ?>
-                    <?php echo $accountData->category_name; ?>
+                        <?php echo $accountData->category_name; ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -50,7 +62,7 @@
                                maxlength="255"
                                value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
                     <?php else: ?>
-                    <?php echo $accountData->account_url; ?>
+                        <?php echo $accountData->account_url; ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -62,7 +74,7 @@
                                maxlength="50"
                                value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
                     <?php else: ?>
-                    <?php echo $accountData->account_login; ?>
+                        <?php echo $accountData->account_login; ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -165,17 +177,17 @@
                 </tr>
             <?php endif; ?>
 
-        <?php if ($showform): ?>
-        <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
-        <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
+            <?php if ($showform): ?>
+            <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
+            <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
+            <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
             <?php if ($gotData): ?>
                 <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
             <?php endif; ?>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
-        <input type="hidden" name="isAjax" value="1">
-    </form>
-        <?php endif; ?>
+            <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+            <input type="hidden" name="isAjax" value="1">
+</form>
+<?php endif; ?>
 
 <!--Files boxes-->
 <?php if ($showFiles): ?>
@@ -207,11 +219,26 @@
     <tr>
         <td class="descField"><?php echo _('Historial'); ?></td>
         <td class="valField">
-            <?php SP\Html::printSelect($historyData, $historySelProp); ?>
-            <script>$("#sel-history").chosen({
+            <select id="selHistory" name="historyId" class="select-box">
+                <option value="0"></option>
+                <?php foreach ($historyData as $id => $name): ?>
+                    <option
+                        value="<?php echo $id; ?>" <?php echo ($gotData && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                <?php endforeach; ?>
+            </select>
+            <script>
+                $('#selHistory').on('change', function (e) {
+                    var historyId = $('#selHistory').val();
+
+                    if (historyId > 0)
+                        doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
+                });
+
+                $('#selHistory').chosen({
                     disable_search: true,
                     placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"
-                });</script>
+                });
+            </script>
         </td>
     </tr>
 <?php endif; ?>
@@ -300,7 +327,8 @@
 <?php if ($gotData && $accountIsHistory): ?>
     <form method="post" name="frmaccount" id="frmAccount">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
+        <input type="hidden" name="actionId"
+               value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
         <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">

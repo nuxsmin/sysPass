@@ -153,12 +153,8 @@ function clearSearch(clearStart) {
     }
 
     document.frmSearch.search.value = "";
-    document.frmSearch.customer.selectedIndex = 0;
-    document.frmSearch.category.selectedIndex = 0;
-    $('#frmSearch').find('input[name="start"]').val(0);
-    $('#frmSearch').find('input[name="skey"]').val(0);
-    $('#frmSearch').find('input[name="sorder"]').val(0);
-    $(".select-box").val('').trigger("chosen:updated");
+    $('#frmSearch').find('select').prop('selectedIndex', 0).trigger("chosen:updated");
+    $('#frmSearch').find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
     order.key = 0;
     order.dir = 0;
 }
@@ -185,11 +181,13 @@ function accSearch(continous, event) {
         return;
     }
 
-    if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode != 13) {
+    if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode !== 13) {
         return;
     }
 
     window.lastlen = lenTxtSearch;
+
+    $('#frmSearch').find('input[name="start"]').val(0);
 
     doSearch();
 }
