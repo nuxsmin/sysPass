@@ -25,9 +25,6 @@
 
 namespace SP\Controller;
 
-use SP\AccountSearch;
-use SP\Session;
-
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -59,12 +56,12 @@ class SearchC extends Controller implements ActionsInterface
         $this->view->assign('globalSearch', \SP\Config::getValue('globalsearch', 0));
 
         // Comprobar si está creado el objeto de búsqueda en la sesión
-        if (!is_object(Session::getSearchFilters())) {
-            Session::setSearchFilters(new AccountSearch());
+        if (!is_object(\SP\Session::getSearchFilters())) {
+            \SP\Session::setSearchFilters(new \SP\AccountSearch());
         }
 
         // Obtener el filtro de búsqueda desde la sesión
-        $filters = Session::getSearchFilters();
+        $filters = \SP\Session::getSearchFilters();
 
         // Valores POST
         $this->view->assign('searchKey', \SP\Common::parseParams('p', 'skey', $filters->getSortKey()));
@@ -94,7 +91,7 @@ class SearchC extends Controller implements ActionsInterface
 
         $this->view->assign('queryTimeStart', microtime());
 
-        $search = new AccountSearch();
+        $search = new \SP\AccountSearch();
 
         $search->setGlobalSearch($this->view->globalSearch);
         $search->setTxtSearch($this->view->searchTxt);
@@ -126,11 +123,11 @@ class SearchC extends Controller implements ActionsInterface
 
         // Variables para la barra de navegación
         $this->view->assign('firstPage', ceil(($this->view->limitStart + 1) / $this->view->limitCount));
-        $this->view->assign('lastPage', ceil(AccountSearch::$queryNumRows / $this->view->limitCount));
-        $this->view->assign('totalRows', AccountSearch::$queryNumRows);
+        $this->view->assign('lastPage', ceil(\SP\AccountSearch::$queryNumRows / $this->view->limitCount));
+        $this->view->assign('totalRows', \SP\AccountSearch::$queryNumRows);
         $this->view->assign('filterOn', ($this->view->searchKey > 1 || $this->view->searchCustomer || $this->view->searchCategory || $this->view->searchTxt) ? true : false);
 
-        $limitLast = ((AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? AccountSearch::$queryNumRows - $this->view->limitCount : floor(AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
+        $limitLast = ((\SP\AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? \SP\AccountSearch::$queryNumRows - $this->view->limitCount : floor(\SP\AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
 
         $this->view->assign('pagerOnnClick', array(
             'first' => 'searchSort(' . $this->view->searchKey . ', 0,1)',
@@ -259,34 +256,34 @@ class SearchC extends Controller implements ActionsInterface
     {
         $this->view->assign('sortFields', array(
             array(
-                'key' => AccountSearch::SORT_CUSTOMER,
+                'key' => \SP\AccountSearch::SORT_CUSTOMER,
                 'title' => _('Ordenar por Cliente'),
                 'name' => _('Cliente'),
-                'function' => 'searchSort(' . AccountSearch::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . \SP\AccountSearch::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => AccountSearch::SORT_NAME,
+                'key' => \SP\AccountSearch::SORT_NAME,
                 'title' => _('Ordenar por Nombre'),
                 'name' => _('Nombre'),
-                'function' => 'searchSort(' . AccountSearch::SORT_NAME . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . \SP\AccountSearch::SORT_NAME . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => AccountSearch::SORT_CATEGORY,
+                'key' => \SP\AccountSearch::SORT_CATEGORY,
                 'title' => _('Ordenar por Categoría'),
                 'name' => _('Categoría'),
-                'function' => 'searchSort(' . AccountSearch::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . \SP\AccountSearch::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => AccountSearch::SORT_LOGIN,
+                'key' => \SP\AccountSearch::SORT_LOGIN,
                 'title' => _('Ordenar por Usuario'),
                 'name' => _('Usuario'),
-                'function' => 'searchSort(' . AccountSearch::SORT_LOGIN . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . \SP\AccountSearch::SORT_LOGIN . ',' . $this->view->limitStart . ')'
             ),
             array(
-                'key' => AccountSearch::SORT_URL,
+                'key' => \SP\AccountSearch::SORT_URL,
                 'title' => _('Ordenar por URL / IP'),
                 'name' => _('URL / IP'),
-                'function' => 'searchSort(' . AccountSearch::SORT_URL . ',' . $this->view->limitStart . ')'
+                'function' => 'searchSort(' . \SP\AccountSearch::SORT_URL . ',' . $this->view->limitStart . ')'
             )
         ));
     }

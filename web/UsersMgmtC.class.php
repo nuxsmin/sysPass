@@ -277,31 +277,8 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
         $this->view->assign('user', \SP\Users::getUserData($this->view->itemId));
-
-        $this->view->assign(
-            'profilesSelProp', array('name' => 'profileid',
-                'id' => 'selProfile',
-                'class' => '',
-                'size' => 1,
-                'label' => '',
-                'selected' => $this->view->user['user_profileId'],
-                'default' => '',
-                'js' => '',
-                'attribs' => array('required', $this->view->isDisabled))
-        );
-
-        $this->view->assign(
-            'groupsSelProp', array('name' => 'groupid',
-                'id' => 'selGroup',
-                'class' => '',
-                'size' => 1,
-                'label' => '',
-                'selected' => $this->view->user['user_groupId'],
-                'default' => '',
-                'js' => '',
-                'attribs' => array('required', $this->view->isDisabled))
-        );
-
+        $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->view->assign('profiles', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
         $this->view->assign('ro', ($this->view->user['checks']['user_isLdap']) ? 'READONLY' : '');
     }
 

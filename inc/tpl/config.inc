@@ -249,7 +249,12 @@
                         <?php echo SP\Common::printHelpButton("config", 27); ?>
                     </td>
                     <td class="valField">
-                        <?php SP\Html::printSelect($groupsSelData, $groupsSelProp); ?>
+                        <select id="ldap_defaultgroup" name="ldap_defaultgroup" class="select-box" <?php echo $isDisabled; ?> required>
+                            <option value="0"></option>
+                            <?php foreach ($groups as $id => $name): ?>
+                                <option value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultGroup) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
                 </tr>
                 <tr>
@@ -258,7 +263,12 @@
                         <?php echo SP\Common::printHelpButton("config", 28); ?>
                     </td>
                     <td class="valField">
-                        <?php SP\Html::printSelect($profilesSelData, $profilesSelProp); ?>
+                        <select id="ldap_defaultprofile" name="profileid" class="select-box" <?php echo $isDisabled; ?> required>
+                            <option value="0"></option>
+                            <?php foreach ($profiles as $id => $name): ?>
+                                <option value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
                 </tr>
                 <tr>

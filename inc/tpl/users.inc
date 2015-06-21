@@ -1,8 +1,5 @@
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php use SP\Html;
-        use SP\Session;
-
-        echo $header; ?></h2>
+    <h2 class="midround"><?php echo $header; ?></h2>
 
     <form method="post" name="frmUsers" id="frmUsers">
         <table class="fancydata">
@@ -39,14 +36,24 @@
             <tr>
                 <td class="descField"><?php echo _('Perfil'); ?></td>
                 <td class="valField">
-                    <?php \SP\Html::printSelect(\SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'), $profilesSelProp); ?>
+                    <select id="selProfile" name="profileid" class="select-box" <?php echo $isDisabled; ?> required>
+                        <option value="0"></option>
+                        <?php foreach ($profiles as $id => $name): ?>
+                            <option value="<?php echo $id; ?>" <?php echo ($id == $user['user_profileId']) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </td>
             </tr>
 
             <tr>
                 <td class="descField"><?php echo _('Grupo'); ?></td>
                 <td class="valField">
-                    <?php \SP\Html::printSelect(\SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'), $groupsSelProp); ?>
+                    <select id="selGroup" name="groupid" class="select-box" <?php echo $isDisabled; ?> required>
+                        <option value="0"></option>
+                        <?php foreach ($groups as $id => $name): ?>
+                            <option value="<?php echo $id; ?>" <?php echo ($id == $user['user_groupId']) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </td>
             </tr>
 
@@ -94,7 +101,7 @@
                 <td class="descField"><?php echo _('Opciones'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnUserOptions" class="btn-checks round5">
-                        <?php if (Session::getUserIsAdminApp() || $isDemo): ?>
+                        <?php if (\SP\Session::getUserIsAdminApp() || $isDemo): ?>
                             <label for="usradminapp"
                                    title="<?php echo _('Administrador de la aplicación'); ?>"><?php echo _('Admin. Aplicación'); ?></label>
                             <input type="checkbox" id="usradminapp"

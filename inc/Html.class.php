@@ -33,54 +33,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Html
 {
     /**
-     * Crear un elemento del tipo SELECT.
-     * Esta función genera un elemento SELECT con las propiedades y valores pasados.
-     *
-     * @param array $values     con los valores del select
-     * @param array $properties con las propiedades del select
-     * @param bool  $useValue   para usar el Id como valor
-     */
-    public static function printSelect($values, $properties, $useValue = true)
-    {
-
-        if (!is_array($properties)) {
-            return;
-        }
-
-        $attribs = (is_array($properties['attribs'])) ? implode(' ', $properties['attribs']) : '';
-        $cssClass = ($properties['class']) ? 'class="' . $properties['class'] . '"' : '';
-
-        if (!is_array($values)) {
-            echo '<label for=' . $properties['id'] . '">' . $properties['label'] . '</label>';
-            echo '<select name="' . $properties['name'] . '" id="' . $properties['id'] . '" ' . $cssClass . ' size="' . $properties['size'] . '" ' . $properties['js'] . ' ' . $attribs . ' >';
-            echo '<option value="0">' . $properties['default'] . '</option>';
-            echo '</select>';
-            return;
-        }
-
-        if ($properties['label']) {
-            echo '<label for=' . $properties['id'] . '">' . $properties['label'] . '</label>';
-        }
-
-        echo '<select name="' . $properties['name'] . '" id="' . $properties['id'] . '" ' . $cssClass . ' size="' . $properties['size'] . '" ' . $properties['js'] . ' ' . $attribs . ' >';
-        echo '<option value="0">' . $properties['default'] . '</option>';
-
-        $selectedId = (isset($properties['selected'])) ? $properties['selected'] : "";
-
-        foreach ($values as $valueId => $valueName) {
-            if ($useValue) {
-                $selected = ($valueId == $selectedId) ? 'SELECTED' : '';
-                echo '<option value="' . $valueId . '" ' . $selected . '>' . $valueName . '</option>';
-            } else {
-                $selected = ($valueName == $selectedId) ? 'SELECTED' : '';
-                echo '<option ' . $selected . '>' . $valueName . '</option>';
-            }
-        }
-
-        echo '</select>';
-    }
-
-    /**
      * Limpia los datos recibidos de un formulario.
      *
      * @param string $data con los datos a limpiar

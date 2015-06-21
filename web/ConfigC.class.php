@@ -92,30 +92,10 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->assign('filesAllowedExts', \SP\Config::getValue('files_allowed_exts'));
         $this->view->assign('filesAllowedSize', \SP\Config::getValue('files_allowed_size'));
-        $this->view->assign('groupsSelData', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->view->assign('groupsSelProp',
-            array('name' => 'ldap_defaultgroup',
-                'id' => 'ldap_defaultgroup',
-                'class' => '',
-                'size' => 1,
-                'label' => '',
-                'selected' => \SP\Config::getValue('ldap_defaultgroup'),
-                'default' => '',
-                'js' => '',
-                'attribs' => array('required', $this->view->isDisabled))
-        );
-        $this->view->assign('profilesSelData', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
-        $this->view->assign('profilesSelProp',
-            array('name' => 'ldap_defaultprofile',
-                'id' => 'ldap_defaultprofile',
-                'class' => '',
-                'size' => 1,
-                'label' => '',
-                'selected' => \SP\Config::getValue('ldap_defaultprofile'),
-                'default' => '',
-                'js' => '',
-                'attribs' => array('required', $this->view->isDisabled))
-        );
+        $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->view->assign('profiles', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
+        $this->view->assign('ldapDefaultGroup', \SP\Config::getValue('ldap_defaultgroup'));
+        $this->view->assign('ldapDefaultProfile', \SP\Config::getValue('ldap_defaultprofile'));
         $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
         $this->view->assign('sessionTimeout', \SP\Config::getValue('session_timeout'));
         $this->view->assign('accountCount', \SP\Config::getValue('account_count'));
