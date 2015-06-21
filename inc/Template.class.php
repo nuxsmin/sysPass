@@ -151,7 +151,6 @@ class Template
         $template = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $file . '.inc';
 
         if (!is_readable($template)) {
-            error_log('TPL: ' . $template);
             throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file . '"');
         }
 
@@ -185,12 +184,15 @@ class Template
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
      * @param string $file Con el nombre del archivo de plantilla
+     * @return bool
      */
     public function addTemplate($file)
     {
         if (!is_null($file) && $this->checkTemplate($file)) {
-            $this->setTemplate($file);
+            return true;
         }
+
+        return false;
     }
 
     /**
