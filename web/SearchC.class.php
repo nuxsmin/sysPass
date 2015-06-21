@@ -23,7 +23,9 @@
  *
  */
 
-namespace Controller;
+namespace SP\Controller;
+
+use SP\AccountSearch;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -32,7 +34,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class SearchC extends \SP_Controller implements ActionsInterface
+class SearchC extends Controller implements ActionsInterface
 {
     /**
      * Constantes de ordenación
@@ -46,13 +48,13 @@ class SearchC extends \SP_Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP_Template con instancia de plantilla
+     * @param $template \SP\Template con instancia de plantilla
      */
-    public function __construct(\SP_Template $template = null)
+    public function __construct(\SP\Template $template = null)
     {
         parent::__construct($template);
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
         $this->setVars();
     }
 
@@ -62,17 +64,17 @@ class SearchC extends \SP_Controller implements ActionsInterface
     private function setVars()
     {
         $this->view->assign('isAdmin', ($_SESSION["uisadminapp"] || $_SESSION["uisadminacc"]));
-        $this->view->assign('globalSearch', \SP_Config::getValue('globalsearch', 0));
+        $this->view->assign('globalSearch', \SP\Config::getValue('globalsearch', 0));
 
         // Valores POST
-        $this->view->assign('searchKey', \SP_Common::parseParams('p', 'skey', \SP_Common::parseParams('s', 'accountSearchKey', 0)));
-        $this->view->assign('searchOrder', \SP_Common::parseParams('p', 'sorder', \SP_Common::parseParams('s', 'accountSearchOrder', 0)));
-        $this->view->assign('searchCustomer', \SP_Common::parseParams('p', 'customer', \SP_Common::parseParams('s', 'accountSearchCustomer', 0)));
-        $this->view->assign('searchCategory', \SP_Common::parseParams('p', 'category', \SP_Common::parseParams('s', 'accountSearchCategory', 0)));
-        $this->view->assign('searchTxt', \SP_Common::parseParams('p', 'search', \SP_Common::parseParams('s', 'accountSearchTxt')));
-        $this->view->assign('searchGlobal', \SP_Common::parseParams('p', 'gsearch', \SP_Common::parseParams('s', 'accountGlobalSearch', 0), false, 1));
-        $this->view->assign('limitStart', \SP_Common::parseParams('p', 'start', \SP_Common::parseParams('s', 'accountSearchStart', 0)));
-        $this->view->assign('limitCount', \SP_Common::parseParams('p', 'rpp', \SP_Common::parseParams('s', 'accountSearchLimit', \SP_Config::getValue('account_count', 10))));
+        $this->view->assign('searchKey', \SP\Common::parseParams('p', 'skey', \SP\Common::parseParams('s', 'accountSearchKey', 0)));
+        $this->view->assign('searchOrder', \SP\Common::parseParams('p', 'sorder', \SP\Common::parseParams('s', 'accountSearchOrder', 0)));
+        $this->view->assign('searchCustomer', \SP\Common::parseParams('p', 'customer', \SP\Common::parseParams('s', 'accountSearchCustomer', 0)));
+        $this->view->assign('searchCategory', \SP\Common::parseParams('p', 'category', \SP\Common::parseParams('s', 'accountSearchCategory', 0)));
+        $this->view->assign('searchTxt', \SP\Common::parseParams('p', 'search', \SP\Common::parseParams('s', 'accountSearchTxt')));
+        $this->view->assign('searchGlobal', \SP\Common::parseParams('p', 'gsearch', \SP\Common::parseParams('s', 'accountGlobalSearch', 0), false, 1));
+        $this->view->assign('limitStart', \SP\Common::parseParams('p', 'start', \SP\Common::parseParams('s', 'accountSearchStart', 0)));
+        $this->view->assign('limitCount', \SP\Common::parseParams('p', 'rpp', \SP\Common::parseParams('s', 'accountSearchLimit', \SP\Config::getValue('account_count', 10))));
     }
 
     /**
@@ -115,8 +117,8 @@ class SearchC extends \SP_Controller implements ActionsInterface
 
         $searchFilter = array(
             'txtSearch' => $this->view->searchTxt,
-            'userId' => \SP_Common::parseParams('s', 'uid', 0),
-            'groupId' => \SP_Common::parseParams('s', 'ugroup', 0),
+            'userId' => \SP\Common::parseParams('s', 'uid', 0),
+            'groupId' => \SP\Common::parseParams('s', 'ugroup', 0),
             'categoryId' => $this->view->searchCategory,
             'customerId' => $this->view->searchCustomer,
             'keyId' => $this->view->searchKey,
@@ -126,7 +128,7 @@ class SearchC extends \SP_Controller implements ActionsInterface
             'globalSearch' => $this->view->globalSearch
         );
 
-        $resQuery = \SP_Accounts::getAccounts($searchFilter);
+        $resQuery = AccountSearch::getAccounts($searchFilter);
 
         if (!$resQuery) {
             $this->view->assign('accounts', false);
@@ -136,27 +138,42 @@ class SearchC extends \SP_Controller implements ActionsInterface
         $this->processSearchResults($resQuery);
     }
 
+    /**
+     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
+     * a mostrar.
+     *
+     * @param &$results array Con los resultados de la búsqueda
+     */
     private function processSearchResults(&$results)
     {
+
         // Variables para la barra de navegación
         $this->view->assign('firstPage', ceil(($this->view->limitStart + 1) / $this->view->limitCount));
-        $this->view->assign('lastPage', ceil(\SP_Accounts::$queryNumRows / $this->view->limitCount));
-        $this->view->assign('totalRows', \SP_Accounts::$queryNumRows);
-        $this->view->assign('limitLast', (($this->view->totalRows % $this->view->limitCount) == 0) ? $this->view->totalRows - $this->view->limitCount : floor($this->view->totalRows / $this->view->limitCount) * $this->view->limitCount);
+        $this->view->assign('lastPage', ceil(AccountSearch::$queryNumRows / $this->view->limitCount));
+        $this->view->assign('totalRows', AccountSearch::$queryNumRows);
         $this->view->assign('filterOn', ($this->view->searchKey > 1 || $this->view->searchCustomer || $this->view->searchCategory || $this->view->searchTxt) ? true : false);
 
-        // Variables de configuración
-        $this->view->assign('accountLink', \SP_Config::getValue('account_link', 0));
-        $this->view->assign('requestEnabled', \SP_Util::mailrequestIsEnabled());
-        $this->view->assign('isDemoMode', \SP_Util::demoIsEnabled());
-        $maxTextLength = (\SP_Util::resultsCardsIsEnabled()) ? 40 : 60;
+        $limitLast = ((AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? AccountSearch::$queryNumRows - $this->view->limitCount : floor(AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
 
-        $wikiEnabled = \SP_Util::wikiIsEnabled();
+        $this->view->assign('pagerOnnClick', array(
+            'first' => 'searchSort(' . $this->view->searchKey . ', 0,1)',
+            'last' => 'searchSort(' . $this->view->searchKey . ',' . $limitLast . ',1)',
+            'prev' => 'searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart - $this->view->limitCount) . ',1)',
+            'next' => 'searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart + $this->view->limitCount) . ',1)',
+        ));
+
+        // Variables de configuración
+        $this->view->assign('accountLink', \SP\Config::getValue('account_link', 0));
+        $this->view->assign('requestEnabled', \SP\Util::mailrequestIsEnabled());
+        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
+        $maxTextLength = (\SP\Util::resultsCardsIsEnabled()) ? 40 : 60;
+
+        $wikiEnabled = \SP\Util::wikiIsEnabled();
 
         if ($wikiEnabled) {
-            $wikiSearchUrl = \SP_Config::getValue('wiki_searchurl', false);
-            $this->view->assign('wikiFilter', explode(',', \SP_Config::getValue('wiki_filter')));
-            $this->view->assign('wikiPageUrl', \SP_Config::getValue('wiki_pageurl'));
+            $wikiSearchUrl = \SP\Config::getValue('wiki_searchurl', false);
+            $this->view->assign('wikiFilter', explode(',', \SP\Config::getValue('wiki_filter')));
+            $this->view->assign('wikiPageUrl', \SP\Config::getValue('wiki_pageurl'));
         }
 
         $colors = array(
@@ -178,24 +195,24 @@ class SearchC extends \SP_Controller implements ActionsInterface
 
         $this->setSortFields();
 
-        $objAccount = new \SP_Accounts();
+        $objAccount = new \SP\Account();
 
         foreach ($results as $account) {
-            $objAccount->accountId = $account->account_id;
-            $objAccount->accountUserId = $account->account_userId;
-            $objAccount->accountUserGroupId = $account->account_userGroupId;
-            $objAccount->accountOtherUserEdit = $account->account_otherUserEdit;
-            $objAccount->accountOtherGroupEdit = $account->account_otherGroupEdit;
+            $objAccount->setAccountId($account->account_id);
+            $objAccount->setAccountUserId($account->account_userId);
+            $objAccount->setAccountUserGroupId($account->account_userGroupId);
+            $objAccount->setAccountOtherUserEdit($account->account_otherUserEdit);
+            $objAccount->setAccountOtherGroupEdit($account->account_otherGroupEdit);
 
             // Obtener los datos de la cuenta para aplicar las ACL
             $accountAclData = $objAccount->getAccountDataForACL();
 
             // Establecer los permisos de acceso
-            $accView = (\SP_Acl::checkAccountAccess(self::ACTION_ACC_VIEW, $accountAclData) && \SP_Acl::checkUserAccess(self::ACTION_ACC_VIEW));
-            $accViewPass = (\SP_Acl::checkAccountAccess(self::ACTION_ACC_VIEW_PASS, $accountAclData) && \SP_Acl::checkUserAccess(self::ACTION_ACC_VIEW_PASS));
-            $accEdit = (\SP_Acl::checkAccountAccess(self::ACTION_ACC_EDIT, $accountAclData) && \SP_Acl::checkUserAccess(self::ACTION_ACC_EDIT));
-            $accCopy = (\SP_Acl::checkAccountAccess(self::ACTION_ACC_COPY, $accountAclData) && \SP_Acl::checkUserAccess(self::ACTION_ACC_COPY));
-            $accDel = (\SP_Acl::checkAccountAccess(self::ACTION_ACC_DELETE, $accountAclData) && \SP_Acl::checkUserAccess(self::ACTION_ACC_DELETE));
+            $accView = (\SP\Acl::checkAccountAccess(self::ACTION_ACC_VIEW, $accountAclData) && \SP\Acl::checkUserAccess(self::ACTION_ACC_VIEW));
+            $accViewPass = (\SP\Acl::checkAccountAccess(self::ACTION_ACC_VIEW_PASS, $accountAclData) && \SP\Acl::checkUserAccess(self::ACTION_ACC_VIEW_PASS));
+            $accEdit = (\SP\Acl::checkAccountAccess(self::ACTION_ACC_EDIT, $accountAclData) && \SP\Acl::checkUserAccess(self::ACTION_ACC_EDIT));
+            $accCopy = (\SP\Acl::checkAccountAccess(self::ACTION_ACC_COPY, $accountAclData) && \SP\Acl::checkUserAccess(self::ACTION_ACC_COPY));
+            $accDel = (\SP\Acl::checkAccountAccess(self::ACTION_ACC_DELETE, $accountAclData) && \SP\Acl::checkUserAccess(self::ACTION_ACC_DELETE));
 
             $show = ($accView || $accViewPass || $accEdit || $accCopy || $accDel);
 
@@ -210,8 +227,8 @@ class SearchC extends \SP_Controller implements ActionsInterface
 
             // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
             if ($show) {
-                $secondaryGroups = \SP_Groups::getGroupsNameForAccount($account->account_id);
-                $secondaryUsers = \SP_Users::getUsersNameForAccount($account->account_id);
+                $secondaryGroups = \SP\Groups::getGroupsNameForAccount($account->account_id);
+                $secondaryUsers = \SP\Users::getUsersNameForAccount($account->account_id);
 
                 $secondaryAccesses = '<em>(G) ' . $account->usergroup_name . '*</em><br>';
 
@@ -233,21 +250,21 @@ class SearchC extends \SP_Controller implements ActionsInterface
                 }
             }
 
-            // Variable de la plantilla utilizada para obtener los datos de las cuentas
+            // Variable $accounts de la plantilla utilizada para obtener los datos de las cuentas
             $this->view->append('accounts', array(
                 'id' => $account->account_id,
                 'name' => $account->account_name,
-                'login' => \SP_Html::truncate($account->account_login, $maxTextLength),
+                'login' => \SP\Html::truncate($account->account_login, $maxTextLength),
                 'category_name' => $account->category_name,
-                'customer_name' => \SP_Html::truncate($account->customer_name, $maxTextLength),
+                'customer_name' => \SP\Html::truncate($account->customer_name, $maxTextLength),
                 'customer_link' => ($wikiEnabled) ? $wikiSearchUrl . $account->customer_name : '',
                 'color' => $hexColor,
                 'url' => $account->account_url,
-                'url_short' => \SP_Html::truncate($account->account_url, $maxTextLength),
+                'url_short' => \SP\Html::truncate($account->account_url, $maxTextLength),
                 'url_islink' => (preg_match("#^https?://.*#i", $account->account_url)) ? true : false,
                 'notes' => (isset($accountNotes)) ? $accountNotes : '',
                 'accesses' => (isset($secondaryAccesses)) ? $secondaryAccesses : '',
-                'numFiles' => (\SP_Util::fileIsEnabled()) ? \SP_Files::countFiles($account->account_id) : 0,
+                'numFiles' => (\SP\Util::fileIsEnabled()) ? \SP\Files::countFiles($account->account_id) : 0,
                 'show' => $show,
                 'showView' => $accView,
                 'showViewPass' => $accViewPass,
@@ -264,11 +281,36 @@ class SearchC extends \SP_Controller implements ActionsInterface
     private function setSortFields()
     {
         $this->view->assign('sortFields', array(
-            array('key' => self::SORT_CUSTOMER, 'title' => _('Ordenar por Cliente'), 'name' => _('Cliente'), 'function' => 'searchSort('. self::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'),
-            array('key' => self::SORT_NAME, 'title' => _('Ordenar por Nombre'), 'name' => _('Nombre'), 'function' => 'searchSort('. self::SORT_NAME . ',' . $this->view->limitStart . ')'),
-            array('key' => self::SORT_CATEGORY, 'title' => _('Ordenar por Categoría'), 'name' => _('Categoría'), 'function' => 'searchSort('. self::SORT_CATEGORY . ',' . $this->view->limitStart . ')'),
-            array('key' => self::SORT_USER, 'title' => _('Ordenar por Usuario'), 'name' => _('Usuario'), 'function' => 'searchSort('. self::SORT_USER . ',' . $this->view->limitStart . ')'),
-            array('key' => self::SORT_URL, 'title' => _('Ordenar por URL / IP'), 'name' => _('URL / IP'), 'function' => 'searchSort('. self::SORT_URL . ',' . $this->view->limitStart . ')')
+            array(
+                'key' => self::SORT_CUSTOMER,
+                'title' => _('Ordenar por Cliente'),
+                'name' => _('Cliente'),
+                'function' => 'searchSort(' . self::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
+            ),
+            array(
+                'key' => self::SORT_NAME,
+                'title' => _('Ordenar por Nombre'),
+                'name' => _('Nombre'),
+                'function' => 'searchSort(' . self::SORT_NAME . ',' . $this->view->limitStart . ')'
+            ),
+            array(
+                'key' => self::SORT_CATEGORY,
+                'title' => _('Ordenar por Categoría'),
+                'name' => _('Categoría'),
+                'function' => 'searchSort(' . self::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
+            ),
+            array(
+                'key' => self::SORT_USER,
+                'title' => _('Ordenar por Usuario'),
+                'name' => _('Usuario'),
+                'function' => 'searchSort(' . self::SORT_USER . ',' . $this->view->limitStart . ')'
+            ),
+            array(
+                'key' => self::SORT_URL,
+                'title' => _('Ordenar por URL / IP'),
+                'name' => _('URL / IP'),
+                'function' => 'searchSort(' . self::SORT_URL . ',' . $this->view->limitStart . ')'
+            )
         ));
     }
 }

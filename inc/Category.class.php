@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre las categorías de sysPass.
  */
-class SP_Category
+class Category
 {
     public static $categoryName;
     public static $categoryDescription;
@@ -75,10 +77,10 @@ class SP_Category
         self::$categoryLastId = DB::$lastId;
 
         $message['action'] = _('Nueva Categoría');
-        $message['text'][] = SP_Html::strongText(_('Categoría') . ': ') . self::$categoryName;
+        $message['text'][] = Html::strongText(_('Categoría') . ': ') . self::$categoryName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -124,10 +126,10 @@ class SP_Category
         }
 
         $message['action'] = _('Eliminar Categoría');
-        $message['text'][] = SP_Html::strongText(_('Categoría') . ': ') . $categoryName . ' (' . $id . ')';
+        $message['text'][] = Html::strongText(_('Categoría') . ': ') . $categoryName . ' (' . $id . ')';
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -176,10 +178,10 @@ class SP_Category
         }
 
         $message['action'] = _('Modificar Categoría');
-        $message['text'][] = SP_Html::strongText(_('Categoría') . ': ') . $categoryName . ' > ' . self::$categoryName;
+        $message['text'][] = Html::strongText(_('Categoría') . ': ') . $categoryName . ' > ' . self::$categoryName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -214,7 +216,7 @@ class SP_Category
     /**
      * Obtiene el listado de categorías.
      *
-     * @param int $id con el Id de la categoría
+     * @param int  $id            con el Id de la categoría
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con en id de categorioa como clave y en nombre como valor
      */

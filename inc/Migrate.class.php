@@ -23,51 +23,21 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-
-/**
- * Extender la clase Exception para mostrar ayuda en los mensajes
- */
-class MigrateException extends Exception
-{
-    private $type;
-    private $hint;
-
-    public function __construct($type, $message, $hint, $code = 0, Exception $previous = null)
-    {
-        $this->type = $type;
-        $this->hint = $hint;
-        parent::__construct($message, $code, $previous);
-    }
-
-    public function __toString()
-    {
-        return __CLASS__ . ": [{$this->code}]: {$this->message} ({$this->hint})\n";
-    }
-
-    public function getHint()
-    {
-        return $this->hint;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-}
 
 /**
  * Esta clase es la encargada de realizar la migración de datos desde phpPMS.
  */
-class SP_Migrate
+class Migrate
 {
 //    private static $dbuser;
-    private static $dbc; // Database connection
-    private static $customersByName;
-    private static $currentQuery;
-    private static $result = array();
-    private static $oldConfig = array();
+    private static $_dbc; // Database connection
+    private static $_customersByName;
+    private static $_currentQuery;
+    private static $_result = array();
+    private static $_oldConfig = array();
 
     /**
      * Iniciar migración desde phpPMS.
@@ -110,19 +80,19 @@ class SP_Migrate
             self::migrateUsers();
             self::migrateUsersGroups();
             self::migrateConfig();
-        } catch (MigrateException $e) {
-            self::$result['error'][] = array(
+        } catch (SPException $e) {
+            self::$_result['error'][] = array(
                 'type' => $e->getType(),
                 'description' => $e->getMessage(),
                 'hint' => $e->getHint()
             );
-            return (self::$result);
+            return (self::$_result);
         }
 
-        self::$result['ok'][] = _('Importación finalizada');
-        self::$result['ok'][] = _('Revise el registro de eventos para más detalles');
+        self::$_result['ok'][] = _('Importación finalizada');
+        self::$_result['ok'][] = _('Revise el registro de eventos para más detalles');
 
-        return (self::$result);
+        return (self::$_result);
     }
 
     /**
@@ -133,16 +103,15 @@ class SP_Migrate
      * @param string $dbpass  clave de conexión
      * @param string $dbname  nombre de la base de datos
      * @param string $dbport  puerto de conexión
-     * @throws MigrateException
-     * @return none
+     * @throws SPException
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname, $dbport)
     {
         try {
             $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';dbport=' . $dbport . ';charset=utf8';
-            self::$dbc = new PDO($dsn, $dbadmin, $dbpass);
-        } catch (PDOException $e) {
-            throw new MigrateException('critical'
+            self::$_dbc = new \PDO($dsn, $dbadmin, $dbpass);
+        } catch (\PDOException $e) {
+            throw new SPException(SPException::SP_CRITICAL
                 , _('No es posible conectar con la BD')
                 , _('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
         }
@@ -161,24 +130,23 @@ class SP_Migrate
             . 'WHERE table_schema = \'' . $dbname . '\' '
             . 'AND table_name = \'usrData\' LIMIT 1';
 
-        return (intval(self::$dbc->query($query)->fetchColumn()) === 0);
+        return (intval(self::$_dbc->query($query)->fetchColumn()) === 0);
     }
 
     /**
      * Comprobar la versión de phpPMS.
      *
-     * @throws MigrateException
-     * @return none
+     * @throws SPException
      */
     private static function checkSourceVersion()
     {
-        if (!isset(self::$oldConfig['version'])) {
+        if (!isset(self::$_oldConfig['version'])) {
             self::getSourceConfig();
         }
 
-        if (self::$oldConfig['version'] != "0.973b") {
-            throw new MigrateException('critical',
-                _('La versión no es compatible') . '(' . self::$oldConfig['version'] . ')',
+        if (self::$_oldConfig['version'] != "0.973b") {
+            throw new SPException(SPException::SP_CRITICAL,
+                _('La versión no es compatible') . '(' . self::$_oldConfig['version'] . ')',
                 _('Actualice a la última versión de phpPMS'));
         }
     }
@@ -186,18 +154,17 @@ class SP_Migrate
     /**
      * Obtener la configuración desde desde phpPMS.
      *
-     * @throws MigrateException
-     * @return none
+     * @throws SPException
      */
     private static function getSourceConfig()
     {
         $query = 'SELECT vacValue as value,vacParameter as parameter FROM config';
 
         try {
-            self::parseSourceConfig(self::$dbc->query($query));
-        } catch (PDOException $e) {
+            self::parseSourceConfig(self::$_dbc->query($query));
+        } catch (\PDOException $e) {
 
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener la configuración'),
                 $e->getMessage());
         }
@@ -222,15 +189,14 @@ class SP_Migrate
         }
 
         // Guardar la configuración anterior
-        self::$oldConfig[$config['parameter']] = $value;
+        self::$_oldConfig[$config['parameter']] = $value;
     }
 
     /**
      * Limpiar los datos de sysPass.
      * Limpiar las tablas de la base de sysPass para la importación.
      *
-     * @throws MigrateException
-     * @return none
+     * @throws SPException
      */
     private static function cleanCurrentDB()
     {
@@ -241,7 +207,7 @@ class SP_Migrate
             $query = 'TRUNCATE TABLE ' . $table;
 
             if (DB::getQuery($query, __FUNCTION__) === false) {
-                throw new MigrateException('critical',
+                throw new SPException(SPException::SP_CRITICAL,
                     _('Error al vaciar tabla') . ' (' . $table . ')',
                     DB::$txtError);
             }
@@ -254,12 +220,12 @@ class SP_Migrate
             $query = 'DELETE FROM usrData WHERE user_id != ' . $currentUserId;
 
             if (DB::getQuery($query, __FUNCTION__) === false) {
-                throw new MigrateException('critical',
+                throw new SPException(SPException::SP_CRITICAL,
                     _('Error al vaciar tabla') . ' (' . $table . ')',
                     DB::$txtError);
             }
         } else {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Usuario actual no es administrador de la aplicación'), 1);
         }
     }
@@ -284,7 +250,7 @@ class SP_Migrate
     /**
      * Migrar los clientes desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateCustomers()
@@ -295,15 +261,15 @@ class SP_Migrate
         $num = 0;
 
         foreach ($customers as $customer) {
-            SP_Customer::$customerName = $customer;
+            Customer::$customerName = $customer;
 
-            if (SP_Customer::checkDupCustomer()) {
+            if (Customer::checkDupCustomer()) {
                 $num++;
                 continue;
             }
 
-            if (!SP_Customer::addCustomer()) {
-                throw new MigrateException('critical',
+            if (!Customer::addCustomer()) {
+                throw new SPException(SPException::SP_CRITICAL,
                     _('No es posible crear el cliente'),
                     _('Contacte con el desarrollador'));
             }
@@ -313,13 +279,13 @@ class SP_Migrate
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Obtener los clientes desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array con los clientes
      */
     private static function getCustomers()
@@ -327,13 +293,13 @@ class SP_Migrate
         $query = 'SELECT DISTINCT vacCliente FROM accounts';
 
         try {
-            foreach (self::$dbc->query($query) as $row) {
+            foreach (self::$_dbc->query($query) as $row) {
                 $customers[] = trim($row['vacCliente']);
             }
 
             return $customers;
-        } catch (PDOException $e) {
-            throw new MigrateException('critical',
+        } catch (\PDOException $e) {
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los clientes'),
                 $e->getMessage());
         }
@@ -342,7 +308,7 @@ class SP_Migrate
     /**
      * Migrar las cuentas desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateAccounts()
@@ -368,14 +334,14 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach (self::$dbc->query($query) as $row) {
+            foreach (self::$_dbc->query($query) as $row) {
                 if (self::insertAccounts($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch (PDOException $e) {
-            throw new MigrateException('critical',
+        } catch (\PDOException $e) {
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener cuentas'),
                 $e->getMessage());
         }
@@ -384,29 +350,29 @@ class SP_Migrate
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar una cuenta en sysPass.
      *
      * @param array $account con los datos de la cuenta
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      */
     private static function insertAccounts($account)
     {
-        if (!is_array(self::$customersByName)) {
-            $customers = SP_Customer::getCustomers(NULL, true);
-            self::$customersByName = array_flip($customers);
+        if (!is_array(self::$_customersByName)) {
+            $customers = Customer::getCustomers(NULL, true);
+            self::$_customersByName = array_flip($customers);
         }
 
         $customer = trim($account['vacCliente']);
 
-        if (array_key_exists($customer, self::$customersByName)) {
-            $customerId = self::$customersByName[$customer];
+        if (array_key_exists($customer, self::$_customersByName)) {
+            $customerId = self::$_customersByName[$customer];
         } else {
-            self::$result['error'][] = _('Cliente no encontrado') . ": " . $account['vacCliente'];
+            self::$_result['error'][] = _('Cliente no encontrado') . ": " . $account['vacCliente'];
 
             return false;
         }
@@ -447,8 +413,8 @@ class SP_Migrate
         $data['dateEdit'] = $account['datChanged'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            self::$currentQuery = DB::escape($query);
-            throw new MigrateException('critical',
+            self::$_currentQuery = DB::escape($query);
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al migrar cuenta'),
                 DB::$txtError);
         }
@@ -459,7 +425,7 @@ class SP_Migrate
     /**
      * Migrar las grupos secundarios de las cuentas desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateAccountsGroups()
@@ -470,14 +436,14 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach(self::$dbc->query($query) as $row){
+            foreach(self::$_dbc->query($query) as $row){
                 if (self::insertAccountsGroups($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch(PDOException $e){
-            throw new MigrateException('critical',
+        } catch(\PDOException $e){
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los grupos de cuentas'),
                 $e->getMessage());
         }
@@ -486,14 +452,14 @@ class SP_Migrate
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar los grupos secundarios de una cuenta en sysPass.
      *
      * @param array $accountGroup con los datos de los grupos secundarios
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      */
     private static function insertAccountsGroups($accountGroup)
@@ -504,7 +470,7 @@ class SP_Migrate
         $data['groupId'] = $accountGroup['intUGroupId'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear grupos de cuentas'),
                 DB::$txtError);
         }
@@ -515,7 +481,7 @@ class SP_Migrate
     /**
      * Migrar el historail de las cuentas desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateAccountsHistory()
@@ -544,43 +510,43 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach(self::$dbc->query($query) as $row){
+            foreach(self::$_dbc->query($query) as $row){
                 if (self::insertAccountsHistory($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch(PDOException $e){
-            throw new MigrateException('critical',
+        } catch(\PDOException $e){
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener el historico de cuentas'),
-                self::$dbc->error);
+                self::$_dbc->error);
         }
 
         $message['action'] = _('Importar Histórico de Cuentas');
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar el historial de una cuenta en sysPass.
      *
      * @param array $accountHistory con los datos del historial de la cuenta
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      */
     private static function insertAccountsHistory($accountHistory)
     {
-        if (!is_array(self::$customersByName)) {
-            $customers = SP_Customer::getCustomers(null, true);
-            self::$customersByName = array_flip($customers);
+        if (!is_array(self::$_customersByName)) {
+            $customers = Customer::getCustomers(null, true);
+            self::$_customersByName = array_flip($customers);
         }
 
         $customer = trim($accountHistory['vacCliente']);
 
-        if (array_key_exists($customer, self::$customersByName)) {
-            $customerId = self::$customersByName[$customer];
+        if (array_key_exists($customer, self::$_customersByName)) {
+            $customerId = self::$_customersByName[$customer];
         } else {
             return false;
         }
@@ -625,7 +591,7 @@ class SP_Migrate
         $data['isDeleted'] = $accountHistory['blnEliminada'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear historico de cuentas'),
                 DB::$txtError);
         }
@@ -636,7 +602,7 @@ class SP_Migrate
     /**
      * Migrar los archivos de de las cuentas desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateAcountsFiles()
@@ -653,30 +619,30 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach(self::$dbc->query($query) as $row){
+            foreach(self::$_dbc->query($query) as $row){
                 if (self::insertAccountsFiles($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch(PDOException $e){
-            throw new MigrateException('critical',
+        } catch(\PDOException $e){
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los archivos de cuentas'),
-                self::$dbc->error);
+                self::$_dbc->error);
         }
 
         $message['action'] = _('Importar Archivos de Cuentas');
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar los archivos de una cuenta en sysPass.
      *
      * @param array $accountFile con los datos del archivo
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      */
     private static function insertAccountsFiles($accountFile)
@@ -697,7 +663,7 @@ class SP_Migrate
         $data['extension'] = $accountFile['vacExtension'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear archivos de cuentas'),
                 DB::$txtError);
         }
@@ -708,7 +674,7 @@ class SP_Migrate
     /**
      * Migrar las categorías de las cuentas desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateAccountsCategories()
@@ -719,30 +685,30 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach(self::$dbc->query($query) as $row){
+            foreach(self::$_dbc->query($query) as $row){
                 if (self::insertAccountsCategories($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch(PDOException $e){
-            throw new MigrateException('critical',
+        } catch(\PDOException $e){
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener las categorías de cuentas'),
-                self::$dbc->error);
+                self::$_dbc->error);
         }
 
         $message['action'] = _('Importar Categorías de Cuentas');
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar las categorías en sysPass.
      *
      * @param array $accountCategory con los datos de la categoría
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      */
     private static function insertAccountsCategories($accountCategory)
@@ -753,7 +719,7 @@ class SP_Migrate
         $data['name'] = $accountCategory['vacCategoryName'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear categorías de cuentas'),
                 DB::$txtError);
         }
@@ -764,7 +730,7 @@ class SP_Migrate
     /**
      * Migrar los usuarios desde desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateUsers()
@@ -794,30 +760,30 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach(self::$dbc->query($query) as $row){
+            foreach(self::$_dbc->query($query) as $row){
                 if (self::insertUsers($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch(PDOException $e){
-            throw new MigrateException('critical',
+        } catch(\PDOException $e){
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los usuarios'),
-                self::$dbc->error);
+                self::$_dbc->error);
         }
 
         $message['action'] = _('Importar Usuarios');
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar los usuarios en sysPass.
      *
      * @param array $users con los datos del usuario
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      *
      * El usuario importado está deshabilitado
@@ -863,7 +829,7 @@ class SP_Migrate
         $data['isLdap'] = $users['blnFromLdap'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear usuarios'),
                 DB::$txtError);
         }
@@ -874,7 +840,7 @@ class SP_Migrate
     /**
      * Migrar los grupos de usuarios desde desde phpPMS.
      *
-     * @throws MigrateException
+     * @throws SPException
      * @return array resultado
      */
     private static function migrateUsersGroups()
@@ -885,30 +851,30 @@ class SP_Migrate
         $num = 0;
 
         try {
-            foreach(self::$dbc->query($query) as $row){
+            foreach(self::$_dbc->query($query) as $row){
                 if (self::insertUsersGroups($row)) {
                     $num++;
                 }
                 $totalRecords++;
             }
-        } catch(PDOException $e){
-            throw new MigrateException('critical',
+        } catch(\PDOException $e){
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los grupos de usuarios'),
-                self::$dbc->error);
+                self::$_dbc->error);
         }
 
         $message['action'] = _('Importar Grupos de Usuarios');
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Insertar los grupos de usuarios en sysPass.
      *
      * @param array $usersGroups con los datos del grupo
-     * @throws MigrateException
+     * @throws SPException
      * @return bool
      */
     private static function insertUsersGroups($usersGroups)
@@ -923,7 +889,7 @@ class SP_Migrate
         $data['description'] = $usersGroups['vacUGroupDesc'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            throw new MigrateException('critical',
+            throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear los grupos de usuarios'),
                 DB::$txtError);
         }
@@ -957,15 +923,15 @@ class SP_Migrate
             'lastupdatempass',
             'passwordsalt');
 
-        $totalParams = count(self::$oldConfig);
+        $totalParams = count(self::$_oldConfig);
         $num = 0;
 
         // Guardar la nueva configuración
-        foreach (self::$oldConfig as $key => $value) {
+        foreach (self::$_oldConfig as $key => $value) {
             if (array_key_exists($key, $skip)) {
                 continue;
             }
-            SP_Config::setValue($key, $value);
+            Config::setValue($key, $value);
             $num++;
         }
 
@@ -973,6 +939,6 @@ class SP_Migrate
         $message['text'][] = 'OK';
         $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalParams;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 }

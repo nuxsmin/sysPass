@@ -2,7 +2,9 @@
         <div id="boxLogo"><img id="imgLogo" src="imgs/logo.png" title="sysPass"/></div>
         <div id="boxData">
             <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
-                <?php if ($demoEnabled): ?>
+                <?php use SP\Html;
+
+                if ($demoEnabled): ?>
                     <input type="text" name="user" id="user" class="round5" placeholder="<?php echo _('Usuario'); ?>"
                            value=""
                            title="> demo <"/><br/>
@@ -33,8 +35,8 @@
                 <input type="hidden" name="isAjax" value="1"/>
                 <?php if (count($_GET) > 0): ?>
                     <?php foreach ($_GET as $param => $value): ?>
-                        <input type="hidden" name="g_<?php echo SP_Html::sanitize($param); ?>"
-                               value="<?php echo SP_Html::sanitize($value); ?>"/>
+                        <input type="hidden" name="g_<?php echo Html::sanitize($param); ?>"
+                               value="<?php echo Html::sanitize($value); ?>"/>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </form>

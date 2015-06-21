@@ -1,5 +1,8 @@
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></h2>
+    <h2 class="midround"><?php use SP\Html;
+        use SP\Session;
+
+        echo $header; ?></h2>
 
     <form method="post" name="frmUsers" id="frmUsers">
         <table class="fancydata">
@@ -36,14 +39,14 @@
             <tr>
                 <td class="descField"><?php echo _('Perfil'); ?></td>
                 <td class="valField">
-                    <?php SP_Html::printSelect(DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'), $profilesSelProp); ?>
+                    <?php \SP\Html::printSelect(\SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'), $profilesSelProp); ?>
                 </td>
             </tr>
 
             <tr>
                 <td class="descField"><?php echo _('Grupo'); ?></td>
                 <td class="valField">
-                    <?php SP_Html::printSelect(DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'), $groupsSelProp); ?>
+                    <?php \SP\Html::printSelect(\SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'), $groupsSelProp); ?>
                 </td>
             </tr>
 
@@ -91,7 +94,7 @@
                 <td class="descField"><?php echo _('Opciones'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnUserOptions" class="btn-checks round5">
-                        <?php if (SP_Session::getUserIsAdminApp() || $isDemo): ?>
+                        <?php if (Session::getUserIsAdminApp() || $isDemo): ?>
                             <label for="usradminapp"
                                    title="<?php echo _('Administrador de la aplicación'); ?>"><?php echo _('Admin. Aplicación'); ?></label>
                             <input type="checkbox" id="usradminapp"

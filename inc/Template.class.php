@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -22,6 +22,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+namespace SP;
+
+use InvalidArgumentException;
 
 /**
  * Clase Template para la manipulación de plantillas
@@ -32,28 +35,26 @@
  * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
  *
  */
-class SP_Template {
+class Template
+{
     /**
      * @var array Variable con los archivos de plantilla a cargar
      */
-    private $file = array();
+    private $_file = array();
     /**
      * @var array Variable con las variables a incluir en la plantilla
      */
-    private $vars = array();
-    /**
-     * @var null Variable con el controlador a usar
-     */
-    private $controllers = array();
+    private $_vars = array();
 
     /**
-     * @param null $file Archivo de plantilla a añadir
+     * @param null  $file Archivo de plantilla a añadir
      * @param array $vars Variables a inicializar
      */
-    public function __construct($file = null, array $vars = array()) {
+    public function __construct($file = null, array $vars = array())
+    {
         $this->addTemplate($file);
 
-        if(!empty($vars)){
+        if (!empty($vars)) {
             $this->setVars($vars);
         }
     }
@@ -62,12 +63,13 @@ class SP_Template {
      * Overloading para añadir nuevas variables en al array de variables dela plantilla
      * pasadas como atributos dinámicos de la clase
      *
-     * @param string $name Nombre del atributo
+     * @param string $name  Nombre del atributo
      * @param string $value Valor del atributo
      * @return null
      */
-    public function __set($name, $value) {
-        $this->vars[$name] = $value;
+    public function __set($name, $value)
+    {
+        $this->_vars[$name] = $value;
         return null;
     }
 
@@ -78,12 +80,13 @@ class SP_Template {
      * @return null
      * @throws InvalidArgumentException
      */
-    public function __get($name) {
-        if (!array_key_exists($name, $this->vars)) {
+    public function __get($name)
+    {
+        if (!array_key_exists($name, $this->_vars)) {
             throw new InvalidArgumentException('No es posible obtener la variable "' . $name . '"');
         }
 
-        return $this->vars[$name];
+        return $this->_vars[$name];
     }
 
     /**
@@ -93,8 +96,9 @@ class SP_Template {
      * @param string $name Nombre del atributo
      * @return bool
      */
-    public function __isset($name) {
-        return array_key_exists($name, $this->vars);
+    public function __isset($name)
+    {
+        return array_key_exists($name, $this->_vars);
     }
 
     /**
@@ -105,12 +109,13 @@ class SP_Template {
      * @return $this
      * @throws InvalidArgumentException
      */
-    public function __unset($name) {
-        if (!isset($this->vars[$name])) {
+    public function __unset($name)
+    {
+        if (!isset($this->_vars[$name])) {
             throw new InvalidArgumentException('No es posible destruir la variable "' . $name . '"');
         }
 
-        unset($this->vars[$name]);
+        unset($this->_vars[$name]);
         return $this;
     }
 
@@ -120,20 +125,14 @@ class SP_Template {
      *
      * @return string Con el contenido del buffer de salida
      */
-    public function render() {
-        extract($this->vars);
-
-        // Añadimos los controladores necesarios
-        foreach ( $this->controllers as $controller) {
-//            error_log('CTRL: ' . $controller->controller);
-            include_once $controller->controller;
-        }
+    public function render()
+    {
+        extract($this->_vars);
 
         ob_start();
 
         // Añadimos las plantillas
-        foreach ( $this->file as $template) {
-//            error_log('TPL: ' . $template);
+        foreach ($this->_file as $template) {
             include_once $template;
         }
 
@@ -144,16 +143,20 @@ class SP_Template {
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
      * @param string $file Con el nombre del archivo
+     * @return bool
      * @throws InvalidArgumentException
      */
-    private function checkTemplate($file){
-        $template = SP_Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $file . '.inc';
+    private function checkTemplate($file)
+    {
+        $template = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $file . '.inc';
 
-        if (!is_file($template) || !is_readable($template)) {
-            throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file .'"');
+        if (!is_readable($template)) {
+            error_log('TPL: ' . $template);
+            throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file . '"');
         }
 
         $this->setTemplate($template);
+        return true;
     }
 
     /**
@@ -161,8 +164,9 @@ class SP_Template {
      *
      * @param string $file Con el nombre del archivo
      */
-    private function setTemplate($file){
-        $this->file[] = $file;
+    private function setTemplate($file)
+    {
+        $this->_file[] = $file;
     }
 
     /**
@@ -170,7 +174,8 @@ class SP_Template {
      *
      * @param array $vars Con los atributos de la clase
      */
-    private function setVars(&$vars){
+    private function setVars(&$vars)
+    {
         foreach ($vars as $name => $value) {
             $this->$name = $value;
         }
@@ -181,64 +186,65 @@ class SP_Template {
      *
      * @param string $file Con el nombre del archivo de plantilla
      */
-    public function addTemplate($file){
-        if (!is_null($file) && $this->checkTemplate($file)){
+    public function addTemplate($file)
+    {
+        if (!is_null($file) && $this->checkTemplate($file)) {
             $this->setTemplate($file);
         }
-    }
-
-    public function setController(SP_Controller $controller){
-        $this->controllers[] = $controller;
     }
 
     /**
      * Crear la variable y asignarle un valor en el array de variables
      *
-     * @param $name string nombre de la variable
-     * @param $value mixed valor de la variable
+     * @param      $name  string nombre de la variable
+     * @param      $value mixed valor de la variable
      * @param null $scope string ámbito de la variable
      */
-    public function assign($name, $value, $scope = null){
-        if(!is_null($scope)){
+    public function assign($name, $value, $scope = null)
+    {
+        if (!is_null($scope)) {
             $name = $scope . '_' . $name;
         }
 
 //        error_log('SET: ' . $name . ' -> ' . $value);
 
-        $this->vars[$name] = $value;
+        $this->_vars[$name] = $value;
     }
 
     /**
      * Anexar el valor de la variable al array de la misma en el array de variables
      *
-     * @param $name string nombre de la variable
-     * @param $value mixed valor de la variable
-     * @param $index string índice del array
+     * @param      $name  string nombre de la variable
+     * @param      $value mixed valor de la variable
+     * @param      $index string índice del array
      * @param null $scope string ámbito de la variable
      */
-    public function append($name, $value, $scope = null, $index = null){
-        if(!is_null($scope)){
+    public function append($name, $value, $scope = null, $index = null)
+    {
+        if (!is_null($scope)) {
             $name = $scope . '_' . $name;
         }
 
-        if (!is_null($index)){
-            $this->vars[$name][$index] = $value;
+        if (!is_null($index)) {
+            $this->_vars[$name][$index] = $value;
         } else {
-            $this->vars[$name][] = $value;
+            $this->_vars[$name][] = $value;
         }
     }
 
     /**
      * Reset de las plantillas añadidas
      */
-    public function resetTemplates(){
-        $this->file = array();
+    public function resetTemplates()
+    {
+        $this->_file = array();
     }
 
     /**
      * Reset de las plantillas añadidas
      */
-    public function resetVariables(){
-        $this->vars = array();
+    public function resetVariables()
+    {
+        $this->_vars = array();
     }
 }

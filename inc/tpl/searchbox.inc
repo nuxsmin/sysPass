@@ -2,20 +2,22 @@
     <table id="tblTools" class="round shadow">
         <tr>
             <td id="toolsLeft">
-                <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="clearSearch(); accSearch(0);" />
+                <img src="imgs/clear.png" title="<?php use SP\Html;
+
+                echo _('Limpiar'); ?>" class="inputImg" id="btnClear" onClick="clearSearch(); accSearch(0);" />
                 <input type="text" name="search" id="txtSearch" onKeyUp="accSearch(1,event)" value="<?php echo $searchTxt; ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
                 <?php if ( $globalSearch && ! $isAdmin ): ?>
                 <input type="checkbox" name="gsearch" id="gsearch" class="checkbox" <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
                 <label for="gsearch" title="<?php echo _('Búsqueda global');?>"><?php echo ($searchGlobal) ? 'ON' : 'OFF'; ?></label>
                 <?php endif; ?>                
-                <input type="hidden" name="start" value="<?php echo $searchStart; ?>">
+                <input type="hidden" name="start" value="<?php echo $limitStart; ?>">
                 <input type="hidden" name="skey" value="<?php echo $searchKey; ?>" />
                 <input type="hidden" name="sorder" value="<?php echo $searchOrder; ?>" />
                 <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
                 <?php
-                SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
-                SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
+                \SP\Html::printSelect(\SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);
+                \SP\Html::printSelect(\SP\DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
                 ?>
                 <br>
             </td>

@@ -24,20 +24,21 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Util::logout();
+SP\Util::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Util::logout();
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Common::parseParams('p', 'sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
     die('<div class="error round">' . _('CONSULTA INVÁLIDA') . '</div>');
 }
 
-$controller = new \Controller\SearchC();
+$controller = new SP\Controller\SearchC();
 $controller->getSearch();
 $controller->view();

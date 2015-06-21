@@ -1,12 +1,11 @@
 <?php
-
 /**
  * sysPass
- * 
- * @author nuxsmin
- * @link http://syspass.org
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *  
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,38 +22,38 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-// TODO: comprobar permisos para eliminar archivos
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Util::logout();
+SP\Util::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Util::logout();
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Common::parseParams('p', 'sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
     die(_('CONSULTA INVÁLIDA'));
 }
 
-if (!SP_Util::fileIsEnabled()) {
+if (!SP\Util::fileIsEnabled()) {
     exit(_('Gestión de archivos deshabilitada'));
 }
 
-$action = SP_Common::parseParams('p', 'action');
-$accountId = SP_Common::parseParams('p', 'accountId', 0);
-$fileId = SP_Common::parseParams('p', 'fileId', 0);
+$action = SP\Common::parseParams('p', 'action');
+$accountId = SP\Common::parseParams('p', 'accountId', 0);
+$fileId = SP\Common::parseParams('p', 'fileId', 0);
 
 if ($action == 'upload') {
     if (!is_array($_FILES["inFile"]) || !$accountId === 0) {
         exit();
     }
 
-    $allowedExts = strtoupper(SP_Config::getValue('files_allowed_exts'));
-    $allowedSize = SP_Config::getValue('files_allowed_size');
+    $allowedExts = strtoupper(SP\Config::getValue('files_allowed_exts'));
+    $allowedSize = SP\Config::getValue('files_allowed_size');
 
     if ($allowedExts) {
         // Extensiones aceptadas
@@ -75,14 +74,14 @@ if ($action == 'upload') {
     }
 
     // Variables con información del archivo
-    $fileData['name'] = SP_Html::sanitize($_FILES['inFile']['name']);
-    $tmpName = SP_Html::sanitize($_FILES['inFile']['tmp_name']);
+    $fileData['name'] = SP\Html::sanitize($_FILES['inFile']['name']);
+    $tmpName = SP\Html::sanitize($_FILES['inFile']['tmp_name']);
     $fileData['size'] = $_FILES['inFile']['size'];
     $fileData['type'] = $_FILES['inFile']['type'];
 
     if (!file_exists($tmpName)) {
         // Registramos el máximo tamaño permitido por PHP
-        SP_Util::getMaxUpload();
+        SP\Util::getMaxUpload();
 
         exit(_('Error interno al leer el archivo'));
     }
@@ -98,12 +97,12 @@ if ($action == 'upload') {
         $message['action'] = _('Subir Archivo');
         $message['text'][] = _('Error interno al leer el archivo');
 
-        SP_Log::wrLogInfo($message);
+        SP\Log::wrLogInfo($message);
 
         exit(_('Error interno al leer el archivo'));
     }
 
-    if (SP_Files::fileUpload($accountId, $fileData)) {
+    if (SP\Files::fileUpload($accountId, $fileData)) {
         exit(_('Archivo guardado'));
     } else {
         exit(_('No se pudo guardar el archivo'));
@@ -116,9 +115,9 @@ if ($action == 'download' || $action == 'view') {
         exit(_('No es un ID de archivo válido'));
     }
 
-    $isView = ( $action == 'view' ) ? true : false;
+    $isView = ($action == 'view') ? true : false;
 
-    $file = SP_Files::fileDownload($fileId);
+    $file = SP\Files::fileDownload($fileId);
 
     if (!$file) {
         exit(_('El archivo no existe'));
@@ -137,8 +136,8 @@ if ($action == 'download' || $action == 'view') {
     $message['text'][] = _('Tamaño') . ": " . round($fileSize / 1024, 2) . " KB";
 
     if (!$isView) {
-        SP_Log::wrLogInfo($message);
-        
+        SP\Log::wrLogInfo($message);
+
         // Enviamos el archivo al navegador
         header('Set-Cookie: fileDownload=true; path=/');
         header('Cache-Control: max-age=60, must-revalidate');
@@ -152,15 +151,15 @@ if ($action == 'download' || $action == 'view') {
     } else {
         $extsOkImg = array("JPG", "GIF", "PNG");
         if (in_array(strtoupper($fileExt), $extsOkImg)) {
-            SP_Log::wrLogInfo($message);
-            
+            SP\Log::wrLogInfo($message);
+
             $imgData = chunk_split(base64_encode($fileData));
             exit('<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($fileExt) == "TXT") {
-            SP_Log::wrLogInfo($message);
-            
+            SP\Log::wrLogInfo($message);
+
             exit('<div id="fancyView" class="backGrey"><pre>' . $fileData . '</pre></div>');
         } else {
             exit();
@@ -174,7 +173,7 @@ if ($action == "delete") {
         exit(_('No es un ID de archivo válido'));
     }
 
-    if (SP_Files::fileDelete($fileId)) {
+    if (SP\Files::fileDelete($fileId)) {
         exit(_('Archivo eliminado'));
     } else {
         exit(_('Error al eliminar el archivo'));

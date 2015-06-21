@@ -23,7 +23,7 @@
  *
  */
 
-namespace Controller;
+namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class UsersMgmtC extends \SP_Controller implements ActionsInterface
+class UsersMgmtC extends Controller implements ActionsInterface
 {
     /**
      * Máximo numero de acciones antes de agrupar
@@ -42,14 +42,14 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP_Template con instancia de plantilla
+     * @param $template \SP\Template con instancia de plantilla
      */
-    public function __construct(\SP_Template $template = null)
+    public function __construct(\SP\Template $template = null)
     {
         parent::__construct($template);
 
-        $this->view->assign('isDemo', \SP_Util::demoIsEnabled());
-        $this->view->assign('sk', \SP_Common::getSessionKey());
+        $this->view->assign('isDemo', \SP\Util::demoIsEnabled());
+        $this->view->assign('sk', \SP\Common::getSessionKey());
     }
 
     /**
@@ -59,7 +59,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_USERS);
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -136,7 +136,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Usuarios'),
-                'query' => \SP_Users::getUsers(),
+                'query' => \SP\Users::getUsers(),
                 'props' => $arrUsersTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5))
         );
@@ -150,7 +150,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_GROUPS);
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -192,7 +192,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Grupos'),
-                'query' => \SP_Groups::getGroups(),
+                'query' => \SP\Groups::getGroups(),
                 'props' => $arrGroupsTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5))
         );
@@ -205,7 +205,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PROFILES);
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -247,7 +247,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Perfiles'),
-                'query' => \SP_Profiles::getProfiles(),
+                'query' => \SP\Profiles::getProfiles(),
                 'props' => $arrProfilesTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5)
             )
@@ -276,7 +276,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
         $this->view->addTemplate('users');
 
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
-        $this->view->assign('user', \SP_Users::getUserData($this->view->itemId));
+        $this->view->assign('user', \SP\Users::getUserData($this->view->itemId));
 
         $this->view->assign(
             'profilesSelProp', array('name' => 'profileid',
@@ -312,7 +312,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->view->addTemplate('groups');
 
-        $this->view->assign('group', \SP_Groups::getGroupData($this->view->itemId));
+        $this->view->assign('group', \SP\Groups::getGroupData($this->view->itemId));
     }
 
     /**
@@ -322,7 +322,7 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->view->addTemplate('profiles');
 
-        $this->view->assign('profile', \SP_Profiles::getProfileData($this->view->itemId));
+        $this->view->assign('profile', \SP\Profiles::getProfileData($this->view->itemId));
     }
 
     /**
@@ -332,14 +332,15 @@ class UsersMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_USERS_EDITPASS);
 
-        if (!$this->checkAccess()) {
+        // Comprobar si el usuario a modificar es distinto al de la sesión
+        if ($this->view->userId != \SP\Session::getUserId() && !$this->checkAccess()) {
             return;
         }
 
         $this->view->addTemplate('userspass');
 
         $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
-        $this->view->assign('sk', \SP_Common::getSessionKey());
+        $this->view->assign('sk', \SP\Common::getSessionKey());
     }
 
 }

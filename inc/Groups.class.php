@@ -24,12 +24,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los grupos de usuarios.
  */
-class SP_Groups
+class Groups
 {
     static $queryRes;
     static $groupId;
@@ -67,7 +69,7 @@ class SP_Groups
     /**
      * Obtener los grupos de usuarios.
      *
-     * @param int $groupId      opcional, con el Id del grupo a consultar
+     * @param int  $groupId     opcional, con el Id del grupo a consultar
      * @param bool $returnArray opcional, si se debe de devolver un array asociativo
      * @return false|array con la lista de grupos
      */
@@ -147,10 +149,10 @@ class SP_Groups
         self::$queryLastId = DB::$lastId;
 
         $message['action'] = _('Nuevo Grupo');
-        $message['text'][] = SP_Html::strongText(_('Grupo') . ': ') . self::$groupName;
+        $message['text'][] = Html::strongText(_('Grupo') . ': ') . self::$groupName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -177,10 +179,10 @@ class SP_Groups
         self::$queryLastId = DB::$lastId;
 
         $message['action'] = _('Modificar Grupo');
-        $message['text'][] = SP_Html::strongText(_('Grupo') . ': ') . $groupName . ' > ' . self::$groupName;
+        $message['text'][] = Html::strongText(_('Grupo') . ': ') . $groupName . ' > ' . self::$groupName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -226,10 +228,10 @@ class SP_Groups
         self::$queryLastId = DB::$lastId;
 
         $message['action'] = _('Eliminar Grupo');
-        $message['text'][] = SP_Html::strongText(_('Grupo') . ': ') . $groupName;
+        $message['text'][] = Html::strongText(_('Grupo') . ': ') . $groupName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -330,8 +332,8 @@ class SP_Groups
     /**
      * Actualizar la asociación de grupos con cuentas.
      *
-     * @param int $accountId  con el Id de la cuenta
-     * @param array $groupsId con los grupos de la cuenta
+     * @param int   $accountId con el Id de la cuenta
+     * @param array $groupsId  con los grupos de la cuenta
      * @return bool
      */
     public static function updateGroupsForAccount($accountId, $groupsId)
@@ -346,8 +348,8 @@ class SP_Groups
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
-     * @param int $accountId  con el Id de la cuenta
-     * @param array $groupsId opcional con los grupos de la cuenta
+     * @param int   $accountId con el Id de la cuenta
+     * @param array $groupsId  opcional con los grupos de la cuenta
      * @return bool
      */
     public static function deleteGroupsForAccount($accountId, $groupsId = null)
@@ -371,13 +373,13 @@ class SP_Groups
     /**
      * Crear asociación de grupos con cuentas.
      *
-     * @param int $accountId  con el Id de la cuenta
-     * @param array $groupsId con los grupos de la cuenta
+     * @param int   $accountId con el Id de la cuenta
+     * @param array $groupsId  con los grupos de la cuenta
      * @return bool
      */
     public static function addGroupsForAccount($accountId, $groupsId)
     {
-        if(!is_array($groupsId)){
+        if (!is_array($groupsId)) {
             return true;
         }
 
@@ -420,12 +422,12 @@ class SP_Groups
 
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        if ($queryRes === false){
-            return false;
+        if ($queryRes === false) {
+            return array();
         }
 
         foreach ($queryRes as $group) {
-            $groups[]= $group->accgroup_groupId;
+            $groups[] = $group->accgroup_groupId;
         }
 
         return $groups;

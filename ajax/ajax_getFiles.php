@@ -24,25 +24,26 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
-SP_Util::checkReferer('GET');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
+SP\Util::checkReferer('GET');
+
+if (!SP\Init::isLoggedIn()) {
     return;
 }
 
-if (!SP_Util::fileIsEnabled()) {
+if (!SP\Util::fileIsEnabled()) {
     echo _('Gestión de archivos deshabilitada');
     return false;
 }
 
-$sk = SP_Common::parseParams('g', 'sk', false);
+$sk = SP\Common::parseParams('g', 'sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
+    SP\Common::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-$controller = new \Controller\AccountsMgmtC();
+$controller = new SP\Controller\AccountsMgmtC();
 $controller->getFiles();
 $controller->view();

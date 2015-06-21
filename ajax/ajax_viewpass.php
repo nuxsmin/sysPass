@@ -1,11 +1,11 @@
 <?php
 /**
  * sysPass
- * 
- * @author nuxsmin
- * @link http://syspass.org
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *  
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -24,44 +24,43 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Util::logout();
+SP\Util::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Util::logout();
 }
 
-$accountId = SP_Common::parseParams('p', 'accountid', false);
-$isHistory = SP_Common::parseParams('p', 'isHistory', false);
+$accountId = SP\Common::parseParams('p', 'accountid', false);
+$isHistory = SP\Common::parseParams('p', 'isHistory', false);
 
 if (!$accountId) {
     return;
 }
 
-$account = new SP_Accounts;
-$account->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : "";
-$account->accountId = $accountId;
-//$account->accountIsHistory = $isHistory;
+$account = (!$isHistory) ? new SP\Account() : new SP\AccountHistory();
 
-$accountData = $account->getAccountPass($isHistory);
+$account->setAccountParentId((isset($_SESSION["accParentId"])) ? $_SESSION["accParentId"] : "");
+$account->setAccountId($accountId);
 
-if ($isHistory && !$account->checkAccountMPass()){
-    SP_Common::printJSON(_('La clave maestra no coincide'));
+$accountData = $account->getAccountPassData();
+
+if ($isHistory && !$account->checkAccountMPass()) {
+    SP\Common::printJSON(_('La clave maestra no coincide'));
 }
 
-$accountData = $account->getAccountPass($isHistory);
-
-if (!SP_Acl::checkAccountAccess(SP_Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP_Acl::checkUserAccess(SP_Acl::ACTION_ACC_VIEW_PASS)) {
-    SP_Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
+if (!SP\Acl::checkAccountAccess(SP\Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP\Acl::checkUserAccess(SP\Acl::ACTION_ACC_VIEW_PASS)) {
+    SP\Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
 }
 
-if (!SP_Users::checkUserUpdateMPass()) {
-    SP_Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+if (!SP\Users::checkUserUpdateMPass()) {
+    SP\Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
-$masterPass = SP_Crypt::getSessionMasterPass();
-$accountClearPass = SP_Crypt::getDecrypt($accountData->pass, $masterPass, $accountData->iv);
+$masterPass = SP\Crypt::getSessionMasterPass();
+$accountClearPass = SP\Crypt::getDecrypt($accountData->pass, $masterPass, $accountData->iv);
 
 if (!$isHistory) {
     $account->incrementDecryptCounter();
@@ -70,10 +69,10 @@ if (!$isHistory) {
     $message['text'][] = _('ID') . ': ' . $accountId;
     $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->name;
 
-    SP_Log::wrLogInfo($message);
+    SP\Log::wrLogInfo($message);
 }
 
-$accountPass = htmlentities(trim($accountClearPass),ENT_COMPAT,'UTF-8');
+$accountPass = htmlentities(trim($accountClearPass), ENT_COMPAT, 'UTF-8');
 
 $data = array(
     'title' => _('Clave de Cuenta'),
@@ -81,4 +80,4 @@ $data = array(
     'accpass' => $accountPass
 );
 
-SP_Common::printJSON($data, 0);
+SP\Common::printJSON($data, 0);

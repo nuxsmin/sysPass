@@ -24,12 +24,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones osbre los usuarios de sysPass
  */
-class SP_Users
+class Users
 {
     const USER_LOGIN_EXIST = 1;
     const USER_MAIL_EXIST = 2;
@@ -201,7 +203,7 @@ class SP_Users
      */
     public static function migrateUser($userLogin, $userPass)
     {
-        $passdata = SP_Users::makeUserPass($userPass);
+        $passdata = Users::makeUserPass($userPass);
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'
@@ -227,7 +229,7 @@ class SP_Users
         $message['text'][] = _('Usuario actualizado');
         $message['text'][] = 'Login: ' . $userLogin;
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
         return true;
     }
 
@@ -239,7 +241,7 @@ class SP_Users
      */
     private static function makeUserPass($userPass)
     {
-        $salt = SP_Crypt::makeHashSalt();
+        $salt = Crypt::makeHashSalt();
         $userPass = sha1($salt . $userPass);
 
         return array('salt' => $salt, 'pass' => $userPass);
@@ -265,7 +267,7 @@ class SP_Users
             return false;
         }
 
-        $configMPassTime = SP_Config::getConfigDbValue('lastupdatempass');
+        $configMPassTime = Config::getConfigDbValue('lastupdatempass');
 
         if ($configMPassTime === false) {
             return false;
@@ -338,8 +340,8 @@ class SP_Users
     /**
      * Actualizar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
-     * @param array $usersId con los usuarios de la cuenta
+     * @param int   $accountId con el Id de la cuenta
+     * @param array $usersId   con los usuarios de la cuenta
      * @return bool
      */
     public static function updateUsersForAccount($accountId, $usersId)
@@ -354,8 +356,8 @@ class SP_Users
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
-     * @param array $usersId opcional con los grupos de la cuenta
+     * @param int   $accountId con el Id de la cuenta
+     * @param array $usersId   opcional con los grupos de la cuenta
      * @return bool
      */
     public static function deleteUsersForAccount($accountId, $usersId = null)
@@ -378,8 +380,8 @@ class SP_Users
     /**
      * Crear asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
-     * @param array $usersId con los grupos de la cuenta
+     * @param int   $accountId con el Id de la cuenta
+     * @param array $usersId   con los grupos de la cuenta
      * @return bool
      */
     public static function addUsersForAccount($accountId, $usersId)
@@ -412,10 +414,10 @@ class SP_Users
     }
 
     /**
-     * Obtiene el listado de grupos de una cuenta.
+     * Obtiene el listado de usuarios de una cuenta.
      *
      * @param int $accountId con el id de la cuenta
-     * @return object con el Id de grupo
+     * @return array con los id de usuarios de la cuenta
      */
     public static function getUsersForAccount($accountId)
     {
@@ -428,7 +430,7 @@ class SP_Users
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
-            return false;
+            return array();
         }
 
         foreach ($queryRes as $user) {
@@ -682,9 +684,9 @@ class SP_Users
             $resUEmail = strtoupper($userData->user_email);
 
             if ($resULogin == $userLogin) {
-                return SP_Users::USER_LOGIN_EXIST;
+                return Users::USER_LOGIN_EXIST;
             } elseif ($resUEmail == $userEmail) {
-                return SP_Users::USER_MAIL_EXIST;
+                return Users::USER_MAIL_EXIST;
             }
         }
     }
@@ -713,7 +715,7 @@ class SP_Users
      */
     public function newUserLDAP()
     {
-        $passdata = SP_Users::makeUserPass($this->userPass);
+        $passdata = Users::makeUserPass($this->userPass);
 
         $query = 'INSERT INTO usrData SET '
             . 'user_name = :name,'
@@ -733,8 +735,8 @@ class SP_Users
         $data['hashSalt'] = $passdata['hash'];
         $data['email'] = $this->userEmail;
         $data['notes'] = 'LDAP';
-        $data['groupId'] = SP_Config::getValue('ldap_defaultgroup', 0);
-        $data['profileId'] = SP_Config::getValue('ldap_defaultprofile', 0);
+        $data['groupId'] = Config::getValue('ldap_defaultgroup', 0);
+        $data['profileId'] = Config::getValue('ldap_defaultprofile', 0);
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
@@ -744,8 +746,8 @@ class SP_Users
         $message['text'][] = _('Su cuenta está pendiente de activación.');
         $message['text'][] = _('En breve recibirá un email de confirmación.');
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message, $this->userEmail, false);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message, $this->userEmail, false);
 
         return true;
     }
@@ -757,7 +759,7 @@ class SP_Users
      */
     public function addUser()
     {
-        $passdata = SP_Users::makeUserPass($this->userPass);
+        $passdata = Users::makeUserPass($this->userPass);
 
         $query = 'INSERT INTO usrData SET '
             . 'user_name = :name,'
@@ -796,16 +798,16 @@ class SP_Users
         $this->queryLastId = DB::$lastId;
 
         $message['action'] = _('Nuevo Usuario');
-        $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
+        $message['text'][] = Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
         if ($this->userChangePass) {
-            if (!SP_Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
-                $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
+            if (!Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
+                $message['text'][] = Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
             }
         }
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -850,16 +852,16 @@ class SP_Users
         $this->queryLastId = DB::$lastId;
 
         $message['action'] = _('Modificar Usuario');
-        $message['text'][] = SP_Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
+        $message['text'][] = Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
 
         if ($this->userChangePass) {
-            if (!SP_Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
-                $message['text'][] = SP_Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
+            if (!Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
+                $message['text'][] = Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
             }
         }
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -871,7 +873,7 @@ class SP_Users
      */
     public function updateUserPass()
     {
-        $passdata = SP_Users::makeUserPass($this->userPass);
+        $passdata = Users::makeUserPass($this->userPass);
         $userLogin = $this->getUserLoginById($this->userId);
 
         $query = 'UPDATE usrData SET '
@@ -892,10 +894,10 @@ class SP_Users
         $this->queryLastId = DB::$lastId;
 
         $message['action'] = _('Modificar Clave Usuario');
-        $message['text'][] = SP_Html::strongText(_('Login') . ': ') . $userLogin;
+        $message['text'][] = Html::strongText(_('Login') . ': ') . $userLogin;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -941,10 +943,10 @@ class SP_Users
         $this->queryLastId = DB::$lastId;
 
         $message['action'] = _('Eliminar Usuario');
-        $message['text'][] = SP_Html::strongText(_('Login') . ': ') . $userLogin;
+        $message['text'][] = Html::strongText(_('Login') . ': ') . $userLogin;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -956,7 +958,7 @@ class SP_Users
      */
     public function updateLDAPUserInDB()
     {
-        $passdata = SP_Users::makeUserPass($this->userPass);
+        $passdata = Users::makeUserPass($this->userPass);
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'
@@ -983,17 +985,17 @@ class SP_Users
      */
     public function setUserSession()
     {
-        SP_Session::setUserLogin($this->userLogin);
-        SP_Session::setUserProfileId($this->userProfileId);
-        SP_Session::setUserName($this->userName);
-        SP_Session::setUserGroupId($this->userGroupId);
-        SP_Session::setUserGroupName($this->userGroupName);
-        SP_Session::setUserId($this->userId);
-        SP_Session::setUserEMail($this->userEmail);
-        SP_Session::setUserIsAdminApp($this->userIsAdminApp);
-        SP_Session::setUserIsAdminAcc($this->userIsAdminAcc);
-        SP_Session::setUserIsLdap($this->userIsLdap);
-        SP_Session::setUserProfile(SP_Profiles::getProfileForUser());
+        Session::setUserLogin($this->userLogin);
+        Session::setUserProfileId($this->userProfileId);
+        Session::setUserName($this->userName);
+        Session::setUserGroupId($this->userGroupId);
+        Session::setUserGroupName($this->userGroupName);
+        Session::setUserId($this->userId);
+        Session::setUserEMail($this->userEmail);
+        Session::setUserIsAdminApp($this->userIsAdminApp);
+        Session::setUserIsAdminAcc($this->userIsAdminAcc);
+        Session::setUserIsLdap($this->userIsLdap);
+        Session::setUserProfile(Profiles::getProfileForUser());
 
         $this->setUserLastLogin();
     }
@@ -1025,14 +1027,14 @@ class SP_Users
             return false;
         }
 
-        $configMPass = SP_Config::getConfigDbValue('masterPwd');
+        $configMPass = Config::getConfigDbValue('masterPwd');
 
         if ($configMPass === false) {
             return false;
         }
 
         // Comprobamos el hash de la clave del usuario con la guardada
-        return SP_Crypt::checkHashPass($userMPass, $configMPass);
+        return Crypt::checkHashPass($userMPass, $configMPass);
     }
 
     /**
@@ -1054,7 +1056,7 @@ class SP_Users
         }
 
         if ($queryRes->user_mPass && $queryRes->user_mIV) {
-            $clearMasterPass = SP_Crypt::getDecrypt($queryRes->user_mPass, $this->getCypherPass(), $queryRes->user_mIV);
+            $clearMasterPass = Crypt::getDecrypt($queryRes->user_mPass, $this->getCypherPass(), $queryRes->user_mIV);
 
             if (!$clearMasterPass) {
                 return false;
@@ -1063,9 +1065,9 @@ class SP_Users
             if ($showPass == true) {
                 return $clearMasterPass;
             } else {
-                $_SESSION['mPassPwd'] = SP_Util::generate_random_bytes(32);
+                $_SESSION['mPassPwd'] = Util::generate_random_bytes(32);
 
-                $sessionMasterPass = SP_Crypt::mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
+                $sessionMasterPass = Crypt::mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
 
                 $_SESSION['mPass'] = $sessionMasterPass[0];
                 $_SESSION['mPassIV'] = $sessionMasterPass[1];
@@ -1083,7 +1085,7 @@ class SP_Users
      */
     private function getCypherPass()
     {
-        $configSalt = SP_Config::getConfigDbValue('passwordsalt');
+        $configSalt = Config::getConfigDbValue('passwordsalt');
         $cypherPass = substr(sha1($configSalt . $this->userPass), 0, 32);
 
         return $cypherPass;
@@ -1097,14 +1099,14 @@ class SP_Users
      */
     public function updateUserMPass($masterPwd)
     {
-        $configMPass = SP_Config::getConfigDbValue('masterPwd');
+        $configMPass = Config::getConfigDbValue('masterPwd');
 
         if (!$configMPass) {
             return false;
         }
 
-        if (SP_Crypt::checkHashPass($masterPwd, $configMPass)) {
-            $strUserMPwd = SP_Crypt::mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
+        if (Crypt::checkHashPass($masterPwd, $configMPass)) {
+            $strUserMPwd = Crypt::mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
 
             if (!$strUserMPwd) {
                 return false;

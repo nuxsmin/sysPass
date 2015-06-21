@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,48 +24,18 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-
-/**
- * Extender la clase Exception para mostrar ayuda en los mensajes
- */
-class ImportException extends Exception
-{
-    private $type;
-    private $hint;
-
-    public function __construct($type, $message, $hint, $code = 0, Exception $previous = null)
-    {
-        $this->type = $type;
-        $this->hint = $hint;
-        parent::__construct($message, $code, $previous);
-    }
-
-    public function __toString()
-    {
-        return __CLASS__ . ": [{$this->code}]: {$this->message} ({$this->hint})\n";
-    }
-
-    public function getHint()
-    {
-        return $this->hint;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-}
 
 /**
  * Esta clase es la encargada de importar cuentas.
  */
-class SP_Import
+class Import
 {
-    private static $result = array();
-    private static $fileContent;
-    private static $tmpFile;
+    private static $_result = array();
+    private static $_fileContent;
+    private static $_tmpFile;
 
     /**
      * Iniciar la importación de cuentas.
@@ -77,32 +47,32 @@ class SP_Import
     {
         try {
             self::readDataFromFile($fileData);
-        } catch (ImportException $e) {
+        } catch (SPException $e) {
             $message['action'] = _('Importar Cuentas');
             $message['text'][] = $e->getMessage();
 
-            SP_Log::wrLogInfo($message);
-            self::$result['error'][] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
-            return (self::$result);
+            Log::wrLogInfo($message);
+            self::$_result['error'][] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
+            return (self::$_result);
         }
 
-        self::$result['ok'][] = _('Importación finalizada');
-        self::$result['ok'][] = _('Revise el registro de eventos para más detalles');
+        self::$_result['ok'][] = _('Importación finalizada');
+        self::$_result['ok'][] = _('Revise el registro de eventos para más detalles');
 
-        return (self::$result);
+        return (self::$_result);
     }
 
     /**
      * Leer los datos del archivo.
      *
      * @param array $fileData con los datos del archivo
-     * @throws ImportException
+     * @throws SPException
      * @return bool
      */
     private static function readDataFromFile(&$fileData)
     {
         if (!is_array($fileData)) {
-            throw new ImportException('critical', _('Archivo no subido correctamente'), _('Verifique los permisos del usuario del servidor web'));
+            throw new SPException(SPException::SP_CRITICAL, _('Archivo no subido correctamente'), _('Verifique los permisos del usuario del servidor web'));
         }
 
         if ($fileData['name']) {
@@ -110,7 +80,11 @@ class SP_Import
             $fileExtension = strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
 
             if ($fileExtension != 'CSV' && $fileExtension != 'XML') {
-                throw new ImportException('critical', _('Tipo de archivo no soportado'), _('Compruebe la extensión del archivo'));
+                throw new SPException(
+                    SPException::SP_CRITICAL,
+                    _('Tipo de archivo no soportado'),
+                    _('Compruebe la extensión del archivo')
+                );
             }
         }
 
@@ -119,26 +93,38 @@ class SP_Import
 
         if (!file_exists($tmpName) || !is_readable($tmpName)) {
             // Registramos el máximo tamaño permitido por PHP
-            SP_Util::getMaxUpload();
+            Util::getMaxUpload();
 
-            throw new ImportException('critical', _('Error interno al leer el archivo'), _('Compruebe la configuración de PHP para subir archivos'));
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno al leer el archivo'),
+                _('Compruebe la configuración de PHP para subir archivos')
+            );
         }
 
-        if ($fileData['type'] === 'text/csv' || $fileData['type'] === 'application/vnd.ms-excel'){
+        if ($fileData['type'] === 'text/csv' || $fileData['type'] === 'application/vnd.ms-excel') {
             // Leemos el archivo a un array
-            self::$fileContent = file($tmpName);
+            self::$_fileContent = file($tmpName);
 
-            if (!is_array(self::$fileContent)) {
-                throw new ImportException('critical', _('Error interno al leer el archivo'), _('Compruebe los permisos del directorio temporal'));
+            if (!is_array(self::$_fileContent)) {
+                throw new SPException(
+                    SPException::SP_CRITICAL,
+                    _('Error interno al leer el archivo'),
+                    _('Compruebe los permisos del directorio temporal')
+                );
             }
             // Obtenemos las cuentas desde el archivo CSV
             self::parseFileData();
-        } elseif ($fileData['type'] === 'text/xml'){
-            self::$tmpFile = $tmpName;
+        } elseif ($fileData['type'] === 'text/xml') {
+            self::$_tmpFile = $tmpName;
             // Analizamos el XML y seleccionamos el formato a importar
             self::detectXMLFormat();
-        } else{
-            throw new ImportException('critical', _('Tipo mime no soportado'), _('Compruebe el formato del archivo'));
+        } else {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Tipo mime no soportado'),
+                _('Compruebe el formato del archivo')
+            );
         }
 
         return true;
@@ -147,24 +133,28 @@ class SP_Import
     /**
      * Leer los datos importados y formatearlos.
      *
-     * @throws ImportException
+     * @throws SPException
      * @return bool
      */
     private static function parseFileData()
     {
-        foreach (self::$fileContent as $data) {
+        foreach (self::$_fileContent as $data) {
             $fields = explode(';', $data);
 
             if (count($fields) < 7) {
-                throw new ImportException('critical', _('El número de campos es incorrecto'), _('Compruebe el formato del archivo CSV'));
+                throw new SPException(
+                    SPException::SP_CRITICAL,
+                    _('El número de campos es incorrecto'),
+                    _('Compruebe el formato del archivo CSV')
+                );
             }
 
-            if (!self::addAccountData($fields)){
+            if (!self::addAccountData($fields)) {
                 $message['action'] = _('Importar Cuentas');
                 $message['text'][] = _('Error importando cuenta');
                 $message['text'][] = $data;
 
-                SP_Log::wrLogInfo($message);
+                Log::wrLogInfo($message);
 
                 unset($message);
             }
@@ -177,48 +167,48 @@ class SP_Import
      * Crear una cuenta con los datos obtenidos.
      *
      * @param array $data con los datos de la cuenta
-     * @throws ImportException
+     * @throws SPException
      * @return bool
      */
     public static function addAccountData($data)
     {
         // Datos del Usuario
-        $userId = SP_Common::parseParams('s', 'uid', 0);
-        $groupId = SP_Common::parseParams('s', 'ugroup', 0);
+        $userId = Common::parseParams('s', 'uid', 0);
+        $groupId = Common::parseParams('s', 'ugroup', 0);
 
         // Asignamos los valores del array a variables
         list($accountName, $customerName, $categoryName, $url, $username, $password, $notes) = $data;
 
         // Comprobamos si existe el cliente o lo creamos
-        SP_Customer::$customerName = $customerName;
-        if (SP_Customer::checkDupCustomer()) {
-            $customerId = SP_Customer::getCustomerByName();
+        Customer::$customerName = $customerName;
+        if (Customer::checkDupCustomer()) {
+            $customerId = Customer::getCustomerByName();
         } else {
-            SP_Customer::addCustomer();
-            $customerId = SP_Customer::$customerLastId;
+            Customer::addCustomer();
+            $customerId = Customer::$customerLastId;
         }
 
         // Comprobamos si existe la categoría o la creamos
-        $categoryId = SP_Category::getCategoryIdByName($categoryName);
+        $categoryId = Category::getCategoryIdByName($categoryName);
         if ($categoryId == 0) {
-            SP_Category::$categoryName = $categoryName;
-            SP_Category::addCategory($categoryName);
-            $categoryId = SP_Category::$categoryLastId;
+            Category::$categoryName = $categoryName;
+            Category::addCategory($categoryName);
+            $categoryId = Category::$categoryLastId;
         }
 
         $pass = self::encryptPass($password);
 
-        $account = new SP_Accounts;
-        $account->accountName = $accountName;
-        $account->accountCustomerId = $customerId;
-        $account->accountCategoryId = $categoryId;
-        $account->accountLogin = $username;
-        $account->accountUrl = $url;
-        $account->accountPass = $pass['pass'];
-        $account->accountIV = $pass['IV'];
-        $account->accountNotes = $notes;
-        $account->accountUserId = $userId;
-        $account->accountUserGroupId = $groupId;
+        $account = new Account;
+        $account->setAccountName($accountName);
+        $account->setAccountCustomerId($customerId);
+        $account->setAccountCategoryId($categoryId);
+        $account->setAccountLogin($username);
+        $account->setAccountUrl($url);
+        $account->setAccountPass($pass['pass']);
+        $account->setAccountIV($pass['IV']);
+        $account->setAccountNotes($notes);
+        $account->setAccountUserId($userId);
+        $account->setAccountUserGroupId($groupId);
 
         // Creamos la cuenta
         return $account->createAccount();
@@ -228,63 +218,55 @@ class SP_Import
      * Encriptar la clave de una cuenta.
      *
      * @param string $password con la clave de la cuenta
-     * @throws ImportException
+     * @throws SPException
      * @return array con la clave y el IV
      */
     private static function encryptPass($password)
     {
-        if (empty($password)){
+        if (empty($password)) {
             return array('pass' => '', 'IV' => '');
         }
 
         // Comprobar el módulo de encriptación
-        if (!SP_Crypt::checkCryptModule()) {
-            throw new ImportException('critical', _('Error interno'), _('No se puede usar el módulo de encriptación'));
+        if (!Crypt::checkCryptModule()) {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('No se puede usar el módulo de encriptación')
+            );
         }
 
         // Encriptar clave
-        $data['pass'] = SP_Crypt::mkEncrypt($password);
+        $data['pass'] = Crypt::mkEncrypt($password);
 
         if (!empty($password) && ($data['pass'] === false || is_null($data['pass']))) {
-            throw new ImportException('critical', _('Error interno'), _('Error al generar datos cifrados'));
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('Error al generar datos cifrados')
+            );
         }
 
-        $data['IV'] = SP_Crypt::$strInitialVector;
+        $data['IV'] = Crypt::$strInitialVector;
 
         return $data;
     }
 
     /**
-     * Leer el archivo de KeePass a un objeto XML.
-     *
-     * @throws ImportException
-     * @return object Con los datos del archivo XML
-     */
-    private static function readXMLFile()
-    {
-        if ($xmlFile = simplexml_load_file(self::$tmpFile)){
-            return $xmlFile;
-        } else{
-            throw new ImportException('critical', _('Error interno'), _('No es posible procesar el archivo XML'));
-        }
-    }
-
-    /**
      * Detectar la aplicación que generó el XML.
      *
-     * @throws ImportException
-     * @return none
+     * @throws SPException
      */
     private static function detectXMLFormat()
     {
         $xml = self::readXMLFile();
 
-        if ( $xml->Meta->Generator == 'KeePass' ){
-            SP_KeepassImport::addKeepassAccounts($xml);
-        } else if ($xmlApp = self::parseFileHeader()){
+        if ($xml->Meta->Generator == 'KeePass') {
+            KeepassImport::addKeepassAccounts($xml);
+        } else if ($xmlApp = self::parseFileHeader()) {
             switch ($xmlApp) {
                 case 'keepassx_database':
-                    SP_KeepassXImport::addKeepassXAccounts($xml);
+                    KeepassXImport::addKeepassXAccounts($xml);
                     break;
                 case 'revelationdata':
                     error_log('REVELATION');
@@ -292,8 +274,31 @@ class SP_Import
                 default:
                     break;
             }
-        } else{
-            throw new ImportException('critical', _('Archivo XML no soportado'), _('No es posible detectar la aplicación que exportó los datos'));
+        } else {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Archivo XML no soportado'),
+                _('No es posible detectar la aplicación que exportó los datos')
+            );
+        }
+    }
+
+    /**
+     * Leer el archivo de KeePass a un objeto XML.
+     *
+     * @throws SPException
+     * @return object Con los datos del archivo XML
+     */
+    private static function readXMLFile()
+    {
+        if ($xmlFile = simplexml_load_file(self::$_tmpFile)) {
+            return $xmlFile;
+        } else {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('No es posible procesar el archivo XML')
+            );
         }
     }
 
@@ -304,16 +309,16 @@ class SP_Import
      */
     private static function parseFileHeader()
     {
-        $handle = @fopen(self::$tmpFile, "r");
+        $handle = @fopen(self::$_tmpFile, "r");
         $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
 
-        if ( $handle ){
+        if ($handle) {
             // No. de líneas a leer como máximo
             $maxLines = 5;
             $count = 0;
 
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines){
-                if ( preg_match($headersRegex,$buffer,$app) ){
+            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
+                if (preg_match($headersRegex, $buffer, $app)) {
                     fclose($handle);
                     return strtolower($app[0]);
                 }

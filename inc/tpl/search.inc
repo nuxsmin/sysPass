@@ -1,5 +1,7 @@
 <div id="resBuscar">
-    <?php if (!$accounts): ?>
+    <?php use SP\Acl;
+
+    if (!$accounts): ?>
         <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
     <?php else: ?>
         <div id="data-search-header" class="data-header data-header-minimal">
@@ -34,7 +36,7 @@
                         <div class="field-name"><?php echo _('Nombre'); ?></div>
                         <?php if ($account['show'] && $accountLink): ?>
                             <a title="<?php echo _('Detalles de Cuenta'); ?>"
-                               OnClick="doAction(<?php echo \SP_Acl::ACTION_ACC_VIEW; ?>,<?php echo \SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"><?php echo $account['name']; ?></a>
+                               OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"><?php echo $account['name']; ?></a>
                         <?php else: ?>
                             <div class="field-text"><?php echo $account['name']; ?></div>
                         <?php endif; ?>
@@ -75,7 +77,7 @@
 
                             <?php if ($account['show'] && $account['numFiles'] > 0): ?>
                                 <img src="imgs/attach.png"
-                                     title="<?php echo _('Archivos adjuntos'), ': ' . $account['numFiles']; ?>"/>
+                                     title="<?php echo _('Archivos adjuntos'), ': ' , $account['numFiles']; ?>"/>
                             <?php endif; ?>
 
                             <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
@@ -93,7 +95,7 @@
 
                             <?php if ($account['showView']): ?>
                                 <img src="imgs/view.png" title="<?php echo _('Detalles de Cuenta'); ?>"
-                                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_VIEW; ?>,<?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif ?>
 
                             <?php if ($account['showViewPass']): ?>
@@ -112,19 +114,19 @@
                             <?php if ($account['showEdit']): ?>
                                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_EDIT; ?>,<?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
                                 <img src="imgs/btn_copy.png" title="<?php echo _('Copiar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_COPY; ?>,<?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_DELETE; ?>,<?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>"/>
+                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>"/>
                             <?php endif; ?>
 
                         </div>
@@ -133,7 +135,7 @@
                         <div class="account-actions round">
                             <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>"
                                  class="inputImg"
-                                 OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_REQUEST; ?>,<?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                 OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -142,7 +144,7 @@
 
         <div id="pageNav" class="round shadow">
             <div id="pageNavLeft">
-                <?php echo $totalRows, ' @ ', abs(round(microtime() - $queryTimeStart, 5)), ' s '; ?>
+                <?php echo $totalRows; ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
                 <?php if ($filterOn): ?>
                     <span class="filterOn round"><?php echo _('Filtro ON'); ?></span>
                 <?php endif; ?>
@@ -153,21 +155,16 @@
             </div>
             <div id="pageNavRight">
                 <?php if ($limitStart > 1): ?>
-                    <img src="imgs/arrow_first.png" onClick="searchSort(<?php echo $searchKey; ?>,0,1);"
+                    <img src="imgs/arrow_first.png" onClick="<?php echo $pagerOnnClick['first']; ?>"
                          title="<?php echo _('Primera página'); ?>"/>
-                    <img src="imgs/arrow_left.png"
-                         onClick="searchSort(<?php echo $searchKey; ?>,<?php echo($limitStart - $limitCount); ?>,1);"
+                    <img src="imgs/arrow_left.png" onClick="<?php echo $pagerOnnClick['prev']; ?>"
                          title="<?php echo _('Página anterior'); ?>"/>
                 <?php endif; ?>
-
-                <?php echo '&nbsp;&nbsp;', $firstPage, ' / ', $lastPage, '&nbsp;&nbsp;'; ?>
-
+                &nbsp;<?php echo $firstPage, '/', $lastPage; ?>&nbsp;
                 <?php if ($limitStart < $totalRows && $firstPage != $lastPage): ?>
-                    <img src="imgs/arrow_right.png"
-                         onClick="searchSort(<?php echo $searchKey; ?>,<?php echo($limitStart + $limitCount); ?>,1);"
+                    <img src="imgs/arrow_right.png" onClick="<?php echo $pagerOnnClick['next']; ?>"
                          title="<?php echo _('Página siguiente'); ?>"/>
-                    <img src="imgs/arrow_last.png"
-                         onClick="searchSort(<?php echo $searchKey; ?>,<?php echo $intLimitLast; ?>,1);"
+                    <img src="imgs/arrow_last.png" onClick="<?php echo $pagerOnnClick['last']; ?>"
                          title="<?php echo _('Última página'); ?>"/>
                 <?php endif; ?>
             </div>

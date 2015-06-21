@@ -23,12 +23,17 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-define ('EXTENSIONS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ext');
 
-class SP_Init
+/**
+ * Clase Init para la inicialización del entorno de sysPass
+ *
+ * @package SP
+ */
+class Init
 {
-
     /**
      * @var array Associative array for autoloading. classname => filename
      */
@@ -62,23 +67,23 @@ class SP_Init
     /**
      * @var string
      */
-    private static $SUBURI = '';
+    private static $_SUBURI = '';
 
     /**
      * Inicializar la aplicación.
      * Esta función inicializa las variables de la aplicación y muestra la página
      * según el estado en el que se encuentre.
-     *
-     * @return none
      */
-    public static function init()
+    public static function start()
     {
+        self::setIncludes();
+
         if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
             // Registro del cargador de clases (PHP >= 5.1.2)
             if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-                spl_autoload_register(array('SP_Init', 'sysPassAutoload'), true);
+                spl_autoload_register(array('SP\Init', 'loadClass'), true);
             } else {
-                spl_autoload_register(array('SP_Init', 'sysPassAutoload'));
+                spl_autoload_register(array('SP\Init', 'loadClass'));
             }
         } else {
             /**
@@ -88,7 +93,7 @@ class SP_Init
              */
             function __autoload($classname)
             {
-                SP_Init::sysPassAutoload($classname);
+                \SP\Init::loadClass($classname);
             }
         }
 
@@ -159,6 +164,7 @@ class SP_Init
 
         // Comprobar la configuración
         self::checkConfig();
+
         // Comprobar si está instalado
         self::checkInstalled();
 
@@ -180,7 +186,7 @@ class SP_Init
         $sessionLifeTime = self::getSessionLifeTime();
         @ini_set('gc_maxlifetime', (string)$sessionLifeTime);
 
-        if (!SP_Config::getValue("installed", false)) {
+        if (!Config::getValue("installed", false)) {
             $_SESSION['user_id'] = '';
         }
 
@@ -213,7 +219,7 @@ class SP_Init
                             continue;
                         }
 
-                        $params[] = SP_Html::sanitize($param) . '=' . SP_Html::sanitize($value);
+                        $params[] = Html::sanitize($param) . '=' . Html::sanitize($value);
                     }
 
                     header("Location: " . self::$WEBROOT . '/index.php?' . implode('&', $params));
@@ -230,49 +236,12 @@ class SP_Init
                 return;
             }
 
-            $controller = new \Controller\MainC();
+            $controller = new Controller\MainC();
             $controller->getLogin();
             $controller->view();
             exit();
         }
 
-    }
-
-    /**
-     * SPL autoload.
-     * Cargador de clases
-     */
-    public static function sysPassAutoload($classname)
-    {
-        $classFound = false;
-        $class = str_ireplace('sp_', '', $classname);
-        $class = (strrpos($class, '\\')) ? substr($class, strrpos($class, '\\') + 1) : $class;
-        $classfile = dirname(__FILE__) . DIRECTORY_SEPARATOR . $class . '.class.php';
-
-//        error_log($class);
-//        error_log($classfile);
-
-        if (!is_readable($classfile)) {
-            $includePaths = explode(':', get_include_path());
-
-            foreach ($includePaths as $path) {
-                $classfile = $path . DIRECTORY_SEPARATOR . $class . '.class.php';
-                if (is_readable($classfile)) {
-                    $classFound = true;
-                    break;
-                }
-            }
-        } else {
-            $classFound = true;
-        }
-
-
-        if ($classFound === false) {
-            error_log('Class Autoloader Error: ' . $classfile);
-            return false;
-        }
-
-        require_once $classfile;
     }
 
     /**
@@ -286,7 +255,7 @@ class SP_Init
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
 
-            SP_Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
+            Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
 
             header('HTTP/1.1 500 Internal Server Error');
 
@@ -295,38 +264,50 @@ class SP_Init
     }
 
     /**
+     * Devuelve un eror utilizando la plantilla de rror.
+     *
+     * @param string $str  con la descripción del error
+     * @param string $hint opcional, con una ayuda sobre el error
+     */
+    public static function initError($str, $hint = '')
+    {
+        $tpl = new Template();
+        $tpl->append('errors', array('type' => 'critical', 'description' => $str, 'hint' => $hint));
+        $controller = new Controller\MainC($tpl);
+        $controller->getError(true);
+        $controller->view();
+        exit();
+    }
+
+    /**
      * Establecer las rutas de la aplicación.
      * Esta función establece las rutas del sistema de archivos y web de la aplicación.
      * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
-     *
-     * @return none
      */
     private static function setPaths()
     {
         // Calcular los directorios raíz
-        self::$SERVERROOT = str_replace("\\", DIRECTORY_SEPARATOR, substr(__DIR__, 0, -4));
+//        self::$SERVERROOT = str_replace("\\", DIRECTORY_SEPARATOR, substr(__DIR__, 0, -4));
+        $dir = (defined(__DIR__)) ? __DIR__ : dirname(__FILE__);
 
-        // Establecer la ruta include correcta
-        set_include_path(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . PATH_SEPARATOR .
-            self::$SERVERROOT . DIRECTORY_SEPARATOR . 'web' . PATH_SEPARATOR .
-            get_include_path() . PATH_SEPARATOR . self::$SERVERROOT);
+        self::$SERVERROOT = substr($dir, 0, strripos($dir, '/'));
 
-        self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
+        self::$_SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
 
         $scriptName = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
         if (substr($scriptName, -1) == '/') {
             $scriptName .= 'index.php';
             // Asegurar que suburi sigue las mismas reglas que scriptName
-            if (substr(self::$SUBURI, -9) != 'index.php') {
-                if (substr(self::$SUBURI, -1) != '/') {
-                    self::$SUBURI .= '/';
+            if (substr(self::$_SUBURI, -9) != 'index.php') {
+                if (substr(self::$_SUBURI, -1) != '/') {
+                    self::$_SUBURI .= '/';
                 }
-                self::$SUBURI .= 'index.php';
+                self::$_SUBURI .= 'index.php';
             }
         }
 
-        $pos = strpos($scriptName, self::$SUBURI);
+        $pos = strpos($scriptName, self::$_SUBURI);
 
         if ($pos === false) {
             $pos = strpos($scriptName, '?');
@@ -345,13 +326,11 @@ class SP_Init
     /**
      * Establece el lenguaje de la aplicación.
      * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
-     *
-     * @returns none
      */
     private static function selectLang()
     {
         $browserLang = str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
-        $configLang = SP_Config::getValue('sitelang');
+        $configLang = Config::getValue('sitelang');
         $localesDir = self::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'locales';
 
         // Establecer a en_US si no existe la traducción o no es español
@@ -390,8 +369,6 @@ class SP_Init
     /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
-     *
-     * @return none
      */
     private static function checkConfig()
     {
@@ -408,46 +385,27 @@ class SP_Init
         //$configPerms = substr(sprintf('%o', fileperms(self::$SERVERROOT.'/config')), -4);
         $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
 
-        if (!SP_Util::runningOnWindows() && $configPerms != "750") {
+        if (!Util::runningOnWindows() && $configPerms != "750") {
             clearstatcache();
             self::initError(_('Los permisos del directorio "/config" son incorrectos'), _('Actual:') . ' ' . $configPerms . ' - ' . _('Necesario: 750'));
         }
     }
 
     /**
-     * Devuelve un eror utilizando la plantilla de rror.
-     *
-     * @param string $str  con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @returns none
-     */
-    public static function initError($str, $hint = '')
-    {
-        $tpl = new SP_Template();
-        $tpl->append('errors', array('type' => 'critical', 'description' => $str, 'hint' => $hint));
-        $controller = new \Controller\MainC($tpl);
-        $controller->getError(true);
-        $controller->view();
-        exit();
-    }
-
-    /**
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
-     *
-     * @return none
      */
     private static function checkInstalled()
     {
         // Redirigir al instalador si no está instalada
-        if (!SP_Config::getValue('installed', false) && self::$SUBURI != '/index.php') {
+        if (!Config::getValue('installed', false) && self::$_SUBURI != '/index.php') {
             $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
             header("Location: $url");
             exit();
-        } elseif (!SP_Config::getValue('installed', false) && self::$SUBURI == '/index.php') {
+        } elseif (!Config::getValue('installed', false) && self::$_SUBURI == '/index.php') {
             // Comprobar si sysPass está instalada o en modo mantenimiento
-            if (!SP_Config::getValue('installed', false)) {
-                $controller = new \Controller\MainC();
+            if (!Config::getValue('installed', false)) {
+                $controller = new Controller\MainC();
                 $controller->getInstaller();
                 $controller->view();
                 exit();
@@ -465,11 +423,11 @@ class SP_Init
      */
     public static function checkMaintenanceMode($check = false)
     {
-        if (SP_Config::getValue('maintenance', false)) {
+        if (Config::getValue('maintenance', false)) {
             if ($check === true
-                || SP_Common::parseParams('r', 'isAjax', 0) === 1
-                || SP_Common::parseParams('g', 'upgrade', 0) === 1
-                || SP_Common::parseParams('g', 'nodbupgrade', 0) === 1
+                || Common::parseParams('r', 'isAjax', 0) === 1
+                || Common::parseParams('g', 'upgrade', 0) === 1
+                || Common::parseParams('g', 'nodbupgrade', 0) === 1
             ) {
                 return true;
             }
@@ -486,45 +444,43 @@ class SP_Init
 
     /**
      * Comrpueba y actualiza la versión de la aplicación.
-     *
-     * @returns none
      */
     private static function checkVersion()
     {
-        if (substr(self::$SUBURI, -9) != 'index.php' || SP_Common::parseParams('g', 'logout', 0) === 1) {
+        if (substr(self::$_SUBURI, -9) != 'index.php' || Common::parseParams('g', 'logout', 0) === 1) {
             return;
         }
 
         $update = false;
-        $configVersion = (int)str_replace('.', '', SP_Config::getValue('version'));
-        $databaseVersion = (int)str_replace('.', '', SP_Config::getConfigDbValue('version'));
-        $appVersion = (int)implode(SP_Util::getVersion(true));
+        $configVersion = (int)str_replace('.', '', Config::getValue('version'));
+        $databaseVersion = (int)str_replace('.', '', Config::getConfigDbValue('version'));
+        $appVersion = (int)implode(Util::getVersion(true));
 
         if ($databaseVersion < $appVersion
-            && SP_Common::parseParams('g', 'nodbupgrade', 0) === 0
+            && Common::parseParams('g', 'nodbupgrade', 0) === 0
         ) {
-            if (SP_Upgrade::needDBUpgrade($databaseVersion)) {
+            if (Upgrade::needDBUpgrade($databaseVersion)) {
                 if (!self::checkMaintenanceMode(true)) {
-                    if (SP_Config::getValue('upgrade_key', 0) === 0) {
-                        SP_Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
-                        SP_Config::setValue('maintenance', true);
+                    if (Config::getValue('upgrade_key', 0) === 0) {
+                        Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
+                        Config::setValue('maintenance', true);
                     }
 
                     self::initError(_('La aplicación necesita actualizarse'), _('Si es un administrador pulse en el enlace:') . ' <a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>');
                 }
 
-                $action = SP_Common::parseParams('g', 'a');
-                $hash = SP_Common::parseParams('g', 'h');
+                $action = Common::parseParams('g', 'a');
+                $hash = Common::parseParams('g', 'h');
 
-                if ($action === 'upgrade' && $hash === SP_Config::getValue('upgrade_key', 0)) {
-                    if (SP_Upgrade::doUpgrade($databaseVersion)) {
-                        SP_Config::setConfigDbValue('version', $appVersion);
-                        SP_Config::setValue('maintenance', false);
-                        SP_Config::deleteKey('upgrade_key');
+                if ($action === 'upgrade' && $hash === Config::getValue('upgrade_key', 0)) {
+                    if (Upgrade::doUpgrade($databaseVersion)) {
+                        Config::setConfigDbValue('version', $appVersion);
+                        Config::setValue('maintenance', false);
+                        Config::deleteKey('upgrade_key');
                         $update = true;
                     }
                 } else {
-                    $controller = new \Controller\MainC();
+                    $controller = new Controller\MainC();
                     $controller->getUpgrade();
                     $controller->view();
                     exit();
@@ -533,10 +489,10 @@ class SP_Init
         }
 
         if ($configVersion < $appVersion
-            && SP_Upgrade::needConfigUpgrade($appVersion)
-            && SP_Upgrade::upgradeConfig($appVersion)
+            && Upgrade::needConfigUpgrade($appVersion)
+            && Upgrade::upgradeConfig($appVersion)
         ) {
-            SP_Config::setValue('version', $appVersion);
+            Config::setValue('version', $appVersion);
             $update = true;
         }
 
@@ -545,8 +501,8 @@ class SP_Init
             $message['text'][] = _('Actualización de versión realizada.');
             $message['text'][] = _('Versión') . ': ' . $appVersion;
 
-            SP_Log::wrLogInfo($message);
-            SP_Common::sendEmail($message);
+            Log::wrLogInfo($message);
+            Common::sendEmail($message);
 
             self::$UPDATED = true;
         }
@@ -554,8 +510,6 @@ class SP_Init
 
     /**
      * Inicialiar la sesión de usuario
-     *
-     * @return none
      */
     private static function initSession()
     {
@@ -569,7 +523,7 @@ class SP_Init
             session_regenerate_id(true);
             $_SESSION['SID_CREATED'] = time();
             // Recargar los permisos del perfil de usuario
-            $_SESSION['usrprofile'] = SP_Profiles::getProfileForUser();
+            $_SESSION['usrprofile'] = Profiles::getProfileForUser();
             unset($_SESSION['APP_CONFIG']);
         }
 
@@ -596,10 +550,10 @@ class SP_Init
      */
     private static function getSessionLifeTime()
     {
-        $timeout = SP_Common::parseParams('s', 'session_timeout', 0);
+        $timeout = Common::parseParams('s', 'session_timeout', 0);
 
         if ($timeout === 0) {
-            $timeout = $_SESSION['session_timeout'] = SP_Config::getValue('session_timeout', 60 * 5);
+            $timeout = $_SESSION['session_timeout'] = Config::getValue('session_timeout', 60 * 5);
         }
 
         return $timeout;
@@ -607,36 +561,34 @@ class SP_Init
 
     /**
      * Escribir la información de logout en el registro de eventos.
-     *
-     * @return none
      */
     private static function wrLogoutInfo()
     {
         $inactiveTime = round(((time() - $_SESSION['LAST_ACTIVITY']) / 60), 2);
         $totalTime = round(((time() - $_SESSION['START_ACTIVITY']) / 60), 2);
-        $ulogin = SP_Common::parseParams('s', 'ulogin');
+        $ulogin = Common::parseParams('s', 'ulogin');
 
         $message['action'] = _('Finalizar sesión');
         $message['text'][] = _('Usuario') . ": " . $ulogin;
         $message['text'][] = _('Tiempo inactivo') . ": " . $inactiveTime . " min.";
         $message['text'][] = _('Tiempo total') . ": " . $totalTime . " min.";
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
     }
 
     /**
      * Comprobar si hay que ejecutar acciones de URL.
      *
-     * @return bool|none
+     * @return bool
      */
     public static function checkRequestActions()
     {
-        if (!SP_Common::parseParams('r', 'a', '', true)) {
-            return;
+        if (!Common::parseParams('r', 'a', '', true)) {
+            return false;
         }
 
-        $action = SP_Common::parseParams('r', 'a');
-        $controller = new \Controller\MainC();
+        $action = Common::parseParams('r', 'a');
+        $controller = new Controller\MainC();
 
         switch ($action) {
             case 'passreset':
@@ -652,8 +604,6 @@ class SP_Init
 
     /**
      * Deslogar el usuario actual y eliminar la información de sesión.
-     *
-     * @return none
      */
     private static function logout()
     {
@@ -670,11 +620,40 @@ class SP_Init
      */
     public static function isLoggedIn()
     {
-        if (SP_Common::parseParams('s', 'ulogin')) {
+        if (Common::parseParams('s', 'ulogin', '', true)) {
             // TODO: refrescar variables de sesión.
             return true;
         }
         return false;
+    }
+
+    /**
+     * Establecer las rutas de sysPass en el PATH de PHP
+     */
+    public static function setIncludes()
+    {
+        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . get_include_path());
+    }
+
+    /**
+     * Cargador de clases de sysPass
+     *
+     * @param $class string El nombre de la clase a cargar
+     */
+    public static function loadClass($class)
+    {
+        // Eliminar \\ para las clases con namespace definido
+        $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
+
+//        error_log($class);
+
+        // Buscar la clase en los directorios de include
+        foreach (explode(':', get_include_path()) as $iPath) {
+            $classFile = $iPath . DIRECTORY_SEPARATOR . $class . '.class.php';
+            if (is_readable($classFile)) {
+                require_once $classFile;
+            }
+        }
     }
 
     /**
@@ -689,10 +668,3 @@ class SP_Init
         return ((float)$usec + (float)$sec);
     }
 }
-
-// Empezar a calcular el tiempo y memoria utilizados
-$memInit = memory_get_usage();
-$timeStart = SP_Init::microtime_float();
-
-// Inicializar sysPass
-SP_Init::init();

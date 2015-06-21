@@ -1,5 +1,8 @@
 <!-- Start Tab - Encryption -->
-<div id="tabs-<?php echo $encryption_tabIndex;?>">
+<div id="tabs-<?php use SP\Acl;
+use SP\Common;
+
+echo $encryption_tabIndex;?>">
 
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Clave Maestra'); ?>
@@ -45,7 +48,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('No modificar cuentas'); ?>
-                    <?php echo SP_Common::printHelpButton("config", 16); ?>
+                    <?php echo Common::printHelpButton("config", 16); ?>
                 </td>
                 <td class="valField">
                     <label for="chkNoAccountChange"><?php echo _('NO'); ?></label>
@@ -72,9 +75,9 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
-        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
-        <input type="hidden" name="action" value="<?php echo SP_Acl::ACTION_CFG_ENCRYPTION; ?>"/>
+        <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
+        <input type="hidden" name="onCloseAction" value="<?php echo $encryption_onCloseAction; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -130,9 +133,9 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
-        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
-        <input type="hidden" name="action" value="<?php echo SP_Acl::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
+        <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
+        <input type="hidden" name="onCloseAction" value="<?php echo $encryption_onCloseAction; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>

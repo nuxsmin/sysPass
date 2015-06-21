@@ -1,7 +1,9 @@
 <div id="actions" class="installer" align="center">
     <div id="logo">
         <img src="imgs/logo_full.png" alt="sysPass logo"/>
-        <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>
+        <span ID="pageDesc"><?php use SP\Util;
+
+            echo _('Instalación ') . ' ' . Util::getVersionString(); ?></span>
     </div>
 
     <?php if (@file_exists(__FILE__ . "\0Nullbyte")): ?>
@@ -10,7 +12,7 @@
             'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura')); ?>
     <?php endif; ?>
 
-    <?php if (!SP_Util::secureRNG_available()): ?>
+    <?php if (!Util::secureRNG_available()): ?>
         <?php $securityErrors[] = array('type' => 'warning',
             'description' => _('No se encuentra el generador de números aleatorios.'),
             'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')); ?>
@@ -44,7 +46,7 @@
                      title="<?php echo _('Login del usuario administrador de sysPass'); ?>"/>
                 <input type="text" name="adminlogin" id="adminlogin" title="<?php echo _('Usuario'); ?>"
                        placeholder="<?php echo _('Usuario'); ?>"
-                       value="<?php echo SP_Util::init_var('adminlogin'); ?>" autocomplete="off" autofocus
+                       value="<?php echo Util::init_var('adminlogin'); ?>" autocomplete="off" autofocus
                        required/>
             </p>
 
@@ -54,7 +56,7 @@
                 <input type="password" name="adminpass" id="adminpass"
                        title="<?php echo _('Clave'); ?>"
                        placeholder="<?php echo _('Clave'); ?>"
-                       value="<?php echo SP_Util::init_var('adminpass'); ?>" autocomplete="off"
+                       value="<?php echo Util::init_var('adminpass'); ?>" autocomplete="off"
                        onKeyUp="checkPassLevel(this.value,'adminaccount')" required/>
                 <span class="passLevel passLevel-float fullround"
                       title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
@@ -69,7 +71,7 @@
                 <input type="password" name="masterpassword" id="masterpassword"
                        title="<?php echo _('Clave Maestra'); ?>  "
                        placeholder="<?php echo _('Clave Maestra'); ?>"
-                       value="<?php echo SP_Util::init_var('masterpassword'); ?>" autocomplete="off"
+                       value="<?php echo Util::init_var('masterpassword'); ?>" autocomplete="off"
                        onKeyUp="checkPassLevel(this.value,'masterpwd')" required/>
                 <span class="passLevel passLevel-float fullround"
                       title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
@@ -86,7 +88,7 @@
                      title="<?php echo _('Login de usuario con permisos de administrador de MySQL'); ?>"/>
                 <input type="text" name="dbuser" id="dbuser" title="<?php echo _('Usuario BBDD'); ?>"
                        placeholder="<?php echo _('Usuario BBDD'); ?>"
-                       value="<?php echo SP_Util::init_var('dbuser', 'root'); ?>" autocomplete=off" required/>
+                       value="<?php echo Util::init_var('dbuser', 'root'); ?>" autocomplete=off" required/>
             </p>
 
             <p>
@@ -94,7 +96,7 @@
                      alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <input type="password" name="dbpass" id="dbpass" title="<?php echo _('Clave BBDD'); ?>"
                        placeholder="<?php echo _('Clave BBDD'); ?>"
-                       value="<?php echo SP_Util::init_var('dbpass'); ?>" required/>
+                       value="<?php echo Util::init_var('dbpass'); ?>" required/>
             </p>
 
             <p>
@@ -102,7 +104,7 @@
                      title="<?php echo _('Nombre de la base de datos para sysPass'); ?>"/>
                 <input type="text" name="dbname" id="dbname" title="<?php echo _('Nombre BBDD'); ?>"
                        placeholder="<?php echo _('Nombre BBDD'); ?>"
-                       value="<?php echo SP_Util::init_var('dbname', 'syspass'); ?>" autocomplete=off"
+                       value="<?php echo Util::init_var('dbname', 'syspass'); ?>" autocomplete=off"
                        pattern="[0-9a-zA-Z$_-]+" required/>
             </p>
 
@@ -111,7 +113,7 @@
                      title="<?php echo _('Nombre del servidor de la base de datos de sysPass'); ?>"/>
                 <input type="text" name="dbhost" id="dbhost" title="<?php echo _('Servidor BBDD'); ?>"
                        placeholder="<?php echo _('Servidor BBDD'); ?>"
-                       value="<?php echo SP_Util::init_var('dbhost', 'localhost'); ?>" required/>
+                       value="<?php echo Util::init_var('dbhost', 'localhost'); ?>" required/>
             </p>
 
             <br>
@@ -120,10 +122,10 @@
                 <img src="imgs/help.png" class="inputImg"
                      title="<?php echo _('No crea ni verifica los permisos del usuario sobre la BBDD'); ?>"/>
                 <label
-                    for="hostingmode"><?php echo (SP_Util::init_var('hostingmode')) ? _('Modo Hosting') . ' ON' : _('Modo Hosting') . ' OFF'; ?></label>
+                    for="hostingmode"><?php echo (Util::init_var('hostingmode')) ? _('Modo Hosting') . ' ON' : _('Modo Hosting') . ' OFF'; ?></label>
                 <input type="checkbox" name="hostingmode"
                        id="hostingmode"
-                       class="checkbox" <?php echo (SP_Util::init_var('hostingmode')) ? 'checked' : ''; ?> />
+                       class="checkbox" <?php echo (Util::init_var('hostingmode')) ? 'checked' : ''; ?> />
             </p>
         </fieldset>
 
@@ -133,7 +135,7 @@
 </div>
 
 <script>
-    var hostingmode = <?php echo SP_Util::init_var('hostingmode', 0); ?>;
+    var hostingmode = <?php echo Util::init_var('hostingmode', 0); ?>;
 
     $('#frmInstall').find('.checkbox').button();
     $('#frmInstall').find('.ui-button').click(function () {

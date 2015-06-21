@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -23,12 +23,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de manejar el registro de eventos
  */
-class SP_Log
+class Log
 {
     static $numRows;
 
@@ -87,7 +89,7 @@ class SP_Log
         $message['text'][] = _('Vaciar registro de eventos');
 
         self::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -100,12 +102,12 @@ class SP_Log
      */
     public static function wrLogInfo($message)
     {
-        if (!SP_Util::logIsEnabled() || !is_array($message)) {
+        if (!Util::logIsEnabled() || !is_array($message)) {
             return false;
         }
 
-        $login = SP_Session::getUserLogin();
-        $userId = SP_Session::getUserId();
+        $login = Session::getUserLogin();
+        $userId = Session::getUserId();
         $action = strip_tags(utf8_encode($message['action']));
         $description = (isset($message['text'])) ? strip_tags(utf8_encode(implode(';;', $message['text']))) : '';
 

@@ -1,5 +1,8 @@
 <!-- Start Tab - Import -->
-<div id="tabs-<?php echo $import_tabIndex; ?>">
+<div id="tabs-<?php use SP\Acl;
+use SP\Common;
+
+echo $import_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Importar phpPMS'); ?>
     </div>
@@ -9,7 +12,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario BBDD'); ?>
-                    <?php echo SP_Common::printHelpButton("config", 0); ?>
+                    <?php echo Common::printHelpButton("config", 0); ?>
                 </td>
                 <td class="valField">
                     <input type="text" name="dbuser" value="" />
@@ -26,7 +29,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre BBDD'); ?>
-                    <?php echo SP_Common::printHelpButton("config", 1); ?>
+                    <?php echo Common::printHelpButton("config", 1); ?>
                 </td>
                 <td class="valField">
                     <input type="text" name="dbname" value="phppms" />
@@ -35,7 +38,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Servidor BBDD'); ?>
-                    <?php echo SP_Common::printHelpButton("config", 2); ?>
+                    <?php echo Common::printHelpButton("config", 2); ?>
                 </td>
                 <td class="valField">
                     <input type="text" name="dbhost" value="localhost" />
@@ -55,9 +58,9 @@
             </tr>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>" />
-        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>" />
-        <input type="hidden" name="action" value="<?php echo SP_Acl::ACTION_CFG_IMPORT; ?>" />
+        <input type="hidden" name="activeTab" value="<?php echo $import_activeTab; ?>" />
+        <input type="hidden" name="onCloseAction" value="<?php echo $import_onCloseAction; ?>" />
+        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT; ?>" />
         <input type="hidden" name="isAjax" value="1" />
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -79,7 +82,7 @@
         <tr>
             <td class="descField">
                 <?php echo _('Archivo'); ?>
-                <?php echo SP_Common::printHelpButton("config", 23); ?>
+                <?php echo Common::printHelpButton("config", 23); ?>
             </td>
             <td class="valField">
                 <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUpload">
@@ -104,5 +107,5 @@
             $(this).children().html('<?php echo _('SI'); ?>');
         }
     });
-    importFile('<?php echo SP_Common::getSessionKey(true); ?>');
+    importFile('<?php echo Common::getSessionKey(true); ?>');
 </script>

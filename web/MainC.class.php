@@ -6,7 +6,7 @@
  * Time: 22:25
  */
 
-namespace Controller;
+namespace SP\Controller;
 
 /**
  * Clase encargada de mostrar el interface principal de la aplicación
@@ -14,24 +14,24 @@ namespace Controller;
  *
  * @package Controller
  */
-class MainC extends \SP_Controller implements ActionsInterface
+class MainC extends Controller implements ActionsInterface
 {
     /**
      * Constructor
      *
-     * @param $template  \SP_Template con instancia de plantilla
+     * @param $template  \SP\Template con instancia de plantilla
      * @param null $page nombre de página para la clase del body
      */
-    public function __construct(\SP_Template $template = null, $page = null)
+    public function __construct(\SP\Template $template = null, $page = null)
     {
         parent::__construct($template);
 
         $this->view->addTemplate('header');
         $this->view->addTemplate('body');
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
-        $this->view->assign('appInfo', \SP_Util::getAppInfo());
-        $this->view->assign('appVersion', \SP_Util::getVersionString());
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('appInfo', \SP\Util::getAppInfo());
+        $this->view->assign('appVersion', \SP\Util::getVersionString());
         $this->view->assign('startTime', microtime());
         $this->view->assign('page', $page);
 
@@ -44,12 +44,12 @@ class MainC extends \SP_Controller implements ActionsInterface
      */
     public function getHeader()
     {
-        $cssVersionHash = md5(implode(\SP_Util::getVersion()) . \SP_Util::resultsCardsIsEnabled());
-        $jsVersionHash = md5(implode(\SP_Util::getVersion()));
+        $cssVersionHash = md5(implode(\SP\Util::getVersion()) . \SP\Util::resultsCardsIsEnabled());
+        $jsVersionHash = md5(implode(\SP\Util::getVersion()));
 
-        $this->view->assign('cssLink', \SP_Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
-        $this->view->assign('jsLink', \SP_Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
-        $this->view->assign('logo', \SP_Init::$WEBROOT . '/imgs/logo.png');
+        $this->view->assign('cssLink', \SP\Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
+        $this->view->assign('jsLink', \SP\Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
+        $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo.png');
     }
 
     /**
@@ -118,10 +118,10 @@ class MainC extends \SP_Controller implements ActionsInterface
         $this->view->addTemplate('login');
         $this->view->addTemplate('footer');
 
-        $this->view->assign('demoEnabled', \SP_Util::demoIsEnabled());
-        $this->view->assign('mailEnabled', \SP_Util::mailIsEnabled());
-        $this->view->assign('isLogout', \SP_Common::parseParams('g', 'logout', false, true));
-        $this->view->assign('updated', \SP_Init::$UPDATED === true);
+        $this->view->assign('demoEnabled', \SP\Util::demoIsEnabled());
+        $this->view->assign('mailEnabled', \SP\Util::mailIsEnabled());
+        $this->view->assign('isLogout', \SP\Common::parseParams('g', 'logout', false, true));
+        $this->view->assign('updated', \SP\Init::$UPDATED === true);
         $this->view->assign('newFeatures', array(
             _('Nuevo interface de búsqueda con estilo de lista o tipo tarjeta'),
             _('Selección de grupos y usuarios de acceso a cuentas'),
@@ -149,8 +149,8 @@ class MainC extends \SP_Controller implements ActionsInterface
         $this->view->addTemplate('install');
         $this->view->addTemplate('footer');
 
-        $this->view->assign('modulesErrors', \SP_Util::checkModules());
-        $this->view->assign('versionErrors', \SP_Util::checkPhpVersion());
+        $this->view->assign('modulesErrors', \SP\Util::checkModules());
+        $this->view->assign('versionErrors', \SP\Util::checkPhpVersion());
         $this->view->assign('resInstall', array());
         $this->view->assign('isCompleted', false);
 
@@ -181,7 +181,7 @@ class MainC extends \SP_Controller implements ActionsInterface
         $this->view->addTemplate('footer');
 
         $this->view->assign('showLogo', $showLogo);
-        $this->view->assign('logo', \SP_Init::$WEBROOT . '/imgs/logo_full.png');
+        $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo_full.png');
     }
 
     /**
@@ -189,18 +189,18 @@ class MainC extends \SP_Controller implements ActionsInterface
      */
     public function getPassReset()
     {
-        if (\SP_Util::mailIsEnabled() || \SP_Common::parseParams('g', 'f', 0) === 1) {
+        if (\SP\Util::mailIsEnabled() || \SP\Common::parseParams('g', 'f', 0) === 1) {
             $this->view->addTemplate('passreset');
 
-            $this->view->assign('action', \SP_Common::parseParams('g', 'a'));
-            $this->view->assign('hash', \SP_Common::parseParams('g', 'h'));
-            $this->view->assign('time', \SP_Common::parseParams('g', 't'));
-            $this->view->assign('logo', \SP_Init::$WEBROOT . '/imgs/logo_full.png');
+            $this->view->assign('action', \SP\Common::parseParams('g', 'a'));
+            $this->view->assign('hash', \SP\Common::parseParams('g', 'h'));
+            $this->view->assign('time', \SP\Common::parseParams('g', 't'));
+            $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo_full.png');
 
             $this->view->assign('passReset', ($this->view->action === 'passreset' && $this->view->hash && $this->view->time));
         } else {
             $this->view->assign('showLogo', true);
-            $this->view->assign('logo', \SP_Init::$WEBROOT . '/imgs/logo_full.png');
+            $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo_full.png');
 
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
@@ -216,9 +216,9 @@ class MainC extends \SP_Controller implements ActionsInterface
         $this->view->addTemplate('upgrade');
         $this->view->addTemplate('footer');
 
-        $this->view->assign('action', \SP_Common::parseParams('g', 'a'));
-        $this->view->assign('time', \SP_Common::parseParams('g', 't'));
+        $this->view->assign('action', \SP\Common::parseParams('g', 'a'));
+        $this->view->assign('time', \SP\Common::parseParams('g', 't'));
         $this->view->assign('upgrade', $this->view->action === 'upgrade');
-        $this->view->assign('logo', \SP_Init::$WEBROOT . '/imgs/logo_full.png');
+        $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo_full.png');
     }
 }

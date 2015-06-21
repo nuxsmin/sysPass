@@ -1,10 +1,9 @@
 <?php
-
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,138 +23,61 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de mostrar el HTML
  */
-class SP_Html
+class Html
 {
     /**
      * Crear un elemento del tipo SELECT.
      * Esta función genera un elemento SELECT con las propiedades y valores pasados.
      *
-     * @param array $arrValues con los valores del select
-     * @param array $arrSelectProp con las propiedades del select
-     * @param bool $useValue para usar el Id como valor
-     * @return none
+     * @param array $values     con los valores del select
+     * @param array $properties con las propiedades del select
+     * @param bool  $useValue   para usar el Id como valor
      */
-    public static function printSelect($arrValues, $arrSelectProp, $useValue = true)
+    public static function printSelect($values, $properties, $useValue = true)
     {
 
-        if (!is_array($arrSelectProp)) {
+        if (!is_array($properties)) {
             return;
         }
 
-        $strAttrs = (is_array($arrSelectProp["attribs"])) ? implode(" ", $arrSelectProp["attribs"]) : "";
-        $strClass = ($arrSelectProp["class"]) ? 'class="' . $arrSelectProp["class"] . '"' : "";
+        $attribs = (is_array($properties['attribs'])) ? implode(' ', $properties['attribs']) : '';
+        $cssClass = ($properties['class']) ? 'class="' . $properties['class'] . '"' : '';
 
-        if (!is_array($arrValues)) {
-            echo '<label for=' . $arrSelectProp["id"] . '">' . $arrSelectProp["label"] . '</label>';
-            echo '<select name="' . $arrSelectProp["name"] . '" id="' . $arrSelectProp["id"] . '" ' . $strClass . ' size="' . $arrSelectProp["size"] . '" ' . $arrSelectProp["js"] . ' ' . $strAttrs . ' >';
-            echo '<option value="0">' . $arrSelectProp["default"] . '</option>';
+        if (!is_array($values)) {
+            echo '<label for=' . $properties['id'] . '">' . $properties['label'] . '</label>';
+            echo '<select name="' . $properties['name'] . '" id="' . $properties['id'] . '" ' . $cssClass . ' size="' . $properties['size'] . '" ' . $properties['js'] . ' ' . $attribs . ' >';
+            echo '<option value="0">' . $properties['default'] . '</option>';
             echo '</select>';
             return;
         }
 
-        if ($arrSelectProp["label"]) {
-            echo '<label for=' . $arrSelectProp["id"] . '">' . $arrSelectProp["label"] . '</label>';
+        if ($properties['label']) {
+            echo '<label for=' . $properties['id'] . '">' . $properties['label'] . '</label>';
         }
 
-        echo '<select name="' . $arrSelectProp["name"] . '" id="' . $arrSelectProp["id"] . '" ' . $strClass . ' size="' . $arrSelectProp["size"] . '" ' . $arrSelectProp["js"] . ' ' . $strAttrs . ' >';
-        echo '<option value="0">' . $arrSelectProp["default"] . '</option>';
+        echo '<select name="' . $properties['name'] . '" id="' . $properties['id'] . '" ' . $cssClass . ' size="' . $properties['size'] . '" ' . $properties['js'] . ' ' . $attribs . ' >';
+        echo '<option value="0">' . $properties['default'] . '</option>';
 
-        $selectedId = (isset($arrSelectProp["selected"])) ? $arrSelectProp["selected"] : "";
+        $selectedId = (isset($properties['selected'])) ? $properties['selected'] : "";
 
-        foreach ($arrValues as $valueId => $valueName) {
+        foreach ($values as $valueId => $valueName) {
             if ($useValue) {
-                $selected = ($valueId == $selectedId) ? "SELECTED" : "";
+                $selected = ($valueId == $selectedId) ? 'SELECTED' : '';
                 echo '<option value="' . $valueId . '" ' . $selected . '>' . $valueName . '</option>';
             } else {
-                $selected = ($valueName == $selectedId) ? "SELECTED" : "";
+                $selected = ($valueName == $selectedId) ? 'SELECTED' : '';
                 echo '<option ' . $selected . '>' . $valueName . '</option>';
             }
         }
 
         echo '</select>';
-    }
-
-    /**
-     * Crea la barra de navegación para búsqueda de cuentas.
-     *
-     * @param int $intSortKey con el número de campo del filro
-     * @param int $intCur con el número de página actual
-     * @param int $intTotal con el número total de páginas
-     * @param int $intLimit con el límite de registros a mostrar
-     * @param int $intTime con el tiempo de carga de los resultados
-     * @param bool $filterOn opcional con el estado del filtrado
-     * @return none
-     */
-    public static function printQuerySearchNavBar($intSortKey, $intCur, $intTotal, $intLimit, $intTime, $filterOn = false)
-    {
-//    SP_Html::printQuerySearchNavBar($sortKey, $limitStart, SP_Accounts::$queryNumRows, $limitCount, $totalTime, $filterOn);
-
-        $firstPage = ceil(($intCur + 1) / $intLimit);
-        $lastPage = ceil($intTotal / $intLimit);
-        $globalOn = SP_Common::parseParams('p', 'gsearch', 0, false, 1);
-
-        echo '<div id="pageNav" class="round shadow">';
-        echo '<div id="pageNavLeft">';
-        echo $intTotal . ' @ ' . abs($intTime) . ' s ';
-        echo ($filterOn) ? '<span class="filterOn round">' . _('Filtro ON') . '</span>' : '';
-        echo '&nbsp;';
-        echo ($globalOn) ? '<span class="globalOn round">' . _('Global ON') . '</span>' : '';
-        echo '</div>';
-        echo '<div id="pageNavRight">';
-
-        if ($intCur > 1) {
-            echo '<img src="imgs/arrow_first.png" onClick="searchSort(' . $intSortKey . ',0,1);" title="' . _('Primera página') . '" />';
-            echo '<img src="imgs/arrow_left.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur - $intLimit) . ',1);" title="' . _('Página anterior') . '" />';
-        }
-
-        echo "&nbsp; $firstPage / $lastPage &nbsp;";
-
-        if ($intCur < $intTotal && $firstPage != $lastPage) {
-            $intLimitLast = (($intTotal % $intLimit) == 0) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
-            echo '<img src="imgs/arrow_right.png" onClick="searchSort(' . $intSortKey . ',' . ($intCur + $intLimit) . ',1);" title="' . _('Página siguiente') . '" />';
-            echo '<img src="imgs/arrow_last.png" onClick="searchSort(' . $intSortKey . ',' . $intLimitLast . ',1);" title="' . _('Última página') . '" />';
-        }
-
-        echo '</div></div>';
-    }
-
-    /**
-     * Crea la barra de navegación para el registro de eventos.
-     *
-     * @param int $intCur con el número de página actual
-     * @param int $intTotal con el número total de páginas
-     * @param int $intTime con el tiempo de carga de los resultados
-     * @return none
-     */
-    public static function printQueryLogNavBar($intCur, $intTotal, $intTime = 0)
-    {
-        $intLimit = 50;
-        $firstPage = ceil(($intCur + 1) / $intLimit);
-        $lastPage = ceil($intTotal / $intLimit);
-
-        echo '<div id="pageNav" class="round shadow">';
-        echo '<div id="pageNavLeft">' . $intTotal . ' @ ' . $intTime . ' s</div>';
-        echo '<div id="pageNavRight">';
-
-        if ($intCur > 1) {
-            echo '<img src="imgs/arrow_first.png" onClick="navLog(0,' . $intCur . ');" title="' . _('Primera página') . '" />';
-            echo '<img src="imgs/arrow_left.png" onClick="navLog(' . ($intCur - $intLimit) . ',' . $intCur . ');" title="' . _('Página anterior') . '" />';
-        }
-
-        echo "&nbsp; $firstPage / $lastPage &nbsp;";
-
-        if ($intCur < $intTotal && $firstPage != $lastPage) {
-            $intLimitLast = (($intTotal % $intLimit) == 0) ? $intTotal - $intLimit : floor($intTotal / $intLimit) * $intLimit;
-            echo '<img src="imgs/arrow_right.png" onClick="navLog(' . ($intCur + $intLimit) . ',' . $intCur . ');" title="' . _('Página siguiente') . '" />';
-            echo '<img src="imgs/arrow_last.png" onClick="navLog(' . $intLimitLast . ',' . $intCur . ');" title="' . _('Última página') . '" />';
-        }
-
-        echo '</div></div>';
     }
 
     /**
@@ -171,7 +93,7 @@ class SP_Html
         }
 
         if (is_array($data)) {
-            array_walk_recursive($data, 'SP_Html::sanitize');
+            array_walk_recursive($data, '\SP\Html::sanitize');
         } else {
             $data = strip_tags($data);
 
@@ -207,27 +129,10 @@ class SP_Html
     }
 
     /**
-     * Muestra una barra de información con los registros y tiempo de la consulta.
-     *
-     * @param int $intTotal con el total de registros devueltos
-     * @param int $startTime con el tiempo de inicio de la consulta
-     * @return none
-     */
-    public static function printQueryInfoBar($intTotal, $startTime)
-    {
-        $endTime = microtime();
-        $totalTime = round($endTime - $startTime, 5);
-
-        echo '<div id="pageNav" class="round shadow">';
-        echo '<div id="pageNavLeft">' . $intTotal . ' @ ' . $totalTime . ' s</div>';
-        echo '</div>';
-    }
-
-    /**
      * Truncar un texto a una determinada longitud.
      *
      * @param string $str con la cadena a truncar
-     * @param int $len con la longitud máxima de la cadena
+     * @param int    $len con la longitud máxima de la cadena
      * @return string con el texto truncado
      */
     public static function truncate($str, $len)
@@ -257,103 +162,6 @@ class SP_Html
     }
 
     /**
-     * Devolver una tabla con el resultado de una consulta y acciones.
-     *
-     * @param array $arrTableProp con las propiedades de la tabla
-     * @param array $queryItems con los resultados de la consulta
-     * @return none
-     */
-    public static function getQueryTable($arrTableProp, $queryItems)
-    {
-        $sk = SP_Common::getSessionKey(true);
-        $maxNumActions = 3;
-
-        echo '<div class="action fullWidth">';
-        echo '<ul>';
-        echo '<LI><img src="imgs/add.png" title="' . $arrTableProp["actions"]['new']['title'] . '" class="inputImg" OnClick="' . $arrTableProp["actions"]['new']['action'] . '(0,' . $arrTableProp["newActionId"] . ',\'' . $sk . '\',' . $arrTableProp["activeTab"] . ',0);" /></LI>';
-        echo '</ul>';
-        echo '</div>';
-
-        if ($arrTableProp["header"]) {
-            echo '<div id="title" class="midroundup titleNormal">' . $arrTableProp["header"] . '</div>';
-        }
-
-        echo '<form name="' . $arrTableProp["frmId"] . '" id="' . $arrTableProp["frmId"] . '" OnSubmit="return false;" >';
-        echo '<div id="' . $arrTableProp["tblId"] . '" class="data-header" >';
-        echo '<ul class="round header-grey">';
-
-        $cellWidth = floor(65 / count($arrTableProp["tblHeaders"]));
-
-        foreach ($arrTableProp["tblHeaders"] as $header) {
-            if (is_array($header)) {
-                echo '<li class="' . $header['class'] . '" style="width: ' . $cellWidth . '%;">' . $header['name'] . '</li>';
-            } else {
-                echo '<li style="width: ' . $cellWidth . '%;">' . $header . '</li>';
-            }
-        }
-
-        echo '</ul>';
-        echo '</div>';
-
-        echo '<div class="data-rows">';
-
-        foreach ($queryItems as $item) {
-            $intId = $item->$arrTableProp["tblRowSrcId"];
-            $action_check = array();
-            $numActions = count($arrTableProp["actions"]);
-            $classActionsOptional = ($numActions > $maxNumActions) ? 'actions-optional' : '';
-
-            echo '<ul>';
-
-            foreach ($arrTableProp["tblRowSrc"] as $rowSrc) {
-                // If row is an array handle images in it
-                if (is_array($rowSrc)) {
-                    echo '<li class="cell-nodata" style="width: ' . $cellWidth . '%;">';
-                    foreach ($rowSrc as $rowName => $imgProp) {
-                        if ($item->$rowName) {
-                            echo '<img src="imgs/' . $imgProp['img_file'] . '" title="' . $imgProp['img_title'] . '" />';
-                            $action_check[$rowName] = 1;
-                        }
-                    }
-                    echo '</li>';
-                } else {
-                    echo '<li class="cell-data" style="width: ' . $cellWidth . '%;">';
-                    echo ($item->$rowSrc) ? $item->$rowSrc : '&nbsp;'; // Fix height
-                    echo '</li>';
-                }
-            }
-
-            echo '<li class="cell-actions round" style="width: ' . ($numActions * 5 + 2) . '%;">';
-            //echo '<li class="cell-actions round" style="width: 175px;">';
-            foreach ($arrTableProp["actions"] as $action => $function) {
-                switch ($action) {
-                    case "view":
-                        echo '<img src="imgs/view.png" title="' . $arrTableProp['actions']['view']['title'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['view']['action'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',1);" />';
-                        break;
-                    case "edit":
-                        echo '<img src="imgs/edit.png" title="' . $arrTableProp['actions']['edit']['title'] . '" class="inputImg" Onclick="return ' . $arrTableProp["actions"]['edit']['action'] . '(' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', ' . $arrTableProp["activeTab"] . ',0);" />';
-                        break;
-                    case "del":
-                        echo '<img src="imgs/delete.png" title="' . $arrTableProp['actions']['del']['title'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['del']['action'] . '(' . $arrTableProp["activeTab"] . ',1,' . $intId . ',' . $arrTableProp["actionId"] . ',\'' . $sk . '\', \'' . $arrTableProp["onCloseAction"] . '\');" />';
-                        break;
-                    case "pass":
-                        if (isset($action_check['user_isLdap'])) {
-                            break;
-                        }
-
-                        echo '<img src="imgs/key.png" title="' . $arrTableProp['actions']['pass']['title'] . '" class="inputImg ' . $classActionsOptional . '" Onclick="return ' . $arrTableProp["actions"]['pass']['action'] . '(' . $intId . ');" />';
-                        break;
-                }
-            }
-            echo ($numActions > $maxNumActions) ? '<img src="imgs/action.png" title="' . _('Más Acciones') . '" OnClick="showOptional(this)" />' : '';
-            echo '</li>';
-            echo '</ul>';
-        }
-
-        echo '</div></form>';
-    }
-
-    /**
      * Devolver una cadena con el tag HTML strong.
      *
      * @param string $text con la cadena de texto
@@ -367,9 +175,9 @@ class SP_Html
     /**
      * Devolver un link HTML.
      *
-     * @param string $text con la cadena de texto
-     * @param string $link con el destino del enlace
-     * @param string $title con el título del enlace
+     * @param string $text    con la cadena de texto
+     * @param string $link    con el destino del enlace
+     * @param string $title   con el título del enlace
      * @param string $attribs con atributos del enlace
      * @return string
      */

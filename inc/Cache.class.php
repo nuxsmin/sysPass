@@ -23,10 +23,12 @@
  *
  */
 
+namespace SP;
+
 /**
  * Clase base para guardar/obtener elementos de la caché
  */
-class SP_Cache
+class Cache
 {
     /**
      * Tiempo de expiración de la cache en segundos
@@ -48,7 +50,7 @@ class SP_Cache
         }
 
         // FIXME
-        error_log('CONFIG_CACHE_VALUE_MISS');
+//        error_log('CONFIG_CACHE_VALUE_MISS');
 
         return null;
     }
@@ -79,9 +81,9 @@ class SP_Cache
     public static function setSessionCacheConfig()
     {
         // FIXME
-        error_log('CONFIG_CACHE_MISS');
+//        error_log('CONFIG_CACHE_MISS');
 
-        $_SESSION['cache']['config'] = SP_Config::getConfig();
+        $_SESSION['cache']['config'] = Config::getConfig();
         $_SESSION['cache']['config']['expires'] = time() + self::EXPIRE_TIME;
     }
 }

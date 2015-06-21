@@ -1,7 +1,10 @@
 <div id="actions" align="center">
 
     <div id="logo">
-        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
+        <img src="<?php use SP\Html;
+        use SP\Util;
+
+        echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
     <form id="passreset" action="" method="post"
@@ -12,17 +15,17 @@
                 <p>
                     <input type="text" name="login" id="login" title="<?php echo _('Login del Usuario'); ?>"
                            placeholder="<?php echo _('Usuario'); ?> "
-                           value="<?php echo SP_Util::init_var('login'); ?>" autocomplete="off" autofocus required/>
+                           value="<?php echo Util::init_var('login'); ?>" autocomplete="off" autofocus required/>
                 </p>
                 <p>
                     <input type="text" name="email" id="email" title="<?php echo _('Email del Usuario'); ?>"
                            placeholder="<?php echo _('Email'); ?>  "
-                           value="<?php echo SP_Util::init_var('email'); ?>" autocomplete="off" autofocus required/>
+                           value="<?php echo Util::init_var('email'); ?>" autocomplete="off" autofocus required/>
                 </p>
             <?php else: ?>
                 <p>
                     <input type="password" name="pass" id="pass" title="<?php echo _('Nueva Clave'); ?>"
-                           placeholder="<?php echo _('Clave'); ?>" value="<?php echo SP_Util::init_var('pass'); ?>"
+                           placeholder="<?php echo _('Clave'); ?>" value="<?php echo Util::init_var('pass'); ?>"
                            onKeyUp="checkPassLevel(this.value)" required/>
                     <span class="passLevel fullround"
                           title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
@@ -31,7 +34,7 @@
                     <input type="password" name="passv" id="passv"
                            title="<?php echo _('Nueva Clave (Verificar)'); ?>"
                            placeholder="<?php echo _('Clave (Verificar)'); ?>"
-                           value="<?php echo SP_Util::init_var('passv'); ?>" required/>
+                           value="<?php echo Util::init_var('passv'); ?>" required/>
                     <span class="passLevel fullround"
                           title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
@@ -43,7 +46,7 @@
         </fieldset>
 
         <div class="buttons">
-            <?php echo SP_Html::anchorText(_('Volver'), 'index.php', _('Volver a iniciar sesión'), 'class="button round5"'); ?>
+            <?php echo Html::anchorText(_('Volver'), 'index.php', _('Volver a iniciar sesión'), 'class="button round5"'); ?>
             <?php if (!$passReset): ?>
                 <input type="submit" class="button round5" value="<?php echo _('Solicitar'); ?>"
                        title="<?php echo _('Solicitar cambio de clave'); ?>"/>

@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,15 +24,17 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones actualización de la aplicación.
  */
-class SP_Upgrade
+class Upgrade
 {
-    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001);
-    private static $cfgUpgrade = array(1124);
+    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001);
+    private static $_cfgUpgrade = array(1124);
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -42,10 +44,10 @@ class SP_Upgrade
      */
     public static function doUpgrade($version)
     {
-        foreach (self::$dbUpgrade as $upgradeVersion) {
+        foreach (self::$_dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
                 if (self::upgradeTo($upgradeVersion) === false) {
-                    SP_Init::initError(
+                    Init::initError(
                         _('Error al aplicar la actualización de la Base de Datos'),
                         _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
                 }
@@ -107,18 +109,18 @@ class SP_Upgrade
         }
 
         foreach ($queries as $query) {
-            try{
+            try {
                 DB::getQuery($query, __FUNCTION__);
-            } catch(SPDatabaseException $e){
+            } catch (SPException $e) {
                 $result['text'][] = _('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')';
                 $result['text'][] = 'ERROR: ' . $e->getMessage() . ' (' . $e->getCode() . ')';
-                SP_Log::wrLogInfo($result);
+                Log::wrLogInfo($result);
                 return false;
             }
         }
 
         $result['text'][] = _('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')';
-        SP_Log::wrLogInfo($result);
+        Log::wrLogInfo($result);
 
         return true;
     }
@@ -131,7 +133,9 @@ class SP_Upgrade
      */
     public static function needDBUpgrade($version)
     {
-        $upgrades = array_filter(self::$dbUpgrade, function ($uVersions) use ($version){ return ($uVersions >= $version); } );
+        $upgrades = array_filter(self::$_dbUpgrade, function ($uVersions) use ($version) {
+            return ($uVersions >= $version);
+        });
 
         return (count($upgrades) > 0);
     }
@@ -144,7 +148,7 @@ class SP_Upgrade
      */
     public static function needConfigUpgrade($version)
     {
-        return (in_array($version, self::$cfgUpgrade));
+        return (in_array($version, self::$_cfgUpgrade));
     }
 
     /**
@@ -181,18 +185,18 @@ class SP_Upgrade
             'wiki_searchurl' => 'wikisearchurl'
         );
 
-        $currData = SP_Config::getKeys(true);
+        $currData = Config::getKeys(true);
 
-        foreach ( $mapParams as $newParam => $oldParam){
-            if ( array_key_exists($oldParam,$currData)){
-                SP_Config::setValue($newParam,$currData[$oldParam]);
-                SP_Config::deleteKey($oldParam);
+        foreach ($mapParams as $newParam => $oldParam) {
+            if (array_key_exists($oldParam, $currData)) {
+                Config::setValue($newParam, $currData[$oldParam]);
+                Config::deleteKey($oldParam);
             }
         }
 
         $result['action'] = _('Actualizar Configuración');
         $result['text'][] = _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')';
-        SP_Log::wrLogInfo($result);
+        Log::wrLogInfo($result);
 
         return true;
     }

@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,17 +24,19 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar operaciones con archivos de las cuentas de sysPass
  */
-class SP_Files
+class Files
 {
     /**
      * Guardar un archivo en la BBDD.
      *
-     * @param int $accountId
+     * @param int   $accountId
      * @param array $fileData con los datos y el contenido del archivo
      * @return bool
      */
@@ -62,8 +64,8 @@ class SP_Files
             $message['text'][] = _('Tipo') . ": " . $fileData['type'];
             $message['text'][] = _('Tamaño') . ": " . round($fileData['size'] / 1024, 2) . " KB";
 
-            SP_Log::wrLogInfo($message);
-            SP_Common::sendEmail($message);
+            Log::wrLogInfo($message);
+            Common::sendEmail($message);
 
             return true;
         }
@@ -110,8 +112,8 @@ class SP_Files
             $message['text'][] = _('Tipo') . ": " . $fileInfo->accfile_type;
             $message['text'][] = _('Tamaño') . ": " . round($fileInfo->accfile_size / 1024, 2) . " KB";
 
-            SP_Log::wrLogInfo($message);
-            SP_Common::sendEmail($message);
+            Log::wrLogInfo($message);
+            Common::sendEmail($message);
 
             return true;
         }

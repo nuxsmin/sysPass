@@ -23,24 +23,20 @@
  *
  */
 
-define('APP_ROOT', '..');
+namespace SP;
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-SP\Util::checkReferer('GET');
+/**
+ * Interface AccountInterface con la definición de métodos comunes a las cuentas
+ */
+interface AccountInterface
+{
+    public function getAccountData();
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+    public function createAccount();
+
+    public function deleteAccount();
+
+    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null);
 }
-
-$userId = SP\Common::parseParams('g', 'userId', false);
-
-if (!$userId) {
-    return;
-}
-
-$tpl = new SP\Template();
-$tpl->assign('userId', $userId);
-$controller = new SP\Controller\UsersMgmtC($tpl);
-$controller->getUserPass();
-$controller->view();

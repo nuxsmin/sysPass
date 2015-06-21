@@ -1,4 +1,6 @@
-<div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
+<div id="title" class="midroundup <?php use SP\Acl;
+
+echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
 <form method="post" name="editpass" id="frmEditPass">
     <table class="data round">
@@ -33,13 +35,13 @@
         </tr>
         <tr>
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
-            <td class="valField"><INPUT type="password" MAXLENGTH="255" name="password2" autocomplete="off">
+            <td class="valField"><input type="password" MAXLENGTH="255" name="password2" autocomplete="off">
                 <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </td>
         </tr>
     </table>
-    <input type="hidden" name="savetyp" value="4"/>
-    <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
+    <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
+    <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
     <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
     <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     <input type="hidden" name="isAjax" value="1">
@@ -49,7 +51,7 @@
     <ul>
         <li>
             <img SRC="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                 OnClick="doAction(<?php echo $lastAction; ?>, <?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account->accountId; ?>)"/>
+                 OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"/>
         </li>
         <li>
             <img SRC="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"

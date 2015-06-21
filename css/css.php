@@ -24,7 +24,8 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
+
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 $cssFiles = array(
     array('href' => 'css/reset.css', 'min' => true),
@@ -39,8 +40,8 @@ $cssFiles = array(
     array('href' => 'css/styles.css', 'min' => true)
 );
 
-if (!SP_Util::resultsCardsIsEnabled()) {
+if (!SP\Util::resultsCardsIsEnabled()) {
     array_push($cssFiles, array('href' => 'css/search-grid.css', 'min' => true));
 }
 
-SP_Util::getMinified('css', $cssFiles);
+SP\Util::getMinified('css', $cssFiles);

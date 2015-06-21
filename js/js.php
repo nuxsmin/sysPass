@@ -24,7 +24,8 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
+
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 $jsFiles = array(
 //    array("href" => "js/jquery.js", "min" => false),
@@ -68,7 +69,7 @@ $arrJsLang = array(
 );
 
 //$js = "// i18n language array from PHP. Detected language: " . SP_Init::$LANG . "\n";
-echo "var LANG = ['" . implode("','", SP_Util::arrayJSEscape($arrJsLang)) . "'];";
-echo "var APP_ROOT = '" . SP_Init::$WEBROOT . "';\n";
+echo "var LANG = ['" . implode("','", SP\Util::arrayJSEscape($arrJsLang)) . "'];";
+echo "var APP_ROOT = '" . SP\Init::$WEBROOT . "';\n";
 
-SP_Util::getMinified('js', $jsFiles, true);
+SP\Util::getMinified('js', $jsFiles, true);

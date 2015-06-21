@@ -1,5 +1,7 @@
 <!-- Start Tab - Info -->
-<div id="tabs-<?php echo $info_tabIndex; ?>">
+<div id="tabs-<?php use SP\Util;
+
+echo $info_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Información de la Aplicación'); ?>
     </div>
@@ -10,7 +12,7 @@
                 <?php echo _('Versión sysPass'); ?>
             </td>
             <td class="valField">
-                <?php echo implode('.', SP_Util::getVersion(true)); ?>
+                <?php echo implode('.', Util::getVersion(true)); ?>
             </td>
         </tr>
         <tr>

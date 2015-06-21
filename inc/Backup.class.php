@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -23,12 +23,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar la copia y restauración de sysPass.
  */
-class SP_Backup
+class Backup
 {
     /**
      * Realizar backup de la BBDD y aplicación.
@@ -37,8 +39,8 @@ class SP_Backup
      */
     public static function doBackup()
     {
-        $siteName = SP_Util::getAppInfo('appname');
-        $backupDir = SP_Init::$SERVERROOT;
+        $siteName = Util::getAppInfo('appname');
+        $backupDir = Init::$SERVERROOT;
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
         $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '.tar';
         $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '_db.sql';
@@ -47,13 +49,13 @@ class SP_Backup
             self::checkBackupDir($backupDstDir);
             self::backupTables('*', $bakFileDB);
             self::backupApp($bakFileApp);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             $message['action'] = __FUNCTION__;
             $message['text'][] = $e->getMessage();
 
-            SP_Log::wrLogInfo($message);
-            SP_Common::sendEmail($message);
+            Log::wrLogInfo($message);
+            Common::sendEmail($message);
 
             return false;
         }
@@ -67,12 +69,12 @@ class SP_Backup
      *
      * @param string $tables
      * @param string $backupFile
-     * @throws Exception
+     * @throws SPException
      * @return bool
      */
     private static function backupTables($tables = '*', $backupFile)
     {
-        $dbname = SP_Config::getValue("dbname");
+        $dbname = Config::getValue("dbname");
 
         try {
             $handle = fopen($backupFile, 'w');
@@ -105,14 +107,14 @@ class SP_Backup
                 $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
                 fwrite($handle, $sqlOut);
 
-                DB::setUnbuffered();
+                DB::setReturnRawData();
 
                 // Consulta para obtener los registros de la tabla
                 $queryRes = DB::getResults('SELECT * FROM ' . $tableName, __FUNCTION__);
 
                 $numColumns = $queryRes->columnCount();
 
-                while ($row = $queryRes->fetch(PDO::FETCH_NUM)) {
+                while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
                     fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
 
                     $field = 1;
@@ -133,7 +135,7 @@ class SP_Backup
                 }
                 fwrite($handle, PHP_EOL . PHP_EOL);
 
-                DB::setUnbuffered(false);
+                DB::setReturnRawData(false);
             }
 
             $sqlOut = '--' . PHP_EOL;
@@ -144,8 +146,8 @@ class SP_Backup
             fwrite($handle, $sqlOut);
 
             fclose($handle);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage());
         }
 
         return true;
@@ -161,12 +163,10 @@ class SP_Backup
     private static function backupApp($backupFile)
     {
         if (!class_exists('PharData')) {
-            if(SP_Util::runningOnWindows()){
-                throw new Exception(_('Esta operación sólo es posible en entornos Linux'));
-            }
-
-            if(!self::backupAppLegacyLinux($backupFile)){
-                throw new Exception(_('Error al realizar backup en modo compatibilidad'));
+            if (Util::runningOnWindows()) {
+                throw new SPException(SPException::SP_CRITICAL, _('Esta operación sólo es posible en entornos Linux'));
+            } elseif (!self::backupAppLegacyLinux($backupFile)) {
+                throw new SPException(SPException::SP_CRITICAL, _('Error al realizar backup en modo compatibilidad'));
             }
 
             return true;
@@ -175,17 +175,17 @@ class SP_Backup
         $compressedFile = $backupFile . '.gz';
 
         try {
-            if (file_exists($compressedFile)){
+            if (file_exists($compressedFile)) {
                 unlink($compressedFile);
             }
 
-            $archive = new PharData($backupFile);
-            $archive->buildFromDirectory(SP_Init::$SERVERROOT);
-            $archive->compress(Phar::GZ);
+            $archive = new \PharData($backupFile);
+            $archive->buildFromDirectory(Init::$SERVERROOT);
+            $archive->compress(\Phar::GZ);
 
             unlink($backupFile);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage());
         }
 
         return file_exists($backupFile);
@@ -200,7 +200,7 @@ class SP_Backup
     private static function backupAppLegacyLinux($backupFile)
     {
         $compressedFile = $backupFile . '.gz';
-        $backupDir = SP_Init::$SERVERROOT;
+        $backupDir = Init::$SERVERROOT;
         $bakDstDir = $backupDir . '/backup';
 
         $command = 'tar czf ' . $compressedFile . ' ' . $backupDir . ' --exclude "' . $bakDstDir . '" 2>&1';
@@ -213,21 +213,21 @@ class SP_Backup
      * Comprobar y crear el directorio de backups.
      *
      * @param string $backupDir ruta del directorio de backup
-     * @throws Exception
+     * @throws SPException
      * @return bool
      */
     private static function checkBackupDir($backupDir)
     {
         if (!is_dir($backupDir)) {
             if (!@mkdir($backupDir, 0550)) {
-                throw new Exception(('No es posible crear el directorio de backups') . ' (' . $backupDir . ')');
+                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $backupDir . ')');
             }
         }
 
         if (!is_writable($backupDir)) {
-            throw new Exception(_('Compruebe los permisos del directorio de backups'));
+            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
         }
 
         return true;
     }
-} 
+}

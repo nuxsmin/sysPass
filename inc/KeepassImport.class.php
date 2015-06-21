@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,18 +24,19 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de importar cuentas desde KeePass
  */
-class SP_KeepassImport
+class KeepassImport
 {
-
     /**
      * Iniciar la importación desde KeePass
+     *
      * @param object $xml
-     * @return none
      */
     public static function addKeepassAccounts($xml)
     {
@@ -45,17 +46,15 @@ class SP_KeepassImport
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param object $entries con el objeto XML con las entradas
+     * @param object $entries   con el objeto XML con las entradas
      * @param string $groupName con nombre del grupo a procesar
-     * @throws ImportException
-     * @return none
      */
     private static function getEntryData($entries, $groupName)
     {
-        foreach ( $entries as $entry ){
-            foreach ( $entry->String as $account ){
-                $value = (isset($account->Value)) ? (string) $account->Value : '';
-                switch ($account->Key){
+        foreach ($entries as $entry) {
+            foreach ($entry->String as $account) {
+                $value = (isset($account->Value)) ? (string)$account->Value : '';
+                switch ($account->Key) {
                     case 'Notes':
                         $notes = $value;
                         break;
@@ -74,8 +73,8 @@ class SP_KeepassImport
                 }
             }
 
-            $accountData = array($name,'KeePass',$groupName,$url,$username,$password,$notes);
-            SP_Import::addAccountData($accountData);
+            $accountData = array($name, 'KeePass', $groupName, $url, $username, $password, $notes);
+            Import::addAccountData($accountData);
         }
     }
 
@@ -83,33 +82,31 @@ class SP_KeepassImport
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
      * @param object $xml con objeto XML del archivo de KeePass
-     * @throws ImportException
-     * @return none
      */
     private static function getGroups($xml)
     {
-        foreach($xml as $node){
-            if ( $node->Group ){
-                foreach ( $node->Group as $group ){
+        foreach ($xml as $node) {
+            if ($node->Group) {
+                foreach ($node->Group as $group) {
                     $groupName = $group->Name;
                     // Analizar grupo
-                    if ( $node->Group->Entry ){
+                    if ($node->Group->Entry) {
                         // Obtener entradas
-                        self::getEntryData($group->Entry,$groupName);
+                        self::getEntryData($group->Entry, $groupName);
                     }
 
-                    if ( $group->Group ){
+                    if ($group->Group) {
                         // Analizar subgrupo
                         self::getGroups($group);
                     }
                 }
             }
 
-            if ( $node->Entry ){
+            if ($node->Entry) {
                 $groupName = $node->Name;
                 // Obtener entradas
-                self::getEntryData($node->Entry,$groupName);
+                self::getEntryData($node->Entry, $groupName);
             }
         }
     }
-} 
+}

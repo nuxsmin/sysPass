@@ -24,36 +24,37 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+SP\Util::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Common::parseParams('p', 'sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
+    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$doBackup = SP_Common::parseParams('p', 'backup', 0);
-$frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
-$frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
+$actionId = SP\Common::parseParams('p', 'actionId', 0);
+$onCloseAction = SP\Common::parseParams('p', 'onCloseAction');
+$activeTab = SP\Common::parseParams('p', 'activeTab', 0);
 
-$doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
+$doActionOnClose = "doAction('$actionId','',$activeTab);";
 
-if ($doBackup) {
-    if (!SP_Backup::doBackup()) {
-        SP_Common::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
+if ($actionId === \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
+    if (!SP\Backup::doBackup()) {
+        SP\Common::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 
     $message['action'] = _('Realizar Backup');
     $message['text'][] = _('Copia de la aplicación y base de datos realizada correctamente');
 
-    SP_Log::wrLogInfo($message);
-    SP_Common::sendEmail($message);
+    SP\Log::wrLogInfo($message);
+    SP\Common::sendEmail($message);
 
-    SP_Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
+    SP\Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
 }

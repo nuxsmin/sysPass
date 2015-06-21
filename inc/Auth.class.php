@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
  */
-class SP_Auth
+class Auth
 {
     static $userName;
     static $userEmail;
@@ -38,12 +40,12 @@ class SP_Auth
      * Autentificación de usuarios con LDAP.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return int|bool Número de error o boolean
      */
     public static function authUserLDAP($userLogin, $userPass)
     {
-        if (!SP_Util::ldapIsAvailable() || !SP_Util::ldapIsEnabled() || !SP_Ldap::checkLDAPParams()) {
+        if (!Util::ldapIsAvailable() || !Util::ldapIsEnabled() || !Ldap::checkLDAPParams()) {
             return false;
         }
 
@@ -52,14 +54,14 @@ class SP_Auth
 
         // Conectamos al servidor realizamos la conexión con el usuario proxy
         try {
-            SP_Ldap::ldapConnect();
-            SP_Ldap::ldapBind();
-            SP_Ldap::getUserDN($userLogin);
+            Ldap::ldapConnect();
+            Ldap::ldapBind();
+            Ldap::getUserDN($userLogin);
         } catch (Exception $e) {
             return false;
         }
 
-        $userDN = SP_Ldap::$ldapSearchData[0]['dn'];
+        $userDN = Ldap::$ldapSearchData[0]['dn'];
         // Mapeo de los atributos
         $attribsMap = array(
             'groupMembership' => 'group',
@@ -71,10 +73,10 @@ class SP_Auth
 
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
-            SP_Ldap::ldapBind($userDN, $userPass);
-            $attribs = SP_Ldap::getLDAPAttr($attribsMap);
+            Ldap::ldapBind($userDN, $userPass);
+            $attribs = Ldap::getLDAPAttr($attribsMap);
         } catch (Exception $e) {
-            return ldap_errno(SP_Ldap::getConn());
+            return ldap_errno(Ldap::getConn());
         }
 
         // Comprobamos si la cuenta está bloqueada o expirada
@@ -101,7 +103,7 @@ class SP_Auth
             }
             // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
         } else {
-            $ldapGroupAccess = SP_Ldap::searchUserInGroup($userDN);
+            $ldapGroupAccess = Ldap::searchUserInGroup($userDN);
         }
 
         if ($ldapGroupAccess == false) {
@@ -122,7 +124,7 @@ class SP_Auth
      */
     private static function checkLDAPGroup($group)
     {
-        $ldapGroup = strtolower(SP_Config::getValue('ldap_group'));
+        $ldapGroup = strtolower(Config::getValue('ldap_group'));
         $groupName = array();
 
         preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);
@@ -141,13 +143,13 @@ class SP_Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return bool
      */
     public static function authUserMySQL($userLogin, $userPass)
     {
-        if (SP_Users::checkUserIsMigrate($userLogin)) {
-            if (!SP_Users::migrateUser($userLogin, $userPass)) {
+        if (Users::checkUserIsMigrate($userLogin)) {
+            if (!Users::migrateUser($userLogin, $userPass)) {
                 return false;
             }
         }
@@ -173,23 +175,23 @@ class SP_Auth
      */
     public static function mailPassRecover($login, $email)
     {
-        if (SP_Users::checkUserMail($login, $email)
-            && !SP_Users::checkUserIsDisabled($login)
-            && !SP_Users::checkUserIsLDAP($login)
-            && !SP_Users::checkPassRecoverLimit($login)
+        if (Users::checkUserMail($login, $email)
+            && !Users::checkUserIsDisabled($login)
+            && !Users::checkUserIsLDAP($login)
+            && !Users::checkPassRecoverLimit($login)
         ) {
-            $hash = SP_Util::generate_random_bytes();
+            $hash = Util::generate_random_bytes();
 
             $message['action'] = _('Cambio de Clave');
-            $message['text'][] = SP_Html::strongText(_('Se ha solicitado el cambio de su clave de usuario.'));
+            $message['text'][] = Html::strongText(_('Se ha solicitado el cambio de su clave de usuario.'));
             $message['text'][] = '';
             $message['text'][] = _('Para completar el proceso es necesario que acceda a la siguiente URL:');
             $message['text'][] = '';
-            $message['text'][] = SP_Html::anchorText(SP_Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time());
+            $message['text'][] = Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time());
             $message['text'][] = '';
             $message['text'][] = _('Si no ha solicitado esta acción, ignore este mensaje.');
 
-            return (SP_Common::sendEmail($message, $email, false) && SP_Users::addPassRecover($login, $hash));
+            return (Common::sendEmail($message, $email, false) && Users::addPassRecover($login, $hash));
         } else {
             return false;
         }

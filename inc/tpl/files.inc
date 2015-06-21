@@ -1,8 +1,10 @@
 <div id="files-wrap" class="round">
     <ul id="files-list">
-        <?php foreach ($files as $file): ?>
+        <?php use SP\Html;
+
+        foreach ($files as $file): ?>
             <li class="files-item round">
-                <span title="<?php echo $file['name'] ?>"> <?php echo SP_Html::truncate($file['name'], 25); ?>
+                <span title="<?php echo $file['name'] ?>"> <?php echo Html::truncate($file['name'], 25); ?>
                     (<?php echo $file['size']; ?> KB)</span>
                 <?php if ($deleteEnabled === 1): ?>
                     <img src="imgs/delete.png" title="<?php echo _('Eliminar Archivo'); ?>" id="btnDelete"

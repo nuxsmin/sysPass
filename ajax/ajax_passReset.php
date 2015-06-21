@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,63 +24,64 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+SP\Util::checkReferer('POST');
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
+$sk = SP\Common::parseParams('p', 'sk', false);
+
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
+    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$userLogin = SP_Common::parseParams('p', 'login');
-$userEmail = SP_Common::parseParams('p', 'email');
-$userPass = SP_Common::parseParams('p', 'pass');
-$userPassV = SP_Common::parseParams('p', 'passv');
-$hash = SP_Common::parseParams('p', 'hash');
-$time = SP_Common::parseParams('p', 'time');
+$userLogin = SP\Common::parseParams('p', 'login');
+$userEmail = SP\Common::parseParams('p', 'email');
+$userPass = SP\Common::parseParams('p', 'pass');
+$userPassV = SP\Common::parseParams('p', 'passv');
+$hash = SP\Common::parseParams('p', 'hash');
+$time = SP\Common::parseParams('p', 'time');
 
 $message['action'] = _('Recuperación de Clave');
 
 if ($userLogin && $userEmail) {
-    if (SP_Auth::mailPassRecover($userLogin, $userEmail)) {
-        $message['text'][] = SP_Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')';
+    if (SP\Auth::mailPassRecover($userLogin, $userEmail)) {
+        $message['text'][] = SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')';
 
-        SP_Common::sendEmail($message);
-        SP_Log::wrLogInfo($message);
-        SP_Common::printJSON(_('Solicitud enviada') . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
+        SP\Common::sendEmail($message);
+        SP\Log::wrLogInfo($message);
+        SP\Common::printJSON(_('Solicitud enviada') . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
     } else {
         $message['text'][] = 'ERROR';
-        $message['text'][] = SP_Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')';
+        $message['text'][] = SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')';
 
-        SP_Common::sendEmail($message);
-        SP_Log::wrLogInfo($message);
-        SP_Common::printJSON(_('No se ha podido realizar la solicitud. Consulte con el administrador.'));
+        SP\Common::sendEmail($message);
+        SP\Log::wrLogInfo($message);
+        SP\Common::printJSON(_('No se ha podido realizar la solicitud. Consulte con el administrador.'));
     }
 }
 
 if ($userPass && $userPassV && $userPass === $userPassV) {
-    $userId = SP_Users::checkHashPassRecover($hash);
+    $userId = SP\Users::checkHashPassRecover($hash);
 
     if ($userId) {
-        $user = new SP_Users();
+        $user = new SP\Users();
 
         $user->userId = $userId;
         $user->userPass = $userPass;
 
-        if ($user->updateUserPass() && SP_Users::updateHashPassRecover($hash)) {
+        if ($user->updateUserPass() && SP\Users::updateHashPassRecover($hash)) {
             $message['action'] = _('Modificar Clave Usuario');
-            $message['text'][] = SP_Html::strongText(_('Login') . ': ') . $user->getUserLoginById($userId);
+            $message['text'][] = SP\Html::strongText(_('Login') . ': ') . $user->getUserLoginById($userId);
 
-            SP_Log::wrLogInfo($message);
-            SP_Common::sendEmail($message);
+            SP\Log::wrLogInfo($message);
+            SP\Common::sendEmail($message);
 
-            SP_Common::printJSON(_('Clave actualizada'), 0, 'goLogin();');
+            SP\Common::printJSON(_('Clave actualizada'), 0, 'goLogin();');
         }
     }
 
-    SP_Common::printJSON(_('Error al modificar la clave'));
+    SP\Common::printJSON(_('Error al modificar la clave'));
 } else {
-    SP_Common::printJSON(_('La clave es incorrecta o no coincide'));
+    SP\Common::printJSON(_('La clave es incorrecta o no coincide'));
 }

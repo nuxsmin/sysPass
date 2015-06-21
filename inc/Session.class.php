@@ -23,12 +23,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase para manejar la variable de sesion
  */
-class SP_Session
+class Session
 {
     /**
      * Obtiene el id de usuario de la sesión.
@@ -103,7 +105,7 @@ class SP_Session
     /**
      * Establece el id de perfil de usuario en la sesión.
      *
-     * @param SplInt $profileId
+     * @param int $profileId
      */
     public static function setUserProfileId($profileId)
     {
@@ -183,7 +185,7 @@ class SP_Session
     /**
      * Establece el nombre del grupo de usuario en la sesión.
      *
-     * @param SplString $groupName
+     * @param string $groupName
      */
     public static function setUserGroupName($groupName)
     {
@@ -243,10 +245,10 @@ class SP_Session
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param StdClass $profile
+     * @param \StdClass $profile
      */
-    public static function setUserProfile(StdClass $profile)
+    public static function setUserProfile(\StdClass $profile)
     {
-        $_SESSION["usrprofile"] = (object)$profile;
+        $_SESSION["usrprofile"] = $profile;
     }
 }

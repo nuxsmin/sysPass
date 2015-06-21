@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class SP_Acl implements \Controller\ActionsInterface
+class Acl implements Controller\ActionsInterface
 {
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
@@ -38,7 +40,7 @@ class SP_Acl implements \Controller\ActionsInterface
      * en la variable de sesión.
      *
      * @param string $action con el nombre de la acción
-     * @param int $userId opcional, con el Id del usuario
+     * @param int    $userId opcional, con el Id del usuario
      * @return bool
      */
     public static function checkUserAccess($action, $userId = 0)
@@ -49,64 +51,64 @@ class SP_Acl implements \Controller\ActionsInterface
             return false;
         }
 
-        $curUserIsAdminApp = SP_Session::getUserIsAdminApp();
-        $curUserIsAdminAcc = SP_Session::getUserIsAdminAcc();
-        $curUserProfile = SP_Session::getUserProfileId();
-        $curUserId = SP_Session::getUserId();
+        $curUserIsAdminApp = Session::getUserIsAdminApp();
+        $curUserIsAdminAcc = Session::getUserIsAdminAcc();
+        $curUserProfile = Session::getUserProfile();
+        $curUserId = Session::getUserId();
 
         switch ($action) {
             case self::ACTION_ACC_VIEW:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pView);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pView || $curUserProfile->pEdit);
             case self::ACTION_ACC_VIEW_PASS:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pViewPass);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pViewPass);
             case self::ACTION_ACC_VIEW_HISTORY:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pViewHistory);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pViewHistory);
             case self::ACTION_ACC_EDIT:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pEdit);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pEdit);
             case self::ACTION_ACC_EDIT_PASS:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pEditPass || $userId == $_SESSION["uid"]);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pEditPass);
             case self::ACTION_ACC_NEW:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pAdd);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pAdd);
             case self::ACTION_ACC_COPY:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || ($curUserProfile->userProfile_pAdd && $curUserProfile->userProfile_pView));
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || ($curUserProfile->pAdd && $curUserProfile->pView));
             case self::ACTION_ACC_DELETE:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pDelete);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pDelete);
             case self::ACTION_ACC_FILES:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->userProfile_pFiles);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pFiles);
             case self::ACTION_MGM:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pAppMgmtMenu);
+                return ($curUserIsAdminApp || $curUserProfile->pAppMgmtMenu);
             case self::ACTION_CFG:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfigMenu);
+                return ($curUserIsAdminApp || $curUserProfile->pConfigMenu);
             case self::ACTION_CFG_GENERAL:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfig);
+                return ($curUserIsAdminApp || $curUserProfile->pConfig);
             case self::ACTION_CFG_IMPORT:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfig);
+                return ($curUserIsAdminApp || $curUserProfile->pConfig);
             case self::ACTION_MGM_CATEGORIES:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pAppMgmtCategories);
+                return ($curUserIsAdminApp || $curUserProfile->pAppMgmtCategories);
             case self::ACTION_MGM_CUSTOMERS:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pAppMgmtCustomers);
+                return ($curUserIsAdminApp || $curUserProfile->pAppMgmtCustomers);
             case self::ACTION_CFG_ENCRYPTION:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfigMasterPass);
+                return ($curUserIsAdminApp || $curUserProfile->pConfigMasterPass);
             case self::ACTION_CFG_BACKUP:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pConfigBackup);
+                return ($curUserIsAdminApp || $curUserProfile->pConfigBackup);
             case self::ACTION_USR:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pUsersMenu);
+                return ($curUserIsAdminApp || $curUserProfile->pUsersMenu);
             case self::ACTION_USR_USERS:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pUsers);
+                return ($curUserIsAdminApp || $curUserProfile->pUsers);
             case self::ACTION_USR_USERS_EDITPASS:
-                return ($userId == $curUserId || $curUserIsAdminApp || $curUserProfile->userProfile_pUsers);
+                return ($userId == $curUserId || $curUserIsAdminApp || $curUserProfile->pUsers);
             case self::ACTION_USR_GROUPS:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pGroups);
+                return ($curUserIsAdminApp || $curUserProfile->pGroups);
             case self::ACTION_USR_PROFILES:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pProfiles);
+                return ($curUserIsAdminApp || $curUserProfile->pProfiles);
             case self::ACTION_EVL:
-                return ($curUserIsAdminApp || $curUserProfile->userProfile_pEventlog);
+                return ($curUserIsAdminApp || $curUserProfile->pEventlog);
         }
 
         $message['action'] = __FUNCTION__;
         $message['text'][] = _('Denegado acceso a') . " '" . self::getActionName($action) . "'";
 
-        SP_Log::wrLogInfo($message);
+        Log::wrLogInfo($message);
 
         return false;
     }
@@ -114,16 +116,16 @@ class SP_Acl implements \Controller\ActionsInterface
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string $module con la acción realizada
-     * @param array $accountData con los datos de la cuenta a verificar
+     * @param string $module      con la acción realizada
+     * @param array  $accountData con los datos de la cuenta a verificar
      * @return bool
      */
     public static function checkAccountAccess($module, $accountData)
     {
-        $userGroupId = SP_Session::getUserGroupId();
-        $userId = SP_Session::getUserId();
-        $userIsAdminApp = SP_Session::getUserIsAdminApp();
-        $userIsAdminAcc = SP_Session::getUserIsAdminAcc();
+        $userGroupId = Session::getUserGroupId();
+        $userId = Session::getUserId();
+        $userIsAdminApp = Session::getUserIsAdminApp();
+        $userIsAdminAcc = Session::getUserIsAdminAcc();
 
         $okView = ($userId == $accountData['user_id']
             || $userGroupId == $accountData['group_id']
@@ -143,7 +145,7 @@ class SP_Acl implements \Controller\ActionsInterface
             case self::ACTION_ACC_VIEW:
                 return $okView;
             case self::ACTION_ACC_VIEW_PASS:
-                return $okView;;
+                return $okView;
             case self::ACTION_ACC_VIEW_HISTORY:
                 return $okView;
             case self::ACTION_ACC_EDIT:
@@ -165,7 +167,8 @@ class SP_Acl implements \Controller\ActionsInterface
      * @param int $action El id de la acción
      * @return string
      */
-    public static function getActionName($action){
+    public static function getActionName($action)
+    {
         $actionName = array(
             self::ACTION_ACC_SEARCH => 'acc_search',
             self::ACTION_ACC_VIEW => 'acc_view',
@@ -193,7 +196,7 @@ class SP_Acl implements \Controller\ActionsInterface
             self::ACTION_EVL => 'evl'
         );
 
-        if (!isset($actionName[$action])){
+        if (!isset($actionName[$action])) {
             return 'action';
         }
 

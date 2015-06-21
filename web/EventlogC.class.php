@@ -23,7 +23,7 @@
  *
  */
 
-namespace Controller;
+namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -32,14 +32,19 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class EventlogC extends \SP_Controller implements ActionsInterface
+class EventlogC extends Controller implements ActionsInterface
 {
+    /**
+     * Número de máximo de registros por página
+     */
+    const MAX_ROWS = 50;
+
     /**
      * Constructor
      *
-     * @param $template \SP_Template con instancia de plantilla
+     * @param $template \SP\Template con instancia de plantilla
      */
-    public function __construct(\SP_Template $template = null)
+    public function __construct(\SP\Template $template = null)
     {
         parent::__construct($template);
     }
@@ -51,28 +56,41 @@ class EventlogC extends \SP_Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_EVL);
 
-        if (!$this->checkAccess()){
+        if (!$this->checkAccess()) {
             return;
         }
+
 
         $this->view->addTemplate('eventlog');
 
         $this->view->assign('rowClass', 'row_even');
-        $this->view->assign('isDemoMode', \SP_Util::demoIsEnabled());
-        $this->view->assign('start', (isset($this->view->start)) ? (int)$this->view->start : 0);
-        $this->view->assign('events', \SP_Log::getEvents($this->view->start));
-        $this->view->assign('numRows', \SP_Log::$numRows);
+        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
+        $this->view->assign('limitStart', (isset($this->view->limitStart)) ? (int)$this->view->limitStart : 0);
+        $this->view->assign('events', \SP\Log::getEvents($this->view->limitStart));
+        $this->view->assign('totalRows', \SP\Log::$numRows);
+        $this->view->assign('firstPage', ceil(($this->view->limitStart + 1) / self::MAX_ROWS));
+        $this->view->assign('lastPage', ceil(\SP\Log::$numRows / self::MAX_ROWS));
+
+        $limitLast = (\SP\Log::$numRows % self::MAX_ROWS == 0) ? \SP\Log::$numRows - self::MAX_ROWS : floor(\SP\Log::$numRows / self::MAX_ROWS) * self::MAX_ROWS;
+
+        $this->view->assign('pagerOnnClick', array(
+            'first' => 'navLog(0,' . $this->view->limitStart . ')',
+            'last' => 'navLog(' . $limitLast . ',' . $this->view->limitStart . ')',
+            'prev' => 'navLog(' . ($this->view->limitStart - self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
+            'next' => 'navLog(' . ($this->view->limitStart + self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
+        ));
     }
 
     /**
      * Comprobar si es necesario limpiar el registro de eventos
      */
-    public function checkClear(){
-        if ($this->view->clear && $this->view->sk && \SP_Common::checkSessionKey($this->view->sk)){
-            if ( \SP_Log::clearEvents() ){
-                \SP_Common::printJSON(_('Registro de eventos vaciado'), 0, "doAction('eventlog');scrollUp();");
-            } else{
-                \SP_Common::printJSON(_('Error al vaciar el registro de eventos'));
+    public function checkClear()
+    {
+        if ($this->view->clear && $this->view->sk && \SP\Common::checkSessionKey($this->view->sk)) {
+            if (\SP\Log::clearEvents()) {
+                \SP\Common::printJSON(_('Registro de eventos vaciado'), 0, "doAction(" . ActionsInterface::ACTION_EVL . "); scrollUp();");
+            } else {
+                \SP\Common::printJSON(_('Error al vaciar el registro de eventos'));
             }
         }
     }

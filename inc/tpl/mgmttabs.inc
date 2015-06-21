@@ -55,7 +55,7 @@
 
                     <li class="cell-actions round" style="width: <?php echo($numActions * 5 + 2); ?>%;">
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
-                            <?php if (isset($action['skip']) || ($action['id'] == \Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
+                            <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php $i++; ?>
                             <img src="<?php echo $action['img']; ?>" title="<?php echo $action['title']; ?>"
                                  class="inputImg <?php echo ($i >= $maxNumActions) ? 'actions-optional' : ''; ?>"
@@ -74,7 +74,9 @@
         </div>
 
         <div id="pageNav" class="round shadow">
-            <div id="pageNavLeft"><?php echo count($tab['query']); ?> @ <?php echo $tab['time']; ?> s</div>
+            <div id="pageNavLeft">
+                <?php echo count($tab['query']); ?> @ <?php echo $tab['time']; ?>s
+            </div>
         </div>
     </div>
 <?php endforeach; ?>

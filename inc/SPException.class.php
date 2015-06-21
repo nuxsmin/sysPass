@@ -1,5 +1,5 @@
 <?php
-/**
+ /**
  * sysPass
  *
  * @author    nuxsmin
@@ -23,24 +23,36 @@
  *
  */
 
-define('APP_ROOT', '..');
+namespace SP;
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+/**
+ * Extender la clase Exception para mostrar ayuda en los mensajes
+ */
+class SPException extends  \Exception{
+    const SP_CRITICAL = 1;
+    const SP_WARNING = 2;
+    private $_type;
+    private $_hint;
 
-SP\Util::checkReferer('GET');
+    public function __construct($type, $message, $hint = '', $code = 0, \Exception $previous = null)
+    {
+        $this->_type = $type;
+        $this->_hint = $hint;
+        parent::__construct($message, $code, $previous);
+    }
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+    public function __toString()
+    {
+        return __CLASS__ . ": [{$this->code}]: {$this->message} ({$this->_hint})\n";
+    }
+
+    public function getHint()
+    {
+        return $this->_hint;
+    }
+
+    public function getType()
+    {
+        return $this->_type;
+    }
 }
-
-$userId = SP\Common::parseParams('g', 'userId', false);
-
-if (!$userId) {
-    return;
-}
-
-$tpl = new SP\Template();
-$tpl->assign('userId', $userId);
-$controller = new SP\Controller\UsersMgmtC($tpl);
-$controller->getUserPass();
-$controller->view();

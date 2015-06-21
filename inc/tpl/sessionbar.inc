@@ -3,7 +3,8 @@
         <?php if ($showPassIcon): ?>
             <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?><img src="imgs/key.png" class="iconMini"
                                                                             title="<? echo _('Cambiar clave de usuario'); ?>"
-                                                                            Onclick="usrUpdPass(<?php echo $userId, ',\'', $userLogin, '\''; ?>)" />
+                                                                            data-itemid="<?php echo $currentUserId; ?>"
+                                                                            Onclick="usrUpdPass(this,<?php echo \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')" />
         <?php else: ?>
             <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
         <?php endif; ?>

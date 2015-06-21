@@ -23,7 +23,7 @@
  *
  */
 
-namespace Controller;
+namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class AccountsMgmtC extends \SP_Controller implements ActionsInterface
+class AccountsMgmtC extends Controller implements ActionsInterface
 {
     /**
      * Máximo numero de acciones antes de agrupar
@@ -42,14 +42,14 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP_Template con instancia de plantilla
+     * @param $template \SP\Template con instancia de plantilla
      */
-    public function __construct(\SP_Template $template = null)
+    public function __construct(\SP\Template $template = null)
     {
         parent::__construct($template);
 
-        $this->view->assign('isDemo', \SP_Util::demoIsEnabled());
-        $this->view->assign('sk', \SP_Common::getSessionKey());
+        $this->view->assign('isDemo', \SP\Util::demoIsEnabled());
+        $this->view->assign('sk', \SP\Common::getSessionKey());
     }
 
     /**
@@ -63,7 +63,7 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
 
         $categoriesTableProp = array(
             'tblId' => 'tblCategories',
@@ -102,7 +102,7 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
             'tabs',
             array(
                 'title' => _('Gestión de Categorías'),
-                'query' => \SP_Category::getCategories(),
+                'query' => \SP\Category::getCategories(),
                 'props' => $categoriesTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5))
         );
@@ -119,7 +119,7 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
 
         $customersTableProp = array(
             'tblId' => 'tblCustomers',
@@ -157,7 +157,7 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Clientes'),
-                'query' => \SP_Customer::getCustomers(),
+                'query' => \SP\Customer::getCustomers(),
                 'props' => $customersTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5))
         );
@@ -184,7 +184,7 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->view->addTemplate('customers');
 
-        $this->view->assign('customer', \SP_Customer::getCustomerData($this->view->itemId));
+        $this->view->assign('customer', \SP\Customer::getCustomerData($this->view->itemId));
     }
 
     /**
@@ -194,7 +194,7 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->view->addTemplate('categories');
 
-        $this->view->assign('category', \SP_Category::getCategoryData($this->view->itemId));
+        $this->view->assign('category', \SP\Category::getCategoryData($this->view->itemId));
     }
 
     /**
@@ -204,9 +204,9 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_ACC_FILES);
 
-        $this->view->assign('accountId', \SP_Common::parseParams('g', 'id', 0));
-        $this->view->assign('deleteEnabled', \SP_Common::parseParams('g', 'del', 0));
-        $this->view->assign('files', \SP_Files::getFileList($this->view->accountId, $this->view->deleteEnabled));
+        $this->view->assign('accountId', \SP\Common::parseParams('g', 'id', 0));
+        $this->view->assign('deleteEnabled', \SP\Common::parseParams('g', 'del', 0));
+        $this->view->assign('files', \SP\Files::getFileList($this->view->accountId, $this->view->deleteEnabled));
 
         if (!is_array($this->view->files) || count($this->view->files) === 0) {
             return;
@@ -214,6 +214,6 @@ class AccountsMgmtC extends \SP_Controller implements ActionsInterface
 
         $this->view->addTemplate('files');
 
-        $this->view->assign('sk', \SP_Common::getSessionKey());
+        $this->view->assign('sk', \SP\Common::getSessionKey());
     }
 }

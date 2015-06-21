@@ -2,7 +2,7 @@
 <?php if ($showform): ?>
     <form method="post" name="frmaccount" id="frmAccount">
 <?php endif; ?>
-    <?php if ($account->accountIsHistory): ?>
+    <?php if ($gotData && $accountIsHistory): ?>
         <table class="data round tblIcon">
     <?php else: ?>
         <table class="data round">
@@ -23,57 +23,47 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <?php SP_Html::printSelect(DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);?>
+                        <?php \SP\Html::printSelect(\SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'), $customersSelProp);?>
                         <br><br>
                         <input type="text" name="customer_new" maxlength="50"
                                placeholder="<?php echo _('Buscar en desplegable o introducir'); ?>"/>
                     <?php else: ?>
-                        echo $accountData->customer_name;
+                    <?php echo $accountData->customer_name; ?>
                     <?php endif; ?>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
-                    <?php
-                    if ($showform) {
-                        SP_Html::printSelect(DB::getValuesForSelect('categories', 'category_id', 'category_name'), $categoriesSelProp);
-                    } else {
-                        echo $accountData->category_name;
-                    }
-                    ?>
+                    <?php if ($showform): ?>
+                        <?php \SP\Html::printSelect($accountCategories, $categoriesSelProp); ?>
+                    <?php else: ?>
+                    <?php echo $accountData->category_name; ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('URL / IP'); ?></td>
                 <td class="valField">
-                    <?php
-                    if ($showform) {
-                        ?>
+                    <?php if ($showform): ?>
                         <input name="url" type="text" placeholder="<?php echo _('URL o IP de acceso'); ?>"
                                maxlength="255"
                                value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
-                    <?php
-                    } else {
-                        echo $accountData->account_url;
-                    }
-                    ?>
+                    <?php else: ?>
+                    <?php echo $accountData->account_url; ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Usuario'); ?></td>
                 <td class="valField">
-                    <?php
-                    if ($showform) {
-                        ?>
+                    <?php if ($showform): ?>
                         <input name="login" type="text" placeholder="<?php echo _('Usuario de acceso'); ?>"
                                maxlength="50"
                                value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
-                    <?php
-                    } else {
-                        echo $accountData->account_login;
-                    }
-                    ?>
+                    <?php else: ?>
+                    <?php echo $accountData->account_login; ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php if ($showPass): ?>
@@ -114,14 +104,14 @@
                                 <legend><?php echo _('Usuarios'); ?></legend>
                                 <select id="selUsers" name="otherusers[]" multiple="multiple">
                                     <?php
-                                    $users = array_flip(DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
+                                    $users = array_flip($otherUsers);
 
                                     foreach ($users as $otherUserName => $otherUserId) {
                                         $userSelected = '';
 
                                         if ($gotData && $otherUserId != $accountData->account_userId) {
-                                            if (isset($account->accountUsersId) && is_array($account->accountUsersId)) {
-                                                $userSelected = (in_array($otherUserId, $account->accountUsersId)) ? "selected" : "";
+                                            if (is_array($accountOtherUsers)) {
+                                                $userSelected = (in_array($otherUserId, $accountOtherUsers)) ? "selected" : "";
                                             }
                                             echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
                                         } else {
@@ -145,14 +135,14 @@
                                 <legend><?php echo _('Grupos'); ?></legend>
                                 <select id="selGroups" name="othergroups[]" multiple="multiple">
                                     <?php
-                                    $groups = array_flip(DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+                                    $groups = array_flip($otherGroups);
 
                                     foreach ($groups as $otherGroupName => $otherGroupId) {
                                         $uGroupSelected = '';
 
                                         if ($gotData && $otherGroupId != $accountData->account_userGroupId) {
-                                            if (isset($account->accountUserGroupsId) && is_array($account->accountUserGroupsId)) {
-                                                $uGroupSelected = (in_array($otherGroupId, $account->accountUserGroupsId)) ? "selected" : "";
+                                            if (is_array($accountOtherGroups)) {
+                                                $uGroupSelected = (in_array($otherGroupId, $accountOtherGroups)) ? "selected" : "";
                                             }
                                             echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
                                         } else {
@@ -178,9 +168,11 @@
         <?php if ($showform): ?>
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
         <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
-        <input type="hidden" name="savetyp" value="<?php echo $savetype; ?>">
-        <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
-        <input type="hidden" name="sk" value="<?php echo $skey; ?>">
+        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
+            <?php if ($gotData): ?>
+                <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
+            <?php endif; ?>
+        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
         <?php endif; ?>
@@ -191,43 +183,31 @@
         <td class="descField"><?php echo _('Archivos'); ?></td>
         <td class="valField">
             <div id="downFiles"></div>
-            <?php if ($account->accountIsHistory): ?>
-                <script>getFiles(<?php echo $account->accountParentId; ?>, <?php echo $filesDelete; ?>, '<?php echo $sk; ?>');</script>
+            <?php if ($accountIsHistory): ?>
+                <script>getFiles(<?php echo $accountParentId; ?>, <?php echo $filesDelete; ?>, '<?php echo $sk; ?>');</script>
             <?php else: ?>
-                <script>getFiles(<?php echo $account->accountId; ?>, <?php echo $filesDelete; ?>, '<?php echo $sk; ?>');    </script>
-            <?php if ($action == SP_Acl::ACTION_ACC_EDIT): ?>
+                <script>getFiles(<?php echo $accountId; ?>, <?php echo $filesDelete; ?>, '<?php echo $sk; ?>');    </script>
+            <?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
                 <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
                     <input type="file" id="inFile" name="inFile"/>
                 </form>
                 <div id="dropzone" class="round"
-                     data-files-ext="<?php echo SP_Config::getValue('files_allowed_exts'); ?>"
+                     data-files-ext="<?php echo $filesAllowedExts; ?>"
                      title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
                     <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                 </div>
-                <script> dropFile(<?php echo $account->accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
+                <script> dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
             <?php endif; ?>
             <?php endif; ?>
         </td>
     </tr>
 <?php endif; ?>
 
-<?php if ($showHistory): ?>
+<?php if ($showHistory && is_array($historyData) && count($historyData) > 0): ?>
     <tr>
         <td class="descField"><?php echo _('Historial'); ?></td>
         <td class="valField">
-            <?php
-            $arrSelectProp = array("name" => "historyId",
-                "id" => "sel-history",
-                "class" => "",
-                "size" => 1,
-                "label" => "",
-                "selected" => ($account->accountIsHistory) ? $account->accountId : "",
-                "default" => "",
-                "js" => "OnChange=\"if ( $('#sel-history').val() > 0 ) doAction(" . SP_Acl::ACTION_ACC_VIEW_HISTORY . "," . SP_Acl::ACTION_ACC_VIEW . ", $('#sel-history').val());\"",
-                "attribs" => '');
-
-            SP_Html::printSelect($account->getAccountHistoryList(), $arrSelectProp);
-            ?>
+            <?php SP\Html::printSelect($historyData, $historySelProp); ?>
             <script>$("#sel-history").chosen({
                     disable_search: true,
                     placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"
@@ -236,7 +216,7 @@
     </tr>
 <?php endif; ?>
 
-<?php if ($action == SP_Acl::ACTION_ACC_EDIT): ?>
+<?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
     <tr>
         <td class="descField"><?php echo _('Última Modificación'); ?></td>
         <?php if ($accountData->user_editName): ?>
@@ -265,16 +245,14 @@
             <td class="descField"><?php echo _('Grupo Principal'); ?></td>
             <td class="valField"><?php echo $accountData->usergroup_name; ?></td>
         </tr>
-        <?php if (isset($account->accountUsersId) && $account->accountUsersId !== false): ?>
+        <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
             <tr>
                 <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
                 <td class="valField">
                     <?php
-                    $users = SP_Users::getUsersNameForAccount($accountData->account_id);
-
-                    foreach ($users as $userId => $userName) {
+                    foreach ($accountOtherUsersName as $userId => $userName) {
                         if ($userId != $accountData->account_userId) {
-                            if (in_array($userId, $account->accountUsersId)) {
+                            if (in_array($userId, $accountOtherUsers)) {
                                 $accUsers[] = $userName;
                             }
                         }
@@ -286,16 +264,14 @@
                 </td>
             </tr>
         <?php endif; ?>
-        <?php if (isset($account->accountUserGroupsId) && $account->accountUserGroupsId !== false): ?>
+        <?php if (is_array($accountOtherGroups) && count($accountOtherGroups) > 0): ?>
             <tr>
                 <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
                 <td class="valField">
                     <?php
-                    $groups = SP_Groups::getGroupsNameForAccount($accountData->account_id);
-
-                    foreach ($groups as $groupId => $groupName) {
+                    foreach ($accountOtherGroupsName as $groupId => $groupName) {
                         if ($groupId != $accountData->account_userGroupId) {
-                            if (in_array($groupId, $account->accountUserGroupsId)) {
+                            if (in_array($groupId, $accountOtherGroups)) {
                                 $accGroups[] = $groupName;
                             }
                         }
@@ -321,11 +297,11 @@
     </table>
 <?php endif; ?>
 
-<?php if ($account->accountIsHistory): ?>
+<?php if ($gotData && $accountIsHistory): ?>
     <form method="post" name="frmaccount" id="frmAccount">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
-        <input type="hidden" name="savetyp" value="<?php echo $savetype; ?>">
-        <input type="hidden" name="accountid" value="<?php echo $account->accountId; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
+        <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
@@ -333,15 +309,15 @@
 
 <div class="action">
     <ul>
-        <?php if ($account->accountIsHistory): ?>
+        <?php if ($gotData && $accountIsHistory): ?>
             <li>
                 <img src="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack"
-                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_VIEW; ?>,<?php echo SP_Acl::ACTION_ACC_SEARCH; ?>,<?php echo $account->accountParentId; ?>)"/>
+                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"/>
             </li>
         <?php else: ?>
             <li>
                 <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                     OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $action; ?>,<?php echo $account->accountId; ?>)"/>
+                     OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo ($gotData) ? $accountId : 0; ?>)"/>
             </li>
         <?php endif; ?>
 
@@ -356,12 +332,12 @@
         <?php if ($showViewPass): ?>
             <li>
                 <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
-                     onClick="viewPass(<?php echo $account->accountId; ?>,1,<?php echo $account->accountIsHistory; ?>)"
+                     onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)"
                      class="inputImg"/>
             </li>
             <li>
                 <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                     onmousedown="viewPass(<?php echo $account->accountId; ?>, false, <?php echo $account->accountIsHistory; ?>)"
+                     onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
                      data-clipboard-target="clip-pass-text"
                      class="inputImg clip-pass-button"/>
             </li>
@@ -377,26 +353,26 @@
         <?php if ($showEditPass): ?>
             <li>
                 <img src="imgs/key.png" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="inputImg"
-                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_EDIT_PASS; ?>, <?php echo $action; ?>,<?php echo $account->accountId; ?>)"/>
+                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)"/>
             </li>
         <?php endif; ?>
 
         <?php if ($showEdit): ?>
             <li>
                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg"
-                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_EDIT; ?>,<?php echo SP_Acl::ACTION_ACC_VIEW; ?>,<?php echo $account->accountId; ?>)"/>
+                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)"/>
             </li>
-        <?php elseif (!$showEdit && $action == SP_Acl::ACTION_ACC_VIEW && SP_Util::mailrequestIsEnabled()): ?>
+        <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
             <li>
                 <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>" class="inputImg"
-                     OnClick="doAction(<?php echo SP_Acl::ACTION_ACC_REQUEST; ?>,<?php echo SP_Acl::ACTION_ACC_VIEW; ?>,<?php echo $account->accountId; ?>)"/>
+                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)"/>
             </li>
         <?php endif; ?>
 
         <?php if ($showDelete): ?>
             <li>
                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>" class="inputImg"
-                     OnClick="delAccount(<?php echo $account->accountId; ?>,3,'<?php echo $sk; ?>');"/>
+                     OnClick="delAccount(<?php echo $accountId; ?>,3,'<?php echo $sk; ?>');"/>
             </li>
         <?php endif; ?>
     </ul>

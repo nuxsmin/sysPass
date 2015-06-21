@@ -24,14 +24,15 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los clientes de sysPass
  */
-class SP_Customer
+class Customer
 {
-
     public static $customerName;
     public static $customerDescription;
     public static $customerLastId;
@@ -57,10 +58,10 @@ class SP_Customer
         self::$customerLastId = DB::$lastId;
 
         $message['action'] = _('Nuevo Cliente');
-        $message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . self::$customerName;
+        $message['text'][] = Html::strongText(_('Cliente') . ': ') . self::$customerName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -109,10 +110,10 @@ class SP_Customer
         }
 
         $message['action'] = _('Actualizar Cliente');
-        $message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName;
+        $message['text'][] = Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -157,10 +158,10 @@ class SP_Customer
         }
 
         $message['action'] = _('Eliminar Cliente');
-        $message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . $customerName;
+        $message['text'][] = Html::strongText(_('Cliente') . ': ') . $customerName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -238,7 +239,7 @@ class SP_Customer
     /**
      * Obtener el listado de clientes.
      *
-     * @param int $customerId     con el Id del cliente
+     * @param int  $customerId    con el Id del cliente
      * @param bool $retAssocArray para devolver un array asociativo
      * @return array con el id de cliente como clave y el nombre como valor
      */

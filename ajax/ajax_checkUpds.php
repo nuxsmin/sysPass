@@ -24,15 +24,16 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
-SP_Util::checkReferer('GET');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$checkVersion = SP_Common::parseParams('s', 'UPDATED', false, true);
+SP\Util::checkReferer('GET');
+
+$checkVersion = SP\Common::parseParams('s', 'UPDATED', false, true);
 
 // Una vez por sesión
 if (!$checkVersion) {
-    $_SESSION["UPDATED"] = $checkVersion = SP_Util::checkUpdates();
+    $_SESSION["UPDATED"] = $checkVersion = SP\Util::checkUpdates();
 }
 
 session_write_close();

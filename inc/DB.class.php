@@ -1,5 +1,4 @@
 <?php
-
 /**
  * sysPass
  *
@@ -24,88 +23,9 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-
-/**
- * Class DBConnectionFactory
- *
- * Esta clase se encarga de crear las conexiones a la BD
- */
-class DBConnectionFactory
-{
-    private static $factory;
-    private $db;
-
-    public static function getFactory()
-    {
-        if (!self::$factory) {
-//             FIXME
-//            error_log('NEW FACTORY');
-            self::$factory = new DBConnectionFactory();
-        }
-
-        return self::$factory;
-    }
-
-    /**
-     * Realizar la conexión con la BBDD.
-     * Esta función utiliza PDO para conectar con la base de datos.
-     *
-     * @throws Exception
-     * @return object|bool
-     */
-
-    public function getConnection()
-    {
-        if (!$this->db) {
-//             FIXME
-//            error_log('NEW DB_CONNECTION');
-            $isInstalled = SP_Config::getValue('installed');
-
-            $dbhost = SP_Config::getValue('dbhost');
-            $dbuser = SP_Config::getValue('dbuser');
-            $dbpass = SP_Config::getValue('dbpass');
-            $dbname = SP_Config::getValue('dbname');
-            $dbport = SP_Config::getValue('dbport', 3306);
-
-            if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
-                if ($isInstalled) {
-                    SP_Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
-                } else {
-                    throw new SPDatabaseException(_('No es posible conectar con la BD'), 1);
-                }
-            }
-
-            try {
-                $dsn = 'mysql:host=' . $dbhost . ';port=' . $dbport . ';dbname=' . $dbname . ';charset=utf8';
-//                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
-                $this->db = new PDO($dsn, $dbuser, $dbpass);
-            } catch (PDOException $e) {
-                if ($isInstalled) {
-                    if ($this->db->connect_errno === 1049) {
-                        SP_Config::setValue('installed', '0');
-                    }
-
-                    SP_Init::initError(_('No es posible conectar con la BD'), 'Error ' . $e->getCode() . ': ' . $e->getMessage());
-                } else {
-                    throw new SPDatabaseException($e->getMessage(), $e->getCode());
-                }
-            }
-        }
-
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $this->db;
-    }
-}
-
-/**
- * Class SPDatabaseException
- *
- * Clase para excepciones de BD de sysPass
- */
-class SPDatabaseException extends Exception
-{
-}
 
 /**
  * Esta clase es la encargada de realizar las operaciones con la BBDD de sysPass.
@@ -116,27 +36,27 @@ class DB
     static $numError = 0;
     static $last_num_rows = 0;
     static $lastId = null;
-    private static $retArray = false;
-    private static $unbuffered = false;
-    private static $fullRowCount = false;
+    private static $_retArray = false;
+    private static $_returnRawData = false;
+    private static $_fullRowCount = false;
 
     public $num_rows = 0;
     public $num_fields = 0;
-    private $last_result = null;
-    private $querySource;
+    private $_last_result = null;
+    private $_querySource;
 
     /**
      * Datos para el objeto PDOStatement
      *
      * @var array
      */
-    private $stData;
+    private $_stData;
 
     /**
      * Comprobar que la base de datos existe.
      *
      * @return bool
-     * @throws SPDatabaseException
+     * @throws SPException
      */
     public static function checkDatabaseExist()
     {
@@ -145,14 +65,14 @@ class DB
 
             $query = 'SELECT COUNT(*) '
                 . 'FROM information_schema.tables '
-                . 'WHERE table_schema=\'' . SP_Config::getValue("dbname") . '\' '
+                . 'WHERE table_schema=\'' . Config::getValue("dbname") . '\' '
                 . 'AND table_name = \'usrData\'';
 
             if ($db->query($query)->fetchColumn() !== 0) {
                 return true;
             }
-        } catch (PDOException $e) {
-            throw new SPDatabaseException($e->getMessage(), $e->getCode());
+        } catch (\Exception $e) {
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
 
         return false;
@@ -161,17 +81,17 @@ class DB
     /**
      * Obtener los datos para generar un select.
      *
-     * @param string $tblName    con el nombre de la tabla a cunsultar
-     * @param string $tblColId   con el nombre de la columna del tipo Id a mostrar
-     * @param string $tblColName con el nombre de la columna del tipo Name a mostrar
-     * @param array $arrFilter   con las columnas a filtrar
-     * @param array $arrOrder    con el orden de las columnas
+     * @param $tblName    string    con el nombre de la tabla a cunsultar
+     * @param $tblColId   string    con el nombre de la columna del tipo Id a mostrar
+     * @param $tblColName string    con el nombre de la columna del tipo Name a mostrar
+     * @param $arrFilter  array     con las columnas a filtrar
+     * @param $arrOrder   array     con el orden de las columnas
      * @return false|array con los valores del select con el Id como clave y el nombre como valor
      */
     public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
     {
         if (!$tblName || !$tblColId || !$tblColName) {
-            return;
+            return false;
         }
 
         $strFilter = (is_array($arrFilter)) ? " WHERE " . implode(" OR ", $arrFilter) : "";
@@ -195,17 +115,20 @@ class DB
         return $arrValues;
     }
 
+    /**
+     * Establecer si se devuelve un array de objetos siempre
+     */
     public static function setReturnArray()
     {
-        self::$retArray = true;
+        self::$_retArray = true;
     }
 
     /**
      * Obtener los resultados de una consulta.
      *
-     * @param string $query       con la consulta a realizar
-     * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param array $data         con los datos de la consulta
+     * @param  $query       string    con la consulta a realizar
+     * @param  $querySource string    con el nombre de la función que realiza la consulta
+     * @param  $data        array     con los datos de la consulta
      * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
     public static function getResults($query, $querySource, &$data = null)
@@ -217,87 +140,87 @@ class DB
 
         try {
             $db = new DB();
-            $db->querySource = $querySource;
-            $db->stData = $data;
-            $doQuery = $db->doQuery($query, $querySource, self::$unbuffered);
-        } catch (SPDatabaseException $e) {
-            $db->logDBException($query, $e->getMessage(), $e->getCode());
+            $db->_querySource = $querySource;
+            $db->_stData = $data;
+            $doQuery = $db->doQuery($query, $querySource, self::$_returnRawData);
+        } catch (SPException $e) {
+            self::logDBException($query, $e->getMessage(), $e->getCode(), $querySource);
             return false;
         }
 
-        if (self::$unbuffered && is_object($doQuery) && get_class($doQuery) == "PDOStatement") {
+        if (self::$_returnRawData && is_object($doQuery) && get_class($doQuery) == "PDOStatement") {
             return $doQuery;
         }
 
-        DB::$last_num_rows = (self::$fullRowCount === false) ? $db->num_rows : $db->getFullRowCount($query);
+        DB::$last_num_rows = (self::$_fullRowCount === false) ? $db->num_rows : $db->getFullRowCount($query);
 
         if ($db->num_rows == 0) {
             self::resetVars();
             return false;
         }
 
-        if ($db->num_rows == 1 && self::$retArray === false) {
+        if ($db->num_rows == 1 && self::$_retArray === false) {
             self::resetVars();
-            return $db->last_result[0];
+            return $db->_last_result[0];
         }
 
         self::resetVars();
-        return $db->last_result;
+        return $db->_last_result;
     }
 
+    /**
+     * Restablecer los atributos estáticos
+     */
     private static function resetVars()
     {
-        self::$unbuffered = false;
-        self::$fullRowCount = false;
-        self::$retArray = false;
+        self::$_returnRawData = false;
+        self::$_fullRowCount = false;
+        self::$_retArray = false;
     }
 
     /**
      * Realizar una consulta a la BBDD.
      *
-     * @param string $query       con la consulta a realizar
-     * @param string $querySource con el nombre de la función que realiza la consulta
-     * @param bool $unbuffered    realizar la consulta para obtener registro a registro
+     * @param $query       string  con la consulta a realizar
+     * @param $querySource string  con el nombre de la función que realiza la consulta
+     * @param $getRawData  bool    realizar la consulta para obtener registro a registro
      * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
-     * @throws SPDatabaseException
+     * @throws SPException
      */
-    public function doQuery(&$query, $querySource, $unbuffered = false)
+    public function doQuery(&$query, $querySource, $getRawData = false)
     {
         $isSelect = preg_match("/^(select|show)\s/i", $query);
 
         // Limpiar valores de caché y errores
-        $this->last_result = array();
+        $this->_last_result = array();
 
         try {
             $queryRes = $this->prepareQueryData($query);
-        } catch (SPDatabaseException $e) {
-            throw new SPDatabaseException($e->getMessage(), $e->getCode());
+        } catch (SPException $e) {
+            throw $e;
         }
 
         if ($isSelect) {
-            if (!$unbuffered) {
+            if (!$getRawData) {
                 $this->num_fields = $queryRes->columnCount();
-                $this->last_result = $queryRes->fetchAll(PDO::FETCH_OBJ);
+                $this->_last_result = $queryRes->fetchAll(\PDO::FETCH_OBJ);
             } else {
                 return $queryRes;
             }
 
-            $queryRes->closeCursor();
+//            $queryRes->closeCursor();
 
-//            $this->num_rows = $this->getFullRowCount($query);
-            $this->num_rows = count($this->last_result);
-
-//            return $this->num_rows;
+            $this->num_rows = count($this->_last_result);
         }
     }
 
     /**
      * Asociar los parámetros de la consulta utilizando el tipo adecuado
      *
-     * @param &$query
-     * @param $isCount
+     * @param &$query  string La consulta a realizar
+     * @param $isCount bool   Indica si es una consulta de contador de registros
      * @return bool
-     * @throws SPDatabaseException
+     * @throws SPException
      */
     private function prepareQueryData(&$query, $isCount = false)
     {
@@ -313,11 +236,11 @@ class DB
         try {
             $db = DBConnectionFactory::getFactory()->getConnection();
 
-            if (is_array($this->stData)) {
+            if (is_array($this->_stData)) {
                 $sth = $db->prepare($query);
                 $paramIndex = 0;
 
-                foreach ($this->stData as $param => $value) {
+                foreach ($this->_stData as $param => $value) {
                     // Si la clave es un número utilizamos marcadores de posición "?" en
                     // la consulta. En caso contrario marcadores de nombre
                     $param = (is_int($param)) ? $param + 1 : ':' . $param;
@@ -327,13 +250,13 @@ class DB
                     }
 
                     if ($param == 'blobcontent') {
-                        $sth->bindValue($param, $value, PDO::PARAM_LOB);
+                        $sth->bindValue($param, $value, \PDO::PARAM_LOB);
                     } elseif (is_int($value)) {
-                        //error_log("INT: " . $param . " -> " . $value);
-                        $sth->bindValue($param, $value, PDO::PARAM_INT);
+//                        error_log("INT: " . $param . " -> " . $value);
+                        $sth->bindValue($param, $value, \PDO::PARAM_INT);
                     } else {
-                        //error_log("STR: " . $param . " -> " . $value);
-                        $sth->bindValue($param, $value, PDO::PARAM_STR);
+//                        error_log("STR: " . $param . " -> " . $value);
+                        $sth->bindValue($param, $value, \PDO::PARAM_STR);
                     }
 
                     $paramIndex++;
@@ -347,26 +270,24 @@ class DB
             DB::$lastId = $db->lastInsertId();
 
             return $sth;
-        } catch (PDOException $e) {
+        } catch (\Exception $e) {
             error_log("Exception: " . $e->getMessage());
-            throw new SPDatabaseException($e->getMessage());
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
-
-        return false;
     }
 
     /**
      * Método para registar los eventos de BD en el log
      *
-     * @param $query
-     * @param $errorMsg
-     * @param $errorCode
+     * @param $query     string  La consulta que genera el error
+     * @param $errorMsg  string  El mensaje de error
+     * @param $errorCode int     El código de error
      */
-    private function logDBException($query, $errorMsg, $errorCode)
+    private static function logDBException($query, $errorMsg, $errorCode, $querySource)
     {
-        $message['action'] = $this->querySource;
+        $message['action'] = $querySource;
         $message['text'][] = $errorMsg . '(' . $errorCode . ')';
-        $message['text'][] = "SQL: " . DB::escape($query);
+        $message['text'][] = "SQL: " . self::escape($query);
 
         error_log($query);
         error_log($errorMsg);
@@ -375,7 +296,7 @@ class DB
     /**
      * Escapar una cadena de texto con funciones de mysqli.
      *
-     * @param string $str con la cadena a escapar
+     * @param $str string con la cadena a escapar
      * @return string con la cadena escapada
      */
     public static function escape($str)
@@ -384,7 +305,7 @@ class DB
             $db = DBConnectionFactory::getFactory()->getConnection();
 
             return $db->quote(trim($str));
-        } catch (SPDatabaseException $e) {
+        } catch (SPException $e) {
             return $str;
         }
     }
@@ -392,8 +313,9 @@ class DB
     /**
      * Obtener el número de filas de una consulta realizada
      *
+     * @param &$query string La consulta para contar los registros
      * @return int Número de files de la consulta
-     * @throws SPDatabaseException
+     * @throws SPException
      */
     private function getFullRowCount(&$query)
     {
@@ -401,6 +323,7 @@ class DB
             return 0;
         }
 
+        $num = 0;
         $patterns = array(
             '/(LIMIT|ORDER BY|GROUP BY).*/i',
             '/SELECT DISTINCT\s([\w_]+),.* FROM/i',
@@ -413,7 +336,7 @@ class DB
         try {
             $db = DBConnectionFactory::getFactory()->getConnection();
 
-            if (!is_array($this->stData)) {
+            if (!is_array($this->_stData)) {
                 $queryRes = $db->query($query);
                 $num = intval($queryRes->fetchColumn());
             } else {
@@ -425,23 +348,21 @@ class DB
             $queryRes->closeCursor();
 
             return $num;
-        } catch (PDOException $e) {
+        } catch (SPException $e) {
             error_log("Exception: " . $e->getMessage());
-            throw new SPDatabaseException($e->getMessage());
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
-
-        return 0;
     }
 
     /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param $query
-     * @param $querySource
-     * @param bool $unbuffered
+     * @param      $query       string La consulta a realizar
+     * @param      $querySource string La función orígen de la consulta
+     * @param      $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */
-    public static function getQuery($query, $querySource, &$data = null, $unbuffered = false)
+    public static function getQuery($query, $querySource, &$data = null, $getRawData = false)
     {
         if (empty($query)) {
             return false;
@@ -449,15 +370,14 @@ class DB
 
         try {
             $db = new DB();
-            $db->querySource = $querySource;
-            $db->stData = $data;
-            $db->doQuery($query, $querySource, $unbuffered);
+            $db->_querySource = $querySource;
+            $db->_stData = $data;
+            $db->doQuery($query, $querySource, $getRawData);
             DB::$last_num_rows = $db->num_rows;
-        } catch (SPDatabaseException $e) {
-            $db->logDBException($query, $e->getMessage(), $e->getCode());
-
-            DB::$txtError = $e->getMessage();
-            DB::$numError = $e->getCode();
+        } catch (SPException $e) {
+            self::logDBException($query, $e->getMessage(), $e->getCode(), $querySource);
+            self::$txtError = $e->getMessage();
+            self::$numError = $e->getCode();
 
             return false;
         }
@@ -465,14 +385,22 @@ class DB
         return true;
     }
 
-    public static function setUnbuffered($on = true)
+    /**
+     * Establecer si se devuelven los datos obtenidos como PDOStatement
+     *
+     * @param bool $on
+     */
+    public static function setReturnRawData($on = true)
     {
-        self::$unbuffered = (bool)$on;
+        self::$_returnRawData = (bool)$on;
     }
 
+    /**
+     * Establecer si es necesario contar el número total de resultados devueltos
+     */
     public static function setFullRowCount()
     {
-        self::$fullRowCount = true;
+        self::$_fullRowCount = true;
     }
 
     /**
@@ -498,7 +426,7 @@ class DB
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
 
-        } catch (SPDatabaseException $e) {
+        } catch (SPException $e) {
             return $dbinfo;
         }
 
@@ -512,6 +440,6 @@ class DB
      */
     public function setParamData(&$data)
     {
-        $this->stData = $data;
+        $this->_stData = $data;
     }
 }

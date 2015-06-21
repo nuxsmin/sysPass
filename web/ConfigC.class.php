@@ -23,9 +23,7 @@
  *
  */
 
-namespace Controller;
-
-use SP_Util;
+namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -34,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class ConfigC extends \SP_Controller implements ActionsInterface
+class ConfigC extends Controller implements ActionsInterface
 {
     private $_tabIndex = 0;
     public $activeTab = 0;
@@ -42,14 +40,14 @@ class ConfigC extends \SP_Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP_Template con instancia de plantilla
+     * @param $template \SP\Template con instancia de plantilla
      */
-    public function __construct(\SP_Template $template = null)
+    public function __construct(\SP\Template $template = null)
     {
         parent::__construct($template);
 
         $this->view->assign('tabs', array());
-        $this->view->assign('sk', \SP_Common::getSessionKey(true));
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
     }
 
     /**
@@ -75,63 +73,67 @@ class ConfigC extends \SP_Controller implements ActionsInterface
                 'Français' => 'fr_FR')
         );
         $this->view->assign('arrAccountCount', array(6, 9, 12, 15, 21, 27, 30, 51, 99));
-        $this->view->assign('isDemoMode', \SP_Util::demoIsEnabled());
-        $this->view->assign('isDisabled', (\SP_Util::demoIsEnabled()) ? 'DISABLED' : '');
-        $this->view->assign('chkLog', (\SP_Config::getValue('log_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkDebug', (\SP_Config::getValue('debug')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMaintenance', (\SP_Config::getValue('maintenance')) ? 'checked="checked"' : '');
-        $this->view->assign('chkUpdates', (\SP_Config::getValue('checkupdates')) ? 'checked="checked"' : '');
-        $this->view->assign('chkGlobalSearch', (\SP_Config::getValue('globalsearch')) ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountLink', (\SP_Config::getValue('account_link')) ? 'checked="checked"' : '');
-        $this->view->assign('chkFiles', (\SP_Config::getValue('files_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkWiki', (\SP_Config::getValue('wiki_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkLdap', (\SP_Config::getValue('ldap_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkLdapADS', (\SP_Config::getValue('ldap_ads')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMail', (\SP_Config::getValue('mail_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMailRequests', (\SP_Config::getValue('mail_requestsenabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMailAuth', (\SP_Config::getValue('mail_authenabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkResultsAsCards', (\SP_Config::getValue('resultsascards')) ? 'checked="checked"' : '');
+        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
+        $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled()) ? 'DISABLED' : '');
+        $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkDebug', (\SP\Config::getValue('debug')) ? 'checked="checked"' : '');
+        $this->view->assign('chkMaintenance', (\SP\Config::getValue('maintenance')) ? 'checked="checked"' : '');
+        $this->view->assign('chkUpdates', (\SP\Config::getValue('checkupdates')) ? 'checked="checked"' : '');
+        $this->view->assign('chkGlobalSearch', (\SP\Config::getValue('globalsearch')) ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountLink', (\SP\Config::getValue('account_link')) ? 'checked="checked"' : '');
+        $this->view->assign('chkFiles', (\SP\Config::getValue('files_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkWiki', (\SP\Config::getValue('wiki_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkLdap', (\SP\Config::getValue('ldap_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkLdapADS', (\SP\Config::getValue('ldap_ads')) ? 'checked="checked"' : '');
+        $this->view->assign('chkMail', (\SP\Config::getValue('mail_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkMailRequests', (\SP\Config::getValue('mail_requestsenabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkMailAuth', (\SP\Config::getValue('mail_authenabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', (\SP\Config::getValue('resultsascards')) ? 'checked="checked"' : '');
 
-        $this->view->assign('filesAllowedExts', \SP_Config::getValue('files_allowed_exts'));
-        $this->view->assign('filesAllowedSize', \SP_Config::getValue('files_allowed_size'));
-        $this->view->assign('groupsSelData', \DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->view->assign('filesAllowedExts', \SP\Config::getValue('files_allowed_exts'));
+        $this->view->assign('filesAllowedSize', \SP\Config::getValue('files_allowed_size'));
+        $this->view->assign('groupsSelData', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
         $this->view->assign('groupsSelProp',
             array('name' => 'ldap_defaultgroup',
                 'id' => 'ldap_defaultgroup',
                 'class' => '',
                 'size' => 1,
                 'label' => '',
-                'selected' => \SP_Config::getValue('ldap_defaultgroup'),
+                'selected' => \SP\Config::getValue('ldap_defaultgroup'),
                 'default' => '',
                 'js' => '',
                 'attribs' => array('required', $this->view->isDisabled))
         );
-        $this->view->assign('profilesSelData', \DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
+        $this->view->assign('profilesSelData', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
         $this->view->assign('profilesSelProp',
             array('name' => 'ldap_defaultprofile',
                 'id' => 'ldap_defaultprofile',
                 'class' => '',
                 'size' => 1,
                 'label' => '',
-                'selected' => \SP_Config::getValue('ldap_defaultprofile'),
+                'selected' => \SP\Config::getValue('ldap_defaultprofile'),
                 'default' => '',
                 'js' => '',
                 'attribs' => array('required', $this->view->isDisabled))
         );
-        $this->view->assign('currentLang', \SP_Config::getValue('sitelang'));
-        $this->view->assign('sessionTimeout', \SP_Config::getValue('session_timeout'));
-        $this->view->assign('accountCount', \SP_Config::getValue('account_count'));
-        $this->view->assign('wikiSearchUrl', \SP_Config::getValue('wiki_searchurl'));
-        $this->view->assign('wikiPageUrl', \SP_Config::getValue('wiki_pageurl'));
-        $this->view->assign('wikiFilter', \SP_Config::getValue('wiki_filter'));
-        $this->view->assign('ldapIsAvailable', \SP_Util::ldapIsAvailable());
-        $this->view->assign('ldapServer', \SP_Config::getValue('ldap_server'));
-        $this->view->assign('ldapBindUser', \SP_Config::getValue('ldap_binduser'));
-        $this->view->assign('ldapBindPass', \SP_Config::getValue('ldap_bindpass'));
-        $this->view->assign('ldapBase', \SP_Config::getValue('ldap_base'));
-        $this->view->assign('ldapGroup', \SP_Config::getValue('ldap_group'));
-        $this->view->assign('currentMailSecurity', \SP_Config::getValue('mail_security'));
-        $this->view->assign('mailFrom', \SP_Config::getValue('mail_from'));
+        $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
+        $this->view->assign('sessionTimeout', \SP\Config::getValue('session_timeout'));
+        $this->view->assign('accountCount', \SP\Config::getValue('account_count'));
+        $this->view->assign('wikiSearchUrl', \SP\Config::getValue('wiki_searchurl'));
+        $this->view->assign('wikiPageUrl', \SP\Config::getValue('wiki_pageurl'));
+        $this->view->assign('wikiFilter', \SP\Config::getValue('wiki_filter'));
+        $this->view->assign('ldapIsAvailable', \SP\Util::ldapIsAvailable());
+        $this->view->assign('ldapServer', \SP\Config::getValue('ldap_server'));
+        $this->view->assign('ldapBindUser', \SP\Config::getValue('ldap_binduser'));
+        $this->view->assign('ldapBindPass', \SP\Config::getValue('ldap_bindpass'));
+        $this->view->assign('ldapBase', \SP\Config::getValue('ldap_base'));
+        $this->view->assign('ldapGroup', \SP\Config::getValue('ldap_group'));
+        $this->view->assign('mailServer', \SP\Config::getValue('mail_server','localhost'));
+        $this->view->assign('mailPort', \SP\Config::getValue('mail_port',25));
+        $this->view->assign('mailUser', \SP\Config::getValue('mail_user'));
+        $this->view->assign('mailPass', \SP\Config::getValue('mail_pass'));
+        $this->view->assign('currentMailSecurity', \SP\Config::getValue('mail_security'));
+        $this->view->assign('mailFrom', \SP\Config::getValue('mail_from'));
         $this->view->assign('mailSecurity', array('SSL', 'TLS'));
         $this->view->append('tabs', array('title' => _('Configuración')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'config');
@@ -152,9 +154,9 @@ class ConfigC extends \SP_Controller implements ActionsInterface
 
         $this->view->addTemplate('encryption');
 
-        $this->view->assign('lastUpdateMPass', \SP_Config::getConfigDbValue("lastupdatempass"));
-        $this->view->assign('tempMasterPassTime', \SP_Config::getConfigDbValue("tempmaster_passtime"));
-        $this->view->assign('tempMasterMaxTime', \SP_Config::getConfigDbValue("tempmaster_maxtime"));
+        $this->view->assign('lastUpdateMPass', \SP\Config::getConfigDbValue("lastupdatempass"));
+        $this->view->assign('tempMasterPassTime', \SP\Config::getConfigDbValue("tempmaster_passtime"));
+        $this->view->assign('tempMasterMaxTime', \SP\Config::getConfigDbValue("tempmaster_maxtime"));
         $this->view->append('tabs', array('title' => _('Encriptación')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');
     }
@@ -174,9 +176,9 @@ class ConfigC extends \SP_Controller implements ActionsInterface
 
         $this->view->addTemplate('backup');
 
-        $this->view->assign('siteName', SP_Util::getAppInfo('appname'));
-        $this->view->assign('backupDir', \SP_Init::$SERVERROOT . '/backup');
-        $this->view->assign('backupPath', \SP_Init::$WEBROOT . '/backup');
+        $this->view->assign('siteName', \SP\Util::getAppInfo('appname'));
+        $this->view->assign('backupDir', \SP\Init::$SERVERROOT . '/backup');
+        $this->view->assign('backupPath', \SP\Init::$WEBROOT . '/backup');
 
         $this->view->assign('backupFile',
             array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '.tar.gz',
@@ -225,7 +227,7 @@ class ConfigC extends \SP_Controller implements ActionsInterface
 
         $this->view->addTemplate('info');
 
-        $this->view->assign('dbInfo', \DB::getDBinfo());
+        $this->view->assign('dbInfo', \SP\DB::getDBinfo());
         $this->view->append('tabs', array('title' => _('Información')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');
     }

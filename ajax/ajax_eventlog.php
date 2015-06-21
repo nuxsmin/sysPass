@@ -24,23 +24,24 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Util::logout();
+SP\Util::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Util::logout();
 }
 
-$start = SP_Common::parseParams('p', 'start', 0);
-$clear = SP_Common::parseParams('p', 'clear', 0);
-$sk = SP_Common::parseParams('p', 'sk', false);
+$start = SP\Common::parseParams('p', 'start', 0);
+$clear = SP\Common::parseParams('p', 'clear', 0);
+$sk = SP\Common::parseParams('p', 'sk', false);
 
-$tpl = new SP_Template();
-$tpl->assign('start', $start);
+$tpl = new SP\Template();
+$tpl->assign('limitStart', $start);
 $tpl->assign('clear', $clear);
 $tpl->assign('sk', $sk);
-$controller = new EventlogController($tpl);
+$controller = new SP\Controller\EventlogC($tpl);
 $controller->checkClear();
 $controller->getEventlog();
 echo $tpl->render();

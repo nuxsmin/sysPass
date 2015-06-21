@@ -23,10 +23,14 @@
  *
  */
 
+namespace SP\Controller;
+
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Clase base para los controladores
  */
-abstract class SP_Controller
+abstract class Controller
 {
     /**
      * Constantes de errores
@@ -36,25 +40,22 @@ abstract class SP_Controller
     const ERR_PAGE_NO_PERMISSION = 2;
     const ERR_UPDATE_MPASS = 3;
     const ERR_OPERATION_NO_PERMISSION = 4;
+
     /**
-     * @var Nombre del controlador
-     */
-    public $controller;
-    /**
-     * @var Instancia del motor de plantillas a utilizar
+     * @var \SP\Template Instancia del motor de plantillas a utilizar
      */
     public $view;
     /**
-     * @var Módulo a usar
+     * @var int Módulo a usar
      */
-    protected $_action; // FIXME: revisar visibilidad
+    protected $_action;
 
     /**
      * Constructor
      *
-     * @param $template SP_Template con instancia de plantilla
+     * @param $template \SP\Template con instancia de plantilla
      */
-    public function __construct(\SP_Template $template = null)
+    public function __construct(\SP\Template $template = null)
     {
         global $timeStart;
 
@@ -71,11 +72,29 @@ abstract class SP_Controller
      * Obtener una nueva instancia del motor de plantillas.
      *
      * @param null $template string con el nombre de la plantilla
-     * @return SP_Template
+     * @return \SP\Template
      */
     protected function getTemplate($template = null)
     {
-        return new SP_Template($template);
+        return new \SP\Template($template);
+    }
+
+    /**
+     * @return int El id de la acción
+     */
+    public function getAction()
+    {
+        return $this->_action;
+    }
+
+    /**
+     * Establecer el módulo a presentar.
+     *
+     * @param int $action El id de la acción
+     */
+    public function setAction($action)
+    {
+        $this->_action = $action;
     }
 
     /**
@@ -87,23 +106,27 @@ abstract class SP_Controller
     }
 
     /**
-     * Establecer la instancia del motor de plantillas a utilizar.
-     *
-     * @param SP_Template $template
+     * Obtener los datos para la vista de depuración
      */
-    protected function setTemplate(SP_Template $template)
+    public function getDebug()
     {
-        $this->view = $template;
+        global $memInit;
+
+        $this->view->addTemplate('debug');
+
+        $this->view->assign('time', (\SP\Init::microtime_float() - $this->view->timeStart));
+        $this->view->assign('memInit', $memInit / 1000);
+        $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
 
     /**
-     * Establecer el módulo a presentar.
+     * Establecer la instancia del motor de plantillas a utilizar.
      *
-     * @param $action int con el número de módulo
+     * @param \SP\Template $template
      */
-    protected function setAction($action)
+    protected function setTemplate(\SP\Template $template)
     {
-        $this->_action = $action;
+        $this->view = $template;
     }
 
     /**
@@ -113,7 +136,7 @@ abstract class SP_Controller
      */
     protected function checkAccess()
     {
-        if (!\SP_Acl::checkUserAccess($this->_action)) {
+        if (!\SP\Acl::checkUserAccess($this->_action)) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
         }
@@ -140,7 +163,7 @@ abstract class SP_Controller
             $this->view->resetTemplates();
         }
 
-        if ($fancy){
+        if ($fancy) {
             $this->view->addTemplate('errorfancy');
         } else {
             $this->view->addTemplate('error');
@@ -152,19 +175,5 @@ abstract class SP_Controller
                 'description' => $errorsTypes[$type]['txt'],
                 'hint' => $errorsTypes[$type]['hint'])
         );
-    }
-
-    /**
-     * Obtener los datos para la vista de depuración
-     */
-    public function getDebug()
-    {
-        global $memInit;
-
-        $this->view->addTemplate('debug');
-
-        $this->view->assign('time', (SP_Init::microtime_float() - $this->view->timeStart));
-        $this->view->assign('memInit', $memInit / 1000);
-        $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
 }

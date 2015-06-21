@@ -23,24 +23,16 @@
  *
  */
 
-define('APP_ROOT', '..');
+define('MODEL_PATH', __DIR__);
+define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
+define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'tpl');
+define('EXTENSIONS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ext');
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require_once MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
 
-SP\Util::checkReferer('GET');
+// Empezar a calcular el tiempo y memoria utilizados
+$memInit = memory_get_usage();
+$timeStart = \SP\Init::microtime_float();
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
-}
-
-$userId = SP\Common::parseParams('g', 'userId', false);
-
-if (!$userId) {
-    return;
-}
-
-$tpl = new SP\Template();
-$tpl->assign('userId', $userId);
-$controller = new SP\Controller\UsersMgmtC($tpl);
-$controller->getUserPass();
-$controller->view();
+// Inicializar sysPass
+\SP\Init::start();

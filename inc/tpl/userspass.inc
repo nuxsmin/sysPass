@@ -20,7 +20,7 @@
             </td>
         </tr>
     </table>
-    <input type="hidden" name="itemId" value="<?php echo $userId; ?>" />
+    <input type="hidden" name="itemId" value="<?php echo $currentUserId; ?>" />
     <input type="hidden" name="actionId" value="<?php echo $actionId; ?>" />
     <input type="hidden" name="sk" value="<?php echo $sk; ?>">
 </form>

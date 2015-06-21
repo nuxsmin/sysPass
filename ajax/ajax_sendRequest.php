@@ -1,10 +1,9 @@
 <?php
-
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -23,52 +22,54 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 define('APP_ROOT', '..');
-require_once APP_ROOT.DIRECTORY_SEPARATOR.'inc'.DIRECTORY_SEPARATOR.'Init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+SP\Util::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Common::parseParams('p', 'sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
+    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmAccountId = SP_Common::parseParams('p', 'accountid', 0);
-$frmDescription = SP_Common::parseParams('p', 'description');
+$frmAccountId = SP\Common::parseParams('p', 'accountid', 0);
+$frmDescription = SP\Common::parseParams('p', 'description');
 
 if (!$frmDescription) {
-    SP_Common::printJSON(_('Es necesaria una descripción'));
+    SP\Common::printJSON(_('Es necesaria una descripción'));
 }
 
-$accountRequestData = SP_Accounts::getAccountRequestData($frmAccountId);
+$accountRequestData = SP\Account::getAccountRequestData($frmAccountId);
 
 $recipients = array(
-    SP_Users::getUserEmail($accountRequestData->account_userId),
-    SP_Users::getUserEmail($accountRequestData->account_userEditId)
+    SP\Users::getUserEmail($accountRequestData->account_userId),
+    SP\Users::getUserEmail($accountRequestData->account_userEditId)
 );
 
-$requestUsername = SP_Common::parseParams('s', 'uname');
-$requestLogin = SP_Common::parseParams('s', 'ulogin');
+$requestUsername = SP\Common::parseParams('s', 'uname');
+$requestLogin = SP\Common::parseParams('s', 'ulogin');
 
 $message['action'] = _('Solicitud de Modificación de Cuenta');
-$message['text'][] = SP_Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')';
-$message['text'][] = SP_Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name;
-$message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name;
-$message['text'][] = SP_Html::strongText(_('Descripción') . ': ') . $frmDescription;
+$message['text'][] = SP\Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')';
+$message['text'][] = SP\Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name;
+$message['text'][] = SP\Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name;
+$message['text'][] = SP\Html::strongText(_('Descripción') . ': ') . $frmDescription;
 
 $mailto = implode(',', $recipients);
 
 if ($mailto
-    && SP_Util::mailrequestIsEnabled()
-    && SP_Common::sendEmail($message, $mailto)
+    && SP\Util::mailrequestIsEnabled()
+    && SP\Common::sendEmail($message, $mailto)
 ) {
-    SP_Log::wrLogInfo($message);
-    SP_Common::printJSON(_('Solicitud enviada'), 0, "doAction('accsearch');");
+    SP\Log::wrLogInfo($message);
+    SP\Common::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
 }
 
-SP_Common::printJSON(_('Error al enviar la solicitud'));
+SP\Common::printJSON(_('Error al enviar la solicitud'));

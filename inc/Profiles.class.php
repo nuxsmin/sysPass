@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,14 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los perfiles de usuarios.
  */
-class SP_Profiles
+class Profiles
 {
     static $profileId;
     static $profileName;
@@ -37,6 +39,7 @@ class SP_Profiles
 
     /**
      * Obtener los datos de un perfil
+     *
      * @param int $id con el Id del perfil a consultar
      * @return array con el nombre de la columna como clave y los datos como valor
      */
@@ -85,6 +88,7 @@ class SP_Profiles
 
     /**
      * Obtener los datos de un perfil
+     *
      * @param int $profileId opcional, con el Id del perfil a consultar
      * @return array con la lista de perfiles
      */
@@ -130,6 +134,7 @@ class SP_Profiles
 
     /**
      * Comprobar si un perfil existe
+     *
      * @return bool
      */
     public static function checkProfileExist()
@@ -157,6 +162,7 @@ class SP_Profiles
 
     /**
      * Añadir un nuevo perfil
+     *
      * @param array $profileProp con las propiedades del perfil
      * @return bool
      */
@@ -218,10 +224,10 @@ class SP_Profiles
         self::$queryLastId = DB::$lastId;
 
         $message['action'] = _('Nuevo Perfil');
-        $message['text'][] = SP_Html::strongText(_('Perfil') . ': ') . self::$profileName;
+        $message['text'][] = Html::strongText(_('Perfil') . ': ') . self::$profileName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -293,10 +299,10 @@ class SP_Profiles
         self::$queryLastId = DB::$lastId;
 
         $message['action'] = _('Modificar Perfil');
-        $message['text'][] = SP_Html::strongText(_('Perfil') . ': ') . $profileName . ' > ' . self::$profileName;
+        $message['text'][] = Html::strongText(_('Perfil') . ': ') . $profileName . ' > ' . self::$profileName;
 
-        SP_Log::wrLogInfo($message);
-        SP_Common::sendEmail($message);
+        Log::wrLogInfo($message);
+        Common::sendEmail($message);
 
         return true;
     }
@@ -378,7 +384,7 @@ class SP_Profiles
      */
     public static function getProfileForUser($userId = 0)
     {
-        $userId = SP_Session::getUserId();
+        $userId = Session::getUserId();
 
         if (!$userId) {
             return false;
@@ -401,7 +407,10 @@ class SP_Profiles
             . 'BIN(userProfile_pUsers) AS pUsers,'
             . 'BIN(userProfile_pGroups) AS pGroups,'
             . 'BIN(userProfile_pProfiles) AS pProfiles,'
-            . 'BIN(userProfile_pEventlog) AS pEventlog '
+            . 'BIN(userProfile_pEventlog) AS pEventlog,'
+            . 'BIN(userProfile_pConfigMenu) AS pConfigMenu,'
+            . 'BIN(userProfile_pAppMgmtMenu) AS pAppMgmtMenu,'
+            . 'BIN(userProfile_pUsersMenu) AS pUsersMenu '
             . 'FROM usrData '
             . 'JOIN usrProfiles ON userProfile_Id = user_profileId '
             . 'WHERE user_id = :id LIMIT 1';

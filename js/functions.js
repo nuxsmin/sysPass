@@ -86,10 +86,10 @@ $(document).ready(function () {
 //});
 
 // Función para cargar el contenido de la acción del menú seleccionada
-function doAction(action, lastAction, id) {
+function doAction(actionId, lastAction, itemId) {
     "use strict";
 
-    var data = {'action': action, 'lastAction': lastAction, 'id': id, isAjax: 1};
+    var data = {'actionId': actionId, 'lastAction': lastAction, 'itemId': itemId, isAjax: 1};
 
     $('#content').fadeOut(function () {
         $.fancybox.showLoading();

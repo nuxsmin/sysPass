@@ -23,24 +23,26 @@
  *
  */
 
+namespace SP;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es encargada de ejecutar acciones comunes para las funciones
  */
-class SP_Common
+class Common
 {
     /**
      * Enviar un email utilizando la clase PHPMailer.
      *
-     * @param array $message con el nombre de la accióm y el texto del mensaje
-     * @param string $mailTo con el destinatario
-     * @param bool $isEvent  para indicar si es um
+     * @param array  $message con el nombre de la accióm y el texto del mensaje
+     * @param string $mailTo  con el destinatario
+     * @param bool   $isEvent para indicar si es um
      * @return bool
      */
     public static function sendEmail($message, $mailTo = '', $isEvent = true)
     {
-        if (!SP_Util::mailIsEnabled()) {
+        if (!Util::mailIsEnabled()) {
             return false;
         }
 
@@ -59,17 +61,17 @@ class SP_Common
 
         if ($isEvent === true) {
             $performer = (isset($_SESSION["ulogin"])) ? $_SESSION["ulogin"] : _('N/D');
-            $body[] = SP_Html::strongText(_('Acción') . ": ") . $message['action'];
-            $body[] = SP_Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
+            $body[] = Html::strongText(_('Acción') . ": ") . $message['action'];
+            $body[] = Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
 
-            $mail->addCC(SP_Config::getValue('mail_from'));
+            $mail->addCC(Config::getValue('mail_from'));
         }
 
         $body[] = (is_array($message['text'])) ? implode($newline, $message['text']) : '';
         $body[] = '';
         $body[] = '--';
-        $body[] = SP_Util::getAppInfo('appname') . ' - ' . SP_Util::getAppInfo('appdesc');
-        $body[] = SP_Html::anchorText(SP_Init::$WEBURI);
+        $body[] = Util::getAppInfo('appname') . ' - ' . Util::getAppInfo('appdesc');
+        $body[] = Html::anchorText(Init::$WEBURI);
 
 
         $mail->Body = implode($newline, $body);
@@ -86,11 +88,11 @@ class SP_Common
 
         $log['text'][] = '';
         $log['text'][] = _('Destinatario') . ": $mailTo";
-        $log['text'][] = ($isEvent === true) ? _('CC') . ": " . SP_Config::getValue('mail_from') : '';
+        $log['text'][] = ($isEvent === true) ? _('CC') . ": " . Config::getValue('mail_from') : '';
 
         $log['action'] = _('Enviar Email');
 
-        SP_Log::wrLogInfo($log);
+        Log::wrLogInfo($log);
         return $sendMail;
     }
 
@@ -103,15 +105,15 @@ class SP_Common
      */
     public static function getEmailObject($mailTo, $action)
     {
-        $appName = SP_Util::getAppInfo('appname');
-        $mailFrom = SP_Config::getValue('mail_from');
-        $mailServer = SP_Config::getValue('mail_server');
-        $mailPort = SP_Config::getValue('mail_port', 25);
-        $mailAuth = SP_Config::getValue('mail_authenabled', FALSE);
+        $appName = Util::getAppInfo('appname');
+        $mailFrom = Config::getValue('mail_from');
+        $mailServer = Config::getValue('mail_server');
+        $mailPort = Config::getValue('mail_port', 25);
+        $mailAuth = Config::getValue('mail_authenabled', FALSE);
 
         if ($mailAuth) {
-            $mailUser = SP_Config::getValue('mail_user');
-            $mailPass = SP_Config::getValue('mail_pass');
+            $mailUser = Config::getValue('mail_user');
+            $mailPass = Config::getValue('mail_pass');
         }
 
         if (!$mailServer) {
@@ -135,7 +137,7 @@ class SP_Common
         $mail->Port = $mailPort;
         $mail->Username = $mailUser;
         $mail->Password = $mailPass;
-        $mail->SMTPSecure = strtolower(SP_Config::getValue('mail_security'));
+        $mail->SMTPSecure = strtolower(Config::getValue('mail_security'));
         //$mail->SMTPDebug = 2;
         //$mail->Debugoutput = 'error_log';
 
@@ -152,7 +154,7 @@ class SP_Common
      * Devuelve una respuesta en formato XML con el estado y el mensaje.
      *
      * @param string $description mensaje a devolver
-     * @param int $status         devuelve el estado
+     * @param int    $status      devuelve el estado
      * @return bool
      */
     public static function printXML($description, $status = 1)
@@ -176,9 +178,9 @@ class SP_Common
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param string|array $data mensaje a devolver
-     * @param int $status        devuelve el estado
-     * @param string $action     con la accion a realizar
+     * @param string|array $data   mensaje a devolver
+     * @param int          $status devuelve el estado
+     * @param string       $action con la accion a realizar
      * @return bool
      */
     public static function printJSON($data, $status = 1, $action = '')
@@ -198,7 +200,7 @@ class SP_Common
             );
         } else {
             array_walk($data,
-                function (&$value, &$key, $arrStrFrom, $arrStrTo) {
+                function (&$value, &$key) use ($arrStrFrom, $arrStrTo) {
                     return str_replace($arrStrFrom, $arrStrTo, $value);
                 }
             );
@@ -295,12 +297,12 @@ class SP_Common
      * Obtener los valores de variables $_GET, $_POST, $_REQUEST o $_SESSION
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $method  con el método a utilizar
-     * @param string $param   con el parámetro a consultar
-     * @param mixed $default  opcional, valor por defecto a devolver
-     * @param bool $onlyCHeck opcional, comprobar si el parámetro está presente
-     * @param mixed $force    opcional, valor devuelto si el parámeto está definido
-     * @param bool $sanitize  opcional, escapar/eliminar carácteres especiales
+     * @param string $method    con el método a utilizar
+     * @param string $param     con el parámetro a consultar
+     * @param mixed  $default   opcional, valor por defecto a devolver
+     * @param bool   $onlyCHeck opcional, comprobar si el parámetro está presente
+     * @param mixed  $force     opcional, valor devuelto si el parámeto está definido
+     * @param bool   $sanitize  opcional, escapar/eliminar carácteres especiales
      * @return bool|string si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
     public static function parseParams($method, $param, $default = '', $onlyCHeck = false, $force = false, $sanitize = true)
@@ -349,7 +351,7 @@ class SP_Common
         }
 
         if (is_string($out)) {
-            return ($method != 's' && $sanitize === true) ? SP_Html::sanitize($out) : $out;
+            return ($method != 's' && $sanitize === true) ? Html::sanitize($out) : $out;
         }
 
         if (is_array($out)) {
