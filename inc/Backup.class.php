@@ -50,13 +50,7 @@ class Backup
             self::backupTables('*', $bakFileDB);
             self::backupApp($bakFileApp);
         } catch (\Exception $e) {
-
-            $message['action'] = __FUNCTION__;
-            $message['text'][] = $e->getMessage();
-
-            Log::wrLogInfo($message);
-            Common::sendEmail($message);
-
+            Log::writeNewLogAndEmail(__FUNCTION__, $e->getMessage());
             return false;
         }
 

@@ -51,6 +51,12 @@ class Upgrade
                         _('Error al aplicar la actualización de la Base de Datos'),
                         _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
                 }
+
+                if(self::auxUpgrades($upgradeVersion) === false){
+                    Init::initError(
+                        _('Error al aplicar la actualización auxiliar'),
+                        _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
+                }
             }
         }
 
@@ -65,7 +71,7 @@ class Upgrade
      */
     private static function upgradeTo($version)
     {
-        $result['action'] = _('Actualizar BBDD');
+        $log = new Log(_('Actualizar BBDD'));
 
         switch ($version) {
             case 110:
@@ -102,9 +108,10 @@ class Upgrade
                 $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_userEditId` `account_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL;';
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_userEditId` `acchistory_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `acchistory_dateEdit` `acchistory_dateEdit` DATETIME NULL DEFAULT NULL;';
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';';
+                $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_profile` BLOB NOT NULL;';
                 break;
             default :
-                $result['text'][] = _('No es necesario actualizar la Base de Datos.');
+                $log->addDescription(_('No es necesario actualizar la Base de Datos.'));
                 return true;
         }
 
@@ -112,15 +119,19 @@ class Upgrade
             try {
                 DB::getQuery($query, __FUNCTION__);
             } catch (SPException $e) {
-                $result['text'][] = _('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')';
-                $result['text'][] = 'ERROR: ' . $e->getMessage() . ' (' . $e->getCode() . ')';
-                Log::wrLogInfo($result);
+                $log->addDescription(_('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')');
+                $log->addDescription('ERROR: ' . $e->getMessage() . ' (' . $e->getCode() . ')');
+                $log->writeLog();
+
+                Email::sendEmail($log);
                 return false;
             }
         }
 
-        $result['text'][] = _('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')';
-        Log::wrLogInfo($result);
+        $log->addDescription(_('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')');
+        $log->writeLog();
+
+        Email::sendEmail($log);
 
         return true;
     }
@@ -154,7 +165,7 @@ class Upgrade
     /**
      * Migrar valores de configuración.
      *
-     * @param int $version con el número de versión
+     * @param int $version El número de versión
      * @return bool
      */
     public static function upgradeConfig($version)
@@ -194,10 +205,24 @@ class Upgrade
             }
         }
 
-        $result['action'] = _('Actualizar Configuración');
-        $result['text'][] = _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')';
-        Log::wrLogInfo($result);
+        Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')');
 
         return true;
+    }
+
+    /**
+     * Aplicar actualizaciones auxiliares.
+     *
+     * @param $version int El número de versión
+     * @return bool
+     */
+    private static function auxUpgrades($version){
+        switch ($version){
+            case 12001:
+                return Profile::migrateProfiles();
+                break;
+            default:
+                break;
+        }
     }
 }

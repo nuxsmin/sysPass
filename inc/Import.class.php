@@ -48,10 +48,8 @@ class Import
         try {
             self::readDataFromFile($fileData);
         } catch (SPException $e) {
-            $message['action'] = _('Importar Cuentas');
-            $message['text'][] = $e->getMessage();
+            Log::writeNewLog(_('Importar Cuentas'), $e->getMessage());
 
-            Log::wrLogInfo($message);
             self::$_result['error'][] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
             return (self::$_result);
         }
@@ -150,13 +148,10 @@ class Import
             }
 
             if (!self::addAccountData($fields)) {
-                $message['action'] = _('Importar Cuentas');
-                $message['text'][] = _('Error importando cuenta');
-                $message['text'][] = $data;
-
-                Log::wrLogInfo($message);
-
-                unset($message);
+                $log = new Log(_('Importar Cuentas'));
+                $log->addDescription(_('Error importando cuenta'));
+                $log->addDescription($data);
+                $log->writeLog();
             }
         }
 
@@ -173,8 +168,8 @@ class Import
     public static function addAccountData($data)
     {
         // Datos del Usuario
-        $userId = Common::parseParams('s', 'uid', 0);
-        $groupId = Common::parseParams('s', 'ugroup', 0);
+        $userId = Session::getUserId();
+        $groupId = Session::getUserGroupId();
 
         // Asignamos los valores del array a variables
         list($accountName, $customerName, $categoryName, $url, $username, $password, $notes) = $data;

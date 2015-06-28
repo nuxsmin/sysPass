@@ -23,19 +23,21 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Util::logout();
 }
 
-$start = SP\Common::parseParams('p', 'start', 0);
-$clear = SP\Common::parseParams('p', 'clear', 0);
-$sk = SP\Common::parseParams('p', 'sk', false);
+$start = SP\Request::analyze('start', 0);
+$clear = SP\Request::analyze('clear', 0);
+$sk = SP\Request::analyze('sk', false);
 
 $tpl = new SP\Template();
 $tpl->assign('limitStart', $start);

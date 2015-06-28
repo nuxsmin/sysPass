@@ -31,7 +31,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los perfiles de usuarios.
  */
-class Profiles
+class Profile extends ProfileBase
 {
     static $profileId;
     static $profileName;
@@ -87,49 +87,105 @@ class Profiles
     }
 
     /**
-     * Obtener los datos de un perfil
+     * Migrar los perfiles con formato anterior a v1.2
      *
-     * @param int $profileId opcional, con el Id del perfil a consultar
-     * @return array con la lista de perfiles
+     * @return bool
      */
-    public static function getProfiles($profileId = null)
+    public static function migrateProfiles()
     {
-        $data = null;
-
-        if (!is_null($profileId)) {
-            $query = 'SELECT userprofile_id AS id,'
-                . 'userprofile_name AS name,'
-                . 'BIN(userProfile_pView) AS pView,'
-                . 'BIN(userProfile_pViewPass) AS pViewPass,'
-                . 'BIN(userProfile_pViewHistory) AS pViewHistory,'
-                . 'BIN(userProfile_pEdit) AS pEdit,'
-                . 'BIN(userProfile_pEditPass) AS pEditPass,'
-                . 'BIN(userProfile_pAdd) AS pAdd,'
-                . 'BIN(userProfile_pDelete) AS pDelete,'
-                . 'BIN(userProfile_pFiles) AS pFiles,'
-                . 'BIN(userProfile_pConfig) AS pConfig,'
-                . 'BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,'
-                . 'BIN(userProfile_pConfigBackup) AS pConfigBackup,'
-                . 'BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,'
-                . 'BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,'
-                . 'BIN(userProfile_pUsers) AS pUsers,'
-                . 'BIN(userProfile_pGroups) AS pGroups,'
-                . 'BIN(userProfile_pProfiles) AS pProfiles,'
-                . 'BIN(userProfile_pEventlog) AS pEventlog '
-                . 'FROM usrProfiles '
-                . 'WHERE userprofile_id = :id LIMIT 1';
-
-            $data['id'] = $profileId;
-        } else {
-            $query = 'SELECT userprofile_id,'
-                . 'userprofile_name '
-                . 'FROM usrProfiles '
-                . 'ORDER BY userprofile_name';
-        }
+        $query = 'SELECT userprofile_id AS id,'
+            . 'userprofile_name AS name,'
+            . 'BIN(userProfile_pView) AS pView,'
+            . 'BIN(userProfile_pViewPass) AS pViewPass,'
+            . 'BIN(userProfile_pViewHistory) AS pViewHistory,'
+            . 'BIN(userProfile_pEdit) AS pEdit,'
+            . 'BIN(userProfile_pEditPass) AS pEditPass,'
+            . 'BIN(userProfile_pAdd) AS pAdd,'
+            . 'BIN(userProfile_pDelete) AS pDelete,'
+            . 'BIN(userProfile_pFiles) AS pFiles,'
+            . 'BIN(userProfile_pConfig) AS pConfig,'
+            . 'BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,'
+            . 'BIN(userProfile_pConfigBackup) AS pConfigBackup,'
+            . 'BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,'
+            . 'BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,'
+            . 'BIN(userProfile_pUsers) AS pUsers,'
+            . 'BIN(userProfile_pGroups) AS pGroups,'
+            . 'BIN(userProfile_pProfiles) AS pProfiles,'
+            . 'BIN(userProfile_pEventlog) AS pEventlog '
+            . 'FROM usrProfiles';
 
         DB::setReturnArray();
 
-        return DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === false) {
+            Log::writeNewLog(_('Migrar Perfiles'), _('Error al obtener perfiles'));
+            return false;
+        }
+
+        foreach ($queryRes as $oldProfile){
+            $profile = new Profile();
+            $profile->setId($oldProfile->id);
+            $profile->setName($oldProfile->name);
+            $profile->setAccAdd($oldProfile->pAdd);
+            $profile->setAccView($oldProfile->pView);
+            $profile->setAccViewPass($oldProfile->pViewPass);
+            $profile->setAccViewHistory($oldProfile->pViewHistory);
+            $profile->setAccEdit($oldProfile->pEdit);
+            $profile->setAccEditPass($oldProfile->pEditPass);
+            $profile->setAccDelete($oldProfile->pDelete);
+            $profile->setConfigGeneral($oldProfile->pConfig);
+            $profile->setConfigEncryption($oldProfile->pConfigMasterPass);
+            $profile->setConfigBackup($oldProfile->pConfigBackup);
+            $profile->setMgmCategories($oldProfile->pAppMgmtCategories);
+            $profile->setMgmCustomers($oldProfile->pAppMgmtCustomers);
+            $profile->setMgmUsers($oldProfile->pUsers);
+            $profile->setMgmGroups($oldProfile->pGroups);
+            $profile->setMgmProfiles($oldProfile->pProfiles);
+            $profile->setEvl($oldProfile->pEventlog);
+
+            if ($profile->profileUpdate() === false){
+                return false;
+            }
+        }
+
+        $query = 'ALTER TABLE usrProfiles '
+            . 'DROP COLUMN userProfile_pAppMgmtCustomers,'
+            . 'DROP COLUMN userProfile_pAppMgmtCategories,'
+            . 'DROP COLUMN userProfile_pAppMgmtMenu,'
+            . 'DROP COLUMN userProfile_pUsersMenu,'
+            . 'DROP COLUMN userProfile_pConfigMenu,'
+            . 'DROP COLUMN userProfile_pFiles,'
+            . 'DROP COLUMN userProfile_pViewHistory,'
+            . 'DROP COLUMN userProfile_pEventlog,'
+            . 'DROP COLUMN userProfile_pEditPass,'
+            . 'DROP COLUMN userProfile_pViewPass,'
+            . 'DROP COLUMN userProfile_pDelete,'
+            . 'DROP COLUMN userProfile_pProfiles,'
+            . 'DROP COLUMN userProfile_pGroups,'
+            . 'DROP COLUMN userProfile_pUsers,'
+            . 'DROP COLUMN userProfile_pConfigBackup,'
+            . 'DROP COLUMN userProfile_pConfigMasterPass,'
+            . 'DROP COLUMN userProfile_pConfig,'
+            . 'DROP COLUMN userProfile_pAdd,'
+            . 'DROP COLUMN userProfile_pEdit,'
+            . 'DROP COLUMN userProfile_pView';
+
+        $queryRes = DB::getQuery($query, __FUNCTION__);
+
+        $log = new Log(_('Migrar Perfiles'));
+
+        if ($queryRes) {
+            $log->addDescription(_('Operación realizada correctamente'));
+        } else {
+            $log->addDescription(_('Migrar Perfiles'), _('Fallo al realizar la operación'));
+        }
+
+        $log->writeLog();
+
+        Email::sendEmail($log);
+
+        return $queryRes;
     }
 
     /**
@@ -223,11 +279,7 @@ class Profiles
 
         self::$queryLastId = DB::$lastId;
 
-        $message['action'] = _('Nuevo Perfil');
-        $message['text'][] = Html::strongText(_('Perfil') . ': ') . self::$profileName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Nuevo Perfil'), Html::strongText(_('Perfil') . ': ') . self::$profileName);
 
         return true;
     }
@@ -298,11 +350,7 @@ class Profiles
 
         self::$queryLastId = DB::$lastId;
 
-        $message['action'] = _('Modificar Perfil');
-        $message['text'][] = Html::strongText(_('Perfil') . ': ') . $profileName . ' > ' . self::$profileName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Modificar Perfil'), Html::strongText(_('Perfil') . ': ') . $profileName . ' > ' . self::$profileName);
 
         return true;
     }
@@ -355,6 +403,32 @@ class Profiles
     }
 
     /**
+     * Obtener el perfil de un usuario.
+     * Si el usuario no es indicado, se obtiene el perfil del suuario de la sesión actual
+     *
+     * @param int $userId opcional con el Id del usuario
+     * @return false|object con los permisos del perfil del usuario
+     */
+    public static function getProfileForUser($userId = 0)
+    {
+        $userId = Session::getUserId();
+
+        if (!$userId) {
+            return false;
+        }
+
+        $query = 'SELECT user_profileId,'
+            . 'userProfile_profile '
+            . 'FROM usrData '
+            . 'JOIN usrProfiles ON userProfile_Id = user_profileId '
+            . 'WHERE user_id = :id LIMIT 1';
+
+        $data['id'] = $userId;
+
+        return DB::getResults($query, __FUNCTION__, $data);
+    }
+
+    /**
      * Obtener el nombre de un perfil por a partir del Id.
      *
      * @param int $id con el Id del perfil
@@ -373,50 +447,5 @@ class Profiles
         }
 
         return $queryRes->userprofile_name;
-    }
-
-    /**
-     * Obtener el perfil de un usuario.
-     * Si el usuario no es indicado, se obtiene el perfil del suuario de la sesión actual
-     *
-     * @param int $userId opcional con el Id del usuario
-     * @return false|object con los permisos del perfil del usuario
-     */
-    public static function getProfileForUser($userId = 0)
-    {
-        $userId = Session::getUserId();
-
-        if (!$userId) {
-            return false;
-        }
-
-        $query = 'SELECT user_profileId,'
-            . 'BIN(userProfile_pView) AS pView,'
-            . 'BIN(userProfile_pViewPass) AS pViewPass,'
-            . 'BIN(userProfile_pViewHistory) AS pViewHistory,'
-            . 'BIN(userProfile_pEdit) AS pEdit,'
-            . 'BIN(userProfile_pEditPass) AS pEditPass,'
-            . 'BIN(userProfile_pAdd) AS pAdd,'
-            . 'BIN(userProfile_pDelete) AS pDelete,'
-            . 'BIN(userProfile_pFiles) AS pFiles,'
-            . 'BIN(userProfile_pConfig) AS pConfig,'
-            . 'BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,'
-            . 'BIN(userProfile_pConfigBackup) AS pConfigBackup,'
-            . 'BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,'
-            . 'BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,'
-            . 'BIN(userProfile_pUsers) AS pUsers,'
-            . 'BIN(userProfile_pGroups) AS pGroups,'
-            . 'BIN(userProfile_pProfiles) AS pProfiles,'
-            . 'BIN(userProfile_pEventlog) AS pEventlog,'
-            . 'BIN(userProfile_pConfigMenu) AS pConfigMenu,'
-            . 'BIN(userProfile_pAppMgmtMenu) AS pAppMgmtMenu,'
-            . 'BIN(userProfile_pUsersMenu) AS pUsersMenu '
-            . 'FROM usrData '
-            . 'JOIN usrProfiles ON userProfile_Id = user_profileId '
-            . 'WHERE user_id = :id LIMIT 1';
-
-        $data['id'] = $userId;
-
-        return DB::getResults($query, __FUNCTION__, $data);
     }
 }

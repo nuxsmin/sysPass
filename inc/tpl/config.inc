@@ -392,7 +392,6 @@
             <input type="hidden" name="files_enabled" value="1" />
             <input type="hidden" name="wiki_enabled" value="1" />
         <?php endif; ?>
-        <input type="hidden" name="onCloseAction" value="<?php echo $config_onCloseAction; ?>" />
         <input type="hidden" name="activeTab" value="<?php echo $config_tabIndex; ?>" />
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_GENERAL; ?>" />
         <input type="hidden" name="isAjax" value="1" />

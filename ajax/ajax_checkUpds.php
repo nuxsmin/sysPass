@@ -23,26 +23,26 @@
  *
  */
 
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('GET');
+SP\Request::checkReferer('GET');
 
-$checkVersion = SP\Common::parseParams('s', 'UPDATED', false, true);
-
-// Una vez por sesión
-if (!$checkVersion) {
-    $_SESSION["UPDATED"] = $checkVersion = SP\Util::checkUpdates();
+// Comprobar una vez por sesión
+if (!SP\Session::getUpdated()) {
+    $updates = SP\Util::checkUpdates();
+    SP\Session::setUpdated();
 }
 
 session_write_close();
 
-if (is_array($checkVersion)) {
-    $title = _('Descargar nueva versión') . ' - ' . $checkVersion['version'] . '<br><br>' . nl2br($checkVersion['description']);
-    echo '<a href="' . $checkVersion['url'] . '" target="_blank" title="' . $title . '"><img src="imgs/update.png" />&nbsp;' . $checkVersion['title'] . '</a>';
-} elseif ($checkVersion === true) {
+if (is_array($updates)) {
+    $title = _('Descargar nueva versión') . ' - ' . $updates['version'] . '<br><br>' . nl2br($updates['description']);
+    echo '<a href="' . $updates['url'] . '" target="_blank" title="' . $title . '"><img src="imgs/update.png" />&nbsp;' . $updates['title'] . '</a>';
+} elseif ($updates === true) {
     echo '<img src="imgs/ok.png" title="' . _('Actualizado') . '"/>';
-} elseif ($checkVersion === false) {
+} elseif ($updates === false) {
     echo '!';
 }

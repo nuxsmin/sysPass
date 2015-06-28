@@ -27,38 +27,39 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+SP\Request::checkReferer('POST');
 
-$sk = SP\Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$userLogin = SP\Common::parseParams('p', 'login');
-$userEmail = SP\Common::parseParams('p', 'email');
-$userPass = SP\Common::parseParams('p', 'pass');
-$userPassV = SP\Common::parseParams('p', 'passv');
-$hash = SP\Common::parseParams('p', 'hash');
-$time = SP\Common::parseParams('p', 'time');
+$userLogin = SP\Request::analyze('login');
+$userEmail = SP\Request::analyze('email');
+$userPass = SP\Request::analyze('pass');
+$userPassV = SP\Request::analyze('passv');
+$hash = SP\Request::analyze('hash');
+$time = SP\Request::analyze('time');
 
 $message['action'] = _('Recuperación de Clave');
 
 if ($userLogin && $userEmail) {
-    if (SP\Auth::mailPassRecover($userLogin, $userEmail)) {
-        $message['text'][] = SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')';
+    $log = new \SP\Log(_('Recuperación de Clave'));
 
-        SP\Common::sendEmail($message);
-        SP\Log::wrLogInfo($message);
+    if (SP\Auth::mailPassRecover($userLogin, $userEmail)) {
+        $log->addDescription(SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')');
+
         SP\Common::printJSON(_('Solicitud enviada') . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
     } else {
-        $message['text'][] = 'ERROR';
-        $message['text'][] = SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')';
+        $log->addDescription('ERROR');
+        $log->addDescription(SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')');
 
-        SP\Common::sendEmail($message);
-        SP\Log::wrLogInfo($message);
         SP\Common::printJSON(_('No se ha podido realizar la solicitud. Consulte con el administrador.'));
     }
+
+    $log->writeLog();
+    SP\Email::sendEmail($log);
 }
 
 if ($userPass && $userPassV && $userPass === $userPassV) {
@@ -71,11 +72,7 @@ if ($userPass && $userPassV && $userPass === $userPassV) {
         $user->userPass = $userPass;
 
         if ($user->updateUserPass() && SP\Users::updateHashPassRecover($hash)) {
-            $message['action'] = _('Modificar Clave Usuario');
-            $message['text'][] = SP\Html::strongText(_('Login') . ': ') . $user->getUserLoginById($userId);
-
-            SP\Log::wrLogInfo($message);
-            SP\Common::sendEmail($message);
+            \SP\Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), SP\Html::strongText(_('Login') . ': ') . $user->getUserLoginById($userId));
 
             SP\Common::printJSON(_('Clave actualizada'), 0, 'goLogin();');
         }

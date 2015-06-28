@@ -120,25 +120,24 @@ class AccountHistory extends AccountBase implements AccountInterface
         $errorCount = 0;
         $demoEnabled = Util::demoIsEnabled();
 
-        $message['action'] = _('Actualizar Clave Maestra (H)');
-        $message['text'][] = _('Inicio');
+        $log = new Log(_('Actualizar Clave Maestra (H)'));
+        $log->addDescription(_('Inicio'));
+        $log->writeLog();
 
-        Log::wrLogInfo($message);
-
-        // Limpiar 'text' para los próximos mensajes
-        $message['text'] = array();
+        $log->resetDescription();
 
         if (!Crypt::checkCryptModule()) {
-            $message['text'][] = _('Error en el módulo de encriptación');
-            Log::wrLogInfo($message);
+            $log->addDescription(_('Error en el módulo de encriptación'));
+            $log->writeLog();
             return false;
         }
 
         $accountsPass = $this->getAccountsPassData();
 
         if (!$accountsPass) {
-            $message['text'][] = _('Error al obtener las claves de las cuentas');
-            Log::wrLogInfo($message);
+            $log->addDescription(_('Error al obtener las claves de las cuentas'));
+            $log->writeLog();
+
             return false;
         }
 
@@ -153,12 +152,12 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if (!$this->checkAccountMPass()) {
                 $errorCount++;
-                $message['text'][] = _('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ')';
+                $log->addDescription(_('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ')');
                 continue;
             }
 
             if (strlen($account->acchistory_IV) < 32) {
-                $message['text'][] = _('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ')';
+                $log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ')');
                 continue;
             }
 
@@ -173,7 +172,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if (!$this->updateAccountPass($account->acchistory_id, $newHash)) {
                 $errorCount++;
-                $message['text'][] = _('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ')';
+                $log->addDescription(_('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ')');
                 continue;
             }
 
@@ -181,19 +180,19 @@ class AccountHistory extends AccountBase implements AccountInterface
         }
 
         // Vaciar el array de mensaje de log
-        if (count($message['text']) > 0) {
-            Log::wrLogInfo($message);
-            $message['text'] = array();
+        if (count($log->getDescription()) > 0) {
+            $log->writeLog();
+            $log->resetDescription();
         }
 
         if ($idOk) {
-            $message['text'][] = _('Registros actualizados') . ': ' . implode(',', $idOk);
-            Log::wrLogInfo($message);
-            $message['text'] = array();
+            $log->addDescription(_('Registros actualizados') . ': ' . implode(',', $idOk));
+            $log->writeLog();
+            $log->resetDescription();
         }
 
-        $message['text'][] = _('Fin');
-        Log::wrLogInfo($message);
+        $log->addDescription(_('Fin'));
+        $log->writeLog();
 
         if ($errorCount > 0) {
             return false;

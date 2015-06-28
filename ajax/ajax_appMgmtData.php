@@ -23,27 +23,29 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Util::logout();
 }
 
-if (!SP\Common::parseParams('p', 'itemId', false, true)
-    || !SP\Common::parseParams('p', 'actionId', false, true)
+if (!SP\Request::analyze('itemId', false, true)
+    || !SP\Request::analyze('actionId', false, true)
 ) {
     exit();
 }
 
-$actionId = SP\Common::parseParams('p', 'actionId', 0);
+$actionId = SP\Request::analyze('actionId', 0);
 
 $tpl = new SP\Template();
-$tpl->assign('itemId', SP\Common::parseParams('p', 'itemId', 0));
-$tpl->assign('activeTab', SP\Common::parseParams('p', 'activeTab', 0));
+$tpl->assign('itemId', SP\Request::analyze('itemId', 0));
+$tpl->assign('activeTab', SP\Request::analyze('activeTab', 0));
 $tpl->assign('actionId', $actionId);
 $tpl->assign('isView', false);
 

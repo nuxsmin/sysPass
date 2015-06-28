@@ -182,16 +182,17 @@ class Auth
         ) {
             $hash = Util::generate_random_bytes();
 
-            $message['action'] = _('Cambio de Clave');
-            $message['text'][] = Html::strongText(_('Se ha solicitado el cambio de su clave de usuario.'));
-            $message['text'][] = '';
-            $message['text'][] = _('Para completar el proceso es necesario que acceda a la siguiente URL:');
-            $message['text'][] = '';
-            $message['text'][] = Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time());
-            $message['text'][] = '';
-            $message['text'][] = _('Si no ha solicitado esta acción, ignore este mensaje.');
+            $log = new Log(_('Cambio de Clave'));
 
-            return (Common::sendEmail($message, $email, false) && Users::addPassRecover($login, $hash));
+            $log->addDescription(Html::strongText(_('Se ha solicitado el cambio de su clave de usuario.')));
+            $log->addDescription();
+            $log->addDescription(_('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+            $log->addDescription();
+            $log->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
+            $log->addDescription('');
+            $log->addDescription(_('Si no ha solicitado esta acción, ignore este mensaje.'));
+
+            return (Email::sendEmail($log, $email, false) && Users::addPassRecover($login, $hash));
         } else {
             return false;
         }

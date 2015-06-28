@@ -27,20 +27,20 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+SP\Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP\Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmAccountId = SP\Common::parseParams('p', 'accountid', 0);
-$frmDescription = SP\Common::parseParams('p', 'description');
+$frmAccountId = SP\Request::analyze('accountid', 0);
+$frmDescription = SP\Request::analyze('description');
 
 if (!$frmDescription) {
     SP\Common::printJSON(_('Es necesaria una descripción'));
@@ -53,22 +53,23 @@ $recipients = array(
     SP\Users::getUserEmail($accountRequestData->account_userEditId)
 );
 
-$requestUsername = SP\Common::parseParams('s', 'uname');
-$requestLogin = SP\Common::parseParams('s', 'ulogin');
+$requestUsername = SP\Session::getUserName();
+$requestLogin = SP\Session::getUserLogin();
 
-$message['action'] = _('Solicitud de Modificación de Cuenta');
-$message['text'][] = SP\Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')';
-$message['text'][] = SP\Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name;
-$message['text'][] = SP\Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name;
-$message['text'][] = SP\Html::strongText(_('Descripción') . ': ') . $frmDescription;
+$log = new \SP\Log(_('Solicitud de Modificación de Cuenta'));
+$log->addDescription(SP\Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')');
+$log->addDescription(SP\Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name);
+$log->addDescription(SP\Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name);
+$log->addDescription(SP\Html::strongText(_('Descripción') . ': ') . $frmDescription);
 
 $mailto = implode(',', $recipients);
 
 if ($mailto
     && SP\Util::mailrequestIsEnabled()
-    && SP\Common::sendEmail($message, $mailto)
+    && SP\Email::sendEmail($log, $mailto)
 ) {
-    SP\Log::wrLogInfo($message);
+    $log->writeLog();
+
     SP\Common::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
 }
 

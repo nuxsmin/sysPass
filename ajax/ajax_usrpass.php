@@ -23,17 +23,19 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('GET');
+Request::checkReferer('GET');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Util::logout();
 }
 
-$userId = SP\Common::parseParams('g', 'userId', false);
+$userId = SP\Request::analyze('userId', false);
 
 if (!$userId) {
     return;

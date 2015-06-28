@@ -58,14 +58,14 @@ class Files
         $data['extension'] = $fileData['extension'];
 
         if (DB::getQuery($query, __FUNCTION__, $data) === true) {
-            $message['action'] = _('Subir Archivo');
-            $message['text'][] = _('Cuenta') . ": " . $accountId;
-            $message['text'][] = _('Archivo') . ": " . $fileData['name'];
-            $message['text'][] = _('Tipo') . ": " . $fileData['type'];
-            $message['text'][] = _('Tamaño') . ": " . round($fileData['size'] / 1024, 2) . " KB";
+            $log = new Log(_('Subir Archivo'));
+            $log->addDescription(_('Cuenta') . ": " . $accountId);
+            $log->addDescription(_('Archivo') . ": " . $fileData['name']);
+            $log->addDescription(_('Tipo') . ": " . $fileData['type']);
+            $log->addDescription(_('Tamaño') . ": " . round($fileData['size'] / 1024, 2) . " KB");
+            $log->writeLog();
 
-            Log::wrLogInfo($message);
-            Common::sendEmail($message);
+            Email::sendEmail($log);
 
             return true;
         }
@@ -106,14 +106,14 @@ class Files
         $data['id'] = $fileId;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === true) {
-            $message['action'] = _('Eliminar Archivo');
-            $message['text'][] = _('ID') . ": " . $fileId;
-            $message['text'][] = _('Archivo') . ": " . $fileInfo->accfile_name;
-            $message['text'][] = _('Tipo') . ": " . $fileInfo->accfile_type;
-            $message['text'][] = _('Tamaño') . ": " . round($fileInfo->accfile_size / 1024, 2) . " KB";
+            $log = new Log(_('Eliminar Archivo'));
+            $log->addDescription(_('ID') . ": " . $fileId);
+            $log->addDescription(_('Archivo') . ": " . $fileInfo->accfile_name);
+            $log->addDescription(_('Tipo') . ": " . $fileInfo->accfile_type);
+            $log->addDescription(_('Tamaño') . ": " . round($fileInfo->accfile_size / 1024, 2) . " KB");
+            $log->writeLog();
 
-            Log::wrLogInfo($message);
-            Common::sendEmail($message);
+            Email::sendEmail($log);
 
             return true;
         }

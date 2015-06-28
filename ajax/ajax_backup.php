@@ -27,34 +27,32 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+SP\Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP\Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$actionId = SP\Common::parseParams('p', 'actionId', 0);
-$onCloseAction = SP\Common::parseParams('p', 'onCloseAction');
-$activeTab = SP\Common::parseParams('p', 'activeTab', 0);
+$actionId = SP\Request::analyze('actionId', 0);
+$onCloseAction = SP\Request::analyze('onCloseAction');
+$activeTab = SP\Request::analyze('activeTab', 0);
 
-$doActionOnClose = "doAction('$actionId','',$activeTab);";
+$doActionOnClose = "doAction($actionId,'',$activeTab);";
 
-if ($actionId === \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
+if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
     if (!SP\Backup::doBackup()) {
+        SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Error al realizar el backup'));
+
         SP\Common::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 
-    $message['action'] = _('Realizar Backup');
-    $message['text'][] = _('Copia de la aplicación y base de datos realizada correctamente');
-
-    SP\Log::wrLogInfo($message);
-    SP\Common::sendEmail($message);
+    SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Copia de la aplicación y base de datos realizada correctamente'));
 
     SP\Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
 }

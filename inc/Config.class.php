@@ -107,11 +107,7 @@ class Config
             }
         }
 
-        $message['action'] = _('Configuración');
-        $message['text'][] = _('Modificar configuración');
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Configuración'), _('Modificar configuración'));
 
         return true;
     }
@@ -383,15 +379,14 @@ class Config
             return false;
         }
 
-        $message['action'] = _('Configuración');
-        $message['text'][] = _('Modificar configuración');
-        $message['text'][] = _('Parámetro') . ': ' . $param;
-        $message['text'][] = _('Valor') . ': ' . $value;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Configuración'));
+        $log->addDescription(_('Modificar configuración'));
+        $log->addDescription(_('Parámetro') . ': ' . $param);
+        $log->addDescription(_('Valor') . ': ' . $value);
+        $log->writeLog();
 
         if ($email === true) {
-            Common::sendEmail($message);
+            Email::sendEmail($log);
         }
 
         return true;

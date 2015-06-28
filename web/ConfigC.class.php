@@ -35,7 +35,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class ConfigC extends Controller implements ActionsInterface
 {
     private $_tabIndex = 0;
-    public $activeTab = 0;
 
     /**
      * Constructor

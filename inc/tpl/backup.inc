@@ -25,7 +25,6 @@
     </table>
 
     <form method="post" name="frmBackup" id="frmBackup">
-        <input type="hidden" name="onCloseAction" value="<?php echo $backup_onCloseAction; ?>" />
         <input type="hidden" name="activeTab" value="<?php echo $backup_tabIndex; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP; ?>"/>

@@ -148,11 +148,7 @@ class Groups
 
         self::$queryLastId = DB::$lastId;
 
-        $message['action'] = _('Nuevo Grupo');
-        $message['text'][] = Html::strongText(_('Grupo') . ': ') . self::$groupName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Nuevo Grupo'), Html::strongText(_('Grupo') . ': ') . self::$groupName);
 
         return true;
     }
@@ -178,11 +174,7 @@ class Groups
 
         self::$queryLastId = DB::$lastId;
 
-        $message['action'] = _('Modificar Grupo');
-        $message['text'][] = Html::strongText(_('Grupo') . ': ') . $groupName . ' > ' . self::$groupName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Modificar Grupo'), Html::strongText(_('Grupo') . ': ') . $groupName . ' > ' . self::$groupName);
 
         return true;
     }
@@ -227,11 +219,7 @@ class Groups
 
         self::$queryLastId = DB::$lastId;
 
-        $message['action'] = _('Eliminar Grupo');
-        $message['text'][] = Html::strongText(_('Grupo') . ': ') . $groupName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Eliminar Grupo'), Html::strongText(_('Grupo') . ': ') . $groupName);
 
         return true;
     }

@@ -64,14 +64,14 @@ class SearchC extends Controller implements ActionsInterface
         $filters = \SP\Session::getSearchFilters();
 
         // Valores POST
-        $this->view->assign('searchKey', \SP\Common::parseParams('p', 'skey', $filters->getSortKey()));
-        $this->view->assign('searchOrder', \SP\Common::parseParams('p', 'sorder', $filters->getSortOrder()));
-        $this->view->assign('searchCustomer', \SP\Common::parseParams('p', 'customer', $filters->getCustomerId()));
-        $this->view->assign('searchCategory', \SP\Common::parseParams('p', 'category', $filters->getCategoryId()));
-        $this->view->assign('searchTxt', \SP\Common::parseParams('p', 'search', $filters->getTxtSearch()));
-        $this->view->assign('searchGlobal', \SP\Common::parseParams('p', 'gsearch', $filters->isGlobalSearch(), false, 1));
-        $this->view->assign('limitStart', \SP\Common::parseParams('p', 'start', $filters->getLimitStart()));
-        $this->view->assign('limitCount', \SP\Common::parseParams('p', 'rpp', $filters->getLimitCount()));
+        $this->view->assign('searchKey', \SP\Request::analyze('skey', $filters->getSortKey()));
+        $this->view->assign('searchOrder', \SP\Request::analyze('sorder', $filters->getSortOrder()));
+        $this->view->assign('searchCustomer', \SP\Request::analyze('customer', $filters->getCustomerId()));
+        $this->view->assign('searchCategory', \SP\Request::analyze('category', $filters->getCategoryId()));
+        $this->view->assign('searchTxt', \SP\Request::analyze('search', $filters->getTxtSearch()));
+        $this->view->assign('searchGlobal', \SP\Request::analyze('gsearch', $filters->isGlobalSearch(), false, 1));
+        $this->view->assign('limitStart', \SP\Request::analyze('start', $filters->getLimitStart()));
+        $this->view->assign('limitCount', \SP\Request::analyze('rpp', $filters->getLimitCount()));
     }
 
     /**

@@ -168,17 +168,23 @@ class Init
         // Comprobar si está instalado
         self::checkInstalled();
 
+        // Comprobar si el modo mantenimiento está activado
+        self::checkMaintenanceMode();
+
         // Comprobar si la Base de datos existe
         if (!DB::checkDatabaseExist()) {
             self::initError(_('Error en la verificación de la base de datos'));
         }
 
-        // Comprobar si el modo mantenimiento está activado
-        self::checkMaintenanceMode();
+        // Comprobar si es cierre de sesión
+        self::checkLogout();
+
         // Comprobar la versión y actualizarla
         self::checkVersion();
+
         // Inicializar la sesión
         self::initSession();
+
         // Comprobar acciones en URL
         self::checkRequestActions();
 
@@ -187,11 +193,11 @@ class Init
         @ini_set('gc_maxlifetime', (string)$sessionLifeTime);
 
         if (!Config::getValue("installed", false)) {
-            $_SESSION['user_id'] = '';
+            Session::setUserId('');
         }
 
-        if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SESSION['user_id'])
-            && $_SERVER['PHP_AUTH_USER'] != $_SESSION['user_id']
+        if (isset($_SERVER['PHP_AUTH_USER']) && Session::getUserId()
+            && $_SERVER['PHP_AUTH_USER'] != Session::getUserId()
         ) {
             self::logout();
         }
@@ -208,9 +214,15 @@ class Init
             }
         }
 
-        // El usuario está logado
-        if (self::isLoggedIn()) {
-            if (isset($_GET["logout"]) && $_GET["logout"]) {
+        if (self::isLoggedIn() || Request::analyze('isAjax', false, true)){
+            return;
+        }
+
+        // El usuario no está logado y no es una petición, redirigir al login
+        self::goLogin();
+
+        // El usuario no está logado y no es una petición, redirigir al login
+  /*          if (isset($_GET["logout"]) && $_GET["logout"]) {
                 self::logout();
 
                 if (count($_GET) > 1) {
@@ -226,22 +238,7 @@ class Init
                 } else {
                     header("Location: " . self::$WEBROOT . '/');
                 }
-            }
-            return;
-        } else {
-            // Si la petición es ajax, no hacer nada
-            if ((isset($_POST['isAjax']) || isset($_GET['isAjax']))
-                && ($_POST['isAjax'] || $_GET['isAjax'])
-            ) {
-                return;
-            }
-
-            $controller = new Controller\MainC();
-            $controller->getLogin();
-            $controller->view();
-            exit();
-        }
-
+            }*/
     }
 
     /**
@@ -255,7 +252,7 @@ class Init
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
 
-            Log::wrLogInfo(_('Sesion'), _('La sesión no puede ser inicializada'));
+            Log::newLog(_('Sesion'), _('La sesión no puede ser inicializada'));
 
             header('HTTP/1.1 500 Internal Server Error');
 
@@ -276,7 +273,7 @@ class Init
         $controller = new Controller\MainC($tpl);
         $controller->getError(true);
         $controller->view();
-        exit();
+        exit;
     }
 
     /**
@@ -408,7 +405,7 @@ class Init
                 $controller = new Controller\MainC();
                 $controller->getInstaller();
                 $controller->view();
-                exit();
+                exit;
             }
         }
     }
@@ -425,9 +422,9 @@ class Init
     {
         if (Config::getValue('maintenance', false)) {
             if ($check === true
-                || Common::parseParams('r', 'isAjax', 0) === 1
-                || Common::parseParams('g', 'upgrade', 0) === 1
-                || Common::parseParams('g', 'nodbupgrade', 0) === 1
+                || Request::analyze('isAjax', 0) === 1
+                || Request::analyze('upgrade', 0) === 1
+                || Request::analyze('nodbupgrade', 0) === 1
             ) {
                 return true;
             }
@@ -447,7 +444,7 @@ class Init
      */
     private static function checkVersion()
     {
-        if (substr(self::$_SUBURI, -9) != 'index.php' || Common::parseParams('g', 'logout', 0) === 1) {
+        if (substr(self::$_SUBURI, -9) != 'index.php' || Request::analyze('logout', 0) === 1) {
             return;
         }
 
@@ -457,7 +454,7 @@ class Init
         $appVersion = (int)implode(Util::getVersion(true));
 
         if ($databaseVersion < $appVersion
-            && Common::parseParams('g', 'nodbupgrade', 0) === 0
+            && Request::analyze('nodbupgrade', 0) === 0
         ) {
             if (Upgrade::needDBUpgrade($databaseVersion)) {
                 if (!self::checkMaintenanceMode(true)) {
@@ -469,8 +466,8 @@ class Init
                     self::initError(_('La aplicación necesita actualizarse'), _('Si es un administrador pulse en el enlace:') . ' <a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>');
                 }
 
-                $action = Common::parseParams('g', 'a');
-                $hash = Common::parseParams('g', 'h');
+                $action = Request::analyze('a');
+                $hash = Request::analyze('h');
 
                 if ($action === 'upgrade' && $hash === Config::getValue('upgrade_key', 0)) {
                     if (Upgrade::doUpgrade($databaseVersion)) {
@@ -497,12 +494,12 @@ class Init
         }
 
         if ($update === true) {
-            $message['action'] = _('Actualización');
-            $message['text'][] = _('Actualización de versión realizada.');
-            $message['text'][] = _('Versión') . ': ' . $appVersion;
+            $log = new Log(_('Actualización'));
+            $log->addDescription(_('Actualización de versión realizada.'));
+            $log->addDescription(_('Versión') . ': ' . $appVersion);
+            $log->writeLog();
 
-            Log::wrLogInfo($message);
-            Common::sendEmail($message);
+            Email::sendEmail($log);
 
             self::$UPDATED = true;
         }
@@ -516,19 +513,18 @@ class Init
         $sessionLifeTime = self::getSessionLifeTime();
 
         // Regenerar el Id de sesión periódicamente para evitar fijación
-        if (!isset($_SESSION['SID_CREATED'])) {
-            $_SESSION['SID_CREATED'] = time();
-            $_SESSION['START_ACTIVITY'] = time();
-        } else if (time() - $_SESSION['SID_CREATED'] > $sessionLifeTime / 2) {
+        if (Session::getSidStartTime() === 0) {
+            Session::setSidStartTime(time());
+            Session::setStartActivity(time());
+        } else if (time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
             session_regenerate_id(true);
-            $_SESSION['SID_CREATED'] = time();
+            Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario
-            $_SESSION['usrprofile'] = Profiles::getProfileForUser();
-            unset($_SESSION['APP_CONFIG']);
+            Session::setUserProfile(Profile::getProfile(Session::getUserProfileId()));
         }
 
         // Timeout de sesión
-        if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $sessionLifeTime)) {
+        if (Session::getLastActivity() && (time() - Session::getLastActivity() > $sessionLifeTime)) {
             if (isset($_COOKIE[session_name()])) {
                 setcookie(session_name(), '', time() - 42000, '/');
             }
@@ -540,7 +536,7 @@ class Init
             session_start();
         }
 
-        $_SESSION['LAST_ACTIVITY'] = time();
+        Session::setLastActivity(time());
     }
 
     /**
@@ -550,13 +546,11 @@ class Init
      */
     private static function getSessionLifeTime()
     {
-        $timeout = Common::parseParams('s', 'session_timeout', 0);
-
-        if ($timeout === 0) {
-            $timeout = $_SESSION['session_timeout'] = Config::getValue('session_timeout', 60 * 5);
+        if (is_null(Session::getSessionTimeout())) {
+            Session::setSessionTimeout(Config::getValue('session_timeout', 60 * 5));
         }
 
-        return $timeout;
+        return Session::getSessionTimeout();
     }
 
     /**
@@ -564,16 +558,15 @@ class Init
      */
     private static function wrLogoutInfo()
     {
-        $inactiveTime = round(((time() - $_SESSION['LAST_ACTIVITY']) / 60), 2);
-        $totalTime = round(((time() - $_SESSION['START_ACTIVITY']) / 60), 2);
-        $ulogin = Common::parseParams('s', 'ulogin');
+        $inactiveTime = round(((time() - Session::getLastActivity()) / 60), 2);
+        $totalTime = round(((time() - Session::getStartActivity()) / 60), 2);
+        $ulogin = Session::getUserLogin();
 
-        $message['action'] = _('Finalizar sesión');
-        $message['text'][] = _('Usuario') . ": " . $ulogin;
-        $message['text'][] = _('Tiempo inactivo') . ": " . $inactiveTime . " min.";
-        $message['text'][] = _('Tiempo total') . ": " . $totalTime . " min.";
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Finalizar sesión'));
+        $log->addDescription(_('Usuario') . ": " . $ulogin);
+        $log->addDescription(_('Tiempo inactivo') . ": " . $inactiveTime . " min.");
+        $log->addDescription(_('Tiempo total') . ": " . $totalTime . " min.");
+        $log->writeLog();
     }
 
     /**
@@ -583,11 +576,11 @@ class Init
      */
     public static function checkRequestActions()
     {
-        if (!Common::parseParams('r', 'a', '', true)) {
+        if (!Request::analyze('a', '', true)) {
             return false;
         }
 
-        $action = Common::parseParams('r', 'a');
+        $action = Request::analyze('a');
         $controller = new Controller\MainC();
 
         switch ($action) {
@@ -620,10 +613,11 @@ class Init
      */
     public static function isLoggedIn()
     {
-        if (Common::parseParams('s', 'ulogin', '', true)) {
+        if (Session::getUserLogin(false)) {
             // TODO: refrescar variables de sesión.
             return true;
         }
+
         return false;
     }
 
@@ -666,5 +660,25 @@ class Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
+    }
+
+    /**
+     * Comprobar si es necesario cerrar la sesión
+     */
+    private static function checkLogout(){
+        if (Request::analyze('logout', false, true)) {
+            self::logout();
+            self::goLogin();
+        }
+    }
+
+    /**
+     * Mostrar la página de login
+     */
+    private static function goLogin(){
+        $controller = new Controller\MainC();
+        $controller->getLogin();
+        $controller->view();
+        exit;
     }
 }

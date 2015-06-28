@@ -23,27 +23,29 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP\Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmLdapServer = SP\Common::parseParams('p', 'ldap_server');
-$frmLdapBase = SP\Common::parseParams('p', 'ldap_base');
-$frmLdapGroup = SP\Common::parseParams('p', 'ldap_group');
-$frmLdapBindUser = SP\Common::parseParams('p', 'ldap_binduser');
-$frmLdapBindPass = SP\Common::parseParams('p', 'ldap_bindpass');
+$frmLdapServer = SP\Request::analyze('ldap_server');
+$frmLdapBase = SP\Request::analyze('ldap_base');
+$frmLdapGroup = SP\Request::analyze('ldap_group');
+$frmLdapBindUser = SP\Request::analyze('ldap_binduser');
+$frmLdapBindPass = SP\Request::analyze('ldap_bindpass');
 
 if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
     SP\Common::printJSON(_('Los parámetros de LDAP no están configurados'));

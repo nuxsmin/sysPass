@@ -46,7 +46,7 @@ class Acl implements Controller\ActionsInterface
     public static function checkUserAccess($action, $userId = 0)
     {
         // Comprobamos si la cache de permisos está inicializada
-        if (!isset($_SESSION["usrprofile"]) || !is_object($_SESSION["usrprofile"])) {
+        if (!is_object(Session::getUserProfile())) {
 //            error_log('ACL_CACHE_MISS');
             return false;
         }
@@ -58,59 +58,98 @@ class Acl implements Controller\ActionsInterface
 
         switch ($action) {
             case self::ACTION_ACC_VIEW:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pView || $curUserProfile->pEdit);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccView() || $curUserProfile->isAccEdit());
             case self::ACTION_ACC_VIEW_PASS:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pViewPass);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccViewPass());
             case self::ACTION_ACC_VIEW_HISTORY:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pViewHistory);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccViewHistory());
             case self::ACTION_ACC_EDIT:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pEdit);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccEdit());
             case self::ACTION_ACC_EDIT_PASS:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pEditPass);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccEditPass());
             case self::ACTION_ACC_NEW:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pAdd);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccAdd());
             case self::ACTION_ACC_COPY:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || ($curUserProfile->pAdd && $curUserProfile->pView));
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || ($curUserProfile->isAccAdd() && $curUserProfile->isAccView()));
             case self::ACTION_ACC_DELETE:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pDelete);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccDelete());
             case self::ACTION_ACC_FILES:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->pFiles);
+                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccFiles());
             case self::ACTION_MGM:
-                return ($curUserIsAdminApp || $curUserProfile->pAppMgmtMenu);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
             case self::ACTION_CFG:
-                return ($curUserIsAdminApp || $curUserProfile->pConfigMenu);
+                return ($curUserIsAdminApp || $curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
             case self::ACTION_CFG_GENERAL:
-                return ($curUserIsAdminApp || $curUserProfile->pConfig);
+                return ($curUserIsAdminApp || $curUserProfile->isConfigGeneral());
             case self::ACTION_CFG_IMPORT:
-                return ($curUserIsAdminApp || $curUserProfile->pConfig);
+                return ($curUserIsAdminApp || $curUserProfile->isConfigBackup());
             case self::ACTION_MGM_CATEGORIES:
-                return ($curUserIsAdminApp || $curUserProfile->pAppMgmtCategories);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmCategories());
             case self::ACTION_MGM_CUSTOMERS:
-                return ($curUserIsAdminApp || $curUserProfile->pAppMgmtCustomers);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmCustomers());
             case self::ACTION_CFG_ENCRYPTION:
-                return ($curUserIsAdminApp || $curUserProfile->pConfigMasterPass);
+                return ($curUserIsAdminApp || $curUserProfile->isConfigEncryption());
             case self::ACTION_CFG_BACKUP:
-                return ($curUserIsAdminApp || $curUserProfile->pConfigBackup);
+                return ($curUserIsAdminApp || $curUserProfile->isConfigBackup());
             case self::ACTION_USR:
-                return ($curUserIsAdminApp || $curUserProfile->pUsersMenu);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
             case self::ACTION_USR_USERS:
-                return ($curUserIsAdminApp || $curUserProfile->pUsers);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmUsers());
             case self::ACTION_USR_USERS_EDITPASS:
-                return ($userId == $curUserId || $curUserIsAdminApp || $curUserProfile->pUsers);
+                return ($userId == $curUserId || $curUserIsAdminApp || $curUserProfile->isMgmUsers());
             case self::ACTION_USR_GROUPS:
-                return ($curUserIsAdminApp || $curUserProfile->pGroups);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmGroups());
             case self::ACTION_USR_PROFILES:
-                return ($curUserIsAdminApp || $curUserProfile->pProfiles);
+                return ($curUserIsAdminApp || $curUserProfile->isMgmProfiles());
             case self::ACTION_EVL:
-                return ($curUserIsAdminApp || $curUserProfile->pEventlog);
+                return ($curUserIsAdminApp || $curUserProfile->isEvl());
         }
 
-        $message['action'] = __FUNCTION__;
-        $message['text'][] = _('Denegado acceso a') . " '" . self::getActionName($action) . "'";
-
-        Log::wrLogInfo($message);
+        Log::writeNewLog(__FUNCTION__, _('Denegado acceso a') . " '" . self::getActionName($action) . "'");
 
         return false;
+    }
+
+    /**
+     * Obtener el nombre de la acción indicada
+     *
+     * @param int $action El id de la acción
+     * @return string
+     */
+    public static function getActionName($action)
+    {
+        $actionName = array(
+            self::ACTION_ACC_SEARCH => 'acc_search',
+            self::ACTION_ACC_VIEW => 'acc_view',
+            self::ACTION_ACC_COPY => 'acc_copy',
+            self::ACTION_ACC_NEW => 'acc_new',
+            self::ACTION_ACC_EDIT => 'acc_edit',
+            self::ACTION_ACC_EDIT_PASS => 'acc_editpass',
+            self::ACTION_ACC_VIEW_HISTORY => 'acc_viewhist',
+            self::ACTION_ACC_VIEW_PASS => 'acc_viewpass',
+            self::ACTION_ACC_DELETE => 'acc_delete',
+            self::ACTION_ACC_FILES => 'acc_files',
+            self::ACTION_ACC_REQUEST => 'acc_request',
+            self::ACTION_MGM => 'mgm',
+            self::ACTION_MGM_CATEGORIES => 'mgm_categories',
+            self::ACTION_MGM_CUSTOMERS => 'mgm_customers',
+            self::ACTION_USR => 'usr',
+            self::ACTION_USR_USERS => 'usr_users',
+            self::ACTION_USR_GROUPS => 'usr_groups',
+            self::ACTION_USR_PROFILES => 'usr_profiles',
+            self::ACTION_CFG => 'cfg',
+            self::ACTION_CFG_GENERAL => 'cfg_general',
+            self::ACTION_CFG_ENCRYPTION => 'cfg_encryption',
+            self::ACTION_CFG_BACKUP => 'cfg_backup',
+            self::ACTION_CFG_IMPORT => 'cfg_import',
+            self::ACTION_EVL => 'evl'
+        );
+
+        if (!isset($actionName[$action])) {
+            return 'action';
+        }
+
+        return $actionName[$action];
     }
 
     /**
@@ -159,47 +198,5 @@ class Acl implements Controller\ActionsInterface
         }
 
         return false;
-    }
-
-    /**
-     * Obtener el nombre de la acción indicada
-     *
-     * @param int $action El id de la acción
-     * @return string
-     */
-    public static function getActionName($action)
-    {
-        $actionName = array(
-            self::ACTION_ACC_SEARCH => 'acc_search',
-            self::ACTION_ACC_VIEW => 'acc_view',
-            self::ACTION_ACC_COPY => 'acc_copy',
-            self::ACTION_ACC_NEW => 'acc_new',
-            self::ACTION_ACC_EDIT => 'acc_edit',
-            self::ACTION_ACC_EDIT_PASS => 'acc_editpass',
-            self::ACTION_ACC_VIEW_HISTORY => 'acc_viewhist',
-            self::ACTION_ACC_VIEW_PASS => 'acc_viewpass',
-            self::ACTION_ACC_DELETE => 'acc_delete',
-            self::ACTION_ACC_FILES => 'acc_files',
-            self::ACTION_ACC_REQUEST => 'acc_request',
-            self::ACTION_MGM => 'mgm',
-            self::ACTION_MGM_CATEGORIES => 'mgm_categories',
-            self::ACTION_MGM_CUSTOMERS => 'mgm_customers',
-            self::ACTION_USR => 'usr',
-            self::ACTION_USR_USERS => 'usr_users',
-            self::ACTION_USR_GROUPS => 'usr_groups',
-            self::ACTION_USR_PROFILES => 'usr_profiles',
-            self::ACTION_CFG => 'cfg',
-            self::ACTION_CFG_GENERAL => 'cfg_general',
-            self::ACTION_CFG_ENCRYPTION => 'cfg_encryption',
-            self::ACTION_CFG_BACKUP => 'cfg_backup',
-            self::ACTION_CFG_IMPORT => 'cfg_import',
-            self::ACTION_EVL => 'evl'
-        );
-
-        if (!isset($actionName[$action])) {
-            return 'action';
-        }
-
-        return $actionName[$action];
     }
 }

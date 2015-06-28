@@ -57,11 +57,7 @@ class Customer
 
         self::$customerLastId = DB::$lastId;
 
-        $message['action'] = _('Nuevo Cliente');
-        $message['text'][] = Html::strongText(_('Cliente') . ': ') . self::$customerName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Nuevo Cliente'), Html::strongText(_('Cliente') . ': ') . self::$customerName);
 
         return true;
     }
@@ -109,11 +105,7 @@ class Customer
             return false;
         }
 
-        $message['action'] = _('Actualizar Cliente');
-        $message['text'][] = Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Actualizar Cliente'), Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName);
 
         return true;
     }
@@ -157,11 +149,7 @@ class Customer
             return false;
         }
 
-        $message['action'] = _('Eliminar Cliente');
-        $message['text'][] = Html::strongText(_('Cliente') . ': ') . $customerName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Eliminar Cliente'), Html::strongText(_('Cliente') . ': ') . $customerName);
 
         return true;
     }

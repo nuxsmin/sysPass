@@ -58,8 +58,7 @@ echo $import_tabIndex; ?>">
             </tr>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $import_activeTab; ?>" />
-        <input type="hidden" name="onCloseAction" value="<?php echo $import_onCloseAction; ?>" />
+        <input type="hidden" name="activeTab" value="<?php echo $import_tabIndex; ?>" />
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT; ?>" />
         <input type="hidden" name="isAjax" value="1" />
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">

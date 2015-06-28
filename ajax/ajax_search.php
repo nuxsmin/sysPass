@@ -23,17 +23,19 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Util::logout();
 }
 
-$sk = SP\Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     die('<div class="error round">' . _('CONSULTA INVÁLIDA') . '</div>');

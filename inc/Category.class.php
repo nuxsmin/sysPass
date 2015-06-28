@@ -76,11 +76,7 @@ class Category
 
         self::$categoryLastId = DB::$lastId;
 
-        $message['action'] = _('Nueva Categoría');
-        $message['text'][] = Html::strongText(_('Categoría') . ': ') . self::$categoryName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Nueva Categoría'), Html::strongText(_('Categoría') . ': ') . self::$categoryName);
 
         return true;
     }
@@ -125,11 +121,7 @@ class Category
             return false;
         }
 
-        $message['action'] = _('Eliminar Categoría');
-        $message['text'][] = Html::strongText(_('Categoría') . ': ') . $categoryName . ' (' . $id . ')';
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Eliminar Categoría'), Html::strongText(_('Categoría') . ': ') . $categoryName . ' (' . $id . ')');
 
         return true;
     }
@@ -177,11 +169,7 @@ class Category
             return false;
         }
 
-        $message['action'] = _('Modificar Categoría');
-        $message['text'][] = Html::strongText(_('Categoría') . ': ') . $categoryName . ' > ' . self::$categoryName;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Modificar Categoría'), Html::strongText(_('Categoría') . ': ') . $categoryName . ' > ' . self::$categoryName);
 
         return true;
     }

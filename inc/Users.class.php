@@ -167,7 +167,7 @@ class Users
                 . 'LEFT JOIN usrProfiles ON user_profileId = userprofile_id '
                 . 'LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id ';
 
-            $query .= ($_SESSION['uisadminapp'] == 0) ? 'WHERE user_isAdminApp = 0 ORDER BY user_name' : 'ORDER BY user_name';
+            $query .= (!Session::getUserIsAdminApp()) ? 'WHERE user_isAdminApp = 0 ORDER BY user_name' : 'ORDER BY user_name';
         }
 
         DB::setReturnArray();
@@ -225,11 +225,13 @@ class Users
             return false;
         }
 
-        $message['action'] = __FUNCTION__;
-        $message['text'][] = _('Usuario actualizado');
-        $message['text'][] = 'Login: ' . $userLogin;
+        $log = new Log(__FUNCTION__);
+        $log->addDescription(_('Usuario actualizado'));
+        $log->addDescription('Login: ' . $userLogin);
+        $log->writeLog();
 
-        Log::wrLogInfo($message);
+        Email::sendEmail($log);
+
         return true;
     }
 
@@ -253,17 +255,11 @@ class Users
      * @param string $login opcional con el login del usuario
      * @return bool
      */
-    public static function checkUserUpdateMPass($login = '')
+    public static function checkUserUpdateMPass($login = null)
     {
-        if (isset($login)) {
-            $userId = self::getUserIdByLogin($login);
-        }
+        $userId = (!is_null($login)) ? self::getUserIdByLogin($login) : Session::getUserId();
 
-        if (isset($_SESSION["uid"])) {
-            $userId = $_SESSION["uid"];
-        }
-
-        if (!isset($userId)) {
+        if ($userId === 0){
             return false;
         }
 
@@ -742,12 +738,12 @@ class Users
             return false;
         }
 
-        $message['action'] = _('Activación Cuenta');
-        $message['text'][] = _('Su cuenta está pendiente de activación.');
-        $message['text'][] = _('En breve recibirá un email de confirmación.');
+        $log = new Log(_('Activación Cuenta'));
+        $log->addDescription(_('Su cuenta está pendiente de activación.'));
+        $log->addDescription(_('En breve recibirá un email de confirmación.'));
+        $log->writeLog();
 
-        Log::wrLogInfo($message);
-        Common::sendEmail($message, $this->userEmail, false);
+        Email::sendEmail($log, $this->userEmail, false);
 
         return true;
     }
@@ -797,17 +793,18 @@ class Users
 
         $this->queryLastId = DB::$lastId;
 
-        $message['action'] = _('Nuevo Usuario');
-        $message['text'][] = Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
+        $log = new Log(_('Nuevo Usuario'));
+        $log->addDescription(Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')');
 
         if ($this->userChangePass) {
             if (!Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
-                $message['text'][] = Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
+                $log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
         }
 
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        $log->writeLog();
+
+        Email::sendEmail($log);
 
         return true;
     }
@@ -851,17 +848,18 @@ class Users
 
         $this->queryLastId = DB::$lastId;
 
-        $message['action'] = _('Modificar Usuario');
-        $message['text'][] = Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')';
+        $log = new Log(_('Modificar Usuario'));
+        $log->addDescription(Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')');
 
         if ($this->userChangePass) {
             if (!Auth::mailPassRecover(DB::escape($this->userLogin), DB::escape($this->userEmail))) {
-                $message['text'][] = Html::strongText(_('No se pudo realizar la petición de cambio de clave.'));
+                $log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
         }
 
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        $log->writeLog();
+
+        Email::sendEmail($log);
 
         return true;
     }
@@ -893,11 +891,7 @@ class Users
 
         $this->queryLastId = DB::$lastId;
 
-        $message['action'] = _('Modificar Clave Usuario');
-        $message['text'][] = Html::strongText(_('Login') . ': ') . $userLogin;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), Html::strongText(_('Login') . ': ') . $userLogin);
 
         return true;
     }
@@ -942,11 +936,7 @@ class Users
 
         $this->queryLastId = DB::$lastId;
 
-        $message['action'] = _('Eliminar Usuario');
-        $message['text'][] = Html::strongText(_('Login') . ': ') . $userLogin;
-
-        Log::wrLogInfo($message);
-        Common::sendEmail($message);
+        Log::writeNewLogAndEmail(_('Eliminar Usuario'), Html::strongText(_('Login') . ': ') . $userLogin);
 
         return true;
     }
@@ -980,8 +970,6 @@ class Users
 
     /**
      * Establece las variables de sesión del usuario.
-     *
-     * @return none
      */
     public function setUserSession()
     {
@@ -995,7 +983,7 @@ class Users
         Session::setUserIsAdminApp($this->userIsAdminApp);
         Session::setUserIsAdminAcc($this->userIsAdminAcc);
         Session::setUserIsLdap($this->userIsLdap);
-        Session::setUserProfile(Profiles::getProfileForUser());
+        Session::setUserProfile(Profile::getProfile($this->userProfileId));
 
         $this->setUserLastLogin();
     }
@@ -1065,12 +1053,13 @@ class Users
             if ($showPass == true) {
                 return $clearMasterPass;
             } else {
-                $_SESSION['mPassPwd'] = Util::generate_random_bytes(32);
+                $mPassPwd = Util::generate_random_bytes(32);
+                Session::setMPassPwd($mPassPwd);
 
-                $sessionMasterPass = Crypt::mkCustomMPassEncrypt($_SESSION["mPassPwd"], $clearMasterPass);
+                $sessionMasterPass = Crypt::mkCustomMPassEncrypt($mPassPwd, $clearMasterPass);
 
-                $_SESSION['mPass'] = $sessionMasterPass[0];
-                $_SESSION['mPassIV'] = $sessionMasterPass[1];
+                Session::setMPass($sessionMasterPass[0]);
+                Session::setMPassIV($sessionMasterPass[1]);
                 return true;
             }
         }

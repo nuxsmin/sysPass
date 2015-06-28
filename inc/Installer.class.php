@@ -394,9 +394,9 @@ class Installer
             "pProfiles" => 1,
             "pEventlog" => 1);
 
-        Profiles::$profileName = 'Admin';
+        Profile::$profileName = 'Admin';
 
-        if (!Profiles::addProfile($profileProp)) {
+        if (!Profile::addProfile($profileProp)) {
             self::rollback();
 
             throw new SPException("critical"
@@ -405,7 +405,7 @@ class Installer
         }
 
         // Establecer el id de perfil del usuario al recién creado
-        $user->userProfileId = Profiles::$queryLastId;
+        $user->userProfileId = Profile::$queryLastId;
 
         // Datos del usuario
         $user->userLogin = self::$_username;

@@ -204,8 +204,8 @@ class AccountsMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_ACC_FILES);
 
-        $this->view->assign('accountId', \SP\Common::parseParams('g', 'id', 0));
-        $this->view->assign('deleteEnabled', \SP\Common::parseParams('g', 'del', 0));
+        $this->view->assign('accountId', \SP\Request::analyze('id', 0));
+        $this->view->assign('deleteEnabled', \SP\Request::analyze('del', 0));
         $this->view->assign('files', \SP\Files::getFileList($this->view->accountId, $this->view->deleteEnabled));
 
         if (!is_array($this->view->files) || count($this->view->files) === 0) {

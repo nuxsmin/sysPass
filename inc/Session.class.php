@@ -115,11 +115,12 @@ class Session
     /**
      * Obtiene el login de usuario de la sesión.
      *
+     * @param bool $default valor devuelto en caso de no estar establecida la variable de sesión
      * @return string
      */
-    public static function getUserLogin()
+    public static function getUserLogin($default = false)
     {
-        return isset($_SESSION['ulogin']) ? (string)$_SESSION['ulogin'] : '-';
+        return isset($_SESSION['ulogin']) ? (string)$_SESSION['ulogin'] : $default;
     }
 
     /**
@@ -235,19 +236,19 @@ class Session
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
      *
-     * @return object
+     * @return Profile
      */
     public static function getUserProfile()
     {
-        return (object)$_SESSION["usrprofile"];
+        return $_SESSION["usrprofile"];
     }
 
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param \StdClass $profile
+     * @param \SP\Profile $profile
      */
-    public static function setUserProfile(\StdClass $profile)
+    public static function setUserProfile(\SP\Profile $profile)
     {
         $_SESSION["usrprofile"] = $profile;
     }
@@ -257,15 +258,15 @@ class Session
      */
     public static function getSearchFilters()
     {
-        return $_SESSION["search"];
+        return (isset($_SESSION["searchFilters"])) ? $_SESSION["searchFilters"] : null;
     }
 
     /**
-     * @param \SP\AccountSearch $search
+     * @param \SP\AccountSearch $searchFilters
      */
-    public static function setSearchFilters(\SP\AccountSearch $search)
+    public static function setSearchFilters(\SP\AccountSearch $searchFilters)
     {
-        $_SESSION["search"] = $search;
+        $_SESSION["searchFilters"] = $searchFilters;
     }
 
     /**
@@ -273,8 +274,9 @@ class Session
      *
      * @param $id int El id de la cuenta
      */
-    public static function setAccountParentId($id){
-        $_SESSION["accParentId"] = (int) $id;
+    public static function setAccountParentId($id)
+    {
+        $_SESSION["accParentId"] = (int)$id;
     }
 
     /**
@@ -284,6 +286,206 @@ class Session
      */
     public static function getAccountParentId()
     {
-        return $_SESSION["accParentId"];
+        return (isset($_SESSION["accParentId"])) ? $_SESSION["accParentId"] : null;
+    }
+
+    /**
+     * Establece si se ha comprobado si hay actualizaciones
+     *
+     * @param bool $bool
+     */
+    public static function setUpdated($bool = true)
+    {
+        $_SESSION["updated"] = $bool;
+    }
+
+    /**
+     * Devuelve si se ha combrobado si hay actualizaciones
+     *
+     * @return bool
+     */
+    public static function getUpdated()
+    {
+        return (isset($_SESSION["updated"])) ? $_SESSION["updated"] : false;
+    }
+
+    /**
+     * Devuelve el timeout de la sesión
+     *
+     * @return int|null El valor en segundos
+     */
+    public static function getSessionTimeout()
+    {
+        return (isset($_SESSION["sessionTimeout"])) ? $_SESSION["sessionTimeout"] : null;
+    }
+
+    /**
+     * Establecer el timeout de la sesión
+     *
+     * @param int $timeout El valor en segundos
+     */
+    public static function setSessionTimeout($timeout)
+    {
+        $_SESSION["sessionTimeout"] = $timeout;
+    }
+
+    /**
+     * Devuelve si es necesario recargar la aplicación
+     *
+     * @return bool|null
+     */
+    public static function getReload()
+    {
+        return (isset($_SESSION["reload"])) ? $_SESSION["reload"] : null;
+    }
+
+    /**
+     * Establecer si es necesario recargar la aplicación
+     *
+     * @param bool $bool
+     */
+    public static function setReload($bool = false)
+    {
+        $_SESSION["reload"] = $bool;
+    }
+
+    /**
+     * Devuelve la clave de seguridad para los formularios
+     *
+     * @return string|null
+     */
+    public static function getSecurityKey()
+    {
+        return (isset($_SESSION["sk"])) ? $_SESSION["sk"] : null;
+    }
+
+    /**
+     * Establece la clave de seguridad para los formularios
+     *
+     * @param string $sk La clave de seguridad
+     */
+    public static function setSecurityKey($sk)
+    {
+        $_SESSION["sk"] = $sk;
+    }
+
+    /**
+     * Devuelve la clave maestra encriptada
+     *
+     * @return string
+     */
+    public static function getMPass()
+    {
+        return $_SESSION["mPass"];
+    }
+
+    /**
+     * Establecer la clave maestra encriptada
+     *
+     * @param $mpass string La clave maestra
+     */
+    public static function setMPass($mpass)
+    {
+        $_SESSION["mPass"] = $mpass;
+    }
+
+    /**
+     * Devuelve la clave usada para encriptar la clave maestra
+     *
+     * @return string
+     */
+    public static function getMPassPwd()
+    {
+        return $_SESSION["mPassPwd"];
+    }
+
+    /**
+     * Establece la clave usada para encriptar la clave maestra
+     *
+     * @param $mPassPwd string La clave usada
+     */
+    public static function setMPassPwd($mPassPwd)
+    {
+        $_SESSION["mPassPwd"] = $mPassPwd;
+    }
+
+    /**
+     * Devuelve el vector de inicialización de la clave maestra
+     *
+     * @return string
+     */
+    public static function getMPassIV()
+    {
+        return $_SESSION["mPassIV"];
+    }
+
+    /**
+     * Establece el vector de inicialización de la clave maestra
+     *
+     * @param $mPassIV string El vector de inicialización
+     */
+    public static function setMPassIV($mPassIV)
+    {
+        $_SESSION["mPassIV"] = $mPassIV;
+    }
+
+    /**
+     * Devuelve la hora en la que el SID de sesión fue creado
+     *
+     * @return int
+     */
+    public static function getSidStartTime()
+    {
+        return (isset($_SESSION['sidStartTime'])) ? (int)$_SESSION['sidStartTime'] : 0;
+    }
+
+    /**
+     * Establece la hora de creación del SID
+     *
+     * @param $time int La marca de hora
+     */
+    public static function setSidStartTime($time)
+    {
+        $_SESSION['sidStartTime'] = (int)$time;
+    }
+
+    /**
+     * Devuelve la hora de inicio de actividad.
+     *
+     * @return int
+     */
+    public static function getStartActivity()
+    {
+        return (isset($_SESSION['startActivity'])) ? (int)$_SESSION['startActivity'] : 0;
+    }
+
+    /**
+     * Establece la hora de inicio de actividad
+     *
+     * @param $time int La marca de hora
+     */
+    public static function setStartActivity($time)
+    {
+        $_SESSION['startActivity'] = $time;
+    }
+
+    /**
+     * Devuelve la hora de la última actividad
+     *
+     * @return int
+     */
+    public static function getLastActivity()
+    {
+        return (isset($_SESSION['lastActivity'])) ? $_SESSION['lastActivity'] : 0;
+    }
+
+    /**
+     * Establece la hora de la última actividad
+     *
+     * @param $time int La marca de hora
+     */
+    public static function setLastActivity($time)
+    {
+        $_SESSION['lastActivity'] = $time;
     }
 }

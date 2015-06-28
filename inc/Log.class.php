@@ -30,7 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de manejar el registro de eventos
  */
-class Log
+class Log extends ActionLog
 {
     static $numRows;
 
@@ -85,34 +85,65 @@ class Log
             return false;
         }
 
-        $message['action'] = _('Vaciar Eventos');
-        $message['text'][] = _('Vaciar registro de eventos');
-
-        self::wrLogInfo($message);
-        Common::sendEmail($message);
+        self::writeNewLogAndEmail(_('Vaciar Eventos'), _('Vaciar registro de eventos'));
 
         return true;
     }
 
     /**
-     * Crear un nuevo registro en el registro de eventos.
+     * Obtener una nueva instancia de la clase inicializada
      *
-     * @param array $message con el nombre de la accióm y el texto del mensaje
+     * @param      $action string La acción realizada
+     * @param null $description string La descripción de la acción realizada
+     * @return Log
+     */
+    public static function newLog($action, $description = null)
+    {
+        return new Log($action, $description);
+    }
+
+    /**
+     * Escribir un nuevo evento en el registro de eventos
+     *
+     * @param      $action string La acción realizada
+     * @param null $description string La descripción de la acción realizada
+     * @return Log
+     */
+    public static function writeNewLog($action, $description = null){
+        $log = new Log($action, $description);
+        $log->writeLog();
+
+        return $log;
+    }
+
+    /**
+     * Obtener una nueva instancia de la clase inicializada
+     *
+     * @param      $action string La acción realizada
+     * @param null $description string La descripción de la acción realizada
+     * @return Log
+     */
+    public static function writeNewLogAndEmail($action, $description = null){
+        $log = new Log($action, $description);
+        $log->writeLog();
+
+        Email::sendEmail($log);
+
+        return $log;
+    }
+
+    /**
+     * Escribir un nuevo evento en el registro de eventos
+     *
      * @return bool
      */
-    public static function wrLogInfo($message)
-    {
-        if (!Util::logIsEnabled() || !is_array($message)) {
-            return false;
+    public function writeLog(){
+        if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
+            error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription());
         }
 
-        $login = Session::getUserLogin();
-        $userId = Session::getUserId();
-        $action = strip_tags(utf8_encode($message['action']));
-        $description = (isset($message['text'])) ? strip_tags(utf8_encode(implode(';;', $message['text']))) : '';
-
-        if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
-            error_log('Action: ' . $action . ' -- Description: ' . $description);
+        if (!Util::logIsEnabled()) {
+            return false;
         }
 
         $query = 'INSERT INTO log SET ' .
@@ -123,11 +154,11 @@ class Log
             'log_action = :action,' .
             'log_description = :description';
 
-        $data['login'] = $login;
-        $data['userId'] = $userId;
+        $data['login'] = Session::getUserLogin();
+        $data['userId'] = Session::getUserId();
         $data['ipAddress'] = $_SERVER['REMOTE_ADDR'];
-        $data['action'] = $action;
-        $data['description'] = $description;
+        $data['action'] = $this->getAction();
+        $data['description'] = $this->getDescription();
 
         return DB::getQuery($query, __FUNCTION__, $data);
     }

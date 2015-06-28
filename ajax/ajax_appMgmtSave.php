@@ -23,17 +23,20 @@
  *
  */
 
+use SP\Email;
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
      SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk =  SP\Common::parseParams('p', 'sk', false);
+$sk =  SP\Request::analyze('sk', false);
 
 if (!$sk || ! SP\Common::checkSessionKey($sk)) {
      SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
@@ -41,10 +44,10 @@ if (!$sk || ! SP\Common::checkSessionKey($sk)) {
 
 
 // Variables POST del formulario
-$actionId =  SP\Common::parseParams('p', 'actionId', 0);
-$itemId =  SP\Common::parseParams('p', 'itemId', 0);
-$onCloseAction =  SP\Common::parseParams('p', 'onCloseAction');
-$activeTab =  SP\Common::parseParams('p', 'activeTab', 0);
+$actionId =  SP\Request::analyze('actionId', 0);
+$itemId =  SP\Request::analyze('itemId', 0);
+$onCloseAction =  SP\Request::analyze('onCloseAction');
+$activeTab =  SP\Request::analyze('activeTab', 0);
 
 // Acción al cerrar la vista
 $doActionOnClose = "doAction('$onCloseAction','',$activeTab);";
@@ -59,19 +62,19 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $user = new SP\Users;
 
     // Variables POST del formulario
-    $isLdap =  SP\Common::parseParams('p', 'isLdap', 0);
-    $userName =  SP\Common::parseParams('p', 'name');
-    $userLogin =  SP\Common::parseParams('p', 'login');
-    $userProfile =  SP\Common::parseParams('p', 'profileid', 0);
-    $userGroup =  SP\Common::parseParams('p', 'groupid', 0);
-    $userEmail =  SP\Common::parseParams('p', 'email');
-    $userNotes =  SP\Common::parseParams('p', 'notes');
-    $userPass =  SP\Common::parseParams('p', 'pass', '', false, false, false);
-    $userPassV =  SP\Common::parseParams('p', 'passv', '', false, false, false);
-    $userIsAdminApp =  SP\Common::parseParams('p', 'adminapp', 0, false, 1);
-    $userIsAdminAcc =  SP\Common::parseParams('p', 'adminacc', 0, false, 1);
-    $userIsDisabled =  SP\Common::parseParams('p', 'disabled', 0, false, 1);
-    $userIsChangePass =  SP\Common::parseParams('p', 'changepass', 0, false, 1);
+    $isLdap =  SP\Request::analyze('isLdap', 0);
+    $userName =  SP\Request::analyze('name');
+    $userLogin =  SP\Request::analyze('login');
+    $userProfile =  SP\Request::analyze('profileid', 0);
+    $userGroup =  SP\Request::analyze('groupid', 0);
+    $userEmail =  SP\Request::analyze('email');
+    $userNotes =  SP\Request::analyze('notes');
+    $userPass =  SP\Request::analyze('pass', '', false, false, false);
+    $userPassV =  SP\Request::analyze('passv', '', false, false, false);
+    $userIsAdminApp =  SP\Request::analyze('adminapp', 0, false, 1);
+    $userIsAdminAcc =  SP\Request::analyze('adminacc', 0, false, 1);
+    $userIsDisabled =  SP\Request::analyze('disabled', 0, false, 1);
+    $userIsChangePass =  SP\Request::analyze('changepass', 0, false, 1);
 
     // Nuevo usuario o editar
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
@@ -186,8 +189,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_DELETE
 ) {
     // Variables POST del formulario
-    $frmGrpName =  SP\Common::parseParams('p', 'name');
-    $frmGrpDesc =  SP\Common::parseParams('p', 'description');
+    $frmGrpName =  SP\Request::analyze('name');
+    $frmGrpDesc =  SP\Request::analyze('description');
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT
@@ -248,52 +251,47 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_DELETE
 ) {
-    $profileProp = array();
+    $profile = new \SP\Profile();
 
     // Variables POST del formulario
-    $frmProfileName =  SP\Common::parseParams('p', 'profile_name');
-    SP\Profiles::$profileId = $itemId;
+    $name = SP\Request::analyze('profile_name');
 
-    // Profile properties Array
-    $profileProp["pAccView"] =  SP\Common::parseParams('p', 'profile_accview', 0, false, 1);
-    $profileProp["pAccViewPass"] =  SP\Common::parseParams('p', 'profile_accviewpass', 0, false, 1);
-    $profileProp["pAccViewHistory"] =  SP\Common::parseParams('p', 'profile_accviewhistory', 0, false, 1);
-    $profileProp["pAccEdit"] =  SP\Common::parseParams('p', 'profile_accedit', 0, false, 1);
-    $profileProp["pAccEditPass"] =  SP\Common::parseParams('p', 'profile_acceditpass', 0, false, 1);
-    $profileProp["pAccAdd"] =  SP\Common::parseParams('p', 'profile_accadd', 0, false, 1);
-    $profileProp["pAccDel"] =  SP\Common::parseParams('p', 'profile_accdel', 0, false, 1);
-    $profileProp["pAccFiles"] =  SP\Common::parseParams('p', 'profile_accfiles', 0, false, 1);
-    $profileProp["pConfig"] =  SP\Common::parseParams('p', 'profile_config', 0, false, 1);
-    $profileProp["pAppMgmtCat"] =  SP\Common::parseParams('p', 'profile_categories', 0, false, 1);
-    $profileProp["pAppMgmtCust"] =  SP\Common::parseParams('p', 'profile_customers', 0, false, 1);
-    $profileProp["pConfigMpw"] =  SP\Common::parseParams('p', 'profile_configmpw', 0, false, 1);
-    $profileProp["pConfigBack"] =  SP\Common::parseParams('p', 'profile_configback', 0, false, 1);
-    $profileProp["pUsers"] =  SP\Common::parseParams('p', 'profile_users', 0, false, 1);
-    $profileProp["pGroups"] =  SP\Common::parseParams('p', 'profile_groups', 0, false, 1);
-    $profileProp["pProfiles"] =  SP\Common::parseParams('p', 'profile_profiles', 0, false, 1);
-    $profileProp["pEventlog"] =  SP\Common::parseParams('p', 'profile_eventlog', 0, false, 1);
+    $profile->setName($name);
+    $profile->setId(SP\Request::analyze('itemId', 0));
+    $profile->setAccAdd(SP\Request::analyze('profile_accadd', 0, false, 1));
+    $profile->setAccView(SP\Request::analyze('profile_accview', 0, false, 1));
+    $profile->setAccViewPass(SP\Request::analyze('profile_accviewpass', 0, false, 1));
+    $profile->setAccViewHistory(SP\Request::analyze('profile_accviewhistory', 0, false, 1));
+    $profile->setAccEdit(SP\Request::analyze('profile_accedit', 0, false, 1));
+    $profile->setAccEditPass(SP\Request::analyze('profile_acceditpass', 0, false, 1));
+    $profile->setAccDelete(SP\Request::analyze('profile_accdel', 0, false, 1));
+    $profile->setConfigGeneral(SP\Request::analyze('profile_config', 0, false, 1));
+    $profile->setConfigEncryption(SP\Request::analyze('profile_configmpw', 0, false, 1));
+    $profile->setConfigBackup(SP\Request::analyze('profile_configback', 0, false, 1));
+    $profile->setMgmCategories(SP\Request::analyze('profile_categories', 0, false, 1));
+    $profile->setMgmCustomers(SP\Request::analyze('profile_customers', 0, false, 1));
+    $profile->setMgmUsers(SP\Request::analyze('profile_users', 0, false, 1));
+    $profile->setMgmGroups(SP\Request::analyze('profile_groups', 0, false, 1));
+    $profile->setMgmProfiles(SP\Request::analyze('profile_profiles', 0, false, 1));
+    $profile->setEvl(SP\Request::analyze('profile_eventlog', 0, false, 1));
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT
     ) {
-        if (!$frmProfileName) {
+        if (!$name) {
              SP\Common::printJSON(_('Es necesario un nombre de perfil'), 2);
-        }
-
-        SP\Profiles::$profileName = $frmProfileName;
-
-        if (SP\Profiles::checkProfileExist()) {
+        } elseif (SP\Profile::checkProfileExist()) {
              SP\Common::printJSON(_('Nombre de perfil duplicado'), 2);
         }
 
         if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW) {
-            if (SP\Profiles::addProfile($profileProp)) {
+            if ($profile->profileAdd()) {
                  SP\Common::printJSON(_('Perfil creado'), 0, $doActionOnClose);
             }
 
              SP\Common::printJSON(_('Error al crear el perfil'));
-        } else if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT) {
-            if (SP\Profiles::updateProfile($profileProp)) {
+        } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT) {
+            if ($profile->profileUpdate()) {
                  SP\Common::printJSON(_('Perfil actualizado'), 0, $doActionOnClose);
             }
 
@@ -301,26 +299,18 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         }
 
     } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_DELETE) {
-        $resProfileUse = SP\Profiles::checkProfileInUse();
+        $resProfileUse = SP\Profile::checkProfileInUse();
 
         if ($resProfileUse['users'] > 0) {
             $uses[] = _('Usuarios') . " (" . $resProfileUse['users'] . ")";
 
              SP\Common::printJSON(_('No es posible eliminar') . ';;' . _('Perfil en uso por:') . ';;' . implode(';;', $uses));
         } else {
-            $profileName = SP\Profiles::getProfileNameById($itemId);
-
-            if (SP\Profiles::deleteProfile()) {
-                $message['action'] = _('Eliminar Perfil');
-                $message['text'][] = SP\Html::strongText(_('Perfil') . ': ') . $profileName;
-
-                SP\Log::wrLogInfo($message);
-                 SP\Common::sendEmail($message);
-
-                 SP\Common::printJSON(_('Perfil eliminado'), 0, $doActionOnClose);
+            if ($profile->profileDelete()) {
+                SP\Common::printJSON(_('Perfil eliminado'), 0, $doActionOnClose);
             }
 
-             SP\Common::printJSON(_('Error al eliminar el perfil'));
+            SP\Common::printJSON(_('Error al eliminar el perfil'));
         }
     }
 
@@ -330,8 +320,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE
 ) {
     // Variables POST del formulario
-    $frmCustomerName =  SP\Common::parseParams('p', 'name');
-    $frmCustomerDesc =  SP\Common::parseParams('p', 'description');
+    $frmCustomerName =  SP\Request::analyze('name');
+    $frmCustomerDesc =  SP\Request::analyze('description');
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT
@@ -384,8 +374,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_DELETE
 ) {
     // Variables POST del formulario
-    $frmCategoryName =  SP\Common::parseParams('p', 'name');
-    $frmCategoryDesc =  SP\Common::parseParams('p', 'description');
+    $frmCategoryName =  SP\Request::analyze('name');
+    $frmCategoryDesc =  SP\Request::analyze('description');
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_EDIT

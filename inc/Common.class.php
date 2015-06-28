@@ -33,124 +33,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Common
 {
     /**
-     * Enviar un email utilizando la clase PHPMailer.
-     *
-     * @param array  $message con el nombre de la accióm y el texto del mensaje
-     * @param string $mailTo  con el destinatario
-     * @param bool   $isEvent para indicar si es um
-     * @return bool
-     */
-    public static function sendEmail($message, $mailTo = '', $isEvent = true)
-    {
-        if (!Util::mailIsEnabled()) {
-            return false;
-        }
-
-        if (!is_array($message)) {
-            return false;
-        }
-
-        $mail = self::getEmailObject($mailTo, $message['action']);
-
-        if (!is_object($mail)) {
-            return false;
-        }
-
-        $mail->isHTML();
-        $newline = '<br>';
-
-        if ($isEvent === true) {
-            $performer = (isset($_SESSION["ulogin"])) ? $_SESSION["ulogin"] : _('N/D');
-            $body[] = Html::strongText(_('Acción') . ": ") . $message['action'];
-            $body[] = Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
-
-            $mail->addCC(Config::getValue('mail_from'));
-        }
-
-        $body[] = (is_array($message['text'])) ? implode($newline, $message['text']) : '';
-        $body[] = '';
-        $body[] = '--';
-        $body[] = Util::getAppInfo('appname') . ' - ' . Util::getAppInfo('appdesc');
-        $body[] = Html::anchorText(Init::$WEBURI);
-
-
-        $mail->Body = implode($newline, $body);
-
-        $sendMail = $mail->send();
-
-        // Enviar correo
-        if ($sendMail) {
-            $log['text'][] = _('Correo enviado');
-        } else {
-            $log['text'][] = _('Error al enviar correo');
-            $log['text'][] = 'ERROR: ' . $mail->ErrorInfo;
-        }
-
-        $log['text'][] = '';
-        $log['text'][] = _('Destinatario') . ": $mailTo";
-        $log['text'][] = ($isEvent === true) ? _('CC') . ": " . Config::getValue('mail_from') : '';
-
-        $log['action'] = _('Enviar Email');
-
-        Log::wrLogInfo($log);
-        return $sendMail;
-    }
-
-    /**
-     * Inicializar la clase PHPMailer.
-     *
-     * @param string $mailTo con la dirección del destinatario
-     * @param string $action con la acción realizada
-     * @return false|object
-     */
-    public static function getEmailObject($mailTo, $action)
-    {
-        $appName = Util::getAppInfo('appname');
-        $mailFrom = Config::getValue('mail_from');
-        $mailServer = Config::getValue('mail_server');
-        $mailPort = Config::getValue('mail_port', 25);
-        $mailAuth = Config::getValue('mail_authenabled', FALSE);
-
-        if ($mailAuth) {
-            $mailUser = Config::getValue('mail_user');
-            $mailPass = Config::getValue('mail_pass');
-        }
-
-        if (!$mailServer) {
-            return false;
-        }
-
-        if (empty($mailTo)) {
-            $mailTo = $mailFrom;
-        }
-
-        $phpmailerPath = EXTENSIONS_DIR . DIRECTORY_SEPARATOR . 'phpmailer';
-        require_once $phpmailerPath . DIRECTORY_SEPARATOR . 'class.phpmailer.php';
-        require_once $phpmailerPath . DIRECTORY_SEPARATOR . 'class.smtp.php';
-
-        $mail = new PHPMailer();
-
-        $mail->isSMTP();
-        $mail->CharSet = 'utf-8';
-        $mail->SMTPAuth = $mailAuth;
-        $mail->Host = $mailServer;
-        $mail->Port = $mailPort;
-        $mail->Username = $mailUser;
-        $mail->Password = $mailPass;
-        $mail->SMTPSecure = strtolower(Config::getValue('mail_security'));
-        //$mail->SMTPDebug = 2;
-        //$mail->Debugoutput = 'error_log';
-
-        $mail->setFrom($mailFrom, $appName);
-        $mail->addAddress($mailTo);
-        $mail->addReplyTo($mailFrom, $appName);
-        $mail->WordWrap = 100;
-        $mail->Subject = $appName . ' (' . _('Aviso') . ') - ' . $action;
-
-        return $mail;
-    }
-
-    /**
      * Devuelve una respuesta en formato XML con el estado y el mensaje.
      *
      * @param string $description mensaje a devolver
@@ -270,12 +152,12 @@ class Common
         $hash = sha1(time());
 
         // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
-        if (!isset($_SESSION["sk"]) || $new === true) {
-            $_SESSION["sk"] = $hash;
+        if (is_null(Session::getSecurityKey()) || $new === true) {
+            Session::setSecurityKey($hash);
             return $hash;
         }
 
-        return $_SESSION["sk"];
+        return Session::getSecurityKey();
     }
 
     /**
@@ -286,76 +168,6 @@ class Common
      */
     public static function checkSessionKey($key)
     {
-        if (!isset($_SESSION["sk"]) || $_SESSION["sk"] == "" || !$key) {
-            return false;
-        }
-
-        return ($_SESSION["sk"] == $key);
-    }
-
-    /**
-     * Obtener los valores de variables $_GET, $_POST, $_REQUEST o $_SESSION
-     * y devolverlos limpios con el tipo correcto o esperado.
-     *
-     * @param string $method    con el método a utilizar
-     * @param string $param     con el parámetro a consultar
-     * @param mixed  $default   opcional, valor por defecto a devolver
-     * @param bool   $onlyCHeck opcional, comprobar si el parámetro está presente
-     * @param mixed  $force     opcional, valor devuelto si el parámeto está definido
-     * @param bool   $sanitize  opcional, escapar/eliminar carácteres especiales
-     * @return bool|string si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
-     */
-    public static function parseParams($method, $param, $default = '', $onlyCHeck = false, $force = false, $sanitize = true)
-    {
-        $out = '';
-
-        switch ($method) {
-            case 'g':
-                if (!isset($_GET[$param])) {
-                    return $default;
-                }
-                $out = $_GET[$param];
-                break;
-            case 'p':
-                if (!isset($_POST[$param])) {
-                    return $default;
-                }
-                $out = $_POST[$param];
-                break;
-            case 's':
-                if (!isset($_SESSION[$param])) {
-                    return $default;
-                }
-                $out = $_SESSION[$param];
-                break;
-            case 'r':
-                if (!isset($_REQUEST[$param])) {
-                    return $default;
-                }
-                $out = $_REQUEST[$param];
-                break;
-            default :
-                return false;
-        }
-
-        if ($onlyCHeck) {
-            return true;
-        }
-
-        if ($force) {
-            return $force;
-        }
-
-        if ((is_numeric($out) && !is_string($default)) || is_numeric($default)) {
-            return intval($out);
-        }
-
-        if (is_string($out)) {
-            return ($method != 's' && $sanitize === true) ? Html::sanitize($out) : $out;
-        }
-
-        if (is_array($out)) {
-            return $out;
-        }
+        return (!is_null(Session::getSecurityKey()) && Session::getSecurityKey() == $key);
     }
 }

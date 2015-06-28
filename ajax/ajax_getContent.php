@@ -23,11 +23,13 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Util::logout();
@@ -35,17 +37,18 @@ if (!SP\Init::isLoggedIn()) {
 
 SP\Util::checkReload();
 
-if (!SP\Common::parseParams('p', 'actionId', 0, true)) {
+if (!SP\Request::analyze('actionId', 0, true)) {
     die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
 }
 
-$actionId = SP\Common::parseParams('p', 'actionId');
-$itemId = SP\Common::parseParams('p', 'itemId', 0);
-$lastAction = filter_var(SP\Common::parseParams('p', 'lastAction', \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH, false, false, false), FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
+$actionId = SP\Request::analyze('actionId');
+$itemId = SP\Request::analyze('itemId', 0);
+$lastAction = filter_var(SP\Request::analyze('lastAction', \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH, false, false, false), FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
 
 $tpl = new SP\Template();
 $tpl->assign('actionId', $actionId);
 $tpl->assign('id', $itemId);
+$tpl->assign('activeTabId', $itemId);
 $tpl->assign('queryTimeStart', microtime());
 $tpl->assign('userId', SP\Session::getUserId());
 $tpl->assign('userGroupId', SP\Session::getUserGroupId());
@@ -130,7 +133,7 @@ switch ($actionId) {
     case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
     case \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP:
     case \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT:
-        $tpl->assign('onCloseAction', $action);
+        $tpl->assign('onCloseAction', $actionId);
         $tpl->addTemplate('tabs-start');
 
         $controller = new SP\Controller\ConfigC($tpl);
@@ -149,16 +152,16 @@ switch ($actionId) {
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración
-if (isset($_SESSION["uisadminapp"]) && SP\Config::getValue('debug')) {
+if (\SP\Session::getUserIsAdminApp() && SP\Config::getValue('debug')) {
     $controller->getDebug();
 }
 
 // Se comprueba si hay actualizaciones.
 // Es necesario que se haga al final de obtener el contenido ya que la 
 // consulta ajax detiene al resto si se ejecuta antes
-if ($_SESSION['uisadminapp']
+if (\SP\Session::getUserIsAdminApp()
     && SP\Config::getValue('checkupdates') === true
-    && !SP\Common::parseParams('s', 'UPDATED', false, true)
+    && !SP\Session::getUpdated()
 ) {
     echo '<script>checkUpds();</script>';
 }

@@ -225,10 +225,7 @@ class Util
         $data = curl_exec($ch);
 
         if ($data === false) {
-            $message['action'] = __FUNCTION__;
-            $message['text'][] = curl_error($ch);
-
-            Log::wrLogInfo($message);
+            Log::writeNewLog(__FUNCTION__, curl_error($ch));
 
             return false;
         }
@@ -300,22 +297,6 @@ class Util
         return $version;
     }
 
-    /**
-     * Comprobar el método utilizado para enviar un formulario.
-     *
-     * @param string $method con el método utilizado.
-     * @return none
-     */
-    public static function checkReferer($method)
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== $method
-            || !isset($_SERVER['HTTP_REFERER'])
-            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
-        ) {
-            Init::initError(_('No es posible acceder directamente a este archivo'));
-            exit();
-        }
-    }
 
     /**
      * Realiza el proceso de logout.
@@ -335,10 +316,7 @@ class Util
         $memory_limit = (int)(ini_get('memory_limit'));
         $upload_mb = min($max_upload, $max_post, $memory_limit);
 
-        $message['action'] = __FUNCTION__;
-        $message['text'][] = "Max. PHP upload: " . $upload_mb . "MB";
-
-        Log::wrLogInfo($message);
+        Log::writeNewLog(__FUNCTION__, "Max. PHP upload: " . $upload_mb . "MB");
     }
 
     /**
@@ -457,10 +435,8 @@ class Util
      */
     public static function reload()
     {
-        $reload = Common::parseParams('s', 'reload', 0);
-
-        if ($reload === 0) {
-            $_SESSION["reload"] = 1;
+        if (Session::getReload() === false) {
+            Session::setReload(true);
         }
     }
 
@@ -469,10 +445,8 @@ class Util
      */
     public static function checkReload()
     {
-        $reload = Common::parseParams('s', 'reload', 0);
-
-        if ($reload === 1) {
-            $_SESSION['reload'] = 0;
+        if (Session::getReload() === true) {
+            Session::setReload();
             exit("<script>location.reload();</script>");
         }
     }

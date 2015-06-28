@@ -118,7 +118,7 @@ class Crypt
      */
     public static function getSessionMasterPass()
     {
-        return self::getDecrypt($_SESSION["mPass"], $_SESSION['mPassPwd'], $_SESSION['mPassIV']);
+        return self::getDecrypt(Session::getMPass(), Session::getMPassPwd(), Session::getMPassIV());
     }
 
     /**

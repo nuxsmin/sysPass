@@ -23,18 +23,20 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Util::logout();
 }
 
-$accountId = SP\Common::parseParams('p', 'accountid', false);
-$isHistory = SP\Common::parseParams('p', 'isHistory', false);
+$accountId = SP\Request::analyze('accountid', false);
+$isHistory = SP\Request::analyze('isHistory', false);
 
 if (!$accountId) {
     return;
@@ -42,7 +44,7 @@ if (!$accountId) {
 
 $account = (!$isHistory) ? new SP\Account() : new SP\AccountHistory();
 
-$account->setAccountParentId((isset($_SESSION["accParentId"])) ? $_SESSION["accParentId"] : "");
+$account->setAccountParentId(\SP\Session::getAccountParentId());
 $account->setAccountId($accountId);
 
 $accountData = $account->getAccountPassData();
@@ -65,11 +67,10 @@ $accountClearPass = SP\Crypt::getDecrypt($accountData->pass, $masterPass, $accou
 if (!$isHistory) {
     $account->incrementDecryptCounter();
 
-    $message['action'] = _('Ver Clave');
-    $message['text'][] = _('ID') . ': ' . $accountId;
-    $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->name;
-
-    SP\Log::wrLogInfo($message);
+    $log = new \SP\Log(_('Ver Clave'));
+    $log->addDescription(_('ID') . ': ' . $accountId);
+    $log->addDescription(_('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->name);
+    $log->writeLog();
 }
 
 $accountPass = htmlentities(trim($accountClearPass), ENT_COMPAT, 'UTF-8');

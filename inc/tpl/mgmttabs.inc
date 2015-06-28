@@ -5,7 +5,7 @@
                 <li>
                     <img src="imgs/add.png" title="<?php echo $tab['props']['actions']['new']['title']; ?>"
                          class="inputImg" data-itemid="0" data-activetab="<?php echo $index; ?>"
-                         data-nextactionid="<?php echo $onCloseAction; ?>"
+                         data-nextactionid="<?php echo (isset($onCloseAction)) ? $onCloseAction : ''; ?>"
                          OnClick="<?php echo $tab['props']['actions']['new']['onclick']; ?>"/>
                 </li>
             </ul>
@@ -31,6 +31,7 @@
         <div class="data-rows">
             <?php $numActions = count($tab['props']["actions"]) - 1; ?>
             <?php foreach ($tab['query'] as $item): ?>
+                <?php $i = 0; ?>
                 <?php $itemId = $item->$tab['props']['tblRowSrcId']; ?>
                 <?php $action_check = array(); ?>
                 <ul>
@@ -69,7 +70,6 @@
                         <?php endif; ?>
                     </li>
                 </ul>
-                <?php $i = 0; ?>
             <?php endforeach; ?>
         </div>
 

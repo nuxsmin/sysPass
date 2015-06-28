@@ -74,6 +74,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->assign('changesHash', '');
         $this->view->assign('chkUserEdit', '');
         $this->view->assign('chkGroupEdit', '');
+        $this->view->assign('gotData', $this->isGotData());
         $this->view->assign('sk', Common::getSessionKey(true));
     }
 

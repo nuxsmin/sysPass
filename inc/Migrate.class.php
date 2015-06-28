@@ -213,7 +213,7 @@ class Migrate
             }
         }
 
-        $currentUserId = $_SESSION['uid'];
+        $currentUserId = Session::getUserId();
 
         // Limpiar datos de usuarios manteniendo el usuario actual
         if (self::checkAdminAccount($currentUserId)) {
@@ -275,11 +275,10 @@ class Migrate
             }
         }
 
-        $message['action'] = _('Importar Clientes');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . ' / ' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Clientes'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -346,11 +345,10 @@ class Migrate
                 $e->getMessage());
         }
 
-        $message['action'] = _('Importar Cuentas');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Cuentas'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -448,11 +446,10 @@ class Migrate
                 $e->getMessage());
         }
 
-        $message['action'] = _('Importar Grupos de Cuentas');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Grupos de Cuentas'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -522,11 +519,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $message['action'] = _('Importar Histórico de Cuentas');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Histórico de Cuentas'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -631,11 +627,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $message['action'] = _('Importar Archivos de Cuentas');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Archivos de Cuentas'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -697,11 +692,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $message['action'] = _('Importar Categorías de Cuentas');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Categorías de Cuentas'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -754,7 +748,7 @@ class Migrate
             . 'blnFromLdap,'
             . 'blnDisabled '
             . 'FROM users '
-            . 'WHERE intUserId <> ' . $_SESSION['uid'];
+            . 'WHERE intUserId <> ' . Session::getUserId();
 
         $totalRecords = 0;
         $num = 0;
@@ -772,11 +766,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $message['action'] = _('Importar Usuarios');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Usuarios'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -863,11 +856,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $message['action'] = _('Importar Grupos de Usuarios');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalRecords;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Grupos de Usuarios'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
+        $log->writeLog();
     }
 
     /**
@@ -935,10 +927,9 @@ class Migrate
             $num++;
         }
 
-        $message['action'] = _('Importar Configuración');
-        $message['text'][] = 'OK';
-        $message['text'][] = _('Registros') . ': ' . $num . '/' . $totalParams;
-
-        Log::wrLogInfo($message);
+        $log = new Log(_('Importar Configuración'));
+        $log->addDescription('OK');
+        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalParams);
+        $log->writeLog();
     }
 }

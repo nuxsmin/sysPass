@@ -23,11 +23,13 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('GET');
+Request::checkReferer('GET');
 
 if (!SP\Init::isLoggedIn()) {
     return;
@@ -38,7 +40,7 @@ if (!SP\Util::fileIsEnabled()) {
     return false;
 }
 
-$sk = SP\Common::parseParams('g', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printXML(_('CONSULTA INVÁLIDA'));

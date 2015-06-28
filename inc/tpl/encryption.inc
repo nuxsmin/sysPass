@@ -76,7 +76,6 @@ echo $encryption_tabIndex;?>">
             </tr>
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
-        <input type="hidden" name="onCloseAction" value="<?php echo $encryption_onCloseAction; ?>"/>
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
@@ -134,7 +133,6 @@ echo $encryption_tabIndex;?>">
             </tr>
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
-        <input type="hidden" name="onCloseAction" value="<?php echo $encryption_onCloseAction; ?>"/>
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">

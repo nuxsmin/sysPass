@@ -7,6 +7,7 @@
  */
 
 namespace SP\Controller;
+use SP\Session;
 
 /**
  * Clase encargada de mostrar el interface principal de la aplicación
@@ -85,12 +86,12 @@ class MainC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('sessionbar');
 
-        $this->view->assign('adminApp', (isset($_SESSION["uisadminapp"]) && $_SESSION["uisadminapp"] == 1) ? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
-        $this->view->assign('userId', (isset($_SESSION["uid"])) ? $_SESSION["uid"] : 0);
-        $this->view->assign('userLogin', (isset($_SESSION["ulogin"]) && !empty($_SESSION["ulogin"])) ? strtoupper($_SESSION["ulogin"]) : '');
-        $this->view->assign('userName', (isset($_SESSION["uname"]) && !empty($_SESSION["uname"])) ? $_SESSION["uname"] : strtoupper($this->view->userLogin));
-        $this->view->assign('userGroup', (isset($_SESSION["ugroupn"])) ? $_SESSION["ugroupn"] : '');
-        $this->view->assign('showPassIcon', (!isset($_SESSION['uisldap']) || $_SESSION['uisldap'] == 0));
+        $this->view->assign('adminApp', (Session::getUserIsAdminApp()) ? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
+        $this->view->assign('userId', Session::getUserId());
+        $this->view->assign('userLogin', strtoupper(Session::getUserLogin()));
+        $this->view->assign('userName', (Session::getUserName()) ? Session::getUserName() : strtoupper($this->view->userLogin));
+        $this->view->assign('userGroup', Session::getUserGroupName());
+        $this->view->assign('showPassIcon', \SP\Session::getUserIsLdap());
     }
 
     /**
@@ -120,7 +121,7 @@ class MainC extends Controller implements ActionsInterface
 
         $this->view->assign('demoEnabled', \SP\Util::demoIsEnabled());
         $this->view->assign('mailEnabled', \SP\Util::mailIsEnabled());
-        $this->view->assign('isLogout', \SP\Common::parseParams('g', 'logout', false, true));
+        $this->view->assign('isLogout', \SP\Request::analyze('logout', false, true));
         $this->view->assign('updated', \SP\Init::$UPDATED === true);
         $this->view->assign('newFeatures', array(
             _('Nuevo interface de búsqueda con estilo de lista o tipo tarjeta'),
@@ -189,12 +190,12 @@ class MainC extends Controller implements ActionsInterface
      */
     public function getPassReset()
     {
-        if (\SP\Util::mailIsEnabled() || \SP\Common::parseParams('g', 'f', 0) === 1) {
+        if (\SP\Util::mailIsEnabled() || \SP\Request::analyze('f', 0) === 1) {
             $this->view->addTemplate('passreset');
 
-            $this->view->assign('action', \SP\Common::parseParams('g', 'a'));
-            $this->view->assign('hash', \SP\Common::parseParams('g', 'h'));
-            $this->view->assign('time', \SP\Common::parseParams('g', 't'));
+            $this->view->assign('action', \SP\Request::analyze('a'));
+            $this->view->assign('hash', \SP\Request::analyze('h'));
+            $this->view->assign('time', \SP\Request::analyze('t'));
             $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo_full.png');
 
             $this->view->assign('passReset', ($this->view->action === 'passreset' && $this->view->hash && $this->view->time));
@@ -216,8 +217,8 @@ class MainC extends Controller implements ActionsInterface
         $this->view->addTemplate('upgrade');
         $this->view->addTemplate('footer');
 
-        $this->view->assign('action', \SP\Common::parseParams('g', 'a'));
-        $this->view->assign('time', \SP\Common::parseParams('g', 't'));
+        $this->view->assign('action', \SP\Request::analyze('a'));
+        $this->view->assign('time', \SP\Request::analyze('t'));
         $this->view->assign('upgrade', $this->view->action === 'upgrade');
         $this->view->assign('logo', \SP\Init::$WEBROOT . '/imgs/logo_full.png');
     }

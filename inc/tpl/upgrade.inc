@@ -11,7 +11,7 @@
                        placeholder="<?php echo _('Código de Seguridad'); ?> "
                        value="" autocomplete="off" autofocus required/>
             </p>
-            <input type="hidden" name="a" value="<?php echo $actionId; ?>">
+            <input type="hidden" name="a" value="<?php echo $action; ?>">
             <input type="hidden" name="t" value="<?php echo $time; ?>">
             <input type="hidden" name="upgrade" value="1">
         </fieldset>

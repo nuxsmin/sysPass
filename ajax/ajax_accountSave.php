@@ -23,40 +23,42 @@
  *
  */
 
+use SP\Request;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Util::checkReferer('POST');
+Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
     SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP\Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
 if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
-//$frmSaveType = SP_Common::parseParams('p', 'savetyp', 0);
-$actionId = SP\Common::parseParams('p', 'actionId', 0);
-$accountId = SP\Common::parseParams('p', 'accountid', 0);
-$customerId = SP\Common::parseParams('p', 'customerId', 0);
-$newCustomer = SP\Common::parseParams('p', 'customer_new');
-$accountName = SP\Common::parseParams('p', 'name');
-$accountLogin = SP\Common::parseParams('p', 'login');
-$accountPassword = SP\Common::parseParams('p', 'password', '', false, false, false);
-$accountPasswordV = SP\Common::parseParams('p', 'password2', '', false, false, false);
-$categoryId = SP\Common::parseParams('p', 'categoryId', 0);
-$accountOtherGroups = SP\Common::parseParams('p', 'othergroups');
-$accountOtherUsers = SP\Common::parseParams('p', 'otherusers');
-$accountNotes = SP\Common::parseParams('p', 'notice');
-$accountUrl = SP\Common::parseParams('p', 'url');
-$accountGroupEditEnabled = SP\Common::parseParams('p', 'geditenabled', 0, false, 1);
-$accountUserEditEnabled = SP\Common::parseParams('p', 'ueditenabled', 0, false, 1);
-$accountChangesHash = SP\Common::parseParams('p', 'hash');
+//$frmSaveType = SP_Request::analyze('savetyp', 0);
+$actionId = SP\Request::analyze('actionId', 0);
+$accountId = SP\Request::analyze('accountid', 0);
+$customerId = SP\Request::analyze('customerId', 0);
+$newCustomer = SP\Request::analyze('customer_new');
+$accountName = SP\Request::analyze('name');
+$accountLogin = SP\Request::analyze('login');
+$accountPassword = SP\Request::analyze('password', '', false, false, false);
+$accountPasswordV = SP\Request::analyze('password2', '', false, false, false);
+$categoryId = SP\Request::analyze('categoryId', 0);
+$accountOtherGroups = SP\Request::analyze('othergroups');
+$accountOtherUsers = SP\Request::analyze( 'otherusers');
+$accountNotes = SP\Request::analyze('notice');
+$accountUrl = SP\Request::analyze('url');
+$accountGroupEditEnabled = SP\Request::analyze('geditenabled', 0, false, 1);
+$accountUserEditEnabled = SP\Request::analyze('ueditenabled', 0, false, 1);
+$accountChangesHash = SP\Request::analyze('hash');
 
 // Datos del Usuario
 $currentUserId = SP\Session::getUserId();

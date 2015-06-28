@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\Profile;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -247,7 +249,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Perfiles'),
-                'query' => \SP\Profiles::getProfiles(),
+                'query' => \SP\Profile::getProfiles(),
                 'props' => $arrProfilesTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5)
             )
@@ -299,7 +301,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('profiles');
 
-        $this->view->assign('profile', \SP\Profiles::getProfileData($this->view->itemId));
+        $profile = ($this->view->itemId) ? \SP\Profile::getProfile($this->view->itemId) : new Profile();
+
+        $this->view->assign('profile', $profile);
     }
 
     /**
