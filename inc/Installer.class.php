@@ -376,27 +376,27 @@ class Installer
         // Establecer el id de grupo del usuario al recién creado
         $user->userGroupId = Groups::$queryLastId;
 
-        $profileProp = array("pAccView" => 1,
-            "pAccViewPass" => 1,
-            "pAccViewHistory" => 1,
-            "pAccEdit" => 1,
-            "pAccEditPass" => 1,
-            "pAccAdd" => 1,
-            "pAccDel" => 1,
-            "pAccFiles" => 1,
-            "pConfig" => 1,
-            "pConfigMpw" => 1,
-            "pConfigBack" => 1,
-            "pAppMgmtCat" => 1,
-            "pAppMgmtCust" => 1,
-            "pUsers" => 1,
-            "pGroups" => 1,
-            "pProfiles" => 1,
-            "pEventlog" => 1);
+        $profile = new Profile();
 
-        Profile::$profileName = 'Admin';
+        $profile->setName('Admin');
+        $profile->setAccAdd(true);
+        $profile->setAccView(true);
+        $profile->setAccViewPass(true);
+        $profile->setAccViewHistory(true);
+        $profile->setAccEdit(true);
+        $profile->setAccEditPass(true);
+        $profile->setAccDelete(true);
+        $profile->setConfigGeneral(true);
+        $profile->setConfigEncryption(true);
+        $profile->setConfigBackup(true);
+        $profile->setMgmCategories(true);
+        $profile->setMgmCustomers(true);
+        $profile->setMgmUsers(true);
+        $profile->setMgmGroups(true);
+        $profile->setMgmProfiles(true);
+        $profile->setEvl(true);
 
-        if (!Profile::addProfile($profileProp)) {
+        if (!$profile->profileAdd()) {
             self::rollback();
 
             throw new SPException("critical"
@@ -405,12 +405,12 @@ class Installer
         }
 
         // Establecer el id de perfil del usuario al recién creado
-        $user->userProfileId = Profile::$queryLastId;
+        $user->userProfileId = DB::$lastId;
 
         // Datos del usuario
         $user->userLogin = self::$_username;
         $user->userPass = self::$_password;
-        $user->userName = "Admin";
+        $user->userName = 'Admin';
         $user->userIsAdminApp = 1;
 
 

@@ -280,7 +280,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     ) {
         if (!$name) {
              SP\Common::printJSON(_('Es necesario un nombre de perfil'), 2);
-        } elseif (SP\Profile::checkProfileExist()) {
+        } elseif (SP\Profile::checkProfileExist($profile->getId(), $profile->getName())) {
              SP\Common::printJSON(_('Nombre de perfil duplicado'), 2);
         }
 
@@ -299,7 +299,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         }
 
     } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_DELETE) {
-        $resProfileUse = SP\Profile::checkProfileInUse();
+        $resProfileUse = SP\Profile::checkProfileInUse($profile->getId());
 
         if ($resProfileUse['users'] > 0) {
             $uses[] = _('Usuarios') . " (" . $resProfileUse['users'] . ")";

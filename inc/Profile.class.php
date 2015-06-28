@@ -33,59 +33,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Profile extends ProfileBase
 {
-    static $profileId;
-    static $profileName;
-    static $queryLastId;
-
-    /**
-     * Obtener los datos de un perfil
-     *
-     * @param int $id con el Id del perfil a consultar
-     * @return array con el nombre de la columna como clave y los datos como valor
-     */
-    public static function getProfileData($id = 0)
-    {
-
-        $profile = array('id' => 0,
-            'name' => '',
-            'pView' => 0,
-            'pViewPass' => 0,
-            'pViewHistory' => 0,
-            'pEdit' => 0,
-            'pEditPass' => 0,
-            'pAdd' => 0,
-            'pDelete' => 0,
-            'pFiles' => 0,
-            'pConfig' => 0,
-            'pConfigMasterPass' => 0,
-            'pConfigBackup' => 0,
-            'pAppMgmtCategories' => 0,
-            'pAppMgmtCustomers' => 0,
-            'pUsers' => 0,
-            'pGroups' => 0,
-            'pProfiles' => 0,
-            'pEventlog' => 0,
-            'action' => 1);
-
-        if ($id > 0) {
-            $usersProfiles = self::getProfiles($id);
-
-            if ($usersProfiles) {
-                foreach ($usersProfiles[0] as $name => $value) {
-                    if (preg_match('/^p[A-Za-z].*$/', $name)) {
-                        $profile[$name] = (intval($value) === 1) ? "CHECKED" : "";
-                    } else {
-                        $profile[$name] = $value;
-                    }
-                }
-
-                $profile['action'] = 2;
-            }
-        }
-
-        return $profile;
-    }
-
     /**
      * Migrar los perfiles con formato anterior a v1.2
      *
@@ -191,241 +138,54 @@ class Profile extends ProfileBase
     /**
      * Comprobar si un perfil existe
      *
+     * @param $id int El id de perfil
+     * @param $name string El nombre del perfil
      * @return bool
      */
-    public static function checkProfileExist()
+    public static function checkProfileExist($id, $name)
     {
-        $profileId = (int)strtoupper(self::$profileId);
-        $profileName = strtoupper(self::$profileName);
+        $query = 'SELECT userprofile_name '
+            . 'FROM usrProfiles '
+            . 'WHERE UPPER(userprofile_name) = :name';
 
-        if ($profileId) {
-            $query = 'SELECT userprofile_name '
-                . 'FROM usrProfiles '
-                . 'WHERE UPPER(userprofile_name) = :name '
-                . 'AND userprofile_id != :id';
+        $data['name'] = $name;
 
-            $data['id'] = $profileId;
-        } else {
-            $query = 'SELECT userprofile_name '
-                . 'FROM usrProfiles '
-                . 'WHERE UPPER(userprofile_name) = :name';
+        if ($id !== 0) {
+            $query .= ' AND userprofile_id != :id';
+
+            $data['id'] = $id;
         }
-
-        $data['name'] = $profileName;
 
         return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows >= 1);
     }
 
     /**
-     * Añadir un nuevo perfil
-     *
-     * @param array $profileProp con las propiedades del perfil
-     * @return bool
-     */
-    public static function addProfile(&$profileProp)
-    {
-        $enableConfig = (int)($profileProp["pConfig"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
-        $enableAppMgmt = (int)($profileProp["pAppMgmt"] || $profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
-        $enableUsers = (int)($profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
-
-        $query = 'INSERT INTO usrProfiles SET '
-            . 'userprofile_name = :name,'
-            . 'userProfile_pView = :pView,'
-            . 'userProfile_pViewPass = :pViewPass,'
-            . 'userProfile_pViewHistory = :pViewHistory,'
-            . 'userProfile_pEdit = :pEdit,'
-            . 'userProfile_pEditPass = :pEditPass,'
-            . 'userProfile_pAdd = :pAdd,'
-            . 'userProfile_pDelete = :pDelete,'
-            . 'userProfile_pFiles = :pFiles,'
-            . 'userProfile_pConfigMenu = :pConfigMenu,'
-            . 'userProfile_pConfig = :pConfig,'
-            . 'userProfile_pConfigMasterPass = :pConfigMasterPass,'
-            . 'userProfile_pConfigBackup = :pConfigBackup,'
-            . 'userProfile_pAppMgmtMenu = :pAppMgmtMenu,'
-            . 'userProfile_pAppMgmtCategories = :pAppMgmtCategories,'
-            . 'userProfile_pAppMgmtCustomers = :pAppMgmtCustomers,'
-            . 'userProfile_pUsersMenu = :pUsersMenu,'
-            . 'userProfile_pUsers = :pUsers,'
-            . 'userProfile_pGroups = :pGroups,'
-            . 'userProfile_pProfiles = :pProfiles,'
-            . 'userProfile_pEventlog = :pEventlog';
-
-        $data['name'] = self::$profileName;
-        $data['pView'] = $profileProp["pAccView"];
-        $data['pViewPass'] = $profileProp["pAccViewPass"];
-        $data['pViewHistory'] = $profileProp["pAccViewHistory"];
-        $data['pEdit'] = $profileProp["pAccEdit"];
-        $data['pEditPass'] = $profileProp["pAccEditPass"];
-        $data['pAdd'] = $profileProp["pAccAdd"];
-        $data['pDelete'] = $profileProp["pAccDel"];
-        $data['pFiles'] = $profileProp["pAccFiles"];
-        $data['pConfigMenu'] = $enableConfig;
-        $data['pConfig'] = $profileProp["pConfig"];
-        $data['pConfigMasterPass'] = $profileProp["pConfigMpw"];
-        $data['pConfigBackup'] = $profileProp["pConfigBack"];
-        $data['pAppMgmtMenu'] = $enableAppMgmt;
-        $data['pAppMgmtCategories'] = $profileProp["pAppMgmtCat"];
-        $data['pAppMgmtCustomers'] = $profileProp["pAppMgmtCust"];
-        $data['pUsersMenu'] = $enableUsers;
-        $data['pUsers'] = $profileProp["pUsers"];
-        $data['pGroups'] = $profileProp["pGroups"];
-        $data['pProfiles'] = $profileProp["pProfiles"];
-        $data['pEventlog'] = $profileProp["pEventlog"];
-
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
-        }
-
-        self::$queryLastId = DB::$lastId;
-
-        Log::writeNewLogAndEmail(_('Nuevo Perfil'), Html::strongText(_('Perfil') . ': ') . self::$profileName);
-
-        return true;
-    }
-
-    /**
-     * Modificar un perfil.
-     *
-     * @param array $profileProp con las propiedades del perfil
-     * @return bool
-     */
-    public static function updateProfile(&$profileProp)
-    {
-        $enableConfig = (int)($profileProp["pConfig"] || $profileProp["pConfigMpw"] || $profileProp["pConfigBack"]);
-        $enableAppMgmt = (int)($profileProp["pAppMgmtCat"] || $profileProp["pAppMgmtCust"]);
-        $enableUsers = (int)($profileProp["pUsers"] || $profileProp["pGroups"] || $profileProp["pProfiles"]);
-        $profileName = self::getProfileNameById(self::$profileId);
-
-        $query = 'UPDATE usrProfiles SET '
-            . 'userprofile_name = :name,'
-            . 'userProfile_pView = :pView,'
-            . 'userProfile_pViewPass = :pViewPass,'
-            . 'userProfile_pViewHistory = :pViewHistory,'
-            . 'userProfile_pEdit = :pEdit,'
-            . 'userProfile_pEditPass = :pEditPass,'
-            . 'userProfile_pAdd = :pAdd,'
-            . 'userProfile_pDelete = :pDelete,'
-            . 'userProfile_pFiles = :pFiles,'
-            . 'userProfile_pConfigMenu = :pConfigMenu,'
-            . 'userProfile_pConfig = :pConfig,'
-            . 'userProfile_pConfigMasterPass = :pConfigMasterPass,'
-            . 'userProfile_pConfigBackup = :pConfigBackup,'
-            . 'userProfile_pAppMgmtMenu = :pAppMgmtMenu,'
-            . 'userProfile_pAppMgmtCategories = :pAppMgmtCategories,'
-            . 'userProfile_pAppMgmtCustomers = :pAppMgmtCustomers,'
-            . 'userProfile_pUsersMenu = :pUsersMenu,'
-            . 'userProfile_pUsers = :pUsers,'
-            . 'userProfile_pGroups = :pGroups,'
-            . 'userProfile_pProfiles = :pProfiles,'
-            . 'userProfile_pEventlog = :pEventlog '
-            . 'WHERE userprofile_id = :id LIMIT 1';
-
-        $data['id'] = self::$profileId;
-        $data['name'] = self::$profileName;
-        $data['pView'] = $profileProp["pAccView"];
-        $data['pViewPass'] = $profileProp["pAccViewPass"];
-        $data['pViewHistory'] = $profileProp["pAccViewHistory"];
-        $data['pEdit'] = $profileProp["pAccEdit"];
-        $data['pEditPass'] = $profileProp["pAccEditPass"];
-        $data['pAdd'] = $profileProp["pAccAdd"];
-        $data['pDelete'] = $profileProp["pAccDel"];
-        $data['pFiles'] = $profileProp["pAccFiles"];
-        $data['pConfigMenu'] = $enableConfig;
-        $data['pConfig'] = $profileProp["pConfig"];
-        $data['pConfigMasterPass'] = $profileProp["pConfigMpw"];
-        $data['pConfigBackup'] = $profileProp["pConfigBack"];
-        $data['pAppMgmtMenu'] = $enableAppMgmt;
-        $data['pAppMgmtCategories'] = $profileProp["pAppMgmtCat"];
-        $data['pAppMgmtCustomers'] = $profileProp["pAppMgmtCust"];
-        $data['pUsersMenu'] = $enableUsers;
-        $data['pUsers'] = $profileProp["pUsers"];
-        $data['pGroups'] = $profileProp["pGroups"];
-        $data['pProfiles'] = $profileProp["pProfiles"];
-        $data['pEventlog'] = $profileProp["pEventlog"];
-
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
-        }
-
-        self::$queryLastId = DB::$lastId;
-
-        Log::writeNewLogAndEmail(_('Modificar Perfil'), Html::strongText(_('Perfil') . ': ') . $profileName . ' > ' . self::$profileName);
-
-        return true;
-    }
-
-    /**
-     * Eliminar un perfil.
-     *
-     * @return bool
-     */
-    public static function deleteProfile()
-    {
-        $query = 'DELETE FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
-
-        $data['id'] = self::$profileId;
-
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
-        }
-
-        self::$queryLastId = DB::$lastId;
-
-        return true;
-    }
-
-    /**
      * Comprobar si un perfil está en uso.
      *
+     * @param $id int El id del perfil
      * @return bool|int Cadena con el número de usuarios, o bool si no está en uso
      */
-    public static function checkProfileInUse()
+    public static function checkProfileInUse($id)
     {
-        $count['users'] = self::getProfileInUsers();
+        $count['users'] = self::getProfileInUsers($id);
         return $count;
     }
 
     /**
      * Obtener el número de usuarios que usan un perfil.
      *
+     * @param $id int El id del perfil
      * @return false|int con el número total de cuentas
      */
-    private static function getProfileInUsers()
+    private static function getProfileInUsers($id)
     {
         $query = 'SELECT user_profileId FROM usrData WHERE user_profileId = :id';
 
-        $data['id'] = self::$profileId;
+        $data['id'] = $id;
 
         DB::getQuery($query, __FUNCTION__, $data);
 
         return DB::$last_num_rows;
-    }
-
-    /**
-     * Obtener el perfil de un usuario.
-     * Si el usuario no es indicado, se obtiene el perfil del suuario de la sesión actual
-     *
-     * @param int $userId opcional con el Id del usuario
-     * @return false|object con los permisos del perfil del usuario
-     */
-    public static function getProfileForUser($userId = 0)
-    {
-        $userId = Session::getUserId();
-
-        if (!$userId) {
-            return false;
-        }
-
-        $query = 'SELECT user_profileId,'
-            . 'userProfile_profile '
-            . 'FROM usrData '
-            . 'JOIN usrProfiles ON userProfile_Id = user_profileId '
-            . 'WHERE user_id = :id LIMIT 1';
-
-        $data['id'] = $userId;
-
-        return DB::getResults($query, __FUNCTION__, $data);
     }
 
     /**
