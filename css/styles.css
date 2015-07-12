@@ -1196,7 +1196,8 @@ footer #status {
     float: left;
     width: 20%;
     text-align: left;
-    color: #ffbbb4;
+    color: #b94a48;
+    padding: 0 1em;
 }
 
 footer a, footer a:visited {

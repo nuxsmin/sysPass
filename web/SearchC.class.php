@@ -85,6 +85,9 @@ class SearchC extends Controller implements ActionsInterface
         $this->view->assign('categories', \SP\DB::getValuesForSelect('categories', 'category_id', 'category_name'));
     }
 
+    /**
+     * Obtener los resultados de una búsqueda
+     */
     public function getSearch()
     {
         $this->view->addTemplate('search');
@@ -218,6 +221,8 @@ class SearchC extends Controller implements ActionsInterface
                     }
                 }
 
+                $accountNotes = '';
+
                 if ($account->account_notes) {
                     $accountNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
                     $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
@@ -236,7 +241,7 @@ class SearchC extends Controller implements ActionsInterface
                 'url' => $account->account_url,
                 'url_short' => \SP\Html::truncate($account->account_url, $maxTextLength),
                 'url_islink' => (preg_match("#^https?://.*#i", $account->account_url)) ? true : false,
-                'notes' => (isset($accountNotes)) ? $accountNotes : '',
+                'notes' => $accountNotes,
                 'accesses' => (isset($secondaryAccesses)) ? $secondaryAccesses : '',
                 'numFiles' => (\SP\Util::fileIsEnabled()) ? \SP\Files::countFiles($account->account_id) : 0,
                 'show' => $show,

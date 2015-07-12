@@ -463,6 +463,8 @@ abstract class ProfileBase
             return false;
         }
 
+        $this->setId(DB::getLastId());
+
         Log::writeNewLogAndEmail(_('Nuevo Perfil'), Html::strongText(_('Perfil') . ': ') . $this->getName());
 
         return true;

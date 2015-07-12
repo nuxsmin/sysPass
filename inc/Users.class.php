@@ -450,7 +450,7 @@ class Users
         $data['login'] = $login;
         $data['email'] = $email;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows === 1);
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
 
 //        $userId = self::getUserIdByLogin($login);
 //        return ($userId && self::getUserEmail($userId) == $email);
@@ -594,7 +594,7 @@ class Users
         $db = new DB();
         $db->setParamData($data);
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$last_num_rows >= self::MAX_PASS_RECOVER_LIMIT);
+        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= self::MAX_PASS_RECOVER_LIMIT);
         //return ($db->getFullRowCount($query) >= self::MAX_PASS_RECOVER_LIMIT);
     }
 
@@ -698,7 +698,7 @@ class Users
 
         $data['login'] = $this->userLogin;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows === 1);
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
 //        return ($queryRes === true && $db->getFullRowCount($query) === 1);
     }
 
@@ -791,7 +791,7 @@ class Users
             return false;
         }
 
-        $this->queryLastId = DB::$lastId;
+        $this->userId = DB::getLastId();
 
         $log = new Log(_('Nuevo Usuario'));
         $log->addDescription(Html::strongText(_('Usuario') . ': ') . $this->userName . ' (' . $this->userLogin . ')');

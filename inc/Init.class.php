@@ -269,7 +269,7 @@ class Init
     public static function initError($str, $hint = '')
     {
         $tpl = new Template();
-        $tpl->append('errors', array('type' => 'critical', 'description' => $str, 'hint' => $hint));
+        $tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
         $controller = new Controller\MainC($tpl);
         $controller->getError(true);
         $controller->view();
@@ -395,17 +395,17 @@ class Init
     private static function checkInstalled()
     {
         // Redirigir al instalador si no está instalada
-        if (!Config::getValue('installed', false) && self::$_SUBURI != '/index.php') {
-            $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
-            header("Location: $url");
-            exit();
-        } elseif (!Config::getValue('installed', false) && self::$_SUBURI == '/index.php') {
-            // Comprobar si sysPass está instalada o en modo mantenimiento
-            if (!Config::getValue('installed', false)) {
+        if (!Config::getValue('installed', false)) {
+            if (self::$_SUBURI != '/index.php') {
+                $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
+                header("Location: $url");
+                exit();
+            } elseif (self::$_SUBURI == '/index.php') {
+                // Comprobar si sysPass está instalada o en modo mantenimiento
                 $controller = new Controller\MainC();
                 $controller->getInstaller();
                 $controller->view();
-                exit;
+                exit();
             }
         }
     }
@@ -516,7 +516,7 @@ class Init
         if (Session::getSidStartTime() === 0) {
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
-        } else if (time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
+        } else if (Session::getUserId() && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
             session_regenerate_id(true);
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario

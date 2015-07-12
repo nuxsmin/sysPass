@@ -67,7 +67,7 @@ class Log extends ActionLog
             return false;
         }
 
-        self::$numRows = DB::$last_num_rows;
+        self::$numRows = DB::$lastNumRows;
 
         return $queryRes;
     }

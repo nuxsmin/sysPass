@@ -321,7 +321,7 @@ class Account extends AccountBase implements AccountInterface
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
-            throw new Exception(_('No se pudieron obtener los datos de la cuenta'));
+            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
         }
 
         $this->setAccountUserId($queryRes->account_userId);

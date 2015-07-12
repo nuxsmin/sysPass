@@ -244,7 +244,7 @@ class Migrate
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return (DB::$last_num_rows === 0);
+        return (DB::$lastNumRows === 0);
     }
 
     /**

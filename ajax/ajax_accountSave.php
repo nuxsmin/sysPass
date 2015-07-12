@@ -114,13 +114,13 @@ if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
     }
 
     // Encriptar clave de cuenta
-    $accountPass = SP\Crypt::mkEncrypt($accountPassword);
+    $accountEncPass = SP\Crypt::mkEncrypt($accountPassword);
 
-    if ($accountPass === false || is_null($accountPass)) {
+    if ($accountEncPass === false || is_null($accountEncPass)) {
         SP\Common::printJSON(_('Error al generar datos cifrados'));
     }
 
-    $accountIV = SP\Crypt::$strInitialVector;
+    $accounEncPassIV = SP\Crypt::$strInitialVector;
 }
 
 $account = new SP\Account;
@@ -146,8 +146,8 @@ switch ($actionId) {
         $account->setAccountCategoryId($categoryId);
         $account->setAccountLogin($accountLogin);
         $account->setAccountUrl($accountUrl);
-        $account->setAccountPass($accountPass);
-        $account->setAccountIV($accountIV);
+        $account->setAccountPass($accountEncPass);
+        $account->setAccountIV($accounEncPassIV);
         $account->setAccountNotes($accountNotes);
         $account->setAccountUserId($currentUserId);
         $account->setAccountUserGroupId($currentGroupId);
@@ -214,8 +214,8 @@ switch ($actionId) {
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS:
         $account->setAccountId($accountId);
-        $account->setAccountPass($accountPass);
-        $account->setAccountIV($accountIV);
+        $account->setAccountPass($accountEncPass);
+        $account->setAccountIV($accounEncPassIV);
         $account->setAccountUserEditId($currentUserId);
 
         // Actualizar clave de cuenta

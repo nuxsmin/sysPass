@@ -51,7 +51,7 @@ class Category
 
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        if ($queryRes === false || DB::$last_num_rows === 0) {
+        if ($queryRes === false || DB::$lastNumRows === 0) {
             return false;
         }
 
@@ -100,7 +100,7 @@ class Category
 
         $data['name'] = self::$categoryName;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$last_num_rows >= 1);
+        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
@@ -279,7 +279,7 @@ class Category
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return DB::$last_num_rows;
+        return DB::$lastNumRows;
     }
 
 }

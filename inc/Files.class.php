@@ -194,7 +194,7 @@ class Files
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return DB::$last_num_rows;
+        return DB::$lastNumRows;
     }
 
 

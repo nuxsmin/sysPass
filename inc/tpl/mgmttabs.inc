@@ -29,15 +29,15 @@
         </div>
 
         <div class="data-rows">
-            <?php $numActions = count($tab['props']["actions"]) - 1; ?>
+            <?php $numActions = count($tab['props']["actions"]); ?>
             <?php foreach ($tab['query'] as $item): ?>
                 <?php $i = 0; ?>
                 <?php $itemId = $item->$tab['props']['tblRowSrcId']; ?>
                 <?php $action_check = array(); ?>
                 <ul>
-                    <?php foreach ($tab['props']['tblRowSrc'] as $rowSrc): ?>
-                        <!--            If row is an array handle images in it-->
-                        <?php if (is_array($rowSrc)): ?>
+                    <?php foreach ($tab['props']['tblRowSrc'] as $type => $rowSrc): ?>
+                        <!-- If row is an array handle images in it-->
+                        <?php if ($type === 'images'): ?>
                             <li class="cell-nodata" style="width: <?php echo $tab['props']['cellWidth']; ?>%;">
                                 <?php foreach ($rowSrc as $rowName => $imgProp): ?>
                                     <?php if ($item->$rowName): ?>

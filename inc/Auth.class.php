@@ -162,7 +162,7 @@ class Auth
         $data['login'] = $userLogin;
         $data['pass'] = $userPass;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows === 1);
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
 //        return ($db->getFullRowCount($query) === 1);
     }
 

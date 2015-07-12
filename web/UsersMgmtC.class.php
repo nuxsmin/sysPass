@@ -80,7 +80,8 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'user_name',
                 'user_login',
                 'userprofile_name',
-                'usergroup_name', array(
+                'usergroup_name',
+                'images' => array(
                     'user_isAdminApp' => array(
                         'img_file' => 'check_blue.png',
                         'img_title' => _('Admin Aplicación')),
@@ -228,6 +229,12 @@ class UsersMgmtC extends Controller implements ActionsInterface
                     'img' => 'imgs/new.png',
                     'skip' => true
                 ),
+                'view' => array(
+                    'id' => self::ACTION_USR_PROFILES_VIEW,
+                    'title' => _('Ver Detalles de Perfil'),
+                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_VIEW . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/view.png'
+                ),
                 'edit' => array(
                     'id' => self::ACTION_USR_PROFILES_EDIT,
                     'title' => _('Editar Perfil'),
@@ -304,6 +311,11 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $profile = ($this->view->itemId) ? \SP\Profile::getProfile($this->view->itemId) : new Profile();
 
         $this->view->assign('profile', $profile);
+        $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
+
+        if ( $this->view->isView === true ) {
+            $this->view->assign('usedBy', \SP\Profile::getProfileInUsersName($this->view->itemId));
+        }
     }
 
     /**
@@ -323,5 +335,4 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
         $this->view->assign('sk', \SP\Common::getSessionKey());
     }
-
 }

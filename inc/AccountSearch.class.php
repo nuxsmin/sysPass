@@ -265,6 +265,7 @@ class AccountSearch
 
             $data['categoryId'] = $this->getCategoryId();
         }
+
         if ($this->getCustomerId() !== 0) {
             $arrFilterSelect[] = 'account_customerId = :customerId';
 
@@ -293,7 +294,7 @@ class AccountSearch
             $data['userGroupId'] = Session::getUserGroupId();
             $data['accgroup_groupId'] = Session::getUserGroupId();
 
-            $arrQueryWhere[] = implode(' OR ', $arrFilterUser);
+            $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
         $orderDir = ($this->getSortOrder() === 0) ? 'ASC' : 'DESC';
@@ -330,7 +331,7 @@ class AccountSearch
         }
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
-        self::$queryNumRows = DB::$last_num_rows;
+        self::$queryNumRows = DB::$lastNumRows;
 
         // Establecer el filtro de búsqueda en la sesión como un objeto
         Session::setSearchFilters($this);

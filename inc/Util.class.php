@@ -117,9 +117,11 @@ class Util
         $needsVersion = '5.3.0';
 
         if (version_compare(PHP_VERSION, $needsVersion, '>=')) {
-            $error[] = array('type' => 'critical',
+            $error[] = array(
+                'type' => SPException::SP_CRITICAL,
                 'description' => _('Versión de PHP requerida >= ') . $needsVersion,
-                'hint' => _('Actualice la versión de PHP para que la aplicación funcione correctamente'));
+                'hint' => _('Actualice la versión de PHP para que la aplicación funcione correctamente')
+            );
         }
 
         return $error;
@@ -153,7 +155,7 @@ class Util
         foreach ($modsNeed as $module) {
             if (!extension_loaded($module)) {
                 $error[] = array(
-                    'type' => 'warning',
+                    'type' => SPException::SP_WARNING,
                     'description' => _('Módulo no disponible') . " ($module)",
                     'hint' => _('Sin este módulo la aplicación puede no funcionar correctamente.')
                 );
@@ -197,7 +199,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.2';
+        return '1.2-beta';
     }
 
     /**

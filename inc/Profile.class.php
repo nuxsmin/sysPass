@@ -156,7 +156,7 @@ class Profile extends ProfileBase
             $data['id'] = $id;
         }
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$last_num_rows >= 1);
+        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows >= 1);
     }
 
     /**
@@ -167,7 +167,7 @@ class Profile extends ProfileBase
      */
     public static function checkProfileInUse($id)
     {
-        $count['users'] = self::getProfileInUsers($id);
+        $count['users'] = self::getProfileInUsersCount($id);
         return $count;
     }
 
@@ -177,7 +177,7 @@ class Profile extends ProfileBase
      * @param $id int El id del perfil
      * @return false|int con el número total de cuentas
      */
-    private static function getProfileInUsers($id)
+    private static function getProfileInUsersCount($id)
     {
         $query = 'SELECT user_profileId FROM usrData WHERE user_profileId = :id';
 
@@ -185,7 +185,24 @@ class Profile extends ProfileBase
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return DB::$last_num_rows;
+        return DB::$lastNumRows;
+    }
+
+    /**
+     * Obtener el nombre de los usuarios que usan un perfil.
+     *
+     * @param $id int El id del perfil
+     * @return false|int con el número total de cuentas
+     */
+    public static function getProfileInUsersName($id)
+    {
+        $query = 'SELECT user_login FROM usrData WHERE user_profileId = :id';
+
+        $data['id'] = $id;
+
+        DB::setReturnArray();
+
+        return DB::getResults($query, __FUNCTION__, $data);
     }
 
     /**

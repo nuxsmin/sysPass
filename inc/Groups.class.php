@@ -127,7 +127,7 @@ class Groups
 
         $data['name'] = $groupName;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$last_num_rows >= 1);
+        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
@@ -249,7 +249,7 @@ class Groups
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return DB::$last_num_rows;
+        return DB::$lastNumRows;
     }
 
     /**
@@ -265,7 +265,7 @@ class Groups
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return DB::$last_num_rows;
+        return DB::$lastNumRows;
     }
 
     /**
@@ -281,7 +281,7 @@ class Groups
 
         DB::getQuery($query, __FUNCTION__, $data);
 
-        return DB::$last_num_rows;
+        return DB::$lastNumRows;
     }
 
     /**

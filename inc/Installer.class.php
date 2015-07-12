@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -28,124 +28,191 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-define('IS_INSTALLER',1);
+define('IS_INSTALLER', 1);
 
 /**
  * Esta clase es la encargada de instalar sysPass.
  */
 class Installer
 {
+    /**
+     * @var string Usuario de la BD
+     */
     private static $_dbuser;
+    /**
+     * @var string Clave de la BD
+     */
+    private static $_dbpass;
+    /**
+     * @var string Nombre de la BD
+     */
     private static $_dbname;
+    /**
+     * @var string Host de la BD
+     */
     private static $_dbhost;
-    private static $_dbc; // Database connection
+    /**
+     * @var \PDO Instancia a de conexión a la BD
+     */
+    private static $_dbc;
+    /**
+     * @var string Usuario 'admin' de sysPass
+     */
     private static $_username;
+    /**
+     * @var string Clave del usuario 'admin' de sysPass
+     */
     private static $_password;
+    /**
+     * @var string Clave maestra de sysPass
+     */
     private static $_masterPassword;
+    /**
+     * @var bool Activar/desactivar Modo hosting
+     */
     private static $_isHostingMode;
+
+    /**
+     * @param string $dbuser
+     */
+    public static function setDbuser($dbuser)
+    {
+        self::$_dbuser = $dbuser;
+    }
+
+    /**
+     * @param string $dbpass
+     */
+    public static function setDbpass($dbpass)
+    {
+        self::$_dbpass = $dbpass;
+    }
+
+    /**
+     * @param string $dbname
+     */
+    public static function setDbname($dbname)
+    {
+        self::$_dbname = $dbname;
+    }
+
+    /**
+     * @param string $dbhost
+     */
+    public static function setDbhost($dbhost)
+    {
+        self::$_dbhost = $dbhost;
+    }
+
+    /**
+     * @param string $username
+     */
+    public static function setUsername($username)
+    {
+        self::$_username = $username;
+    }
+
+    /**
+     * @param string $password
+     */
+    public static function setPassword($password)
+    {
+        self::$_password = $password;
+    }
+
+    /**
+     * @param string $masterPassword
+     */
+    public static function setMasterPassword($masterPassword)
+    {
+        self::$_masterPassword = $masterPassword;
+    }
+
+    /**
+     * @param boolean $isHostingMode
+     */
+    public static function setIsHostingMode($isHostingMode)
+    {
+        self::$_isHostingMode = $isHostingMode;
+    }
 
     /**
      * Iniciar instalación.
      *
-     * @param array $options datos de instalación
      * @return array resultado del proceso
      */
-    public static function install($options)
+    public static function install()
     {
         $error = array();
 
-        if (empty($options['adminlogin'])) {
+        if (!self::$_username) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar nombre de usuario admin'),
                 'hint' => _('Usuario admin para acceso a la aplicación'));
-        }
-        if (empty($options['adminpass'])) {
+        } elseif (!self::$_password) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar la clave de admin'),
                 'hint' => _('Clave del usuario admin de la aplicación'));
-        }
-
-        if (empty($options['masterpassword'])) {
+        } elseif (!self::$_masterPassword) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar la clave maestra'),
                 'hint' => _('Clave maestra para encriptar las claves'));
-        }
-        if (strlen($options['masterpassword']) < 11) {
+        } elseif (strlen(self::$_masterPassword) < 11) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Clave maestra muy corta'),
                 'hint' => _('La longitud de la clave maestra ha de ser mayor de 11 caracteres'));
-        }
-
-        if (empty($options['dbuser'])) {
+        } elseif (!self::$_dbuser) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el usuario de la BBDD'),
                 'hint' => _('Usuario con permisos de administrador de la Base de Datos'));
-        }
-        if (empty($options['dbpass'])) {
+        } elseif (!self::$_dbpass) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar la clave de la BBDD'),
                 'hint' => _('Clave del usuario administrador de la Base de Datos'));
-        }
-        if (empty($options['dbname'])) {
+        } elseif (!self::$_dbname) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el nombre de la BBDD'),
                 'hint' => _('Nombre para la BBDD de la aplicación pej. syspass'));
-        }
-        if (substr_count($options['dbname'], '.') >= 1) {
+        } elseif (substr_count(self::$_dbname, '.') >= 1) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('El nombre de la BBDD no puede contener "."'),
                 'hint' => _('Elimine los puntos del nombre de la Base de Datos'));
-        }
-
-        if (empty($options['dbhost'])) {
+        } elseif (!self::$_dbhost) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el servidor de la BBDD'),
                 'hint' => _('Servidor donde se instalará la Base de Datos'));
         }
 
-        if (count($error) == 0) { //no errors, good
-            self::$_username = htmlspecialchars_decode($options['adminlogin']);
-            self::$_password = htmlspecialchars_decode($options['adminpass']);
-            self::$_masterPassword = htmlspecialchars_decode($options['masterpassword']);
-            self::$_dbname = $options['dbname'];
-            self::$_dbhost = $options['dbhost'];
-
-            //generate a random salt that is used to salt the local user passwords
-            $salt = Util::generate_random_bytes(30);
-            Config::setValue('passwordsalt', $salt);
+        if (count($error) === 0) { //no errors, good
+            // Generate a random salt that is used to salt the local user passwords
+            Config::setValue('passwordsalt', Util::generate_random_bytes(30));
             Config::setValue('version', implode(Util::getVersion(true)));
 
-            $dbadmin = $options['dbuser'];
-            $dbpass = $options['dbpass'];
-
-            if (preg_match('/(.*):(\d{1,5})/', $options['dbhost'], $match)){
-                $dbhost = $match[1];
+            if (preg_match('/(.*):(\d{1,5})/', self::$_dbhost, $match)) {
+                self::setDbhost($match[1]);
                 $dbport = $match[2];
             } else {
-                $dbhost = $options['dbhost'];
                 $dbport = 3306;
             }
 
-            self::$_isHostingMode = (isset($options['hostingmode'])) ? 1 : 0;
-
             // Save DB connection info
-            Config::setValue('dbhost', $dbhost);
+            Config::setValue('dbhost', self::$_dbhost);
             Config::setValue('dbname', self::$_dbname);
 
             // Set some basic configuration options
             Config::setDefaultValues();
 
             try {
-                self::checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbport);
+                self::checkDatabaseAdmin(self::$_dbhost, self::$_dbuser, self::$_dbpass, $dbport);
                 self::setupMySQLDatabase();
                 self::createAdminAccount();
             } catch (SPException $e) {
@@ -153,14 +220,14 @@ class Installer
                     'type' => $e->getType(),
                     'description' => $e->getMessage(),
                     'hint' => $e->getHint());
-                return ($error);
+                return $error;
             }
 
             Config::setConfigDbValue('version', implode(Util::getVersion(true)));
             Config::setValue('installed', 1);
         }
 
-        return ($error);
+        return $error;
     }
 
     /**
@@ -168,10 +235,10 @@ class Installer
      * Comprobar si la conexión con la base de datos para sysPass es posible con
      * los datos facilitados.
      *
-     * @param string $dbhost host de conexión
+     * @param string $dbhost  host de conexión
      * @param string $dbadmin usuario de conexión
-     * @param string $dbpass clave de conexión
-     * @param string $dbport puerto de conexión
+     * @param string $dbpass  clave de conexión
+     * @param string $dbport  puerto de conexión
      * @throws SPException
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbport)
@@ -179,7 +246,7 @@ class Installer
         try {
             $dsn = 'mysql:host=' . $dbhost . ';dbport=' . $dbport . ';charset=utf8';
             self::$_dbc = new \PDO($dsn, $dbadmin, $dbpass);
-        } catch (\PDOException $e){
+        } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('No es posible conectar con la BD')
                 , _('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
@@ -194,43 +261,35 @@ class Installer
      */
     private static function setupMySQLDatabase()
     {
-        $oldUser = Config::getValue('dbuser', false);
-
-        //this should be enough to check for admin rights in mysql
-        $query = "SELECT user "
+        // Comprobar si el usuario sumistrado existe
+        $query = "SELECT COUNT(*) "
             . "FROM mysql.user "
-            . "WHERE user='" . self::$_username . "' and host='" . self::$_dbhost . "';";
+            . "WHERE user='" . self::$_username . "' AND host='" . self::$_dbhost . "'";
 
-        // Hash DB connection password
-        $dbpassword = (!self::$_isHostingMode) ? md5(time() . self::$_password) : self::$_password;
-
-        self::$_dbuser = (!self::$_isHostingMode) ? substr('sp_' . self::$_username, 0, 16) : self::$_username;
-
-        if (!self::$_dbc->query($query)) {
-            if (self::$_dbuser != $oldUser) {
-                self::createDBUser($dbpassword);
-
-                Config::setValue('dbuser', self::$_dbuser);
-                Config::setValue('dbpass', $dbpassword);
-            }
-        } else {
-            if (self::$_username != $oldUser) {
-                Config::setValue('dbuser', self::$_dbuser);
-                Config::setValue('dbpass', $dbpassword);
-            }
+        // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
+        if (!self::$_isHostingMode){
+            self::setDbpass(md5(time() . self::$_password));
+            self::setDbuser(substr('sp_' . self::$_username, 0, 16));
         }
 
-        self::createMySQLDatabase($dbpassword);
+        // Si no existe el usuario, se intenta crear
+        if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
+            // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
+            if (self::$_dbuser != Config::getValue('dbuser')) {
+                self::createDBUser();
+            }
 
-        if (!self::checkDatabaseExist()) {
+            // Guardar el nuevo usuario/clave de conexión a la BD
+            Config::setValue('dbuser', self::$_dbuser);
+            Config::setValue('dbpass', self::$_dbpass);
+        }
+
+        try {
+            self::createMySQLDatabase(self::$_dbpass);
             self::createDBStructure();
-        } else {
-            throw new SPException(SPException::SP_CRITICAL
-                , _('La BBDD ya existe')
-                , _('Indique una nueva Base de Datos o elimine la existente'));
+        } catch (SPException $e){
+            throw $e;
         }
-
-//        self::$dbc->close();
     }
 
     /**
@@ -238,20 +297,19 @@ class Installer
      * Esta función crea el usuario para conectar con la base de datos.
      * Si se marca en modo hosting, no se crea el usuario.
      *
-     * @param string $dbpassword clave del usuario de sysPass
      * @throws SPException
      */
-    private static function createDBUser($dbpassword)
+    private static function createDBUser()
     {
         if (self::$_isHostingMode) {
             return;
         }
 
-        $query = "CREATE USER '" . self::$_dbuser . "'@'localhost' IDENTIFIED BY '" . $dbpassword . "'";
+        $query = "CREATE USER '" . self::$_dbuser . "'@'localhost' IDENTIFIED BY '" . self::$_dbpass . "'";
 
         try {
             self::$_dbc->query($query);
-        } catch (\PDOException $e){
+        } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('El usuario de MySQL ya existe') . " (" . self::$_dbuser . ")"
                 , _('Indique un nuevo usuario o elimine el existente'));
@@ -259,29 +317,34 @@ class Installer
     }
 
     /**
-     * Crear la base de datos.
+     * Crear la base de datos en MySQL.
      *
-     * @param string $dbpassword clave del usuario de sysPass
      * @throws SPException
      */
-    private static function createMySQLDatabase($dbpassword)
+    private static function createMySQLDatabase()
     {
+        if (self::checkDatabaseExist()) {
+            throw new SPException(SPException::SP_CRITICAL
+                , _('La BBDD ya existe')
+                , _('Indique una nueva Base de Datos o elimine la existente'));
+        }
+
         $query = "CREATE DATABASE IF NOT EXISTS `" . self::$_dbname . "`";
 
         try {
             self::$_dbc->query($query);
-        } catch (\PDOException $e){
+        } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear la BBDD') . " (" . $e->getMessage() . ")"
                 , _('Verifique los permisos del usuario de la Base de Datos'));
         }
 
         if (!self::$_isHostingMode) {
-            $query = "GRANT ALL PRIVILEGES ON `" . self::$_dbname . "`.* TO '" . self::$_dbuser . "'@'" . self::$_dbhost . "' IDENTIFIED BY '$dbpassword';";
+            $query = "GRANT ALL PRIVILEGES ON `" . self::$_dbname . "`.* TO '" . self::$_dbuser . "'@'" . self::$_dbhost . "' IDENTIFIED BY '" . self::$_dbpass . "';";
 
             try {
                 self::$_dbc->query($query);
-            } catch (\PDOException $e){
+            } catch (\PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
                     , _('Error al establecer permisos de la BBDD') . " (" . $e->getMessage() . ")"
                     , _('Verifique los permisos del usuario de la Base de Datos'));
@@ -301,7 +364,7 @@ class Installer
             . "WHERE table_schema = '" . self::$_dbname . "' "
             . "AND table_name = 'usrData' LIMIT 1";
 
-        return (intval(self::$_dbc->query($query)->fetchColumn()) === 0);
+        return (intval(self::$_dbc->query($query)->fetchColumn()) > 0);
     }
 
     /**
@@ -323,7 +386,7 @@ class Installer
         // Usar la base de datos de sysPass
         try {
             self::$_dbc->query('USE ' . self::$_dbname);
-        } catch (\PDOException $e){
+        } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al seleccionar la BBDD') . " '" . self::$_dbname . "' (" . $e->getMessage() . ")"
                 , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
@@ -359,8 +422,6 @@ class Installer
      */
     private static function createAdminAccount()
     {
-        $user = new Users;
-
         // Datos del grupo
         Groups::$groupName = "Admins";
         Groups::$groupDescription = "Admins";
@@ -368,10 +429,12 @@ class Installer
         if (!Groups::addGroup()) {
             self::rollback();
 
-            throw new SPException("critical"
+            throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear el grupo "admin"')
                 , _('Informe al desarrollador'));
         }
+
+        $user = new Users;
 
         // Establecer el id de grupo del usuario al recién creado
         $user->userGroupId = Groups::$queryLastId;
@@ -399,20 +462,19 @@ class Installer
         if (!$profile->profileAdd()) {
             self::rollback();
 
-            throw new SPException("critical"
+            throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear el perfil "admin"')
                 , _('Informe al desarrollador'));
         }
-
-        // Establecer el id de perfil del usuario al recién creado
-        $user->userProfileId = DB::$lastId;
 
         // Datos del usuario
         $user->userLogin = self::$_username;
         $user->userPass = self::$_password;
         $user->userName = 'Admin';
+        $user->userProfileId = $profile->getId();
         $user->userIsAdminApp = 1;
-
+        $user->userIsAdminAcc = 0;
+        $user->userIsDisabled = 0;
 
         if (!$user->addUser()) {
             self::rollback();
@@ -426,8 +488,6 @@ class Installer
         Config::setArrConfigValue('masterPwd', Crypt::mkHashPassword(self::$_masterPassword));
         Config::setArrConfigValue('lastupdatempass', time());
         Config::writeConfigDb(true);
-
-        $user->userId = $user->queryLastId; // Needed for update user's master password
 
         if (!$user->updateUserMPass(self::$_masterPassword, false)) {
             self::rollback();
@@ -448,7 +508,7 @@ class Installer
             self::$_dbc->query("DROP DATABASE IF EXISTS " . self::$_dbname . ";");
             self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'" . self::$_dbhost . "';");
             self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'%';");
-        } catch(\PDOException $e){
+        } catch (\PDOException $e) {
             Config::deleteKey('dbuser');
             Config::deleteKey('dbpass');
         }

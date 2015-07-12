@@ -91,25 +91,23 @@ function doAction(actionId, lastAction, itemId) {
 
     var data = {'actionId': actionId, 'lastAction': lastAction, 'itemId': itemId, isAjax: 1};
 
-    $('#content').fadeOut(function () {
-        $.fancybox.showLoading();
+    $.fancybox.showLoading();
 
-        $.ajax({
-            type: 'POST',
-            dataType: 'html',
-            url: APP_ROOT + '/ajax/ajax_getContent.php',
-            data: data,
-            success: function (response) {
-                $('#content').fadeIn().html(response);
-                setContentSize();
-            },
-            error: function () {
-                $('#content').html(resMsg("nofancyerror"));
-            },
-            complete: function () {
-                $.fancybox.hideLoading();
-            }
-        });
+    $.ajax({
+        type: 'POST',
+        dataType: 'html',
+        url: APP_ROOT + '/ajax/ajax_getContent.php',
+        data: data,
+        success: function (response) {
+            $('#content').html(response);
+            setContentSize();
+        },
+        error: function () {
+            $('#content').html(resMsg("nofancyerror"));
+        },
+        complete: function () {
+            $.fancybox.hideLoading();
+        }
     });
 }
 
@@ -302,6 +300,12 @@ function viewPass(id, full, history) {
         async: false,
         data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
         success: function (json) {
+
+            if (json.status === 10) {
+                doLogout();
+                return;
+            }
+
             if (full === false) {
                 // Copiamos la clave en el objeto que tiene acceso al portapapeles
                 $('#clip-pass-text').html(json.accpass);
@@ -999,7 +1003,7 @@ function password(length, special, fancy, dstId) {
         $('#' + dstId + ' #passLevel').show(500);
     } else {
         checkPassLevel(genPassword);
-        $('input:password').val(genPassword);
+        $('input:password, input.password').val(genPassword);
         $('#passLevel').show(500);
     }
     //return password;

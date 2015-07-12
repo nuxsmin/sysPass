@@ -2,7 +2,7 @@
 <div id="tabs-<?php echo $backup_tabIndex; ?>">
     <table class="data round">
         <tr>
-            <td class="descField">s
+            <td class="descField">
                 <?php echo _('Resultado'); ?>
             </td>
             <td class="valField">

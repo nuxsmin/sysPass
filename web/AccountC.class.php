@@ -30,6 +30,7 @@ use SP\AccountHistory;
 use SP\Acl;
 use SP\Common;
 use SP\Groups;
+use SP\Session;
 use SP\Users;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -173,7 +174,7 @@ class AccountC extends Controller implements ActionsInterface
     private function setCommonData()
     {
         if ($this->isGotData()) {
-            $this->view->assign('accountParentId', $this->getAccount()->getAccountParentId());
+//            $this->view->assign('accountParentId', $this->getAccount()->getAccountParentId());
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
             $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountUsersId());
             $this->view->assign('accountOtherUsersName', \SP\Users::getUsersNameForAccount($this->getId()));
@@ -189,6 +190,7 @@ class AccountC extends Controller implements ActionsInterface
             $this->view->assign('filesDelete', ($this->_action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
         }
 
+        $this->view->assign('accountParentId', Session::getLastAcountId());
         $this->view->assign('categories', \SP\DB::getValuesForSelect('categories', 'category_id', 'category_name'));
         $this->view->assign('customers', \SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'));
         $this->view->assign('otherUsers', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
@@ -215,11 +217,11 @@ class AccountC extends Controller implements ActionsInterface
             && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->_account->getAccountDataForACL())
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)
             && !$this->_account->getAccountIsHistory()));
-        $this->view->assign('showEditPass', ($this->_action == Acl::ACTION_ACC_EDIT
+        $this->view->assign('showEditPass', ($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_VIEW
             && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS, $this->_account->getAccountDataForACL())
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT_PASS)
             && !$this->_account->getAccountIsHistory()));
-        $this->view->assign('showDelete', ($this->_action == Acl::ACTION_ACC_DELETE
+        $this->view->assign('showDelete', ($this->_action == Acl::ACTION_ACC_DELETE || $this->_action == Acl::ACTION_ACC_EDIT
             && Acl::checkAccountAccess(Acl::ACTION_ACC_DELETE, $this->_account->getAccountDataForACL())
             && Acl::checkUserAccess(Acl::ACTION_ACC_DELETE)));
         $this->view->assign('showRestore', ($this->_action == Acl::ACTION_ACC_VIEW_HISTORY
@@ -260,7 +262,7 @@ class AccountC extends Controller implements ActionsInterface
         try {
             $this->setAccount(new Account());
             $this->_account->setAccountId($this->getId());
-            $this->_account->setAccountParentId(\SP\Session::getAccountParentId());
+            $this->_account->setAccountParentId($this->getId());
 
             $this->view->assign('accountId', $this->getId());
             $this->view->assign('accountData', $this->getAccount()->getAccountData());
@@ -268,6 +270,8 @@ class AccountC extends Controller implements ActionsInterface
 
             $this->setAccountDetails();
             $this->setGotData(true);
+
+            Session::setLastAcountId($this->getId());
         } catch (\Exception $e) {
             return false;
         }
@@ -395,6 +399,8 @@ class AccountC extends Controller implements ActionsInterface
 
             $this->setAccountDetails();
             $this->setGotData(true);
+
+            Session::setLastAcountId(\SP\Session::getAccountParentId());
         } catch (\Exception $e) {
             return false;
         }

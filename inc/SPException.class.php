@@ -28,7 +28,8 @@ namespace SP;
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */
-class SPException extends  \Exception{
+class SPException extends \Exception{
+    const SP_OK = 0;
     const SP_CRITICAL = 1;
     const SP_WARNING = 2;
     private $_type;
@@ -54,5 +55,15 @@ class SPException extends  \Exception{
     public function getType()
     {
         return $this->_type;
+    }
+
+    public static function getExceptionTypeName($type){
+        $typeName = array(
+            self::SP_OK => 'ok',
+            self::SP_CRITICAL => 'critical',
+            self::SP_WARNING => 'warning'
+        );
+
+        return $typeName[$type];
     }
 }

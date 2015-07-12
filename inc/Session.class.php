@@ -488,4 +488,24 @@ class Session
     {
         $_SESSION['lastActivity'] = $time;
     }
+
+    /**
+     * Devuelve el id de la última cuenta vista
+     *
+     * @return int
+     */
+    public static function getLastAcountId()
+    {
+        return (isset($_SESSION['lastAccountId'])) ? $_SESSION['lastAccountId'] : 0;
+    }
+
+    /**
+     * Establece el id de la última cuenta vista
+     *
+     * @param $id int La marca de hora
+     */
+    public static function setLastAcountId($id)
+    {
+        $_SESSION['lastAccountId'] = $id;
+    }
 }

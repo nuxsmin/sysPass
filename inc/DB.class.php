@@ -32,25 +32,64 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class DB
 {
+    /**
+     * @var string
+     */
     static $txtError = '';
+    /**
+     * @var int
+     */
     static $numError = 0;
-    static $last_num_rows = 0;
+    /**
+     * @var int
+     */
+    static $lastNumRows = 0;
+    /**
+     * @var int
+     */
     static $lastId = null;
+    /**
+     * @var bool Resultado como array
+     */
     private static $_retArray = false;
+    /**
+     * @var bool Resultado como un objeto PDO
+     */
     private static $_returnRawData = false;
+    /**
+     * @var bool Contar el número de filas totales
+     */
     private static $_fullRowCount = false;
-
-    public $num_rows = 0;
-    public $num_fields = 0;
-    private $_last_result = null;
+    /**
+     * @var int Número de registros obtenidos
+     */
+    private $_numRows = 0;
+    /**
+     * @var int Número de campos de la consulta
+     */
+    private $_numFields = 0;
+    /**
+     * @var array Resultados de la consulta
+     */
+    private $_lastResult = null;
+    /**
+     * @var string Nombre de la función que realiza la consulta
+     */
     private $_querySource;
-
     /**
      * Datos para el objeto PDOStatement
      *
      * @var array
      */
     private $_stData;
+
+    /**
+     * @return int
+     */
+    public static function getLastId()
+    {
+        return self::$lastId;
+    }
 
     /**
      * Comprobar que la base de datos existe.
@@ -86,7 +125,7 @@ class DB
      * @param $tblColName string    con el nombre de la columna del tipo Name a mostrar
      * @param $arrFilter  array     con las columnas a filtrar
      * @param $arrOrder   array     con el orden de las columnas
-     * @return false|array con los valores del select con el Id como clave y el nombre como valor
+     * @return array con los valores del select con el Id como clave y el nombre como valor
      */
     public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
     {
@@ -100,10 +139,11 @@ class DB
         $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter $strOrder";
 
         self::setReturnArray();
+
         $queryRes = self::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
-            return false;
+            return array();
         }
 
         $arrValues = array();
@@ -152,20 +192,20 @@ class DB
             return $doQuery;
         }
 
-        DB::$last_num_rows = (self::$_fullRowCount === false) ? $db->num_rows : $db->getFullRowCount($query);
+        DB::$lastNumRows = (self::$_fullRowCount === false) ? $db->_numRows : $db->getFullRowCount($query);
 
-        if ($db->num_rows == 0) {
+        if ($db->_numRows == 0) {
             self::resetVars();
             return false;
         }
 
-        if ($db->num_rows == 1 && self::$_retArray === false) {
+        if ($db->_numRows == 1 && self::$_retArray === false) {
             self::resetVars();
-            return $db->_last_result[0];
+            return $db->_lastResult[0];
         }
 
         self::resetVars();
-        return $db->_last_result;
+        return $db->_lastResult;
     }
 
     /**
@@ -192,7 +232,7 @@ class DB
         $isSelect = preg_match("/^(select|show)\s/i", $query);
 
         // Limpiar valores de caché y errores
-        $this->_last_result = array();
+        $this->_lastResult = array();
 
         try {
             $queryRes = $this->prepareQueryData($query);
@@ -202,15 +242,15 @@ class DB
 
         if ($isSelect) {
             if (!$getRawData) {
-                $this->num_fields = $queryRes->columnCount();
-                $this->_last_result = $queryRes->fetchAll(\PDO::FETCH_OBJ);
+                $this->_numFields = $queryRes->columnCount();
+                $this->_lastResult = $queryRes->fetchAll(\PDO::FETCH_OBJ);
             } else {
                 return $queryRes;
             }
 
 //            $queryRes->closeCursor();
 
-            $this->num_rows = count($this->_last_result);
+            $this->_numRows = count($this->_lastResult);
         }
     }
 
@@ -373,7 +413,7 @@ class DB
             $db->_querySource = $querySource;
             $db->_stData = $data;
             $db->doQuery($query, $querySource, $getRawData);
-            DB::$last_num_rows = $db->num_rows;
+            DB::$lastNumRows = $db->_numRows;
         } catch (SPException $e) {
             self::logDBException($query, $e->getMessage(), $e->getCode(), $querySource);
             self::$txtError = $e->getMessage();

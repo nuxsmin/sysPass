@@ -274,26 +274,7 @@ DROP TABLE IF EXISTS `usrProfiles`;
 CREATE TABLE `usrProfiles` (
   `userprofile_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `userprofile_name` varchar(45) NOT NULL,
-  `userProfile_pView` bit(1) DEFAULT b'0',
-  `userProfile_pEdit` bit(1) DEFAULT b'0',
-  `userProfile_pAdd` bit(1) DEFAULT b'0',
-  `userProfile_pConfig` bit(1) DEFAULT b'0',
-  `userProfile_pConfigMasterPass` bit(1) DEFAULT b'0',
-  `userProfile_pConfigBackup` bit(1) DEFAULT b'0',
-  `userProfile_pUsers` bit(1) DEFAULT b'0',
-  `userProfile_pGroups` bit(1) DEFAULT b'0',
-  `userProfile_pProfiles` bit(1) DEFAULT b'0',
-  `userProfile_pDelete` bit(1) DEFAULT b'0',
-  `userProfile_pViewPass` bit(1) DEFAULT b'0',
-  `userProfile_pEditPass` bit(1) DEFAULT b'0',
-  `userProfile_pEventlog` bit(1) DEFAULT b'0',
-  `userProfile_pViewHistory` bit(1) DEFAULT b'0',
-  `userProfile_pFiles` bit(1) DEFAULT b'0',
-  `userProfile_pConfigMenu` bit(1) DEFAULT b'0',
-  `userProfile_pUsersMenu` bit(1) DEFAULT b'0',
-  `userProfile_pAppMgmtMenu` bit(1) DEFAULT b'0',
-  `userProfile_pAppMgmtCategories` bit(1) DEFAULT b'0',
-  `userProfile_pAppMgmtCustomers` bit(1) DEFAULT b'0',
+  `userProfile_profile` BLOB NOT NULL,
   PRIMARY KEY (`userprofile_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

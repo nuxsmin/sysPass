@@ -265,6 +265,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $profile->setAccEdit(SP\Request::analyze('profile_accedit', 0, false, 1));
     $profile->setAccEditPass(SP\Request::analyze('profile_acceditpass', 0, false, 1));
     $profile->setAccDelete(SP\Request::analyze('profile_accdel', 0, false, 1));
+    $profile->setAccFiles(SP\Request::analyze('profile_accfiles', 0, false, 1));
     $profile->setConfigGeneral(SP\Request::analyze('profile_config', 0, false, 1));
     $profile->setConfigEncryption(SP\Request::analyze('profile_configmpw', 0, false, 1));
     $profile->setConfigBackup(SP\Request::analyze('profile_configback', 0, false, 1));

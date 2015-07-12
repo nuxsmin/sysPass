@@ -34,7 +34,13 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class DBConnectionFactory
 {
+    /**
+     * @var DBConnectionFactory
+     */
     private static $_factory;
+    /**
+     * @var \PDO
+     */
     private $_db;
 
     /**
@@ -58,7 +64,7 @@ class DBConnectionFactory
      * Esta función utiliza PDO para conectar con la base de datos.
      *
      * @throws SPException
-     * @return object|bool
+     * @return \PDO
      */
 
     public function getConnection()
@@ -88,7 +94,7 @@ class DBConnectionFactory
                 $this->_db = new \PDO($dsn, $dbuser, $dbpass);
             } catch (\Exception $e) {
                 if ($isInstalled) {
-                    if ($this->_db->connect_errno === 1049) {
+                    if ($e->getCode() === 1049) {
                         Config::setValue('installed', '0');
                     }
 
@@ -100,6 +106,7 @@ class DBConnectionFactory
         }
 
         $this->_db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
         return $this->_db;
     }
 }

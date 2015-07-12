@@ -32,7 +32,7 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $accountId = SP\Request::analyze('accountid', false);
@@ -55,9 +55,7 @@ if ($isHistory && !$account->checkAccountMPass()) {
 
 if (!SP\Acl::checkAccountAccess(SP\Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP\Acl::checkUserAccess(SP\Acl::ACTION_ACC_VIEW_PASS)) {
     SP\Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
-}
-
-if (!SP\Users::checkUserUpdateMPass()) {
+} elseif (!SP\Users::checkUserUpdateMPass()) {
     SP\Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
@@ -73,12 +71,12 @@ if (!$isHistory) {
     $log->writeLog();
 }
 
-$accountPass = htmlentities(trim($accountClearPass), ENT_COMPAT, 'UTF-8');
+//$accountPass = htmlspecialchars(trim($accountClearPass));
 
 $data = array(
     'title' => _('Clave de Cuenta'),
 //    'acclogin' => _('Usuario') . ': ' . $accountData->login,
-    'accpass' => $accountPass
+    'accpass' => trim($accountClearPass)
 );
 
 SP\Common::printJSON($data, 0);

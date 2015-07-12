@@ -2,7 +2,7 @@
     <div id="session" class="midround shadow">
         <?php if ($showPassIcon): ?>
             <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?><img src="imgs/key.png" class="iconMini"
-                                                                            title="<? echo _('Cambiar clave de usuario'); ?>"
+                                                                            title="<?php echo _('Cambiar clave de usuario'); ?>"
                                                                             data-itemid="<?php echo $userId; ?>"
                                                                             Onclick="usrUpdPass(this,<?php echo \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')" />
         <?php else: ?>

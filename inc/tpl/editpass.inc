@@ -24,18 +24,17 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" onKeyUp="checkPassLevel(this.value)"
+                <input type="password" maxlength="255" name="password" class="password" onKeyUp="checkPassLevel(this.value)"
                        autocomplete="off">
-                <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
-                     class="inputImg" id="viewPass"/>
-                &nbsp;&nbsp;
+                <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                     alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
                      class="inputImg"/>
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
-            <td class="valField"><input type="password" MAXLENGTH="255" name="password2" autocomplete="off">
+            <td class="valField"><input type="password" class="password" maxlength="255" name="password2" autocomplete="off">
                 <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </td>
         </tr>
@@ -64,4 +63,13 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
     $('#passGen').click(function () {
         password(11, true, true);
     });
+    $('.showpass').click(function () {
+        var passInput = $(this).prev();
+
+        if (passInput.attr('type') == 'password') {
+            passInput.get(0).type = 'text';
+        } else {
+            passInput.get(0).type = 'password';
+        }
+    })
 </script>

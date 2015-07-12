@@ -33,9 +33,17 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Config
 {
-    // Array asociativo clave => valor
+    /**
+     * @var array
+     */
     private static $_config;
+    /**
+     * @var array
+     */
     private static $_cache = array();
+    /**
+     * @var bool
+     */
     private static $_init = false;
 
     /**
@@ -57,9 +65,9 @@ class Config
      */
     public static function setArrConfigValue($key, $value)
     {
-        if (isset(self::$_config[$key])) {
-            self::$_config[$key] = $value;
-        }
+//        if (isset(self::$_config[$key])) {
+        self::$_config[$key] = $value;
+//        }
     }
 
     /**
@@ -309,7 +317,7 @@ class Config
 
     /**
      * Establece un valor en el archivo de configuración.
-     * Esta función establece el valor y reescribe configmgmt.php. Si el archivo
+     * Esta función establece el valor y reescribe config.php. Si el archivo
      * no se puede escribir, devolverá false.
      *
      * @param string $key   clave

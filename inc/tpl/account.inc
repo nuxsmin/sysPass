@@ -82,11 +82,10 @@
                 <tr>
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
-                        <input name="password" type="password" id="txtPass" maxlength="255"
+                        <input name="password" type="password" id="txtPass" class="password" maxlength="255"
                                OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
-                        <img src="imgs/user-pass.png" title="<?php echo _('La clave generada se mostrará aquí'); ?>"
-                             class="inputImg" id="viewPass"/>
-                        &nbsp;&nbsp;
+                        <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                         <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
                              class="inputImg"/>
                     </td>
@@ -94,7 +93,7 @@
                 <tr>
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
-                        <input name="password2" type="password" maxlength="255" autocomplete="off">
+                        <input name="password2" type="password" class="password" maxlength="255" autocomplete="off">
                         <span class="passLevel fullround"
                               title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                     </td>
@@ -196,20 +195,20 @@
         <td class="valField">
             <div id="downFiles"></div>
             <?php if ($accountIsHistory): ?>
-                <script>getFiles(<?php echo $accountParentId; ?>, <?php echo $filesDelete; ?>, '<?php echo $sk; ?>');</script>
+                <script>getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
             <?php else: ?>
-                <script>getFiles(<?php echo $accountId; ?>, <?php echo $filesDelete; ?>, '<?php echo $sk; ?>');    </script>
-            <?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
-                <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
-                    <input type="file" id="inFile" name="inFile"/>
-                </form>
-                <div id="dropzone" class="round"
-                     data-files-ext="<?php echo $filesAllowedExts; ?>"
-                     title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
-                    <img src="imgs/upload.png" alt="upload" class="opacity50"/>
-                </div>
-                <script> dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
-            <?php endif; ?>
+                <script>getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
+                <?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
+                    <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
+                        <input type="file" id="inFile" name="inFile"/>
+                    </form>
+                    <div id="dropzone" class="round"
+                         data-files-ext="<?php echo $filesAllowedExts; ?>"
+                         title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
+                        <img src="imgs/upload.png" alt="upload" class="opacity50"/>
+                    </div>
+                    <script> dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
+                <?php endif; ?>
             <?php endif; ?>
         </td>
     </tr>
@@ -345,7 +344,7 @@
         <?php else: ?>
             <li>
                 <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                     OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo ($gotData) ? $accountId : 0; ?>)"/>
+                     OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"/>
             </li>
         <?php endif; ?>
 
@@ -439,6 +438,16 @@
         $('#passGen').click(function () {
             password(11, true, true);
         });
+
+        $('.showpass').click(function () {
+            var passInput = $(this).prev();
+
+            if (passInput.attr('type') == 'password') {
+                passInput.get(0).type = 'text';
+            } else {
+                passInput.get(0).type = 'password';
+            }
+        })
     </script>
 <?php endif; ?>
 

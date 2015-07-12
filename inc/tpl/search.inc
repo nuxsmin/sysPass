@@ -126,7 +126,7 @@
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>"/>
+                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)" />
                             <?php endif; ?>
 
                         </div>
@@ -154,7 +154,7 @@
                 <?php endif; ?>
             </div>
             <div id="pageNavRight">
-                <?php if ($limitStart > 1): ?>
+                <?php if ($limitStart >= 1): ?>
                     <img src="imgs/arrow_first.png" onClick="<?php echo $pagerOnnClick['first']; ?>"
                          title="<?php echo _('Primera página'); ?>"/>
                     <img src="imgs/arrow_left.png" onClick="<?php echo $pagerOnnClick['prev']; ?>"
@@ -169,6 +169,7 @@
                 <?php endif; ?>
             </div>
         </div>
+
         <div id="clip-pass-text" style="visibility: hidden"></div>
 
         <script>
