@@ -31,6 +31,7 @@ use SP\Acl;
 use SP\Common;
 use SP\Groups;
 use SP\Session;
+use SP\SPException;
 use SP\Users;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -272,7 +273,7 @@ class AccountC extends Controller implements ActionsInterface
             $this->setGotData(true);
 
             Session::setLastAcountId($this->getId());
-        } catch (\Exception $e) {
+        } catch (SPException $e) {
             return false;
         }
         return true;
@@ -401,7 +402,7 @@ class AccountC extends Controller implements ActionsInterface
             $this->setGotData(true);
 
             Session::setLastAcountId(\SP\Session::getAccountParentId());
-        } catch (\Exception $e) {
+        } catch (SPException $e) {
             return false;
         }
 

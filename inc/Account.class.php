@@ -278,7 +278,7 @@ class Account extends AccountBase implements AccountInterface
      * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
      *
      * @return object
-     * @throws Exception
+     * @throws SPException
      */
     public function getAccountData()
     {
@@ -521,10 +521,13 @@ class Account extends AccountBase implements AccountInterface
                 continue;
             }
 
-            if (strlen($account->account_IV) < 32) {
-                $errorCount++;
-                $log->addDescription(_('IV de encriptación incorrecto') . " (" . $account->account_id . ")");
+            if (strlen($account->account_pass) === 0){
+                $log->addDescription(_('Clave de cuenta vacía') . ' (' . $account->account_id . ') ' . $account->account_name);
                 continue;
+            }
+
+            if (strlen($account->account_IV) < 32) {
+                $log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->account_id . ') ' . $account->account_name);
             }
 
             $decryptedPass = Crypt::getDecrypt($account->account_pass, $currentMasterPass, $account->account_IV);
@@ -533,12 +536,13 @@ class Account extends AccountBase implements AccountInterface
 
             if ($this->getAccountPass() === false) {
                 $errorCount++;
+                $log->addDescription(_('No es posible desencriptar la clave de la cuenta') . ' (' . $account->account_id . ') ' . $account->account_name);
                 continue;
             }
 
             if (!$this->updateAccountPass(true)) {
                 $errorCount++;
-                $log->addDescription(_('Fallo al actualizar la clave de la cuenta') . '(' . $this->getAccountId() . ')');
+                $log->addDescription(_('Fallo al actualizar la clave de la cuenta') . ' (' . $this->getAccountId() . ') ' .  $account->acchistory_name);
                 continue;
             }
 
@@ -562,10 +566,6 @@ class Account extends AccountBase implements AccountInterface
 
         Email::sendEmail($log);
 
-        if ($errorCount > 0) {
-            return false;
-        }
-
         return true;
     }
 
@@ -576,7 +576,7 @@ class Account extends AccountBase implements AccountInterface
      */
     protected function getAccountsPassData()
     {
-        $query = 'SELECT account_id, account_pass, account_IV FROM accounts';
+        $query = 'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
 
         return DB::getResults($query, __FUNCTION__);
     }

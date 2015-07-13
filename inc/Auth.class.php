@@ -57,7 +57,7 @@ class Auth
             Ldap::ldapConnect();
             Ldap::ldapBind();
             Ldap::getUserDN($userLogin);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -75,7 +75,7 @@ class Auth
         try {
             Ldap::ldapBind($userDN, $userPass);
             $attribs = Ldap::getLDAPAttr($attribsMap);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return ldap_errno(Ldap::getConn());
         }
 

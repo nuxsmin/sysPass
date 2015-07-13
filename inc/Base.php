@@ -27,7 +27,7 @@ define('MODEL_PATH', __DIR__);
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'tpl');
 define('EXTENSIONS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ext');
-define('DEBUG', true);
+define('DEBUG', false);
 
 require_once MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
 

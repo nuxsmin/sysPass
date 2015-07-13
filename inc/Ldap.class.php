@@ -26,8 +26,6 @@
 
 namespace SP;
 
-use Exception;
-
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -82,7 +80,7 @@ class Ldap
             self::ldapConnect();
             self::ldapBind();
             $numObjects = self::searchBase();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -92,7 +90,7 @@ class Ldap
     /**
      * Realizar la conexión al servidor de LDAP.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return bool
      */
     public static function ldapConnect()
@@ -105,7 +103,7 @@ class Ldap
             $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
             $log->writeLog();
 
-            throw new Exception(_('No es posible conectar con el servidor de LDAP'));
+            throw new \Exception(_('No es posible conectar con el servidor de LDAP'));
         }
 
         @ldap_set_option(self::$_ldapConn, LDAP_OPT_NETWORK_TIMEOUT, 10); // Set timeout
@@ -119,7 +117,7 @@ class Ldap
      *
      * @param string $userDN   con el DN del usuario
      * @param string $userPass con la clave del usuario
-     * @throws Exception
+     * @throws \Exception
      * @return bool
      */
     public static function ldapBind($userDN = '', $userPass = '')
@@ -135,7 +133,7 @@ class Ldap
             $log->addDescription('LDAP DN: ' . $dn);
             $log->writeLog();
 
-            throw new Exception(_('Error al conectar (BIND)'));
+            throw new \Exception(_('Error al conectar (BIND)'));
         }
 
         return true;
@@ -144,7 +142,7 @@ class Ldap
     /**
      * Realizar una búsqueda de objetos en la ruta indicada.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return int con el número de resultados
      */
     private static function searchBase()
@@ -163,7 +161,7 @@ class Ldap
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('Error al buscar objetos en DN base'));
+            throw new \Exception(_('Error al buscar objetos en DN base'));
         }
 
         return @ldap_count_entries(self::$_ldapConn, $searchRes);
@@ -172,7 +170,7 @@ class Ldap
     /**
      * Obtener el RDN del grupo.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return string con el RDN del grupo
      */
     private static function searchGroupDN()
@@ -196,7 +194,7 @@ class Ldap
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('Error al buscar RDN de grupo'));
+            throw new \Exception(_('Error al buscar RDN de grupo'));
         }
 
         if (@ldap_count_entries(self::$_ldapConn, $searchRes) === 1) {
@@ -207,7 +205,7 @@ class Ldap
                 $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
                 $log->writeLog();
 
-                throw new Exception(_('Error al buscar RDN de grupo'));
+                throw new \Exception(_('Error al buscar RDN de grupo'));
             }
 
             $log->addDescription(_('RDN de grupo encontrado'));
@@ -220,7 +218,7 @@ class Ldap
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('Error al buscar RDN de grupo'));
+            throw new \Exception(_('Error al buscar RDN de grupo'));
         }
     }
 
@@ -251,7 +249,7 @@ class Ldap
      * Obtener el RDN del usuario que realiza el login.
      *
      * @param string $userLogin con el login del usuario
-     * @throws Exception
+     * @throws \Exception
      * @return none
      */
     public static function getUserDN($userLogin)
@@ -274,7 +272,7 @@ class Ldap
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('Error al buscar el DN del usuario'));
+            throw new \Exception(_('Error al buscar el DN del usuario'));
         }
 
         if (@ldap_count_entries(self::$_ldapConn, $searchRes) === 1) {
@@ -285,14 +283,14 @@ class Ldap
                 $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
                 $log->writeLog();
 
-                throw new Exception(_('Error al localizar el usuario en LDAP'));
+                throw new \Exception(_('Error al localizar el usuario en LDAP'));
             }
         } else {
             $log->addDescription(_('Error al buscar el DN del usuario'));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('Error al buscar el DN del usuario'));
+            throw new \Exception(_('Error al buscar el DN del usuario'));
         }
     }
 
@@ -339,7 +337,7 @@ class Ldap
      * Buscar al usuario en un grupo.
      *
      * @param string $userDN con el RDN del usuario
-     * @throws Exception
+     * @throws \Exception
      * @return bool
      */
     public static function searchUserInGroup($userDN)
@@ -371,7 +369,7 @@ class Ldap
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('Error al buscar el grupo de usuarios'));
+            throw new \Exception(_('Error al buscar el grupo de usuarios'));
         }
 
         if (!@ldap_count_entries(self::$_ldapConn, $searchRes) === 1) {
@@ -380,7 +378,7 @@ class Ldap
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
-            throw new Exception(_('No se encontró el grupo con ese nombre'));
+            throw new \Exception(_('No se encontró el grupo con ese nombre'));
         }
 
         return true;

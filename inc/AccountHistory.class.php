@@ -152,13 +152,17 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if (!$this->checkAccountMPass()) {
                 $errorCount++;
-                $log->addDescription(_('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ')');
+                $log->addDescription(_('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
+                continue;
+            }
+
+            if (strlen($account->acchistory_pass) === 0){
+                $log->addDescription(_('Clave de cuenta vacía') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
                 continue;
             }
 
             if (strlen($account->acchistory_IV) < 32) {
-                $log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ')');
-                continue;
+                $log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
             }
 
             $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $currentMasterPass, $account->acchistory_IV);
@@ -167,12 +171,13 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if ($this->getAccountPass() === false) {
                 $errorCount++;
+                $log->addDescription(_('No es posible desencriptar la clave de la cuenta') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
                 continue;
             }
 
             if (!$this->updateAccountPass($account->acchistory_id, $newHash)) {
                 $errorCount++;
-                $log->addDescription(_('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ')');
+                $log->addDescription(_('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
                 continue;
             }
 
@@ -194,10 +199,6 @@ class AccountHistory extends AccountBase implements AccountInterface
         $log->addDescription(_('Fin'));
         $log->writeLog();
 
-        if ($errorCount > 0) {
-            return false;
-        }
-
         return true;
     }
 
@@ -208,7 +209,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     protected function getAccountsPassData()
     {
-        $query = 'SELECT acchistory_id, acchistory_pass, acchistory_IV FROM accHistory';
+        $query = 'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
 
         DB::setReturnArray();
 
@@ -296,7 +297,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      * en las variables de la clase.
      *
      * @return object
-     * @throws Exception
+     * @throws SPException
      */
     public function getAccountData()
     {
@@ -339,7 +340,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
-            throw new \Exception(_('No se pudieron obtener los datos de la cuenta'));
+            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
         }
 
         $this->setAccountUserId($queryRes->account_userId);
