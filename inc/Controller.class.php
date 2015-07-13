@@ -137,7 +137,7 @@ abstract class Controller
     protected function checkAccess()
     {
         if (!\SP\Acl::checkUserAccess($this->_action)) {
-            $this->showError(self::ERR_PAGE_NO_PERMISSION);
+//            $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
         }
 
