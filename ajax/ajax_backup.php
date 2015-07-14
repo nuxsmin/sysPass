@@ -42,6 +42,8 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
 $actionId = SP\Request::analyze('actionId', 0);
 $onCloseAction = SP\Request::analyze('onCloseAction');
 $activeTab = SP\Request::analyze('activeTab', 0);
+$exportPassword = SP\Request::analyze('exportPwd', '', false, false, false);
+$exportPasswordR = SP\Request::analyze('exportPwdR', '', false, false, false);
 
 $doActionOnClose = "doAction($actionId,'',$activeTab);";
 
@@ -55,4 +57,18 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
     SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Copia de la aplicación y base de datos realizada correctamente'));
 
     SP\Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
+} elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_EXPORT) {
+    if (!empty($exportPassword) && $exportPassword !== $exportPasswordR){
+        SP\Common::printJSON(_('Las claves no coinciden'));
+    }
+
+    if(!\SP\XmlExport::doExport($exportPassword)){
+        SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Error al realizar la exportación de cuentas'));
+
+        SP\Common::printJSON(_('Error al realizar la exportación') . ';;' . _('Revise el registro de eventos para más detalles'));
+    }
+
+    SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Exportación de cuentas realizada correctamente'));
+
+    SP\Common::printJSON(_('Proceso de exportación finalizado'), 0, $doActionOnClose);
 }

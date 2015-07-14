@@ -670,4 +670,34 @@ class Account extends AccountBase implements AccountInterface
 
         return true;
     }
+
+    /**
+     * Obtener los datos de todas las cuentas
+     *
+     * @return array
+     * @throws SPException
+     */
+    public static function getAccountsData()
+    {
+        $query = 'SELECT account_id,'
+            . 'account_name,'
+            . 'account_categoryId,'
+            . 'account_customerId,'
+            . 'account_login,'
+            . 'account_url,'
+            . 'account_pass,'
+            . 'account_IV,'
+            . 'account_notes '
+            . 'FROM accounts';
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de las cuentas'));
+        }
+
+        return $queryRes;
+    }
 }

@@ -94,19 +94,19 @@ class Crypt
     }
 
     /**
-     * Generar una clave encriptada.
+     * Generar datos encriptados.
      * Esta función llama a los métodos privados para encriptar datos.
      *
-     * @param string $pwd       con la clave a encriptar
+     * @param string $data       con los datos a encriptar
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
-    public static function mkEncrypt($pwd, $masterPwd = "")
+    public static function mkEncrypt($data, $masterPwd = "")
     {
         $masterPwd = (!$masterPwd) ? self::getSessionMasterPass() : $masterPwd;
 
         self::$strInitialVector = self::getIV();
-        $cryptValue = self::encrypt($pwd, $masterPwd, self::$strInitialVector);
+        $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
 
         return $cryptValue;
     }
@@ -124,8 +124,8 @@ class Crypt
     /**
      * Desencriptar datos con la clave maestra.
      *
-     * @param string $strEncrypted con los datos a desencriptar
-     * @param string $strPassword  con la clave maestra
+     * @param string $strEncrypted Los datos a desencriptar
+     * @param string $strPassword  La clave maestra
      * @param string $cryptIV      con el IV
      * @return string con los datos desencriptados
      */

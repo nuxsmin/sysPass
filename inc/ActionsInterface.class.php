@@ -77,5 +77,6 @@ interface ActionsInterface {
     const ACTION_CFG_ENCRYPTION_TEMPPASS = 83;
     const ACTION_CFG_BACKUP = 84;
     const ACTION_CFG_IMPORT = 85;
+    const ACTION_CFG_EXPORT = 86;
     const ACTION_EVL = 90;
 }

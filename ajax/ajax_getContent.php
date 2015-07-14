@@ -132,6 +132,7 @@ switch ($actionId) {
     case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION:
     case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
     case \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP:
+    case \SP\Controller\ActionsInterface::ACTION_CFG_EXPORT:
     case \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT:
         $tpl->assign('onCloseAction', $actionId);
         $tpl->addTemplate('tabs-start');

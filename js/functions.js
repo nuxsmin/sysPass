@@ -564,6 +564,10 @@ function configMgmt(action) {
             frm = 'frmBackup';
             url = '/ajax/ajax_backup.php';
             break;
+        case "export":
+            frm = 'frmExport';
+            url = '/ajax/ajax_backup.php';
+            break;
         case "migrate":
             frm = 'frmMigrate';
             url = '/ajax/ajax_migrate.php';

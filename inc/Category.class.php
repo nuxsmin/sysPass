@@ -206,7 +206,7 @@ class Category
      *
      * @param int  $id            con el Id de la categoría
      * @param bool $retAssocArray para devolver un array asociativo
-     * @return array con en id de categorioa como clave y en nombre como valor
+     * @return array con el id de categoria como clave y en nombre como valor
      */
     public static function getCategories($id = null, $retAssocArray = false)
     {

@@ -151,7 +151,7 @@ class Backup
      * Realizar un backup de la aplicación y comprimirlo.
      *
      * @param string $backupFile nombre del archivo de backup
-     * @throws Exception
+     * @throws SPException
      * @return bool
      */
     private static function backupApp($backupFile)
