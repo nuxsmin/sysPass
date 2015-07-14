@@ -33,8 +33,17 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Import
 {
+    /**
+     * @var array Resultado de las operaciones
+     */
     private static $_result = array();
+    /**
+     * @var string Contenido del archivo importado
+     */
     private static $_fileContent;
+    /**
+     * @var string Nombre del archivo temporal
+     */
     private static $_tmpFile;
 
     /**
@@ -257,14 +266,17 @@ class Import
         $xml = self::readXMLFile();
 
         if ($xml->Meta->Generator == 'KeePass') {
-            KeepassImport::addKeepassAccounts($xml);
+            KeepassImport::addAccounts($xml);
+        } else if($xml->Meta->Generator == 'sysPass') {
+            $import = new SyspassImport();
+            $import->addAccounts($xml);
         } else if ($xmlApp = self::parseFileHeader()) {
             switch ($xmlApp) {
                 case 'keepassx_database':
-                    KeepassXImport::addKeepassXAccounts($xml);
+                    KeepassXImport::addAccounts($xml);
                     break;
                 case 'revelationdata':
-                    error_log('REVELATION');
+                    error_log('REVELATION XML');
                     break;
                 default:
                     break;
@@ -282,7 +294,7 @@ class Import
      * Leer el archivo de KeePass a un objeto XML.
      *
      * @throws SPException
-     * @return object Con los datos del archivo XML
+     * @return \SimpleXMLElement Con los datos del archivo XML
      */
     private static function readXMLFile()
     {

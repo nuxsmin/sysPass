@@ -1,5 +1,4 @@
 <?php
-
 /**
  * sysPass
  *
@@ -36,9 +35,9 @@ class KeepassImport
     /**
      * Iniciar la importación desde KeePass
      *
-     * @param object $xml
+     * @param \SimpleXMLElement $xml
      */
-    public static function addKeepassAccounts($xml)
+    public static function addAccounts(\SimpleXMLElement $xml)
     {
         self::getGroups($xml->Root->Group);
     }
@@ -46,10 +45,10 @@ class KeepassImport
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param object $entries   con el objeto XML con las entradas
+     * @param \SimpleXMLElement $entries  El objeto XML con las entradas
      * @param string $groupName con nombre del grupo a procesar
      */
-    private static function getEntryData($entries, $groupName)
+    protected static function getEntryData(\SimpleXMLElement $entries, $groupName)
     {
         foreach ($entries as $entry) {
             foreach ($entry->String as $account) {
@@ -81,9 +80,9 @@ class KeepassImport
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
-     * @param object $xml con objeto XML del archivo de KeePass
+     * @param \SimpleXMLElement $xml El objeto XML del archivo de KeePass
      */
-    private static function getGroups($xml)
+    protected static function getGroups(\SimpleXMLElement $xml)
     {
         foreach ($xml as $node) {
             if ($node->Group) {
