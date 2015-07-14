@@ -1497,6 +1497,7 @@ footer img {
     border: #dbfdcb 1px solid;
 }
 
+.help-box{background-color: #ceeffa !important; color: #777;}
 .help-text{text-align: justify; line-height: 1.5em; margin-top: 1em;}
 
 /*Login Page*/

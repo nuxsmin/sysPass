@@ -19,9 +19,9 @@
             </td>
             <td class="valField">
                 <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
-                    <a href="<?php echo $backupDbFile['relative']; ?>">Backup BBDD</a>
+                    <strong><a href="<?php echo $backupDbFile['relative']; ?>" download="<?php echo $backupDbFile['filename']; ?>">Backup BBDD</a></strong>
                     -
-                    <a href="<?php echo $backupFile['relative']; ?>">Backup <?php echo $siteName; ?></a>
+                    <strong><a href="<?php echo $backupFile['relative']; ?>" download="<?php echo $backupFile['filename']; ?>">Backup <?php echo $siteName; ?></a></strong>
                 <?php else: echo _('No hay backups para descargar'); ?>
                 <?php endif; ?>
             </td>
@@ -57,6 +57,25 @@
 
     <form method="post" name="frmExport" id="frmExport">
         <table class="data round">
+            <tr>
+                <td class="descField">
+                    <?php echo _('Resultado'); ?>
+                </td>
+                <td class="valField">
+                    <?php echo $lastExportTime; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Descargar Actual'); ?>
+                </td>
+                <td class="valField">
+                    <?php if (file_exists($exportFile['absolute'])): ?>
+                        <strong><a href="<?php echo $exportFile['relative']; ?>" download="<?php echo $exportFile['filename']; ?>">XML <?php echo $siteName; ?></></a></strong>
+                    <?php else: echo _('No hay archivos XML para descargar'); ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('Clave de Exportación'); ?>

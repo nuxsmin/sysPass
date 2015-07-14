@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\XmlExport;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -161,13 +163,22 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->assign('backupFile',
             array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '.tar.gz',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '.tar.gz')
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '.tar.gz',
+                'filename' => $this->view->siteName . '.tar.gz')
         );
         $this->view->assign('backupDbFile',
             array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '_db.sql',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '_db.sql')
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '_db.sql',
+                'filename' => $this->view->siteName . '_db.sql')
         );
         $this->view->assign('lastBackupTime', (file_exists($this->view->backupFile['absolute'])) ? _('Último backup') . ": " . date("r", filemtime($this->view->backupFile['absolute'])) : _('No se encontraron backups'));
+
+        $this->view->assign('exportFile',
+            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '.xml',
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '.xml',
+                'filename' => $this->view->siteName . '.xml')
+        );
+        $this->view->assign('lastExportTime', (file_exists($this->view->exportFile['absolute'])) ? _('Última exportación') . ': ' . date("r", filemtime($this->view->exportFile['absolute'])) : _('No se encontró archivo de exportación'));
 
         $this->view->append('tabs', array('title' => _('Copia de Seguridad')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'backup');
