@@ -399,7 +399,7 @@
         <?php if ($showDelete): ?>
             <li>
                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>" class="inputImg"
-                     OnClick="delAccount(<?php echo $accountId; ?>,3,'<?php echo $sk; ?>');"/>
+                     OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');"/>
             </li>
         <?php endif; ?>
     </ul>

@@ -520,7 +520,7 @@ function saveAccount(frm) {
 function delAccount(id, action, sk) {
     "use strict";
 
-    var data = {accountid: id, savetyp: action, sk: sk};
+    var data = {accountid: id, actionId: action, sk: sk};
     var atext = '<div id="alert"><p id="alert-text">' + LANG[3] + '</p></div>';
     var url = '/ajax/ajax_accountSave.php';
 
