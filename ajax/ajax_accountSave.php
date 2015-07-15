@@ -53,7 +53,7 @@ $accountPassword = SP\Request::analyze('password', '', false, false, false);
 $accountPasswordV = SP\Request::analyze('password2', '', false, false, false);
 $categoryId = SP\Request::analyze('categoryId', 0);
 $accountOtherGroups = SP\Request::analyze('othergroups');
-$accountOtherUsers = SP\Request::analyze( 'otherusers');
+$accountOtherUsers = SP\Request::analyze('otherusers');
 $accountNotes = SP\Request::analyze('notice');
 $accountUrl = SP\Request::analyze('url');
 $accountGroupEditEnabled = SP\Request::analyze('geditenabled', 0, false, 1);
@@ -188,7 +188,6 @@ switch ($actionId) {
         $account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
 
-
         // Comprobar si han habido cambios
         if ($accountChangesHash == $account->calcChangesHash()) {
             SP\Common::printJSON(_('Sin cambios'), 0);
@@ -206,7 +205,7 @@ switch ($actionId) {
 
         // Eliminar cuenta
         if ($account->deleteAccount()) {
-            SP\Common::printJSON(_('Cuenta eliminada'), 0, "doAction('accsearch');");
+            SP\Common::printJSON(_('Cuenta eliminada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
         }
         SP\Common::printJSON(_('Error al eliminar la cuenta'));
         break;
