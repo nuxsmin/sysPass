@@ -29,33 +29,30 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 class XmlImport extends XmlImportBase
 {
-
-    /**
-     * Obtener los datos de las entradas.
-     */
-    protected function getAccountData()
-    {
-        // TODO: Implement getAccountData() method.
-    }
-
-    /**
-     * Añadir una cuenta en sysPass desde XML
-     *
-     * @return mixed
-     */
-    protected function addAccount()
-    {
-        // TODO: Implement addAccount() method.
-    }
-
     /**
      * Iniciar la importación desde XML.
      *
      * @throws SPException
      * @return bool
      */
-    protected function doImport()
+    public function doImport()
     {
-        // TODO: Implement doImport() method.
+        $format = $this->detectXMLFormat();
+
+        switch ($format) {
+            case 'syspass':
+                $import = new SyspassImport($this->_file);
+                break;
+            case 'keepass':
+                $import = new KeepassImport($this->_file);
+                break;
+            case 'keepassx':
+                $import = new KeepassXImport($this->_file);
+                break;
+        }
+
+        if (is_object($import)){
+            $import->doImport();
+        }
     }
 }

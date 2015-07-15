@@ -210,4 +210,42 @@ class Crypt
     {
         return mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_CBC, '');
     }
+
+    /**
+     * Encriptar datos. Devuelve un array con los datos encriptados y el IV.
+     *
+     * @param $data string Los datos a encriptar
+     * @throws SPException
+     * @return array
+     */
+    public static function encryptData($data)
+    {
+        if (empty($data)) {
+            return array('pass' => '', 'IV' => '');
+        }
+
+        // Comprobar el módulo de encriptación
+        if (!Crypt::checkCryptModule()) {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('No se puede usar el módulo de encriptación')
+            );
+        }
+
+        // Encriptar clave
+        $encData['pass'] = Crypt::mkEncrypt($data);
+
+        if (!empty($data) && ($encData['pass'] === false || is_null($encData['pass']))) {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('Error al generar datos cifrados')
+            );
+        }
+
+        $encData['IV'] = Crypt::$strInitialVector;
+
+        return $encData;
+    }
 }

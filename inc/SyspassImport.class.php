@@ -53,18 +53,10 @@ class SyspassImport extends XmlImportBase
      */
     public function doImport()
     {
-        if ($this->getUserId() === 0){
-            $this->setUserId(Session::getUserId());
-        }
-
-        if ($this->getUserGroupId() === 0){
-            $this->setUserGroupId(Session::getUserGroupId());
-        }
-
         try {
-            $this->addCategories();
-            $this->addCustomers();
-            $this->getAccountData();
+            $this->processCategories();
+            $this->processCustomers();
+            $this->processAccounts();
         } catch (SPException $e){
             return false;
         }
@@ -73,11 +65,10 @@ class SyspassImport extends XmlImportBase
     }
 
     /**
-     * Obtener los datos de las entradas de KeePass.
+     * Obtener los datos de las entradas de sysPass y crearlas.
      */
-    protected function getAccountData()
+    protected function processAccounts()
     {
-
         foreach ($this->_xml->Accounts as $entry) {
             $account = $entry->Account;
 
@@ -98,42 +89,26 @@ class SyspassImport extends XmlImportBase
     /**
      * Obtener las categorías y añadirlas a sysPass.
      */
-    protected function addCategories()
+    protected function processCategories()
     {
         foreach ($this->_xml->Categories as $category) {
-            $this->_categories[$category['id']] = Category::addCategoryReturnId($category->name, $category->description);
+            $this->setCustomerName($category->name);
+            $this->setCategoryDescription($category->description);
+
+            $this->_categories[$category['id']] = $this->addCategory();
         }
     }
 
     /**
      * Obtener los clientes y añadirlos a sysPass.
      */
-    protected function addCustomers()
+    protected function processCustomers()
     {
         foreach ($this->_xml->Customers as $customer) {
-            $this->_customers[$customer['id']] = Customer::addCustomerReturnId($customer->name, $customer->description);
+            $this->setCustomerName($customer->name);
+            $this->setCustomerDescription($customer->description);
+
+            $this->_customers[$customer['id']] = $this->addCustomer();
         }
-    }
-
-    /**
-     * Añadir una cuenta en sysPass desde XML
-     *
-     * @return mixed
-     */
-    protected function addAccount()
-    {
-        $account = new Account;
-        $account->setAccountName($this->getAccountName());
-        $account->setAccountCustomerId($this->getCustomerId());
-        $account->setAccountCategoryId($this->getCategoryId());
-        $account->setAccountLogin($this->getAccountLogin());
-        $account->setAccountUrl($this->getAccountUrl());
-        $account->setAccountPass($this->getAccountPass());
-        $account->setAccountIV($this->getAccountPassIV());
-        $account->setAccountNotes($this->getAccountNotes());
-        $account->setAccountUserId($this->getUserId());
-        $account->setAccountUserGroupId($this->getUserGroupId());
-
-        return $account->createAccount();
     }
 }

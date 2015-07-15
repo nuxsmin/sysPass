@@ -140,6 +140,123 @@ abstract class XmlImportBase
     }
 
     /**
+     * Leer el archivo a un objeto XML.
+     *
+     * @throws SPException
+     * @return \SimpleXMLElement Con los datos del archivo XML
+     */
+    protected function readXMLFile()
+    {
+        $this->_xml = simplexml_load_file($this->_file->getTmpFile());
+
+        if ($this->_xml === false) {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('No es posible procesar el archivo XML')
+            );
+        }
+    }
+
+    /**
+     * Detectar la aplicación que generó el XML.
+     *
+     * @throws SPException
+     */
+    public function detectXMLFormat()
+    {
+        if ($this->_xml->Meta->Generator == 'KeePass') {
+            return 'keepass';
+        } else if ($this->_xml->Meta->Generator == 'sysPass') {
+            return 'syspass';
+        } else if ($xmlApp = $this->parseFileHeader()) {
+            switch ($xmlApp) {
+                case 'keepassx_database':
+                    return 'keepassx';
+                case 'revelationdata':
+                    return 'revelation';
+                default:
+                    break;
+            }
+        } else {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Archivo XML no soportado'),
+                _('No es posible detectar la aplicación que exportó los datos')
+            );
+        }
+
+        return '';
+    }
+
+    /**
+     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
+     *
+     * @return bool
+     */
+    protected function parseFileHeader()
+    {
+        $handle = @fopen($this->_file->getTmpFile(), "r");
+        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
+
+        if ($handle) {
+            // No. de líneas a leer como máximo
+            $maxLines = 5;
+            $count = 0;
+
+            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
+                if (preg_match($headersRegex, $buffer, $app)) {
+                    fclose($handle);
+                    return strtolower($app[0]);
+                }
+                $count++;
+            }
+
+            fclose($handle);
+        }
+
+        return false;
+    }
+
+    /**
+     * Iniciar la importación desde XML.
+     *
+     * @throws SPException
+     * @return bool
+     */
+    public abstract function doImport();
+
+    /**
+     * Añadir una cuenta desde XML.
+     *
+     * @return bool
+     */
+    protected function addAccount()
+    {
+        if ($this->getUserId() === 0) {
+            $this->setUserId(Session::getUserId());
+        }
+
+        if ($this->getUserGroupId() === 0) {
+            $this->setUserGroupId(Session::getUserGroupId());
+        }
+
+        $account = new Account;
+        $account->setAccountName($this->getAccountName());
+        $account->setAccountCustomerId($this->getCustomerId());
+        $account->setAccountCategoryId($this->getCategoryId());
+        $account->setAccountLogin($this->getAccountLogin());
+        $account->setAccountUrl($this->getAccountUrl());
+        $account->setAccountPass($this->getAccountPass());
+        $account->setAccountIV($this->getAccountPassIV());
+        $account->setAccountNotes($this->getAccountNotes());
+        $account->setAccountUserId($this->getUserId());
+        $account->setAccountUserGroupId($this->getUserGroupId());
+
+        return $account->createAccount();
+    }
+
+    /**
      * @return int
      */
     public function getUserId()
@@ -169,70 +286,6 @@ abstract class XmlImportBase
     public function setUserGroupId($userGroupId)
     {
         $this->userGroupId = $userGroupId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        return $this->_categoryName;
-    }
-
-    /**
-     * @param string $_categoryName
-     */
-    public function setCategoryName($_categoryName)
-    {
-        $this->_categoryName = $_categoryName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryDescription()
-    {
-        return $this->_categoryDescription;
-    }
-
-    /**
-     * @param string $categoryDescription
-     */
-    public function setCategoryDescription($categoryDescription)
-    {
-        $this->_categoryDescription = $categoryDescription;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerDescription()
-    {
-        return $this->_customerDescription;
-    }
-
-    /**
-     * @param string $customerDescription
-     */
-    public function setCustomerDescription($customerDescription)
-    {
-        $this->_customerDescription = $customerDescription;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerName()
-    {
-        return $this->_customerName;
-    }
-
-    /**
-     * @param string $_customerName
-     */
-    public function setCustomerName($_customerName)
-    {
-        $this->_customerName = $_customerName;
     }
 
     /**
@@ -318,22 +371,6 @@ abstract class XmlImportBase
     /**
      * @return string
      */
-    public function getAccountNotes()
-    {
-        return $this->_accountNotes;
-    }
-
-    /**
-     * @param string $_accountNotes
-     */
-    public function setAccountNotes($_accountNotes)
-    {
-        $this->_accountNotes = $_accountNotes;
-    }
-
-    /**
-     * @return string
-     */
     public function getAccountPass()
     {
         return $this->_accountPass;
@@ -364,101 +401,100 @@ abstract class XmlImportBase
     }
 
     /**
-     * Obtener los datos de las entradas.
+     * @return string
      */
-    protected abstract function getAccountData();
-
-    /**
-     * Añadir una cuenta en sysPass desde XML
-     *
-     * @return mixed
-     */
-    protected abstract function addAccount();
-
-    /**
-     * Detectar la aplicación que generó el XML.
-     *
-     * @throws SPException
-     */
-    public function detectXMLFormat()
+    public function getAccountNotes()
     {
-        if ($this->_xml->Meta->Generator == 'KeePass') {
-            return 'keepass';
-        } else if ($this->_xml->Meta->Generator == 'sysPass') {
-            return 'syspass';
-        } else if ($xmlApp = $this->parseFileHeader()) {
-            switch ($xmlApp) {
-                case 'keepassx_database':
-                    return 'keepassx';
-                case 'revelationdata':
-                    return 'revelation';
-                default:
-                    break;
-            }
-        } else {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Archivo XML no soportado'),
-                _('No es posible detectar la aplicación que exportó los datos')
-            );
-        }
-
-        return '';
+        return $this->_accountNotes;
     }
 
     /**
-     * Leer el archivo a un objeto XML.
-     *
-     * @throws SPException
-     * @return \SimpleXMLElement Con los datos del archivo XML
+     * @param string $_accountNotes
      */
-    protected function readXMLFile()
+    public function setAccountNotes($_accountNotes)
     {
-        $this->_xml = simplexml_load_file($this->_file->getTmpFile());
-
-        if ($this->_xml === false) {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('No es posible procesar el archivo XML')
-            );
-        }
+        $this->_accountNotes = $_accountNotes;
     }
 
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws SPException
-     * @return bool
+     * Añadir una categoría y devolver el Id
+     * @return int
      */
-    public abstract function doImport();
+    protected function addCategory()
+    {
+        return Category::addCategoryReturnId($this->getCategoryName(), $this->getCategoryDescription());
+    }
 
     /**
-     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
-     *
-     * @return bool
+     * @return string
      */
-    protected function parseFileHeader()
+    public function getCategoryName()
     {
-        $handle = @fopen($this->_file->getTmpFile(), "r");
-        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
+        return $this->_categoryName;
+    }
 
-        if ($handle) {
-            // No. de líneas a leer como máximo
-            $maxLines = 5;
-            $count = 0;
+    /**
+     * @param string $_categoryName
+     */
+    public function setCategoryName($_categoryName)
+    {
+        $this->_categoryName = $_categoryName;
+    }
 
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
-                if (preg_match($headersRegex, $buffer, $app)) {
-                    fclose($handle);
-                    return strtolower($app[0]);
-                }
-                $count++;
-            }
+    /**
+     * @return string
+     */
+    public function getCategoryDescription()
+    {
+        return $this->_categoryDescription;
+    }
 
-            fclose($handle);
-        }
+    /**
+     * @param string $categoryDescription
+     */
+    public function setCategoryDescription($categoryDescription)
+    {
+        $this->_categoryDescription = $categoryDescription;
+    }
 
-        return false;
+    /**
+     * Añadir un cliente y devolver el Id
+     * @return int
+     */
+    protected function addCustomer()
+    {
+        return Customer::addCustomerReturnId($this->getCustomerName(), $this->getCustomerDescription());
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerName()
+    {
+        return $this->_customerName;
+    }
+
+    /**
+     * @param string $_customerName
+     */
+    public function setCustomerName($_customerName)
+    {
+        $this->_customerName = $_customerName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerDescription()
+    {
+        return $this->_customerDescription;
+    }
+
+    /**
+     * @param string $customerDescription
+     */
+    public function setCustomerDescription($customerDescription)
+    {
+        $this->_customerDescription = $customerDescription;
     }
 }

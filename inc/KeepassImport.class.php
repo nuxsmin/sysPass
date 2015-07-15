@@ -37,42 +37,10 @@ class KeepassImport extends XmlImportBase
      */
     public function doImport()
     {
-        $this->getGroups($this->_xml->Root->Group);
-    }
+        $this->setCustomerName('KeePass');
+        $this->setCustomerId($this->addCustomer());
 
-    /**
-     * Obtener los datos de las entradas de KeePass.
-     *
-     * @param \SimpleXMLElement $entries  El objeto XML con las entradas
-     * @param string $groupName con nombre del grupo a procesar
-     */
-    protected function getEntryData(\SimpleXMLElement $entries, $groupName)
-    {
-        foreach ($entries as $entry) {
-            foreach ($entry->String as $account) {
-                $value = (isset($account->Value)) ? (string)$account->Value : '';
-                switch ($account->Key) {
-                    case 'Notes':
-                        $notes = $value;
-                        break;
-                    case 'Password':
-                        $password = $value;
-                        break;
-                    case 'Title':
-                        $name = $value;
-                        break;
-                    case 'URL':
-                        $url = $value;
-                        break;
-                    case 'UserName':
-                        $username = $value;
-                        break;
-                }
-            }
-
-            $accountData = array($name, 'KeePass', $groupName, $url, $username, $password, $notes);
-            Import::addAccountData($accountData);
-        }
+        $this->processCategories($this->_xml->Root->Group);
     }
 
     /**
@@ -80,48 +48,72 @@ class KeepassImport extends XmlImportBase
      *
      * @param \SimpleXMLElement $xml El objeto XML del archivo de KeePass
      */
-    protected function getGroups(\SimpleXMLElement $xml)
+    protected function processCategories(\SimpleXMLElement $xml)
     {
         foreach ($xml as $node) {
             if ($node->Group) {
                 foreach ($node->Group as $group) {
-                    $groupName = $group->Name;
                     // Analizar grupo
                     if ($node->Group->Entry) {
-                        // Obtener entradas
-                        $this->getEntryData($group->Entry, $groupName);
+                        // Crear la categoría
+                        $this->setCategoryName($group->Name);
+                        $this->setCategoryId($this->addCategory());
+
+                        // Crear cuentas
+                        $this->processAccounts($group->Entry);
                     }
 
                     if ($group->Group) {
                         // Analizar subgrupo
-                        $this->getGroups($group);
+                        $this->processCategories($group);
                     }
                 }
             }
 
             if ($node->Entry) {
-                $groupName = $node->Name;
-                // Obtener entradas
-                $this->getEntryData($node->Entry, $groupName);
+                // Crear la categoría
+                $this->setCategoryName($node->Name);
+                $this->setCategoryId($this->addCategory());
+
+                // Crear cuentas
+                $this->processAccounts($node->Entry);
             }
         }
     }
 
     /**
-     * Obtener los datos de las entradas.
-     */
-    protected function getAccountData()
-    {
-        // TODO: Implement getAccountData() method.
-    }
-
-    /**
-     * Añadir una cuenta en sysPass desde XML
+     * Obtener los datos de las entradas de KeePass.
      *
-     * @return mixed
+     * @param \SimpleXMLElement $entries El objeto XML con las entradas
      */
-    protected function addAccount()
+    protected function processAccounts(\SimpleXMLElement $entries)
     {
-        // TODO: Implement addAccount() method.
+        foreach ($entries as $entry) {
+            foreach ($entry->String as $account) {
+                $value = (isset($account->Value)) ? (string)$account->Value : '';
+                switch ($account->Key) {
+                    case 'Notes':
+                        $this->setAccountNotes($value);
+                        break;
+                    case 'Password':
+                        $passData = Crypt::encryptData($value);
+
+                        $this->setAccountPass($passData['pass']);
+                        $this->setAccountPassIV($passData['IV']);
+                        break;
+                    case 'Title':
+                        $this->setAccountName($value);
+                        break;
+                    case 'URL':
+                        $this->setAccountUrl($value);
+                        break;
+                    case 'UserName':
+                        $this->setAccountLogin($value);
+                        break;
+                }
+            }
+
+            $this->addAccount();
+        }
     }
 }

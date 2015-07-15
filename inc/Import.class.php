@@ -75,18 +75,7 @@ class Import
 
                 // Analizamos el XML y seleccionamos el formato a importar
                 $xml = new XmlImport($file);
-                $format = $xml->detectXMLFormat();
-
-                if ($format == 'syspass') {
-                    $xmlSyspass = new SyspassImport($file);
-                    $xmlSyspass->doImport();
-                } elseif ($format == 'keepass') {
-                    $xmlKeepass = new KeepassImport($file);
-                    $xmlKeepass->doImport();
-                } elseif ($format == 'keepassx') {
-                    $xmlKeepassx = new KeepassXImport($file);
-                    $xmlKeepassx->doImport();
-                }
+                $xml->doImport();
             } else {
                 throw new SPException(
                     SPException::SP_WARNING,
@@ -170,7 +159,7 @@ class Import
             $categoryId = Category::$categoryLastId;
         }
 
-        $pass = self::encryptPass($password);
+        $pass = Crypt::encryptData($password);
 
         $account = new Account;
         $account->setAccountName($accountName);
@@ -186,43 +175,5 @@ class Import
 
         // Creamos la cuenta
         return $account->createAccount();
-    }
-
-    /**
-     * Encriptar la clave de una cuenta.
-     *
-     * @param string $password con la clave de la cuenta
-     * @throws SPException
-     * @return array con la clave y el IV
-     */
-    private static function encryptPass($password)
-    {
-        if (empty($password)) {
-            return array('pass' => '', 'IV' => '');
-        }
-
-        // Comprobar el módulo de encriptación
-        if (!Crypt::checkCryptModule()) {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('No se puede usar el módulo de encriptación')
-            );
-        }
-
-        // Encriptar clave
-        $data['pass'] = Crypt::mkEncrypt($password);
-
-        if (!empty($password) && ($data['pass'] === false || is_null($data['pass']))) {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('Error al generar datos cifrados')
-            );
-        }
-
-        $data['IV'] = Crypt::$strInitialVector;
-
-        return $data;
     }
 }
