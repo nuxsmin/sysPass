@@ -131,19 +131,17 @@ switch ($actionId) {
 
         // Comprobar si se ha introducido un nuevo cliente
         if ($newCustomer) {
-            if (SP\Customer::checkDupCustomer()) {
-                SP\Common::printJSON(_('Cliente duplicado'));
-            } elseif (!SP\Customer::addCustomer()) {
-                SP\Common::printJSON(_('Error al crear el cliente'));
+            try {
+                SP\Customer::addCustomer();
+                $customerId = SP\Customer::$customerLastId;
+            } catch (\SP\SPException $e) {
+                SP\Common::printJSON($e->getMessage());
             }
-
-            $account->setAccountCustomerId(SP\Customer::$customerLastId);
-        } else {
-            $account->setAccountCustomerId($customerId);
         }
 
         $account->setAccountName($accountName);
         $account->setAccountCategoryId($categoryId);
+        $account->setAccountCustomerId($customerId);
         $account->setAccountLogin($accountLogin);
         $account->setAccountUrl($accountUrl);
         $account->setAccountPass($accountEncPass);
@@ -166,9 +164,20 @@ switch ($actionId) {
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT:
         SP\Customer::$customerName = $newCustomer;
 
+        // Comprobar si se ha introducido un nuevo cliente
+        if ($newCustomer) {
+            try {
+                SP\Customer::addCustomer();
+                $customerId = SP\Customer::$customerLastId;
+            } catch (\SP\SPException $e) {
+                SP\Common::printJSON($e->getMessage());
+            }
+        }
+
         $account->setAccountId($accountId);
         $account->setAccountName($accountName);
         $account->setAccountCategoryId($categoryId);
+        $account->setAccountCustomerId($customerId);
         $account->setAccountLogin($accountLogin);
         $account->setAccountUrl($accountUrl);
         $account->setAccountNotes($accountNotes);
@@ -178,18 +187,7 @@ switch ($actionId) {
         $account->setAccountOtherUserEdit($accountUserEditEnabled);
         $account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
-        // Comprobar si se ha introducido un nuevo cliente
-        if ($newCustomer) {
-            if (SP\Customer::checkDupCustomer()) {
-                SP\Common::printJSON(_('Cliente duplicado'));
-            } elseif (!SP\Customer::addCustomer()) {
-                SP\Common::printJSON(_('Error al crear el cliente'));
-            }
 
-            $account->setAccountCustomerId(SP\Customer::$customerLastId);
-        } else {
-            $account->setAccountCustomerId($customerId);
-        }
 
         // Comprobar si han habido cambios
         if ($accountChangesHash == $account->calcChangesHash()) {

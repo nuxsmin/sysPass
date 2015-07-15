@@ -41,10 +41,15 @@ class Customer
     /**
      * Crear un nuevo cliente en la BBDD.
      *
-     * @return bool
+     * @param null $id El Id del cliente actual (solo para comprobar duplicidad)
+     * @throws SPException
      */
-    public static function addCustomer()
+    public static function addCustomer($id = null)
     {
+        if(self::checkDupCustomer($id)){
+            throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
+        }
+
         $query = 'INSERT INTO customers SET customer_name = :name, customer_description = :description, customer_hash = :hash';
 
         $data['name'] = self::$customerName;
@@ -52,14 +57,12 @@ class Customer
         $data['hash'] = self::mkCustomerHash();
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el cliente'));
         }
 
         self::$customerLastId = DB::$lastId;
 
         Log::writeNewLogAndEmail(_('Nuevo Cliente'), Html::strongText(_('Cliente') . ': ') . self::$customerName);
-
-        return true;
     }
 
     /**
@@ -84,10 +87,14 @@ class Customer
      * Actualizar un cliente en la BBDD.
      *
      * @param int $id con el Id del cliente
-     * @return bool
+     * @throws SPException
      */
     public static function updateCustomer($id)
     {
+        if(self::checkDupCustomer($id)){
+            throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
+        }
+
         $customerName = self::getCustomerById($id);
 
         $query = "UPDATE customers "
@@ -102,12 +109,10 @@ class Customer
         $data['id'] = $id;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
+            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el cliente'));
         }
 
         Log::writeNewLogAndEmail(_('Actualizar Cliente'), Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName);
-
-        return true;
     }
 
     /**
@@ -135,23 +140,27 @@ class Customer
      * Eliminar un cliente de la BBDD.
      *
      * @param int $id con el Id del cliente a eliminar
-     * @return bool
+     * @throws SPException
      */
-    public static function delCustomer($id)
+    public static function deleteCustomer($id)
     {
-        $customerName = self::getCustomerById($id);
+        $resCustomerUse = self::checkCustomerInUse($id);
+
+        if ($resCustomerUse['accounts'] > 0) {
+            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar') . ';;' . _('Cliente en uso por:') . ';;' . _('Cuentas') . ' (' . $resCustomerUse['accounts'] . ')');
+        }
+
+        $curCustomerName = self::getCustomerById($id);
 
         $query = 'DELETE FROM customers WHERE customer_id = :id LIMIT 1';
 
         $data['id'] = $id;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
+            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el cliente'));
         }
 
-        Log::writeNewLogAndEmail(_('Eliminar Cliente'), Html::strongText(_('Cliente') . ': ') . $customerName);
-
-        return true;
+        Log::writeNewLogAndEmail(_('Eliminar Cliente'), Html::strongText(_('Cliente') . ': ') . $curCustomerName);
     }
 
     /**
@@ -160,9 +169,9 @@ class Customer
      * @param int $id opcional con el Id del cliente
      * @return bool
      */
-    public static function checkDupCustomer($id = NULL)
+    public static function checkDupCustomer($id = null)
     {
-        if ($id === NULL) {
+        if (is_null($id)) {
             $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash';
         } else {
             $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash AND customer_id <> :id';
@@ -173,8 +182,6 @@ class Customer
         $data['hash'] = self::mkCustomerHash();
 
         return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= 1);
-
-//        return ($db->getFullRowCount($query) >= 1);
     }
 
     /**
@@ -292,5 +299,29 @@ class Customer
         DB::getQuery($query, __FUNCTION__, $data);
 
         return DB::$lastNumRows;
+    }
+
+    /**
+     * Añadir un cliente
+     * @param $name
+     * @param $description
+     * @return int
+     */
+    public static function addCustomerReturnId($name, $description){
+        $customerId = 0;
+
+        self::$customerName = $name;
+        self::$customerDescription = $description;
+
+        try {
+            self::addCustomer();
+            $customerId = self::$customerLastId;
+        } catch (SPException $e) {
+            if ($e->getType() === SPException::SP_WARNING){
+                $customerId = self::getCustomerByName();
+            }
+        }
+
+        return $customerId;
     }
 }

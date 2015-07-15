@@ -28,23 +28,43 @@ namespace SP;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Esta clase es la encargada de importar cuentas desde KeePass
+ * Esta clase es la encargada de importar cuentas desde sysPass
  */
 class SyspassImport extends XmlImportBase
 {
     /**
-     * Iniciar la importación desde KeePass
+     * Mapeo de categorías.
      *
-     * @param \SimpleXMLElement $xml
+     * @var array
+     */
+    private $_categories = array();
+    /**
+     * Mapeo de clientes.
+     *
+     * @var array
+     */
+    private $_customers = array();
+
+    /**
+     * Iniciar la importación desde sysPass.
+     *
      * @throws SPException
      * @return bool
      */
-    public function addAccounts(\SimpleXMLElement $xml)
+    public function doImport()
     {
+        if ($this->getUserId() === 0){
+            $this->setUserId(Session::getUserId());
+        }
+
+        if ($this->getUserGroupId() === 0){
+            $this->setUserGroupId(Session::getUserGroupId());
+        }
+
         try {
-            $this->getAccountData($xml->Accounts);
-            $this->getCategories($xml->Categories);
-            $this->getCustomers($xml->Customers);
+            $this->addCategories();
+            $this->addCustomers();
+            $this->getAccountData();
         } catch (SPException $e){
             return false;
         }
@@ -54,55 +74,66 @@ class SyspassImport extends XmlImportBase
 
     /**
      * Obtener los datos de las entradas de KeePass.
-     *
-     * @param \SimpleXMLElement $entries  El objeto XML del nodo de cuentas
      */
-    protected function getAccountData(\SimpleXMLElement $entries)
+    protected function getAccountData()
     {
-        foreach ($entries as $entry) {
+
+        foreach ($this->_xml->Accounts as $entry) {
             $account = $entry->Account;
 
             $this->setAccountName($account->name);
             $this->setAccountLogin($account->login);
-            $this->setCategoryId($account->categoryId);
-            $this->setCustomerId($account->customerId);
+            $this->setCategoryId($this->_categories[$account->categoryId]);
+            $this->setCustomerId($this->_customers[$account->customerId]);
             $this->setAccountUrl($account->url);
             $this->setAccountLogin($account->login);
             $this->setAccountPass($account->pass);
             $this->setAccountPassIV($account->passiv);
             $this->setAccountNotes($account->notes);
 
-            error_log($this->getAccountName());
-
-//            Import::addAccountData($accountData);
+            $this->addAccount();
         }
     }
 
     /**
-     * Obtener las categorías.
-     *
-     * @param \SimpleXMLElement $entries El objeto XML del nodo categorias
+     * Obtener las categorías y añadirlas a sysPass.
      */
-    protected function getCategories(\SimpleXMLElement $entries)
+    protected function addCategories()
     {
-        foreach ($entries->Category as $category) {
-            $this->setCategoryId($category['id']);
-            $this->setCategoryName($category->name);
-
-            Category::addCategory();
+        foreach ($this->_xml->Categories as $category) {
+            $this->_categories[$category['id']] = Category::addCategoryReturnId($category->name, $category->description);
         }
     }
 
     /**
-     * Obtener los clientes.
-     *
-     * @param \SimpleXMLElement $entries El objeto XML del nodo clientes
+     * Obtener los clientes y añadirlos a sysPass.
      */
-    protected function getCustomers(\SimpleXMLElement $entries)
+    protected function addCustomers()
     {
-        foreach ($entries->Customer as $customer) {
-            $this->setCustomerId($customer['id']);
-            $this->setCustomerName($customer->name);
+        foreach ($this->_xml->Customers as $customer) {
+            $this->_customers[$customer['id']] = Customer::addCustomerReturnId($customer->name, $customer->description);
         }
+    }
+
+    /**
+     * Añadir una cuenta en sysPass desde XML
+     *
+     * @return mixed
+     */
+    protected function addAccount()
+    {
+        $account = new Account;
+        $account->setAccountName($this->getAccountName());
+        $account->setAccountCustomerId($this->getCustomerId());
+        $account->setAccountCategoryId($this->getCategoryId());
+        $account->setAccountLogin($this->getAccountLogin());
+        $account->setAccountUrl($this->getAccountUrl());
+        $account->setAccountPass($this->getAccountPass());
+        $account->setAccountIV($this->getAccountPassIV());
+        $account->setAccountNotes($this->getAccountNotes());
+        $account->setAccountUserId($this->getUserId());
+        $account->setAccountUserGroupId($this->getUserGroupId());
+
+        return $account->createAccount();
     }
 }

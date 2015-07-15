@@ -61,24 +61,26 @@ class Category
     /**
      * Crear una nueva categoría en la BBDD.
      *
-     * @return bool
+     * @throws SPException
      */
     public static function addCategory()
     {
+        if (self::checkDupCategory()){
+            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
+        }
+
         $query = 'INSERT INTO categories SET category_name = :name ,category_description = :description';
 
         $data['name'] = self::$categoryName;
         $data['description'] = self::$categoryDescription;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
         }
 
         self::$categoryLastId = DB::$lastId;
 
         Log::writeNewLogAndEmail(_('Nueva Categoría'), Html::strongText(_('Categoría') . ': ') . self::$categoryName);
-
-        return true;
     }
 
     /**
@@ -90,7 +92,7 @@ class Category
     public static function checkDupCategory($id = null)
     {
 
-        if ($id === NULL) {
+        if (is_null($id)) {
             $query = 'SELECT category_id FROM categories WHERE category_name = :name';
         } else {
             $query = 'SELECT category_id FROM categories WHERE category_name = :name AND category_id <> :id';
@@ -107,23 +109,27 @@ class Category
      * Eliminar una categoría de la BBDD.
      *
      * @param int $id con el id de la categoría
-     * @return bool
+     * @throws SPException
      */
-    public static function delCategory($id)
+    public static function deleteCategory($id)
     {
-        $categoryName = self::getCategoryNameById($id);
+        $resCategoryUse = self::checkCategoryInUse($id);
+
+        if ($resCategoryUse !== true) {
+            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar') . ';;' . _('Categoría en uso por:') . ';;' . $resCategoryUse);
+        }
+
+        $curCategoryName = self::getCategoryNameById($id);
 
         $query = 'DELETE FROM categories WHERE category_id = :id LIMIT 1';
 
         $data['id'] = $id;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
+            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar la categoría'));
         }
 
-        Log::writeNewLogAndEmail(_('Eliminar Categoría'), Html::strongText(_('Categoría') . ': ') . $categoryName . ' (' . $id . ')');
-
-        return true;
+        Log::writeNewLogAndEmail(_('Eliminar Categoría'), Html::strongText(_('Categoría') . ': ') . $curCategoryName . ' (' . $id . ')');
     }
 
     /**
@@ -151,11 +157,15 @@ class Category
      * Actualizar una categoría en la BBDD con el id.
      *
      * @param int $id con el Id de la categoría a consultar
-     * @return bool
+     * @throws SPException
      */
     public static function updateCategory($id)
     {
-        $categoryName = self::getCategoryNameById($id);
+        if (self::checkDupCategory($id)){
+            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
+        }
+
+        $curCategoryName = self::getCategoryNameById($id);
 
         $query = 'UPDATE categories '
             . 'SET category_name = :name, category_description = :description '
@@ -166,12 +176,10 @@ class Category
         $data['id'] = $id;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
+            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar la categoría'));
         }
 
-        Log::writeNewLogAndEmail(_('Modificar Categoría'), Html::strongText(_('Categoría') . ': ') . $categoryName . ' > ' . self::$categoryName);
-
-        return true;
+        Log::writeNewLogAndEmail(_('Modificar Categoría'), Html::strongText(_('Categoría') . ': ') . $curCategoryName . ' > ' . self::$categoryName);
     }
 
     /**
@@ -282,4 +290,28 @@ class Category
         return DB::$lastNumRows;
     }
 
+    /**
+     * Crear una categoría y devolver el id si existe o de la nueva
+     *
+     * @param $name string El nombre de la categoría
+     * @param $description string La descripción de la categoría
+     * @return int
+     */
+    public static function addCategoryReturnId($name, $description){
+        // Comprobamos si existe la categoría o la creamos
+        $newCategoryId = self::getCategoryIdByName($name);
+
+        if ($newCategoryId == 0) {
+            self::$categoryName = $name;
+            self::$categoryDescription = $description;
+
+            try {
+                self::addCategory();
+                $newCategoryId = self::$categoryLastId;
+            } catch (SPException $e){
+            }
+        }
+
+        return $newCategoryId;
+    }
 }

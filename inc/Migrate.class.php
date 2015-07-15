@@ -263,12 +263,13 @@ class Migrate
         foreach ($customers as $customer) {
             Customer::$customerName = $customer;
 
-            if (Customer::checkDupCustomer()) {
+            try {
+                Customer::addCustomer();
                 $num++;
-                continue;
-            }
-
-            if (!Customer::addCustomer()) {
+            } catch (SPException $e) {
+                if ($e->getType() === SPException::SP_WARNING){
+                    continue;
+                }
                 throw new SPException(SPException::SP_CRITICAL,
                     _('No es posible crear el cliente'),
                     _('Contacte con el desarrollador'));

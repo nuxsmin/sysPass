@@ -30,25 +30,15 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de importar cuentas desde KeePassX
  */
-class KeepassXImport
+class KeepassXImport extends XmlImportBase
 {
-    /**
-     * Iniciar la importación desde KeePass.
-     *
-     * @param \SimpleXMLElement $xml
-     */
-    public static function addAccounts(\SimpleXMLElement $xml)
-    {
-        self::getGroups($xml);
-    }
-
     /**
      * Obtener los datos de las entradas de KeePass.
      *
      * @param \SimpleXMLElement $entries   El objeto XML con las entradas
      * @param string $groupName con nombre del grupo a procesar
      */
-    protected static function getEntryData(\SimpleXMLElement $entries, $groupName)
+    protected function getEntryData(\SimpleXMLElement $entries, $groupName)
     {
         foreach ($entries as $entry) {
             $notes = (isset($entry->comment)) ? (string)$entry->comment : '';
@@ -67,7 +57,7 @@ class KeepassXImport
      *
      * @param \SimpleXMLElement $xml con objeto XML del archivo de KeePass
      */
-    protected static function getGroups(\SimpleXMLElement $xml)
+    protected function getGroups(\SimpleXMLElement $xml)
     {
         foreach ($xml as $node) {
             if ($node->group) {
@@ -76,12 +66,12 @@ class KeepassXImport
                     // Analizar grupo
                     if ($node->group->entry) {
                         // Obtener entradas
-                        self::getEntryData($group->entry, $groupName);
+                        $this->getEntryData($group->entry, $groupName);
                     }
 
                     if ($group->group) {
                         // Analizar subgrupo
-                        self::getGroups($group);
+                        $this->getGroups($group);
                     }
                 }
             }
@@ -89,8 +79,37 @@ class KeepassXImport
             if ($node->entry) {
                 $groupName = $node->title;
                 // Obtener entradas
-                self::getEntryData($node->entry, $groupName);
+                $this->getEntryData($node->entry, $groupName);
             }
         }
+    }
+
+    /**
+     * Obtener los datos de las entradas.
+     */
+    protected function getAccountData()
+    {
+        // TODO: Implement getAccountData() method.
+    }
+
+    /**
+     * Añadir una cuenta en sysPass desde XML
+     *
+     * @return mixed
+     */
+    protected function addAccount()
+    {
+        // TODO: Implement addAccount() method.
+    }
+
+    /**
+     * Iniciar la importación desde KeePassX.
+     *
+     * @throws SPException
+     * @return bool
+     */
+    public function doImport()
+    {
+        self::getGroups($this->_xml);
     }
 }

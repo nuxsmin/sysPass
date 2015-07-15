@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rub閚 Dom韓guez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rub锟絥 Dom锟絥guez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,6 +29,18 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 abstract class XmlImportBase
 {
+    /**
+     * El id de usuario propietario de la cuenta.
+     *
+     * @var int
+     */
+    public $userId = 0;
+    /**
+     * El id del grupo propietario de la cuenta.
+     *
+     * @var int
+     */
+    public $userGroupId = 0;
     /**
      * Nombre de la cuenta.
      *
@@ -78,7 +90,7 @@ abstract class XmlImportBase
      */
     protected $_accountPassIV = '';
     /**
-     * Nombre de la categor韆
+     * Nombre de la categor铆a.
      *
      * @var string
      */
@@ -89,6 +101,75 @@ abstract class XmlImportBase
      * @var string
      */
     protected $_customerName = '';
+    /**
+     * Descrici贸n de la categor铆a.
+     *
+     * @var string
+     */
+    protected $_categoryDescription = '';
+    /**
+     * Descripci贸n del cliente.
+     *
+     * @var string
+     */
+    protected $_customerDescription = '';
+    /**
+     * @var \SimpleXMLElement
+     */
+    protected $_xml;
+    /**
+     * @var FileImport
+     */
+    protected $_file;
+
+    /**
+     * Constructor
+     *
+     * @param $file FileImport Instancia de la clase FileImport
+     * @throws SPException
+     */
+    public function __construct($file)
+    {
+        try {
+            $this->_file = $file;
+            $this->readXMLFile();
+//            $this->doImport($this->readXMLFile());
+        } catch (SPException $e) {
+            throw $e;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param int $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserGroupId()
+    {
+        return $this->userGroupId;
+    }
+
+    /**
+     * @param int $userGroupId
+     */
+    public function setUserGroupId($userGroupId)
+    {
+        $this->userGroupId = $userGroupId;
+    }
 
     /**
      * @return string
@@ -104,6 +185,38 @@ abstract class XmlImportBase
     public function setCategoryName($_categoryName)
     {
         $this->_categoryName = $_categoryName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryDescription()
+    {
+        return $this->_categoryDescription;
+    }
+
+    /**
+     * @param string $categoryDescription
+     */
+    public function setCategoryDescription($categoryDescription)
+    {
+        $this->_categoryDescription = $categoryDescription;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerDescription()
+    {
+        return $this->_customerDescription;
+    }
+
+    /**
+     * @param string $customerDescription
+     */
+    public function setCustomerDescription($customerDescription)
+    {
+        $this->_customerDescription = $customerDescription;
     }
 
     /**
@@ -251,16 +364,101 @@ abstract class XmlImportBase
     }
 
     /**
-     * Iniciar la importaci髇 de cuentas
-     *
-     * @param \SimpleXMLElement $xml
+     * Obtener los datos de las entradas.
      */
-    public abstract function addAccounts(\SimpleXMLElement $xml);
+    protected abstract function getAccountData();
 
     /**
-     * Obtener los datos de las entradas.
+     * A帽adir una cuenta en sysPass desde XML
      *
-     * @param \SimpleXMLElement $entries El objeto XML con las entradas
+     * @return mixed
      */
-    protected abstract function getAccountData(\SimpleXMLElement $entries);
+    protected abstract function addAccount();
+
+    /**
+     * Detectar la aplicaci贸n que gener贸 el XML.
+     *
+     * @throws SPException
+     */
+    public function detectXMLFormat()
+    {
+        if ($this->_xml->Meta->Generator == 'KeePass') {
+            return 'keepass';
+        } else if ($this->_xml->Meta->Generator == 'sysPass') {
+            return 'syspass';
+        } else if ($xmlApp = $this->parseFileHeader()) {
+            switch ($xmlApp) {
+                case 'keepassx_database':
+                    return 'keepassx';
+                case 'revelationdata':
+                    return 'revelation';
+                default:
+                    break;
+            }
+        } else {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Archivo XML no soportado'),
+                _('No es posible detectar la aplicaci贸n que export贸 los datos')
+            );
+        }
+
+        return '';
+    }
+
+    /**
+     * Leer el archivo a un objeto XML.
+     *
+     * @throws SPException
+     * @return \SimpleXMLElement Con los datos del archivo XML
+     */
+    protected function readXMLFile()
+    {
+        $this->_xml = simplexml_load_file($this->_file->getTmpFile());
+
+        if ($this->_xml === false) {
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno'),
+                _('No es posible procesar el archivo XML')
+            );
+        }
+    }
+
+    /**
+     * Iniciar la importaci贸n desde XML.
+     *
+     * @throws SPException
+     * @return bool
+     */
+    public abstract function doImport();
+
+    /**
+     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
+     *
+     * @return bool
+     */
+    protected function parseFileHeader()
+    {
+        $handle = @fopen($this->_file->getTmpFile(), "r");
+        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
+
+        if ($handle) {
+            // No. de l铆neas a leer como m谩ximo
+            $maxLines = 5;
+            $count = 0;
+
+            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
+                if (preg_match($headersRegex, $buffer, $app)) {
+                    fclose($handle);
+                    return strtolower($app[0]);
+                }
+                $count++;
+            }
+
+            fclose($handle);
+        }
+
+        return false;
+    }
 }

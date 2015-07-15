@@ -38,7 +38,7 @@ class Import
      */
     private static $_result = array();
     /**
-     * @var string Contenido del archivo importado
+     * @var array Contenido del archivo importado
      */
     private static $_fileContent;
     /**
@@ -55,7 +55,45 @@ class Import
     public static function doImport(&$fileData)
     {
         try {
-            self::readDataFromFile($fileData);
+            $file = new FileImport($fileData);
+
+            if ($file->getFileType() === 'text/csv' || $file->getFileType() === 'application/vnd.ms-excel') {
+                // Leemos el archivo a un array
+                self::$_fileContent = file($file->getTmpFile());
+
+                if (!is_array(self::$_fileContent)) {
+                    throw new SPException(
+                        SPException::SP_CRITICAL,
+                        _('Error interno al leer el archivo'),
+                        _('Compruebe los permisos del directorio temporal')
+                    );
+                }
+                // Obtenemos las cuentas desde el archivo CSV
+                self::parseFileData();
+            } elseif ($fileData['type'] === 'text/xml') {
+                self::$_tmpFile = $file->getTmpFile();
+
+                // Analizamos el XML y seleccionamos el formato a importar
+                $xml = new XmlImport($file);
+                $format = $xml->detectXMLFormat();
+
+                if ($format == 'syspass') {
+                    $xmlSyspass = new SyspassImport($file);
+                    $xmlSyspass->doImport();
+                } elseif ($format == 'keepass') {
+                    $xmlKeepass = new KeepassImport($file);
+                    $xmlKeepass->doImport();
+                } elseif ($format == 'keepassx') {
+                    $xmlKeepassx = new KeepassXImport($file);
+                    $xmlKeepassx->doImport();
+                }
+            } else {
+                throw new SPException(
+                    SPException::SP_WARNING,
+                    _('Tipo mime no soportado'),
+                    _('Compruebe el formato del archivo')
+                );
+            }
         } catch (SPException $e) {
             Log::writeNewLog(_('Importar Cuentas'), $e->getMessage());
 
@@ -66,75 +104,7 @@ class Import
         self::$_result['ok'][] = _('Importación finalizada');
         self::$_result['ok'][] = _('Revise el registro de eventos para más detalles');
 
-        return (self::$_result);
-    }
-
-    /**
-     * Leer los datos del archivo.
-     *
-     * @param array $fileData con los datos del archivo
-     * @throws SPException
-     * @return bool
-     */
-    private static function readDataFromFile(&$fileData)
-    {
-        if (!is_array($fileData)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Archivo no subido correctamente'), _('Verifique los permisos del usuario del servidor web'));
-        }
-
-        if ($fileData['name']) {
-            // Comprobamos la extensión del archivo
-            $fileExtension = strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
-
-            if ($fileExtension != 'CSV' && $fileExtension != 'XML') {
-                throw new SPException(
-                    SPException::SP_CRITICAL,
-                    _('Tipo de archivo no soportado'),
-                    _('Compruebe la extensión del archivo')
-                );
-            }
-        }
-
-        // Variables con información del archivo
-        $tmpName = $fileData['tmp_name'];
-
-        if (!file_exists($tmpName) || !is_readable($tmpName)) {
-            // Registramos el máximo tamaño permitido por PHP
-            Util::getMaxUpload();
-
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Error interno al leer el archivo'),
-                _('Compruebe la configuración de PHP para subir archivos')
-            );
-        }
-
-        if ($fileData['type'] === 'text/csv' || $fileData['type'] === 'application/vnd.ms-excel') {
-            // Leemos el archivo a un array
-            self::$_fileContent = file($tmpName);
-
-            if (!is_array(self::$_fileContent)) {
-                throw new SPException(
-                    SPException::SP_CRITICAL,
-                    _('Error interno al leer el archivo'),
-                    _('Compruebe los permisos del directorio temporal')
-                );
-            }
-            // Obtenemos las cuentas desde el archivo CSV
-            self::parseFileData();
-        } elseif ($fileData['type'] === 'text/xml') {
-            self::$_tmpFile = $tmpName;
-            // Analizamos el XML y seleccionamos el formato a importar
-            self::detectXMLFormat();
-        } else {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Tipo mime no soportado'),
-                _('Compruebe el formato del archivo')
-            );
-        }
-
-        return true;
+        return self::$_result;
     }
 
     /**
@@ -254,87 +224,5 @@ class Import
         $data['IV'] = Crypt::$strInitialVector;
 
         return $data;
-    }
-
-    /**
-     * Detectar la aplicación que generó el XML.
-     *
-     * @throws SPException
-     */
-    private static function detectXMLFormat()
-    {
-        $xml = self::readXMLFile();
-
-        if ($xml->Meta->Generator == 'KeePass') {
-            KeepassImport::addAccounts($xml);
-        } else if($xml->Meta->Generator == 'sysPass') {
-            $import = new SyspassImport();
-            $import->addAccounts($xml);
-        } else if ($xmlApp = self::parseFileHeader()) {
-            switch ($xmlApp) {
-                case 'keepassx_database':
-                    KeepassXImport::addAccounts($xml);
-                    break;
-                case 'revelationdata':
-                    error_log('REVELATION XML');
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Archivo XML no soportado'),
-                _('No es posible detectar la aplicación que exportó los datos')
-            );
-        }
-    }
-
-    /**
-     * Leer el archivo de KeePass a un objeto XML.
-     *
-     * @throws SPException
-     * @return \SimpleXMLElement Con los datos del archivo XML
-     */
-    private static function readXMLFile()
-    {
-        if ($xmlFile = simplexml_load_file(self::$_tmpFile)) {
-            return $xmlFile;
-        } else {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('No es posible procesar el archivo XML')
-            );
-        }
-    }
-
-    /**
-     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
-     *
-     * @return bool
-     */
-    private static function parseFileHeader()
-    {
-        $handle = @fopen(self::$_tmpFile, "r");
-        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
-
-        if ($handle) {
-            // No. de líneas a leer como máximo
-            $maxLines = 5;
-            $count = 0;
-
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
-                if (preg_match($headersRegex, $buffer, $app)) {
-                    fclose($handle);
-                    return strtolower($app[0]);
-                }
-                $count++;
-            }
-
-            fclose($handle);
-        }
-
-        return false;
     }
 }
