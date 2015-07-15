@@ -52,7 +52,7 @@ class Import
      * @param array $fileData con los datos del archivo
      * @return array resultado del proceso
      */
-    public static function doImport(&$fileData)
+    public static function doImport(&$fileData, $defUser = null, $defGroup = null)
     {
         try {
             $file = new FileImport($fileData);
@@ -75,6 +75,8 @@ class Import
 
                 // Analizamos el XML y seleccionamos el formato a importar
                 $xml = new XmlImport($file);
+                $xml->setUserId($defUser);
+                $xml->setUserGroupId($defGroup);
                 $xml->doImport();
             } else {
                 throw new SPException(
@@ -142,22 +144,9 @@ class Import
         // Asignamos los valores del array a variables
         list($accountName, $customerName, $categoryName, $url, $username, $password, $notes) = $data;
 
-        // Comprobamos si existe el cliente o lo creamos
-        Customer::$customerName = $customerName;
-        if (Customer::checkDupCustomer()) {
-            $customerId = Customer::getCustomerByName();
-        } else {
-            Customer::addCustomer();
-            $customerId = Customer::$customerLastId;
-        }
+        $customerId = Customer::addCustomerReturnId($customerName);
 
-        // Comprobamos si existe la categoría o la creamos
-        $categoryId = Category::getCategoryIdByName($categoryName);
-        if ($categoryId == 0) {
-            Category::$categoryName = $categoryName;
-            Category::addCategory($categoryName);
-            $categoryId = Category::$categoryLastId;
-        }
+        $categoryId = Category::addCategoryReturnId($categoryName);
 
         $pass = Crypt::encryptData($password);
 

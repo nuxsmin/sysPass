@@ -728,7 +728,9 @@ function importFile(sk) {
         data: {
             sk: sk,
             action: 'import',
-            isAjax: 1
+            isAjax: 1,
+            defUser: function() { return $('#import_defaultuser').chosen().val()},
+            defGroup: function() { return $('#import_defaultgroup').chosen().val()}
         },
         uploadFinished: function (i, file, json) {
             $.fancybox.hideLoading();

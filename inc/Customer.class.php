@@ -307,7 +307,7 @@ class Customer
      * @param $description
      * @return int
      */
-    public static function addCustomerReturnId($name, $description){
+    public static function addCustomerReturnId($name, $description = ''){
         $customerId = 0;
 
         self::$customerName = $name;
@@ -322,6 +322,6 @@ class Customer
             }
         }
 
-        return $customerId;
+        return (int)$customerId;
     }
 }

@@ -297,7 +297,7 @@ class Category
      * @param $description string La descripción de la categoría
      * @return int
      */
-    public static function addCategoryReturnId($name, $description){
+    public static function addCategoryReturnId($name, $description = ''){
         // Comprobamos si existe la categoría o la creamos
         $newCategoryId = self::getCategoryIdByName($name);
 
@@ -312,6 +312,6 @@ class Category
             }
         }
 
-        return $newCategoryId;
+        return (int)$newCategoryId;
     }
 }

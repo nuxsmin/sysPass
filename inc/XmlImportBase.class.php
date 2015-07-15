@@ -133,7 +133,6 @@ abstract class XmlImportBase
         try {
             $this->_file = $file;
             $this->readXMLFile();
-//            $this->doImport($this->readXMLFile());
         } catch (SPException $e) {
             throw $e;
         }
@@ -233,11 +232,11 @@ abstract class XmlImportBase
      */
     protected function addAccount()
     {
-        if ($this->getUserId() === 0) {
+        if (is_null($this->getUserId()) || $this->getUserId() === 0) {
             $this->setUserId(Session::getUserId());
         }
 
-        if ($this->getUserGroupId() === 0) {
+        if (is_null($this->getUserGroupId()) || $this->getUserGroupId() === 0) {
             $this->setUserGroupId(Session::getUserGroupId());
         }
 

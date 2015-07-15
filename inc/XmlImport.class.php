@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://${PROJECT_LINK}
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@${PROJECT_LINK}
+ * @link      http://syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,12 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
+ * según el tipo de archivo XML detectado.
+ *
+ * @package SP
+ */
 class XmlImport extends XmlImportBase
 {
     /**
@@ -37,6 +43,7 @@ class XmlImport extends XmlImportBase
      */
     public function doImport()
     {
+        $import = null;
         $format = $this->detectXMLFormat();
 
         switch ($format) {
@@ -52,6 +59,10 @@ class XmlImport extends XmlImportBase
         }
 
         if (is_object($import)){
+            Log::writeNewLog(_('Importar Cuentas'), _('Formato detectado') . ': ' . strtoupper($format));
+
+            $import->setUserId($this->getUserId());
+            $import->setUserGroupId($this->getUserGroupId());
             $import->doImport();
         }
     }

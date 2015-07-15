@@ -69,17 +69,15 @@ class SyspassImport extends XmlImportBase
      */
     protected function processAccounts()
     {
-        foreach ($this->_xml->Accounts as $entry) {
-            $account = $entry->Account;
-
+        foreach ($this->_xml->Accounts->Account as $account) {
             $this->setAccountName($account->name);
             $this->setAccountLogin($account->login);
-            $this->setCategoryId($this->_categories[$account->categoryId]);
-            $this->setCustomerId($this->_customers[$account->customerId]);
+            $this->setCategoryId($this->_categories[(int)$account->categoryId]);
+            $this->setCustomerId($this->_customers[(int)$account->customerId]);
             $this->setAccountUrl($account->url);
             $this->setAccountLogin($account->login);
-            $this->setAccountPass($account->pass);
-            $this->setAccountPassIV($account->passiv);
+            $this->setAccountPass(base64_decode($account->pass));
+            $this->setAccountPassIV(base64_decode($account->passiv));
             $this->setAccountNotes($account->notes);
 
             $this->addAccount();
@@ -91,11 +89,11 @@ class SyspassImport extends XmlImportBase
      */
     protected function processCategories()
     {
-        foreach ($this->_xml->Categories as $category) {
-            $this->setCustomerName($category->name);
+        foreach ($this->_xml->Categories->Category as $category) {
+            $this->setCategoryName($category->name);
             $this->setCategoryDescription($category->description);
 
-            $this->_categories[$category['id']] = $this->addCategory();
+            $this->_categories[(int)$category['id']] = $this->addCategory();
         }
     }
 
@@ -104,11 +102,11 @@ class SyspassImport extends XmlImportBase
      */
     protected function processCustomers()
     {
-        foreach ($this->_xml->Customers as $customer) {
+        foreach ($this->_xml->Customers->Customer as $customer) {
             $this->setCustomerName($customer->name);
             $this->setCustomerDescription($customer->description);
 
-            $this->_customers[$customer['id']] = $this->addCustomer();
+            $this->_customers[(int)$customer['id']] = $this->addCustomer();
         }
     }
 }

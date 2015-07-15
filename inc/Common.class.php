@@ -134,6 +134,8 @@ class Common
         $msgHelp[26] = _('Habilita el modo de conexión con LDAP de Active Directory.');
         $msgHelp[27] = _('Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP.');
         $msgHelp[28] = _('Define el perfil de usuario por defecto para los nuevos usuarios de LDAP.');
+        $msgHelp[29] = _('Define el usuario por defecto para las cuentas importadas.');
+        $msgHelp[30] = _('Define el grupo por defecto para las cuentas importadas.');
 
         if (array_key_exists($id, $msgHelp)) {
             return '<img src="imgs/help.png" title="' . $msgHelp[$id] . '" class="inputImgMini" />';

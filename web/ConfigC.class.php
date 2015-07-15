@@ -201,6 +201,8 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->append('tabs', array('title' => _('Importar Cuentas')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'import');
+        $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
     }
 
     /**

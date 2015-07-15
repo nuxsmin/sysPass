@@ -134,7 +134,7 @@ class Init
         }
 
         // Establecer el modo debug si una sesión de xdebug está activa
-        if (isset($_COOKIE['XDEBUG_SESSION']) && (!defined('DEBUG') || !DEBUG)) {
+        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
             define('DEBUG', true);
         }
 
