@@ -63,6 +63,7 @@ class XmlImport extends XmlImportBase
 
             $import->setUserId($this->getUserId());
             $import->setUserGroupId($this->getUserGroupId());
+            $import->setImportPass($this->getImportPass());
             $import->doImport();
         }
     }

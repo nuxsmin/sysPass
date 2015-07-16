@@ -121,6 +121,16 @@ abstract class XmlImportBase
      * @var FileImport
      */
     protected $_file;
+    /**
+     * La clave de importación
+     *
+     * @var string
+     */
+    protected $_importPass;
+    /**
+     * @var \DOMDocument
+     */
+    protected $_xmlDOM;
 
     /**
      * Constructor
@@ -148,6 +158,10 @@ abstract class XmlImportBase
     {
         $this->_xml = simplexml_load_file($this->_file->getTmpFile());
 
+        // Cargar el XML con DOM
+        $this->_xmlDOM = new \DOMDocument();
+        $this->_xmlDOM->load($this->_file->getTmpFile());
+
         if ($this->_xml === false) {
             throw new SPException(
                 SPException::SP_CRITICAL,
@@ -155,6 +169,22 @@ abstract class XmlImportBase
                 _('No es posible procesar el archivo XML')
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getImportPass()
+    {
+        return $this->_importPass;
+    }
+
+    /**
+     * @param string $importPass
+     */
+    public function setImportPass($importPass)
+    {
+        $this->_importPass = $importPass;
     }
 
     /**

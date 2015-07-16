@@ -52,7 +52,7 @@ class Import
      * @param array $fileData con los datos del archivo
      * @return array resultado del proceso
      */
-    public static function doImport(&$fileData, $defUser = null, $defGroup = null)
+    public static function doImport(&$fileData, $defUser = null, $defGroup = null, $importPwd = null)
     {
         try {
             $file = new FileImport($fileData);
@@ -77,6 +77,7 @@ class Import
                 $xml = new XmlImport($file);
                 $xml->setUserId($defUser);
                 $xml->setUserGroupId($defGroup);
+                $xml->setImportPass($importPwd);
                 $xml->doImport();
             } else {
                 throw new SPException(

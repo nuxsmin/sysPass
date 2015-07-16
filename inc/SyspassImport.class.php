@@ -54,14 +54,38 @@ class SyspassImport extends XmlImportBase
     public function doImport()
     {
         try {
-            $this->processCategories();
-            $this->processCustomers();
+            if ($this->detectEncrypted() && !is_null($this->getImportPass())) {
+                $this->processEncrypted();
+            }
+//            $this->processCategories();
+//            $this->processCustomers();
             $this->processAccounts();
-        } catch (SPException $e){
+        } catch (SPException $e) {
             return false;
         }
 
         return true;
+    }
+
+    protected function detectEncrypted()
+    {
+        return ($this->_xmlDOM->getElementsByTagName('Encrypted')->length > 0);
+    }
+
+    protected function processEncrypted()
+    {
+        foreach ($this->_xmlDOM->getElementsByTagName('Data') as $node) {
+            error_log($node->getAttribute('iv'));
+
+            $data = base64_decode($node->nodeValue);
+            $iv = base64_decode($node->getAttribute('iv'));
+
+            $newXmlData = new \DOMDocument();
+//            $newXmlData->preserveWhiteSpace = true;
+            $newXmlData->loadXML(Crypt::getDecrypt($data, $this->getImportPass(), $iv));
+
+            $this->_xmlDOM->getElementsByTagName('Root')->item(0)->appendChild($newXmlData);
+        }
     }
 
     /**
@@ -69,18 +93,46 @@ class SyspassImport extends XmlImportBase
      */
     protected function processAccounts()
     {
-        foreach ($this->_xml->Accounts->Account as $account) {
-            $this->setAccountName($account->name);
-            $this->setAccountLogin($account->login);
-            $this->setCategoryId($this->_categories[(int)$account->categoryId]);
-            $this->setCustomerId($this->_customers[(int)$account->customerId]);
-            $this->setAccountUrl($account->url);
-            $this->setAccountLogin($account->login);
-            $this->setAccountPass(base64_decode($account->pass));
-            $this->setAccountPassIV(base64_decode($account->passiv));
-            $this->setAccountNotes($account->notes);
+        foreach ($this->_xmlDOM->getElementsByTagName('Account') as $account) {
+            foreach ($account->childNodes as $attribute) {
+                switch ($attribute->nodeName) {
+                    case 'name';
+                        $this->setAccountName($attribute->nodeValue);
+                        break;
+                    case 'login';
+                        $this->setAccountLogin($attribute->nodeValue);
+                        break;
+                    case 'categories';
+                        $this->setCategoryId($attribute->nodeValue);
+                        break;
+                    case 'customers';
+                        $this->setCustomerId($attribute->nodeValue);
+                        break;
+                    case 'url';
+                        $this->setAccountUrl($attribute->nodeValue);
+                        break;
+                    case 'pass';
+                        $this->setAccountPass($attribute->nodeValue);
+                        break;
+                    case 'passiv';
+                        $this->setAccountPassIV($attribute->nodeValue);
+                        break;
+                    case 'notes';
+                        $this->setAccountNotes($attribute->nodeValue);
+                        break;
+                }
+            }
 
-            $this->addAccount();
+//            $this->setAccountName($account->name);
+//            $this->setAccountLogin($account->login);
+//            $this->setCategoryId($this->_categories[(int)$account->categoryId]);
+//            $this->setCustomerId($this->_customers[(int)$account->customerId]);
+//            $this->setAccountUrl($account->url);
+//            $this->setAccountPass(base64_decode($account->pass));
+//            $this->setAccountPassIV(base64_decode($account->passiv));
+//            $this->setAccountNotes($account->notes);
+
+//            $this->addAccount();
         }
     }
 

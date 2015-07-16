@@ -112,6 +112,14 @@ echo $import_tabIndex; ?>">
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Clave de Importación'); ?>
+                </td>
+                <td class="valField">
+                    <input type="password" name="importPwd" maxlength="255">
+                </td>
+            </tr>
         </form>
         <tr>
             <td class="descField">
