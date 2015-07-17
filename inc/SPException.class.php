@@ -29,11 +29,20 @@ namespace SP;
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */
 class SPException extends \Exception{
+    /**
+     * Constantes para tipos de excepción
+     */
     const SP_OK = 0;
     const SP_CRITICAL = 1;
     const SP_WARNING = 2;
-    private $_type;
-    private $_hint;
+    /**
+     * @var int Tipo de excepción
+     */
+    private $_type = 0;
+    /**
+     * @var string Ayuda de la excepción
+     */
+    private $_hint = '';
 
     public function __construct($type, $message, $hint = '', $code = 0, \Exception $previous = null)
     {

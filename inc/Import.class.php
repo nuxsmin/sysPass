@@ -93,6 +93,8 @@ class Import
             return (self::$_result);
         }
 
+        Log::writeNewLog(_('Importar Cuentas'), _('Importación finalizada'));
+
         self::$_result['ok'][] = _('Importación finalizada');
         self::$_result['ok'][] = _('Revise el registro de eventos para más detalles');
 

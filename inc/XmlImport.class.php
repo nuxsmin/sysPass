@@ -59,6 +59,7 @@ class XmlImport extends XmlImportBase
         }
 
         if (is_object($import)){
+            Log::writeNewLog(_('Importar Cuentas'), _('Inicio'));
             Log::writeNewLog(_('Importar Cuentas'), _('Formato detectado') . ': ' . strtoupper($format));
 
             $import->setUserId($this->getUserId());
