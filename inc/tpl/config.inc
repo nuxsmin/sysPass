@@ -263,7 +263,7 @@
                         <?php echo SP\Common::printHelpButton("config", 28); ?>
                     </td>
                     <td class="valField">
-                        <select id="ldap_defaultprofile" name="profileid" class="select-box" <?php echo $isDisabled; ?> required>
+                        <select id="ldap_defaultprofile" name="ldap_defaultprofile" class="select-box" <?php echo $isDisabled; ?> required>
                             <option value="0"></option>
                             <?php foreach ($profiles as $id => $name): ?>
                                 <option value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $name; ?></option>
