@@ -43,14 +43,18 @@
         }});
     <?php if ( $globalSearch ): ?>
     $('#tblTools').find('.checkbox').button();
-    $('#frmSearch #gsearch').click(function(){
-        if ( $(this).next('label').hasClass('ui-state-active') ){
-            $(this).next('label').children('span').html('OFF');
+    $('#frmSearch').find('.ui-button').click(function(){
+        // El cambio de clase se produce durante el evento de click
+        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
+        if ( $(this).hasClass('ui-state-active') ){
+            $(this).children().html('OFF');
         } else{
-            $(this).next('label').children('span').html('ON');
+            $(this).children().html('ON');
         }
+
         accSearch(0);
     });
+
     <?php endif; ?>
     $('#frmSearch input:text:visible:first').focus();
     $('#frmSearch #txtSearch').keyup(function(e){accSearch(1,e)});

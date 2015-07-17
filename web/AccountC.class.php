@@ -433,6 +433,9 @@ class AccountC extends Controller implements ActionsInterface
      */
     public function getRequestAccountAccess()
     {
+        // Obtener los datos de la cuenta
+        $this->setAccountData();
+
         $this->view->addTemplate('request');
     }
 }
