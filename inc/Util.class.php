@@ -344,22 +344,21 @@ class Util
      */
     public static function boolval($in, $strict = false)
     {
-        $out = null;
         $in = (is_string($in) ? strtolower($in) : $in);
+
         // if not strict, we only have to check if something is false
         if (in_array($in, array('false', 'no', 'n', '0', 'off', false, 0), true) || !$in) {
-            $out = false;
+            return false;
         } else if ($strict) {
             // if strict, check the equivalent true values
             if (in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
-                $out = true;
+                return true;
             }
         } else {
             // not strict? let the regular php bool check figure it out (will
             // largely default to true)
-            $out = ($in ? true : false);
+            return ($in ? true : false);
         }
-        return $out;
     }
 
     /**

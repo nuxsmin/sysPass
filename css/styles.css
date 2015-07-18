@@ -1424,14 +1424,14 @@ footer img {
 /* Fix for fancybox z-index*/
 
 .ui-buttonset .ui-state-active {
-    background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+    background: url("images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
     border: 1px solid #AAAAAA;
     color: #212121;
     font-weight: normal;
 }
 
 .valField .ui-state-active, #tblTools .ui-state-active, #frmInstall .ui-state-active {
-    background: url("smoothness/images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
+    background: url("images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
 }
 
 /*#passLevel { margin-left: 10px; padding: 3px 15px;}*/

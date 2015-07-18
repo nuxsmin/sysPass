@@ -409,16 +409,17 @@
 
 <script>
     $("#sel-sitelang,#sel-account_link,#sel-mailsecurity").chosen({disable_search : true});
-    $('#frmConfig').find('.checkbox').button();
-    $('#frmConfig').find('.ui-button').click(function(){
-        // El cambio de clase se produce durante el evento de click
-        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-        if ( $(this).hasClass('ui-state-active') ){
-            $(this).children().html('OFF');
-        } else{
-            $(this).children().html('ON');
+
+    $('#frmConfig').find('.checkbox').button().click(
+        function(){
+            if ($(this).attr('checked') == undefined){
+                $(this).button('option', 'label', 'OFF');
+            } else {
+                $(this).button('option', 'label', 'ON');
+            }
         }
-    });
+    );
+
     $('#allowed_exts').tagsInput({
         'width':'350px',
         'defaultText':'<?php echo _('Añadir extensión'); ?>',

@@ -424,16 +424,16 @@
             placeholder_text_multiple: "<?php echo _('Seleccionar usuarios'); ?>"
         });
         $('input:text:visible:first').focus();
-        $('.checkbox').button();
-        $('.ui-button').click(function () {
-            // El cambio de clase se produce durante el evento de click
-            // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-            if ($(this).hasClass('ui-state-active')) {
-                $(this).children().html('<?php echo _('NO'); ?>');
-            } else {
-                $(this).children().html('<?php echo _('SI'); ?>');
+
+        $('.checkbox').button().click(
+            function(){
+                if ($(this).attr('checked') == undefined){
+                    $(this).button('option', 'label', '<?php echo _('NO'); ?>');
+                } else {
+                    $(this).button('option', 'label', '<?php echo _('SI'); ?>');
+                }
             }
-        });
+        );
 
         $('#passGen').click(function () {
             password(11, true, true);

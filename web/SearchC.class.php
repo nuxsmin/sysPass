@@ -53,7 +53,7 @@ class SearchC extends Controller implements ActionsInterface
     private function setVars()
     {
         $this->view->assign('isAdmin', (\SP\Session::getUserIsAdminApp() || \SP\Session::getUserIsAdminAcc()));
-        $this->view->assign('globalSearch', \SP\Config::getValue('globalsearch', 0));
+        $this->view->assign('showGlobalSearch', \SP\Config::getValue('globalsearch', false));
 
         // Comprobar si está creado el objeto de búsqueda en la sesión
         if (!is_object(\SP\Session::getSearchFilters())) {
@@ -69,7 +69,7 @@ class SearchC extends Controller implements ActionsInterface
         $this->view->assign('searchCustomer', \SP\Request::analyze('customer', $filters->getCustomerId()));
         $this->view->assign('searchCategory', \SP\Request::analyze('category', $filters->getCategoryId()));
         $this->view->assign('searchTxt', \SP\Request::analyze('search', $filters->getTxtSearch()));
-        $this->view->assign('searchGlobal', \SP\Request::analyze('gsearch', $filters->isGlobalSearch(), false, 1));
+        $this->view->assign('searchGlobal', \SP\Request::analyze('gsearch', $filters->getGlobalSearch()));
         $this->view->assign('limitStart', \SP\Request::analyze('start', $filters->getLimitStart()));
         $this->view->assign('limitCount', \SP\Request::analyze('rpp', $filters->getLimitCount()));
     }
@@ -96,7 +96,7 @@ class SearchC extends Controller implements ActionsInterface
 
         $search = new \SP\AccountSearch();
 
-        $search->setGlobalSearch($this->view->globalSearch);
+        $search->setGlobalSearch($this->view->searchGlobal);
         $search->setTxtSearch($this->view->searchTxt);
         $search->setCategoryId($this->view->searchCategory);
         $search->setCustomerId($this->view->searchCustomer);

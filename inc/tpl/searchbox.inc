@@ -4,9 +4,10 @@
             <td id="toolsLeft">
                 <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" />
                 <input type="text" name="search" id="txtSearch" value="<?php echo $searchTxt; ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
-                <?php if ( $globalSearch && ! $isAdmin ): ?>
-                    <label for="gsearch" title="<?php echo _('Búsqueda global');?>"><?php echo ($searchGlobal) ? 'ON' : 'OFF'; ?></label>
-                    <input type="checkbox" name="gsearch" id="gsearch" class="checkbox" <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
+                <?php if ( $showGlobalSearch && ! $isAdmin ): ?>
+                    <label for="chkgsearch" title="<?php echo _('Búsqueda global');?>"><?php echo ($searchGlobal) ? 'ON' : 'OFF'; ?></label>
+                    <input type="checkbox" name="chkgsearch" id="chkgsearch" class="checkbox" <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
+                    <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
                 <?php endif; ?>
                 <input type="hidden" name="start" value="<?php echo $limitStart; ?>">
                 <input type="hidden" name="skey" value="<?php echo $searchKey; ?>" />
@@ -41,22 +42,23 @@
     $("#rpp").spinner({step: 3, max: 50, min: 6, numberFormat: "n", stop: function(event, ui) {
             accSearch(0);
         }});
-    <?php if ( $globalSearch ): ?>
-    $('#tblTools').find('.checkbox').button();
-    $('#frmSearch').find('.ui-button').click(function(){
-        // El cambio de clase se produce durante el evento de click
-        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-        if ( $(this).hasClass('ui-state-active') ){
-            $(this).children().html('OFF');
-        } else{
-            $(this).children().html('ON');
-        }
-
-        accSearch(0);
-    });
-
-    <?php endif; ?>
     $('#frmSearch input:text:visible:first').focus();
     $('#frmSearch #txtSearch').keyup(function(e){accSearch(1,e)});
     $('#frmSearch #btnClear').click(function(e){clearSearch(); accSearch(0);})
+
+    <?php if ( $showGlobalSearch ): ?>
+    $('#tblTools').find('.checkbox').button().click(
+        function(){
+            if ($(this).attr('checked') == undefined){
+                $(this).button('option', 'label', 'OFF');
+                $('input[name="gsearch"]').val(0);
+            } else {
+                $(this).button('option', 'label', 'ON');
+                $('input[name="gsearch"]').val(1);
+            }
+
+            accSearch(0);
+        }
+    );
+    <?php endif; ?>
 </script>

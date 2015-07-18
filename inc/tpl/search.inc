@@ -150,7 +150,7 @@
                 <?php endif; ?>
                 &nbsp;
                 <?php if ($searchGlobal): ?>
-                    <span class="globalOn round"><?php _('Global ON'); ?></span>
+                    <span class="globalOn round"><?php echo _('Global ON'); ?></span>
                 <?php endif; ?>
             </div>
             <div id="pageNavRight">

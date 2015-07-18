@@ -46,13 +46,37 @@ class AccountSearch
      */
     public static $queryNumRows;
 
+    /**
+     * @var bool
+     */
     private $_globalSearch = false;
+    /**
+     * @var string
+     */
     private $_txtSearch = '';
+    /**
+     * @var int
+     */
     private $_customerId = 0;
+    /**
+     * @var int
+     */
     private $_categoryId = 0;
+    /**
+     * @var int
+     */
     private $_sortOrder = 0;
+    /**
+     * @var int
+     */
     private $_sortKey = 0;
+    /**
+     * @var int
+     */
     private $_limitStart = 0;
+    /**
+     * @var int
+     */
     private $_limitCount = 12;
 
     /**
@@ -64,15 +88,15 @@ class AccountSearch
     }
 
     /**
-     * @return boolean
+     * @return int
      */
-    public function isGlobalSearch()
+    public function getGlobalSearch()
     {
         return $this->_globalSearch;
     }
 
     /**
-     * @param boolean $globalSearch
+     * @param int $globalSearch
      */
     public function setGlobalSearch($globalSearch)
     {
@@ -199,7 +223,6 @@ class AccountSearch
     public function getAccounts()
     {
         $isAdmin = (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc());
-        $globalSearch = ($this->isGlobalSearch() && Config::getValue('globalsearch', 0));
 
         $arrFilterCommon = array();
         $arrFilterSelect = array();
@@ -280,7 +303,7 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        if (!$isAdmin && !$globalSearch) {
+        if (!$isAdmin && !$this->getGlobalSearch()) {
             $arrFilterUser[] = 'account_userGroupId = :userGroupId';
             $arrFilterUser[] = 'account_userId = :userId';
             $arrFilterUser[] = 'accgroup_groupId = :accgroup_groupId';
