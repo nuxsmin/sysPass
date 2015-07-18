@@ -171,6 +171,7 @@ class MainC extends Controller implements ActionsInterface
     public function getInstaller()
     {
         $this->view->addTemplate('install');
+        $this->view->addTemplate('js-common');
         $this->view->addTemplate('footer');
 
         $this->view->assign('modulesErrors', Util::checkModules());

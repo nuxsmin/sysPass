@@ -168,19 +168,21 @@
     <?php endif; ?>
 </div>
 <script>
-    $("#btnUserOptions").buttonset();
-    $("#selProfile").chosen({
-        placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
-        disable_search_threshold: 10,
-        no_results_text: "<?php echo _('Sin resultados'); ?>"
-    });
-    $("#selGroup").chosen({
-        placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-        disable_search_threshold: 10,
-        no_results_text: "<?php echo _('Sin resultados'); ?>"
-    });
-    $('#passGen').click(function () {
-        $('#resFancyAccion').hide();
-        password(11, true, true);
+    $(function() {
+        $("#btnUserOptions").buttonset();
+        $("#selProfile").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $("#selGroup").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $('#passGen').click(function () {
+            $('#resFancyAccion').hide();
+            password(11, true, true);
+        });
     });
 </script>

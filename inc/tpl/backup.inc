@@ -19,9 +19,15 @@
             </td>
             <td class="valField">
                 <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
-                    <strong><a href="<?php echo $backupDbFile['relative']; ?>" download="<?php echo $backupDbFile['filename']; ?>">Backup BBDD</a></strong>
-                    -
-                    <strong><a href="<?php echo $backupFile['relative']; ?>" download="<?php echo $backupFile['filename']; ?>">Backup <?php echo $siteName; ?></a></strong>
+                    <a href="<?php echo $backupDbFile['relative']; ?>"
+                       download="<?php echo $backupDbFile['filename']; ?>" class="download">
+                        Backup BBDD
+                    </a>
+
+                    <a href="<?php echo $backupFile['relative']; ?>"
+                       download="<?php echo $backupFile['filename']; ?>" class="download">
+                        Backup <?php echo $siteName; ?>
+                    </a>
                 <?php else: echo _('No hay backups para descargar'); ?>
                 <?php endif; ?>
             </td>
@@ -42,9 +48,11 @@
                      OnClick="configMgmt('backup');"/>
             </li>
             <li>
-                <img id="help_backup_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg" />
+                <img id="help_backup_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+
                 <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
                     <p class="help-text"><?php echo _('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
+
                     <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
                 </div>
             </li>
@@ -71,7 +79,11 @@
                 </td>
                 <td class="valField">
                     <?php if (file_exists($exportFile['absolute'])): ?>
-                        <strong><a href="<?php echo $exportFile['relative']; ?>" download="<?php echo $exportFile['filename']; ?>">XML <?php echo $siteName; ?></></a></strong>
+                        <a href="<?php echo $exportFile['relative']; ?>"
+                           download="<?php echo $exportFile['filename']; ?>"
+                           class="download">
+                           XML <?php echo $siteName; ?></>
+                       </a>
                     <?php else: echo _('No hay archivos XML para descargar'); ?>
                     <?php endif; ?>
                 </td>
@@ -82,6 +94,8 @@
                 </td>
                 <td class="valField">
                     <input type="password" name="exportPwd" maxlength="255">
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </td>
             </tr>
             <tr>
@@ -107,11 +121,15 @@
                      OnClick="configMgmt('export');"/>
             </li>
             <li>
-                <img id="help_export_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg" />
+                <img id="help_export_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+
                 <div id="help_export" class="help-box" title="<?php echo _('Ayuda'); ?>">
                     <p class="help-text"><?php echo _('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
+
                     <p class="help-text"><?php echo _('Los elementos exportados son cuentas, clientes y categorías.'); ?></p>
+
                     <p class="help-text"><?php echo _('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
+
                     <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
                 </div>
             </li>
@@ -119,12 +137,13 @@
     </div>
 
     <script>
-        $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>', minWidth: window.innerWidth / 3 });
-        $("#help_backup_button").click(function() {
-            $("#help_backup").dialog("open");
-        });
-        $("#help_export_button").click(function() {
-            $("#help_export").dialog("open");
-        });
+        $(function () {
+            $("#help_backup_button").click(function () {
+                $("#help_backup").dialog("open");
+            });
+            $("#help_export_button").click(function () {
+                $("#help_export").dialog("open");
+            });
+        })
     </script>
 </div> <!-- End Tab - Backup -->

@@ -45,4 +45,5 @@ $tpl = new SP\Template();
 $tpl->assign('userId', $userId);
 $controller = new SP\Controller\UsersMgmtC($tpl);
 $controller->getUserPass();
+$tpl->addTemplate('js-common');
 $controller->view();

@@ -407,47 +407,35 @@
 
 <?php if ($showform): ?>
     <script>
-        $("#selCustomer").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
-        });
-        $("#selCategory").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
-        });
-        $("#selGroups").chosen({
-            placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>"
-        });
-        $("#selUsers").chosen({
-            placeholder_text_multiple: "<?php echo _('Seleccionar usuarios'); ?>"
-        });
-        $('input:text:visible:first').focus();
+        $(function(){
+            $("#selCustomer").chosen({
+                placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>",
+                disable_search_threshold: 10,
+                no_results_text: "<?php echo _('Sin resultados'); ?>"
+            });
+            $("#selCategory").chosen({
+                placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
+                disable_search_threshold: 10,
+                no_results_text: "<?php echo _('Sin resultados'); ?>"
+            });
+            $("#selGroups").chosen({
+                placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>"
+            });
+            $("#selUsers").chosen({
+                placeholder_text_multiple: "<?php echo _('Seleccionar usuarios'); ?>"
+            });
+            $('input:text:visible:first').focus();
 
-        $('.checkbox').button().click(
-            function(){
-                if ($(this).attr('checked') == undefined){
-                    $(this).button('option', 'label', '<?php echo _('NO'); ?>');
-                } else {
-                    $(this).button('option', 'label', '<?php echo _('SI'); ?>');
+            $('.checkbox').button().click(
+                function(){
+                    if ($(this).attr('checked') == undefined){
+                        $(this).button('option', 'label', '<?php echo _('NO'); ?>');
+                    } else {
+                        $(this).button('option', 'label', '<?php echo _('SI'); ?>');
+                    }
                 }
-            }
-        );
-
-        $('#passGen').click(function () {
-            password(11, true, true);
+            );
         });
-
-        $('.showpass').click(function () {
-            var passInput = $(this).prev();
-
-            if (passInput.attr('type') == 'password') {
-                passInput.get(0).type = 'text';
-            } else {
-                passInput.get(0).type = 'password';
-            }
-        })
     </script>
 <?php endif; ?>
 
@@ -457,22 +445,24 @@
     <script>
         passToClip = 0;
 
-        function clipboard() {
-            var client = new ZeroClipboard($('.clip-pass-button'), {
-                swfPath: "js/ZeroClipboard.swf",
-                debug: false,
-                title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
-            });
+        $(function(){
+            function clipboard() {
+                var client = new ZeroClipboard($('.clip-pass-button'), {
+                    swfPath: "js/ZeroClipboard.swf",
+                    debug: false,
+                    title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
+                });
 
-            client.on("aftercopy", function (e) {
-                resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-            });
+                client.on("aftercopy", function (e) {
+                    resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+                });
 
-            client.on("error", function (e) {
-                ZeroClipboard.destroy();
-            });
-        }
+                client.on("error", function (e) {
+                    ZeroClipboard.destroy();
+                });
+            }
 
-        clipboard();
+            clipboard();
+        });
     </script>
 <?php endif; ?>

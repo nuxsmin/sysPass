@@ -167,4 +167,5 @@ if (\SP\Session::getUserIsAdminApp()
     echo '<script>checkUpds();</script>';
 }
 
+$tpl->addTemplate('js-common');
 $controller->view();

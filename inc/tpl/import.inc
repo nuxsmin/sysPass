@@ -24,6 +24,8 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <input type="password" name="dbpass" value=""/>
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </td>
             </tr>
             <tr>
@@ -118,6 +120,8 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <input type="password" name="importPwd" maxlength="255">
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </td>
             </tr>
         </form>
@@ -162,28 +166,20 @@ echo $import_tabIndex; ?>">
 </div> <!-- End Tab - Import -->
 
 <script>
-    $('#frmMigrate .checkbox').button();
-    $('#frmMigrate .ui-button').click(function () {
-        // El cambio de clase se produce durante el evento de click
-        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-        if ($(this).hasClass('ui-state-active')) {
-            $(this).children().html('<?php echo _('NO'); ?>');
-        } else {
-            $(this).children().html('<?php echo _('SI'); ?>');
-        }
-    });
-    importFile('<?php echo Common::getSessionKey(true); ?>');
-    $("#import_defaultgroup").chosen({
-        placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-        disable_search_threshold: 10,
-        no_results_text: "<?php echo _('Sin resultados'); ?>"
-    });
-    $("#import_defaultuser").chosen({
-        placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
-        disable_search_threshold: 10,
-        no_results_text: "<?php echo _('Sin resultados'); ?>"
-    });
-    $("#help_import_button").click(function () {
-        $("#help_import").dialog("open");
+    $(function () {
+        importFile('<?php echo Common::getSessionKey(true); ?>');
+        $("#import_defaultgroup").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $("#import_defaultuser").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $("#help_import_button").click(function () {
+            $("#help_import").dialog("open");
+        });
     });
 </script>

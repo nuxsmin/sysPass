@@ -59,17 +59,7 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
     </ul>
 </div>
 <script>
-    $('input:password:visible:first').focus();
-    $('#passGen').click(function () {
-        password(11, true, true);
+    $(function(){
+        $('input:password:visible:first').focus();
     });
-    $('.showpass').click(function () {
-        var passInput = $(this).prev();
-
-        if (passInput.attr('type') == 'password') {
-            passInput.get(0).type = 'text';
-        } else {
-            passInput.get(0).type = 'password';
-        }
-    })
 </script>

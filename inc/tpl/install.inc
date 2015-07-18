@@ -24,22 +24,22 @@
             <fieldset id="adminaccount">
                 <legend><?php echo _('Crear cuenta de admin de sysPass'); ?></legend>
                 <p>
-                    <img src="imgs/help.png" class="inputImg"
-                         title="<?php echo _('Login del usuario administrador de sysPass'); ?>"/>
                     <input type="text" name="adminlogin" id="adminlogin" title="<?php echo _('Usuario'); ?>"
                            placeholder="<?php echo _('Usuario'); ?>"
                            value="<?php echo $adminlogin; ?>" autocomplete="off" autofocus
                            required/>
+                    <img src="imgs/help.png" class="inputImg"
+                         title="<?php echo _('Login del usuario administrador de sysPass'); ?>"/>
                 </p>
 
                 <p>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                     <input type="password" name="adminpass" id="adminpass"
                            title="<?php echo _('Clave'); ?>"
                            placeholder="<?php echo _('Clave'); ?>"
                            value="<?php echo $adminpass; ?>" autocomplete="off"
                            onKeyUp="checkPassLevel(this.value,'adminaccount')" required/>
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <span class="passLevel passLevel-float fullround"
                       title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
@@ -48,13 +48,13 @@
             <fieldset id="masterpwd">
                 <legend><?php echo _('Clave Maestra'); ?></legend>
                 <p>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                     <input type="password" name="masterpassword" id="masterpassword"
                            title="<?php echo _('Clave Maestra'); ?>  "
                            placeholder="<?php echo _('Clave Maestra'); ?>"
                            value="<?php echo $masterpassword; ?>" autocomplete="off"
                            onKeyUp="checkPassLevel(this.value,'masterpwd')" required/>
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <span class="passLevel passLevel-float fullround"
                       title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
@@ -66,48 +66,49 @@
                 <input type="hidden" id="dbtype" name="dbtype" value="mysql"/>
 
                 <p>
-                    <img src="imgs/help.png" class="inputImg"
-                         title="<?php echo _('Login de usuario con permisos de administrador de MySQL'); ?>"/>
                     <input type="text" name="dbuser" id="dbuser" title="<?php echo _('Usuario BBDD'); ?>"
                            placeholder="<?php echo _('Usuario BBDD'); ?>"
                            value="<?php echo $dbuser; ?>" autocomplete=off" required/>
+                    <img src="imgs/help.png" class="inputImg"
+                         title="<?php echo _('Login de usuario con permisos de administrador de MySQL'); ?>"/>
                 </p>
 
                 <p>
-                    <img class="showpass inputImg " src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                     <input type="password" name="dbpass" id="dbpass" title="<?php echo _('Clave BBDD'); ?>"
                            placeholder="<?php echo _('Clave BBDD'); ?>"
                            value="<?php echo $dbpass; ?>" required/>
+                    <img class="showpass inputImg " src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </p>
 
                 <p>
-                    <img src="imgs/help.png" class="inputImg"
-                         title="<?php echo _('Nombre de la base de datos para sysPass'); ?>"/>
                     <input type="text" name="dbname" id="dbname" title="<?php echo _('Nombre BBDD'); ?>"
                            placeholder="<?php echo _('Nombre BBDD'); ?>"
                            value="<?php echo $dbname; ?>" autocomplete=off"
                            pattern="[0-9a-zA-Z$_-]+" required/>
+                    <img src="imgs/help.png" class="inputImg"
+                         title="<?php echo _('Nombre de la base de datos para sysPass'); ?>"/>
                 </p>
 
                 <p>
-                    <img src="imgs/help.png" class="inputImg"
-                         title="<?php echo _('Nombre del servidor de la base de datos de sysPass'); ?>"/>
                     <input type="text" name="dbhost" id="dbhost" title="<?php echo _('Servidor BBDD'); ?>"
                            placeholder="<?php echo _('Servidor BBDD'); ?>"
                            value="<?php echo $dbhost; ?>" required/>
+                    <img src="imgs/help.png" class="inputImg"
+                         title="<?php echo _('Nombre del servidor de la base de datos de sysPass'); ?>"/>
                 </p>
 
                 <br>
 
                 <p>
-                    <img src="imgs/help.png" class="inputImg"
-                         title="<?php echo _('No crea ni verifica los permisos del usuario sobre la BBDD'); ?>"/>
+                    <span class="option-text"><?php echo _('Modo Hosting'); ?></span>
                     <label
-                        for="hostingmode"><?php echo ($hostingmode) ? _('Modo Hosting') . ' ON' : _('Modo Hosting') . ' OFF'; ?></label>
+                        for="hostingmode"><?php echo ($hostingmode) ? _('NO') : _('SI'); ?></label>
                     <input type="checkbox" name="hostingmode"
                            id="hostingmode"
                            class="checkbox" <?php echo ($hostingmode) ? 'checked' : ''; ?> />
+                    <img src="imgs/help.png" class="inputImg"
+                         title="<?php echo _('No crea ni verifica los permisos del usuario sobre la BBDD'); ?>"/>
                 </p>
             </fieldset>
 
@@ -115,27 +116,3 @@
         </form>
     <?php endif; ?>
 </div>
-
-<script>
-    var hostingmode = <?php echo ($hostingmode === true) ? 1 : 0; ?>;
-
-    $('#frmInstall').find('.checkbox').button();
-    $('#frmInstall').find('.ui-button').click(function () {
-        if (hostingmode == 1) {
-            hostingmode = 0;
-            $(this).children().html('<?php echo _('Modo Hosting');?> OFF');
-        } else {
-            hostingmode = 1;
-            $(this).children().html('<?php echo _('Modo Hosting');?> ON');
-        }
-    });
-    $('.showpass').click(function () {
-        var passInput = $(this).next();
-
-        if (passInput.attr('type') == 'password') {
-            passInput.get(0).type = 'text';
-        } else {
-            passInput.get(0).type = 'password';
-        }
-    })
-</script>

@@ -78,7 +78,7 @@
 </div>
 <div id="pageNav" class="round shadow">
     <div id="pageNavLeft">
-        <? echo $totalRows; ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
+        <?php echo $totalRows; ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
     </div>
     <div id="pageNavRight">
         <?php if ($limitStart > 1): ?>

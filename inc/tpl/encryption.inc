@@ -2,7 +2,7 @@
 <div id="tabs-<?php use SP\Acl;
 use SP\Common;
 
-echo $encryption_tabIndex;?>">
+echo $encryption_tabIndex; ?>">
 
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Clave Maestra'); ?>
@@ -26,6 +26,8 @@ echo $encryption_tabIndex;?>">
                 </td>
                 <td class="valField">
                     <input type="password" name="curMasterPwd" maxlength="255">
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </td>
             </tr>
             <tr>
@@ -34,6 +36,8 @@ echo $encryption_tabIndex;?>">
                 </td>
                 <td class="valField">
                     <input type="password" name="newMasterPwd" maxlength="255" OnKeyUp="checkPassLevel(this.value)">
+                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                     <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>
             </tr>
@@ -76,7 +80,8 @@ echo $encryption_tabIndex;?>">
             </tr>
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
+        <input type="hidden" name="actionId"
+               value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -87,9 +92,11 @@ echo $encryption_tabIndex;?>">
                      OnClick="configMgmt('savempwd');"/>
             </li>
             <li>
-                <img id="help_mpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg" />
+                <img id="help_mpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+
                 <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
                     <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
+
                     <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
                 </div>
             </li>
@@ -116,7 +123,7 @@ echo $encryption_tabIndex;?>">
                 </td>
                 <td class="valField">
                     <?php if (time() > $tempMasterMaxTime): ?>
-                    <span style="color: red"><?php echo date("r", $tempMasterMaxTime); ?></span>
+                        <span style="color: red"><?php echo date("r", $tempMasterMaxTime); ?></span>
                     <?php elseif ($tempMasterMaxTime > 0): echo date("r", $tempMasterMaxTime); ?>
                     <?php else: echo _('No generada'); ?>
                     <?php endif; ?>
@@ -133,7 +140,8 @@ echo $encryption_tabIndex;?>">
             </tr>
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
+        <input type="hidden" name="actionId"
+               value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -144,7 +152,8 @@ echo $encryption_tabIndex;?>">
                      OnClick="configMgmt('gentmpass');"/>
             </li>
             <li>
-                <img id="help_tmpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg" />
+                <img id="help_tmpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+
                 <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
                     <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
                 </div>
@@ -154,26 +163,17 @@ echo $encryption_tabIndex;?>">
 </div> <!-- End Tab - Encryption -->
 
 <script>
-    $('#frmCrypt .checkbox').button();
-    $('#frmCrypt .ui-button').click(function () {
-        // El cambio de clase se produce durante el evento de click
-        // Si tiene la clase significa que el estado anterior era ON y ahora es OFF
-        if ($(this).hasClass('ui-state-active')) {
-            $(this).children().html('<?php echo _('NO'); ?>');
-        } else {
-            $(this).children().html('<?php echo _('SI'); ?>');
-        }
-    });
-    $("#tmpass_maxtime").spinner({
-        step: 60, min: 60, numberFormat: "n", stop: function (event, ui) {
-            accSearch(0);
-        }
-    });
-    $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>'});
-    $("#help_tmpass_button").click(function() {
-        $("#help_tmpass").dialog("open");
-    });
-    $("#help_mpass_button").click(function() {
-        $("#help_mpass").dialog("open");
+    $(function () {
+        $("#tmpass_maxtime").spinner({
+            step: 60, min: 60, numberFormat: "n", stop: function (event, ui) {
+                accSearch(0);
+            }
+        });
+        $("#help_tmpass_button").click(function () {
+            $("#help_tmpass").dialog("open");
+        });
+        $("#help_mpass_button").click(function () {
+            $("#help_mpass").dialog("open");
+        });
     });
 </script>

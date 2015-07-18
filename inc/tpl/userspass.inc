@@ -8,6 +8,8 @@
             </td>
             <td class="valField">
                 <input type="password" id="usrpass" name="pass" title="<?php echo _('Clave'); ?>" class="txtpass" OnFocus="$('#passLevel').show(); $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value, 'fancyContainer')" />
+                <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
+                     alt="<?php echo _('Mostrar Clave'); ?>"/>
                 <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>" class="inputImg" />
             </td>
         </tr>
@@ -36,9 +38,3 @@
         </ul>
     </div>
 </div>
-<script>
-    $('#passGen').click(function(){
-        $('#resFancyAccion').hide();
-        password(11, true, false, 'fancyContainer');
-    });
-</script>
