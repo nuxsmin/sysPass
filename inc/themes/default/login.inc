@@ -52,7 +52,7 @@
 <?php if ($isLogout): ?>
     <div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
     <script>$('#boxLogout').fadeOut(1500, function () {
-            location.href = 'index.php';
+            location.href = '../../../index.php';
         });</script>
 <?php endif; ?>
 

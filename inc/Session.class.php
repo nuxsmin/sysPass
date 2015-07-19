@@ -508,4 +508,24 @@ class Session
     {
         $_SESSION['lastAccountId'] = $id;
     }
+
+    /**
+     * Devuelve el tema visual utilizado en sysPass
+     *
+     * @return string
+     */
+    public static function getTheme()
+    {
+        return (isset($_SESSION['theme'])) ? $_SESSION['theme'] : '';
+    }
+
+    /**
+     * Establece el tema visual utilizado en sysPass
+     *
+     * @param $theme string El tema visual a utilizar
+     */
+    public static function setTheme($theme)
+    {
+        $_SESSION['theme'] = $theme;
+    }
 }

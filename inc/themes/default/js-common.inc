@@ -1,5 +1,22 @@
 <script>
     $(function () {
+        $(".sel-chosen-ns").chosen({disable_search: true});
+        $(".sel-chosen-usergroup").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $(".sel-chosen-user").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $(".sel-chosen-profile").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+
         $(".showpass").each(function (index, input) {
             // Cross-browser compatibility
             $(this).on("mouseover", function () {

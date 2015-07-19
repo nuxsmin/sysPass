@@ -23,17 +23,8 @@
  *
  */
 
-define('MODEL_PATH', __DIR__);
-define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
-define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
-define('EXTENSIONS_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'ext');
-define('DEBUG', false);
-
-require_once MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
-
-// Empezar a calcular el tiempo y memoria utilizados
-$memInit = memory_get_usage();
-$timeStart = \SP\Init::microtime_float();
-
-// Inicializar sysPass
-\SP\Init::start();
+$themeInfo = array(
+    'creator' => 'nuxsmin',
+    'version' => '1.0',
+    'targetversion' => '1.2.0'
+);

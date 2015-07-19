@@ -89,7 +89,7 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <select id="import_defaultuser" name="import_defaultuser"
-                            class="select-box" <?php echo $isDisabled; ?> required>
+                            class="select-box sel-chosen-user" <?php echo $isDisabled; ?> required>
                         <option value="0"></option>
                         <?php foreach ($users as $id => $name): ?>
                             <option
@@ -105,7 +105,7 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <select id="import_defaultgroup" name="import_defaultgroup"
-                            class="select-box" <?php echo $isDisabled; ?> required>
+                            class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
                         <option value="0"></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
@@ -176,16 +176,6 @@ echo $import_tabIndex; ?>">
 <script>
     $(function () {
         importFile('<?php echo Common::getSessionKey(true); ?>');
-        $("#import_defaultgroup").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
-        });
-        $("#import_defaultuser").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
-        });
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");
         });

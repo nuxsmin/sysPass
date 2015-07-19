@@ -60,17 +60,59 @@ class Template
     }
 
     /**
-     * Overloading para añadir nuevas variables en al array de variables dela plantilla
-     * pasadas como atributos dinámicos de la clase
+     * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param string $name  Nombre del atributo
-     * @param string $value Valor del atributo
-     * @return null
+     * @param string $file Con el nombre del archivo de plantilla
+     * @return bool
      */
-    public function __set($name, $value)
+    public function addTemplate($file)
     {
-        $this->_vars[$name] = $value;
-        return null;
+        if (!is_null($file) && $this->checkTemplate($file)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Comprobar si un archivo de plantilla existe y se puede leer
+     *
+     * @param string $file Con el nombre del archivo
+     * @return bool
+     * @throws InvalidArgumentException
+     */
+    private function checkTemplate($file)
+    {
+        $template = VIEW_PATH . DIRECTORY_SEPARATOR . Init::$_THEME . DIRECTORY_SEPARATOR . $file . '.inc';
+
+        if (!is_readable($template)) {
+            throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file . '"');
+        }
+
+        $this->setTemplate($template);
+        return true;
+    }
+
+    /**
+     * Añadir un nuevo archivo de plantilla al array de plantillas de la clase.
+     *
+     * @param string $file Con el nombre del archivo
+     */
+    private function setTemplate($file)
+    {
+        $this->_file[] = $file;
+    }
+
+    /**
+     * Establecer los atributos de la clase a partir de un array.
+     *
+     * @param array $vars Con los atributos de la clase
+     */
+    private function setVars(&$vars)
+    {
+        foreach ($vars as $name => $value) {
+            $this->$name = $value;
+        }
     }
 
     /**
@@ -87,6 +129,20 @@ class Template
         }
 
         return $this->_vars[$name];
+    }
+
+    /**
+     * Overloading para añadir nuevas variables en al array de variables dela plantilla
+     * pasadas como atributos dinámicos de la clase
+     *
+     * @param string $name  Nombre del atributo
+     * @param string $value Valor del atributo
+     * @return null
+     */
+    public function __set($name, $value)
+    {
+        $this->_vars[$name] = $value;
+        return null;
     }
 
     /**
@@ -137,62 +193,6 @@ class Template
         }
 
         return ob_get_clean();
-    }
-
-    /**
-     * Comprobar si un archivo de plantilla existe y se puede leer
-     *
-     * @param string $file Con el nombre del archivo
-     * @return bool
-     * @throws InvalidArgumentException
-     */
-    private function checkTemplate($file)
-    {
-        $template = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . $file . '.inc';
-
-        if (!is_readable($template)) {
-            throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file . '"');
-        }
-
-        $this->setTemplate($template);
-        return true;
-    }
-
-    /**
-     * Añadir un nuevo archivo de plantilla al array de plantillas de la clase.
-     *
-     * @param string $file Con el nombre del archivo
-     */
-    private function setTemplate($file)
-    {
-        $this->_file[] = $file;
-    }
-
-    /**
-     * Establecer los atributos de la clase a partir de un array.
-     *
-     * @param array $vars Con los atributos de la clase
-     */
-    private function setVars(&$vars)
-    {
-        foreach ($vars as $name => $value) {
-            $this->$name = $value;
-        }
-    }
-
-    /**
-     * Añadir una nueva plantilla al array de plantillas de la clase
-     *
-     * @param string $file Con el nombre del archivo de plantilla
-     * @return bool
-     */
-    public function addTemplate($file)
-    {
-        if (!is_null($file) && $this->checkTemplate($file)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

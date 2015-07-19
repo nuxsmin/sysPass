@@ -63,7 +63,10 @@ class Init
      * @var bool True if sysPass has been updated. Only for notices.
      */
     public static $UPDATED = false;
-
+    /**
+     * @var string
+     */
+    public static $_THEME = '';
     /**
      * @var string
      */
@@ -165,6 +168,9 @@ class Init
         // Comprobar la configuración
         self::checkConfig();
 
+        // Establecer el tema de sysPass
+        self::selectTheme();
+
         // Comprobar si está instalado
         self::checkInstalled();
 
@@ -214,31 +220,41 @@ class Init
             }
         }
 
-        if (self::isLoggedIn() || Request::analyze('isAjax', false, true)){
+        if (self::isLoggedIn() || Request::analyze('isAjax', false, true)) {
             return;
         }
 
         // El usuario no está logado y no es una petición, redirigir al login
         self::goLogin();
+    }
 
-        // El usuario no está logado y no es una petición, redirigir al login
-  /*          if (isset($_GET["logout"]) && $_GET["logout"]) {
-                self::logout();
+    /**
+     * Establecer las rutas de sysPass en el PATH de PHP
+     */
+    public static function setIncludes()
+    {
+        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . get_include_path());
+    }
 
-                if (count($_GET) > 1) {
-                    foreach ($_GET as $param => $value) {
-                        if ($param == 'logout') {
-                            continue;
-                        }
+    /**
+     * Cargador de clases de sysPass
+     *
+     * @param $class string El nombre de la clase a cargar
+     */
+    public static function loadClass($class)
+    {
+        // Eliminar \\ para las clases con namespace definido
+        $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
 
-                        $params[] = Html::sanitize($param) . '=' . Html::sanitize($value);
-                    }
+//        error_log($class);
 
-                    header("Location: " . self::$WEBROOT . '/index.php?' . implode('&', $params));
-                } else {
-                    header("Location: " . self::$WEBROOT . '/');
-                }
-            }*/
+        // Buscar la clase en los directorios de include
+        foreach (explode(':', get_include_path()) as $iPath) {
+            $classFile = $iPath . DIRECTORY_SEPARATOR . $class . '.class.php';
+            if (is_readable($classFile)) {
+                require_once $classFile;
+            }
+        }
     }
 
     /**
@@ -440,6 +456,55 @@ class Init
     }
 
     /**
+     * Comprobar si es necesario cerrar la sesión
+     */
+    private static function checkLogout()
+    {
+        if (Request::analyze('logout', false, true)) {
+            self::logout();
+            self::goLogin();
+        }
+    }
+
+    /**
+     * Deslogar el usuario actual y eliminar la información de sesión.
+     */
+    private static function logout()
+    {
+        self::wrLogoutInfo();
+
+        session_unset();
+        session_destroy();
+    }
+
+    /**
+     * Escribir la información de logout en el registro de eventos.
+     */
+    private static function wrLogoutInfo()
+    {
+        $inactiveTime = round(((time() - Session::getLastActivity()) / 60), 2);
+        $totalTime = round(((time() - Session::getStartActivity()) / 60), 2);
+        $ulogin = Session::getUserLogin();
+
+        $log = new Log(_('Finalizar sesión'));
+        $log->addDescription(_('Usuario') . ": " . $ulogin);
+        $log->addDescription(_('Tiempo inactivo') . ": " . $inactiveTime . " min.");
+        $log->addDescription(_('Tiempo total') . ": " . $totalTime . " min.");
+        $log->writeLog();
+    }
+
+    /**
+     * Mostrar la página de login
+     */
+    private static function goLogin()
+    {
+        $controller = new Controller\MainC();
+        $controller->getLogin();
+        $controller->view();
+        exit;
+    }
+
+    /**
      * Comrpueba y actualiza la versión de la aplicación.
      */
     private static function checkVersion()
@@ -554,22 +619,6 @@ class Init
     }
 
     /**
-     * Escribir la información de logout en el registro de eventos.
-     */
-    private static function wrLogoutInfo()
-    {
-        $inactiveTime = round(((time() - Session::getLastActivity()) / 60), 2);
-        $totalTime = round(((time() - Session::getStartActivity()) / 60), 2);
-        $ulogin = Session::getUserLogin();
-
-        $log = new Log(_('Finalizar sesión'));
-        $log->addDescription(_('Usuario') . ": " . $ulogin);
-        $log->addDescription(_('Tiempo inactivo') . ": " . $inactiveTime . " min.");
-        $log->addDescription(_('Tiempo total') . ": " . $totalTime . " min.");
-        $log->writeLog();
-    }
-
-    /**
      * Comprobar si hay que ejecutar acciones de URL.
      *
      * @return bool
@@ -596,17 +645,6 @@ class Init
     }
 
     /**
-     * Deslogar el usuario actual y eliminar la información de sesión.
-     */
-    private static function logout()
-    {
-        self::wrLogoutInfo();
-
-        session_unset();
-        session_destroy();
-    }
-
-    /**
      * Comprobar si el usuario está logado.
      *
      * @returns bool
@@ -622,35 +660,6 @@ class Init
     }
 
     /**
-     * Establecer las rutas de sysPass en el PATH de PHP
-     */
-    public static function setIncludes()
-    {
-        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . get_include_path());
-    }
-
-    /**
-     * Cargador de clases de sysPass
-     *
-     * @param $class string El nombre de la clase a cargar
-     */
-    public static function loadClass($class)
-    {
-        // Eliminar \\ para las clases con namespace definido
-        $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
-
-//        error_log($class);
-
-        // Buscar la clase en los directorios de include
-        foreach (explode(':', get_include_path()) as $iPath) {
-            $classFile = $iPath . DIRECTORY_SEPARATOR . $class . '.class.php';
-            if (is_readable($classFile)) {
-                require_once $classFile;
-            }
-        }
-    }
-
-    /**
      * Devuelve el tiempo actual en coma flotante.
      * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
      *
@@ -663,22 +672,15 @@ class Init
     }
 
     /**
-     * Comprobar si es necesario cerrar la sesión
+     * Establecer el tema visual de sysPass desde la configuración
      */
-    private static function checkLogout(){
-        if (Request::analyze('logout', false, true)) {
-            self::logout();
-            self::goLogin();
+    private static function selectTheme()
+    {
+        if (!empty(Session::getTheme())){
+            self::$_THEME = Session::getTheme();
+        } else {
+            self::$_THEME = Config::getValue('theme', 'default');
+            Session::setTheme(self::$_THEME);
         }
-    }
-
-    /**
-     * Mostrar la página de login
-     */
-    private static function goLogin(){
-        $controller = new Controller\MainC();
-        $controller->getLogin();
-        $controller->view();
-        exit;
     }
 }

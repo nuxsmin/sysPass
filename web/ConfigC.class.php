@@ -64,16 +64,28 @@ class ConfigC extends Controller implements ActionsInterface
             return;
         }
 
+        $themesAvailable = array();
+
+        $dirThemes = dir(VIEW_PATH);
+
+        while (false !== ($theme = $dirThemes->read())) {
+            if($theme != '.' && $theme != '..') {
+                $themesAvailable[] = $theme;
+            }
+        }
+
+        $dirThemes->close();
+
         $this->view->addTemplate('config');
 
-        $this->view->assign('arrLangAvailable',
+        $this->view->assign('langsAvailable',
             array('Español' => 'es_ES',
                 'English' => 'en_US',
                 'Deutsch' => 'de_DE',
                 'Magyar' => 'hu_HU',
                 'Français' => 'fr_FR')
         );
-        $this->view->assign('arrAccountCount', array(6, 9, 12, 15, 21, 27, 30, 51, 99));
+        $this->view->assign('themesAvailable', $themesAvailable);
         $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
         $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled()) ? 'DISABLED' : '');
         $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');

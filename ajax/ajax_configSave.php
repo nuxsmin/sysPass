@@ -47,6 +47,7 @@ $doActionOnClose = "doAction($actionId,'',$activeTab);";
 
 if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
     $siteLang = SP\Request::analyze('sitelang');
+    $siteTheme = SP\Request::analyze('sitetheme');
     $sessionTimeout = SP\Request::analyze('session_timeout', 300);
     $logEnabled = SP\Request::analyze('log_enabled', false, false, true);
     $debugEnabled = SP\Request::analyze('debug', false, false, true);
@@ -147,6 +148,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
     SP\Config::setValue('account_link', $accountLinkEnabled);
     SP\Config::setValue('account_count', $accountCount);
     SP\Config::setValue('sitelang', $siteLang);
+    SP\Config::setValue('sitetheme', $siteTheme);
     SP\Config::setValue('session_timeout', $sessionTimeout);
     SP\Config::setValue('log_enabled', $logEnabled);
     SP\Config::setValue('debug', $debugEnabled);

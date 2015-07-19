@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,8 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
+$themeUri = 'inc/themes/' . \SP\Session::getTheme();
+
 $cssFiles = array(
     array('href' => 'css/reset.css', 'min' => true),
     array('href' => 'css/jquery-ui.min.css', 'min' => false),
@@ -39,11 +41,11 @@ $cssFiles = array(
     array('href' => 'css/alertify.default.css', 'min' => true),
     array('href' => 'css/jquery.tagsinput.css', 'min' => true),
     array('href' => 'js/fancybox/jquery.fancybox.css', 'min' => true),
-    array('href' => 'css/styles.css', 'min' => true)
+    array('href' => $themeUri . '/css/styles.css', 'min' => true)
 );
 
 if (!SP\Util::resultsCardsIsEnabled()) {
-    array_push($cssFiles, array('href' => 'css/search-grid.css', 'min' => true));
+    array_push($cssFiles, array('href' => $themeUri . '/css/search-grid.css', 'min' => true));
 }
 
 SP\Util::getMinified('css', $cssFiles);

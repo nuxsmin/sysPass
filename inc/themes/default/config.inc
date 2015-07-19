@@ -11,10 +11,21 @@
             <tr>
                 <td class="descField"><?php echo _('Idioma'); ?></td>
                 <td class="valField">
-                    <select name="sitelang" id="sel-sitelang" size="1">
-                        <?php foreach ($arrLangAvailable as $langName => $langValue): ?>
+                    <select name="sitelang" id="sel-sitelang" size="1" class="sel-chosen-ns">
+                        <?php foreach ($langsAvailable as $langName => $langValue): ?>
                             <option
                                 value='<?php echo $langValue; ?>' <?php echo ($currentLang == $langValue) ? "SELECTED" : ""; ?>><?php echo $langName; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField"><?php echo _('Tema Visual'); ?></td>
+                <td class="valField">
+                    <select name="sitetheme" id="sel-sitetheme" size="1" class="sel-chosen-ns">
+                        <?php foreach ($themesAvailable as $theme): ?>
+                            <option
+                                value='<?php echo $theme; ?>' <?php echo ($currentTheme == $theme) ? "SELECTED" : ""; ?>><?php echo strtoupper($theme); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -274,7 +285,7 @@
                     </td>
                     <td class="valField">
                         <select id="ldap_defaultgroup" name="ldap_defaultgroup"
-                                class="select-box" <?php echo $isDisabled; ?> required>
+                                class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
                             <option value="0"></option>
                             <?php foreach ($groups as $id => $name): ?>
                                 <option
@@ -290,7 +301,7 @@
                     </td>
                     <td class="valField">
                         <select id="ldap_defaultprofile" name="ldap_defaultprofile"
-                                class="select-box" <?php echo $isDisabled; ?> required>
+                                class="select-box sel-chosen-profile" <?php echo $isDisabled; ?> required>
                             <option value="0"></option>
                             <?php foreach ($profiles as $id => $name): ?>
                                 <option
@@ -393,7 +404,7 @@
                     <?php echo _('Seguridad'); ?>
                 </td>
                 <td class="valField">
-                    <select name="mail_security" id="sel-mailsecurity" size="1">
+                    <select name="mail_security" id="sel-mailsecurity" size="1" class="sel-chosen-ns">
 
                         <?php echo '<option>' . _('Deshabilitada') . '</option>'; ?>
                         <?php foreach ($mailSecurity as $security): ?>
@@ -446,8 +457,6 @@
 
 <script>
     $(function () {
-        $("#sel-sitelang,#sel-account_link,#sel-mailsecurity").chosen({disable_search: true});
-
         $('#allowed_exts').tagsInput({
             'width': '350px',
             'defaultText': '<?php echo _('Añadir extensión'); ?>',
@@ -499,16 +508,6 @@
                 var last_width = $tagsbox.find("span:last").width() + 10;
                 $tagsbox.find(".tag:last").css('width', last_width);
             }
-        });
-        $("#ldap_defaultgroup").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
-        });
-        $("#ldap_defaultprofile").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
         });
         $("#session_timeout").spinner({step: 300, min: 300, numberFormat: "n"});
         $("#files_allowed_size").spinner({step: 1024, min: 1024, numberFormat: "n"});
