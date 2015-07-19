@@ -37,9 +37,9 @@ class FileImport
     /**
      * Contenido del archivo leído
      *
-     * @var string
+     * @var string|array
      */
-    protected $_fileContent = '';
+    protected $_fileContent = null;
 
     /**
      * Archivo temporal utilizado en la subida HTML
@@ -56,7 +56,7 @@ class FileImport
     protected $_fileType = '';
 
     /**
-     * @return string
+     * @return string|array
      */
     public function getFileContent()
     {
@@ -86,7 +86,7 @@ class FileImport
     public function __construct(&$fileData)
     {
         try {
-            $this->readDataFromFile($fileData);
+            $this->checkFile($fileData);
         } catch (SPException $e) {
             throw $e;
         }
@@ -99,7 +99,7 @@ class FileImport
      * @throws SPException
      * @return bool
      */
-    private function readDataFromFile(&$fileData)
+    private function checkFile(&$fileData)
     {
         if (!is_array($fileData)) {
             throw new SPException(SPException::SP_CRITICAL, _('Archivo no subido correctamente'), _('Verifique los permisos del usuario del servidor web'));
@@ -130,6 +130,42 @@ class FileImport
                 SPException::SP_CRITICAL,
                 _('Error interno al leer el archivo'),
                 _('Compruebe la configuración de PHP para subir archivos')
+            );
+        }
+    }
+
+    /**
+     * Leer los datos de un archivo subido a un array
+     *
+     * @throws SPException
+     */
+    public function readFileToArray()
+    {
+        $this->_fileContent = file($this->_tmpFile, FILE_SKIP_EMPTY_LINES);
+
+        if ($this->_fileContent === false){
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno al leer el archivo'),
+                _('Compruebe los permisos del directorio temporal')
+            );
+        }
+    }
+
+    /**
+     * Leer los datos de un archivo subido a una cadena
+     *
+     * @throws SPException
+     */
+    public function readFileToString()
+    {
+        $this->_fileContent = file_get_contents($this->_tmpFile);
+
+        if ($this->_fileContent === false){
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                _('Error interno al leer el archivo'),
+                _('Compruebe los permisos del directorio temporal')
             );
         }
     }

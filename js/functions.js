@@ -729,9 +729,10 @@ function importFile(sk) {
             sk: sk,
             action: 'import',
             isAjax: 1,
-            importPwd: function() { return $('input[name="importPwd"]').val() },
-            defUser: function() { return $('#import_defaultuser').chosen().val()},
-            defGroup: function() { return $('#import_defaultgroup').chosen().val()}
+            importPwd: function() { return $('input[name="importPwd"]').val(); },
+            defUser: function() { return $('#import_defaultuser').chosen().val(); },
+            defGroup: function() { return $('#import_defaultgroup').chosen().val(); },
+            csvDelimiter: function() { return $('input[name="csvDelimiter"]').val();; }
         },
         uploadFinished: function (i, file, json) {
             $.fancybox.hideLoading();

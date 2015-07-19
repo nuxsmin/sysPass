@@ -124,6 +124,14 @@ echo $import_tabIndex; ?>">
                          alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Delimitador CSV'); ?>
+                </td>
+                <td class="valField">
+                    <input type="text" name="csvDelimiter" maxlength="1" value=";">
+                </td>
+            </tr>
         </form>
         <tr>
             <td class="descField">

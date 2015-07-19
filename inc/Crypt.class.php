@@ -221,7 +221,7 @@ class Crypt
     public static function encryptData($data)
     {
         if (empty($data)) {
-            return array('pass' => '', 'IV' => '');
+            return array('pass' => '', 'iv' => '');
         }
 
         // Comprobar el módulo de encriptación
@@ -244,7 +244,7 @@ class Crypt
             );
         }
 
-        $encData['IV'] = Crypt::$strInitialVector;
+        $encData['iv'] = Crypt::$strInitialVector;
 
         return $encData;
     }

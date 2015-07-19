@@ -33,7 +33,7 @@
             }
         );
 
-        $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>'});
+        $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>', width: screen.width / 2.5  });
 
         $('#passGen').click(function () {
             password(11, true, true);

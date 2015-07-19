@@ -34,138 +34,100 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Import
 {
     /**
-     * @var array Resultado de las operaciones
+     * @var string
      */
-    private static $_result = array();
+    static $importPwd = '';
     /**
-     * @var array Contenido del archivo importado
+     * @var int
      */
-    private static $_fileContent;
+    static $defUser = 0;
     /**
-     * @var string Nombre del archivo temporal
+     * @var int
      */
-    private static $_tmpFile;
+    static $defGroup = 0;
+    /**
+     * @var string
+     */
+    static $csvDelimiter = '';
+
+    /**
+     * @param string $importPwd
+     */
+    public static function setImportPwd($importPwd)
+    {
+        self::$importPwd = $importPwd;
+    }
+
+    /**
+     * @param int $defUser
+     */
+    public static function setDefUser($defUser)
+    {
+        self::$defUser = $defUser;
+    }
+
+    /**
+     * @param int $defGroup
+     */
+    public static function setDefGroup($defGroup)
+    {
+        self::$defGroup = $defGroup;
+    }
+
+    /**
+     * @param string $csvDelimiter
+     */
+    public static function setCsvDelimiter($csvDelimiter)
+    {
+        self::$csvDelimiter = $csvDelimiter;
+    }
 
     /**
      * Iniciar la importación de cuentas.
      *
-     * @param array $fileData con los datos del archivo
+     * @param array  $fileData  Los datos del archivo
      * @return array resultado del proceso
      */
-    public static function doImport(&$fileData, $defUser = null, $defGroup = null, $importPwd = null)
+    public static function doImport(&$fileData)
     {
         try {
             $file = new FileImport($fileData);
 
-            if ($file->getFileType() === 'text/csv' || $file->getFileType() === 'application/vnd.ms-excel') {
-                // Leemos el archivo a un array
-                self::$_fileContent = file($file->getTmpFile());
-
-                if (!is_array(self::$_fileContent)) {
+            switch ($file->getFileType()) {
+                case 'text/csv':
+                case 'application/vnd.ms-excel':
+                    $import = new CsvImport($file);
+                    $import->setFieldDelimiter(self::$csvDelimiter);
+                    break;
+                case 'text/xml':
+                    $import = new XmlImport($file);
+                    $import->setImportPass(self::$importPwd);
+                    break;
+                default:
                     throw new SPException(
-                        SPException::SP_CRITICAL,
-                        _('Error interno al leer el archivo'),
-                        _('Compruebe los permisos del directorio temporal')
+                        SPException::SP_WARNING,
+                        _('Tipo mime no soportado'),
+                        _('Compruebe el formato del archivo')
                     );
-                }
-                // Obtenemos las cuentas desde el archivo CSV
-                self::parseFileData();
-            } elseif ($fileData['type'] === 'text/xml') {
-                self::$_tmpFile = $file->getTmpFile();
-
-                // Analizamos el XML y seleccionamos el formato a importar
-                $xml = new XmlImport($file);
-                $xml->setUserId($defUser);
-                $xml->setUserGroupId($defGroup);
-                $xml->setImportPass($importPwd);
-                $xml->doImport();
-            } else {
-                throw new SPException(
-                    SPException::SP_WARNING,
-                    _('Tipo mime no soportado'),
-                    _('Compruebe el formato del archivo')
-                );
             }
-        } catch (SPException $e) {
-            Log::writeNewLog(_('Importar Cuentas'), $e->getMessage());
 
-            self::$_result['error'][] = array('type' => $e->getType(), 'description' => $e->getMessage(), 'hint' => $e->getHint());
-            return (self::$_result);
+            $import->setUserId(self::$defUser);
+            $import->setUserGroupId(self::$defGroup);
+            $import->doImport();
+        } catch (SPException $e) {
+            Log::writeNewLog(_('Importar Cuentas'), $e->getMessage() . ';;' . $e->getHint());
+
+            $result['error'] = array('description' => $e->getMessage(), 'hint' => $e->getHint());
+            return $result;
         }
 
         Log::writeNewLog(_('Importar Cuentas'), _('Importación finalizada'));
 
-        self::$_result['ok'][] = _('Importación finalizada');
-        self::$_result['ok'][] = _('Revise el registro de eventos para más detalles');
+        $result['ok'] = array(
+            _('Importación finalizada'),
+            _('Revise el registro de eventos para más detalles')
+        );
 
-        return self::$_result;
-    }
-
-    /**
-     * Leer los datos importados y formatearlos.
-     *
-     * @throws SPException
-     * @return bool
-     */
-    private static function parseFileData()
-    {
-        foreach (self::$_fileContent as $data) {
-            $fields = explode(';', $data);
-
-            if (count($fields) < 7) {
-                throw new SPException(
-                    SPException::SP_CRITICAL,
-                    _('El número de campos es incorrecto'),
-                    _('Compruebe el formato del archivo CSV')
-                );
-            }
-
-            if (!self::addAccountData($fields)) {
-                $log = new Log(_('Importar Cuentas'));
-                $log->addDescription(_('Error importando cuenta'));
-                $log->addDescription($data);
-                $log->writeLog();
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Crear una cuenta con los datos obtenidos.
-     *
-     * @param array $data con los datos de la cuenta
-     * @throws SPException
-     * @return bool
-     */
-    public static function addAccountData($data)
-    {
-        // Datos del Usuario
-        $userId = Session::getUserId();
-        $groupId = Session::getUserGroupId();
-
-        // Asignamos los valores del array a variables
-        list($accountName, $customerName, $categoryName, $url, $username, $password, $notes) = $data;
-
-        $customerId = Customer::addCustomerReturnId($customerName);
-
-        $categoryId = Category::addCategoryReturnId($categoryName);
-
-        $pass = Crypt::encryptData($password);
-
-        $account = new Account;
-        $account->setAccountName($accountName);
-        $account->setAccountCustomerId($customerId);
-        $account->setAccountCategoryId($categoryId);
-        $account->setAccountLogin($username);
-        $account->setAccountUrl($url);
-        $account->setAccountPass($pass['pass']);
-        $account->setAccountIV($pass['IV']);
-        $account->setAccountNotes($notes);
-        $account->setAccountUserId($userId);
-        $account->setAccountUserGroupId($groupId);
-
-        // Creamos la cuenta
-        return $account->createAccount();
+        return $result;
     }
 }

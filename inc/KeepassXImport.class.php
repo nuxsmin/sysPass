@@ -103,7 +103,7 @@ class KeepassXImport extends XmlImportBase
             $passData = Crypt::encryptData($password);
 
             $this->setAccountPass($passData['pass']);
-            $this->setAccountPassIV($passData['IV']);
+            $this->setAccountPassIV($passData['iv']);
             $this->setAccountNotes($notes);
             $this->setAccountName($name);
             $this->setAccountUrl($url);
