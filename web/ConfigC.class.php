@@ -70,7 +70,9 @@ class ConfigC extends Controller implements ActionsInterface
 
         while (false !== ($theme = $dirThemes->read())) {
             if($theme != '.' && $theme != '..') {
-                $themesAvailable[] = $theme;
+                include VIEW_PATH . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'index.php';
+
+                $themesAvailable[$theme] = $themeInfo['name'];
             }
         }
 
@@ -86,6 +88,7 @@ class ConfigC extends Controller implements ActionsInterface
                 'Français' => 'fr_FR')
         );
         $this->view->assign('themesAvailable', $themesAvailable);
+        $this->view->assign('currentTheme', \SP\Config::getValue('sitetheme'));
         $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
         $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled()) ? 'DISABLED' : '');
         $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');

@@ -679,7 +679,7 @@ class Init
         if (!empty(Session::getTheme())){
             self::$_THEME = Session::getTheme();
         } else {
-            self::$_THEME = Config::getValue('theme', 'default');
+            self::$_THEME = Config::getValue('sitetheme', 'default');
             Session::setTheme(self::$_THEME);
         }
     }

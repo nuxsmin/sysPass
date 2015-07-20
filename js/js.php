@@ -27,20 +27,21 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$jsFiles = array(
-    array("href" => "js/jquery-1.11.2.min.js", "min" => false),
-    array("href" => "js/jquery-migrate-1.2.1.min.js", "min" => false),
-    array("href" => "js/jquery.placeholder.js", "min" => true),
-    array("href" => "js/jquery-ui.min.js", "min" => false),
-    array("href" => "js/fancybox/jquery.fancybox.pack.js", "min" => false),
-    array("href" => "js/jquery.powertip.min.js", "min" => false),
-    array("href" => "js/chosen.jquery.min.js", "min" => false),
-    array("href" => "js/alertify.js", "min" => true),
-    array("href" => "js/jquery.fileDownload.js", "min" => true),
-    array("href" => "js/jquery.filedrop.js", "min" => true),
-    array("href" => "js/jquery.tagsinput.js", "min" => true),
-    array("href" => "js/ZeroClipboard.min.js", "min" => false),
-    array("href" => "js/functions.js", "min" => true)
+$themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.php';
+
+$jsFilesBase = array(
+    array('href' => 'js/jquery-1.11.2.min.js', 'min' => false),
+    array('href' => 'js/jquery-migrate-1.2.1.min.js', 'min' => false),
+    array('href' => 'js/jquery.placeholder.js', 'min' => true),
+    array('href' => 'js/jquery-ui.min.js', 'min' => false),
+    array('href' => 'js/fancybox/jquery.fancybox.pack.js', 'min' => false),
+    array('href' => 'js/jquery.powertip.min.js', 'min' => false),
+    array('href' => 'js/chosen.jquery.min.js', 'min' => false),
+    array('href' => 'js/alertify.js', 'min' => true),
+    array('href' => 'js/jquery.fileDownload.js', 'min' => true),
+    array('href' => 'js/jquery.filedrop.js', 'min' => true),
+    array('href' => 'js/jquery.tagsinput.js', 'min' => true),
+    array('href' => 'js/ZeroClipboard.min.js', 'min' => false),
 );
 
 $arrJsLang = array(
@@ -68,7 +69,15 @@ $arrJsLang = array(
 );
 
 //$js = "// i18n language array from PHP. Detected language: " . SP_Init::$LANG . "\n";
-echo "var LANG = ['" . implode("','", SP\Util::arrayJSEscape($arrJsLang)) . "'];";
 echo "var APP_ROOT = '" . SP\Init::$WEBROOT . "';\n";
+echo "var LANG = ['" . implode("','", SP\Util::arrayJSEscape($arrJsLang)) . "'];\n";
 
-SP\Util::getMinified('js', $jsFiles, true);
+if (file_exists($themeJsPath)){
+    include $themeJsPath;
+
+    foreach ($jsFilesTheme as $file) {
+        array_push($jsFilesBase, $file);
+    }
+}
+
+SP\Util::getMinified('js', $jsFilesBase, false);

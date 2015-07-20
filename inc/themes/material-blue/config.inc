@@ -45,9 +45,10 @@
                     <?php echo SP\Common::printHelpButton("config", 20); ?>
                 </td>
                 <td class="valField">
-                    <label for="logenabled"><?php echo ($chkLog) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="log_enabled" id="logenabled"
-                           class="checkbox" <?php echo $chkLog, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
+                        <input type="checkbox" id="log_enabled" class="mdl-switch__input" name="log_enabled" <?php echo $chkLog, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -56,9 +57,10 @@
                     <?php echo SP\Common::printHelpButton("config", 19); ?>
                 </td>
                 <td class="valField">
-                    <label for="debug"><?php echo ($chkDebug) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="debug" id="debug"
-                           class="checkbox" <?php echo $chkDebug, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
+                        <input type="checkbox" id="debug" class="mdl-switch__input" name="debug" <?php echo $chkDebug, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -67,9 +69,10 @@
                     <?php echo SP\Common::printHelpButton("config", 18); ?>
                 </td>
                 <td class="valField">
-                    <label for="maintenance"><?php echo ($chkMaintenance) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="maintenance" id="maintenance"
-                           class="checkbox" <?php echo $chkMaintenance, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
+                        <input type="checkbox" id="maintenance" class="mdl-switch__input" name="maintenance" <?php echo $chkMaintenance, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -78,9 +81,10 @@
                     <?php echo SP\Common::printHelpButton("config", 21); ?>
                 </td>
                 <td class="valField">
-                    <label for="updates"><?php echo ($chkUpdates) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="updates" id="updates"
-                           class="checkbox" <?php echo $chkUpdates, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
+                        <input type="checkbox" id="updates" class="mdl-switch__input" name="updates" <?php echo $chkUpdates, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -89,9 +93,10 @@
                     <?php echo SP\Common::printHelpButton("config", 3); ?>
                 </td>
                 <td class="valField">
-                    <label for="account_link"><?php echo ($chkAccountLink) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="account_link" id="account_link"
-                           class="checkbox" <?php echo $chkAccountLink; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
+                        <input type="checkbox" id="account_link" class="mdl-switch__input" name="account_link" <?php echo $chkAccountLink, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -100,9 +105,10 @@
                     <?php echo SP\Common::printHelpButton("config", 5); ?>
                 </td>
                 <td class="valField">
-                    <label for="filesenabled"><?php echo ($chkFiles) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="files_enabled" id="filesenabled"
-                           class="checkbox" <?php echo $chkFiles, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
+                        <input type="checkbox" id="files_enabled" class="mdl-switch__input" name="files_enabled" <?php echo $chkFiles, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -111,9 +117,10 @@
                     <?php echo SP\Common::printHelpButton("config", 24); ?>
                 </td>
                 <td class="valField">
-                    <label for="globalsearch"><?php echo ($chkGlobalSearch) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="globalsearch" id="globalsearch"
-                           class="checkbox" <?php echo $chkGlobalSearch, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="globalsearch">
+                        <input type="checkbox" id="globalsearch" class="mdl-switch__input" name="globalsearch" <?php echo $chkGlobalSearch, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -146,17 +153,6 @@
                            maxlength="5" <?php echo $isDisabled; ?> />
                 </td>
             </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Resultados en Tarjetas'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 25); ?>
-                </td>
-                <td class="valField">
-                    <label for="resultsascards"><?php echo ($chkResultsAsCards) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="resultsascards" id="resultsascards"
-                           class="checkbox" <?php echo $chkResultsAsCards, ' ', $isDisabled; ?> />
-                </td>
-            </tr>
         </table>
 
         <!--WIKI-->
@@ -171,9 +167,10 @@
                     <?php echo SP\Common::printHelpButton("config", 7); ?>
                 </td>
                 <td class="valField">
-                    <label for="wikienabled"><?php echo ($chkWiki) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="wiki_enabled" id="wikienabled"
-                           class="checkbox" <?php echo $chkWiki, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
+                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input" name="wiki_enabled" <?php echo $chkWiki, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -221,9 +218,10 @@
                         <?php echo SP\Common::printHelpButton("config", 11); ?>
                     </td>
                     <td class="valField">
-                        <label for="ldapenabled"><?php echo ($chkLdap) ? 'SI' : 'NO'; ?></label>
-                        <input type="checkbox" name="ldap_enabled" id="ldapenabled"
-                               class="checkbox" <?php echo $chkLdap, ' ', $isDisabled; ?> />
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_enabled">
+                            <input type="checkbox" id="ldap_enabled" class="mdl-switch__input" name="ldap_enabled" <?php echo $chkLdap, ' ', $isDisabled; ?>/>
+                            <span class="mdl-switch__label"></span>
+                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -316,9 +314,10 @@
                         <?php echo SP\Common::printHelpButton("config", 26); ?>
                     </td>
                     <td class="valField">
-                        <label for="ldap_ads"><?php echo ($chkLdapADS) ? 'SI' : 'NO'; ?></label>
-                        <input type="checkbox" name="ldap_ads" id="ldap_ads"
-                               class="checkbox" <?php echo $chkLdapADS, ' ', $isDisabled; ?> />
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
+                            <input type="checkbox" id="ldap_ads" class="mdl-switch__input" name="ldap_ads" <?php echo $chkLdapADS, ' ', $isDisabled; ?>/>
+                            <span class="mdl-switch__label"></span>
+                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -350,9 +349,10 @@
                     <?php echo _('Habilitar notificaciones de correo'); ?>
                 </td>
                 <td class="valField">
-                    <label for="mailenabled"><?php echo ($chkMail) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="mail_enabled" id="mailenabled"
-                           class="checkbox" <?php echo $chkMail, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
+                        <input type="checkbox" id="mail_enabled" class="mdl-switch__input" name="mail_enabled" <?php echo $chkMail, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -376,9 +376,10 @@
                     <?php echo _('Habilitar Autentificación'); ?>
                 </td>
                 <td class="valField">
-                    <label for="mailauthenabled"><?php echo ($chkMailAuth) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="mail_authenabled" id="mailauthenabled"
-                           class="checkbox" <?php echo $chkMailAuth, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
+                        <input type="checkbox" id="mail_authenabled" class="mdl-switch__input" name="mail_authenabled" <?php echo $chkMailAuth, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>

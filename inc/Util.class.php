@@ -459,6 +459,7 @@ class Util
      *
      * @param string $type  tipo de recurso a devolver
      * @param array  $files archivos a parsear
+     * @param bool   $disableMinify Deshabilitar minimizar
      */
     public static function getMinified($type, &$files, $disableMinify = false)
     {
@@ -499,6 +500,23 @@ class Util
         foreach ($files as $file) {
             $filePath = $path . $file['href'];
 
+            // Obtener el recurso desde una URL
+            if (preg_match('#^https?://.*#', $file['href'])){
+                $data = self::getDataFromUrl($file['href']);
+
+                if($data !== false){
+                    echo '/* URL: ' . $file['href'] . ' */' . PHP_EOL;
+                    echo $data;
+                }
+
+                continue;
+            }
+
+            if(!file_exists($filePath)){
+                error_log('File not found: ' . $filePath);
+                continue;
+            }
+
             if ($file['min'] === true && $disableMinify === false) {
                 echo '/* MINIFIED FILE: ' . $file['href'] . ' */' . PHP_EOL;
                 if ($type == 'js') {
@@ -530,6 +548,9 @@ class Util
         $path = Init::$SERVERROOT . DIRECTORY_SEPARATOR;
 
         foreach ($files as $file) {
+            if(preg_match('#^https?://.*#', $file['href'])){
+                continue;
+            }
             $md5Sum .= md5_file($path . $file['href']);
         }
 
@@ -638,5 +659,26 @@ class Util
         }
 
         return $appinfo;
+    }
+
+    private static function getDataFromUrl($url)
+    {
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass-App");
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
+        $data = curl_exec($ch);
+
+        if ($data === false) {
+            Log::writeNewLog(__FUNCTION__, curl_error($ch));
+
+            return false;
+        }
+
+        return $data;
     }
 }

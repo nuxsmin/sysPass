@@ -23,21 +23,13 @@
  *
  */
 
-define('MODEL_PATH', __DIR__);
-define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
-define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
-define('EXTENSIONS_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'ext');
-define('DEBUG', false);
+$cssFilesTheme = array(
+    array('href' => 'https://fonts.googleapis.com/icon?family=Material+Icons', 'min' => false),
+    array('href' => 'http://fonts.googleapis.com/css?family=Roboto:300,400,500,700', 'min' => false),
+    array('href' => $themeUri . '/css/material.min.css', 'min' => false),
+    array('href' => $themeUri . '/css/material-blue.min.css', 'min' => false),
+    array('href' => $themeUri . '/css/material-custom.css', 'min' => true),
+    array('href' => $themeUri . '/css/styles.css', 'min' => false),
+    array('href' => $themeUri . '/css/search-grid.css', 'min' => true)
 
-require_once MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
-
-// Empezar a calcular el tiempo y memoria utilizados
-$memInit = memory_get_usage();
-$timeStart = \SP\Init::microtime_float();
-
-// Inicializar sysPass
-\SP\Init::start();
-
-// Variables para el tema visual (utilizada en css y js)
-$theme = \SP\Session::getTheme();
-$themeUri = 'inc/themes/' . $theme;
+);

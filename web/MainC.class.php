@@ -125,12 +125,42 @@ class MainC extends Controller implements ActionsInterface
         $this->view->addTemplate('menu');
 
         $this->view->assign('actions', array(
-            array('name' => self::ACTION_ACC_SEARCH, 'title' => _('Buscar'), 'img' => 'search.png', 'checkaccess' => 0),
-            array('name' => self::ACTION_ACC_NEW, 'title' => _('Nueva Cuenta'), 'img' => 'add.png', 'checkaccess' => 1),
-            array('name' => self::ACTION_USR, 'title' => _('Gestión de Usuarios'), 'img' => 'users.png', 'checkaccess' => 1),
-            array('name' => self::ACTION_MGM, 'title' => _('Gestión de Clientes y Categorías'), 'img' => 'appmgmt.png', 'checkaccess' => 1),
-            array('name' => self::ACTION_CFG, 'title' => _('Configuración'), 'img' => 'config.png', 'checkaccess' => 1),
-            array('name' => self::ACTION_EVL, 'title' => _('Registro de Eventos'), 'img' => 'log.png', 'checkaccess' => 1)
+            array(
+                'name' => self::ACTION_ACC_SEARCH,
+                'title' => _('Buscar'),
+                'img' => 'search.png',
+                'icon' => 'search',
+                'checkaccess' => 0),
+            array(
+                'name' => self::ACTION_ACC_NEW,
+                'title' => _('Nueva Cuenta'),
+                'img' => 'add.png',
+                'icon' => 'add',
+                'checkaccess' => 1),
+            array(
+                'name' => self::ACTION_USR,
+                'title' => _('Gestión de Usuarios'),
+                'img' => 'users.png',
+                'icon' => 'account_box',
+                'checkaccess' => 1),
+            array(
+                'name' => self::ACTION_MGM,
+                'title' => _('Gestión de Clientes y Categorías'),
+                'img' => 'appmgmt.png',
+                'icon' => 'group_work',
+                'checkaccess' => 1),
+            array(
+                'name' => self::ACTION_CFG,
+                'title' => _('Configuración'),
+                'img' => 'config.png',
+                'icon' => 'settings_applications',
+                'checkaccess' => 1),
+            array(
+                'name' => self::ACTION_EVL,
+                'title' => _('Registro de Eventos'),
+                'img' => 'log.png',
+                'icon' => 'view_headline',
+                'checkaccess' => 1)
         ));
     }
 
@@ -191,17 +221,17 @@ class MainC extends Controller implements ActionsInterface
 
         if (@file_exists(__FILE__ . "\0Nullbyte")) {
             $this->view->append('securityErrors', array(
-                'type' => SPException::SP_WARNING,
-                'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
-                'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura'))
+                    'type' => SPException::SP_WARNING,
+                    'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
+                    'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura'))
             );
         }
 
         if (!Util::secureRNG_available()) {
             $this->view->append('securityErrors', array(
-                'type' => SPException::SP_WARNING,
-                'description' => _('No se encuentra el generador de números aleatorios.'),
-                'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave'))
+                    'type' => SPException::SP_WARNING,
+                    'description' => _('No se encuentra el generador de números aleatorios.'),
+                    'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave'))
             );
         }
 
