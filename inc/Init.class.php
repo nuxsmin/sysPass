@@ -676,11 +676,7 @@ class Init
      */
     private static function selectTheme()
     {
-        if (!empty(Session::getTheme())){
-            self::$_THEME = Session::getTheme();
-        } else {
-            self::$_THEME = Config::getValue('sitetheme', 'default');
-            Session::setTheme(self::$_THEME);
-        }
+        self::$_THEME = Config::getValue('sitetheme', 'default');
+        Session::setTheme(self::$_THEME);
     }
 }

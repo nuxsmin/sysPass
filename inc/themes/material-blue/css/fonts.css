@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../inc/themes/material-blue/css/MaterialIcons-Regular.eot"); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url("../inc/themes/material-blue/css/MaterialIcons-Regular.woff2") format('woff2'),
+    url("../inc/themes/material-blue/css/MaterialIcons-Regular.woff") format('woff'),
+    url("../inc/themes/material-blue/css/MaterialIcons-Regular.ttf") format('truetype');
+}

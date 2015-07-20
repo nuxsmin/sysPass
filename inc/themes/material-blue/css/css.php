@@ -24,12 +24,13 @@
  */
 
 $cssFilesTheme = array(
-    array('href' => 'https://fonts.googleapis.com/icon?family=Material+Icons', 'min' => false),
+//    array('href' => 'https://fonts.googleapis.com/icon?family=Material+Icons', 'min' => false),
     array('href' => 'http://fonts.googleapis.com/css?family=Roboto:300,400,500,700', 'min' => false),
+    array('href' => $themeUri . '/css/fonts.css', 'min' => true),
     array('href' => $themeUri . '/css/material.min.css', 'min' => false),
     array('href' => $themeUri . '/css/material-blue.min.css', 'min' => false),
     array('href' => $themeUri . '/css/material-custom.css', 'min' => true),
-    array('href' => $themeUri . '/css/styles.css', 'min' => false),
+    array('href' => $themeUri . '/css/styles.css', 'min' => true),
     array('href' => $themeUri . '/css/search-grid.css', 'min' => true)
 
 );

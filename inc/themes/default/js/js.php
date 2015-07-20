@@ -24,5 +24,5 @@
  */
 
 $jsFilesTheme = array(
-    array("href" => "js/functions.js", "min" => true)
+    array('href' => $themeUri . '/js/functions.js', 'min' => true)
 );
