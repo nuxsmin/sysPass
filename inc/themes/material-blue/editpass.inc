@@ -1,6 +1,7 @@
-<div id="title" class="midroundup <?php use SP\Acl;
-
-echo $title['class']; ?>"><?php echo $title['name']; ?></div>
+<div id="title" class="midroundup <?php echo $title['class']; ?>">
+    <?php echo $title['name']; ?>
+    <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
+</div>
 
 <form method="post" name="editpass" id="frmEditPass">
     <table class="data round">

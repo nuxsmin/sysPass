@@ -140,7 +140,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('account');
-        $this->view->assign('title', array('class' => 'titleGreen', 'name' => _('Nueva Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Nueva Cuenta'),
+                'icon' => 'add'
+            )
+        );
         $this->view->assign('showform', true);
         $this->view->assign('nextaction', Acl::ACTION_ACC_SEARCH);
 
@@ -245,7 +251,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('account');
-        $this->view->assign('title', array('class' => 'titleGreen', 'name' => _('Copiar Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Copiar Cuenta'),
+                'icon' => 'content_copy'
+            )
+        );
         $this->view->assign('showform', true);
         $this->view->assign('nextaction', self::ACTION_ACC_COPY);
 
@@ -303,7 +315,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('account');
-        $this->view->assign('title', array('class' => 'titleOrange', 'name' => _('Editar Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Editar Cuenta'),
+                'icon' => 'mode_edit'
+            )
+        );
         $this->view->assign('showform', true);
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
 
@@ -326,7 +344,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('account');
-        $this->view->assign('title', array('class' => 'titleRed', 'name' => _('Eliminar Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Eliminar Cuenta'),
+                'icon' => 'delete'
+            )
+        );
         $this->view->assign('showform', false);
 
         $this->setCommonData();
@@ -348,7 +372,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('account');
-        $this->view->assign('title', array('class' => 'titleNormal', 'name' => _('Detalles de Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Detalles de Cuenta'),
+                'icon' => 'visibility'
+            )
+        );
         $this->view->assign('showform', false);
 
         \SP\Session::setAccountParentId($this->getId());
@@ -373,7 +403,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('account');
-        $this->view->assign('title', array('class' => 'titleNormal', 'name' => _('Detalles de Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Detalles de Cuenta'),
+                'icon' => 'access_time'
+            )
+        );
         $this->view->assign('showform', false);
 
         $this->_account->setAccountIsHistory(1);
@@ -424,7 +460,13 @@ class AccountC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('editpass');
-        $this->view->assign('title', array('class' => 'titleOrange', 'name' => _('Modificar Clave de Cuenta')));
+        $this->view->assign('title',
+            array(
+                'class' => 'titleBlue',
+                'name' => _('Modificar Clave de Cuenta'),
+                'icon' => 'mode_edit'
+            )
+        );
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
     }
 

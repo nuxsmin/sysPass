@@ -362,16 +362,34 @@ a:focus {
     text-align: center;
 }
 
-#content #title.titleGreen {
-    background: url("../imgs/bg_tab_new.png") repeat-x scroll left top #a9c1d7;
+#content #title.titleBlue {
+    background-color: #448AFF;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
+    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
+    /*background: url("../imgs/bg_tab_new.png") repeat-x scroll left top #a9c1d7;*/
 }
 
 #content #title.titleOrange {
-    background: url("../imgs/bg_tab_edit.png") repeat-x scroll left top #a9c1d7;
+    background-color: #448AFF;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
+    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
+    /*background: url("../imgs/bg_tab_edit.png") repeat-x scroll left top #a9c1d7;*/
 }
 
 #content #title.titleRed {
-    background: url("../imgs/bg_tab_edit.png") repeat-x scroll left top #a9c1d7;
+    background-color: #448AFF;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
+    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
+    /*background: url("../imgs/bg_tab_edit.png") repeat-x scroll left top #a9c1d7;*/
 }
 
 #content #title.titleNormal {
@@ -591,7 +609,8 @@ a:focus {
     padding: 0.5em;
     font-weight: bold;
     letter-spacing: 0.2em;
-    color: #696969;
+    /*color: #696969;*/
+    color: #fff;
 }
 
 #content .data-header li a {
@@ -1108,7 +1127,7 @@ footer {
     width: 100%;
     height: 1.5em;
     margin: 0 auto;
-    padding: .5em 0;
+    padding: 1em 0;
     background-color: #F5F5F5;
     color: #b9b9b9;
     font-size: 13px;
@@ -1253,7 +1272,14 @@ footer img {
 }
 
 .header-grey {
-    background: url("../imgs/bg_table_header.png") repeat-x scroll left top #f2f2f2;
+    background-color: #448AFF;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
+    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
+    color: #fff;
+    /*background: url("../imgs/bg_table_header.png") repeat-x scroll left top #f2f2f2;*/
     height: 30px;
     text-align: center;
 }

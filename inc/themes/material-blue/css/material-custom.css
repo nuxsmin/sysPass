@@ -36,8 +36,8 @@
 
 .mdl-button {margin: 0 .3em;}
 
-.blue20 {color: rgba(83, 109, 254, .2)}
-.blue40 {color: rgba(83, 109, 254, .4)}
-.blue60 {color: rgba(83, 109, 254, .6)}
-.blue80 {color: rgba(83, 109, 254, .8)}
-.blue100 {color: rgba(83, 109, 254, 1)}
+.blue20 {color: rgba(68, 138, 255, .2)}
+.blue40 {color: rgba(68, 138, 255, .4)}
+.blue60 {color: rgba(68, 138, 255, .6)}
+.blue80 {color: rgba(68, 138, 255, .8)}
+.blue100 {color: rgb(68, 138, 255)}

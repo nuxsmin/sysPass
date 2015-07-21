@@ -13,11 +13,11 @@
         </div>
 
         <?php if ($tab['props']['header']): ?>
-            <div id="title" class="midroundup titleNormal"><?php echo $tab['props']['header']; ?></div>
+            <div id="title" class="midroundup titleBlue"><?php echo $tab['props']['header']; ?></div>
         <?php endif; ?>
 
         <div id="<?php echo $tab['props']['tblId']; ?>" class="data-header">
-            <ul class="round header-grey">
+            <ul class="round5 header-grey">
                 <?php foreach ($tab['props']['tblHeaders'] as $header): ?>
                     <?php if (is_array($header)): ?>
                         <li class="<?php echo $header['class']; ?>"

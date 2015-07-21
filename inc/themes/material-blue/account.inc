@@ -1,7 +1,9 @@
 <div id="title" class="midroundup <?php echo $title['class']; ?>">
     <?php echo $title['name']; ?>
     <?php if ($gotData && $accountIsHistory): ?>
-        <i id="history-icon" class="material-icons blue80" title="<?php echo _('Histórico'); ?>">access_time</i>
+        <i id="history-icon" class="material-icons" title="<?php echo _('Histórico'); ?>"><?php echo $title['icon']; ?></i>
+    <?php else: ?>
+        <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
     <?php endif; ?>
 </div>
 
