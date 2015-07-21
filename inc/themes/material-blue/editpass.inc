@@ -24,17 +24,23 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" class="password" onKeyUp="checkPassLevel(this.value)"
-                       autocomplete="off">
-                <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                     alt="<?php echo _('Mostrar Clave'); ?>"/>
-                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
-                     class="inputImg"/>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="password" name="password" type="password" required class="mdl-textfield__input blue100"
+                           maxlength="255" OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                    <label class="mdl-textfield__label" for="password"><?php echo _('Clave'); ?></label>
+                </div>
+                <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
-            <td class="valField"><input type="password" class="password" maxlength="255" name="password2" autocomplete="off">
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="password2" name="password2" type="password" required class="mdl-textfield__input blue100"
+                           maxlength="255" OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                    <label class="mdl-textfield__label" for="password2"><?php echo _('Clave'); ?></label>
+                </div>
                 <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </td>
         </tr>
@@ -47,19 +53,20 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 </form>
 
 <div class="action">
-    <ul>
-        <li>
-            <img SRC="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                 OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"/>
-        </li>
-        <li>
-            <img SRC="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"
-                 OnClick="saveAccount('frmEditPass');"/>
-        </li>
-    </ul>
+    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+            OnClick="saveAccount('frmEditPass');" title="<?php echo _('Guardar'); ?>">
+        <i class="material-icons">save</i>
+    </button>
+
+    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+            OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
+            title="<?php echo _('Atrás'); ?>">
+        <i class="material-icons">arrow_back</i>
+    </button>
+
 </div>
 <script>
-    $(function(){
+    $(function () {
         $('input:password:visible:first').focus();
     });
 </script>

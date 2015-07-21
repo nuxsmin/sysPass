@@ -4,78 +4,6 @@ use SP\Common;
 
 echo $import_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
-        <?php echo _('Importar phpPMS'); ?>
-    </div>
-
-    <form method="post" name="frmMigrate" id="frmMigrate">
-        <table class="data round">
-            <tr>
-                <td class="descField">
-                    <?php echo _('Usuario BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 0); ?>
-                </td>
-                <td class="valField">
-                    <input type="text" name="dbuser" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Clave BBDD'); ?>
-                </td>
-                <td class="valField">
-                    <input type="password" name="dbpass" value=""/>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Nombre BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 1); ?>
-                </td>
-                <td class="valField">
-                    <input type="text" name="dbname" value="phppms"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Servidor BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 2); ?>
-                </td>
-                <td class="valField">
-                    <input type="text" name="dbhost" value="localhost"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Confirmar'); ?>
-                </td>
-                <td class="valField">
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
-                    <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
-                    <br><br>
-                    <label for="chkmigrate"><?php echo _('NO'); ?></label>
-                    <input type="checkbox" name="chkmigrate" id="chkmigrate" class="checkbox"/>
-                </td>
-            </tr>
-        </table>
-
-        <input type="hidden" name="activeTab" value="<?php echo $import_tabIndex; ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT; ?>"/>
-        <input type="hidden" name="isAjax" value="1"/>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
-    </form>
-
-    <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/start.png" title="<?php echo _('Iniciar'); ?>" class="inputImg"
-                     OnClick="configMgmt('migrate');"/>
-            </li>
-        </ul>
-    </div>
-
-    <div id="title" class="midroundup titleNormal">
         <?php echo _('Importar CSV/XML'); ?>
     </div>
 
@@ -119,9 +47,12 @@ echo $import_tabIndex; ?>">
                     <?php echo _('Clave de Importación'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="importPwd" maxlength="255">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255"/>
+                        <label class="mdl-textfield__label" for="importPwd"><?php echo _('Clave de Importación'); ?></label>
+                    </div>
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
                 </td>
             </tr>
             <tr>
@@ -129,7 +60,11 @@ echo $import_tabIndex; ?>">
                     <?php echo _('Delimitador CSV'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="csvDelimiter" maxlength="1" value=";">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="csvDelimiter" name="csvDelimiter" type="text" class="mdl-textfield__input blue100"
+                               maxlength="1" value=";"/>
+                        <label class="mdl-textfield__label" for="csvDelimiter"><?php echo _('Delimitador CSV'); ?></label>
+                    </div>
                 </td>
             </tr>
         </form>
@@ -149,27 +84,115 @@ echo $import_tabIndex; ?>">
         </tr>
     </table>
     <div class="action">
-        <ul>
-            <li>
-                <img id="help_import_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_import_button"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                title="<?php echo _('Ayuda'); ?>">
+            <i class="material-icons">help_outline</i>
+        </button>
 
-                <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>
+        <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
+            <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
 
-                    <p class="help-text"><?php echo _('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
+            <p class="help-text"><?php echo _('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
+            <p class="help-text"><?php echo _('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
 
-                    <p class="help-text"><?php echo _('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
+            <p class="help-text"><?php echo _('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
 
-                    <p class="help-text"><?php echo _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
+            <p class="help-text"><?php echo _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
 
-                    <p class="help-text"><?php echo _('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
-                </div>
-            </li>
-        </ul>
+            <p class="help-text"><?php echo _('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
+        </div>
+    </div>
+
+    <div id="title" class="midroundup titleNormal">
+        <?php echo _('Importar phpPMS'); ?>
+    </div>
+
+    <form method="post" name="frmMigrate" id="frmMigrate">
+        <table class="data round">
+            <tr>
+                <td class="descField">
+                    <?php echo _('Usuario BBDD'); ?>
+                    <?php echo Common::printHelpButton("config", 0); ?>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="dbuser" name="dbuser" type="text" class="mdl-textfield__input blue100"
+                               maxlength="255" required/>
+                        <label class="mdl-textfield__label" for="dbuser"><?php echo _('Usuario BBDD'); ?></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Clave BBDD'); ?>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255" required/>
+                        <label class="mdl-textfield__label" for="dbpass"><?php echo _('Clave BBDD'); ?></label>
+                    </div>
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Nombre BBDD'); ?>
+                    <?php echo Common::printHelpButton("config", 1); ?>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="dbname" name="dbname" type="text" class="mdl-textfield__input blue100"
+                               maxlength="255" required/>
+                        <label class="mdl-textfield__label" for="dbname"><?php echo _('Nombre BBDD'); ?></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Servidor BBDD'); ?>
+                    <?php echo Common::printHelpButton("config", 2); ?>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="dbhost" name="dbhost" type="text" class="mdl-textfield__input blue100"
+                               maxlength="255" value="localhost" required/>
+                        <label class="mdl-textfield__label" for="dbhost"><?php echo _('Servidor BBDD'); ?></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Confirmar'); ?>
+                </td>
+                <td class="valField">
+                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
+                    <br><br>
+
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkmigrate">
+                        <input type="checkbox" id="chkmigrate" class="mdl-switch__input blue100" name="chkmigrate"/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+        </table>
+
+        <input type="hidden" name="activeTab" value="<?php echo $import_tabIndex; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT; ?>"/>
+        <input type="hidden" name="isAjax" value="1"/>
+        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+    </form>
+
+    <div class="action">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="configMgmt('migrate');" title="<?php echo _('Realizar'); ?>">
+            <i class="material-icons">play_circle_filled</i>
+        </button>
     </div>
 </div> <!-- End Tab - Import -->
 

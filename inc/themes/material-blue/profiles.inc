@@ -7,49 +7,58 @@
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
-                    <input type="text" id="profile_name" name="profile_name"
-                           title="<?php echo _('Nombre del perfil'); ?>" value="<?php echo $profile->getName(); ?>" <?php echo $isDisabled; ?> />
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="profile_name" name="profile_name" type="text" required class="mdl-textfield__input blue100"
+                               value="<?php echo $profile->getName(); ?>" maxlength="50" <?php echo $isDisabled; ?>>
+                        <label class="mdl-textfield__label"
+                               for="profile_name"><?php echo _('Nombre del perfil'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Cuentas'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnProfilesAcc" class="btn-checks round5">
-                        <label for="profile_accview"
-                               title="<?php echo _('Ver detalles de cuenta'); ?>"><?php echo _('Ver'); ?></label>
-                        <input type="checkbox" id="profile_accview"
-                               name="profile_accview" <?php echo ($profile->isAccView()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_accviewpass"
-                               title="<?php echo _('Ver clave de cuenta'); ?>"><?php echo _('Ver Clave'); ?></label>
-                        <input type="checkbox" id="profile_accviewpass"
-                               name="profile_accviewpass" <?php echo ($profile->isAccViewPass()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <br>
-                        <label for="profile_accviewhistory"
-                               title="<?php echo _('Ver historial de cuenta'); ?>"><?php echo _('Ver Historial'); ?></label>
-                        <input type="checkbox" id="profile_accviewhistory"
-                               name="profile_accviewhistory" <?php echo ($profile->isAccViewHistory()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_accedit"
-                               title="<?php echo _('Editar cuenta'); ?>"><?php echo _('Editar'); ?></label>
-                        <input type="checkbox" id="profile_accedit"
-                               name="profile_accedit" <?php echo ($profile->isAccEdit()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <br>
-                        <label for="profile_acceditpass"
-                               title="<?php echo _('Editar clave de cuenta'); ?>"><?php echo _('Editar Clave'); ?></label>
-                        <input type="checkbox" id="profile_acceditpass"
-                               name="profile_acceditpass" <?php echo ($profile->isAccEditPass()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_accadd"
-                               title="<?php echo _('Añadir nueva cuenta'); ?>"><?php echo _('Añadir'); ?></label>
-                        <input type="checkbox" id="profile_accadd"
-                               name="profile_accadd" <?php echo ($profile->isAccAdd()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <br>
-                        <label for="profile_accdel"
-                               title="<?php echo _('Borrar cuenta'); ?>"><?php echo _('Borrar'); ?></label>
-                        <input type="checkbox" id="profile_accdel"
-                               name="profile_accdel" <?php echo ($profile->isAccDelete()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_accfiles"
-                               title="<?php echo _('Ver archivos de cuenta'); ?>"><?php echo _('Archivos'); ?></label>
-                        <input type="checkbox" id="profile_accfiles"
-                               name="profile_accfiles" <?php echo ($profile->isAccFiles()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accadd">
+                            <input type="checkbox" id="profile_accadd" class="mdl-switch__input blue100"
+                                   name="profile_accadd" <?php echo ($profile->isAccAdd()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Crear nueva cuenta'); ?>"><?php echo _('Crear'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accview">
+                            <input type="checkbox" id="profile_accview" class="mdl-switch__input blue100"
+                                   name="profile_accview" <?php echo ($profile->isAccView()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Ver detalles de cuenta'); ?>"><?php echo _('Ver'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accviewpass">
+                            <input type="checkbox" id="profile_accviewpass" class="mdl-switch__input blue100"
+                                   name="profile_accviewpass" <?php echo ($profile->isAccViewPass()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Ver clave de cuenta'); ?>"><?php echo _('Ver Clave'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accviewhistory">
+                            <input type="checkbox" id="profile_accviewhistory" class="mdl-switch__input blue100"
+                                   name="profile_accviewhistory" <?php echo ($profile->isAccViewHistory()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Ver historial de cuenta'); ?>"><?php echo _('Ver Historial'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accedit">
+                            <input type="checkbox" id="profile_accedit" class="mdl-switch__input blue100"
+                                   name="profile_accedit" <?php echo ($profile->isAccEdit()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Editar cuenta'); ?>"><?php echo _('Editar'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_acceditpass">
+                            <input type="checkbox" id="profile_acceditpass" class="mdl-switch__input blue100"
+                                   name="profile_acceditpass" <?php echo ($profile->isAccEditPass()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Editar clave de cuenta'); ?>"><?php echo _('Editar Clave'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accdel">
+                            <input type="checkbox" id="profile_accdel" class="mdl-switch__input blue100"
+                                   name="profile_accdel" <?php echo ($profile->isAccDelete()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Eliminar cuenta'); ?>"><?php echo _('Eliminar'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accfiles">
+                            <input type="checkbox" id="profile_accfiles" class="mdl-switch__input blue100"
+                                   name="profile_accfiles" <?php echo ($profile->isAccFiles()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Var archivos de cuenta'); ?>"><?php echo _('Archivos'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>
@@ -57,19 +66,26 @@
                 <td class="descField"><?php echo _('Configuración'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnProfilesConfig" class="btn-checks round5">
-                        <label for="profile_config"
-                               title="<?php echo _('Configuración general'); ?>"><?php echo _('General'); ?></label>
-                        <input type="checkbox" id="profile_config"
-                               name="profile_config" <?php echo ($profile->isConfigGeneral()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_configmpw"
-                               title="<?php echo _('Cambiar clave maestra'); ?>"><?php echo _('Encriptación'); ?></label>
-                        <input type="checkbox" id="profile_configmpw"
-                               name="profile_configmpw" <?php echo ($profile->isConfigEncryption()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <br>
-                        <label for="profile_configback"
-                               title="<?php echo _('Realizar copia de seguridad'); ?>"><?php echo _('Backup'); ?></label>
-                        <input type="checkbox" id="profile_configback"
-                               name="profile_configback" <?php echo ($profile->isConfigBackup()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_config">
+                            <input type="checkbox" id="profile_config" class="mdl-switch__input blue100"
+                                   name="profile_config" <?php echo ($profile->isConfigGeneral()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Configuración general'); ?>"><?php echo _('General'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configmpw">
+                            <input type="checkbox" id="profile_configmpw" class="mdl-switch__input blue100"
+                                   name="profile_configmpw" <?php echo ($profile->isConfigEncryption()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Opciones de encriptación'); ?>"><?php echo _('Encriptación'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configback">
+                            <input type="checkbox" id="profile_configback" class="mdl-switch__input blue100"
+                                   name="profile_configback" <?php echo ($profile->isConfigBackup()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Realizar copia de seguridad y exportar'); ?>"><?php echo _('Backup'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configimport">
+                            <input type="checkbox" id="profile_configimport" class="mdl-switch__input blue100"
+                                   name="profile_configimport" <?php echo ($profile->isConfigImport()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Realizar importación de cuentas'); ?>"><?php echo _('Importar'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>
@@ -77,28 +93,31 @@
                 <td class="descField"><?php echo _('Gestión'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnProfilesUsers" class="btn-checks round5">
-                        <label for="profile_users"
-                               title="<?php echo _('Gestión de usuarios'); ?>"><?php echo _('Usuarios'); ?></label>
-                        <input type="checkbox" id="profile_users"
-                               name="profile_users" <?php echo ($profile->isMgmUsers()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_groups"
-                               title="<?php echo _('Gestión de grupos'); ?>"><?php echo _('Grupos'); ?></label>
-                        <input type="checkbox" id="profile_groups"
-                               name="profile_groups" <?php echo ($profile->isMgmGroups()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <br>
-                        <label for="profile_profiles"
-                               title="<?php echo _('Gestión de perfiles'); ?>"><?php echo _('Perfiles'); ?></label>
-                        <input type="checkbox" id="profile_profiles"
-                               name="profile_profiles" <?php echo ($profile->isMgmProfiles()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <label for="profile_categories"
-                               title="<?php echo _('Gestión de categorías'); ?>"><?php echo _('Categorías'); ?></label>
-                        <input type="checkbox" id="profile_categories"
-                               name="profile_categories" <?php echo ($profile->isMgmCategories()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
-                        <br>
-                        <label for="profile_customers"
-                               title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></label>
-                        <input type="checkbox" id="profile_customers"
-                               name="profile_customers" <?php echo ($profile->isMgmCustomers()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_users">
+                            <input type="checkbox" id="profile_users" class="mdl-switch__input blue100"
+                                   name="profile_users" <?php echo ($profile->isMgmUsers()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de usuarios'); ?>"><?php echo _('Usuarios'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_groups">
+                            <input type="checkbox" id="profile_groups" class="mdl-switch__input blue100"
+                                   name="profile_groups" <?php echo ($profile->isMgmGroups()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de grupos'); ?>"><?php echo _('Grupos'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_profiles">
+                            <input type="checkbox" id="profile_profiles" class="mdl-switch__input blue100"
+                                   name="profile_profiles" <?php echo ($profile->isMgmProfiles()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de perfiles'); ?>"><?php echo _('Perfiles'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_categories">
+                            <input type="checkbox" id="profile_categories" class="mdl-switch__input blue100"
+                                   name="profile_categories" <?php echo ($profile->isMgmCategories()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de categorías'); ?>"><?php echo _('Categorías'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_customers">
+                            <input type="checkbox" id="profile_customers" class="mdl-switch__input blue100"
+                                   name="profile_customers" <?php echo ($profile->isMgmCustomers()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>
@@ -106,10 +125,11 @@
                 <td class="descField"><?php echo _('Otros'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnProfilesOthers" class="btn-checks round5">
-                        <label for="profile_eventlog"
-                               title="<?php echo _('Ver log de eventos'); ?>"><?php echo _('Log de Eventos'); ?></label>
-                        <input type="checkbox" id="profile_eventlog"
-                               name="profile_eventlog" <?php echo ($profile->isEvl()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_eventlog">
+                            <input type="checkbox" id="profile_eventlog" class="mdl-switch__input blue100"
+                                   name="profile_eventlog" <?php echo ($profile->isEvl()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Ver log de eventos'); ?>"><?php echo _('Log de Eventos'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>
@@ -138,25 +158,15 @@
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">
         <?php endif; ?>
-        <script>
-            $(function () {
-                $('#btnProfilesAcc').buttonset();
-                $('#btnProfilesConfig').buttonset();
-                $('#btnProfilesUsers').buttonset();
-                $('#btnProfilesOthers').buttonset();
-            });
-        </script>
     </form>
 
     <?php if (!$isView): ?>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <ul>
-            <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                     OnClick="appMgmtSave('frmProfiles');"/>
-            </li>
-        </ul>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="appMgmtSave('frmProfiles');" title="<?php echo _('Guardar'); ?>">
+            <i class="material-icons">save</i>
+        </button>
     </div>
     <?php endif; ?>
 </div>

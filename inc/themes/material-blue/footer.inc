@@ -1,5 +1,6 @@
 </div> <!-- Close container -->
 <footer>
+    <?php if($loggedIn): ?>
     <div id="session">
         <i class="material-icons" title="<?php echo _('Salir'); ?>" OnClick="doLogout();">exit_to_app</i>
         <?php if ($showPassIcon): ?>
@@ -9,6 +10,8 @@
         <?php endif; ?>
         <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
     </div>
+    <?php endif; ?>
+
     <div id="updates"></div>
     <div id="status"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></div>
     <div id="project">

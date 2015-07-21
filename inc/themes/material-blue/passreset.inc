@@ -7,37 +7,38 @@
         echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
-    <form id="passreset" action="" method="post"
+    <form id="frmPassReset" action="" method="post"
           onsubmit="sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
         <fieldset id="resetdata">
             <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
             <?php if (!$passReset): ?>
-                <p>
-                    <input type="text" name="login" id="login" title="<?php echo _('Login del Usuario'); ?>"
-                           placeholder="<?php echo _('Usuario'); ?> "
-                           value="<?php echo Util::init_var('login'); ?>" autocomplete="off" autofocus required/>
-                </p>
-                <p>
-                    <input type="text" name="email" id="email" title="<?php echo _('Email del Usuario'); ?>"
-                           placeholder="<?php echo _('Email'); ?>  "
-                           value="<?php echo Util::init_var('email'); ?>" autocomplete="off" autofocus required/>
-                </p>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="login" name="login" type="text" required class="mdl-textfield__input blue100"
+                           value="<?php echo Util::init_var('login'); ?>" maxlength="80" autocomplete="off" autofocus>
+                    <label class="mdl-textfield__label"
+                           for="login"><?php echo _('Usuario'); ?></label>
+                </div>
+                <br>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="email" name="email" type="email" required class="mdl-textfield__input blue100"
+                           value="<?php echo Util::init_var('email'); ?>" maxlength="80" autocomplete="off">
+                    <label class="mdl-textfield__label"
+                           for="email"><?php echo _('Email del Usuario'); ?></label>
+                </div>
             <?php else: ?>
-                <p>
-                    <input type="password" name="pass" id="pass" title="<?php echo _('Nueva Clave'); ?>"
-                           placeholder="<?php echo _('Clave'); ?>" value="<?php echo Util::init_var('pass'); ?>"
-                           onKeyUp="checkPassLevel(this.value)" required/>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="pass" name="pass" type="password" required class="mdl-textfield__input blue100"
+                           value="<?php echo Util::init_var('pass'); ?>" maxlength="255" autocomplete="off"
+                           onKeyUp="checkPassLevel(this.value)">
+                    <label class="mdl-textfield__label"
+                           for="pass"><?php echo _('Clave'); ?></label>
+                </div>
+                <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+
                     <span class="passLevel fullround"
                           title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
-                </p>
-                <p>
-                    <input type="password" name="passv" id="passv"
-                           title="<?php echo _('Nueva Clave (Verificar)'); ?>"
-                           placeholder="<?php echo _('Clave (Verificar)'); ?>"
-                           value="<?php echo Util::init_var('passv'); ?>" required/>
-                    <span class="passLevel fullround"
-                          title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
-                </p>
+
                 <input type="hidden" name="time" value="<?php echo $time; ?>">
                 <input type="hidden" name="hash" value="<?php echo $hash; ?>">
             <?php endif; ?>
@@ -46,14 +47,30 @@
         </fieldset>
 
         <div class="buttons">
-            <?php echo Html::anchorText(_('Volver'), 'index.php', _('Volver a iniciar sesión'), 'class="button round5"'); ?>
+            <button id="btnBack" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                <i class="material-icons" title="<?php echo _('Volver a iniciar sesión'); ?>">arrow_back</i>
+                <?php echo _('Volver'); ?>
+            </button>
+
             <?php if (!$passReset): ?>
-                <input type="submit" class="button round5" value="<?php echo _('Solicitar'); ?>"
-                       title="<?php echo _('Solicitar cambio de clave'); ?>"/>
+                <button id="btnRequest" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                    <?php echo _('Solicitar'); ?>
+                    <i class="material-icons" title="<?php echo _('Solicitar'); ?>">play_circle_filled</i>
+                </button>
             <?php else: ?>
-                <input type="submit" class="button round5" value="<?php echo _('Cambiar'); ?>"
-                       title="<?php echo _('Cambiar Clave'); ?>"/>
+                <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                    <?php echo _('Cambiar'); ?>
+                    <i class="material-icons" title="<?php echo _('Cambiar'); ?>">play_circle_filled</i>
+                </button>
             <?php endif; ?>
         </div>
     </form>
 </div>
+
+<script>
+    $(function(){
+        $('#btnBack').click(function(){
+            window.history.back();
+        })
+    })
+</script>

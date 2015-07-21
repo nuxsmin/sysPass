@@ -28,8 +28,6 @@
 .material-icons.md-36 { font-size: 36px; }
 .material-icons.md-48 { font-size: 48px; }
 
-.material-icons.blue80 {color: rgba(83, 109, 254, .8)}
-
 .material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
 .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
 
@@ -38,3 +36,8 @@
 
 .mdl-button {margin: 0 .3em;}
 
+.blue20 {color: rgba(83, 109, 254, .2)}
+.blue40 {color: rgba(83, 109, 254, .4)}
+.blue60 {color: rgba(83, 109, 254, .6)}
+.blue80 {color: rgba(83, 109, 254, .8)}
+.blue100 {color: rgba(83, 109, 254, 1)}

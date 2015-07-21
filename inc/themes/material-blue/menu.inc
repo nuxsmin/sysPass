@@ -1,4 +1,5 @@
 <div id="actionsBar">
+    <div id="actionsBar-icons">
         <?php
         foreach ($actions as $action): ?>
             <?php if ($action['checkaccess'] && !\SP\Acl::checkUserAccess($action['name'])): ?>
@@ -13,5 +14,6 @@
                 <i class="material-icons"><?php echo $action['icon']; ?></i>
             </button>
         <?php endforeach; ?>
+    </div>
 </div>
 <div id="content"></div>

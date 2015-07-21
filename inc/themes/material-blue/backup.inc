@@ -42,21 +42,22 @@
     </form>
 
     <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/backup.png" title="<?php echo _('Realizar Backup'); ?>" class="inputImg"
-                     OnClick="configMgmt('backup');"/>
-            </li>
-            <li>
-                <img id="help_backup_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_backup_button"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                title="<?php echo _('Ayuda'); ?>">
+            <i class="material-icons">help_outline</i>
+        </button>
 
-                <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
+        <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
-                </div>
-            </li>
-        </ul>
+            <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="configMgmt('backup');" title="<?php echo _('Realizar'); ?>">
+            <i class="material-icons">play_circle_filled</i>
+        </button>
     </div>
 
     <div id="title" class="midroundup titleNormal">
@@ -93,9 +94,14 @@
                     <?php echo _('Clave de Exportación'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="exportPwd" maxlength="255">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255"/>
+                        <label class="mdl-textfield__label"
+                               for="exportPwd"><?php echo _('Clave de Exportación'); ?></label>
+                    </div>
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -103,7 +109,12 @@
                     <?php echo _('Clave de Exportación (repetir)'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="exportPwdR" maxlength="255">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="exportPwdR" name="exportPwdR" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255"/>
+                        <label class="mdl-textfield__label"
+                               for="exportPwdR"><?php echo _('Clave de Exportación (repetir)'); ?></label>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -115,25 +126,27 @@
     </form>
 
     <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/backup.png" title="<?php echo _('Exportar Cuentas'); ?>" class="inputImg"
-                     OnClick="configMgmt('export');"/>
-            </li>
-            <li>
-                <img id="help_export_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_export_button"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                title="<?php echo _('Ayuda'); ?>">
+            <i class="material-icons">help_outline</i>
+        </button>
 
-                <div id="help_export" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
+        <div id="help_export" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Los elementos exportados son cuentas, clientes y categorías.'); ?></p>
+            <p class="help-text"><?php echo _('Los elementos exportados son cuentas, clientes y categorías.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
+            <p class="help-text"><?php echo _('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
-                </div>
-            </li>
-        </ul>
+            <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="configMgmt('export');" title="<?php echo _('Realizar'); ?>">
+            <i class="material-icons">play_circle_filled</i>
+        </button>
+
     </div>
 
     <script>

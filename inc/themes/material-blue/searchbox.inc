@@ -2,9 +2,10 @@
     <table id="tblTools" class="round shadow">
         <tr>
             <td id="toolsLeft">
-                <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear</i>
+                <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear_all</i>
                 <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input" type="text" id="txtSearch" name="search" value="<?php echo $searchTxt; ?>"/>
+                    <input class="mdl-textfield__input blue100" type="text" id="txtSearch"
+                           name="search" value="<?php echo $searchTxt; ?>"/>
                     <label class="mdl-textfield__label" for="txtSearch"><?php echo _('Texto a buscar'); ?></label>
                 </div>
 

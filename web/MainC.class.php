@@ -58,6 +58,7 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('startTime', microtime());
         $this->view->assign('page', $page);
+        $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
 
         $this->getHeader();
         $this->setHeaders();

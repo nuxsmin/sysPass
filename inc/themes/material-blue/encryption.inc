@@ -25,9 +25,13 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Clave Maestra actual'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="curMasterPwd" maxlength="255">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255" required/>
+                        <label class="mdl-textfield__label" for="curMasterPwd"><?php echo _('Clave Maestra actual'); ?></label>
+                    </div>
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -35,9 +39,15 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Nueva Clave Maestra'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="newMasterPwd" maxlength="255" OnKeyUp="checkPassLevel(this.value)">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255" OnKeyUp="checkPassLevel(this.value)" required/>
+                        <label class="mdl-textfield__label" for="newMasterPwd"><?php echo _('Nueva Clave Maestra'); ?></label>
+                    </div>
+
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
+
                     <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>
             </tr>
@@ -46,7 +56,11 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Nueva Clave Maestra (repetir)'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="newMasterPwdR" maxlength="255">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="newMasterPwdR" name="newMasterPwdR" type="password" class="mdl-textfield__input blue100"
+                               maxlength="255" required/>
+                        <label class="mdl-textfield__label" for="newMasterPwdR"><?php echo _('Nueva Clave Maestra (repetir)'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -55,8 +69,10 @@ echo $encryption_tabIndex; ?>">
                     <?php echo Common::printHelpButton("config", 16); ?>
                 </td>
                 <td class="valField">
-                    <label for="chkNoAccountChange"><?php echo _('NO'); ?></label>
-                    <input type="checkbox" class="checkbox" name="chkNoAccountChange" id="chkNoAccountChange"/>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkNoAccountChange">
+                        <input type="checkbox" id="chkNoAccountChange" class="mdl-switch__input blue100" name="chkNoAccountChange"/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
             <tr>
@@ -74,8 +90,10 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                     <br>
                     <br>
-                    <label for="confirmPassChange"><?php echo _('NO'); ?></label>
-                    <input type="checkbox" class="checkbox" name="confirmPassChange" id="confirmPassChange"/>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="confirmPassChange">
+                        <input type="checkbox" id="confirmPassChange" class="mdl-switch__input" name="confirmPassChange"/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
         </table>
@@ -86,21 +104,19 @@ echo $encryption_tabIndex; ?>">
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
     <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                     OnClick="configMgmt('savempwd');"/>
-            </li>
-            <li>
-                <img id="help_mpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_mpass_button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('savempwd');" title="<?php echo _('Ayuda'); ?>">
+            <i class="material-icons">help_outline</i>
+        </button>
 
-                <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
+        <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
-                </div>
-            </li>
-        </ul>
+            <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('savempwd');" title="<?php echo _('Realizar'); ?>">
+            <i class="material-icons">play_circle_filled</i>
+        </button>
     </div>
 
     <div id="title" class="midroundup titleNormal">
@@ -134,8 +150,11 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Validez (s)'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="tmpass_maxtime" id="tmpass_maxtime" title="<?php echo _('Validez'); ?>"
-                           value="3600"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="tmpass_maxtime" name="tmpass_maxtime" type="number" step="600"
+                               pattern="[0-9]{2,6}" class="mdl-textfield__input blue100" value="3600" required/>
+                        <label class="mdl-textfield__label" for="tmpass_maxtime"><?php echo _('Validez (s)'); ?></label>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -146,29 +165,24 @@ echo $encryption_tabIndex; ?>">
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
     <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/genpass.png" title="<?php echo _('Generar'); ?>" class="inputImg"
-                     OnClick="configMgmt('gentmpass');"/>
-            </li>
-            <li>
-                <img id="help_tmpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_tmpass_button"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                title="<?php echo _('Ayuda'); ?>">
+            <i class="material-icons">help_outline</i>
+        </button>
 
-                <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
-                </div>
-            </li>
-        </ul>
+        <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('gentmpass');" title="<?php echo _('Generar'); ?>">
+            <i class="material-icons">play_circle_filled</i>
+        </button>
     </div>
 </div> <!-- End Tab - Encryption -->
 
 <script>
     $(function () {
-        $("#tmpass_maxtime").spinner({
-            step: 60, min: 60, numberFormat: "n", stop: function (event, ui) {
-                accSearch(0);
-            }
-        });
         $("#help_tmpass_button").click(function () {
             $("#help_tmpass").dialog("open");
         });

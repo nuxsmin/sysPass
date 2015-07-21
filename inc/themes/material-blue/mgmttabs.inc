@@ -59,16 +59,11 @@
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
                             <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php $i++; ?>
-                            <img src="<?php echo $action['img']; ?>" title="<?php echo $action['title']; ?>"
-                                 class="inputImg <?php echo ($i >= $maxNumActions) ? 'actions-optional' : ''; ?>"
-                                 data-itemid="<?php echo $itemId; ?>" data-activetab="<?php echo $index; ?>"
-                                 data-nextactionid="<?php echo $actionId; ?>"
-                                 Onclick="<?php echo $action['onclick'];; ?>;"/>
+                            <i class="material-icons blue80" title="<?php echo $action['title']; ?>"
+                               data-itemid="<?php echo $itemId; ?>" data-activetab="<?php echo $index; ?>"
+                               data-nextactionid="<?php echo $actionId; ?>"
+                               Onclick="<?php echo $action['onclick'];; ?>;"><?php echo $action['icon']; ?></i>
                         <?php endforeach; ?>
-                        <?php if ($numActions > $maxNumActions): ?>
-                            <img src="imgs/action.png" title="<?php echo _('Más Acciones'); ?>"
-                                 OnClick="showOptional(this)"/>
-                        <?php endif; ?>
                     </li>
                 </ul>
             <?php endforeach; ?>

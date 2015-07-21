@@ -528,7 +528,7 @@ class Init
                         Config::setValue('maintenance', true);
                     }
 
-                    self::initError(_('La aplicación necesita actualizarse'), _('Si es un administrador pulse en el enlace:') . ' <a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>');
+                    self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'),'<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
                 }
 
                 $action = Request::analyze('a');

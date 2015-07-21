@@ -35,8 +35,12 @@
                     <?php echo _('Timeout de sesión (s)'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="session_timeout" id="session_timeout"
-                           value="<?php echo $sessionTimeout; ?>" maxlength="4" <?php echo $isDisabled; ?> />
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="session_timeout" name="session_timeout" type="number" step="300"
+                               pattern="[0-9]{2,4}" class="mdl-textfield__input blue100" maxlength="5"
+                               value="<?php echo $sessionTimeout; ?>" <?php echo $isDisabled; ?> required/>
+                        <label class="mdl-textfield__label" for="session_timeout"><?php echo _('Timeout de sesión (s)'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -46,7 +50,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
-                        <input type="checkbox" id="log_enabled" class="mdl-switch__input" name="log_enabled" <?php echo $chkLog, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="log_enabled" class="mdl-switch__input blue100" name="log_enabled"
+                            <?php echo $chkLog, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -58,7 +63,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
-                        <input type="checkbox" id="debug" class="mdl-switch__input" name="debug" <?php echo $chkDebug, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="debug" class="mdl-switch__input blue100" name="debug"
+                            <?php echo $chkDebug, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -70,7 +76,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
-                        <input type="checkbox" id="maintenance" class="mdl-switch__input" name="maintenance" <?php echo $chkMaintenance, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="maintenance" class="mdl-switch__input blue100" name="maintenance"
+                            <?php echo $chkMaintenance, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -82,7 +89,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
-                        <input type="checkbox" id="updates" class="mdl-switch__input" name="updates" <?php echo $chkUpdates, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="updates" class="mdl-switch__input blue100" name="updates"
+                            <?php echo $chkUpdates, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -94,7 +102,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
-                        <input type="checkbox" id="account_link" class="mdl-switch__input" name="account_link" <?php echo $chkAccountLink, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="account_link" class="mdl-switch__input blue100" name="account_link"
+                            <?php echo $chkAccountLink, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -106,7 +115,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
-                        <input type="checkbox" id="files_enabled" class="mdl-switch__input" name="files_enabled" <?php echo $chkFiles, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="files_enabled" class="mdl-switch__input blue100" name="files_enabled"
+                            <?php echo $chkFiles, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -118,7 +128,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="globalsearch">
-                        <input type="checkbox" id="globalsearch" class="mdl-switch__input" name="globalsearch" <?php echo $chkGlobalSearch, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="globalsearch" class="mdl-switch__input blue100" name="globalsearch"
+                            <?php echo $chkGlobalSearch, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -139,8 +150,12 @@
                     <?php echo SP\Common::printHelpButton("config", 6); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="files_allowed_size" id="files_allowed_size"
-                           value="<?php echo $filesAllowedSize; ?>" maxlength="5" <?php echo $isDisabled; ?> />
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="files_allowed_size" name="files_allowed_size" type="number" step="512"
+                               pattern="[0-9]{1,5}" class="mdl-textfield__input blue100" maxlength="5"
+                               value="<?php echo $filesAllowedSize; ?>" <?php echo $isDisabled; ?>/>
+                        <label class="mdl-textfield__label" for="files_allowed_size"><?php echo _('Tamaño máximo de archivo'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -149,8 +164,12 @@
                     <?php echo SP\Common::printHelpButton("config", 4); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="account_count" id="sel-account_count" value="<?php echo $accountCount; ?>"
-                           maxlength="5" <?php echo $isDisabled; ?> />
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="account_count" name="account_count" type="number" step="6"
+                               pattern="[0-9]{1,5}" class="mdl-textfield__input blue100" maxlength="5"
+                               value="<?php echo $accountCount; ?>" <?php echo $isDisabled; ?> required/>
+                        <label class="mdl-textfield__label" for="account_count"><?php echo _('Tamaño máximo de archivo'); ?></label>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -168,7 +187,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
-                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input" name="wiki_enabled" <?php echo $chkWiki, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input blue100" name="wiki_enabled"
+                            <?php echo $chkWiki, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -179,8 +199,11 @@
                     <?php echo SP\Common::printHelpButton("config", 8); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="wiki_searchurl" class="txtLong" value="<?php echo $wikiSearchUrl; ?>"
-                           maxlength="128"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="wiki_searchurl" name="wiki_searchurl" type="text" class="mdl-textfield__input blue100"
+                               maxlength="128" value="<?php echo $wikiSearchUrl; ?>">
+                        <label class="mdl-textfield__label" for="wiki_searchurl"><?php echo _('URL de búsqueda Wiki'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -189,8 +212,11 @@
                     <?php echo SP\Common::printHelpButton("config", 9); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="wiki_pageurl" class="txtLong" value="<?php echo $wikiPageUrl; ?>"
-                           maxlength="128"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input blue100"
+                               maxlength="128" value="<?php echo $wikiPageUrl; ?>">
+                        <label class="mdl-textfield__label" for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -219,7 +245,8 @@
                     </td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_enabled">
-                            <input type="checkbox" id="ldap_enabled" class="mdl-switch__input" name="ldap_enabled" <?php echo $chkLdap, ' ', $isDisabled; ?>/>
+                            <input type="checkbox" id="ldap_enabled" class="mdl-switch__input blue100" name="ldap_enabled"
+                                <?php echo $chkLdap, ' ', $isDisabled; ?>/>
                             <span class="mdl-switch__label"></span>
                         </label>
                     </td>
@@ -230,8 +257,11 @@
                         <?php echo SP\Common::printHelpButton("config", 15); ?>
                     </td>
                     <td class="valField">
-                        <input type="text" name="ldap_server" value="<?php echo $ldapServer; ?>"
-                               maxlength="128" <?php echo $isDisabled; ?>/>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="ldap_server" name="ldap_server" type="text" class="mdl-textfield__input blue100"
+                                   maxlength="128" value="<?php echo $ldapServer; ?>" <?php echo $isDisabled; ?>/>
+                            <label class="mdl-textfield__label" for="ldap_server"><?php echo _('Servidor'); ?></label>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -240,8 +270,11 @@
                         <?php echo SP\Common::printHelpButton("config", 12); ?>
                     </td>
                     <td class="valField">
-                        <input type="text" name="ldap_binduser" value="<?php echo $ldapBindUser; ?>"
-                               maxlength="128" <?php echo $isDisabled; ?>/>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="ldap_binduser" name="ldap_binduser" type="text" class="mdl-textfield__input blue100"
+                                   maxlength="128" value="<?php echo $ldapBindUser; ?>" <?php echo $isDisabled; ?>/>
+                            <label class="mdl-textfield__label" for="ldap_binduser"><?php echo _('Servidor'); ?></label>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -250,10 +283,13 @@
                         <?php echo SP\Common::printHelpButton("config", 17); ?>
                     </td>
                     <td class="valField">
-                        <input type="password" name="ldap_bindpass" value="<?php echo $ldapBindPass; ?>"
-                               maxlength="128" <?php echo $isDisabled; ?>/>
-                        <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                             alt="<?php echo _('Mostrar Clave'); ?>"/>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="ldap_bindpass" name="ldap_bindpass" type="password" class="mdl-textfield__input blue100"
+                                   maxlength="128" value="<?php echo $ldapBindPass; ?>" <?php echo $isDisabled; ?>/>
+                            <label class="mdl-textfield__label" for="ldap_bindpass"><?php echo _('Clave'); ?></label>
+                        </div>
+                        <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                        <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                     </td>
                 </tr>
                 <tr>
@@ -262,8 +298,11 @@
                         <?php echo SP\Common::printHelpButton("config", 13); ?>
                     </td>
                     <td class="valField">
-                        <input type="text" name="ldap_base" class="txtLong" value="<?php echo $ldapBase; ?>"
-                               maxlength="128" <?php echo $isDisabled; ?>/>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="ldap_base" name="ldap_base" type="text" class="mdl-textfield__input blue100"
+                                   maxlength="128" value="<?php echo $ldapBase; ?>" <?php echo $isDisabled; ?>/>
+                            <label class="mdl-textfield__label" for="ldap_base"><?php echo _('Base de búsqueda'); ?></label>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -272,8 +311,11 @@
                         <?php echo SP\Common::printHelpButton("config", 14); ?>
                     </td>
                     <td class="valField">
-                        <input type="text" name="ldap_group" class="txtLong" value="<?php echo $ldapGroup; ?>"
-                               maxlength="128" <?php echo $isDisabled; ?>/>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="ldap_group" name="ldap_group" type="text" class="mdl-textfield__input blue100"
+                                   maxlength="128" value="<?php echo $ldapGroup; ?>" <?php echo $isDisabled; ?>/>
+                            <label class="mdl-textfield__label" for="ldap_group"><?php echo _('Grupo'); ?></label>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -315,7 +357,8 @@
                     </td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
-                            <input type="checkbox" id="ldap_ads" class="mdl-switch__input" name="ldap_ads" <?php echo $chkLdapADS, ' ', $isDisabled; ?>/>
+                            <input type="checkbox" id="ldap_ads" class="mdl-switch__input blue100" name="ldap_ads"
+                                <?php echo $chkLdapADS, ' ', $isDisabled; ?>/>
                             <span class="mdl-switch__label"></span>
                         </label>
                     </td>
@@ -350,7 +393,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
-                        <input type="checkbox" id="mail_enabled" class="mdl-switch__input" name="mail_enabled" <?php echo $chkMail, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="mail_enabled" class="mdl-switch__input blue100" name="mail_enabled"
+                            <?php echo $chkMail, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -360,7 +404,11 @@
                     <?php echo _('Servidor'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="mail_server" size="20" value="<?php echo $mailServer; ?>" maxlength="128"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="mail_server" name="mail_server" type="text" class="mdl-textfield__input blue100"
+                               maxlength="128" value="<?php echo $mailServer; ?>" <?php echo $isDisabled; ?>/>
+                        <label class="mdl-textfield__label" for="mail_server"><?php echo _('Servidor'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -368,7 +416,12 @@
                     <?php echo _('Puerto'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="mail_port" size="20" value="<?php echo $mailPort; ?>" maxlength="5"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="mail_port" name="mail_port" type="number" pattern="[0-9]{1,5}"
+                               class="mdl-textfield__input blue100" maxlength="5"
+                               value="<?php echo $mailPort; ?>" <?php echo $isDisabled; ?>/>
+                        <label class="mdl-textfield__label" for="mail_port"><?php echo _('Puerto'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -377,7 +430,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
-                        <input type="checkbox" id="mail_authenabled" class="mdl-switch__input" name="mail_authenabled" <?php echo $chkMailAuth, ' ', $isDisabled; ?>/>
+                        <input type="checkbox" id="mail_authenabled" class="mdl-switch__input blue100"
+                               name="mail_authenabled" <?php echo $chkMailAuth, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -387,7 +441,11 @@
                     <?php echo _('Usuario'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="mail_user" size="20" value="<?php echo $mailUser; ?>" maxlength="50"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="mail_user" name="mail_user" type="email" class="mdl-textfield__input blue100"
+                               maxlength="50" value="<?php echo $mailUser; ?>" <?php echo $isDisabled; ?>/>
+                        <label class="mdl-textfield__label" for="mail_user"><?php echo _('Usuario'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -395,9 +453,13 @@
                     <?php echo _('Clave'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="mail_pass" size="20" value="<?php echo $mailPass; ?>" maxlength="50"/>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="mail_pass" name="mail_pass" type="password" class="mdl-textfield__input blue100"
+                               maxlength="128" value="<?php echo $mailPass; ?>" <?php echo $isDisabled; ?>/>
+                        <label class="mdl-textfield__label" for="mail_pass"><?php echo _('Clave'); ?></label>
+                    </div>
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -419,7 +481,11 @@
                     <?php echo _('Dirección de correo de envío'); ?>
                 </td>
                 <td class="valField">
-                    <input type="text" name="mail_from" size="20" value="<?php echo $mailFrom; ?>" maxlength="128"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="mail_from" name="mail_from" type="email" class="mdl-textfield__input blue100"
+                               maxlength="128" value="<?php echo $mailFrom; ?>" <?php echo $isDisabled; ?>/>
+                        <label class="mdl-textfield__label" for="mail_from"><?php echo _('Dirección de correo de envío'); ?></label>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -427,9 +493,11 @@
                     <?php echo _('Habilitar peticiones por correo'); ?>
                 </td>
                 <td class="valField">
-                    <label for="mailrequestsenabled"><?php echo ($chkMailRequests) ? 'SI' : 'NO'; ?></label>
-                    <input type="checkbox" name="mail_requestsenabled" id="mailrequestsenabled"
-                           class="checkbox" <?php echo $chkMailRequests, ' ', $isDisabled; ?> />
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
+                        <input type="checkbox" id="mail_requestsenabled" class="mdl-switch__input blue100"
+                               name="mail_requestsenabled" <?php echo $chkMailRequests, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
                 </td>
             </tr>
         </table>
@@ -447,12 +515,9 @@
     </form>
 
     <div class="action">
-        <ul>
-            <li
-                ><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                      OnClick="configMgmt('saveconfig');"/>
-            </li>
-        </ul>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('saveconfig');" title="<?php echo _('Guardar'); ?>">
+            <i class="material-icons">save</i>
+        </button>
     </div>
 </div> <!-- End Tab - Config -->
 
@@ -510,8 +575,5 @@
                 $tagsbox.find(".tag:last").css('width', last_width);
             }
         });
-        $("#session_timeout").spinner({step: 300, min: 300, numberFormat: "n"});
-        $("#files_allowed_size").spinner({step: 1024, min: 1024, numberFormat: "n"});
-        $("#sel-account_count").spinner({step: 6, max: 100, min: 6, numberFormat: "n"});
     })
 </script>

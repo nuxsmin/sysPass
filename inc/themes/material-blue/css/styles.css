@@ -68,44 +68,7 @@ form {
     border: 0px solid #5dd;
     margin: 0;
 }
-/*
-input, select, textarea {
-    background-color: #fffef0;
-    color: black;
-    font-size: 11px;
-    padding: 5px;
-}
 
-td>input, td>select, td>textarea {
-    border: 1px solid #dfdfdf;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.075) inset;
-}
-
-input:hover, select:hover, textarea:hover {
-    background-color: #fffccd;
-}
-
-td>input:active, td>select:hover, td>textarea:active {
-    background-color: #fffde1;
-    color: #045FB4;
-    border: 1px solid #5897fb;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset, 0 0 5px rgba(88, 151, 251, 0.5);
-}
-
-td>input:focus, td>select:hover, td>textarea:focus {
-    background-color: #fffccd;
-    color: #045FB4;
-    border: 1px solid #5897fb;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset, 0 0 5px rgba(88, 151, 251, 0.5);
-}
-
-input {
-    width: 200px;
-}
-*/
 input.inputImg, img.inputImg {
     background-color: transparent !important;
     width: 24px !important;
@@ -298,6 +261,14 @@ a:focus {
     text-align: center;
     padding: .5em 0;
 }
+/*#container #actionsBar #actionsBar-icons{*/
+    /*margin: 0 auto;*/
+    /*width: 30%;*/
+    /*background-color: rgba(83, 109, 254, .1);*/
+    /*box-shadow: 0px 0px 5px rgb(83, 109, 254);*/
+    /*border-radius: 5px;*/
+    /*padding: 1em;*/
+/*}*/
 
 #container #content {
     width: 95%;
@@ -417,11 +388,17 @@ a:focus {
 }
 
 #content .data {
-    width: 90%;
+    width: 80%;
     padding: 10px;
     border: 1px solid #c9c9c9;
     margin: auto;
     background-color: #f9f9f9;
+}
+
+#content .data #history-icon{
+    position: relative;
+    top: 5em;
+    right: 2em;
 }
 
 #content .data td {
@@ -818,11 +795,6 @@ a:focus {
 
 #content #tblTools select {
     min-width: 180px;
-}
-
-#content #tblTools label {
-    margin-left: 15px;
-    color: #999;
 }
 
 #content #tblTools #toolsLeft {
@@ -1255,11 +1227,7 @@ footer img {
     border: 1px solid #d9d9d9;
     padding: 5px;
     margin: 5px 0;
-}
-
-.btn-checks .ui-button {
-    width: 150px;
-    margin: 5px !important;
+    width: 30em;
 }
 
 .shadow {
@@ -1295,7 +1263,7 @@ footer img {
 }
 
 .action {
-    max-width: 90%;
+    max-width: 80%;
     height: 4em;
     margin: 0.7em auto;
     text-align: right;
@@ -1479,10 +1447,10 @@ footer img {
 
 /*Login Page*/
 #boxLogin {
-    width: 450px;
-    height: 150px;
+    width: 500px;
+    min-height: 150px;
     margin: 75px auto;
-    padding: 25px;
+    padding: 2em;
     background-color: #fff;
 }
 
@@ -1497,74 +1465,41 @@ footer img {
 }
 
 #boxLogin #boxLogo {
-    float: left;
+    display: inline-block;
     width: 150px;
-    height: 100%;
-    text-align: center;
+    text-align: left;
+    padding: 2em auto;
 }
 
 #boxLogin #boxLogo #imgLogo {
-    float: left;
     width: 100px;
     height: 100px;
-    position: relative;
-    top: 25px;
-    left: 20px;
-    z-index: 90;
     vertical-align: middle;
 }
 
 #boxLogin #boxData {
-    float: left;
-    width: 280px;
+    display: inline-block;
+    width: 200px;
+    height: 100%;
     min-height: 100px;
-    padding: 20px 0;
     text-align: left;
     margin-left: auto;
     margin-right: auto;
     background-color: transparent;
 }
 
-#boxLogin #boxData label {
-    float: left;
-    width: 120px;
-    padding: 5px;
-    margin: 10px 20px 0 10px;
-    color: #045FB4;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-#boxLogin #boxData input {
-    float: left;
-    margin-top: 10px;
-    margin-left: 40px;
-    border: 1px solid #ddd;
-    color: #039;
-    width: 150px;
-    background-color: #f5f5f5;
-    font-size: 14px;
-}
-
-#boxLogin #boxData #btnLogin {
-    float: right;
-    width: 24px;
-    height: 24px;
-    margin-top: 15px;
-    border: none;
-    padding: 0;
-    background-color: transparent !important;
-}
-
-#boxLogin #boxData input:active,
-#boxLogin #boxData input:focus {
-    border: 1px solid #5897fb;
+#boxLogin #boxButton {
+    width: 130px;
+    display: inline-block;
+    text-align: right;
+    margin: 0 auto;
+    padding: 6em 0 0 0;
 }
 
 #boxLogin #boxActions {
-    float: left;
     width: 100%;
-    padding: .5em;
+    height: 1em;
+    margin-top: 1em;
     text-align: right;
 }
 
@@ -1682,70 +1617,26 @@ fieldset.warning a {
     font-size: 12px;
 }
 
-#actions form fieldset legend {
-    width: 100%;
-    margin-top: 1em;
-    text-align: center;
-    font-weight: bold;
-    color: #999;
-    text-shadow: 0 1px 0 white;
-    font-size: 14px;
-}
-
-#actions input[type="text"],
-#actions input[type="password"],
-#actions input[type="email"] {
-    margin-top: 0.5em;
-    border: 1px solid #a9a9a9;
-    font-size: 14px;
-    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .25) inset;
-    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .25) inset;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .25) inset;
-}
-
-#actions form input[type="checkbox"] + label {
-    position: relative;
-    margin: 0;
-    font-size: 1em;
-    text-shadow: #fff 0 1px 0;
-}
-
-#actions .button {
-    display: inline-block;
-    width: 150px;
-    margin: 15px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #d9d9d9;
-    background-color: #777;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 16px;
-    box-shadow: 3px 3px 3px -3px #a9a9a9;
-    -webkit-box-shadow: 8px 8px 6px -6px #a9a9a9;
-    -moz-box-shadow: 8px 8px 6px -6px #a9a9a9;
-}
-
-#actions.installer form {
+#actions form {
     width: 400px;
     margin: 0 auto;
     text-align: left;
 }
 
-#actions.installer form legend {
+#actions form fieldset legend {
+    width: 100%;
+    margin-top: 1em;
+    font-weight: bold;
+    color: rgb(96, 125, 139);
+    text-shadow: 0 1px 0 white;
+    font-size: 14px;
     text-align: left;
-    border-bottom: 1px solid #DFDFDF;
+    border-bottom: 2px solid rgb(96, 125, 139);
     margin-bottom: 1em;
 }
 
-#actions.installer form fieldset p {
-    width: 300px;
-    margin: 0 auto;
-}
-
-#actions.installer div.buttons {
-    margin-top: 1em;
+#actions div.buttons {
+    margin-top: 2em;
     text-align: center;
 }
 

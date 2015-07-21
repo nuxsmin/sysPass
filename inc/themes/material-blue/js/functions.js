@@ -419,7 +419,7 @@ function doLogin() {
             } else if (status === 3 || status === 4) {
                 resMsg("error", description);
                 $("#mpass").prop('disabled', false);
-                $('#smpass').show();
+                $('#smpass').show().focus();
             } else if (status === 5) {
                 resMsg("warn", description, '', "location.href = 'index.php';");
             } else {

@@ -78,19 +78,22 @@ class AccountsMgmtC extends Controller implements ActionsInterface
                     'title' => _('Nueva Categoría'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
+                    'icon' => 'add',
                     'skip' => true
                 ),
                 'edit' => array(
                     'id' => self::ACTION_MGM_CATEGORIES_EDIT,
                     'title' => _('Editar Categoría'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png'
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_MGM_CATEGORIES_DELETE,
                     'title' => _('Eliminar Categoría'),
                     'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_CATEGORIES_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
                     'isdelete' => true
                 )
             )
@@ -140,13 +143,15 @@ class AccountsMgmtC extends Controller implements ActionsInterface
                     'id' => self::ACTION_MGM_CUSTOMERS_EDIT,
                     'title' => _('Editar Cliente'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png'
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_MGM_CUSTOMERS_DELETE,
                     'title' => _('Eliminar Cliente'),
                     'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMERS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
                     'isdelete' => true
                 )
             )

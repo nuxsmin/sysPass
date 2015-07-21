@@ -7,16 +7,24 @@
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
-                    <input type="text" id="grpname" name="name" title="<?php echo _('Nombre del grupo'); ?>"
-                           value="<?php echo $group["usergroup_name"] ?>"/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="name" name="name" type="text" required class="mdl-textfield__input blue100"
+                               maxlength="50" value="<?php echo $group["usergroup_name"]; ?>">
+                        <label class="mdl-textfield__label"
+                               for="name"><?php echo _('Nombre del grupo'); ?></label>
+                    </div>
                 </td>
             </tr>
 
             <tr>
                 <td class="descField"><?php echo _('Descripción'); ?></td>
-                <td class="valField"><input type="text" id="grpdesc" name="description"
-                                            title="<?php echo _('Descripción del grupo'); ?>"
-                                            value="<?php echo $group["usergroup_description"]; ?>"/>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="description" name="description" type="text" class="mdl-textfield__input blue100"
+                               maxlength="50" value="<?php echo $group["usergroup_description"]; ?>">
+                        <label class="mdl-textfield__label"
+                               for="description"><?php echo _('Descripción del grupo'); ?></label>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -31,9 +39,9 @@
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                     OnClick="appMgmtSave('frmGroups');"/></li>
-        </ul>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="appMgmtSave('frmGroups');" title="<?php echo _('Guardar'); ?>">
+            <i class="material-icons">save</i>
+        </button>
     </div>
 </div>

@@ -104,33 +104,38 @@ class UsersMgmtC extends Controller implements ActionsInterface
                     'title' => _('Nuevo Usuario'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_USERS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
+                    'icon' => 'add',
                     'skip' => true
                 ),
                 'view' => array(
                     'id' => self::ACTION_USR_USERS_VIEW,
                     'title' => _('Ver Detalles de Usuario'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_USERS_VIEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png'
+                    'img' => 'imgs/view.png',
+                    'icon' => 'visibility'
                 ),
                 'edit' => array(
                     'id' => self::ACTION_USR_USERS_EDIT,
                     'title' => _('Editar Usuario'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_USERS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png'
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
+                ),
+                'pass' => array(
+                    'id' => self::ACTION_USR_USERS_EDITPASS,
+                    'title' => _('Cambiar Clave de Usuario'),
+                    'onclick' => 'usrUpdPass(this,' . self::ACTION_USR_USERS_EDITPASS . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/key.png',
+                    'icon' => 'lock_outline'
                 ),
                 'del' => array(
                     'id' => self::ACTION_USR_USERS_DELETE,
                     'title' => _('Eliminar Usuario'),
                     'onclick' => 'appMgmtDelete(this,' . self::ACTION_USR_USERS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
                     'isdelete' => true
                 ),
-                'pass' => array(
-                    'id' => self::ACTION_USR_USERS_EDITPASS,
-                    'title' => _('Cambiar Clave de Usuario'),
-                    'onclick' => 'usrUpdPass(this,' . self::ACTION_USR_USERS_EDITPASS . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/key.png'
-                )
             )
         );
 
@@ -172,19 +177,22 @@ class UsersMgmtC extends Controller implements ActionsInterface
                     'title' => _('Nuevo Grupo'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_GROUPS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
+                    'icon' => 'add',
                     'skip' => true
                 ),
                 'edit' => array(
                     'id' => self::ACTION_USR_GROUPS_EDIT,
                     'title' => _('Editar Grupo'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_GROUPS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png'
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_USR_GROUPS_DELETE,
                     'title' => _('Eliminar Grupo'),
                     'onclick' => 'appMgmtDelete(this,' . self::ACTION_USR_GROUPS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
                     'isdelete' => true
                 )
             )
@@ -227,25 +235,29 @@ class UsersMgmtC extends Controller implements ActionsInterface
                     'title' => _('Nuevo Perfil'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
+                    'icon' => 'add',
                     'skip' => true
                 ),
                 'view' => array(
                     'id' => self::ACTION_USR_PROFILES_VIEW,
                     'title' => _('Ver Detalles de Perfil'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_VIEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png'
+                    'img' => 'imgs/view.png',
+                    'icon' => 'visibility'
                 ),
                 'edit' => array(
                     'id' => self::ACTION_USR_PROFILES_EDIT,
                     'title' => _('Editar Perfil'),
                     'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png'
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_USR_PROFILES_DELETE,
                     'title' => _('Eliminar Perfil'),
                     'onclick' => 'appMgmtDelete(this,' . self::ACTION_USR_PROFILES_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
                     'isdelete' => true
                 )
             )

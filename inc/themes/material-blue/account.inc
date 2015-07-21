@@ -1,18 +1,21 @@
-<div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
+<div id="title" class="midroundup <?php echo $title['class']; ?>">
+    <?php echo $title['name']; ?>
+    <?php if ($gotData && $accountIsHistory): ?>
+        <i id="history-icon" class="material-icons blue80" title="<?php echo _('Histórico'); ?>">access_time</i>
+    <?php endif; ?>
+</div>
+
 <?php if ($showform): ?>
 <form method="post" name="frmaccount" id="frmAccount">
     <?php endif; ?>
-    <?php if ($gotData && $accountIsHistory): ?>
-    <table class="data round tblIcon">
-        <?php else: ?>
         <table class="data round">
-            <?php endif; ?>
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="name" name="name" type="text" required class="mdl-textfield__input" maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
+                            <input id="name" name="name" type="text" required class="mdl-textfield__input blue100"
+                            maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
                         </div>
                     <?php else: ?>
@@ -24,7 +27,7 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCustomer" name="customerId" class="select-box">
+                        <select id="selCustomer" name="customerId" class="select-box" required>
                             <option value="0"></option>
                             <?php foreach ($customers as $id => $name): ?>
                                 <option
@@ -33,7 +36,7 @@
                         </select>
                         <br><br>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="customer_new" name="customer_new" type="text" required class="mdl-textfield__input" maxlength="50">
+                            <input id="customer_new" name="customer_new" type="text" class="mdl-textfield__input blue100" maxlength="50">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Seleccionar o escribir para crear uno nuevo'); ?></label>
                         </div>
                     <?php else: ?>
@@ -45,7 +48,7 @@
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCategory" name="categoryId" class="select-box">
+                        <select id="selCategory" name="categoryId" class="select-box" required>
                             <option value="0"></option>
                             <?php foreach ($categories as $id => $name): ?>
                                 <option
@@ -62,7 +65,8 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="url" name="url" type="text" required class="mdl-textfield__input" maxlength="255" value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
+                            <input id="url" name="url" type="text" class="mdl-textfield__input blue100"
+                            maxlength="255" value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('URL o IP de acceso'); ?></label>
                         </div>
                     <?php else: ?>
@@ -75,7 +79,8 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="login" name="login" type="text" required class="mdl-textfield__input" maxlength="50" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
+                            <input id="login" name="login" type="text" required class="mdl-textfield__input blue100"
+                            maxlength="50" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
                         </div>
                     <?php else: ?>
@@ -88,21 +93,22 @@
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="password" name="password" type="password" required class="mdl-textfield__input" maxlength="255" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>" OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
-                            <label class="mdl-textfield__label" for="name"><?php echo _('Clave'); ?></label>
+                            <input id="password" name="password" type="password" required class="mdl-textfield__input" maxlength="255"
+                            OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                            <label class="mdl-textfield__label" for="password"><?php echo _('Clave'); ?></label>
                         </div>
-                        <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
-                        <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
-                             class="inputImg"/>
+
+                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="password2" name="password2" type="password" required class="mdl-textfield__input" maxlength="255" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>" OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
-                            <label class="mdl-textfield__label" for="name"><?php echo _('Clave (Repetir)'); ?></label>
+                            <input id="password2" name="password2" type="password" required class="mdl-textfield__input blue100" maxlength="255"
+                            OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                            <label class="mdl-textfield__label" for="password2"><?php echo _('Clave (Repetir)'); ?></label>
                         </div>
                         <span class="passLevel fullround"
                               title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
@@ -114,8 +120,8 @@
                 <td class="valField">
                 <?php if ($showform): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input" type="text" rows= "5" id="notice" maxlength="1000" <?php echo ($gotData) ? $accountData->account_notes : ''; ?>></textarea>
-                        <label class="mdl-textfield__label" for="notice"><?php echo _('Notas sobre la cuenta'); ?></label>
+                        <textarea class="mdl-textfield__input blue100" rows= "3" id="notes" name="notes" maxlength="1000"><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
+                        <label class="mdl-textfield__label" for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                     </div>
                 <?php else: ?>
                     <?php echo $accountData->account_notes; ?>
@@ -398,6 +404,7 @@
         <?php if ($showSave): ?>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="saveAccount('frmAccount');" title="<?php echo _('Guardar'); ?>">
                 <i class="material-icons">save</i>
+            </button>
         <?php endif; ?>
 
         <?php if ($gotData && $accountIsHistory): ?>
