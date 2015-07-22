@@ -4,7 +4,7 @@
             <td id="toolsLeft">
                 <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear_all</i>
                 <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input blue100" type="text" id="txtSearch"
+                    <input class="mdl-textfield__input fg-blue100" type="text" id="txtSearch"
                            name="search" value="<?php echo $searchTxt; ?>"/>
                     <label class="mdl-textfield__label" for="txtSearch"><?php echo _('Texto a buscar'); ?></label>
                 </div>
@@ -33,7 +33,7 @@
                 </select>
             </td>
             <td id="toolsRight">
-                <input type="text" name="rpp" id="rpp" placeholder="<?php echo _('CPP'); ?>" title="<?php echo _('Cuentas por página'); ?>" value="<?php echo $limitCount; ?>"/>
+                <input type="number" name="rpp" id="rpp" min="3" step="6" pattern="" placeholder="<?php echo _('CPP'); ?>" title="<?php echo _('Cuentas por página'); ?>" value="<?php echo $limitCount; ?>"/>
             </td>
         </tr>
     </table>
@@ -43,13 +43,10 @@
     mkChosen({id: 'selCategory', placeholder: '<?php echo _('Seleccionar Categoría'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
 
     $('#frmSearch select').on('change', function(e){clearSearch(1); accSearch(0)});
-
-    $("#rpp").spinner({step: 3, max: 50, min: 6, numberFormat: "n", stop: function(event, ui) {
-            accSearch(0);
-        }});
-    $('#frmSearch input:text:visible:first').focus();
-    $('#frmSearch #txtSearch').keyup(function(e){accSearch(1,e)});
     $('#frmSearch #btnClear').click(function(e){clearSearch(); accSearch(0);})
+    $('#frmSearch input:text:visible:first').focus();
+    $('#frmSearch #txtSearch').on('keyup', function(e){accSearch(1,e)});
+    $('#frmSearch #rpp').on('change', function(){accSearch(0);})
 
     <?php if ( $showGlobalSearch ): ?>
     $('#tblTools').find('.checkbox').button().click(

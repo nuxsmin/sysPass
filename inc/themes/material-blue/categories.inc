@@ -8,7 +8,7 @@
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required class="mdl-textfield__input blue100"
+                        <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo $category["category_name"]; ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo _('Nombre de la categoría'); ?></label>
@@ -20,7 +20,7 @@
                 <td class="descField"><?php echo _('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="description" name="description" type="text" class="mdl-textfield__input blue100"
+                        <input id="description" name="description" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo $category["category_description"]; ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo _('Descripción de la categoría'); ?></label>

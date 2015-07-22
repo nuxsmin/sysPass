@@ -26,7 +26,7 @@ echo $encryption_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input blue100"
+                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="curMasterPwd"><?php echo _('Clave Maestra actual'); ?></label>
                     </div>
@@ -40,7 +40,7 @@ echo $encryption_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input blue100"
+                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255" OnKeyUp="checkPassLevel(this.value)" required/>
                         <label class="mdl-textfield__label" for="newMasterPwd"><?php echo _('Nueva Clave Maestra'); ?></label>
                     </div>
@@ -57,7 +57,7 @@ echo $encryption_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="newMasterPwdR" name="newMasterPwdR" type="password" class="mdl-textfield__input blue100"
+                        <input id="newMasterPwdR" name="newMasterPwdR" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="newMasterPwdR"><?php echo _('Nueva Clave Maestra (repetir)'); ?></label>
                     </div>
@@ -66,11 +66,17 @@ echo $encryption_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('No modificar cuentas'); ?>
-                    <?php echo Common::printHelpButton("config", 16); ?>
+
+                    <div id="help-chkNoAccountChange" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-chkNoAccountChange">
+                        <p>
+                            <?php echo _('Establece una nueva clave maestra sin re-encriptar las cuentas'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkNoAccountChange">
-                        <input type="checkbox" id="chkNoAccountChange" class="mdl-switch__input blue100" name="chkNoAccountChange"/>
+                        <input type="checkbox" id="chkNoAccountChange" class="mdl-switch__input fg-blue100" name="chkNoAccountChange"/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -80,13 +86,13 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Confirmar cambio'); ?>
                 </td>
                 <td class="valField">
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <div class="icon material-icons fg-orange80">warning</div>
                     <?php echo _('Guarde la nueva clave en un lugar seguro.'); ?>
                     <br>
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <div class="icon material-icons fg-orange80">warning</div>
                     <?php echo _('Se volverán a encriptar las claves de todas las cuentas.'); ?>
                     <br>
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <div class="icon material-icons fg-orange80">warning</div>
                     <?php echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                     <br>
                     <br>
@@ -152,7 +158,7 @@ echo $encryption_tabIndex; ?>">
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="tmpass_maxtime" name="tmpass_maxtime" type="number" step="600"
-                               pattern="[0-9]{2,6}" class="mdl-textfield__input blue100" value="3600" required/>
+                               pattern="[0-9]{2,6}" class="mdl-textfield__input fg-blue100" value="3600" required/>
                         <label class="mdl-textfield__label" for="tmpass_maxtime"><?php echo _('Validez (s)'); ?></label>
                     </div>
                 </td>

@@ -8,7 +8,7 @@
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required class="mdl-textfield__input blue100"
+                        <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo $group["usergroup_name"]; ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo _('Nombre del grupo'); ?></label>
@@ -20,7 +20,7 @@
                 <td class="descField"><?php echo _('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="description" name="description" type="text" class="mdl-textfield__input blue100"
+                        <input id="description" name="description" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo $group["usergroup_description"]; ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo _('Descripción del grupo'); ?></label>

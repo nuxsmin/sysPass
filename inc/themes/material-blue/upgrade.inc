@@ -8,7 +8,7 @@
             <legend><?php echo _('Actualización de BBDD'); ?></legend>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="h" name="h" type="text" required class="mdl-textfield__input blue100"
+                <input id="h" name="h" type="text" required class="mdl-textfield__input fg-blue100"
                        autocomplete="off" autofocus>
                 <label class="mdl-textfield__label"
                        for="h"><?php echo _('Código de Seguridad'); ?></label>

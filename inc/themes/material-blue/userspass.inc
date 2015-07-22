@@ -8,7 +8,7 @@
                 <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="pass" name="pass" type="password" required class="mdl-textfield__input blue100"
+                        <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
                                maxlength="50" OnFocus="$('#passLevel').show();
                                     $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value)">
                         <label class="mdl-textfield__label"
@@ -23,7 +23,7 @@
                 <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="passv" name="passv" type="password" required class="mdl-textfield__input blue100"
+                        <input id="passv" name="passv" type="password" required class="mdl-textfield__input fg-blue100"
                                maxlength="50">
                         <label class="mdl-textfield__label"
                                for="passv"><?php echo _('Clave (repetir)'); ?></label>

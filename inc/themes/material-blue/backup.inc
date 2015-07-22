@@ -95,7 +95,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input blue100"
+                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255"/>
                         <label class="mdl-textfield__label"
                                for="exportPwd"><?php echo _('Clave de Exportación'); ?></label>
@@ -110,7 +110,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="exportPwdR" name="exportPwdR" type="password" class="mdl-textfield__input blue100"
+                        <input id="exportPwdR" name="exportPwdR" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255"/>
                         <label class="mdl-textfield__label"
                                for="exportPwdR"><?php echo _('Clave de Exportación (repetir)'); ?></label>

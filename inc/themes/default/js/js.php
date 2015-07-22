@@ -24,5 +24,5 @@
  */
 
 $jsFilesTheme = array(
-    array('href' => $themeUri . '/js/functions.js', 'min' => true)
+    array('href' => \SP\Init::$THEMEPATH . '/js/functions.js', 'min' => true)
 );

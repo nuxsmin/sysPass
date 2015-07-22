@@ -49,13 +49,13 @@ jQuery.extend(jQuery.fancybox.defaults, {
 $(document).ready(function () {
     "use strict";
 
-    $("[title]").powerTip(powertipOptions);
+    //$("[title]").powerTip(powertipOptions);
     setContentSize();
     setWindowAdjustSize();
 }).ajaxComplete(function () {
     "use strict";
 
-    $("[title]").powerTip(powertipOptions);
+    //$("[title]").powerTip(powertipOptions);
 
     // Actualizar componentes de MDL cargados con AJAX
     componentHandler.upgradeDom();
@@ -831,8 +831,6 @@ function usrUpdPass(object, actionId, sk) {
 
     var data = {'userId': userId, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
 
-    $.fancybox.showLoading();
-
     $.ajax({
         type: "GET",
         cache: false,
@@ -1118,7 +1116,7 @@ function outputResult(dstId) {
         complexity.attr('title', LANG[10]).addClass("strongest");
     }
 
-    $('.passLevel').powerTip(powertipOptions);
+    //$('.passLevel').powerTip(powertipOptions);
 }
 
 // Función para mostrar mensaje con alertify
@@ -1161,7 +1159,13 @@ function resMsg(type, txt, url, action) {
             return alertify.error(txt);
     }
 
-    $.fancybox(html, {
+    jQuery('#dialog').load(html).dialog('open').afterClose(function () {
+        if (typeof action !== "undefined") {
+            eval(action);
+        }
+    });
+
+/*    $.fancybox(html, {
         afterLoad: function () {
             $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({
                 'border-radius': '25px',
@@ -1173,7 +1177,7 @@ function resMsg(type, txt, url, action) {
                 eval(action);
             }
         }
-    });
+    });*/
 }
 
 // Función para comprobar la conexión con LDAP

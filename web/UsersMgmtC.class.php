@@ -84,16 +84,20 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'images' => array(
                     'user_isAdminApp' => array(
                         'img_file' => 'check_blue.png',
-                        'img_title' => _('Admin Aplicación')),
+                        'img_title' => _('Admin Aplicación'),
+                        'icon' => 'star'),
                     'user_isAdminAcc' => array(
                         'img_file' => 'check_orange.png',
-                        'img_title' => _('Admin Cuentas')),
+                        'img_title' => _('Admin Cuentas'),
+                        'icon' => 'star_half'),
                     'user_isLdap' => array(
                         'img_file' => 'ldap.png',
-                        'img_title' => _('Usuario de LDAP')),
+                        'img_title' => _('Usuario de LDAP'),
+                        'icon' => 'business'),
                     'user_isDisabled' => array(
                         'img_file' => 'disabled.png',
-                        'img_title' => _('Deshabilitado'))
+                        'img_title' => _('Deshabilitado'),
+                        'icon' => 'error')
                 )
             ),
             'tblRowSrcId' => 'user_id',

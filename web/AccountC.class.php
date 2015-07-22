@@ -142,7 +142,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('account');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleGreen',
                 'name' => _('Nueva Cuenta'),
                 'icon' => 'add'
             )
@@ -253,7 +253,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('account');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleGreen',
                 'name' => _('Copiar Cuenta'),
                 'icon' => 'content_copy'
             )
@@ -317,7 +317,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('account');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleOrange',
                 'name' => _('Editar Cuenta'),
                 'icon' => 'mode_edit'
             )
@@ -346,7 +346,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('account');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleRed',
                 'name' => _('Eliminar Cuenta'),
                 'icon' => 'delete'
             )
@@ -374,7 +374,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('account');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleNormal',
                 'name' => _('Detalles de Cuenta'),
                 'icon' => 'visibility'
             )
@@ -405,7 +405,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('account');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleNormal',
                 'name' => _('Detalles de Cuenta'),
                 'icon' => 'access_time'
             )
@@ -462,7 +462,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->addTemplate('editpass');
         $this->view->assign('title',
             array(
-                'class' => 'titleBlue',
+                'class' => 'titleOrange',
                 'name' => _('Modificar Clave de Cuenta'),
                 'icon' => 'mode_edit'
             )

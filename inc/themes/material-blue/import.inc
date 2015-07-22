@@ -13,15 +13,21 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario por Defecto'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 29); ?>
+                    <div id="help-import_defaultuser" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultuser">
+                        <p>
+                            <?php echo _('Define el usuario por defecto para las cuentas importadas.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <select id="import_defaultuser" name="import_defaultuser"
-                            class="select-box sel-chosen-user" <?php echo $isDisabled; ?> required>
+                            class="select-box sel-chosen-user" required>
                         <option value="0"></option>
                         <?php foreach ($users as $id => $name): ?>
-                            <option
-                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserId()) ? 'selected' : ''; ?>>
+                                <?php echo $name; ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -29,15 +35,21 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Grupo por Defecto'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 30); ?>
+                    <div id="help-import_defaultgroup" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultgroup">
+                        <p>
+                            <?php echo _('Define el grupo por defecto para las cuentas importadas.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <select id="import_defaultgroup" name="import_defaultgroup"
-                            class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
+                            class="select-box sel-chosen-usergroup" required>
                         <option value="0"></option>
                         <?php foreach ($groups as $id => $name): ?>
-                            <option
-                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserGroupId()) ? 'selected' : ''; ?>>
+                                <?php echo $name; ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -48,7 +60,7 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input blue100"
+                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255"/>
                         <label class="mdl-textfield__label" for="importPwd"><?php echo _('Clave de Importación'); ?></label>
                     </div>
@@ -61,7 +73,7 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="csvDelimiter" name="csvDelimiter" type="text" class="mdl-textfield__input blue100"
+                        <input id="csvDelimiter" name="csvDelimiter" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="1" value=";"/>
                         <label class="mdl-textfield__label" for="csvDelimiter"><?php echo _('Delimitador CSV'); ?></label>
                     </div>
@@ -116,11 +128,16 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 0); ?>
+                    <div id="help-dbuser" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-dbuser">
+                        <p>
+                            <?php echo _('Indicar el usuario de conexión a la base de datos de phpPMS.') ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbuser" name="dbuser" type="text" class="mdl-textfield__input blue100"
+                        <input id="dbuser" name="dbuser" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbuser"><?php echo _('Usuario BBDD'); ?></label>
                     </div>
@@ -132,7 +149,7 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input blue100"
+                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbpass"><?php echo _('Clave BBDD'); ?></label>
                     </div>
@@ -142,11 +159,16 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 1); ?>
+                    <div id="help-dbname" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-dbname">
+                        <p>
+                            <?php echo _('Indicar el nombre de la base de datos de phpPMS.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbname" name="dbname" type="text" class="mdl-textfield__input blue100"
+                        <input id="dbname" name="dbname" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbname"><?php echo _('Nombre BBDD'); ?></label>
                     </div>
@@ -155,11 +177,16 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Servidor BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 2); ?>
+                    <div id="help-dbhost" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-dbhost">
+                        <p>
+                            <?php echo _('Indicar el servidor de la base de datos de phpPMS.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbhost" name="dbhost" type="text" class="mdl-textfield__input blue100"
+                        <input id="dbhost" name="dbhost" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="255" value="localhost" required/>
                         <label class="mdl-textfield__label" for="dbhost"><?php echo _('Servidor BBDD'); ?></label>
                     </div>
@@ -170,12 +197,12 @@ echo $import_tabIndex; ?>">
                     <?php echo _('Confirmar'); ?>
                 </td>
                 <td class="valField">
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <div class="icon material-icons fg-orange80">warning</div>
                     <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
                     <br><br>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkmigrate">
-                        <input type="checkbox" id="chkmigrate" class="mdl-switch__input blue100" name="chkmigrate"/>
+                        <input type="checkbox" id="chkmigrate" class="mdl-switch__input fg-blue100" name="chkmigrate"/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -201,6 +228,16 @@ echo $import_tabIndex; ?>">
         importFile('<?php echo Common::getSessionKey(true); ?>');
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");
+        });
+        $(".sel-chosen-usergroup").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
+        });
+        $(".sel-chosen-user").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>"
         });
     });
 </script>

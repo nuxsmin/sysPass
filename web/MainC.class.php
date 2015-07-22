@@ -59,6 +59,8 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('startTime', microtime());
         $this->view->assign('page', $page);
         $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
+        $this->view->assign('logoMedium', Init::$THEMEURI . '/imgs/logo.png');
+        $this->view->assign('logo', Init::$THEMEURI . '/imgs/logo_full.png');
 
         $this->getHeader();
         $this->setHeaders();
@@ -74,7 +76,6 @@ class MainC extends Controller implements ActionsInterface
 
         $this->view->assign('cssLink', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
         $this->view->assign('jsLink', Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
-        $this->view->assign('logo', Init::$WEBROOT . '/imgs/logo.png');
     }
 
     /**
@@ -273,7 +274,6 @@ class MainC extends Controller implements ActionsInterface
         $this->view->addTemplate('footer');
 
         $this->view->assign('showLogo', $showLogo);
-        $this->view->assign('logo', Init::$WEBROOT . '/imgs/logo_full.png');
     }
 
     /**
@@ -287,12 +287,10 @@ class MainC extends Controller implements ActionsInterface
             $this->view->assign('action', Request::analyze('a'));
             $this->view->assign('hash', Request::analyze('h'));
             $this->view->assign('time', Request::analyze('t'));
-            $this->view->assign('logo', Init::$WEBROOT . '/imgs/logo_full.png');
 
             $this->view->assign('passReset', ($this->view->action === 'passreset' && $this->view->hash && $this->view->time));
         } else {
             $this->view->assign('showLogo', true);
-            $this->view->assign('logo', Init::$WEBROOT . '/imgs/logo_full.png');
 
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
@@ -311,6 +309,5 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('action', Request::analyze('a'));
         $this->view->assign('time', Request::analyze('t'));
         $this->view->assign('upgrade', $this->view->action === 'upgrade');
-        $this->view->assign('logo', Init::$WEBROOT . '/imgs/logo_full.png');
     }
 }

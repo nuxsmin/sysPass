@@ -26,11 +26,12 @@
 $cssFilesTheme = array(
 //    array('href' => 'https://fonts.googleapis.com/icon?family=Material+Icons', 'min' => false),
     array('href' => 'http://fonts.googleapis.com/css?family=Roboto:300,400,500,700', 'min' => false),
-    array('href' => $themeUri . '/css/fonts.css', 'min' => true),
-    array('href' => $themeUri . '/css/material.min.css', 'min' => false),
-    array('href' => $themeUri . '/css/material-custom.css', 'min' => true),
-    array('href' => $themeUri . '/css/styles.css', 'min' => true),
-    array('href' => $themeUri . '/css/search-grid.css', 'min' => true),
-    array('href' => $themeUri . '/css/chosen.css', 'min' => true)
-
+    array('href' => \SP\Init::$THEMEPATH . '/css/fonts.css', 'min' => true),
+    array('href' => \SP\Init::$THEMEPATH . '/css/material.min.css', 'min' => false),
+    array('href' => \SP\Init::$THEMEPATH . '/css/material-custom.css', 'min' => true),
+    array('href' => \SP\Init::$THEMEPATH . '/css/jquery-ui.theme.min.css', 'min' => false),
+    array('href' => \SP\Init::$THEMEPATH . '/css/styles.css', 'min' => true),
+    array('href' => \SP\Init::$THEMEPATH . '/css/search-grid.css', 'min' => true),
+    array('href' => \SP\Init::$THEMEPATH . '/css/chosen.css', 'min' => true),
+    array('href' => \SP\Init::$THEMEPATH . '/css/alertify.custom.css', 'min' => true)
 );

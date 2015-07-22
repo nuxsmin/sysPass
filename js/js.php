@@ -27,7 +27,7 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.php';
+$themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . \SP\Init::$THEME . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.php';
 
 $jsFilesBase = array(
     array('href' => 'js/jquery-1.11.2.min.js', 'min' => false),

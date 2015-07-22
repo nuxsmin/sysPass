@@ -54,7 +54,7 @@ $tpl->assign('userId', SP\Session::getUserId());
 $tpl->assign('userGroupId', SP\Session::getUserGroupId());
 $tpl->assign('userIsAdminApp', SP\Session::getUserIsAdminApp());
 $tpl->assign('userIsAdminAcc', SP\Session::getUserIsAdminAcc());
-$tpl->assign('themeUri', $themeUri);
+$tpl->assign('themeUri', \SP\Init::$THEMEURI);
 
 // Control de ruta de acciones
 if ($actionId != \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH) {

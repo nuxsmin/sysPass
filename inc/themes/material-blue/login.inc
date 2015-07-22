@@ -1,18 +1,20 @@
 <div id="boxLogin" class="round shadow">
-    <div id="boxLogo"><img id="imgLogo" src="imgs/logo.png"/></div>
+    <div id="boxLogo">
+        <img id="imgLogo" src="<?php echo $logoMedium; ?>"/>
+    </div>
     <div id="boxData">
         <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
             <?php use SP\Html;
 
             if ($demoEnabled): ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="user" name="user" type="text" class="mdl-textfield__input blue100" maxlength="80"
+                    <input id="user" name="user" type="text" class="mdl-textfield__input fg-blue100" maxlength="80"
                            title="> demo <">
                     <label class="mdl-textfield__label"
                            for="user"><?php echo _('Usuario'); ?></label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="pass" name="pass" type="password" class="mdl-textfield__input blue100" maxlength="80"
+                    <input id="pass" name="pass" type="password" class="mdl-textfield__input fg-blue100" maxlength="80"
                            title="> syspass <">
                     <label class="mdl-textfield__label"
                            for="pass"><?php echo _('Clave'); ?></label>
@@ -20,7 +22,7 @@
 
                 <span id="smpass" style="display: none">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input blue100"
+                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="80" title="> 1234567890 <">
                         <label class="mdl-textfield__label"
                                for="mpass"><?php echo _('Clave Maestra'); ?></label>
@@ -28,13 +30,13 @@
                 </span>
             <?php else: ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="user" name="user" type="text" class="mdl-textfield__input blue100" maxlength="80"
+                    <input id="user" name="user" type="text" class="mdl-textfield__input fg-blue100" maxlength="80"
                            autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="user"><?php echo _('Usuario'); ?></label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="pass" name="pass" type="password" class="mdl-textfield__input blue100" maxlength="80"
+                    <input id="pass" name="pass" type="password" class="mdl-textfield__input fg-blue100" maxlength="80"
                            autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="pass"><?php echo _('Clave'); ?></label>
@@ -42,7 +44,7 @@
 
                 <span id="smpass" style="display: none">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input blue100"
+                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="80" autocomplete="off">
                         <label class="mdl-textfield__label"
                                for="mpass"><?php echo _('Clave Maestra'); ?></label>

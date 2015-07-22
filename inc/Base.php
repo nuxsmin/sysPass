@@ -37,7 +37,3 @@ $timeStart = \SP\Init::microtime_float();
 
 // Inicializar sysPass
 \SP\Init::start();
-
-// Variables para el tema visual (utilizada en css y js)
-$theme = \SP\Session::getTheme();
-$themeUri = 'inc/themes/' . $theme;

@@ -27,7 +27,7 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$themeCssPath = VIEW_PATH . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'css.php';
+$themeCssPath = VIEW_PATH . DIRECTORY_SEPARATOR . \SP\Init::$THEME . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'css.php';
 
 $cssFilesBase = array(
     array('href' => 'css/reset.css', 'min' => true),

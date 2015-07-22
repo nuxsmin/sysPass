@@ -42,8 +42,9 @@
                             <li class="cell-nodata" style="width: <?php echo $tab['props']['cellWidth']; ?>%;">
                                 <?php foreach ($rowSrc as $rowName => $imgProp): ?>
                                     <?php if ($item->$rowName): ?>
-                                        <img src="imgs/<?php echo $imgProp['img_file']; ?>"
-                                             title="<?php echo $imgProp['img_title']; ?>"/>
+                                        <i class="material-icons" title="<?php echo $imgProp['img_title']; ?>">
+                                            <?php echo $imgProp['icon']; ?>
+                                        </i>
                                         <?php $action_check[$rowName] = 1; ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
@@ -58,8 +59,21 @@
                     <li class="cell-actions round" style="width: <?php echo($numActions * 5 + 2); ?>%;">
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
                             <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
-                            <?php $i++; ?>
-                            <i class="material-icons blue80" title="<?php echo $action['title']; ?>"
+                            <?php
+                                $i++;
+
+                                switch($actionName){
+                                    case 'edit':
+                                        $actionClass = 'fg-orange80';
+                                        break;
+                                    case 'del':
+                                        $actionClass = 'fg-red80';
+                                        break;
+                                    default:
+                                        $actionClass = 'fg-blue80';
+                                    }
+                            ?>
+                            <i class="material-icons <?php echo $actionClass; ?>" title="<?php echo $action['title']; ?>"
                                data-itemid="<?php echo $itemId; ?>" data-activetab="<?php echo $index; ?>"
                                data-nextactionid="<?php echo $actionId; ?>"
                                Onclick="<?php echo $action['onclick'];; ?>;"><?php echo $action['icon']; ?></i>

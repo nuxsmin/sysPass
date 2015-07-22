@@ -102,14 +102,14 @@
                         <div class="account-actions round">
 
                             <?php if ($account['showView']): ?>
-                                <i class="material-icons blue80" title="<?php echo _('Detalles de Cuenta'); ?>"
+                                <i class="material-icons fg-blue80" title="<?php echo _('Detalles de Cuenta'); ?>"
                                    OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">visibility</i>
                             <?php endif ?>
 
                             <?php if ($account['showViewPass']): ?>
-                                <i id="viewpass" class="material-icons blue80" title="<?php echo _('Ver Clave'); ?>"
+                                <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
                                    onClick="viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
-                                <i id="clipboard" class="material-icons blue80 actions-optional clip-pass-button"
+                                <i id="clipboard" class="material-icons fg-blue80 actions-optional clip-pass-button"
                                    data-clipboard-target="clip-pass-text"
                                    title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
                                    onmousedown="viewPass(<?php echo $account['id']; ?>, false)">content_paste</i>
@@ -121,19 +121,19 @@
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
-                                <i class="material-icons blue80 actions-optional"
+                                <i class="material-icons fg-orange80 actions-optional"
                                    title="<?php echo _('Modificar Cuenta'); ?>"
                                    OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">mode_edit</i>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
-                                <i class="material-icons blue80 actions-optional"
+                                <i class="material-icons fg-blue80 actions-optional"
                                    title="<?php echo _('Copiar Cuenta'); ?>"
                                    OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">content_copy</i>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
-                                <i class="material-icons blue80 actions-optional"
+                                <i class="material-icons fg-red80 actions-optional"
                                    title="<?php echo _('Eliminar Cuenta'); ?>"
                                    OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">delete</i>
                             <?php endif; ?>

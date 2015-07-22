@@ -24,9 +24,10 @@
  */
 
 $cssFilesTheme = array(
-    array('href' => $themeUri . '/css/styles.css', 'min' => true)
+    array('href' => \SP\Init::$THEMEPATH . '/css/jquery-ui.theme.min.css', 'min' => true),
+    array('href' => \SP\Init::$THEMEPATH . '/css/styles.css', 'min' => true)
 );
 
 if (!SP\Util::resultsCardsIsEnabled()) {
-    array_push($cssFilesTheme, array('href' => $themeUri . '/css/search-grid.css', 'min' => true));
+    array_push($cssFilesTheme, array('href' => \SP\Init::$THEMEPATH . '/css/search-grid.css', 'min' => true));
 }

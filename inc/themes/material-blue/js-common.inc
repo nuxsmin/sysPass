@@ -20,9 +20,9 @@
         $(".showpass").each(function (index, input) {
             // Cross-browser compatibility
             $(this).on("mouseover", function () {
-                $(this).data('powertip', function(){
-                 return $(this).prev().val()
-                });
+                var pass = $(this).prev().find('[type="password"]').val();
+
+                $(this).attr('title', pass);
             });
         });
 
@@ -58,29 +58,38 @@
 
         // Stick the #nav to the top of the window
         var nav = $('#actionsBar');
-        var navHomeY = nav.offset().top;
         var isFixed = false;
+        var navCssProps = {
+            position: 'fixed',
+            top: 0,
+            left: nav.offset().left,
+            width: nav.width(),
+            padding: "1em 0",
+            backgroundColor: 'rgba(220, 220, 220, .5)',
+            borderBottom: '1px solid #ccc'
+        }
 
         $(window).scroll(function() {
             var scrollTop = $(this).scrollTop();
-            var shouldBeFixed = scrollTop > navHomeY;
+            var shouldBeFixed = scrollTop > nav.height();
             if (shouldBeFixed && !isFixed) {
-                nav.css({
-                    position: 'fixed',
-                    top: 0,
-                    left: nav.offset().left,
-                    width: nav.width(),
-                    padding: ".5em 0",
-                    backgroundColor: 'rgba(220, 220, 220, .5)'
-                });
+                nav.css(navCssProps);
                 isFixed = true;
             }
             else if (!shouldBeFixed && isFixed)
             {
-                nav.css({
-                    backgroundColor: 'transparent'
+                nav.animate({
+                    backgroundColor: 'transparent',
+                    border: '0'
                 });
                 isFixed = false;
+            }
+        });
+
+        $(document).ready(function(){
+            // Detectar si al cargar la barra de iconos no está en la posición 0
+            if(nav.offset().top > 0){
+                nav.css(navCssProps)
             }
         });
     });

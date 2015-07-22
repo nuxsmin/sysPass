@@ -37,20 +37,26 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="session_timeout" name="session_timeout" type="number" step="300"
-                               pattern="[0-9]{2,4}" class="mdl-textfield__input blue100" maxlength="5"
+                               pattern="[0-9]{2,4}" class="mdl-textfield__input fg-blue100" maxlength="5"
                                value="<?php echo $sessionTimeout; ?>" <?php echo $isDisabled; ?> required/>
-                        <label class="mdl-textfield__label" for="session_timeout"><?php echo _('Timeout de sesión (s)'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="session_timeout"><?php echo _('Timeout de sesión (s)'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar log de eventos'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 20); ?>
+                    <div id="help-eventlog" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">
+                        <p>
+                            <?php echo _('Guarda las acciones realizadas en la aplicación.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
-                        <input type="checkbox" id="log_enabled" class="mdl-switch__input blue100" name="log_enabled"
+                        <input type="checkbox" id="log_enabled" class="mdl-switch__input fg-blue100" name="log_enabled"
                             <?php echo $chkLog, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -59,11 +65,16 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar depuración'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 19); ?>
+                    <div id="help-debug" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-debug">
+                        <p>
+                            <?php echo _('Muestra información relativa a la configuración de la aplicación y rendimiento.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
-                        <input type="checkbox" id="debug" class="mdl-switch__input blue100" name="debug"
+                        <input type="checkbox" id="debug" class="mdl-switch__input fg-blue100" name="debug"
                             <?php echo $chkDebug, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -72,11 +83,16 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Modo mantenimiento'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 18); ?>
+                    <div id="help-maintenance" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-maintenance">
+                        <p>
+                            <?php echo _('En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
-                        <input type="checkbox" id="maintenance" class="mdl-switch__input blue100" name="maintenance"
+                        <input type="checkbox" id="maintenance" class="mdl-switch__input fg-blue100" name="maintenance"
                             <?php echo $chkMaintenance, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -85,11 +101,16 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Comprobar actualizaciones'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 21); ?>
+                    <div id="help-updates" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-updates">
+                        <p>
+                            <?php echo _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores).'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
-                        <input type="checkbox" id="updates" class="mdl-switch__input blue100" name="updates"
+                        <input type="checkbox" id="updates" class="mdl-switch__input fg-blue100" name="updates"
                             <?php echo $chkUpdates, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -98,11 +119,17 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre de cuenta como enlace'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 3); ?>
+                    <div id="help-account_link" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-account_link">
+                        <p>
+                            <?php echo _('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
-                        <input type="checkbox" id="account_link" class="mdl-switch__input blue100" name="account_link"
+                        <input type="checkbox" id="account_link" class="mdl-switch__input fg-blue100"
+                               name="account_link"
                             <?php echo $chkAccountLink, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -111,11 +138,17 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Gestión de archivos'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 5); ?>
+                    <div id="help-files" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-files">
+                        <p>
+                            <?php echo _('Habilita la subida/descarga de archivos para las cuentas.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
-                        <input type="checkbox" id="files_enabled" class="mdl-switch__input blue100" name="files_enabled"
+                        <input type="checkbox" id="files_enabled" class="mdl-switch__input fg-blue100"
+                               name="files_enabled"
                             <?php echo $chkFiles, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -124,11 +157,17 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Búsquedas globales'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 24); ?>
+                    <div id="help-globalsearch" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-globalsearch">
+                        <p>
+                            <?php echo _('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="globalsearch">
-                        <input type="checkbox" id="globalsearch" class="mdl-switch__input blue100" name="globalsearch"
+                        <input type="checkbox" id="globalsearch" class="mdl-switch__input fg-blue100"
+                               name="globalsearch"
                             <?php echo $chkGlobalSearch, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -137,7 +176,20 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Extensiones de archivos permitidas'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 22); ?>
+                    <div id="help-allowed_exts" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-allowed_exts">
+                        <p>
+                            <?php echo _('Extensiones permitidas para la subida de archivos.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Se permite un máximo de 4 caracteres.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <input type="text" name="files_allowed_exts" id="allowed_exts"
@@ -147,28 +199,44 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Tamaño máximo de archivo'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 6); ?>
+                    <div id="help-files_allowed_size" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-files_allowed_size">
+                        <p>
+                            <?php echo _('Establece el tamaño máximo para subir archivos.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('El máximo absuluto es de 16MB.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="files_allowed_size" name="files_allowed_size" type="number" step="512"
-                               pattern="[0-9]{1,5}" class="mdl-textfield__input blue100" maxlength="5"
+                               pattern="[0-9]{1,5}" class="mdl-textfield__input fg-blue100" maxlength="5"
                                value="<?php echo $filesAllowedSize; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="files_allowed_size"><?php echo _('Tamaño máximo de archivo'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="files_allowed_size"><?php echo _('Tamaño máximo de archivo'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('Resultados por página'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 4); ?>
+                    <div id="help-account_count" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
+                        <p>
+                            <?php echo _('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="account_count" name="account_count" type="number" step="6"
-                               pattern="[0-9]{1,5}" class="mdl-textfield__input blue100" maxlength="5"
+                               pattern="[0-9]{1,5}" class="mdl-textfield__input fg-blue100" maxlength="5"
                                value="<?php echo $accountCount; ?>" <?php echo $isDisabled; ?> required/>
-                        <label class="mdl-textfield__label" for="account_count"><?php echo _('Tamaño máximo de archivo'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="account_count"><?php echo _('Tamaño máximo de archivo'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -183,11 +251,17 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar enlaces Wiki'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 7); ?>
+                    <div id="help-wiki_enabled" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
+                        <p>
+                            <?php echo _('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
-                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input blue100" name="wiki_enabled"
+                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input fg-blue100"
+                               name="wiki_enabled"
                             <?php echo $chkWiki, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -196,33 +270,79 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de búsqueda Wiki'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 8); ?>
+                    <div id="help-wiki_searchurl" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_searchurl">
+                        <p>
+                            <?php echo _('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Como parámetro se utiliza el nombre del cliente.'); ?>
+                        </p>
+
+                        <p>
+                            <?php _('Ejemplo:'); ?>
+                        </p>
+
+                        <p>
+                            https://wiki.example.org/search.php?phrase=
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="wiki_searchurl" name="wiki_searchurl" type="text" class="mdl-textfield__input blue100"
+                        <input id="wiki_searchurl" name="wiki_searchurl" type="text"
+                               class="mdl-textfield__input fg-blue100"
                                maxlength="128" value="<?php echo $wikiSearchUrl; ?>">
-                        <label class="mdl-textfield__label" for="wiki_searchurl"><?php echo _('URL de búsqueda Wiki'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="wiki_searchurl"><?php echo _('URL de búsqueda Wiki'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('URL de página en Wiki'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 9); ?>
+                    <div id="help-wiki_pageurl" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_pageurl">
+                        <p>
+                            <?php echo _('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Ejemplo:'); ?>
+                        </p>
+
+                        <p>
+                            https://wiki.example.org/show.php?name=
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input blue100"
+                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="128" value="<?php echo $wikiPageUrl; ?>">
-                        <label class="mdl-textfield__label" for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('Prefijo para nombre de cuenta'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 10); ?>
+                    <div id="help-wikifilter" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wikifilter">
+                        <p>
+                            <?php echo _('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Ejemplos:') . ' serv- | srv- | vm-'; ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo $wikiFilter; ?>"/>
@@ -241,11 +361,21 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Habilitar LDAP'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 11); ?>
+                        <div id="help-ldap_enabled" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_enabled">
+                            <p>
+                                <?php echo _('Habilita de autentificación mediante servidor LDAP.'); ?>
+                            </p>
+
+                            <p>
+                                <?php echo _('Este método utilizará MySQL en caso de fallo.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_enabled">
-                            <input type="checkbox" id="ldap_enabled" class="mdl-switch__input blue100" name="ldap_enabled"
+                            <input type="checkbox" id="ldap_enabled" class="mdl-switch__input fg-blue100"
+                                   name="ldap_enabled"
                                 <?php echo $chkLdap, ' ', $isDisabled; ?>/>
                             <span class="mdl-switch__label"></span>
                         </label>
@@ -254,11 +384,27 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Servidor'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 15); ?>
+                        <div id="help-ldap_server" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_server">
+                            <p>
+                                <?php echo _('Nombre o dirección IP del servidor de LDAP.'); ?>
+                            </p>
+
+                            <p>
+                                <?php echo _('Ejemplos:'); ?>
+                            </p>
+
+                            <ul>
+                                <li>ldap.example.org</li>
+                                <li>ldap://ldap.example.org</li>
+                                <li>ldaps://ldap.example.org</li>
+                            </ul>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_server" name="ldap_server" type="text" class="mdl-textfield__input blue100"
+                            <input id="ldap_server" name="ldap_server" type="text"
+                                   class="mdl-textfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapServer; ?>" <?php echo $isDisabled; ?>/>
                             <label class="mdl-textfield__label" for="ldap_server"><?php echo _('Servidor'); ?></label>
                         </div>
@@ -267,11 +413,26 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Usuario de conexión'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 12); ?>
+                        <div id="help-ldap_binduser" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_binduser">
+                            <p>
+                                <?php echo _('Usuario para conectar con el servicio de LDAP.'); ?>
+                            </p>
+
+                            <p>
+                                <?php echo _('Ejemplos:'); ?>
+                            </p>
+
+                            <ul>
+                                <li>cn=syspass,ou=Users,dc=syspass,o=org</li>
+                                <li>syspass</li>
+                            </ul>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_binduser" name="ldap_binduser" type="text" class="mdl-textfield__input blue100"
+                            <input id="ldap_binduser" name="ldap_binduser" type="text"
+                                   class="mdl-textfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapBindUser; ?>" <?php echo $isDisabled; ?>/>
                             <label class="mdl-textfield__label" for="ldap_binduser"><?php echo _('Servidor'); ?></label>
                         </div>
@@ -280,11 +441,17 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Clave de conexión'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 17); ?>
+                        <div id="help-ldap_bindpass" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_bindpass">
+                            <p>
+                                <?php echo _('Clave del usuario de conexión a LDAP.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_bindpass" name="ldap_bindpass" type="password" class="mdl-textfield__input blue100"
+                            <input id="ldap_bindpass" name="ldap_bindpass" type="password"
+                                   class="mdl-textfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapBindPass; ?>" <?php echo $isDisabled; ?>/>
                             <label class="mdl-textfield__label" for="ldap_bindpass"><?php echo _('Clave'); ?></label>
                         </div>
@@ -295,24 +462,57 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Base de búsqueda'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 13); ?>
+                        <div id="help-ldap_base" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_base">
+                            <p>
+                                <?php echo _('Base en la que realizar la búsqueda de usuarios de LDAP.'); ?>
+                            </p>
+
+                            <p>
+                                <?php echo _('Ejemplos:'); ?>
+                            </p>
+
+                            <ul>
+                                <li>cn=Users,dc=example,dc=org</li>
+                                <li>ou=AdminUsers,dc=example,o=org</li>
+                            </ul>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_base" name="ldap_base" type="text" class="mdl-textfield__input blue100"
+                            <input id="ldap_base" name="ldap_base" type="text" class="mdl-textfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapBase; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label" for="ldap_base"><?php echo _('Base de búsqueda'); ?></label>
+                            <label class="mdl-textfield__label"
+                                   for="ldap_base"><?php echo _('Base de búsqueda'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
                         <?php echo _('Grupo'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 14); ?>
+                        <div id="help-ldap_group" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_group">
+                            <p>
+                                <?php echo _('Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso.'); ?>
+                            </p>
+
+                            <p>
+                                <?php echo _('Este grupo debe de estar ubicado en la base de búsquedas de LDAP.'); ?>
+                            </p>
+
+                            <p>
+                                <?php echo _('Ejemplos:'); ?>
+                            </p>
+
+                            <ul>
+                                <li>cn=GRP_SPUSERS,cn=Users,dc=example,dc=org</li>
+                                <li>GRP_SPUSERS</li>
+                            </ul>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_group" name="ldap_group" type="text" class="mdl-textfield__input blue100"
+                            <input id="ldap_group" name="ldap_group" type="text" class="mdl-textfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapGroup; ?>" <?php echo $isDisabled; ?>/>
                             <label class="mdl-textfield__label" for="ldap_group"><?php echo _('Grupo'); ?></label>
                         </div>
@@ -321,7 +521,12 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Grupo por Defecto'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 27); ?>
+                        <div id="help-ldap_defaultgroup" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_defaultgroup">
+                            <p>
+                                <?php echo _('Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <select id="ldap_defaultgroup" name="ldap_defaultgroup"
@@ -337,7 +542,12 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Perfil por Defecto'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 28); ?>
+                        <div id="help-ldap_defaultprofile" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_defaultprofile">
+                            <p>
+                                <?php echo _('Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <select id="ldap_defaultprofile" name="ldap_defaultprofile"
@@ -353,11 +563,16 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Active Directory'); ?>
-                        <?php echo SP\Common::printHelpButton("config", 26); ?>
+                        <div id="help-ldap_ads" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_ads">
+                            <p>
+                                <?php echo _('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
-                            <input type="checkbox" id="ldap_ads" class="mdl-switch__input blue100" name="ldap_ads"
+                            <input type="checkbox" id="ldap_ads" class="mdl-switch__input fg-blue100" name="ldap_ads"
                                 <?php echo $chkLdapADS, ' ', $isDisabled; ?>/>
                             <span class="mdl-switch__label"></span>
                         </label>
@@ -393,7 +608,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
-                        <input type="checkbox" id="mail_enabled" class="mdl-switch__input blue100" name="mail_enabled"
+                        <input type="checkbox" id="mail_enabled" class="mdl-switch__input fg-blue100"
+                               name="mail_enabled"
                             <?php echo $chkMail, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -405,7 +621,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_server" name="mail_server" type="text" class="mdl-textfield__input blue100"
+                        <input id="mail_server" name="mail_server" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="128" value="<?php echo $mailServer; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="mail_server"><?php echo _('Servidor'); ?></label>
                     </div>
@@ -418,7 +634,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="mail_port" name="mail_port" type="number" pattern="[0-9]{1,5}"
-                               class="mdl-textfield__input blue100" maxlength="5"
+                               class="mdl-textfield__input fg-blue100" maxlength="5"
                                value="<?php echo $mailPort; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="mail_port"><?php echo _('Puerto'); ?></label>
                     </div>
@@ -430,7 +646,7 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
-                        <input type="checkbox" id="mail_authenabled" class="mdl-switch__input blue100"
+                        <input type="checkbox" id="mail_authenabled" class="mdl-switch__input fg-blue100"
                                name="mail_authenabled" <?php echo $chkMailAuth, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -442,7 +658,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_user" name="mail_user" type="email" class="mdl-textfield__input blue100"
+                        <input id="mail_user" name="mail_user" type="email" class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo $mailUser; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="mail_user"><?php echo _('Usuario'); ?></label>
                     </div>
@@ -454,12 +670,13 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_pass" name="mail_pass" type="password" class="mdl-textfield__input blue100"
+                        <input id="mail_pass" name="mail_pass" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="128" value="<?php echo $mailPass; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="mail_pass"><?php echo _('Clave'); ?></label>
                     </div>
                     <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
+                    <i id="passGen" class="material-icons"
+                       title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -482,19 +699,27 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_from" name="mail_from" type="email" class="mdl-textfield__input blue100"
+                        <input id="mail_from" name="mail_from" type="email" class="mdl-textfield__input fg-blue100"
                                maxlength="128" value="<?php echo $mailFrom; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="mail_from"><?php echo _('Dirección de correo de envío'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="mail_from"><?php echo _('Dirección de correo de envío'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar peticiones por correo'); ?>
+
+                    <div id="help-mail_requestsenabled" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-mail_requestsenabled">
+                        <p>
+                            <?php echo _('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
-                        <input type="checkbox" id="mail_requestsenabled" class="mdl-switch__input blue100"
+                        <input type="checkbox" id="mail_requestsenabled" class="mdl-switch__input fg-blue100"
                                name="mail_requestsenabled" <?php echo $chkMailRequests, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -515,7 +740,8 @@
     </form>
 
     <div class="action">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('saveconfig');" title="<?php echo _('Guardar'); ?>">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="configMgmt('saveconfig');" title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>
         </button>
     </div>
@@ -535,15 +761,15 @@
                 var $tagsbox = $(this).next();
                 $tagsbox.animate({scrollTop: $tagsbox.height()});
 
-                if ($tagsbox.find('img:last').attr('alt') != 'warning') {
-                    $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '" />');
+                if (!$tagsbox.find('div').hasClass('icon')) {
+                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
                 }
             },
             'onRemoveTag': function () {
                 var $tagsbox = $(this).next();
 
-                if ($tagsbox.find('img:last').attr('alt') != 'warning') {
-                    $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
+                if (!$tagsbox.find('div').hasClass('icon')) {
+                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
                 }
             }
         });
@@ -558,15 +784,15 @@
                 var $tagsbox = $(this).next();
                 $tagsbox.animate({scrollTop: $tagsbox.height()});
 
-                if ($tagsbox.find('img:last').attr('alt') != 'warning') {
-                    $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
+                if (!$tagsbox.find('div').hasClass('icon')) {
+                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
                 }
             },
             onRemoveTag: function () {
                 var $tagsbox = $(this).next();
 
-                if ($tagsbox.find('img:last').attr('alt') != 'warning') {
-                    $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
+                if (!$tagsbox.find('div').hasClass('icon')) {
+                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
                 }
             },
             onChange: function () {

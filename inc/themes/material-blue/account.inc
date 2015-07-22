@@ -16,7 +16,7 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="name" name="name" type="text" required class="mdl-textfield__input blue100"
+                            <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
                             maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
                         </div>
@@ -38,7 +38,7 @@
                         </select>
                         <br><br>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="customer_new" name="customer_new" type="text" class="mdl-textfield__input blue100" maxlength="50">
+                            <input id="customer_new" name="customer_new" type="text" class="mdl-textfield__input fg-blue100" maxlength="50">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Seleccionar o escribir para crear uno nuevo'); ?></label>
                         </div>
                     <?php else: ?>
@@ -67,7 +67,7 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="url" name="url" type="text" class="mdl-textfield__input blue100"
+                            <input id="url" name="url" type="text" class="mdl-textfield__input fg-blue100"
                             maxlength="255" value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('URL o IP de acceso'); ?></label>
                         </div>
@@ -81,7 +81,7 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="login" name="login" type="text" required class="mdl-textfield__input blue100"
+                            <input id="login" name="login" type="text" required class="mdl-textfield__input fg-blue100"
                             maxlength="50" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
                         </div>
@@ -108,7 +108,7 @@
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="password2" name="password2" type="password" required class="mdl-textfield__input blue100" maxlength="255"
+                            <input id="password2" name="password2" type="password" required class="mdl-textfield__input fg-blue100" maxlength="255"
                             OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
                             <label class="mdl-textfield__label" for="password2"><?php echo _('Clave (Repetir)'); ?></label>
                         </div>
@@ -122,7 +122,7 @@
                 <td class="valField">
                 <?php if ($showform): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input blue100" rows= "3" id="notes" name="notes" maxlength="1000"><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
+                        <textarea class="mdl-textfield__input fg-blue100" rows= "3" id="notes" name="notes" maxlength="1000"><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
                         <label class="mdl-textfield__label" for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                     </div>
                 <?php else: ?>
@@ -365,6 +365,12 @@
 <?php endif; ?>
 
 <div class="action">
+        <?php if ($showDelete): ?>
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80" OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
+                <i class="material-icons">delete</i>
+            </button>
+        <?php endif; ?>
+
         <?php if ($showRestore): ?>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="saveAccount('frmAccount');" title="<?php echo _('Restaurar cuenta desde este punto'); ?>">
                 <i class="material-icons">restore</i>
@@ -382,30 +388,18 @@
         <?php endif; ?>
 
         <?php if ($showEditPass): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Clave de Cuenta'); ?>">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Clave de Cuenta'); ?>">
                 <i class="material-icons">lock_outline</i>
             </button>
         <?php endif; ?>
 
         <?php if ($showEdit): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Cuenta'); ?>">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Cuenta'); ?>">
                 <i class="material-icons">mode_edit</i>
             </button>
         <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Solicitar Modificación'); ?>">
                 <i class="material-icons">email</i>
-            </button>
-        <?php endif; ?>
-
-        <?php if ($showDelete): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
-                <i class="material-icons ">delete</i>
-            </button>
-        <?php endif; ?>
-
-        <?php if ($showSave): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="saveAccount('frmAccount');" title="<?php echo _('Guardar'); ?>">
-                <i class="material-icons">save</i>
             </button>
         <?php endif; ?>
 
@@ -416,6 +410,12 @@
         <?php else: ?>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Atrás'); ?>">
                 <i class="material-icons">arrow_back</i>
+            </button>
+        <?php endif; ?>
+
+        <?php if ($showSave): ?>
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" OnClick="saveAccount('frmAccount');" title="<?php echo _('Guardar'); ?>">
+                <i class="material-icons">save</i>
             </button>
         <?php endif; ?>
 </div>

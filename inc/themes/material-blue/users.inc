@@ -9,7 +9,7 @@
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="name" name="name" type="text" required class="mdl-textfield__input blue100"
+                            <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
                                    value="<?php echo $user["user_name"]; ?>" maxlength="80">
                             <label class="mdl-textfield__label"
                                    for="name"><?php echo _('Nombre de usuario completo'); ?></label>
@@ -25,7 +25,7 @@
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="login" name="login" type="text" required class="mdl-textfield__input blue100"
+                            <input id="login" name="login" type="text" required class="mdl-textfield__input fg-blue100"
                                    value="<?php echo $user["user_login"]; ?>" maxlength="80" <?php echo $ro; ?>>
                             <label class="mdl-textfield__label"
                                    for="login"><?php echo _('Login de inicio de sesión'); ?></label>
@@ -70,7 +70,7 @@
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="email" name="email" type="email" required class="mdl-textfield__input blue100"
+                            <input id="email" name="email" type="email" required class="mdl-textfield__input fg-blue100"
                                    value="<?php echo $user["user_email"]; ?>" maxlength="50">
                             <label class="mdl-textfield__label"
                                    for="email"><?php echo _('Dirección de correo'); ?></label>
@@ -87,7 +87,7 @@
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="pass" name="pass" type="password" required class="mdl-textfield__input blue100"
+                            <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
                                    maxlength="50" OnFocus="$('#passLevel').show();
                                     $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value)">
                             <label class="mdl-textfield__label"
@@ -102,7 +102,7 @@
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="passv" name="passv" type="password" required class="mdl-textfield__input blue100"
+                            <input id="passv" name="passv" type="password" required class="mdl-textfield__input fg-blue100"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
                                    for="passv"><?php echo _('Clave (repetir)'); ?></label>
@@ -134,26 +134,26 @@
                     <div id="btnUserOptions" class="btn-checks round5">
                         <?php if (\SP\Session::getUserIsAdminApp() || $isDemo): ?>
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp" title="<?php echo _('Administrador de la aplicación'); ?>">
-                                <input type="checkbox" id="adminapp" class="mdl-switch__input blue100"
+                                <input type="checkbox" id="adminapp" class="mdl-switch__input fg-blue100"
                                        name="adminapp" <?php echo $user['checks']['user_isAdminApp'] . ' ' . $isDisabled; ?>/>
                                 <span class="mdl-switch__label"><?php echo _('Admin. Aplicación'); ?></span>
                             </label>
 
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc" title="<?php echo _('Administrador de cuentas'); ?>">
-                                <input type="checkbox" id="adminacc" class="mdl-switch__input blue100"
+                                <input type="checkbox" id="adminacc" class="mdl-switch__input fg-blue100"
                                        name="adminacc" <?php echo $user['checks']['user_isAdminAcc'] . ' ' . $isDisabled; ?>/>
                                 <span class="mdl-switch__label"><?php echo _('Admin. Cuentas'); ?></span>
                             </label>
                         <?php endif; ?>
                         <br>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="disabled" title="<?php echo _('Deshabilitado'); ?>">
-                            <input type="checkbox" id="disabled" class="mdl-switch__input blue100"
+                            <input type="checkbox" id="disabled" class="mdl-switch__input fg-blue100"
                                    name="disabled" <?php echo $user['checks']['user_isDisabled'] . ' ' . $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo _('Deshabilitado'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="changepass" title="<?php echo _('Forzar cambio de clave'); ?>">
-                            <input type="checkbox" id="changepass" class="mdl-switch__input blue100"
+                            <input type="checkbox" id="changepass" class="mdl-switch__input fg-blue100"
                                    name="changepass" <?php echo $user['checks']['user_isChangePass'] . ' ' . $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo _('Cambio de Clave'); ?></span>
                         </label>

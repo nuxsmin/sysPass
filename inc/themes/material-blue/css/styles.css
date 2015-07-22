@@ -215,7 +215,7 @@ a:focus {
     width: 100%;
     height: auto;
     min-height: 650px;
-    background: url("../imgs/logo_full.png") no-repeat left top transparent;
+    background: url("../inc/themes/material-blue/imgs/logo_full.png") no-repeat left top transparent;
 }
 
 #container.error, #container.install, #container.passreset {
@@ -361,48 +361,19 @@ a:focus {
     letter-spacing: 0.3em;
     text-align: center;
 }
-
-#content #title.titleBlue {
+#content #title.titleBlue,
+#content #title.titleGreen,
+#content #title.titleOrange,
+#content #title.titleRed,
+#content #title.titleNormal
+{
     background-color: #448AFF;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
     background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
     background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
     background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
     background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
-    /*background: url("../imgs/bg_tab_new.png") repeat-x scroll left top #a9c1d7;*/
-}
-
-#content #title.titleOrange {
-    background-color: #448AFF;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
-    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
-    /*background: url("../imgs/bg_tab_edit.png") repeat-x scroll left top #a9c1d7;*/
-}
-
-#content #title.titleRed {
-    background-color: #448AFF;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
-    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
-    /*background: url("../imgs/bg_tab_edit.png") repeat-x scroll left top #a9c1d7;*/
-}
-
-#content #title.titleNormal {
-    color: #999;
-    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Q5ZDlkOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkOWQ5ZDkiIHN0b3Atb3BhY2l0eT0iMCIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-    background: -moz-linear-gradient(top, rgba(217, 217, 217, 1) 0%, rgba(217, 217, 217, 0) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(217, 217, 217, 1)), color-stop(100%, rgba(217, 217, 217, 0))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, rgba(217, 217, 217, 1) 0%, rgba(217, 217, 217, 0) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(217, 217, 217, 1) 0%, rgba(217, 217, 217, 0) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, rgba(217, 217, 217, 1) 0%, rgba(217, 217, 217, 0) 100%); /* IE10+ */
-    background: linear-gradient(to bottom, rgba(217, 217, 217, 1) 0%, rgba(217, 217, 217, 0) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d9d9d9', endColorstr='#00d9d9d9', GradientType=0); /* IE6-8 */
+    background: #448aff url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_75_448AFF_1x100.png") repeat-x scroll 50% 50%
 }
 
 #content .data {
@@ -1051,13 +1022,17 @@ a:focus {
 
 #fancyContainer h2 {
     width: 80%;
-    height: 1.5em;
     font-size: 18px;
     color: white;
-    background: url("../imgs/bg_h2.png") repeat-x scroll left top #a9c1d7;
-    margin: 0;
-    margin-bottom: 20px;
-    padding-top: 0.3em;
+    background-color: #448AFF;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
+    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
+    margin: 0 0 20px 0;
+    padding: .5em 0;
+    line-height: 1em;
 }
 
 #fancyContainer select {
@@ -1268,7 +1243,7 @@ footer img {
 }
 
 .header-blue {
-    background-color: #E6F2FF;
+    background: #448aff url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_75_448AFF_1x100.png") repeat-x scroll 50% 50%
 }
 
 .header-grey {
@@ -1279,7 +1254,7 @@ footer img {
     background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
     background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
     color: #fff;
-    /*background: url("../imgs/bg_table_header.png") repeat-x scroll left top #f2f2f2;*/
+    background: #448aff url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_75_448AFF_1x100.png") repeat-x scroll 50% 50%
     height: 30px;
     text-align: center;
 }
@@ -1393,7 +1368,7 @@ footer img {
 }
 
 /* Fix for fancybox z-index*/
-
+/*
 .ui-buttonset .ui-state-active {
     background: url("images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
     border: 1px solid #AAAAAA;
@@ -1404,7 +1379,7 @@ footer img {
 .valField .ui-state-active, #tblTools .ui-state-active, #frmInstall .ui-state-active {
     background: url("images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
 }
-
+*/
 /*#passLevel { margin-left: 10px; padding: 3px 15px;}*/
 .passLevel {
     width: 20px;
@@ -1468,7 +1443,7 @@ footer img {
     border: #dbfdcb 1px solid;
 }
 
-.help-box{background-color: #ceeffa !important; color: #777;}
+.help-box{background-color: #f2f2f2 !important; color: #777;}
 .help-text{text-align: justify; line-height: 1.5em; margin-top: 1em;}
 
 /*Login Page*/
@@ -1704,4 +1679,8 @@ fieldset.warning a {
     background: url("../imgs/arrow-list.png") left center no-repeat;
     line-height: 32px;
     list-style: none;
+}
+
+.no-title .ui-dialog-titlebar {
+    display: none;
 }

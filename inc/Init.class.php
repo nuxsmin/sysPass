@@ -66,7 +66,15 @@ class Init
     /**
      * @var string
      */
-    public static $_THEME = '';
+    public static $THEMEURI = '';
+    /**
+     * @var string
+     */
+    public static $THEMEPATH = '';
+    /**
+     * @var string
+     */
+    public static $THEME = '';
     /**
      * @var string
      */
@@ -160,6 +168,9 @@ class Init
         // Cargar el lenguaje
         self::selectLang();
 
+        // Establecer el tema de sysPass
+        self::selectTheme();
+
         // Comprobar si es necesario inicialización
         if (self::checkInitSourceInclude()) {
             return;
@@ -167,9 +178,6 @@ class Init
 
         // Comprobar la configuración
         self::checkConfig();
-
-        // Establecer el tema de sysPass
-        self::selectTheme();
 
         // Comprobar si está instalado
         self::checkInstalled();
@@ -367,6 +375,18 @@ class Init
     }
 
     /**
+     * Establecer el tema visual de sysPass desde la configuración
+     */
+    private static function selectTheme()
+    {
+        self::$THEME = Config::getValue('sitetheme', 'default');
+        self::$THEMEURI = self::$WEBURI . '/inc/themes/' . self::$THEME;
+        self::$THEMEPATH = DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . self::$THEME;
+
+        Session::setTheme(self::$THEME);
+    }
+
+    /**
      * Comprobar el archivo que realiza el include necesita inicialización.
      *
      * @returns bool
@@ -528,7 +548,7 @@ class Init
                         Config::setValue('maintenance', true);
                     }
 
-                    self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'),'<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
+                    self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
                 }
 
                 $action = Request::analyze('a');
@@ -669,14 +689,5 @@ class Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
-    }
-
-    /**
-     * Establecer el tema visual de sysPass desde la configuración
-     */
-    private static function selectTheme()
-    {
-        self::$_THEME = Config::getValue('sitetheme', 'default');
-        Session::setTheme(self::$_THEME);
     }
 }

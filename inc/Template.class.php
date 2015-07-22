@@ -83,7 +83,7 @@ class Template
      */
     private function checkTemplate($file)
     {
-        $template = VIEW_PATH . DIRECTORY_SEPARATOR . Init::$_THEME . DIRECTORY_SEPARATOR . $file . '.inc';
+        $template = VIEW_PATH . DIRECTORY_SEPARATOR . Init::$THEME . DIRECTORY_SEPARATOR . $file . '.inc';
 
         if (!is_readable($template)) {
             throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file . '"');
