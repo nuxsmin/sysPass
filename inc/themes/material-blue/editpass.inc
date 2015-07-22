@@ -3,7 +3,7 @@
     <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
 </div>
 
-<form method="post" name="editpass" id="frmEditPass">
+<form method="post" name="editpass" id="frmEditPass" onsubmit="saveAccount('frmEditPass'); return false;">
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -39,7 +39,7 @@
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="password2" name="password2" type="password" required class="mdl-textfield__input fg-blue100"
-                           maxlength="255" OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
+                           maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label" for="password2"><?php echo _('Clave'); ?></label>
                 </div>
                 <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
@@ -51,21 +51,22 @@
     <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
     <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     <input type="hidden" name="isAjax" value="1">
+
+    <div class="action">
+        <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
+                title="<?php echo _('Atrás'); ?>">
+            <i class="material-icons">arrow_back</i>
+        </button>
+
+        <button id="btnSave" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                title="<?php echo _('Guardar'); ?>">
+            <i class="material-icons">save</i>
+        </button>
+    </div>
 </form>
 
-<div class="action">
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-            OnClick="saveAccount('frmEditPass');" title="<?php echo _('Guardar'); ?>">
-        <i class="material-icons">save</i>
-    </button>
 
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-            OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
-            title="<?php echo _('Atrás'); ?>">
-        <i class="material-icons">arrow_back</i>
-    </button>
-
-</div>
 <script>
     $(function () {
         $('input:password:visible:first').focus();

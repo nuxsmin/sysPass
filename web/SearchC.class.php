@@ -154,20 +154,23 @@ class SearchC extends Controller implements ActionsInterface
         }
 
         $colors = array(
-            'ef5350',
-            'ec407a',
-            'ab47bc',
-            '7e57c2',
-            '5c6bc0',
-            '42a5f5',
-            '29b6f6',
-            '26c6da',
-            '26a69a',
-            '66bb6a',
-            '9ccc65',
-            'ff7043',
-            '8d6e63',
-            '78909c'
+            '2196F3',
+            '03A9F4',
+            '00BCD4',
+            '009688',
+            '4CAF50',
+            '8BC34A',
+            'CDDC39',
+            'FFC107',
+            '795548',
+            '607D8B',
+            '9E9E9E',
+            'FF5722',
+            'F44336',
+            'E91E63',
+            '9C27B0',
+            '673AB7',
+            '3F51B5',
         );
 
         $this->setSortFields();

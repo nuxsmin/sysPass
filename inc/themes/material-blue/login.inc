@@ -62,7 +62,7 @@
         </form>
     </div>
     <div id="boxButton">
-        <button id="btnLogin" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" title="<?php echo _('Acceder'); ?>">
+        <button id="btnLogin" form="frmLogin" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" title="<?php echo _('Acceder'); ?>">
             <i class="material-icons">play_arrow</i>
         </button>
     </div>
@@ -104,8 +104,6 @@
 
 <script>
     $(function(){
-        $('#btnLogin').click(function(){$('#frmLogin').submit();});
-
         $("#pass, #mpass").keyup(function(event){
             if(event.keyCode == 13){
                 $('#frmLogin').submit();

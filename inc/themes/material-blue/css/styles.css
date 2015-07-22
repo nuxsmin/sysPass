@@ -155,30 +155,15 @@ i{cursor: pointer;}
     font-weight: bold;
 }
 
-a {
+a, a:visited {
     text-decoration: none;
-    color: #339;
+    color: rgba(68, 138, 255, 1);
 }
 
-a:visited {
+a:hover, a:active, a:focus {
     text-decoration: none;
-    color: #339;
-}
-
-a:hover {
-    text-decoration: none;
-    color: orangered;
+    color: rgba(68, 138, 255, .6);
     cursor: pointer;
-}
-
-a:active {
-    text-decoration: none;
-    color: #BB0000;
-}
-
-a:focus {
-    text-decoration: none;
-    color: #FF0000;
 }
 
 #nojs {

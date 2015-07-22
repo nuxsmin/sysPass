@@ -8,7 +8,7 @@
 </div>
 
 <?php if ($showform): ?>
-<form method="post" name="frmaccount" id="frmAccount">
+<form method="post" name="frmaccount" id="frmAccount" onsubmit="saveAccount('frmAccount'); return false;">
     <?php endif; ?>
         <table class="data round">
             <tr>
@@ -206,15 +206,15 @@
                 </tr>
             <?php endif; ?>
 
-            <?php if ($showform): ?>
-            <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
-            <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
-            <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
-            <?php if ($gotData): ?>
-                <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
-            <?php endif; ?>
-            <input type="hidden" name="sk" value="<?php echo $sk; ?>">
-            <input type="hidden" name="isAjax" value="1">
+<?php if ($showform): ?>
+    <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
+    <input type="hidden" name="next" value="<?php echo $nextaction; ?>">
+    <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
+    <?php if ($gotData): ?>
+        <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
+    <?php endif; ?>
+    <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+    <input type="hidden" name="isAjax" value="1">
 </form>
 <?php endif; ?>
 
@@ -354,7 +354,7 @@
 <?php endif; ?>
 
 <?php if ($gotData && $accountIsHistory): ?>
-    <form method="post" name="frmaccount" id="frmAccount">
+    <form method="post" name="frmaccount" id="frmAccount" onsubmit="saveAccount('frmAccount'); return false;">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
         <input type="hidden" name="actionId"
                value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
@@ -366,55 +366,55 @@
 
 <div class="action">
         <?php if ($showDelete): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80" OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
+            <button id="btnDelete" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80" OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
                 <i class="material-icons">delete</i>
             </button>
         <?php endif; ?>
 
-        <?php if ($showRestore): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="saveAccount('frmAccount');" title="<?php echo _('Restaurar cuenta desde este punto'); ?>">
-                <i class="material-icons">restore</i>
-            </button>
-        <?php endif; ?>
-
         <?php if ($showViewPass): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)" title="<?php echo _('Ver Clave'); ?>">
+            <button id="btnViewPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)" title="<?php echo _('Ver Clave'); ?>">
                 <i class="material-icons">lock_open</i>
             </button>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>">
+            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>">
                 <i class="material-icons clip-pass-button"
                    data-clipboard-target="clip-pass-text">content_paste</i>
            </button>
         <?php endif; ?>
 
         <?php if ($showEditPass): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Clave de Cuenta'); ?>">
+            <button id="btnEditPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Clave de Cuenta'); ?>">
                 <i class="material-icons">lock_outline</i>
             </button>
         <?php endif; ?>
 
+        <?php if ($gotData && $accountIsHistory): ?>
+            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Ver Actual'); ?>">
+                <i class="material-icons">arrow_back</i>
+            </button>
+        <?php else: ?>
+            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Atrás'); ?>">
+                <i class="material-icons">arrow_back</i>
+            </button>
+        <?php endif; ?>
+
         <?php if ($showEdit): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Cuenta'); ?>">
+            <button id="btnEdit" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Cuenta'); ?>">
                 <i class="material-icons">mode_edit</i>
             </button>
         <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Solicitar Modificación'); ?>">
+            <button id="btnRequest" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Solicitar Modificación'); ?>">
                 <i class="material-icons">email</i>
             </button>
         <?php endif; ?>
 
-        <?php if ($gotData && $accountIsHistory): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Ver Actual'); ?>">
-                <i class="material-icons">arrow_back</i>
-            </button>
-        <?php else: ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Atrás'); ?>">
-                <i class="material-icons">arrow_back</i>
+        <?php if ($showRestore): ?>
+            <button id="btnRestore" name="btnRestore" type="submit" form="frmAccount" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" title="<?php echo _('Restaurar cuenta desde este punto'); ?>">
+                <i class="material-icons">restore</i>
             </button>
         <?php endif; ?>
 
         <?php if ($showSave): ?>
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" OnClick="saveAccount('frmAccount');" title="<?php echo _('Guardar'); ?>">
+            <button id="btnSave" name="btnRestore" type="submit" form="frmAccount" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" title="<?php echo _('Guardar'); ?>">
                 <i class="material-icons">save</i>
             </button>
         <?php endif; ?>

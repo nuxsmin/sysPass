@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo _('Cambio de Clave'); ?></h2>
 
-    <form method="post" name="updUsrPass" id="frmUpdUsrPass">
+    <form method="post" name="updUsrPass" id="frmUpdUsrPass" onsubmit="appMgmtSave('frmUpdUsrPass'); return false;">
         <table class="fancydata">
 
             <tr>
@@ -9,8 +9,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
-                               maxlength="50" OnFocus="$('#passLevel').show();
-                                    $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value)">
+                               maxlength="50">
                         <label class="mdl-textfield__label"
                                for="pass"><?php echo _('Clave'); ?></label>
                     </div>
@@ -27,8 +26,8 @@
                                maxlength="50">
                         <label class="mdl-textfield__label"
                                for="passv"><?php echo _('Clave (repetir)'); ?></label>
-                    </div
-                    <span id="passLevel" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
+                    </div>
+                    <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>
             </tr>
         </table>
@@ -41,8 +40,8 @@
         <span id="resFancyAccion"></span>
     </div>
     <div class="action-in-box">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="appMgmtSave('frmUpdUsrPass');" title="<?php echo _('Guardar'); ?>">
+        <button form="frmUpdUsrPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                 title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>
         </button>
     </div>
@@ -54,5 +53,10 @@
             $('#resFancyAccion').hide();
             password(11, true, true);
         });
+
+        $('#pass').focus(function() {
+            $('#passLevel').show();
+            $('#resFancyAccion').hide();
+        }).on('keyup', function(){checkPassLevel(this.value)});
     });
 </script>

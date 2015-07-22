@@ -36,9 +36,13 @@ jQuery.extend(jQuery.fancybox.defaults, {
     type: 'ajax',
     autoWidth: 'true',
     autoHeight: 'true',
+    autoResize: 'true',
+    autoCenter: 'true',
+    fitToView: 'true',
     minHeight: 50,
     padding: 0,
     helpers: {overlay: {css: {'background': 'rgba(0, 0, 0, 0.1)'}}},
+    keys: {close: [27]},
     afterShow: function () {
         "use strict";
 
@@ -473,11 +477,7 @@ function saveAccount(frm) {
 
     var data = $("#" + frm).serialize();
     var id = $('input[name="accountid"]').val();
-    var savetyp = $('input[name="savetyp"]').val();
     var action = $('input[name="next"]').val();
-
-    $('#btnGuardar').attr('disabled', true);
-    $.fancybox.showLoading();
 
     $.ajax({
         type: 'POST',
@@ -491,20 +491,13 @@ function saveAccount(frm) {
             if (status === 0) {
                 resMsg("ok", description);
 
-                if (savetyp === 1) {
-                    $('#btnSave').hide();
-                } else {
-                    $('#btnSave').attr('disabled', true);
-                }
-
                 if (action && id) {
-                    doAction(action, 'accsearch', id);
+                    doAction(action, 1, id);
                 }
             } else if (status === 10) {
                 doLogout();
             } else {
                 resMsg("error", description);
-                $('#btnSave').removeAttr("disabled");
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -512,7 +505,6 @@ function saveAccount(frm) {
             resMsg("error", txt);
         },
         complete: function () {
-            $.fancybox.hideLoading();
         }
     });
 }
@@ -1158,12 +1150,6 @@ function resMsg(type, txt, url, action) {
             alertify.set({beforeCloseAction: action});
             return alertify.error(txt);
     }
-
-    jQuery('#dialog').load(html).dialog('open').afterClose(function () {
-        if (typeof action !== "undefined") {
-            eval(action);
-        }
-    });
 
 /*    $.fancybox(html, {
         afterLoad: function () {

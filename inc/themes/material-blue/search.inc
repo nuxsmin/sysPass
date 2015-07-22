@@ -21,10 +21,10 @@
                     <div class="field-customer label-field">
                         <div class="field-name"><?php echo _('Cliente'); ?></div>
                         <div class="field-text round5 no-link"
-                             style="background-color: <?php echo $account['color']; ?>">
+                             style="background-color: <?php echo $account['color']; ?>;">
                             <?php if (!empty($account['customer_link'])): ?>
                                 <a href="<?php echo $account['customer_link']; ?>" target="blank"
-                                   title="<?php echo _('Buscar en Wiki'); ?><br><br><?php echo $account['customer_name']; ?>">
+                                   title="<?php echo _('Buscar en Wiki'); ?>&nbsp;<?php echo $account['customer_name']; ?>">
                                     <?php echo $account['customer_name']; ?>
                                 </a>
                             <?php else: ?>
@@ -92,7 +92,7 @@
                                 <?php foreach ($wikiFilter as $filter): ?>
                                     <?php if (preg_match("/^" . preg_quote($filter) . ".*/i", $account['name'])): ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
-                                            <img src="imgs/wiki.png" title="<?php echo _('Enlace a Wiki'); ?>"/>
+                                            <i id="viewpass" class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
                                         </a>
                                     <?php endif; ?>
                                 <?php endforeach; ?>

@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmProfiles" id="frmProfiles">
+    <form method="post" name="frmProfiles" id="frmProfiles" onsubmit="appMgmtSave('frmProfiles'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -163,8 +163,8 @@
     <?php if (!$isView): ?>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="appMgmtSave('frmProfiles');" title="<?php echo _('Guardar'); ?>">
+        <button form="frmProfiles" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>
         </button>
     </div>
