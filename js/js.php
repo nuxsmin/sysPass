@@ -31,11 +31,11 @@ $themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . \SP\Init::$THEME . DIRECTORY_SE
 
 $jsFilesBase = array(
     array('href' => 'js/jquery-1.11.2.min.js', 'min' => false),
-    array('href' => 'js/jquery-migrate-1.2.1.min.js', 'min' => false),
+//    array('href' => 'js/jquery-migrate-1.2.1.min.js', 'min' => false),
     array('href' => 'js/jquery.placeholder.js', 'min' => true),
     array('href' => 'js/jquery-ui.min.js', 'min' => false),
     array('href' => 'js/jquery.fancybox.pack.js', 'min' => false),
-    array('href' => 'js/jquery.powertip.min.js', 'min' => false),
+//    array('href' => 'js/jquery.powertip.min.js', 'min' => false),
     array('href' => 'js/chosen.jquery.min.js', 'min' => false),
     array('href' => 'js/alertify.js', 'min' => true),
     array('href' => 'js/jquery.fileDownload.js', 'min' => true),

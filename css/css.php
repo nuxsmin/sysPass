@@ -33,7 +33,6 @@ $cssFilesBase = array(
     array('href' => 'css/reset.css', 'min' => true),
     array('href' => 'css/jquery-ui.min.css', 'min' => false),
     array('href' => 'css/jquery-ui.structure.min.css', 'min' => false),
-    array('href' => 'css/jquery-ui.theme.min.css', 'min' => false),
     array('href' => 'css/jquery.powertip.css', 'min' => true),
     array('href' => 'css/jquery.powertip-yellow.min.css', 'min' => true),
     array('href' => 'css/chosen.css', 'min' => true),

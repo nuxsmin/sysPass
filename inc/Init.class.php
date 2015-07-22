@@ -379,7 +379,7 @@ class Init
      */
     private static function selectTheme()
     {
-        self::$THEME = Config::getValue('sitetheme', 'default');
+        self::$THEME = Config::getValue('sitetheme', 'material-blue');
         self::$THEMEURI = self::$WEBURI . '/inc/themes/' . self::$THEME;
         self::$THEMEPATH = DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . self::$THEME;
 
