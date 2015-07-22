@@ -40,7 +40,7 @@ $cssFilesBase = array(
     array('href' => 'css/alertify.core.css', 'min' => true),
     array('href' => 'css/alertify.default.css', 'min' => true),
     array('href' => 'css/jquery.tagsinput.css', 'min' => true),
-    array('href' => 'js/fancybox/jquery.fancybox.css', 'min' => true),
+    array('href' => 'css/jquery.fancybox.css', 'min' => true),
 );
 
 if (file_exists($themeCssPath)){
