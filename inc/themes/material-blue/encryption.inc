@@ -8,7 +8,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Maestra'); ?>
     </div>
 
-    <form method="post" name="frmCrypt" id="frmCrypt">
+    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="configMgmt('savempwd'); return false;">
         <table class="data tblConfig round">
             <?php if ($lastUpdateMPass > 0): ?>
                 <tr>
@@ -110,7 +110,8 @@ echo $encryption_tabIndex; ?>">
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
     <div class="action">
-        <button id="help_mpass_button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('savempwd');" title="<?php echo _('Ayuda'); ?>">
+        <button id="help_mpass_button" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                title="<?php echo _('Ayuda'); ?>">
             <i class="material-icons">help_outline</i>
         </button>
 
@@ -120,7 +121,8 @@ echo $encryption_tabIndex; ?>">
             <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
         </div>
 
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('savempwd');" title="<?php echo _('Realizar'); ?>">
+        <button form="frmCrypt" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                title="<?php echo _('Realizar'); ?>">
             <i class="material-icons">play_circle_filled</i>
         </button>
     </div>
@@ -129,7 +131,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Temporal'); ?>
     </div>
 
-    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass">
+    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" onsubmit="configMgmt('gentmpass'); return false;">
         <table class="data tblConfig round">
             <tr>
                 <td class="descField">
@@ -181,7 +183,8 @@ echo $encryption_tabIndex; ?>">
             <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
         </div>
 
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="configMgmt('gentmpass');" title="<?php echo _('Generar'); ?>">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                title="<?php echo _('Generar'); ?>">
             <i class="material-icons">play_circle_filled</i>
         </button>
     </div>

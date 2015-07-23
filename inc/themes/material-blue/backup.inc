@@ -34,7 +34,7 @@
         </tr>
     </table>
 
-    <form method="post" name="frmBackup" id="frmBackup">
+    <form method="post" name="frmBackup" id="frmBackup" onsubmit="configMgmt('backup');return false;">
         <input type="hidden" name="activeTab" value="<?php echo $backup_tabIndex; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP; ?>"/>
@@ -42,7 +42,7 @@
     </form>
 
     <div class="action">
-        <button id="help_backup_button"
+        <button id="help_backup_button" type="button"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                 title="<?php echo _('Ayuda'); ?>">
             <i class="material-icons">help_outline</i>
@@ -54,7 +54,7 @@
             <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
         </div>
 
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+        <button form="frmBackup" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
                 OnClick="configMgmt('backup');" title="<?php echo _('Realizar'); ?>">
             <i class="material-icons">play_circle_filled</i>
         </button>
@@ -64,7 +64,7 @@
         <?php echo _('Exportar Cuentas'); ?>
     </div>
 
-    <form method="post" name="frmExport" id="frmExport">
+    <form method="post" name="frmExport" id="frmExport" onsubmit="configMgmt('export'); return false;" >
         <table class="data round">
             <tr>
                 <td class="descField">
@@ -95,13 +95,11 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input passwordfield__input fg-blue100"
                                maxlength="255"/>
                         <label class="mdl-textfield__label"
                                for="exportPwd"><?php echo _('Clave de Exportación'); ?></label>
                     </div>
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -126,7 +124,7 @@
     </form>
 
     <div class="action">
-        <button id="help_export_button"
+        <button id="help_export_button" type="button"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                 title="<?php echo _('Ayuda'); ?>">
             <i class="material-icons">help_outline</i>
@@ -142,8 +140,8 @@
             <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
         </div>
 
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="configMgmt('export');" title="<?php echo _('Realizar'); ?>">
+        <button form="frmExport" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                title="<?php echo _('Realizar'); ?>">
             <i class="material-icons">play_circle_filled</i>
         </button>
 

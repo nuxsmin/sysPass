@@ -90,7 +90,7 @@ echo $import_tabIndex; ?>">
                 </form>
                 <div id="dropzone" class="round"
                      title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
-                    <img src="imgs/upload.png" alt="upload" class="opacity50"/>
+                    <i class="material-icons md-60 fg-green80">cloud_upload</i>
                 </div>
             </td>
         </tr>
@@ -123,7 +123,7 @@ echo $import_tabIndex; ?>">
         <?php echo _('Importar phpPMS'); ?>
     </div>
 
-    <form method="post" name="frmMigrate" id="frmMigrate">
+    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="configMgmt('migrate'); return false;">
         <table class="data round">
             <tr>
                 <td class="descField">
@@ -216,8 +216,8 @@ echo $import_tabIndex; ?>">
     </form>
 
     <div class="action">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="configMgmt('migrate');" title="<?php echo _('Realizar'); ?>">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" form="frmMigrate"
+                title="<?php echo _('Realizar'); ?>">
             <i class="material-icons">play_circle_filled</i>
         </button>
     </div>

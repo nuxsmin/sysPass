@@ -35,7 +35,7 @@ $jsFilesBase = array(
     array('href' => 'js/jquery.placeholder.js', 'min' => true),
     array('href' => 'js/jquery-ui.min.js', 'min' => false),
     array('href' => 'js/jquery.fancybox.pack.js', 'min' => false),
-//    array('href' => 'js/jquery.powertip.min.js', 'min' => false),
+    array('href' => 'js/jquery.powertip.min.js', 'min' => false),
     array('href' => 'js/chosen.jquery.min.js', 'min' => false),
     array('href' => 'js/alertify.js', 'min' => true),
     array('href' => 'js/jquery.fileDownload.js', 'min' => true),
@@ -63,7 +63,7 @@ $arrJsLang = array(
     _('Eliminar archivo?'),
     _('Su navegador no soporta subir archivos con HTML5'),
     _('Demasiados archivos'),
-    _('No es posible guardar el archivo.<br>Tamaño máximo:'),
+    sprintf(_('No es posible guardar el archivo.%sTamaño máximo:'), '<br>'),
     _('Extensión no permitida'),
     _('Vaciar el registro de eventos?')
 );
@@ -80,4 +80,4 @@ if (file_exists($themeJsPath)){
     }
 }
 
-SP\Util::getMinified('js', $jsFilesBase, false);
+SP\Util::getMinified('js', $jsFilesBase, true);

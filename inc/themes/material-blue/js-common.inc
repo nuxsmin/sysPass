@@ -17,15 +17,6 @@
             no_results_text: "<?php echo _('Sin resultados'); ?>"
         });
 
-        $(".showpass").each(function (index, input) {
-            // Cross-browser compatibility
-            $(this).on("mouseover", function () {
-                var pass = $(this).prev().find('[type="password"]').val();
-
-                $(this).attr('title', pass);
-            });
-        });
-
         $( ".download" ).button({
             icons: { primary: "	ui-icon-arrowthickstop-1-s"}
         });
@@ -52,9 +43,29 @@
 
         $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>', width: screen.width / 2.5  });
 
-        $('#passGen').click(function () {
-            password(11, true, true);
-        });
+        $('.passwordfield__input').parent().each(function(){
+            var target = $(this).find('.passwordfield__input').parent();
+            var targetId = $(this).find('.passwordfield__input').attr('id');
+
+            $(this)
+                .after('<i id="passGen" data-targetid="' + targetId + '" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>" onclick="password(11, true, true, \'' + targetId + '\')">settings</i>')
+                .after('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>');
+
+            $('#passGen').each(function(){
+                $(this).click(function () {
+                    password(11, true, true, "targetId");
+                });
+            });
+
+            $(".showpass").each(function (index, input) {
+                // Cross-browser compatibility
+                $(this).on("mouseover", function () {
+                    var pass = $('#' + targetId).val();
+
+                    $(this).attr('title', pass);
+                });
+            });
+        })
 
         // Stick the #nav to the top of the window
         var nav = $('#actionsBar');

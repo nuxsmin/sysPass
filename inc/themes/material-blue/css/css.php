@@ -25,7 +25,7 @@
 
 $cssFilesTheme = array(
 //    array('href' => 'https://fonts.googleapis.com/icon?family=Material+Icons', 'min' => false),
-    array('href' => 'http://fonts.googleapis.com/css?family=Roboto:300,400,500,700', 'min' => false),
+    array('href' => 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700', 'min' => false),
     array('href' => \SP\Init::$THEMEPATH . '/css/fonts.css', 'min' => true),
     array('href' => \SP\Init::$THEMEPATH . '/css/material.min.css', 'min' => false),
     array('href' => \SP\Init::$THEMEPATH . '/css/material-custom.css', 'min' => true),

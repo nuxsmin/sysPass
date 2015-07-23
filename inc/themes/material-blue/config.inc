@@ -4,7 +4,7 @@
         <?php echo _('Sitio'); ?>
     </div>
 
-    <form method="post" name="frmConfig" id="frmConfig">
+    <form method="post" name="frmConfig" id="frmConfig" onsubmit="configMgmt('saveconfig'); return false;">
 
         <table id="tblSite" class="data tblConfig round">
 
@@ -451,12 +451,10 @@
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="ldap_bindpass" name="ldap_bindpass" type="password"
-                                   class="mdl-textfield__input fg-blue100"
+                                   class="mdl-textfield__input passwordfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapBindPass; ?>" <?php echo $isDisabled; ?>/>
                             <label class="mdl-textfield__label" for="ldap_bindpass"><?php echo _('Clave'); ?></label>
                         </div>
-                        <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                        <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                     </td>
                 </tr>
                 <tr>
@@ -670,13 +668,10 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_pass" name="mail_pass" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="mail_pass" name="mail_pass" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input"
                                maxlength="128" value="<?php echo $mailPass; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="mail_pass"><?php echo _('Clave'); ?></label>
                     </div>
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons"
-                       title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -740,8 +735,8 @@
     </form>
 
     <div class="action">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="configMgmt('saveconfig');" title="<?php echo _('Guardar'); ?>">
+        <button form="frmConfig" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+                title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>
         </button>
     </div>

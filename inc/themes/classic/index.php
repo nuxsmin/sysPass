@@ -24,7 +24,7 @@
  */
 
 $themeInfo = array(
-    'name' => 'Default',
+    'name' => 'Classic',
     'creator' => 'nuxsmin',
     'version' => '1.0',
     'targetversion' => '1.2.0'

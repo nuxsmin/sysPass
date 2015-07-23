@@ -3,7 +3,7 @@
         <img id="imgLogo" src="<?php echo $logoMedium; ?>"/>
     </div>
     <div id="boxData">
-        <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
+        <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="doLogin(); return false;">
             <?php use SP\Html;
 
             if ($demoEnabled): ?>
@@ -104,11 +104,6 @@
 
 <script>
     $(function(){
-        $("#pass, #mpass").keyup(function(event){
-            if(event.keyCode == 13){
-                $('#frmLogin').submit();
-            }
-        });
         $('#imgLogo').click(function(){$('#smpass').show();});
     })
 </script>

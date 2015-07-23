@@ -997,9 +997,15 @@ function password(length, special, fancy, dstId) {
     }
 
     if (dstId) {
+        var dstParent = $('#' + dstId).parent();
+
         checkPassLevel(genPassword);
-        $('#' + dstId + ' input:password').val(genPassword);
-        $('#' + dstId + ' #passLevel').show(500);
+
+        // Poner la clave en el input de la
+        dstParent.find('input:password').val(genPassword);
+        // Poner la clave en el input de repetición
+        $('#' + dstId + 'R').val(genPassword);
+        dstParent.find('#passLevel').show(500);
     } else {
         checkPassLevel(genPassword);
         $('input:password, input.password').val(genPassword);
