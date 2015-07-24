@@ -247,6 +247,15 @@ a:hover, a:active, a:focus {
     text-align: center;
     padding: .5em 0;
 }
+
+#container #actionsBar #actionsBar-logo img {
+    display: none;
+    position: absolute;
+    top: .5em;
+    left: 1em;
+    width: 75px;
+}
+
 /*#container #actionsBar #actionsBar-icons{*/
     /*margin: 0 auto;*/
     /*width: 30%;*/
@@ -1443,7 +1452,8 @@ footer img {
     border: #dbfdcb 1px solid;
 }
 
-.help-box{background-color: #f2f2f2 !important; color: #777;}
+.help-box{background-color: #fff !important; color: rgb(96, 125, 139);}
+.help-box>*{font-weight: bold;}
 .help-text{text-align: justify; line-height: 1.5em; margin-top: 1em;}
 
 /*Login Page*/

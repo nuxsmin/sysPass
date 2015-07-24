@@ -24,7 +24,6 @@
  */
 
 $jsFilesTheme = array(
-//    array('href' => \SP\Init::$THEMEPATH . '/js/material.min.js.map', 'min' => false),
     array('href' => \SP\Init::$THEMEPATH . '/js/material.min.js', 'min' => false),
     array('href' => \SP\Init::$THEMEPATH . '/js/functions.js', 'min' => true),
 );

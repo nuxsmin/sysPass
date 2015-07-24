@@ -96,8 +96,8 @@
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="accountpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input" maxlength="255"
-                            OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
-                            <label class="mdl-textfield__label" for="password"><?php echo _('Clave'); ?></label>
+                            autocomplete="off">
+                            <label class="mdl-textfield__label" for="accountpass"><?php echo _('Clave'); ?></label>
                         </div>
                     </td>
                 </tr>
@@ -105,12 +105,10 @@
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="checkPassLevelR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
+                            <input id="accountpassR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
                             maxlength="255" autocomplete="off">
-                            <label class="mdl-textfield__label" for="passR"><?php echo _('Clave (Repetir)'); ?></label>
+                            <label class="mdl-textfield__label" for="accountpassR"><?php echo _('Clave (Repetir)'); ?></label>
                         </div>
-                        <span class="passLevel fullround"
-                              title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                     </td>
                 </tr>
             <?php endif; ?>

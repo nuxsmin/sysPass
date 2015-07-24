@@ -7,7 +7,6 @@ echo $import_tabIndex; ?>">
         <?php echo _('Importar CSV/XML'); ?>
     </div>
 
-
     <table class="data round">
         <form method="post" name="frmImport" id="frmImport">
             <tr>
@@ -102,7 +101,7 @@ echo $import_tabIndex; ?>">
         </button>
 
         <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
-            <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>
+            <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
 
             <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
 

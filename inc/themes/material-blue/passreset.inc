@@ -28,17 +28,11 @@
                 </div>
             <?php else: ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
-                           value="<?php echo Util::init_var('pass'); ?>" maxlength="255" autocomplete="off"
-                           onKeyUp="checkPassLevel(this.value)">
+                    <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
+                           value="<?php echo Util::init_var('pass'); ?>" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="pass"><?php echo _('Clave'); ?></label>
                 </div>
-                <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-
-                    <span class="passLevel fullround"
-                          title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
-
                 <input type="hidden" name="time" value="<?php echo $time; ?>">
                 <input type="hidden" name="hash" value="<?php echo $hash; ?>">
             <?php endif; ?>

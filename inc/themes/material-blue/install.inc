@@ -37,40 +37,31 @@
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="adminpass" name="adminpass" type="password" required class="mdl-textfield__input fg-blue100"
+                    <input id="adminpass" name="adminpass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
                            value="<?php echo $adminpass; ?>" maxlength="255" autocomplete="off"
                            onKeyUp="checkPassLevel(this.value,'adminaccount')">
                     <label class="mdl-textfield__label"
                            for="adminlogin"><?php echo _('Clave'); ?></label>
                 </div>
-                <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
-                <span class="passLevel passLevel-float fullround"
-                      title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
-
             </fieldset>
 
             <fieldset id="masterpwd">
                 <legend><?php echo _('Clave Maestra'); ?></legend>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="masterpassword" name="masterpassword" type="password" required
-                           class="mdl-textfield__input fg-blue100"
+                           class="mdl-textfield__input fg-blue100 passwordfield__input"
                            value="<?php echo $masterpassword; ?>" maxlength="255" autocomplete="off"
                            onKeyUp="checkPassLevel(this.value,'masterpwd')">
                     <label class="mdl-textfield__label"
                            for="masterpassword"><?php echo _('Clave Maestra'); ?></label>
                 </div>
-                <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
-                <span class="passLevel passLevel-float fullround"
-                      title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="masterpasswordr" name="masterpasswordr" type="password" required
+                    <input id="masterpasswordR" name="masterpasswordr" type="password" required
                            class="mdl-textfield__input fg-blue100"
                            value="<?php echo $masterpasswordr; ?>" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
-                           for="masterpassword"><?php echo _('Clave (repetir)'); ?></label>
+                           for="masterpasswordR"><?php echo _('Clave (repetir)'); ?></label>
                 </div>
             </fieldset>
 
@@ -93,7 +84,7 @@
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dbpass" name="dbpass" type="password" required class="mdl-textfield__input fg-blue100"
+                    <input id="dbpass" name="dbpass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input-show"
                            value="<?php echo $dbpass; ?>" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="dbpass"><?php echo _('Clave acceso BBDD'); ?></label>

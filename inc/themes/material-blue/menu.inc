@@ -1,7 +1,7 @@
 <div id="actionsBar">
+    <div id="actionsBar-logo"><img src="<?php echo $logoNoText; ?>" alt="logo" /></div>
     <div id="actionsBar-icons">
-        <?php
-        foreach ($actions as $action): ?>
+        <?php foreach ($actions as $action): ?>
             <?php if ($action['checkaccess'] && !\SP\Acl::checkUserAccess($action['name'])): ?>
                 <?php continue; ?>
             <?php endif; ?>

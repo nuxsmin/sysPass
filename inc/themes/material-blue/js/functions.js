@@ -999,7 +999,7 @@ function password(length, special, fancy, dstId) {
     if (dstId) {
         var dstParent = $('#' + dstId).parent();
 
-        checkPassLevel(genPassword);
+        checkPassLevel(genPassword, dstId);
 
         // Poner la clave en el input de la
         dstParent.find('input:password').val(genPassword);
@@ -1016,7 +1016,7 @@ function password(length, special, fancy, dstId) {
 
 // Funciones para analizar al fortaleza de una clave
 // From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
-function checkPassLevel(password, dstId) {
+function checkPassLevel(password, dst) {
     "use strict";
 
     strPassword = password;
@@ -1039,11 +1039,7 @@ function checkPassLevel(password, dstId) {
         baseScore = 0;
     }
 
-    if (dstId) {
-        outputResult(dstId);
-    } else {
-        outputResult(dstId);
-    }
+    outputResult(dst);
 }
 
 function analyzeString() {
@@ -1091,11 +1087,7 @@ function calcComplexity() {
 function outputResult(dstId) {
     "use strict";
 
-    var complexity, selector = '.passLevel';
-
-    if (dstId) {
-        selector = '#' + dstId + ' .passLevel';
-    }
+    var complexity, selector = '.passLevel-' + dstId;
 
     complexity = $(selector);
     complexity.removeClass("weak good strong strongest");

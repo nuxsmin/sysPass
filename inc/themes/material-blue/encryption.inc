@@ -39,11 +39,9 @@ echo $encryption_tabIndex; ?>">
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input"
-                               maxlength="255" OnKeyUp="checkPassLevel(this.value)" required/>
+                               maxlength="255" required/>
                         <label class="mdl-textfield__label" for="newMasterPwd"><?php echo _('Nueva Clave Maestra'); ?></label>
                     </div>
-
-                    <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>
             </tr>
             <tr>

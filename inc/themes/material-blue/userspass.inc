@@ -10,7 +10,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="userpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
                                maxlength="50">
-                        <label class="mdl-textfield__label" for="pass"><?php echo _('Clave'); ?></label>
+                        <label class="mdl-textfield__label" for="userpass"><?php echo _('Clave'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -22,9 +22,8 @@
                         <input id="userpassR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
                                maxlength="50">
                         <label class="mdl-textfield__label"
-                               for="passR"><?php echo _('Clave (repetir)'); ?></label>
+                               for="userpassR"><?php echo _('Clave (repetir)'); ?></label>
                     </div>
-                    <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>
             </tr>
         </table>
@@ -54,6 +53,6 @@
         $('#pass').focus(function() {
             $('#passLevel').show();
             $('#resFancyAccion').hide();
-        }).on('keyup', function(){checkPassLevel(this.value)});
+        });
     });
 </script>
