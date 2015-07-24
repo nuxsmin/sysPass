@@ -100,13 +100,13 @@ function doAction(actionId, lastAction, itemId) {
         data: data,
         success: function (response) {
             $('#content').html(response);
-            setContentSize();
         },
         error: function () {
             $('#content').html(resMsg("nofancyerror"));
         },
         complete: function () {
             $.fancybox.hideLoading();
+            setContentSize();
         }
     });
 }

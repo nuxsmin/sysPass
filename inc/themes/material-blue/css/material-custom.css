@@ -37,17 +37,17 @@
 
 .mdl-button {margin: 0 .3em;}
 
-.fg-blue20 {color: rgba(68, 138, 255, .2)}
-.fg-blue40 {color: rgba(68, 138, 255, .4)}
-.fg-blue60 {color: rgba(68, 138, 255, .6)}
-.fg-blue80 {color: rgba(68, 138, 255, .8)}
-.fg-blue100 {color: rgb(68, 138, 255)}
+.fg-blue20 {color: rgba(83, 109, 254, .2)}
+.fg-blue40 {color: rgba(83, 109, 254, .4)}
+.fg-blue60 {color: rgba(83, 109, 254, .6)}
+.fg-blue80 {color: rgba(83, 109, 254, .8)}
+.fg-blue100 {color: rgb(83, 109, 254)}
 
-.mdl-button--fab.mdl-button--colored.bg-blue20 {background-color: rgba(68, 138, 255, .2)}
-.mdl-button--fab.mdl-button--colored.bg-blue40 {background-color: rgba(68, 138, 255, .4)}
-.mdl-button--fab.mdl-button--colored.bg-blue60 {background-color: rgba(68, 138, 255, .6)}
-.mdl-button--fab.mdl-button--colored.bg-blue80 {background-color: rgba(68, 138, 255, .8)}
-.mdl-button--fab.mdl-button--colored.bg-blue100 {background-color: rgb(68, 138, 255)}
+.mdl-button--fab.mdl-button--colored.bg-blue20 {background-color: rgba(83, 109, 254, .2)}
+.mdl-button--fab.mdl-button--colored.bg-blue40 {background-color: rgba(83, 109, 254, .4)}
+.mdl-button--fab.mdl-button--colored.bg-blue60 {background-color: rgba(83, 109, 254, .6)}
+.mdl-button--fab.mdl-button--colored.bg-blue80 {background-color: rgba(83, 109, 254, .8)}
+.mdl-button--fab.mdl-button--colored.bg-blue100 {background-color: rgb(83, 109, 254)}
 
 .fg-orange20 {color: rgba(255, 193, 7, .2)}
 .fg-orange40 {color: rgba(255, 193, 7, .4)}

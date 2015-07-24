@@ -95,22 +95,19 @@
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="password" name="password" type="password" required class="mdl-textfield__input" maxlength="255"
+                            <input id="accountpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input" maxlength="255"
                             OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
                             <label class="mdl-textfield__label" for="password"><?php echo _('Clave'); ?></label>
                         </div>
-
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="password2" name="password2" type="password" required class="mdl-textfield__input fg-blue100" maxlength="255"
-                            OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
-                            <label class="mdl-textfield__label" for="password2"><?php echo _('Clave (Repetir)'); ?></label>
+                            <input id="checkPassLevelR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
+                            maxlength="255" autocomplete="off">
+                            <label class="mdl-textfield__label" for="passR"><?php echo _('Clave (Repetir)'); ?></label>
                         </div>
                         <span class="passLevel fullround"
                               title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>

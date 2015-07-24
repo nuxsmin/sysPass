@@ -44,28 +44,26 @@
         $(".help-box").dialog({autoOpen: false, title: '<?php echo _('Ayuda'); ?>', width: screen.width / 2.5  });
 
         $('.passwordfield__input').parent().each(function(){
-            var target = $(this).find('.passwordfield__input').parent();
+            var targetContainer = $(this).find('.passwordfield__input').parent();
             var targetId = $(this).find('.passwordfield__input').attr('id');
 
             $(this)
-                .after('<i id="passGen" data-targetid="' + targetId + '" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>" onclick="password(11, true, true, \'' + targetId + '\')">settings</i>')
-                .after('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>');
+                .after('<i id="passGen" data-targetid="' + targetId + '" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>" >settings</i>')
+                .after('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>" onmouseover="$(this).attr(\'title\', $(\'#' + targetId + '\').val())">remove_red_eye</i>');
 
             $('#passGen').each(function(){
                 $(this).click(function () {
-                    password(11, true, true, "targetId");
+                    password(11, true, true, targetId);
                 });
             });
+        });
 
-            $(".showpass").each(function (index, input) {
-                // Cross-browser compatibility
-                $(this).on("mouseover", function () {
-                    var pass = $('#' + targetId).val();
+        $('.passwordfield__input-show').parent().each(function(){
+            var targetId = $(this).find('.passwordfield__input-show').attr('id');
 
-                    $(this).attr('title', pass);
-                });
-            });
-        })
+            $(this)
+                .after('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>" onmouseover="$(this).attr(\'title\', $(\'#' + targetId + '\').val())">remove_red_eye</i>');
+        });
 
         // Stick the #nav to the top of the window
         var nav = $('#actionsBar');

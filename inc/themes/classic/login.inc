@@ -1,5 +1,4 @@
     <div id="boxLogin" class="round shadow">
-        <div id="boxLogo"><img id="imgLogo" src="imgs/logo.png" title="sysPass"/></div>
         <div id="boxData">
             <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
                 <?php use SP\Html;
@@ -52,7 +51,7 @@
 <?php if ($isLogout): ?>
     <div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
     <script>$('#boxLogout').fadeOut(1500, function () {
-            location.href = '../../../index.php';
+            location.href = 'index.php';
         });</script>
 <?php endif; ?>
 

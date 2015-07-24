@@ -49,8 +49,8 @@ $customerId = SP\Request::analyze('customerId', 0);
 $newCustomer = SP\Request::analyze('customer_new');
 $accountName = SP\Request::analyze('name');
 $accountLogin = SP\Request::analyze('login');
-$accountPassword = SP\Request::analyze('password', '', false, false, false);
-$accountPasswordV = SP\Request::analyze('password2', '', false, false, false);
+$accountPassword = SP\Request::analyze('pass', '', false, false, false);
+$accountPasswordR = SP\Request::analyze('passR', '', false, false, false);
 $categoryId = SP\Request::analyze('categoryId', 0);
 $accountOtherGroups = SP\Request::analyze('othergroups');
 $accountOtherUsers = SP\Request::analyze('otherusers');
@@ -74,7 +74,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
         SP\Common::printJSON(_('Es necesario un usuario'));
     } elseif (!$accountPassword) {
         SP\Common::printJSON(_('Es necesario una clave'));
-    } elseif ($accountPassword != $accountPasswordV) {
+    } elseif ($accountPassword != $accountPasswordR) {
         SP\Common::printJSON(_('Las claves no coinciden'));
     }
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT) {
@@ -92,9 +92,9 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
     }
 } elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS) {
     // Comprobaciones para modficación de clave
-    if (!$accountPassword && !$accountPasswordV) {
+    if (!$accountPassword && !$accountPasswordR) {
         SP\Common::printJSON(_('La clave no puede estar en blanco'));
-    } elseif ($accountPassword != $accountPasswordV) {
+    } elseif ($accountPassword != $accountPasswordR) {
         SP\Common::printJSON(_('Las claves no coinciden'));
     }
 } elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE) {

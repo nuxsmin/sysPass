@@ -1,7 +1,4 @@
 <div id="boxLogin" class="round shadow">
-    <div id="boxLogo">
-        <img id="imgLogo" src="<?php echo $logoMedium; ?>"/>
-    </div>
     <div id="boxData">
         <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="doLogin(); return false;">
             <?php use SP\Html;

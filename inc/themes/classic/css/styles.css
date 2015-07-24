@@ -248,7 +248,9 @@ a:focus {
     width: 100%;
     height: auto;
     min-height: 650px;
-    background: url("../imgs/logo_full.png") no-repeat left top transparent;
+    /*background: url("../imgs/logo_full.png") no-repeat left top transparent;*/
+    background: url("../inc/themes/classic/imgs/logo_full.svg") no-repeat left top #f2f2f2;
+    background-size: 350px;
 }
 
 #container.error, #container.install, #container.passreset {
@@ -287,11 +289,12 @@ a:focus {
 }
 
 #container #actionsBar {
-    float: left;
+    display: inline-block;
     position: relative;
-    top: 100px;
-    left: 30px;
-    margin-right: 80px;
+    top: 10em;
+    left: 5em;
+    height: 100%;
+    width: 5em;
     text-align: center;
 }
 
@@ -329,11 +332,12 @@ a:focus {
 }
 
 #container #content {
-    float: left;
-    width: 88%;
-    min-height: 500px;
-    margin: 50px auto;
-    margin-bottom: 80px;
+    display: inline-block;
+    position: relative;
+    top: 1em;
+    left: 10em;
+    width: 85%;
+    margin: 50px auto 80px auto;
 }
 
 #content td.descField, #fancyContainer td.descField {
@@ -1503,10 +1507,11 @@ footer img {
 /*Login Page*/
 #boxLogin {
     width: 450px;
-    height: 150px;
+    min-height: 150px;
     margin: 75px auto;
-    padding: 25px;
-    background-color: #fff;
+    padding: 2em;
+    background: url("../inc/themes/classic/imgs/logo_full.svg") no-repeat left top #fff;
+    background-size: 300px auto;
 }
 
 #boxLogin .error {
@@ -1519,25 +1524,10 @@ footer img {
     margin-right: auto;
 }
 
-#boxLogin #boxLogo {
-    float: left;
-    width: 150px;
-    height: 100%;
-    text-align: center;
-}
-
-#boxLogin #boxLogo #imgLogo {
-    float: left;
-    width: 100px;
-    height: 100px;
-    position: relative;
-    top: 25px;
-    left: 20px;
-    z-index: 90;
-    vertical-align: middle;
-}
-
 #boxLogin #boxData {
+    position: relative;
+    top: 3em;
+    left: 10em;
     float: left;
     width: 280px;
     min-height: 100px;
@@ -1654,6 +1644,10 @@ fieldset.warning a {
     box-shadow: 0px 8px 6px -6px #a9a9a9;
     -webkit-box-shadow: 0px 8px 6px -6px #a9a9a9;
     -moz-box-shadow: 0px 8px 6px -6px #a9a9a9;
+}
+
+#actions #logo img {
+    width: 300px;
 }
 
 #actions #logo #pageDesc {

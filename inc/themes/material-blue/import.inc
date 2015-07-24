@@ -60,11 +60,10 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input-show"
                                maxlength="255"/>
                         <label class="mdl-textfield__label" for="importPwd"><?php echo _('Clave de Importación'); ?></label>
                     </div>
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
                 </td>
             </tr>
             <tr>
@@ -149,11 +148,10 @@ echo $import_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input-show"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbpass"><?php echo _('Clave BBDD'); ?></label>
                     </div>
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
                 </td>
             </tr>
             <tr>

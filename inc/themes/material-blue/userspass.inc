@@ -8,13 +8,10 @@
                 <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
+                        <input id="userpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
                                maxlength="50">
-                        <label class="mdl-textfield__label"
-                               for="pass"><?php echo _('Clave'); ?></label>
+                        <label class="mdl-textfield__label" for="pass"><?php echo _('Clave'); ?></label>
                     </div>
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
 
@@ -22,10 +19,10 @@
                 <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="passv" name="passv" type="password" required class="mdl-textfield__input fg-blue100"
+                        <input id="userpassR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
                                maxlength="50">
                         <label class="mdl-textfield__label"
-                               for="passv"><?php echo _('Clave (repetir)'); ?></label>
+                               for="passR"><?php echo _('Clave (repetir)'); ?></label>
                     </div>
                     <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>

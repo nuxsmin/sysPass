@@ -26,12 +26,10 @@ echo $encryption_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input-show"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="curMasterPwd"><?php echo _('Clave Maestra actual'); ?></label>
                     </div>
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
                 </td>
             </tr>
             <tr>
@@ -40,13 +38,10 @@ echo $encryption_tabIndex; ?>">
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input"
                                maxlength="255" OnKeyUp="checkPassLevel(this.value)" required/>
                         <label class="mdl-textfield__label" for="newMasterPwd"><?php echo _('Nueva Clave Maestra'); ?></label>
                     </div>
-
-                    <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                    <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
 
                     <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </td>

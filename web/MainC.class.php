@@ -59,8 +59,8 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('startTime', microtime());
         $this->view->assign('page', $page);
         $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
-        $this->view->assign('logoMedium', Init::$THEMEURI . '/imgs/logo.png');
-        $this->view->assign('logo', Init::$THEMEURI . '/imgs/logo_full.png');
+        $this->view->assign('logoMedium', Init::$THEMEURI . '/imgs/logo.svg');
+        $this->view->assign('logo', Init::$THEMEURI . '/imgs/logo_full.svg');
 
         $this->getHeader();
         $this->setHeaders();
