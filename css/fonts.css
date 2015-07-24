@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Register';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../imgs/register.eot"); /* For IE6-8 */
+    src: local('Register'),
+    local('Register'),
+    url("../imgs/register.woff2") format('woff2'),
+    url("../imgs/register.ttf") format('truetype');
+}

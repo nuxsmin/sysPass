@@ -200,7 +200,7 @@ a:hover, a:active, a:focus {
     width: 100%;
     height: auto;
     min-height: 650px;
-    background: url("../inc/themes/material-blue/imgs/logo_full.svg") no-repeat left top transparent;
+    background: url("../imgs/logo_full.svg") no-repeat left top transparent;
     background-size: auto 200px;
 }
 
@@ -1452,7 +1452,7 @@ footer img {
     min-height: 150px;
     margin: 75px auto;
     padding: 2em;
-    background: url("../inc/themes/material-blue/imgs/logo_full.svg") no-repeat left top #fff;
+    background: url("../imgs/logo_full.svg") no-repeat left top #fff;
     background-size: 300px auto;
 }
 

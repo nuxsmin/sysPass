@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="675"
+   height="325"
+   id="svg2985"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="logo_full.svg">
+  <defs
+     id="defs2987">
+    <linearGradient
+       id="linearGradient3841"
+       osb:paint="gradient">
+      <stop
+         style="stop-color:#607d8b;stop-opacity:1;"
+         offset="0"
+         id="stop3843" />
+      <stop
+         style="stop-color:#607d8b;stop-opacity:0;"
+         offset="1"
+         id="stop3845" />
+    </linearGradient>
+    <filter
+       inkscape:label="Drop Shadow"
+       id="filter4485"
+       color-interpolation-filters="sRGB">
+      <feFlood
+         flood-opacity="0.5"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood4487" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite4489" />
+      <feGaussianBlur
+         stdDeviation="5"
+         result="blur"
+         id="feGaussianBlur4491" />
+      <feOffset
+         dx="1"
+         dy="1"
+         result="offset"
+         id="feOffset4493" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite4495" />
+    </filter>
+    <filter
+       inkscape:label="Inner Glow"
+       inkscape:menu="Shadows and Glows"
+       inkscape:menu-tooltip="Adds a colorizable glow inside"
+       color-interpolation-filters="sRGB"
+       id="filter3878">
+      <feGaussianBlur
+         stdDeviation="5"
+         result="result8"
+         id="feGaussianBlur3880" />
+      <feComposite
+         result="result6"
+         in="SourceGraphic"
+         operator="in"
+         in2="result8"
+         id="feComposite3882" />
+      <feComposite
+         operator="in"
+         result="result11"
+         in2="result6"
+         id="feComposite3884" />
+      <feFlood
+         result="result10"
+         in="result11"
+         flood-opacity="0.5"
+         flood-color="rgb(63,81,181)"
+         id="feFlood3886" />
+      <feBlend
+         mode="screen"
+         in="result11"
+         in2="result10"
+         result="result12"
+         id="feBlend3888" />
+      <feComposite
+         result="result2"
+         operator="in"
+         in2="SourceGraphic"
+         in="result12"
+         id="feComposite3890" />
+    </filter>
+    <filter
+       inkscape:label="Drop Shadow"
+       id="filter3034-2"
+       color-interpolation-filters="sRGB">
+      <feFlood
+         flood-opacity="0.75098814229249011"
+         flood-color="rgb(255,255,255)"
+         result="flood"
+         id="feFlood3036-2" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite3038-6" />
+      <feGaussianBlur
+         stdDeviation="2"
+         result="blur"
+         id="feGaussianBlur3040-0" />
+      <feOffset
+         dx="2"
+         dy="2"
+         result="offset"
+         id="feOffset3042-5" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite3044-9" />
+    </filter>
+    <style
+       type="text/css"
+       id="style57"><![CDATA[
+    @font-face {
+    font-family: 'Register';
+    font-style: normal;
+    font-weight: 400;
+    src: url("register.eot");
+    src: local('Register'),
+    local('Register'),
+    url("register.woff2") format('woff2'),
+    url("register.ttf") format('truetype'),
+    url('register.otf') format('otf');
+    }
+   ]]></style>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="437.56192"
+     inkscape:cy="274.51786"
+     inkscape:current-layer="layer2"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:window-width="1618"
+     inkscape:window-height="1028"
+     inkscape:window-x="54"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     objecttolerance="20"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="false"
+     showborder="true">
+    <sodipodi:guide
+       orientation="1,0"
+       position="317.48352,207.04712"
+       id="guide3048" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="387.48352,153.29712"
+       id="guide3050" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="247.48352,187.04712"
+       id="guide3052" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="230.27188,176.18345"
+       id="guide3040" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="290.0224,105.82632"
+       id="guide3042" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata2990">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-nc-sa/3.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:prohibits
+           rdf:resource="http://creativecommons.org/ns#CommercialUse" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Trazo"
+     transform="translate(-2.5164841,-106.54713)">
+    <rect
+       style="fill:#3f51b5;fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter4485)"
+       id="rect4164"
+       width="346"
+       height="354.0452"
+       x="143.16484"
+       y="63.00806"
+       rx="15"
+       ry="15"
+       transform="matrix(1.6595186,0,0.17103845,0.40740571,-223.23592,102.71016)" />
+    <g
+       id="g5235"
+       transform="translate(-128,36)">
+      <g
+         transform="matrix(0.87796262,0,0,0.85190732,217.4825,104.27881)"
+         id="g4160"
+         style="fill:#f2f2f2;stroke:#666666;overflow:visible">
+        <path
+           id="path4152"
+           transform="matrix(1.1390007,0,0,1.1738366,-247.71271,-122.40628)"
+           d="m 308.59375,104.28125 c -34.42667,0 -62.34375,25.10504 -62.34375,56.0625 l 0,51.6875 -3.71875,0 c -13.8402,0 -25.0625,8.98286 -25.0625,20.03125 l 0,123.65625 c 0,11.04839 11.2223,20 25.0625,20 l 154.9375,0 c 13.8402,0 25.0625,-8.95161 25.0625,-20 l 0,-123.65625 c 0,-11.04839 -11.2223,-20.03125 -25.0625,-20.03125 l -3.71875,0 0,-51.6875 c 0,-30.95746 -27.91796,-56.0625 -62.34375,-56.0625 l -22.8125,0 z m 4.40625,22.9375 14,0 c 21.06496,0 38.125,16.36463 38.125,36.5625 l 0,48.25 -90.25,0 0,-48.25 c 0,-20.19787 17.06004,-36.5625 38.125,-36.5625 z"
+           style="fill:#f2f2f2;stroke:#666666;stroke-width:0.86483687"
+           inkscape:connector-curvature="0" />
+      </g>
+      <path
+         style="fill:#cccccc;fill-opacity:1;stroke:#cccccc;stroke-width:0.14366552;stroke-miterlimit:4;stroke-dasharray:none"
+         inkscape:connector-curvature="0"
+         id="path3041"
+         d="m 234.87694,284.46931 q -1.35333,-0.76493 -1.7505,-2.28006 -0.39717,-1.51514 0.36775,-2.86846 l 1.88289,-3.23621 q 0.76492,-1.35333 2.28006,-1.7505 1.51513,-0.39717 2.86846,0.36775 l 7.82574,4.50128 0,-9.03197 q 0,-1.52985 1.11797,-2.64781 1.11796,-1.11797 2.6478,-1.11797 l 3.76578,0 q 1.52984,0 2.64781,1.11797 1.11796,1.11796 1.11796,2.64781 l 0,9.03197 7.82575,-4.50128 q 1.35332,-0.76492 2.86846,-0.36775 1.51514,0.39717 2.28006,1.7505 l 1.88288,3.23621 q 0.76493,1.35332 0.36776,2.86846 -0.39717,1.51513 -1.7505,2.28006 L 265.29732,289 l 7.82575,4.5307 q 1.35333,0.76492 1.7505,2.28005 0.39717,1.51514 -0.36776,2.86846 l -1.88288,3.23621 q -0.76492,1.35333 -2.28006,1.7505 -1.51514,0.39717 -2.86846,-0.36775 l -7.82575,-4.50128 0,9.03197 q 0,1.52985 -1.11796,2.64781 -1.11797,1.11797 -2.64781,1.11797 l -3.76578,0 q -1.52984,0 -2.6478,-1.11797 -1.11797,-1.11796 -1.11797,-2.64781 l 0,-9.03197 -7.82574,4.50128 q -1.35333,0.76492 -2.86846,0.36775 -1.51514,-0.39717 -2.28006,-1.7505 l -1.88289,-3.23621 q -0.76492,-1.35332 -0.36775,-2.86846 0.39717,-1.51513 1.7505,-2.28005 L 242.70268,289 z" />
+      <path
+         style="fill:#607d8b;fill-opacity:1;stroke:#cccccc;stroke-width:0.14366552;stroke-miterlimit:4;stroke-dasharray:none"
+         inkscape:connector-curvature="0"
+         id="path3041-6"
+         d="m 315.46931,308.12306 q -0.76492,1.35333 -2.28006,1.7505 -1.51513,0.39717 -2.86846,-0.36776 l -3.23621,-1.88288 q -1.35333,-0.76492 -1.75049,-2.28006 -0.39718,-1.51513 0.36774,-2.86846 l 4.50128,-7.82574 -9.03197,0 q -1.52984,0 -2.64781,-1.11797 -1.11797,-1.11796 -1.11797,-2.64781 l 0,-3.76577 q 0,-1.52984 1.11797,-2.64781 1.11797,-1.11796 2.64781,-1.11796 l 9.03197,0 -4.50128,-7.82575 q -0.76492,-1.35332 -0.36774,-2.86845 0.39716,-1.51514 1.75049,-2.28006 l 3.23621,-1.88289 q 1.35333,-0.76492 2.86846,-0.36775 1.51514,0.39717 2.28006,1.7505 l 4.53069,7.82574 4.5307,-7.82574 q 0.76492,-1.35333 2.28005,-1.7505 1.51514,-0.39717 2.86846,0.36775 l 3.23621,1.88289 q 1.35333,0.76492 1.7505,2.28006 0.39717,1.51513 -0.36775,2.86845 l -4.50128,7.82575 9.03197,0 q 1.52985,0 2.64782,1.11796 1.11796,1.11797 1.11796,2.64781 l 0,3.76577 q 0,1.52985 -1.11796,2.64781 -1.11797,1.11797 -2.64782,1.11797 l -9.03197,0 4.50128,7.82574 q 0.76492,1.35333 0.36775,2.86846 -0.39717,1.51514 -1.7505,2.28006 l -3.23621,1.88288 q -1.35332,0.76493 -2.86846,0.36776 -1.51513,-0.39717 -2.28005,-1.7505 L 320,300.29732 z" />
+      <path
+         style="fill:#3f51b5;fill-opacity:1;stroke:#cccccc;stroke-width:0.14366552;stroke-miterlimit:4;stroke-dasharray:none"
+         inkscape:connector-curvature="0"
+         id="path3041-1"
+         d="m 366.92424,284.46931 q -1.35333,-0.76492 -1.75049,-2.28006 -0.39717,-1.51513 0.36775,-2.86846 l 1.88288,-3.23621 q 0.76493,-1.35333 2.28006,-1.75049 1.51514,-0.39718 2.86846,0.36774 l 7.82575,4.50128 0,-9.03197 q 0,-1.52984 1.11796,-2.64781 1.11796,-1.11797 2.64781,-1.11797 l 3.76577,0 q 1.52984,0 2.64781,1.11797 1.11797,1.11797 1.11797,2.64781 l 0,9.03197 7.82574,-4.50128 q 1.35332,-0.76492 2.86846,-0.36774 1.51513,0.39716 2.28006,1.75049 l 1.88289,3.23621 q 0.76491,1.35333 0.36774,2.86846 -0.39717,1.51514 -1.75049,2.28006 L 397.34462,289 l 7.82575,4.5307 q 1.35332,0.76492 1.75049,2.28005 0.39717,1.51514 -0.36774,2.86846 l -1.88289,3.23621 q -0.76493,1.35333 -2.28006,1.7505 -1.51514,0.39717 -2.86846,-0.36775 l -7.82574,-4.50128 0,9.03197 q 0,1.52985 -1.11797,2.64781 -1.11797,1.11797 -2.64781,1.11797 l -3.76577,0 q -1.52985,0 -2.64781,-1.11797 -1.11796,-1.11796 -1.11796,-2.64781 l 0,-9.03197 -7.82575,4.50128 q -1.35332,0.76492 -2.86846,0.36775 -1.51513,-0.39717 -2.28006,-1.7505 l -1.88288,-3.23621 q -0.76492,-1.35332 -0.36775,-2.86846 0.39716,-1.51513 1.75049,-2.28005 L 374.74999,289 z" />
+    </g>
+    <rect
+       style="opacity:0.5;fill:#e6e6e6;fill-opacity:1;fill-rule:evenodd;stroke:#cccccc;stroke-width:1.01193643;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;filter:url(#filter3878)"
+       id="rect3044"
+       width="191.49452"
+       height="68.371681"
+       x="96.257629"
+       y="291.35638"
+       rx="15.806274"
+       ry="14.576706" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Texto"
+     transform="translate(-2.5164841,-106.54713)">
+    <text
+       sodipodi:linespacing="125%"
+       id="text4744"
+       y="213.39413"
+       x="285.3916"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;filter:url(#filter3034-2);font-family:'Register'"
+       xml:space="preserve"><tspan
+         style="font-size:56px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:1.21000004px;fill:#ffffff;fill-opacity:1;font-family:Register;-inkscape-font-specification:'Register'"
+         y="213.39413"
+         x="285.3916"
+         id="tspan4746"
+         sodipodi:role="line">#sysPass</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+       x="436.92841"
+       y="233.61017"
+       id="text5277"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5279"
+         x="436.92841"
+         y="233.61017"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#ffffff;fill-opacity:1;font-family:Roboto;-inkscape-font-specification:Roboto">Systems Password Manager</tspan></text>
+  </g>
+</svg>
