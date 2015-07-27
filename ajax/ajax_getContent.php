@@ -151,6 +151,14 @@ switch ($actionId) {
         $controller = new SP\Controller\EventlogC($tpl);
         $controller->getEventlog();
         break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES:
+        $tpl->addTemplate('tabs-start');
+
+        $controller = new \SP\Controller\UsersPrefsC($tpl);
+        $controller->getSecurityTab();
+
+        $tpl->addTemplate('tabs-end');
+        break;
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración

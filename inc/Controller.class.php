@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\SPException;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -171,7 +173,7 @@ abstract class Controller
 
         $this->view->append('errors',
             array(
-                'type' => 'critical',
+                'type' => SPException::SP_WARNING,
                 'description' => $errorsTypes[$type]['txt'],
                 'hint' => $errorsTypes[$type]['hint'])
         );

@@ -75,7 +75,7 @@ if (!$isHistory) {
 
 $data = array(
     'title' => _('Clave de Cuenta'),
-//    'acclogin' => _('Usuario') . ': ' . $accountData->login,
+    'acclogin' => $accountData->login,
     'accpass' => trim($accountClearPass)
 );
 

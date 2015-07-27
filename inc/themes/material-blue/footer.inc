@@ -8,6 +8,8 @@
                                data-itemid="<?php echo $userId; ?>"
                                Onclick="usrUpdPass(this,<?php echo \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')">security</i>
                         <?php endif; ?>
+                        <i class="material-icons" title="<?php echo _('Preferencias de usuario'); ?>"
+                           OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES; ?>)">account_circle</i>
                         <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
                     </div>
                 <?php endif; ?>

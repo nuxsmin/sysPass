@@ -69,7 +69,7 @@ $arrJsLang = array(
 );
 
 //$js = "// i18n language array from PHP. Detected language: " . SP_Init::$LANG . "\n";
-echo "var APP_ROOT = '" . SP\Init::$WEBROOT . "';\n";
+echo "var APP_ROOT = '" . SP\Init::$WEBURI . "';\n";
 echo "var LANG = ['" . implode("','", SP\Util::arrayJSEscape($arrJsLang)) . "'];\n";
 
 if (file_exists($themeJsPath)){

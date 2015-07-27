@@ -310,4 +310,25 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('time', Request::analyze('t'));
         $this->view->assign('upgrade', $this->view->action === 'upgrade');
     }
+
+    /**
+     * Obtener los datos para el interface de autentificación en 2 pasos
+     */
+    public function get2FA()
+    {
+        if (Request::analyze('f', 0) === 1) {
+            $this->view->addTemplate('2fa');
+
+            $this->view->assign('action', Request::analyze('a'));
+            $this->view->assign('userId', Request::analyze('i'));
+            $this->view->assign('time', Request::analyze('t'));
+        } else {
+            $this->view->assign('showLogo', true);
+
+            $this->showError(self::ERR_UNAVAILABLE, false);
+        }
+
+        $this->view->addTemplate('footer');
+
+    }
 }

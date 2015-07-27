@@ -1116,4 +1116,25 @@ class Users
 
         return DB::getQuery($query, __FUNCTION__, $data);
     }
+
+    /**
+     * Obtener el IV del usuario a partir del Id.
+     *
+     * @param int $id El id del usuario
+     * @return string El hash
+     */
+    public static function getUserIVById($id)
+    {
+        $query = 'SELECT user_mIV FROM usrData WHERE user_id = :id LIMIT 1';
+
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->user_mIV;
+    }
 }

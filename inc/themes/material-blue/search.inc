@@ -184,25 +184,28 @@
         <script>
             passToClip = 0;
 
-            function clipboard() {
-                var client = new ZeroClipboard($('.clip-pass-button'), {
-                    swfPath: "js/ZeroClipboard.swf",
-                    debug: false,
-                    title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
-                });
+            $(function(){
+                function clipboard() {
+                    var client = new ZeroClipboard($('.clip-pass-button'), {
+                        swfPath: "<?php echo \SP\Init::$WEBURI; ?>/js/ZeroClipboard.swf",
+                        debug: false,
+                        title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
+                    });
 
-                client.on("aftercopy", function (e) {
-                    resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-                });
+                    client.on("aftercopy", function (e) {
+                        resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+                    });
 
-                client.on("error", function (e) {
-                    ZeroClipboard.destroy();
-                });
-            }
+                    client.on("error", function (e) {
+                        ZeroClipboard.destroy();
+                    });
+                }
 
-            clipboard();
+                clipboard();
 
-            showSearchOrder();
+                showSearchOrder();
+            })
+
         </script>
     <?php endif; ?>
     <script>

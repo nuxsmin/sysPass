@@ -123,8 +123,8 @@ class Email
             $mailTo = $mailFrom;
         }
 
-        require_once EXTENSIONS_DIR . '/phpmailer/class.phpmailer.php';
-        require_once EXTENSIONS_DIR . '/phpmailer/class.smtp.php';
+        require_once EXTENSIONS_PATH . '/phpmailer/class.phpmailer.php';
+        require_once EXTENSIONS_PATH . '/phpmailer/class.smtp.php';
 
         $mail = new \PHPMailer();
 

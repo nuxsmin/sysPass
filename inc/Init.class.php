@@ -63,18 +63,22 @@ class Init
      * @var bool True if sysPass has been updated. Only for notices.
      */
     public static $UPDATED = false;
+
     /**
      * @var string
      */
     public static $THEMEURI = '';
+
     /**
      * @var string
      */
     public static $THEMEPATH = '';
+
     /**
      * @var string
      */
     public static $THEME = '';
+
     /**
      * @var string
      */
@@ -241,7 +245,7 @@ class Init
      */
     public static function setIncludes()
     {
-        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . get_include_path());
+        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . EXTENSIONS_PATH . PATH_SEPARATOR . get_include_path());
     }
 
     /**
@@ -340,8 +344,8 @@ class Init
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        self::$WEBURI = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
-        self::$WEBURI .= $_SERVER['HTTP_HOST'] . self::$WEBROOT;
+        $protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+        self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
     }
 
     /**
@@ -657,6 +661,10 @@ class Init
                 $controller->getPassReset();
                 $controller->view();
                 break;
+            case '2fa':
+                $controller->get2FA();
+                $controller->view();
+                break;
             default:
                 return false;
         }
@@ -671,7 +679,9 @@ class Init
      */
     public static function isLoggedIn()
     {
-        if (Session::getUserLogin(false)) {
+        if (Session::getUserLogin(false)
+            && Session::get2FApassed()
+        ) {
             // TODO: refrescar variables de sesión.
             return true;
         }

@@ -158,15 +158,28 @@ if ($objUser->getUserMPass()) {
     $log->addDescription(_('Perfil') . ": " . SP\Profile::getProfileNameById($objUser->userProfileId));
     $log->addDescription(_('Grupo') . ": " . SP\Groups::getGroupNameById($objUser->userGroupId));
     $log->writeLog();
-
-    // Comprobar si existen parámetros adicionales en URL via GET
-    foreach ($_POST as $param => $value) {
-        if (preg_match('/g_.*/', $param)) {
-            $params[] = substr($param, 2) . '=' . $value;
-        }
-    }
-
-    $urlParams = isset($params) ? '?' . implode('&', $params) : '';
-
-    SP\Common::printJSON('index.php' . $urlParams, 0);
+} else {
+    SP\Common::printJSON(_('Error interno'));
 }
+
+$userPrefs = new \SP\UserPreferences();
+$prefs = $userPrefs->getPreferences($objUser->userId);
+
+if ($prefs->isUse2Fa()){
+    SP\Session::set2FApassed(false);
+    $url = SP\Init::$WEBURI . '/index.php?a=2fa&i=' . $objUser->userId . '&t=' . time() . '&f=1';
+    SP\Common::printJSON($url, 0);
+} else {
+    SP\Session::set2FApassed(true);
+}
+
+// Comprobar si existen parámetros adicionales en URL via POST para pasarlos por GET
+foreach ($_POST as $param => $value) {
+    if (preg_match('/g_.*/', $param)) {
+        $params[] = substr($param, 2) . '=' . $value;
+    }
+}
+
+$urlParams = isset($params) ? '?' . implode('&', $params) : '';
+
+SP\Common::printJSON('index.php' . $urlParams, 0);

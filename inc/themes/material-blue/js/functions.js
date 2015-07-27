@@ -327,13 +327,17 @@ function viewPass(id, full, history) {
 
                     if (json.status === 0) {
                         content = '<p class="dialog-pass-text">' + json.accpass + '</p>' +
-                        '<br>' +
-                        '<div class="dialog-buttons">' +
-                        '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
-                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                        '<span class="ui-button-text">Copiar</span>' +
-                        '</button>' +
-                        '</div>';
+                            '<br>' +
+                            '<div class="dialog-buttons">' +
+                            '<button id="dialog-clip-user-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                            '<span class="ui-button-text">Copiar Usuario</span>' +
+                            '</button>' +
+                            '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                            '<span class="ui-button-text">Copiar Clave</span>' +
+                            '</button>' +
+                            '</div>';
                     } else {
                         content = '<span class="altTxtRed">' + json.description + '</span>';
 
@@ -353,27 +357,40 @@ function viewPass(id, full, history) {
                     $(this).dialog('option', 'position', 'center');
 
                     // Carga de objeto flash para copiar al portapapeles
-                    var client = new ZeroClipboard($("#dialog-clip-pass-button-" + id), {swfPath: "js/ZeroClipboard.swf"});
+                    var clientPass = new ZeroClipboard($("#dialog-clip-pass-button-" + id), {swfPath: APP_ROOT + "/js/ZeroClipboard.swf"});
+                    var clientUser = new ZeroClipboard($("#dialog-clip-user-button-" + id), {swfPath: APP_ROOT + "/js/ZeroClipboard.swf"});
 
-                    client.on('ready', function (e) {
+                    clientPass.on('ready', function (e) {
                         $("#dialog-clip-pass-button-" + id).attr("data-clip", 1);
-
-                        client.on('copy', function (e) {
-                            e.clipboardData.setData('text/plain', json.accpass);
+                        clientPass.on('copy', function (e) {
+                            //e.clipboardData.setData('text/plain', json.accpass);
+                            clientPass.setText(json.accpass);
                         });
-                        client.on('aftercopy', function (e) {
+                        clientPass.on('aftercopy', function (e) {
                             $('.dialog-pass-text').addClass('dialog-clip-pass-copy round');
                         });
                     });
-                    client.on('error', function (e) {
+
+                    clientPass.on('error', function (e) {
                         ZeroClipboard.destroy();
                     });
 
-                    // Timeout del mensaje
+                    clientUser.on('ready', function (e) {
+                        clientUser.on('copy', function (e) {
+                            clientUser.setText(json.acclogin);
+                        });
+                    });
+
+
+                    // Cerrar Dialog a los 30s
                     var $this = $(this);
-                    timeout = setTimeout(function () {
-                        $this.dialog('close');
-                    }, 30000);
+
+                    $(this).parent().on('mouseleave', function(){
+                        clearTimeout(timeout);
+                        timeout = setTimeout(function () {
+                            $this.dialog('close');
+                        }, 30000);
+                    });
                 },
                 // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
                 close: function () {
@@ -469,6 +486,10 @@ function checkLogout() {
     if (session === 0) {
         resMsg("warn", LANG[2], '', "location.search = ''");
     }
+}
+
+function redirect(url) {
+    location.href = url;
 }
 
 // Función para añadir/editar una cuenta
@@ -722,10 +743,19 @@ function importFile(sk) {
             sk: sk,
             action: 'import',
             isAjax: 1,
-            importPwd: function() { return $('input[name="importPwd"]').val(); },
-            defUser: function() { return $('#import_defaultuser').chosen().val(); },
-            defGroup: function() { return $('#import_defaultgroup').chosen().val(); },
-            csvDelimiter: function() { return $('input[name="csvDelimiter"]').val();; }
+            importPwd: function () {
+                return $('input[name="importPwd"]').val();
+            },
+            defUser: function () {
+                return $('#import_defaultuser').chosen().val();
+            },
+            defGroup: function () {
+                return $('#import_defaultgroup').chosen().val();
+            },
+            csvDelimiter: function () {
+                return $('input[name="csvDelimiter"]').val();
+                ;
+            }
         },
         uploadFinished: function (i, file, json) {
             $.fancybox.hideLoading();
@@ -1149,19 +1179,19 @@ function resMsg(type, txt, url, action) {
             return alertify.error(txt);
     }
 
-/*    $.fancybox(html, {
-        afterLoad: function () {
-            $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({
-                'border-radius': '25px',
-                '-moz-border-radius': '25px',
-                '-webkit-border-radius': '25px'
-            });
-        }, afterClose: function () {
-            if (typeof action !== "undefined") {
-                eval(action);
-            }
-        }
-    });*/
+    /*    $.fancybox(html, {
+     afterLoad: function () {
+     $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({
+     'border-radius': '25px',
+     '-moz-border-radius': '25px',
+     '-webkit-border-radius': '25px'
+     });
+     }, afterClose: function () {
+     if (typeof action !== "undefined") {
+     eval(action);
+     }
+     }
+     });*/
 }
 
 // Función para comprobar la conexión con LDAP

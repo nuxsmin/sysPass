@@ -528,4 +528,24 @@ class Session
     {
         $_SESSION['theme'] = $theme;
     }
+
+    /**
+     * Devuelve si el usuario ha pasado la autentificación en 2 pasos
+     *
+     * @return bool
+     */
+    public static function get2FApassed()
+    {
+        return $_SESSION['2fapass'];
+    }
+
+    /**
+     * Establece esi el usuario ha pasado la autentificación en 2 pasos
+     *
+     * @param $passed bool
+     */
+    public static function set2FApassed($passed)
+    {
+        $_SESSION['2fapass'] = $passed;
+    }
 }

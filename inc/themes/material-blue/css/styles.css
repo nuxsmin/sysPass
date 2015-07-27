@@ -253,7 +253,7 @@ a:hover, a:active, a:focus {
     position: absolute;
     top: .5em;
     left: 1em;
-    width: 75px;
+    width: 50px;
 }
 
 /*#container #actionsBar #actionsBar-icons{*/
@@ -1033,12 +1033,13 @@ a:hover, a:active, a:focus {
     width: 80%;
     font-size: 18px;
     color: white;
-    background-color: #448AFF;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #66a1ff), color-stop(90%, #448AFF));
-    background-image: -webkit-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: -moz-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: -o-linear-gradient(#66a1ff 20%, #448AFF 90%);
-    background-image: linear-gradient(#66a1ff 20%, #448AFF 90%);
+    background-color: #536dfe;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #536dfe), color-stop(90%, #536dfe));
+    background-image: -webkit-linear-gradient(#536dfe 20%, #536dfe 90%);
+    background-image: -moz-linear-gradient(#536dfe 20%, #536dfe 90%);
+    background-image: -o-linear-gradient(#536dfe 20%, #536dfe 90%);
+    background-image: linear-gradient(#536dfe 20%, #536dfe 90%);
+    background: #536dfe url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_100_536DFE_1x100.png") repeat-x scroll 50% 50%;
     margin: 0 0 20px 0;
     padding: .5em 0;
     line-height: 1em;
@@ -1461,9 +1462,10 @@ footer img {
     width: 500px;
     min-height: 150px;
     margin: 75px auto;
-    padding: 2em;
-    background: url("../imgs/logo_full.svg") no-repeat left top #fff;
+    padding: 3em;
+    background: url("../imgs/logo_full.svg") no-repeat #fff;
     background-size: 300px auto;
+    background-position: .5em .5em;
 }
 
 #boxLogin .error {

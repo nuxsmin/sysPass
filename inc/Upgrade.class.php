@@ -109,6 +109,7 @@ class Upgrade
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_userEditId` `acchistory_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `acchistory_dateEdit` `acchistory_dateEdit` DATETIME NULL DEFAULT NULL;';
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';';
                 $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_profile` BLOB NOT NULL;';
+                $queries[] = 'ALTER TABLE `usrData` ADD `user_preferences` BLOB NULL;';
                 break;
             default :
                 $log->addDescription(_('No es necesario actualizar la Base de Datos.'));

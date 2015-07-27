@@ -349,6 +349,8 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->addTemplate('userspass');
 
         $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
+
+        // Obtener de nuevo el token de seguridad por si se habñia regenerado antes
         $this->view->assign('sk', \SP\Common::getSessionKey());
     }
 }

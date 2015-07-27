@@ -71,6 +71,8 @@ interface ActionsInterface {
     const ACTION_USR_PROFILES_NEW = 731;
     const ACTION_USR_PROFILES_EDIT = 732;
     const ACTION_USR_PROFILES_DELETE = 733;
+    const ACTION_USR_PREFERENCES = 740;
+    const ACTION_USR_PREFERENCES_SECURITY = 741;
     const ACTION_CFG = 80;
     const ACTION_CFG_GENERAL = 81;
     const ACTION_CFG_ENCRYPTION = 82;

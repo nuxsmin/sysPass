@@ -522,7 +522,7 @@ class Util
                 if ($type == 'js') {
                     echo self::jsCompress(file_get_contents($filePath));
                 } elseif ($type == 'css') {
-                    require_once EXTENSIONS_DIR . DIRECTORY_SEPARATOR . 'cssmin' . DIRECTORY_SEPARATOR . 'class.cssmin.php';
+                    require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'cssmin' . DIRECTORY_SEPARATOR . 'class.cssmin.php';
                     echo CssMin::minify(file_get_contents($filePath));
                 }
             } else {
