@@ -10,7 +10,7 @@
 
             <tr>
                 <td class="descField">
-                    <?php echo _('Activar 2FA'); ?>
+                    <?php echo _('Autenticación en 2 pasos'); ?>
                     <div id="help-security_2fa" class="icon material-icons fg-blue80">help_outline</div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-security_2fa">
                         <p>
@@ -28,19 +28,24 @@
                                name="security_2faenabled" <?php echo ($chk2FAEnabled) ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"><?php echo _('Activar'); ?></span>
                     </label>
-                    <?php if (!$chk2FAEnabled && $qrCode):?>
+                    <?php if (!$chk2FAEnabled && $qrCode): ?>
                         <br><br>
                         <img id="security_qrcode" src="data:image/gif;base64,<?php echo $qrCode; ?>" alt="QR Code"/>
-                    <?php elseif($qrCode === false):?>
+                    <?php elseif ($qrCode === false): ?>
                         <p class="ui-state-error"><?php echo _('Error al obtener el código QR. Inténtelo de nuevo'); ?></p>
                     <?php endif; ?>
                     <br><br>
+
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="security_pin" name="security_pin" type="text"
                                pattern="[0-9]{6}" class="mdl-textfield__input fg-blue100" maxlength="6" required/>
                         <label class="mdl-textfield__label"
                                for="security_pin"><?php echo _('Código'); ?></label>
                     </div>
+                    <br>
+
+                    <div class="icon material-icons fg-orange80">warning</div>
+                    <?php echo _('Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado.'); ?>
                 </td>
             </tr>
         </table>
@@ -54,15 +59,16 @@
 
     </form>
     <div class="action">
-        <button form="frmSecurity" type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+        <button form="frmSecurity" type="submit"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
                 title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>
         </button>
     </div>
 </div> <!-- End Tab - Security -->
 <script type="text/javascript">
-    $(function(){
-        $('#frmSecurity').on('submit', function(){
+    $(function () {
+        $('#frmSecurity').on('submit', function () {
             var url = $(this).data('url');
             var data = $(this).serialize();
 

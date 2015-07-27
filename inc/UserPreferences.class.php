@@ -45,19 +45,32 @@ class UserPreferences
     private $_use2Fa = false;
 
     /**
-     * @return int
+     * Obtener las preferencas de un usuario
+     *
+     * @param $id int El id del usuario
+     * @return bool|UserPreferences
+     * @throws SPException
      */
-    public function getId()
+    public static function getPreferences($id)
     {
-        return $this->_id;
-    }
+        $query = 'SELECT user_preferences FROM usrData WHERE user_id = :id LIMIT 1';
 
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->_id = $id;
+        $data['id'] = $id;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return new UserPreferences();
+//            throw new SPException(SPException::SP_WARNING, _('Datos de preferencias incorrectos'));
+        }
+
+        $preferences = unserialize($queryRes->user_preferences);
+
+        if (!$preferences instanceof UserPreferences) {
+            return new UserPreferences();
+        }
+
+        return $preferences;
     }
 
     /**
@@ -74,34 +87,6 @@ class UserPreferences
     public function setUse2Fa($use2Fa)
     {
         $this->_use2Fa = $use2Fa;
-    }
-
-    /**
-     * Obtener las preferencas de un usuario
-     *
-     * @param $id int El id del usuario
-     * @return bool|UserPreferences
-     * @throws SPException
-     */
-    public static function getPreferences($id)
-    {
-        $query = 'SELECT user_preferences FROM usrData WHERE user_id = :id LIMIT 1';
-
-        $data['id'] = $id;
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            throw new SPException(SPException::SP_WARNING, _('Datos de preferencias incorrectos'));
-        }
-
-        $preferences = unserialize($queryRes->user_preferences);
-
-        if (!$preferences instanceof UserPreferences) {
-            return new UserPreferences();
-        }
-
-        return $preferences;
     }
 
     /**
@@ -123,6 +108,22 @@ class UserPreferences
         }
 
         return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->_id = $id;
     }
 
 
