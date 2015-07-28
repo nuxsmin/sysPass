@@ -1,10 +1,7 @@
 <div id="actions" align="center">
 
     <div id="logo">
-        <img src="<?php use SP\Html;
-        use SP\Util;
-
-        echo $logo; ?>" alt="sysPass logo"/>
+        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
     <form id="frmPassReset" action="" method="post"
@@ -15,21 +12,21 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="login" name="login" type="text" required class="mdl-textfield__input fg-blue100"
-                           value="<?php echo Util::init_var('login'); ?>" maxlength="80" autocomplete="off" autofocus>
+                           value="<?php echo SP\Util::init_var('login'); ?>" maxlength="80" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="login"><?php echo _('Usuario'); ?></label>
                 </div>
                 <br>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="email" name="email" type="email" required class="mdl-textfield__input fg-blue100"
-                           value="<?php echo Util::init_var('email'); ?>" maxlength="80" autocomplete="off">
+                           value="<?php echo SP\Util::init_var('email'); ?>" maxlength="80" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="email"><?php echo _('Email del Usuario'); ?></label>
                 </div>
             <?php else: ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
-                           value="<?php echo Util::init_var('pass'); ?>" maxlength="255" autocomplete="off">
+                           value="<?php echo SP\Util::init_var('pass'); ?>" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="pass"><?php echo _('Clave'); ?></label>
                 </div>
