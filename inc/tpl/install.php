@@ -43,7 +43,7 @@ if (isset($_POST['install']) && $_POST['install'] == 'true') {
 
 <div id="actions" class="installer" align="center">
     <div id="logo">
-        <img src="imgs/logo_full.png" alt="sysPass logo"/>
+        <img src="imgs/logo_full.svg" alt="sysPass logo"/>
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . SP_Util::getVersionString(); ?></span>
     </div>
 

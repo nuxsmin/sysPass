@@ -245,7 +245,8 @@ a:focus {
     width: 100%;
     height: auto;
     min-height: 650px;
-    background: url("../imgs/logo_full.png") no-repeat left top transparent;
+    background: url("../imgs/logo_full.svg") no-repeat left top transparent;
+    background-size: 300px;
 }
 
 #container.error, #container.install, #container.passreset {
@@ -286,9 +287,9 @@ a:focus {
 #container #actionsBar {
     float: left;
     position: relative;
-    top: 100px;
-    left: 30px;
-    margin-right: 80px;
+    top: 110px;
+    left: 40px;
+    margin-right: 90px;
     text-align: center;
 }
 
@@ -1506,11 +1507,9 @@ footer img {
 
 #boxLogin #boxLogo #imgLogo {
     float: left;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     position: relative;
-    top: 25px;
-    left: 20px;
     z-index: 90;
     vertical-align: middle;
 }
@@ -1634,7 +1633,7 @@ fieldset.warning a {
     -moz-box-shadow: 0px 8px 6px -6px #a9a9a9;
 }
 
-#actions #logo img{display: inline-block;}
+#actions #logo img{display: inline-block; width: 400px;}
 
 #actions #logo #pageDesc {
     position: relative;

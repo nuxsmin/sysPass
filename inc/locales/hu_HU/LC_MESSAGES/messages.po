@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-08 21:34+0100\n"
-"PO-Revision-Date: 2015-02-08 21:34+0100\n"
+"POT-Creation-Date: 2015-07-28 18:37+0100\n"
+"PO-Revision-Date: 2015-07-28 18:42+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: hu_HU\n"
@@ -19,30 +19,235 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
 # "Session not started or timeout"
+#: ../../../../ajax/ajax_accountSave.php:33
 #: ../../../../ajax/ajax_appMgmtSave.php:34
-#: ../../../../ajax/ajax_accountSave.php:33 ../../../../ajax/ajax_import.php:1
-#: ../../../../ajax/ajax_configSave.php:33 ../../../../ajax/ajax_backup.php:32
+#: ../../../../ajax/ajax_backup.php:32 ../../../../ajax/ajax_checkLdap.php:32
+#: ../../../../ajax/ajax_configSave.php:33 ../../../../ajax/ajax_import.php:1
 #: ../../../../ajax/ajax_migrate.php:1
 #: ../../../../ajax/ajax_sendRequest.php:32
-#: ../../../../ajax/ajax_checkLdap.php:32
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "A munkamenet nem indult el, vagy idõtúllépés miatt bezáródott"
 
 # "INVALID QUERY"
+#: ../../../../ajax/ajax_accountSave.php:39
 #: ../../../../ajax/ajax_appMgmtSave.php:40
-#: ../../../../ajax/ajax_accountSave.php:39 ../../../../ajax/ajax_import.php:1
-#: ../../../../ajax/ajax_configSave.php:39 ../../../../ajax/ajax_backup.php:38
-#: ../../../../ajax/ajax_passReset.php:34 ../../../../ajax/ajax_files.php:40
-#: ../../../../ajax/ajax_migrate.php:1 ../../../../ajax/ajax_search.php:38
+#: ../../../../ajax/ajax_backup.php:38 ../../../../ajax/ajax_checkLdap.php:38
+#: ../../../../ajax/ajax_configSave.php:39 ../../../../ajax/ajax_files.php:40
+#: ../../../../ajax/ajax_getFiles.php:43 ../../../../ajax/ajax_import.php:1
+#: ../../../../ajax/ajax_migrate.php:1 ../../../../ajax/ajax_passReset.php:34
+#: ../../../../ajax/ajax_search.php:38
 #: ../../../../ajax/ajax_sendRequest.php:38
-#: ../../../../ajax/ajax_checkLdap.php:38
-#: ../../../../ajax/ajax_getFiles.php:43
 msgid "CONSULTA INVÁLIDA"
 msgstr "Érvénytelen lekérdezés"
+
+# "Account name needed"
+#: ../../../../ajax/ajax_accountSave.php:67
+#: ../../../../ajax/ajax_accountSave.php:92
+msgid "Es necesario un nombre de cuenta"
+msgstr "Fiók név szükséges"
+
+# "Customer name needed"
+#: ../../../../ajax/ajax_accountSave.php:71
+#: ../../../../ajax/ajax_accountSave.php:88
+#: ../../../../ajax/ajax_appMgmtSave.php:327
+msgid "Es necesario un nombre de cliente"
+msgstr "Ügyfél név szükséges"
+
+# "Username needed"
+#: ../../../../ajax/ajax_accountSave.php:75
+#: ../../../../ajax/ajax_accountSave.php:96
+msgid "Es necesario un usuario"
+msgstr "Felhasználónév szükséges"
+
+# "Password needed"
+#: ../../../../ajax/ajax_accountSave.php:79
+msgid "Es necesario una clave"
+msgstr "Jelszó szükséges"
+
+# "Passwords mismatch"
+#: ../../../../ajax/ajax_accountSave.php:83
+#: ../../../../ajax/ajax_accountSave.php:109
+#: ../../../../ajax/ajax_appMgmtSave.php:123
+#: ../../../../ajax/ajax_appMgmtSave.php:149
+msgid "Las claves no coinciden"
+msgstr "A jelszó nem egyezik"
+
+# "Invalid Id"
+#: ../../../../ajax/ajax_accountSave.php:100
+#: ../../../../ajax/ajax_accountSave.php:113
+msgid "Id inválido"
+msgstr "Érvénytelen Id"
+
+# "Password cannot be blank"
+#: ../../../../ajax/ajax_accountSave.php:105
+#: ../../../../ajax/ajax_appMgmtSave.php:119
+#: ../../../../ajax/ajax_appMgmtSave.php:145
+msgid "La clave no puede estar en blanco"
+msgstr "A jelszó nem lehet üres"
+
+# "Invalid Action"
+#: ../../../../ajax/ajax_accountSave.php:116
+#: ../../../../ajax/ajax_accountSave.php:264
+#: ../../../../ajax/ajax_appMgmtSave.php:179
+#: ../../../../ajax/ajax_appMgmtSave.php:240
+#: ../../../../ajax/ajax_appMgmtSave.php:318
+#: ../../../../ajax/ajax_appMgmtSave.php:369
+#: ../../../../ajax/ajax_appMgmtSave.php:418
+#: ../../../../ajax/ajax_configSave.php:239
+msgid "Acción Inválida"
+msgstr "Érvénytelen Akció"
+
+# "Crypto module can't be loaded"
+#: ../../../../ajax/ajax_accountSave.php:122
+#: ../../../../inc/import.class.php:240
+msgid "No se puede usar el módulo de encriptación"
+msgstr "A Crypto modul nem tölthetõ be"
+
+# "Error on creating encryption data"
+#: ../../../../ajax/ajax_accountSave.php:129
+#: ../../../../inc/import.class.php:247
+msgid "Error al generar datos cifrados"
+msgstr "Hiba a titkosítási folyamat közben"
+
+# "Duplicated customer"
+#: ../../../../ajax/ajax_accountSave.php:144
+#: ../../../../ajax/ajax_accountSave.php:193
+msgid "Cliente duplicado"
+msgstr "Kettõzött ügyfél"
+
+# "Error on creating customer"
+#: ../../../../ajax/ajax_accountSave.php:148
+#: ../../../../ajax/ajax_accountSave.php:197
+#: ../../../../ajax/ajax_appMgmtSave.php:341
+msgid "Error al crear el cliente"
+msgstr "Hiba az ügyfél létrehozása közben"
+
+# "Account added"
+#: ../../../../ajax/ajax_accountSave.php:172
+msgid "Cuenta creada"
+msgstr "Fiók hozzáadva"
+
+# "Error on account creation"
+#: ../../../../ajax/ajax_accountSave.php:174
+msgid "Error al crear la cuenta"
+msgstr "Hiba a fiók létrehozása közben"
+
+# "No changes"
+#: ../../../../ajax/ajax_accountSave.php:207
+msgid "Sin cambios"
+msgstr "Nincsenek változások"
+
+# "Account updated"
+#: ../../../../ajax/ajax_accountSave.php:212
+#: ../../../../inc/account.class.php:369
+msgid "Cuenta actualizada"
+msgstr "Fiók frissítve"
+
+# "Error on updating account"
+#: ../../../../ajax/ajax_accountSave.php:214
+msgid "Error al modificar la cuenta"
+msgstr "Hiba a fiók frissítése közben"
+
+# "Account deleted"
+#: ../../../../ajax/ajax_accountSave.php:221
+msgid "Cuenta eliminada"
+msgstr "Fiók törölve"
+
+# "Error on account deletion"
+#: ../../../../ajax/ajax_accountSave.php:223
+msgid "Error al eliminar la cuenta"
+msgstr "Hiba a fiók törlése közben"
+
+# "Password updated"
+#: ../../../../ajax/ajax_accountSave.php:233
+#: ../../../../ajax/ajax_appMgmtSave.php:156
+#: ../../../../ajax/ajax_passReset.php:79
+msgid "Clave actualizada"
+msgstr "Jelszó frissítve"
+
+# "Error on updating password"
+#: ../../../../ajax/ajax_accountSave.php:235
+msgid "Error al actualizar la clave"
+msgstr "Hiba a jelszó frissítése közben"
+
+# "Account restored"
+#: ../../../../ajax/ajax_accountSave.php:258
+msgid "Cuenta restaurada"
+msgstr "Fiók restaurált"
+
+# "Error on restoring account"
+#: ../../../../ajax/ajax_accountSave.php:261
+msgid "Error al restaurar cuenta"
+msgstr "Hiba történt helyreállítása számla"
+
+# "Edit User"
+#: ../../../../ajax/ajax_appMgmtData.php:46
+#: ../../../../ajax/ajax_getContent.php:137
+msgid "Editar Usuario"
+msgstr "Felhasználó módosítás"
+
+# "New User"
+#: ../../../../ajax/ajax_appMgmtData.php:51
+#: ../../../../ajax/ajax_getContent.php:135
+#: ../../../../inc/users.class.php:816
+msgid "Nuevo Usuario"
+msgstr "Új felhasználó"
+
+# "Edit Group"
+#: ../../../../ajax/ajax_appMgmtData.php:56
+#: ../../../../ajax/ajax_getContent.php:168
+msgid "Editar Grupo"
+msgstr "Csoport módosítás"
+
+# "New Group"
+#: ../../../../ajax/ajax_appMgmtData.php:61
+#: ../../../../ajax/ajax_getContent.php:167
+#: ../../../../inc/groups.class.php:154
+msgid "Nuevo Grupo"
+msgstr "Új csoport"
+
+# "Edit Profile"
+#: ../../../../ajax/ajax_appMgmtData.php:66
+#: ../../../../ajax/ajax_getContent.php:200
+msgid "Editar Perfil"
+msgstr "Profil módosítás"
+
+# "New Profile"
+#: ../../../../ajax/ajax_appMgmtData.php:71
+#: ../../../../ajax/ajax_getContent.php:199
+#: ../../../../inc/profiles.class.php:206
+msgid "Nuevo Perfil"
+msgstr "Új profil"
+
+# "Edit Customer"
+#: ../../../../ajax/ajax_appMgmtData.php:76
+#: ../../../../ajax/ajax_getContent.php:285
+msgid "Editar Cliente"
+msgstr "Ügyfél módosítás"
+
+# "New Customer"
+#: ../../../../ajax/ajax_appMgmtData.php:81
+#: ../../../../ajax/ajax_getContent.php:284
+#: ../../../../inc/customer.class.php:58
+msgid "Nuevo Cliente"
+msgstr "Új ügyfél"
+
+# "Edit Category"
+#: ../../../../ajax/ajax_appMgmtData.php:86
+#: ../../../../ajax/ajax_getContent.php:253
+msgid "Editar Categoría"
+msgstr "Kategória módosítás"
+
+# "New Category"
+#: ../../../../ajax/ajax_appMgmtData.php:91
+#: ../../../../ajax/ajax_getContent.php:252
+#: ../../../../inc/category.class.php:79
+msgid "Nueva Categoría"
+msgstr "Új Kategória"
 
 # "Username required"
 #: ../../../../ajax/ajax_appMgmtSave.php:76
@@ -79,21 +284,6 @@ msgstr "Dupla felhasználó bejelentkezés"
 msgid "Email de usuario duplicado"
 msgstr "Kettõzött felhasználó Email"
 
-# "Password cannot be blank"
-#: ../../../../ajax/ajax_appMgmtSave.php:119
-#: ../../../../ajax/ajax_appMgmtSave.php:145
-#: ../../../../ajax/ajax_accountSave.php:105
-msgid "La clave no puede estar en blanco"
-msgstr "A jelszó nem lehet üres"
-
-# "Passwords mismatch"
-#: ../../../../ajax/ajax_appMgmtSave.php:123
-#: ../../../../ajax/ajax_appMgmtSave.php:149
-#: ../../../../ajax/ajax_accountSave.php:83
-#: ../../../../ajax/ajax_accountSave.php:109
-msgid "Las claves no coinciden"
-msgstr "A jelszó nem egyezik"
-
 # "User added"
 #: ../../../../ajax/ajax_appMgmtSave.php:127
 msgid "Usuario creado"
@@ -118,17 +308,10 @@ msgstr "Hiba a felhasználó frissítése közben"
 # "Ey, this is a DEMO!!"
 #: ../../../../ajax/ajax_appMgmtSave.php:141
 #: ../../../../ajax/ajax_appMgmtSave.php:163
-#: ../../../../ajax/ajax_import.php:1 ../../../../ajax/ajax_configSave.php:214
+#: ../../../../ajax/ajax_configSave.php:214 ../../../../ajax/ajax_import.php:1
 #: ../../../../ajax/ajax_migrate.php:1
 msgid "Ey, esto es una DEMO!!"
 msgstr "Aj, ez egy próbaverzió"
-
-# "Password updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:156
-#: ../../../../ajax/ajax_accountSave.php:233
-#: ../../../../ajax/ajax_passReset.php:79
-msgid "Clave actualizada"
-msgstr "Jelszó frissítve"
 
 # "Error on updating password"
 #: ../../../../ajax/ajax_appMgmtSave.php:159
@@ -150,18 +333,6 @@ msgstr "Felhasználó törölve"
 #: ../../../../ajax/ajax_appMgmtSave.php:176
 msgid "Error al eliminar el usuario"
 msgstr "Hiba a felhasználó törlése közben"
-
-# "Invalid Action"
-#: ../../../../ajax/ajax_appMgmtSave.php:179
-#: ../../../../ajax/ajax_appMgmtSave.php:240
-#: ../../../../ajax/ajax_appMgmtSave.php:318
-#: ../../../../ajax/ajax_appMgmtSave.php:369
-#: ../../../../ajax/ajax_appMgmtSave.php:418
-#: ../../../../ajax/ajax_accountSave.php:116
-#: ../../../../ajax/ajax_accountSave.php:264
-#: ../../../../ajax/ajax_configSave.php:229
-msgid "Acción Inválida"
-msgstr "Érvénytelen Akció"
 
 # "Group name required"
 #: ../../../../ajax/ajax_appMgmtSave.php:188
@@ -196,7 +367,7 @@ msgstr "Hiba a csoport frissítése közben"
 # "Users"
 #: ../../../../ajax/ajax_appMgmtSave.php:221
 #: ../../../../ajax/ajax_appMgmtSave.php:298
-#: ../../../../inc/tpl/profiles.php:88 ../../../../inc/tpl/accounts.php:282
+#: ../../../../inc/tpl/accounts.php:283 ../../../../inc/tpl/profiles.php:88
 msgid "Usuarios"
 msgstr "Felhasználók"
 
@@ -273,8 +444,8 @@ msgstr "Profil törlése"
 
 # "Profile"
 #: ../../../../ajax/ajax_appMgmtSave.php:306
+#: ../../../../ajax/ajax_doLogin.php:157
 #: ../../../../ajax/ajax_getContent.php:114
-#: ../../../../ajax/ajax_doLogin.php:153
 #: ../../../../inc/profiles.class.php:207
 #: ../../../../inc/profiles.class.php:259 ../../../../inc/tpl/users.php:102
 msgid "Perfil"
@@ -290,13 +461,6 @@ msgstr "Profil törölve"
 msgid "Error al eliminar el perfil"
 msgstr "Hiba a profil törlése közben"
 
-# "Customer name needed"
-#: ../../../../ajax/ajax_appMgmtSave.php:327
-#: ../../../../ajax/ajax_accountSave.php:71
-#: ../../../../ajax/ajax_accountSave.php:88
-msgid "Es necesario un nombre de cliente"
-msgstr "Ügyfél név szükséges"
-
 # "Duplicated customer name"
 #: ../../../../ajax/ajax_appMgmtSave.php:334
 msgid "Nombre de cliente duplicado"
@@ -306,13 +470,6 @@ msgstr "Kettõzött ügyfél név"
 #: ../../../../ajax/ajax_appMgmtSave.php:339
 msgid "Cliente creado"
 msgstr "Ügyfél hozzáadva"
-
-# "Error on creating customer"
-#: ../../../../ajax/ajax_appMgmtSave.php:341
-#: ../../../../ajax/ajax_accountSave.php:148
-#: ../../../../ajax/ajax_accountSave.php:197
-msgid "Error al crear el cliente"
-msgstr "Hiba az ügyfél létrehozása közben"
 
 # "Customer updated"
 #: ../../../../ajax/ajax_appMgmtSave.php:345
@@ -384,70 +541,52 @@ msgstr "Kategória törölve"
 msgid "Error al eliminar la categoría"
 msgstr "Hiba a kategória törlése közben"
 
-# "Edit User"
-#: ../../../../ajax/ajax_appMgmtData.php:46
-#: ../../../../ajax/ajax_getContent.php:137
-msgid "Editar Usuario"
-msgstr "Felhasználó módosítás"
+# "Error while doing backup"
+#: ../../../../ajax/ajax_backup.php:49
+msgid "Error al realizar el backup"
+msgstr "Hiba Archiválás közben"
 
-# "New User"
-#: ../../../../ajax/ajax_appMgmtData.php:51
-#: ../../../../ajax/ajax_getContent.php:135
-#: ../../../../inc/users.class.php:812
-msgid "Nuevo Usuario"
-msgstr "Új felhasználó"
+# "Please, check the event log for more details"
+#: ../../../../ajax/ajax_backup.php:49 ../../../../ajax/ajax_checkLdap.php:54
+#: ../../../../inc/import.class.php:90 ../../../../inc/migrate.class.php:118
+msgid "Revise el registro de eventos para más detalles"
+msgstr "Részletes leírást az esemény naplóban olvashat"
 
-# "Edit Group"
-#: ../../../../ajax/ajax_appMgmtData.php:56
-#: ../../../../ajax/ajax_getContent.php:168
-msgid "Editar Grupo"
-msgstr "Csoport módosítás"
+# "Make Backup"
+#: ../../../../ajax/ajax_backup.php:52 ../../../../inc/tpl/backup.php:82
+msgid "Realizar Backup"
+msgstr "Archívum készítés"
 
-# "New Group"
-#: ../../../../ajax/ajax_appMgmtData.php:61
-#: ../../../../ajax/ajax_getContent.php:167
-#: ../../../../inc/groups.class.php:154
-msgid "Nuevo Grupo"
-msgstr "Új csoport"
+# Application and database backup successfully done
+#: ../../../../ajax/ajax_backup.php:53
+#, fuzzy
+msgid "Copia de la aplicación y base de datos realizada correctamente"
+msgstr "Application and database backup successfully done"
 
-# "Edit Profile"
-#: ../../../../ajax/ajax_appMgmtData.php:66
-#: ../../../../ajax/ajax_getContent.php:200
-msgid "Editar Perfil"
-msgstr "Profil módosítás"
+# "Backup process finished"
+#: ../../../../ajax/ajax_backup.php:58
+msgid "Proceso de backup finalizado"
+msgstr "Archiválás kész"
 
-# "New Profile"
-#: ../../../../ajax/ajax_appMgmtData.php:71
-#: ../../../../ajax/ajax_getContent.php:199
-#: ../../../../inc/profiles.class.php:206
-msgid "Nuevo Perfil"
-msgstr "Új profil"
+# "LDAP parameters are not set"
+#: ../../../../ajax/ajax_checkLdap.php:48 ../../../../inc/ldap.class.php:246
+msgid "Los parámetros de LDAP no están configurados"
+msgstr "LDAP paraméterek nem lettek elmentve"
 
-# "Edit Customer"
-#: ../../../../ajax/ajax_appMgmtData.php:76
-#: ../../../../ajax/ajax_getContent.php:285
-msgid "Editar Cliente"
-msgstr "Ügyfél módosítás"
+# "LDAP connection error"
+#: ../../../../ajax/ajax_checkLdap.php:54
+msgid "Error de conexión a LDAP"
+msgstr "LDAP kapcsolódási hiba"
 
-# "New Customer"
-#: ../../../../ajax/ajax_appMgmtData.php:81
-#: ../../../../ajax/ajax_getContent.php:284
-#: ../../../../inc/customer.class.php:57
-msgid "Nuevo Cliente"
-msgstr "Új ügyfél"
+# "LDAP connection OK"
+#: ../../../../ajax/ajax_checkLdap.php:56
+msgid "Conexión a LDAP correcta"
+msgstr "LDAP kapcsolat"
 
-# "Edit Category"
-#: ../../../../ajax/ajax_appMgmtData.php:86
-#: ../../../../ajax/ajax_getContent.php:253
-msgid "Editar Categoría"
-msgstr "Kategória módosítás"
-
-# "New Category"
-#: ../../../../ajax/ajax_appMgmtData.php:91
-#: ../../../../ajax/ajax_getContent.php:252
-#: ../../../../inc/category.class.php:79
-msgid "Nueva Categoría"
-msgstr "Új Kategória"
+# "Objects found"
+#: ../../../../ajax/ajax_checkLdap.php:56
+msgid "Objetos encontrados"
+msgstr "Objektum találatok"
 
 # "Download new version"
 #: ../../../../ajax/ajax_checkUpds.php:41
@@ -458,108 +597,6 @@ msgstr "Új verzió letöltése"
 #: ../../../../ajax/ajax_checkUpds.php:44
 msgid "Actualizado"
 msgstr "Frissítve"
-
-# "Account name needed"
-#: ../../../../ajax/ajax_accountSave.php:67
-#: ../../../../ajax/ajax_accountSave.php:92
-msgid "Es necesario un nombre de cuenta"
-msgstr "Fiók név szükséges"
-
-# "Username needed"
-#: ../../../../ajax/ajax_accountSave.php:75
-#: ../../../../ajax/ajax_accountSave.php:96
-msgid "Es necesario un usuario"
-msgstr "Felhasználónév szükséges"
-
-# "Password needed"
-#: ../../../../ajax/ajax_accountSave.php:79
-msgid "Es necesario una clave"
-msgstr "Jelszó szükséges"
-
-# "Invalid Id"
-#: ../../../../ajax/ajax_accountSave.php:100
-#: ../../../../ajax/ajax_accountSave.php:113
-msgid "Id inválido"
-msgstr "Érvénytelen Id"
-
-# "Crypto module can't be loaded"
-#: ../../../../ajax/ajax_accountSave.php:122
-#: ../../../../inc/import.class.php:240
-msgid "No se puede usar el módulo de encriptación"
-msgstr "A Crypto modul nem tölthetõ be"
-
-# "Error on creating encryption data"
-#: ../../../../ajax/ajax_accountSave.php:129
-#: ../../../../inc/import.class.php:247
-msgid "Error al generar datos cifrados"
-msgstr "Hiba a titkosítási folyamat közben"
-
-# "Duplicated customer"
-#: ../../../../ajax/ajax_accountSave.php:144
-#: ../../../../ajax/ajax_accountSave.php:193
-msgid "Cliente duplicado"
-msgstr "Kettõzött ügyfél"
-
-# "Account added"
-#: ../../../../ajax/ajax_accountSave.php:172
-msgid "Cuenta creada"
-msgstr "Fiók hozzáadva"
-
-# "Error on account creation"
-#: ../../../../ajax/ajax_accountSave.php:174
-msgid "Error al crear la cuenta"
-msgstr "Hiba a fiók létrehozása közben"
-
-# "No changes"
-#: ../../../../ajax/ajax_accountSave.php:207
-msgid "Sin cambios"
-msgstr "Nincsenek változások"
-
-# "Account updated"
-#: ../../../../ajax/ajax_accountSave.php:212
-#: ../../../../inc/account.class.php:369
-msgid "Cuenta actualizada"
-msgstr "Fiók frissítve"
-
-# "Error on updating account"
-#: ../../../../ajax/ajax_accountSave.php:214
-msgid "Error al modificar la cuenta"
-msgstr "Hiba a fiók frissítése közben"
-
-# "Account deleted"
-#: ../../../../ajax/ajax_accountSave.php:221
-msgid "Cuenta eliminada"
-msgstr "Fiók törölve"
-
-# "Error on account deletion"
-#: ../../../../ajax/ajax_accountSave.php:223
-msgid "Error al eliminar la cuenta"
-msgstr "Hiba a fiók törlése közben"
-
-# "Error on updating password"
-#: ../../../../ajax/ajax_accountSave.php:235
-msgid "Error al actualizar la clave"
-msgstr "Hiba a jelszó frissítése közben"
-
-# "Account restored"
-#: ../../../../ajax/ajax_accountSave.php:258
-msgid "Cuenta restaurada"
-msgstr "Fiók restaurált"
-
-# "Error on restoring account"
-#: ../../../../ajax/ajax_accountSave.php:261
-msgid "Error al restaurar cuenta"
-msgstr "Hiba történt helyreállítása számla"
-
-# "Event log cleared"
-#: ../../../../ajax/ajax_eventlog.php:43
-msgid "Registro de eventos vaciado"
-msgstr "Esemény napló törölve"
-
-# "Error on clearing event log"
-#: ../../../../ajax/ajax_eventlog.php:45
-msgid "Error al vaciar el registro de eventos"
-msgstr "Hiba az esemény napló törlése közben"
 
 # "Missing Wiki parameters"
 #: ../../../../ajax/ajax_configSave.php:96
@@ -647,230 +684,137 @@ msgstr "Frissítse a mester jelszót"
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Hiba a mester jelszó hash-ének elmentése közben"
 
-# "Incorrect parameters"
-#: ../../../../ajax/ajax_getContent.php:42
-msgid "Parámetros incorrectos"
-msgstr "Helytelen paraméter"
+# Generate Temporary Password
+#: ../../../../ajax/ajax_configSave.php:232
+msgid "Generar Clave Temporal"
+msgstr "Generate Temporary Password"
 
-# "Users Management"
-#: ../../../../ajax/ajax_getContent.php:100 ../../../../inc/tpl/main.php:54
-msgid "Gestión de Usuarios"
-msgstr "Felhasználó Menedzsment"
+# "Password"
+#: ../../../../ajax/ajax_configSave.php:233
+#: ../../../../ajax/ajax_usrpass.php:53 ../../../../ajax/ajax_usrpass.php:56
+#: ../../../../ajax/ajax_viewpass.php:98 ../../../../inc/tpl/accounts.php:251
+#: ../../../../inc/tpl/config.php:462 ../../../../inc/tpl/editpass.php:57
+#: ../../../../inc/tpl/install.php:102 ../../../../inc/tpl/install.php:103
+#: ../../../../inc/tpl/login.php:37 ../../../../inc/tpl/login.php:45
+#: ../../../../inc/tpl/passreset.php:62 ../../../../inc/tpl/users.php:135
+msgid "Clave"
+msgstr "Jelszó"
 
-# "Groups Management"
-#: ../../../../ajax/ajax_getContent.php:101
-msgid "Gestión de Grupos"
-msgstr "Csoport Menedzsment"
+# Temporary Password Generated
+#: ../../../../ajax/ajax_configSave.php:236
+#, fuzzy
+msgid "Clave Temporal Generada"
+msgstr "Temporary Password Generated"
 
-# "Profiles Management"
-#: ../../../../ajax/ajax_getContent.php:102
-msgid "Gestión de Perfiles"
-msgstr "Profil Menedzsment"
+# "User/Pass not entered"
+#: ../../../../ajax/ajax_doLogin.php:41
+msgid "Usuario/Clave no introducidos"
+msgstr "Felhasználó/jelszó nem lett kitöltve"
 
-# "Name"
-#: ../../../../ajax/ajax_getContent.php:112
-#: ../../../../ajax/ajax_getContent.php:158
-#: ../../../../ajax/ajax_getContent.php:190
-#: ../../../../ajax/ajax_getContent.php:243
-#: ../../../../ajax/ajax_getContent.php:275
-#: ../../../../ajax/ajax_search.php:125 ../../../../ajax/ajax_search.php:238
-#: ../../../../inc/tpl/request.php:38 ../../../../inc/tpl/groups.php:39
-#: ../../../../inc/tpl/customers.php:40 ../../../../inc/tpl/profiles.php:39
-#: ../../../../inc/tpl/editpass.php:40 ../../../../inc/tpl/accounts.php:172
-#: ../../../../inc/tpl/categories.php:40 ../../../../inc/tpl/users.php:66
-msgid "Nombre"
-msgstr "Név"
+# "Session start (LDAP)"
+#: ../../../../ajax/ajax_doLogin.php:54 ../../../../ajax/ajax_doLogin.php:75
+#: ../../../../ajax/ajax_doLogin.php:82 ../../../../ajax/ajax_doLogin.php:89
+msgid "Inicio sesión (LDAP)"
+msgstr "munkamenet elindult (LDAP)"
 
-# "Login"
-#: ../../../../ajax/ajax_getContent.php:113
-#: ../../../../ajax/ajax_passReset.php:74 ../../../../inc/users.class.php:893
-#: ../../../../inc/users.class.php:920 ../../../../inc/tpl/users.php:83
-msgid "Login"
-msgstr "Belépés"
+# "Error on saving LDAP user data"
+#: ../../../../ajax/ajax_doLogin.php:60
+msgid "Error al guardar los datos de LDAP"
+msgstr "Hiba az LDAP felhasználók adatainak elmentése közben"
+
+# "Internal error"
+#: ../../../../ajax/ajax_doLogin.php:63 ../../../../ajax/ajax_doLogin.php:71
+#: ../../../../ajax/ajax_doLogin.php:122 ../../../../inc/import.class.php:240
+#: ../../../../inc/import.class.php:247 ../../../../inc/import.class.php:266
+msgid "Error interno"
+msgstr "Belsõ hiba"
+
+# "Error on updating user password in BD"
+#: ../../../../ajax/ajax_doLogin.php:68
+msgid "Error al actualizar la clave del usuario en la BBDD"
+msgstr "Adatbázis Hiba a felhasználói jelszó frissítése közben"
+
+# "Incorrect login"
+#: ../../../../ajax/ajax_doLogin.php:76 ../../../../ajax/ajax_doLogin.php:100
+msgid "Login incorrecto"
+msgstr "Hibás felhasználónév vagy jelszó"
+
+# "User"
+#: ../../../../ajax/ajax_doLogin.php:77 ../../../../ajax/ajax_doLogin.php:84
+#: ../../../../ajax/ajax_doLogin.php:91 ../../../../ajax/ajax_doLogin.php:101
+#: ../../../../ajax/ajax_doLogin.php:111 ../../../../ajax/ajax_doLogin.php:156
+#: ../../../../ajax/ajax_search.php:131 ../../../../ajax/ajax_search.php:250
+#: ../../../../ajax/ajax_viewpass.php:94 ../../../../inc/init.php:544
+#: ../../../../inc/tpl/accounts.php:234 ../../../../inc/tpl/config.php:453
+#: ../../../../inc/tpl/editpass.php:53 ../../../../inc/tpl/eventlog.php:62
+#: ../../../../inc/tpl/install.php:92 ../../../../inc/tpl/install.php:93
+#: ../../../../inc/tpl/login.php:35 ../../../../inc/tpl/login.php:44
+#: ../../../../inc/tpl/passreset.php:51 ../../../../inc/tpl/request.php:52
+#: ../../../../inc/users.class.php:817 ../../../../inc/users.class.php:859
+#: ../../../../res/test.php:64
+msgid "Usuario"
+msgstr "Felhasználó"
+
+# "Wrong user/pass"
+#: ../../../../ajax/ajax_doLogin.php:80 ../../../../ajax/ajax_doLogin.php:94
+#: ../../../../ajax/ajax_doLogin.php:104
+msgid "Usuario/Clave incorrectos"
+msgstr "Hibás felhasználó/jelszó"
+
+# Account Expired
+#: ../../../../ajax/ajax_doLogin.php:83 ../../../../ajax/ajax_doLogin.php:87
+#, fuzzy
+msgid "Cuenta expirada"
+msgstr "Account expired"
+
+# "The user have no associated groups"
+#: ../../../../ajax/ajax_doLogin.php:90
+msgid "El usuario no tiene grupos asociados"
+msgstr "a felhasználó nincs csoporthoz társítva"
+
+# "Session start (MySQL)"
+#: ../../../../ajax/ajax_doLogin.php:96
+msgid "Inicio sesión (MySQL)"
+msgstr "munkamenet elindult (MySQL)"
+
+# "User disabled"
+#: ../../../../ajax/ajax_doLogin.php:110 ../../../../ajax/ajax_doLogin.php:114
+msgid "Usuario deshabilitado"
+msgstr "Felhasználó letiltva"
+
+# "Error on retrieving user data from DB"
+#: ../../../../ajax/ajax_doLogin.php:119
+msgid "Error al obtener los datos del usuario de la BBDD"
+msgstr "Hiba a felhasználói adatok adatbázisból való betöltése közben"
+
+# "The master password not saved or is incorrect"
+#: ../../../../ajax/ajax_doLogin.php:127
+msgid "La clave maestra no ha sido guardada o es incorrecta"
+msgstr "A mester jelszó nem lett elmentve, vagy helytelen"
+
+# "Invalid Master Password"
+#: ../../../../ajax/ajax_doLogin.php:134 ../../../../ajax/ajax_doLogin.php:137
+msgid "Clave maestra incorrecta"
+msgstr "Érvénytelen mester jelszó"
 
 # "Group"
+#: ../../../../ajax/ajax_doLogin.php:158
 #: ../../../../ajax/ajax_getContent.php:115
-#: ../../../../ajax/ajax_doLogin.php:154 ../../../../inc/groups.class.php:155
-#: ../../../../inc/groups.class.php:184 ../../../../inc/groups.class.php:211
-#: ../../../../inc/tpl/config.php:349 ../../../../inc/tpl/users.php:109
+#: ../../../../inc/groups.class.php:155 ../../../../inc/groups.class.php:184
+#: ../../../../inc/groups.class.php:211 ../../../../inc/tpl/config.php:352
+#: ../../../../inc/tpl/users.php:109
 msgid "Grupo"
 msgstr "Csoport"
 
-# "Properties"
-#: ../../../../ajax/ajax_getContent.php:116
-msgid "Propiedades"
-msgstr "Beállítások"
+# "Event log cleared"
+#: ../../../../ajax/ajax_eventlog.php:43
+msgid "Registro de eventos vaciado"
+msgstr "Esemény napló törölve"
 
-# "Application Admin"
-#: ../../../../ajax/ajax_getContent.php:122 ../../../../inc/tpl/main.php:30
-msgid "Admin Aplicación"
-msgstr "Admin alkalmazás"
-
-# "Account Admin"
-#: ../../../../ajax/ajax_getContent.php:123
-msgid "Admin Cuentas"
-msgstr "Admin Fiók"
-
-# "LDAP User"
-#: ../../../../ajax/ajax_getContent.php:124 ../../../../inc/tpl/users.php:91
-msgid "Usuario de LDAP"
-msgstr "LDAP felhasználó"
-
-# "Disabled"
-#: ../../../../ajax/ajax_getContent.php:125 ../../../../inc/tpl/users.php:171
-msgid "Deshabilitado"
-msgstr "Inaktív"
-
-# "View user details"
-#: ../../../../ajax/ajax_getContent.php:136
-msgid "Ver Detalles de Usuario"
-msgstr "Felhasználó részletek"
-
-# "Delete User"
-#: ../../../../ajax/ajax_getContent.php:138
-#: ../../../../inc/users.class.php:919
-msgid "Eliminar Usuario"
-msgstr "felhasználó törlése"
-
-# "Change user password"
-#: ../../../../ajax/ajax_getContent.php:139
-msgid "Cambiar Clave de Usuario"
-msgstr "Változás felhasználói jelszó"
-
-# "Description"
-#: ../../../../ajax/ajax_getContent.php:158
-#: ../../../../ajax/ajax_getContent.php:243
-#: ../../../../ajax/ajax_getContent.php:275
-#: ../../../../ajax/ajax_sendRequest.php:62 ../../../../inc/tpl/groups.php:46
-#: ../../../../inc/tpl/customers.php:48 ../../../../inc/tpl/categories.php:48
-#: ../../../../inc/tpl/eventlog.php:68
-msgid "Descripción"
-msgstr "Leírás"
-
-# "Delete Group"
-#: ../../../../ajax/ajax_getContent.php:169
-#: ../../../../inc/groups.class.php:210
-msgid "Eliminar Grupo"
-msgstr "Csoport törlése"
-
-# "Categories management"
-#: ../../../../ajax/ajax_getContent.php:233
-msgid "Gestión de Categorías"
-msgstr "Kategória Menedzsment"
-
-# "Customers Management"
-#: ../../../../ajax/ajax_getContent.php:234
-msgid "Gestión de Clientes"
-msgstr "Ügyfél Menedzsment"
-
-# "Delete Category"
-#: ../../../../ajax/ajax_getContent.php:254
-#: ../../../../inc/category.class.php:135
-msgid "Eliminar Categoría"
-msgstr "Kategória törlése"
-
-# "Delete Customer"
-#: ../../../../ajax/ajax_getContent.php:286
-#: ../../../../inc/customer.class.php:130
-msgid "Eliminar Cliente"
-msgstr "Ügyfél törlése"
-
-# "Configuration"
-#: ../../../../ajax/ajax_getContent.php:319
-#: ../../../../inc/config.class.php:121 ../../../../inc/config.class.php:148
-#: ../../../../inc/tpl/main.php:56 ../../../../inc/tpl/profiles.php:71
-msgid "Configuración"
-msgstr "LDAP kapcsolat rendben"
-
-# "Master Password"
-#: ../../../../ajax/ajax_getContent.php:320 ../../../../inc/tpl/login.php:40
-#: ../../../../inc/tpl/login.php:48 ../../../../inc/tpl/profiles.php:76
-#: ../../../../inc/tpl/install.php:109 ../../../../inc/tpl/install.php:114
-#: ../../../../inc/tpl/install.php:115
-msgid "Clave Maestra"
-msgstr "Mester jelszó"
-
-# "Backup"
-#: ../../../../ajax/ajax_getContent.php:321
-msgid "Copia de Seguridad"
-msgstr "Archiválás"
-
-# "Import accounts from external sources"
-#: ../../../../ajax/ajax_getContent.php:322
-msgid "Importar cuentas desde fuentes externas"
-msgstr "Külsõ forrásból származó felhasználók importálása"
-
-# "Import Accounts"
-#: ../../../../ajax/ajax_getContent.php:322
-#: ../../../../inc/migrate.class.php:396 ../../../../inc/import.class.php:81
-#: ../../../../inc/import.class.php:163
-msgid "Importar Cuentas"
-msgstr "Fiókok importálása"
-
-# "Error while doing backup"
-#: ../../../../ajax/ajax_backup.php:49
-msgid "Error al realizar el backup"
-msgstr "Hiba Archiválás közben"
-
-# "Please, check the event log for more details"
-#: ../../../../ajax/ajax_backup.php:49 ../../../../ajax/ajax_checkLdap.php:54
-#: ../../../../inc/migrate.class.php:114 ../../../../inc/import.class.php:90
-msgid "Revise el registro de eventos para más detalles"
-msgstr "Részletes leírást az esemény naplóban olvashat"
-
-# "Make Backup"
-#: ../../../../ajax/ajax_backup.php:52 ../../../../inc/tpl/backup.php:82
-msgid "Realizar Backup"
-msgstr "Archívum készítés"
-
-# Application and database backup successfully done
-#: ../../../../ajax/ajax_backup.php:53
-#, fuzzy
-msgid "Copia de la aplicación y base de datos realizada correctamente"
-msgstr "Application and database backup successfully done"
-
-# "Backup process finished"
-#: ../../../../ajax/ajax_backup.php:58
-msgid "Proceso de backup finalizado"
-msgstr "Archiválás kész"
-
-# "Password Recovery"
-#: ../../../../ajax/ajax_passReset.php:44
-msgid "Recuperación de Clave"
-msgstr "Jelszó visszaállítás"
-
-# "Requested for"
-#: ../../../../ajax/ajax_passReset.php:48
-#: ../../../../ajax/ajax_passReset.php:55
-msgid "Solicitado para"
-msgstr "Kért, hogy"
-
-# "Request sent"
-#: ../../../../ajax/ajax_passReset.php:52
-#: ../../../../ajax/ajax_sendRequest.php:71
-msgid "Solicitud enviada"
-msgstr "Kérést elküldve"
-
-# "You will receive an email to complete the request in short."
-#: ../../../../ajax/ajax_passReset.php:52
-msgid "En breve recibirá un correo para completar la solicitud."
-msgstr "A kérés befejezéséhez email értesítõt küldünk"
-
-# "The request can't be done. Please contact with the administrator"
-#: ../../../../ajax/ajax_passReset.php:59
-msgid "No se ha podido realizar la solicitud. Consulte con el administrador."
-msgstr ""
-"A kérést nem lehet befejezni. Kérem lépjen kapcsolatba a rendszergazdával"
-
-# "Edit User Password"
-#: ../../../../ajax/ajax_passReset.php:73 ../../../../inc/users.class.php:892
-msgid "Modificar Clave Usuario"
-msgstr "Felhasználó jelszavának szerkesztése"
-
-# "The password is incorrect or not the same"
-#: ../../../../ajax/ajax_passReset.php:85
-msgid "La clave es incorrecta o no coincide"
-msgstr "A jelszó helytelen, vagy nem egyezik"
+# "Error on clearing event log"
+#: ../../../../ajax/ajax_eventlog.php:45
+msgid "Error al vaciar el registro de eventos"
+msgstr "Hiba az esemény napló törlése közben"
 
 # "Files management disabled"
 #: ../../../../ajax/ajax_files.php:44 ../../../../ajax/ajax_getFiles.php:36
@@ -968,6 +912,168 @@ msgstr "Fájl törölve"
 msgid "Error al eliminar el archivo"
 msgstr "Hiba a fájlok törlése közben"
 
+# "Incorrect parameters"
+#: ../../../../ajax/ajax_getContent.php:42
+msgid "Parámetros incorrectos"
+msgstr "Helytelen paraméter"
+
+# "Users Management"
+#: ../../../../ajax/ajax_getContent.php:100 ../../../../inc/tpl/main.php:54
+msgid "Gestión de Usuarios"
+msgstr "Felhasználó Menedzsment"
+
+# "Groups Management"
+#: ../../../../ajax/ajax_getContent.php:101
+msgid "Gestión de Grupos"
+msgstr "Csoport Menedzsment"
+
+# "Profiles Management"
+#: ../../../../ajax/ajax_getContent.php:102
+msgid "Gestión de Perfiles"
+msgstr "Profil Menedzsment"
+
+# "Name"
+#: ../../../../ajax/ajax_getContent.php:112
+#: ../../../../ajax/ajax_getContent.php:158
+#: ../../../../ajax/ajax_getContent.php:190
+#: ../../../../ajax/ajax_getContent.php:243
+#: ../../../../ajax/ajax_getContent.php:275
+#: ../../../../ajax/ajax_search.php:125 ../../../../ajax/ajax_search.php:238
+#: ../../../../inc/tpl/accounts.php:173 ../../../../inc/tpl/categories.php:40
+#: ../../../../inc/tpl/customers.php:40 ../../../../inc/tpl/editpass.php:40
+#: ../../../../inc/tpl/groups.php:39 ../../../../inc/tpl/profiles.php:39
+#: ../../../../inc/tpl/request.php:38 ../../../../inc/tpl/users.php:66
+msgid "Nombre"
+msgstr "Név"
+
+# "Login"
+#: ../../../../ajax/ajax_getContent.php:113
+#: ../../../../ajax/ajax_passReset.php:74 ../../../../inc/tpl/users.php:83
+#: ../../../../inc/users.class.php:897 ../../../../inc/users.class.php:924
+msgid "Login"
+msgstr "Belépés"
+
+# "Properties"
+#: ../../../../ajax/ajax_getContent.php:116
+msgid "Propiedades"
+msgstr "Beállítások"
+
+# "Application Admin"
+#: ../../../../ajax/ajax_getContent.php:122 ../../../../inc/tpl/main.php:30
+msgid "Admin Aplicación"
+msgstr "Admin alkalmazás"
+
+# "Account Admin"
+#: ../../../../ajax/ajax_getContent.php:123
+msgid "Admin Cuentas"
+msgstr "Admin Fiók"
+
+# "LDAP User"
+#: ../../../../ajax/ajax_getContent.php:124 ../../../../inc/tpl/users.php:91
+msgid "Usuario de LDAP"
+msgstr "LDAP felhasználó"
+
+# "Disabled"
+#: ../../../../ajax/ajax_getContent.php:125 ../../../../inc/tpl/users.php:171
+msgid "Deshabilitado"
+msgstr "Inaktív"
+
+# "View user details"
+#: ../../../../ajax/ajax_getContent.php:136
+msgid "Ver Detalles de Usuario"
+msgstr "Felhasználó részletek"
+
+# "Delete User"
+#: ../../../../ajax/ajax_getContent.php:138
+#: ../../../../inc/users.class.php:923
+msgid "Eliminar Usuario"
+msgstr "felhasználó törlése"
+
+# "Change user password"
+#: ../../../../ajax/ajax_getContent.php:139
+msgid "Cambiar Clave de Usuario"
+msgstr "Változás felhasználói jelszó"
+
+# "Description"
+#: ../../../../ajax/ajax_getContent.php:158
+#: ../../../../ajax/ajax_getContent.php:243
+#: ../../../../ajax/ajax_getContent.php:275
+#: ../../../../ajax/ajax_sendRequest.php:62
+#: ../../../../inc/tpl/categories.php:48 ../../../../inc/tpl/customers.php:48
+#: ../../../../inc/tpl/eventlog.php:68 ../../../../inc/tpl/groups.php:46
+msgid "Descripción"
+msgstr "Leírás"
+
+# "Delete Group"
+#: ../../../../ajax/ajax_getContent.php:169
+#: ../../../../inc/groups.class.php:210
+msgid "Eliminar Grupo"
+msgstr "Csoport törlése"
+
+# "Categories management"
+#: ../../../../ajax/ajax_getContent.php:233
+msgid "Gestión de Categorías"
+msgstr "Kategória Menedzsment"
+
+# "Customers Management"
+#: ../../../../ajax/ajax_getContent.php:234
+msgid "Gestión de Clientes"
+msgstr "Ügyfél Menedzsment"
+
+# "Delete Category"
+#: ../../../../ajax/ajax_getContent.php:254
+#: ../../../../inc/category.class.php:135
+msgid "Eliminar Categoría"
+msgstr "Kategória törlése"
+
+# "Delete Customer"
+#: ../../../../ajax/ajax_getContent.php:286
+#: ../../../../inc/customer.class.php:131
+msgid "Eliminar Cliente"
+msgstr "Ügyfél törlése"
+
+# "Configuration"
+#: ../../../../ajax/ajax_getContent.php:319
+#: ../../../../inc/config.class.php:121 ../../../../inc/config.class.php:149
+#: ../../../../inc/tpl/main.php:56 ../../../../inc/tpl/profiles.php:71
+msgid "Configuración"
+msgstr "LDAP kapcsolat rendben"
+
+# "Master Password"
+#: ../../../../ajax/ajax_getContent.php:320
+#: ../../../../inc/tpl/install.php:112 ../../../../inc/tpl/install.php:117
+#: ../../../../inc/tpl/install.php:118 ../../../../inc/tpl/login.php:40
+#: ../../../../inc/tpl/login.php:48 ../../../../inc/tpl/profiles.php:76
+msgid "Clave Maestra"
+msgstr "Mester jelszó"
+
+# "Backup"
+#: ../../../../ajax/ajax_getContent.php:321
+msgid "Copia de Seguridad"
+msgstr "Archiválás"
+
+# "Import accounts from external sources"
+#: ../../../../ajax/ajax_getContent.php:322
+msgid "Importar cuentas desde fuentes externas"
+msgstr "Külsõ forrásból származó felhasználók importálása"
+
+# "Import Accounts"
+#: ../../../../ajax/ajax_getContent.php:322
+#: ../../../../inc/import.class.php:81 ../../../../inc/import.class.php:163
+#: ../../../../inc/migrate.class.php:402
+msgid "Importar Cuentas"
+msgstr "Fiókok importálása"
+
+# "Delete File"
+#: ../../../../ajax/ajax_getFiles.php:63 ../../../../inc/files.class.php:108
+msgid "Eliminar Archivo"
+msgstr "Fájl törlése"
+
+# "View File"
+#: ../../../../ajax/ajax_getFiles.php:70
+msgid "Ver Archivo"
+msgstr "Fájl megtekintése"
+
 # "Confirm account import"
 #: ../../../../ajax/ajax_migrate.php:1
 msgid "Confirmar la importación de cuentas"
@@ -993,56 +1099,43 @@ msgstr "Adatbázis név szükséges"
 msgid "Es necesario un nombre de host"
 msgstr "Host név szükséges"
 
-# "You don't have permission to access to this account"
-#: ../../../../ajax/ajax_viewpass.php:52 ../../../../ajax/ajax_viewpass.php:58
-#: ../../../../inc/html.class.php:425
-msgid "No tiene permisos para acceder a esta cuenta"
-msgstr "Nincs jogosultságod belépni ebbe a fiókba"
+# "Password Recovery"
+#: ../../../../ajax/ajax_passReset.php:44
+msgid "Recuperación de Clave"
+msgstr "Jelszó visszaállítás"
 
-# "Master password mismatch"
-#: ../../../../ajax/ajax_viewpass.php:61
-msgid "La clave maestra no coincide"
-msgstr "A mester jelszó nem egyezik"
+# "Requested for"
+#: ../../../../ajax/ajax_passReset.php:48
+#: ../../../../ajax/ajax_passReset.php:55
+msgid "Solicitado para"
+msgstr "Kért, hogy"
 
-# "View password"
-#: ../../../../ajax/ajax_viewpass.php:80 ../../../../ajax/ajax_search.php:293
-#: ../../../../inc/tpl/profiles.php:50 ../../../../inc/tpl/accounts.php:527
-msgid "Ver Clave"
-msgstr "Jelszó"
+# "Request sent"
+#: ../../../../ajax/ajax_passReset.php:52
+#: ../../../../ajax/ajax_sendRequest.php:71
+msgid "Solicitud enviada"
+msgstr "Kérést elküldve"
 
-# "Account"
-#: ../../../../ajax/ajax_viewpass.php:82
-#: ../../../../ajax/ajax_sendRequest.php:60 ../../../../inc/files.class.php:53
-#: ../../../../inc/account.class.php:371 ../../../../inc/account.class.php:581
-#: ../../../../inc/account.class.php:604 ../../../../inc/account.class.php:880
-msgid "Cuenta"
-msgstr "Fiók"
+# "You will receive an email to complete the request in short."
+#: ../../../../ajax/ajax_passReset.php:52
+msgid "En breve recibirá un correo para completar la solicitud."
+msgstr "A kérés befejezéséhez email értesítõt küldünk"
 
-# "User"
-#: ../../../../ajax/ajax_viewpass.php:94 ../../../../ajax/ajax_search.php:131
-#: ../../../../ajax/ajax_search.php:250 ../../../../ajax/ajax_doLogin.php:77
-#: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:91
-#: ../../../../ajax/ajax_doLogin.php:101 ../../../../ajax/ajax_doLogin.php:111
-#: ../../../../ajax/ajax_doLogin.php:152 ../../../../res/test.php:64
-#: ../../../../inc/init.php:554 ../../../../inc/users.class.php:813
-#: ../../../../inc/users.class.php:855 ../../../../inc/tpl/passreset.php:51
-#: ../../../../inc/tpl/request.php:52 ../../../../inc/tpl/login.php:35
-#: ../../../../inc/tpl/login.php:44 ../../../../inc/tpl/install.php:89
-#: ../../../../inc/tpl/install.php:90 ../../../../inc/tpl/editpass.php:53
-#: ../../../../inc/tpl/accounts.php:233 ../../../../inc/tpl/config.php:450
-#: ../../../../inc/tpl/eventlog.php:62
-msgid "Usuario"
-msgstr "Felhasználó"
+# "The request can't be done. Please contact with the administrator"
+#: ../../../../ajax/ajax_passReset.php:59
+msgid "No se ha podido realizar la solicitud. Consulte con el administrador."
+msgstr ""
+"A kérést nem lehet befejezni. Kérem lépjen kapcsolatba a rendszergazdával"
 
-# "Password"
-#: ../../../../ajax/ajax_viewpass.php:98 ../../../../ajax/ajax_usrpass.php:53
-#: ../../../../ajax/ajax_usrpass.php:56 ../../../../inc/tpl/passreset.php:62
-#: ../../../../inc/tpl/login.php:37 ../../../../inc/tpl/login.php:45
-#: ../../../../inc/tpl/install.php:99 ../../../../inc/tpl/install.php:100
-#: ../../../../inc/tpl/editpass.php:57 ../../../../inc/tpl/accounts.php:250
-#: ../../../../inc/tpl/config.php:459 ../../../../inc/tpl/users.php:135
-msgid "Clave"
-msgstr "Jelszó"
+# "Edit User Password"
+#: ../../../../ajax/ajax_passReset.php:73 ../../../../inc/users.class.php:896
+msgid "Modificar Clave Usuario"
+msgstr "Felhasználó jelszavának szerkesztése"
+
+# "The password is incorrect or not the same"
+#: ../../../../ajax/ajax_passReset.php:85
+msgid "La clave es incorrecta o no coincide"
+msgstr "A jelszó helytelen, vagy nem egyezik"
 
 # "No records found"
 #: ../../../../ajax/ajax_search.php:108 ../../../../inc/tpl/eventlog.php:42
@@ -1059,10 +1152,10 @@ msgstr "Rendezés Ügyfél szerint"
 #: ../../../../ajax/ajax_sendRequest.php:61
 #: ../../../../inc/account.class.php:370 ../../../../inc/account.class.php:580
 #: ../../../../inc/account.class.php:603 ../../../../inc/account.class.php:879
-#: ../../../../inc/customer.class.php:58
-#: ../../../../inc/customer.class.php:105
-#: ../../../../inc/customer.class.php:131 ../../../../inc/tpl/request.php:42
-#: ../../../../inc/tpl/editpass.php:44 ../../../../inc/tpl/accounts.php:188
+#: ../../../../inc/customer.class.php:59
+#: ../../../../inc/customer.class.php:106
+#: ../../../../inc/customer.class.php:132 ../../../../inc/tpl/accounts.php:189
+#: ../../../../inc/tpl/editpass.php:44 ../../../../inc/tpl/request.php:42
 msgid "Cliente"
 msgstr "Ügyfél"
 
@@ -1080,7 +1173,7 @@ msgstr "Rendezés Kategória szerint"
 #: ../../../../ajax/ajax_search.php:128 ../../../../ajax/ajax_search.php:243
 #: ../../../../inc/category.class.php:80
 #: ../../../../inc/category.class.php:136
-#: ../../../../inc/category.class.php:184 ../../../../inc/tpl/accounts.php:205
+#: ../../../../inc/category.class.php:184 ../../../../inc/tpl/accounts.php:206
 msgid "Categoría"
 msgstr "Kategória"
 
@@ -1096,8 +1189,8 @@ msgstr "Rendezés URL / IP szerint"
 
 # "URL / IP"
 #: ../../../../ajax/ajax_search.php:134 ../../../../ajax/ajax_search.php:255
-#: ../../../../inc/tpl/request.php:47 ../../../../inc/tpl/editpass.php:48
-#: ../../../../inc/tpl/accounts.php:217
+#: ../../../../inc/tpl/accounts.php:218 ../../../../inc/tpl/editpass.php:48
+#: ../../../../inc/tpl/request.php:47
 msgid "URL / IP"
 msgstr "URL / IP"
 
@@ -1118,7 +1211,7 @@ msgid "Abrir enlace a"
 msgstr "Nyissa meg a linket, hogy"
 
 # "Notes"
-#: ../../../../ajax/ajax_search.php:262 ../../../../inc/tpl/accounts.php:270
+#: ../../../../ajax/ajax_search.php:262 ../../../../inc/tpl/accounts.php:271
 #: ../../../../inc/tpl/users.php:154
 msgid "Notas"
 msgstr "Jegyzetek"
@@ -1133,9 +1226,15 @@ msgstr "Csatolmányok"
 msgid "Enlace a Wiki"
 msgstr "Wiki link"
 
+# "View password"
+#: ../../../../ajax/ajax_search.php:293 ../../../../ajax/ajax_viewpass.php:80
+#: ../../../../inc/tpl/accounts.php:528 ../../../../inc/tpl/profiles.php:50
+msgid "Ver Clave"
+msgstr "Jelszó"
+
 # Copy Password to Clipboard
 #: ../../../../ajax/ajax_search.php:294 ../../../../ajax/ajax_search.php:346
-#: ../../../../inc/tpl/accounts.php:532 ../../../../inc/tpl/accounts.php:623
+#: ../../../../inc/tpl/accounts.php:533 ../../../../inc/tpl/accounts.php:624
 #, fuzzy
 msgid "Copiar Clave en Portapapeles"
 msgstr "Jelszó másolása a vágólapra"
@@ -1146,7 +1245,7 @@ msgid "Más Acciones"
 msgstr "Több akció"
 
 # "Edit Account"
-#: ../../../../ajax/ajax_search.php:302 ../../../../inc/tpl/accounts.php:555
+#: ../../../../ajax/ajax_search.php:302 ../../../../inc/tpl/accounts.php:556
 msgid "Modificar Cuenta"
 msgstr "Fiók módosítás"
 
@@ -1157,17 +1256,17 @@ msgstr "Fiók másolása"
 
 # "Delete Account"
 #: ../../../../ajax/ajax_search.php:310 ../../../../inc/account.class.php:602
-#: ../../../../inc/tpl/accounts.php:73 ../../../../inc/tpl/accounts.php:567
+#: ../../../../inc/tpl/accounts.php:73 ../../../../inc/tpl/accounts.php:568
 msgid "Eliminar Cuenta"
 msgstr "Fiók törlése"
 
 # "Request Modification"
-#: ../../../../ajax/ajax_search.php:317 ../../../../inc/tpl/accounts.php:560
+#: ../../../../ajax/ajax_search.php:317 ../../../../inc/tpl/accounts.php:561
 msgid "Solicitar Modificación"
 msgstr "Kérés módosítás"
 
 # Password Copied to Clipboard
-#: ../../../../ajax/ajax_search.php:350 ../../../../inc/tpl/accounts.php:627
+#: ../../../../ajax/ajax_search.php:350 ../../../../inc/tpl/accounts.php:628
 #, fuzzy
 msgid "Clave Copiada al Portapapeles"
 msgstr "Jelszó vágólapra másolt"
@@ -1187,6 +1286,14 @@ msgstr "Kérés fiók módosításához"
 msgid "Solicitante"
 msgstr "Kérõ"
 
+# "Account"
+#: ../../../../ajax/ajax_sendRequest.php:60
+#: ../../../../ajax/ajax_viewpass.php:82 ../../../../inc/account.class.php:371
+#: ../../../../inc/account.class.php:581 ../../../../inc/account.class.php:604
+#: ../../../../inc/account.class.php:880 ../../../../inc/files.class.php:53
+msgid "Cuenta"
+msgstr "Fiók"
+
 # "Error on sending request"
 #: ../../../../ajax/ajax_sendRequest.php:74
 msgid "Error al enviar la solicitud"
@@ -1204,374 +1311,199 @@ msgid "Cambio de Clave"
 msgstr "Jelszó változtatás"
 
 # "Generate random password"
-#: ../../../../ajax/ajax_usrpass.php:57 ../../../../inc/tpl/editpass.php:64
-#: ../../../../inc/tpl/accounts.php:257 ../../../../inc/tpl/users.php:139
+#: ../../../../ajax/ajax_usrpass.php:57 ../../../../inc/tpl/accounts.php:258
+#: ../../../../inc/tpl/editpass.php:64 ../../../../inc/tpl/users.php:139
 msgid "Generar clave aleatoria"
 msgstr "Véletlenszerû jelszó generálása"
 
 # "Password (repeat)"
 #: ../../../../ajax/ajax_usrpass.php:63 ../../../../ajax/ajax_usrpass.php:65
-#: ../../../../inc/tpl/editpass.php:69 ../../../../inc/tpl/accounts.php:262
+#: ../../../../inc/tpl/accounts.php:263 ../../../../inc/tpl/editpass.php:69
 #: ../../../../inc/tpl/users.php:145
 msgid "Clave (repetir)"
 msgstr "Jelszó (ismét)"
 
 # "Password strength level"
-#: ../../../../ajax/ajax_usrpass.php:66 ../../../../inc/tpl/passreset.php:65
-#: ../../../../inc/tpl/passreset.php:73 ../../../../inc/tpl/masterpass.php:63
-#: ../../../../inc/tpl/install.php:104 ../../../../inc/tpl/install.php:119
-#: ../../../../inc/tpl/editpass.php:71 ../../../../inc/tpl/accounts.php:265
+#: ../../../../ajax/ajax_usrpass.php:66 ../../../../inc/tpl/accounts.php:266
+#: ../../../../inc/tpl/editpass.php:71 ../../../../inc/tpl/install.php:107
+#: ../../../../inc/tpl/install.php:122 ../../../../inc/tpl/masterpass.php:64
+#: ../../../../inc/tpl/passreset.php:65 ../../../../inc/tpl/passreset.php:73
 #: ../../../../inc/tpl/users.php:148
 msgid "Nivel de fortaleza de la clave"
 msgstr "Jelszó erõssége"
 
 # "Save"
 #: ../../../../ajax/ajax_usrpass.php:82 ../../../../ajax/ajax_usrpass.php:83
-#: ../../../../inc/tpl/masterpass.php:113 ../../../../inc/tpl/groups.php:64
-#: ../../../../inc/tpl/customers.php:68 ../../../../inc/tpl/profiles.php:138
-#: ../../../../inc/tpl/editpass.php:89 ../../../../inc/tpl/accounts.php:541
-#: ../../../../inc/tpl/categories.php:68 ../../../../inc/tpl/config.php:519
+#: ../../../../inc/tpl/accounts.php:542 ../../../../inc/tpl/categories.php:68
+#: ../../../../inc/tpl/config.php:522 ../../../../inc/tpl/customers.php:68
+#: ../../../../inc/tpl/editpass.php:89 ../../../../inc/tpl/groups.php:64
+#: ../../../../inc/tpl/masterpass.php:114 ../../../../inc/tpl/profiles.php:138
 #: ../../../../inc/tpl/users.php:220
 msgid "Guardar"
 msgstr "Mentés"
 
-# "LDAP parameters are not set"
-#: ../../../../ajax/ajax_checkLdap.php:48 ../../../../inc/ldap.class.php:246
-msgid "Los parámetros de LDAP no están configurados"
-msgstr "LDAP paraméterek nem lettek elmentve"
+# "You don't have permission to access to this account"
+#: ../../../../ajax/ajax_viewpass.php:52 ../../../../ajax/ajax_viewpass.php:58
+#: ../../../../inc/html.class.php:425
+msgid "No tiene permisos para acceder a esta cuenta"
+msgstr "Nincs jogosultságod belépni ebbe a fiókba"
 
-# "LDAP connection error"
-#: ../../../../ajax/ajax_checkLdap.php:54
-msgid "Error de conexión a LDAP"
-msgstr "LDAP kapcsolódási hiba"
-
-# "LDAP connection OK"
-#: ../../../../ajax/ajax_checkLdap.php:56
-msgid "Conexión a LDAP correcta"
-msgstr "LDAP kapcsolat"
-
-# "Objects found"
-#: ../../../../ajax/ajax_checkLdap.php:56
-msgid "Objetos encontrados"
-msgstr "Objektum találatok"
-
-# "Delete File"
-#: ../../../../ajax/ajax_getFiles.php:63 ../../../../inc/files.class.php:108
-msgid "Eliminar Archivo"
-msgstr "Fájl törlése"
-
-# "View File"
-#: ../../../../ajax/ajax_getFiles.php:70
-msgid "Ver Archivo"
-msgstr "Fájl megtekintése"
-
-# "User/Pass not entered"
-#: ../../../../ajax/ajax_doLogin.php:41
-msgid "Usuario/Clave no introducidos"
-msgstr "Felhasználó/jelszó nem lett kitöltve"
-
-# "Session start (LDAP)"
-#: ../../../../ajax/ajax_doLogin.php:54 ../../../../ajax/ajax_doLogin.php:75
-#: ../../../../ajax/ajax_doLogin.php:82 ../../../../ajax/ajax_doLogin.php:89
-msgid "Inicio sesión (LDAP)"
-msgstr "munkamenet elindult (LDAP)"
-
-# "Error on saving LDAP user data"
-#: ../../../../ajax/ajax_doLogin.php:60
-msgid "Error al guardar los datos de LDAP"
-msgstr "Hiba az LDAP felhasználók adatainak elmentése közben"
-
-# "Internal error"
-#: ../../../../ajax/ajax_doLogin.php:63 ../../../../ajax/ajax_doLogin.php:71
-#: ../../../../ajax/ajax_doLogin.php:122 ../../../../inc/import.class.php:240
-#: ../../../../inc/import.class.php:247 ../../../../inc/import.class.php:266
-msgid "Error interno"
-msgstr "Belsõ hiba"
-
-# "Error on updating user password in BD"
-#: ../../../../ajax/ajax_doLogin.php:68
-msgid "Error al actualizar la clave del usuario en la BBDD"
-msgstr "Adatbázis Hiba a felhasználói jelszó frissítése közben"
-
-# "Incorrect login"
-#: ../../../../ajax/ajax_doLogin.php:76 ../../../../ajax/ajax_doLogin.php:100
-msgid "Login incorrecto"
-msgstr "Hibás felhasználónév vagy jelszó"
-
-# "Wrong user/pass"
-#: ../../../../ajax/ajax_doLogin.php:80 ../../../../ajax/ajax_doLogin.php:94
-#: ../../../../ajax/ajax_doLogin.php:104
-msgid "Usuario/Clave incorrectos"
-msgstr "Hibás felhasználó/jelszó"
-
-# Account Expired
-#: ../../../../ajax/ajax_doLogin.php:83 ../../../../ajax/ajax_doLogin.php:87
-#, fuzzy
-msgid "Cuenta expirada"
-msgstr "Account expired"
-
-# "The user have no associated groups"
-#: ../../../../ajax/ajax_doLogin.php:90
-msgid "El usuario no tiene grupos asociados"
-msgstr "a felhasználó nincs csoporthoz társítva"
-
-# "Session start (MySQL)"
-#: ../../../../ajax/ajax_doLogin.php:96
-msgid "Inicio sesión (MySQL)"
-msgstr "munkamenet elindult (MySQL)"
-
-# "User disabled"
-#: ../../../../ajax/ajax_doLogin.php:110 ../../../../ajax/ajax_doLogin.php:114
-msgid "Usuario deshabilitado"
-msgstr "Felhasználó letiltva"
-
-# "Error on retrieving user data from DB"
-#: ../../../../ajax/ajax_doLogin.php:119
-msgid "Error al obtener los datos del usuario de la BBDD"
-msgstr "Hiba a felhasználói adatok adatbázisból való betöltése közben"
-
-# "The master password not saved or is incorrect"
-#: ../../../../ajax/ajax_doLogin.php:127
-msgid "La clave maestra no ha sido guardada o es incorrecta"
-msgstr "A mester jelszó nem lett elmentve, vagy helytelen"
-
-# "Invalid Master Password"
-#: ../../../../ajax/ajax_doLogin.php:130 ../../../../ajax/ajax_doLogin.php:133
-msgid "Clave maestra incorrecta"
-msgstr "Érvénytelen mester jelszó"
-
-# "Query error"
-#: ../../../../js/js.php:45
-msgid "Error en la consulta"
-msgstr "Lekérdezési hiba"
-
-# "There was an error"
-#: ../../../../js/js.php:46
-msgid "Ha ocurrido un error"
-msgstr "Hiba történt"
-
-# "Session finished"
-#: ../../../../js/js.php:47 ../../../../inc/tpl/login.php:71
-msgid "Sesión finalizada"
-msgstr "Munkamenet befejezõdött"
-
-# "Delete account?"
-#: ../../../../js/js.php:48
-msgid "Borrar la cuenta?"
-msgstr "Fiók törlése?"
-
-# "Delete user?"
-#: ../../../../js/js.php:49
-msgid "Borrar el usuario?"
-msgstr "Törlöd a felhasználót?"
-
-# "You should save configuration in order to take effect"
-#: ../../../../js/js.php:50
-msgid "Guarde la configuración para que sea efectiva"
-msgstr "A módosítások életbe lépéséhez mentened kell a beállításokat"
-
-# "Generated Password"
-#: ../../../../js/js.php:51
-msgid "Clave Generada"
-msgstr "Generált Jelszó"
-
-# "High level"
-#: ../../../../js/js.php:52
-msgid "Nivel alto"
-msgstr "Erös"
-
-# "Average level"
-#: ../../../../js/js.php:53
-msgid "Nivel medio"
-msgstr "Közepes"
-
-# "Low level"
-#: ../../../../js/js.php:54
-msgid "Nivel bajo"
-msgstr "Gyenge"
-
-# "Very high level"
-#: ../../../../js/js.php:55
-msgid "Nivel muy alto"
-msgstr "Nagyon erös"
-
-# "You should use at least 8 characters"
-#: ../../../../js/js.php:56
-msgid "Utilizar al menos 8 caracteres"
-msgstr "Legalább 8 karakterböl állót adj meg"
-
-# "Delete item?"
-#: ../../../../js/js.php:57
-msgid "Borrar elemento?"
-msgstr "Törlöd a tételt?"
-
-# "Page not found"
-#: ../../../../js/js.php:58
-msgid "Página no encontrada"
-msgstr "Oldal nem található"
-
-# "File not supported for preview"
-#: ../../../../js/js.php:59
-msgid "Archivo no soportado para visualizar"
-msgstr "A fájlnak nincs elönézete"
-
-# "Delete file?"
-#: ../../../../js/js.php:60
-msgid "Eliminar archivo?"
-msgstr "Törlöd a fájlt?"
-
-# "Your browser does not support HTML5 file uploads"
-#: ../../../../js/js.php:61
-msgid "Su navegador no soporta subir archivos con HTML5"
-msgstr "A böngészöd nem támogatja a HTML5 fájlok feltöltését"
-
-# "Too many files"
-#: ../../../../js/js.php:62
-msgid "Demasiados archivos"
-msgstr "Túl sok fájl"
-
-# "Unable to save file.<br>Max file size:"
-#: ../../../../js/js.php:63
-msgid "No es posible guardar el archivo.<br>Tamaño máximo:"
-msgstr "Nem lehet elmenteni a fájlt.<br>Maximális fájl méret:"
-
-# "Extension not allowed"
-#: ../../../../js/js.php:64
-msgid "Extensión no permitida"
-msgstr "A kiterjesztés nem engedélyezett"
-
-# "Clear event log?"
-#: ../../../../js/js.php:65
-msgid "Vaciar el registro de eventos?"
-msgstr "Törlöd az esemény naplót?"
+# "Master password mismatch"
+#: ../../../../ajax/ajax_viewpass.php:61
+msgid "La clave maestra no coincide"
+msgstr "A mester jelszó nem egyezik"
 
 # "Unable to access to this file directly"
-#: ../../../../inc/groups.class.php:27 ../../../../inc/util.class.php:26
-#: ../../../../inc/util.class.php:300 ../../../../inc/db.class.php:27
-#: ../../../../inc/html.class.php:27 ../../../../inc/files.class.php:27
-#: ../../../../inc/backup.class.php:26 ../../../../inc/ldap.class.php:27
-#: ../../../../inc/config.class.php:26 ../../../../inc/profiles.class.php:27
-#: ../../../../inc/common.class.php:26 ../../../../inc/account.class.php:26
-#: ../../../../inc/init.php:26 ../../../../inc/acl.class.php:27
-#: ../../../../inc/upgrade.class.php:27 ../../../../inc/migrate.class.php:26
+#: ../../../../inc/account.class.php:26 ../../../../inc/acl.class.php:27
+#: ../../../../inc/auth.class.php:27 ../../../../inc/backup.class.php:26
+#: ../../../../inc/category.class.php:27 ../../../../inc/common.class.php:26
+#: ../../../../inc/config.class.php:26 ../../../../inc/crypt.class.php:26
+#: ../../../../inc/customer.class.php:27 ../../../../inc/db.class.php:27
+#: ../../../../inc/files.class.php:27 ../../../../inc/groups.class.php:27
+#: ../../../../inc/html.class.php:27 ../../../../inc/import.class.php:27
+#: ../../../../inc/init.php:26 ../../../../inc/installer.class.php:27
 #: ../../../../inc/keepassimport.class.php:27
-#: ../../../../inc/installer.class.php:27
 #: ../../../../inc/keepassximport.class.php:27
-#: ../../../../inc/users.class.php:27 ../../../../inc/log.class.php:26
-#: ../../../../inc/crypt.class.php:26 ../../../../inc/customer.class.php:27
-#: ../../../../inc/category.class.php:27 ../../../../inc/import.class.php:27
-#: ../../../../inc/auth.class.php:27 ../../../../inc/tpl/request.php:25
-#: ../../../../inc/tpl/backup.php:26 ../../../../inc/tpl/masterpass.php:26
-#: ../../../../inc/tpl/groups.php:26 ../../../../inc/tpl/migrate.php:26
-#: ../../../../inc/tpl/login.php:26 ../../../../inc/tpl/customers.php:26
-#: ../../../../inc/tpl/main.php:26 ../../../../inc/tpl/profiles.php:26
-#: ../../../../inc/tpl/search.php:26 ../../../../inc/tpl/editpass.php:25
-#: ../../../../inc/tpl/accounts.php:26 ../../../../inc/tpl/categories.php:26
-#: ../../../../inc/tpl/config.php:26 ../../../../inc/tpl/users.php:26
-#: ../../../../inc/tpl/eventlog.php:26
+#: ../../../../inc/ldap.class.php:27 ../../../../inc/log.class.php:26
+#: ../../../../inc/migrate.class.php:26 ../../../../inc/profiles.class.php:27
+#: ../../../../inc/tpl/accounts.php:26 ../../../../inc/tpl/backup.php:26
+#: ../../../../inc/tpl/categories.php:26 ../../../../inc/tpl/config.php:26
+#: ../../../../inc/tpl/customers.php:26 ../../../../inc/tpl/editpass.php:25
+#: ../../../../inc/tpl/eventlog.php:26 ../../../../inc/tpl/groups.php:26
+#: ../../../../inc/tpl/login.php:26 ../../../../inc/tpl/main.php:26
+#: ../../../../inc/tpl/masterpass.php:26 ../../../../inc/tpl/migrate.php:26
+#: ../../../../inc/tpl/profiles.php:26 ../../../../inc/tpl/request.php:25
+#: ../../../../inc/tpl/search.php:26 ../../../../inc/tpl/users.php:26
+#: ../../../../inc/upgrade.class.php:27 ../../../../inc/users.class.php:27
+#: ../../../../inc/util.class.php:26 ../../../../inc/util.class.php:293
 msgid "No es posible acceder directamente a este archivo"
 msgstr "A fájl közvetlen elérése meghiúsult"
 
-# "Edit Group"
-#: ../../../../inc/groups.class.php:183
-msgid "Modificar Grupo"
-msgstr "Csoport módosítás"
+# "Error on updating history"
+#: ../../../../inc/account.class.php:325 ../../../../inc/account.class.php:855
+msgid "Error al actualizar el historial"
+msgstr "Hiba az elõzmények frissítése közben"
 
-# Required PHP version >= 5.1
-#: ../../../../inc/util.class.php:119
-#, fuzzy
-msgid "Versión de PHP requerida >= 5.1"
-msgstr "Szükséges PHP verzió> = 5.1"
+# "Update Customer"
+#: ../../../../inc/account.class.php:331
+msgid "Actualizar Cuenta"
+msgstr "Frissítés Számla"
 
-# "Please update PHP version to run sysPass in a secure way"
-#: ../../../../inc/util.class.php:120
-#, fuzzy
-msgid ""
-"Actualice la versión de PHP para que la aplicación funcione correctamente"
-msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
+# "Error on updating secondary groups"
+#: ../../../../inc/account.class.php:334 ../../../../inc/account.class.php:562
+msgid "Error al actualizar los grupos secundarios"
+msgstr "Hiba a másodlagos csoportok frissítése közben"
 
-# "Module unavilable"
-#: ../../../../inc/util.class.php:141 ../../../../inc/tpl/config.php:398
-msgid "Módulo no disponible"
-msgstr "Modul nem elérhetõ"
+# "Error on updating account's users"
+#: ../../../../inc/account.class.php:340 ../../../../inc/account.class.php:570
+msgid "Error al actualizar los usuarios de la cuenta"
+msgstr "Hiba a fiók felhasználóinak frissítése közben"
 
-# "Without this module the application couldn't run correctly"
-#: ../../../../inc/util.class.php:142
-msgid "Sin este módulo la aplicación puede no funcionar correctamente."
-msgstr "E modul nélkül az alkalmazás nem futtatható megfelelõen"
+# "Restore Account"
+#: ../../../../inc/account.class.php:345
+msgid "Restaurar Cuenta"
+msgstr "Restore Számla"
 
-# "Unable to connect to DB"
-#: ../../../../inc/db.class.php:94 ../../../../inc/db.class.php:108
-#: ../../../../inc/db.class.php:115
-msgid "No es posible conectar con la BD"
-msgstr "Csatlakozás a DB-hez meghiusúlt"
+# "New Account"
+#: ../../../../inc/account.class.php:579 ../../../../inc/tpl/accounts.php:47
+#: ../../../../inc/tpl/main.php:53
+msgid "Nueva Cuenta"
+msgstr "Új fiók"
 
-# Please, check connection parameters
-#: ../../../../inc/db.class.php:94
-#, fuzzy
-msgid "Compruebe los datos de conexión"
-msgstr "Please, check connection parameters"
+# "ERROR: Operation failed"
+#: ../../../../inc/account.class.php:597
+msgid "ERROR: Error en la operación."
+msgstr "HIBA: A mûvelet meghiusult"
 
-# "Javascript is needed in order to run correctly"
-#: ../../../../inc/html.class.php:207
-msgid "Javascript es necesario para el correcto funcionamiento"
-msgstr "Java szkript szükséges a megfelelõ mûködéshez"
+# "Error on deleting account's groups"
+#: ../../../../inc/account.class.php:614
+msgid "Error al eliminar grupos asociados a la cuenta"
+msgstr "Hiba a felhasználó csoportok törlése közben"
 
-# Help :: FAQ :: Changelog
-#: ../../../../inc/html.class.php:231
-msgid "Ayuda :: FAQ :: Changelog"
-msgstr "Segítség :: GYIK :: Változások Listája"
+# "Error on deleting account's users"
+#: ../../../../inc/account.class.php:618
+msgid "Error al eliminar usuarios asociados a la cuenta"
+msgstr "Hiba a fiók felhasználók törlése közben"
 
-# "A cygnux.org project"
-#: ../../../../inc/html.class.php:233
-msgid "Un proyecto de cygnux.org"
-msgstr "A cygnux.org projekt"
+# "Error on deleting account's files"
+#: ../../../../inc/account.class.php:622
+msgid "Error al eliminar archivos asociados a la cuenta"
+msgstr "Hiba a fiók fájljainak törlése közben"
 
-# "Filter ON"
-#: ../../../../inc/html.class.php:277
-msgid "Filtro ON"
-msgstr "Szûrõ bekapcsolva"
+# "Start"
+#: ../../../../inc/account.class.php:750 ../../../../inc/account.class.php:904
+msgid "Inicio"
+msgstr "Start"
 
-# "Global ON"
-#: ../../../../inc/html.class.php:279
-msgid "Global ON"
-msgstr "Global On"
+# "Error on encryption module"
+#: ../../../../inc/account.class.php:758 ../../../../inc/account.class.php:912
+msgid "Error en el módulo de encriptación"
+msgstr "Titkosító modul hiba"
 
-# "First page"
-#: ../../../../inc/html.class.php:284 ../../../../inc/html.class.php:318
-msgid "Primera página"
-msgstr "Elsõ oldal"
+# "Error on retrieving accounts' passwords"
+#: ../../../../inc/account.class.php:766 ../../../../inc/account.class.php:920
+msgid "Error al obtener las claves de las cuentas"
+msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
-# "Previous page"
-#: ../../../../inc/html.class.php:285 ../../../../inc/html.class.php:319
-msgid "Página anterior"
-msgstr "Elõzõ oldal"
+# "Error on updating account's password"
+#: ../../../../inc/account.class.php:792
+msgid "Fallo al actualizar la clave de la cuenta"
+msgstr "Hiba a fiók jelszavának frissítése közben"
 
-# "Next page"
-#: ../../../../inc/html.class.php:292 ../../../../inc/html.class.php:326
-msgid "Página siguiente"
-msgstr "Következõ oldal"
+# "Accounts updated:"
+#: ../../../../inc/account.class.php:804
+msgid "Cuentas actualizadas:"
+msgstr "Fiókok frissítve"
 
-# "Last page"
-#: ../../../../inc/html.class.php:293 ../../../../inc/html.class.php:327
-msgid "Última página"
-msgstr "Utolsó oldal"
+# "End"
+#: ../../../../inc/account.class.php:809 ../../../../inc/account.class.php:968
+msgid "Fin"
+msgstr "Vége"
 
-# "Option unavilable"
-#: ../../../../inc/html.class.php:424
-msgid "Opción no disponible"
-msgstr "Beállítás nem elérhetõ"
+# "Update Password"
+#: ../../../../inc/account.class.php:878
+msgid "Modificar Clave"
+msgstr "Jelszó frissítés"
 
-# "Please, contact to administrator"
-#: ../../../../inc/html.class.php:424 ../../../../inc/html.class.php:425
-#: ../../../../inc/html.class.php:426 ../../../../inc/init.php:490
-msgid "Consulte con el administrador"
-msgstr "Kérem, keresse a rendszergazdát"
+# "Update Master Password (H)"
+#: ../../../../inc/account.class.php:903
+msgid "Actualizar Clave Maestra (H)"
+msgstr "Frissítse a mester jelszót (H)"
 
-# "You don't have permission to access to this page"
-#: ../../../../inc/html.class.php:426
-msgid "No tiene permisos para acceder a esta página"
-msgstr "Nincs jogosultságod belépni ebbe az oldalba"
+# "Record's Master password mismatch"
+#: ../../../../inc/account.class.php:934
+msgid "La clave maestra del registro no coincide"
+msgstr "A rekord mester jelszava nem egyezik"
+
+# "Error on updating history's master password"
+#: ../../../../inc/account.class.php:950
+msgid "Fallo al actualizar la clave del histórico"
+msgstr "Hiba a elõzmények mester jelszavának frissítése közben"
+
+# "Records updated"
+#: ../../../../inc/account.class.php:963
+msgid "Registros actualizados:"
+msgstr "Rekordok frissítve"
+
+# "Access denied to"
+#: ../../../../inc/acl.class.php:104
+msgid "Denegado acceso a"
+msgstr "Belépés megtagadva"
+
+# A request for updating your user password has been done.
+#: ../../../../inc/auth.class.php:195
+msgid "Se ha solicitado el cambio de su clave de usuario."
+msgstr "A kérelmet frissíteni a felhasználói jelszót megtörtént."
+
+# "In order to complete the process, please go to this URL:"
+#: ../../../../inc/auth.class.php:197
+msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
+msgstr "A folyamat befejezéséhez látogass el a következõ oldalra:"
+
+# "If you have not requested this action, please dismiss this message."
+#: ../../../../inc/auth.class.php:201
+msgid "Si no ha solicitado esta acción, ignore este mensaje."
+msgstr "Amennyiben nincs szüksége erre a folyamatra, zárja be ezt az üzenetet"
 
 # "This operation is only available on Linux environments"
 #: ../../../../inc/backup.class.php:159
@@ -1589,83 +1521,10 @@ msgstr "Error while doing backup in compatibility mode"
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Ellenõrizze az archiválás mappa jogosultságait"
 
-# "Unable to connect to LDAP server"
-#: ../../../../inc/ldap.class.php:100 ../../../../inc/ldap.class.php:105
-msgid "No es posible conectar con el servidor de LDAP"
-msgstr "Csatlakozás az LDAP szerverhez meghiúsult"
-
-# "Connection error (BIND)"
-#: ../../../../inc/ldap.class.php:130 ../../../../inc/ldap.class.php:136
-msgid "Error al conectar (BIND)"
-msgstr "Kapcsolat hiba (BIND)"
-
-# "Error on searching objects in base DN"
-#: ../../../../inc/ldap.class.php:159 ../../../../inc/ldap.class.php:165
-msgid "Error al buscar objetos en DN base"
-msgstr "Hiba a keresés közben"
-
-# "Error on searching group RDN"
-#: ../../../../inc/ldap.class.php:193 ../../../../inc/ldap.class.php:199
-#: ../../../../inc/ldap.class.php:206 ../../../../inc/ldap.class.php:211
-#: ../../../../inc/ldap.class.php:221 ../../../../inc/ldap.class.php:226
-msgid "Error al buscar RDN de grupo"
-msgstr "Hiba az RDN csoport keresése közben"
-
-# "Group RDN found"
-#: ../../../../inc/ldap.class.php:214
-msgid "RDN de grupo encontrado"
-msgstr "Alap RDN találat"
-
-# "Error on searching user DN"
-#: ../../../../inc/ldap.class.php:278 ../../../../inc/ldap.class.php:284
-#: ../../../../inc/ldap.class.php:299 ../../../../inc/ldap.class.php:304
-msgid "Error al buscar el DN del usuario"
-msgstr "Hiba a DN felhasználó keresése közben"
-
-# "Error on searching user on LDAP"
-#: ../../../../inc/ldap.class.php:291 ../../../../inc/ldap.class.php:296
-msgid "Error al localizar el usuario en LDAP"
-msgstr "Hiba az LDAP felhasználók keresése közben"
-
-# "Error on searching users group"
-#: ../../../../inc/ldap.class.php:380 ../../../../inc/ldap.class.php:386
-msgid "Error al buscar el grupo de usuarios"
-msgstr "Hiba a keresése közben"
-
-# "The user has not associated groups"
-#: ../../../../inc/ldap.class.php:392 ../../../../inc/ldap.class.php:398
-msgid "El usuario no pertenece al grupo"
-msgstr "a felhasználó nincs csoporthoz társítva"
-
-# "Update Configuration"
-#: ../../../../inc/config.class.php:122 ../../../../inc/config.class.php:149
-msgid "Modificar configuración"
-msgstr "Konfiguráció frissítése"
-
-# "Parameter"
-#: ../../../../inc/config.class.php:150
-msgid "Parámetro"
-msgstr "Paraméter"
-
-# "Value"
-#: ../../../../inc/config.class.php:151
-msgid "Valor"
-msgstr "Érték"
-
-# "Unable to write on configuration file"
-#: ../../../../inc/config.class.php:306
-msgid "No es posible escribir el archivo de configuración"
-msgstr "Nem lehet a konfigurációs fájlba írni"
-
-# "Please, check 'config' directory permissions"
-#: ../../../../inc/config.class.php:307
-msgid "Compruebe los permisos del directorio \"config\""
-msgstr "Kérem, ellenõrizze a 'config' mappa jogosultságait"
-
-# "Edit Profile"
-#: ../../../../inc/profiles.class.php:258
-msgid "Modificar Perfil"
-msgstr "Profil módosítás"
+# "Category Edit"
+#: ../../../../inc/category.class.php:183
+msgid "Modificar Categoría"
+msgstr "Kategória szerkesztés"
 
 # "N/A"
 #: ../../../../inc/common.class.php:61 ../../../../inc/users.class.php:108
@@ -1943,446 +1802,287 @@ msgid ""
 "Define el perfil de usuario por defecto para los nuevos usuarios de LDAP."
 msgstr "Define the default users profile for new LDAP users"
 
-# "Error on updating history"
-#: ../../../../inc/account.class.php:325 ../../../../inc/account.class.php:855
-msgid "Error al actualizar el historial"
-msgstr "Hiba az elõzmények frissítése közben"
+# "Update Configuration"
+#: ../../../../inc/config.class.php:122 ../../../../inc/config.class.php:150
+msgid "Modificar configuración"
+msgstr "Konfiguráció frissítése"
+
+# "Parameter"
+#: ../../../../inc/config.class.php:151
+msgid "Parámetro"
+msgstr "Paraméter"
+
+# "Value"
+#: ../../../../inc/config.class.php:152
+msgid "Valor"
+msgstr "Érték"
+
+# "Unable to write on configuration file"
+#: ../../../../inc/config.class.php:310
+msgid "No es posible escribir el archivo de configuración"
+msgstr "Nem lehet a konfigurációs fájlba írni"
+
+# "Please, check 'config' directory permissions"
+#: ../../../../inc/config.class.php:311
+msgid "Compruebe los permisos del directorio \"config\""
+msgstr "Kérem, ellenõrizze a 'config' mappa jogosultságait"
 
 # "Update Customer"
-#: ../../../../inc/account.class.php:331
-msgid "Actualizar Cuenta"
-msgstr "Frissítés Számla"
+#: ../../../../inc/customer.class.php:105
+msgid "Actualizar Cliente"
+msgstr "Frissítse az ügyfelet"
 
-# "Error on updating secondary groups"
-#: ../../../../inc/account.class.php:334 ../../../../inc/account.class.php:562
-msgid "Error al actualizar los grupos secundarios"
-msgstr "Hiba a másodlagos csoportok frissítése közben"
+# "Unable to connect to DB"
+#: ../../../../inc/db.class.php:95 ../../../../inc/db.class.php:109
+#: ../../../../inc/db.class.php:116 ../../../../inc/installer.class.php:214
+msgid "No es posible conectar con la BD"
+msgstr "Csatlakozás a DB-hez meghiusúlt"
 
-# "Error on updating account's users"
-#: ../../../../inc/account.class.php:340 ../../../../inc/account.class.php:570
-msgid "Error al actualizar los usuarios de la cuenta"
-msgstr "Hiba a fiók felhasználóinak frissítése közben"
+# Please, check connection parameters
+#: ../../../../inc/db.class.php:95 ../../../../inc/installer.class.php:215
+#, fuzzy
+msgid "Compruebe los datos de conexión"
+msgstr "Please, check connection parameters"
 
-# "Restore Account"
-#: ../../../../inc/account.class.php:345
-msgid "Restaurar Cuenta"
-msgstr "Restore Számla"
+# "Edit Group"
+#: ../../../../inc/groups.class.php:183
+msgid "Modificar Grupo"
+msgstr "Csoport módosítás"
 
-# "New Account"
-#: ../../../../inc/account.class.php:579 ../../../../inc/tpl/main.php:53
-#: ../../../../inc/tpl/accounts.php:47
-msgid "Nueva Cuenta"
-msgstr "Új fiók"
+# "Javascript is needed in order to run correctly"
+#: ../../../../inc/html.class.php:207
+msgid "Javascript es necesario para el correcto funcionamiento"
+msgstr "Java szkript szükséges a megfelelõ mûködéshez"
 
-# "ERROR: Operation failed"
-#: ../../../../inc/account.class.php:597
-msgid "ERROR: Error en la operación."
-msgstr "HIBA: A mûvelet meghiusult"
+# Help :: FAQ :: Changelog
+#: ../../../../inc/html.class.php:231
+msgid "Ayuda :: FAQ :: Changelog"
+msgstr "Segítség :: GYIK :: Változások Listája"
 
-# "Error on deleting account's groups"
-#: ../../../../inc/account.class.php:614
-msgid "Error al eliminar grupos asociados a la cuenta"
-msgstr "Hiba a felhasználó csoportok törlése közben"
+# "A cygnux.org project"
+#: ../../../../inc/html.class.php:233
+msgid "Un proyecto de cygnux.org"
+msgstr "A cygnux.org projekt"
 
-# "Error on deleting account's users"
-#: ../../../../inc/account.class.php:618
-msgid "Error al eliminar usuarios asociados a la cuenta"
-msgstr "Hiba a fiók felhasználók törlése közben"
+# "Filter ON"
+#: ../../../../inc/html.class.php:277
+msgid "Filtro ON"
+msgstr "Szûrõ bekapcsolva"
 
-# "Error on deleting account's files"
-#: ../../../../inc/account.class.php:622
-msgid "Error al eliminar archivos asociados a la cuenta"
-msgstr "Hiba a fiók fájljainak törlése közben"
+# "Global ON"
+#: ../../../../inc/html.class.php:279
+msgid "Global ON"
+msgstr "Global On"
 
-# "Start"
-#: ../../../../inc/account.class.php:750 ../../../../inc/account.class.php:904
-msgid "Inicio"
-msgstr "Start"
+# "First page"
+#: ../../../../inc/html.class.php:284 ../../../../inc/html.class.php:318
+msgid "Primera página"
+msgstr "Elsõ oldal"
 
-# "Error on encryption module"
-#: ../../../../inc/account.class.php:758 ../../../../inc/account.class.php:912
-msgid "Error en el módulo de encriptación"
-msgstr "Titkosító modul hiba"
+# "Previous page"
+#: ../../../../inc/html.class.php:285 ../../../../inc/html.class.php:319
+msgid "Página anterior"
+msgstr "Elõzõ oldal"
 
-# "Error on retrieving accounts' passwords"
-#: ../../../../inc/account.class.php:766 ../../../../inc/account.class.php:920
-msgid "Error al obtener las claves de las cuentas"
-msgstr "Hiba a fiókok jelszavainak betöltése közben"
+# "Next page"
+#: ../../../../inc/html.class.php:292 ../../../../inc/html.class.php:326
+msgid "Página siguiente"
+msgstr "Következõ oldal"
 
-# "Error on updating account's password"
-#: ../../../../inc/account.class.php:792
-msgid "Fallo al actualizar la clave de la cuenta"
-msgstr "Hiba a fiók jelszavának frissítése közben"
+# "Last page"
+#: ../../../../inc/html.class.php:293 ../../../../inc/html.class.php:327
+msgid "Última página"
+msgstr "Utolsó oldal"
 
-# "Accounts updated:"
-#: ../../../../inc/account.class.php:804
-msgid "Cuentas actualizadas:"
-msgstr "Fiókok frissítve"
+# "Option unavilable"
+#: ../../../../inc/html.class.php:424
+msgid "Opción no disponible"
+msgstr "Beállítás nem elérhetõ"
 
-# "End"
-#: ../../../../inc/account.class.php:809 ../../../../inc/account.class.php:968
-msgid "Fin"
-msgstr "Vége"
+# "Please, contact to administrator"
+#: ../../../../inc/html.class.php:424 ../../../../inc/html.class.php:425
+#: ../../../../inc/html.class.php:426 ../../../../inc/init.php:630
+msgid "Consulte con el administrador"
+msgstr "Kérem, keresse a rendszergazdát"
 
-# "Update Password"
-#: ../../../../inc/account.class.php:878
-msgid "Modificar Clave"
-msgstr "Jelszó frissítés"
+# "You don't have permission to access to this page"
+#: ../../../../inc/html.class.php:426
+msgid "No tiene permisos para acceder a esta página"
+msgstr "Nincs jogosultságod belépni ebbe az oldalba"
 
-# "Update Master Password (H)"
-#: ../../../../inc/account.class.php:903
-msgid "Actualizar Clave Maestra (H)"
-msgstr "Frissítse a mester jelszót (H)"
+# "Import finished"
+#: ../../../../inc/import.class.php:89 ../../../../inc/migrate.class.php:117
+msgid "Importación finalizada"
+msgstr "Importálás kész"
 
-# "Record's Master password mismatch"
-#: ../../../../inc/account.class.php:934
-msgid "La clave maestra del registro no coincide"
-msgstr "A rekord mester jelszava nem egyezik"
+# "File successfully uploaded"
+#: ../../../../inc/import.class.php:105
+msgid "Archivo no subido correctamente"
+msgstr "A fájl feltöltése sikeres"
 
-# "Error on updating history's master password"
-#: ../../../../inc/account.class.php:950
-msgid "Fallo al actualizar la clave del histórico"
-msgstr "Hiba a elõzmények mester jelszavának frissítése közben"
+# "Please, check the web server's user permissions"
+#: ../../../../inc/import.class.php:105
+msgid "Verifique los permisos del usuario del servidor web"
+msgstr "Kérem, ellenõrizze az webszerver felhasználójának jogosultságait"
 
-# "Records updated"
-#: ../../../../inc/account.class.php:963
-msgid "Registros actualizados:"
-msgstr "Rekordok frissítve"
+# "Please, check file extension"
+#: ../../../../inc/import.class.php:113
+msgid "Compruebe la extensión del archivo"
+msgstr "Kérem, ellenõrizze a fájl kiterjesztését"
+
+# "Please, check PHP configuration for upload files"
+#: ../../../../inc/import.class.php:124
+msgid "Compruebe la configuración de PHP para subir archivos"
+msgstr "Kérem, tekintse meg a PHP konfigurációt fájlok feltötése elõtt"
+
+# "Please, check temporary directory permissions"
+#: ../../../../inc/import.class.php:132
+msgid "Compruebe los permisos del directorio temporal"
+msgstr "Kérem, ellenõrizze az ideiglenes mappa jogosultságait"
+
+# Mime type not supported
+#: ../../../../inc/import.class.php:141
+#, fuzzy
+msgid "Tipo mime no soportado"
+msgstr "Mime type not supported"
+
+# Please, check the file format
+#: ../../../../inc/import.class.php:141
+#, fuzzy
+msgid "Compruebe el formato del archivo"
+msgstr "Kérem, ellenõrizze a fájl kiterjesztését"
+
+# "The number of fields is incorrect"
+#: ../../../../inc/import.class.php:159
+msgid "El número de campos es incorrecto"
+msgstr "A mezõk száma helytelen"
+
+# "Please, check the CSV file format"
+#: ../../../../inc/import.class.php:159
+msgid "Compruebe el formato del archivo CSV"
+msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
+
+# "Error on importing account"
+#: ../../../../inc/import.class.php:164
+msgid "Error importando cuenta"
+msgstr "Hiba a fiók importálása közben"
+
+# Unable to process XML file
+#: ../../../../inc/import.class.php:266
+#, fuzzy
+msgid "No es posible procesar el archivo XML"
+msgstr "Unable to process XML file"
+
+# XML file not supported
+#: ../../../../inc/import.class.php:294
+#, fuzzy
+msgid "Archivo XML no soportado"
+msgstr "XML file not supported"
+
+# Unable to detect the application the data was exported from
+#: ../../../../inc/import.class.php:294
+#, fuzzy
+msgid "No es posible detectar la aplicación que exportó los datos"
+msgstr "Unable to detect the application the data was exported from"
 
 # "Error on checking database"
-#: ../../../../inc/init.php:128
+#: ../../../../inc/init.php:136
 msgid "Error en la verificación de la base de datos"
 msgstr "Hiba az adatbázis ellenõrzése közben"
 
 # "\"/config\" directory doesn't exist."
-#: ../../../../inc/init.php:319
+#: ../../../../inc/init.php:343
 msgid "El directorio \"/config\" no existe"
 msgstr "\"/config\" mappa nem létezik"
 
 # "Unable to write into \"/config\" directory"
-#: ../../../../inc/init.php:324
+#: ../../../../inc/init.php:348
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Nem lehet a \"/config\" mappába írni"
 
 # "\"/config\" directory permissions are incorrect"
-#: ../../../../inc/init.php:332
+#: ../../../../inc/init.php:356
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "\"/config\" mappa jogosultságai helytelenek"
 
 # Current
-#: ../../../../inc/init.php:332
+#: ../../../../inc/init.php:356
 #, fuzzy
 msgid "Actual:"
 msgstr "Current:"
 
 # Needed: 750
-#: ../../../../inc/init.php:332
+#: ../../../../inc/init.php:356
 #, fuzzy
 msgid "Necesario: 750"
 msgstr "Needed: 750"
 
 # "Application in maintenance"
-#: ../../../../inc/init.php:399
+#: ../../../../inc/init.php:423
 msgid "Aplicación en mantenimiento"
 msgstr "Az alkalmazás fut"
 
 # "It will be running in short"
-#: ../../../../inc/init.php:399
+#: ../../../../inc/init.php:423
 msgid "En breve estará operativa"
 msgstr "Hamar végezni fog"
 
 # "The application needs to be updated"
-#: ../../../../inc/init.php:431
+#: ../../../../inc/init.php:455
 msgid "La aplicación necesita actualizarse"
 msgstr "Frissítsd az alkalmazást"
 
 # If you are an administrator, click on the link:
-#: ../../../../inc/init.php:431
+#: ../../../../inc/init.php:455
 #, fuzzy
 msgid "Si es un administrador pulse en el enlace:"
 msgstr "If you are an administrator, click on the link:"
 
 # Update
-#: ../../../../inc/init.php:431 ../../../../inc/tpl/upgrade.php:54
+#: ../../../../inc/init.php:455 ../../../../inc/tpl/upgrade.php:54
 #, fuzzy
 msgid "Actualizar"
 msgstr "Update"
 
 # "Update"
-#: ../../../../inc/init.php:460
+#: ../../../../inc/init.php:484
 msgid "Actualización"
 msgstr "Frissítés"
 
 # "Version updating done."
-#: ../../../../inc/init.php:461
+#: ../../../../inc/init.php:485
 msgid "Actualización de versión realizada."
 msgstr "Verzió frissítés kész"
 
 # "Version"
-#: ../../../../inc/init.php:462
+#: ../../../../inc/init.php:486
 msgid "Versión"
 msgstr "Verzió"
 
-# "Session"
-#: ../../../../inc/init.php:484
-msgid "Sesion"
-msgstr "Munkamenet"
-
-# "Session cannot be initialized."
-#: ../../../../inc/init.php:484 ../../../../inc/init.php:489
-msgid "La sesión no puede ser inicializada"
-msgstr "A munkamenetot nem lehet elindítani"
-
 # "Logout session"
-#: ../../../../inc/init.php:553
+#: ../../../../inc/init.php:543
 msgid "Finalizar sesión"
 msgstr "Kijelentkezés"
 
 # "Inactive time"
-#: ../../../../inc/init.php:555
+#: ../../../../inc/init.php:545
 msgid "Tiempo inactivo"
 msgstr "Idõ kikapcsolása"
 
 # "Total time"
-#: ../../../../inc/init.php:556
+#: ../../../../inc/init.php:546
 msgid "Tiempo total"
 msgstr "Teljes idõ"
 
-# "Access denied to"
-#: ../../../../inc/acl.class.php:104
-msgid "Denegado acceso a"
-msgstr "Belépés megtagadva"
+# "Session"
+#: ../../../../inc/init.php:624
+msgid "Sesion"
+msgstr "Munkamenet"
 
-# "Error on updating database"
-#: ../../../../inc/upgrade.class.php:49
-msgid "Error al aplicar la actualización de la Base de Datos"
-msgstr "Hiba az adatbázis frissítése közben"
-
-# "Please, check the event log for more details"
-#: ../../../../inc/upgrade.class.php:50
-msgid "Compruebe el registro de eventos para más detalles"
-msgstr "Részletes leírást az esemény naplóban olvashat"
-
-# "Login"
-#: ../../../../inc/upgrade.class.php:50 ../../../../inc/tpl/login.php:51
-msgid "Acceder"
-msgstr "Belépés"
-
-# "Update DB"
-#: ../../../../inc/upgrade.class.php:66
-msgid "Actualizar BBDD"
-msgstr "Frissítse az adatbázist"
-
-# "Database update not needed."
-#: ../../../../inc/upgrade.class.php:93
-msgid "No es necesario actualizar la Base de Datos."
-msgstr "Az adatbázis frissítése nem szükséges"
-
-# "Error on updating database."
-#: ../../../../inc/upgrade.class.php:99
-msgid "Error al aplicar la actualización de la Base de Datos."
-msgstr "Hiba az adatbázis frissítése közben"
-
-# "Database updating was done successfully."
-#: ../../../../inc/upgrade.class.php:106
-msgid "Actualización de la Base de Datos realizada correctamente."
-msgstr "Az adatbázis frissítés sikeresen megtörtént"
-
-# "Update Configuration"
-#: ../../../../inc/upgrade.class.php:181
-msgid "Actualizar Configuración"
-msgstr "Konfiguráció frissítése"
-
-# "Configuration updating successfully done."
-#: ../../../../inc/upgrade.class.php:182
-msgid "Actualización de la Configuración realizada correctamente."
-msgstr "A beállítások elmentve"
-
-# "Missing parameters"
-#: ../../../../inc/migrate.class.php:84
-msgid "Faltan parámetros"
-msgstr "Hiányzó paraméter"
-
-# "Import finished"
-#: ../../../../inc/migrate.class.php:113 ../../../../inc/import.class.php:89
-msgid "Importación finalizada"
-msgstr "Importálás kész"
-
-# "Wrong MySQL user/pass"
-#: ../../../../inc/migrate.class.php:135
-#: ../../../../inc/installer.class.php:203
-msgid "El usuario/clave de MySQL no es correcto"
-msgstr "Hibás MySQL felhasználó/jelszó"
-
-# "Please, check database connection user"
-#: ../../../../inc/migrate.class.php:136
-#: ../../../../inc/installer.class.php:204
-msgid "Verifique el usuario de conexión con la Base de Datos"
-msgstr "Kérem, ellenõrizze az adatbázis felhasználót"
-
-# "Incompatible version"
-#: ../../../../inc/migrate.class.php:179
-msgid "La versión no es compatible"
-msgstr "Nem kompatibilis verzió"
-
-# "Please, update to last version of phpPMS"
-#: ../../../../inc/migrate.class.php:180
-msgid "Actualice a la última versión de phpPMS"
-msgstr "Kérem, telepítse a phpPMS legfrissebb változatát"
-
-# "Error on retrieving configuration"
-#: ../../../../inc/migrate.class.php:199
-msgid "Error al obtener la configuración"
-msgstr "Hiba a konfiguráció betöltése közben"
-
-# "Error on cleaning table"
-#: ../../../../inc/migrate.class.php:250 ../../../../inc/migrate.class.php:264
-msgid "Error al vaciar tabla"
-msgstr "Hiba a tábla törlése közben"
-
-# "Current user is not application administrator"
-#: ../../../../inc/migrate.class.php:269
-msgid "Usuario actual no es administrador de la aplicación"
-msgstr "A jelenlegi felhasználó nem rendszergazda"
-
-# "Unable to create customer"
-#: ../../../../inc/migrate.class.php:317
-msgid "No es posible crear el cliente"
-msgstr "Ügyfél létrehozása meghiusúlt"
-
-# "Please, contact to developer"
-#: ../../../../inc/migrate.class.php:318
-msgid "Contacte con el desarrollador"
-msgstr "Kérem, keresse a fejlesztõt"
-
-# "Import Customers"
-#: ../../../../inc/migrate.class.php:322
-msgid "Importar Clientes"
-msgstr "Ügyfelek importálása"
-
-# "Records"
-#: ../../../../inc/migrate.class.php:324 ../../../../inc/migrate.class.php:398
-#: ../../../../inc/migrate.class.php:487 ../../../../inc/migrate.class.php:561
-#: ../../../../inc/migrate.class.php:653 ../../../../inc/migrate.class.php:716
-#: ../../../../inc/migrate.class.php:792 ../../../../inc/migrate.class.php:871
-#: ../../../../inc/migrate.class.php:942
-msgid "Registros"
-msgstr "Rekordok"
-
-# "Error on retrieving customer"
-#: ../../../../inc/migrate.class.php:344
-msgid "Error al obtener los clientes"
-msgstr "Hiba az ügyfél betöltése közben"
-
-# "Error on retrieving accounts"
-#: ../../../../inc/migrate.class.php:383
-msgid "Error al obtener cuentas"
-msgstr "Hiba a fiókok betöltése közben"
-
-# "Customer not found"
-#: ../../../../inc/migrate.class.php:424
-msgid "Cliente no encontrado"
-msgstr "Nincs ügyfél találat"
-
-# "Error on importing account"
-#: ../../../../inc/migrate.class.php:450
-msgid "Error al migrar cuenta"
-msgstr "Hiba a fiók importálása közben"
-
-# "Error on retrieving accounts groups"
-#: ../../../../inc/migrate.class.php:472
-msgid "Error al obtener los grupos de cuentas"
-msgstr "Hiba a fiók csoportok betöltése közben"
-
-# "Import Accounts Groups"
-#: ../../../../inc/migrate.class.php:485
-msgid "Importar Grupos de Cuentas"
-msgstr "Fiók csoportok importálása"
-
-# "Error on accounts groups creation"
-#: ../../../../inc/migrate.class.php:508
-msgid "Error al crear grupos de cuentas"
-msgstr "Hiba a fiók csoportok létrehozása közben"
-
-# "Error on retrieving accounts history"
-#: ../../../../inc/migrate.class.php:546
-msgid "Error al obtener el historico de cuentas"
-msgstr "Hiba a fiókok elõzményeinek betöltése közben"
-
-# "Import Accounts History"
-#: ../../../../inc/migrate.class.php:559
-msgid "Importar Histórico de Cuentas"
-msgstr "Fiók elõzmények importálása"
-
-# "Error on creating accounts history"
-#: ../../../../inc/migrate.class.php:612
-msgid "Error al crear historico de cuentas"
-msgstr "Hiba a fiók elõzmények létrehozása közben"
-
-# "Error on retrieving accounts files"
-#: ../../../../inc/migrate.class.php:638
-msgid "Error al obtener los archivos de cuentas"
-msgstr "Hiba a fiókok fájljainak betöltése közben"
-
-# "Import Accounts Files"
-#: ../../../../inc/migrate.class.php:651
-msgid "Importar Archivos de Cuentas"
-msgstr "Fiók fájljainak importálása"
-
-# "Error on creating accounts files"
-#: ../../../../inc/migrate.class.php:679
-msgid "Error al crear archivos de cuentas"
-msgstr "Hiba a fiók fájlok létrehozása közben"
-
-# "Error on retrieving accounts categories"
-#: ../../../../inc/migrate.class.php:701
-msgid "Error al obtener las categorías de cuentas"
-msgstr "Hiba a fiók kategóriák elérése közben"
-
-# "Import Accounts Categories"
-#: ../../../../inc/migrate.class.php:714
-msgid "Importar Categorías de Cuentas"
-msgstr "Fiók kategóriák importálása"
-
-# "Error on retrieving accounts categories"
-#: ../../../../inc/migrate.class.php:738
-msgid "Error al crear categorías de cuentas"
-msgstr "Hiba a fiók kategóriák elérése közben"
-
-# "Error on retrieving users"
-#: ../../../../inc/migrate.class.php:777
-msgid "Error al obtener los usuarios"
-msgstr "Hiba a felhasználók betöltése közben"
-
-# "Import Users"
-#: ../../../../inc/migrate.class.php:790
-msgid "Importar Usuarios"
-msgstr "Felhasználók importálása"
-
-# "Error on creating users"
-#: ../../../../inc/migrate.class.php:833
-msgid "Error al crear usuarios"
-msgstr "Hiba a profil létrehozása közben"
-
-# "Error on retrieving users groups"
-#: ../../../../inc/migrate.class.php:856
-msgid "Error al obtener los grupos de usuarios"
-msgstr "Hiba a felhasználói csoportok betöltése közben"
-
-# "Import Users Groups"
-#: ../../../../inc/migrate.class.php:869
-msgid "Importar Grupos de Usuarios"
-msgstr "Felhasználó csoportok importálása"
-
-# "Error on adding users groups"
-#: ../../../../inc/migrate.class.php:894
-msgid "Error al crear los grupos de usuarios"
-msgstr "Hiba a felhasználói csoportok hozzáadás közben"
-
-# "Import Configuration"
-#: ../../../../inc/migrate.class.php:940
-msgid "Importar Configuración"
-msgstr "Konfiguráció importálása"
+# "Session cannot be initialized."
+#: ../../../../inc/init.php:624 ../../../../inc/init.php:629
+msgid "La sesión no puede ser inicializada"
+msgstr "A munkamenetot nem lehet elindítani"
 
 # "Enter admin username"
 #: ../../../../inc/installer.class.php:90
@@ -2475,59 +2175,59 @@ msgid "Servidor donde se instalará la Base de Datos"
 msgstr "Szerver, ahová az adatbázis telepítve lesz"
 
 # "Database already exist"
-#: ../../../../inc/installer.class.php:249
+#: ../../../../inc/installer.class.php:260
 msgid "La BBDD ya existe"
 msgstr "Az adatbázis már létezik"
 
 # "Enter a new database or delete the existing one"
-#: ../../../../inc/installer.class.php:250
+#: ../../../../inc/installer.class.php:261
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Írd be az új adatbázist, vagy töröld a jelenlegit"
 
 # "MySQL user already exist"
-#: ../../../../inc/installer.class.php:275
+#: ../../../../inc/installer.class.php:286
 msgid "El usuario de MySQL ya existe"
 msgstr "MySQL felhasználó már létezik"
 
 # "Enter a new username or delete the existing one"
-#: ../../../../inc/installer.class.php:276
+#: ../../../../inc/installer.class.php:287
 msgid "Indique un nuevo usuario o elimine el existente"
 msgstr "Írd be az új felhasználónevet, vagy töröld a jelenlegit"
 
 # "Error on DB creation"
-#: ../../../../inc/installer.class.php:293
-#: ../../../../inc/installer.class.php:370
+#: ../../../../inc/installer.class.php:304
+#: ../../../../inc/installer.class.php:382
 msgid "Error al crear la BBDD"
 msgstr "Hiba az adatbázis létrehozása közben"
 
 # "Please, check database user permissions"
-#: ../../../../inc/installer.class.php:294
 #: ../../../../inc/installer.class.php:305
+#: ../../../../inc/installer.class.php:317
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Kérem, ellenõrizze az adatbázis felhasználó jogosultságait"
 
 # "Error on setting database permissions"
-#: ../../../../inc/installer.class.php:304
+#: ../../../../inc/installer.class.php:316
 msgid "Error al establecer permisos de la BBDD"
 msgstr "Hiba az adatbázis jogosultságok beállítása közben"
 
 # "Database structure file doesn't exist"
-#: ../../../../inc/installer.class.php:348
+#: ../../../../inc/installer.class.php:360
 msgid "El archivo de estructura de la BBDD no existe"
 msgstr "Adatbázis fájl nem létezik"
 
 # "Unable to create application database. Please, download it again."
-#: ../../../../inc/installer.class.php:349
+#: ../../../../inc/installer.class.php:361
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
 msgstr "Az adatbázis létrehozása meghiúsult. Kérem, töltse le újra"
 
 # "Error on selecting database."
-#: ../../../../inc/installer.class.php:355
+#: ../../../../inc/installer.class.php:367
 msgid "Error al seleccionar la BBDD"
 msgstr "Hiba az adatbázis kiválasztása közben"
 
 # "Unable to use the database to create the structure. Check permissions and it doesn't exist."
-#: ../../../../inc/installer.class.php:356
+#: ../../../../inc/installer.class.php:368
 msgid ""
 "No es posible usar la Base de Datos para crear la estructura. Compruebe los "
 "permisos y que no exista."
@@ -2536,63 +2236,85 @@ msgstr ""
 "jogosultságokat és hogy valóban létezik az adatbázis"
 
 # "Error on creating database structure."
-#: ../../../../inc/installer.class.php:371
+#: ../../../../inc/installer.class.php:383
 msgid "Error al crear la estructura de la Base de Datos."
 msgstr "Hiba az adatbázis létrehozása közben"
 
 # "Error on creating \"admin\" group"
-#: ../../../../inc/installer.class.php:397
+#: ../../../../inc/installer.class.php:409
 msgid "Error al crear el grupo \"admin\""
 msgstr "Hiba az ügyfél létrehozása közben"
 
 # "Warn to developer"
-#: ../../../../inc/installer.class.php:398
-#: ../../../../inc/installer.class.php:429
-#: ../../../../inc/installer.class.php:447
-#: ../../../../inc/installer.class.php:462
+#: ../../../../inc/installer.class.php:410
+#: ../../../../inc/installer.class.php:441
+#: ../../../../inc/installer.class.php:459
+#: ../../../../inc/installer.class.php:474
 msgid "Informe al desarrollador"
 msgstr "Figyelmeztetsd a fejlesztõt"
 
 # "Error on creating \"admin\" profile"
-#: ../../../../inc/installer.class.php:428
+#: ../../../../inc/installer.class.php:440
 msgid "Error al crear el perfil \"admin\""
 msgstr "Hiba az \"admin\" profil létrehozása közben"
 
 # "Error on creating \"admin\" user"
-#: ../../../../inc/installer.class.php:446
+#: ../../../../inc/installer.class.php:458
 msgid "Error al crear el usuario \"admin\""
 msgstr "Hiba az \"admin\" felhasználó létrehozása közben"
 
 # "Error on updating master password for user \"admin\""
-#: ../../../../inc/installer.class.php:461
+#: ../../../../inc/installer.class.php:473
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Hiba a mester jelszó frissítése közben"
 
-# "Account Activation"
-#: ../../../../inc/users.class.php:770
-msgid "Activación Cuenta"
-msgstr "Fiók Aktiválás"
+# "Unable to connect to LDAP server"
+#: ../../../../inc/ldap.class.php:100 ../../../../inc/ldap.class.php:105
+msgid "No es posible conectar con el servidor de LDAP"
+msgstr "Csatlakozás az LDAP szerverhez meghiúsult"
 
-# "Your account activation is pending."
-#: ../../../../inc/users.class.php:771
-msgid "Su cuenta está pendiente de activación."
-msgstr "Az ön fiók aktiválása függõben van"
+# "Connection error (BIND)"
+#: ../../../../inc/ldap.class.php:130 ../../../../inc/ldap.class.php:136
+msgid "Error al conectar (BIND)"
+msgstr "Kapcsolat hiba (BIND)"
 
-# "You will receive a confirmation email in short."
-#: ../../../../inc/users.class.php:772
-msgid "En breve recibirá un email de confirmación."
-msgstr "Hamarosan megerõsítésre váró emailt küldünk"
+# "Error on searching objects in base DN"
+#: ../../../../inc/ldap.class.php:159 ../../../../inc/ldap.class.php:165
+msgid "Error al buscar objetos en DN base"
+msgstr "Hiba a keresés közben"
 
-# Could not perform the password change request.
-#: ../../../../inc/users.class.php:817 ../../../../inc/users.class.php:859
-#, fuzzy
-msgid "No se pudo realizar la petición de cambio de clave."
-msgstr "Nem sikerült végrehajtani a jelszócsere kérelmet."
+# "Error on searching group RDN"
+#: ../../../../inc/ldap.class.php:193 ../../../../inc/ldap.class.php:199
+#: ../../../../inc/ldap.class.php:206 ../../../../inc/ldap.class.php:211
+#: ../../../../inc/ldap.class.php:221 ../../../../inc/ldap.class.php:226
+msgid "Error al buscar RDN de grupo"
+msgstr "Hiba az RDN csoport keresése közben"
 
-# "Edit User"
-#: ../../../../inc/users.class.php:854
-msgid "Modificar Usuario"
-msgstr "Felhasználó módosítás"
+# "Group RDN found"
+#: ../../../../inc/ldap.class.php:214
+msgid "RDN de grupo encontrado"
+msgstr "Alap RDN találat"
+
+# "Error on searching user DN"
+#: ../../../../inc/ldap.class.php:278 ../../../../inc/ldap.class.php:284
+#: ../../../../inc/ldap.class.php:299 ../../../../inc/ldap.class.php:304
+msgid "Error al buscar el DN del usuario"
+msgstr "Hiba a DN felhasználó keresése közben"
+
+# "Error on searching user on LDAP"
+#: ../../../../inc/ldap.class.php:291 ../../../../inc/ldap.class.php:296
+msgid "Error al localizar el usuario en LDAP"
+msgstr "Hiba az LDAP felhasználók keresése közben"
+
+# "Error on searching users group"
+#: ../../../../inc/ldap.class.php:380 ../../../../inc/ldap.class.php:386
+msgid "Error al buscar el grupo de usuarios"
+msgstr "Hiba a keresése közben"
+
+# "The user has not associated groups"
+#: ../../../../inc/ldap.class.php:392 ../../../../inc/ldap.class.php:398
+msgid "El usuario no pertenece al grupo"
+msgstr "a felhasználó nincs csoporthoz társítva"
 
 # "Clear Events"
 #: ../../../../inc/log.class.php:82
@@ -2604,100 +2326,1043 @@ msgstr "Események törlése"
 msgid "Vaciar registro de eventos"
 msgstr "Esemény napló törlése"
 
-# "Update Customer"
-#: ../../../../inc/customer.class.php:104
-msgid "Actualizar Cliente"
-msgstr "Frissítse az ügyfelet"
+# "Missing parameters"
+#: ../../../../inc/migrate.class.php:81
+msgid "Faltan parámetros"
+msgstr "Hiányzó paraméter"
 
-# "Category Edit"
-#: ../../../../inc/category.class.php:183
-msgid "Modificar Categoría"
-msgstr "Kategória szerkesztés"
+# "Wrong MySQL user/pass"
+#: ../../../../inc/migrate.class.php:140
+msgid "El usuario/clave de MySQL no es correcto"
+msgstr "Hibás MySQL felhasználó/jelszó"
 
-# "File successfully uploaded"
-#: ../../../../inc/import.class.php:105
-msgid "Archivo no subido correctamente"
-msgstr "A fájl feltöltése sikeres"
+# "Please, check database connection user"
+#: ../../../../inc/migrate.class.php:141
+msgid "Verifique el usuario de conexión con la Base de Datos"
+msgstr "Kérem, ellenõrizze az adatbázis felhasználót"
 
-# "Please, check the web server's user permissions"
-#: ../../../../inc/import.class.php:105
-msgid "Verifique los permisos del usuario del servidor web"
-msgstr "Kérem, ellenõrizze az webszerver felhasználójának jogosultságait"
+# "Incompatible version"
+#: ../../../../inc/migrate.class.php:185
+msgid "La versión no es compatible"
+msgstr "Nem kompatibilis verzió"
 
-# "Please, check file extension"
-#: ../../../../inc/import.class.php:113
-msgid "Compruebe la extensión del archivo"
-msgstr "Kérem, ellenõrizze a fájl kiterjesztését"
+# "Please, update to last version of phpPMS"
+#: ../../../../inc/migrate.class.php:186
+msgid "Actualice a la última versión de phpPMS"
+msgstr "Kérem, telepítse a phpPMS legfrissebb változatát"
 
-# "Please, check PHP configuration for upload files"
-#: ../../../../inc/import.class.php:124
-msgid "Compruebe la configuración de PHP para subir archivos"
-msgstr "Kérem, tekintse meg a PHP konfigurációt fájlok feltötése elõtt"
+# "Error on retrieving configuration"
+#: ../../../../inc/migrate.class.php:205
+msgid "Error al obtener la configuración"
+msgstr "Hiba a konfiguráció betöltése közben"
 
-# "Please, check temporary directory permissions"
-#: ../../../../inc/import.class.php:132
-msgid "Compruebe los permisos del directorio temporal"
-msgstr "Kérem, ellenõrizze az ideiglenes mappa jogosultságait"
+# "Error on cleaning table"
+#: ../../../../inc/migrate.class.php:256 ../../../../inc/migrate.class.php:270
+msgid "Error al vaciar tabla"
+msgstr "Hiba a tábla törlése közben"
 
-# Mime type not supported
-#: ../../../../inc/import.class.php:141
-#, fuzzy
-msgid "Tipo mime no soportado"
-msgstr "Mime type not supported"
+# "Current user is not application administrator"
+#: ../../../../inc/migrate.class.php:275
+msgid "Usuario actual no es administrador de la aplicación"
+msgstr "A jelenlegi felhasználó nem rendszergazda"
 
-# Please, check the file format
-#: ../../../../inc/import.class.php:141
-#, fuzzy
-msgid "Compruebe el formato del archivo"
-msgstr "Kérem, ellenõrizze a fájl kiterjesztését"
+# "Unable to create customer"
+#: ../../../../inc/migrate.class.php:323
+msgid "No es posible crear el cliente"
+msgstr "Ügyfél létrehozása meghiusúlt"
 
-# "The number of fields is incorrect"
-#: ../../../../inc/import.class.php:159
-msgid "El número de campos es incorrecto"
-msgstr "A mezõk száma helytelen"
+# "Please, contact to developer"
+#: ../../../../inc/migrate.class.php:324
+msgid "Contacte con el desarrollador"
+msgstr "Kérem, keresse a fejlesztõt"
 
-# "Please, check the CSV file format"
-#: ../../../../inc/import.class.php:159
-msgid "Compruebe el formato del archivo CSV"
-msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
+# "Import Customers"
+#: ../../../../inc/migrate.class.php:328
+msgid "Importar Clientes"
+msgstr "Ügyfelek importálása"
+
+# "Records"
+#: ../../../../inc/migrate.class.php:330 ../../../../inc/migrate.class.php:404
+#: ../../../../inc/migrate.class.php:493 ../../../../inc/migrate.class.php:567
+#: ../../../../inc/migrate.class.php:659 ../../../../inc/migrate.class.php:722
+#: ../../../../inc/migrate.class.php:798 ../../../../inc/migrate.class.php:877
+#: ../../../../inc/migrate.class.php:948
+msgid "Registros"
+msgstr "Rekordok"
+
+# "Error on retrieving customer"
+#: ../../../../inc/migrate.class.php:350
+msgid "Error al obtener los clientes"
+msgstr "Hiba az ügyfél betöltése közben"
+
+# "Error on retrieving accounts"
+#: ../../../../inc/migrate.class.php:389
+msgid "Error al obtener cuentas"
+msgstr "Hiba a fiókok betöltése közben"
+
+# "Customer not found"
+#: ../../../../inc/migrate.class.php:430
+msgid "Cliente no encontrado"
+msgstr "Nincs ügyfél találat"
 
 # "Error on importing account"
-#: ../../../../inc/import.class.php:164
-msgid "Error importando cuenta"
+#: ../../../../inc/migrate.class.php:456
+msgid "Error al migrar cuenta"
 msgstr "Hiba a fiók importálása közben"
 
-# Unable to process XML file
-#: ../../../../inc/import.class.php:266
+# "Error on retrieving accounts groups"
+#: ../../../../inc/migrate.class.php:478
+msgid "Error al obtener los grupos de cuentas"
+msgstr "Hiba a fiók csoportok betöltése közben"
+
+# "Import Accounts Groups"
+#: ../../../../inc/migrate.class.php:491
+msgid "Importar Grupos de Cuentas"
+msgstr "Fiók csoportok importálása"
+
+# "Error on accounts groups creation"
+#: ../../../../inc/migrate.class.php:514
+msgid "Error al crear grupos de cuentas"
+msgstr "Hiba a fiók csoportok létrehozása közben"
+
+# "Error on retrieving accounts history"
+#: ../../../../inc/migrate.class.php:552
+msgid "Error al obtener el historico de cuentas"
+msgstr "Hiba a fiókok elõzményeinek betöltése közben"
+
+# "Import Accounts History"
+#: ../../../../inc/migrate.class.php:565
+msgid "Importar Histórico de Cuentas"
+msgstr "Fiók elõzmények importálása"
+
+# "Error on creating accounts history"
+#: ../../../../inc/migrate.class.php:618
+msgid "Error al crear historico de cuentas"
+msgstr "Hiba a fiók elõzmények létrehozása közben"
+
+# "Error on retrieving accounts files"
+#: ../../../../inc/migrate.class.php:644
+msgid "Error al obtener los archivos de cuentas"
+msgstr "Hiba a fiókok fájljainak betöltése közben"
+
+# "Import Accounts Files"
+#: ../../../../inc/migrate.class.php:657
+msgid "Importar Archivos de Cuentas"
+msgstr "Fiók fájljainak importálása"
+
+# "Error on creating accounts files"
+#: ../../../../inc/migrate.class.php:685
+msgid "Error al crear archivos de cuentas"
+msgstr "Hiba a fiók fájlok létrehozása közben"
+
+# "Error on retrieving accounts categories"
+#: ../../../../inc/migrate.class.php:707
+msgid "Error al obtener las categorías de cuentas"
+msgstr "Hiba a fiók kategóriák elérése közben"
+
+# "Import Accounts Categories"
+#: ../../../../inc/migrate.class.php:720
+msgid "Importar Categorías de Cuentas"
+msgstr "Fiók kategóriák importálása"
+
+# "Error on retrieving accounts categories"
+#: ../../../../inc/migrate.class.php:744
+msgid "Error al crear categorías de cuentas"
+msgstr "Hiba a fiók kategóriák elérése közben"
+
+# "Error on retrieving users"
+#: ../../../../inc/migrate.class.php:783
+msgid "Error al obtener los usuarios"
+msgstr "Hiba a felhasználók betöltése közben"
+
+# "Import Users"
+#: ../../../../inc/migrate.class.php:796
+msgid "Importar Usuarios"
+msgstr "Felhasználók importálása"
+
+# "Error on creating users"
+#: ../../../../inc/migrate.class.php:839
+msgid "Error al crear usuarios"
+msgstr "Hiba a profil létrehozása közben"
+
+# "Error on retrieving users groups"
+#: ../../../../inc/migrate.class.php:862
+msgid "Error al obtener los grupos de usuarios"
+msgstr "Hiba a felhasználói csoportok betöltése közben"
+
+# "Import Users Groups"
+#: ../../../../inc/migrate.class.php:875
+msgid "Importar Grupos de Usuarios"
+msgstr "Felhasználó csoportok importálása"
+
+# "Error on adding users groups"
+#: ../../../../inc/migrate.class.php:900
+msgid "Error al crear los grupos de usuarios"
+msgstr "Hiba a felhasználói csoportok hozzáadás közben"
+
+# "Import Configuration"
+#: ../../../../inc/migrate.class.php:946
+msgid "Importar Configuración"
+msgstr "Konfiguráció importálása"
+
+# "Edit Profile"
+#: ../../../../inc/profiles.class.php:258
+msgid "Modificar Perfil"
+msgstr "Profil módosítás"
+
+# "Edit Account"
+#: ../../../../inc/tpl/accounts.php:63
+msgid "Editar Cuenta"
+msgstr "Fiók módosítás"
+
+# "Account name"
+#: ../../../../inc/tpl/accounts.php:178
+msgid "Nombre de cuenta"
+msgstr "Fiók név"
+
+# "Search down or enter"
+#: ../../../../inc/tpl/accounts.php:197
+msgid "Buscar en desplegable o introducir"
+msgstr "Keress lentebb, vagy nyomj entert"
+
+# "Access URL or IP"
+#: ../../../../inc/tpl/accounts.php:223
+msgid "URL o IP de acceso"
+msgstr "URL vagy IP elérés"
+
+# "Access user"
+#: ../../../../inc/tpl/accounts.php:239
+msgid "Usuario de acceso"
+msgstr "Felhasználó elérése"
+
+# "The generated password will be shown here"
+#: ../../../../inc/tpl/accounts.php:255 ../../../../inc/tpl/editpass.php:61
+msgid "La clave generada se mostrará aquí"
+msgstr "A generált jelszó megjelenítése itt"
+
+# "Notes about the account"
+#: ../../../../inc/tpl/accounts.php:273
+msgid "Notas sobre la cuenta"
+msgstr "Jegyzetek a fiókokról"
+
+# "Permissions"
+#: ../../../../inc/tpl/accounts.php:279
+msgid "Permisos"
+msgstr "Jofosultságok"
+
+# "Enable Edit"
+#: ../../../../inc/tpl/accounts.php:306 ../../../../inc/tpl/accounts.php:337
+msgid "Hablitar edición"
+msgstr "Szerkesztés engedélyezése"
+
+# "YES"
+#: ../../../../inc/tpl/accounts.php:307 ../../../../inc/tpl/accounts.php:338
+#: ../../../../inc/tpl/accounts.php:601 ../../../../inc/tpl/masterpass.php:178
+#: ../../../../inc/tpl/migrate.php:132
+msgid "SI"
+msgstr "Igen"
+
+# "NO"
+#: ../../../../inc/tpl/accounts.php:307 ../../../../inc/tpl/accounts.php:338
+#: ../../../../inc/tpl/accounts.php:599 ../../../../inc/tpl/masterpass.php:81
+#: ../../../../inc/tpl/masterpass.php:100
+#: ../../../../inc/tpl/masterpass.php:176 ../../../../inc/tpl/migrate.php:81
+#: ../../../../inc/tpl/migrate.php:130
+msgid "NO"
+msgstr "Nem"
+
+# "Groups"
+#: ../../../../inc/tpl/accounts.php:314 ../../../../inc/tpl/profiles.php:90
+msgid "Grupos"
+msgstr "Csoportok"
+
+# "Files"
+#: ../../../../inc/tpl/accounts.php:360 ../../../../inc/tpl/profiles.php:65
+msgid "Archivos"
+msgstr "Fájlok"
+
+# "Drop files here (max. 5) or click to select"
+#: ../../../../inc/tpl/accounts.php:373
+msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
+msgstr "Dobja el a fájlokat (max. 5) vagy kattintson a választáshoz"
+
+# "Maximum file size"
+#: ../../../../inc/tpl/accounts.php:373 ../../../../inc/tpl/config.php:204
+msgid "Tamaño máximo de archivo"
+msgstr "Maximális fájl méret"
+
+# "History"
+#: ../../../../inc/tpl/accounts.php:385
+msgid "Historial"
+msgstr "Elõzmények"
+
+# "Select date"
+#: ../../../../inc/tpl/accounts.php:402
+msgid "Seleccionar fecha"
+msgstr "Válassz dátumot"
+
+# "Last Modification"
+#: ../../../../inc/tpl/accounts.php:410 ../../../../inc/tpl/users.php:193
+msgid "Última Modificación"
+msgstr "Utoljára módosítva"
+
+# "by"
+#: ../../../../inc/tpl/accounts.php:412
+msgid "por"
+msgstr "által"
+
+# "Visits"
+#: ../../../../inc/tpl/accounts.php:422
+msgid "Visitas"
+msgstr "Látogatók"
+
+# "Date Added"
+#: ../../../../inc/tpl/accounts.php:426
+msgid "Fecha Alta"
+msgstr "Dátum hozzáadva"
+
+# "Creator"
+#: ../../../../inc/tpl/accounts.php:430
+msgid "Creador"
+msgstr "Készítõ"
+
+# "Main Group"
+#: ../../../../inc/tpl/accounts.php:434
+msgid "Grupo Principal"
+msgstr "Fõcsoport"
+
+# "Secondary Users"
+#: ../../../../inc/tpl/accounts.php:439
+msgid "Usuarios Secundarios"
+msgstr "Másodlagos felhasználók"
+
+# "Secondary Groups"
+#: ../../../../inc/tpl/accounts.php:460
+msgid "Grupos Secundarios"
+msgstr "Másodlagos csoportok"
+
+# "Date Modified"
+#: ../../../../inc/tpl/accounts.php:482
+msgid "Fecha Edición"
+msgstr "Adat módosítva"
+
+# "Editor"
+#: ../../../../inc/tpl/accounts.php:486
+msgid "Editor"
+msgstr "Szerkesztõ"
+
+# "View Current"
+#: ../../../../inc/tpl/accounts.php:508
+msgid "Ver Actual"
+msgstr "Általános"
+
+# "Back"
+#: ../../../../inc/tpl/accounts.php:513 ../../../../inc/tpl/editpass.php:85
+#: ../../../../inc/tpl/request.php:72
+msgid "Atrás"
+msgstr "Vissza"
+
+# "Restore account from this point"
+#: ../../../../inc/tpl/accounts.php:520
+msgid "Restaurar cuenta desde este punto"
+msgstr "Restore véve ezen a ponton"
+
+# "Edit Account Password"
+#: ../../../../inc/tpl/accounts.php:549 ../../../../inc/tpl/editpass.php:35
+msgid "Modificar Clave de Cuenta"
+msgstr "Fiók jelszavának szerkesztése"
+
+# "Select Customer"
+#: ../../../../inc/tpl/accounts.php:578 ../../../../inc/tpl/search.php:89
+msgid "Seleccionar Cliente"
+msgstr "Válassz ügyfelet"
+
+# "No results"
+#: ../../../../inc/tpl/accounts.php:580 ../../../../inc/tpl/accounts.php:585
+#: ../../../../inc/tpl/config.php:601 ../../../../inc/tpl/config.php:606
+#: ../../../../inc/tpl/search.php:89 ../../../../inc/tpl/search.php:90
+#: ../../../../inc/tpl/users.php:231 ../../../../inc/tpl/users.php:236
+msgid "Sin resultados"
+msgstr "Nincsenek eredmények"
+
+# "Select category"
+#: ../../../../inc/tpl/accounts.php:583 ../../../../inc/tpl/search.php:90
+msgid "Seleccionar Categoría"
+msgstr "Válassz kategóriát"
+
+# "Select secondary groups"
+#: ../../../../inc/tpl/accounts.php:588
+msgid "Seleccionar grupos secundarios"
+msgstr " Válassz másodlagos csoportot"
+
+# "Select users"
+#: ../../../../inc/tpl/accounts.php:591
+msgid "Seleccionar usuarios"
+msgstr "Válassz felhasználót"
+
+# "Last backup"
+#: ../../../../inc/tpl/backup.php:42
+msgid "Último backup"
+msgstr "Utolsó Archiválás"
+
+# "There're no backups available"
+#: ../../../../inc/tpl/backup.php:42
+msgid "No se encontraron backups"
+msgstr "Nincsenek elérhetõ Archívumok"
+
+# "Result"
+#: ../../../../inc/tpl/backup.php:48
+msgid "Resultado"
+msgstr "Eredmény"
+
+# "Download Current"
+#: ../../../../inc/tpl/backup.php:56
+msgid "Descargar Actual"
+msgstr "Aktuális letöltés"
+
+# "There're no backups for download"
+#: ../../../../inc/tpl/backup.php:64
+msgid "No hay backups para descargar"
+msgstr "Nincsenek letölthetõ Archívumok"
+
+# "Category name"
+#: ../../../../inc/tpl/categories.php:42
+msgid "Nombre de la categoría"
+msgstr "Kategória név"
+
+# "Category description"
+#: ../../../../inc/tpl/categories.php:50
+msgid "Descripción de la categoría"
+msgstr "Kategória leírás"
+
+# "Site"
+#: ../../../../inc/tpl/config.php:87
+msgid "Sitio"
+msgstr "Oldal"
+
+# "Language"
+#: ../../../../inc/tpl/config.php:95
+msgid "Idioma"
+msgstr "Nyelv"
+
+# "Session timeout (s)"
+#: ../../../../inc/tpl/config.php:109
+msgid "Timeout de sesión (s)"
+msgstr "Munkamenet idõ"
+
+# "Enable event log"
+#: ../../../../inc/tpl/config.php:118
+msgid "Habilitar log de eventos"
+msgstr "Esemény napló engedélyezése"
+
+# "Enable debug"
+#: ../../../../inc/tpl/config.php:129
+msgid "Habilitar depuración"
+msgstr "Nyomkövetés engedélyezése"
+
+# "Maintenance mode."
+#: ../../../../inc/tpl/config.php:140
+msgid "Modo mantenimiento"
+msgstr "Fenntartás mód"
+
+# "Check for updates"
+#: ../../../../inc/tpl/config.php:151
+msgid "Comprobar actualizaciones"
+msgstr "Frissítések keresése"
+
+# "Account name as link"
+#: ../../../../inc/tpl/config.php:162
+msgid "Nombre de cuenta como enlace"
+msgstr "Fiók neve linkként"
+
+# "Files management"
+#: ../../../../inc/tpl/config.php:173
+msgid "Gestión de archivos"
+msgstr "Fájl menedzsment"
+
+# "Global searches"
+#: ../../../../inc/tpl/config.php:184
+msgid "Búsquedas globales"
+msgstr "Gblobális Keresések"
+
+# "Allowed file extensions"
+#: ../../../../inc/tpl/config.php:195
+msgid "Extensiones de archivos permitidas"
+msgstr "Engedélyezett fájl kiterjesztés"
+
+# "Results per page"
+#: ../../../../inc/tpl/config.php:215
+msgid "Resultados por página"
+msgstr "Eredmény / oldal"
+
+# Results like Cards
+#: ../../../../inc/tpl/config.php:231
 #, fuzzy
-msgid "No es posible procesar el archivo XML"
-msgstr "Unable to process XML file"
+msgid "Resultados en Tarjetas"
+msgstr "Results like Cards"
 
-# XML file not supported
-#: ../../../../inc/import.class.php:294
+# "Wiki"
+#: ../../../../inc/tpl/config.php:244
+msgid "Wiki"
+msgstr "Wiki"
+
+# "Enable Wiki links"
+#: ../../../../inc/tpl/config.php:250
+msgid "Habilitar enlaces Wiki"
+msgstr "Wiki linkek engedélyezése"
+
+# "Wiki search URL"
+#: ../../../../inc/tpl/config.php:261
+msgid "URL de búsqueda Wiki"
+msgstr "Wiki keresés URL"
+
+# "Wiki page URL"
+#: ../../../../inc/tpl/config.php:271
+msgid "URL de página en Wiki"
+msgstr "Wiki oldal URL"
+
+# "Account name preffix"
+#: ../../../../inc/tpl/config.php:281
+msgid "Prefijo para nombre de cuenta"
+msgstr "Fiók név elõtag"
+
+# "LDAP"
+#: ../../../../inc/tpl/config.php:294
+msgid "LDAP"
+msgstr "LDAP"
+
+# "Enable LDAP"
+#: ../../../../inc/tpl/config.php:301
+msgid "Habilitar LDAP"
+msgstr "LDAP engedélyezése"
+
+# "Server"
+#: ../../../../inc/tpl/config.php:312 ../../../../inc/tpl/config.php:425
+msgid "Servidor"
+msgstr "Szerver"
+
+# "Bind User"
+#: ../../../../inc/tpl/config.php:322
+msgid "Usuario de conexión"
+msgstr "Bind felhasználó"
+
+# "Bind Password"
+#: ../../../../inc/tpl/config.php:332
+msgid "Clave de conexión"
+msgstr "Bind jelszó"
+
+# "Search base"
+#: ../../../../inc/tpl/config.php:342
+msgid "Base de búsqueda"
+msgstr "Keresés"
+
+# Default Group
+#: ../../../../inc/tpl/config.php:362
 #, fuzzy
-msgid "Archivo XML no soportado"
-msgstr "XML file not supported"
+msgid "Grupo por Defecto"
+msgstr "Default Group"
 
-# Unable to detect the application the data was exported from
-#: ../../../../inc/import.class.php:294
+# Default Profile
+#: ../../../../inc/tpl/config.php:371
 #, fuzzy
-msgid "No es posible detectar la aplicación que exportó los datos"
-msgstr "Unable to detect the application the data was exported from"
+msgid "Perfil por Defecto"
+msgstr "Default Profile"
 
-# A request for updating your user password has been done.
-#: ../../../../inc/auth.class.php:195
-msgid "Se ha solicitado el cambio de su clave de usuario."
-msgstr "A kérelmet frissíteni a felhasználói jelszót megtörtént."
+# Active Directory
+#: ../../../../inc/tpl/config.php:380
+#, fuzzy
+msgid "Active Directory"
+msgstr "Active Directory"
 
-# "In order to complete the process, please go to this URL:"
-#: ../../../../inc/auth.class.php:197
-msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
-msgstr "A folyamat befejezéséhez látogass el a következõ oldalra:"
+# "Check"
+#: ../../../../inc/tpl/config.php:391
+msgid "Comprobar"
+msgstr "Ellenõrzés"
 
-# "If you have not requested this action, please dismiss this message."
-#: ../../../../inc/auth.class.php:201
-msgid "Si no ha solicitado esta acción, ignore este mensaje."
-msgstr "Amennyiben nincs szüksége erre a folyamatra, zárja be ezt az üzenetet"
+# "Check LDAP connection"
+#: ../../../../inc/tpl/config.php:394
+msgid "Comprobar conexión con LDAP"
+msgstr "LDAP kapcsolat ellenõrzése"
+
+# "Module unavilable"
+#: ../../../../inc/tpl/config.php:401 ../../../../inc/util.class.php:141
+msgid "Módulo no disponible"
+msgstr "Modul nem elérhetõ"
+
+# "Mail"
+#: ../../../../inc/tpl/config.php:409
+msgid "Correo"
+msgstr "Mail"
+
+# "Enable email notifications"
+#: ../../../../inc/tpl/config.php:415
+msgid "Habilitar notificaciones de correo"
+msgstr "Email értesítés engedélyezése"
+
+# "Port"
+#: ../../../../inc/tpl/config.php:434
+msgid "Puerto"
+msgstr "Port"
+
+# "Enable Authentication"
+#: ../../../../inc/tpl/config.php:443
+msgid "Habilitar Autentificación"
+msgstr "Engedélyezése Hitelesítés"
+
+# "Security"
+#: ../../../../inc/tpl/config.php:471
+msgid "Seguridad"
+msgstr "Biztonság"
+
+# "Disabled"
+#: ../../../../inc/tpl/config.php:477
+msgid "Deshabilitada"
+msgstr "Inaktív"
+
+# "Recipient email address"
+#: ../../../../inc/tpl/config.php:488
+msgid "Dirección de correo de envío"
+msgstr "Címzett email címe"
+
+# "Enable requests by email"
+#: ../../../../inc/tpl/config.php:497
+msgid "Habilitar peticiones por correo"
+msgstr "Email kérések engedélyezése"
+
+# "Add extension"
+#: ../../../../inc/tpl/config.php:541
+msgid "Añadir extensión"
+msgstr "Kiterjesztés hozzáadása"
+
+# "Delete extension"
+#: ../../../../inc/tpl/config.php:542
+msgid "Eliminar extensión"
+msgstr "Kiterjesztés törlése"
+
+# "Add filter"
+#: ../../../../inc/tpl/config.php:570
+msgid "Añadir filtro"
+msgstr "Szûrõ hozzáadása"
+
+# "Delete filter"
+#: ../../../../inc/tpl/config.php:571
+msgid "Eliminar filtro"
+msgstr "Szûrõ törlése"
+
+# "Select Group"
+#: ../../../../inc/tpl/config.php:599 ../../../../inc/tpl/users.php:234
+msgid "Seleccionar Grupo"
+msgstr "Válassz csoportot"
+
+# "Select Profile"
+#: ../../../../inc/tpl/config.php:604 ../../../../inc/tpl/users.php:229
+msgid "Seleccionar Perfil"
+msgstr "Válassz profilt"
+
+# "Customer name"
+#: ../../../../inc/tpl/customers.php:42
+msgid "Nombre del cliente"
+msgstr "Ügyfél név"
+
+# "Customer description"
+#: ../../../../inc/tpl/customers.php:50
+msgid "Descripción del cliente"
+msgstr "Ügyfél leírás"
+
+# "Event Log"
+#: ../../../../inc/tpl/eventlog.php:37 ../../../../inc/tpl/main.php:57
+msgid "Registro de Eventos"
+msgstr "Esemény napló"
+
+# "Date / Time"
+#: ../../../../inc/tpl/eventlog.php:56
+msgid "Fecha / Hora"
+msgstr "Dátum / Idõ"
+
+# "Event"
+#: ../../../../inc/tpl/eventlog.php:59
+msgid "Evento"
+msgstr "Esemény"
+
+# "IP"
+#: ../../../../inc/tpl/eventlog.php:65
+msgid "IP"
+msgstr "IP"
+
+# "Group name"
+#: ../../../../inc/tpl/groups.php:41
+msgid "Nombre del grupo"
+msgstr "Csoport név"
+
+# "Group description"
+#: ../../../../inc/tpl/groups.php:47
+msgid "Descripción del grupo"
+msgstr "Csoport leírás"
+
+# "Installation finished"
+#: ../../../../inc/tpl/install.php:36
+msgid "Instalación finalizada"
+msgstr "A telepítés befejezõdött"
+
+# "Click <a href=\"index.php\" title=\"Login\">here</a> to access"
+#: ../../../../inc/tpl/install.php:37
+msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
+msgstr ""
+"Kattinst <a href=\"index.php\" title=\"Bejelentkezés\">here</a> a "
+"bejelentkezéshez"
+
+# "Installation"
+#: ../../../../inc/tpl/install.php:47
+msgid "Instalación "
+msgstr "Telepítés"
+
+# "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
+#: ../../../../inc/tpl/install.php:55
+msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
+msgstr ""
+"Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
+
+# "Please update PHP version to run sysPass in a secure way"
+#: ../../../../inc/tpl/install.php:56
+msgid "Actualice la versión de PHP para usar sysPass de forma segura"
+msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
+
+# "Cannot find random number generator."
+#: ../../../../inc/tpl/install.php:60
+msgid "No se encuentra el generador de números aleatorios."
+msgstr "Nem találom a véletlen szám generátort"
+
+# "Without this function, an attacker could take your account on password reset."
+#: ../../../../inc/tpl/install.php:61
+msgid ""
+"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgstr "E funkció nélkül egy támadó alapállapotba állíthatja jelszavát"
+
+# Create sysPass admin account
+#: ../../../../inc/tpl/install.php:88
+#, fuzzy
+msgid "Crear cuenta de admin de sysPass"
+msgstr "Create sysPass admin account"
+
+# sysPass administrator's login
+#: ../../../../inc/tpl/install.php:91
+#, fuzzy
+msgid "Login del usuario administrador de sysPass"
+msgstr "sysPass administrator's login"
+
+# Show Password
+#: ../../../../inc/tpl/install.php:99 ../../../../inc/tpl/install.php:100
+#: ../../../../inc/tpl/install.php:114 ../../../../inc/tpl/install.php:115
+#: ../../../../inc/tpl/install.php:140 ../../../../inc/tpl/install.php:141
+#, fuzzy
+msgid "Mostrar Clave"
+msgstr "Show Password"
+
+# "DB Configuration"
+#: ../../../../inc/tpl/install.php:127
+msgid "Configurar BBDD"
+msgstr "Adatbázis beállítások"
+
+# User login with with database administrative rights
+#: ../../../../inc/tpl/install.php:133
+#, fuzzy
+msgid "Login de usuario con permisos de administrador de MySQL"
+msgstr "User login with with database administrative rights"
+
+# "DB Username"
+#: ../../../../inc/tpl/install.php:134 ../../../../inc/tpl/install.php:135
+#: ../../../../inc/tpl/migrate.php:40
+msgid "Usuario BBDD"
+msgstr "DB felhasználónév"
+
+# "DB Password"
+#: ../../../../inc/tpl/install.php:142 ../../../../inc/tpl/install.php:143
+#: ../../../../inc/tpl/migrate.php:49
+msgid "Clave BBDD"
+msgstr "Adatbázis jelszó"
+
+# sysPass database name
+#: ../../../../inc/tpl/install.php:149
+#, fuzzy
+msgid "Nombre de la base de datos para sysPass"
+msgstr "ÍsysPass database name"
+
+# "DB Name"
+#: ../../../../inc/tpl/install.php:150 ../../../../inc/tpl/install.php:151
+#: ../../../../inc/tpl/migrate.php:57
+msgid "Nombre BBDD"
+msgstr "DB név"
+
+# sysPass database server name
+#: ../../../../inc/tpl/install.php:158
+#, fuzzy
+msgid "Nombre del servidor de la base de datos de sysPass"
+msgstr "sysPass database server name"
+
+# "DB Server"
+#: ../../../../inc/tpl/install.php:159 ../../../../inc/tpl/install.php:160
+#: ../../../../inc/tpl/migrate.php:66
+msgid "Servidor BBDD"
+msgstr "DB szerver"
+
+# "It does not create or verify the user's permissions on the DB"
+#: ../../../../inc/tpl/install.php:168
+msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
+msgstr "Ez nem hozza létre, illetve erõsíti meg az adatbázis jogosultságokat"
+
+# "Hosting Mode"
+#: ../../../../inc/tpl/install.php:170 ../../../../inc/tpl/install.php:191
+#: ../../../../inc/tpl/install.php:194
+msgid "Modo Hosting"
+msgstr "Hosting mód"
+
+# "Install"
+#: ../../../../inc/tpl/install.php:177
+msgid "Instalar"
+msgstr "Telepítés"
+
+# "Login"
+#: ../../../../inc/tpl/login.php:51 ../../../../inc/upgrade.class.php:50
+msgid "Acceder"
+msgstr "Belépés"
+
+# "Lost your password?"
+#: ../../../../inc/tpl/login.php:65
+msgid "¿Olvidó su clave?"
+msgstr "Elvesztette jelszavát?"
+
+# "Session finished"
+#: ../../../../inc/tpl/login.php:71 ../../../../js/js.php:47
+msgid "Sesión finalizada"
+msgstr "Munkamenet befejezõdött"
+
+# "Application successfully updated"
+#: ../../../../inc/tpl/login.php:78
+msgid "Aplicación actualizada correctamente"
+msgstr "Az alkalmazás frissítése sikeres"
+
+# New search interface with list or card like styles
+#: ../../../../inc/tpl/login.php:84
+#, fuzzy
+msgid "Nuevo interface de búsqueda con estilo de lista o tipo tarjeta"
+msgstr "New search interface with list or card like styles"
+
+# Users and groups selection for account access
+#: ../../../../inc/tpl/login.php:85
+#, fuzzy
+msgid "Selección de grupos y usuarios de acceso a cuentas"
+msgstr "Users and groups selection for account access"
+
+# Drag&Drop for files uploading
+#: ../../../../inc/tpl/login.php:86
+#, fuzzy
+msgid "Drag&Drop para subida de archivos"
+msgstr "Drag&Drop for files uploading"
+
+# Copy Password to Clipboard
+#: ../../../../inc/tpl/login.php:87
+#, fuzzy
+msgid "Copiar clave al portapapeles"
+msgstr "Jelszó másolása a vágólapra"
+
+# "View account history"
+#: ../../../../inc/tpl/login.php:88
+#, fuzzy
+msgid "Historial de cuentas y restauración"
+msgstr "Fiók elõzmények"
+
+# "Categories management"
+#: ../../../../inc/tpl/login.php:89
+#, fuzzy
+msgid "Nueva gestión de categorías y clientes"
+msgstr "Kategória Menedzsment"
+
+# Reset password function for users
+#: ../../../../inc/tpl/login.php:90
+#, fuzzy
+msgid "Función de olvido de claves para usuarios"
+msgstr "Reset password function for users"
+
+# Improved Active Directory and LDAP integration
+#: ../../../../inc/tpl/login.php:91
+#, fuzzy
+msgid "Integración con Active Directory y LDAP mejorada"
+msgstr "Improved Active Directory and LDAP integration"
+
+# "Enable email notifications"
+#: ../../../../inc/tpl/login.php:92
+#, fuzzy
+msgid "Autentificación para notificaciones por correo"
+msgstr "Email értesítés engedélyezése"
+
+# Global account searching for unprivileged users
+#: ../../../../inc/tpl/login.php:93
+#, fuzzy
+msgid "Búsqueda global de cuentas para usuarios sin permisos"
+msgstr "Global account searching for unprivileged users"
+
+# "Request for Account Modification"
+#: ../../../../inc/tpl/login.php:94
+#, fuzzy
+msgid "Solicitudes de modificación de cuentas para usuarios sin permisos"
+msgstr "Kérés fiók módosításához"
+
+# "Import accounts from external sources"
+#: ../../../../inc/tpl/login.php:95
+#, fuzzy
+msgid "Importación de cuentas desde KeePass, KeePassX y CSV"
+msgstr "Külsõ forrásból származó felhasználók importálása"
+
+# "Customers Management"
+#: ../../../../inc/tpl/login.php:96
+#, fuzzy
+msgid "Función de copiar cuentas"
+msgstr "Ügyfél Menedzsment"
+
+# Code optimization and faster loading
+#: ../../../../inc/tpl/login.php:97
+#, fuzzy
+msgid "Optimización del código y mayor rapidez de carga"
+msgstr "Code optimization and faster loading"
+
+# Improved security to prevent XSS and SQL injection
+#: ../../../../inc/tpl/login.php:98
+#, fuzzy
+msgid "Mejoras de seguridad en XSS e inyección SQL"
+msgstr "Improved security to prevent XSS and SQL injection"
+
+# "New Category"
+#: ../../../../inc/tpl/login.php:101 ../../../../inc/tpl/login.php:102
+#, fuzzy
+msgid "Nuevas Características"
+msgstr "Új Kategória"
+
+# "Change user password"
+#: ../../../../inc/tpl/main.php:37
+msgid "Cambiar clave de usuario"
+msgstr "Változatsd meg a felhasználói jelszót"
+
+# "Logout"
+#: ../../../../inc/tpl/main.php:44
+msgid "Salir"
+msgstr "Kijelentkezés"
+
+# "Search"
+#: ../../../../inc/tpl/main.php:52
+msgid "Buscar"
+msgstr "Keresés"
+
+# "Customer and Categories management"
+#: ../../../../inc/tpl/main.php:55
+msgid "Gestión de Clientes y Categorías"
+msgstr "Ügyfél és Kategória Menedzsment"
+
+# "Last Change"
+#: ../../../../inc/tpl/masterpass.php:43
+#: ../../../../inc/tpl/masterpass.php:128
+msgid "Último cambio"
+msgstr "Utolsó változtatás"
+
+# "Current Master Password"
+#: ../../../../inc/tpl/masterpass.php:52
+msgid "Clave Maestra actual"
+msgstr "Jelenlegki mester jelszó"
+
+# "New Master Password"
+#: ../../../../inc/tpl/masterpass.php:60
+msgid "Nueva Clave Maestra"
+msgstr "Új mester jelszó"
+
+# "New Master Password (repeat)"
+#: ../../../../inc/tpl/masterpass.php:69
+msgid "Nueva Clave Maestra (repetir)"
+msgstr "Új mester jelszó (megerõsítés)"
+
+# "Don't modify accounts"
+#: ../../../../inc/tpl/masterpass.php:77
+msgid "No modificar cuentas"
+msgstr "Ne módosítsa a fiókokat"
+
+# "Confirm Change"
+#: ../../../../inc/tpl/masterpass.php:87
+msgid "Confirmar cambio"
+msgstr "Változás megerõsítése"
+
+# "Warning"
+#: ../../../../inc/tpl/masterpass.php:90 ../../../../inc/tpl/masterpass.php:93
+#: ../../../../inc/tpl/masterpass.php:96 ../../../../inc/tpl/migrate.php:78
+msgid "Atención"
+msgstr "Figyelem"
+
+# "You should save the new password on a secure place"
+#: ../../../../inc/tpl/masterpass.php:91
+msgid "Guarde la nueva clave en un lugar seguro."
+msgstr "Tárold biztonságos helyen az új jelszót"
+
+# "All accounts passwords will be encrypted again."
+#: ../../../../inc/tpl/masterpass.php:94
+msgid "Se volverán a encriptar las claves de todas las cuentas."
+msgstr "Minden fiók jelszó újra titkosítva lesz"
+
+# "All users must re-enter the new master password."
+#: ../../../../inc/tpl/masterpass.php:97
+msgid "Los usuarios deberán de introducir la nueva clave maestra."
+msgstr "Minden felhasználónak úrja be kell írnia az új mester jelszót"
+
+# Temporary Password
+#: ../../../../inc/tpl/masterpass.php:121
+#, fuzzy
+msgid "Clave Temporal"
+msgstr "Temporary Password"
+
+# Not generated
+#: ../../../../inc/tpl/masterpass.php:135
+#: ../../../../inc/tpl/masterpass.php:149
+#, fuzzy
+msgid "No generada"
+msgstr "Not generated"
+
+#: ../../../../inc/tpl/masterpass.php:142
+#, fuzzy
+msgid "Válido hasta"
+msgstr "Valid until"
+
+# Generate
+#: ../../../../inc/tpl/masterpass.php:164
+#, fuzzy
+msgid "Generar"
+msgstr "Generate"
+
+# "phpPMS Import"
+#: ../../../../inc/tpl/migrate.php:33
+msgid "Importar phpPMS"
+msgstr "phpPMS importálása"
+
+# "Confirm"
+#: ../../../../inc/tpl/migrate.php:75
+msgid "Confirmar"
+msgstr "Megerõsítés"
+
+# "Current data will be removed (except current user)"
+#: ../../../../inc/tpl/migrate.php:79
+msgid "Los datos actuales serán borrados (excepto el usuario actual)"
+msgstr "Jelenlegi adatok törlése (kivéve a jelenlegi felhasználót)"
+
+# "Start"
+#: ../../../../inc/tpl/migrate.php:97
+msgid "Iniciar"
+msgstr "Start"
+
+# CSV/XML Import
+#: ../../../../inc/tpl/migrate.php:103
+#, fuzzy
+msgid "Importar CSV/XML"
+msgstr "Import CSV/XML"
+
+# "Drop files here or click to select"
+#: ../../../../inc/tpl/migrate.php:117
+msgid "Soltar archivo aquí o click para seleccionar"
+msgstr "Dobja el a fájlokat vagy kattintson a választáshoz"
 
 # "Request Password Change"
 #: ../../../../inc/tpl/passreset.php:47
@@ -2763,313 +3428,6 @@ msgstr "Változtatás"
 #: ../../../../inc/tpl/passreset.php:89
 msgid "Cambiar Clave"
 msgstr "Változtatsd meg a jelszót"
-
-# "Request Account Modification"
-#: ../../../../inc/tpl/request.php:33
-msgid "Solicitar Modificación de Cuenta"
-msgstr "Kérés fiók módosítás"
-
-# "Request"
-#: ../../../../inc/tpl/request.php:57
-msgid "Petición"
-msgstr "Kérés"
-
-# "Request description"
-#: ../../../../inc/tpl/request.php:60
-msgid "Descripción de la petición"
-msgstr "Kérés leírás"
-
-# "Back"
-#: ../../../../inc/tpl/request.php:72 ../../../../inc/tpl/editpass.php:85
-#: ../../../../inc/tpl/accounts.php:512
-msgid "Atrás"
-msgstr "Vissza"
-
-# "Send"
-#: ../../../../inc/tpl/request.php:76
-msgid "Enviar"
-msgstr "Küldés"
-
-# "Last backup"
-#: ../../../../inc/tpl/backup.php:42
-msgid "Último backup"
-msgstr "Utolsó Archiválás"
-
-# "There're no backups available"
-#: ../../../../inc/tpl/backup.php:42
-msgid "No se encontraron backups"
-msgstr "Nincsenek elérhetõ Archívumok"
-
-# "Result"
-#: ../../../../inc/tpl/backup.php:48
-msgid "Resultado"
-msgstr "Eredmény"
-
-# "Download Current"
-#: ../../../../inc/tpl/backup.php:56
-msgid "Descargar Actual"
-msgstr "Aktuális letöltés"
-
-# "There're no backups for download"
-#: ../../../../inc/tpl/backup.php:64
-msgid "No hay backups para descargar"
-msgstr "Nincsenek letölthetõ Archívumok"
-
-# "Last Change"
-#: ../../../../inc/tpl/masterpass.php:42
-msgid "Último cambio"
-msgstr "Utolsó változtatás"
-
-# "Current Master Password"
-#: ../../../../inc/tpl/masterpass.php:51
-msgid "Clave Maestra actual"
-msgstr "Jelenlegki mester jelszó"
-
-# "New Master Password"
-#: ../../../../inc/tpl/masterpass.php:59
-msgid "Nueva Clave Maestra"
-msgstr "Új mester jelszó"
-
-# "New Master Password (repeat)"
-#: ../../../../inc/tpl/masterpass.php:68
-msgid "Nueva Clave Maestra (repetir)"
-msgstr "Új mester jelszó (megerõsítés)"
-
-# "Don't modify accounts"
-#: ../../../../inc/tpl/masterpass.php:76
-msgid "No modificar cuentas"
-msgstr "Ne módosítsa a fiókokat"
-
-# "NO"
-#: ../../../../inc/tpl/masterpass.php:80 ../../../../inc/tpl/masterpass.php:99
-#: ../../../../inc/tpl/masterpass.php:125 ../../../../inc/tpl/migrate.php:81
-#: ../../../../inc/tpl/migrate.php:130 ../../../../inc/tpl/accounts.php:306
-#: ../../../../inc/tpl/accounts.php:337 ../../../../inc/tpl/accounts.php:598
-msgid "NO"
-msgstr "Nem"
-
-# "Confirm Change"
-#: ../../../../inc/tpl/masterpass.php:86
-msgid "Confirmar cambio"
-msgstr "Változás megerõsítése"
-
-# "Warning"
-#: ../../../../inc/tpl/masterpass.php:89 ../../../../inc/tpl/masterpass.php:92
-#: ../../../../inc/tpl/masterpass.php:95 ../../../../inc/tpl/migrate.php:78
-msgid "Atención"
-msgstr "Figyelem"
-
-# "You should save the new password on a secure place"
-#: ../../../../inc/tpl/masterpass.php:90
-msgid "Guarde la nueva clave en un lugar seguro."
-msgstr "Tárold biztonságos helyen az új jelszót"
-
-# "All accounts passwords will be encrypted again."
-#: ../../../../inc/tpl/masterpass.php:93
-msgid "Se volverán a encriptar las claves de todas las cuentas."
-msgstr "Minden fiók jelszó újra titkosítva lesz"
-
-# "All users must re-enter the new master password."
-#: ../../../../inc/tpl/masterpass.php:96
-msgid "Los usuarios deberán de introducir la nueva clave maestra."
-msgstr "Minden felhasználónak úrja be kell írnia az új mester jelszót"
-
-# "YES"
-#: ../../../../inc/tpl/masterpass.php:127 ../../../../inc/tpl/migrate.php:132
-#: ../../../../inc/tpl/accounts.php:306 ../../../../inc/tpl/accounts.php:337
-#: ../../../../inc/tpl/accounts.php:600
-msgid "SI"
-msgstr "Igen"
-
-# "Group name"
-#: ../../../../inc/tpl/groups.php:41
-msgid "Nombre del grupo"
-msgstr "Csoport név"
-
-# "Group description"
-#: ../../../../inc/tpl/groups.php:47
-msgid "Descripción del grupo"
-msgstr "Csoport leírás"
-
-# "phpPMS Import"
-#: ../../../../inc/tpl/migrate.php:33
-msgid "Importar phpPMS"
-msgstr "phpPMS importálása"
-
-# "DB Username"
-#: ../../../../inc/tpl/migrate.php:40 ../../../../inc/tpl/install.php:131
-#: ../../../../inc/tpl/install.php:132
-msgid "Usuario BBDD"
-msgstr "DB felhasználónév"
-
-# "DB Password"
-#: ../../../../inc/tpl/migrate.php:49 ../../../../inc/tpl/install.php:139
-#: ../../../../inc/tpl/install.php:140
-msgid "Clave BBDD"
-msgstr "Adatbázis jelszó"
-
-# "DB Name"
-#: ../../../../inc/tpl/migrate.php:57 ../../../../inc/tpl/install.php:147
-#: ../../../../inc/tpl/install.php:148
-msgid "Nombre BBDD"
-msgstr "DB név"
-
-# "DB Server"
-#: ../../../../inc/tpl/migrate.php:66 ../../../../inc/tpl/install.php:156
-#: ../../../../inc/tpl/install.php:157
-msgid "Servidor BBDD"
-msgstr "DB szerver"
-
-# "Confirm"
-#: ../../../../inc/tpl/migrate.php:75
-msgid "Confirmar"
-msgstr "Megerõsítés"
-
-# "Current data will be removed (except current user)"
-#: ../../../../inc/tpl/migrate.php:79
-msgid "Los datos actuales serán borrados (excepto el usuario actual)"
-msgstr "Jelenlegi adatok törlése (kivéve a jelenlegi felhasználót)"
-
-# "Start"
-#: ../../../../inc/tpl/migrate.php:97
-msgid "Iniciar"
-msgstr "Start"
-
-# CSV/XML Import
-#: ../../../../inc/tpl/migrate.php:103
-#, fuzzy
-msgid "Importar CSV/XML"
-msgstr "Import CSV/XML"
-
-# "Drop files here or click to select"
-#: ../../../../inc/tpl/migrate.php:117
-msgid "Soltar archivo aquí o click para seleccionar"
-msgstr "Dobja el a fájlokat vagy kattintson a választáshoz"
-
-# "Lost your password?"
-#: ../../../../inc/tpl/login.php:65
-msgid "¿Olvidó su clave?"
-msgstr "Elvesztette jelszavát?"
-
-# "Application successfully updated"
-#: ../../../../inc/tpl/login.php:78
-msgid "Aplicación actualizada correctamente"
-msgstr "Az alkalmazás frissítése sikeres"
-
-#: ../../../../inc/tpl/login.php:84
-msgid "Nuevo interface de búsqueda con estilo de lista o tipo tarjeta"
-msgstr ""
-
-#: ../../../../inc/tpl/login.php:85
-msgid "Selección de grupos y usuarios de acceso a cuentas"
-msgstr ""
-
-#: ../../../../inc/tpl/login.php:86
-msgid "Drag&Drop para subida de archivos"
-msgstr ""
-
-# Copy Password to Clipboard
-#: ../../../../inc/tpl/login.php:87
-#, fuzzy
-msgid "Copiar clave al portapapeles"
-msgstr "Jelszó másolása a vágólapra"
-
-# "View account history"
-#: ../../../../inc/tpl/login.php:88
-#, fuzzy
-msgid "Historial de cuentas y restauración"
-msgstr "Fiók elõzmények"
-
-# "Categories management"
-#: ../../../../inc/tpl/login.php:89
-#, fuzzy
-msgid "Nueva gestión de categorías y clientes"
-msgstr "Kategória Menedzsment"
-
-#: ../../../../inc/tpl/login.php:90
-msgid "Función de olvido de claves para usuarios"
-msgstr ""
-
-#: ../../../../inc/tpl/login.php:91
-msgid "Integración con Active Directory y LDAP mejorada"
-msgstr ""
-
-# "Enable email notifications"
-#: ../../../../inc/tpl/login.php:92
-#, fuzzy
-msgid "Autentificación para notificaciones por correo"
-msgstr "Email értesítés engedélyezése"
-
-#: ../../../../inc/tpl/login.php:93
-msgid "Búsqueda global de cuentas para usuarios sin permisos"
-msgstr ""
-
-# "Request for Account Modification"
-#: ../../../../inc/tpl/login.php:94
-#, fuzzy
-msgid "Solicitudes de modificación de cuentas para usuarios sin permisos"
-msgstr "Kérés fiók módosításához"
-
-# "Import accounts from external sources"
-#: ../../../../inc/tpl/login.php:95
-#, fuzzy
-msgid "Importación de cuentas desde KeePass, KeePassX y CSV"
-msgstr "Külsõ forrásból származó felhasználók importálása"
-
-# "Customers Management"
-#: ../../../../inc/tpl/login.php:96
-#, fuzzy
-msgid "Función de copiar cuentas"
-msgstr "Ügyfél Menedzsment"
-
-#: ../../../../inc/tpl/login.php:97
-msgid "Optimización del código y mayor rapidez de carga"
-msgstr ""
-
-#: ../../../../inc/tpl/login.php:98
-msgid "Mejoras de seguridad en XSS e inyección SQL"
-msgstr ""
-
-# "New Category"
-#: ../../../../inc/tpl/login.php:101 ../../../../inc/tpl/login.php:102
-#, fuzzy
-msgid "Nuevas Características"
-msgstr "Új Kategória"
-
-# "Customer name"
-#: ../../../../inc/tpl/customers.php:42
-msgid "Nombre del cliente"
-msgstr "Ügyfél név"
-
-# "Customer description"
-#: ../../../../inc/tpl/customers.php:50
-msgid "Descripción del cliente"
-msgstr "Ügyfél leírás"
-
-# "Change user password"
-#: ../../../../inc/tpl/main.php:37
-msgid "Cambiar clave de usuario"
-msgstr "Változatsd meg a felhasználói jelszót"
-
-# "Logout"
-#: ../../../../inc/tpl/main.php:44
-msgid "Salir"
-msgstr "Kijelentkezés"
-
-# "Search"
-#: ../../../../inc/tpl/main.php:52
-msgid "Buscar"
-msgstr "Keresés"
-
-# "Customer and Categories management"
-#: ../../../../inc/tpl/main.php:55
-msgid "Gestión de Clientes y Categorías"
-msgstr "Ügyfél és Kategória Menedzsment"
-
-# "Event Log"
-#: ../../../../inc/tpl/main.php:57 ../../../../inc/tpl/eventlog.php:37
-msgid "Registro de Eventos"
-msgstr "Esemény napló"
 
 # "Profile name"
 #: ../../../../inc/tpl/profiles.php:41
@@ -3146,11 +3504,6 @@ msgstr "Törlés"
 msgid "Ver archivos de cuenta"
 msgstr "Fiók fáljok"
 
-# "Files"
-#: ../../../../inc/tpl/profiles.php:65 ../../../../inc/tpl/accounts.php:359
-msgid "Archivos"
-msgstr "Fájlok"
-
 # "General configuration"
 #: ../../../../inc/tpl/profiles.php:74
 msgid "Configuración general"
@@ -3190,11 +3543,6 @@ msgstr "Felhasználó menedzsment"
 #: ../../../../inc/tpl/profiles.php:90
 msgid "Gestión de grupos"
 msgstr "Csoport menedzsment"
-
-# "Groups"
-#: ../../../../inc/tpl/profiles.php:90 ../../../../inc/tpl/accounts.php:313
-msgid "Grupos"
-msgstr "Csoportok"
 
 # "Profiles management"
 #: ../../../../inc/tpl/profiles.php:93
@@ -3241,6 +3589,26 @@ msgstr "Esemény napló"
 msgid "Log de Eventos"
 msgstr "Esemény napló"
 
+# "Request Account Modification"
+#: ../../../../inc/tpl/request.php:33
+msgid "Solicitar Modificación de Cuenta"
+msgstr "Kérés fiók módosítás"
+
+# "Request"
+#: ../../../../inc/tpl/request.php:57
+msgid "Petición"
+msgstr "Kérés"
+
+# "Request description"
+#: ../../../../inc/tpl/request.php:60
+msgid "Descripción de la petición"
+msgstr "Kérés leírás"
+
+# "Send"
+#: ../../../../inc/tpl/request.php:76
+msgid "Enviar"
+msgstr "Küldés"
+
 # "Clear"
 #: ../../../../inc/tpl/search.php:59
 msgid "Limpiar"
@@ -3266,490 +3634,29 @@ msgstr "APP"
 msgid "Cuentas por página"
 msgstr "Fiók/oldal"
 
-# "Select Customer"
-#: ../../../../inc/tpl/search.php:89 ../../../../inc/tpl/accounts.php:577
-msgid "Seleccionar Cliente"
-msgstr "Válassz ügyfelet"
-
-# "No results"
-#: ../../../../inc/tpl/search.php:89 ../../../../inc/tpl/search.php:90
-#: ../../../../inc/tpl/accounts.php:579 ../../../../inc/tpl/accounts.php:584
-#: ../../../../inc/tpl/config.php:598 ../../../../inc/tpl/config.php:603
-#: ../../../../inc/tpl/users.php:231 ../../../../inc/tpl/users.php:236
-msgid "Sin resultados"
-msgstr "Nincsenek eredmények"
-
-# "Select category"
-#: ../../../../inc/tpl/search.php:90 ../../../../inc/tpl/accounts.php:582
-msgid "Seleccionar Categoría"
-msgstr "Válassz kategóriát"
-
-# "Installation finished"
-#: ../../../../inc/tpl/install.php:35
-msgid "Instalación finalizada"
-msgstr "A telepítés befejezõdött"
-
-# "Click <a href=\"index.php\" title=\"Login\">here</a> to access"
-#: ../../../../inc/tpl/install.php:36
-msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
-msgstr ""
-"Kattinst <a href=\"index.php\" title=\"Bejelentkezés\">here</a> a "
-"bejelentkezéshez"
-
-# "Installation"
-#: ../../../../inc/tpl/install.php:46
-msgid "Instalación "
-msgstr "Telepítés"
-
-# "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
-#: ../../../../inc/tpl/install.php:57
-msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
-msgstr ""
-"Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
-
-# "Please update PHP version to run sysPass in a secure way"
-#: ../../../../inc/tpl/install.php:58
-msgid "Actualice la versión de PHP para usar sysPass de forma segura"
-msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
-
-# "Cannot find random number generator."
-#: ../../../../inc/tpl/install.php:62
-msgid "No se encuentra el generador de números aleatorios."
-msgstr "Nem találom a véletlen szám generátort"
-
-# "Without this function, an attacker could take your account on password reset."
-#: ../../../../inc/tpl/install.php:63
-msgid ""
-"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
-msgstr "E funkció nélkül egy támadó alapállapotba állíthatja jelszavát"
-
-# Create sysPass admin account
-#: ../../../../inc/tpl/install.php:85
+# DB Update
+#: ../../../../inc/tpl/upgrade.php:42
 #, fuzzy
-msgid "Crear cuenta de admin de sysPass"
-msgstr "Create sysPass admin account"
+msgid "Actualización de BBDD"
+msgstr "DB Update"
 
-# sysPass administrator's login
-#: ../../../../inc/tpl/install.php:88
+# Enter Security Code
+#: ../../../../inc/tpl/upgrade.php:44
 #, fuzzy
-msgid "Login del usuario administrador de sysPass"
-msgstr "sysPass administrator's login"
+msgid "Introducir Código de Seguridad"
+msgstr "Enter Security Code"
 
-# Show Password
-#: ../../../../inc/tpl/install.php:96 ../../../../inc/tpl/install.php:97
-#: ../../../../inc/tpl/install.php:111 ../../../../inc/tpl/install.php:112
-#: ../../../../inc/tpl/install.php:137 ../../../../inc/tpl/install.php:138
+# Security Code
+#: ../../../../inc/tpl/upgrade.php:45
 #, fuzzy
-msgid "Mostrar Clave"
-msgstr "Show Password"
+msgid "Código de Seguridad"
+msgstr "Security Code"
 
-# "DB Configuration"
-#: ../../../../inc/tpl/install.php:124
-msgid "Configurar BBDD"
-msgstr "Adatbázis beállítások"
-
-# User login with with database administrative rights
-#: ../../../../inc/tpl/install.php:130
+# Start Update
+#: ../../../../inc/tpl/upgrade.php:55
 #, fuzzy
-msgid "Login de usuario con permisos de administrador de MySQL"
-msgstr "User login with with database administrative rights"
-
-# sysPass database name
-#: ../../../../inc/tpl/install.php:146
-#, fuzzy
-msgid "Nombre de la base de datos para sysPass"
-msgstr "ÍsysPass database name"
-
-# sysPass database server name
-#: ../../../../inc/tpl/install.php:155
-#, fuzzy
-msgid "Nombre del servidor de la base de datos de sysPass"
-msgstr "sysPass database server name"
-
-# "It does not create or verify the user's permissions on the DB"
-#: ../../../../inc/tpl/install.php:165
-msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
-msgstr "Ez nem hozza létre, illetve erõsíti meg az adatbázis jogosultságokat"
-
-# "Hosting Mode"
-#: ../../../../inc/tpl/install.php:167 ../../../../inc/tpl/install.php:185
-#: ../../../../inc/tpl/install.php:187
-msgid "Modo Hosting"
-msgstr "Hosting mód"
-
-# "Install"
-#: ../../../../inc/tpl/install.php:174
-msgid "Instalar"
-msgstr "Telepítés"
-
-# "Edit Account Password"
-#: ../../../../inc/tpl/editpass.php:35 ../../../../inc/tpl/accounts.php:548
-msgid "Modificar Clave de Cuenta"
-msgstr "Fiók jelszavának szerkesztése"
-
-# "The generated password will be shown here"
-#: ../../../../inc/tpl/editpass.php:61 ../../../../inc/tpl/accounts.php:254
-msgid "La clave generada se mostrará aquí"
-msgstr "A generált jelszó megjelenítése itt"
-
-# "Edit Account"
-#: ../../../../inc/tpl/accounts.php:63
-msgid "Editar Cuenta"
-msgstr "Fiók módosítás"
-
-# "Account name"
-#: ../../../../inc/tpl/accounts.php:177
-msgid "Nombre de cuenta"
-msgstr "Fiók név"
-
-# "Search down or enter"
-#: ../../../../inc/tpl/accounts.php:196
-msgid "Buscar en desplegable o introducir"
-msgstr "Keress lentebb, vagy nyomj entert"
-
-# "Access URL or IP"
-#: ../../../../inc/tpl/accounts.php:222
-msgid "URL o IP de acceso"
-msgstr "URL vagy IP elérés"
-
-# "Access user"
-#: ../../../../inc/tpl/accounts.php:238
-msgid "Usuario de acceso"
-msgstr "Felhasználó elérése"
-
-# "Notes about the account"
-#: ../../../../inc/tpl/accounts.php:272
-msgid "Notas sobre la cuenta"
-msgstr "Jegyzetek a fiókokról"
-
-# "Permissions"
-#: ../../../../inc/tpl/accounts.php:278
-msgid "Permisos"
-msgstr "Jofosultságok"
-
-# "Enable Edit"
-#: ../../../../inc/tpl/accounts.php:305 ../../../../inc/tpl/accounts.php:336
-msgid "Hablitar edición"
-msgstr "Szerkesztés engedélyezése"
-
-# "Drop files here (max. 5) or click to select"
-#: ../../../../inc/tpl/accounts.php:372
-msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
-msgstr "Dobja el a fájlokat (max. 5) vagy kattintson a választáshoz"
-
-# "Maximum file size"
-#: ../../../../inc/tpl/accounts.php:372 ../../../../inc/tpl/config.php:201
-msgid "Tamaño máximo de archivo"
-msgstr "Maximális fájl méret"
-
-# "History"
-#: ../../../../inc/tpl/accounts.php:384
-msgid "Historial"
-msgstr "Elõzmények"
-
-# "Select date"
-#: ../../../../inc/tpl/accounts.php:401
-msgid "Seleccionar fecha"
-msgstr "Válassz dátumot"
-
-# "Last Modification"
-#: ../../../../inc/tpl/accounts.php:409 ../../../../inc/tpl/users.php:193
-msgid "Última Modificación"
-msgstr "Utoljára módosítva"
-
-# "by"
-#: ../../../../inc/tpl/accounts.php:411
-msgid "por"
-msgstr "által"
-
-# "Visits"
-#: ../../../../inc/tpl/accounts.php:421
-msgid "Visitas"
-msgstr "Látogatók"
-
-# "Date Added"
-#: ../../../../inc/tpl/accounts.php:425
-msgid "Fecha Alta"
-msgstr "Dátum hozzáadva"
-
-# "Creator"
-#: ../../../../inc/tpl/accounts.php:429
-msgid "Creador"
-msgstr "Készítõ"
-
-# "Main Group"
-#: ../../../../inc/tpl/accounts.php:433
-msgid "Grupo Principal"
-msgstr "Fõcsoport"
-
-# "Secondary Users"
-#: ../../../../inc/tpl/accounts.php:438
-msgid "Usuarios Secundarios"
-msgstr "Másodlagos felhasználók"
-
-# "Secondary Groups"
-#: ../../../../inc/tpl/accounts.php:459
-msgid "Grupos Secundarios"
-msgstr "Másodlagos csoportok"
-
-# "Date Modified"
-#: ../../../../inc/tpl/accounts.php:481
-msgid "Fecha Edición"
-msgstr "Adat módosítva"
-
-# "Editor"
-#: ../../../../inc/tpl/accounts.php:485
-msgid "Editor"
-msgstr "Szerkesztõ"
-
-# "View Current"
-#: ../../../../inc/tpl/accounts.php:507
-msgid "Ver Actual"
-msgstr "Általános"
-
-# "Restore account from this point"
-#: ../../../../inc/tpl/accounts.php:519
-msgid "Restaurar cuenta desde este punto"
-msgstr "Restore véve ezen a ponton"
-
-# "Select secondary groups"
-#: ../../../../inc/tpl/accounts.php:587
-msgid "Seleccionar grupos secundarios"
-msgstr " Válassz másodlagos csoportot"
-
-# "Select users"
-#: ../../../../inc/tpl/accounts.php:590
-msgid "Seleccionar usuarios"
-msgstr "Válassz felhasználót"
-
-# "Category name"
-#: ../../../../inc/tpl/categories.php:42
-msgid "Nombre de la categoría"
-msgstr "Kategória név"
-
-# "Category description"
-#: ../../../../inc/tpl/categories.php:50
-msgid "Descripción de la categoría"
-msgstr "Kategória leírás"
-
-# "Site"
-#: ../../../../inc/tpl/config.php:84
-msgid "Sitio"
-msgstr "Oldal"
-
-# "Language"
-#: ../../../../inc/tpl/config.php:92
-msgid "Idioma"
-msgstr "Nyelv"
-
-# "Session timeout (s)"
-#: ../../../../inc/tpl/config.php:106
-msgid "Timeout de sesión (s)"
-msgstr "Munkamenet idõ"
-
-# "Enable event log"
-#: ../../../../inc/tpl/config.php:115
-msgid "Habilitar log de eventos"
-msgstr "Esemény napló engedélyezése"
-
-# "Enable debug"
-#: ../../../../inc/tpl/config.php:126
-msgid "Habilitar depuración"
-msgstr "Nyomkövetés engedélyezése"
-
-# "Maintenance mode."
-#: ../../../../inc/tpl/config.php:137
-msgid "Modo mantenimiento"
-msgstr "Fenntartás mód"
-
-# "Check for updates"
-#: ../../../../inc/tpl/config.php:148
-msgid "Comprobar actualizaciones"
-msgstr "Frissítések keresése"
-
-# "Account name as link"
-#: ../../../../inc/tpl/config.php:159
-msgid "Nombre de cuenta como enlace"
-msgstr "Fiók neve linkként"
-
-# "Files management"
-#: ../../../../inc/tpl/config.php:170
-msgid "Gestión de archivos"
-msgstr "Fájl menedzsment"
-
-# "Global searches"
-#: ../../../../inc/tpl/config.php:181
-msgid "Búsquedas globales"
-msgstr "Gblobális Keresések"
-
-# "Allowed file extensions"
-#: ../../../../inc/tpl/config.php:192
-msgid "Extensiones de archivos permitidas"
-msgstr "Engedélyezett fájl kiterjesztés"
-
-# "Results per page"
-#: ../../../../inc/tpl/config.php:212
-msgid "Resultados por página"
-msgstr "Eredmény / oldal"
-
-# Results like Cards
-#: ../../../../inc/tpl/config.php:228
-#, fuzzy
-msgid "Resultados en Tarjetas"
-msgstr "Results like Cards"
-
-# "Wiki"
-#: ../../../../inc/tpl/config.php:241
-msgid "Wiki"
-msgstr "Wiki"
-
-# "Enable Wiki links"
-#: ../../../../inc/tpl/config.php:247
-msgid "Habilitar enlaces Wiki"
-msgstr "Wiki linkek engedélyezése"
-
-# "Wiki search URL"
-#: ../../../../inc/tpl/config.php:258
-msgid "URL de búsqueda Wiki"
-msgstr "Wiki keresés URL"
-
-# "Wiki page URL"
-#: ../../../../inc/tpl/config.php:268
-msgid "URL de página en Wiki"
-msgstr "Wiki oldal URL"
-
-# "Account name preffix"
-#: ../../../../inc/tpl/config.php:278
-msgid "Prefijo para nombre de cuenta"
-msgstr "Fiók név elõtag"
-
-# "LDAP"
-#: ../../../../inc/tpl/config.php:291
-msgid "LDAP"
-msgstr "LDAP"
-
-# "Enable LDAP"
-#: ../../../../inc/tpl/config.php:298
-msgid "Habilitar LDAP"
-msgstr "LDAP engedélyezése"
-
-# "Server"
-#: ../../../../inc/tpl/config.php:309 ../../../../inc/tpl/config.php:422
-msgid "Servidor"
-msgstr "Szerver"
-
-# "Bind User"
-#: ../../../../inc/tpl/config.php:319
-msgid "Usuario de conexión"
-msgstr "Bind felhasználó"
-
-# "Bind Password"
-#: ../../../../inc/tpl/config.php:329
-msgid "Clave de conexión"
-msgstr "Bind jelszó"
-
-# "Search base"
-#: ../../../../inc/tpl/config.php:339
-msgid "Base de búsqueda"
-msgstr "Keresés"
-
-# Default Group
-#: ../../../../inc/tpl/config.php:359
-#, fuzzy
-msgid "Grupo por Defecto"
-msgstr "Default Group"
-
-# Default Profile
-#: ../../../../inc/tpl/config.php:368
-#, fuzzy
-msgid "Perfil por Defecto"
-msgstr "Default Profile"
-
-# Active Directory
-#: ../../../../inc/tpl/config.php:377
-#, fuzzy
-msgid "Active Directory"
-msgstr "Active Directory"
-
-# "Check"
-#: ../../../../inc/tpl/config.php:388
-msgid "Comprobar"
-msgstr "Ellenõrzés"
-
-# "Check LDAP connection"
-#: ../../../../inc/tpl/config.php:391
-msgid "Comprobar conexión con LDAP"
-msgstr "LDAP kapcsolat ellenõrzése"
-
-# "Mail"
-#: ../../../../inc/tpl/config.php:406
-msgid "Correo"
-msgstr "Mail"
-
-# "Enable email notifications"
-#: ../../../../inc/tpl/config.php:412
-msgid "Habilitar notificaciones de correo"
-msgstr "Email értesítés engedélyezése"
-
-# "Port"
-#: ../../../../inc/tpl/config.php:431
-msgid "Puerto"
-msgstr "Port"
-
-# "Enable Authentication"
-#: ../../../../inc/tpl/config.php:440
-msgid "Habilitar Autentificación"
-msgstr "Engedélyezése Hitelesítés"
-
-# "Security"
-#: ../../../../inc/tpl/config.php:468
-msgid "Seguridad"
-msgstr "Biztonság"
-
-# "Disabled"
-#: ../../../../inc/tpl/config.php:474
-msgid "Deshabilitada"
-msgstr "Inaktív"
-
-# "Recipient email address"
-#: ../../../../inc/tpl/config.php:485
-msgid "Dirección de correo de envío"
-msgstr "Címzett email címe"
-
-# "Enable requests by email"
-#: ../../../../inc/tpl/config.php:494
-msgid "Habilitar peticiones por correo"
-msgstr "Email kérések engedélyezése"
-
-# "Add extension"
-#: ../../../../inc/tpl/config.php:538
-msgid "Añadir extensión"
-msgstr "Kiterjesztés hozzáadása"
-
-# "Delete extension"
-#: ../../../../inc/tpl/config.php:539
-msgid "Eliminar extensión"
-msgstr "Kiterjesztés törlése"
-
-# "Add filter"
-#: ../../../../inc/tpl/config.php:567
-msgid "Añadir filtro"
-msgstr "Szûrõ hozzáadása"
-
-# "Delete filter"
-#: ../../../../inc/tpl/config.php:568
-msgid "Eliminar filtro"
-msgstr "Szûrõ törlése"
-
-# "Select Group"
-#: ../../../../inc/tpl/config.php:596 ../../../../inc/tpl/users.php:234
-msgid "Seleccionar Grupo"
-msgstr "Válassz csoportot"
-
-# "Select Profile"
-#: ../../../../inc/tpl/config.php:601 ../../../../inc/tpl/users.php:229
-msgid "Seleccionar Perfil"
-msgstr "Válassz profilt"
+msgid "Iniciar Actualización"
+msgstr "Start Update"
 
 # "Full username"
 #: ../../../../inc/tpl/users.php:72
@@ -3811,44 +3718,189 @@ msgstr "Utolsó belépés"
 msgid "Fecha Clave Maestra"
 msgstr "Mester jelszó dátum"
 
-# DB Update
-#: ../../../../inc/tpl/upgrade.php:42
+# "Error on updating database"
+#: ../../../../inc/upgrade.class.php:49
+msgid "Error al aplicar la actualización de la Base de Datos"
+msgstr "Hiba az adatbázis frissítése közben"
+
+# "Please, check the event log for more details"
+#: ../../../../inc/upgrade.class.php:50
+msgid "Compruebe el registro de eventos para más detalles"
+msgstr "Részletes leírást az esemény naplóban olvashat"
+
+# "Update DB"
+#: ../../../../inc/upgrade.class.php:66
+msgid "Actualizar BBDD"
+msgstr "Frissítse az adatbázist"
+
+# "Database update not needed."
+#: ../../../../inc/upgrade.class.php:97
+msgid "No es necesario actualizar la Base de Datos."
+msgstr "Az adatbázis frissítése nem szükséges"
+
+# "Error on updating database."
+#: ../../../../inc/upgrade.class.php:103
+msgid "Error al aplicar la actualización de la Base de Datos."
+msgstr "Hiba az adatbázis frissítése közben"
+
+# "Database updating was done successfully."
+#: ../../../../inc/upgrade.class.php:110
+msgid "Actualización de la Base de Datos realizada correctamente."
+msgstr "Az adatbázis frissítés sikeresen megtörtént"
+
+# "Update Configuration"
+#: ../../../../inc/upgrade.class.php:185
+msgid "Actualizar Configuración"
+msgstr "Konfiguráció frissítése"
+
+# "Configuration updating successfully done."
+#: ../../../../inc/upgrade.class.php:186
+msgid "Actualización de la Configuración realizada correctamente."
+msgstr "A beállítások elmentve"
+
+# "Account Activation"
+#: ../../../../inc/users.class.php:774
+msgid "Activación Cuenta"
+msgstr "Fiók Aktiválás"
+
+# "Your account activation is pending."
+#: ../../../../inc/users.class.php:775
+msgid "Su cuenta está pendiente de activación."
+msgstr "Az ön fiók aktiválása függõben van"
+
+# "You will receive a confirmation email in short."
+#: ../../../../inc/users.class.php:776
+msgid "En breve recibirá un email de confirmación."
+msgstr "Hamarosan megerõsítésre váró emailt küldünk"
+
+# Could not perform the password change request.
+#: ../../../../inc/users.class.php:821 ../../../../inc/users.class.php:863
 #, fuzzy
-msgid "Actualización de BBDD"
-msgstr "DB Update"
+msgid "No se pudo realizar la petición de cambio de clave."
+msgstr "Nem sikerült végrehajtani a jelszócsere kérelmet."
 
-# Enter Security Code
-#: ../../../../inc/tpl/upgrade.php:44
+# "Edit User"
+#: ../../../../inc/users.class.php:858
+msgid "Modificar Usuario"
+msgstr "Felhasználó módosítás"
+
+# Required PHP version >= 5.1
+#: ../../../../inc/util.class.php:119
 #, fuzzy
-msgid "Introducir Código de Seguridad"
-msgstr "Enter Security Code"
+msgid "Versión de PHP requerida >= 5.1"
+msgstr "Szükséges PHP verzió> = 5.1"
 
-# Security Code
-#: ../../../../inc/tpl/upgrade.php:45
+# "Please update PHP version to run sysPass in a secure way"
+#: ../../../../inc/util.class.php:120
 #, fuzzy
-msgid "Código de Seguridad"
-msgstr "Security Code"
+msgid ""
+"Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
-# Start Update
-#: ../../../../inc/tpl/upgrade.php:55
-#, fuzzy
-msgid "Iniciar Actualización"
-msgstr "Start Update"
+# "Without this module the application couldn't run correctly"
+#: ../../../../inc/util.class.php:142
+msgid "Sin este módulo la aplicación puede no funcionar correctamente."
+msgstr "E modul nélkül az alkalmazás nem futtatható megfelelõen"
 
-# "Date / Time"
-#: ../../../../inc/tpl/eventlog.php:56
-msgid "Fecha / Hora"
-msgstr "Dátum / Idõ"
+# "Query error"
+#: ../../../../js/js.php:45
+msgid "Error en la consulta"
+msgstr "Lekérdezési hiba"
 
-# "Event"
-#: ../../../../inc/tpl/eventlog.php:59
-msgid "Evento"
-msgstr "Esemény"
+# "There was an error"
+#: ../../../../js/js.php:46
+msgid "Ha ocurrido un error"
+msgstr "Hiba történt"
 
-# "IP"
-#: ../../../../inc/tpl/eventlog.php:65
-msgid "IP"
-msgstr "IP"
+# "Delete account?"
+#: ../../../../js/js.php:48
+msgid "Borrar la cuenta?"
+msgstr "Fiók törlése?"
+
+# "Delete user?"
+#: ../../../../js/js.php:49
+msgid "Borrar el usuario?"
+msgstr "Törlöd a felhasználót?"
+
+# "You should save configuration in order to take effect"
+#: ../../../../js/js.php:50
+msgid "Guarde la configuración para que sea efectiva"
+msgstr "A módosítások életbe lépéséhez mentened kell a beállításokat"
+
+# "Generated Password"
+#: ../../../../js/js.php:51
+msgid "Clave Generada"
+msgstr "Generált Jelszó"
+
+# "High level"
+#: ../../../../js/js.php:52
+msgid "Nivel alto"
+msgstr "Erös"
+
+# "Average level"
+#: ../../../../js/js.php:53
+msgid "Nivel medio"
+msgstr "Közepes"
+
+# "Low level"
+#: ../../../../js/js.php:54
+msgid "Nivel bajo"
+msgstr "Gyenge"
+
+# "Very high level"
+#: ../../../../js/js.php:55
+msgid "Nivel muy alto"
+msgstr "Nagyon erös"
+
+# "You should use at least 8 characters"
+#: ../../../../js/js.php:56
+msgid "Utilizar al menos 8 caracteres"
+msgstr "Legalább 8 karakterböl állót adj meg"
+
+# "Delete item?"
+#: ../../../../js/js.php:57
+msgid "Borrar elemento?"
+msgstr "Törlöd a tételt?"
+
+# "Page not found"
+#: ../../../../js/js.php:58
+msgid "Página no encontrada"
+msgstr "Oldal nem található"
+
+# "File not supported for preview"
+#: ../../../../js/js.php:59
+msgid "Archivo no soportado para visualizar"
+msgstr "A fájlnak nincs elönézete"
+
+# "Delete file?"
+#: ../../../../js/js.php:60
+msgid "Eliminar archivo?"
+msgstr "Törlöd a fájlt?"
+
+# "Your browser does not support HTML5 file uploads"
+#: ../../../../js/js.php:61
+msgid "Su navegador no soporta subir archivos con HTML5"
+msgstr "A böngészöd nem támogatja a HTML5 fájlok feltöltését"
+
+# "Too many files"
+#: ../../../../js/js.php:62
+msgid "Demasiados archivos"
+msgstr "Túl sok fájl"
+
+# "Unable to save file.<br>Max file size:"
+#: ../../../../js/js.php:63
+msgid "No es posible guardar el archivo.<br>Tamaño máximo:"
+msgstr "Nem lehet elmenteni a fájlt.<br>Maximális fájl méret:"
+
+# "Extension not allowed"
+#: ../../../../js/js.php:64
+msgid "Extensión no permitida"
+msgstr "A kiterjesztés nem engedélyezett"
+
+# "Clear event log?"
+#: ../../../../js/js.php:65
+msgid "Vaciar el registro de eventos?"
+msgstr "Törlöd az esemény naplót?"
 
 # "No group found with that name"
 #~ msgid "No se encontró el grupo con ese nombre"
