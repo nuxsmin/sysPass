@@ -144,7 +144,6 @@ if ($frmAction == "config") {
         SP_Common::printJSON(_('El tamaño máximo de archivo es de 16MB'));
     }
 
-    SP_Config::setValue("allowed_exts", $frmAllowedExts);
     SP_Config::setValue("account_link", $frmAccountLink);
     SP_Config::setValue("account_count", $frmAccountCount);
     SP_Config::setValue("sitelang", $frmSiteLang);
@@ -157,6 +156,7 @@ if ($frmAction == "config") {
     SP_Config::setValue("resultsascards", $frmResultsAsCards);
     SP_Config::setValue("globalsearch", $frmGlobalSearch);
     SP_Config::setValue("files_allowed_size", $frmAllowedSize);
+    SP_Config::setValue("files_allowed_exts", $frmAllowedExts);
 
     $message['action'] = _('Modificar Configuración');
 
