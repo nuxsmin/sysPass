@@ -202,13 +202,13 @@ $ro = ( $user['checks']['user_isLdap'] ) ? "READONLY" : "";
             </tbody>
         </table>
         <?php if (!$isView): ?>
-            <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
-            <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
+            <input type="hidden" name="activeTab" value="<?php echo $activeTab; ?>"/>
+            <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction; ?>"/>
             <input type="hidden" name="ldap" value="<?php echo $user['user_isLdap']; ?>"/>
             <input type="hidden" name="id" value="<?php echo $user['user_id']; ?>"/>
             <input type="hidden" name="action" value="<?php echo $user['action']; ?>"/>
             <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>"/>
-            <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true) ?>">
+            <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(); ?>">
             <input type="hidden" name="isAjax" value="1">
         <?php endif; ?>
     </form>

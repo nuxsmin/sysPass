@@ -50,12 +50,12 @@ $activeTab = $data['activeTab'];
             </tbody>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
-        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
+        <input type="hidden" name="activeTab" value="<?php echo $activeTab; ?>"/>
+        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction; ?>"/>
         <input type="hidden" name="id" value="<?php echo $group["usergroup_id"]; ?>" />
-        <input type="hidden" name="action" value="<?php echo $group["action"] ?>" />
+        <input type="hidden" name="action" value="<?php echo $group["action"]; ?>" />
         <input type="hidden" name="type" value="<?php echo $data['itemtype']; ?>" />
-        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(true) ?>">
+        <input type="hidden" name="sk" value="<?php echo SP_Common::getSessionKey(); ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
