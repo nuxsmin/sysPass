@@ -41,7 +41,7 @@ if (is_array($checkVersion)) {
     $title = _('Descargar nueva versión') . ' - ' . $checkVersion['version'] . '<br><br>' . nl2br($checkVersion['description']);
     echo '<a href="' . $checkVersion['url'] . '" target="_blank" title="' . $title . '"><img src="imgs/update.png" />&nbsp;' . $checkVersion['title'] . '</a>';
 } elseif ($checkVersion === true) {
-    echo '<img src="imgs/ok.png" title="' . _('Actualizado') . '"/>';
+    echo '<img src="imgs/ok.png" title="' . _('Actualizado') . ' ' . implode('.', SP_Util::getVersion(true)) . '"/>';
 } elseif ($checkVersion === false) {
     echo '!';
 }

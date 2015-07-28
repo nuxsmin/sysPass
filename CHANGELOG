@@ -1,3 +1,13 @@
+=== ** v1.1.2.24 ===
+
+* [FIX] Fixed error on saving files extensions.
+* [FIX] Fixed checking for updates issue.
+* [FIX] Closes #109
+* [FIX] Closes #116, Closes #107
+* [MOD] Changed behaviour on getting security token for customers, categories, groups, users and profiles edition.
+* [MOD] Changed application logo and description.
+* [MOD] Added version umber on update title.
+
 === ** v1.1.2.23 ===
 
 * [FIX] Customer description not being added when it was created. Thanks to @tejadon

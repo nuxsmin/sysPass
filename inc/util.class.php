@@ -223,19 +223,11 @@ class SP_Util
 
         $updateInfo = json_decode($data);
 
-        // $updateInfo[0]->tag_name
-        // $updateInfo[0]->name
-        // $updateInfo[0]->body
-        // $updateInfo[0]->tarball_url
-        // $updateInfo[0]->zipball_url
-        // $updateInfo[0]->published_at
-        // $updateInfo[0]->html_url
-
-        $version = $updateInfo[0]->tag_name;
-        $url = $updateInfo[0]->html_url;
-        $title = $updateInfo[0]->name;
-        $description = $updateInfo[0]->body;
-        $date = $updateInfo[0]->published_at;
+        $version = $updateInfo->tag_name;
+        $url = $updateInfo->html_url;
+        $title = $updateInfo->name;
+        $description = $updateInfo->body;
+        $date = $updateInfo->published_at;
 
         preg_match("/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/", $version, $realVer);
 
@@ -276,7 +268,7 @@ class SP_Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '23';
+        $build = '24';
         $version = array(1, 1, 2);
 
         if ($retBuild) {

@@ -1,3 +1,13 @@
+=== ** v1.1.2.24 ===
+
+* [FIX] Corregido error al guardar extensiones de archivos.
+* [FIX] Corregido error al comprobar actualizaciones.
+* [FIX] Closes #109
+* [FIX] Closes #116, Closes #107
+* [MOD] Cambiada la funcionalidad de generación del token de seguridad para la gestión de clientes, categorias, usuarios, grupos y perfiles.
+* [MOD] Cambiados logo y descripción de la aplicación.
+* [MOD] Añadido número de versión en mensaje de actualización.
+
 === ** v1.1.2.23 ===
 
 * [FIX] Corregido error al crear clientes, la descripción no era insertada. Gracias a @tejadon
