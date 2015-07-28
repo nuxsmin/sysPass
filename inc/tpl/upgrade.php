@@ -33,7 +33,7 @@ $upgrade = ($action === 'upgrade');
 
     <?php if (isset($data['showlogo'])): ?>
         <div id="logo">
-            <img src="<?php echo SP_Init::$WEBROOT; ?>/imgs/logo_full.png" alt="sysPass logo"/>
+            <img src="<?php echo SP_Init::$WEBROOT; ?>/imgs/logo_full.svg" alt="sysPass logo"/>
         </div>
     <?php endif; ?>
 
