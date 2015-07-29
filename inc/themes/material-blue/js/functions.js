@@ -205,26 +205,13 @@ function accSearch(continous, event) {
 }
 
 // Función para la búsqueda de cuentas mediante ordenación
-function searchSort(skey, start, nav) {
+function searchSort(skey, start, dir) {
     "use strict";
 
     if (typeof(skey) === "undefined" || typeof(start) === "undefined") return false;
 
-    if (order.key > 0 && order.key != skey) {
-        order.key = skey;
-        order.dir = 0;
-    } else if (nav != 1) {
-        order.key = skey;
-
-        if (order.dir === 1) {
-            order.dir = 0;
-        } else {
-            order.dir = 1;
-        }
-    }
-
-    $('#frmSearch').find('input[name="skey"]').val(order.key);
-    $('#frmSearch').find('input[name="sorder"]').val(order.dir);
+    $('#frmSearch').find('input[name="skey"]').val(skey);
+    $('#frmSearch').find('input[name="sorder"]').val(dir);
     $('#frmSearch').find('input[name="start"]').val(start);
 
     doSearch();
@@ -251,8 +238,9 @@ function doSearch() {
             $('#resBuscar').html(resMsg("nofancyerror"));
         },
         complete: function () {
-            scrollUp();
             $.fancybox.hideLoading();
+            scrollUp();
+            setContentSize();
         }
     });
 }

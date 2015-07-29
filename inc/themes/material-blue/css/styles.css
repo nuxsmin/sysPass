@@ -1485,11 +1485,15 @@ footer img {
     margin-top: 1em;
 }
 
-.tooltip{
+.tooltip {
     max-width: 300px;
     background-color: #777;
     color: #fff;
     z-index: 101;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
 /*Login Page*/

@@ -1,16 +1,18 @@
 <div id="resBuscar">
-    <?php use SP\Acl;
-
-    if (!$accounts): ?>
+    <?php if (!$accounts): ?>
         <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
     <?php else: ?>
         <div id="data-search-header" class="data-header data-header-minimal">
             <ul>
                 <?php foreach ($sortFields as $field): ?>
-                    <li>
-                        <a id="search-sort-<?php echo $field['key']; ?>" class="round"
-                           onClick="<?php echo $field['function']; ?>"
-                           title="<?php echo $field['title']; ?>"><?php echo $field['name']; ?></a>
+                    <li data-key="<?php echo $field['key']; ?>">
+                        <a class="round <?php echo ($searchKey == $field['key']) ? 'filterOn' : ''; ?>"
+                           title="<?php echo $field['title']; ?>">
+                            <?php echo $field['name']; ?>
+                        </a>
+
+                        <div class="icon material-icons sort-down cursor-pointer <?php echo ($searchKey ==  $field['key'] && $searchOrder === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">arrow_drop_down</div>
+                        <div class="icon material-icons sort-up cursor-pointer <?php echo ($searchKey ==  $field['key'] && $searchOrder === 1) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">arrow_drop_up</div>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -92,7 +94,8 @@
                                 <?php foreach ($wikiFilter as $filter): ?>
                                     <?php if (preg_match("/^" . preg_quote($filter) . ".*/i", $account['name'])): ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
-                                            <i id="viewpass" class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                            <i id="viewpass" class="material-icons"
+                                               title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
                                         </a>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
@@ -184,7 +187,7 @@
         <script>
             passToClip = 0;
 
-            $(function(){
+            $(function () {
                 function clipboard() {
                     var client = new ZeroClipboard($('.clip-pass-button'), {
                         swfPath: "<?php echo \SP\Init::$WEBURI; ?>/js/ZeroClipboard.swf",
@@ -211,5 +214,21 @@
     <script>
         // Actualizar el token de seguridad
         $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
+
+        $('#data-search-header').find('.sort-down').each(function () {
+            $(this).click(function () {
+                var key = $(this).parent().data('key');
+                $(this).parent().find('a').addClass('filterOn');
+                searchSort(key, <?php echo $limitStart; ?>, 0);
+            });
+        });
+
+        $('#data-search-header').find('.sort-up').each(function () {
+            $(this).click(function () {
+                var key = $(this).parent().data('key');
+                $(this).parent().find('a').addClass('filterOn');
+                searchSort(key, <?php echo $limitStart; ?>, 1);
+            });
+        });
     </script>
 </div>
