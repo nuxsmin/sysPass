@@ -134,11 +134,18 @@ abstract class Controller
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
+     * @param null $action La acción a comprobar
      * @return bool
      */
-    protected function checkAccess()
+    protected function checkAccess($action = null)
     {
-        if (!\SP\Acl::checkUserAccess($this->_action)) {
+        $checkAction = $this->_action;
+
+        if (!is_null($action)){
+            $checkAction = $action;
+        }
+
+        if (!\SP\Acl::checkUserAccess($checkAction)) {
 //            $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
         }

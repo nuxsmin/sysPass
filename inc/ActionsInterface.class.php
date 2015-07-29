@@ -80,5 +80,8 @@ interface ActionsInterface {
     const ACTION_CFG_BACKUP = 84;
     const ACTION_CFG_IMPORT = 85;
     const ACTION_CFG_EXPORT = 86;
+    const ACTION_CFG_WIKI = 87;
+    const ACTION_CFG_LDAP = 88;
+    const ACTION_CFG_MAIL = 89;
     const ACTION_EVL = 90;
 }

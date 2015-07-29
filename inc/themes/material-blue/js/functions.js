@@ -63,6 +63,14 @@ $(document).ready(function () {
 
     // Actualizar componentes de MDL cargados con AJAX
     componentHandler.upgradeDom();
+
+    // Activar tooltips
+    $('.active-tooltip').tooltip({
+        content: function() {
+            return $(this).attr('title');
+        },
+        tooltipClass: "tooltip"
+    });
 });
 
 //$(function() {
@@ -170,7 +178,8 @@ function mkChosen(options) {
         allow_single_deselect: true,
         placeholder_text_single: options.placeholder,
         disable_search_threshold: 10,
-        no_results_text: options.noresults
+        no_results_text: options.noresults,
+        width: "200px"
     });
 }
 
@@ -556,41 +565,26 @@ function sendRequest() {
 }
 
 // Función para guardar la configuración
-function configMgmt(action) {
+function configMgmt(action, obj) {
     "use strict";
 
-    var frm, url;
+    var url;
 
     switch (action) {
-        case "saveconfig":
-            frm = 'frmConfig';
+        case "config":
             url = '/ajax/ajax_configSave.php';
-            break;
-        case "savempwd":
-            frm = 'frmCrypt';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "gentmpass":
-            frm = 'frmTempMasterPass';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "backup":
-            frm = 'frmBackup';
-            url = '/ajax/ajax_backup.php';
             break;
         case "export":
-            frm = 'frmExport';
             url = '/ajax/ajax_backup.php';
             break;
-        case "migrate":
-            frm = 'frmMigrate';
+        case "import":
             url = '/ajax/ajax_migrate.php';
             break;
         default:
             return;
     }
 
-    var data = $('#' + frm).serialize();
+    var data = $(obj).serialize();
 
     sendAjax(data, url);
 }
@@ -944,6 +938,8 @@ function checkUpds() {
         timeout: 10000,
         success: function (response) {
             $('#updates').html(response);
+
+            componentHandler.upgradeDom();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $('#updates').html('!');

@@ -30,19 +30,6 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 SP\Request::checkReferer('GET');
 
-// Comprobar una vez por sesión
-if (!SP\Session::getUpdated()) {
-    $updates = SP\Util::checkUpdates();
-    SP\Session::setUpdated();
-}
-
-session_write_close();
-
-if (is_array($updates)) {
-    $title = _('Descargar nueva versión') . ' - ' . $updates['version'] . '<br><br>' . nl2br($updates['description']);
-    echo '<a href="' . $updates['url'] . '" target="_blank" title="' . $title . '"><img src="imgs/update.png" />&nbsp;' . $updates['title'] . '</a>';
-} elseif ($updates === true) {
-    echo '<img src="imgs/ok.png" title="' . _('Actualizado') . '"/>';
-} elseif ($updates === false) {
-    echo '!';
-}
+$controller = new \SP\Controller\MainC(null, null, false);
+$controller->getCheckUpdates();
+$controller->view();

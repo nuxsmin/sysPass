@@ -13,16 +13,17 @@
                         <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
                     </div>
                 <?php endif; ?>
-
-                <div id="updates"></div>
-                <div id="status"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></div>
                 <div id="project">
                     <a href="<?php echo $appInfo['appwebsite']; ?>" target="_blank"
-                       title="<?php echo _('Ayuda :: FAQ :: Changelog'); ?>"><?php echo $appInfo['appname'], ' ', $appVersion; ?></a>
+                    title="<?php echo _('Ayuda :: FAQ :: Changelog'); ?>"><?php echo $appInfo['appname'], ' ', $appVersion; ?></a>
                     &nbsp;::&nbsp;
                     <a href="<?php echo $appInfo['appblog']; ?>" target="_blank"
-                       title="<?php echo _('Un proyecto de cygnux.org'); ?>">cygnux.org</a>
+                    title="<?php echo _('Un proyecto de cygnux.org'); ?>">cygnux.org</a>
                 </div> <!-- Close Project -->
+                <div id="status">
+                    <?php echo (DEBUG) ? 'Debug ON' : ''; ?>
+                    <div id="updates"></div>
+                </div>
             </footer> <!-- Close footer -->
         </div> <!-- Close wrap -->
     </body> <!-- Close BODY...almost done..go..go..go -->

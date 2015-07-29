@@ -8,7 +8,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Maestra'); ?>
     </div>
 
-    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="configMgmt('savempwd'); return false;">
+    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <?php if ($lastUpdateMPass > 0): ?>
                 <tr>
@@ -124,7 +124,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Temporal'); ?>
     </div>
 
-    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" onsubmit="configMgmt('gentmpass'); return false;">
+    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" onsubmit="configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <tr>
                 <td class="descField">

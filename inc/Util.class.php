@@ -215,8 +215,21 @@ class Util
             return false;
         }
 
-        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases';
+        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
         $ch = curl_init($githubUrl);
+
+        if (Config::getValue('proxy_enabled')){
+            curl_setopt($ch, CURLOPT_PROXY, Config::getValue('proxy_server'));
+            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getValue('proxy_port'));
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+
+            $proxyUser = Config::getValue('proxy_user');
+
+            if ($proxyUser) {
+                $proxyAuth = $proxyUser . ':' . Config::getValue('proxy_pass');
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
+            }
+        }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -244,11 +257,11 @@ class Util
         // $updateInfo[0]->published_at
         // $updateInfo[0]->html_url
 
-        $version = $updateInfo[0]->tag_name;
-        $url = $updateInfo[0]->html_url;
-        $title = $updateInfo[0]->name;
-        $description = $updateInfo[0]->body;
-        $date = $updateInfo[0]->published_at;
+        $version = $updateInfo->tag_name;
+        $url = $updateInfo->html_url;
+        $title = $updateInfo->name;
+        $description = $updateInfo->body;
+        $date = $updateInfo->published_at;
 
         preg_match("/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/", $version, $realVer);
 

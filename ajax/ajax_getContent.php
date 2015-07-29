@@ -130,6 +130,9 @@ switch ($actionId) {
         break;
     case \SP\Controller\ActionsInterface::ACTION_CFG:
     case \SP\Controller\ActionsInterface::ACTION_CFG_GENERAL:
+    case \SP\Controller\ActionsInterface::ACTION_CFG_WIKI:
+    case \SP\Controller\ActionsInterface::ACTION_CFG_LDAP:
+    case \SP\Controller\ActionsInterface::ACTION_CFG_MAIL:
     case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION:
     case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
     case \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP:
@@ -139,7 +142,10 @@ switch ($actionId) {
         $tpl->addTemplate('tabs-start');
 
         $controller = new SP\Controller\ConfigC($tpl);
-        $controller->getConfigTab();
+        $controller->getGeneralTab();
+        $controller->getWikiTab();
+        $controller->getLdapTab();
+        $controller->getMailTab();
         $controller->getEncryptionTab();
         $controller->getBackupTab();
         $controller->getImportTab();
@@ -169,9 +175,9 @@ if (\SP\Session::getUserIsAdminApp() && SP\Config::getValue('debug')) {
 // Se comprueba si hay actualizaciones.
 // Es necesario que se haga al final de obtener el contenido ya que la 
 // consulta ajax detiene al resto si se ejecuta antes
-if (\SP\Session::getUserIsAdminApp()
+if (!SP\Session::getUpdated()
+    && \SP\Session::getUserIsAdminApp()
     && SP\Config::getValue('checkupdates') === true
-    && !SP\Session::getUpdated()
 ) {
     echo '<script>checkUpds();</script>';
 }

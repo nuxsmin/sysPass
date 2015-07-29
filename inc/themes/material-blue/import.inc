@@ -121,7 +121,7 @@ echo $import_tabIndex; ?>">
         <?php echo _('Importar phpPMS'); ?>
     </div>
 
-    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="configMgmt('migrate'); return false;">
+    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="configMgmt('import', this); return false;">
         <table class="data round">
             <tr>
                 <td class="descField">
@@ -222,19 +222,11 @@ echo $import_tabIndex; ?>">
 
 <script>
     $(function () {
+        // Preparar la zona de importación
         importFile('<?php echo Common::getSessionKey(true); ?>');
+
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");
-        });
-        $(".sel-chosen-usergroup").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
-        });
-        $(".sel-chosen-user").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
         });
     });
 </script>

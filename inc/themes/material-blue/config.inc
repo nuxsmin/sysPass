@@ -4,10 +4,9 @@
         <?php echo _('Sitio'); ?>
     </div>
 
-    <form method="post" name="frmConfig" id="frmConfig" onsubmit="configMgmt('saveconfig'); return false;">
+    <form method="post" name="frmConfig" id="frmConfig" onsubmit="configMgmt('config', this); return false;">
 
         <table id="tblSite" class="data tblConfig round">
-
             <tr>
                 <td class="descField"><?php echo _('Idioma'); ?></td>
                 <td class="valField">
@@ -116,6 +115,13 @@
                     </label>
                 </td>
             </tr>
+        </table>
+
+        <div id="title" class="midroundup titleNormal">
+            <?php echo _('Cuentas'); ?>
+        </div>
+
+        <table id="tblAccounts" class="data tblConfig round">
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre de cuenta como enlace'); ?>
@@ -137,25 +143,6 @@
             </tr>
             <tr>
                 <td class="descField">
-                    <?php echo _('Gestión de archivos'); ?>
-                    <div id="help-files" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-files">
-                        <p>
-                            <?php echo _('Habilita la subida/descarga de archivos para las cuentas.'); ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
-                        <input type="checkbox" id="files_enabled" class="mdl-switch__input fg-blue100"
-                               name="files_enabled"
-                            <?php echo $chkFiles, ' ', $isDisabled; ?>/>
-                        <span class="mdl-switch__label"></span>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
                     <?php echo _('Búsquedas globales'); ?>
                     <div id="help-globalsearch" class="icon material-icons fg-blue80">help_outline</div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-globalsearch">
@@ -169,6 +156,52 @@
                         <input type="checkbox" id="globalsearch" class="mdl-switch__input fg-blue100"
                                name="globalsearch"
                             <?php echo $chkGlobalSearch, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Resultados por página'); ?>
+                    <div id="help-account_count" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
+                        <p>
+                            <?php echo _('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="account_count" name="account_count" type="number" step="6"
+                               pattern="[0-9]{1,5}" class="mdl-textfield__input fg-blue100" maxlength="5"
+                               value="<?php echo $accountCount; ?>" <?php echo $isDisabled; ?> required/>
+                        <label class="mdl-textfield__label"
+                               for="account_count"><?php echo _('Número de resultados por página'); ?></label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div id="title" class="midroundup titleNormal">
+            <?php echo _('Archivos'); ?>
+        </div>
+
+        <table id="tblFiles" class="data tblConfig round">
+            <tr>
+                <td class="descField">
+                    <?php echo _('Gestión de archivos'); ?>
+                    <div id="help-files" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-files">
+                        <p>
+                            <?php echo _('Habilita la subida/descarga de archivos para las cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
+                        <input type="checkbox" id="files_enabled" class="mdl-switch__input fg-blue100"
+                               name="files_enabled"
+                            <?php echo $chkFiles, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -216,399 +249,26 @@
                                pattern="[0-9]{1,5}" class="mdl-textfield__input fg-blue100" maxlength="5"
                                value="<?php echo $filesAllowedSize; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label"
-                               for="files_allowed_size"><?php echo _('Tamaño máximo de archivo'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Resultados por página'); ?>
-                    <div id="help-account_count" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
-                        <p>
-                            <?php echo _('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="account_count" name="account_count" type="number" step="6"
-                               pattern="[0-9]{1,5}" class="mdl-textfield__input fg-blue100" maxlength="5"
-                               value="<?php echo $accountCount; ?>" <?php echo $isDisabled; ?> required/>
-                        <label class="mdl-textfield__label"
-                               for="account_count"><?php echo _('Tamaño máximo de archivo'); ?></label>
+                               for="files_allowed_size"><?php echo _('Tamaño máximo de archivo en bytes'); ?></label>
                     </div>
                 </td>
             </tr>
         </table>
 
-        <!--WIKI-->
         <div id="title" class="midroundup titleNormal">
-            <?php echo _('Wiki'); ?>
+            <?php echo _('Proxy'); ?>
         </div>
 
-        <table id="tblWiki" class="data tblConfig round">
+        <table id="tblProxy" class="data tblConfig round">
             <tr>
                 <td class="descField">
-                    <?php echo _('Habilitar enlaces Wiki'); ?>
-                    <div id="help-wiki_enabled" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
-                        <p>
-                            <?php echo _('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
-                        </p>
-                    </div>
+                    <?php echo _('Usar Proxy'); ?>
                 </td>
                 <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
-                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input fg-blue100"
-                               name="wiki_enabled"
-                            <?php echo $chkWiki, ' ', $isDisabled; ?>/>
-                        <span class="mdl-switch__label"></span>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('URL de búsqueda Wiki'); ?>
-                    <div id="help-wiki_searchurl" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_searchurl">
-                        <p>
-                            <?php echo _('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
-                        </p>
-
-                        <p>
-                            <?php echo _('Como parámetro se utiliza el nombre del cliente.'); ?>
-                        </p>
-
-                        <p>
-                            <?php _('Ejemplo:'); ?>
-                        </p>
-
-                        <p>
-                            https://wiki.example.org/search.php?phrase=
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="wiki_searchurl" name="wiki_searchurl" type="text"
-                               class="mdl-textfield__input fg-blue100"
-                               maxlength="128" value="<?php echo $wikiSearchUrl; ?>">
-                        <label class="mdl-textfield__label"
-                               for="wiki_searchurl"><?php echo _('URL de búsqueda Wiki'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('URL de página en Wiki'); ?>
-                    <div id="help-wiki_pageurl" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_pageurl">
-                        <p>
-                            <?php echo _('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
-                        </p>
-
-                        <p>
-                            <?php echo _('El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki.'); ?>
-                        </p>
-
-                        <p>
-                            <?php echo _('Ejemplo:'); ?>
-                        </p>
-
-                        <p>
-                            https://wiki.example.org/show.php?name=
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input fg-blue100"
-                               maxlength="128" value="<?php echo $wikiPageUrl; ?>">
-                        <label class="mdl-textfield__label"
-                               for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Prefijo para nombre de cuenta'); ?>
-                    <div id="help-wikifilter" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-wikifilter">
-                        <p>
-                            <?php echo _('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
-                        </p>
-
-                        <p>
-                            <?php echo _('Ejemplos:') . ' serv- | srv- | vm-'; ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo $wikiFilter; ?>"/>
-                </td>
-            </tr>
-        </table>
-
-        <!--LDAP-->
-
-        <div id="title" class="midroundup titleNormal">
-            <?php echo _('LDAP'); ?>
-        </div>
-
-        <table id="tblLdap" class="data tblConfig round">
-            <?php if ($ldapIsAvailable || $isDemoMode): ?>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Habilitar LDAP'); ?>
-                        <div id="help-ldap_enabled" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_enabled">
-                            <p>
-                                <?php echo _('Habilita de autentificación mediante servidor LDAP.'); ?>
-                            </p>
-
-                            <p>
-                                <?php echo _('Este método utilizará MySQL en caso de fallo.'); ?>
-                            </p>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_enabled">
-                            <input type="checkbox" id="ldap_enabled" class="mdl-switch__input fg-blue100"
-                                   name="ldap_enabled"
-                                <?php echo $chkLdap, ' ', $isDisabled; ?>/>
-                            <span class="mdl-switch__label"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Servidor'); ?>
-                        <div id="help-ldap_server" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_server">
-                            <p>
-                                <?php echo _('Nombre o dirección IP del servidor de LDAP.'); ?>
-                            </p>
-
-                            <p>
-                                <?php echo _('Ejemplos:'); ?>
-                            </p>
-
-                            <ul>
-                                <li>ldap.example.org</li>
-                                <li>ldap://ldap.example.org</li>
-                                <li>ldaps://ldap.example.org</li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_server" name="ldap_server" type="text"
-                                   class="mdl-textfield__input fg-blue100"
-                                   maxlength="128" value="<?php echo $ldapServer; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label" for="ldap_server"><?php echo _('Servidor'); ?></label>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Usuario de conexión'); ?>
-                        <div id="help-ldap_binduser" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_binduser">
-                            <p>
-                                <?php echo _('Usuario para conectar con el servicio de LDAP.'); ?>
-                            </p>
-
-                            <p>
-                                <?php echo _('Ejemplos:'); ?>
-                            </p>
-
-                            <ul>
-                                <li>cn=syspass,ou=Users,dc=syspass,o=org</li>
-                                <li>syspass</li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_binduser" name="ldap_binduser" type="text"
-                                   class="mdl-textfield__input fg-blue100"
-                                   maxlength="128" value="<?php echo $ldapBindUser; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label" for="ldap_binduser"><?php echo _('Servidor'); ?></label>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Clave de conexión'); ?>
-                        <div id="help-ldap_bindpass" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_bindpass">
-                            <p>
-                                <?php echo _('Clave del usuario de conexión a LDAP.'); ?>
-                            </p>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_bindpass" name="ldap_bindpass" type="password"
-                                   class="mdl-textfield__input passwordfield__input fg-blue100"
-                                   maxlength="128" value="<?php echo $ldapBindPass; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label" for="ldap_bindpass"><?php echo _('Clave'); ?></label>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Base de búsqueda'); ?>
-                        <div id="help-ldap_base" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_base">
-                            <p>
-                                <?php echo _('Base en la que realizar la búsqueda de usuarios de LDAP.'); ?>
-                            </p>
-
-                            <p>
-                                <?php echo _('Ejemplos:'); ?>
-                            </p>
-
-                            <ul>
-                                <li>cn=Users,dc=example,dc=org</li>
-                                <li>ou=AdminUsers,dc=example,o=org</li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_base" name="ldap_base" type="text" class="mdl-textfield__input fg-blue100"
-                                   maxlength="128" value="<?php echo $ldapBase; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label"
-                                   for="ldap_base"><?php echo _('Base de búsqueda'); ?></label>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Grupo'); ?>
-                        <div id="help-ldap_group" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_group">
-                            <p>
-                                <?php echo _('Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso.'); ?>
-                            </p>
-
-                            <p>
-                                <?php echo _('Este grupo debe de estar ubicado en la base de búsquedas de LDAP.'); ?>
-                            </p>
-
-                            <p>
-                                <?php echo _('Ejemplos:'); ?>
-                            </p>
-
-                            <ul>
-                                <li>cn=GRP_SPUSERS,cn=Users,dc=example,dc=org</li>
-                                <li>GRP_SPUSERS</li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="ldap_group" name="ldap_group" type="text" class="mdl-textfield__input fg-blue100"
-                                   maxlength="128" value="<?php echo $ldapGroup; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label" for="ldap_group"><?php echo _('Grupo'); ?></label>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Grupo por Defecto'); ?>
-                        <div id="help-ldap_defaultgroup" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_defaultgroup">
-                            <p>
-                                <?php echo _('Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
-                            </p>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <select id="ldap_defaultgroup" name="ldap_defaultgroup"
-                                class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
-                            <option value="0"></option>
-                            <?php foreach ($groups as $id => $name): ?>
-                                <option
-                                    value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultGroup) ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Perfil por Defecto'); ?>
-                        <div id="help-ldap_defaultprofile" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_defaultprofile">
-                            <p>
-                                <?php echo _('Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
-                            </p>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <select id="ldap_defaultprofile" name="ldap_defaultprofile"
-                                class="select-box sel-chosen-profile" <?php echo $isDisabled; ?> required>
-                            <option value="0"></option>
-                            <?php foreach ($profiles as $id => $name): ?>
-                                <option
-                                    value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Active Directory'); ?>
-                        <div id="help-ldap_ads" class="icon material-icons fg-blue80">help_outline</div>
-                        <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_ads">
-                            <p>
-                                <?php echo _('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
-                            </p>
-                        </div>
-                    </td>
-                    <td class="valField">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
-                            <input type="checkbox" id="ldap_ads" class="mdl-switch__input fg-blue100" name="ldap_ads"
-                                <?php echo $chkLdapADS, ' ', $isDisabled; ?>/>
-                            <span class="mdl-switch__label"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Comprobar'); ?>
-                    </td>
-                    <td class="valField">
-                        <img src="imgs/refresh.png" class="inputImg"
-                             title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="checkLdapConn();"/>
-                    </td>
-                </tr>
-            <?php else: ?>
-                <tr>
-                    <td class="option-disabled">
-                        <?php echo _('Módulo no disponible'); ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
-        </table>
-
-        <!--MAIL-->
-        <div id="title" class="midroundup titleNormal">
-            <?php echo _('Correo'); ?>
-        </div>
-
-        <table id="tblMail" class="data tblConfig round">
-            <tr>
-                <td class="descField">
-                    <?php echo _('Habilitar notificaciones de correo'); ?>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
-                        <input type="checkbox" id="mail_enabled" class="mdl-switch__input fg-blue100"
-                               name="mail_enabled"
-                            <?php echo $chkMail, ' ', $isDisabled; ?>/>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="proxy_enabled">
+                        <input type="checkbox" id="proxy_enabled" class="mdl-switch__input fg-blue100"
+                               name="proxy_enabled"
+                            <?php echo $chkProxy, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -619,9 +279,11 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_server" name="mail_server" type="text" class="mdl-textfield__input fg-blue100"
-                               maxlength="128" value="<?php echo $mailServer; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="mail_server"><?php echo _('Servidor'); ?></label>
+                        <input id="proxy_server" name="proxy_server" type="text"
+                               class="mdl-textfield__input fg-blue100"
+                               maxlength="128" value="<?php echo $proxyServer; ?>">
+                        <label class="mdl-textfield__label"
+                               for="proxy_server"><?php echo _('Servidor proxy'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -631,23 +293,12 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_port" name="mail_port" type="number" pattern="[0-9]{1,5}"
-                               class="mdl-textfield__input fg-blue100" maxlength="5"
-                               value="<?php echo $mailPort; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="mail_port"><?php echo _('Puerto'); ?></label>
+                        <input id="proxy_port" name="proxy_port" type="number"
+                               class="mdl-textfield__input fg-blue100" pattern="[0-9]{1,5}"
+                               maxlength="128" value="<?php echo $proxyPort; ?>">
+                        <label class="mdl-textfield__label"
+                               for="proxy_port"><?php echo _('Puerto del servidor proxy'); ?></label>
                     </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Habilitar Autentificación'); ?>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
-                        <input type="checkbox" id="mail_authenabled" class="mdl-switch__input fg-blue100"
-                               name="mail_authenabled" <?php echo $chkMailAuth, ' ', $isDisabled; ?>/>
-                        <span class="mdl-switch__label"></span>
-                    </label>
                 </td>
             </tr>
             <tr>
@@ -656,9 +307,11 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_user" name="mail_user" type="email" class="mdl-textfield__input fg-blue100"
-                               maxlength="50" value="<?php echo $mailUser; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="mail_user"><?php echo _('Usuario'); ?></label>
+                        <input id="proxy_user" name="proxy_user" type="text"
+                               class="mdl-textfield__input fg-blue100"
+                               maxlength="128" value="<?php echo $proxyUser; ?>">
+                        <label class="mdl-textfield__label"
+                               for="proxy_user"><?php echo _('Usuario del servidor proxy'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -668,74 +321,32 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_pass" name="mail_pass" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input"
-                               maxlength="128" value="<?php echo $mailPass; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="mail_pass"><?php echo _('Clave'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Seguridad'); ?>
-                </td>
-                <td class="valField">
-                    <select name="mail_security" id="sel-mailsecurity" size="1" class="sel-chosen-ns">
-
-                        <?php echo '<option>' . _('Deshabilitada') . '</option>'; ?>
-                        <?php foreach ($mailSecurity as $security): ?>
-                            <?php echo "<option ", ($currentMailSecurity == $security) ? "SELECTED" : "", ">$security</option>"; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Dirección de correo de envío'); ?>
-                </td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mail_from" name="mail_from" type="email" class="mdl-textfield__input fg-blue100"
-                               maxlength="128" value="<?php echo $mailFrom; ?>" <?php echo $isDisabled; ?>/>
+                        <input id="proxy_pass" name="proxy_pass" type="password"
+                               class="mdl-textfield__input passwordfield__input fg-blue100"
+                               maxlength="128" value="<?php echo $proxyPass; ?>">
                         <label class="mdl-textfield__label"
-                               for="mail_from"><?php echo _('Dirección de correo de envío'); ?></label>
+                               for="proxy_pass"><?php echo _('Clave del servidor proxy'); ?></label>
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Habilitar peticiones por correo'); ?>
 
-                    <div id="help-mail_requestsenabled" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-mail_requestsenabled">
-                        <p>
-                            <?php echo _('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
-                        <input type="checkbox" id="mail_requestsenabled" class="mdl-switch__input fg-blue100"
-                               name="mail_requestsenabled" <?php echo $chkMailRequests, ' ', $isDisabled; ?>/>
-                        <span class="mdl-switch__label"></span>
-                    </label>
-                </td>
-            </tr>
         </table>
+
 
         <?php if ($isDemoMode): ?>
             <input type="hidden" name="log_enabled" value="1"/>
             <input type="hidden" name="files_enabled" value="1"/>
-            <input type="hidden" name="wiki_enabled" value="1"/>
         <?php endif; ?>
+
         <input type="hidden" name="activeTab" value="<?php echo $config_tabIndex; ?>"/>
-        <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_GENERAL; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo $config_actionId; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 
     <div class="action">
-        <button form="frmConfig" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+        <button form="frmConfig"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
                 title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>
         </button>
@@ -766,34 +377,6 @@
                 if (!$tagsbox.find('div').hasClass('icon')) {
                     $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
                 }
-            }
-        });
-        $('#wikifilter').tagsInput({
-            'width': '350px',
-            'height': '50px',
-            'defaultText': '<?php echo _('Añadir filtro'); ?>',
-            'defaultRemoveText': '<?php echo _('Eliminar filtro'); ?>',
-            'removeWithBackspace': false,
-            onAddTag: function () {
-                // Fix scrolling to bottom
-                var $tagsbox = $(this).next();
-                $tagsbox.animate({scrollTop: $tagsbox.height()});
-
-                if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
-                }
-            },
-            onRemoveTag: function () {
-                var $tagsbox = $(this).next();
-
-                if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
-                }
-            },
-            onChange: function () {
-                var $tagsbox = $(this).next();
-                var last_width = $tagsbox.find("span:last").width() + 10;
-                $tagsbox.find(".tag:last").css('width', last_width);
             }
         });
     })

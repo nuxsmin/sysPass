@@ -115,7 +115,9 @@ img.inputImgMini {
     vertical-align: middle;
 }
 
-i{cursor: pointer;}
+i {
+    cursor: pointer;
+}
 
 .altTable {
     border: 0px;
@@ -257,12 +259,12 @@ a:hover, a:active, a:focus {
 }
 
 /*#container #actionsBar #actionsBar-icons{*/
-    /*margin: 0 auto;*/
-    /*width: 30%;*/
-    /*background-color: rgba(83, 109, 254, .1);*/
-    /*box-shadow: 0px 0px 5px rgb(83, 109, 254);*/
-    /*border-radius: 5px;*/
-    /*padding: 1em;*/
+/*margin: 0 auto;*/
+/*width: 30%;*/
+/*background-color: rgba(83, 109, 254, .1);*/
+/*box-shadow: 0px 0px 5px rgb(83, 109, 254);*/
+/*border-radius: 5px;*/
+/*padding: 1em;*/
 /*}*/
 
 #container #content {
@@ -364,12 +366,11 @@ a:hover, a:active, a:focus {
     letter-spacing: 0.3em;
     text-align: center;
 }
+
 #content #title.titleBlue,
 #content #title.titleGreen,
 #content #title.titleOrange,
-#content #title.titleRed,
-#content #title.titleNormal
-{
+#content #title.titleRed {
     background-color: #536dfe;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #536dfe), color-stop(90%, #536dfe));
     background-image: -webkit-linear-gradient(#536dfe 20%, #536dfe 90%);
@@ -377,6 +378,12 @@ a:hover, a:active, a:focus {
     background-image: -o-linear-gradient(#536dfe 20%, #536dfe 90%);
     background-image: linear-gradient(#536dfe 20%, #536dfe 90%);
     background: #536dfe url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_100_536DFE_1x100.png") repeat-x scroll 50% 50%;
+}
+
+#content #title.titleNormal {
+    background-color: rgb(96, 125, 139);
+    color: #fff;
+    font-weight: bold;
 }
 
 #content .data {
@@ -387,7 +394,7 @@ a:hover, a:active, a:focus {
     background-color: #f9f9f9;
 }
 
-#content .data #history-icon{
+#content .data #history-icon {
     position: relative;
     top: 5em;
     right: 2em;
@@ -489,8 +496,8 @@ a:hover, a:active, a:focus {
     background: url("../imgs/clock.png") no-repeat 98% 5% #f9f9f9;
 }
 
-#content #tabs .ui-tabs-nav{
-    position:relative;
+#content #tabs .ui-tabs-nav {
+    position: relative;
     left: 12em;
     width: 90%;
 }
@@ -919,7 +926,9 @@ a:hover, a:active, a:focus {
     font-size: 14px;
 }
 
-#fancyView ul {list-style: none;}
+#fancyView ul {
+    list-style: none;
+}
 
 #fancyView.msgError {
     margin: 5px;
@@ -1108,7 +1117,6 @@ footer {
     position: fixed;
     bottom: 0;
     z-index: 100;
-    float: left;
     width: 100%;
     height: 1.5em;
     margin: 0 auto;
@@ -1123,29 +1131,26 @@ footer {
 
 footer #project {
     float: right;
-    width: 40%;
     text-align: right;
-    padding-right: 20px;
+    padding-right: 1em;
 }
 
 footer #updates {
-    float: left;
-    width: 15%;
-    text-align: left;
+    display: inline-block;
     padding-left: 20px;
+    cursor: pointer;
 }
 
 footer #status {
-    float: left;
-    width: 10%;
-    text-align: left;
+    float: right;
+    text-align: right;
     color: #b94a48;
     padding: 0 1em;
 }
 
 footer #session {
     float: left;
-    width: 15%;
+    width: 50em;
     text-align: left;
     padding: .2em 1em;
     color: #999;
@@ -1445,17 +1450,47 @@ footer img {
     font-weight: bold;
 }
 
-.dialog-pass-text{padding: .5em; border: transparent 1px solid; text-align: center; min-width: 200px; }
-.dialog-buttons{text-align: center; padding: .5em; border-top: 1px solid #c9c9c9; line-height: 2.5em;}
+.dialog-pass-text {
+    padding: .5em;
+    border: transparent 1px solid;
+    text-align: center;
+    min-width: 200px;
+}
+
+.dialog-buttons {
+    text-align: center;
+    padding: .5em;
+    border-top: 1px solid #c9c9c9;
+    line-height: 2.5em;
+}
+
 .dialog-clip-pass-copy {
     background-color: #ecfde4;;
     color: green;
     border: #dbfdcb 1px solid;
 }
 
-.help-box{background-color: #fff !important; color: rgb(96, 125, 139);}
-.help-box>*{font-weight: bold;}
-.help-text{text-align: justify; line-height: 1.5em; margin-top: 1em;}
+.help-box {
+    background-color: #fff !important;
+    color: rgb(96, 125, 139);
+}
+
+.help-box > * {
+    font-weight: bold;
+}
+
+.help-text {
+    text-align: justify;
+    line-height: 1.5em;
+    margin-top: 1em;
+}
+
+.tooltip{
+    max-width: 300px;
+    background-color: #777;
+    color: #fff;
+    z-index: 101;
+}
 
 /*Login Page*/
 #boxLogin {

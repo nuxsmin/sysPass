@@ -46,24 +46,26 @@ class MainC extends Controller implements ActionsInterface
      * @param      $template  \SP\Template con instancia de plantilla
      * @param null $page      nombre de página para la clase del body
      */
-    public function __construct(\SP\Template $template = null, $page = null)
+    public function __construct(\SP\Template $template = null, $page = null, $initialize = true)
     {
         parent::__construct($template);
 
-        $this->view->addTemplate('header');
-        $this->view->addTemplate('body');
+        if ($initialize) {
+            $this->view->addTemplate('header');
+            $this->view->addTemplate('body');
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
-        $this->view->assign('appInfo', Util::getAppInfo());
-        $this->view->assign('appVersion', Util::getVersionString());
-        $this->view->assign('startTime', microtime());
-        $this->view->assign('page', $page);
-        $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
-        $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
-        $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
+            $this->view->assign('sk', \SP\Common::getSessionKey(true));
+            $this->view->assign('appInfo', Util::getAppInfo());
+            $this->view->assign('appVersion', Util::getVersionString());
+            $this->view->assign('startTime', microtime());
+            $this->view->assign('page', $page);
+            $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
+            $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
+            $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
 
-        $this->getHeader();
-        $this->setHeaders();
+            $this->getHeader();
+            $this->setHeaders();
+        }
     }
 
     /**
@@ -329,6 +331,37 @@ class MainC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('footer');
+
+    }
+
+    /**
+     * Obtener los datos para el interface de comprobación de actualizaciones
+     */
+    public function getCheckUpdates()
+    {
+        // Comprobar una vez por sesión
+        if (!\SP\Session::getUpdated()) {
+            $updates = \SP\Util::checkUpdates();
+            \SP\Session::setUpdated(true);
+        }
+
+        // Forzar la escritura de la sesión
+        session_write_close();
+
+        $this->view->addTemplate('update');
+
+        if (is_array($updates)){
+            $description = nl2br($updates['description']);
+            $version = $updates['version'];
+
+            $this->view->assign('hasUpdates', true);
+            $this->view->assign('title', $updates['title']);
+            $this->view->assign('url', $updates['url']);
+            $this->view->assign('description', _('Descargar nueva versión') . ' - ' . $version . '<br><br>' . $description);
+        } else {
+            $this->view->assign('hasUpdates', false);
+            $this->view->assign('status', $updates);
+        }
 
     }
 }

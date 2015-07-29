@@ -47,6 +47,8 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->assign('tabs', array());
         $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
+        $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled()) ? 'DISABLED' : '');
     }
 
     /**
@@ -54,7 +56,7 @@ class ConfigC extends Controller implements ActionsInterface
      *
      * @return bool
      */
-    public function getConfigTab()
+    public function getGeneralTab()
     {
         $this->setAction(self::ACTION_CFG_GENERAL);
 
@@ -85,51 +87,35 @@ class ConfigC extends Controller implements ActionsInterface
                 'Magyar' => 'hu_HU',
                 'Français' => 'fr_FR')
         );
+        $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
         $this->view->assign('themesAvailable', $themesAvailable);
         $this->view->assign('currentTheme', \SP\Config::getValue('sitetheme'));
-        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
-        $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled()) ? 'DISABLED' : '');
         $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkDebug', (\SP\Config::getValue('debug')) ? 'checked="checked"' : '');
         $this->view->assign('chkMaintenance', (\SP\Config::getValue('maintenance')) ? 'checked="checked"' : '');
         $this->view->assign('chkUpdates', (\SP\Config::getValue('checkupdates')) ? 'checked="checked"' : '');
-        $this->view->assign('chkGlobalSearch', (\SP\Config::getValue('globalsearch')) ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountLink', (\SP\Config::getValue('account_link')) ? 'checked="checked"' : '');
-        $this->view->assign('chkFiles', (\SP\Config::getValue('files_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkWiki', (\SP\Config::getValue('wiki_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkLdap', (\SP\Config::getValue('ldap_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkLdapADS', (\SP\Config::getValue('ldap_ads')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMail', (\SP\Config::getValue('mail_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMailRequests', (\SP\Config::getValue('mail_requestsenabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMailAuth', (\SP\Config::getValue('mail_authenabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkResultsAsCards', (\SP\Config::getValue('resultsascards')) ? 'checked="checked"' : '');
+        $this->view->assign('sessionTimeout', \SP\Config::getValue('session_timeout'));
 
+        // Files
+        $this->view->assign('chkFiles', (\SP\Config::getValue('files_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('filesAllowedExts', \SP\Config::getValue('files_allowed_exts'));
         $this->view->assign('filesAllowedSize', \SP\Config::getValue('files_allowed_size'));
-        $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->view->assign('profiles', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
-        $this->view->assign('ldapDefaultGroup', \SP\Config::getValue('ldap_defaultgroup'));
-        $this->view->assign('ldapDefaultProfile', \SP\Config::getValue('ldap_defaultprofile'));
-        $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
-        $this->view->assign('sessionTimeout', \SP\Config::getValue('session_timeout'));
+
+        // Accounts
+        $this->view->assign('chkGlobalSearch', (\SP\Config::getValue('globalsearch')) ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', (\SP\Config::getValue('resultsascards')) ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountLink', (\SP\Config::getValue('account_link')) ? 'checked="checked"' : '');
         $this->view->assign('accountCount', \SP\Config::getValue('account_count'));
-        $this->view->assign('wikiSearchUrl', \SP\Config::getValue('wiki_searchurl'));
-        $this->view->assign('wikiPageUrl', \SP\Config::getValue('wiki_pageurl'));
-        $this->view->assign('wikiFilter', \SP\Config::getValue('wiki_filter'));
-        $this->view->assign('ldapIsAvailable', \SP\Util::ldapIsAvailable());
-        $this->view->assign('ldapServer', \SP\Config::getValue('ldap_server'));
-        $this->view->assign('ldapBindUser', \SP\Config::getValue('ldap_binduser'));
-        $this->view->assign('ldapBindPass', \SP\Config::getValue('ldap_bindpass'));
-        $this->view->assign('ldapBase', \SP\Config::getValue('ldap_base'));
-        $this->view->assign('ldapGroup', \SP\Config::getValue('ldap_group'));
-        $this->view->assign('mailServer', \SP\Config::getValue('mail_server','localhost'));
-        $this->view->assign('mailPort', \SP\Config::getValue('mail_port',25));
-        $this->view->assign('mailUser', \SP\Config::getValue('mail_user'));
-        $this->view->assign('mailPass', \SP\Config::getValue('mail_pass'));
-        $this->view->assign('currentMailSecurity', \SP\Config::getValue('mail_security'));
-        $this->view->assign('mailFrom', \SP\Config::getValue('mail_from'));
-        $this->view->assign('mailSecurity', array('SSL', 'TLS'));
-        $this->view->append('tabs', array('title' => _('Configuración')));
+
+        // Proxy
+        $this->view->assign('chkProxy', (\SP\Config::getValue('proxy_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('proxyServer', \SP\Config::getValue('proxy_server'));
+        $this->view->assign('proxyPort', \SP\Config::getValue('proxy_port'));
+        $this->view->assign('proxyUser', \SP\Config::getValue('proxy_user'));
+        $this->view->assign('proxyPass', \SP\Config::getValue('proxy_pass'));
+
+        $this->view->assign('actionId', $this->getAction(), 'config');
+        $this->view->append('tabs', array('title' => _('General')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'config');
     }
 
@@ -151,6 +137,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('lastUpdateMPass', \SP\Config::getConfigDbValue("lastupdatempass"));
         $this->view->assign('tempMasterPassTime', \SP\Config::getConfigDbValue("tempmaster_passtime"));
         $this->view->assign('tempMasterMaxTime', \SP\Config::getConfigDbValue("tempmaster_maxtime"));
+
         $this->view->append('tabs', array('title' => _('Encriptación')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');
     }
@@ -212,10 +199,11 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->addTemplate('import');
 
-        $this->view->append('tabs', array('title' => _('Importar Cuentas')));
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'import');
         $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
         $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
+
+        $this->view->append('tabs', array('title' => _('Importar Cuentas')));
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'import');
     }
 
     /**
@@ -233,8 +221,95 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->addTemplate('info');
 
         $this->view->assign('dbInfo', \SP\DB::getDBinfo());
+
         $this->view->append('tabs', array('title' => _('Información')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');
+    }
+
+    /**
+     * Obtener la pestaña de Wiki
+     * @return bool
+     */
+    public function getWikiTab()
+    {
+        $this->setAction(self::ACTION_CFG_WIKI);
+
+        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+            return;
+        }
+
+        $this->view->addTemplate('wiki');
+
+        $this->view->assign('chkWiki', (\SP\Config::getValue('wiki_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('wikiSearchUrl', \SP\Config::getValue('wiki_searchurl'));
+        $this->view->assign('wikiPageUrl', \SP\Config::getValue('wiki_pageurl'));
+        $this->view->assign('wikiFilter', \SP\Config::getValue('wiki_filter'));
+
+        $this->view->assign('actionId', $this->getAction(), 'wiki');
+        $this->view->append('tabs', array('title' => _('Wiki')));
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'wiki');
+    }
+
+    /**
+     * Obtener la pestaña de LDAP
+     * @return bool
+     */
+    public function getLdapTab()
+    {
+        $this->setAction(self::ACTION_CFG_LDAP);
+
+        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+            return;
+        }
+
+        $this->view->addTemplate('ldap');
+
+        $this->view->assign('chkLdap', (\SP\Config::getValue('ldap_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkLdapADS', (\SP\Config::getValue('ldap_ads')) ? 'checked="checked"' : '');
+        $this->view->assign('ldapIsAvailable', \SP\Util::ldapIsAvailable());
+        $this->view->assign('ldapServer', \SP\Config::getValue('ldap_server'));
+        $this->view->assign('ldapBindUser', \SP\Config::getValue('ldap_binduser'));
+        $this->view->assign('ldapBindPass', \SP\Config::getValue('ldap_bindpass'));
+        $this->view->assign('ldapBase', \SP\Config::getValue('ldap_base'));
+        $this->view->assign('ldapGroup', \SP\Config::getValue('ldap_group'));
+        $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->view->assign('profiles', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
+        $this->view->assign('ldapDefaultGroup', \SP\Config::getValue('ldap_defaultgroup'));
+        $this->view->assign('ldapDefaultProfile', \SP\Config::getValue('ldap_defaultprofile'));
+
+        $this->view->assign('actionId', $this->getAction(), 'ldap');
+        $this->view->append('tabs', array('title' => _('LDAP')));
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'ldap');
+    }
+
+    /**
+     * Obtener la pestaña de Correo
+     * @return bool
+     */
+    public function getMailTab()
+    {
+        $this->setAction(self::ACTION_CFG_MAIL);
+
+        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+            return;
+        }
+
+        $this->view->addTemplate('mail');
+
+        $this->view->assign('chkMail', (\SP\Config::getValue('mail_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkMailRequests', (\SP\Config::getValue('mail_requestsenabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkMailAuth', (\SP\Config::getValue('mail_authenabled')) ? 'checked="checked"' : '');
+        $this->view->assign('mailServer', \SP\Config::getValue('mail_server','localhost'));
+        $this->view->assign('mailPort', \SP\Config::getValue('mail_port',25));
+        $this->view->assign('mailUser', \SP\Config::getValue('mail_user'));
+        $this->view->assign('mailPass', \SP\Config::getValue('mail_pass'));
+        $this->view->assign('currentMailSecurity', \SP\Config::getValue('mail_security'));
+        $this->view->assign('mailFrom', \SP\Config::getValue('mail_from'));
+        $this->view->assign('mailSecurity', array('SSL', 'TLS'));
+
+        $this->view->assign('actionId', $this->getAction(), 'mail');
+        $this->view->append('tabs', array('title' => _('Correo')));
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'mail');
     }
 
     /**

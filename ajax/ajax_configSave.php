@@ -45,124 +45,174 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 
 $doActionOnClose = "doAction($actionId,'',$activeTab);";
 
-if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
-    $siteLang = SP\Request::analyze('sitelang');
-    $siteTheme = SP\Request::analyze('sitetheme');
-    $sessionTimeout = SP\Request::analyze('session_timeout', 300);
-    $logEnabled = SP\Request::analyze('log_enabled', false, false, true);
-    $debugEnabled = SP\Request::analyze('debug', false, false, true);
-    $maintenanceEnabled = SP\Request::analyze('maintenance', false, false, true);
-    $checkUpdatesEnabled = SP\Request::analyze('updates', false, false, true);
-    $filesEnabled = SP\Request::analyze('files_enabled', false, false, true);
-    $globalSearchEnabled = SP\Request::analyze('globalsearch', false, false, true);
-    $accountLinkEnabled = SP\Request::analyze('account_link', false, false, true);
-    $accountCount = SP\Request::analyze('account_count', 10);
-    $filesAllowedSize = SP\Request::analyze('files_allowed_size', 1024);
-    $filesAllowedExts = SP\Request::analyze('files_allowed_exts');
-    $resultsAsCardsEnabled = SP\Request::analyze('resultsascards', false, false, true);
+if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
+    || $actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI
+    || $actionId === SP\Controller\ActionsInterface::ACTION_CFG_LDAP
+    || $actionId === SP\Controller\ActionsInterface::ACTION_CFG_MAIL
+) {
+    $log = SP\Log::newLog(_('Modificar Configuración'));
 
-    $wikiEnabled = SP\Request::analyze('wiki_enabled', false, false, true);
-    $wikiSearchUrl = SP\Request::analyze('wiki_searchurl');
-    $wikiPageUrl = SP\Request::analyze('wiki_pageurl');
-    $wikiFilter = SP\Request::analyze('wiki_filter');
+    if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
 
-    $ldapEnabled = SP\Request::analyze('ldap_enabled', false, false, true);
-    $ldapADSEnabled = SP\Request::analyze('ldap_ads', false, false, true);
-    $ldapServer = SP\Request::analyze('ldap_server');
-    $ldapBase = SP\Request::analyze('ldap_base');
-    $ldapGroup = SP\Request::analyze('ldap_group');
-    $ldapDefaultGroup = SP\Request::analyze('ldap_defaultgroup', 0);
-    $ldapDefaultProfile = SP\Request::analyze('ldap_defaultprofile', 0);
-    $ldapBindUser = SP\Request::analyze('ldap_binduser');
-    $ldapBindPass = SP\Request::analyze('ldap_bindpass', '', false, false, false);
-
-    $mailEnabled = SP\Request::analyze('mail_enabled', false, false, true);
-    $mailServer = SP\Request::analyze('mail_server');
-    $mailPort = SP\Request::analyze('mail_port', 25);
-    $mailUser = SP\Request::analyze('mail_user');
-    $mailPass = SP\Request::analyze('mail_pass', '', false, false, false);
-    $mailSecurity = SP\Request::analyze('mail_security');
-    $mailFrom = SP\Request::analyze('mail_from');
-    $mailRequests = SP\Request::analyze('mail_requestsenabled', false, false, true);
-    $mailAuth = SP\Request::analyze('mail_authenabled', false, false, true);
-
-    if ($accountCount == 'all') {
-        $accountCount = 99;
-    }
-
-    // Valores para la conexión a la Wiki
-    if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-        SP\Common::printJSON(_('Faltan parámetros de Wiki'));
-    } elseif ($wikiEnabled) {
-        SP\Config::setValue('wiki_enabled', true);
-        SP\Config::setValue('wiki_searchurl', $wikiSearchUrl);
-        SP\Config::setValue('wiki_pageurl', $wikiPageUrl);
-        SP\Config::setValue('wiki_filter', $wikiFilter);
-    } else {
-        SP\Config::setValue('wiki_enabled', false);
-    }
-
-    // Valores para la configuración de LDAP
-    if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
-        SP\Common::printJSON(_('Faltan parámetros de LDAP'));
-    } elseif ($ldapEnabled) {
-        SP\Config::setValue('ldap_enabled', true);
-        SP\Config::setValue('ldap_ads', $ldapADSEnabled);
-        SP\Config::setValue('ldap_server', $ldapServer);
-        SP\Config::setValue('ldap_base', $ldapBase);
-        SP\Config::setValue('ldap_group', $ldapGroup);
-        SP\Config::setValue('ldap_defaultgroup', $ldapDefaultGroup);
-        SP\Config::setValue('ldap_defaultprofile', $ldapDefaultProfile);
-        SP\Config::setValue('ldap_binduser', $ldapBindUser);
-        SP\Config::setValue('ldap_bindpass', $ldapBindPass);
-    } else {
-        SP\Config::setValue('ldap_enabled', false);
-    }
-
-    // Valores para la configuración del Correo
-    if ($mailEnabled && (!$mailServer || !$mailFrom)) {
-        SP\Common::printJSON(_('Faltan parámetros de Correo'));
-    } elseif ($mailEnabled) {
-        SP\Config::setValue('mail_enabled', true);
-        SP\Config::setValue('mail_requestsenabled', $mailRequests);
-        SP\Config::setValue('mail_server', $mailServer);
-        SP\Config::setValue('mail_port', $mailPort);
-        SP\Config::setValue('mail_security', $mailSecurity);
-        SP\Config::setValue('mail_from', $mailFrom);
-
-        if ($mailAuth) {
-            SP\Config::setValue('mail_authenabled', $mailAuth);
-            SP\Config::setValue('mail_user', $mailUser);
-            SP\Config::setValue('mail_pass', $mailPass);
+        if ($filesEnabled && $filesAllowedSize >= 16384) {
+            SP\Common::printJSON(_('El tamaño máximo por archivo es de 16MB'));
         }
-    } else {
-        SP\Config::setValue('mail_enabled', false);
-        SP\Config::setValue('mail_requestsenabled', false);
-        SP\Config::setValue('mail_authenabled', false);
+
+        // General
+        $siteLang = SP\Request::analyze('sitelang');
+        $siteTheme = SP\Request::analyze('sitetheme');
+        $sessionTimeout = SP\Request::analyze('session_timeout', 300);
+        $logEnabled = SP\Request::analyze('log_enabled', false, false, true);
+        $debugEnabled = SP\Request::analyze('debug', false, false, true);
+        $maintenanceEnabled = SP\Request::analyze('maintenance', false, false, true);
+        $checkUpdatesEnabled = SP\Request::analyze('updates', false, false, true);
+
+        SP\Config::setValue('sitelang', $siteLang);
+        SP\Config::setValue('sitetheme', $siteTheme);
+        SP\Config::setValue('session_timeout', $sessionTimeout);
+        SP\Config::setValue('log_enabled', $logEnabled);
+        SP\Config::setValue('debug', $debugEnabled);
+        SP\Config::setValue('maintenance', $maintenanceEnabled);
+        SP\Config::setValue('checkupdates', $checkUpdatesEnabled);
+
+        // Accounts
+        $globalSearchEnabled = SP\Request::analyze('globalsearch', false, false, true);
+        $accountLinkEnabled = SP\Request::analyze('account_link', false, false, true);
+        $accountCount = SP\Request::analyze('account_count', 10);
+        $resultsAsCardsEnabled = SP\Request::analyze('resultsascards', false, false, true);
+
+        SP\Config::setValue('globalsearch', $globalSearchEnabled);
+        SP\Config::setValue('account_link', $accountLinkEnabled);
+        SP\Config::setValue('account_count', $accountCount);
+        SP\Config::setValue('resultsascards', $resultsAsCardsEnabled);
+
+        // Files
+        $filesEnabled = SP\Request::analyze('files_enabled', false, false, true);
+        $filesAllowedSize = SP\Request::analyze('files_allowed_size', 1024);
+        $filesAllowedExts = SP\Request::analyze('files_allowed_exts');
+
+        SP\Config::setValue('files_enabled', $filesEnabled);
+        SP\Config::setValue('files_allowed_size', $filesAllowedSize);
+        SP\Config::setValue('files_allowed_exts', $filesAllowedExts);
+
+        // Proxy
+        $proxyEnabled = SP\Request::analyze('proxy_enabled', false, false, true);
+        $proxyServer = SP\Request::analyze('proxy_server');
+        $proxyPort = SP\Request::analyze('proxy_port', 0);
+        $proxyUser = SP\Request::analyze('proxy_user');
+        $proxyPass = SP\Request::analyze('proxy_pass');
+
+
+        // Valores para Proxy
+        if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
+            SP\Common::printJSON(_('Faltan parámetros de Proxy'));
+        } elseif ($proxyEnabled) {
+            SP\Config::setValue('proxy_enabled', true);
+            SP\Config::setValue('proxy_server', $proxyServer);
+            SP\Config::setValue('proxy_port', $proxyPort);
+            SP\Config::setValue('proxy_user', $proxyUser);
+            SP\Config::setValue('proxy_pass', $proxyPass);
+        } else {
+            SP\Config::setValue('proxy_enabled', false);
+        }
+
+        $log->addDescription(_('General'));
     }
 
-    if ($filesEnabled && $filesAllowedSize > 16384) {
-        SP\Common::printJSON(_('El tamaño máximo de archivo es de 16MB'));
+    if ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI ) {
+        // Wiki
+        $wikiEnabled = SP\Request::analyze('wiki_enabled', false, false, true);
+        $wikiSearchUrl = SP\Request::analyze('wiki_searchurl');
+        $wikiPageUrl = SP\Request::analyze('wiki_pageurl');
+        $wikiFilter = SP\Request::analyze('wiki_filter');
+
+        // Valores para la conexión a la Wiki
+        if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
+            SP\Common::printJSON(_('Faltan parámetros de Wiki'));
+        } elseif ($wikiEnabled) {
+            SP\Config::setValue('wiki_enabled', true);
+            SP\Config::setValue('wiki_searchurl', $wikiSearchUrl);
+            SP\Config::setValue('wiki_pageurl', $wikiPageUrl);
+            SP\Config::setValue('wiki_filter', $wikiFilter);
+        } else {
+            SP\Config::setValue('wiki_enabled', false);
+        }
+
+        $log->addDescription(_('Wiki'));
     }
 
-    SP\Config::setValue('account_link', $accountLinkEnabled);
-    SP\Config::setValue('account_count', $accountCount);
-    SP\Config::setValue('sitelang', $siteLang);
-    SP\Config::setValue('sitetheme', $siteTheme);
-    SP\Config::setValue('session_timeout', $sessionTimeout);
-    SP\Config::setValue('log_enabled', $logEnabled);
-    SP\Config::setValue('debug', $debugEnabled);
-    SP\Config::setValue('maintenance', $maintenanceEnabled);
-    SP\Config::setValue('checkupdates', $checkUpdatesEnabled);
-    SP\Config::setValue('files_enabled', $filesEnabled);
-    SP\Config::setValue('files_allowed_exts', $filesAllowedExts);
-    SP\Config::setValue('files_allowed_size', $filesAllowedSize);
-    SP\Config::setValue('resultsascards', $resultsAsCardsEnabled);
-    SP\Config::setValue('globalsearch', $globalSearchEnabled);
+    if ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_LDAP ) {
+        // LDAP
+        $ldapEnabled = SP\Request::analyze('ldap_enabled', false, false, true);
+        $ldapADSEnabled = SP\Request::analyze('ldap_ads', false, false, true);
+        $ldapServer = SP\Request::analyze('ldap_server');
+        $ldapBase = SP\Request::analyze('ldap_base');
+        $ldapGroup = SP\Request::analyze('ldap_group');
+        $ldapDefaultGroup = SP\Request::analyze('ldap_defaultgroup', 0);
+        $ldapDefaultProfile = SP\Request::analyze('ldap_defaultprofile', 0);
+        $ldapBindUser = SP\Request::analyze('ldap_binduser');
+        $ldapBindPass = SP\Request::analyze('ldap_bindpass', '', false, false, false);
 
-    $message['action'] = _('Modificar Configuración');
+        // Valores para la configuración de LDAP
+        if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
+            SP\Common::printJSON(_('Faltan parámetros de LDAP'));
+        } elseif ($ldapEnabled) {
+            SP\Config::setValue('ldap_enabled', true);
+            SP\Config::setValue('ldap_ads', $ldapADSEnabled);
+            SP\Config::setValue('ldap_server', $ldapServer);
+            SP\Config::setValue('ldap_base', $ldapBase);
+            SP\Config::setValue('ldap_group', $ldapGroup);
+            SP\Config::setValue('ldap_defaultgroup', $ldapDefaultGroup);
+            SP\Config::setValue('ldap_defaultprofile', $ldapDefaultProfile);
+            SP\Config::setValue('ldap_binduser', $ldapBindUser);
+            SP\Config::setValue('ldap_bindpass', $ldapBindPass);
+        } else {
+            SP\Config::setValue('ldap_enabled', false);
+        }
 
-    SP\Log::writeNewLogAndEmail(_('Modificar Configuración'));
+        $log->addDescription(_('LDAP'));
+    }
+
+    if ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_MAIL ) {
+        // Mail
+        $mailEnabled = SP\Request::analyze('mail_enabled', false, false, true);
+        $mailServer = SP\Request::analyze('mail_server');
+        $mailPort = SP\Request::analyze('mail_port', 25);
+        $mailUser = SP\Request::analyze('mail_user');
+        $mailPass = SP\Request::analyze('mail_pass', '', false, false, false);
+        $mailSecurity = SP\Request::analyze('mail_security');
+        $mailFrom = SP\Request::analyze('mail_from');
+        $mailRequests = SP\Request::analyze('mail_requestsenabled', false, false, true);
+        $mailAuth = SP\Request::analyze('mail_authenabled', false, false, true);
+
+        // Valores para la configuración del Correo
+        if ($mailEnabled && (!$mailServer || !$mailFrom)) {
+            SP\Common::printJSON(_('Faltan parámetros de Correo'));
+        } elseif ($mailEnabled) {
+            SP\Config::setValue('mail_enabled', true);
+            SP\Config::setValue('mail_requestsenabled', $mailRequests);
+            SP\Config::setValue('mail_server', $mailServer);
+            SP\Config::setValue('mail_port', $mailPort);
+            SP\Config::setValue('mail_security', $mailSecurity);
+            SP\Config::setValue('mail_from', $mailFrom);
+
+            if ($mailAuth) {
+                SP\Config::setValue('mail_authenabled', $mailAuth);
+                SP\Config::setValue('mail_user', $mailUser);
+                SP\Config::setValue('mail_pass', $mailPass);
+            }
+        } else {
+            SP\Config::setValue('mail_enabled', false);
+            SP\Config::setValue('mail_requestsenabled', false);
+            SP\Config::setValue('mail_authenabled', false);
+        }
+
+        $log->addDescription(_('Correo'));
+    }
+
+    $log->writeLog();
+
+    SP\Email::sendEmail($log);
 
     // Recargar la aplicación completa para establecer nuevos valores
     SP\Util::reload();
@@ -226,7 +276,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
     $tempMasterPass = SP\Config::setTempMasterPass($tempMasterMaxTime);
 
     if (!empty($tempMasterPass)) {
-        SP\Email::sendEmail(new \SP\Log(_('Generar Clave Temporal'),SP\Html::strongText(_('Clave') . ': ') . $tempMasterPass));
+        SP\Email::sendEmail(new \SP\Log(_('Generar Clave Temporal'), SP\Html::strongText(_('Clave') . ': ') . $tempMasterPass));
 
         SP\Common::printJSON(_('Clave Temporal Generada'), 0, $doActionOnClose);
     }
