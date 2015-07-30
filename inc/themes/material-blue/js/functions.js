@@ -11,7 +11,7 @@ var windowAdjustSize = 450;
 // Variable para almacena la llamada a setTimeout()
 var timeout;
 
-var strPassword;
+var passLength;
 var minPasswordLength = 8;
 var baseScore = 0, score = 0;
 
@@ -30,7 +30,12 @@ bonus.Combo = 0;
 bonus.FlatLower = 0;
 bonus.FlatNumber = 0;
 
-var powertipOptions = {placement: 'ne', smartPlacement: 'true', fadeOutTime: 500};
+var complexity = {};
+complexity.numbers = true;
+complexity.symbols = true;
+complexity.uppercase = true;
+complexity.numlength = 10;
+
 
 jQuery.extend(jQuery.fancybox.defaults, {
     type: 'ajax',
@@ -66,7 +71,7 @@ $(document).ready(function () {
 
     // Activar tooltips
     $('.active-tooltip').tooltip({
-        content: function() {
+        content: function () {
             return $(this).attr('title');
         },
         tooltipClass: "tooltip"
@@ -382,7 +387,7 @@ function viewPass(id, full, history) {
                     // Cerrar Dialog a los 30s
                     var $this = $(this);
 
-                    $(this).parent().on('mouseleave', function(){
+                    $(this).parent().on('mouseleave', function () {
                         clearTimeout(timeout);
                         timeout = setTimeout(function () {
                             $this.dialog('close');
@@ -972,20 +977,16 @@ function getTime() {
 
 // Función para generar claves aleatorias. 
 // By Uzbekjon from  http://jquery-howto.blogspot.com.es
-function password(length, special, fancy, dstId) {
+function password(length, special, fancy, targetId) {
     "use strict";
 
     var iteration = 0;
     var genPassword = '';
     var randomNumber;
 
-    if (typeof special === 'undefined') {
-        special = false;
-    }
-
-    while (iteration < length) {
+    while (iteration < complexity.numlength) {
         randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
-        if (!special) {
+        if (!complexity.symbols) {
             if ((randomNumber >= 33) && (randomNumber <= 47)) {
                 continue;
             }
@@ -999,6 +1000,15 @@ function password(length, special, fancy, dstId) {
                 continue;
             }
         }
+
+        if(!complexity.numbers && randomNumber >= 48 && randomNumber <= 57){
+            continue;
+        }
+
+        if(!complexity.uppercase && randomNumber >= 65 && randomNumber <= 90){
+            continue;
+        }
+
         iteration++;
         genPassword += String.fromCharCode(randomNumber);
     }
@@ -1010,22 +1020,31 @@ function password(length, special, fancy, dstId) {
         alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + genPassword + '</p>');
     }
 
-    if (dstId) {
-        var dstParent = $('#' + dstId).parent();
+    var level = zxcvbn(genPassword);
+    passLength = genPassword.length;
 
-        checkPassLevel(genPassword, dstId);
+    if (targetId) {
+        var dstParent = $('#' + targetId).parent();
 
-        // Poner la clave en el input de la
+        outputResult(level.score, targetId);
+
+        // Actualizar los componentes de MDL
+        var mdl = new MaterialTextfield();
+
+        // Poner la clave en los input y actualizar MDL
         dstParent.find('input:password').val(genPassword);
+        dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
         // Poner la clave en el input de repetición
-        $('#' + dstId + 'R').val(genPassword);
+        $('#' + targetId + 'R').val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+
+        // Mostar el indicador de complejidad
         dstParent.find('#passLevel').show(500);
     } else {
-        checkPassLevel(genPassword);
+        outputResult(level.score);
         $('input:password, input.password').val(genPassword);
         $('#passLevel').show(500);
     }
-    //return password;
+
 }
 
 // Funciones para analizar al fortaleza de una clave
@@ -1033,72 +1052,12 @@ function password(length, special, fancy, dstId) {
 function checkPassLevel(password, dst) {
     "use strict";
 
-    strPassword = password;
+    var level = zxcvbn(password);
 
-    num.Excess = 0;
-    num.Upper = 0;
-    num.Numbers = 0;
-    num.Symbols = 0;
-    bonus.Combo = 0;
-    bonus.FlatLower = 0;
-    bonus.FlatNumber = 0;
-    baseScore = 0;
-    score = 0;
-
-    if (password.length >= minPasswordLength) {
-        baseScore = 50;
-        analyzeString();
-        calcComplexity();
-    } else {
-        baseScore = 0;
-    }
-
-    outputResult(dst);
+    outputResult(level.score, dst);
 }
 
-function analyzeString() {
-    "use strict";
-
-    var chars = strPassword.split('');
-
-    for (var i = 0; i < strPassword.length; i++) {
-        if (chars[i].match(/[A-Z]/g)) {
-            num.Upper++;
-        }
-        if (chars[i].match(/[0-9]/g)) {
-            num.Numbers++;
-        }
-        if (chars[i].match(/(.*[!,@,#,$,%,&,*,?,%,_])/)) {
-            num.Symbols++;
-        }
-    }
-
-    num.Excess = strPassword.length - minPasswordLength;
-
-    if (num.Upper && num.Numbers && num.Symbols) {
-        bonus.Combo = 25;
-    }
-
-    else if ((num.Upper && num.Numbers) || (num.Upper && num.Symbols) || (num.Numbers && num.Symbols)) {
-        bonus.Combo = 15;
-    }
-
-    if (strPassword.match(/^[\sa-z]+$/)) {
-        bonus.FlatLower = -15;
-    }
-
-    if (strPassword.match(/^[\s0-9]+$/)) {
-        bonus.FlatNumber = -35;
-    }
-}
-
-function calcComplexity() {
-    "use strict";
-
-    score = baseScore + (num.Excess * bonus.Excess) + (num.Upper * bonus.Upper) + (num.Numbers * bonus.Numbers) + (num.Symbols * bonus.Symbols) + bonus.Combo + bonus.FlatLower + bonus.FlatNumber;
-}
-
-function outputResult(dstId) {
+function outputResult(level, dstId) {
     "use strict";
 
     var complexity, selector = '.passLevel-' + dstId;
@@ -1106,17 +1065,17 @@ function outputResult(dstId) {
     complexity = $(selector);
     complexity.removeClass("weak good strong strongest");
 
-    if (strPassword.length === 0) {
+    if (passLength === 0) {
         complexity.attr('title', '').empty();
-    } else if (strPassword.length < minPasswordLength) {
+    } else if (passLength < minPasswordLength) {
         complexity.attr('title', LANG[11]).addClass("weak");
-    } else if (score < 50) {
+    } else if (level === 0) {
         complexity.attr('title', LANG[9]).addClass("weak");
-    } else if (score >= 50 && score < 75) {
+    } else if (level === 1 || level === 2) {
         complexity.attr('title', LANG[8]).addClass("good");
-    } else if (score >= 75 && score < 100) {
+    } else if (level === 3) {
         complexity.attr('title', LANG[7]).addClass("strong");
-    } else if (score >= 100) {
+    } else if (level === 4) {
         complexity.attr('title', LANG[10]).addClass("strongest");
     }
 
@@ -1223,4 +1182,63 @@ function getBrowser() {
     }
 
     return browser;
+}
+
+function complexityDialog(targetId) {
+    $('<div></div>').dialog({
+        modal: true,
+        title: 'Opciones de Complejidad',
+        width: '400px',
+        open: function () {
+            var content =
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">' +
+                '<input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers"/>' +
+                '<span class="mdl-checkbox__label">Incluir números</span>' +
+                '</label>' +
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">' +
+                '<input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>' +
+                '<span class="mdl-checkbox__label">Incluir mayúculas</span>' +
+                '</label>' +
+                '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">' +
+                '<input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>' +
+                '<span class="mdl-checkbox__label">Incluir símbolos</span>' +
+                '</label>' +
+                '<div class="mdl-textfield mdl-js-textfield textfield-passlength">' +
+                '<input class="mdl-textfield__input" type="number" pattern="[0-9]*" id="passlength" />' +
+                '<label class="mdl-textfield__label" for="passlength">Longitud</label>' +
+                '</div>' +
+                '<button id="btn-complexity" class="mdl-button mdl-js-button mdl-button--raised">Ok</button>';
+
+            $(this).html(content);
+
+            // Recentrar después de insertar el contenido
+            $(this).dialog('option', 'position', 'center');
+
+            $this = $(this);
+
+            // Actualizar componentes de MDL
+            $(this).ready(function () {
+                $('#checkbox-numbers').prop('checked', complexity.numbers);
+                $('#checkbox-uppercase').prop('checked', complexity.uppercase);
+                $('#checkbox-symbols').prop('checked', complexity.symbols);
+                $('#passlength').val(complexity.numlength);
+
+                $('#btn-complexity').click(function () {
+                    complexity.numbers = $(' #checkbox-numbers').is(':checked');
+                    complexity.uppercase = $('#checkbox-uppercase').is(':checked');
+                    complexity.symbols = $('#checkbox-symbols').is(':checked');
+                    complexity.numlength = parseInt($('#passlength').val());
+
+                    $this.dialog('close');
+                });
+
+                // Actualizar objetos de MDL
+                componentHandler.upgradeDom();
+            });
+        },
+        // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
+        close: function () {
+            $(this).dialog("destroy");
+        }
+    });
 }

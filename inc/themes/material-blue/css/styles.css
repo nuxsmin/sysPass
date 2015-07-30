@@ -1374,20 +1374,6 @@ footer img {
     z-index: 8050;
 }
 
-/* Fix for fancybox z-index*/
-/*
-.ui-buttonset .ui-state-active {
-    background: url("images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
-    border: 1px solid #AAAAAA;
-    color: #212121;
-    font-weight: normal;
-}
-
-.valField .ui-state-active, #tblTools .ui-state-active, #frmInstall .ui-state-active {
-    background: url("images/ui-bg_glass_75_ON_1x400.png") repeat-x scroll 50% 50% #ecfde4;
-}
-*/
-/*#passLevel { margin-left: 10px; padding: 3px 15px;}*/
 .passLevel {
     width: 20px;
     height: 20px;
@@ -1488,7 +1474,14 @@ footer img {
     cursor: pointer;
 }
 
-.password-actions { display: inline-block; width: 10em;}
+.password-actions {
+    display: inline-block;
+    width: 12em;
+}
+
+.password-actions > span, .password-actions i {
+    margin-right: .6em;
+}
 
 /*Login Page*/
 #boxLogin {

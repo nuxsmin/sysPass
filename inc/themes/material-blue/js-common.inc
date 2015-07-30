@@ -47,13 +47,19 @@
         $('.passwordfield__input').each(function () {
             var thisParent = $(this).parent();
             var targetId = $(this).attr('id');
+            var btnMenu = '<button id="menu-speed-' + targetId + '" class="mdl-button mdl-js-button mdl-button--icon" type="button"><i class="material-icons">more_vert</i></button>';
+
+            btnMenu += '<ul class="mdl-menu mdl-js-menu" for="menu-speed-' + targetId + '">';
+            btnMenu += '<li class="mdl-menu__item passGen" data-targetid="' + targetId + '"><i class="material-icons">settings</i><?php echo _('Generar clave aleatoria'); ?></li>';
+            btnMenu += '<li class="mdl-menu__item passComplexity" data-targetid="' + targetId + '"><i class="material-icons">vpn_key</i><?php echo _('Complejidad'); ?></li>';
+            btnMenu += '<li class="mdl-menu__item reset" data-targetid="' + targetId + '"><i class="material-icons">refresh</i><?php echo _('Reset'); ?></li>';
 
             thisParent.after('<div class="password-actions" />');
 
-            $('.password-actions')
+            thisParent.next('.password-actions')
                 .prepend('<span class="passLevel passLevel-' + targetId + ' fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>')
-                .prepend('<i class="passGen material-icons" title="<?php echo _('Generar clave aleatoria'); ?>" data-targetid="' + targetId + '">settings</i>')
-                .prepend('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>" data-targetid="' + targetId + '">remove_red_eye</i>');
+                .prepend('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>" data-targetid="' + targetId + '">remove_red_eye</i>')
+                .prepend(btnMenu);
 
             $(this).on('keyup', function () {
                 checkPassLevel($(this).val(), targetId);
@@ -74,12 +80,12 @@
             $(this).on('click', function () {
                 var targetId = $(this).data('targetid');
                 password(11, true, true, targetId);
+            });
+        });
 
-                var mdl = new MaterialTextfield();
-
-                $('#' + targetId).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-                $('#' + targetId + 'R').parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-
+        $('.passComplexity').each(function () {
+            $(this).on('click', function () {
+                complexityDialog();
             });
         });
 
@@ -88,6 +94,14 @@
             $(this).on('mouseover', function () {
                 var targetId = $(this).data('targetid');
                 $(this).attr('title', $('#' + targetId).val());
+            });
+        });
+
+        $('.reset').each(function () {
+            $(this).on('click', function () {
+                var targetId = $(this).data('targetid');
+                $('#' + targetId).val('');
+                $('#' + targetId + 'R').val('');
             });
         });
 

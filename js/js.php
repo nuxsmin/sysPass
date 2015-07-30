@@ -42,6 +42,7 @@ $jsFilesBase = array(
     array('href' => 'js/jquery.filedrop.js', 'min' => true),
     array('href' => 'js/jquery.tagsinput.js', 'min' => true),
     array('href' => 'js/ZeroClipboard.min.js', 'min' => false),
+    array('href' => 'js/zxcvbn-async.js', 'min' => true)
 );
 
 $arrJsLang = array(
@@ -80,4 +81,4 @@ if (file_exists($themeJsPath)){
     }
 }
 
-SP\Util::getMinified('js', $jsFilesBase, true);
+SP\Util::getMinified('js', $jsFilesBase, false);
