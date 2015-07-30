@@ -87,14 +87,16 @@
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="pass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
-                                   maxlength="50" OnFocus="$('#passLevel').show();
-                                    $('#resFancyAccion').hide();" OnKeyUp="checkPassLevel(this.value)">
+                            <input id="userpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
+                                   maxlength="50" OnKeyUp="checkPassLevel(this.value)">
                             <label class="mdl-textfield__label"
-                                   for="pass"><?php echo _('Clave'); ?></label>
+                                   for="userpass"><?php echo _('Clave'); ?></label>
                         </div>
-                        <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                        <i id="passGen" class="material-icons" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
+                        <div class="password-actions" >
+                            <i class="showpass material-icons" data-targetid="userpass" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
+                            <i class="passGen material-icons" data-targetid="userpass" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
+                            <span class="passLevel passLevel-userpass fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
+                        </div>
                     </td>
                 </tr>
 
@@ -102,12 +104,11 @@
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="passv" name="passv" type="password" required class="mdl-textfield__input fg-blue100"
+                            <input id="userpassR" name="passv" type="password" required class="mdl-textfield__input fg-blue100"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
-                                   for="passv"><?php echo _('Clave (repetir)'); ?></label>
-                        </div
-                        <span id="passLevel" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
+                                   for="userpassR"><?php echo _('Clave (repetir)'); ?></label>
+                        </div>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -209,16 +210,39 @@
         $("#selProfile").chosen({
             placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
             disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
         });
         $("#selGroup").chosen({
             placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
             disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>"
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
         });
-        $('#passGen').click(function () {
-            $('#resFancyAccion').hide();
-            password(11, true, true);
+
+        // Crear evento para generar clave aleatoria
+        $('.passGen').each(function () {
+            $(this).on('click', function () {
+                var targetId = $(this).data('targetid');
+                password(11, true, true, targetId);
+
+                console.log();
+                console.log(targetId);
+
+                var mdl = new MaterialTextfield();
+
+                $('#' + targetId).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+                $('#' + targetId + 'R').parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+
+            });
+        });
+
+        // Crear evento para mostrar clave generada/introducida
+        $('.showpass').each(function () {
+            $(this).on('mouseover', function () {
+                var targetId = $(this).data('targetid');
+                $(this).attr('title', $('#' + targetId).val());
+            });
         });
     });
 </script>

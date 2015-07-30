@@ -48,10 +48,12 @@
             var thisParent = $(this).parent();
             var targetId = $(this).attr('id');
 
-            thisParent
-                .after('<span class="passLevel passLevel-' + targetId + ' fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>')
-                .after('<i class="passGen material-icons" title="<?php echo _('Generar clave aleatoria'); ?>" data-targetid="' + targetId + '">settings</i>')
-                .after('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>" data-targetid="' + targetId + '">remove_red_eye</i>');
+            thisParent.after('<div class="password-actions" />');
+
+            $('.password-actions')
+                .prepend('<span class="passLevel passLevel-' + targetId + ' fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>')
+                .prepend('<i class="passGen material-icons" title="<?php echo _('Generar clave aleatoria'); ?>" data-targetid="' + targetId + '">settings</i>')
+                .prepend('<i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>" data-targetid="' + targetId + '">remove_red_eye</i>');
 
             $(this).on('keyup', function () {
                 checkPassLevel($(this).val(), targetId);
