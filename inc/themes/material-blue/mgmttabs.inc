@@ -30,7 +30,6 @@
         </div>
 
         <div class="data-rows">
-            <?php $numActions = count($tab['props']["actions"]); ?>
             <?php foreach ($tab['query'] as $item): ?>
                 <?php $i = 0; ?>
                 <?php $itemId = $item->$tab['props']['tblRowSrcId']; ?>
@@ -56,7 +55,7 @@
                         <?php endif; ?>
                     <?php endforeach; ?>
 
-                    <li class="cell-actions round" style="width: <?php echo($numActions * 5 + 2); ?>%;">
+                    <li class="cell-actions round">
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
                             <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php

@@ -2,31 +2,39 @@
     $(function () {
         $(".sel-chosen-ns").chosen({disable_search: true, width: "250px"});
 
-        $(".sel-chosen-usergroup").each(function(){
-            $(this).chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>",
-                width: "250px"
-            });
+        $(".sel-chosen-usergroup").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
         });
 
-        $(".sel-chosen-user").each(function(){
-            $(this).chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>",
-                width: "250px"
-            });
+        $(".sel-chosen-user").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Usuario'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
         });
 
-        $(".sel-chosen-profile").each(function(){
-            $(this).chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>",
-                width: "250px"
-            });
+        $(".sel-chosen-profile").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
+        });
+
+        $(".sel-chosen-customer").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
+        });
+
+        $(".sel-chosen-category").chosen({
+            placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
+            disable_search_threshold: 10,
+            no_results_text: "<?php echo _('Sin resultados'); ?>",
+            width: "250px"
         });
 
         $(".download").button({

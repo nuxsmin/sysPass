@@ -1,4 +1,4 @@
-<div id="title" class="midroundup <?php echo $title['class']; ?>">
+<div id="title" class="midroundup titleBlue">
     <?php echo $title['name']; ?>
     <?php if ($gotData && $accountIsHistory): ?>
         <i id="history-icon" class="material-icons" title="<?php echo _('Histórico'); ?>"><?php echo $title['icon']; ?></i>
@@ -29,7 +29,7 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCustomer" name="customerId" class="select-box" required>
+                        <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer" required>
                             <option value="0"></option>
                             <?php foreach ($customers as $id => $name): ?>
                                 <option
@@ -50,7 +50,7 @@
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCategory" name="categoryId" class="select-box" required>
+                        <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
                             <option value="0"></option>
                             <?php foreach ($categories as $id => $name): ?>
                                 <option
@@ -418,16 +418,6 @@
 <?php if ($showform): ?>
     <script>
         $(function(){
-            $("#selCustomer").chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>"
-            });
-            $("#selCategory").chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>"
-            });
             $("#selGroups").chosen({
                 placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>"
             });

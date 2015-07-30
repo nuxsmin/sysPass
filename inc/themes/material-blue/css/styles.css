@@ -7,7 +7,7 @@ html, body {
     padding: 0;
     text-align: left;
     background-color: #f5f5f5;
-    color: #000000;
+    color: #555;
     font-size: 12px;
     font-weight: normal;
 }
@@ -270,7 +270,7 @@ a:hover, a:active, a:focus {
 #container #content {
     width: 95%;
     min-height: 500px;
-    margin: 14em auto 5em auto;
+    margin: 10em auto 5em auto;
 }
 
 #content td.descField, #fancyContainer td.descField {
@@ -367,10 +367,7 @@ a:hover, a:active, a:focus {
     text-align: center;
 }
 
-#content #title.titleBlue,
-#content #title.titleGreen,
-#content #title.titleOrange,
-#content #title.titleRed {
+#content #title.titleBlue {
     background-color: #536dfe;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #536dfe), color-stop(90%, #536dfe));
     background-image: -webkit-linear-gradient(#536dfe 20%, #536dfe 90%);
@@ -383,11 +380,11 @@ a:hover, a:active, a:focus {
 #content #title.titleNormal {
     background-color: rgb(96, 125, 139);
     color: #fff;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 #content .data {
-    width: 80%;
+    width: 75%;
     padding: 10px;
     border: 1px solid #c9c9c9;
     margin: auto;
@@ -657,6 +654,7 @@ a:hover, a:active, a:focus {
     padding: 1em 0;
     text-align: center;
     background-color: #fcfcfc;
+    width: 15em;
 }
 
 #content .data-rows li.cell-actions:hover {
@@ -1262,14 +1260,8 @@ footer img {
 }
 
 .header-grey {
-    background-color: #536dfe;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #536dfe), color-stop(90%, #536dfe));
-    background-image: -webkit-linear-gradient(#536dfe 20%, #536dfe 90%);
-    background-image: -moz-linear-gradient(#536dfe 20%, #536dfe 90%);
-    background-image: -o-linear-gradient(#536dfe 20%, #536dfe 90%);
-    background-image: linear-gradient(#536dfe 20%, #536dfe 90%);
+    background-color: rgb(96, 125, 139);
     color: #fff;
-    background: #536dfe url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_100_536DFE_1x100.png") repeat-x scroll 50% 50%;
     height: 30px;
     text-align: center;
 }
@@ -1279,7 +1271,7 @@ footer img {
 }
 
 .action {
-    max-width: 80%;
+    max-width: 75%;
     height: 4em;
     margin: 0.7em auto;
     text-align: right;
@@ -1731,4 +1723,33 @@ fieldset.warning a {
 
 .no-title .ui-dialog-titlebar {
     display: none;
+}
+
+@media all and (max-width: 1024px) {
+    #container #actionsBar {
+        text-align: right;
+    }
+
+    #container #content {
+        width: 95%;
+        min-height: 500px;
+        margin: 15em auto 5em auto;
+    }
+
+    #content .data {
+        width: 95%;
+        padding: 10px;
+        margin: auto;
+    }
+
+    #content #tabs .ui-tabs-nav {
+        left: 0;
+        width: 100%;
+    }
+
+    .action {
+        max-width: 95%;
+        height: 4em;
+        margin: 0.7em auto;
+    }
 }
