@@ -14,7 +14,7 @@
    height="395.32526"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="logo.svg">
   <defs
      id="defs2987">
@@ -435,16 +435,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="24.119479"
-     inkscape:cy="161.20187"
+     inkscape:zoom="0.82910156"
+     inkscape:cx="-98.934263"
+     inkscape:cy="353.00994"
      inkscape:current-layer="layer2"
      inkscape:document-units="px"
      showgrid="false"
-     inkscape:window-width="1440"
-     inkscape:window-height="852"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-width="1618"
+     inkscape:window-height="1028"
+     inkscape:window-x="54"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -497,7 +497,7 @@
            y="396.5" /></text>
     </g>
     <rect
-       style="fill:#3f51b5;fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter4485-6)"
+       style="fill:#3f51b5;fill-opacity:1;fill-rule:evenodd;stroke:none;filter:url(#filter4485-6);opacity:0.5"
        id="rect3079"
        width="298"
        height="380"

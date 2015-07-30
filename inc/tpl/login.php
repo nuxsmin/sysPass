@@ -28,7 +28,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 ?>
 
     <div id="boxLogin" class="round shadow">
-        <div id="boxLogo"><img id="imgLogo" src="imgs/logo.png" title="sysPass"/></div>
+        <div id="boxLogo"><img id="imgLogo" src="imgs/logo.svg" title="sysPass"/></div>
         <div id="boxData">
             <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
                 <?php if (SP_Util::demoIsEnabled()): ?>
