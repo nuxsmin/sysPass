@@ -42,7 +42,7 @@
             <tr>
                 <td class="descField"><?php echo _('Perfil'); ?></td>
                 <td class="valField">
-                    <select id="selProfile" name="profileid" class="select-box" <?php echo $isDisabled; ?> required>
+                    <select id="selProfile" name="profileid" class="select-box sel-chosen-profile" <?php echo $isDisabled; ?> required>
                         <option value="0"></option>
                         <?php foreach ($profiles as $id => $name): ?>
                             <option
@@ -55,7 +55,7 @@
             <tr>
                 <td class="descField"><?php echo _('Grupo'); ?></td>
                 <td class="valField">
-                    <select id="selGroup" name="groupid" class="select-box" <?php echo $isDisabled; ?> required>
+                    <select id="selGroup" name="groupid" class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
                         <option value="0"></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
@@ -87,15 +87,10 @@
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="userpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100"
+                            <input id="userpass" name="pass" type="password" required class="mdl-textfield__input passwordfield__input fg-blue100"
                                    maxlength="50" OnKeyUp="checkPassLevel(this.value)">
                             <label class="mdl-textfield__label"
                                    for="userpass"><?php echo _('Clave'); ?></label>
-                        </div>
-                        <div class="password-actions" >
-                            <i class="showpass material-icons" data-targetid="userpass" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
-                            <i class="passGen material-icons" data-targetid="userpass" title="<?php echo _('Generar clave aleatoria'); ?>">settings</i>
-                            <span class="passLevel passLevel-userpass fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                         </div>
                     </td>
                 </tr>
@@ -207,42 +202,8 @@
 </div>
 <script>
     $(function () {
-        $("#selProfile").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Perfil'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>",
-            width: "250px"
-        });
-        $("#selGroup").chosen({
-            placeholder_text_single: "<?php echo _('Seleccionar Grupo'); ?>",
-            disable_search_threshold: 10,
-            no_results_text: "<?php echo _('Sin resultados'); ?>",
-            width: "250px"
-        });
+        chosenDetect();
 
-        // Crear evento para generar clave aleatoria
-        $('.passGen').each(function () {
-            $(this).on('click', function () {
-                var targetId = $(this).data('targetid');
-                password(11, true, true, targetId);
-
-                console.log();
-                console.log(targetId);
-
-                var mdl = new MaterialTextfield();
-
-                $('#' + targetId).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-                $('#' + targetId + 'R').parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-
-            });
-        });
-
-        // Crear evento para mostrar clave generada/introducida
-        $('.showpass').each(function () {
-            $(this).on('mouseover', function () {
-                var targetId = $(this).data('targetid');
-                $(this).attr('title', $('#' + targetId).val());
-            });
-        });
+        passwordDetect();
     });
 </script>

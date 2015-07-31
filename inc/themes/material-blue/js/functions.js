@@ -1001,11 +1001,11 @@ function password(length, special, fancy, targetId) {
             }
         }
 
-        if(!complexity.numbers && randomNumber >= 48 && randomNumber <= 57){
+        if (!complexity.numbers && randomNumber >= 48 && randomNumber <= 57) {
             continue;
         }
 
-        if(!complexity.uppercase && randomNumber >= 65 && randomNumber <= 90){
+        if (!complexity.uppercase && randomNumber >= 65 && randomNumber <= 90) {
             continue;
         }
 
@@ -1184,6 +1184,7 @@ function getBrowser() {
     return browser;
 }
 
+// Dialógo de configuración de complejidad de clave
 function complexityDialog(targetId) {
     $('<div></div>').dialog({
         modal: true,
@@ -1240,5 +1241,117 @@ function complexityDialog(targetId) {
         close: function () {
             $(this).dialog("destroy");
         }
+    });
+}
+
+// Detectar los campos select y añadir funciones
+function chosenDetect() {
+    var selectWidth = "250px";
+    var searchTreshold = 10;
+
+    $(".sel-chosen-usergroup").chosen({
+        placeholder_text_single: LANG[21],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-user").chosen({
+        placeholder_text_single: LANG[22],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-profile").chosen({
+        placeholder_text_single: LANG[23],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-customer").chosen({
+        placeholder_text_single: LANG[24],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-category").chosen({
+        placeholder_text_single: LANG[25],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
+}
+
+// Detectar los campos de clave y añadir funciones
+function passwordDetect() {
+    // Crear los iconos de acciones sobre claves
+    $('.passwordfield__input').each(function () {
+        var thisParent = $(this).parent();
+        var targetId = $(this).attr('id');
+        var btnMenu = '<button id="menu-speed-' + targetId + '" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="' + LANG[27] + '"><i class="material-icons">more_vert</i></button>';
+
+        btnMenu += '<ul class="mdl-menu mdl-js-menu" for="menu-speed-' + targetId + '">';
+        btnMenu += '<li class="mdl-menu__item passGen" data-targetid="' + targetId + '"><i class="material-icons">settings</i>' + LANG[28] + '</li>';
+        btnMenu += '<li class="mdl-menu__item passComplexity" data-targetid="' + targetId + '"><i class="material-icons">vpn_key</i>' + LANG[29] + '</li>';
+        btnMenu += '<li class="mdl-menu__item reset" data-targetid="' + targetId + '"><i class="material-icons">refresh</i>' + LANG[30] + '</li>';
+
+        thisParent.after('<div class="password-actions" />');
+
+        thisParent.next('.password-actions')
+            .prepend('<span class="passLevel passLevel-' + targetId + ' fullround" title="' + LANG[31] + '"></span>')
+            .prepend('<i class="showpass material-icons" title="' + LANG[32] + '" data-targetid="' + targetId + '">remove_red_eye</i>')
+            .prepend(btnMenu);
+
+        $(this).on('keyup', function () {
+            checkPassLevel($(this).val(), targetId);
+        });
+    });
+
+    // Crear los iconos de acciones sobre claves (sólo mostrar clave)
+    $('.passwordfield__input-show').each(function () {
+        var thisParent = $(this).parent();
+        var targetId = $(this).attr('id');
+
+        thisParent
+            .after('<i class="showpass material-icons" title="' + LANG[32] + '" data-targetid="' + targetId + '">remove_red_eye</i>');
+    });
+
+    // Crear evento para generar clave aleatoria
+    $('.passGen').each(function () {
+        $(this).on('click', function () {
+            var targetId = $(this).data('targetid');
+            password(11, true, true, targetId);
+        });
+    });
+
+    $('.passComplexity').each(function () {
+        $(this).on('click', function () {
+            complexityDialog();
+        });
+    });
+
+    // Crear evento para mostrar clave generada/introducida
+    $('.showpass').each(function () {
+        $(this).on('mouseover', function () {
+            var targetId = $(this).data('targetid');
+            $(this).attr('title', $('#' + targetId).val());
+        });
+    });
+
+    // Reset de los campos de clave
+    $('.reset').each(function () {
+        $(this).on('click', function () {
+            var targetId = $(this).data('targetid');
+            $('#' + targetId).val('');
+            $('#' + targetId + 'R').val('');
+
+            // Actualizar objetos de MDL
+            componentHandler.upgradeDom();
+        });
     });
 }

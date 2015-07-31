@@ -27,6 +27,8 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
+require_once 'strings.js.php';
+
 $themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . \SP\Init::$THEME . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.php';
 
 $jsFilesBase = array(
@@ -45,33 +47,12 @@ $jsFilesBase = array(
     array('href' => 'js/zxcvbn-async.js', 'min' => true)
 );
 
-$arrJsLang = array(
-    _('Error en la consulta'),
-    _('Ha ocurrido un error'),
-    _('Sesión finalizada'),
-    _('Borrar la cuenta?'),
-    _('Borrar el usuario?'),
-    _('Guarde la configuración para que sea efectiva'),
-    _('Clave Generada'),
-    _('Nivel alto'),
-    _('Nivel medio'),
-    _('Nivel bajo'),
-    _('Nivel muy alto'),
-    _('Utilizar al menos 8 caracteres'),
-    _('Borrar elemento?'),
-    _('Página no encontrada'),
-    _('Archivo no soportado para visualizar'),
-    _('Eliminar archivo?'),
-    _('Su navegador no soporta subir archivos con HTML5'),
-    _('Demasiados archivos'),
-    sprintf(_('No es posible guardar el archivo.%sTamaño máximo:'), '<br>'),
-    _('Extensión no permitida'),
-    _('Vaciar el registro de eventos?')
-);
+?>
 
-//$js = "// i18n language array from PHP. Detected language: " . SP_Init::$LANG . "\n";
-echo "var APP_ROOT = '" . SP\Init::$WEBURI . "';\n";
-echo "var LANG = ['" . implode("','", SP\Util::arrayJSEscape($arrJsLang)) . "'];\n";
+var APP_ROOT = '<?php echo SP\Init::$WEBURI; ?>';
+var LANG = ['<?php echo implode("','", SP\Util::arrayJSEscape($stringsJsLang)) ?>'];
+
+<?php
 
 if (file_exists($themeJsPath)){
     include $themeJsPath;

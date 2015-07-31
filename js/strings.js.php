@@ -1,0 +1,63 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+$stringsJsLang = array(
+    0 => _('Error en la consulta'),
+    1 => _('Ha ocurrido un error'),
+    2 => _('Sesión finalizada'),
+    3 => _('Borrar la cuenta?'),
+    4 => _('Borrar el usuario?'),
+    5 => _('Guarde la configuración para que sea efectiva'),
+    6 => _('Clave Generada'),
+    7 => _('Nivel alto'),
+    8 => _('Nivel medio'),
+    9 => _('Nivel bajo'),
+    10 => _('Nivel muy alto'),
+    11 => _('Utilizar al menos 8 caracteres'),
+    12 => _('Borrar elemento?'),
+    13 => _('Página no encontrada'),
+    14 => _('Archivo no soportado para visualizar'),
+    15 => _('Eliminar archivo?'),
+    16 => _('Su navegador no soporta subir archivos con HTML5'),
+    17 => _('Demasiados archivos'),
+    18 => sprintf(_('No es posible guardar el archivo.%sTamaño máximo:'), '<br>'),
+    19 => _('Extensión no permitida'),
+    20 => _('Vaciar el registro de eventos?'),
+    21 => _('Seleccionar Grupo'),
+    22 => _('Seleccionar Usuario'),
+    23 => _('Seleccionar Perfil'),
+    24 => _('Seleccionar Cliente'),
+    25 => _('Seleccionar Categoría'),
+    26 => _('Sin resultados'),
+    27 => _('Opciones de clave'),
+    28 => _('Generar clave aleatoria'),
+    29 => _('Complejidad'),
+    30 => _('Reset'),
+    31 => _('Nivel de fortaleza de la clave'),
+    32 => _('Mostrar Clave')
+);
+
+
+

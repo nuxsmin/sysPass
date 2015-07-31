@@ -196,6 +196,10 @@ a:hover, a:active, a:focus {
     width: 100%;
 }
 
+#container.login {
+    padding-top: 10em;
+}
+
 #container.main {
     position: absolute;
     top: 0;
@@ -1487,7 +1491,7 @@ footer img {
 #boxLogin {
     width: 500px;
     min-height: 150px;
-    margin: 75px auto;
+    margin: 0 auto;
     padding: 3em;
     background: url("../imgs/logo_full.svg") no-repeat #fff;
     background-size: 300px auto;
@@ -1541,7 +1545,7 @@ footer img {
 
 #boxLogout {
     width: 250px;
-    margin: 0 auto;
+    margin: 5em auto 5em auto;
     font-size: 14px;
     text-align: center;
     color: orange;
@@ -1552,7 +1556,7 @@ footer img {
 
 #boxUpdated {
     width: 350px;
-    margin: 0 auto;
+    margin: 5em auto 5em auto;
     font-size: 14px;
     text-align: center;
     color: green;

@@ -522,7 +522,7 @@ class Init
      */
     private static function goLogin()
     {
-        $controller = new Controller\MainC();
+        $controller = new Controller\MainC(null,'login');
         $controller->getLogin();
         $controller->view();
         exit;

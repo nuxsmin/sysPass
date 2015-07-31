@@ -98,9 +98,3 @@
         </ul>
     </div>
 <?php endif; ?>
-
-<script>
-    $(function(){
-        $('#imgLogo').click(function(){$('#smpass').show();});
-    })
-</script>
