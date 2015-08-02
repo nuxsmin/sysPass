@@ -43,7 +43,7 @@ if (!SP\Request::analyze('actionId', 0, true)) {
 
 $actionId = SP\Request::analyze('actionId');
 $itemId = SP\Request::analyze('itemId', 0);
-$lastAction = filter_var(SP\Request::analyze('lastAction', \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH, false, false, false), FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
+$lastAction = SP\Request::analyze('lastAction', \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH);
 
 $tpl = new SP\Template();
 $tpl->assign('actionId', $actionId);
@@ -170,16 +170,6 @@ switch ($actionId) {
 // Se comprueba si se debe de mostrar la vista de depuración
 if (\SP\Session::getUserIsAdminApp() && SP\Config::getValue('debug')) {
     $controller->getDebug();
-}
-
-// Se comprueba si hay actualizaciones.
-// Es necesario que se haga al final de obtener el contenido ya que la 
-// consulta ajax detiene al resto si se ejecuta antes
-if (!SP\Session::getUpdated()
-    && \SP\Session::getUserIsAdminApp()
-    && SP\Config::getValue('checkupdates') === true
-) {
-    echo '<script>checkUpds();</script>';
 }
 
 $tpl->addTemplate('js-common');

@@ -165,18 +165,27 @@ class Acl implements Controller\ActionsInterface
         $userId = Session::getUserId();
         $userIsAdminApp = Session::getUserIsAdminApp();
         $userIsAdminAcc = Session::getUserIsAdminAcc();
+        $userToGroups = false;
+
+        foreach($accountData['groups_id'] as $groupId){
+            $users = Groups::getUsersForGroup($groupId);
+
+            if ($userGroupId === $groupId || in_array($userId, $users)){
+                $userToGroups = true;
+            }
+        }
 
         $okView = ($userId == $accountData['user_id']
             || $userGroupId == $accountData['group_id']
             || in_array($userId, $accountData['users_id'])
-            || in_array($userGroupId, $accountData['groups_id'])
+            || $userToGroups
             || $userIsAdminApp
             || $userIsAdminAcc);
 
         $okEdit = ($userId == $accountData['user_id']
             || $userGroupId == $accountData['group_id']
             || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-            || (in_array($userGroupId, $accountData['groups_id']) && $accountData['othergroup_edit'])
+            || (userToGroups  && $accountData['othergroup_edit'])
             || $userIsAdminApp
             || $userIsAdminAcc);
 

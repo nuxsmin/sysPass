@@ -7,12 +7,17 @@ echo $import_tabIndex; ?>">
         <?php echo _('Importar phpPMS'); ?>
     </div>
 
-    <form method="post" name="frmMigrate" id="frmMigrate">
+    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="configMgmt('import', this); return false;">
         <table class="data round">
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 0); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dbuser" style="display:none;">
+                        <p>
+                            <?php echo _('Indicar el usuario de conexión a la base de datos de phpPMS.') ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <input type="text" name="dbuser" value=""/>
@@ -23,15 +28,18 @@ echo $import_tabIndex; ?>">
                     <?php echo _('Clave BBDD'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="dbpass" value=""/>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <input type="password" name="dbpass" class="passwordfield__input-show" value=""/>
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 1); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dbname" style="display:none;">
+                        <p>
+                            <?php echo _('Indicar el nombre de la base de datos de phpPMS.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <input type="text" name="dbname" value="phppms"/>
@@ -40,7 +48,12 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Servidor BBDD'); ?>
-                    <?php echo Common::printHelpButton("config", 2); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dbhost" style="display:none;">
+                        <p>
+                            <?php echo _('Indicar el servidor de la base de datos de phpPMS.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <input type="text" name="dbhost" value="localhost"/>
@@ -67,25 +80,26 @@ echo $import_tabIndex; ?>">
     </form>
 
     <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/start.png" title="<?php echo _('Iniciar'); ?>" class="inputImg"
-                     OnClick="configMgmt('migrate');"/>
-            </li>
-        </ul>
+        <button type="submit" form="frmMigrate" title="<?php echo _('Iniciar'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/start.png" alt="save"/>
+        </button>
     </div>
 
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Importar CSV/XML'); ?>
     </div>
 
-
     <table class="data round">
         <form method="post" name="frmImport" id="frmImport">
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario por Defecto'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 29); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-import_defaultuser" style="display: none;">
+                        <p>
+                            <?php echo _('Define el usuario por defecto para las cuentas importadas.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <select id="import_defaultuser" name="import_defaultuser"
@@ -101,7 +115,12 @@ echo $import_tabIndex; ?>">
             <tr>
                 <td class="descField">
                     <?php echo _('Grupo por Defecto'); ?>
-                    <?php echo SP\Common::printHelpButton("config", 30); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-import_defaultuser" style="display: none;">
+                        <p>
+                            <?php echo _('Define el grupo por defecto para las cuentas importadas.'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <select id="import_defaultgroup" name="import_defaultgroup"
@@ -119,9 +138,7 @@ echo $import_tabIndex; ?>">
                     <?php echo _('Clave de Importación'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="importPwd" maxlength="255">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <input type="password" name="importPwd" class="passwordfield__input-show" maxlength="255">
                 </td>
             </tr>
             <tr>
@@ -148,28 +165,27 @@ echo $import_tabIndex; ?>">
             </td>
         </tr>
     </table>
+
     <div class="action">
-        <ul>
-            <li>
-                <img id="help_import_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_import_button" type="button" title="<?php echo _('Ayuda'); ?>"
+                class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+        </button>
+        <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>
 
-                <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>
+            <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
 
-                    <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
+            <p class="help-text"><?php echo _('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
+            <p class="help-text"><?php echo _('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
 
-                    <p class="help-text"><?php echo _('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
+            <p class="help-text"><?php echo _('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
 
-                    <p class="help-text"><?php echo _('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
+            <p class="help-text"><?php echo _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
 
-                    <p class="help-text"><?php echo _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
-
-                    <p class="help-text"><?php echo _('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
-                </div>
-            </li>
-        </ul>
+            <p class="help-text"><?php echo _('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
+        </div>
     </div>
 </div> <!-- End Tab - Import -->
 

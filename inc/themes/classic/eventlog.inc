@@ -97,10 +97,8 @@
     </div>
 </div>
 <div class="action fullWidth">
-    <ul>
-        <li>
-            <img src="imgs/clear.png" title="<?php echo _('Vaciar registro de eventos'); ?>" class="inputImg"
-                 OnClick="clearEventlog('<?php echo Common::getSessionKey(); ?>');"/>
-        </li>
-    </ul>
+    <button type="button" title="<?php echo _('Vaciar registro de eventos'); ?>" class="button-action"
+            OnClick="clearEventlog('<?php echo Common::getSessionKey(); ?>');">
+        <img src="<?php \SP\Init::$WEBURI; ?>imgs/clear.png" alt="save"/>
+    </button>
 </div>

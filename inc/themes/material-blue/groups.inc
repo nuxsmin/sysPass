@@ -27,6 +27,21 @@
                     </div>
                 </td>
             </tr>
+
+            <tr>
+                <td class="descField"><?php echo _('Usuarios'); ?></td>
+                <td class="valField">
+                    <select id="selUsers" name="users[]" multiple="multiple" class="select-box sel-chosen-user" <?php echo $isDisabled; ?>>
+                        <option value="0"></option>
+                        <?php foreach ($users as $id => $name): ?>
+                            <?php $selected = (in_array($id, $groupUsers)) ? 'selected' : ''; ?>
+                            <option
+                                value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+
             </tbody>
         </table>
 
@@ -45,3 +60,8 @@
         </button>
     </div>
 </div>
+<script>
+    $(function(){
+        chosenDetect();
+    });
+</script>

@@ -99,7 +99,9 @@ class MainC extends Controller implements ActionsInterface
      */
     public function getMain()
     {
-        $this->view->assign('onLoad', 'doAction(' . self::ACTION_ACC_SEARCH . ')');
+        $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')', 'checkUpds()');
+
+        $this->view->assign('onLoad', implode(';', $onLoad));
 
         $this->getSessionBar();
         $this->getMenu();
@@ -341,13 +343,13 @@ class MainC extends Controller implements ActionsInterface
     public function getCheckUpdates()
     {
         // Comprobar una vez por sesión
-        if (!\SP\Session::getUpdated()) {
+//        if (!\SP\Session::getUpdated()) {
             $updates = \SP\Util::checkUpdates();
-            \SP\Session::setUpdated(true);
-        }
+//            \SP\Session::setUpdated(true);
+//        }
 
         // Forzar la escritura de la sesión
-        session_write_close();
+//        session_write_close();
 
         $this->view->addTemplate('update');
 

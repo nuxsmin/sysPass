@@ -10,14 +10,16 @@
                         <?php endif; ?>
                         <i class="material-icons" title="<?php echo _('Preferencias de usuario'); ?>"
                            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES; ?>)">account_circle</i>
-                        <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
+                        <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
                     </div>
                 <?php endif; ?>
                 <div id="project">
-                    <a href="<?php echo $appInfo['appwebsite']; ?>" target="_blank"
-                    title="<?php echo _('Ayuda :: FAQ :: Changelog'); ?>"><?php echo $appInfo['appname'], ' ', $appVersion; ?></a>
+                    <a href="<?php echo $appInfo['appwebsite']; ?>" target="_blank" class="active-tooltip"
+                    title="<?php echo _('Ayuda :: FAQ :: Changelog'); ?>">
+                        <?php echo $appInfo['appname'], ' ', $appVersion; ?>
+                    </a>
                     &nbsp;::&nbsp;
-                    <a href="<?php echo $appInfo['appblog']; ?>" target="_blank"
+                    <a href="<?php echo $appInfo['appblog']; ?>" target="_blank" class="active-tooltip"
                     title="<?php echo _('Un proyecto de cygnux.org'); ?>">cygnux.org</a>
                 </div> <!-- Close Project -->
                 <div id="status">

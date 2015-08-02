@@ -2,7 +2,7 @@
 
 echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
-<form method="post" name="editpass" id="frmEditPass">
+<form method="post" name="editpass" id="frmEditPass" onsubmit="saveAccount('frmEditPass'); return false;">
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -24,12 +24,8 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" class="password" onKeyUp="checkPassLevel(this.value)"
+                <input type="password" maxlength="255" name="password" class="password passwordfield__input" onKeyUp="checkPassLevel(this.value)"
                        autocomplete="off">
-                <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                     alt="<?php echo _('Mostrar Clave'); ?>"/>
-                <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
-                     class="inputImg"/>
             </td>
         </tr>
         <tr>
@@ -47,16 +43,14 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 </form>
 
 <div class="action">
-    <ul>
-        <li>
-            <img SRC="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                 OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"/>
-        </li>
-        <li>
-            <img SRC="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"
-                 OnClick="saveAccount('frmEditPass');"/>
-        </li>
-    </ul>
+    <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
+            OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)">
+        <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+    </button>
+
+    <button type="submit" form="frmEditPass" title="<?php echo _('Guardar'); ?>" class="button-action">
+        <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+    </button>
 </div>
 <script>
     $(function(){

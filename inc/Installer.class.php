@@ -434,32 +434,32 @@ class Installer
                 , _('Informe al desarrollador'));
         }
 
-        $user = new Users;
+        $User = new User();
 
         // Establecer el id de grupo del usuario al recién creado
-        $user->userGroupId = Groups::$queryLastId;
+        $User->userGroupId = Groups::$queryLastId;
 
-        $profile = new Profile();
+        $Profile = new Profile();
 
-        $profile->setName('Admin');
-        $profile->setAccAdd(true);
-        $profile->setAccView(true);
-        $profile->setAccViewPass(true);
-        $profile->setAccViewHistory(true);
-        $profile->setAccEdit(true);
-        $profile->setAccEditPass(true);
-        $profile->setAccDelete(true);
-        $profile->setConfigGeneral(true);
-        $profile->setConfigEncryption(true);
-        $profile->setConfigBackup(true);
-        $profile->setMgmCategories(true);
-        $profile->setMgmCustomers(true);
-        $profile->setMgmUsers(true);
-        $profile->setMgmGroups(true);
-        $profile->setMgmProfiles(true);
-        $profile->setEvl(true);
+        $Profile->setName('Admin');
+        $Profile->setAccAdd(true);
+        $Profile->setAccView(true);
+        $Profile->setAccViewPass(true);
+        $Profile->setAccViewHistory(true);
+        $Profile->setAccEdit(true);
+        $Profile->setAccEditPass(true);
+        $Profile->setAccDelete(true);
+        $Profile->setConfigGeneral(true);
+        $Profile->setConfigEncryption(true);
+        $Profile->setConfigBackup(true);
+        $Profile->setMgmCategories(true);
+        $Profile->setMgmCustomers(true);
+        $Profile->setMgmUsers(true);
+        $Profile->setMgmGroups(true);
+        $Profile->setMgmProfiles(true);
+        $Profile->setEvl(true);
 
-        if (!$profile->profileAdd()) {
+        if (!$Profile->profileAdd()) {
             self::rollback();
 
             throw new SPException(SPException::SP_CRITICAL
@@ -468,15 +468,15 @@ class Installer
         }
 
         // Datos del usuario
-        $user->userLogin = self::$_username;
-        $user->userPass = self::$_password;
-        $user->userName = 'Admin';
-        $user->userProfileId = $profile->getId();
-        $user->userIsAdminApp = 1;
-        $user->userIsAdminAcc = 0;
-        $user->userIsDisabled = 0;
+        $User->setUserLogin(self::$_username);
+        $User->setUserPass(self::$_password);
+        $User->setUserName('Admin');
+        $User->setUserProfileId($Profile->getId());
+        $User->setUserIsAdminApp(true);
+        $User->setUserIsAdminAcc(false);
+        $User->setUserIsDisabled(false);
 
-        if (!$user->addUser()) {
+        if (!$User->addUser()) {
             self::rollback();
 
             throw new SPException(SPException::SP_CRITICAL
@@ -489,7 +489,7 @@ class Installer
         Config::setArrConfigValue('lastupdatempass', time());
         Config::writeConfigDb(true);
 
-        if (!$user->updateUserMPass(self::$_masterPassword, false)) {
+        if (!UserUtil::updateUserMPass($User->getUserId(), $User->getUserPass(), self::$_masterPassword)) {
             self::rollback();
 
             throw new SPException(SPException::SP_CRITICAL

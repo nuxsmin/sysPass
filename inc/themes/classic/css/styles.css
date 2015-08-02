@@ -76,7 +76,7 @@ input, select, textarea {
     padding: 5px;
 }
 
-td>input, td>select, td>textarea {
+td > input, td > select, td > textarea {
     border: 1px solid #dfdfdf;
     border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -88,14 +88,14 @@ input:hover, select:hover, textarea:hover {
     background-color: #fffccd;
 }
 
-td>input:active, td>select:hover, td>textarea:active {
+td > input:active, td > select:hover, td > textarea:active {
     background-color: #fffde1;
     color: #045FB4;
     border: 1px solid #5897fb;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) inset, 0 0 5px rgba(88, 151, 251, 0.5);
 }
 
-td>input:focus, td>select:hover, td>textarea:focus {
+td > input:focus, td > select:hover, td > textarea:focus {
     background-color: #fffccd;
     color: #045FB4;
     border: 1px solid #5897fb;
@@ -275,8 +275,7 @@ a:focus {
 #container #session img {
     width: 24px;
     height: 24px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 0 .5em;
     vertical-align: middle;
 }
 
@@ -985,7 +984,9 @@ a:focus {
     font-size: 14px;
 }
 
-#fancyView ul {list-style: none;}
+#fancyView ul {
+    list-style: none;
+}
 
 #fancyView.msgError {
     margin: 5px;
@@ -1155,13 +1156,13 @@ a:focus {
 }
 
 .fancydata {
-    min-width: 400px;
+    width: 600px;
     border: none;
     text-align: left;
 }
 
 .fancydata .descField {
-    min-width: 100px;
+    width: 300px;
     font-weight: bold;
 }
 
@@ -1475,9 +1476,6 @@ footer img {
     border: #fed2ce 1px solid;
 }
 
-.passLevel-float {
-}
-
 #alert #alert-text {
     margin: 15px auto;
     font-size: 14px;
@@ -1493,16 +1491,99 @@ footer img {
     font-weight: bold;
 }
 
-.dialog-pass-text{padding: .5em; border: transparent 1px solid; text-align: center; min-width: 200px; }
-.dialog-buttons{text-align: center; padding: .5em; border-top: 1px solid #c9c9c9; line-height: 2.5em;}
+.dialog-pass-text {
+    padding: .5em;
+    border: transparent 1px solid;
+    text-align: center;
+    min-width: 200px;
+}
+
+.dialog-buttons {
+    text-align: center;
+    padding: .5em;
+    border-top: 1px solid #c9c9c9;
+    line-height: 2.5em;
+}
+
 .dialog-clip-pass-copy {
     background-color: #ecfde4;;
     color: green;
     border: #dbfdcb 1px solid;
 }
 
-.help-box{background-color: #ceeffa !important; color: #777;}
-.help-text{text-align: justify; line-height: 1.5em; margin-top: 1em;}
+.help-box {
+    background-color: #888 !important;
+    color: #fff;
+    font-weight: bold;
+}
+
+.help-text {
+    text-align: justify;
+    line-height: 1.5em;
+    margin-top: 1em;
+}
+
+.password-actions {
+    display: inline-block;
+    width: 13em;
+    height: 2em;
+    margin: 0 1em;
+    z-index: 3;
+}
+
+.password-actions .ui-buttonset {
+    display: inline-block;
+}
+
+.password-actions > * {
+    margin: 0 .5em
+}
+
+#dialog-complexity .dialog-length-complexity {
+    margin: 1em 0
+}
+
+#dialog-complexity .dialog-length-complexity label {
+    margin-right: 1em;
+}
+
+.ui-dialog {
+    z-index: 9000 !important;
+}
+
+.tooltip {
+    width: 300px;
+    max-width: 300px;
+    background-color: #777;
+    color: #fff;
+    z-index: 101;
+}
+
+.tooltip p {
+    margin: .5em 0;
+    line-height: 1.2em;
+}
+
+.tooltip ul {
+    margin-left: 1em;
+}
+
+.action .button-action,
+.action-in-box .button-action {
+    border: 1px solid #d9d9d9;
+    border-radius: 3em;
+    background-color: #f9f9f9 !important;
+    width: 4em;
+    height: 4em;
+    cursor: pointer;
+    text-align: center;
+}
+
+.action .button-action img,
+.action-in-box .button-action img{
+    width: 24px;
+    height: 24px;
+}
 
 /*Login Page*/
 #boxLogin {

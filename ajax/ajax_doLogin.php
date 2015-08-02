@@ -24,6 +24,8 @@
  */
 
 use SP\Request;
+use SP\UserLdap;
+use SP\UserUtil;
 
 define('APP_ROOT', '..');
 
@@ -43,87 +45,94 @@ if (!$userLogin || !$userPass) {
     SP\Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
-$resLdap = SP\Auth::authUserLDAP($userLogin, $userPass);
+$User = new SP\User();
+$User->setUserLogin($userLogin);
+$User->setUserPass($userPass);
 
-$objUser = new SP\Users;
-$objUser->userLogin = $userLogin;
-$objUser->userPass = $userPass;
-$objUser->userName = SP\Auth::$userName;
-$objUser->userEmail = SP\Auth::$userEmail;
+if ($resLdap = SP\Auth::authUserLDAP($userLogin, $userPass)) {
+    $User->setUserName(SP\Auth::$userName);
+    $User->setUserEmail(SP\Auth::$userEmail);
+}
 
-$log = new \SP\Log(_('Inicio sesión (LDAP)'));
+$Log = new \SP\Log(_('Inicio sesión'));
 
 // Autentificamos por LDAP
 if ($resLdap === true) {
+    $Log->addDescription('(LDAP)');
+
     // Verificamos si el usuario existe en la BBDD
-    if (!$objUser->checkLDAPUserInDB()) {
+    if (!UserLdap::checkLDAPUserInDB($userLogin)) {
         // Creamos el usuario de LDAP en MySQL
-        if (!$objUser->newUserLDAP()) {
-            $log->addDescription(_('Error al guardar los datos de LDAP'));
-            $log->writeLog();
+        if (!\SP\UserLdap::newUserLDAP($User)) {
+            $Log->addDescription(_('Error al guardar los datos de LDAP'));
+            $Log->writeLog();
 
             SP\Common::printJSON(_('Error interno'));
         }
     } else {
         // Actualizamos la clave del usuario en MySQL
-        if (!$objUser->updateLDAPUserInDB()) {
-            $log->addDescription(_('Error al actualizar la clave del usuario en la BBDD'));
-            $log->writeLog();
+        if (!UserLdap::updateLDAPUserInDB($User)) {
+            $Log->addDescription(_('Error al actualizar la clave del usuario en la BBDD'));
+            $Log->writeLog();
 
             SP\Common::printJSON(_('Error interno'));
         }
     }
 } else if ($resLdap == 49) {
-    $log->addDescription(_('Login incorrecto'));
-    $log->addDescription(_('Usuario') . ": " . $userLogin);
-    $log->writeLog();
+    $Log->addDescription('(LDAP)');
+    $Log->addDescription(_('Login incorrecto'));
+    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->writeLog();
 
     SP\Common::printJSON(_('Usuario/Clave incorrectos'));
 } else if ($resLdap === 701) {
-    $log->addDescription(_('Cuenta expirada'));
-    $log->addDescription(_('Usuario') . ": " . $userLogin);
-    $log->writeLog();
+    $Log->addDescription('(LDAP)');
+    $Log->addDescription(_('Cuenta expirada'));
+    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->writeLog();
 
     SP\Common::printJSON(_('Cuenta expirada'));
 } else if ($resLdap === 702) {
-    $log->addDescription(_('El usuario no tiene grupos asociados'));
-    $log->addDescription(_('Usuario') . ": " . $userLogin);
-    $log->writeLog();
+    $Log->addDescription('(LDAP)');
+    $Log->addDescription(_('El usuario no tiene grupos asociados'));
+    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->writeLog();
 
     SP\Common::printJSON(_('Usuario/Clave incorrectos'));
 } else { // Autentificamos por MySQL (ha fallado LDAP)
-    $log->setAction(_('Inicio sesión (MySQL)'));
+    $Log->resetDescription();
+    $Log->addDescription('(MySQL)');
 
     // Autentificamos con la BBDD
     if (!SP\Auth::authUserMySQL($userLogin, $userPass)) {
-        $log->addDescription(_('Login incorrecto'));
-        $log->addDescription(_('Usuario') . ": " . $userLogin);
-        $log->writeLog();
+        $Log->addDescription(_('Login incorrecto'));
+        $Log->addDescription(_('Usuario') . ": " . $userLogin);
+        $Log->writeLog();
 
         SP\Common::printJSON(_('Usuario/Clave incorrectos'));
     }
 }
 
 // Comprobar si el usuario está deshabilitado
-if (SP\Users::checkUserIsDisabled($userLogin)) {
-    $log->addDescription(_('Usuario deshabilitado'));
-    $log->addDescription(_('Usuario') . ": " . $userLogin);
-    $log->writeLog();
+if (UserUtil::checkUserIsDisabled($userLogin)) {
+    $Log->addDescription(_('Usuario deshabilitado'));
+    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->writeLog();
 
     SP\Common::printJSON(_('Usuario deshabilitado'));
 }
 
 // Obtenemos los datos del usuario
-if (!$objUser->getUserInfo()) {
-    $log->addDescription(_('Error al obtener los datos del usuario de la BBDD'));
-    $log->writeLog();
+if (!$User->getUserInfo()) {
+    $Log->addDescription(_('Error al obtener los datos del usuario de la BBDD'));
+    $Log->writeLog();
 
     SP\Common::printJSON(_('Error interno'));
 }
 
 // Comprobamos que la clave maestra del usuario es correcta y está actualizada
-if (!$masterPass && (!$objUser->checkUserMPass()
-    || !SP\Users::checkUserUpdateMPass($userLogin))
+if (!$masterPass
+    && (!UserUtil::checkUserMPass($User) || !UserUtil::checkUserUpdateMPass($userLogin))
 ) {
     SP\Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
@@ -131,43 +140,43 @@ if (!$masterPass && (!$objUser->checkUserMPass()
         $masterPass = SP\Config::getTempMasterPass($masterPass);
     }
 
-    if (!$objUser->updateUserMPass($masterPass)) {
-        $log->addDescription(_('Clave maestra incorrecta'));
-        $log->writeLog();
+    if (!$User->updateUserMPass($masterPass)) {
+        $Log->addDescription(_('Clave maestra incorrecta'));
+        $Log->writeLog();
 
         SP\Common::printJSON(_('Clave maestra incorrecta'), 4);
     }
 }
 
 // Comprobar si se ha forzado un cambio de clave
-if ($objUser->userChangePass) {
+if ($User->isUserChangePass()) {
     $hash = SP\Util::generate_random_bytes();
 
-    if (SP\Users::addPassRecover($userLogin, $hash)) {
+    if (UserUtil::addPassRecover($userLogin, $hash)) {
         $url = SP\Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1';
         SP\Common::printJSON($url, 0);
     }
 }
 
 // Obtenemos la clave maestra del usuario
-if ($objUser->getUserMPass()) {
+if ($User->getUserMPass()) {
     // Establecemos las variables de sesión
-    $objUser->setUserSession();
+    UserUtil::setUserSession($User);
 
-    $log->addDescription(_('Usuario') . ": " . $userLogin);
-    $log->addDescription(_('Perfil') . ": " . SP\Profile::getProfileNameById($objUser->userProfileId));
-    $log->addDescription(_('Grupo') . ": " . SP\Groups::getGroupNameById($objUser->userGroupId));
-    $log->writeLog();
+    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->addDescription(_('Perfil') . ": " . SP\Profile::getProfileNameById($User->getUserProfileId()));
+    $Log->addDescription(_('Grupo') . ": " . SP\Groups::getGroupNameById($User->getUserGroupId()));
+    $Log->writeLog();
 } else {
     SP\Common::printJSON(_('Error interno'));
 }
 
 $userPrefs = new \SP\UserPreferences();
-$prefs = $userPrefs->getPreferences($objUser->userId);
+$prefs = $userPrefs->getPreferences($User->getUserId());
 
-if ($prefs->isUse2Fa()){
+if ($prefs->isUse2Fa()) {
     SP\Session::set2FApassed(false);
-    $url = SP\Init::$WEBURI . '/index.php?a=2fa&i=' . $objUser->userId . '&t=' . time() . '&f=1';
+    $url = SP\Init::$WEBURI . '/index.php?a=2fa&i=' . $User->getUserId() . '&t=' . time() . '&f=1';
     SP\Common::printJSON($url, 0);
 } else {
     SP\Session::set2FApassed(true);

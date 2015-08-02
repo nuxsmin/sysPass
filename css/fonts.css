@@ -1,10 +1,11 @@
 @font-face {
-    font-family: 'Register';
+    font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url("../imgs/register.eot"); /* For IE6-8 */
-    src: local('Register'),
-    local('Register'),
-    url("../imgs/register.woff2") format('woff2'),
-    url("../imgs/register.ttf") format('truetype');
+    src: url("MaterialIcons-Regular.eot"); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url("MaterialIcons-Regular.woff2") format('woff2'),
+    url("MaterialIcons-Regular.woff") format('woff'),
+    url("MaterialIcons-Regular.ttf") format('truetype');
 }

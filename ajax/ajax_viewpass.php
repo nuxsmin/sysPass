@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\UserUtil;
 
 define('APP_ROOT', '..');
 
@@ -55,7 +56,7 @@ if ($isHistory && !$account->checkAccountMPass()) {
 
 if (!SP\Acl::checkAccountAccess(SP\Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP\Acl::checkUserAccess(SP\Acl::ACTION_ACC_VIEW_PASS)) {
     SP\Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
-} elseif (!SP\Users::checkUserUpdateMPass()) {
+} elseif (!UserUtil::checkUserUpdateMPass()) {
     SP\Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 

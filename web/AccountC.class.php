@@ -33,6 +33,7 @@ use SP\Groups;
 use SP\Session;
 use SP\SPException;
 use SP\Users;
+use SP\UserUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -164,7 +165,7 @@ class AccountC extends Controller implements ActionsInterface
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!Users::checkUserUpdateMPass()) {
+        } elseif (!UserUtil::checkUserUpdateMPass()) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->_id > 0 && !Acl::checkAccountAccess($this->_action, $this->_account->getAccountDataForACL())) {
@@ -184,7 +185,7 @@ class AccountC extends Controller implements ActionsInterface
 //            $this->view->assign('accountParentId', $this->getAccount()->getAccountParentId());
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
             $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountUsersId());
-            $this->view->assign('accountOtherUsersName', \SP\Users::getUsersNameForAccount($this->getId()));
+            $this->view->assign('accountOtherUsersName', UserUtil::getUsersNameForAccount($this->getId()));
             $this->view->assign('accountOtherGroups', $this->getAccount()->getAccountUserGroupsId());
             $this->view->assign('accountOtherGroupsName', \SP\Groups::getGroupsNameForAccount($this->getId()));
             $this->view->assign('changesHash', $this->getAccount()->calcChangesHash());
@@ -296,7 +297,7 @@ class AccountC extends Controller implements ActionsInterface
      */
     private function setAccountDetails()
     {
-        $this->_account->setAccountUsersId(Users::getUsersForAccount($this->getId()));
+        $this->_account->setAccountUsersId(UserUtil::getUsersForAccount($this->getId()));
         $this->_account->setAccountUserGroupsId(Groups::getGroupsForAccount($this->getId()));
     }
 

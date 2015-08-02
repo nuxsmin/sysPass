@@ -23,6 +23,8 @@
  *
  */
 
+use SP\UserUtil;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
@@ -225,7 +227,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
     $confirmPassChange = SP\Request::analyze('confirmPassChange', 0, false, 1);
     $noAccountPassChange = SP\Request::analyze('chkNoAccountChange', 0, false, 1);
 
-    if (!SP\Users::checkUserUpdateMPass()) {
+    if (!UserUtil::checkUserUpdateMPass()) {
         SP\Common::printJSON(_('Clave maestra actualizada') . ';;' . _('Reinicie la sesión para cambiarla'));
     } elseif ($newMasterPass == '' && $currentMasterPass == '') {
         SP\Common::printJSON(_('Clave maestra no indicada'));

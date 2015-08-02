@@ -25,6 +25,8 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Class UsersPreferences para la gestion de las preferencias de usuarios
  *

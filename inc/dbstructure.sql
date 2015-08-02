@@ -278,6 +278,21 @@ CREATE TABLE `usrProfiles` (
   `userProfile_profile` BLOB NOT NULL,
   PRIMARY KEY (`userprofile_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `usrToGroups`
+--
+
+DROP TABLE IF EXISTS `usrToGroups`;
+
+CREATE TABLE `usrToGroups` (
+  `usertogroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `usertogroup_userId` int(10) unsigned NOT NULL,
+  `usertogroup_groupId` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`usertogroup_id`),
+  KEY `IDX_accountId` (`usertogroup_userId`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

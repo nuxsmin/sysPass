@@ -35,12 +35,14 @@ $cssFilesBase = array(
     array('href' => 'css/jquery-ui.structure.min.css', 'min' => false),
     array('href' => 'css/jquery.powertip.css', 'min' => true),
     array('href' => 'css/jquery.powertip-yellow.min.css', 'min' => true),
-    array('href' => 'css/chosen.css', 'min' => true),
+    array('href' => 'css/chosen.min.css', 'min' => true),
+    array('href' => 'css/chosen-custom.css', 'min' => true),
     array('href' => 'css/alertify.core.css', 'min' => true),
     array('href' => 'css/alertify.default.css', 'min' => true),
     array('href' => 'css/jquery.tagsinput.css', 'min' => true),
     array('href' => 'css/jquery.fancybox.css', 'min' => true),
     array('href' => 'css/fonts.css', 'min' => true),
+    array('href' => 'css/material-icons.css', 'min' => true),
 );
 
 if (file_exists($themeCssPath)){

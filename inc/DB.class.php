@@ -183,6 +183,7 @@ class DB
             $db->_querySource = $querySource;
             $db->_stData = $data;
             $doQuery = $db->doQuery($query, $querySource, self::$_returnRawData);
+            self::$lastNumRows = (self::$_fullRowCount === false) ? $db->_numRows : $db->getFullRowCount($query);
         } catch (SPException $e) {
             self::logDBException($query, $e->getMessage(), $e->getCode(), $querySource);
             return false;
@@ -191,8 +192,6 @@ class DB
         if (self::$_returnRawData && is_object($doQuery) && get_class($doQuery) == "PDOStatement") {
             return $doQuery;
         }
-
-        DB::$lastNumRows = (self::$_fullRowCount === false) ? $db->_numRows : $db->getFullRowCount($query);
 
         if ($db->_numRows == 0) {
             self::resetVars();
@@ -259,7 +258,7 @@ class DB
      *
      * @param &$query  string La consulta a realizar
      * @param $isCount bool   Indica si es una consulta de contador de registros
-     * @return bool
+     * @return bool|\PDOStatement
      * @throws SPException
      */
     private function prepareQueryData(&$query, $isCount = false)
@@ -325,9 +324,10 @@ class DB
      */
     private static function logDBException($query, $errorMsg, $errorCode, $querySource)
     {
-        $message['action'] = $querySource;
-        $message['text'][] = $errorMsg . '(' . $errorCode . ')';
-        $message['text'][] = "SQL: " . self::escape($query);
+        $Log = new Log($querySource);
+        $Log->addDescription($errorMsg . '(' . $errorCode . ')');
+        $Log->addDescription("SQL: " . self::escape($query));
+        $Log->writeLog();
 
         error_log($query);
         error_log($errorMsg);
@@ -366,10 +366,12 @@ class DB
         $num = 0;
         $patterns = array(
             '/(LIMIT|ORDER BY|GROUP BY).*/i',
-            '/SELECT DISTINCT\s([\w_]+),.* FROM/i',
-            '/SELECT [\w_]+,.* FROM/i'
+            '/SELECT DISTINCT\s([\w_]+),.* FROM/iU',
+            '/SELECT [\w_]+,.* FROM/iU',
         );
-        $replace = array('', 'SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM');
+        $replace = array('', 'SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM', '');
+
+        preg_match('/SELECT DISTINCT\s([\w_]*),.*\sFROM\s([\w_]*)\s(LEFT|RIGHT|WHERE).*/iU', $query, $match);
 
         $query = preg_replace($patterns, $replace, $query);
 

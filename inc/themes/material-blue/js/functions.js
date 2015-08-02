@@ -13,22 +13,6 @@ var timeout;
 
 var passLength;
 var minPasswordLength = 8;
-var baseScore = 0, score = 0;
-
-var num = {};
-num.Excess = 0;
-num.Upper = 0;
-num.Numbers = 0;
-num.Symbols = 0;
-
-var bonus = {};
-bonus.Excess = 3;
-bonus.Upper = 4;
-bonus.Numbers = 5;
-bonus.Symbols = 5;
-bonus.Combo = 0;
-bonus.FlatLower = 0;
-bonus.FlatNumber = 0;
 
 var complexity = {};
 complexity.numbers = true;
@@ -58,16 +42,23 @@ jQuery.extend(jQuery.fancybox.defaults, {
 $(document).ready(function () {
     "use strict";
 
-    //$("[title]").powerTip(powertipOptions);
     setContentSize();
     setWindowAdjustSize();
+
+    // Activar tooltips
+    activeTooltip();
 }).ajaxComplete(function () {
     "use strict";
 
-    //$("[title]").powerTip(powertipOptions);
-
     // Actualizar componentes de MDL cargados con AJAX
     componentHandler.upgradeDom();
+
+    // Activar tooltips
+    activeTooltip();
+});
+
+function activeTooltip(){
+    "use strict";
 
     // Activar tooltips
     $('.active-tooltip').tooltip({
@@ -76,8 +67,7 @@ $(document).ready(function () {
         },
         tooltipClass: "tooltip"
     });
-});
-
+}
 //$(function() {
 //    "use strict";
 //
@@ -1044,7 +1034,6 @@ function password(length, special, fancy, targetId) {
         $('input:password, input.password').val(genPassword);
         $('#passLevel').show(500);
     }
-
 }
 
 // Funciones para analizar al fortaleza de una clave
@@ -1184,13 +1173,17 @@ function getBrowser() {
     return browser;
 }
 
-// Dialógo de configuración de complejidad de clave
-function complexityDialog(targetId) {
+// Diálogo de configuración de complejidad de clave
+function complexityDialog() {
+    "use strict";
+
     $('<div></div>').dialog({
         modal: true,
         title: 'Opciones de Complejidad',
         width: '400px',
         open: function () {
+            var thisDialog = $(this);
+
             var content =
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">' +
                 '<input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers"/>' +
@@ -1210,15 +1203,15 @@ function complexityDialog(targetId) {
                 '</div>' +
                 '<button id="btn-complexity" class="mdl-button mdl-js-button mdl-button--raised">Ok</button>';
 
-            $(this).html(content);
+            thisDialog.html(content);
 
             // Recentrar después de insertar el contenido
-            $(this).dialog('option', 'position', 'center');
+            thisDialog.dialog('option', 'position', 'center');
 
-            $this = $(this);
+
 
             // Actualizar componentes de MDL
-            $(this).ready(function () {
+            thisDialog.ready(function () {
                 $('#checkbox-numbers').prop('checked', complexity.numbers);
                 $('#checkbox-uppercase').prop('checked', complexity.uppercase);
                 $('#checkbox-symbols').prop('checked', complexity.symbols);
@@ -1230,7 +1223,7 @@ function complexityDialog(targetId) {
                     complexity.symbols = $('#checkbox-symbols').is(':checked');
                     complexity.numlength = parseInt($('#passlength').val());
 
-                    $this.dialog('close');
+                    thisDialog.dialog('close');
                 });
 
                 // Actualizar objetos de MDL
@@ -1246,6 +1239,8 @@ function complexityDialog(targetId) {
 
 // Detectar los campos select y añadir funciones
 function chosenDetect() {
+    "use strict";
+
     var selectWidth = "250px";
     var searchTreshold = 10;
 
@@ -1270,18 +1265,28 @@ function chosenDetect() {
         width: selectWidth
     });
 
-    $(".sel-chosen-customer").chosen({
-        placeholder_text_single: LANG[24],
-        disable_search_threshold: searchTreshold,
-        no_results_text: LANG[26],
-        width: selectWidth
+    $(".sel-chosen-customer").each(function(){
+        var deselect = $(this).hasClass('sel-chosen-deselect');
+
+        $(this).chosen({
+            allow_single_deselect: deselect,
+            placeholder_text_single: LANG[24],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
     });
 
-    $(".sel-chosen-category").chosen({
-        placeholder_text_single: LANG[25],
-        disable_search_threshold: searchTreshold,
-        no_results_text: LANG[26],
-        width: selectWidth
+    $(".sel-chosen-category").each(function(){
+        var deselect = $(this).hasClass('sel-chosen-deselect');
+
+        $(this).chosen({
+            allow_single_deselect: deselect,
+            placeholder_text_single: LANG[25],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
     });
 
     $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
@@ -1289,6 +1294,8 @@ function chosenDetect() {
 
 // Detectar los campos de clave y añadir funciones
 function passwordDetect() {
+    "use strict";
+
     // Crear los iconos de acciones sobre claves
     $('.passwordfield__input').each(function () {
         var thisParent = $(this).parent();

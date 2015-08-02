@@ -23,6 +23,8 @@
  *
  */
 
+use SP\UserUtil;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
@@ -63,16 +65,11 @@ if ($userLogin && $userEmail) {
 }
 
 if ($userPass && $userPassV && $userPass === $userPassV) {
-    $userId = SP\Users::checkHashPassRecover($hash);
+    $userId = UserUtil::checkHashPassRecover($hash);
 
     if ($userId) {
-        $user = new SP\Users();
-
-        $user->userId = $userId;
-        $user->userPass = $userPass;
-
-        if ($user->updateUserPass() && SP\Users::updateHashPassRecover($hash)) {
-            \SP\Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), SP\Html::strongText(_('Login') . ': ') . $user->getUserLoginById($userId));
+        if (UserUtil::updateUserPass($userId, $userPass) && UserUtil::updateHashPassRecover($hash)) {
+            \SP\Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), SP\Html::strongText(_('Login') . ': ') . UserUtil::getUserLoginById($userId));
 
             SP\Common::printJSON(_('Clave actualizada'), 0, 'goLogin();');
         }

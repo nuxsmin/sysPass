@@ -25,6 +25,7 @@
 
 use SP\Email;
 use SP\Request;
+use SP\UserUtil;
 
 define('APP_ROOT', '..');
 
@@ -52,14 +53,14 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 // Acción al cerrar la vista
 $doActionOnClose = "doAction('$onCloseAction','',$activeTab);";
 
-$userLogin = SP\Users::getUserLoginById($itemId);
+$userLogin = UserUtil::getUserLoginById($itemId);
 
 if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDIT
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_DELETE
 ) {
-    $user = new SP\Users;
+    $User = new SP\User();
 
     // Variables POST del formulario
     $isLdap = SP\Request::analyze('isLdap', 0);
@@ -70,7 +71,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $userEmail = SP\Request::analyze('email');
     $userNotes = SP\Request::analyze('notes');
     $userPass = SP\Request::analyze('pass', '', false, false, false);
-    $userPassV = SP\Request::analyze('passv', '', false, false, false);
+    $userPassV = SP\Request::analyze('passR', '', false, false, false);
     $userIsAdminApp = SP\Request::analyze('adminapp', 0, false, 1);
     $userIsAdminAcc = SP\Request::analyze('adminacc', 0, false, 1);
     $userIsDisabled = SP\Request::analyze('disabled', 0, false, 1);
@@ -100,20 +101,20 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Es necesario un email'), 2);
         }
 
-        $user->userId = $itemId;
-        $user->userName = $userName;
-        $user->userLogin = $userLogin;
-        $user->userEmail = $userEmail;
-        $user->userNotes = $userNotes;
-        $user->userGroupId = $userGroup;
-        $user->userProfileId = $userProfile;
-        $user->userIsAdminApp = $userIsAdminApp;
-        $user->userIsAdminAcc = $userIsAdminAcc;
-        $user->userIsDisabled = $userIsDisabled;
-        $user->userChangePass = $userIsChangePass;
-        $user->userPass = $userPass;
+        $User->setUserId($itemId);
+        $User->setUserName($userName);
+        $User->setUserLogin($userLogin);
+        $User->setUserEmail($userEmail);
+        $User->setUserNotes($userNotes);
+        $User->setUserGroupId($userGroup);
+        $User->setUserProfileId($userProfile);
+        $User->setUserIsAdminApp($userIsAdminApp);
+        $User->setUserIsAdminAcc($userIsAdminAcc);
+        $User->setUserIsDisabled($userIsDisabled);
+        $User->setUserChangePass($userIsChangePass);
+        $User->setUserPass($userPass);
 
-        switch ($user->checkUserExist()) {
+        switch ($User->checkUserExist()) {
             case 1:
                 SP\Common::printJSON(_('Login de usuario duplicado'), 2);
                 break;
@@ -131,13 +132,13 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
                 SP\Common::printJSON(_('Las claves no coinciden'), 2);
             }
 
-            if ($user->addUser()) {
+            if ($User->addUser()) {
                 SP\Common::printJSON(_('Usuario creado'), 0, $doActionOnClose);
             }
 
             SP\Common::printJSON(_('Error al crear el usuario'));
         } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDIT) {
-            if ($user->updateUser()) {
+            if ($User->updateUser()) {
                 SP\Common::printJSON(_('Usuario actualizado'), 0, $doActionOnClose);
             }
 
@@ -156,10 +157,10 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Las claves no coinciden'), 2);
         }
 
-        $user->userId = $itemId;
-        $user->userPass = $userPass;
+        $User->setUserId($itemId);
+        $User->setUserPass($userPass);
 
-        if ($user->updateUserPass()) {
+        if ($User->updateUserPass()) {
             SP\Common::printJSON(_('Clave actualizada'), 0);
         }
 
@@ -170,13 +171,13 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
         }
 
-        $user->userId = $itemId;
+        $User->setUserId($itemId);
 
         if ($itemId == SP\Session::getUserId()) {
             SP\Common::printJSON(_('No es posible eliminar, usuario en uso'));
         }
 
-        if ($user->deleteUser()) {
+        if ($User->deleteUser()) {
             SP\Common::printJSON(_('Usuario eliminado'), 0, $doActionOnClose);
         }
 
@@ -191,6 +192,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     // Variables POST del formulario
     $frmGrpName = SP\Request::analyze('name');
     $frmGrpDesc = SP\Request::analyze('description');
+    $frmGrpUsers = SP\Request::analyze('users');
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT
@@ -208,13 +210,13 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         }
 
         if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW) {
-            if (SP\Groups::addGroup()) {
+            if (SP\Groups::addGroup($frmGrpUsers)) {
                 SP\Common::printJSON(_('Grupo creado'), 0, $doActionOnClose);
             } else {
                 SP\Common::printJSON(_('Error al crear el grupo'));
             }
         } else if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT) {
-            if (SP\Groups::updateGroup()) {
+            if (SP\Groups::updateGroup($frmGrpUsers)) {
                 SP\Common::printJSON(_('Grupo actualizado'), 0, $doActionOnClose);
             }
 

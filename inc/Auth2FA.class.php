@@ -25,6 +25,8 @@
 
 namespace SP\Auth;
 
+use SP\UserUtil;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -129,7 +131,7 @@ class Auth2FA
 
     private function genUserInitializationKey()
     {
-        $userIV = \SP\Users::getUserIVById($this->_userId);
+        $userIV = UserUtil::getUserIVById($this->_userId);
         $base32 = new \Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
         $key = substr($base32->encode($userIV), 0, 16);
 

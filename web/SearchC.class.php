@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\UserUtil;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -208,7 +210,7 @@ class SearchC extends Controller implements ActionsInterface
             // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
             if ($show) {
                 $secondaryGroups = \SP\Groups::getGroupsNameForAccount($account->account_id);
-                $secondaryUsers = \SP\Users::getUsersNameForAccount($account->account_id);
+                $secondaryUsers = UserUtil::getUsersNameForAccount($account->account_id);
 
                 $secondaryAccesses = '<em>(G) ' . $account->usergroup_name . '*</em><br>';
 

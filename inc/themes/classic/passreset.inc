@@ -25,18 +25,15 @@
             <?php else: ?>
                 <p>
                     <input type="password" name="pass" id="pass" title="<?php echo _('Nueva Clave'); ?>"
+                           class="passwordfield__input"
                            placeholder="<?php echo _('Clave'); ?>" value="<?php echo Util::init_var('pass'); ?>"
                            onKeyUp="checkPassLevel(this.value)" required/>
-                    <span class="passLevel fullround"
-                          title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
                 <p>
-                    <input type="password" name="passv" id="passv"
+                    <input type="password" name="passR" id="passR"
                            title="<?php echo _('Nueva Clave (Verificar)'); ?>"
                            placeholder="<?php echo _('Clave (Verificar)'); ?>"
                            value="<?php echo Util::init_var('passv'); ?>" required/>
-                    <span class="passLevel fullround"
-                          title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
                 <input type="hidden" name="time" value="<?php echo $time; ?>">
                 <input type="hidden" name="hash" value="<?php echo $hash; ?>">

@@ -1,14 +1,12 @@
 <?php foreach ($tabs as $index => $tab): ?>
     <div id="tabs-<?php echo $index; ?>">
         <div class="action fullWidth">
-            <ul>
-                <li>
-                    <img src="imgs/add.png" title="<?php echo $tab['props']['actions']['new']['title']; ?>"
-                         class="inputImg" data-itemid="0" data-activetab="<?php echo $index; ?>"
-                         data-nextactionid="<?php echo (isset($onCloseAction)) ? $onCloseAction : ''; ?>"
-                         OnClick="<?php echo $tab['props']['actions']['new']['onclick']; ?>"/>
-                </li>
-            </ul>
+            <button type="submit" form="frmSecurity" title="<?php echo $tab['props']['actions']['new']['title']; ?>"
+                    class="button-action" data-itemid="0" data-activetab="<?php echo $index; ?>"
+                    data-nextactionid="<?php echo (isset($onCloseAction)) ? $onCloseAction : ''; ?>"
+                    OnClick="<?php echo $tab['props']['actions']['new']['onclick']; ?>">
+                <img src="<?php \SP\Init::$WEBURI; ?>imgs/add.png" alt="save"/>
+            </button>
         </div>
 
         <?php if ($tab['props']['header']): ?>

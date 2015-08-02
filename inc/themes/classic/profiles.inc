@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmProfiles" id="frmProfiles">
+    <form method="post" name="frmProfiles" id="frmProfiles" onsubmit="appMgmtSave('frmProfiles'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -151,12 +151,9 @@
     <?php if (!$isView): ?>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <ul>
-            <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                     OnClick="appMgmtSave('frmProfiles');"/>
-            </li>
-        </ul>
+        <button type="submit" form="frmProfiles" title="<?php echo _('Guardar'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+        </button>
     </div>
     <?php endif; ?>
 </div>

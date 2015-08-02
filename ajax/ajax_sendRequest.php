@@ -23,6 +23,8 @@
  *
  */
 
+use SP\UserUtil;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
@@ -49,8 +51,8 @@ if (!$frmDescription) {
 $accountRequestData = SP\Account::getAccountRequestData($frmAccountId);
 
 $recipients = array(
-    SP\Users::getUserEmail($accountRequestData->account_userId),
-    SP\Users::getUserEmail($accountRequestData->account_userEditId)
+    UserUtil::getUserEmail($accountRequestData->account_userId),
+    UserUtil::getUserEmail($accountRequestData->account_userEditId)
 );
 
 $requestUsername = SP\Session::getUserName();

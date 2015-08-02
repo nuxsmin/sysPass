@@ -133,9 +133,10 @@ class Groups
     /**
      * Añadir un nuevo grupo.
      *
+     * @param $users array Los usuario del grupo
      * @return bool
      */
-    public static function addGroup()
+    public static function addGroup($users)
     {
         $query = 'INSERT INTO usrGroups SET usergroup_name = :name, usergroup_description = :description';
 
@@ -148,17 +149,92 @@ class Groups
 
         self::$queryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Nuevo Grupo'), Html::strongText(_('Grupo') . ': ') . self::$groupName);
+        $Log = new Log(_('Nuevo Grupo'));
+
+        if (!Groups::addUsersForGroup(self::$queryLastId, $users)) {
+            $Log->addDescription(_('Error al añadir los usuarios del grupo'));
+        }
+
+        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Grupo')), self::$groupName));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
 
     /**
-     * Modificar un grupo.
+     * Crear asociación de grupos con usuarios.
      *
+     * @param int   $groupId con los grupos del usuario
+     * @param array $usersId Los usuarios del grupo
      * @return bool
      */
-    public static function updateGroup()
+    public static function addUsersForGroup($groupId, $usersId)
+    {
+        if (!is_array($usersId)) {
+            return true;
+        }
+
+        $values = '';
+
+        // Obtenemos los grupos actuales
+        $groupsExcluded = self::getUsersForGroup($groupId);
+
+        foreach ($usersId as $userId) {
+            // Excluimos los grupos actuales
+            if (isset($groupsExcluded) && is_array($groupsExcluded) && in_array($userId, $groupsExcluded)) {
+                continue;
+            }
+
+            $values[] = '(' . (int)$userId . ',' . (int)$groupId . ')';
+        }
+
+        if (!is_array($values)) {
+            return true;
+        }
+
+        $query = 'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . implode(',', $values);
+
+        return DB::getQuery($query, __FUNCTION__);
+    }
+
+    /**
+     * Obtiene el listado de grupos de un usuario.
+     *
+     * @param int $groupId con el Id del usuario
+     * @return array con el Id de grupo
+     */
+    public static function getUsersForGroup($groupId)
+    {
+        $users = array();
+
+        $query = 'SELECT usertogroup_userId FROM usrToGroups WHERE usertogroup_groupId = :id';
+
+        $data['id'] = $groupId;
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        foreach ($queryRes as $group) {
+            $users[] = $group->usertogroup_userId;
+        }
+
+        return $users;
+    }
+
+    /**
+     * Modificar un grupo.
+     *
+     * @param $users array Los usuario del grupo
+     * @return bool
+     */
+    public static function updateGroup($users)
     {
         $groupName = self::getGroupNameById(self::$groupId);
 
@@ -174,7 +250,16 @@ class Groups
 
         self::$queryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Modificar Grupo'), Html::strongText(_('Grupo') . ': ') . $groupName . ' > ' . self::$groupName);
+        $Log = new Log(_('Nuevo Grupo'));
+
+        if (!Groups::updateUsersForGroup(self::$groupId, $users)) {
+            $Log->addDescription(_('Error al actualizar los usuarios del grupo'));
+        }
+
+        $Log->addDescription(sprintf('%s : %s > %s', Html::strongText(_('Grupo')), $groupName, self::$groupName));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -201,6 +286,47 @@ class Groups
     }
 
     /**
+     * Actualizar la asociación de grupos con usuarios.
+     *
+     * @param int   $groupId con el Id del usuario
+     * @param array $usersId con los usuarios del grupo
+     * @return bool
+     */
+    public static function updateUsersForGroup($groupId, $usersId)
+    {
+        if (self::deleteUsersForGroup($groupId, $usersId)) {
+            return self::addUsersForGroup($groupId, $usersId);
+        }
+
+        return false;
+    }
+
+    /**
+     * Eliminar la asociación de grupos con usuarios.
+     *
+     * @param int   $groupId con el Id del grupo
+     * @param array $usersId opcional con los usuarios del grupo
+     * @return bool
+     */
+    public static function deleteUsersForGroup($groupId, $usersId = null)
+    {
+        $queryExcluded = '';
+
+        // Excluimos los grupos actuales
+        if (is_array($usersId)) {
+            array_map('intval', $usersId);
+
+            $queryExcluded = 'AND usertogroup_userId NOT IN (' . implode(',', $usersId) . ')';
+        }
+
+        $query = 'DELETE FROM usrToGroups WHERE usertogroup_groupId = :id ' . $queryExcluded;
+
+        $data['id'] = $groupId;
+
+        return DB::getQuery($query, __FUNCTION__, $data);
+    }
+
+    /**
      * Eliminar un grupo.
      *
      * @return bool
@@ -219,7 +345,16 @@ class Groups
 
         self::$queryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Eliminar Grupo'), Html::strongText(_('Grupo') . ': ') . $groupName);
+        $Log = new Log(_('Eliminar Grupo'));
+
+        if (!Groups::deleteUsersForGroup(self::$groupId)) {
+            $Log->addDescription(_('Error al eliminar los usuarios del grupo'));
+        }
+
+        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Grupo')), $groupName));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -243,9 +378,11 @@ class Groups
      */
     private static function getGroupInUsers()
     {
-        $query = 'SELECT user_groupId FROM usrData WHERE user_groupId = :id';
+        $query = 'SELECT user_groupId as groupId FROM usrData WHERE user_groupId = :idu ' .
+            'UNION ALL SELECT usertogroup_groupId as groupId FROM usrToGroups WHERE usertogroup_groupId = :idg';
 
-        $data['id'] = self::$groupId;
+        $data['idu'] = self::$groupId;
+        $data['idg'] = self::$groupId;
 
         DB::getQuery($query, __FUNCTION__, $data);
 
@@ -415,10 +552,9 @@ class Groups
         }
 
         foreach ($queryRes as $group) {
-            $groups[] = $group->accgroup_groupId;
+            $groups[] = (int)$group->accgroup_groupId;
         }
 
         return $groups;
     }
-
 }

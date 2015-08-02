@@ -1468,6 +1468,7 @@ footer img {
 }
 
 .tooltip {
+    width: 300px;
     max-width: 300px;
     background-color: #777;
     color: #fff;

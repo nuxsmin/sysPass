@@ -8,7 +8,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Maestra'); ?>
     </div>
 
-    <form method="post" name="frmCrypt" id="frmCrypt">
+    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <?php if ($lastUpdateMPass > 0): ?>
                 <tr>
@@ -25,9 +25,8 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Clave Maestra actual'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="curMasterPwd" maxlength="255">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
+                    <input type="password" id="curMasterPwd" name="curMasterPwd" class="passwordfield__input-show"
+                           maxlength="255">
                 </td>
             </tr>
             <tr>
@@ -35,10 +34,8 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Nueva Clave Maestra'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="newMasterPwd" maxlength="255" OnKeyUp="checkPassLevel(this.value)">
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
-                    <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
+                    <input type="password" id="newMasterPwd" name="newMasterPwd" class="passwordfield__input"
+                           maxlength="255">
                 </td>
             </tr>
             <tr>
@@ -46,13 +43,19 @@ echo $encryption_tabIndex; ?>">
                     <?php echo _('Nueva Clave Maestra (repetir)'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="newMasterPwdR" maxlength="255">
+                    <input type="password" id="newMasterPwdR" name="newMasterPwdR" maxlength="255">
                 </td>
             </tr>
             <tr>
                 <td class="descField">
                     <?php echo _('No modificar cuentas'); ?>
-                    <?php echo Common::printHelpButton("config", 16); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+
+                    <div class="tooltip" for="help-chkNoAccountChange" style="display:none;">
+                        <p>
+                            <?php echo _('Establece una nueva clave maestra sin re-encriptar las cuentas'); ?>
+                        </p>
+                    </div>
                 </td>
                 <td class="valField">
                     <label for="chkNoAccountChange"><?php echo _('NO'); ?></label>
@@ -85,29 +88,28 @@ echo $encryption_tabIndex; ?>">
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
+
     <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                     OnClick="configMgmt('savempwd');"/>
-            </li>
-            <li>
-                <img id="help_mpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
+        <button id="help_mpass_button" type="button" title="<?php echo _('Ayuda'); ?>"
+                class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+        </button>
+        <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
 
-                <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
-
-                    <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
-                </div>
-            </li>
-        </ul>
+            <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
+        </div>
+        <button type="submit" form="frmCrypt" title="<?php echo _('Guardar'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+        </button>
     </div>
 
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Clave Temporal'); ?>
     </div>
 
-    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass">
+    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass"
+          onsubmit="configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <tr>
                 <td class="descField">
@@ -145,20 +147,18 @@ echo $encryption_tabIndex; ?>">
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
-    <div class="action">
-        <ul>
-            <li>
-                <img src="imgs/genpass.png" title="<?php echo _('Generar'); ?>" class="inputImg"
-                     OnClick="configMgmt('gentmpass');"/>
-            </li>
-            <li>
-                <img id="help_tmpass_button" src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImg"/>
 
-                <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                    <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
-                </div>
-            </li>
-        </ul>
+    <div class="action">
+        <button id="help_tmpass_button" type="button" title="<?php echo _('Ayuda'); ?>"
+                class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+        </button>
+        <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
+            <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
+        </div>
+        <button type="submit" form="frmTempMasterPass" title="<?php echo _('Generar'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/genpass.png" alt="save"/>
+        </button>
     </div>
 </div> <!-- End Tab - Encryption -->
 

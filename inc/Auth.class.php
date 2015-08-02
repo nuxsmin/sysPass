@@ -148,8 +148,8 @@ class Auth
      */
     public static function authUserMySQL($userLogin, $userPass)
     {
-        if (Users::checkUserIsMigrate($userLogin)) {
-            if (!Users::migrateUser($userLogin, $userPass)) {
+        if (UserUtil::checkUserIsMigrate($userLogin)) {
+            if (!UserUtil::migrateUser($userLogin, $userPass)) {
                 return false;
             }
         }
@@ -175,10 +175,10 @@ class Auth
      */
     public static function mailPassRecover($login, $email)
     {
-        if (Users::checkUserMail($login, $email)
-            && !Users::checkUserIsDisabled($login)
-            && !Users::checkUserIsLDAP($login)
-            && !Users::checkPassRecoverLimit($login)
+        if (UserUtil::checkUserMail($login, $email)
+            && !UserUtil::checkUserIsDisabled($login)
+            && !UserLdap::checkUserIsLDAP($login)
+            && !UserUtil::checkPassRecoverLimit($login)
         ) {
             $hash = Util::generate_random_bytes();
 
@@ -192,7 +192,7 @@ class Auth
             $log->addDescription('');
             $log->addDescription(_('Si no ha solicitado esta acción, ignore este mensaje.'));
 
-            return (Email::sendEmail($log, $email, false) && Users::addPassRecover($login, $hash));
+            return (Email::sendEmail($log, $email, false) && UserUtil::addPassRecover($login, $hash));
         } else {
             return false;
         }

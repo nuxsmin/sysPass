@@ -11,10 +11,11 @@
                 </div>
 
                 <?php if ($showGlobalSearch && !$isAdmin): ?>
-                    <label for="chkgsearch"
-                           title="<?php echo _('Búsqueda global'); ?>"><?php echo ($searchGlobal) ? 'ON' : 'OFF'; ?></label>
-                    <input type="checkbox" name="chkgsearch" id="chkgsearch"
-                           class="checkbox" <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="chkgsearch" title="<?php echo _('Búsqueda global'); ?>">
+                        <input type="checkbox" id="chkgsearch" class="mdl-switch__input fg-blue100" name="chkgsearch"
+                            <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
+                        <span class="mdl-switch__label" title="<?php echo _('Búsqueda global'); ?>"></span>
+                    </label>
                     <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
                 <?php endif; ?>
                 <input type="hidden" name="start" value="<?php echo $limitStart; ?>">
@@ -22,14 +23,14 @@
                 <input type="hidden" name="sorder" value="<?php echo $searchOrder; ?>"/>
                 <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
-                <select id="selCustomer" name="customer" class="select-box">
+                <select id="selCustomer" name="customer" class="select-box sel-chosen-customer sel-chosen-deselect">
                     <option value="0"></option>
                     <?php foreach ($customers as $id => $name): ?>
                         <option
                             value="<?php echo $id; ?>" <?php echo ($id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                     <?php endforeach; ?>
                 </select>
-                <select id="selCategory" name="category" class="select-box">
+                <select id="selCategory" name="category" class="select-box sel-chosen-category sel-chosen-deselect">
                     <option value="0"></option>
                     <?php foreach ($categories as $id => $name): ?>
                         <option
@@ -46,46 +47,35 @@
     </form>
 </div>
 <script>
-    mkChosen({
-        id: 'selCustomer',
-        placeholder: '<?php echo _('Seleccionar Cliente'); ?>',
-        noresults: '<?php echo _('Sin resultados'); ?>'
-    });
-    mkChosen({
-        id: 'selCategory',
-        placeholder: '<?php echo _('Seleccionar Categoría'); ?>',
-        noresults: '<?php echo _('Sin resultados'); ?>'
-    });
-
-    $('#frmSearch select').on('change', function (e) {
-        clearSearch(1);
-        accSearch(0)
-    });
-    $('#frmSearch #btnClear').click(function (e) {
-        clearSearch();
-        accSearch(0);
-    })
-    $('#frmSearch input:text:visible:first').focus();
-    $('#frmSearch #txtSearch').on('keyup', function (e) {
-        accSearch(1, e)
-    });
-    $('#frmSearch #rpp').on('change', function () {
-        accSearch(0);
-    })
-
-    <?php if ( $showGlobalSearch ): ?>
-    $('#tblTools').find('.checkbox').button().click(
-        function () {
-            if ($(this).attr('checked') == undefined) {
-                $(this).button('option', 'label', 'OFF');
-                $('input[name="gsearch"]').val(0);
-            } else {
-                $(this).button('option', 'label', 'ON');
-                $('input[name="gsearch"]').val(1);
-            }
-
+    $(function(){
+        $('#frmSearch select').on('change', function (e) {
+            clearSearch(1);
+            accSearch(0)
+        });
+        $('#frmSearch #btnClear').click(function (e) {
+            clearSearch();
             accSearch(0);
-        }
-    );
-    <?php endif; ?>
+        })
+        $('#frmSearch input:text:visible:first').focus();
+        $('#frmSearch #txtSearch').on('keyup', function (e) {
+            accSearch(1, e)
+        });
+        $('#frmSearch #rpp').on('change', function () {
+            accSearch(0);
+        })
+
+        <?php if ( $showGlobalSearch ): ?>
+        $('#chkgsearch').click(
+            function () {
+                if ($(this).prop('checked') == true) {
+                    $('input[name="gsearch"]').val(1);
+                } else {
+                    $('input[name="gsearch"]').val(0);
+                }
+
+                accSearch(0);
+            }
+        );
+        <?php endif; ?>
+    })
 </script>

@@ -34,14 +34,11 @@
 
                 <p>
                     <input type="password" name="adminpass" id="adminpass"
+                           class="passwordfield__input"
                            title="<?php echo _('Clave'); ?>"
                            placeholder="<?php echo _('Clave'); ?>"
                            value="<?php echo $adminpass; ?>" autocomplete="off"
                            onKeyUp="checkPassLevel(this.value,'adminaccount')" required/>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
-                <span class="passLevel passLevel-float fullround"
-                      title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
             </fieldset>
 
@@ -49,14 +46,11 @@
                 <legend><?php echo _('Clave Maestra'); ?></legend>
                 <p>
                     <input type="password" name="masterpassword" id="masterpassword"
+                           class="passwordfield__input"
                            title="<?php echo _('Clave Maestra'); ?>  "
                            placeholder="<?php echo _('Clave Maestra'); ?>"
                            value="<?php echo $masterpassword; ?>" autocomplete="off"
                            onKeyUp="checkPassLevel(this.value,'masterpwd')" required/>
-                    <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
-                <span class="passLevel passLevel-float fullround"
-                      title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
                 </p>
             </fieldset>
 
@@ -75,6 +69,7 @@
 
                 <p>
                     <input type="password" name="dbpass" id="dbpass" title="<?php echo _('Clave BBDD'); ?>"
+                           class="passwordfield__input-show"
                            placeholder="<?php echo _('Clave BBDD'); ?>"
                            value="<?php echo $dbpass; ?>" required/>
                     <img class="showpass inputImg " src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"

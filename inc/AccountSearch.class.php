@@ -304,18 +304,26 @@ class AccountSearch
         }
 
         if (!$isAdmin && !$this->getGlobalSearch()) {
-            $arrFilterUser[] = 'account_userGroupId = :userGroupId';
+            $subQueryGroupsA = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduA UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgA)';
+            $subQueryGroupsB = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduB UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgB)';
+
+            $arrFilterUser[] = 'account_userGroupId IN ' . $subQueryGroupsA;
+            $arrFilterUser[] = 'accgroup_groupId IN ' . $subQueryGroupsB;
             $arrFilterUser[] = 'account_userId = :userId';
-            $arrFilterUser[] = 'accgroup_groupId = :accgroup_groupId';
             $arrFilterUser[] = 'accuser_userId = :accuser_userId';
 
             // Usuario/Grupo principal de la cuenta
             $data['userId'] = Session::getUserId();
             $data['accuser_userId'] = Session::getUserId();
 
+            $data['userIduA'] = Session::getUserId();
+            $data['userIduB'] = Session::getUserId();
+            $data['userIdgA'] = Session::getUserId();
+            $data['userIdgB'] = Session::getUserId();
+
             // Usuario/Grupo secundario de la cuenta
-            $data['userGroupId'] = Session::getUserGroupId();
-            $data['accgroup_groupId'] = Session::getUserGroupId();
+//            $data['userGroupId'] = Session::getUserGroupId();
+//            $data['accgroup_groupId'] = Session::getUserGroupId();
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
@@ -337,6 +345,8 @@ class AccountSearch
         } else {
             $query = $querySelect . ' ' . $queryOrder . ' ' . $queryLimit;
         }
+
+//        print_r($query);
 
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();

@@ -25,7 +25,14 @@
 
 namespace SP\Controller;
 
+use SP\Common;
+use SP\DB;
+use SP\Groups;
 use SP\Profile;
+use SP\Session;
+use SP\Template;
+use SP\UserUtil;
+use SP\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -44,14 +51,14 @@ class UsersMgmtC extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP\Template con instancia de plantilla
+     * @param $template Template con instancia de plantilla
      */
-    public function __construct(\SP\Template $template = null)
+    public function __construct(Template $template = null)
     {
         parent::__construct($template);
 
-        $this->view->assign('isDemo', \SP\Util::demoIsEnabled());
-        $this->view->assign('sk', \SP\Common::getSessionKey());
+        $this->view->assign('isDemo', Util::demoIsEnabled());
+        $this->view->assign('sk', Common::getSessionKey());
     }
 
     /**
@@ -61,7 +68,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_USERS);
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', Common::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -148,7 +155,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Usuarios'),
-                'query' => \SP\Users::getUsers(),
+                'query' => UserUtil::getUsers(),
                 'props' => $arrUsersTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5))
         );
@@ -162,7 +169,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_GROUPS);
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', Common::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -207,7 +214,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Grupos'),
-                'query' => \SP\Groups::getGroups(),
+                'query' => Groups::getGroups(),
                 'props' => $arrGroupsTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5))
         );
@@ -220,7 +227,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PROFILES);
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', Common::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -272,7 +279,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->append(
             'tabs', array(
                 'title' => _('Gestión de Perfiles'),
-                'query' => \SP\Profile::getProfiles(),
+                'query' => Profile::getProfiles(),
                 'props' => $arrProfilesTableProp,
                 'time' => round(microtime() - $this->view->queryTimeStart, 5)
             )
@@ -301,9 +308,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->addTemplate('users');
 
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
-        $this->view->assign('user', \SP\Users::getUserData($this->view->itemId));
-        $this->view->assign('groups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->view->assign('profiles', \SP\DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
+        $this->view->assign('user', UserUtil::getUserData($this->view->itemId));
+        $this->view->assign('groups', DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->view->assign('profiles', DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
         $this->view->assign('ro', ($this->view->user['checks']['user_isLdap']) ? 'READONLY' : '');
     }
 
@@ -314,7 +321,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('groups');
 
-        $this->view->assign('group', \SP\Groups::getGroupData($this->view->itemId));
+        $this->view->assign('group', Groups::getGroupData($this->view->itemId));
+        $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
+        $this->view->assign('groupUsers', \SP\Groups::getUsersForGroup($this->view->itemId));
     }
 
     /**
@@ -324,13 +333,13 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('profiles');
 
-        $profile = ($this->view->itemId) ? \SP\Profile::getProfile($this->view->itemId) : new Profile();
+        $profile = ($this->view->itemId) ? Profile::getProfile($this->view->itemId) : new Profile();
 
         $this->view->assign('profile', $profile);
         $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
 
         if ( $this->view->isView === true ) {
-            $this->view->assign('usedBy', \SP\Profile::getProfileInUsersName($this->view->itemId));
+            $this->view->assign('usedBy', Profile::getProfileInUsersName($this->view->itemId));
         }
     }
 
@@ -342,7 +351,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->setAction(self::ACTION_USR_USERS_EDITPASS);
 
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if ($this->view->userId != \SP\Session::getUserId() && !$this->checkAccess()) {
+        if ($this->view->userId != Session::getUserId() && !$this->checkAccess()) {
             return;
         }
 
@@ -351,6 +360,6 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
 
         // Obtener de nuevo el token de seguridad por si se habñia regenerado antes
-        $this->view->assign('sk', \SP\Common::getSessionKey());
+        $this->view->assign('sk', Common::getSessionKey());
     }
 }

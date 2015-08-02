@@ -1,6 +1,6 @@
 <div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 <?php if ($showform): ?>
-<form method="post" name="frmaccount" id="frmAccount">
+<form method="post" name="frmaccount" id="frmAccount" onsubmit="saveAccount('frmAccount'); return false;">
     <?php endif; ?>
     <?php if ($gotData && $accountIsHistory): ?>
     <table class="data round tblIcon">
@@ -23,7 +23,7 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCustomer" name="customerId" class="select-box">
+                        <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer">
                             <option value="0"></option>
                             <?php foreach ($customers as $id => $name): ?>
                                 <option
@@ -42,7 +42,7 @@
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCategory" name="categoryId" class="select-box">
+                        <select id="selCategory" name="categoryId" class="select-box sel-chosen-category">
                             <option value="0"></option>
                             <?php foreach ($categories as $id => $name): ?>
                                 <option
@@ -82,20 +82,14 @@
                 <tr>
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
-                        <input name="password" type="password" id="txtPass" class="password" maxlength="255"
+                        <input name="pass" type="password" id="pass" class="password passwordfield__input" maxlength="255"
                                OnKeyUp="checkPassLevel(this.value)" autocomplete="off">
-                        <img class="showpass inputImg" src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
-                        <img id="passGen" src="imgs/genpass.png" title="<?php echo _('Generar clave aleatoria'); ?>"
-                             class="inputImg"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
-                        <input name="password2" type="password" class="password" maxlength="255" autocomplete="off">
-                        <span class="passLevel fullround"
-                              title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
+                        <input name="passR" type="password" id="passR" class="password" maxlength="255" autocomplete="off">
                     </td>
                 </tr>
             <?php endif; ?>
@@ -335,95 +329,81 @@
 <?php endif; ?>
 
 <div class="action">
-    <ul>
-        <?php if ($gotData && $accountIsHistory): ?>
-            <li>
-                <img src="imgs/back.png" title="<?php echo _('Ver Actual'); ?>" class="inputImg" id="btnBack"
-                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"/>
-            </li>
-        <?php else: ?>
-            <li>
-                <img src="imgs/back.png" title="<?php echo _('Atrás'); ?>" class="inputImg" id="btnBack"
-                     OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"/>
-            </li>
-        <?php endif; ?>
+    <?php if ($showDelete): ?>
+        <button type="button" title="<?php echo _('Eliminar Cuenta'); ?>" class="button-action"
+            OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/delete.png" alt="save" />
+        </button>
+    <?php endif; ?>
 
-        <?php if ($showRestore): ?>
-            <li>
-                <img src="imgs/restore.png" title="<?php echo _('Restaurar cuenta desde este punto'); ?>"
-                     class="inputImg" id="btnRestore"
-                     OnClick="saveAccount('frmAccount');"/>
-            </li>
-        <?php endif; ?>
+    <?php if ($showRestore): ?>
+        <button type="submit" form="frmAccount" title="<?php echo _('Restaurar cuenta desde este punto'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/restore.png" alt="save" />
+        </button>
+    <?php endif; ?>
 
-        <?php if ($showViewPass): ?>
-            <li>
-                <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
-                     onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)"
-                     class="inputImg"/>
-            </li>
-            <li>
-                <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                     onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
-                     data-clipboard-target="clip-pass-text"
-                     class="inputImg clip-pass-button"/>
-            </li>
-        <?php endif; ?>
+    <?php if ($showViewPass): ?>
+        <button type="button" title="<?php echo _('Ver Clave'); ?>" class="button-action"
+            onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/user-pass.png" alt="save" />
+        </button>
 
-        <?php if ($showSave): ?>
-            <li>
-                <img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg" id="btnSave"
-                     OnClick="saveAccount('frmAccount');"/>
-            </li>
-        <?php endif; ?>
+        <button type="button" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" class="button-action clip-pass-button"
+            onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
+            data-clipboard-target="clip-pass-text">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/clipboard.png" alt="save" />
+        </button>
+    <?php endif; ?>
 
-        <?php if ($showEditPass): ?>
-            <li>
-                <img src="imgs/key.png" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="inputImg"
-                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)"/>
-            </li>
-        <?php endif; ?>
+    <?php if ($showEditPass): ?>
+        <button type="button" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="button-action"
+            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/key.png" alt="save" />
+        </button>
+    <?php endif; ?>
 
-        <?php if ($showEdit): ?>
-            <li>
-                <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>" class="inputImg"
-                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)"/>
-            </li>
-        <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
-            <li>
-                <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>" class="inputImg"
-                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)"/>
-            </li>
-        <?php endif; ?>
+    <?php if ($gotData && $accountIsHistory): ?>
+        <button type="button" title="<?php echo _('Ver Actual'); ?>" class="button-action"
+            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+        </button>
+    <?php else: ?>
+        <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
+            OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+        </button>
+    <?php endif; ?>
 
-        <?php if ($showDelete): ?>
-            <li>
-                <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>" class="inputImg"
-                     OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');"/>
-            </li>
-        <?php endif; ?>
-    </ul>
+    <?php if ($showEdit): ?>
+        <button type="button" title="<?php echo _('Modificar Cuenta'); ?>" class="button-action"
+            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/edit.png" alt="save" />
+        </button>
+    <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
+        <button type="button" title="<?php echo _('Solicitar Modificación'); ?>" class="button-action"
+            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/request.png" alt="save" />
+        </button>
+    <?php endif; ?>
+
+    <?php if ($showSave): ?>
+        <button type="submit" form="frmAccount" title="<?php echo _('Guardar'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+        </button>
+    <?php endif; ?>
 </div>
 
 <?php if ($showform): ?>
     <script>
         $(function(){
-            $("#selCustomer").chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Cliente'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>"
-            });
-            $("#selCategory").chosen({
-                placeholder_text_single: "<?php echo _('Seleccionar Categoría'); ?>",
-                disable_search_threshold: 10,
-                no_results_text: "<?php echo _('Sin resultados'); ?>"
-            });
             $("#selGroups").chosen({
                 placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>"
             });
+
             $("#selUsers").chosen({
                 placeholder_text_multiple: "<?php echo _('Seleccionar usuarios'); ?>"
             });
+
             $('input:text:visible:first').focus();
 
             $('.checkbox').button().click(

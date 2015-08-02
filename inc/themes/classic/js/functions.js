@@ -11,26 +11,14 @@ var windowAdjustSize = 350;
 // Variable para almacena la llamada a setTimeout()
 var timeout;
 
-var strPassword;
+var passLength;
 var minPasswordLength = 8;
-var baseScore = 0, score = 0;
 
-var num = {};
-num.Excess = 0;
-num.Upper = 0;
-num.Numbers = 0;
-num.Symbols = 0;
-
-var bonus = {};
-bonus.Excess = 3;
-bonus.Upper = 4;
-bonus.Numbers = 5;
-bonus.Symbols = 5;
-bonus.Combo = 0;
-bonus.FlatLower = 0;
-bonus.FlatNumber = 0;
-
-var powertipOptions = {placement: 'ne', smartPlacement: 'true', fadeOutTime: 500};
+var complexity = {};
+complexity.numbers = true;
+complexity.symbols = true;
+complexity.uppercase = true;
+complexity.numlength = 10;
 
 jQuery.extend(jQuery.fancybox.defaults, {
     type: 'ajax',
@@ -49,16 +37,42 @@ jQuery.extend(jQuery.fancybox.defaults, {
 $(document).ready(function () {
     "use strict";
 
-    $("[title]").powerTip(powertipOptions);
-    $('input, textarea').placeholder();
+    $('input[type="text"], select, textarea').placeholder().mouseenter(function () {$(this).focus();});
+
     setContentSize();
     setWindowAdjustSize();
+
+    // Activar tooltips
+    activeTooltip();
+
 }).ajaxComplete(function () {
     "use strict";
 
-    $("[title]").powerTip(powertipOptions);
-    $('input, textarea').placeholder();
+    $('input[type="text"], select, textarea').placeholder().mouseenter(function () {$(this).focus();});
+
+    // Activar tooltips
+    activeTooltip();
 });
+
+
+function activeTooltip(){
+    "use strict";
+
+    // Activar tooltips
+    $('.active-tooltip').tooltip({
+        content: function () {
+            return $(this).attr('title');
+        },
+        tooltipClass: "tooltip"
+    });
+
+    $('.help-tooltip').tooltip({
+        content: function(){
+            return $(this).next('div').html();
+        },
+        tooltipClass: "tooltip"
+    });
+}
 
 //$(function() {
 //    "use strict";
@@ -155,18 +169,6 @@ function clearSearch(clearStart) {
     $('#frmSearch').find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
     order.key = 0;
     order.dir = 0;
-}
-
-// Funcion para crear un desplegable con opciones
-function mkChosen(options) {
-    "use strict";
-
-    $('#' + options.id).chosen({
-        allow_single_deselect: true,
-        placeholder_text_single: options.placeholder,
-        disable_search_threshold: 10,
-        no_results_text: options.noresults
-    });
 }
 
 // Función para la búsqueda de cuentas mediante filtros
@@ -322,13 +324,13 @@ function viewPass(id, full, history) {
 
                     if (json.status === 0) {
                         content = '<p class="dialog-pass-text">' + json.accpass + '</p>' +
-                        '<br>' +
-                        '<div class="dialog-buttons">' +
-                        '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
-                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                        '<span class="ui-button-text">Copiar</span>' +
-                        '</button>' +
-                        '</div>';
+                            '<br>' +
+                            '<div class="dialog-buttons">' +
+                            '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                            '<span class="ui-button-text">Copiar</span>' +
+                            '</button>' +
+                            '</div>';
                     } else {
                         content = '<span class="altTxtRed">' + json.description + '</span>';
 
@@ -542,41 +544,26 @@ function sendRequest() {
 }
 
 // Función para guardar la configuración
-function configMgmt(action) {
+function configMgmt(action, obj) {
     "use strict";
 
-    var frm, url;
+    var url;
 
     switch (action) {
-        case "saveconfig":
-            frm = 'frmConfig';
+        case "config":
             url = '/ajax/ajax_configSave.php';
-            break;
-        case "savempwd":
-            frm = 'frmCrypt';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "gentmpass":
-            frm = 'frmTempMasterPass';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "backup":
-            frm = 'frmBackup';
-            url = '/ajax/ajax_backup.php';
             break;
         case "export":
-            frm = 'frmExport';
             url = '/ajax/ajax_backup.php';
             break;
-        case "migrate":
-            frm = 'frmMigrate';
+        case "import":
             url = '/ajax/ajax_migrate.php';
             break;
         default:
             return;
     }
 
-    var data = $('#' + frm).serialize();
+    var data = $(obj).serialize();
 
     sendAjax(data, url);
 }
@@ -729,10 +716,19 @@ function importFile(sk) {
             sk: sk,
             action: 'import',
             isAjax: 1,
-            importPwd: function() { return $('input[name="importPwd"]').val(); },
-            defUser: function() { return $('#import_defaultuser').chosen().val(); },
-            defGroup: function() { return $('#import_defaultgroup').chosen().val(); },
-            csvDelimiter: function() { return $('input[name="csvDelimiter"]').val();; }
+            importPwd: function () {
+                return $('input[name="importPwd"]').val();
+            },
+            defUser: function () {
+                return $('#import_defaultuser').chosen().val();
+            },
+            defGroup: function () {
+                return $('#import_defaultgroup').chosen().val();
+            },
+            csvDelimiter: function () {
+                return $('input[name="csvDelimiter"]').val();
+                ;
+            }
         },
         uploadFinished: function (i, file, json) {
             $.fancybox.hideLoading();
@@ -967,20 +963,16 @@ function getTime() {
 
 // Función para generar claves aleatorias. 
 // By Uzbekjon from  http://jquery-howto.blogspot.com.es
-function password(length, special, fancy, dstId) {
+function password(length, special, fancy, targetId) {
     "use strict";
 
     var iteration = 0;
     var genPassword = '';
     var randomNumber;
 
-    if (typeof special === 'undefined') {
-        special = false;
-    }
-
-    while (iteration < length) {
+    while (iteration < complexity.numlength) {
         randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
-        if (!special) {
+        if (!complexity.symbols) {
             if ((randomNumber >= 33) && (randomNumber <= 47)) {
                 continue;
             }
@@ -994,6 +986,15 @@ function password(length, special, fancy, dstId) {
                 continue;
             }
         }
+
+        if (!complexity.numbers && randomNumber >= 48 && randomNumber <= 57) {
+            continue;
+        }
+
+        if (!complexity.uppercase && randomNumber >= 65 && randomNumber <= 90) {
+            continue;
+        }
+
         iteration++;
         genPassword += String.fromCharCode(randomNumber);
     }
@@ -1005,119 +1006,55 @@ function password(length, special, fancy, dstId) {
         alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + genPassword + '</p>');
     }
 
-    if (dstId) {
-        checkPassLevel(genPassword);
-        $('#' + dstId + ' input:password').val(genPassword);
-        $('#' + dstId + ' #passLevel').show(500);
+    var level = zxcvbn(genPassword);
+    passLength = genPassword.length;
+
+    if (targetId) {
+        outputResult(level.score, targetId);
+
+        $('#' + targetId).val(genPassword);
+        $('#' + targetId + 'R').val(genPassword);
     } else {
-        checkPassLevel(genPassword);
+        outputResult(level.score, targetId);
+
         $('input:password, input.password').val(genPassword);
         $('#passLevel').show(500);
     }
-    //return password;
 }
 
 // Funciones para analizar al fortaleza de una clave
 // From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
-function checkPassLevel(password, dstId) {
+function checkPassLevel(password, dst) {
     "use strict";
 
-    strPassword = password;
+    var level = zxcvbn(password);
 
-    num.Excess = 0;
-    num.Upper = 0;
-    num.Numbers = 0;
-    num.Symbols = 0;
-    bonus.Combo = 0;
-    bonus.FlatLower = 0;
-    bonus.FlatNumber = 0;
-    baseScore = 0;
-    score = 0;
-
-    if (password.length >= minPasswordLength) {
-        baseScore = 50;
-        analyzeString();
-        calcComplexity();
-    } else {
-        baseScore = 0;
-    }
-
-    if (dstId) {
-        outputResult(dstId);
-    } else {
-        outputResult(dstId);
-    }
+    outputResult(level.score, dst);
 }
 
-function analyzeString() {
+function outputResult(level, dstId) {
     "use strict";
 
-    var chars = strPassword.split('');
-
-    for (var i = 0; i < strPassword.length; i++) {
-        if (chars[i].match(/[A-Z]/g)) {
-            num.Upper++;
-        }
-        if (chars[i].match(/[0-9]/g)) {
-            num.Numbers++;
-        }
-        if (chars[i].match(/(.*[!,@,#,$,%,&,*,?,%,_])/)) {
-            num.Symbols++;
-        }
-    }
-
-    num.Excess = strPassword.length - minPasswordLength;
-
-    if (num.Upper && num.Numbers && num.Symbols) {
-        bonus.Combo = 25;
-    }
-
-    else if ((num.Upper && num.Numbers) || (num.Upper && num.Symbols) || (num.Numbers && num.Symbols)) {
-        bonus.Combo = 15;
-    }
-
-    if (strPassword.match(/^[\sa-z]+$/)) {
-        bonus.FlatLower = -15;
-    }
-
-    if (strPassword.match(/^[\s0-9]+$/)) {
-        bonus.FlatNumber = -35;
-    }
-}
-
-function calcComplexity() {
-    "use strict";
-
-    score = baseScore + (num.Excess * bonus.Excess) + (num.Upper * bonus.Upper) + (num.Numbers * bonus.Numbers) + (num.Symbols * bonus.Symbols) + bonus.Combo + bonus.FlatLower + bonus.FlatNumber;
-}
-
-function outputResult(dstId) {
-    "use strict";
-
-    var complexity, selector = '.passLevel';
-
-    if (dstId) {
-        selector = '#' + dstId + ' .passLevel';
-    }
+    var complexity, selector = '.passLevel-' + dstId;
 
     complexity = $(selector);
     complexity.removeClass("weak good strong strongest");
 
-    if (strPassword.length === 0) {
+    if (passLength === 0) {
         complexity.attr('title', '').empty();
-    } else if (strPassword.length < minPasswordLength) {
+    } else if (passLength < minPasswordLength) {
         complexity.attr('title', LANG[11]).addClass("weak");
-    } else if (score < 50) {
+    } else if (level === 0) {
         complexity.attr('title', LANG[9]).addClass("weak");
-    } else if (score >= 50 && score < 75) {
+    } else if (level === 1 || level === 2) {
         complexity.attr('title', LANG[8]).addClass("good");
-    } else if (score >= 75 && score < 100) {
+    } else if (level === 3) {
         complexity.attr('title', LANG[7]).addClass("strong");
-    } else if (score >= 100) {
+    } else if (level === 4) {
         complexity.attr('title', LANG[10]).addClass("strongest");
     }
 
-    $('.passLevel').powerTip(powertipOptions);
+    //$('.passLevel').powerTip(powertipOptions);
 }
 
 // Función para mostrar mensaje con alertify
@@ -1207,6 +1144,71 @@ function goLogin() {
     }, 2000);
 }
 
+// Diálogo de configuración de complejidad de clave
+function complexityDialog(targetId) {
+    $('<div id="dialog-complexity"></div>').dialog({
+        modal: true,
+        title: 'Opciones de Complejidad',
+        width: '400px',
+        open: function () {
+            var thisDialog = $(this);
+
+            var content =
+                '<div class="dialog-btns-complexity">' +
+                '<label for="checkbox-numbers">Incluir números</label>' +
+                '<input type="checkbox" id="checkbox-numbers" name="checkbox-numbers"/>' +
+                '<label for="checkbox-uppercase">Incluir mayúculas</label>' +
+                '<input type="checkbox" id="checkbox-uppercase" name="checkbox-uppercase"/>' +
+                '<label for="checkbox-symbols">Incluir símbolos</label>' +
+                '<input type="checkbox" id="checkbox-symbols" name="checkbox-symbols"/>' +
+                '</div>' +
+                '<div class="dialog-length-complexity">' +
+                '<label for="passlength">Longitud</label>' +
+                '<input class="inputNumber" pattern="[0-9]*" id="passlength" />' +
+                '</div>' +
+                '<div class="dialog-buttons">' +
+                '<button class="btnDialogOk">Ok</button>' +
+                '</div>';
+
+            thisDialog.html(content);
+
+            // Recentrar después de insertar el contenido
+            thisDialog.dialog('option', 'position', 'center');
+
+            // Actualizar componentes de MDL
+            thisDialog.ready(function () {
+                $('#checkbox-numbers').prop('checked', complexity.numbers);
+                $('#checkbox-uppercase').prop('checked', complexity.uppercase);
+                $('#checkbox-symbols').prop('checked', complexity.symbols);
+                $('#passlength').val(complexity.numlength);
+
+                $(".dialog-btns-complexity").buttonset({
+                    icons: {primary: "ui-icon-transferthick-e-w"}
+                });
+
+                $(".inputNumber").spinner();
+
+                $(".btnDialogOk")
+                    .button()
+                    .click(function () {
+                        complexity.numbers = $(' #checkbox-numbers').is(':checked');
+                        complexity.uppercase = $('#checkbox-uppercase').is(':checked');
+                        complexity.symbols = $('#checkbox-symbols').is(':checked');
+                        complexity.numlength = parseInt($('#passlength').val());
+
+                        console.log(thisDialog);
+                        thisDialog.dialog('close');
+                    }
+                );
+            });
+        },
+        // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
+        close: function () {
+            $(this).dialog("destroy");
+        }
+    });
+}
+
 // Función para obtener el navegador usado
 function getBrowser() {
     "use strict";
@@ -1220,4 +1222,170 @@ function getBrowser() {
     }
 
     return browser;
+}
+
+// Detectar los campos select y añadir funciones
+function chosenDetect() {
+    "use strict";
+
+    var selectWidth = "210px";
+    var searchTreshold = 10;
+
+    $(".sel-chosen-usergroup").chosen({
+        placeholder_text_single: LANG[21],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-user").chosen({
+        placeholder_text_single: LANG[22],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-profile").chosen({
+        placeholder_text_single: LANG[23],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
+    $(".sel-chosen-customer").each(function(){
+        var deselect = $(this).hasClass('sel-chosen-deselect');
+
+        $(this).chosen({
+            allow_single_deselect: deselect,
+            placeholder_text_single: LANG[24],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
+    });
+
+    $(".sel-chosen-category").each(function(){
+        var deselect = $(this).hasClass('sel-chosen-deselect');
+
+        $(this).chosen({
+            allow_single_deselect: deselect,
+            placeholder_text_single: LANG[25],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
+    });
+
+    $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
+}
+
+// Detectar los campos de clave y añadir funciones
+function passwordDetect() {
+    "use strict";
+
+    // Crear los iconos de acciones sobre claves
+    $('.passwordfield__input').each(function () {
+        var thisInput = $(this);
+        var targetId = $(this).attr('id');
+
+        if ( thisInput.next().hasClass('password-actions') ){
+            return;
+        }
+
+        console.log(targetId);
+
+        var btnMenu = '<div><button type="button" class="quickGenPass" data-targetid="' + targetId + '">' + LANG[28] + '</button>';
+        btnMenu += '<button type="button" class="genPassActions">' + LANG[27] + '</button></div>';
+        btnMenu += '<ul>';
+        btnMenu += '<li data-targetid="' + targetId + '" class="passGen">' + LANG[28] + '</li>';
+        btnMenu += '<li data-targetid="' + targetId + '" class="passComplexity">' + LANG[29] + '</li>';
+        btnMenu += '<li data-targetid="' + targetId + '" class="reset">' + LANG[30] + '</li>';
+        btnMenu += '</ul>';
+
+        thisInput.after('<div class="password-actions" />');
+
+        thisInput.next('.password-actions')
+            .prepend(btnMenu)
+            .prepend('<img class="showpass inputImg" src="imgs/show.png" title="' + LANG[32] + '" data-targetid="' + targetId + '" />')
+            .prepend('<span class="passLevel passLevel-' + targetId + ' fullround" title="' + LANG[31] + '"></span>');
+
+        $(".quickGenPass")
+            .button({
+                text: false,
+                icons: {
+                    primary: "ui-icon-gear"
+                }
+            })
+            .click(function () {
+                password(11, true, true, targetId);
+            })
+            .next()
+            .button({
+                text: false,
+                icons: {
+                    primary: "ui-icon-key"
+                }
+            })
+            .click(function () {
+                var menu = $(this).parent().next().show().position({
+                    my: "left top",
+                    at: "left bottom",
+                    of: this
+                });
+                $(document).one("click", function () {
+                    menu.hide();
+                });
+                return false;
+            })
+            .parent()
+            .buttonset()
+            .next()
+            .hide()
+            .menu();
+
+
+        $(this).on('keyup', function () {
+            checkPassLevel($(this).val(), targetId);
+        });
+    });
+
+    // Crear los iconos de acciones sobre claves (sólo mostrar clave)
+    $('.passwordfield__input-show').each(function () {
+        var thisParent = $(this);
+        var targetId = $(this).attr('id');
+
+        thisParent
+            .after('<img class="showpass inputImg" src="imgs/show.png" title="' + LANG[32] + '" data-targetid="' + targetId + '" />');
+    });
+
+    // Crear evento para generar clave aleatoria
+    $('.passGen').each(function () {
+        $(this).on('click', function () {
+            var targetId = $(this).data('targetid');
+            password(11, true, true, targetId);
+        });
+    });
+
+    $('.passComplexity').each(function () {
+        $(this).on('click', function () {
+            complexityDialog();
+        });
+    });
+
+    // Crear evento para mostrar clave generada/introducida
+    $('.showpass').each(function () {
+        $(this).on('mouseover', function () {
+            var targetId = $(this).data('targetid');
+            $(this).attr('title', $('#' + targetId).val());
+        });
+    });
+
+    // Reset de los campos de clave
+    $('.reset').each(function () {
+        $(this).on('click', function () {
+            var targetId = $(this).data('targetid');
+            $('#' + targetId).val('');
+            $('#' + targetId + 'R').val('');
+        });
+    });
 }

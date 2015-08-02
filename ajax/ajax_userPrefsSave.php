@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\UserUtil;
 
 define('APP_ROOT', '..');
 
@@ -55,7 +56,7 @@ if($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY
     $twoFaEnabled = SP\Request::analyze('security_2faenabled', 0, false, 1);
     $pin = SP\Request::analyze('security_pin', 0);
 
-    $userLogin = \SP\Users::getUserLoginById($itemId);
+    $userLogin = UserUtil::getUserLoginById($itemId);
     $twoFa = new \SP\Auth\Auth2FA($itemId, $userLogin);
 
     if(!$twoFa->verifyKey($pin)){

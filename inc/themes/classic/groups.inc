@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmGroups" id="frmGroups">
+    <form method="post" name="frmGroups" id="frmGroups" onsubmit="appMgmtSave('frmGroups'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -19,6 +19,21 @@
                                             value="<?php echo $group["usergroup_description"]; ?>"/>
                 </td>
             </tr>
+
+            <tr>
+                <td class="descField"><?php echo _('Usuarios'); ?></td>
+                <td class="valField">
+                    <select id="selUsers" name="users[]" multiple="multiple" class="select-box sel-chosen-user" <?php echo $isDisabled; ?>>
+                        <option value="0"></option>
+                        <?php foreach ($users as $id => $name): ?>
+                            <?php $selected = (in_array($id, $groupUsers)) ? 'selected' : ''; ?>
+                            <option
+                                value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+
             </tbody>
         </table>
 
@@ -31,9 +46,13 @@
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <ul>
-            <li><img src="imgs/check.png" title="<?php echo _('Guardar'); ?>" class="inputImg"
-                     OnClick="appMgmtSave('frmGroups');"/></li>
-        </ul>
+        <button type="submit" form="frmGroups" title="<?php echo _('Guardar'); ?>" class="button-action">
+            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+        </button>
     </div>
 </div>
+<script>
+    $(function(){
+        chosenDetect();
+    });
+</script>

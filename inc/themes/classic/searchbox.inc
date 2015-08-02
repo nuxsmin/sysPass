@@ -14,13 +14,13 @@
                 <input type="hidden" name="sorder" value="<?php echo $searchOrder; ?>" />
                 <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
-                <select id="selCustomer" name="customer" class="select-box">
+                <select id="selCustomer" name="customer" class="select-box sel-chosen-customer sel-chosen-deselect">
                     <option value="0"></option>
                     <?php foreach ($customers as $id => $name): ?>
                         <option value="<?php echo $id; ?>" <?php echo ($id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                     <?php endforeach; ?>
                 </select>
-                <select id="selCategory" name="category" class="select-box">
+                <select id="selCategory" name="category" class="select-box sel-chosen-category sel-chosen-deselect">
                     <option value="0"></option>
                     <?php foreach ($categories as $id => $name): ?>
                         <option value="<?php echo $id; ?>" <?php echo ($id === $searchCategory) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -34,31 +34,42 @@
     </table>
 </form>
 <script>
-    mkChosen({id: 'selCustomer', placeholder: '<?php echo _('Seleccionar Cliente'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
-    mkChosen({id: 'selCategory', placeholder: '<?php echo _('Seleccionar Categoría'); ?>', noresults: '<?php echo _('Sin resultados'); ?>' });
+    $(function(){
+        $('#frmSearch select').on('change', function (e) {
+            clearSearch(1);
+            accSearch(0)
+        });
 
-    $('#frmSearch select').on('change', function(e){clearSearch(1); accSearch(0)});
+        $('#frmSearch #btnClear').click(function (e) {
+            clearSearch();
+            accSearch(0);
+        });
 
-    $("#rpp").spinner({step: 3, max: 50, min: 6, numberFormat: "n", stop: function(event, ui) {
+        $('#frmSearch input:text:visible:first').focus();
+        $('#frmSearch #txtSearch').on('keyup', function (e) {
+            accSearch(1, e)
+        });
+
+        $('#frmSearch #rpp').on('change', function () {
+            accSearch(0);
+        });
+
+        $("#rpp").spinner({step: 3, max: 50, min: 6, numberFormat: "n", stop: function(event, ui) {
             accSearch(0);
         }});
-    $('#frmSearch input:text:visible:first').focus();
-    $('#frmSearch #txtSearch').keyup(function(e){accSearch(1,e)});
-    $('#frmSearch #btnClear').click(function(e){clearSearch(); accSearch(0);})
 
-    <?php if ( $showGlobalSearch ): ?>
-    $('#tblTools').find('.checkbox').button().click(
-        function(){
-            if ($(this).attr('checked') == undefined){
-                $(this).button('option', 'label', 'OFF');
-                $('input[name="gsearch"]').val(0);
-            } else {
-                $(this).button('option', 'label', 'ON');
-                $('input[name="gsearch"]').val(1);
+        <?php if ( $showGlobalSearch ): ?>
+        $('#chkgsearch').click(
+            function () {
+                if ($(this).prop('checked') == true) {
+                    $('input[name="gsearch"]').val(1);
+                } else {
+                    $('input[name="gsearch"]').val(0);
+                }
+
+                accSearch(0);
             }
-
-            accSearch(0);
-        }
-    );
-    <?php endif; ?>
+        );
+        <?php endif; ?>
+    })
 </script>
