@@ -64,7 +64,7 @@ class EventlogC extends Controller implements ActionsInterface
         $this->view->addTemplate('eventlog');
 
         $this->view->assign('rowClass', 'row_even');
-        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
+        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled() || !\SP\Session::getUserIsAdminApp()); // FIXME
         $this->view->assign('limitStart', (isset($this->view->limitStart)) ? (int)$this->view->limitStart : 0);
         $this->view->assign('events', \SP\Log::getEvents($this->view->limitStart));
         $this->view->assign('totalRows', \SP\Log::$numRows);
