@@ -79,11 +79,13 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
 
         // Accounts
         $globalSearchEnabled = SP\Request::analyze('globalsearch', false, false, true);
+        $accountPassToImageEnabled = SP\Request::analyze('account_passtoimage', false, false, true);
         $accountLinkEnabled = SP\Request::analyze('account_link', false, false, true);
         $accountCount = SP\Request::analyze('account_count', 10);
         $resultsAsCardsEnabled = SP\Request::analyze('resultsascards', false, false, true);
 
         SP\Config::setValue('globalsearch', $globalSearchEnabled);
+        SP\Config::setValue('account_passtoimage', $accountPassToImageEnabled);
         SP\Config::setValue('account_link', $accountLinkEnabled);
         SP\Config::setValue('account_count', $accountCount);
         SP\Config::setValue('resultsascards', $resultsAsCardsEnabled);

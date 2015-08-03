@@ -445,6 +445,16 @@ class Util
     }
 
     /**
+     * Comprobar si está habilitado usar imagen para claves de cuentas
+     *
+     * @return bool
+     */
+    public static function accountPassToImageIsEnabled()
+    {
+        return self::boolval(Config::getValue('account_passtoimage', false));
+    }
+
+    /**
      * Establecer variable de sesión para recargar la aplicación.
      */
     public static function reload()

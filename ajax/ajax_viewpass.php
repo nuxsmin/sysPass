@@ -74,10 +74,13 @@ if (!$isHistory) {
 
 //$accountPass = htmlspecialchars(trim($accountClearPass));
 
+$useImage = intval(\SP\Util::accountPassToImageIsEnabled());
+
 $data = array(
     'title' => _('Clave de Cuenta'),
     'acclogin' => $accountData->login,
-    'accpass' => trim($accountClearPass)
+    'accpass' => (!$useImage) ? trim($accountClearPass) : \SP\ImageUtil::convertText($accountClearPass),
+    'useimage' => $useImage
 );
 
 SP\Common::printJSON($data, 0);

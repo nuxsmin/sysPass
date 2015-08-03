@@ -370,10 +370,12 @@
             <button id="btnViewPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)" title="<?php echo _('Ver Clave'); ?>">
                 <i class="material-icons">lock_open</i>
             </button>
+            <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
             <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>">
                 <i class="material-icons clip-pass-button"
                    data-clipboard-target="clip-pass-text">content_paste</i>
            </button>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($showEditPass): ?>

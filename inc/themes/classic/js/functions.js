@@ -37,7 +37,9 @@ jQuery.extend(jQuery.fancybox.defaults, {
 $(document).ready(function () {
     "use strict";
 
-    $('input[type="text"], select, textarea').placeholder().mouseenter(function () {$(this).focus();});
+    $('input[type="text"], select, textarea').placeholder().mouseenter(function () {
+        $(this).focus();
+    });
 
     setContentSize();
     setWindowAdjustSize();
@@ -48,14 +50,16 @@ $(document).ready(function () {
 }).ajaxComplete(function () {
     "use strict";
 
-    $('input[type="text"], select, textarea').placeholder().mouseenter(function () {$(this).focus();});
+    $('input[type="text"], select, textarea').placeholder().mouseenter(function () {
+        $(this).focus();
+    });
 
     // Activar tooltips
     activeTooltip();
 });
 
 
-function activeTooltip(){
+function activeTooltip() {
     "use strict";
 
     // Activar tooltips
@@ -67,7 +71,7 @@ function activeTooltip(){
     });
 
     $('.help-tooltip').tooltip({
-        content: function(){
+        content: function () {
             return $(this).next('div').html();
         },
         tooltipClass: "tooltip"
@@ -321,16 +325,28 @@ function viewPass(id, full, history) {
                 width: 'auto',
                 open: function () {
                     var content;
+                    var pass = '';
+                    var clipboardUserButton =
+                        '<button id="dialog-clip-user-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                        '<span class="ui-button-text">' + LANG[33] + '</span>' +
+                        '</button>';
+                    var clipboardPassButton =
+                        '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                        '<span class="ui-button-text">' + LANG[34] + '</span>' +
+                        '</button>';
+                    var useImage = json.useimage;
 
                     if (json.status === 0) {
-                        content = '<p class="dialog-pass-text">' + json.accpass + '</p>' +
-                            '<br>' +
-                            '<div class="dialog-buttons">' +
-                            '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
-                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                            '<span class="ui-button-text">Copiar</span>' +
-                            '</button>' +
-                            '</div>';
+                        if (useImage === 0) {
+                            pass = '<p class="dialog-pass-text">' + json.accpass + '</p>';
+                        } else {
+                            pass = '<img class="dialog-pass-text" src="data:image/png;base64,' + json.accpass + '" />';
+                            clipboardPassButton = '';
+                        }
+
+                        content = pass + '<br>' + '<div class="dialog-buttons">' + clipboardUserButton + clipboardPassButton + '</div>';
                     } else {
                         content = '<span class="altTxtRed">' + json.description + '</span>';
 
@@ -350,26 +366,34 @@ function viewPass(id, full, history) {
                     $(this).dialog('option', 'position', 'center');
 
                     // Carga de objeto flash para copiar al portapapeles
-                    var client = new ZeroClipboard($("#dialog-clip-pass-button-" + id), {swfPath: "js/ZeroClipboard.swf"});
+                    var clientPass = new ZeroClipboard($("#dialog-clip-pass-button-" + id), {swfPath: APP_ROOT + "/js/ZeroClipboard.swf"});
+                    var clientUser = new ZeroClipboard($("#dialog-clip-user-button-" + id), {swfPath: APP_ROOT + "/js/ZeroClipboard.swf"});
 
-                    client.on('ready', function (e) {
+                    clientPass.on('ready', function (e) {
                         $("#dialog-clip-pass-button-" + id).attr("data-clip", 1);
-
-                        client.on('copy', function (e) {
-                            e.clipboardData.setData('text/plain', json.accpass);
+                        clientPass.on('copy', function (e) {
+                            //e.clipboardData.setData('text/plain', json.accpass);
+                            clientPass.setText(json.accpass);
                         });
-                        client.on('aftercopy', function (e) {
+                        clientPass.on('aftercopy', function (e) {
                             $('.dialog-pass-text').addClass('dialog-clip-pass-copy round');
                         });
                     });
-                    client.on('error', function (e) {
+
+                    clientPass.on('error', function (e) {
                         ZeroClipboard.destroy();
                     });
 
+                    clientUser.on('ready', function (e) {
+                        clientUser.on('copy', function (e) {
+                            clientUser.setText(json.acclogin);
+                        });
+                    });
+
                     // Timeout del mensaje
-                    var $this = $(this);
+                    var thisDialog = $(this);
                     timeout = setTimeout(function () {
-                        $this.dialog('close');
+                        thisDialog.dialog('close');
                     }, 30000);
                 },
                 // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
@@ -1149,21 +1173,21 @@ function complexityDialog(targetId) {
     $('<div id="dialog-complexity"></div>').dialog({
         modal: true,
         title: 'Opciones de Complejidad',
-        width: '400px',
+        width: '450px',
         open: function () {
             var thisDialog = $(this);
 
             var content =
                 '<div class="dialog-btns-complexity">' +
-                '<label for="checkbox-numbers">Incluir números</label>' +
+                '<label for="checkbox-numbers">' + LANG[35] + '</label>' +
                 '<input type="checkbox" id="checkbox-numbers" name="checkbox-numbers"/>' +
-                '<label for="checkbox-uppercase">Incluir mayúculas</label>' +
+                '<label for="checkbox-uppercase">' + LANG[36] + '</label>' +
                 '<input type="checkbox" id="checkbox-uppercase" name="checkbox-uppercase"/>' +
-                '<label for="checkbox-symbols">Incluir símbolos</label>' +
+                '<label for="checkbox-symbols">' + LANG[37] + '</label>' +
                 '<input type="checkbox" id="checkbox-symbols" name="checkbox-symbols"/>' +
                 '</div>' +
                 '<div class="dialog-length-complexity">' +
-                '<label for="passlength">Longitud</label>' +
+                '<label for="passlength">' + LANG[38] + '</label>' +
                 '<input class="inputNumber" pattern="[0-9]*" id="passlength" />' +
                 '</div>' +
                 '<div class="dialog-buttons">' +
@@ -1252,7 +1276,7 @@ function chosenDetect() {
         width: selectWidth
     });
 
-    $(".sel-chosen-customer").each(function(){
+    $(".sel-chosen-customer").each(function () {
         var deselect = $(this).hasClass('sel-chosen-deselect');
 
         $(this).chosen({
@@ -1264,7 +1288,7 @@ function chosenDetect() {
         });
     });
 
-    $(".sel-chosen-category").each(function(){
+    $(".sel-chosen-category").each(function () {
         var deselect = $(this).hasClass('sel-chosen-deselect');
 
         $(this).chosen({
@@ -1288,7 +1312,7 @@ function passwordDetect() {
         var thisInput = $(this);
         var targetId = $(this).attr('id');
 
-        if ( thisInput.next().hasClass('password-actions') ){
+        if (thisInput.next().hasClass('password-actions')) {
             return;
         }
 

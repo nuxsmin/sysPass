@@ -222,6 +222,25 @@
                            class="checkbox" <?php echo $chkResultsAsCards, ' ', $isDisabled; ?> />
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Imagen para mostrar clave'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <div class="tooltip" style="display:none;">
+                        <p>
+                            <?php echo _('Generar una imagen con el texto de la clave de la cuenta.'); ?>
+                        </p>
+                        <p>
+                            <?php echo _('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label for="account_passtoimage"><?php echo ($chkAccountPassToImage) ? 'SI' : 'NO'; ?></label>
+                    <input type="checkbox" name="account_passtoimage" id="account_passtoimage"
+                           class="checkbox" <?php echo $chkAccountPassToImage, ' ', $isDisabled; ?> />
+                </td>
+            </tr>
         </table>
 
         <?php if ($isDemoMode): ?>

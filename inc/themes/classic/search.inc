@@ -101,9 +101,11 @@
                             <?php if ($account['showViewPass']): ?>
                                 <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
                                      onClick="viewPass(<?php echo $account['id']; ?>, 1)"/>
+                                <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
                                 <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
                                      onmousedown="viewPass(<?php echo $account['id']; ?>, false)"
                                      class="actions-optional clip-pass-button" data-clipboard-target="clip-pass-text"/>
+                                <?php endif; ?>
                             <?php endif ?>
 
                             <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>

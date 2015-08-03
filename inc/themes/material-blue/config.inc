@@ -180,6 +180,28 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Imagen para mostrar clave'); ?>
+                    <div id="help-account_passtoimage" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-account_passtoimage">
+                        <p>
+                            <?php echo _('Generar una imagen con el texto de la clave de la cuenta.'); ?>
+                        </p>
+                        <p>
+                            <?php echo _('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_passtoimage">
+                        <input type="checkbox" id="account_passtoimage" class="mdl-switch__input fg-blue100"
+                               name="account_passtoimage"
+                            <?php echo $chkAccountPassToImage, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
         </table>
 
         <div id="title" class="midroundup titleNormal">

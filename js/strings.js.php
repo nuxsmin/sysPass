@@ -56,7 +56,13 @@ $stringsJsLang = array(
     29 => _('Complejidad'),
     30 => _('Reset'),
     31 => _('Nivel de fortaleza de la clave'),
-    32 => _('Mostrar Clave')
+    32 => _('Mostrar Clave'),
+    33 => _('Copiar Usuario'),
+    34 => _('Copiar Clave'),
+    35 => _('Incluir Números'),
+    36 => _('Incluir Mayúsculas'),
+    37 => _('Incluir Símbolos'),
+    38 => _('Longitud'),
 );
 
 

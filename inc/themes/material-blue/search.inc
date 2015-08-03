@@ -112,10 +112,12 @@
                             <?php if ($account['showViewPass']): ?>
                                 <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
                                    onClick="viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
+                                <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
                                 <i id="clipboard" class="material-icons fg-blue80 actions-optional clip-pass-button"
                                    data-clipboard-target="clip-pass-text"
                                    title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
                                    onmousedown="viewPass(<?php echo $account['id']; ?>, false)">content_paste</i>
+                                <?php endif ?>
                             <?php endif ?>
 
                             <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>

@@ -104,6 +104,7 @@ class ConfigC extends Controller implements ActionsInterface
         // Accounts
         $this->view->assign('chkGlobalSearch', (\SP\Config::getValue('globalsearch')) ? 'checked="checked"' : '');
         $this->view->assign('chkResultsAsCards', (\SP\Config::getValue('resultsascards')) ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountPassToImage', (\SP\Config::getValue('account_passtoimage')) ? 'checked="checked"' : '');
         $this->view->assign('chkAccountLink', (\SP\Config::getValue('account_link')) ? 'checked="checked"' : '');
         $this->view->assign('accountCount', \SP\Config::getValue('account_count'));
 

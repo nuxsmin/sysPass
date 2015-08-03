@@ -316,20 +316,28 @@ function viewPass(id, full, history) {
                 width: 'auto',
                 open: function () {
                     var content;
+                    var pass = '';
+                    var clipboardUserButton =
+                        '<button id="dialog-clip-user-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                        '<span class="ui-button-text">' + LANG[33] + '</span>' +
+                        '</button>';
+                    var clipboardPassButton =
+                        '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                        '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
+                        '<span class="ui-button-text">' + LANG[34] + '</span>' +
+                        '</button>';
+                    var useImage = json.useimage;
 
                     if (json.status === 0) {
-                        content = '<p class="dialog-pass-text">' + json.accpass + '</p>' +
-                            '<br>' +
-                            '<div class="dialog-buttons">' +
-                            '<button id="dialog-clip-user-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
-                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                            '<span class="ui-button-text">Copiar Usuario</span>' +
-                            '</button>' +
-                            '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
-                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                            '<span class="ui-button-text">Copiar Clave</span>' +
-                            '</button>' +
-                            '</div>';
+                        if (useImage === 0) {
+                            pass = '<p class="dialog-pass-text">' + json.accpass + '</p>';
+                        } else {
+                            pass = '<img class="dialog-pass-text" src="data:image/png;base64,' + json.accpass + '" />';
+                            clipboardPassButton = '';
+                        }
+
+                        content = pass + '<br>' + '<div class="dialog-buttons">' + clipboardUserButton + clipboardPassButton + '</div>';
                     } else {
                         content = '<span class="altTxtRed">' + json.description + '</span>';
 
@@ -373,14 +381,13 @@ function viewPass(id, full, history) {
                         });
                     });
 
-
                     // Cerrar Dialog a los 30s
-                    var $this = $(this);
+                    var thisDialog = $(this);
 
                     $(this).parent().on('mouseleave', function () {
                         clearTimeout(timeout);
                         timeout = setTimeout(function () {
-                            $this.dialog('close');
+                            thisDialog.dialog('close');
                         }, 30000);
                     });
                 },
@@ -1187,19 +1194,19 @@ function complexityDialog() {
             var content =
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">' +
                 '<input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers"/>' +
-                '<span class="mdl-checkbox__label">Incluir números</span>' +
+                '<span class="mdl-checkbox__label">' + LANG[35] + '</span>' +
                 '</label>' +
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">' +
                 '<input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>' +
-                '<span class="mdl-checkbox__label">Incluir mayúculas</span>' +
+                '<span class="mdl-checkbox__label">' + LANG[36] + '</span>' +
                 '</label>' +
                 '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">' +
                 '<input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>' +
-                '<span class="mdl-checkbox__label">Incluir símbolos</span>' +
+                '<span class="mdl-checkbox__label">' + LANG[37] + '</span>' +
                 '</label>' +
                 '<div class="mdl-textfield mdl-js-textfield textfield-passlength">' +
                 '<input class="mdl-textfield__input" type="number" pattern="[0-9]*" id="passlength" />' +
-                '<label class="mdl-textfield__label" for="passlength">Longitud</label>' +
+                '<label class="mdl-textfield__label" for="passlength">' + LANG[38] + '</label>' +
                 '</div>' +
                 '<button id="btn-complexity" class="mdl-button mdl-js-button mdl-button--raised">Ok</button>';
 

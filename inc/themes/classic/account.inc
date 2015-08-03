@@ -348,11 +348,13 @@
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/user-pass.png" alt="save" />
         </button>
 
+        <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
         <button type="button" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" class="button-action clip-pass-button"
             onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
             data-clipboard-target="clip-pass-text">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/clipboard.png" alt="save" />
         </button>
+        <?php endif; ?>
     <?php endif; ?>
 
     <?php if ($showEditPass): ?>
