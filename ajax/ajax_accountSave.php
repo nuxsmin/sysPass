@@ -58,11 +58,11 @@ $accountNotes = SP\Request::analyze('notes');
 $accountUrl = SP\Request::analyze('url');
 $accountGroupEditEnabled = SP\Request::analyze('geditenabled', 0, false, 1);
 $accountUserEditEnabled = SP\Request::analyze('ueditenabled', 0, false, 1);
+$accountMainGroupId = SP\Request::analyze('mainGroupId', SP\Session::getUserGroupId());
 $accountChangesHash = SP\Request::analyze('hash');
 
 // Datos del Usuario
 $currentUserId = SP\Session::getUserId();
-$currentGroupId = SP\Session::getUserGroupId();
 
 if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
     // Comprobaciones para nueva cuenta
@@ -148,7 +148,7 @@ switch ($actionId) {
         $account->setAccountIV($accounEncPassIV);
         $account->setAccountNotes($accountNotes);
         $account->setAccountUserId($currentUserId);
-        $account->setAccountUserGroupId($currentGroupId);
+        $account->setAccountUserGroupId($accountMainGroupId);
         $account->setAccountUsersId($accountOtherUsers);
         $account->setAccountUserGroupsId($accountOtherGroups);
         $account->setAccountOtherUserEdit($accountUserEditEnabled);
@@ -187,6 +187,10 @@ switch ($actionId) {
         $account->setAccountOtherUserEdit($accountUserEditEnabled);
         $account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
+        // Cambiar el grupo principal si el usuario es Admin
+        if (SP\Session::getUserIsAdminApp() || SP\Session::getUserIsAdminAcc()) {
+            $account->setAccountUserGroupId($accountMainGroupId);
+        }
 
         // Comprobar si han habido cambios
         if ($accountChangesHash == $account->calcChangesHash()) {

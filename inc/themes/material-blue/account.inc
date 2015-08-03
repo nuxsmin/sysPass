@@ -199,6 +199,21 @@
                         </div>
                     </td>
                 </tr>
+                <?php if($userIsAdminApp || $userIsAdminAcc):?>
+                <tr>
+                    <td class="descField"><?php echo _('Grupo Principal'); ?></td>
+                    <td class="valField">
+                        <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup" required>
+                            <option value="0"></option>
+                            <?php foreach ($otherGroups as $id => $name): ?>
+                                <option
+                                    value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_userGroupId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <?php endif; ?>
+
             <?php endif; ?>
 
 <?php if ($showform): ?>

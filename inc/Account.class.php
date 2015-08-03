@@ -136,6 +136,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_url = :accountUrl,'
             . 'account_notes = :accountNotes,'
             . 'account_userEditId = :accountUserEditId,'
+            . 'account_userGroupId = :accountUserGroupId,'
             . 'account_dateEdit = NOW(),'
             . 'account_otherUserEdit = :accountOtherUserEdit,'
             . 'account_otherGroupEdit = :accountOtherGroupEdit '
@@ -148,6 +149,7 @@ class Account extends AccountBase implements AccountInterface
         $data['accountUrl'] = $this->getAccountUrl();
         $data['accountNotes'] = $this->getAccountNotes();
         $data['accountUserEditId'] = $this->getAccountUserEditId();
+        $data['accountUserGroupId'] = ($this->getAccountUserGroupId()) ? $this->getAccountUserGroupId() : 'account_userGroupId';
         $data['accountOtherUserEdit'] = intval($this->getAccountOtherUserEdit());
         $data['accountOtherGroupEdit'] = intval($this->getAccountOtherGroupEdit());
         $data['accountId'] = $this->getAccountId();
