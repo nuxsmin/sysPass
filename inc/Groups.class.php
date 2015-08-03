@@ -286,6 +286,27 @@ class Groups
     }
 
     /**
+     * Obtener el id de un grupo por a partir del nombre.
+     *
+     * @param int $name con el nombre del grupo
+     * @return false|string con el nombre del grupo
+     */
+    public static function getGroupIdByName($name)
+    {
+        $query = 'SELECT usergroup_id FROM usrGroups WHERE usergroup_name = :name LIMIT 1';
+
+        $data['name'] = $name;
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->usergroup_id;
+    }
+
+    /**
      * Actualizar la asociación de grupos con usuarios.
      *
      * @param int   $groupId con el Id del usuario

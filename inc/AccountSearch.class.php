@@ -272,15 +272,31 @@ class AccountSearch
             . 'LEFT JOIN accGroups ON accgroup_accountId = account_id';
 
         if ($this->getTxtSearch()) {
-            $arrFilterCommon[] = 'account_name LIKE :name';
-            $arrFilterCommon[] = 'account_login LIKE :login';
-            $arrFilterCommon[] = 'account_url LIKE :url';
-            $arrFilterCommon[] = 'account_notes LIKE :notes';
+            // Analizar la cadena de búsqueda por etiquetas especiales
+            $stringFilters = $this->analyzeQueryString();
 
-            $data['name'] = '%' . $this->getTxtSearch() . '%';
-            $data['login'] = '%' . $this->getTxtSearch() . '%';
-            $data['url'] = '%' . $this->getTxtSearch() . '%';
-            $data['notes'] = '%' . $this->getTxtSearch() . '%';
+            if($stringFilters !== false){
+                $i = 0;
+
+                foreach($stringFilters as $column => $value){
+                    $parameter = $column . $i;
+
+                    $arrFilterCommon[] = $column . ' = :' . $parameter;
+                    $data[$parameter] = $value;
+                    $i++;
+                }
+            } else {
+
+                $arrFilterCommon[] = 'account_name LIKE :name';
+                $arrFilterCommon[] = 'account_login LIKE :login';
+                $arrFilterCommon[] = 'account_url LIKE :url';
+                $arrFilterCommon[] = 'account_notes LIKE :notes';
+
+                $data['name'] = '%' . $this->getTxtSearch() . '%';
+                $data['login'] = '%' . $this->getTxtSearch() . '%';
+                $data['url'] = '%' . $this->getTxtSearch() . '%';
+                $data['notes'] = '%' . $this->getTxtSearch() . '%';
+            }
         }
 
         if ($this->getCategoryId() !== 0) {
@@ -404,5 +420,37 @@ class AccountSearch
         }
 
         return $queryRes->numacc;
+    }
+
+    /**
+     * Analizar la cadena de consulta por eqituetas especiales y devolver un array
+     * con las columnas y los valores a buscar.
+     *
+     * @return array|bool
+     */
+    private function analyzeQueryString()
+    {
+        preg_match('/:(user|group)\s(.*)/i', $this->_txtSearch, $filters);
+
+        if(count($filters) === 1){
+            return false;
+        }
+
+        switch ($filters[1]){
+            case 'user':
+                return array(
+                    'account_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2])),
+                    'accuser_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2]))
+                );
+                break;
+            case 'group':
+                return array(
+                    'account_userGroupId' => Groups::getGroupIdByName(Html::sanitize($filters[2])),
+                    'accgroup_groupId' => Groups::getGroupIdByName(Html::sanitize($filters[2]))
+                );
+                break;
+            default:
+                return false;
+        }
     }
 }
