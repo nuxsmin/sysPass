@@ -1307,6 +1307,11 @@ function passwordDetect() {
     $('.passwordfield__input').each(function () {
         var thisParent = $(this).parent();
         var targetId = $(this).attr('id');
+
+        if (thisParent.next().hasClass('password-actions')) {
+            return;
+        }
+
         var btnMenu = '<button id="menu-speed-' + targetId + '" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="' + LANG[27] + '"><i class="material-icons">more_vert</i></button>';
 
         btnMenu += '<ul class="mdl-menu mdl-js-menu" for="menu-speed-' + targetId + '">';

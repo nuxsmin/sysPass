@@ -1,7 +1,7 @@
 <!-- Start Tab - Security -->
 <div id="tabs-<?php echo $security_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
-        <?php echo _('Autenticación'); ?>
+        <?php echo _('Autentificación'); ?>
     </div>
 
     <form method="post" name="frmSecurity" id="frmSecurity" data-url="/ajax/ajax_userPrefsSave.php">
@@ -10,7 +10,7 @@
 
             <tr>
                 <td class="descField">
-                    <?php echo _('Autenticación en 2 pasos'); ?>
+                    <?php echo _('Autentificación en 2 pasos'); ?>
                     <div id="help-security_2fa" class="icon material-icons fg-blue80">help_outline</div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-security_2fa">
                         <p>
