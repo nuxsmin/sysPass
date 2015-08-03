@@ -4,6 +4,16 @@
             <td id="toolsLeft">
                 <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear" />
                 <input type="text" name="search" id="txtSearch" value="<?php echo $searchTxt; ?>" placeholder="<?php echo _('Texto a buscar'); ?>"/>
+                <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                <div class="tooltip" style="display:none;">
+                    <p>
+                        <?php echo _('Parámetros especiales:'); ?>
+                    </p>
+                    <ul>
+                        <li>:user [login] &gt; <?php echo _('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
+                        <li>:group [group_name] &gt; <?php echo _('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
+                    </ul>
+                </div>
                 <?php if ( $showGlobalSearch && ! $isAdmin ): ?>
                     <label for="chkgsearch" title="<?php echo _('Búsqueda global');?>"><?php echo ($searchGlobal) ? 'ON' : 'OFF'; ?></label>
                     <input type="checkbox" name="chkgsearch" id="chkgsearch" class="checkbox" <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>

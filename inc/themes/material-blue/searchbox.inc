@@ -9,6 +9,16 @@
                            name="search" value="<?php echo $searchTxt; ?>"/>
                     <label class="mdl-textfield__label" for="txtSearch"><?php echo _('Texto a buscar'); ?></label>
                 </div>
+                <div id="help-account_search" class="icon material-icons fg-blue80">help_outline</div>
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_search">
+                    <p>
+                        <?php echo _('Parámetros especiales:'); ?>
+                    </p>
+                    <ul>
+                        <li>:user [login] &gt; <?php echo _('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
+                        <li>:group [group_name] &gt; <?php echo _('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
+                    </ul>
+                </div>
 
                 <?php if ($showGlobalSearch && !$isAdmin): ?>
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="chkgsearch" title="<?php echo _('Búsqueda global'); ?>">
