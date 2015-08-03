@@ -110,7 +110,7 @@ class Upgrade
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';';
                 $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_profile` BLOB NOT NULL;';
                 $queries[] = 'ALTER TABLE `usrData` ADD `user_preferences` BLOB NULL;';
-                $queries[] = 'CREATE TABLE `usrToGroups` (`usertogroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`usertogroup_userId` int(10) unsigned NOT NULL,`usertogroup_groupId` int(10) unsigned NOT NULL,PRIMARY KEY (`usertogroup_id`), KEY `IDX_accountId` (`usertogroup_userId`) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
+                $queries[] = 'CREATE TABLE `usrToGroups` (`usertogroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`usertogroup_userId` int(10) unsigned NOT NULL,`usertogroup_groupId` int(10) unsigned NOT NULL,PRIMARY KEY (`usertogroup_id`), KEY `IDX_usertogroup_userId` (`usertogroup_userId`)) DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;';
                 break;
             default :
                 $log->addDescription(_('No es necesario actualizar la Base de Datos.'));

@@ -70,7 +70,7 @@
 
             </tr>
 
-            <?php if ($user['action'] === 1 && !$isView): ?>
+            <?php if ($User['action'] === 1 && !$isView): ?>
                 <tr>
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">

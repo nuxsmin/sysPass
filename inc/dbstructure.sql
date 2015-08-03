@@ -290,7 +290,7 @@ CREATE TABLE `usrToGroups` (
   `usertogroup_userId` int(10) unsigned NOT NULL,
   `usertogroup_groupId` int(10) unsigned NOT NULL,
   PRIMARY KEY (`usertogroup_id`),
-  KEY `IDX_accountId` (`usertogroup_userId`)
+  KEY `IDX_usertogroup_userId` (`usertogroup_userId`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -332,11 +332,11 @@ class Session
     /**
      * Devuelve si es necesario recargar la aplicación
      *
-     * @return bool|null
+     * @return bool
      */
     public static function getReload()
     {
-        return (isset($_SESSION["reload"])) ? $_SESSION["reload"] : null;
+        return (isset($_SESSION["reload"])) ? $_SESSION["reload"] : false;
     }
 
     /**
@@ -344,7 +344,7 @@ class Session
      *
      * @param bool $bool
      */
-    public static function setReload($bool = false)
+    public static function setReload($bool)
     {
         $_SESSION["reload"] = $bool;
     }

@@ -470,7 +470,7 @@ class Util
     public static function checkReload()
     {
         if (Session::getReload() === true) {
-            Session::setReload();
+            Session::setReload(false);
             exit("<script>location.reload();</script>");
         }
     }
