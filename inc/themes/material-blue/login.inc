@@ -1,8 +1,7 @@
 <div id="boxLogin" class="round shadow">
-    <div id="boxData">
-        <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="doLogin(); return false;">
+    <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="doLogin(); return false;">
+        <div id="boxData">
             <?php use SP\Html;
-
             if ($demoEnabled): ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="user" name="user" type="text" class="mdl-textfield__input fg-blue100" maxlength="80"
@@ -56,13 +55,14 @@
                            value="<?php echo Html::sanitize($value); ?>"/>
                 <?php endforeach; ?>
             <?php endif; ?>
-        </form>
-    </div>
-    <div id="boxButton">
-        <button id="btnLogin" form="frmLogin" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" title="<?php echo _('Acceder'); ?>">
-            <i class="material-icons">play_arrow</i>
-        </button>
-    </div>
+
+        </div>
+        <div id="boxButton">
+            <button id="btnLogin" type="submit" form="frmLogin" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" title="<?php echo _('Acceder'); ?>">
+                <i class="material-icons">play_arrow</i>
+            </button>
+        </div>
+    </form>
 
     <!-- Close boxData -->
     <?php if ($mailEnabled): ?>

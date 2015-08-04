@@ -42,8 +42,8 @@ jQuery.extend(jQuery.fancybox.defaults, {
 $(document).ready(function () {
     "use strict";
 
-    setContentSize();
-    setWindowAdjustSize();
+    //setContentSize();
+    //setWindowAdjustSize();
 
     // Activar tooltips
     activeTooltip();
@@ -235,7 +235,7 @@ function doSearch() {
         complete: function () {
             $.fancybox.hideLoading();
             scrollUp();
-            setContentSize();
+            //setContentSize();
         }
     });
 }
@@ -276,7 +276,7 @@ function navLog(start, current) {
         complete: function () {
             $.fancybox.hideLoading();
             scrollUp();
-            setContentSize();
+            //setContentSize();
         }
     });
 }
