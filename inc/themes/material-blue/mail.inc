@@ -140,7 +140,7 @@
     </form>
 
     <div class="action">
-        <button form="frbMail"
+        <button form="frmMail"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
                 title="<?php echo _('Guardar'); ?>">
             <i class="material-icons">save</i>

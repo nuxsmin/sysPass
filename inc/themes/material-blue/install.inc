@@ -1,7 +1,7 @@
 <div id="actions" class="installer" align="center">
     <div id="logo">
-        <img src="imgs/logo_full.png" alt="sysPass logo"/>
-        <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . $version; ?></span>
+        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
+        <span id="pageDesc"><?php echo _('Instalación ') . ' ' . $version; ?></span>
     </div>
 
     <?php if (count($errors) > 0): ?>
@@ -89,7 +89,6 @@
                     <label class="mdl-textfield__label"
                            for="dbpass"><?php echo _('Clave acceso BBDD'); ?></label>
                 </div>
-                <i class="showpass material-icons" title="<?php echo _('Mostrar Clave'); ?>">remove_red_eye</i>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dbname" name="dbname" type="text" required class="mdl-textfield__input fg-blue100"

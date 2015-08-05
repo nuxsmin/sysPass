@@ -24,6 +24,7 @@ CREATE TABLE `accFiles` (
   `accfile_size` int(11) NOT NULL,
   `accfile_content` mediumblob NOT NULL,
   `accfile_extension` varchar(10) NOT NULL,
+  `accFile_thumb` LONGBLOB,
   PRIMARY KEY (`accfile_id`),
   KEY `IDX_accountId` (`accfile_accountId`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

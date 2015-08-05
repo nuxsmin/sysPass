@@ -1611,9 +1611,9 @@ fieldset.warning a {
     text-align: center;
     color: #a9a9a9;
     letter-spacing: 3px;
-    box-shadow: 0px 8px 6px -6px #a9a9a9;
-    -webkit-box-shadow: 0px 8px 6px -6px #a9a9a9;
-    -moz-box-shadow: 0px 8px 6px -6px #a9a9a9;
+    box-shadow: 0px 8px 6px -6px rgba(83, 109, 254, .3);
+    -webkit-box-shadow: 0px 8px 6px -6px rgba(83, 109, 254, .3);
+    -moz-box-shadow: 0px 8px 6px -6px rgba(83, 109, 254, .3);
 }
 
 #actions #logo img {
@@ -1624,7 +1624,7 @@ fieldset.warning a {
     position: relative;
     top: 30px;
     left: -100px;
-    text-shadow: 3px 3px #fff;
+    color: rgb(96, 125, 139);
 }
 
 #actions ul.errors {
@@ -1670,7 +1670,7 @@ fieldset.warning a {
 }
 
 #actions form {
-    width: 400px;
+    width: 450px;
     margin: 0 auto;
     text-align: left;
 }
@@ -1678,13 +1678,18 @@ fieldset.warning a {
 #actions form fieldset legend {
     width: 100%;
     margin-top: 1em;
-    font-weight: bold;
-    color: rgb(96, 125, 139);
-    text-shadow: 0 1px 0 white;
+    /*color: rgb(96, 125, 139);*/
+    color: #fff;
+    /*text-shadow: 0 1px 0 white;*/
     font-size: 14px;
-    text-align: left;
-    border-bottom: 2px solid rgb(96, 125, 139);
+    font-weight: bold;
+    text-align: center;
+    /*border-bottom: 2px solid rgb(96, 125, 139);*/
+    background-color: rgb(96, 125, 139);
     margin-bottom: 1em;
+    border-radius: 5px;
+    letter-spacing: .2em;
+    padding: .2em 0;
 }
 
 #actions div.buttons {

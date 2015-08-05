@@ -669,7 +669,7 @@ class Util
     {
         $appinfo = array(
             'appname' => 'sysPass',
-            'appdesc' => 'Sysadmin Password Manager',
+            'appdesc' => 'Systems Password Manager',
             'appwebsite' => 'http://www.syspass.org',
             'appblog' => 'http://www.cygnux.org',
             'appdoc' => 'http://wiki.syspass.org',

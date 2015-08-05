@@ -378,7 +378,7 @@ class AccountSearch
             . $queryLimit . ' ';
 
 //        print_r($query);
-        error_log($query);
+//        error_log($query);
 
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();

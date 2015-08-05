@@ -489,7 +489,7 @@ class Installer
         Config::setArrConfigValue('lastupdatempass', time());
         Config::writeConfigDb(true);
 
-        if (!UserUtil::updateUserMPass($User->getUserId(), $User->getUserPass(), self::$_masterPassword)) {
+        if (!$User->updateUserMPass(self::$_masterPassword)) {
             self::rollback();
 
             throw new SPException(SPException::SP_CRITICAL
