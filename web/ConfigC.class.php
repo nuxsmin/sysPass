@@ -222,6 +222,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->addTemplate('info');
 
         $this->view->assign('dbInfo', \SP\DB::getDBinfo());
+        $this->view->assign('dbName', \SP\Config::getValue('dbname') . '@' . \SP\Config::getValue('dbhost'));
 
         $this->view->append('tabs', array('title' => _('Información')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');

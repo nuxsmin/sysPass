@@ -250,27 +250,6 @@ class AccountSearch
                 break;
         }
 
-        $querySelect = 'SELECT DISTINCT '
-            . 'account_id,'
-            . 'account_customerId,'
-            . 'category_name,'
-            . 'account_name,'
-            . 'account_login,'
-            . 'account_url,'
-            . 'account_notes,'
-            . 'account_userId,'
-            . 'account_userGroupId,'
-            . 'BIN(account_otherUserEdit) AS account_otherUserEdit,'
-            . 'BIN(account_otherGroupEdit) AS account_otherGroupEdit,'
-            . 'usergroup_name,'
-            . 'customer_name '
-            . 'FROM accounts '
-            . 'LEFT JOIN categories ON account_categoryId = category_id '
-            . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
-            . 'LEFT JOIN customers ON customer_id = account_customerId '
-            . 'LEFT JOIN accUsers ON accuser_accountId = account_id '
-            . 'LEFT JOIN accGroups ON accgroup_accountId = account_id';
-
         if ($this->getTxtSearch()) {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
@@ -279,9 +258,15 @@ class AccountSearch
                 $i = 0;
 
                 foreach($stringFilters as $column => $value){
-                    $parameter = $column . $i;
+                    $parameter = 'P_' . $column . $i;
+                    $rel = '=';
 
-                    $arrFilterCommon[] = $column . ' = :' . $parameter;
+                    if (preg_match('/name/i', $column)){
+                        $rel = 'LIKE';
+                        $value = '%' . $value . '%';
+                    }
+
+                    $arrFilterCommon[] = $column . ' ' . $rel . ' :' . $parameter;
                     $data[$parameter] = $value;
                     $i++;
                 }
@@ -355,14 +340,45 @@ class AccountSearch
         }
 
         if (count($arrQueryWhere) === 1) {
-            $query = $querySelect . ' WHERE ' . implode($arrQueryWhere) . ' ' . $queryOrder . ' ' . $queryLimit;
+            $queryWhere = ' WHERE ' . implode($arrQueryWhere) . ' ';
+//            $query = $querySelect . ' WHERE ' . implode($arrQueryWhere) . ' ' . $queryOrder . ' ' . $queryLimit;
         } elseif (count($arrQueryWhere) > 1) {
-            $query = $querySelect . ' WHERE ' . implode(' AND ', $arrQueryWhere) . ' ' . $queryOrder . ' ' . $queryLimit;
+            $queryWhere = ' WHERE ' . implode(' AND ', $arrQueryWhere . ' ');
+//            $queryWhere = ' WHERE ' . implode(' AND ', $arrQueryWhere) . ' ' . $queryOrder . ' ' . $queryLimit;
         } else {
-            $query = $querySelect . ' ' . $queryOrder . ' ' . $queryLimit;
+            $queryWhere = '';
+//            $query = $querySelect . ' ' . $queryOrder . ' ' . $queryLimit;
         }
 
+        $query = 'SELECT DISTINCT '
+            . 'account_id,'
+            . 'account_customerId,'
+            . 'category_name,'
+            . 'account_name,'
+            . 'account_login,'
+            . 'account_url,'
+            . 'account_notes,'
+            . 'account_userId,'
+            . 'account_userGroupId,'
+            . 'BIN(account_otherUserEdit) AS account_otherUserEdit,'
+            . 'BIN(account_otherGroupEdit) AS account_otherGroupEdit,'
+            . 'usergroup_name,'
+            . 'customer_name,'
+            . 'count(accfile_id) as num_files '
+            . 'FROM accounts '
+            . 'LEFT JOIN accFiles ON account_id = accfile_accountId '
+            . 'LEFT JOIN categories ON account_categoryId = category_id '
+            . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
+            . 'LEFT JOIN customers ON customer_id = account_customerId '
+            . 'LEFT JOIN accUsers ON accuser_accountId = account_id '
+            . 'LEFT JOIN accGroups ON accgroup_accountId = account_id '
+            . $queryWhere
+            . 'GROUP BY account_id '
+            . $queryOrder . ' '
+            . $queryLimit . ' ';
+
 //        print_r($query);
+        error_log($query);
 
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();
@@ -430,7 +446,7 @@ class AccountSearch
      */
     private function analyzeQueryString()
     {
-        preg_match('/:(user|group)\s(.*)/i', $this->_txtSearch, $filters);
+        preg_match('/:(user|group|file)\s(.*)/i', $this->_txtSearch, $filters);
 
         if(count($filters) === 1){
             return false;
@@ -447,6 +463,11 @@ class AccountSearch
                 return array(
                     'account_userGroupId' => Groups::getGroupIdByName(Html::sanitize($filters[2])),
                     'accgroup_groupId' => Groups::getGroupIdByName(Html::sanitize($filters[2]))
+                );
+                break;
+            case 'file':
+                return array(
+                    'accfile_name' => Html::sanitize($filters[2])
                 );
                 break;
             default:

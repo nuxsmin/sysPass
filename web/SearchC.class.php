@@ -248,7 +248,7 @@ class SearchC extends Controller implements ActionsInterface
                 'url_islink' => (preg_match("#^https?://.*#i", $account->account_url)) ? true : false,
                 'notes' => $accountNotes,
                 'accesses' => (isset($secondaryAccesses)) ? $secondaryAccesses : '',
-                'numFiles' => (\SP\Util::fileIsEnabled()) ? \SP\Files::countFiles($account->account_id) : 0,
+                'numFiles' => (\SP\Util::fileIsEnabled()) ? $account->num_files : 0,
                 'show' => $show,
                 'showView' => $accView,
                 'showViewPass' => $accViewPass,

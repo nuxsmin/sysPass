@@ -10,7 +10,7 @@
                 <?php echo _('Versión sysPass'); ?>
             </td>
             <td class="valField">
-                <?php echo implode('.', \SP\Util::getVersion(true)); ?>
+                <?php echo SP\Html::strongText(implode('.', \SP\Util::getVersion(true))); ?>
             </td>
         </tr>
         <tr>
@@ -19,9 +19,10 @@
             </td>
             <td class="valField">
                 <?php foreach ($dbInfo as $infoattr => $infoval): ?>
-                <?php echo $infoattr, ': ', $infoval; ?>
-                <br><br>
+                    <?php printf('%s : %s', SP\Html::strongText($infoattr), $infoval); ?>
+                    <br>
                 <?php endforeach; ?>
+                <?php printf('%s: %s', SP\Html::strongText(_('Nombre')), $dbName); ?>
             </td>
         </tr>
         <tr>
@@ -29,19 +30,13 @@
                 <?php echo _('PHP'); ?>
             </td>
             <td class="valField">
-                <?php echo _('Versión'), ': ', phpversion(); ?>
-                <br><br>
-                <?php echo _('Extensiones'), ': '; ?>
-                <ul>
-                <?php foreach(get_loaded_extensions() as $extension): ?>
-                    <li><?php echo $extension; ?></li>
-                <?php endforeach; ?>
-                </ul>
-                <br><br>
-                <?php echo _('Memoria Usada'), ': ', (memory_get_usage(true) / 1024), ' KB'; ?>
-                <br><br>
-                <?php  echo _('Usuario'), ': ', get_current_user(); ?>
-                <br><br>
+                <?php printf('%s: %s', SP\Html::strongText(_('Versión')), phpversion()); ?>
+                <br>
+                <?php printf('%s: %s', SP\Html::strongText(_('Extensiones')), implode(', ', get_loaded_extensions())); ?>
+                <br>
+                <?php printf('%s: %d KB', SP\Html::strongText(_('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
+                <br>
+                <?php  printf('%s: %s', SP\Html::strongText(_('Usuario')), get_current_user()); ?>
             </td>
         </tr>
         <tr>
@@ -49,7 +44,7 @@
                 <?php echo _('Servidor'); ?>
             </td>
             <td class="valField">
-                <?php echo $_SERVER['SERVER_SOFTWARE']; ?>
+                <?php echo SP\Html::strongText($_SERVER['SERVER_SOFTWARE']); ?>
             </td>
         </tr>
     </table>

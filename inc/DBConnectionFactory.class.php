@@ -25,6 +25,8 @@
 
 namespace SP;
 
+use \PDO;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -91,7 +93,7 @@ class DBConnectionFactory
             try {
                 $dsn = 'mysql:host=' . $dbhost . ';port=' . $dbport . ';dbname=' . $dbname . ';charset=utf8';
 //                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
-                $this->_db = new \PDO($dsn, $dbuser, $dbpass);
+                $this->_db = new PDO($dsn, $dbuser, $dbpass);
             } catch (\Exception $e) {
                 if ($isInstalled) {
                     if ($e->getCode() === 1049) {
@@ -105,7 +107,8 @@ class DBConnectionFactory
             }
         }
 
-        $this->_db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->_db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $this->_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this->_db;
     }
