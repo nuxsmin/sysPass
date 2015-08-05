@@ -476,7 +476,7 @@ a:focus {
 
 #content .data #files-wrap {
     max-height: 100px;
-    width: 400px;
+    width: 95%;
     overflow-y: auto;
     border: 1px solid #DFDFDF;
     padding: 0.5em;
@@ -500,11 +500,21 @@ a:focus {
     color: #000;
 }
 
-#content .data #files-list li img {
-    float: right;
-    position: relative;
-    top: -5px;
-    vertical-align: middle;
+#content .data #files-list li div {
+    display: inline-block;
+}
+
+#content .data #files-list li div.files-item-info {
+    width: 55%;
+}
+
+#content .data #files-list li div.files-item-info img{
+    margin: 0 .5em;
+}
+
+#content .data #files-list li div.files-item-actions {
+    width: 40%;
+    text-align: right;
 }
 
 #content .data #dropzone {

@@ -64,7 +64,7 @@ class ImageUtil
         // Crear el texto
         imagettftext($im, 12, 0, 10, 20, $fgColor, $font, $text);
 
-        // Guardar la imagen
+        // Devolver la imagen
         ob_start();
         imagepng($im);
         $image = ob_get_contents();
@@ -73,5 +73,47 @@ class ImageUtil
         imagedestroy($im);
 
         return base64_encode($image);
+    }
+
+    /**
+     * Crear miniatura de una imagen
+     *
+     * @param $image string La imagen a redimensionar
+     * @return bool|string
+     */
+    public static function createThumbnail(&$image)
+    {
+        if(!function_exists('imagepng')
+            || !function_exists('imagecreatefromjpeg')
+            || !function_exists('imagecreatefrompng')
+        ){
+            return false;
+        }
+
+        $im = imagecreatefromstring($image);
+
+        $width = imagesx($im);
+        $height = imagesy($im);
+
+        // Calcular el tamaño de la miniatura
+        $new_width = 48;
+        $new_height = floor( $height * ( $new_width / $width ) );
+
+        // Crear nueva imagen
+        $imTmp = imagecreatetruecolor($new_width, $new_height );
+
+        // Redimensionar la imagen
+        imagecopyresized( $imTmp, $im, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+
+        // Devolver la imagen
+        ob_start();
+        imagepng($imTmp);
+        $thumbnail = ob_get_contents();
+        ob_end_clean();
+
+        imagedestroy($imTmp);
+        imagedestroy($im);
+
+        return base64_encode($thumbnail);
     }
 }

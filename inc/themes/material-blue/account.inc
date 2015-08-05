@@ -154,11 +154,9 @@
                                     ?>
                                 </select>
                                 <br><br>
-                                <span><?php echo _('Hablitar edición'); ?></span>
-
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ueditenabled">
                                   <input type="checkbox" id="ueditenabled" class="mdl-switch__input" <?php echo $chkUserEdit; ?>/>
-                                  <span class="mdl-switch__label"></span>
+                                  <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
                                 </label>
 
                             </fieldset>
@@ -188,11 +186,9 @@
                                     ?>
                                 </select>
                                 <br><br>
-                                <span><?php echo _('Hablitar edición'); ?></span>
-
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="geditenabled">
                                   <input type="checkbox" id="geditenabled" class="mdl-switch__input" <?php echo $chkGroupEdit; ?>/>
-                                  <span class="mdl-switch__label"></span>
+                                  <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
                                 </label
 
                             </fieldset>
@@ -243,9 +239,9 @@
                         <input type="file" id="inFile" name="inFile"/>
                     </form>
                     <div id="dropzone" class="round"
-                         data-files-ext="<?php echo $filesAllowedExts; ?>"
-                         title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
-                        <img src="imgs/upload.png" alt="upload" class="opacity50"/>
+                        data-files-ext="<?php echo $filesAllowedExts; ?>"
+                        title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
+                        <i class="material-icons md-60 fg-green80">cloud_upload</i>
                     </div>
                     <script> dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
                 <?php endif; ?>

@@ -48,7 +48,8 @@ class Files
             . "accfile_type = :type,"
             . "accfile_size = :size,"
             . "accfile_content = :blobcontent,"
-            . "accfile_extension = :extension";
+            . "accfile_extension = :extension,"
+            . "accfile_thumb = :thumbnail";
 
         $data['accountId'] = $accountId;
         $data['name'] = $fileData['name'];
@@ -56,6 +57,7 @@ class Files
         $data['size'] = $fileData['size'];
         $data['blobcontent'] = $fileData['content'];
         $data['extension'] = $fileData['extension'];
+        $data['thumbnail'] = ImageUtil::createThumbnail($fileData['content'], $fileData['type']);
 
         if (DB::getQuery($query, __FUNCTION__, $data) === true) {
             $log = new Log(_('Subir Archivo'));
@@ -152,7 +154,8 @@ class Files
     {
         $query = "SELECT accfile_id,"
             . "accfile_name,"
-            . "accfile_size "
+            . "accfile_size, "
+            . "accfile_thumb "
             . "FROM accFiles "
             . "WHERE accfile_accountId = :id";
 
@@ -167,13 +170,14 @@ class Files
         }
 
         $files = array();
-        $fileNum = 0;
 
         foreach ($queryRes as $file) {
-            $files[$fileNum]['id'] = $file->accfile_id;
-            $files[$fileNum]['name'] = $file->accfile_name;
-            $files[$fileNum]['size'] = round($file->accfile_size / 1000, 2);
-            $fileNum++;
+            $files[] = array(
+                'id' => $file->accfile_id,
+                'name' => $file->accfile_name,
+                'size' => round($file->accfile_size / 1000, 2),
+                'thumb' => $file->accfile_thumb
+            );
         }
 
         return $files;
