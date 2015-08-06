@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-06 02:33+0100\n"
-"PO-Revision-Date: 2015-08-06 02:36+0100\n"
+"POT-Creation-Date: 2015-08-06 19:35+0100\n"
+"PO-Revision-Date: 2015-08-06 19:36+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -666,7 +666,8 @@ msgstr "Incorrect login"
 #: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:91
 #: ../../../../ajax/ajax_doLogin.php:98 ../../../../ajax/ajax_doLogin.php:109
 #: ../../../../ajax/ajax_doLogin.php:119 ../../../../ajax/ajax_doLogin.php:166
-#: ../../../../inc/Init.class.php:514 ../../../../inc/UserBase.class.php:382
+#: ../../../../inc/Auth.class.php:112 ../../../../inc/Init.class.php:514
+#: ../../../../inc/UserBase.class.php:382
 #: ../../../../inc/UserBase.class.php:526 ../../../../res/test.php:64
 #: ../../../../web/SearchC.class.php:289
 #: ../../../../inc/themes/classic/account.inc:70
@@ -1155,7 +1156,11 @@ msgstr "Records updated"
 msgid "Denegado acceso a"
 msgstr "Access denied to"
 
-#: ../../../../inc/Auth.class.php:185
+#: ../../../../inc/Auth.class.php:111
+msgid "Usuario no pertenece al grupo"
+msgstr "The user doesn't belong to the group"
+
+#: ../../../../inc/Auth.class.php:190
 #: ../../../../inc/themes/classic/users.inc:117
 #: ../../../../inc/themes/classic/userspass.inc:2
 #: ../../../../inc/themes/material-blue/users.inc:154
@@ -1163,15 +1168,15 @@ msgstr "Access denied to"
 msgid "Cambio de Clave"
 msgstr "Password Change"
 
-#: ../../../../inc/Auth.class.php:187
+#: ../../../../inc/Auth.class.php:192
 msgid "Se ha solicitado el cambio de su clave de usuario."
 msgstr "A request for changing your user password has been done."
 
-#: ../../../../inc/Auth.class.php:189
+#: ../../../../inc/Auth.class.php:194
 msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
 msgstr "In order to complete the process, please go to this URL:"
 
-#: ../../../../inc/Auth.class.php:193
+#: ../../../../inc/Auth.class.php:198
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr "If you have not requested this action, please dismiss this message."
 
@@ -1697,10 +1702,6 @@ msgstr "Error on searching objects in base DN"
 msgid "Error al buscar RDN de grupo"
 msgstr "Error on searching group RDN"
 
-#: ../../../../inc/Ldap.class.php:211
-msgid "RDN de grupo encontrado"
-msgstr "Group RDN found"
-
 #: ../../../../inc/Ldap.class.php:270 ../../../../inc/Ldap.class.php:275
 #: ../../../../inc/Ldap.class.php:289 ../../../../inc/Ldap.class.php:293
 msgid "Error al buscar el DN del usuario"
@@ -1711,10 +1712,15 @@ msgid "Error al localizar el usuario en LDAP"
 msgstr "Error on searching user on LDAP"
 
 #: ../../../../inc/Ldap.class.php:367 ../../../../inc/Ldap.class.php:372
+#: ../../../../inc/Ldap.class.php:430 ../../../../inc/Ldap.class.php:435
 msgid "Error al buscar el grupo de usuarios"
 msgstr "Error on searching users group"
 
-#: ../../../../inc/Ldap.class.php:376 ../../../../inc/Ldap.class.php:381
+#: ../../../../inc/Ldap.class.php:379
+msgid "Usuario verificado en grupo"
+msgstr "User in group verified"
+
+#: ../../../../inc/Ldap.class.php:439 ../../../../inc/Ldap.class.php:444
 msgid "No se encontró el grupo con ese nombre"
 msgstr "No group found with that name"
 
@@ -4436,3 +4442,6 @@ msgstr "Authentication"
 #: ../../../../inc/themes/material-blue/security.inc:29
 msgid "Activar"
 msgstr "Activate"
+
+#~ msgid "RDN de grupo encontrado"
+#~ msgstr "Group RDN found"
