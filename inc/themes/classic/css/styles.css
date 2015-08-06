@@ -1207,6 +1207,8 @@ footer #updates {
     padding-left: 20px;
 }
 
+footer #updates div {display: inline-block; margin: 0 .5em}
+
 footer #status {
     float: left;
     width: 20%;

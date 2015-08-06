@@ -1154,6 +1154,8 @@ footer #updates {
     cursor: pointer;
 }
 
+footer #updates div {display: inline-block; margin: 0 .5em}
+
 footer #status {
     float: right;
     text-align: right;

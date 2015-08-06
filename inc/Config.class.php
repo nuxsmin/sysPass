@@ -290,14 +290,19 @@ class Config
      */
     public static function setDefaultValues()
     {
-        self::setValue('log_enabled', 1);
-        self::setValue('debug', 0);
-        self::setValue('ldap_enabled', 0);
-        self::setValue('mail_enabled', 0);
-        self::setValue('wiki_enabled', 0);
-        self::setValue('demo_enabled', 0);
-        self::setValue('files_enabled', 1);
-        self::setValue('checkupdates', 1);
+        self::setValue('debug', false);
+        self::setValue('log_enabled', true);
+        self::setValue('ldap_enabled', false);
+        self::setValue('mail_enabled', false);
+        self::setValue('wiki_enabled', false);
+        self::setValue('demo_enabled', false);
+        self::setValue('files_enabled', true);
+        self::setValue('proxy_enabled', false);
+        self::setValue('checkupdates', true);
+        self::setValue('checknotices', true);
+        self::setValue('globalsearch', false);
+        self::setValue('account_passtoimage', false);
+        self::setValue('resultsascards', false);
         self::setValue('files_allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
         self::setValue('files_allowed_size', 1024);
         self::setValue('wiki_searchurl', '');
@@ -313,6 +318,11 @@ class Config
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 12);
+        self::setValue('sitetheme', 'material-blue');
+        self::setValue('proxy_server', '');
+        self::setValue('proxy_port', '');
+        self::setValue('proxy_user', '');
+        self::setValue('proxy_pass', '');
     }
 
     /**

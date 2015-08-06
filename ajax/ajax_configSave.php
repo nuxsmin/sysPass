@@ -68,6 +68,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $debugEnabled = SP\Request::analyze('debug', false, false, true);
         $maintenanceEnabled = SP\Request::analyze('maintenance', false, false, true);
         $checkUpdatesEnabled = SP\Request::analyze('updates', false, false, true);
+        $checkNoticesEnabled = SP\Request::analyze('notices', false, false, true);
 
         SP\Config::setValue('sitelang', $siteLang);
         SP\Config::setValue('sitetheme', $siteTheme);
@@ -76,6 +77,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         SP\Config::setValue('debug', $debugEnabled);
         SP\Config::setValue('maintenance', $maintenanceEnabled);
         SP\Config::setValue('checkupdates', $checkUpdatesEnabled);
+        SP\Config::setValue('checknotices', $checkNoticesEnabled);
 
         // Accounts
         $globalSearchEnabled = SP\Request::analyze('globalsearch', false, false, true);

@@ -99,7 +99,7 @@
                     <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="userpassR" name="passv" type="password" required class="mdl-textfield__input fg-blue100"
+                            <input id="userpassR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
                                    for="userpassR"><?php echo _('Clave (repetir)'); ?></label>

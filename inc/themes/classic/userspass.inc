@@ -18,7 +18,7 @@
                 <td class="descField">
                     <?php echo _('Clave (repetir)'); ?></td>
                 <td class="valField">
-                    <input type="password" id="fancypassR" name="passv" title="<?php echo _('Clave (repetir)'); ?>"
+                    <input type="password" id="fancypassR" name="passR" title="<?php echo _('Clave (repetir)'); ?>"
                            class="txtpassv"/>
                 </td>
             </tr>

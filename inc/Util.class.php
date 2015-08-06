@@ -134,7 +134,6 @@ class Util
      */
     public static function checkModules()
     {
-//        $modsAvail = array_map('strtolower', get_loaded_extensions());
         $modsNeed = array(
             'ldap',
             'mcrypt',
@@ -148,7 +147,8 @@ class Util
             'gettext',
             'openssl',
             'pcre',
-            'session'
+            'session',
+            'gd'
         );
         $error = array();
 
@@ -156,7 +156,7 @@ class Util
             if (!extension_loaded($module)) {
                 $error[] = array(
                     'type' => SPException::SP_WARNING,
-                    'description' => _('Módulo no disponible') . " ($module)",
+                    'description' => sprintf('%s (%s)', _('Módulo no disponible'), $module),
                     'hint' => _('Sin este módulo la aplicación puede no funcionar correctamente.')
                 );
             }
@@ -216,72 +216,86 @@ class Util
         }
 
         $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
-        $ch = curl_init($githubUrl);
 
-        if (Config::getValue('proxy_enabled')){
-            curl_setopt($ch, CURLOPT_PROXY, Config::getValue('proxy_server'));
-            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getValue('proxy_port'));
-            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+        $data = self::getDataFromUrl($githubUrl);
 
-            $proxyUser = Config::getValue('proxy_user');
+        if ($data) {
+            $updateInfo = json_decode($data);
 
-            if ($proxyUser) {
-                $proxyAuth = $proxyUser . ':' . Config::getValue('proxy_pass');
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
-            }
-        }
+            // $updateInfo[0]->tag_name
+            // $updateInfo[0]->name
+            // $updateInfo[0]->body
+            // $updateInfo[0]->tarball_url
+            // $updateInfo[0]->zipball_url
+            // $updateInfo[0]->published_at
+            // $updateInfo[0]->html_url
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass App Updater");
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            $version = $updateInfo->tag_name;
+            $url = $updateInfo->html_url;
+            $title = $updateInfo->name;
+            $description = $updateInfo->body;
+            $date = $updateInfo->published_at;
 
-        $data = curl_exec($ch);
+            preg_match("/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/", $version, $realVer);
 
-        if ($data === false) {
-            Log::writeNewLog(__FUNCTION__, curl_error($ch));
+            if (is_array($realVer) && Init::isLoggedIn()) {
+                $appVersion = implode('', self::getVersion(true));
+                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
 
-            return false;
-        }
-
-        curl_close($ch);
-
-        $updateInfo = json_decode($data);
-
-        // $updateInfo[0]->tag_name
-        // $updateInfo[0]->name
-        // $updateInfo[0]->body
-        // $updateInfo[0]->tarball_url
-        // $updateInfo[0]->zipball_url
-        // $updateInfo[0]->published_at
-        // $updateInfo[0]->html_url
-
-        $version = $updateInfo->tag_name;
-        $url = $updateInfo->html_url;
-        $title = $updateInfo->name;
-        $description = $updateInfo->body;
-        $date = $updateInfo->published_at;
-
-        preg_match("/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/", $version, $realVer);
-
-        if (is_array($realVer) && Init::isLoggedIn()) {
-            $appVersion = implode('', self::getVersion(true));
-            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
-
-            if ($pubVersion > $appVersion) {
-                return array(
-                    'version' => $version,
-                    'url' => $url,
-                    'title' => $title,
-                    'description' => $description,
-                    'date' => $date);
+                if ($pubVersion > $appVersion) {
+                    return array(
+                        'version' => $version,
+                        'url' => $url,
+                        'title' => $title,
+                        'description' => $description,
+                        'date' => $date);
+                } else {
+                    return true;
+                }
             } else {
-                return true;
+                return false;
             }
-        } else {
+        }
+
+        return false;
+    }
+
+    /**
+     * Comprobar si hay notificaciones de sysPass disponibles desde internet (github.com)
+     * Esta función hace una petición a GitHub y parsea el JSON devuelto
+     *
+     * @return array|bool
+     */
+    public static function checkNotices()
+    {
+        if (!Config::getValue('checknotices')) {
             return false;
         }
+
+        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
+
+        $data = self::getDataFromUrl($githubUrl);
+
+        if ($data) {
+            $noticesData = json_decode($data);
+            $notices = array();
+
+            // $noticesData[0]->title
+            // $noticesData[0]->body
+            // $noticesData[0]->created_at
+
+            foreach ($noticesData as $notice) {
+                $notices[] = array(
+                    $notice->title,
+//                    $notice->body,
+                    $notice->created_at
+                );
+            }
+
+            return $notices;
+        }
+
+        return false;
     }
 
     /**
@@ -684,9 +698,32 @@ class Util
         return $appinfo;
     }
 
+    /**
+     * Obtener datos desde una URL
+     *
+     * @param $url string La URL
+     * @return bool|string
+     */
     private static function getDataFromUrl($url)
     {
+        if (!self::curlIsAvailable() || !Config::getValue('checkupdates')) {
+            return false;
+        }
+
         $ch = curl_init($url);
+
+        if (Config::getValue('proxy_enabled')){
+            curl_setopt($ch, CURLOPT_PROXY, Config::getValue('proxy_server'));
+            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getValue('proxy_port'));
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+
+            $proxyUser = Config::getValue('proxy_user');
+
+            if ($proxyUser) {
+                $proxyAuth = $proxyUser . ':' . Config::getValue('proxy_pass');
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
+            }
+        }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, 0);

@@ -99,7 +99,11 @@ class MainC extends Controller implements ActionsInterface
      */
     public function getMain()
     {
-        $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')', 'checkUpds()');
+        $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')');
+
+        if(Session::getUserIsAdminApp()){
+            $onLoad[] = 'checkUpds()';
+        }
 
         $this->view->assign('onLoad', implode(';', $onLoad));
 
@@ -342,14 +346,7 @@ class MainC extends Controller implements ActionsInterface
      */
     public function getCheckUpdates()
     {
-        // Comprobar una vez por sesión
-//        if (!\SP\Session::getUpdated()) {
-            $updates = \SP\Util::checkUpdates();
-//            \SP\Session::setUpdated(true);
-//        }
-
-        // Forzar la escritura de la sesión
-//        session_write_close();
+        $updates = \SP\Util::checkUpdates();
 
         $this->view->addTemplate('update');
 
@@ -365,6 +362,22 @@ class MainC extends Controller implements ActionsInterface
             $this->view->assign('hasUpdates', false);
             $this->view->assign('status', $updates);
         }
+
+        $notices = \SP\Util::checkNotices();
+        $numNotices = count($notices);
+        $noticesTitle = '';
+
+        if ($notices !== false && $numNotices > 0){
+            $noticesTitle = 'sysPass Notices<br><br>';
+
+            foreach ($notices as $notice){
+                $noticesTitle .= sprintf('%s <br>', $notice[0]);
+            }
+
+        }
+
+        $this->view->assign('numNotices', $numNotices);
+        $this->view->assign('noticesTitle', $noticesTitle);
 
     }
 }

@@ -115,6 +115,24 @@
                     </label>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Comprobar notificaciones'); ?>
+                    <div id="help-notices" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-notices">
+                        <p>
+                            <?php echo _('Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores).'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notices">
+                        <input type="checkbox" id="notices" class="mdl-switch__input fg-blue100" name="notices"
+                            <?php echo $chkNotices, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
         </table>
 
         <div id="title" class="midroundup titleNormal">

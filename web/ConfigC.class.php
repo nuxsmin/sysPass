@@ -94,6 +94,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('chkDebug', (\SP\Config::getValue('debug')) ? 'checked="checked"' : '');
         $this->view->assign('chkMaintenance', (\SP\Config::getValue('maintenance')) ? 'checked="checked"' : '');
         $this->view->assign('chkUpdates', (\SP\Config::getValue('checkupdates')) ? 'checked="checked"' : '');
+        $this->view->assign('chkNotices', (\SP\Config::getValue('checknotices')) ? 'checked="checked"' : '');
         $this->view->assign('sessionTimeout', \SP\Config::getValue('session_timeout'));
 
         // Files

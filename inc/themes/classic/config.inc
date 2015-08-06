@@ -103,6 +103,22 @@
             </tr>
             <tr>
                 <td class="descField">
+                    <?php echo _('Comprobar notificaciones'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <div class="tooltip" for="help-notices" style="display: none;">
+                        <p>
+                            <?php echo _('Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores).'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label for="notices"><?php echo ($chkUpdates) ? 'SI' : 'NO'; ?></label>
+                    <input type="checkbox" name="notices" id="notices"
+                           class="checkbox" <?php echo $chkNotices, ' ', $isDisabled; ?> />
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
                     <?php echo _('Nombre de cuenta como enlace'); ?>
                     <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-account_link" style="display: none;">
