@@ -62,10 +62,10 @@ class Ldap
      * Comprobar la conexión al servidor de LDAP.
      *
      * @param string $ldapServer con la dirección del servidor
-     * @param string $bindDN     con el usuario de conexión
-     * @param string $bindPass   con la clave del usuario de conexión
+     * @param string $bindDN con el usuario de conexión
+     * @param string $bindPass con la clave del usuario de conexión
      * @param string $searchBase con la base para las búsquedas
-     * @param string $ldapGroup  con el grupo con los usuarios de acceso
+     * @param string $ldapGroup con el grupo con los usuarios de acceso
      * @return false|int Con el número de entradas encontradas
      */
     public static function checkLDAPConn($ldapServer, $bindDN, $bindPass, $searchBase, $ldapGroup)
@@ -115,7 +115,7 @@ class Ldap
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $userDN   con el DN del usuario
+     * @param string $userDN con el DN del usuario
      * @param string $userPass con la clave del usuario
      * @throws \Exception
      * @return bool
@@ -208,9 +208,9 @@ class Ldap
                 throw new \Exception(_('Error al buscar RDN de grupo'));
             }
 
-            $log->addDescription(_('RDN de grupo encontrado'));
-            $log->addDescription('RDN: ' . $ldapSearchData[0]["dn"]);
-            $log->writeLog();
+//            $log->addDescription(_('RDN de grupo encontrado'));
+//            $log->addDescription('RDN: ' . $ldapSearchData[0]["dn"]);
+//            $log->writeLog();
 
             return $ldapSearchData[0]["dn"];
         } else {
@@ -358,7 +358,7 @@ class Ldap
 
         $userDN = self::escapeLdapDN($userDN);
 
-        $filter = '(&(' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+        $filter = '(&(|(' . $groupDN . ')(cn=' . $ldapGroup . '))(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
         $filterAttr = array("member", "uniqueMember");
 
         $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
@@ -372,14 +372,12 @@ class Ldap
             throw new \Exception(_('Error al buscar el grupo de usuarios'));
         }
 
-        if (!@ldap_count_entries(self::$_ldapConn, $searchRes) === 1) {
-            $log->addDescription(_('No se encontró el grupo con ese nombre'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
-            $log->addDescription('LDAP FILTER: ' . $filter);
-            $log->writeLog();
-
-            throw new \Exception(_('No se encontró el grupo con ese nombre'));
+        if (@ldap_count_entries(self::$_ldapConn, $searchRes) === 0) {
+            return false;
         }
+
+        $log->addDescription(_('Usuario verificado en grupo'));
+        $log->writeLog();
 
         return true;
     }
@@ -394,5 +392,64 @@ class Ldap
     {
         $chars = array('/(,)(?!uid|cn|ou|dc)/i', '/(?<!uid|cn|ou|dc)(=)/i', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
         return preg_replace($chars, '\\\$1', $dn);
+    }
+
+    /**
+     * Buscar al usuario en un grupo.
+     *
+     * @param string $userLogin con el login del usuario
+     * @throws \Exception
+     * @return bool
+     */
+    public static function searchADUserInGroup($userLogin)
+    {
+        if (self::$_isADS === false) {
+            return false;
+        }
+
+        $log = new Log(__FUNCTION__);
+
+        $ldapGroup = Config::getValue('ldap_group');
+
+        // El filtro de grupo no está establecido
+        if (empty($ldapGroup)) {
+            return true;
+        }
+
+        // Obtenemos el DN del grupo
+        if (!$groupDN = self::searchGroupDN()) {
+            return false;
+        }
+
+        $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
+        $filterAttr = array("sAMAccountName");
+
+        $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
+
+        if (!$searchRes) {
+            $log->addDescription(_('Error al buscar el grupo de usuarios'));
+            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription('LDAP FILTER: ' . $filter);
+            $log->writeLog();
+
+            throw new \Exception(_('Error al buscar el grupo de usuarios'));
+        }
+
+        if (@ldap_count_entries(self::$_ldapConn, $searchRes) === 0) {
+            $log->addDescription(_('No se encontró el grupo con ese nombre'));
+            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription('LDAP FILTER: ' . $filter);
+            $log->writeLog();
+
+            throw new \Exception(_('No se encontró el grupo con ese nombre'));
+        }
+
+        foreach (ldap_get_entries(self::$_ldapConn, $searchRes) as $entry) {
+            if ($userLogin === $entry['samaccountname'][0]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
