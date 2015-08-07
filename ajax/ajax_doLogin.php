@@ -59,6 +59,7 @@ $Log = new \SP\Log(_('Inicio sesión'));
 // Autentificamos por LDAP
 if ($resLdap === true) {
     $Log->addDescription('(LDAP)');
+    $Log->addDescription(sprintf('%s : %s', _('Servidor Login'), \SP\Ldap::getLdapServer()));
 
     // Verificamos si el usuario existe en la BBDD
     if (!UserLdap::checkLDAPUserInDB($userLogin)) {
@@ -163,9 +164,9 @@ if ($User->getUserMPass()) {
     // Establecemos las variables de sesión
     UserUtil::setUserSession($User);
 
-    $Log->addDescription(_('Usuario') . ": " . $userLogin);
-    $Log->addDescription(_('Perfil') . ": " . SP\Profile::getProfileNameById($User->getUserProfileId()));
-    $Log->addDescription(_('Grupo') . ": " . SP\Groups::getGroupNameById($User->getUserGroupId()));
+    $Log->addDescription(sprintf('%s : %s', _('Usuario'), $userLogin));
+    $Log->addDescription(sprintf('%s : %s', _('Perfil'), SP\Profile::getProfileNameById($User->getUserProfileId())));
+    $Log->addDescription(sprintf('%s : %s', _('Grupo'), SP\Groups::getGroupNameById($User->getUserGroupId())));
     $Log->writeLog();
 } else {
     SP\Common::printJSON(_('Error interno'));

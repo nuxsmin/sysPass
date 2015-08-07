@@ -35,16 +35,24 @@ class Ldap
 {
     // Variabla que contiene los datos de una búsqueda
     public static $ldapSearchData;
-
     // Variable para determinar si conecta con Active Directory
-    private static $_isADS = false;
+    protected static $_isADS = false;
+
     // Variables de conexión con LDAP
-    private static $_ldapConn;
-    private static $_ldapServer;
-    private static $_searchBase;
+    protected static $_ldapConn;
+    protected static $_ldapServer;
+    protected static $_searchBase;
     private static $_bindDN;
     private static $_bindPass;
     private static $_ldapGroup;
+
+    /**
+     * @return mixed
+     */
+    public static function getLdapServer()
+    {
+        return self::$_ldapServer;
+    }
 
     /**
      * Obtener el recurso de conexión a LDAP.
@@ -99,8 +107,8 @@ class Ldap
 
         // Conexión al servidor LDAP
         if (!self::$_ldapConn = @ldap_connect(self::$_ldapServer)) {
-            $log->addDescription(_('No es posible conectar con el servidor de LDAP') . " '" . self::$_ldapServer . "'");
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription(sprintf('%s \'%s\'', _('No es posible conectar con el servidor de LDAP'), self::$_ldapServer));
+            $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->writeLog();
 
             throw new \Exception(_('No es posible conectar con el servidor de LDAP'));
@@ -129,7 +137,7 @@ class Ldap
 
         if (!@ldap_bind(self::$_ldapConn, $dn, $pass)) {
             $log->addDescription(_('Error al conectar (BIND)'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP DN: ' . $dn);
             $log->writeLog();
 
@@ -157,7 +165,7 @@ class Ldap
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar objetos en DN base'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
@@ -173,7 +181,7 @@ class Ldap
      * @throws \Exception
      * @return string con el RDN del grupo
      */
-    private static function searchGroupDN()
+    protected static function searchGroupDN()
     {
         $log = new Log(__FUNCTION__);
         $groupName = array();
@@ -190,7 +198,7 @@ class Ldap
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar RDN de grupo'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
@@ -202,7 +210,7 @@ class Ldap
 
             if (!$ldapSearchData) {
                 $log->addDescription(_('Error al buscar RDN de grupo'));
-                $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+                $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
                 $log->writeLog();
 
                 throw new \Exception(_('Error al buscar RDN de grupo'));
@@ -229,12 +237,12 @@ class Ldap
      */
     public static function checkLDAPParams()
     {
+        self::$_isADS = Config::getValue('ldap_ads', false);
         self::$_searchBase = Config::getValue('ldap_base');
-        self::$_ldapServer = Config::getValue('ldap_server');
+        self::$_ldapServer = (!self::$_isADS) ? Config::getValue('ldap_server') : LdapADS::getADServer(Config::getValue('ldap_server'));
         self::$_bindDN = Config::getValue('ldap_binduser');
         self::$_bindPass = Config::getValue('ldap_bindpass');
         self::$_ldapGroup = Config::getValue('ldap_group', '*');
-        self::$_isADS = Config::getValue('ldap_ads', false);
 
         if (!self::$_searchBase || !self::$_ldapServer || !self::$_bindDN || !self::$_bindPass) {
             Log::writeNewLog(__FUNCTION__, _('Los parámetros de LDAP no están configurados'));
@@ -268,7 +276,7 @@ class Ldap
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar el DN del usuario'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
@@ -280,7 +288,7 @@ class Ldap
 
             if (!self::$ldapSearchData) {
                 $log->addDescription(_('Error al localizar el usuario en LDAP'));
-                $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+                $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
                 $log->writeLog();
 
                 throw new \Exception(_('Error al localizar el usuario en LDAP'));
@@ -365,7 +373,7 @@ class Ldap
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar el grupo de usuarios'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
+            $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
@@ -394,62 +402,5 @@ class Ldap
         return preg_replace($chars, '\\\$1', $dn);
     }
 
-    /**
-     * Buscar al usuario en un grupo.
-     *
-     * @param string $userLogin con el login del usuario
-     * @throws \Exception
-     * @return bool
-     */
-    public static function searchADUserInGroup($userLogin)
-    {
-        if (self::$_isADS === false) {
-            return false;
-        }
 
-        $log = new Log(__FUNCTION__);
-
-        $ldapGroup = Config::getValue('ldap_group');
-
-        // El filtro de grupo no está establecido
-        if (empty($ldapGroup)) {
-            return true;
-        }
-
-        // Obtenemos el DN del grupo
-        if (!$groupDN = self::searchGroupDN()) {
-            return false;
-        }
-
-        $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
-        $filterAttr = array("sAMAccountName");
-
-        $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
-
-        if (!$searchRes) {
-            $log->addDescription(_('Error al buscar el grupo de usuarios'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
-            $log->addDescription('LDAP FILTER: ' . $filter);
-            $log->writeLog();
-
-            throw new \Exception(_('Error al buscar el grupo de usuarios'));
-        }
-
-        if (@ldap_count_entries(self::$_ldapConn, $searchRes) === 0) {
-            $log->addDescription(_('No se encontró el grupo con ese nombre'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(self::$_ldapConn) . '(' . ldap_errno(self::$_ldapConn) . ')');
-            $log->addDescription('LDAP FILTER: ' . $filter);
-            $log->writeLog();
-
-            throw new \Exception(_('No se encontró el grupo con ese nombre'));
-        }
-
-        foreach (ldap_get_entries(self::$_ldapConn, $searchRes) as $entry) {
-            if ($userLogin === $entry['samaccountname'][0]) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
