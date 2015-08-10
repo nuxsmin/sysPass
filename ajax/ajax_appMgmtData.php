@@ -50,104 +50,123 @@ $tpl->assign('actionId', $actionId);
 $tpl->assign('isView', false);
 
 switch ($actionId) {
-case \SP\Controller\ActionsInterface::ACTION_USR_USERS_VIEW:
-    $tpl->assign('header', _('Ver Usuario'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $tpl->assign('isView', true);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getUser();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDIT:
-    $tpl->assign('header', _('Editar Usuario'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getUser();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW:
-    $tpl->assign('header', _('Nuevo Usuario'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getUser();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_VIEW:
-    $tpl->assign('header', _('Ver Grupo'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $tpl->assign('isView', true);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getGroup();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT:
-    $tpl->assign('header', _('Editar Grupo'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getGroup();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW:
-    $tpl->assign('header', _('Nuevo Grupo'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getGroup();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_VIEW:
-    $tpl->assign('header', _('Ver Perfil'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $tpl->assign('isView', true);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getProfile();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT:
-    $tpl->assign('header', _('Editar Perfil'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getProfile();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW:
-    $tpl->assign('header', _('Nuevo Perfil'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
-    $controller = new SP\Controller\UsersMgmtC($tpl);
-    $controller->getProfile();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_VIEW:
-    $tpl->assign('header', _('Ver Cliente'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
-    $tpl->assign('isView', true);
-    $controller = new SP\Controller\AccountsMgmtC($tpl);
-    $controller->getCustomer();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
-    $tpl->assign('header', _('Editar Cliente'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
-    $controller = new SP\Controller\AccountsMgmtC($tpl);
-    $controller->getCustomer();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
-    $tpl->assign('header', _('Nuevo Cliente'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
-    $controller = new SP\Controller\AccountsMgmtC($tpl);
-    $controller->getCustomer();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_VIEW:
-    $tpl->assign('header', _('Ver Categoría'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
-    $tpl->assign('isView', true);
-    $controller = new SP\Controller\AccountsMgmtC($tpl);
-    $controller->getCategory();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
-    $tpl->assign('header', _('Editar Categoría'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
-    $controller = new SP\Controller\AccountsMgmtC($tpl);
-    $controller->getCategory();
-    break;
-case \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
-    $tpl->assign('header', _('Nueva Categoría'));
-    $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
-    $controller = new SP\Controller\AccountsMgmtC($tpl);
-    $controller->getCategory();
-    break;
-default :
-    exit();
-    break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_USERS_VIEW:
+        $tpl->assign('header', _('Ver Usuario'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getUser();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDIT:
+        $tpl->assign('header', _('Editar Usuario'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getUser();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW:
+        $tpl->assign('header', _('Nuevo Usuario'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getUser();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_VIEW:
+        $tpl->assign('header', _('Ver Grupo'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getGroup();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT:
+        $tpl->assign('header', _('Editar Grupo'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getGroup();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW:
+        $tpl->assign('header', _('Nuevo Grupo'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getGroup();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_VIEW:
+        $tpl->assign('header', _('Ver Perfil'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getProfile();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT:
+        $tpl->assign('header', _('Editar Perfil'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getProfile();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW:
+        $tpl->assign('header', _('Nuevo Perfil'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getProfile();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_VIEW:
+        $tpl->assign('header', _('Ver Cliente'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCustomer();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
+        $tpl->assign('header', _('Editar Cliente'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCustomer();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
+        $tpl->assign('header', _('Nuevo Cliente'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCustomer();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_VIEW:
+        $tpl->assign('header', _('Ver Categoría'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCategory();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
+        $tpl->assign('header', _('Editar Categoría'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCategory();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
+        $tpl->assign('header', _('Nueva Categoría'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCategory();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_VIEW:
+        $tpl->assign('header', _('Ver Autorización'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getToken();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW:
+        $tpl->assign('header', _('Nueva Autorización'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getToken();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
+        $tpl->assign('header', _('Editar Autorización'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_USR);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getToken();
+        break;
+    default :
+        exit();
+        break;
 }
 
 $controller->view();

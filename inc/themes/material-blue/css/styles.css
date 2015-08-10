@@ -1087,7 +1087,7 @@ a:hover, a:active, a:focus {
 }
 
 #fancyContainer #resCheck {
-    float: left;
+    display: inline-block;
     width: 80%;
     height: 4em;
     padding: 1em 0;
@@ -1295,7 +1295,7 @@ footer img {
 }
 
 .action-in-box {
-    float: right;
+    display: inline-block;
     height: 4em;
     margin: 0.7em 0;
     text-align: right;
@@ -1390,6 +1390,8 @@ footer img {
 .ui-autocomplete, .ui-menu-item {
     z-index: 8050;
 }
+
+.fancybox-inner { overflow: visible !important; }
 
 .passLevel {
     width: 20px;

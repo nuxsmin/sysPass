@@ -149,7 +149,9 @@ class UserUtil
 
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return ($queryRes !== false && $queryRes->user_lastUpdateMPass > $configMPassTime);
+        $ret = ($queryRes !== false && $queryRes->user_lastUpdateMPass > $configMPassTime);
+
+        return $ret;
 
     }
 
@@ -291,7 +293,9 @@ class UserUtil
 
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return ($queryRes !== false && intval($queryRes->user_isDisabled) === 1);
+        $ret = ($queryRes !== false && intval($queryRes->user_isDisabled) === 1);
+
+        return $ret;
     }
 
     /**
@@ -530,7 +534,9 @@ class UserUtil
         }
 
         // Comprobamos el hash de la clave del usuario con la guardada
-        return Crypt::checkHashPass($userMPass, $configMPass);
+        $ret = Crypt::checkHashPass($userMPass, $configMPass);
+
+        return $ret;
     }
 
     /**

@@ -63,6 +63,7 @@ $stringsJsLang = array(
     36 => _('Incluir Mayúsculas'),
     37 => _('Incluir Símbolos'),
     38 => _('Longitud'),
+    39 => _('Seleccionar Acción'),
 );
 
 

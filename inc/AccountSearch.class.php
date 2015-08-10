@@ -229,7 +229,7 @@ class AccountSearch
         $arrFilterUser = array();
         $arrQueryWhere = array();
 
-        switch ($this->getSortKey()) {
+        switch ($this->_sortKey) {
             case self::SORT_NAME:
                 $orderKey = 'account_name';
                 break;
@@ -250,18 +250,18 @@ class AccountSearch
                 break;
         }
 
-        if ($this->getTxtSearch()) {
+        if ($this->_txtSearch) {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
 
-            if($stringFilters !== false){
+            if ($stringFilters !== false) {
                 $i = 0;
 
-                foreach($stringFilters as $column => $value){
+                foreach ($stringFilters as $column => $value) {
                     $parameter = 'P_' . $column . $i;
                     $rel = '=';
 
-                    if (preg_match('/name/i', $column)){
+                    if (preg_match('/name/i', $column)) {
                         $rel = 'LIKE';
                         $value = '%' . $value . '%';
                     }
@@ -277,23 +277,23 @@ class AccountSearch
                 $arrFilterCommon[] = 'account_url LIKE :url';
                 $arrFilterCommon[] = 'account_notes LIKE :notes';
 
-                $data['name'] = '%' . $this->getTxtSearch() . '%';
-                $data['login'] = '%' . $this->getTxtSearch() . '%';
-                $data['url'] = '%' . $this->getTxtSearch() . '%';
-                $data['notes'] = '%' . $this->getTxtSearch() . '%';
+                $data['name'] = '%' . $this->_txtSearch . '%';
+                $data['login'] = '%' . $this->_txtSearch . '%';
+                $data['url'] = '%' . $this->_txtSearch . '%';
+                $data['notes'] = '%' . $this->_txtSearch . '%';
             }
         }
 
-        if ($this->getCategoryId() !== 0) {
+        if ($this->_categoryId !== 0) {
             $arrFilterSelect[] = 'category_id = :categoryId';
 
-            $data['categoryId'] = $this->getCategoryId();
+            $data['categoryId'] = $this->_categoryId;
         }
 
-        if ($this->getCustomerId() !== 0) {
+        if ($this->_customerId !== 0) {
             $arrFilterSelect[] = 'account_customerId = :customerId';
 
-            $data['customerId'] = $this->getCustomerId();
+            $data['customerId'] = $this->_customerId;
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -304,7 +304,7 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        if (!$isAdmin && !$this->getGlobalSearch()) {
+        if (!$isAdmin && !$this->_globalSearch) {
             $subQueryGroupsA = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduA UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgA)';
             $subQueryGroupsB = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduB UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgB)';
 
@@ -329,53 +329,50 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
-        $orderDir = ($this->getSortOrder() === 0) ? 'ASC' : 'DESC';
+        $orderDir = ($this->_sortOrder === 0) ? 'ASC' : 'DESC';
         $queryOrder = 'ORDER BY ' . $orderKey . ' ' . $orderDir;
 
-        if ($this->getLimitCount() != 99) {
+        if ($this->_limitCount != 99) {
             $queryLimit = 'LIMIT :limitStart,:limitCount';
 
-            $data['limitStart'] = $this->getLimitStart();
-            $data['limitCount'] = $this->getLimitCount();
+            $data['limitStart'] = $this->_limitStart;
+            $data['limitCount'] = $this->_limitCount;
         }
 
         if (count($arrQueryWhere) === 1) {
-            $queryWhere = ' WHERE ' . implode($arrQueryWhere) . ' ';
-//            $query = $querySelect . ' WHERE ' . implode($arrQueryWhere) . ' ' . $queryOrder . ' ' . $queryLimit;
+            $queryWhere = ' WHERE ' . implode($arrQueryWhere);
         } elseif (count($arrQueryWhere) > 1) {
-            $queryWhere = ' WHERE ' . implode(' AND ', $arrQueryWhere . ' ');
-//            $queryWhere = ' WHERE ' . implode(' AND ', $arrQueryWhere) . ' ' . $queryOrder . ' ' . $queryLimit;
+            $queryWhere = ' WHERE ' . implode(' AND ', $arrQueryWhere);
         } else {
             $queryWhere = '';
-//            $query = $querySelect . ' ' . $queryOrder . ' ' . $queryLimit;
         }
 
-        $query = 'SELECT DISTINCT '
-            . 'account_id,'
-            . 'account_customerId,'
-            . 'category_name,'
-            . 'account_name,'
-            . 'account_login,'
-            . 'account_url,'
-            . 'account_notes,'
-            . 'account_userId,'
-            . 'account_userGroupId,'
-            . 'BIN(account_otherUserEdit) AS account_otherUserEdit,'
-            . 'BIN(account_otherGroupEdit) AS account_otherGroupEdit,'
-            . 'usergroup_name,'
-            . 'customer_name,'
-            . 'count(accfile_id) as num_files '
-            . 'FROM accounts '
-            . 'LEFT JOIN accFiles ON account_id = accfile_accountId '
-            . 'LEFT JOIN categories ON account_categoryId = category_id '
-            . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
-            . 'LEFT JOIN customers ON customer_id = account_customerId '
-            . 'LEFT JOIN accUsers ON accuser_accountId = account_id '
-            . 'LEFT JOIN accGroups ON accgroup_accountId = account_id '
-            . $queryWhere
-            . 'GROUP BY account_id '
-            . $queryOrder . ' '
-            . $queryLimit . ' ';
+        $query = 'SELECT DISTINCT ' .
+            'account_id,' .
+            'account_customerId,' .
+            'category_name,' .
+            'account_name,' .
+            'account_login,' .
+            'account_url,' .
+            'account_notes,' .
+            'account_userId,' .
+            'account_userGroupId,' .
+            'BIN(account_otherUserEdit) AS account_otherUserEdit,' .
+            'BIN(account_otherGroupEdit) AS account_otherGroupEdit,' .
+            'usergroup_name,' .
+            'customer_name,' .
+            'count(accfile_id) as num_files ' .
+            'FROM accounts ' .
+            'LEFT JOIN accFiles ON account_id = accfile_accountId ' .
+            'LEFT JOIN categories ON account_categoryId = category_id ' .
+            'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id ' .
+            'LEFT JOIN customers ON customer_id = account_customerId ' .
+            'LEFT JOIN accUsers ON accuser_accountId = account_id ' .
+            'LEFT JOIN accGroups ON accgroup_accountId = account_id ' .
+            $queryWhere . ' ' .
+            'GROUP BY account_id ' .
+            $queryOrder . ' ' .
+            $queryLimit;
 
 //        print_r($query);
 //        error_log($query);
@@ -402,6 +399,43 @@ class AccountSearch
         Session::setSearchFilters($this);
 
         return $queryRes;
+    }
+
+    /**
+     * Analizar la cadena de consulta por eqituetas especiales y devolver un array
+     * con las columnas y los valores a buscar.
+     *
+     * @return array|bool
+     */
+    private function analyzeQueryString()
+    {
+        preg_match('/:(user|group|file)\s(.*)/i', $this->_txtSearch, $filters);
+
+        if (!is_array($filters) || count($filters) === 0) {
+            return false;
+        }
+
+        switch ($filters[1]) {
+            case 'user':
+                return array(
+                    'account_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2])),
+                    'accuser_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2]))
+                );
+                break;
+            case 'group':
+                return array(
+                    'account_userGroupId' => Groups::getGroupIdByName(Html::sanitize($filters[2])),
+                    'accgroup_groupId' => Groups::getGroupIdByName(Html::sanitize($filters[2]))
+                );
+                break;
+            case 'file':
+                return array(
+                    'accfile_name' => Html::sanitize($filters[2])
+                );
+                break;
+            default:
+                return false;
+        }
     }
 
     /**
@@ -436,42 +470,5 @@ class AccountSearch
         }
 
         return $queryRes->numacc;
-    }
-
-    /**
-     * Analizar la cadena de consulta por eqituetas especiales y devolver un array
-     * con las columnas y los valores a buscar.
-     *
-     * @return array|bool
-     */
-    private function analyzeQueryString()
-    {
-        preg_match('/:(user|group|file)\s(.*)/i', $this->_txtSearch, $filters);
-
-        if(count($filters) === 1){
-            return false;
-        }
-
-        switch ($filters[1]){
-            case 'user':
-                return array(
-                    'account_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2])),
-                    'accuser_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2]))
-                );
-                break;
-            case 'group':
-                return array(
-                    'account_userGroupId' => Groups::getGroupIdByName(Html::sanitize($filters[2])),
-                    'accgroup_groupId' => Groups::getGroupIdByName(Html::sanitize($filters[2]))
-                );
-                break;
-            case 'file':
-                return array(
-                    'accfile_name' => Html::sanitize($filters[2])
-                );
-                break;
-            default:
-                return false;
-        }
     }
 }

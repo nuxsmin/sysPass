@@ -27,6 +27,11 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class LdapADS para gestión de LDAP de ADS
+ *
+ * @package SP
+ */
 class LdapADS extends Ldap
 {
     /**

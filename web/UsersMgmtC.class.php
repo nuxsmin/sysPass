@@ -28,6 +28,7 @@ namespace SP\Controller;
 use SP\Common;
 use SP\DB;
 use SP\Groups;
+use SP\Log;
 use SP\Profile;
 use SP\Session;
 use SP\Template;
@@ -361,5 +362,87 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         // Obtener de nuevo el token de seguridad por si se habñia regenerado antes
         $this->view->assign('sk', Common::getSessionKey());
+    }
+
+    /**
+     * Obtener los datos para la pestaña de tokens de API
+     */
+    public function getAPITokensList()
+    {
+        $this->setAction(self::ACTION_MGM_APITOKENS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $tokensTableProp = array(
+            'tblId' => 'tblTokens',
+            'header' => '',
+            'tblHeaders' => array(_('Usuario'), _('Acción')),
+            'tblRowSrc' => array('user_login', 'authtoken_actionId'),
+            'tblRowSrcId' => 'authtoken_id',
+            'onCloseAction' => self::ACTION_USR,
+            'actions' => array(
+                'new' => array(
+                    'id' => self::ACTION_MGM_APITOKENS_NEW,
+                    'title' => _('Nueva Autorización'),
+                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_APITOKENS_NEW . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/new.png',
+                    'icon' => 'add',
+                    'skip' => true
+                ),
+                'view' => array(
+                    'id' => self::ACTION_MGM_APITOKENS_VIEW,
+                    'title' => _('Ver token de Autorización'),
+                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_APITOKENS_VIEW . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/view.png',
+                    'icon' => 'visibility'
+                ),
+                'edit' => array(
+                    'id' => self::ACTION_MGM_APITOKENS_EDIT,
+                    'title' => _('Editar Autorización'),
+                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_APITOKENS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
+                ),
+                'del' => array(
+                    'id' => self::ACTION_MGM_APITOKENS_DELETE,
+                    'title' => _('Eliminar Autorización'),
+                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_APITOKENS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
+                    'isdelete' => true
+                )
+            )
+        );
+
+        $tokensTableProp['cellWidth'] = floor(65 / count($tokensTableProp['tblHeaders']));
+
+        $this->view->append(
+            'tabs', array(
+                'title' => _('Gestión de Autorizaciones API'),
+                'query' => \SP\ApiTokens::getTokens(),
+                'props' => $tokensTableProp,
+                'time' => round(microtime() - $this->view->queryTimeStart, 5))
+        );
+    }
+
+    /**
+     * Obtener los datos para la ficha de tokens de API
+     */
+    public function getToken()
+    {
+        $this->view->addTemplate('tokens');
+
+        $token = \SP\ApiTokens::getTokens($this->view->itemId, true);
+
+        $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
+        $this->view->assign('actions', \SP\ApiTokens::getTokenActions());
+        $this->view->assign('token', $token);
+
+        if (isset($this->view->isView)){
+            $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
+            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
+        }
     }
 }

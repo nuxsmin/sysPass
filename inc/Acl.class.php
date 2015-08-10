@@ -105,7 +105,7 @@ class Acl implements Controller\ActionsInterface
                 return ($curUserIsAdminApp || $curUserProfile->isEvl());
         }
 
-        Log::writeNewLog(__FUNCTION__, _('Denegado acceso a') . " '" . self::getActionName($action) . "'");
+        Log::writeNewLog(__FUNCTION__, sprintf('%s \'%s\'', _('Denegado acceso a'), self::getActionName($action)));
 
         return false;
     }
@@ -116,32 +116,33 @@ class Acl implements Controller\ActionsInterface
      * @param int $action El id de la acción
      * @return string
      */
-    public static function getActionName($action)
+    public static function getActionName($action, $shortName = false)
     {
         $actionName = array(
-            self::ACTION_ACC_SEARCH => 'acc_search',
-            self::ACTION_ACC_VIEW => 'acc_view',
-            self::ACTION_ACC_COPY => 'acc_copy',
-            self::ACTION_ACC_NEW => 'acc_new',
-            self::ACTION_ACC_EDIT => 'acc_edit',
-            self::ACTION_ACC_EDIT_PASS => 'acc_editpass',
-            self::ACTION_ACC_VIEW_HISTORY => 'acc_viewhist',
-            self::ACTION_ACC_VIEW_PASS => 'acc_viewpass',
-            self::ACTION_ACC_DELETE => 'acc_delete',
-            self::ACTION_ACC_FILES => 'acc_files',
-            self::ACTION_ACC_REQUEST => 'acc_request',
-            self::ACTION_MGM => 'mgm',
-            self::ACTION_MGM_CATEGORIES => 'mgm_categories',
-            self::ACTION_MGM_CUSTOMERS => 'mgm_customers',
-            self::ACTION_USR => 'usr',
-            self::ACTION_USR_USERS => 'usr_users',
-            self::ACTION_USR_GROUPS => 'usr_groups',
-            self::ACTION_USR_PROFILES => 'usr_profiles',
-            self::ACTION_CFG => 'cfg',
-            self::ACTION_CFG_GENERAL => 'cfg_general',
-            self::ACTION_CFG_ENCRYPTION => 'cfg_encryption',
-            self::ACTION_CFG_BACKUP => 'cfg_backup',
-            self::ACTION_CFG_IMPORT => 'cfg_import',
+            self::ACTION_ACC_SEARCH => array('acc_search', _('Buscar Cuentas')),
+            self::ACTION_ACC_VIEW => array('acc_view', _('Ver Cuenta')),
+            self::ACTION_ACC_COPY => array('acc_copy', _('Copiar Cuenta')),
+            self::ACTION_ACC_NEW => array('acc_new', _('Nueva Cuenta')),
+            self::ACTION_ACC_EDIT => array('acc_edit', _('Editar Cuenta')),
+            self::ACTION_ACC_EDIT_PASS => array('acc_editpass', _('Editar Clave de Cuenta')),
+            self::ACTION_ACC_VIEW_HISTORY => array('acc_viewhist', _('Ver Historial')),
+            self::ACTION_ACC_VIEW_PASS => array('acc_viewpass', _('Ver Clave')),
+            self::ACTION_ACC_DELETE => array('acc_delete', _('Eliminar Cuenta')),
+            self::ACTION_ACC_FILES => array('acc_files', _('Archivos')),
+            self::ACTION_ACC_REQUEST => array('acc_request', _('Peticiones')),
+            self::ACTION_MGM => array('mgm', _('Gestión Aplicación')),
+            self::ACTION_MGM_CATEGORIES => array('mgm_categories', _('Gestión Categorías')),
+            self::ACTION_MGM_CUSTOMERS => array('mgm_customers', _('Gestión Clientes')),
+            self::ACTION_USR => array('usr', _('Gestión Usuarios')),
+            self::ACTION_USR_USERS => array('usr_users', _('Gestión Usuarios')),
+            self::ACTION_USR_GROUPS => array('usr_groups', _('Gestión Grupos')),
+            self::ACTION_USR_PROFILES => array('usr_profiles', _('Gestión Perfiles')),
+            self::ACTION_CFG => array('cfg', _('Configuración')),
+            self::ACTION_CFG_GENERAL => array('cfg_general', _('Configuración General')),
+            self::ACTION_CFG_ENCRYPTION => array('cfg_encryption', _('Encriptación')),
+            self::ACTION_CFG_BACKUP => array('cfg_backup', _('Copia de Seguridad')),
+            self::ACTION_CFG_EXPORT => array('cfg_export', _('Exportar')),
+            self::ACTION_CFG_IMPORT => array('cfg_import', _('Importar')),
             self::ACTION_EVL => 'evl'
         );
 
@@ -149,7 +150,11 @@ class Acl implements Controller\ActionsInterface
             return 'action';
         }
 
-        return $actionName[$action];
+        if ($shortName){
+            return $actionName[$action][0];
+        }
+
+        return $actionName[$action][1];
     }
 
     /**

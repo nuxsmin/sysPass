@@ -121,6 +121,7 @@ switch ($actionId) {
         $controller->getUsersList();
         $controller->getGroupsList();
         $controller->getProfilesList();
+        $controller->getAPITokensList();
         break;
     case \SP\Controller\ActionsInterface::ACTION_MGM:
         $controller = new SP\Controller\AccountsMgmtC($tpl);

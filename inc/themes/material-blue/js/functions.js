@@ -1296,6 +1296,18 @@ function chosenDetect() {
         });
     });
 
+    $(".sel-chosen-action").each(function(){
+        var deselect = $(this).hasClass('sel-chosen-deselect');
+
+        $(this).chosen({
+            allow_single_deselect: deselect,
+            placeholder_text_single: LANG[39],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
+    });
+
     $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
 }
 

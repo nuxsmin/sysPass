@@ -25,6 +25,7 @@
 
 namespace SP\Controller;
 
+use SP\Session;
 use SP\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -145,7 +146,7 @@ abstract class Controller
             $checkAction = $action;
         }
 
-        if (!\SP\Acl::checkUserAccess($checkAction)) {
+        if (!Session::getUserIsAdminApp() && !\SP\Acl::checkUserAccess($checkAction)) {
 //            $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
         }

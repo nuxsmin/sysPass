@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\ApiTokens;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -211,7 +213,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
 
         $this->view->assign('accountId', \SP\Request::analyze('id', 0));
         $this->view->assign('deleteEnabled', \SP\Request::analyze('del', 0));
-        $this->view->assign('files', \SP\Files::getFileList($this->view->accountId, $this->view->deleteEnabled));
+        $this->view->assign('files', \SP\Files::getFileList($this->view->accountId));
 
         if (!is_array($this->view->files) || count($this->view->files) === 0) {
             return;

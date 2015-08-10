@@ -183,8 +183,6 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
 
         SP\Common::printJSON(_('Error al eliminar el usuario'));
     }
-
-    SP\Common::printJSON(_('Acción Inválida'));
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_DELETE
@@ -247,8 +245,6 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Error al eliminar el grupo'));
         }
     }
-
-    SP\Common::printJSON(_('Acción Inválida'));
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_DELETE
@@ -316,8 +312,6 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Error al eliminar el perfil'));
         }
     }
-
-    SP\Common::printJSON(_('Acción Inválida'));
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT
     || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE
@@ -362,8 +356,6 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
 
         SP\Common::printJSON(_('Cliente eliminado'), 0, $doActionOnClose);
     }
-
-    SP\Common::printJSON(_('Acción Inválida'));
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_EDIT
     || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_DELETE
@@ -409,6 +401,58 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
 
         SP\Common::printJSON(_('Categoría eliminada'), 0, $doActionOnClose);
     }
+} elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_DELETE
+) {
+    // Variables POST del formulario
+    $frmUserId = SP\Request::analyze('users', 0);
+    $frmTokenActionId = SP\Request::analyze('actions', 0);
+    $frmRefreshToken = SP\Request::analyze('refreshtoken', false, false, true);
 
+    if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW
+        || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT)
+    {
+        if ($frmUserId === 0 || $frmTokenActionId === 0) {
+            SP\Common::printJSON(_('Usuario o acción no indicado'), 2);
+        }
+
+        $ApiTokens = new \SP\ApiTokens();
+        $ApiTokens->setUserId($frmUserId);
+        $ApiTokens->setActionId($frmTokenActionId);
+        $ApiTokens->setTokenId($itemId);
+        $ApiTokens->setRefreshToken($frmRefreshToken);
+
+        if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW){
+            try {
+                $ApiTokens->addToken();
+            } catch (\SP\SPException $e) {
+                SP\Common::printJSON($e->getMessage(), 2);
+            }
+
+            SP\Common::printJSON(_('Autorización creada'), 0, $doActionOnClose);
+        } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT){
+            try {
+                $ApiTokens->updateToken();
+            } catch (\SP\SPException $e) {
+                SP\Common::printJSON($e->getMessage(), 2);
+            }
+
+            SP\Common::printJSON(_('Autorización actualizada'), 0, $doActionOnClose);
+        }
+
+    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_DELETE){
+        $ApiTokens = new \SP\ApiTokens();
+        $ApiTokens->setTokenId($itemId);
+
+        try {
+            $ApiTokens->deleteToken();
+        } catch (\SP\SPException $e) {
+            SP\Common::printJSON($e->getMessage(), 2);
+        }
+
+        SP\Common::printJSON(_('Autorización eliminada'), 0, $doActionOnClose);
+    }
+} else {
     SP\Common::printJSON(_('Acción Inválida'));
 }

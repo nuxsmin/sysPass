@@ -167,8 +167,9 @@ class Auth
         $data['login'] = $userLogin;
         $data['pass'] = $userPass;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
-//        return ($db->getFullRowCount($query) === 1);
+        $ret = (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
+
+        return $ret;
     }
 
     /**
@@ -201,5 +202,30 @@ class Auth
         } else {
             return false;
         }
+    }
+
+    /**
+     * Comprobar el token de seguridad
+     *
+     * @param $userId   int El id del usuario
+     * @param $actionId int El id de la accion
+     * @param $token    string El token de seguridad
+     * @return bool
+     */
+    public static function checkAuthToken($userId, $actionId, $token)
+    {
+        $query = 'SELECT authtoken_id FROM authTokens ' .
+            'WHERE authtoken_userId = :userId ' .
+            'AND authtoken_actionId = :actionId ' .
+            'AND authtoken_token = :token ' .
+            'LIMIT 1';
+
+        $data['userId'] = $userId;
+        $data['actionId'] = $actionId;
+        $data['token'] = $token;
+
+        DB::getQuery($query, __FUNCTION__, $data);
+
+        return (DB::$lastNumRows === 1);
     }
 }
