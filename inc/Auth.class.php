@@ -212,15 +212,13 @@ class Auth
      * @param $token    string El token de seguridad
      * @return bool
      */
-    public static function checkAuthToken($userId, $actionId, $token)
+    public static function checkAuthToken($actionId, $token)
     {
         $query = 'SELECT authtoken_id FROM authTokens ' .
-            'WHERE authtoken_userId = :userId ' .
-            'AND authtoken_actionId = :actionId ' .
+            'WHERE authtoken_actionId = :actionId ' .
             'AND authtoken_token = :token ' .
             'LIMIT 1';
 
-        $data['userId'] = $userId;
         $data['actionId'] = $actionId;
         $data['token'] = $token;
 

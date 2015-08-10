@@ -27,41 +27,33 @@ define('APP_ROOT', '.');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$userLogin = \SP\Request::analyze('u');
-$userPass = \SP\Request::analyze('up');
-$authToken = \SP\Request::analyze('t');
-$actionId = \SP\Request::analyze('a', 0);
-
-if (!$userLogin || !$authToken || !$actionId){
-    \SP\Common::printJSON(_('Parámetros incorrectos'));
-}
-
 try {
-    switch ($actionId) {
-        case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW:
-            $itemId = \SP\Request::analyze('i', 0);
+    $ApiRequest = new \SP\ApiRequest();
 
-            $Api = new \SP\Api($userLogin, $actionId, $authToken);
-            $out = $Api->getAccountData($itemId);
+    switch ($ApiRequest->getAction()) {
+        case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW:
+            $itemId = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
+
+            $out = $ApiRequest->getApi()->getAccountData($itemId);
             break;
         case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_PASS:
-            $itemId = \SP\Request::analyze('i', 0);
+            $ApiRequest->addVar('userPass', \SP\ApiRequest::analyze(\SP\ApiRequest::USER_PASS));
 
-            $Api = new \SP\Api($userLogin, $actionId, $authToken, $userPass);
-            $out = $Api->getAccountPassword($itemId);
+            $itemId = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
+
+            $out = $ApiRequest->getApi()->getAccountPassword($itemId);
             break;
         case \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH:
-            $search = \SP\Request::analyze('s');
-            $count = \SP\Request::analyze('c', 10);
+            $search = \SP\Request::analyze(\SP\ApiRequest::SEARCH);
+            $count = \SP\Request::analyze(\SP\ApiRequest::SEARCH_COUNT, 10);
 
-            $Api = new \SP\Api($userLogin, $actionId, $authToken);
-            $out = $Api->getAccountSearch($search, $count);
+            $out = $ApiRequest->getApi()->getAccountSearch($search, $count);
             break;
         default:
             throw new Exception(_('Acción Inválida'));
     }
 } catch (Exception $e) {
-    \SP\Common::printJSON($e->getMessage(), 1, $actionId);
+    \SP\Common::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\ApiRequest::getHelp()));
 }
 
 header('Content-type: application/json');

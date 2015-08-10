@@ -54,24 +54,24 @@ class Api
     private $_mPass = '';
 
     /**
-     * @param      $userLogin string El login del usuario
      * @param      $actionId  int El id de la acción
      * @param      $authToken string El token de seguridad
      * @param null $userPass  string La clave del usuario
      * @throws SPException
      */
-    public function __construct($userLogin, $actionId, $authToken, $userPass = null)
+    public function __construct($actionId, $authToken, $userPass = null)
     {
-        $this->_userId = UserUtil::getUserIdByLogin($userLogin);
-
-        if (!Auth::checkAuthToken($this->_userId, $actionId, $authToken)) {
+        if (!Auth::checkAuthToken($actionId, $authToken)) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 
+        $this->_userId = ApiTokens::getUserIdForToken($authToken);
         $this->_actionId = $actionId;
         $this->_auth = true;
 
         if (!is_null($userPass)) {
+            $userLogin = UserUtil::getUserLoginById($this->_userId);
+
             $User = new User();
             $User->setUserId($this->_userId);
             $User->setUserLogin($userLogin);
@@ -172,8 +172,10 @@ class Api
     /**
      * Devolver los resultados de una búsqueda
      *
-     * @param $search
+     * @param string $search El texto de búsqueda
+     * @param int $count El número de cuentas a mostrar
      * @return string
+     * @throws SPException
      */
     public function getAccountSearch($search, $count = 0)
     {

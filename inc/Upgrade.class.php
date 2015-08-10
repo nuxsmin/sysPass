@@ -77,7 +77,7 @@ class Upgrade
             case 110:
                 $queries[] = 'ALTER TABLE `accFiles` CHANGE COLUMN `accfile_name` `accfile_name` VARCHAR(100) NOT NULL';
                 $queries[] = 'ALTER TABLE `accounts` ADD COLUMN `account_otherGroupEdit` BIT(1) NULL DEFAULT 0 AFTER `account_dateEdit`, ADD COLUMN `account_otherUserEdit` BIT(1) NULL DEFAULT 0 AFTER `account_otherGroupEdit`;';
-                $queries[] = 'CREATE TABLE `accUsers` (`accuser_id` INT NOT NULL AUTO_INCREMENT,`accuser_accountId` INT(10) UNSIGNED NOT NULL,`accuser_userId` INT(10) UNSIGNED NOT NULL, PRIMARY KEY (`accuser_id`), INDEX `idx_account` (`accuser_accountId` ASC));';
+                $queries[] = 'CREATE TABLE `accUsers` (`accuser_id` INT NOT NULL AUTO_INCREMENT,`accuser_accountId` INT(10) UNSIGNED NOT NULL,`accuser_userId` INT(10) UNSIGNED NOT NULL, PRIMARY KEY (`accuser_id`), INDEX `idx_account` (`accuser_accountId` ASC)) DEFAULT CHARSET=utf8;';
                 $queries[] = 'ALTER TABLE `accHistory` ADD COLUMN `accHistory_otherUserEdit` BIT NULL AFTER `acchistory_mPassHash`, ADD COLUMN `accHistory_otherGroupEdit` VARCHAR(45) NULL AFTER `accHistory_otherUserEdit`;';
                 $queries[] = 'ALTER TABLE `accFiles` CHANGE COLUMN `accfile_type` `accfile_type` VARCHAR(100) NOT NULL ;';
                 break;
@@ -89,7 +89,7 @@ class Upgrade
                 $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_login` `user_login` VARCHAR(50) NOT NULL ,CHANGE COLUMN `user_email` `user_email` VARCHAR(80) NULL DEFAULT NULL ;';
                 break;
             case 1123:
-                $queries[] = 'CREATE TABLE `usrPassRecover` (`userpassr_id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userpassr_userId` SMALLINT UNSIGNED NOT NULL,`userpassr_hash` VARBINARY(40) NOT NULL,`userpassr_date` INT UNSIGNED NOT NULL,`userpassr_used` BIT(1) NOT NULL DEFAULT b\'0\', PRIMARY KEY (`userpassr_id`),INDEX `IDX_userId` (`userpassr_userId` ASC, `userpassr_date` ASC)) DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci;';
+                $queries[] = 'CREATE TABLE `usrPassRecover` (`userpassr_id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userpassr_userId` SMALLINT UNSIGNED NOT NULL,`userpassr_hash` VARBINARY(40) NOT NULL,`userpassr_date` INT UNSIGNED NOT NULL,`userpassr_used` BIT(1) NOT NULL DEFAULT b\'0\', PRIMARY KEY (`userpassr_id`),INDEX `IDX_userId` (`userpassr_userId` ASC, `userpassr_date` ASC)) DEFAULT CHARSET=utf8;';
                 $queries[] = 'ALTER TABLE `log` ADD COLUMN `log_ipAddress` VARCHAR(45) NOT NULL AFTER `log_userId`;';
                 $queries[] = 'ALTER TABLE `usrData` ADD COLUMN `user_isChangePass` BIT(1) NULL DEFAULT b\'0\' AFTER `user_isMigrate`;';
                 break;
@@ -110,9 +110,10 @@ class Upgrade
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';';
                 $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_profile` BLOB NOT NULL;';
                 $queries[] = 'ALTER TABLE `usrData` ADD `user_preferences` BLOB NULL;';
-                $queries[] = 'CREATE TABLE usrToGroups (usertogroup_id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,usertogroup_userId INT UNSIGNED NOT NULL,usertogroup_groupId INT UNSIGNED NOT NULL)';
+                $queries[] = 'CREATE TABLE usrToGroups (usertogroup_id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,usertogroup_userId INT UNSIGNED NOT NULL,usertogroup_groupId INT UNSIGNED NOT NULL) DEFAULT CHARSET=utf8;';
                 $queries[] = 'CREATE INDEX IDX_accountId ON usrToGroups (usertogroup_userId)';
                 $queries[] = 'ALTER TABLE `accFiles` ADD `accFile_thumb` BLOB NULL;';
+                $queries[] = 'CREATE TABLE `authTokens` (`authtoken_id` int(11) NOT NULL AUTO_INCREMENT,`authtoken_userId` int(11) NOT NULL,`authtoken_token` varbinary(100) NOT NULL,`authtoken_actionId` smallint(5) unsigned NOT NULL,`authtoken_createdBy` smallint(5) unsigned NOT NULL,`authtoken_startDate` int(10) unsigned NOT NULL,PRIMARY KEY (`authtoken_id`),UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                 break;
             default :
                 $log->addDescription(_('No es necesario actualizar la Base de Datos.'));
