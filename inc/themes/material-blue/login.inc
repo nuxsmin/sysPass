@@ -49,10 +49,9 @@
             <?php endif; ?>
             <input type="hidden" name="login" value="1"/>
             <input type="hidden" name="isAjax" value="1"/>
-            <?php if (count($_GET) > 0): ?>
-                <?php foreach ($_GET as $param => $value): ?>
-                    <input type="hidden" name="g_<?php echo Html::sanitize($param); ?>"
-                           value="<?php echo Html::sanitize($value); ?>"/>
+            <?php if (is_array($getParams)): ?>
+                <?php foreach ($getParams as $param => $value): ?>
+                    <input type="hidden" name="<?php echo $param; ?>" value="<?php echo $value; ?>"/>
                 <?php endforeach; ?>
             <?php endif; ?>
 

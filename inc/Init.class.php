@@ -25,6 +25,8 @@
 
 namespace SP;
 
+use SP\Controller\ActionsInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -204,7 +206,7 @@ class Init
         self::initSession();
 
         // Comprobar acciones en URL
-        self::checkRequestActions();
+        self::checkPreLoginActions();
 
         // Intentar establecer el tiempo de vida de la sesión en PHP
         $sessionLifeTime = self::getSessionLifeTime();
@@ -643,11 +645,11 @@ class Init
     }
 
     /**
-     * Comprobar si hay que ejecutar acciones de URL.
+     * Comprobar si hay que ejecutar acciones de URL antes del login.
      *
      * @return bool
      */
-    public static function checkRequestActions()
+    public static function checkPreLoginActions()
     {
         if (!Request::analyze('a', '', true)) {
             return false;
@@ -670,6 +672,33 @@ class Init
         }
 
         exit();
+    }
+
+    /**
+     * Comprobar si hay que ejecutar acciones de URL después del login.
+     *
+     * @return bool
+     */
+    public static function checkPostLoginActions()
+    {
+        if (!Request::analyze('a', '', true)) {
+            return false;
+        }
+
+        $action = Request::analyze('a');
+        $controller = new Controller\MainC(null , 'main');
+
+        switch ($action) {
+            case 'accView':
+                $itemId = Request::analyze('i');
+                $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
+                $controller->getMain($onLoad);
+                $controller->view();
+                break;
+            default:
+                return false;
+        }
+        return true;
     }
 
     /**

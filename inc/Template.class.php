@@ -202,7 +202,7 @@ class Template
      * @param      $value mixed valor de la variable
      * @param null $scope string ámbito de la variable
      */
-    public function assign($name, $value, $scope = null)
+    public function assign($name, $value = '', $scope = null)
     {
         if (!is_null($scope)) {
             $name = $scope . '_' . $name;

@@ -183,13 +183,18 @@ if ($prefs->isUse2Fa()) {
     SP\Session::set2FApassed(true);
 }
 
+$params = array();
+
 // Comprobar si existen parámetros adicionales en URL via POST para pasarlos por GET
 foreach ($_POST as $param => $value) {
-    if (preg_match('/g_.*/', $param)) {
+    \SP\Html::sanitize($param);
+    \SP\Html::sanitize($value);
+
+    if (!strncmp($param, 'g_', 2)) {
         $params[] = substr($param, 2) . '=' . $value;
     }
 }
 
-$urlParams = isset($params) ? '?' . implode('&', $params) : '';
+$urlParams = (count($params) > 0) ? '?' . implode('&', $params) : '';
 
 SP\Common::printJSON('index.php' . $urlParams, 0);

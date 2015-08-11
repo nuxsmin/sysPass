@@ -96,16 +96,22 @@ class MainC extends Controller implements ActionsInterface
 
     /**
      * Obtener los datos para el interface principal de sysPass
+     *
+     * @param string $onLoad Las acciones a realizar en la carga de la página
      */
-    public function getMain()
+    public function getMain($onLoad = null)
     {
-        $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')');
+        if (is_null($onLoad)) {
+            $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')');
 
-        if(Session::getUserIsAdminApp()){
-            $onLoad[] = 'checkUpds()';
+            if (Session::getUserIsAdminApp()) {
+                $onLoad[] = 'checkUpds()';
+            }
+
+            $this->view->assign('onLoad', implode(';', $onLoad));
+        } else {
+            $this->view->assign('onLoad', $onLoad);
         }
-
-        $this->view->assign('onLoad', implode(';', $onLoad));
 
         $this->getSessionBar();
         $this->getMenu();
@@ -204,6 +210,17 @@ class MainC extends Controller implements ActionsInterface
             _('Optimización del código y mayor rapidez de carga'),
             _('Mejoras de seguridad en XSS e inyección SQL')
         ));
+
+        // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
+        $this->view->assign('getParams');
+
+        if (count($_GET) > 0){
+            foreach ($_GET as $param => $value){
+                $getParams['g_' . \SP\Html::sanitize($param)] = \SP\Html::sanitize($value);
+            }
+
+            $this->view->assign('getParams', $getParams);
+        }
     }
 
     /**
