@@ -1311,7 +1311,9 @@ function chosenDetect() {
     $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
 }
 
-// Detectar los campos de clave y añadir funciones
+/**
+ * Detectar los campos de clave y añadir funciones
+ */
 function passwordDetect() {
     "use strict";
 
@@ -1385,4 +1387,25 @@ function passwordDetect() {
             componentHandler.upgradeDom();
         });
     });
+}
+
+/**
+ * Detectar los imputs del tipo checkbox para generar botones
+ *
+ * @param container El contenedor donde buscar
+ */
+function checkboxDetect(container){
+    "use strict";
+
+    $(container).find('.checkbox').button({
+        icons: {primary: "ui-icon-transferthick-e-w"}
+    }).click(
+        function () {
+            if ($(this).prop('checked') == true) {
+                $(this).button('option', 'label', LANG[40]);
+            } else {
+                $(this).button('option', 'label', LANG[41]);
+            }
+        }
+    );
 }

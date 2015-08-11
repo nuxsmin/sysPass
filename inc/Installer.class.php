@@ -285,7 +285,7 @@ class Installer
         }
 
         try {
-            self::createMySQLDatabase(self::$_dbpass);
+            self::createMySQLDatabase();
             self::createDBStructure();
         } catch (SPException $e){
             throw $e;
@@ -437,7 +437,7 @@ class Installer
         $User = new User();
 
         // Establecer el id de grupo del usuario al recién creado
-        $User->userGroupId = Groups::$queryLastId;
+        $User->setUserGroupId(Groups::$queryLastId);
 
         $Profile = new Profile();
 

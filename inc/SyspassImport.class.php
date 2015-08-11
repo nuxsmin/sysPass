@@ -118,7 +118,7 @@ class SyspassImport extends XmlImportBase
                         $this->setCategoryName($node->nodeValue);
                         break;
                     case 'description':
-                        $this->setCategoryName($node->nodeValue);
+                        $this->setCategoryDescription($node->nodeValue);
                         break;
                 }
             }

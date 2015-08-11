@@ -9,13 +9,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `accFiles`
---
-
 DROP TABLE IF EXISTS `accFiles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accFiles` (
   `accfile_id` int(11) NOT NULL AUTO_INCREMENT,
   `accfile_accountId` smallint(5) unsigned NOT NULL,
@@ -28,15 +22,8 @@ CREATE TABLE `accFiles` (
   PRIMARY KEY (`accfile_id`),
   KEY `IDX_accountId` (`accfile_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `accGroups`
---
 
 DROP TABLE IF EXISTS `accGroups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accGroups` (
   `accgroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `accgroup_accountId` int(10) unsigned NOT NULL,
@@ -44,15 +31,8 @@ CREATE TABLE `accGroups` (
   PRIMARY KEY (`accgroup_id`),
   KEY `IDX_accountId` (`accgroup_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `accHistory`
---
 
 DROP TABLE IF EXISTS `accHistory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accHistory` (
   `acchistory_id` int(11) NOT NULL AUTO_INCREMENT,
   `acchistory_accountId` smallint(5) unsigned NOT NULL,
@@ -79,15 +59,8 @@ CREATE TABLE `accHistory` (
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `accUsers`
---
 
 DROP TABLE IF EXISTS `accUsers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accUsers` (
   `accuser_id` int(11) NOT NULL AUTO_INCREMENT,
   `accuser_accountId` int(10) unsigned NOT NULL,
@@ -95,15 +68,8 @@ CREATE TABLE `accUsers` (
   PRIMARY KEY (`accuser_id`),
   KEY `idx_account` (`accuser_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `accViewLinks`
---
 
 DROP TABLE IF EXISTS `accViewLinks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accViewLinks` (
   `accviewlinks_id` int(10) unsigned NOT NULL DEFAULT '0',
   `accviewlinks_accountId` int(10) unsigned DEFAULT NULL,
@@ -115,15 +81,8 @@ CREATE TABLE `accViewLinks` (
   PRIMARY KEY (`accviewlinks_id`),
   UNIQUE KEY `unique_accviewlinks_id` (`accviewlinks_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `accounts`
---
 
 DROP TABLE IF EXISTS `accounts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accounts` (
   `account_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `account_userGroupId` tinyint(3) unsigned NOT NULL,
@@ -146,18 +105,10 @@ CREATE TABLE `accounts` (
   PRIMARY KEY (`account_id`),
   KEY `IDX_categoryId` (`account_categoryId`),
   KEY `IDX_userId` (`account_userGroupId`,`account_userId`),
-  KEY `IDX_customerId` (`account_customerId`),
-  FULLTEXT KEY `IDX_searchTxt` (`account_name`,`account_login`,`account_url`,`account_notes`)
+  KEY `IDX_customerId` (`account_customerId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `authTokens`
---
 
 DROP TABLE IF EXISTS `authTokens`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `authTokens` (
   `authtoken_id` int(11) NOT NULL AUTO_INCREMENT,
   `authtoken_userId` int(11) NOT NULL,
@@ -169,44 +120,23 @@ CREATE TABLE `authTokens` (
   UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),
   KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `categories`
---
 
 DROP TABLE IF EXISTS `categories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `categories` (
   `category_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `category_name` varchar(50) NOT NULL,
   `category_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `config`
---
 
 DROP TABLE IF EXISTS `config`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
   `config_parameter` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `config_value` varchar(128) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   UNIQUE KEY `vacParameter` (`config_parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `customers`
---
 
 DROP TABLE IF EXISTS `customers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customers` (
   `customer_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `customer_name` varchar(100) NOT NULL,
@@ -215,15 +145,8 @@ CREATE TABLE `customers` (
   PRIMARY KEY (`customer_id`),
   KEY `IDX_name` (`customer_name`,`customer_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `log`
---
 
 DROP TABLE IF EXISTS `log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log` (
   `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `log_date` int(10) unsigned NOT NULL,
@@ -234,15 +157,8 @@ CREATE TABLE `log` (
   `log_description` text NOT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usrData`
---
 
 DROP TABLE IF EXISTS `usrData`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrData` (
   `user_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `user_name` varchar(80) NOT NULL,
@@ -271,30 +187,16 @@ CREATE TABLE `usrData` (
   UNIQUE KEY `IDX_login` (`user_login`),
   KEY `IDX_pass` (`user_pass`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usrGroups`
---
 
 DROP TABLE IF EXISTS `usrGroups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrGroups` (
   `usergroup_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `usergroup_name` varchar(50) NOT NULL,
   `usergroup_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`usergroup_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usrPassRecover`
---
 
 DROP TABLE IF EXISTS `usrPassRecover`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrPassRecover` (
   `userpassr_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userpassr_userId` smallint(5) unsigned NOT NULL,
@@ -304,30 +206,16 @@ CREATE TABLE `usrPassRecover` (
   PRIMARY KEY (`userpassr_id`),
   KEY `IDX_userId` (`userpassr_userId`,`userpassr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usrProfiles`
---
 
 DROP TABLE IF EXISTS `usrProfiles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrProfiles` (
   `userprofile_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `userprofile_name` varchar(45) NOT NULL,
   `userProfile_profile` blob NOT NULL,
   PRIMARY KEY (`userprofile_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usrToGroups`
---
 
 DROP TABLE IF EXISTS `usrToGroups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrToGroups` (
   `usertogroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `usertogroup_userId` int(10) unsigned NOT NULL,
@@ -336,7 +224,6 @@ CREATE TABLE `usrToGroups` (
   KEY `IDX_usertogroup_userId` (`usertogroup_userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

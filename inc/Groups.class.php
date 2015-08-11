@@ -136,7 +136,7 @@ class Groups
      * @param $users array Los usuario del grupo
      * @return bool
      */
-    public static function addGroup($users)
+    public static function addGroup($users = null)
     {
         $query = 'INSERT INTO usrGroups SET usergroup_name = :name, usergroup_description = :description';
 
@@ -151,7 +151,7 @@ class Groups
 
         $Log = new Log(_('Nuevo Grupo'));
 
-        if (!Groups::addUsersForGroup(self::$queryLastId, $users)) {
+        if (!is_null($users) && !Groups::addUsersForGroup(self::$queryLastId, $users)) {
             $Log->addDescription(_('Error al añadir los usuarios del grupo'));
         }
 

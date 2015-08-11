@@ -10,7 +10,7 @@
                  data-itemid="<?php echo $userId; ?>"
                  OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES; ?>)" />
         <?php else: ?>
-            <?php echo $userName, ' (', $userGroups, ') ', $adminApp; ?>
+            <?php echo $userName, ' (', $userGroupName, ') ', $adminApp; ?>
         <?php endif; ?>
         <img src="imgs/exit.png" title="<?php echo _('Salir'); ?>" OnClick="doLogout();"/>
     </div>

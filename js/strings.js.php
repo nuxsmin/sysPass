@@ -64,6 +64,8 @@ $stringsJsLang = array(
     37 => _('Incluir Símbolos'),
     38 => _('Longitud'),
     39 => _('Seleccionar Acción'),
+    40 => _('SI'),
+    41 => _('NO'),
 );
 
 

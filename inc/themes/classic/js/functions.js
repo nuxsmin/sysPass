@@ -1276,6 +1276,13 @@ function chosenDetect() {
         width: selectWidth
     });
 
+    $(".sel-chosen-action").chosen({
+        placeholder_text_single: LANG[23],
+        disable_search_threshold: searchTreshold,
+        no_results_text: LANG[26],
+        width: selectWidth
+    });
+
     $(".sel-chosen-customer").each(function () {
         var deselect = $(this).hasClass('sel-chosen-deselect');
 
@@ -1412,4 +1419,25 @@ function passwordDetect() {
             $('#' + targetId + 'R').val('');
         });
     });
+}
+
+/**
+ * Detectar los imputs del tipo checkbox para generar botones
+ *
+ * @param container El contenedor donde buscar
+ */
+function checkboxDetect(container){
+    "use strict";
+
+    $(container).find('.checkbox').button({
+        icons: {primary: "ui-icon-transferthick-e-w"}
+    }).click(
+        function () {
+            if ($(this).prop('checked') == true) {
+                $(this).button('option', 'label', LANG[40]);
+            } else {
+                $(this).button('option', 'label', LANG[41]);
+            }
+        }
+    );
 }

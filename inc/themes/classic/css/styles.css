@@ -1792,6 +1792,12 @@ fieldset.warning a {
     font-size: 12px;
 }
 
+#actions form {
+    width: 450px;
+    margin: 0 auto;
+    text-align: left;
+}
+
 #actions form fieldset legend {
     width: 100%;
     margin-top: 1em;
@@ -1838,7 +1844,7 @@ fieldset.warning a {
 }
 
 #actions.installer form {
-    width: 400px;
+    width: 550px;
     margin: 0 auto;
     text-align: left;
 }
@@ -1850,7 +1856,9 @@ fieldset.warning a {
 }
 
 #actions.installer form fieldset p {
-    width: 300px;
+    position: relative;
+    left: 10%;
+    width: 450px;
     margin: 0 auto;
 }
 

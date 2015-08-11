@@ -76,6 +76,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
         SP\Common::printJSON(_('Es necesario una clave'));
     } elseif ($accountPassword != $accountPasswordR) {
         SP\Common::printJSON(_('Las claves no coinciden'));
+    } elseif (!$categoryId) {
+        SP\Common::printJSON(_('Es necesario una categoría'));
     }
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT) {
     // Comprobaciones para modificación de cuenta
@@ -85,6 +87,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
         SP\Common::printJSON(_('Es necesario un nombre de cuenta'));
     } elseif (!$accountLogin) {
         SP\Common::printJSON(_('Es necesario un usuario'));
+    } elseif (!$categoryId) {
+        SP\Common::printJSON(_('Es necesario una categoría'));
     }
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_DELETE) {
     if (!$accountId) {

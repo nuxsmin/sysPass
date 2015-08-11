@@ -1,6 +1,6 @@
 <div id="actions" class="installer" align="center">
     <div id="logo">
-        <img src="imgs/logo_full.png" alt="sysPass logo"/>
+        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
         <span ID="pageDesc"><?php echo _('Instalación ') . ' ' . $version; ?></span>
     </div>
 
@@ -72,8 +72,6 @@
                            class="passwordfield__input-show"
                            placeholder="<?php echo _('Clave BBDD'); ?>"
                            value="<?php echo $dbpass; ?>" required/>
-                    <img class="showpass inputImg " src="imgs/show.png" title="<?php echo _('Mostrar Clave'); ?>"
-                         alt="<?php echo _('Mostrar Clave'); ?>"/>
                 </p>
 
                 <p>
@@ -98,10 +96,10 @@
                 <p>
                     <span class="option-text"><?php echo _('Modo Hosting'); ?></span>
                     <label
-                        for="hostingmode"><?php echo ($hostingmode) ? _('NO') : _('SI'); ?></label>
+                        for="hostingmode"><?php echo ($hostingmode) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="hostingmode"
                            id="hostingmode"
-                           class="checkbox" <?php echo ($hostingmode) ? 'checked' : ''; ?> />
+                           class="checkbox" <?php echo ($hostingmode) ? 'checked' : ''; ?>/>
                     <img src="imgs/help.png" class="inputImg"
                          title="<?php echo _('No crea ni verifica los permisos del usuario sobre la BBDD'); ?>"/>
                 </p>
@@ -111,3 +109,8 @@
         </form>
     <?php endif; ?>
 </div>
+<script>
+    $(function(){
+       checkboxDetect('#actions');
+    });
+</script>
