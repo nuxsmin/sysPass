@@ -82,11 +82,13 @@ class Acl implements Controller\ActionsInterface
             case self::ACTION_CFG_GENERAL:
                 return ($curUserIsAdminApp || $curUserProfile->isConfigGeneral());
             case self::ACTION_CFG_IMPORT:
-                return ($curUserIsAdminApp || $curUserProfile->isConfigBackup());
+                return ($curUserIsAdminApp || $curUserProfile->isConfigImport());
             case self::ACTION_MGM_CATEGORIES:
                 return ($curUserIsAdminApp || $curUserProfile->isMgmCategories());
             case self::ACTION_MGM_CUSTOMERS:
                 return ($curUserIsAdminApp || $curUserProfile->isMgmCustomers());
+            case self::ACTION_MGM_CUSTOMFIELDS:
+                return ($curUserIsAdminApp || $curUserProfile->isMgmCustomFields());
             case self::ACTION_CFG_ENCRYPTION:
                 return ($curUserIsAdminApp || $curUserProfile->isConfigEncryption());
             case self::ACTION_CFG_BACKUP:
@@ -101,6 +103,8 @@ class Acl implements Controller\ActionsInterface
                 return ($curUserIsAdminApp || $curUserProfile->isMgmGroups());
             case self::ACTION_USR_PROFILES:
                 return ($curUserIsAdminApp || $curUserProfile->isMgmProfiles());
+            case self::ACTION_MGM_APITOKENS:
+                return ($curUserIsAdminApp || $curUserProfile->isMgmApiTokens());
             case self::ACTION_EVL:
                 return ($curUserIsAdminApp || $curUserProfile->isEvl());
         }
@@ -133,6 +137,8 @@ class Acl implements Controller\ActionsInterface
             self::ACTION_MGM => array('mgm', _('Gestión Aplicación')),
             self::ACTION_MGM_CATEGORIES => array('mgm_categories', _('Gestión Categorías')),
             self::ACTION_MGM_CUSTOMERS => array('mgm_customers', _('Gestión Clientes')),
+            self::ACTION_MGM_CUSTOMFIELDS => array('mgm_customfields', _('Gestión Campos Personalizados')),
+            self::ACTION_MGM_APITOKENS => array('mgm_apitokens', _('Gestión Autorizaciones API')),
             self::ACTION_USR => array('usr', _('Gestión Usuarios')),
             self::ACTION_USR_USERS => array('usr_users', _('Gestión Usuarios')),
             self::ACTION_USR_GROUPS => array('usr_groups', _('Gestión Grupos')),
@@ -190,25 +196,20 @@ class Acl implements Controller\ActionsInterface
         $okEdit = ($userId == $accountData['user_id']
             || $userGroupId == $accountData['group_id']
             || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-            || (userToGroups  && $accountData['othergroup_edit'])
+            || ($userToGroups  && $accountData['othergroup_edit'])
             || $userIsAdminApp
             || $userIsAdminAcc);
 
         switch ($module) {
             case self::ACTION_ACC_VIEW:
-                return $okView;
             case self::ACTION_ACC_VIEW_PASS:
-                return $okView;
             case self::ACTION_ACC_VIEW_HISTORY:
-                return $okView;
-            case self::ACTION_ACC_EDIT:
-                return $okEdit;
-            case self::ACTION_ACC_DELETE:
-                return $okEdit;
-            case self::ACTION_ACC_EDIT_PASS:
-                return $okEdit;
             case self::ACTION_ACC_COPY:
                 return $okView;
+            case self::ACTION_ACC_EDIT:
+            case self::ACTION_ACC_DELETE:
+            case self::ACTION_ACC_EDIT_PASS:
+                return $okEdit;
         }
 
         return false;
