@@ -26,6 +26,7 @@
 namespace SP\Controller;
 
 use SP\Common;
+use SP\CustomFields;
 use SP\DB;
 use SP\Groups;
 use SP\Log;
@@ -48,6 +49,10 @@ class UsersMgmtC extends Controller implements ActionsInterface
      * Máximo numero de acciones antes de agrupar
      */
     const MAX_NUM_ACTIONS = 3;
+    /**
+     * @var int
+     */
+    private $_module = 0;
 
     /**
      * Constructor
@@ -306,6 +311,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
      */
     public function getUser()
     {
+        $this->_module = self::ACTION_USR_USERS;
         $this->view->addTemplate('users');
 
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
@@ -313,6 +319,8 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('groups', DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
         $this->view->assign('profiles', DB::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
         $this->view->assign('ro', ($this->view->user['checks']['user_isLdap']) ? 'READONLY' : '');
+
+        $this->getCustomFieldsForItem();
     }
 
     /**
@@ -320,11 +328,14 @@ class UsersMgmtC extends Controller implements ActionsInterface
      */
     public function getGroup()
     {
+        $this->_module = self::ACTION_USR_GROUPS;
         $this->view->addTemplate('groups');
 
         $this->view->assign('group', Groups::getGroupData($this->view->itemId));
         $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
         $this->view->assign('groupUsers', \SP\Groups::getUsersForGroup($this->view->itemId));
+
+        $this->getCustomFieldsForItem();
     }
 
     /**
@@ -339,7 +350,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('profile', $profile);
         $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
 
-        if ( $this->view->isView === true ) {
+        if ($this->view->isView === true) {
             $this->view->assign('usedBy', Profile::getProfileInUsersName($this->view->itemId));
         }
     }
@@ -440,9 +451,22 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('actions', \SP\ApiTokens::getTokenActions());
         $this->view->assign('token', $token);
 
-        if (isset($this->view->isView)){
+        if (isset($this->view->isView)) {
             $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
             Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
+        }
+    }
+
+    /**
+     * Obtener la lista de campos personalizados y sus valores
+     */
+    private function getCustomFieldsForItem()
+    {
+        // Se comprueba que hayan campos con valores para el elemento actual
+        if (!$this->view->isView && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
+        } else {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
         }
     }
 }

@@ -26,6 +26,8 @@
 namespace SP\Controller;
 
 use SP\ApiTokens;
+use SP\CustomFieldDef;
+use SP\CustomFields;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -40,6 +42,10 @@ class AccountsMgmtC extends Controller implements ActionsInterface
      * Máximo numero de acciones antes de agrupar
      */
     const MAX_NUM_ACTIONS = 3;
+    /**
+     * @var int
+     */
+    private $_module = 0;
 
     /**
      * Constructor
@@ -189,9 +195,11 @@ class AccountsMgmtC extends Controller implements ActionsInterface
      */
     public function getCustomer()
     {
+        $this->_module = self::ACTION_MGM_CUSTOMERS;
         $this->view->addTemplate('customers');
 
         $this->view->assign('customer', \SP\Customer::getCustomerData($this->view->itemId));
+        $this->getCustomFieldsForItem();
     }
 
     /**
@@ -199,9 +207,24 @@ class AccountsMgmtC extends Controller implements ActionsInterface
      */
     public function getCategory()
     {
+        $this->_module = self::ACTION_MGM_CATEGORIES;
         $this->view->addTemplate('categories');
 
         $this->view->assign('category', \SP\Category::getCategoryData($this->view->itemId));
+        $this->getCustomFieldsForItem();
+    }
+
+    /**
+     * Obtener la lista de campos personalizados y sus valores
+     */
+    private function getCustomFieldsForItem()
+    {
+        // Se comprueba que hayan campos con valores para el elemento actual
+        if (!$this->view->isView && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
+        } else {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
+        }
     }
 
     /**
@@ -222,5 +245,79 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $this->view->addTemplate('files');
 
         $this->view->assign('sk', \SP\Common::getSessionKey());
+    }
+
+    /**
+     * Obtener los datos para la pestaña de campos personalizados
+     */
+    public function getCustomFields()
+    {
+        $this->setAction(self::ACTION_MGM_CUSTOMFIELDS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+
+        $tableProp = array(
+            'tblId' => 'tblCustomFields',
+            'header' => '',
+            'tblHeaders' => array(_('Módulo'), _('Nombre'), _('Tipo')),
+            'tblRowSrc' => array('module', 'name', 'typeName'),
+            'tblRowSrcId' => 'id',
+            'onCloseAction' => self::ACTION_MGM,
+            'actions' => array(
+                'new' => array(
+                    'id' => self::ACTION_MGM_CUSTOMFIELDS_NEW,
+                    'title' => _('Nuevo Campo'),
+                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_NEW . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/new.png',
+                    'skip' => true
+                ),
+                'edit' => array(
+                    'id' => self::ACTION_MGM_CUSTOMFIELDS_EDIT,
+                    'title' => _('Editar Campo'),
+                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/edit.png',
+                    'icon' => 'mode_edit'
+                ),
+                'del' => array(
+                    'id' => self::ACTION_MGM_CUSTOMFIELDS_DELETE,
+                    'title' => _('Eliminar Campo'),
+                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMFIELDS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
+                    'isdelete' => true
+                )
+            )
+        );
+
+        $tableProp['cellWidth'] = floor(65 / count($tableProp['tblHeaders']));
+
+        $this->view->append(
+            'tabs', array(
+                'title' => _('Campos Personalizados'),
+                'query' => \SP\CustomFieldDef::getCustomFields(),
+                'props' => $tableProp,
+                'time' => round(microtime() - $this->view->queryTimeStart, 5))
+        );
+    }
+
+    /**
+     * Obtener los datos para la ficha de campo personalizado
+     */
+    public function getCustomField()
+    {
+        $this->view->addTemplate('customfields');
+
+        $customField = \SP\CustomFieldDef::getCustomFields($this->view->itemId, true);
+        $field = unserialize($customField->customfielddef_field);
+
+        $this->view->assign('gotData', ($customField && $field instanceof CustomFieldDef));
+        $this->view->assign('customField', $customField);
+        $this->view->assign('field', $field);
+        $this->view->assign('types', \SP\CustomFieldDef::getFieldsTypes());
+        $this->view->assign('modules', \SP\CustomFieldDef::getFieldsModules());
     }
 }

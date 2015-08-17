@@ -98,7 +98,7 @@ class KeepassImport extends XmlImportBase
                     case 'Password':
                         $passData = Crypt::encryptData($value);
 
-                        $this->setAccountPass($passData['pass']);
+                        $this->setAccountPass($passData['data']);
                         $this->setAccountPassIV($passData['iv']);
                         break;
                     case 'Title':

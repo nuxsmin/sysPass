@@ -128,6 +128,7 @@ switch ($actionId) {
         $controller->useTabs();
         $controller->getCategories();
         $controller->getCustomers();
+        $controller->getCustomFields();
         break;
     case \SP\Controller\ActionsInterface::ACTION_CFG:
     case \SP\Controller\ActionsInterface::ACTION_CFG_GENERAL:

@@ -108,7 +108,7 @@ class Api
 
         $ret = array(
             'accountId' => $accountId,
-            'pass' => Crypt::getDecrypt($Account->getAccountPass(), $this->_mPass, $Account->getAccountIV())
+            'pass' => Crypt::getDecrypt($Account->getAccountPass(), $Account->getAccountIV(), $this->_mPass)
         );
 
         return $this->wrapJSON($ret);

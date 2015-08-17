@@ -133,7 +133,7 @@ abstract class CsvImportBase extends ImportBase
             $this->setCustomerId($customerId);
             $this->setAccountNotes($notes);
             $this->setAccountUrl($url);
-            $this->setAccountPass($pass['pass']);
+            $this->setAccountPass($pass['data']);
             $this->setAccountPass($pass['iv']);
 
             if (!$this->addAccount()) {

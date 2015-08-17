@@ -165,7 +165,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 $log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
             }
 
-            $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $currentMasterPass, $account->acchistory_IV);
+            $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
             $this->setAccountPass(Crypt::mkEncrypt($decryptedPass, $newMasterPass));
             $this->setAccountIV(Crypt::$strInitialVector);
 

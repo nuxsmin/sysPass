@@ -85,7 +85,7 @@ class SyspassImport extends XmlImportBase
             $data = base64_decode($node->nodeValue);
             $iv = base64_decode($node->getAttribute('iv'));
 
-            $xmlDecrypted = Crypt::getDecrypt($data, $this->getImportPass(), $iv);
+            $xmlDecrypted = Crypt::getDecrypt($data, $iv, $this->getImportPass());
 
             $newXmlData = new \DOMDocument();
 //            $newXmlData->preserveWhiteSpace = true;

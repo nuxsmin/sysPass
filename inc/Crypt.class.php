@@ -118,19 +118,23 @@ class Crypt
      */
     public static function getSessionMasterPass()
     {
-        return self::getDecrypt(Session::getMPass(), Session::getMPassPwd(), Session::getMPassIV());
+        return self::getDecrypt(Session::getMPass(), Session::getMPassIV(), Session::getMPassPwd());
     }
 
     /**
      * Desencriptar datos con la clave maestra.
      *
      * @param string $strEncrypted Los datos a desencriptar
-     * @param string $strPassword  La clave maestra
      * @param string $cryptIV      con el IV
+     * @param string $strPassword  La clave maestra
      * @return string con los datos desencriptados
      */
-    public static function getDecrypt($strEncrypted, $strPassword, $cryptIV)
+    public static function getDecrypt($strEncrypted, $cryptIV, $strPassword = null)
     {
+        if (is_null($strPassword)){
+            $strPassword = self::getSessionMasterPass();
+        }
+
         $mcryptRes = self::getMcryptResource();
         mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
         $strDecrypted = trim(mdecrypt_generic($mcryptRes, $strEncrypted));
@@ -221,7 +225,7 @@ class Crypt
     public static function encryptData($data)
     {
         if (empty($data)) {
-            return array('pass' => '', 'iv' => '');
+            return array('data' => '', 'iv' => '');
         }
 
         // Comprobar el módulo de encriptación
@@ -233,10 +237,10 @@ class Crypt
             );
         }
 
-        // Encriptar clave
-        $encData['pass'] = Crypt::mkEncrypt($data);
+        // Encriptar datos
+        $encData['data'] = Crypt::mkEncrypt($data);
 
-        if (!empty($data) && ($encData['pass'] === false || is_null($encData['pass']))) {
+        if (!empty($data) && ($encData['data'] === false || is_null($encData['data']))) {
             throw new SPException(
                 SPException::SP_CRITICAL,
                 _('Error interno'),

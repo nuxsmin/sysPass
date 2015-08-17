@@ -118,6 +118,16 @@
                                    name="profile_customers" <?php echo ($profile->isMgmCustomers()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label" title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></span>
                         </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_customfields">
+                            <input type="checkbox" id="profile_customfields" class="mdl-switch__input fg-blue100"
+                                   name="profile_customfields" <?php echo ($profile->isMgmCustomFields()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de campos personalizados'); ?>"><?php echo _('Campos Personalizados'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_apitokens">
+                            <input type="checkbox" id="profile_apitokens" class="mdl-switch__input fg-blue100"
+                                   name="profile_apitokens" <?php echo ($profile->isMgmApiTokens()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de autorizaciones API'); ?>"><?php echo _('Autorizaciones API'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>

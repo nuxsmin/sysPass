@@ -246,6 +246,39 @@
 <?php endif; ?>
 </table>
 
+<?php if($customFields): ?>
+<table class="data round extra-info">
+    <?php foreach($customFields as $field):?>
+            <tr>
+                <td class="descField">
+                    <?php echo $field->text; ?>
+                    <?php if($field->help): ?>
+                        <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                        <div class="tooltip" for="help-<?php echo $field->name; ?>" style="display: none;">
+                            <p><?php echo $field->help; ?></p>
+                        </div>
+                    <?php endif; ?>
+                </td>
+                <td class="valField">
+                    <?php if ($showform): ?>
+                            <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
+                            type="<?php echo $field->typeName; ?>"
+                            class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                            maxlength="50" value="<?php echo ($gotData) ? \SP\Html::sanitize($field->value) : ''; ?>"
+                            <?php echo ($field->required) ? 'required' : ''; ?>>
+                    <?php else: ?>
+                        <?php if($field->type === \SP\CustomFields::TYPE_PASSWORD && !$showViewPass):?>
+                            ****
+                        <?php else:?>
+                            <?php echo $field->value; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
+
 <!--More info about account details-->
 <?php if ($showDetails): ?>
     <table class="data round extra-info">

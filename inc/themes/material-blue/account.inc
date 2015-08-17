@@ -278,7 +278,7 @@
     </tr>
 <?php endif; ?>
 
-<?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
+<?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT && $accountData->user_editName): ?>
     <tr>
         <td class="descField"><?php echo _('Última Modificación'); ?></td>
         <?php if ($accountData->user_editName): ?>
@@ -286,7 +286,44 @@
         <?php endif; ?>
     </tr>
 <?php endif; ?>
+
 </table>
+
+<?php if($customFields): ?>
+<table class="data round extra-info">
+    <?php foreach($customFields as $field):?>
+            <tr>
+                <td class="descField">
+                    <?php echo $field->text; ?>
+                    <?php if($field->help): ?>
+                        <div id="help-<?php echo $field->name; ?>" class="icon material-icons fg-blue80">help_outline</div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-<?php echo $field->name; ?>">
+                            <p><?php echo $field->help; ?></p>
+                        </div>
+                    <?php endif; ?>
+                </td>
+                <td class="valField">
+                    <?php if ($showform): ?>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
+                            type="<?php echo $field->typeName; ?>"
+                            class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                            maxlength="50" value="<?php echo ($gotData) ? \SP\Html::sanitize($field->value) : ''; ?>"
+                            <?php echo ($field->required) ? 'required' : ''; ?>>
+                            <label class="mdl-textfield__label" for="<?php echo $field->name; ?>"><?php echo $field->text; ?></label>
+                        </div>
+                    <?php else: ?>
+                        <?php if($field->type === \SP\CustomFields::TYPE_PASSWORD && !$showViewPass):?>
+                            ****
+                        <?php else:?>
+                            <?php echo $field->value; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </td>
+            </tr>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
 
 <!--More info about account details-->
 <?php if ($showDetails): ?>
@@ -382,9 +419,8 @@
                 <i class="material-icons">lock_open</i>
             </button>
             <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
-            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>">
-                <i class="material-icons clip-pass-button"
-                   data-clipboard-target="clip-pass-text">content_paste</i>
+            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored clip-pass-button" onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" data-clipboard-target="clip-pass-text">
+                <i class="material-icons">content_paste</i>
            </button>
             <?php endif; ?>
         <?php endif; ?>

@@ -9,7 +9,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-DROP TABLE IF EXISTS `accFiles`;
 CREATE TABLE `accFiles` (
   `accfile_id` int(11) NOT NULL AUTO_INCREMENT,
   `accfile_accountId` smallint(5) unsigned NOT NULL,
@@ -23,7 +22,6 @@ CREATE TABLE `accFiles` (
   KEY `IDX_accountId` (`accfile_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `accGroups`;
 CREATE TABLE `accGroups` (
   `accgroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `accgroup_accountId` int(10) unsigned NOT NULL,
@@ -32,7 +30,6 @@ CREATE TABLE `accGroups` (
   KEY `IDX_accountId` (`accgroup_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `accHistory`;
 CREATE TABLE `accHistory` (
   `acchistory_id` int(11) NOT NULL AUTO_INCREMENT,
   `acchistory_accountId` smallint(5) unsigned NOT NULL,
@@ -60,7 +57,6 @@ CREATE TABLE `accHistory` (
   KEY `IDX_accountId` (`acchistory_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `accUsers`;
 CREATE TABLE `accUsers` (
   `accuser_id` int(11) NOT NULL AUTO_INCREMENT,
   `accuser_accountId` int(10) unsigned NOT NULL,
@@ -69,7 +65,6 @@ CREATE TABLE `accUsers` (
   KEY `idx_account` (`accuser_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `accViewLinks`;
 CREATE TABLE `accViewLinks` (
   `accviewlinks_id` int(10) unsigned NOT NULL DEFAULT '0',
   `accviewlinks_accountId` int(10) unsigned DEFAULT NULL,
@@ -82,7 +77,6 @@ CREATE TABLE `accViewLinks` (
   UNIQUE KEY `unique_accviewlinks_id` (`accviewlinks_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
   `account_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `account_userGroupId` tinyint(3) unsigned NOT NULL,
@@ -108,7 +102,6 @@ CREATE TABLE `accounts` (
   KEY `IDX_customerId` (`account_customerId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `authTokens`;
 CREATE TABLE `authTokens` (
   `authtoken_id` int(11) NOT NULL AUTO_INCREMENT,
   `authtoken_userId` int(11) NOT NULL,
@@ -121,7 +114,6 @@ CREATE TABLE `authTokens` (
   KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `category_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `category_name` varchar(50) NOT NULL,
@@ -129,14 +121,12 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `config`;
 CREATE TABLE `config` (
   `config_parameter` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   `config_value` varchar(128) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   UNIQUE KEY `vacParameter` (`config_parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers` (
   `customer_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `customer_name` varchar(100) NOT NULL,
@@ -146,7 +136,28 @@ CREATE TABLE `customers` (
   KEY `IDX_name` (`customer_name`,`customer_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `log`;
+CREATE TABLE `customFieldsDef` (
+  `customfielddef_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `customfielddef_module` smallint(5) unsigned NOT NULL,
+  `customfielddef_field` blob NOT NULL,
+  PRIMARY KEY (`customfielddef_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `customFieldsData` (
+  `customfielddata_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `customfielddata_moduleId` smallint(5) unsigned NOT NULL,
+  `customfielddata_itemId` int(10) unsigned NOT NULL,
+  `customfielddata_defId` int(10) unsigned NOT NULL,
+  `customfielddata_data` longblob,
+  `customfielddata_iv` varbinary(128) DEFAULT NULL,
+  PRIMARY KEY (`customfielddata_id`),
+  KEY `IDX_DEFID` (`customfielddata_defId`),
+  KEY `IDX_DELETE` (`customfielddata_itemId`,`customfielddata_moduleId`),
+  KEY `IDX_UPDATE` (`customfielddata_moduleId`,`customfielddata_itemId`,`customfielddata_defId`),
+  KEY `IDX_ITEM` (`customfielddata_itemId`),
+  KEY `IDX_MODULE` (`customfielddata_moduleId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `log` (
   `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `log_date` int(10) unsigned NOT NULL,
@@ -158,7 +169,6 @@ CREATE TABLE `log` (
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `usrData`;
 CREATE TABLE `usrData` (
   `user_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `user_name` varchar(80) NOT NULL,
@@ -188,7 +198,6 @@ CREATE TABLE `usrData` (
   KEY `IDX_pass` (`user_pass`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `usrGroups`;
 CREATE TABLE `usrGroups` (
   `usergroup_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `usergroup_name` varchar(50) NOT NULL,
@@ -196,7 +205,6 @@ CREATE TABLE `usrGroups` (
   PRIMARY KEY (`usergroup_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `usrPassRecover`;
 CREATE TABLE `usrPassRecover` (
   `userpassr_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userpassr_userId` smallint(5) unsigned NOT NULL,
@@ -207,7 +215,6 @@ CREATE TABLE `usrPassRecover` (
   KEY `IDX_userId` (`userpassr_userId`,`userpassr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `usrProfiles`;
 CREATE TABLE `usrProfiles` (
   `userprofile_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `userprofile_name` varchar(45) NOT NULL,
@@ -215,7 +222,6 @@ CREATE TABLE `usrProfiles` (
   PRIMARY KEY (`userprofile_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `usrToGroups`;
 CREATE TABLE `usrToGroups` (
   `usertogroup_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `usertogroup_userId` int(10) unsigned NOT NULL,

@@ -113,7 +113,31 @@ abstract class ProfileBase
     /**
      * @var bool
      */
+    protected $_mgmApiTokens = false;
+
+    /**
+     * @return boolean
+     */
+    public function isMgmApiTokens()
+    {
+        return $this->_mgmApiTokens;
+    }
+
+    /**
+     * @param boolean $mgmApiTokens
+     */
+    public function setMgmApiTokens($mgmApiTokens)
+    {
+        $this->_mgmApiTokens = $mgmApiTokens;
+    }
+    /**
+     * @var bool
+     */
     protected $_evl = false;
+    /**
+     * @var bool
+     */
+    protected $_mgmCustomFields = false;
 
     /**
      * Obtener los datos de un perfil
@@ -155,6 +179,22 @@ abstract class ProfileBase
         DB::setReturnArray();
 
         return DB::getResults($query, __FUNCTION__);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmCustomFields()
+    {
+        return $this->_mgmCustomFields;
+    }
+
+    /**
+     * @param boolean $mgmCustomFields
+     */
+    public function setMgmCustomFields($mgmCustomFields)
+    {
+        $this->_mgmCustomFields = $mgmCustomFields;
     }
 
     /**

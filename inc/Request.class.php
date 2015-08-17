@@ -80,16 +80,20 @@ class Request
      */
     private static function parse($value, $default, $sanitize)
     {
+        if (is_array($value)){
+            foreach($value as &$data){
+                self::parse($data, $default, $sanitize);
+            }
+
+            return $value;
+        }
+
         if ((is_numeric($value) && !is_string($default)) || is_numeric($default)) {
             return intval($value);
         }
 
         if (is_string($value)) {
             return ($sanitize === true) ? Html::sanitize($value) : $value;
-        }
-
-        if (is_array($value)) {
-            return $value;
         }
     }
 

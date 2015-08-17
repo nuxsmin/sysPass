@@ -60,6 +60,7 @@ $accountGroupEditEnabled = SP\Request::analyze('geditenabled', 0, false, 1);
 $accountUserEditEnabled = SP\Request::analyze('ueditenabled', 0, false, 1);
 $accountMainGroupId = SP\Request::analyze('mainGroupId', SP\Session::getUserGroupId());
 $accountChangesHash = SP\Request::analyze('hash');
+$customFields = SP\Request::analyze('customfield');
 
 // Datos del Usuario
 $currentUserId = SP\Session::getUserId();
@@ -112,22 +113,15 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
 if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
-    // Comprobar el módulo de encriptación
-    if (!SP\Crypt::checkCryptModule()) {
-        SP\Common::printJSON(_('No se puede usar el módulo de encriptación'));
-    }
-
     // Encriptar clave de cuenta
-    $accountEncPass = SP\Crypt::mkEncrypt($accountPassword);
-
-    if ($accountEncPass === false || is_null($accountEncPass)) {
-        SP\Common::printJSON(_('Error al generar datos cifrados'));
+    try{
+        $accountEncPass = SP\Crypt::encryptData($accountPassword);
+    } catch (\SP\SPException $e){
+        SP\Common::printJSON($e->getMessage());
     }
-
-    $accounEncPassIV = SP\Crypt::$strInitialVector;
 }
 
-$account = new SP\Account;
+$Account = new SP\Account;
 
 switch ($actionId) {
     case \SP\Controller\ActionsInterface::ACTION_ACC_NEW:
@@ -143,23 +137,30 @@ switch ($actionId) {
             }
         }
 
-        $account->setAccountName($accountName);
-        $account->setAccountCategoryId($categoryId);
-        $account->setAccountCustomerId($customerId);
-        $account->setAccountLogin($accountLogin);
-        $account->setAccountUrl($accountUrl);
-        $account->setAccountPass($accountEncPass);
-        $account->setAccountIV($accounEncPassIV);
-        $account->setAccountNotes($accountNotes);
-        $account->setAccountUserId($currentUserId);
-        $account->setAccountUserGroupId($accountMainGroupId);
-        $account->setAccountUsersId($accountOtherUsers);
-        $account->setAccountUserGroupsId($accountOtherGroups);
-        $account->setAccountOtherUserEdit($accountUserEditEnabled);
-        $account->setAccountOtherGroupEdit($accountGroupEditEnabled);
+        $Account->setAccountName($accountName);
+        $Account->setAccountCategoryId($categoryId);
+        $Account->setAccountCustomerId($customerId);
+        $Account->setAccountLogin($accountLogin);
+        $Account->setAccountUrl($accountUrl);
+        $Account->setAccountPass($accountEncPass['data']);
+        $Account->setAccountIV($accountEncPass['iv']);
+        $Account->setAccountNotes($accountNotes);
+        $Account->setAccountUserId($currentUserId);
+        $Account->setAccountUserGroupId($accountMainGroupId);
+        $Account->setAccountUsersId($accountOtherUsers);
+        $Account->setAccountUserGroupsId($accountOtherGroups);
+        $Account->setAccountOtherUserEdit($accountUserEditEnabled);
+        $Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
         // Crear cuenta
-        if ($account->createAccount()) {
+        if ($Account->createAccount()) {
+            if (is_array($customFields)) {
+                foreach ($customFields as $id => $value) {
+                    $CustomFields = new \SP\CustomFields($id, $Account->getAccountId(), $value);
+                    $CustomFields->addCustomField();
+                }
+            }
+
             SP\Common::printJSON(_('Cuenta creada'), 0);
         }
 
@@ -178,63 +179,71 @@ switch ($actionId) {
             }
         }
 
-        $account->setAccountId($accountId);
-        $account->setAccountName($accountName);
-        $account->setAccountCategoryId($categoryId);
-        $account->setAccountCustomerId($customerId);
-        $account->setAccountLogin($accountLogin);
-        $account->setAccountUrl($accountUrl);
-        $account->setAccountNotes($accountNotes);
-        $account->setAccountUserEditId($currentUserId);
-        $account->setAccountUsersId($accountOtherUsers);
-        $account->setAccountUserGroupsId($accountOtherGroups);
-        $account->setAccountOtherUserEdit($accountUserEditEnabled);
-        $account->setAccountOtherGroupEdit($accountGroupEditEnabled);
+        $Account->setAccountId($accountId);
+        $Account->setAccountName($accountName);
+        $Account->setAccountCategoryId($categoryId);
+        $Account->setAccountCustomerId($customerId);
+        $Account->setAccountLogin($accountLogin);
+        $Account->setAccountUrl($accountUrl);
+        $Account->setAccountNotes($accountNotes);
+        $Account->setAccountUserEditId($currentUserId);
+        $Account->setAccountUsersId($accountOtherUsers);
+        $Account->setAccountUserGroupsId($accountOtherGroups);
+        $Account->setAccountOtherUserEdit($accountUserEditEnabled);
+        $Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
         // Cambiar el grupo principal si el usuario es Admin
         if (SP\Session::getUserIsAdminApp() || SP\Session::getUserIsAdminAcc()) {
-            $account->setAccountUserGroupId($accountMainGroupId);
+            $Account->setAccountUserGroupId($accountMainGroupId);
         }
 
         // Comprobar si han habido cambios
-        if ($accountChangesHash == $account->calcChangesHash()) {
+        if ($accountChangesHash == $Account->calcChangesHash()) {
             SP\Common::printJSON(_('Sin cambios'), 0);
         }
 
         // Actualizar cuenta
-        if ($account->updateAccount()) {
+        if ($Account->updateAccount()) {
+            if (is_array($customFields)) {
+                foreach ($customFields as $id => $value) {
+                    $CustomFields = new \SP\CustomFields($id, $accountId, $value);
+                    $CustomFields->updateCustomField();
+                }
+            }
+
             SP\Common::printJSON(_('Cuenta actualizada'), 0);
         }
 
         SP\Common::printJSON(_('Error al modificar la cuenta'));
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_DELETE:
-        $account->setAccountId($accountId);
+        $Account->setAccountId($accountId);
 
         // Eliminar cuenta
-        if ($account->deleteAccount()) {
+        if ($Account->deleteAccount() && \SP\CustomFields::deleteCustomFieldForItem($accountId, \SP\Controller\ActionsInterface::ACTION_ACC_NEW)) {
             SP\Common::printJSON(_('Cuenta eliminada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
         }
+
         SP\Common::printJSON(_('Error al eliminar la cuenta'));
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $account->setAccountId($accountId);
-        $account->setAccountPass($accountEncPass);
-        $account->setAccountIV($accounEncPassIV);
-        $account->setAccountUserEditId($currentUserId);
+        $Account->setAccountId($accountId);
+        $Account->setAccountPass($accountEncPass['data']);
+        $Account->setAccountIV($accountEncPass['iv']);
+        $Account->setAccountUserEditId($currentUserId);
 
         // Actualizar clave de cuenta
-        if ($account->updateAccountPass()) {
+        if ($Account->updateAccountPass()) {
             SP\Common::printJSON(_('Clave actualizada'), 0);
         }
 
         SP\Common::printJSON(_('Error al actualizar la clave'));
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE:
-        $account->setAccountId(SP\AccountHistory::getAccountIdFromId($accountId));
-        $account->setAccountUserEditId($currentUserId);
+        $Account->setAccountId(SP\AccountHistory::getAccountIdFromId($accountId));
+        $Account->setAccountUserEditId($currentUserId);
 
-        if ($account->restoreFromHistory($accountId)) {
+        if ($Account->restoreFromHistory($accountId)) {
             SP\Common::printJSON(_('Cuenta restaurada'), 0);
         }
 

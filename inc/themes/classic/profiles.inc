@@ -70,6 +70,10 @@
                                title="<?php echo _('Realizar copia de seguridad'); ?>"><?php echo _('Backup'); ?></label>
                         <input type="checkbox" id="profile_configback"
                                name="profile_configback" <?php echo ($profile->isConfigBackup()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <label for="profile_configimport"
+                               title="<?php echo _('Realizar importación de cuentas'); ?>"><?php echo _('Importar'); ?></label>
+                        <input type="checkbox" id="profile_configimport"
+                               name="profile_configimport" <?php echo ($profile->isConfigImport()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
                     </div>
                 </td>
             </tr>
@@ -99,6 +103,16 @@
                                title="<?php echo _('Gestión de clientes'); ?>"><?php echo _('Clientes'); ?></label>
                         <input type="checkbox" id="profile_customers"
                                name="profile_customers" <?php echo ($profile->isMgmCustomers()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <label for="profile_customfields"
+                               title="<?php echo _('Gestión de campos personalizados'); ?>"><?php echo _('Campos Personalizados'); ?></label>
+                        <input type="checkbox" id="profile_customfields"
+                               name="profile_customfields" <?php echo ($profile->isMgmCustomFields()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+                        <br>
+                        <label for="profile_apitokens"
+                               title="<?php echo _('Gestión de autorizaciones API'); ?>"><?php echo _('Autorizaciones API'); ?></label>
+                        <input type="checkbox" id="profile_apitokens"
+                               name="profile_apitokens" <?php echo ($profile->isMgmApiTokens()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?> />
+
                     </div>
                 </td>
             </tr>

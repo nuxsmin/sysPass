@@ -29,6 +29,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Controller\ActionsInterface;
 
+/**
+ * Class ApiTokens para la gestión de autorizaciones de acceso a la API de sysPass
+ *
+ * @package SP
+ */
 class ApiTokens
 {
     /**
@@ -57,7 +62,7 @@ class ApiTokens
      *
      * @param int  $tokenId       opcional, con el Id del token a consultar
      * @param bool $returnRawData Devolver la consulta tal cual
-     * @return array|false con la lista de tokens
+     * @return array|object con la lista de tokens
      */
     public static function getTokens($tokenId = null, $returnRawData = false)
     {
@@ -85,7 +90,7 @@ class ApiTokens
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
         if ($queryRes === false) {
-            return false;
+            return array();
         }
 
         if (!$returnRawData) {
@@ -117,35 +122,37 @@ class ApiTokens
     }
 
     /**
+     * Obtener el usuario a partir del token
+     *
+     * @param $token string El token de autorización
+     * @return bool|mixed
+     * @throws SPException
+     */
+    public static function getUserIdForToken($token)
+    {
+        $query = 'SELECT authtoken_userId FROM authTokens WHERE authtoken_token = :token LIMIT 1';
+
+        $data['token'] = $token;
+
+        try {
+            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+        }
+
+        if (DB::$lastNumRows === 0) {
+            return false;
+        }
+
+        return $queryRes->authtoken_userId;
+    }
+
+    /**
      * @param boolean $refreshToken
      */
     public function setRefreshToken($refreshToken)
     {
         $this->_refreshToken = $refreshToken;
-    }
-
-    /**
-     * @param int $tokenId
-     */
-    public function setTokenId($tokenId)
-    {
-        $this->_tokenId = $tokenId;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->_userId = $userId;
-    }
-
-    /**
-     * @param int $actionId
-     */
-    public function setActionId($actionId)
-    {
-        $this->_actionId = $actionId;
     }
 
     /**
@@ -179,7 +186,7 @@ class ApiTokens
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
 
-        $Log = new Log(_('Nuevo Token'));
+        $Log = new Log(_('Nueva Autorización'));
         $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
         $Log->writeLog();
 
@@ -216,6 +223,55 @@ class ApiTokens
     }
 
     /**
+     * Regenerar el hash de los tokens de un usuario
+     *
+     * @throws SPException
+     */
+    private function refreshToken()
+    {
+        $query = 'UPDATE authTokens SET ' .
+            'authtoken_token = :token,' .
+            'authtoken_startDate = UNIX_TIMESTAMP() ' .
+            'WHERE authtoken_userId = :userid';
+
+        $data['userid'] = $this->_userId;
+        $data['token'] = sha1(uniqid() . time());
+
+        try {
+            DB::getQuery($query, __FUNCTION__, $data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+        }
+    }
+
+    /**
+     * Obtener el token de la API de un usuario
+     *
+     * @return bool
+     * @throws SPException
+     */
+    private function getUserToken()
+    {
+        $query = 'SELECT authtoken_token FROM authTokens WHERE authtoken_userId = :userid LIMIT 1';
+
+        $data['userid'] = $this->_userId;
+
+        try {
+            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+        }
+
+        if (DB::$lastNumRows === 0) {
+            return false;
+        }
+
+        $this->_token = $queryRes->authtoken_token;
+
+        return true;
+    }
+
+    /**
      * Actualizar un token
      *
      * @throws SPException
@@ -248,38 +304,11 @@ class ApiTokens
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
 
-        $Log = new Log(_('Actualizar Token'));
+        $Log = new Log(_('Actualizar Autorización'));
         $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
         $Log->writeLog();
 
         Email::sendEmail($Log);
-    }
-
-    /**
-     * Obtener el token de la API de un usuario
-     *
-     * @return bool
-     * @throws SPException
-     */
-    private function getUserToken()
-    {
-        $query = 'SELECT authtoken_token FROM authTokens WHERE authtoken_userId = :userid LIMIT 1';
-
-        $data['userid'] = $this->_userId;
-
-        try {
-            $queryRes = DB::getResults($query, __FUNCTION__, $data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
-        }
-
-        if (DB::$lastNumRows === 0) {
-            return false;
-        }
-
-        $this->_token = $queryRes->authtoken_token;
-
-        return true;
     }
 
     /**
@@ -299,7 +328,7 @@ class ApiTokens
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
 
-        $Log = new Log(_('Eliminar Token'));
+        $Log = new Log(_('Eliminar Autorización'));
         $Log->addDescription(sprintf('%d', $this->_tokenId));
         $Log->writeLog();
 
@@ -307,50 +336,50 @@ class ApiTokens
     }
 
     /**
-     * Regenerar el hash de los tokens de un usuario
-     *
-     * @throws SPException
+     * @return int
      */
-    private function refreshToken()
+    public function getUserId()
     {
-        $query = 'UPDATE authTokens SET ' .
-            'authtoken_token = :token,' .
-            'authtoken_startDate = UNIX_TIMESTAMP() ' .
-            'WHERE authtoken_userId = :userid';
-
-        $data['userid'] = $this->_userId;
-        $data['token'] = sha1(uniqid() . time());
-
-        try {
-            DB::getQuery($query, __FUNCTION__, $data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
-        }
+        return $this->_userId;
     }
 
     /**
-     * Obtener el usuario a partir del token
-     *
-     * @param $token string El token de autorización
-     * @return bool|mixed
-     * @throws SPException
+     * @param int $userId
      */
-    public static function getUserIdForToken($token)
+    public function setUserId($userId)
     {
-        $query = 'SELECT authtoken_userId FROM authTokens WHERE authtoken_token = :token LIMIT 1';
+        $this->_userId = $userId;
+    }
 
-        $data['token'] = $token;
+    /**
+     * @return int
+     */
+    public function getTokenId()
+    {
+        return $this->_tokenId;
+    }
 
-        try {
-            $queryRes = DB::getResults($query, __FUNCTION__, $data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
-        }
+    /**
+     * @param int $tokenId
+     */
+    public function setTokenId($tokenId)
+    {
+        $this->_tokenId = $tokenId;
+    }
 
-        if (DB::$lastNumRows === 0) {
-            return false;
-        }
+    /**
+     * @return int
+     */
+    public function getActionId()
+    {
+        return $this->_actionId;
+    }
 
-        return $queryRes->authtoken_userId;
+    /**
+     * @param int $actionId
+     */
+    public function setActionId($actionId)
+    {
+        $this->_actionId = $actionId;
     }
 }

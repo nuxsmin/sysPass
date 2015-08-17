@@ -532,7 +532,7 @@ class Account extends AccountBase implements AccountInterface
                 $Log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->account_id . ') ' . $account->account_name);
             }
 
-            $decryptedPass = Crypt::getDecrypt($account->account_pass, $currentMasterPass, $account->account_IV);
+            $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV);
             $this->setAccountPass(Crypt::mkEncrypt($decryptedPass, $newMasterPass));
             $this->setAccountIV(Crypt::$strInitialVector);
 

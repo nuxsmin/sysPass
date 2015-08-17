@@ -164,6 +164,18 @@ switch ($actionId) {
         $controller = new SP\Controller\UsersMgmtC($tpl);
         $controller->getToken();
         break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
+        $tpl->assign('header', _('Nuevo Campo'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCustomField();
+        break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
+        $tpl->assign('header', _('Editar Campo'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM);
+        $controller = new SP\Controller\AccountsMgmtC($tpl);
+        $controller->getCustomField();
+        break;
     default :
         exit();
         break;

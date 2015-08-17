@@ -60,8 +60,7 @@ if (!SP\Acl::checkAccountAccess(SP\Acl::ACTION_ACC_VIEW_PASS, $account->getAccou
     SP\Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
-$masterPass = SP\Crypt::getSessionMasterPass();
-$accountClearPass = SP\Crypt::getDecrypt($accountData->pass, $masterPass, $accountData->iv);
+$accountClearPass = SP\Crypt::getDecrypt($accountData->pass, $accountData->iv);
 
 if (!$isHistory) {
     $account->incrementDecryptCounter();

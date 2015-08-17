@@ -103,7 +103,7 @@ class User extends UserBase
         }
 
         if ($queryRes->user_mPass && $queryRes->user_mIV) {
-            $clearMasterPass = Crypt::getDecrypt($queryRes->user_mPass, $this->getCypherPass(), $queryRes->user_mIV);
+            $clearMasterPass = Crypt::getDecrypt($queryRes->user_mPass, $queryRes->user_mIV, $this->getCypherPass());
 
             if (!$clearMasterPass) {
                 return false;

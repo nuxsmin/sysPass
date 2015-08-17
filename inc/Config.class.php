@@ -472,7 +472,7 @@ class Config
         $passLogin = hex2bin(self::getConfigDbValue('tempmaster_pass'));
         $passLoginIV = hex2bin(self::getConfigDbValue('tempmaster_passiv'));
 
-        return Crypt::getDecrypt($passLogin, $pass, $passLoginIV);
+        return Crypt::getDecrypt($passLogin, $passLoginIV, $pass);
     }
 
     /**

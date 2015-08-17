@@ -29,10 +29,10 @@ use SP\Account;
 use SP\AccountHistory;
 use SP\Acl;
 use SP\Common;
+use SP\CustomFields;
 use SP\Groups;
 use SP\Session;
 use SP\SPException;
-use SP\Users;
 use SP\UserUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -203,6 +203,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->assign('customers', \SP\DB::getValuesForSelect('customers', 'customer_id', 'customer_name'));
         $this->view->assign('otherUsers', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
         $this->view->assign('otherGroups', \SP\DB::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
+        $this->getCustomFieldsForItem();
     }
 
     /**
@@ -480,5 +481,18 @@ class AccountC extends Controller implements ActionsInterface
         $this->setAccountData();
 
         $this->view->addTemplate('request');
+    }
+
+    /**
+     * Obtener la lista de campos personalizados y sus valores
+     */
+    private function getCustomFieldsForItem()
+    {
+        // Se comprueba que hayan campos con valores para la cuenta actual
+        if($this->isGotData() && CustomFields::checkCustomFieldExists(ActionsInterface::ACTION_ACC_NEW, $this->_id)){
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData(ActionsInterface::ACTION_ACC_NEW, $this->_id));
+        } else {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule(ActionsInterface::ACTION_ACC_NEW));
+        }
     }
 }

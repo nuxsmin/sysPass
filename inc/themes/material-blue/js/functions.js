@@ -23,11 +23,11 @@ complexity.numlength = 10;
 
 jQuery.extend(jQuery.fancybox.defaults, {
     type: 'ajax',
-    autoWidth: 'true',
-    autoHeight: 'true',
-    autoResize: 'true',
-    autoCenter: 'true',
-    fitToView: 'true',
+    autoWidth: true,
+    autoHeight: true,
+    autoResize: true,
+    autoCenter: true,
+    fitToView: false,
     minHeight: 50,
     padding: 0,
     helpers: {overlay: {css: {'background': 'rgba(0, 0, 0, 0.1)'}}},
@@ -57,7 +57,7 @@ $(document).ready(function () {
     activeTooltip();
 });
 
-function activeTooltip(){
+function activeTooltip() {
     "use strict";
 
     // Activar tooltips
@@ -1216,7 +1216,6 @@ function complexityDialog() {
             thisDialog.dialog('option', 'position', 'center');
 
 
-
             // Actualizar componentes de MDL
             thisDialog.ready(function () {
                 $('#checkbox-numbers').prop('checked', complexity.numbers);
@@ -1272,7 +1271,7 @@ function chosenDetect() {
         width: selectWidth
     });
 
-    $(".sel-chosen-customer").each(function(){
+    $(".sel-chosen-customer").each(function () {
         var deselect = $(this).hasClass('sel-chosen-deselect');
 
         $(this).chosen({
@@ -1284,7 +1283,7 @@ function chosenDetect() {
         });
     });
 
-    $(".sel-chosen-category").each(function(){
+    $(".sel-chosen-category").each(function () {
         var deselect = $(this).hasClass('sel-chosen-deselect');
 
         $(this).chosen({
@@ -1296,7 +1295,7 @@ function chosenDetect() {
         });
     });
 
-    $(".sel-chosen-action").each(function(){
+    $(".sel-chosen-action").each(function () {
         var deselect = $(this).hasClass('sel-chosen-deselect');
 
         $(this).chosen({
@@ -1394,7 +1393,7 @@ function passwordDetect() {
  *
  * @param container El contenedor donde buscar
  */
-function checkboxDetect(container){
+function checkboxDetect(container) {
     "use strict";
 
     $(container).find('.checkbox').button({
