@@ -81,15 +81,15 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDIT
     ) {
-        if (empty($User->getUserName()) && !$isLdap) {
+        if (!$User->getUserName() && !$isLdap) {
             SP\Common::printJSON(_('Es necesario un nombre de usuario'), 2);
-        } elseif (empty($User->getUserLogin()) && !$isLdap) {
+        } elseif (!$User->getUserLogin() && !$isLdap) {
             SP\Common::printJSON(_('Es necesario un login'), 2);
         } elseif (!$User->getUserProfileId()) {
             SP\Common::printJSON(_('Es necesario un perfil'), 2);
         } elseif (!$User->getUserGroupId()) {
             SP\Common::printJSON(_('Es necesario un grupo'), 2);
-        } elseif (empty($User->getUserEmail()) && !$isLdap) {
+        } elseif (!$User->getUserEmail() && !$isLdap) {
             SP\Common::printJSON(_('Es necesario un email'), 2);
         }
 
@@ -103,7 +103,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         }
 
         if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW) {
-            if (empty($User->getUserPass()) && empty($userPassR)) {
+            if (!$User->getUserPass() && !$userPassR) {
                 SP\Common::printJSON(_('La clave no puede estar en blanco'), 2);
             } elseif ($User->getUserPass() != $userPassR) {
                 SP\Common::printJSON(_('Las claves no coinciden'), 2);
@@ -138,7 +138,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS) {
         if (SP\Util::demoIsEnabled() && UserUtil::getUserLoginById($itemId) == 'demo') {
             SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
-        } elseif (empty($User->getUserPass()) || empty($userPassR)) {
+        } elseif (!$User->getUserPass() || !$userPassR) {
             SP\Common::printJSON(_('La clave no puede estar en blanco'), 2);
         } elseif ($User->getUserPass() != $userPassR) {
             SP\Common::printJSON(_('Las claves no coinciden'), 2);
@@ -175,7 +175,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_GROUPS_EDIT
     ) {
-        if (empty($frmGrpName)) {
+        if (!$frmGrpName) {
             SP\Common::printJSON(_('Es necesario un nombre de grupo'), 2);
         }
 
@@ -274,7 +274,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_EDIT
     ) {
-        if (empty($Profile->getName())) {
+        if (!$Profile->getName()) {
             SP\Common::printJSON(_('Es necesario un nombre de perfil'), 2);
         } elseif (SP\Profile::checkProfileExist($Profile->getId(), $Profile->getName())) {
             SP\Common::printJSON(_('Nombre de perfil duplicado'), 2);
@@ -320,7 +320,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT
     ) {
-        if (empty($frmCustomerName)) {
+        if (!$frmCustomerName) {
             SP\Common::printJSON(_('Es necesario un nombre de cliente'), 2);
         }
 
@@ -379,7 +379,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_NEW
         || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES_EDIT
     ) {
-        if (empty($frmCategoryName)) {
+        if (!$frmCategoryName) {
             SP\Common::printJSON(_('Es necesario un nombre de categoría'), 2);
         }
 
