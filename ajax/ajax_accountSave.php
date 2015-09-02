@@ -58,12 +58,16 @@ $accountNotes = SP\Request::analyze('notes');
 $accountUrl = SP\Request::analyze('url');
 $accountGroupEditEnabled = SP\Request::analyze('geditenabled', 0, false, 1);
 $accountUserEditEnabled = SP\Request::analyze('ueditenabled', 0, false, 1);
-$accountMainGroupId = SP\Request::analyze('mainGroupId', SP\Session::getUserGroupId());
+$accountMainGroupId = SP\Request::analyze('mainGroupId', 0);
 $accountChangesHash = SP\Request::analyze('hash');
 $customFields = SP\Request::analyze('customfield');
 
 // Datos del Usuario
 $currentUserId = SP\Session::getUserId();
+
+if ($accountMainGroupId === 0) {
+    $accountMainGroupId = SP\Session::getUserGroupId();
+}
 
 if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
     // Comprobaciones para nueva cuenta
@@ -114,9 +118,9 @@ if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
     // Encriptar clave de cuenta
-    try{
+    try {
         $accountEncPass = SP\Crypt::encryptData($accountPassword);
-    } catch (\SP\SPException $e){
+    } catch (\SP\SPException $e) {
         SP\Common::printJSON($e->getMessage());
     }
 }
