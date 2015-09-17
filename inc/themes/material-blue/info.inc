@@ -22,7 +22,7 @@
                     <?php printf('%s : %s', SP\Html::strongText($infoattr), $infoval); ?>
                     <br>
                 <?php endforeach; ?>
-                <?php printf('%s: %s', SP\Html::strongText(_('Nombre')), $dbName); ?>
+                <?php printf('%s: %s', SP\Html::strongText(_('Nombre')), (!$isDemoMode) ? $dbName : '***'); ?>
             </td>
         </tr>
         <tr>
@@ -30,13 +30,13 @@
                 <?php echo _('PHP'); ?>
             </td>
             <td class="valField">
-                <?php printf('%s: %s', SP\Html::strongText(_('Versión')), phpversion()); ?>
+                <?php printf('%s: %s', SP\Html::strongText(_('Versión')), (!$isDemoMode) ? phpversion() : '***'); ?>
                 <br>
                 <?php printf('%s: %s', SP\Html::strongText(_('Extensiones')), implode(', ', get_loaded_extensions())); ?>
                 <br>
                 <?php printf('%s: %d KB', SP\Html::strongText(_('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
                 <br>
-                <?php  printf('%s: %s', SP\Html::strongText(_('Usuario')), get_current_user()); ?>
+                <?php  printf('%s: %s', SP\Html::strongText(_('Usuario')), (!$isDemoMode) ? get_current_user() : '***'); ?>
             </td>
         </tr>
         <tr>
@@ -44,7 +44,7 @@
                 <?php echo _('Servidor'); ?>
             </td>
             <td class="valField">
-                <?php echo SP\Html::strongText($_SERVER['SERVER_SOFTWARE']); ?>
+                <?php echo (!$isDemoMode) ? SP\Html::strongText($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
             </td>
         </tr>
     </table>

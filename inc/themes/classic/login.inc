@@ -13,7 +13,7 @@
                     <span id="smpass" style="display: none">
                         <input type="password" name="mpass" id="mpass" class="round5"
                                placeholder="<?php echo _('Clave Maestra'); ?>"
-                               value="" title="> 01234567890 <" disabled/>
+                               value="" title="> 12345678900 <" disabled/>
                         <br/>
                     </span>
                 <?php else: ?>

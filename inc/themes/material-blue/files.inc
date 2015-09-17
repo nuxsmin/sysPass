@@ -7,7 +7,7 @@
                     <?php if ($file['thumb']): ?>
                         <img src="data:image/png;base64,<?php echo $file['thumb']; ?>"
                              title="<?php echo $file['name']; ?>" alt="thumbnail"
-                             OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');" />
+                             OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');"/>
                     <?php endif; ?>
                 </div>
                 <div class="files-item-actions">

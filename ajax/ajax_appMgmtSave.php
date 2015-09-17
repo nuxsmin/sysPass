@@ -91,6 +91,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Es necesario un grupo'), 2);
         } elseif (!$User->getUserEmail() && !$isLdap) {
             SP\Common::printJSON(_('Es necesario un email'), 2);
+        } elseif (SP\Util::demoIsEnabled() && !\SP\Session::getUserIsAdminApp() && $User->getUserLogin() == 'demo') {
+            SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
         }
 
         switch ($User->checkUserExist()) {

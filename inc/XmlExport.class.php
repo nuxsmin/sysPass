@@ -426,6 +426,10 @@ class XmlExport
      */
     public static function getExportFile()
     {
-        return Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '.xml';
+        // Generar hash unico para evitar descargas no permitidas
+        $exportUniqueHash = uniqid();
+        Config::setValue('export_hash', $exportUniqueHash);
+
+        return Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
     }
 }

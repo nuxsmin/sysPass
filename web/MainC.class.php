@@ -51,13 +51,15 @@ class MainC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         if ($initialize) {
+            $this->view->assign('startTime', microtime());
+
             $this->view->addTemplate('header');
             $this->view->addTemplate('body');
 
             $this->view->assign('sk', \SP\Common::getSessionKey(true));
             $this->view->assign('appInfo', Util::getAppInfo());
             $this->view->assign('appVersion', Util::getVersionString());
-            $this->view->assign('startTime', microtime());
+            $this->view->assign('isDemoMode', Util::demoIsEnabled());
             $this->view->assign('page', $page);
             $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
             $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
@@ -194,19 +196,18 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('isLogout', Request::analyze('logout', false, true));
         $this->view->assign('updated', Init::$UPDATED === true);
         $this->view->assign('newFeatures', array(
-            _('Nuevo interface de búsqueda con estilo de lista o tipo tarjeta'),
-            _('Selección de grupos y usuarios de acceso a cuentas'),
-            _('Drag&Drop para subida de archivos'),
-            _('Copiar clave al portapapeles'),
-            _('Historial de cuentas y restauración'),
-            _('Nueva gestión de categorías y clientes'),
-            _('Función de olvido de claves para usuarios'),
-            _('Integración con Active Directory y LDAP mejorada'),
-            _('Autentificación para notificaciones por correo'),
-            _('Búsqueda global de cuentas para usuarios sin permisos'),
-            _('Solicitudes de modificación de cuentas para usuarios sin permisos'),
-            _('Importación de cuentas desde KeePass, KeePassX y CSV'),
-            _('Función de copiar cuentas'),
+            _('Nuevo estilo visual basado en Material Design Lite by Google'),
+            _('Usuarios en múltiples grupos'),
+            _('Previsualización de imágenes'),
+            _('Mostrar claves como imágenes'),
+            _('Campos personalizados'),
+            _('API de consultas'),
+            _('Autentificación en 2 pasos'),
+            _('Complejidad de generador de claves'),
+            _('Consultas especiales'),
+            _('Exportación a XML'),
+            _('Clave maestra temporal'),
+            _('Importación de cuentas desde sysPass, KeePass, KeePassX y CSV'),
             _('Optimización del código y mayor rapidez de carga'),
             _('Mejoras de seguridad en XSS e inyección SQL')
         ));

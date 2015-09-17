@@ -1,4 +1,4 @@
-<div id="title" class="midroundup titleBlue">
+<div id="title" class="midroundup titleNormal">
     <?php echo $title['name']; ?>
     <?php if ($gotData && $accountIsHistory): ?>
         <i id="history-icon" class="material-icons" title="<?php echo _('Histórico'); ?>"><?php echo $title['icon']; ?></i>
@@ -290,7 +290,7 @@
 </table>
 
 <?php if($customFields): ?>
-<table class="data round extra-info">
+<table class="data round extra-info secure-info">
     <?php foreach($customFields as $field):?>
             <tr>
                 <td class="descField">

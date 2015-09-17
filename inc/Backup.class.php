@@ -41,9 +41,14 @@ class Backup
     {
         $siteName = Util::getAppInfo('appname');
         $backupDir = Init::$SERVERROOT;
+
+        // Generar hash unico para evitar descargas no permitidas
+        $backupUniqueHash = uniqid();
+        Config::setValue('backup_hash', $backupUniqueHash);
+
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
-        $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '.tar';
-        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '_db.sql';
+        $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
+        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
 
         try {
             self::checkBackupDir($backupDstDir);

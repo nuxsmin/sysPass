@@ -174,7 +174,11 @@ abstract class ProfileBase
      */
     public static function getProfiles()
     {
-        $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles ORDER BY userprofile_name';
+        if (Util::demoIsEnabled()){
+            $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo" ORDER BY userprofile_name';
+        } else {
+            $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles ORDER BY userprofile_name';
+        }
 
         DB::setReturnArray();
 

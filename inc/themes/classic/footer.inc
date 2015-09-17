@@ -1,7 +1,10 @@
             </div> <!-- Close container -->
             <footer>
                 <div id="updates"></div>
-                <div id="status"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></div>
+                <div id="status">
+                    <?php echo (DEBUG) ? 'Debug ON' : ''; ?>
+                    <?php echo ($isDemoMode) ? 'Demo' : ''; ?>
+                </div>
                 <div id="project">
                     <a href="<?php echo $appInfo['appwebsite']; ?>" target="_blank"
                        title="<?php echo _('Ayuda :: FAQ :: Changelog'); ?>"><?php echo $appInfo['appname'], ' ', $appVersion; ?></a>

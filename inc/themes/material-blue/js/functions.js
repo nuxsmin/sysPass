@@ -39,6 +39,25 @@ jQuery.extend(jQuery.fancybox.defaults, {
     }
 });
 
+jQuery.ajaxSetup({
+    beforeSend: function () {
+        "use strict";
+
+        showLoading();
+    },
+    complete: function () {
+        "use strict";
+
+        hideLoading();
+
+        // Actualizar componentes de MDL cargados con AJAX
+        componentHandler.upgradeDom();
+
+        // Activar tooltips
+        activeTooltip();
+    }
+});
+
 $(document).ready(function () {
     "use strict";
 
@@ -47,15 +66,23 @@ $(document).ready(function () {
 
     // Activar tooltips
     activeTooltip();
-}).ajaxComplete(function () {
+});
+
+// Mostrar el spinner de carga
+function showLoading(){
     "use strict";
 
-    // Actualizar componentes de MDL cargados con AJAX
-    componentHandler.upgradeDom();
+    $('#wrap-loading').show();
+    $('#loading').addClass('is-active');
+}
 
-    // Activar tooltips
-    activeTooltip();
-});
+// Ocultar el spinner de carga
+function hideLoading(){
+    "use strict";
+
+    $('#wrap-loading').hide();
+    $('#loading').removeClass('is-active');
+}
 
 function activeTooltip() {
     "use strict";
@@ -99,8 +126,6 @@ function doAction(actionId, lastAction, itemId) {
 
     var data = {'actionId': actionId, 'lastAction': lastAction, 'itemId': itemId, isAjax: 1};
 
-    $.fancybox.showLoading();
-
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -112,9 +137,6 @@ function doAction(actionId, lastAction, itemId) {
         },
         error: function () {
             $('#content').html(resMsg("nofancyerror"));
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
         }
     });
 }
@@ -218,8 +240,6 @@ function doSearch() {
 
     var frmData = $("#frmSearch").serialize();
 
-    $.fancybox.showLoading();
-
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -233,9 +253,8 @@ function doSearch() {
             $('#resBuscar').html(resMsg("nofancyerror"));
         },
         complete: function () {
-            $.fancybox.hideLoading();
+            hideLoading();
             scrollUp();
-            //setContentSize();
         }
     });
 }
@@ -260,8 +279,6 @@ function navLog(start, current) {
 
     if (typeof(start) === "undefined") return false;
 
-    $.fancybox.showLoading();
-
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -274,9 +291,8 @@ function navLog(start, current) {
             $('#content').html(resMsg("nofancyerror"));
         },
         complete: function () {
-            $.fancybox.hideLoading();
+            hideLoading();
             scrollUp();
-            //setContentSize();
         }
     });
 }
@@ -419,8 +435,6 @@ function getUrlVars() {
 function doLogin() {
     "use strict";
 
-    $.fancybox.showLoading();
-
     var data = $('#frmLogin').serialize();
 
     $("#btnLogin").prop('disabled', true);
@@ -450,7 +464,7 @@ function doLogin() {
         },
         complete: function () {
             $('#btnLogin').prop('disabled', false);
-            $.fancybox.hideLoading();
+            hideLoading();
         },
         statusCode: {
             404: function () {
@@ -523,8 +537,6 @@ function saveAccount(frm) {
         error: function (jqXHR, textStatus, errorThrown) {
             var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
             resMsg("error", txt);
-        },
-        complete: function () {
         }
     });
 }
@@ -586,8 +598,6 @@ function downFile(id, sk, action) {
     var data = {'fileId': id, 'sk': sk, 'action': action};
 
     if (action === 'view') {
-        $.fancybox.showLoading();
-
         $.ajax({
             type: "POST",
             cache: false,
@@ -604,9 +614,6 @@ function downFile(id, sk, action) {
                     resMsg("error", LANG[14]);
                 }
 
-            },
-            complete: function () {
-                $.fancybox.hideLoading();
             }
         });
     } else if (action === 'download') {
@@ -627,9 +634,6 @@ function getFiles(id, isDel, sk) {
         data: data,
         success: function (response) {
             $('#downFiles').html(response);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
         }
     });
 }
@@ -642,13 +646,10 @@ function delFile(id, sk, accid) {
 
     alertify.confirm(atext, function (e) {
         if (e) {
-            $.fancybox.showLoading();
-
             var data = {'fileId': id, 'action': 'delete', 'sk': sk};
 
             $.post(APP_ROOT + '/ajax/ajax_files.php', data,
                 function (data) {
-                    $.fancybox.hideLoading();
                     resMsg("ok", data);
                     $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accid + "&del=1&isAjax=1&sk=" + sk);
                 }
@@ -678,7 +679,7 @@ function dropFile(accountId, sk, maxsize) {
             isAjax: 1
         },
         uploadFinished: function (i, file, response) {
-            $.fancybox.hideLoading();
+            hideLoading();
 
             var sk = $('input[name="sk"]').val();
             $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accountId + "&del=1&isAjax=1&sk=" + sk);
@@ -704,7 +705,7 @@ function dropFile(accountId, sk, maxsize) {
             }
         },
         uploadStarted: function (i, file, len) {
-            $.fancybox.showLoading();
+            showLoading();
         }
     });
 }
@@ -742,7 +743,7 @@ function importFile(sk) {
             }
         },
         uploadFinished: function (i, file, json) {
-            $.fancybox.hideLoading();
+            hideLoading();
 
             var status = json.status;
             var description = json.description;
@@ -775,7 +776,7 @@ function importFile(sk) {
             }
         },
         uploadStarted: function (i, file, len) {
-            $.fancybox.showLoading();
+            showLoading();
         }
     });
 }
@@ -783,8 +784,6 @@ function importFile(sk) {
 // Función para realizar una petición ajax
 function sendAjax(data, url) {
     "use strict";
-
-    $.fancybox.showLoading();
 
     $.ajax({
         type: 'POST',
@@ -822,9 +821,6 @@ function sendAjax(data, url) {
         error: function (jqXHR, textStatus, errorThrown) {
             var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
             resMsg("error", txt);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
         }
     });
 }
@@ -862,8 +858,6 @@ function appMgmtData(obj, actionId, sk) {
     var data = {'itemId': itemId, 'actionId': actionId, 'sk': sk, 'activeTab': activeTab, 'isAjax': 1};
     var url = APP_ROOT + '/ajax/ajax_appMgmtData.php';
 
-    $.fancybox.showLoading();
-
     $.ajax({
         type: 'POST',
         dataType: 'html',
@@ -875,9 +869,6 @@ function appMgmtData(obj, actionId, sk) {
         error: function (jqXHR, textStatus, errorThrown) {
             var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
             resMsg("error", txt);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
         }
     });
 }

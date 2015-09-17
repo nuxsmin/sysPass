@@ -25,6 +25,9 @@
 
 namespace SP\Controller;
 
+use SP\Config;
+use SP\Session;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -47,8 +50,8 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->assign('tabs', array());
         $this->view->assign('sk', \SP\Common::getSessionKey(true));
-        $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
-        $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled()) ? 'DISABLED' : '');
+        $this->view->assign('isDemoMode', (\SP\Util::demoIsEnabled() && !Session::getUserIsAdminApp()));
+        $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled() && !Session::getUserIsAdminApp()) ? 'DISABLED' : '');
     }
 
     /**
@@ -81,12 +84,15 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->addTemplate('config');
 
         $this->view->assign('langsAvailable',
-            array('Español' => 'es_ES',
+            array(
+                'Español' => 'es_ES',
                 'English' => 'en_US',
                 'Deutsch' => 'de_DE',
                 'Magyar' => 'hu_HU',
-                'Français' => 'fr_FR')
+                'Français' => 'fr_FR'
+            )
         );
+
         $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
         $this->view->assign('themesAvailable', $themesAvailable);
         $this->view->assign('currentTheme', \SP\Config::getValue('sitetheme'));
@@ -162,23 +168,27 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('siteName', \SP\Util::getAppInfo('appname'));
         $this->view->assign('backupDir', \SP\Init::$SERVERROOT . '/backup');
         $this->view->assign('backupPath', \SP\Init::$WEBROOT . '/backup');
+        $backupHash =  Config::getValue('backup_hash');
+        $exportHash =  Config::getValue('export_hash');
+
+        error_log($backupHash);
 
         $this->view->assign('backupFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '.tar.gz',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '.tar.gz',
-                'filename' => $this->view->siteName . '.tar.gz')
+            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName  . '-' . $backupHash . '.tar.gz',
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '-' . $backupHash . '.tar.gz',
+                'filename' => $this->view->siteName . '-' . $backupHash . '.tar.gz')
         );
         $this->view->assign('backupDbFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '_db.sql',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '_db.sql',
-                'filename' => $this->view->siteName . '_db.sql')
+            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '_db-' . $backupHash . '.sql',
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '_db-' . $backupHash . '.sql',
+                'filename' => $this->view->siteName . '_db-' . $backupHash . '.sql')
         );
         $this->view->assign('lastBackupTime', (file_exists($this->view->backupFile['absolute'])) ? _('Último backup') . ": " . date("r", filemtime($this->view->backupFile['absolute'])) : _('No se encontraron backups'));
 
         $this->view->assign('exportFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '.xml',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '.xml',
-                'filename' => $this->view->siteName . '.xml')
+            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $exportHash . '.xml',
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '-' . $exportHash . '.xml',
+                'filename' => $this->view->siteName . '-' . $exportHash . '.xml')
         );
         $this->view->assign('lastExportTime', (file_exists($this->view->exportFile['absolute'])) ? _('Última exportación') . ': ' . date("r", filemtime($this->view->exportFile['absolute'])) : _('No se encontró archivo de exportación'));
 

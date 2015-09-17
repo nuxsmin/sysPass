@@ -186,7 +186,7 @@ if ($action == 'download' || $action == 'view') {
         } elseif (strtoupper($fileExt) == "TXT") {
             $log->writeLog();
 
-            exit('<div id="fancyView" class="backGrey"><pre>' . $fileData . '</pre></div>');
+            exit('<div id="fancyView" class="backGrey"><pre>' . htmlentities($fileData) . '</pre></div>');
         } else {
             exit();
         }

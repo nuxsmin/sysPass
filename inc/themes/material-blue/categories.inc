@@ -1,5 +1,5 @@
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></H2>
+    <h2 class="midround"><?php echo $header; ?></h2>
 
     <form method="post" name="frmCategories" id="frmCategories" onsubmit="appMgmtSave('frmCategories'); return false;">
         <table class="fancydata">

@@ -73,35 +73,11 @@ class Installer
     private static $_isHostingMode;
 
     /**
-     * @param string $dbuser
-     */
-    public static function setDbuser($dbuser)
-    {
-        self::$_dbuser = $dbuser;
-    }
-
-    /**
-     * @param string $dbpass
-     */
-    public static function setDbpass($dbpass)
-    {
-        self::$_dbpass = $dbpass;
-    }
-
-    /**
      * @param string $dbname
      */
     public static function setDbname($dbname)
     {
         self::$_dbname = $dbname;
-    }
-
-    /**
-     * @param string $dbhost
-     */
-    public static function setDbhost($dbhost)
-    {
-        self::$_dbhost = $dbhost;
     }
 
     /**
@@ -231,6 +207,14 @@ class Installer
     }
 
     /**
+     * @param string $dbhost
+     */
+    public static function setDbhost($dbhost)
+    {
+        self::$_dbhost = $dbhost;
+    }
+
+    /**
      * Comprobar la conexión con la BBDD.
      * Comprobar si la conexión con la base de datos para sysPass es posible con
      * los datos facilitados.
@@ -261,35 +245,50 @@ class Installer
      */
     private static function setupMySQLDatabase()
     {
-        // Comprobar si el usuario sumistrado existe
-        $query = "SELECT COUNT(*) "
-            . "FROM mysql.user "
-            . "WHERE user='" . self::$_username . "' AND host='" . self::$_dbhost . "'";
 
         // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
-        if (!self::$_isHostingMode){
+        if (!self::$_isHostingMode) {
             self::setDbpass(md5(time() . self::$_password));
             self::setDbuser(substr('sp_' . self::$_username, 0, 16));
-        }
 
-        // Si no existe el usuario, se intenta crear
-        if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
-            // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-            if (self::$_dbuser != Config::getValue('dbuser')) {
-                self::createDBUser();
+            // Comprobar si el usuario sumistrado existe
+            $query = "SELECT COUNT(*) FROM mysql.user WHERE user='" . self::$_username . "' AND host='" . self::$_dbhost . "'";
+
+            // Si no existe el usuario, se intenta crear
+            if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
+                // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
+                if (self::$_dbuser != Config::getValue('dbuser')) {
+                    self::createDBUser();
+                }
             }
-
-            // Guardar el nuevo usuario/clave de conexión a la BD
-            Config::setValue('dbuser', self::$_dbuser);
-            Config::setValue('dbpass', self::$_dbpass);
         }
+
+        // Guardar el nuevo usuario/clave de conexión a la BD
+        Config::setValue('dbuser', self::$_dbuser);
+        Config::setValue('dbpass', self::$_dbpass);
 
         try {
             self::createMySQLDatabase();
             self::createDBStructure();
-        } catch (SPException $e){
+        } catch (SPException $e) {
             throw $e;
         }
+    }
+
+    /**
+     * @param string $dbpass
+     */
+    public static function setDbpass($dbpass)
+    {
+        self::$_dbpass = $dbpass;
+    }
+
+    /**
+     * @param string $dbuser
+     */
+    public static function setDbuser($dbuser)
+    {
+        self::$_dbuser = $dbuser;
     }
 
     /**

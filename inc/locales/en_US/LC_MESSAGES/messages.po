@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-17 19:34+0100\n"
-"PO-Revision-Date: 2015-08-17 19:35+0100\n"
+"POT-Creation-Date: 2015-09-04 21:27+0100\n"
+"PO-Revision-Date: 2015-09-04 21:27+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -38,7 +38,7 @@ msgstr "INVALID QUERY"
 msgid "Código correcto"
 msgstr "Verified code"
 
-#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:63
+#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:67
 msgid "Código incorrecto"
 msgstr "Wrong code"
 
@@ -53,101 +53,101 @@ msgstr "Wrong code"
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Session not started or timed out"
 
-#: ../../../../ajax/ajax_accountSave.php:71
-#: ../../../../ajax/ajax_accountSave.php:88
+#: ../../../../ajax/ajax_accountSave.php:75
+#: ../../../../ajax/ajax_accountSave.php:92
 msgid "Es necesario un nombre de cuenta"
 msgstr "An account name needed"
 
-#: ../../../../ajax/ajax_accountSave.php:73
-#: ../../../../ajax/ajax_accountSave.php:86
-#: ../../../../ajax/ajax_appMgmtSave.php:324
+#: ../../../../ajax/ajax_accountSave.php:77
+#: ../../../../ajax/ajax_accountSave.php:90
+#: ../../../../ajax/ajax_appMgmtSave.php:326
 msgid "Es necesario un nombre de cliente"
 msgstr "A customer name needed"
 
-#: ../../../../ajax/ajax_accountSave.php:75
-#: ../../../../ajax/ajax_accountSave.php:90
+#: ../../../../ajax/ajax_accountSave.php:79
+#: ../../../../ajax/ajax_accountSave.php:94
 msgid "Es necesario un usuario"
 msgstr "An username is needed"
 
-#: ../../../../ajax/ajax_accountSave.php:77
+#: ../../../../ajax/ajax_accountSave.php:81
 msgid "Es necesario una clave"
 msgstr "A password is needed"
 
-#: ../../../../ajax/ajax_accountSave.php:79
-#: ../../../../ajax/ajax_accountSave.php:103
-#: ../../../../ajax/ajax_appMgmtSave.php:109
-#: ../../../../ajax/ajax_appMgmtSave.php:144
+#: ../../../../ajax/ajax_accountSave.php:83
+#: ../../../../ajax/ajax_accountSave.php:107
+#: ../../../../ajax/ajax_appMgmtSave.php:111
+#: ../../../../ajax/ajax_appMgmtSave.php:146
 #: ../../../../ajax/ajax_backup.php:62
 msgid "Las claves no coinciden"
 msgstr "The passwords do not match"
 
-#: ../../../../ajax/ajax_accountSave.php:81
-#: ../../../../ajax/ajax_accountSave.php:92
+#: ../../../../ajax/ajax_accountSave.php:85
+#: ../../../../ajax/ajax_accountSave.php:96
 msgid "Es necesario una categoría"
 msgstr "A category is needed"
 
-#: ../../../../ajax/ajax_accountSave.php:96
-#: ../../../../ajax/ajax_accountSave.php:107
+#: ../../../../ajax/ajax_accountSave.php:100
+#: ../../../../ajax/ajax_accountSave.php:111
 msgid "Id inválido"
 msgstr "Invalid Id"
 
-#: ../../../../ajax/ajax_accountSave.php:101
-#: ../../../../ajax/ajax_appMgmtSave.php:107
-#: ../../../../ajax/ajax_appMgmtSave.php:142
+#: ../../../../ajax/ajax_accountSave.php:105
+#: ../../../../ajax/ajax_appMgmtSave.php:109
+#: ../../../../ajax/ajax_appMgmtSave.php:144
 msgid "La clave no puede estar en blanco"
 msgstr "Password cannot be blank"
 
-#: ../../../../ajax/ajax_accountSave.php:110
-#: ../../../../ajax/ajax_accountSave.php:254
-#: ../../../../ajax/ajax_appMgmtSave.php:530
+#: ../../../../ajax/ajax_accountSave.php:114
+#: ../../../../ajax/ajax_accountSave.php:258
+#: ../../../../ajax/ajax_appMgmtSave.php:532
 #: ../../../../ajax/ajax_configSave.php:290
-#: ../../../../ajax/ajax_userPrefsSave.php:76 ../../../../api.php:53
+#: ../../../../ajax/ajax_userPrefsSave.php:80 ../../../../api.php:53
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
-#: ../../../../ajax/ajax_accountSave.php:164
+#: ../../../../ajax/ajax_accountSave.php:168
 msgid "Cuenta creada"
 msgstr "Account added"
 
-#: ../../../../ajax/ajax_accountSave.php:167
+#: ../../../../ajax/ajax_accountSave.php:171
 msgid "Error al crear la cuenta"
 msgstr "Error on account creation"
 
-#: ../../../../ajax/ajax_accountSave.php:202
+#: ../../../../ajax/ajax_accountSave.php:206
 msgid "Sin cambios"
 msgstr "No changes"
 
-#: ../../../../ajax/ajax_accountSave.php:214
+#: ../../../../ajax/ajax_accountSave.php:218
 msgid "Cuenta actualizada"
 msgstr "Account updated"
 
-#: ../../../../ajax/ajax_accountSave.php:217
+#: ../../../../ajax/ajax_accountSave.php:221
 msgid "Error al modificar la cuenta"
 msgstr "Error on updating account"
 
-#: ../../../../ajax/ajax_accountSave.php:224
+#: ../../../../ajax/ajax_accountSave.php:228
 msgid "Cuenta eliminada"
 msgstr "Account deleted"
 
-#: ../../../../ajax/ajax_accountSave.php:227
+#: ../../../../ajax/ajax_accountSave.php:231
 msgid "Error al eliminar la cuenta"
 msgstr "Error on account deletion"
 
-#: ../../../../ajax/ajax_accountSave.php:237
-#: ../../../../ajax/ajax_appMgmtSave.php:148
+#: ../../../../ajax/ajax_accountSave.php:241
+#: ../../../../ajax/ajax_appMgmtSave.php:150
 #: ../../../../ajax/ajax_passReset.php:74
 msgid "Clave actualizada"
 msgstr "Password updated"
 
-#: ../../../../ajax/ajax_accountSave.php:240
+#: ../../../../ajax/ajax_accountSave.php:244
 msgid "Error al actualizar la clave"
 msgstr "Error on updating password"
 
-#: ../../../../ajax/ajax_accountSave.php:247
+#: ../../../../ajax/ajax_accountSave.php:251
 msgid "Cuenta restaurada"
 msgstr "Account restored"
 
-#: ../../../../ajax/ajax_accountSave.php:250
+#: ../../../../ajax/ajax_accountSave.php:254
 msgid "Error al restaurar cuenta"
 msgstr "Error on restoring account"
 
@@ -191,7 +191,7 @@ msgid "Editar Perfil"
 msgstr "Edit Profile"
 
 #: ../../../../ajax/ajax_appMgmtData.php:105
-#: ../../../../inc/ProfileBase.class.php:508
+#: ../../../../inc/ProfileBase.class.php:512
 #: ../../../../web/UsersMgmtC.class.php:252
 msgid "Nuevo Perfil"
 msgstr "New Profile"
@@ -271,81 +271,83 @@ msgstr "A group is needed"
 msgid "Es necesario un email"
 msgstr "An email is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:98
+#: ../../../../ajax/ajax_appMgmtSave.php:95
+#: ../../../../ajax/ajax_appMgmtSave.php:142
+#: ../../../../ajax/ajax_appMgmtSave.php:157
+#: ../../../../ajax/ajax_configSave.php:265
+#: ../../../../ajax/ajax_import.php:39 ../../../../ajax/ajax_migrate.php:39
+#: ../../../../ajax/ajax_userPrefsSave.php:56
+msgid "Ey, esto es una DEMO!!"
+msgstr "Ey, this is a DEMO!!"
+
+#: ../../../../ajax/ajax_appMgmtSave.php:100
 msgid "Login de usuario duplicado"
 msgstr "Duplicated user login "
 
-#: ../../../../ajax/ajax_appMgmtSave.php:101
+#: ../../../../ajax/ajax_appMgmtSave.php:103
 msgid "Email de usuario duplicado"
 msgstr "Duplicated user email"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:120
+#: ../../../../ajax/ajax_appMgmtSave.php:122
 msgid "Usuario creado"
 msgstr "User added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:123
+#: ../../../../ajax/ajax_appMgmtSave.php:125
 msgid "Error al crear el usuario"
 msgstr "Error on creating user"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:133
+#: ../../../../ajax/ajax_appMgmtSave.php:135
 #: ../../../../inc/UserUtil.class.php:103
 msgid "Usuario actualizado"
 msgstr "User updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:136
+#: ../../../../ajax/ajax_appMgmtSave.php:138
 msgid "Error al actualizar el usuario"
 msgstr "Error on user update"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:140
-#: ../../../../ajax/ajax_appMgmtSave.php:155
-#: ../../../../ajax/ajax_configSave.php:265
-#: ../../../../ajax/ajax_import.php:39 ../../../../ajax/ajax_migrate.php:39
-msgid "Ey, esto es una DEMO!!"
-msgstr "Ey, this is a DEMO!!"
-
-#: ../../../../ajax/ajax_appMgmtSave.php:151
+#: ../../../../ajax/ajax_appMgmtSave.php:153
 #: ../../../../ajax/ajax_passReset.php:78
 msgid "Error al modificar la clave"
 msgstr "Error on updating password"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:157
+#: ../../../../ajax/ajax_appMgmtSave.php:159
 msgid "No es posible eliminar, usuario en uso"
 msgstr "Unable to delete, user in use"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:161
+#: ../../../../ajax/ajax_appMgmtSave.php:163
 msgid "Usuario eliminado"
 msgstr "User deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:164
+#: ../../../../ajax/ajax_appMgmtSave.php:166
 msgid "Error al eliminar el usuario"
 msgstr "Error on user deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:179
+#: ../../../../ajax/ajax_appMgmtSave.php:181
 msgid "Es necesario un nombre de grupo"
 msgstr "A group name is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:187
+#: ../../../../ajax/ajax_appMgmtSave.php:189
 msgid "Nombre de grupo duplicado"
 msgstr "Duplicated group name"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:199
+#: ../../../../ajax/ajax_appMgmtSave.php:201
 msgid "Grupo creado"
 msgstr "Group added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:201
+#: ../../../../ajax/ajax_appMgmtSave.php:203
 msgid "Error al crear el grupo"
 msgstr "Error on group creation"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:212
+#: ../../../../ajax/ajax_appMgmtSave.php:214
 msgid "Grupo actualizado"
 msgstr "Group updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:215
+#: ../../../../ajax/ajax_appMgmtSave.php:217
 msgid "Error al actualizar el grupo"
 msgstr "Error on updating group"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:224
-#: ../../../../ajax/ajax_appMgmtSave.php:301
+#: ../../../../ajax/ajax_appMgmtSave.php:226
+#: ../../../../ajax/ajax_appMgmtSave.php:303
 #: ../../../../inc/CustomFieldsBase.class.php:83
 #: ../../../../inc/themes/classic/account.inc:109
 #: ../../../../inc/themes/classic/groups.inc:24
@@ -356,7 +358,7 @@ msgstr "Error on updating group"
 msgid "Usuarios"
 msgstr "Users"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:228
+#: ../../../../ajax/ajax_appMgmtSave.php:230
 #: ../../../../inc/Category.class.php:266
 #: ../../../../inc/CustomFieldsBase.class.php:80
 #: ../../../../inc/Customer.class.php:150
@@ -366,126 +368,126 @@ msgstr "Users"
 msgid "Cuentas"
 msgstr "Accounts"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:231
-#: ../../../../ajax/ajax_appMgmtSave.php:303
+#: ../../../../ajax/ajax_appMgmtSave.php:233
+#: ../../../../ajax/ajax_appMgmtSave.php:305
 #: ../../../../inc/Category.class.php:119
 #: ../../../../inc/Customer.class.php:150
 msgid "No es posible eliminar"
 msgstr "Unable to delete"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:231
+#: ../../../../ajax/ajax_appMgmtSave.php:233
 msgid "Grupo en uso por:"
 msgstr "Group in use by:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:236
+#: ../../../../ajax/ajax_appMgmtSave.php:238
 msgid "Grupo eliminado"
 msgstr "Group deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:239
+#: ../../../../ajax/ajax_appMgmtSave.php:241
 msgid "Error al eliminar el grupo"
 msgstr "Error on group deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:278
+#: ../../../../ajax/ajax_appMgmtSave.php:280
 msgid "Es necesario un nombre de perfil"
 msgstr "A profile name is needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:280
+#: ../../../../ajax/ajax_appMgmtSave.php:282
 msgid "Nombre de perfil duplicado"
 msgstr "Duplicated profile name"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:285
+#: ../../../../ajax/ajax_appMgmtSave.php:287
 msgid "Perfil creado"
 msgstr "Profile added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:288
+#: ../../../../ajax/ajax_appMgmtSave.php:290
 msgid "Error al crear el perfil"
 msgstr "Error on creating profile"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:291
+#: ../../../../ajax/ajax_appMgmtSave.php:293
 msgid "Perfil actualizado"
 msgstr "Profile updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:294
+#: ../../../../ajax/ajax_appMgmtSave.php:296
 msgid "Error al actualizar el perfil"
 msgstr "Error on updating profile"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:303
+#: ../../../../ajax/ajax_appMgmtSave.php:305
 msgid "Perfil en uso por:"
 msgstr "Profiles in use by:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:306
+#: ../../../../ajax/ajax_appMgmtSave.php:308
 msgid "Perfil eliminado"
 msgstr "Profile deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:309
+#: ../../../../ajax/ajax_appMgmtSave.php:311
 msgid "Error al eliminar el perfil"
 msgstr "Error on profile deletion"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:344
+#: ../../../../ajax/ajax_appMgmtSave.php:346
 msgid "Cliente creado"
 msgstr "Customer added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:359
+#: ../../../../ajax/ajax_appMgmtSave.php:361
 msgid "Cliente actualizado"
 msgstr "Customer updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:369
+#: ../../../../ajax/ajax_appMgmtSave.php:371
 msgid "Cliente eliminado"
 msgstr "Customer deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:383
+#: ../../../../ajax/ajax_appMgmtSave.php:385
 msgid "Es necesario un nombre de categoría"
 msgstr "A category name needed"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:403
+#: ../../../../ajax/ajax_appMgmtSave.php:405
 msgid "Categoría creada"
 msgstr "Category added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:418
+#: ../../../../ajax/ajax_appMgmtSave.php:420
 msgid "Categoría actualizada"
 msgstr "Category updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:429
+#: ../../../../ajax/ajax_appMgmtSave.php:431
 msgid "Categoría eliminada"
 msgstr "Category deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:445
+#: ../../../../ajax/ajax_appMgmtSave.php:447
 msgid "Usuario o acción no indicado"
 msgstr "User or action not set"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:455
+#: ../../../../ajax/ajax_appMgmtSave.php:457
 msgid "Autorización creada"
 msgstr "Authorization added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:463
+#: ../../../../ajax/ajax_appMgmtSave.php:465
 msgid "Autorización actualizada"
 msgstr "Authorization Updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:473
+#: ../../../../ajax/ajax_appMgmtSave.php:475
 msgid "Autorización eliminada"
 msgstr "Authorization deleted"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:490
+#: ../../../../ajax/ajax_appMgmtSave.php:492
 msgid "Nombre del campo no indicado"
 msgstr "Field name not set"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:492
+#: ../../../../ajax/ajax_appMgmtSave.php:494
 msgid "Tipo del campo no indicado"
 msgstr "Field type not set"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:494
+#: ../../../../ajax/ajax_appMgmtSave.php:496
 msgid "Módulo del campo no indicado"
 msgstr "Field module not set"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:508
+#: ../../../../ajax/ajax_appMgmtSave.php:510
 msgid "Campo creado"
 msgstr "Field added"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:517
+#: ../../../../ajax/ajax_appMgmtSave.php:519
 msgid "Campo actualizado"
 msgstr "Field updated"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:527
+#: ../../../../ajax/ajax_appMgmtSave.php:529
 msgid "Campo eliminado"
 msgstr "Field deleted"
 
@@ -561,7 +563,7 @@ msgid "Faltan parámetros de Proxy"
 msgstr "Missing proxy parameters "
 
 #: ../../../../ajax/ajax_configSave.php:125
-#: ../../../../web/ConfigC.class.php:120
+#: ../../../../web/ConfigC.class.php:122
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
@@ -572,7 +574,7 @@ msgid "Faltan parámetros de Wiki"
 msgstr "Missing Wiki parameters"
 
 #: ../../../../ajax/ajax_configSave.php:147
-#: ../../../../web/ConfigC.class.php:252
+#: ../../../../web/ConfigC.class.php:254
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
@@ -583,7 +585,7 @@ msgid "Faltan parámetros de LDAP"
 msgstr "Missing LDAP parameters"
 
 #: ../../../../ajax/ajax_configSave.php:179
-#: ../../../../web/ConfigC.class.php:284
+#: ../../../../web/ConfigC.class.php:286
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
@@ -594,7 +596,7 @@ msgid "Faltan parámetros de Correo"
 msgstr "Missing Mail parameters"
 
 #: ../../../../ajax/ajax_configSave.php:216
-#: ../../../../web/ConfigC.class.php:314
+#: ../../../../web/ConfigC.class.php:316
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
@@ -800,9 +802,9 @@ msgid "Clave maestra incorrecta"
 msgstr "Invalid Master Password"
 
 #: ../../../../ajax/ajax_doLogin.php:168
-#: ../../../../inc/ProfileBase.class.php:508
-#: ../../../../inc/ProfileBase.class.php:546
-#: ../../../../inc/ProfileBase.class.php:589
+#: ../../../../inc/ProfileBase.class.php:512
+#: ../../../../inc/ProfileBase.class.php:550
+#: ../../../../inc/ProfileBase.class.php:593
 #: ../../../../web/UsersMgmtC.class.php:89
 #: ../../../../inc/themes/classic/users.inc:37
 #: ../../../../inc/themes/material-blue/users.inc:43
@@ -1035,11 +1037,11 @@ msgstr "Description"
 msgid "Error al enviar la solicitud"
 msgstr "Error on sending request"
 
-#: ../../../../ajax/ajax_userPrefsSave.php:71
+#: ../../../../ajax/ajax_userPrefsSave.php:75
 msgid "Error al actualizar preferencias"
 msgstr "Error while updating preferences"
 
-#: ../../../../ajax/ajax_userPrefsSave.php:74
+#: ../../../../ajax/ajax_userPrefsSave.php:78
 msgid "Preferencias actualizadas"
 msgstr "Preferences updated"
 
@@ -1052,7 +1054,7 @@ msgstr "The master password does not match"
 msgid "No tiene permisos para acceder a esta cuenta"
 msgstr "You don't have permission to access to this account"
 
-#: ../../../../ajax/ajax_viewpass.php:68 ../../../../inc/Acl.class.php:129
+#: ../../../../ajax/ajax_viewpass.php:68 ../../../../inc/Acl.class.php:133
 #: ../../../../inc/themes/classic/account.inc:379
 #: ../../../../inc/themes/classic/profiles.inc:23
 #: ../../../../inc/themes/classic/search.inc:102
@@ -1105,7 +1107,7 @@ msgstr "Parameters help"
 #: ../../../../inc/XmlImportBase.class.php:28
 #: ../../../../web/AccountC.class.php:38
 #: ../../../../web/AccountsMgmtC.class.php:32
-#: ../../../../web/ConfigC.class.php:28 ../../../../web/EventlogC.class.php:28
+#: ../../../../web/ConfigC.class.php:30 ../../../../web/EventlogC.class.php:28
 #: ../../../../web/SearchC.class.php:30
 #: ../../../../web/UsersMgmtC.class.php:39
 #: ../../../../web/UsersPrefsC.class.php:32
@@ -1139,8 +1141,8 @@ msgstr "Account Restore"
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Error while retrieving account data"
 
-#: ../../../../inc/Account.class.php:400 ../../../../inc/Acl.class.php:125
-#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:153
+#: ../../../../inc/Account.class.php:400 ../../../../inc/Acl.class.php:129
+#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:155
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
@@ -1148,7 +1150,7 @@ msgstr "New Account"
 msgid "ERROR: Error en la operación."
 msgstr "ERROR: Operation failed"
 
-#: ../../../../inc/Account.class.php:423 ../../../../inc/Acl.class.php:130
+#: ../../../../inc/Account.class.php:423 ../../../../inc/Acl.class.php:134
 #: ../../../../web/AccountC.class.php:352
 #: ../../../../inc/themes/classic/account.inc:366
 #: ../../../../inc/themes/classic/search.inc:129
@@ -1237,39 +1239,39 @@ msgstr "Error on updating history's master password"
 msgid "Registros actualizados"
 msgstr "Records updated"
 
-#: ../../../../inc/Acl.class.php:108
+#: ../../../../inc/Acl.class.php:112
 msgid "Denegado acceso a"
 msgstr "Access denied to"
 
-#: ../../../../inc/Acl.class.php:122
+#: ../../../../inc/Acl.class.php:126
 msgid "Buscar Cuentas"
 msgstr "Search Accounts"
 
-#: ../../../../inc/Acl.class.php:123
+#: ../../../../inc/Acl.class.php:127
 msgid "Ver Cuenta"
 msgstr "View Account"
 
-#: ../../../../inc/Acl.class.php:124 ../../../../web/AccountC.class.php:259
+#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:259
 #: ../../../../inc/themes/classic/search.inc:123
 #: ../../../../inc/themes/material-blue/search.inc:136
 msgid "Copiar Cuenta"
 msgstr "Copy Account"
 
-#: ../../../../inc/Acl.class.php:126 ../../../../web/AccountC.class.php:323
+#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:323
 msgid "Editar Cuenta"
 msgstr "Edit Account"
 
-#: ../../../../inc/Acl.class.php:127
+#: ../../../../inc/Acl.class.php:131
 msgid "Editar Clave de Cuenta"
 msgstr "Edit Account Password"
 
-#: ../../../../inc/Acl.class.php:128
+#: ../../../../inc/Acl.class.php:132
 #: ../../../../inc/themes/classic/profiles.inc:28
 #: ../../../../inc/themes/material-blue/profiles.inc:40
 msgid "Ver Historial"
 msgstr "View History"
 
-#: ../../../../inc/Acl.class.php:131
+#: ../../../../inc/Acl.class.php:135
 #: ../../../../inc/themes/classic/account.inc:188
 #: ../../../../inc/themes/classic/profiles.inc:50
 #: ../../../../inc/themes/material-blue/account.inc:230
@@ -1278,62 +1280,70 @@ msgstr "View History"
 msgid "Archivos"
 msgstr "Files"
 
-#: ../../../../inc/Acl.class.php:132
+#: ../../../../inc/Acl.class.php:136
 msgid "Peticiones"
 msgstr "Requests"
 
-#: ../../../../inc/Acl.class.php:133
+#: ../../../../inc/Acl.class.php:137
 msgid "Gestión Aplicación"
 msgstr "Application Management"
 
-#: ../../../../inc/Acl.class.php:134
+#: ../../../../inc/Acl.class.php:138
 msgid "Gestión Categorías"
 msgstr "Categories Management"
 
-#: ../../../../inc/Acl.class.php:135
+#: ../../../../inc/Acl.class.php:139
 msgid "Gestión Clientes"
 msgstr "Customers Management"
 
-#: ../../../../inc/Acl.class.php:136 ../../../../inc/Acl.class.php:137
+#: ../../../../inc/Acl.class.php:140
+msgid "Gestión Campos Personalizados"
+msgstr "Custom Fields Management"
+
+#: ../../../../inc/Acl.class.php:141
+msgid "Gestión Autorizaciones API"
+msgstr "API Authorizations Management"
+
+#: ../../../../inc/Acl.class.php:142 ../../../../inc/Acl.class.php:143
 msgid "Gestión Usuarios"
 msgstr "Users Management"
 
-#: ../../../../inc/Acl.class.php:138
+#: ../../../../inc/Acl.class.php:144
 msgid "Gestión Grupos"
 msgstr "Groups Management"
 
-#: ../../../../inc/Acl.class.php:139
+#: ../../../../inc/Acl.class.php:145
 msgid "Gestión Perfiles"
 msgstr "Profiles Management"
 
-#: ../../../../inc/Acl.class.php:140 ../../../../inc/Config.class.php:118
-#: ../../../../inc/Config.class.php:400 ../../../../web/MainC.class.php:171
+#: ../../../../inc/Acl.class.php:146 ../../../../inc/Config.class.php:118
+#: ../../../../inc/Config.class.php:400 ../../../../web/MainC.class.php:173
 #: ../../../../inc/themes/classic/profiles.inc:57
 #: ../../../../inc/themes/material-blue/profiles.inc:66
 msgid "Configuración"
 msgstr "Configuration"
 
-#: ../../../../inc/Acl.class.php:141
+#: ../../../../inc/Acl.class.php:147
 msgid "Configuración General"
 msgstr "General configuration"
 
-#: ../../../../inc/Acl.class.php:142 ../../../../web/ConfigC.class.php:143
+#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:145
 #: ../../../../inc/themes/classic/profiles.inc:65
 #: ../../../../inc/themes/material-blue/profiles.inc:77
 msgid "Encriptación"
 msgstr "Encryption"
 
-#: ../../../../inc/Acl.class.php:143 ../../../../web/ConfigC.class.php:185
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:187
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
-#: ../../../../inc/Acl.class.php:144
+#: ../../../../inc/Acl.class.php:150
 msgid "Exportar"
 msgstr "Export"
 
-#: ../../../../inc/Acl.class.php:145
+#: ../../../../inc/Acl.class.php:151
 #: ../../../../inc/themes/classic/profiles.inc:74
 #: ../../../../inc/themes/material-blue/profiles.inc:87
 msgid "Importar"
@@ -1529,7 +1539,7 @@ msgstr "Please, check CSV format in line %s"
 #: ../../../../inc/Migrate.class.php:349
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:207
+#: ../../../../web/ConfigC.class.php:209
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
 
@@ -1599,14 +1609,14 @@ msgstr "Delete Customer"
 #: ../../../../inc/DBConnectionFactory.class.php:87
 #: ../../../../inc/DBConnectionFactory.class.php:89
 #: ../../../../inc/DBConnectionFactory.class.php:103
-#: ../../../../inc/Installer.class.php:251
+#: ../../../../inc/Installer.class.php:235
 #: ../../../../inc/Migrate.class.php:115
 msgid "No es posible conectar con la BD"
 msgstr "Unable to connect to the DB"
 
 #: ../../../../inc/DBConnectionFactory.class.php:87
 #: ../../../../inc/DBConnectionFactory.class.php:89
-#: ../../../../inc/Installer.class.php:252
+#: ../../../../inc/Installer.class.php:236
 #: ../../../../inc/Migrate.class.php:116
 msgid "Compruebe los datos de conexión"
 msgstr "Please, check connection parameters"
@@ -1787,152 +1797,148 @@ msgstr "Version updating done."
 msgid "Versión"
 msgstr "Version"
 
-#: ../../../../inc/Installer.class.php:151
+#: ../../../../inc/Installer.class.php:127
 msgid "Indicar nombre de usuario admin"
 msgstr "Enter the admin username"
 
-#: ../../../../inc/Installer.class.php:152
+#: ../../../../inc/Installer.class.php:128
 msgid "Usuario admin para acceso a la aplicación"
 msgstr "Admin user to login to the application"
 
-#: ../../../../inc/Installer.class.php:156
+#: ../../../../inc/Installer.class.php:132
 msgid "Indicar la clave de admin"
 msgstr "Enter the admin's password"
 
-#: ../../../../inc/Installer.class.php:157
+#: ../../../../inc/Installer.class.php:133
 msgid "Clave del usuario admin de la aplicación"
 msgstr "Application administrator's password"
 
-#: ../../../../inc/Installer.class.php:161
+#: ../../../../inc/Installer.class.php:137
 msgid "Indicar la clave maestra"
 msgstr "Enter the master password"
 
-#: ../../../../inc/Installer.class.php:162
+#: ../../../../inc/Installer.class.php:138
 msgid "Clave maestra para encriptar las claves"
 msgstr "Master password to encrypt the passwords"
 
-#: ../../../../inc/Installer.class.php:166
+#: ../../../../inc/Installer.class.php:142
 msgid "Clave maestra muy corta"
 msgstr "Master password too short"
 
-#: ../../../../inc/Installer.class.php:167
+#: ../../../../inc/Installer.class.php:143
 msgid "La longitud de la clave maestra ha de ser mayor de 11 caracteres"
 msgstr "The master password length need to be at least 11 characters"
 
-#: ../../../../inc/Installer.class.php:171
+#: ../../../../inc/Installer.class.php:147
 msgid "Indicar el usuario de la BBDD"
 msgstr "Enter the database user"
 
-#: ../../../../inc/Installer.class.php:172
+#: ../../../../inc/Installer.class.php:148
 msgid "Usuario con permisos de administrador de la Base de Datos"
 msgstr "An user with database administrative rights"
 
-#: ../../../../inc/Installer.class.php:176
+#: ../../../../inc/Installer.class.php:152
 msgid "Indicar la clave de la BBDD"
 msgstr "Enter the database password"
 
-#: ../../../../inc/Installer.class.php:177
+#: ../../../../inc/Installer.class.php:153
 msgid "Clave del usuario administrador de la Base de Datos"
 msgstr "Database administartor's password"
 
-#: ../../../../inc/Installer.class.php:181
+#: ../../../../inc/Installer.class.php:157
 msgid "Indicar el nombre de la BBDD"
 msgstr "Enter the database name"
 
-#: ../../../../inc/Installer.class.php:182
+#: ../../../../inc/Installer.class.php:158
 msgid "Nombre para la BBDD de la aplicación pej. syspass"
 msgstr "Application database name. eg. syspass"
 
-#: ../../../../inc/Installer.class.php:186
+#: ../../../../inc/Installer.class.php:162
 msgid "El nombre de la BBDD no puede contener \".\""
 msgstr "Database name cannot contain \".\""
 
-#: ../../../../inc/Installer.class.php:187
+#: ../../../../inc/Installer.class.php:163
 msgid "Elimine los puntos del nombre de la Base de Datos"
 msgstr "Please, remove dots in database name"
 
-#: ../../../../inc/Installer.class.php:191
+#: ../../../../inc/Installer.class.php:167
 msgid "Indicar el servidor de la BBDD"
 msgstr "Enter the database server"
 
-#: ../../../../inc/Installer.class.php:192
+#: ../../../../inc/Installer.class.php:168
 msgid "Servidor donde se instalará la Base de Datos"
 msgstr "Server where the database will be installed"
 
-#: ../../../../inc/Installer.class.php:314
+#: ../../../../inc/Installer.class.php:313
 msgid "El usuario de MySQL ya existe"
 msgstr "The MySQL user already exist"
 
-#: ../../../../inc/Installer.class.php:315
+#: ../../../../inc/Installer.class.php:314
 msgid "Indique un nuevo usuario o elimine el existente"
 msgstr "Enter a new username or delete the existing one"
 
-#: ../../../../inc/Installer.class.php:328
+#: ../../../../inc/Installer.class.php:327
 msgid "La BBDD ya existe"
 msgstr "The database already exist"
 
-#: ../../../../inc/Installer.class.php:329
+#: ../../../../inc/Installer.class.php:328
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Enter a new database or delete the existing one"
 
-#: ../../../../inc/Installer.class.php:338
-#: ../../../../inc/Installer.class.php:409
+#: ../../../../inc/Installer.class.php:337
+#: ../../../../inc/Installer.class.php:408
 msgid "Error al crear la BBDD"
 msgstr "Error on DB creation"
 
-#: ../../../../inc/Installer.class.php:339
-#: ../../../../inc/Installer.class.php:350
+#: ../../../../inc/Installer.class.php:338
+#: ../../../../inc/Installer.class.php:349
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Please, check database user permissions"
 
-#: ../../../../inc/Installer.class.php:349
+#: ../../../../inc/Installer.class.php:348
 msgid "Error al establecer permisos de la BBDD"
 msgstr "Error on setting database permissions"
 
-#: ../../../../inc/Installer.class.php:382
+#: ../../../../inc/Installer.class.php:381
 msgid "El archivo de estructura de la BBDD no existe"
 msgstr "The database structure file does not exist"
 
-#: ../../../../inc/Installer.class.php:383
+#: ../../../../inc/Installer.class.php:382
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
 msgstr "Unable to create the application database. Please, download it again."
 
-#: ../../../../inc/Installer.class.php:391
+#: ../../../../inc/Installer.class.php:390
 msgid "Error al seleccionar la BBDD"
 msgstr "Error on selecting database."
 
-#: ../../../../inc/Installer.class.php:392
-msgid ""
-"No es posible usar la Base de Datos para crear la estructura. Compruebe los "
-"permisos y que no exista."
-msgstr ""
-"Unable to use the database to create the structure. Check permissions and it "
-"does not exist."
+#: ../../../../inc/Installer.class.php:391
+msgid "No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista."
+msgstr "Unable to use the database to create the structure. Check permissions and it does not exist."
 
-#: ../../../../inc/Installer.class.php:410
+#: ../../../../inc/Installer.class.php:409
 msgid "Error al crear la estructura de la Base de Datos."
 msgstr "Error on creating database structure."
 
-#: ../../../../inc/Installer.class.php:433
+#: ../../../../inc/Installer.class.php:432
 msgid "Error al crear el grupo \"admin\""
 msgstr "Error on creating \"admin\" group"
 
-#: ../../../../inc/Installer.class.php:434
-#: ../../../../inc/Installer.class.php:467
-#: ../../../../inc/Installer.class.php:484
-#: ../../../../inc/Installer.class.php:497
+#: ../../../../inc/Installer.class.php:433
+#: ../../../../inc/Installer.class.php:466
+#: ../../../../inc/Installer.class.php:483
+#: ../../../../inc/Installer.class.php:496
 msgid "Informe al desarrollador"
 msgstr "Warn to developer"
 
-#: ../../../../inc/Installer.class.php:466
+#: ../../../../inc/Installer.class.php:465
 msgid "Error al crear el perfil \"admin\""
 msgstr "Error on creating \"admin\" profile"
 
-#: ../../../../inc/Installer.class.php:483
+#: ../../../../inc/Installer.class.php:482
 msgid "Error al crear el usuario \"admin\""
 msgstr "Error on creating \"admin\" user"
 
-#: ../../../../inc/Installer.class.php:496
+#: ../../../../inc/Installer.class.php:495
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Error on updating master password for user \"admin\""
 
@@ -2143,12 +2149,12 @@ msgstr "Error while doing operation"
 msgid "Datos de perfil incorrectos"
 msgstr "Wrong profile data"
 
-#: ../../../../inc/ProfileBase.class.php:546
+#: ../../../../inc/ProfileBase.class.php:550
 #: ../../../../web/UsersMgmtC.class.php:274
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
-#: ../../../../inc/ProfileBase.class.php:589
+#: ../../../../inc/ProfileBase.class.php:593
 msgid "Modificar Perfil"
 msgstr "Edit Profile"
 
@@ -2256,8 +2262,7 @@ msgid "Versión de PHP requerida >= "
 msgstr "Required PHP version >="
 
 #: ../../../../inc/Util.class.php:123
-msgid ""
-"Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgid "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Please update the PHP version to run sysPass"
 
 #: ../../../../inc/Util.class.php:159
@@ -2549,23 +2554,23 @@ msgstr "Delete Field"
 msgid "Campos Personalizados"
 msgstr "Custom Fields"
 
-#: ../../../../web/ConfigC.class.php:176
+#: ../../../../web/ConfigC.class.php:178
 msgid "Último backup"
 msgstr "Last backup"
 
-#: ../../../../web/ConfigC.class.php:176
+#: ../../../../web/ConfigC.class.php:178
 msgid "No se encontraron backups"
 msgstr "There are no backups available"
 
-#: ../../../../web/ConfigC.class.php:183
+#: ../../../../web/ConfigC.class.php:185
 msgid "Última exportación"
 msgstr "Last export"
 
-#: ../../../../web/ConfigC.class.php:183
+#: ../../../../web/ConfigC.class.php:185
 msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
-#: ../../../../web/ConfigC.class.php:228
+#: ../../../../web/ConfigC.class.php:230
 msgid "Información"
 msgstr "Information"
 
@@ -2577,117 +2582,114 @@ msgstr "Event log cleared"
 msgid "Error al vaciar el registro de eventos"
 msgstr "Error on clearing event log"
 
-#: ../../../../web/MainC.class.php:129
+#: ../../../../web/MainC.class.php:131
 #: ../../../../web/UsersMgmtC.class.php:100
 msgid "Admin Aplicación"
 msgstr "Application Admin"
 
-#: ../../../../web/MainC.class.php:147
+#: ../../../../web/MainC.class.php:149
 msgid "Buscar"
 msgstr "Search"
 
-#: ../../../../web/MainC.class.php:159
+#: ../../../../web/MainC.class.php:161
 #: ../../../../web/UsersMgmtC.class.php:163
 msgid "Gestión de Usuarios"
 msgstr "Users Management"
 
-#: ../../../../web/MainC.class.php:165
+#: ../../../../web/MainC.class.php:167
 msgid "Gestión de Clientes y Categorías"
 msgstr "Customer and Categories management"
 
-#: ../../../../web/MainC.class.php:177
+#: ../../../../web/MainC.class.php:179
 #: ../../../../inc/themes/classic/eventlog.inc:4
 #: ../../../../inc/themes/material-blue/eventlog.inc:3
 msgid "Registro de Eventos"
 msgstr "Event Log"
 
-#: ../../../../web/MainC.class.php:197
-msgid "Nuevo interface de búsqueda con estilo de lista o tipo tarjeta"
-msgstr "New search interface with list or card like styles"
-
-#: ../../../../web/MainC.class.php:198
-msgid "Selección de grupos y usuarios de acceso a cuentas"
-msgstr "Users and groups selection for account access"
-
 #: ../../../../web/MainC.class.php:199
-msgid "Drag&Drop para subida de archivos"
-msgstr "Drag&Drop for files uploading"
+msgid "Nuevo estilo visual basado en Material Design Lite by Google"
+msgstr "New visual design based on Material Design by Google"
 
 #: ../../../../web/MainC.class.php:200
-msgid "Copiar clave al portapapeles"
-msgstr "Copy password to clipboard"
+msgid "Usuarios en múltiples grupos"
+msgstr "Users can belong to multiple groups"
 
 #: ../../../../web/MainC.class.php:201
-msgid "Historial de cuentas y restauración"
-msgstr "Accounts history and restore points"
+msgid "Previsualización de imágenes"
+msgstr "Images previsualization"
 
 #: ../../../../web/MainC.class.php:202
-msgid "Nueva gestión de categorías y clientes"
-msgstr "New categories and customers management"
+msgid "Mostrar claves como imágenes"
+msgstr "Show passwords as images"
 
 #: ../../../../web/MainC.class.php:203
-msgid "Función de olvido de claves para usuarios"
-msgstr "Reset password function for users"
+msgid "Campos personalizados"
+msgstr "Custom Fields"
 
 #: ../../../../web/MainC.class.php:204
-msgid "Integración con Active Directory y LDAP mejorada"
-msgstr "Improved Active Directory and LDAP integration"
+msgid "API de consultas"
+msgstr "API queries"
 
 #: ../../../../web/MainC.class.php:205
-msgid "Autentificación para notificaciones por correo"
-msgstr "Email notifications with authentication"
+#: ../../../../inc/themes/classic/2fa.inc:9
+#: ../../../../inc/themes/material-blue/2fa.inc:9
+#: ../../../../inc/themes/material-blue/security.inc:13
+msgid "Autentificación en 2 pasos"
+msgstr "Two factor authentication"
 
 #: ../../../../web/MainC.class.php:206
-msgid "Búsqueda global de cuentas para usuarios sin permisos"
-msgstr "Global account searching for unprivileged users"
+msgid "Complejidad de generador de claves"
+msgstr "Random number generator with complexity configuration"
 
 #: ../../../../web/MainC.class.php:207
-msgid "Solicitudes de modificación de cuentas para usuarios sin permisos"
-msgstr "Requests for account modification for unprivileged users"
+msgid "Consultas especiales"
+msgstr "Special queries"
 
 #: ../../../../web/MainC.class.php:208
-msgid "Importación de cuentas desde KeePass, KeePassX y CSV"
-msgstr "Accounts import from KeePass, KeePassX and CSV"
+msgid "Exportación a XML"
+msgstr "XML Export"
 
 #: ../../../../web/MainC.class.php:209
-msgid "Función de copiar cuentas"
-msgstr "Clone account function"
+msgid "Clave maestra temporal"
+msgstr "Temporary master password"
 
 #: ../../../../web/MainC.class.php:210
+msgid "Importación de cuentas desde sysPass, KeePass, KeePassX y CSV"
+msgstr "Accounts import from KeePass, KeePassX and CSV"
+
+#: ../../../../web/MainC.class.php:211
 msgid "Optimización del código y mayor rapidez de carga"
 msgstr "Code optimization and faster loading"
 
-#: ../../../../web/MainC.class.php:211
+#: ../../../../web/MainC.class.php:212
 msgid "Mejoras de seguridad en XSS e inyección SQL"
 msgstr "Improved security to prevent XSS and SQL injection"
 
-#: ../../../../web/MainC.class.php:253
+#: ../../../../web/MainC.class.php:254
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
 
-#: ../../../../web/MainC.class.php:254
+#: ../../../../web/MainC.class.php:255
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Please update PHP version to run sysPass in a secure way"
 
-#: ../../../../web/MainC.class.php:261
+#: ../../../../web/MainC.class.php:262
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Cannot find random number generator."
 
-#: ../../../../web/MainC.class.php:262
-msgid ""
-"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
-msgstr ""
-"Without this function, an attacker could take your account on password reset."
+#: ../../../../web/MainC.class.php:263
+msgid "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgstr "Without this function, an attacker could take your account on password reset."
 
-#: ../../../../web/MainC.class.php:281
+#: ../../../../web/MainC.class.php:282
 msgid "Instalación finalizada"
 msgstr "Installation finished"
 
-#: ../../../../web/MainC.class.php:282
+#: ../../../../web/MainC.class.php:283
 msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
 msgstr "Click <a href=\"index.php\" title=\"Sign in\">here</a> to sign in"
 
-#: ../../../../web/MainC.class.php:377
+#: ../../../../web/MainC.class.php:378
 msgid "Descargar nueva versión"
 msgstr "Download new version"
 
@@ -2785,12 +2787,6 @@ msgstr "Authorizations"
 #: ../../../../inc/themes/material-blue/mail.inc:86
 msgid "Seguridad"
 msgstr "Security"
-
-#: ../../../../inc/themes/classic/2fa.inc:9
-#: ../../../../inc/themes/material-blue/2fa.inc:9
-#: ../../../../inc/themes/material-blue/security.inc:13
-msgid "Autentificación en 2 pasos"
-msgstr "Two factor authentication"
 
 #: ../../../../inc/themes/classic/2fa.inc:14
 #: ../../../../inc/themes/material-blue/2fa.inc:14
@@ -3095,21 +3091,13 @@ msgstr "Help"
 
 #: ../../../../inc/themes/classic/backup.inc:50
 #: ../../../../inc/themes/material-blue/backup.inc:52
-msgid ""
-"La copia de seguridad permite guardar y descargar tanto la base de datos de "
-"sysPass como los archivos de la aplicación y su configuración."
-msgstr ""
-"The backup allows to save and download either sysPass database or "
-"application files and its configuracion."
+msgid "La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración."
+msgstr "The backup allows to save and download either sysPass database or application files and its configuracion."
 
 #: ../../../../inc/themes/classic/backup.inc:52
 #: ../../../../inc/themes/material-blue/backup.inc:54
-msgid ""
-"Con este método es posible guardar todos los datos de sysPass en otro lugar "
-"o utilizarlos para hacer la aplicación portable."
-msgstr ""
-"With this method it's possible to save all sysPass data in another place or "
-"use it to make a portable application."
+msgid "Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable."
+msgstr "With this method it's possible to save all sysPass data in another place or use it to make a portable application."
 
 #: ../../../../inc/themes/classic/backup.inc:60
 #: ../../../../inc/themes/classic/backup.inc:126
@@ -3136,12 +3124,8 @@ msgstr "Export Password (repeat)"
 
 #: ../../../../inc/themes/classic/backup.inc:118
 #: ../../../../inc/themes/material-blue/backup.inc:134
-msgid ""
-"La exportación de cuentas permite guardar las cuentas y sus datos en formato "
-"XML para posteriormente poder ser importados en otras instancias de sysPass."
-msgstr ""
-"The accounts export allows to save the accounts and their data in XML format "
-"to be imported in another sysPass intances."
+msgid "La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass."
+msgstr "The accounts export allows to save the accounts and their data in XML format to be imported in another sysPass intances."
 
 #: ../../../../inc/themes/classic/backup.inc:120
 #: ../../../../inc/themes/material-blue/backup.inc:136
@@ -3150,20 +3134,13 @@ msgstr "The exported items are accounts, customers and categories."
 
 #: ../../../../inc/themes/classic/backup.inc:122
 #: ../../../../inc/themes/material-blue/backup.inc:138
-msgid ""
-"Las claves de las cuentas son exportadas de forma encriptada para mayor "
-"seguridad."
-msgstr ""
-"The accounts passwords are exported in an excrypted way for better security."
+msgid "Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad."
+msgstr "The accounts passwords are exported in an excrypted way for better security."
 
 #: ../../../../inc/themes/classic/backup.inc:124
 #: ../../../../inc/themes/material-blue/backup.inc:140
-msgid ""
-"Es posible establecer una clave de exportación para guardar todos los datos "
-"encriptados en el archivo XML."
-msgstr ""
-"It's possible to set an export password to save whole data encrypted in the "
-"XML file."
+msgid "Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML."
+msgstr "It's possible to set an export password to save whole data encrypted in the XML file."
 
 #: ../../../../inc/themes/classic/body.inc:4
 #: ../../../../inc/themes/material-blue/body.inc:4
@@ -3218,11 +3195,8 @@ msgstr "Enable debug"
 
 #: ../../../../inc/themes/classic/config.inc:62
 #: ../../../../inc/themes/material-blue/config.inc:70
-msgid ""
-"Muestra información relativa a la configuración de la aplicación y "
-"rendimiento."
-msgstr ""
-"Shows some information about application configuration and performance."
+msgid "Muestra información relativa a la configuración de la aplicación y rendimiento."
+msgstr "Shows some information about application configuration and performance."
 
 #: ../../../../inc/themes/classic/config.inc:74
 #: ../../../../inc/themes/material-blue/config.inc:84
@@ -3231,12 +3205,8 @@ msgstr "Maintenance mode"
 
 #: ../../../../inc/themes/classic/config.inc:78
 #: ../../../../inc/themes/material-blue/config.inc:88
-msgid ""
-"En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
-"necesario modificar el archivo de configuración."
-msgstr ""
-"In this mode nobody can login to the application. To disable it, you need to "
-"modify the configuration file."
+msgid "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración."
+msgstr "In this mode nobody can login to the application. To disable it, you need to modify the configuration file."
 
 #: ../../../../inc/themes/classic/config.inc:90
 #: ../../../../inc/themes/material-blue/config.inc:102
@@ -3245,9 +3215,7 @@ msgstr "Check for updates"
 
 #: ../../../../inc/themes/classic/config.inc:94
 #: ../../../../inc/themes/material-blue/config.inc:106
-msgid ""
-"Comprobar actualizaciones de la aplicación (sólo para los usuarios "
-"administradores)."
+msgid "Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)."
 msgstr "Check for application updates (only for administrators)."
 
 #: ../../../../inc/themes/classic/config.inc:106
@@ -3257,12 +3225,8 @@ msgstr "Check for notices"
 
 #: ../../../../inc/themes/classic/config.inc:110
 #: ../../../../inc/themes/material-blue/config.inc:124
-msgid ""
-"Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
-"para los usuarios administradores)."
-msgstr ""
-"Check if there are sysPass security or warning notices (only for "
-"administrators)."
+msgid "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores)."
+msgstr "Check if there are sysPass security or warning notices (only for administrators)."
 
 #: ../../../../inc/themes/classic/config.inc:122
 #: ../../../../inc/themes/material-blue/config.inc:145
@@ -3271,9 +3235,7 @@ msgstr "Account name as link"
 
 #: ../../../../inc/themes/classic/config.inc:126
 #: ../../../../inc/themes/material-blue/config.inc:149
-msgid ""
-"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
-"de la cuenta."
+msgid "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta."
 msgstr "Enables the account name as a link to account details."
 
 #: ../../../../inc/themes/classic/config.inc:138
@@ -3293,12 +3255,8 @@ msgstr "Global searches"
 
 #: ../../../../inc/themes/classic/config.inc:158
 #: ../../../../inc/themes/material-blue/config.inc:168
-msgid ""
-"Permite que todos los usuarios puedan realizar búsquedas en todas las "
-"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
-msgstr ""
-"Allows to the users to do searches that includes all account, even if they "
-"don't have permissions, but they can't view the accounts details."
+msgid "Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos."
+msgstr "Allows to the users to do searches that includes all account, even if they don't have permissions, but they can't view the accounts details."
 
 #: ../../../../inc/themes/classic/config.inc:170
 #: ../../../../inc/themes/material-blue/config.inc:251
@@ -3317,12 +3275,8 @@ msgstr "Max 4 characters allowed."
 
 #: ../../../../inc/themes/classic/config.inc:182
 #: ../../../../inc/themes/material-blue/config.inc:263
-msgid ""
-"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
-"configuración."
-msgstr ""
-"Write the extension and press enter to add. You need to save the "
-"configuration."
+msgid "Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración."
+msgstr "Write the extension and press enter to add. You need to save the configuration."
 
 #: ../../../../inc/themes/classic/config.inc:197
 #: ../../../../inc/themes/material-blue/config.inc:278
@@ -3365,8 +3319,7 @@ msgstr "Generate an image with a text of the account password."
 #: ../../../../inc/themes/classic/config.inc:250
 #: ../../../../inc/themes/material-blue/config.inc:210
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
-msgstr ""
-"Useful for environments where copy password to clipboard is a security risk."
+msgstr "Useful for environments where copy password to clipboard is a security risk."
 
 #: ../../../../inc/themes/classic/config.inc:285
 #: ../../../../inc/themes/material-blue/config.inc:400
@@ -3477,21 +3430,13 @@ msgstr "Users will need to enter the new master key."
 
 #: ../../../../inc/themes/classic/encryption.inc:98
 #: ../../../../inc/themes/material-blue/encryption.inc:112
-msgid ""
-"La clave maestra es utilizada para encriptar las claves de las cuentas de "
-"sysPass para mantenerlas seguras."
-msgstr ""
-"The master password is used to encryt sysPass accounts passwords and keep "
-"them safe."
+msgid "La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras."
+msgstr "The master password is used to encryt sysPass accounts passwords and keep them safe."
 
 #: ../../../../inc/themes/classic/encryption.inc:100
 #: ../../../../inc/themes/material-blue/encryption.inc:114
-msgid ""
-"Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
-"que incluya números, letras y símbolos."
-msgstr ""
-"It's advisable to change it from time to time and use a complex password "
-"that includes numbers, letters and symbols."
+msgid "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos."
+msgstr "It's advisable to change it from time to time and use a complex password that includes numbers, letters and symbols."
 
 #: ../../../../inc/themes/classic/encryption.inc:108
 #: ../../../../inc/themes/material-blue/encryption.inc:124
@@ -3522,13 +3467,8 @@ msgstr "Life"
 
 #: ../../../../inc/themes/classic/encryption.inc:157
 #: ../../../../inc/themes/material-blue/encryption.inc:176
-msgid ""
-"La clave temporal es utilizada como clave maestra para los usuarios que "
-"necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
-"la clave maestra original."
-msgstr ""
-"The temporary password is used as a master password for the users that need "
-"to enter when login, so there is no need to tell the real master password."
+msgid "La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original."
+msgstr "The temporary password is used as a master password for the users that need to enter when login, so there is no need to tell the real master password."
 
 #: ../../../../inc/themes/classic/encryption.inc:159
 #: ../../../../inc/themes/material-blue/encryption.inc:180
@@ -3590,12 +3530,12 @@ msgstr "Last page"
 msgid "Ver Archivo"
 msgstr "View File"
 
-#: ../../../../inc/themes/classic/footer.inc:7
+#: ../../../../inc/themes/classic/footer.inc:10
 #: ../../../../inc/themes/material-blue/footer.inc:18
 msgid "Ayuda :: FAQ :: Changelog"
 msgstr "Help :: FAQ :: Changelog"
 
-#: ../../../../inc/themes/classic/footer.inc:10
+#: ../../../../inc/themes/classic/footer.inc:13
 #: ../../../../inc/themes/material-blue/footer.inc:23
 msgid "Un proyecto de cygnux.org"
 msgstr "A cygnux.org project"
@@ -3721,34 +3661,23 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Drop files here or click to select"
 
 #: ../../../../inc/themes/classic/import.inc:175
-msgid ""
-"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
-"arhcivos XML y CSV."
-msgstr ""
-"Allows to make the Accounts, Categories and Customers import from XML or CSV "
-"files."
+msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV."
+msgstr "Allows to make the Accounts, Categories and Customers import from XML or CSV files."
 
 #: ../../../../inc/themes/classic/import.inc:177
 #: ../../../../inc/themes/material-blue/import.inc:106
-msgid ""
-"Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
+msgid "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr "The supported XML file formats are: sysPass, KeePass and KeePassX"
 
 #: ../../../../inc/themes/classic/import.inc:179
 #: ../../../../inc/themes/material-blue/import.inc:108
-msgid ""
-"Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
-"flecha."
+msgid "Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha."
 msgstr "Drag&Drop the file to the import zone or click over the arrow."
 
 #: ../../../../inc/themes/classic/import.inc:181
 #: ../../../../inc/themes/material-blue/import.inc:110
-msgid ""
-"Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
-"KeePass o KeePassX y la categoría igual al nombre de los grupos."
-msgstr ""
-"For KeePass or KeePassX files, the customer name will be KeePass or KeePassX "
-"and the category name like groups names."
+msgid "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos."
+msgstr "For KeePass or KeePassX files, the customer name will be KeePass or KeePassX and the category name like groups names."
 
 #: ../../../../inc/themes/classic/import.inc:183
 #: ../../../../inc/themes/material-blue/import.inc:112
@@ -3762,12 +3691,8 @@ msgstr "account_name;customer;category;url;user;password;notes"
 
 #: ../../../../inc/themes/classic/import.inc:187
 #: ../../../../inc/themes/material-blue/import.inc:116
-msgid ""
-"En todos los casos, si el cliente o la categoría no están creados, se crean "
-"automáticamente."
-msgstr ""
-"In all cases, if the customer o category aren't created, they are "
-"automatically created."
+msgid "En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente."
+msgstr "In all cases, if the customer o category aren't created, they are automatically created."
 
 #: ../../../../inc/themes/classic/info.inc:4
 #: ../../../../inc/themes/material-blue/info.inc:4
@@ -3922,8 +3847,7 @@ msgstr "LDAP base to do the LDAP users searches."
 
 #: ../../../../inc/themes/classic/ldap.inc:120
 #: ../../../../inc/themes/material-blue/ldap.inc:143
-msgid ""
-"Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
+msgid "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr "LDAP group that the user must belong to allow it to login."
 
 #: ../../../../inc/themes/classic/ldap.inc:124
@@ -3933,8 +3857,7 @@ msgstr "This group needs to be placed in the LDAP search base."
 
 #: ../../../../inc/themes/classic/ldap.inc:148
 #: ../../../../inc/themes/material-blue/ldap.inc:174
-msgid ""
-"Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Define the default users group for new LDAP users"
 
 #: ../../../../inc/themes/classic/ldap.inc:165
@@ -3944,8 +3867,7 @@ msgstr "Default Profile"
 
 #: ../../../../inc/themes/classic/ldap.inc:169
 #: ../../../../inc/themes/material-blue/ldap.inc:194
-msgid ""
-"Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Defines the default profile for the newly created LDAP users."
 
 #: ../../../../inc/themes/classic/ldap.inc:186
@@ -4354,18 +4276,12 @@ msgstr "Two factor authentication"
 
 #: ../../../../inc/themes/classic/security.inc:17
 #: ../../../../inc/themes/material-blue/security.inc:17
-msgid ""
-"Habilita la autentificación en 2 pasos que requiere de la introducción de un "
-"token generado por una aplicación como Google Authenticator."
-msgstr ""
-"Enables two factor authentication that requires to enter a token that is "
-"generated by an application like Google Authenticator."
+msgid "Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator."
+msgstr "Enables two factor authentication that requires to enter a token that is generated by an application like Google Authenticator."
 
 #: ../../../../inc/themes/classic/security.inc:21
 #: ../../../../inc/themes/material-blue/security.inc:21
-msgid ""
-"Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
-"dígitos."
+msgid "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 dígitos."
 msgstr "Scan the provided QR code and then enter the 6 digits code."
 
 #: ../../../../inc/themes/classic/security.inc:29
@@ -4385,12 +4301,8 @@ msgstr "Code"
 
 #: ../../../../inc/themes/classic/security.inc:44
 #: ../../../../inc/themes/material-blue/security.inc:48
-msgid ""
-"Una vez activada, sólo es posible acceder si se dispone del dispositivo "
-"generador de códigos asociado."
-msgstr ""
-"Once enabled, you can only access if you have the device that generates the "
-"code."
+msgid "Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado."
+msgstr "Once enabled, you can only access if you have the device that generates the code."
 
 #: ../../../../inc/themes/classic/sessionbar.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:7
@@ -4515,11 +4427,8 @@ msgstr "Enable Wiki links"
 
 #: ../../../../inc/themes/classic/wiki.inc:15
 #: ../../../../inc/themes/material-blue/wiki.inc:15
-msgid ""
-"Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
-"la búsqueda."
-msgstr ""
-"Enables the option to add a link for search results to an external Wiki."
+msgid "Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda."
+msgstr "Enables the option to add a link for search results to an external Wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:27
 #: ../../../../inc/themes/material-blue/wiki.inc:30
@@ -4557,9 +4466,7 @@ msgstr "URL that the Wiki uses to access to the entry details."
 
 #: ../../../../inc/themes/classic/wiki.inc:62
 #: ../../../../inc/themes/material-blue/wiki.inc:70
-msgid ""
-"El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
-"de la Wiki."
+msgid "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki."
 msgstr "The account name is used as parameter of Wiki search variable."
 
 #: ../../../../inc/themes/classic/wiki.inc:81
@@ -4569,8 +4476,7 @@ msgstr "Account name preffix"
 
 #: ../../../../inc/themes/classic/wiki.inc:85
 #: ../../../../inc/themes/material-blue/wiki.inc:97
-msgid ""
-"Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
+msgid "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr "Preffix to determine which accounts have a link to the Wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:121
@@ -4647,12 +4553,8 @@ msgid "Preferencias de usuario"
 msgstr "User preferences"
 
 #: ../../../../inc/themes/material-blue/import.inc:104
-msgid ""
-"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
-"archivos XML y CSV."
-msgstr ""
-"Allows to do the Accounts, Categories and Customers import form XML and CSV "
-"files."
+msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV."
+msgstr "Allows to do the Accounts, Categories and Customers import form XML and CSV files."
 
 #: ../../../../inc/themes/material-blue/install.inc:31
 msgid "Usuario administrador de sysPass"
@@ -4687,12 +4589,8 @@ msgid "Clave del usuario de conexión a LDAP."
 msgstr "LDAP connection user password"
 
 #: ../../../../inc/themes/material-blue/mail.inc:118
-msgid ""
-"Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
-"cuentas sin permisos."
-msgstr ""
-"Allows that users can request for modifications or access to accounts in "
-"which they havenn't rights."
+msgid "Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos."
+msgstr "Allows that users can request for modifications or access to accounts in which they havenn't rights."
 
 #: ../../../../inc/themes/material-blue/profiles.inc:25
 msgid "Crear nueva cuenta"

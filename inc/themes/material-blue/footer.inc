@@ -24,6 +24,7 @@
                 </div> <!-- Close Project -->
                 <div id="status">
                     <?php echo (DEBUG) ? 'Debug ON' : ''; ?>
+                    <?php echo ($isDemoMode) ? 'Demo' : ''; ?>
                     <div id="updates"></div>
                 </div>
             </footer> <!-- Close footer -->

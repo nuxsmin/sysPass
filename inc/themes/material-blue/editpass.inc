@@ -1,4 +1,4 @@
-<div id="title" class="midroundup <?php echo $title['class']; ?>">
+<div id="title" class="midroundup titleNormal">
     <?php echo $title['name']; ?>
     <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
 </div>

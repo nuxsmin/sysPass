@@ -52,6 +52,10 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 $doActionOnClose = "doAction('$onCloseAction','',$activeTab);";
 
 if($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY){
+    if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() == 'demo') {
+        SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+    }
+
     // Variables POST del formulario
     $twoFaEnabled = SP\Request::analyze('security_2faenabled', 0, false, 1);
     $pin = SP\Request::analyze('security_pin', 0);

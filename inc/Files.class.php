@@ -155,7 +155,8 @@ class Files
         $query = "SELECT accfile_id,"
             . "accfile_name,"
             . "accfile_size, "
-            . "accfile_thumb "
+            . "accfile_thumb, "
+            . "accfile_type "
             . "FROM accFiles "
             . "WHERE accfile_accountId = :id";
 
@@ -176,7 +177,8 @@ class Files
                 'id' => $file->accfile_id,
                 'name' => $file->accfile_name,
                 'size' => round($file->accfile_size / 1000, 2),
-                'thumb' => $file->accfile_thumb
+                'thumb' => $file->accfile_thumb,
+                'type' => $file->accfile_type
             );
         }
 

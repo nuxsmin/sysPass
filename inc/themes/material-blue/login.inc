@@ -19,7 +19,7 @@
                 <span id="smpass" style="display: none">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="mpass" name="mpass" type="password" class="mdl-textfield__input fg-blue100"
-                               maxlength="80" title="> 1234567890 <">
+                               maxlength="80" title="> 12345678900 <">
                         <label class="mdl-textfield__label"
                                for="mpass"><?php echo _('Clave Maestra'); ?></label>
                     </div>
