@@ -5,9 +5,7 @@
     </div>
 
     <form method="post" name="frmSecurity" id="frmSecurity" data-url="/ajax/ajax_userPrefsSave.php">
-
         <table id="tblSite" class="data tblConfig round">
-
             <tr>
                 <td class="descField">
                     <?php echo _('Autentificación en 2 pasos'); ?>

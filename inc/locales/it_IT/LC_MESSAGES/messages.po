@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2015-09-05 15:53+0100\n"
-"PO-Revision-Date: 2015-09-05 15:59+0100\n"
+"POT-Creation-Date: 2015-09-19 12:41+0100\n"
+"PO-Revision-Date: 2015-09-19 12:41+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: it_IT\n"
@@ -556,7 +556,7 @@ msgid "Faltan parámetros de Proxy"
 msgstr ""
 
 #: ../../../../ajax/ajax_configSave.php:125
-#: ../../../../web/ConfigC.class.php:122
+#: ../../../../web/ConfigC.class.php:126
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
@@ -567,7 +567,7 @@ msgid "Faltan parámetros de Wiki"
 msgstr ""
 
 #: ../../../../ajax/ajax_configSave.php:147
-#: ../../../../web/ConfigC.class.php:254
+#: ../../../../web/ConfigC.class.php:262
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
@@ -578,7 +578,7 @@ msgid "Faltan parámetros de LDAP"
 msgstr ""
 
 #: ../../../../ajax/ajax_configSave.php:179
-#: ../../../../web/ConfigC.class.php:286
+#: ../../../../web/ConfigC.class.php:294
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
@@ -589,7 +589,7 @@ msgid "Faltan parámetros de Correo"
 msgstr ""
 
 #: ../../../../ajax/ajax_configSave.php:216
-#: ../../../../web/ConfigC.class.php:316
+#: ../../../../web/ConfigC.class.php:324
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
@@ -667,14 +667,14 @@ msgstr ""
 #: ../../../../inc/themes/classic/userspass.inc:11
 #: ../../../../inc/themes/material-blue/account.inc:95
 #: ../../../../inc/themes/material-blue/account.inc:100
-#: ../../../../inc/themes/material-blue/config.inc:360
+#: ../../../../inc/themes/material-blue/config.inc:358
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
 #: ../../../../inc/themes/material-blue/install.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:105
-#: ../../../../inc/themes/material-blue/login.inc:16
-#: ../../../../inc/themes/material-blue/login.inc:38
+#: ../../../../inc/themes/material-blue/login.inc:17
+#: ../../../../inc/themes/material-blue/login.inc:40
 #: ../../../../inc/themes/material-blue/mail.inc:73
 #: ../../../../inc/themes/material-blue/mail.inc:80
 #: ../../../../inc/themes/material-blue/passreset.inc:31
@@ -750,12 +750,12 @@ msgstr ""
 #: ../../../../inc/themes/classic/search.inc:52
 #: ../../../../inc/themes/classic/tokens.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:80
-#: ../../../../inc/themes/material-blue/config.inc:346
+#: ../../../../inc/themes/material-blue/config.inc:344
 #: ../../../../inc/themes/material-blue/editpass.inc:22
 #: ../../../../inc/themes/material-blue/eventlog.inc:24
 #: ../../../../inc/themes/material-blue/info.inc:39
 #: ../../../../inc/themes/material-blue/login.inc:10
-#: ../../../../inc/themes/material-blue/login.inc:32
+#: ../../../../inc/themes/material-blue/login.inc:33
 #: ../../../../inc/themes/material-blue/mail.inc:61
 #: ../../../../inc/themes/material-blue/mail.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:17
@@ -1100,7 +1100,7 @@ msgstr ""
 #: ../../../../inc/XmlImportBase.class.php:28
 #: ../../../../web/AccountC.class.php:38
 #: ../../../../web/AccountsMgmtC.class.php:32
-#: ../../../../web/ConfigC.class.php:30 ../../../../web/EventlogC.class.php:28
+#: ../../../../web/ConfigC.class.php:31 ../../../../web/EventlogC.class.php:28
 #: ../../../../web/SearchC.class.php:30
 #: ../../../../web/UsersMgmtC.class.php:39
 #: ../../../../web/UsersPrefsC.class.php:32
@@ -1268,7 +1268,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/account.inc:188
 #: ../../../../inc/themes/classic/profiles.inc:50
 #: ../../../../inc/themes/material-blue/account.inc:230
-#: ../../../../inc/themes/material-blue/config.inc:226
+#: ../../../../inc/themes/material-blue/config.inc:224
 #: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Archivos"
 msgstr ""
@@ -1320,13 +1320,13 @@ msgstr ""
 msgid "Configuración General"
 msgstr ""
 
-#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:145
+#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:149
 #: ../../../../inc/themes/classic/profiles.inc:65
 #: ../../../../inc/themes/material-blue/profiles.inc:77
 msgid "Encriptación"
 msgstr ""
 
-#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:187
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:195
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
@@ -1412,19 +1412,21 @@ msgstr ""
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr ""
 
-#: ../../../../inc/Backup.class.php:161
+#: ../../../../inc/Backup.class.php:166
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr ""
 
-#: ../../../../inc/Backup.class.php:163
+#: ../../../../inc/Backup.class.php:168
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr ""
 
-#: ../../../../inc/Backup.class.php:217
+#: ../../../../inc/Backup.class.php:222
+#: ../../../../inc/XmlExport.class.php:464
 msgid "No es posible crear el directorio de backups"
 msgstr ""
 
-#: ../../../../inc/Backup.class.php:222
+#: ../../../../inc/Backup.class.php:227
+#: ../../../../inc/XmlExport.class.php:469
 msgid "Compruebe los permisos del directorio de backups"
 msgstr ""
 
@@ -1532,7 +1534,7 @@ msgstr ""
 #: ../../../../inc/Migrate.class.php:349
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:209
+#: ../../../../web/ConfigC.class.php:217
 msgid "Importar Cuentas"
 msgstr ""
 
@@ -1905,7 +1907,9 @@ msgid "Error al seleccionar la BBDD"
 msgstr ""
 
 #: ../../../../inc/Installer.class.php:391
-msgid "No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista."
+msgid ""
+"No es posible usar la Base de Datos para crear la estructura. Compruebe los "
+"permisos y que no exista."
 msgstr ""
 
 #: ../../../../inc/Installer.class.php:409
@@ -2180,7 +2184,7 @@ msgstr ""
 #: ../../../../inc/Upgrade.class.php:52 ../../../../inc/Upgrade.class.php:58
 #: ../../../../inc/themes/classic/login.inc:32
 #: ../../../../inc/themes/material-blue/2fa.inc:26
-#: ../../../../inc/themes/material-blue/login.inc:60
+#: ../../../../inc/themes/material-blue/login.inc:64
 msgid "Acceder"
 msgstr ""
 
@@ -2255,7 +2259,8 @@ msgid "Versión de PHP requerida >= "
 msgstr ""
 
 #: ../../../../inc/Util.class.php:123
-msgid "Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgid ""
+"Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr ""
 
 #: ../../../../inc/Util.class.php:159
@@ -2268,11 +2273,11 @@ msgstr ""
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr ""
 
-#: ../../../../inc/XmlExport.class.php:104
-msgid "Importar XML"
+#: ../../../../inc/XmlExport.class.php:124
+msgid "Exportar XML"
 msgstr ""
 
-#: ../../../../inc/XmlExport.class.php:389
+#: ../../../../inc/XmlExport.class.php:409
 msgid "Error al crear el archivo XML"
 msgstr ""
 
@@ -2302,7 +2307,7 @@ msgstr ""
 
 #: ../../../../js/strings.js.php:29
 #: ../../../../inc/themes/classic/login.inc:52
-#: ../../../../inc/themes/material-blue/login.inc:75
+#: ../../../../inc/themes/material-blue/login.inc:77
 msgid "Sesión finalizada"
 msgstr ""
 
@@ -2547,23 +2552,23 @@ msgstr ""
 msgid "Campos Personalizados"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:178
+#: ../../../../web/ConfigC.class.php:186
 msgid "Último backup"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:178
+#: ../../../../web/ConfigC.class.php:186
 msgid "No se encontraron backups"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:193
 msgid "Última exportación"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:193
 msgid "No se encontró archivo de exportación"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:230
+#: ../../../../web/ConfigC.class.php:238
 msgid "Información"
 msgstr ""
 
@@ -2626,7 +2631,7 @@ msgstr ""
 #: ../../../../web/MainC.class.php:205
 #: ../../../../inc/themes/classic/2fa.inc:9
 #: ../../../../inc/themes/material-blue/2fa.inc:9
-#: ../../../../inc/themes/material-blue/security.inc:13
+#: ../../../../inc/themes/material-blue/security.inc:11
 msgid "Autentificación en 2 pasos"
 msgstr ""
 
@@ -2671,7 +2676,8 @@ msgid "No se encuentra el generador de números aleatorios."
 msgstr ""
 
 #: ../../../../web/MainC.class.php:263
-msgid "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgid ""
+"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr ""
 
 #: ../../../../web/MainC.class.php:282
@@ -2684,6 +2690,10 @@ msgstr ""
 
 #: ../../../../web/MainC.class.php:378
 msgid "Descargar nueva versión"
+msgstr ""
+
+#: ../../../../web/MainC.class.php:389
+msgid "Avisos de sysPass"
 msgstr ""
 
 #: ../../../../web/SearchC.class.php:270
@@ -2860,7 +2870,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/account.inc:201
 #: ../../../../inc/themes/classic/config.inc:193
 #: ../../../../inc/themes/material-blue/account.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:274
+#: ../../../../inc/themes/material-blue/config.inc:272
 msgid "Tamaño máximo de archivo"
 msgstr ""
 
@@ -2987,7 +2997,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/wiki.inc:110
 #: ../../../../inc/themes/material-blue/account.inc:461
 #: ../../../../inc/themes/material-blue/categories.inc:72
-#: ../../../../inc/themes/material-blue/config.inc:390
+#: ../../../../inc/themes/material-blue/config.inc:388
 #: ../../../../inc/themes/material-blue/customers.inc:73
 #: ../../../../inc/themes/material-blue/customfields.inc:74
 #: ../../../../inc/themes/material-blue/editpass.inc:60
@@ -2995,7 +3005,7 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
 #: ../../../../inc/themes/material-blue/profiles.inc:177
-#: ../../../../inc/themes/material-blue/security.inc:64
+#: ../../../../inc/themes/material-blue/security.inc:62
 #: ../../../../inc/themes/material-blue/tokens.inc:63
 #: ../../../../inc/themes/material-blue/users.inc:235
 #: ../../../../inc/themes/material-blue/userspass.inc:40
@@ -3084,12 +3094,16 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:50
 #: ../../../../inc/themes/material-blue/backup.inc:52
-msgid "La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración."
+msgid ""
+"La copia de seguridad permite guardar y descargar tanto la base de datos de "
+"sysPass como los archivos de la aplicación y su configuración."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:52
 #: ../../../../inc/themes/material-blue/backup.inc:54
-msgid "Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable."
+msgid ""
+"Con este método es posible guardar todos los datos de sysPass en otro lugar "
+"o utilizarlos para hacer la aplicación portable."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:60
@@ -3117,7 +3131,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:118
 #: ../../../../inc/themes/material-blue/backup.inc:134
-msgid "La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass."
+msgid ""
+"La exportación de cuentas permite guardar las cuentas y sus datos en formato "
+"XML para posteriormente poder ser importados en otras instancias de sysPass."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:120
@@ -3127,12 +3143,16 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:122
 #: ../../../../inc/themes/material-blue/backup.inc:138
-msgid "Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad."
+msgid ""
+"Las claves de las cuentas son exportadas de forma encriptada para mayor "
+"seguridad."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:124
 #: ../../../../inc/themes/material-blue/backup.inc:140
-msgid "Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML."
+msgid ""
+"Es posible establecer una clave de exportación para guardar todos los datos "
+"encriptados en el archivo XML."
 msgstr ""
 
 #: ../../../../inc/themes/classic/body.inc:4
@@ -3188,7 +3208,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:62
 #: ../../../../inc/themes/material-blue/config.inc:70
-msgid "Muestra información relativa a la configuración de la aplicación y rendimiento."
+msgid ""
+"Muestra información relativa a la configuración de la aplicación y "
+"rendimiento."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:74
@@ -3198,7 +3220,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:78
 #: ../../../../inc/themes/material-blue/config.inc:88
-msgid "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración."
+msgid ""
+"En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
+"necesario modificar el archivo de configuración."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:90
@@ -3208,7 +3232,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:94
 #: ../../../../inc/themes/material-blue/config.inc:106
-msgid "Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)."
+msgid ""
+"Comprobar actualizaciones de la aplicación (sólo para los usuarios "
+"administradores)."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:106
@@ -3218,7 +3244,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:110
 #: ../../../../inc/themes/material-blue/config.inc:124
-msgid "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores)."
+msgid ""
+"Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
+"para los usuarios administradores)."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:122
@@ -3228,66 +3256,72 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:126
 #: ../../../../inc/themes/material-blue/config.inc:149
-msgid "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta."
+msgid ""
+"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
+"de la cuenta."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:138
-#: ../../../../inc/themes/material-blue/config.inc:232
+#: ../../../../inc/themes/material-blue/config.inc:230
 msgid "Gestión de archivos"
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:142
-#: ../../../../inc/themes/material-blue/config.inc:236
+#: ../../../../inc/themes/material-blue/config.inc:234
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:154
-#: ../../../../inc/themes/material-blue/config.inc:164
+#: ../../../../inc/themes/material-blue/config.inc:163
 msgid "Búsquedas globales"
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:158
-#: ../../../../inc/themes/material-blue/config.inc:168
-msgid "Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos."
+#: ../../../../inc/themes/material-blue/config.inc:167
+msgid ""
+"Permite que todos los usuarios puedan realizar búsquedas en todas las "
+"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:170
-#: ../../../../inc/themes/material-blue/config.inc:251
+#: ../../../../inc/themes/material-blue/config.inc:249
 msgid "Extensiones de archivos permitidas"
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:174
-#: ../../../../inc/themes/material-blue/config.inc:255
+#: ../../../../inc/themes/material-blue/config.inc:253
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:178
-#: ../../../../inc/themes/material-blue/config.inc:259
+#: ../../../../inc/themes/material-blue/config.inc:257
 msgid "Se permite un máximo de 4 caracteres."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:182
-#: ../../../../inc/themes/material-blue/config.inc:263
-msgid "Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración."
+#: ../../../../inc/themes/material-blue/config.inc:261
+msgid ""
+"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
+"configuración."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:197
-#: ../../../../inc/themes/material-blue/config.inc:278
+#: ../../../../inc/themes/material-blue/config.inc:276
 msgid "Establece el tamaño máximo para subir archivos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:201
-#: ../../../../inc/themes/material-blue/config.inc:282
+#: ../../../../inc/themes/material-blue/config.inc:280
 msgid "El máximo absuluto es de 16MB."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:212
-#: ../../../../inc/themes/material-blue/config.inc:183
+#: ../../../../inc/themes/material-blue/config.inc:181
 msgid "Resultados por página"
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:216
-#: ../../../../inc/themes/material-blue/config.inc:187
+#: ../../../../inc/themes/material-blue/config.inc:185
 msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
 msgstr ""
 
@@ -3300,27 +3334,27 @@ msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:203
+#: ../../../../inc/themes/material-blue/config.inc:201
 msgid "Imagen para mostrar clave"
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:247
-#: ../../../../inc/themes/material-blue/config.inc:207
+#: ../../../../inc/themes/material-blue/config.inc:205
 msgid "Generar una imagen con el texto de la clave de la cuenta."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:250
-#: ../../../../inc/themes/material-blue/config.inc:210
+#: ../../../../inc/themes/material-blue/config.inc:208
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:285
-#: ../../../../inc/themes/material-blue/config.inc:400
+#: ../../../../inc/themes/material-blue/config.inc:398
 msgid "Añadir extensión"
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:286
-#: ../../../../inc/themes/material-blue/config.inc:401
+#: ../../../../inc/themes/material-blue/config.inc:399
 msgid "Eliminar extensión"
 msgstr ""
 
@@ -3353,8 +3387,8 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/encryption.inc:8
 #: ../../../../inc/themes/material-blue/install.inc:49
 #: ../../../../inc/themes/material-blue/install.inc:56
-#: ../../../../inc/themes/material-blue/login.inc:24
-#: ../../../../inc/themes/material-blue/login.inc:46
+#: ../../../../inc/themes/material-blue/login.inc:25
+#: ../../../../inc/themes/material-blue/login.inc:48
 msgid "Clave Maestra"
 msgstr ""
 
@@ -3423,12 +3457,16 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:98
 #: ../../../../inc/themes/material-blue/encryption.inc:112
-msgid "La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras."
+msgid ""
+"La clave maestra es utilizada para encriptar las claves de las cuentas de "
+"sysPass para mantenerlas seguras."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:100
 #: ../../../../inc/themes/material-blue/encryption.inc:114
-msgid "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos."
+msgid ""
+"Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
+"que incluya números, letras y símbolos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:108
@@ -3460,7 +3498,10 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:157
 #: ../../../../inc/themes/material-blue/encryption.inc:176
-msgid "La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original."
+msgid ""
+"La clave temporal es utilizada como clave maestra para los usuarios que "
+"necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
+"la clave maestra original."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:159
@@ -3654,22 +3695,29 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:175
-msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV."
+msgid ""
+"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
+"arhcivos XML y CSV."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:177
 #: ../../../../inc/themes/material-blue/import.inc:106
-msgid "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
+msgid ""
+"Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:179
 #: ../../../../inc/themes/material-blue/import.inc:108
-msgid "Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha."
+msgid ""
+"Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
+"flecha."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:181
 #: ../../../../inc/themes/material-blue/import.inc:110
-msgid "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos."
+msgid ""
+"Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
+"KeePass o KeePassX y la categoría igual al nombre de los grupos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:183
@@ -3684,7 +3732,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:187
 #: ../../../../inc/themes/material-blue/import.inc:116
-msgid "En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente."
+msgid ""
+"En todos los casos, si el cliente o la categoría no están creados, se crean "
+"automáticamente."
 msgstr ""
 
 #: ../../../../inc/themes/classic/info.inc:4
@@ -3720,7 +3770,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/info.inc:44
 #: ../../../../inc/themes/classic/ldap.inc:32
 #: ../../../../inc/themes/classic/mail.inc:21
-#: ../../../../inc/themes/material-blue/config.inc:318
+#: ../../../../inc/themes/material-blue/config.inc:316
 #: ../../../../inc/themes/material-blue/info.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:35
 #: ../../../../inc/themes/material-blue/ldap.inc:58
@@ -3840,7 +3890,8 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:120
 #: ../../../../inc/themes/material-blue/ldap.inc:143
-msgid "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
+msgid ""
+"Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:124
@@ -3850,7 +3901,8 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:148
 #: ../../../../inc/themes/material-blue/ldap.inc:174
-msgid "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid ""
+"Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:165
@@ -3860,7 +3912,8 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:169
 #: ../../../../inc/themes/material-blue/ldap.inc:194
-msgid "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid ""
+"Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:186
@@ -3884,20 +3937,20 @@ msgid "Comprobar conexión con LDAP"
 msgstr ""
 
 #: ../../../../inc/themes/classic/login.inc:46
-#: ../../../../inc/themes/material-blue/login.inc:69
+#: ../../../../inc/themes/material-blue/login.inc:73
 msgid "¿Olvidó su clave?"
 msgstr ""
 
 #: ../../../../inc/themes/classic/login.inc:59
-#: ../../../../inc/themes/material-blue/login.inc:82
+#: ../../../../inc/themes/material-blue/login.inc:85
 msgid "Aplicación actualizada correctamente"
 msgstr ""
 
 #: ../../../../inc/themes/classic/login.inc:64
 #: ../../../../inc/themes/classic/login.inc:65
-#: ../../../../inc/themes/material-blue/login.inc:87
-#: ../../../../inc/themes/material-blue/login.inc:88
 #: ../../../../inc/themes/material-blue/login.inc:90
+#: ../../../../inc/themes/material-blue/login.inc:91
+#: ../../../../inc/themes/material-blue/login.inc:93
 msgid "Nuevas Características"
 msgstr ""
 
@@ -3907,7 +3960,7 @@ msgid "Habilitar notificaciones de correo"
 msgstr ""
 
 #: ../../../../inc/themes/classic/mail.inc:29
-#: ../../../../inc/themes/material-blue/config.inc:332
+#: ../../../../inc/themes/material-blue/config.inc:330
 #: ../../../../inc/themes/material-blue/mail.inc:36
 #: ../../../../inc/themes/material-blue/mail.inc:43
 msgid "Puerto"
@@ -4243,18 +4296,23 @@ msgstr ""
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr ""
 
-#: ../../../../inc/themes/classic/searchbox.inc:18
+#: ../../../../inc/themes/classic/searchbox.inc:15
+#: ../../../../inc/themes/material-blue/searchbox.inc:20
+msgid "Buscar cuentas con archivos con el nombre 'file_name'"
+msgstr ""
+
+#: ../../../../inc/themes/classic/searchbox.inc:19
 #: ../../../../inc/themes/material-blue/searchbox.inc:25
 #: ../../../../inc/themes/material-blue/searchbox.inc:28
 msgid "Búsqueda global"
 msgstr ""
 
-#: ../../../../inc/themes/classic/searchbox.inc:41
+#: ../../../../inc/themes/classic/searchbox.inc:42
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "CPP"
 msgstr ""
 
-#: ../../../../inc/themes/classic/searchbox.inc:41
+#: ../../../../inc/themes/classic/searchbox.inc:42
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "Cuentas por página"
 msgstr ""
@@ -4268,33 +4326,39 @@ msgid "Autenticación en 2 pasos"
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:17
-#: ../../../../inc/themes/material-blue/security.inc:17
-msgid "Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator."
+#: ../../../../inc/themes/material-blue/security.inc:15
+msgid ""
+"Habilita la autentificación en 2 pasos que requiere de la introducción de un "
+"token generado por una aplicación como Google Authenticator."
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:21
-#: ../../../../inc/themes/material-blue/security.inc:21
-msgid "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 dígitos."
+#: ../../../../inc/themes/material-blue/security.inc:19
+msgid ""
+"Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
+"dígitos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:29
-#: ../../../../inc/themes/material-blue/security.inc:29
+#: ../../../../inc/themes/material-blue/security.inc:27
 msgid "Activar"
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:34
-#: ../../../../inc/themes/material-blue/security.inc:35
+#: ../../../../inc/themes/material-blue/security.inc:33
 msgid "Error al obtener el código QR. Inténtelo de nuevo"
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:39
-#: ../../../../inc/themes/material-blue/security.inc:43
+#: ../../../../inc/themes/material-blue/security.inc:41
 msgid "Código"
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:44
-#: ../../../../inc/themes/material-blue/security.inc:48
-msgid "Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado."
+#: ../../../../inc/themes/material-blue/security.inc:46
+msgid ""
+"Una vez activada, sólo es posible acceder si se dispone del dispositivo "
+"generador de códigos asociado."
 msgstr ""
 
 #: ../../../../inc/themes/classic/sessionbar.inc:6
@@ -4420,7 +4484,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/wiki.inc:15
 #: ../../../../inc/themes/material-blue/wiki.inc:15
-msgid "Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda."
+msgid ""
+"Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
+"la búsqueda."
 msgstr ""
 
 #: ../../../../inc/themes/classic/wiki.inc:27
@@ -4459,7 +4525,9 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/wiki.inc:62
 #: ../../../../inc/themes/material-blue/wiki.inc:70
-msgid "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki."
+msgid ""
+"El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
+"de la Wiki."
 msgstr ""
 
 #: ../../../../inc/themes/classic/wiki.inc:81
@@ -4469,7 +4537,8 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/wiki.inc:85
 #: ../../../../inc/themes/material-blue/wiki.inc:97
-msgid "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
+msgid ""
+"Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr ""
 
 #: ../../../../inc/themes/classic/wiki.inc:121
@@ -4501,35 +4570,35 @@ msgstr ""
 msgid "Realizar"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:197
+#: ../../../../inc/themes/material-blue/config.inc:195
 msgid "Número de resultados por página"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:292
+#: ../../../../inc/themes/material-blue/config.inc:290
 msgid "Tamaño máximo de archivo en bytes"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:299
+#: ../../../../inc/themes/material-blue/config.inc:297
 msgid "Proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:305
+#: ../../../../inc/themes/material-blue/config.inc:303
 msgid "Usar Proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:326
+#: ../../../../inc/themes/material-blue/config.inc:324
 msgid "Servidor proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:340
+#: ../../../../inc/themes/material-blue/config.inc:338
 msgid "Puerto del servidor proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:354
+#: ../../../../inc/themes/material-blue/config.inc:352
 msgid "Usuario del servidor proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:368
+#: ../../../../inc/themes/material-blue/config.inc:366
 msgid "Clave del servidor proxy"
 msgstr ""
 
@@ -4546,7 +4615,9 @@ msgid "Preferencias de usuario"
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/import.inc:104
-msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV."
+msgid ""
+"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
+"archivos XML y CSV."
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/install.inc:31
@@ -4582,7 +4653,9 @@ msgid "Clave del usuario de conexión a LDAP."
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/mail.inc:118
-msgid "Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos."
+msgid ""
+"Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
+"cuentas sin permisos."
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/profiles.inc:25
@@ -4611,10 +4684,6 @@ msgstr ""
 
 #: ../../../../inc/themes/material-blue/profiles.inc:82
 msgid "Realizar copia de seguridad y exportar"
-msgstr ""
-
-#: ../../../../inc/themes/material-blue/searchbox.inc:20
-msgid "Buscar cuentas con archivos con el nombre 'file_name'"
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/security.inc:4

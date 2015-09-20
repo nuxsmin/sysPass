@@ -12,6 +12,7 @@
                     <ul>
                         <li>:user [login] &gt; <?php echo _('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
                         <li>:group [group_name] &gt; <?php echo _('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
+                        <li>:file [file_name] &gt; <?php echo _('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
                     </ul>
                 </div>
                 <?php if ( $showGlobalSearch && ! $isAdmin ): ?>

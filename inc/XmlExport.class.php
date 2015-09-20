@@ -48,6 +48,14 @@ class XmlExport
      * @var bool
      */
     private $_encrypted = false;
+    /**
+     * @var string
+     */
+    private $_exportDir = '';
+    /**
+     * @var string
+     */
+    private $_exportFile = '';
 
     /**
      * Constructor
@@ -72,6 +80,9 @@ class XmlExport
             $xml->setEncrypted(true);
         }
 
+        $xml->setExportDir(Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'backup');
+        $xml->setExportFile();
+
         return $xml->makeXML();
     }
 
@@ -86,6 +97,14 @@ class XmlExport
     }
 
     /**
+     * @param boolean $encrypted
+     */
+    public function setEncrypted($encrypted)
+    {
+        $this->_encrypted = $encrypted;
+    }
+
+    /**
      * Crear el documento XML y guardarlo
      *
      * @return bool
@@ -93,6 +112,7 @@ class XmlExport
     public function makeXML()
     {
         try {
+            $this->checkExportDir();
             $this->createRoot();
             $this->createMeta();
             $this->createCategories();
@@ -101,7 +121,7 @@ class XmlExport
             $this->createHash();
             $this->writeXML();
         } catch (SPException $e) {
-            Log::writeNewLog(_('Importar XML'), $e->getHint() . ': ' . $e->getMessage());
+            Log::writeNewLog(_('Exportar XML'), sprintf('%s (%s)', $e->getMessage(), $e->getHint()));
             return false;
         }
 
@@ -161,7 +181,7 @@ class XmlExport
     {
         $categories = Category::getCategories();
 
-        if (count($categories) === 0){
+        if (count($categories) === 0) {
             return;
         }
 
@@ -258,7 +278,7 @@ class XmlExport
     {
         $customers = Customer::getCustomers();
 
-        if(count($customers) === 0){
+        if (count($customers) === 0) {
             return;
         }
 
@@ -295,7 +315,7 @@ class XmlExport
     {
         $accounts = Account::getAccountsData();
 
-        if (count($accounts) === 0){
+        if (count($accounts) === 0) {
             return;
         }
 
@@ -385,7 +405,7 @@ class XmlExport
             $this->_xml->formatOutput = true;
             $this->_xml->preserveWhiteSpace = false;
 
-            if (!$this->_xml->save(XmlExport::getExportFile())) {
+            if (!$this->_xml->save($this->_exportFile)) {
                 throw new SPException(SPException::SP_CRITICAL, _('Error al crear el archivo XML'));
             }
         } catch (\DOMException $e) {
@@ -394,11 +414,23 @@ class XmlExport
     }
 
     /**
-     * @param boolean $encrypted
+     * Genera el nombre del archivo usado para la exportación.
      */
-    public function setEncrypted($encrypted)
+    private function setExportFile()
     {
-        $this->_encrypted = $encrypted;
+        // Generar hash unico para evitar descargas no permitidas
+        $exportUniqueHash = uniqid();
+        Config::setValue('export_hash', $exportUniqueHash);
+
+        $this->_exportFile = $this->_exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
+    }
+
+    /**
+     * @param string $exportDir
+     */
+    public function setExportDir($exportDir)
+    {
+        $this->_exportDir = $exportDir;
     }
 
     /**
@@ -420,16 +452,23 @@ class XmlExport
     }
 
     /**
-     * Devuelve el archivo usado para la exportación.
+     * Comprobar y crear el directorio de exportación.
      *
-     * @return string
+     * @throws SPException
+     * @return bool
      */
-    public static function getExportFile()
+    private function checkExportDir()
     {
-        // Generar hash unico para evitar descargas no permitidas
-        $exportUniqueHash = uniqid();
-        Config::setValue('export_hash', $exportUniqueHash);
+        if (!is_dir($this->_exportDir)) {
+            if (!@mkdir($this->_exportDir, 0550)) {
+                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->_exportDir . ')');
+            }
+        }
 
-        return Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
+        if (!is_writable($this->_exportDir)) {
+            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
+        }
+
+        return true;
     }
 }

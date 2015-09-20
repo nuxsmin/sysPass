@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-04 21:27+0100\n"
-"PO-Revision-Date: 2015-09-04 21:27+0100\n"
-"Last-Translator: nuxsmin <nuxsmin@gmail.com>\n"
+"POT-Creation-Date: 2015-09-19 12:41+0100\n"
+"PO-Revision-Date: 2015-09-19 12:41+0100\n"
+"Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
@@ -708,7 +708,7 @@ msgstr "Hiányzó Wiki paraméter"
 
 # "General"
 #: ../../../../ajax/ajax_configSave.php:125
-#: ../../../../web/ConfigC.class.php:122
+#: ../../../../web/ConfigC.class.php:126
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
@@ -721,7 +721,7 @@ msgstr "Hiányzó Wiki paraméter"
 
 # "Wiki"
 #: ../../../../ajax/ajax_configSave.php:147
-#: ../../../../web/ConfigC.class.php:254
+#: ../../../../web/ConfigC.class.php:262
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
@@ -734,7 +734,7 @@ msgstr "Hiányzó LDAP paraméter"
 
 # "LDAP"
 #: ../../../../ajax/ajax_configSave.php:179
-#: ../../../../web/ConfigC.class.php:286
+#: ../../../../web/ConfigC.class.php:294
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
@@ -747,7 +747,7 @@ msgstr "Hiányzó mail paraméter"
 
 # "Mail"
 #: ../../../../ajax/ajax_configSave.php:216
-#: ../../../../web/ConfigC.class.php:316
+#: ../../../../web/ConfigC.class.php:324
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
@@ -841,14 +841,14 @@ msgstr "Generate Temporary Password"
 #: ../../../../inc/themes/classic/userspass.inc:11
 #: ../../../../inc/themes/material-blue/account.inc:95
 #: ../../../../inc/themes/material-blue/account.inc:100
-#: ../../../../inc/themes/material-blue/config.inc:360
+#: ../../../../inc/themes/material-blue/config.inc:358
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
 #: ../../../../inc/themes/material-blue/install.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:105
-#: ../../../../inc/themes/material-blue/login.inc:16
-#: ../../../../inc/themes/material-blue/login.inc:38
+#: ../../../../inc/themes/material-blue/login.inc:17
+#: ../../../../inc/themes/material-blue/login.inc:40
 #: ../../../../inc/themes/material-blue/mail.inc:73
 #: ../../../../inc/themes/material-blue/mail.inc:80
 #: ../../../../inc/themes/material-blue/passreset.inc:31
@@ -936,12 +936,12 @@ msgstr "Hibás felhasználónév vagy jelszó"
 #: ../../../../inc/themes/classic/search.inc:52
 #: ../../../../inc/themes/classic/tokens.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:80
-#: ../../../../inc/themes/material-blue/config.inc:346
+#: ../../../../inc/themes/material-blue/config.inc:344
 #: ../../../../inc/themes/material-blue/editpass.inc:22
 #: ../../../../inc/themes/material-blue/eventlog.inc:24
 #: ../../../../inc/themes/material-blue/info.inc:39
 #: ../../../../inc/themes/material-blue/login.inc:10
-#: ../../../../inc/themes/material-blue/login.inc:32
+#: ../../../../inc/themes/material-blue/login.inc:33
 #: ../../../../inc/themes/material-blue/mail.inc:61
 #: ../../../../inc/themes/material-blue/mail.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:17
@@ -1176,7 +1176,8 @@ msgstr "A kérés befejezéséhez email értesítõt küldünk"
 # "The request can't be done. Please contact with the administrator"
 #: ../../../../ajax/ajax_passReset.php:60
 msgid "No se ha podido realizar la solicitud. Consulte con el administrador."
-msgstr "A kérést nem lehet befejezni. Kérem lépjen kapcsolatba a rendszergazdával"
+msgstr ""
+"A kérést nem lehet befejezni. Kérem lépjen kapcsolatba a rendszergazdával"
 
 # "Edit User Password"
 #: ../../../../ajax/ajax_passReset.php:72
@@ -1347,7 +1348,7 @@ msgstr "Segítség :: GYIK :: Változások Listája"
 #: ../../../../inc/XmlImportBase.class.php:28
 #: ../../../../web/AccountC.class.php:38
 #: ../../../../web/AccountsMgmtC.class.php:32
-#: ../../../../web/ConfigC.class.php:30 ../../../../web/EventlogC.class.php:28
+#: ../../../../web/ConfigC.class.php:31 ../../../../web/EventlogC.class.php:28
 #: ../../../../web/SearchC.class.php:30
 #: ../../../../web/UsersMgmtC.class.php:39
 #: ../../../../web/UsersPrefsC.class.php:32
@@ -1559,7 +1560,7 @@ msgstr "Elõzmények"
 #: ../../../../inc/themes/classic/account.inc:188
 #: ../../../../inc/themes/classic/profiles.inc:50
 #: ../../../../inc/themes/material-blue/account.inc:230
-#: ../../../../inc/themes/material-blue/config.inc:226
+#: ../../../../inc/themes/material-blue/config.inc:224
 #: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Archivos"
 msgstr "Fájlok"
@@ -1632,7 +1633,7 @@ msgid "Configuración General"
 msgstr "Általános beállítások"
 
 # "Description"
-#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:145
+#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:149
 #: ../../../../inc/themes/classic/profiles.inc:65
 #: ../../../../inc/themes/material-blue/profiles.inc:77
 #, fuzzy
@@ -1640,7 +1641,7 @@ msgid "Encriptación"
 msgstr "A Crypto modul nem tölthetõ be"
 
 # "Backup"
-#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:187
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:195
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
@@ -1754,23 +1755,25 @@ msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr "Amennyiben nincs szüksége erre a folyamatra, zárja be ezt az üzenetet"
 
 # "This operation is only available on Linux environments"
-#: ../../../../inc/Backup.class.php:161
+#: ../../../../inc/Backup.class.php:166
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Ez a mûvelet csak Linux környezetben érhetõ el"
 
 # Error while doing backup in compatibility mode
-#: ../../../../inc/Backup.class.php:163
+#: ../../../../inc/Backup.class.php:168
 #, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Error while doing backup in compatibility mode"
 
 # "Unable to create backup directory"
-#: ../../../../inc/Backup.class.php:217
+#: ../../../../inc/Backup.class.php:222
+#: ../../../../inc/XmlExport.class.php:464
 msgid "No es posible crear el directorio de backups"
 msgstr "Arcív mappa létrehozása meghiusúlt"
 
 # "Check backup directory permissions"
-#: ../../../../inc/Backup.class.php:222
+#: ../../../../inc/Backup.class.php:227
+#: ../../../../inc/XmlExport.class.php:469
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Ellenõrizze az archiválás mappa jogosultságait"
 
@@ -1900,7 +1903,7 @@ msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
 #: ../../../../inc/Migrate.class.php:349
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:209
+#: ../../../../web/ConfigC.class.php:217
 msgid "Importar Cuentas"
 msgstr "Fiókok importálása"
 
@@ -2367,8 +2370,12 @@ msgstr "Hiba az adatbázis kiválasztása közben"
 
 # "Unable to use the database to create the structure. Check permissions and it doesn't exist."
 #: ../../../../inc/Installer.class.php:391
-msgid "No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista."
-msgstr "Új elem létrehozás aaz adatbázisban meghiúsult. Ellenõrizze a jogosultságokat és hogy valóban létezik az adatbázis"
+msgid ""
+"No es posible usar la Base de Datos para crear la estructura. Compruebe los "
+"permisos y que no exista."
+msgstr ""
+"Új elem létrehozás aaz adatbázisban meghiúsult. Ellenõrizze a "
+"jogosultságokat és hogy valóban létezik az adatbázis"
 
 # "Error on creating database structure."
 #: ../../../../inc/Installer.class.php:409
@@ -2715,7 +2722,7 @@ msgstr "Részletes leírást az esemény naplóban olvashat"
 #: ../../../../inc/Upgrade.class.php:52 ../../../../inc/Upgrade.class.php:58
 #: ../../../../inc/themes/classic/login.inc:32
 #: ../../../../inc/themes/material-blue/2fa.inc:26
-#: ../../../../inc/themes/material-blue/login.inc:60
+#: ../../../../inc/themes/material-blue/login.inc:64
 msgid "Acceder"
 msgstr "Belépés"
 
@@ -2815,7 +2822,8 @@ msgstr "Szükséges PHP verzió> = 5.1"
 # "Please update PHP version to run sysPass in a secure way"
 #: ../../../../inc/Util.class.php:123
 #, fuzzy
-msgid "Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgid ""
+"Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
 # "Module unavilable"
@@ -2831,13 +2839,13 @@ msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "E modul nélkül az alkalmazás nem futtatható megfelelõen"
 
 # CSV/XML Import
-#: ../../../../inc/XmlExport.class.php:104
+#: ../../../../inc/XmlExport.class.php:124
 #, fuzzy
-msgid "Importar XML"
+msgid "Exportar XML"
 msgstr "Fiókok importálása"
 
 # "Error on creating user"
-#: ../../../../inc/XmlExport.class.php:389
+#: ../../../../inc/XmlExport.class.php:409
 #, fuzzy
 msgid "Error al crear el archivo XML"
 msgstr "Hiba az ügyfél létrehozása közben"
@@ -2877,7 +2885,7 @@ msgstr "Hiba történt"
 # "Session finished"
 #: ../../../../js/strings.js.php:29
 #: ../../../../inc/themes/classic/login.inc:52
-#: ../../../../inc/themes/material-blue/login.inc:75
+#: ../../../../inc/themes/material-blue/login.inc:77
 msgid "Sesión finalizada"
 msgstr "Munkamenet befejezõdött"
 
@@ -3171,29 +3179,29 @@ msgid "Campos Personalizados"
 msgstr ""
 
 # "Last backup"
-#: ../../../../web/ConfigC.class.php:178
+#: ../../../../web/ConfigC.class.php:186
 msgid "Último backup"
 msgstr "Utolsó Archiválás"
 
 # "There're no backups available"
-#: ../../../../web/ConfigC.class.php:178
+#: ../../../../web/ConfigC.class.php:186
 msgid "No se encontraron backups"
 msgstr "Nincsenek elérhetõ Archívumok"
 
 # "Last Modification"
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:193
 #, fuzzy
 msgid "Última exportación"
 msgstr "Utolsó oldal"
 
 # "Unable to write on configuration file"
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:193
 #, fuzzy
 msgid "No se encontró archivo de exportación"
 msgstr "Nem lehet a konfigurációs fájlba írni"
 
 # "Configuration"
-#: ../../../../web/ConfigC.class.php:230
+#: ../../../../web/ConfigC.class.php:238
 #, fuzzy
 msgid "Información"
 msgstr "Mutat néhány információt az alkalmazásról és a teljesítményrõl"
@@ -3270,7 +3278,7 @@ msgstr "Kérés fiók módosításához"
 #: ../../../../web/MainC.class.php:205
 #: ../../../../inc/themes/classic/2fa.inc:9
 #: ../../../../inc/themes/material-blue/2fa.inc:9
-#: ../../../../inc/themes/material-blue/security.inc:13
+#: ../../../../inc/themes/material-blue/security.inc:11
 #, fuzzy
 msgid "Autentificación en 2 pasos"
 msgstr "Engedélyezése Hitelesítés"
@@ -3309,7 +3317,8 @@ msgstr ""
 # "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
 #: ../../../../web/MainC.class.php:254
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
-msgstr "Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
+msgstr ""
+"Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
 
 # "Please update PHP version to run sysPass in a secure way"
 #: ../../../../web/MainC.class.php:255
@@ -3323,7 +3332,8 @@ msgstr "Nem találom a véletlen szám generátort"
 
 # "Without this function, an attacker could take your account on password reset."
 #: ../../../../web/MainC.class.php:263
-msgid "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgid ""
+"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr "E funkció nélkül egy támadó alapállapotba állíthatja jelszavát"
 
 # "Installation finished"
@@ -3334,12 +3344,18 @@ msgstr "A telepítés befejezõdött"
 # "Click <a href=\"index.php\" title=\"Login\">here</a> to access"
 #: ../../../../web/MainC.class.php:283
 msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
-msgstr "Kattinst <a href=\"index.php\" title=\"Bejelentkezés\">here</a> a bejelentkezéshez"
+msgstr ""
+"Kattinst <a href=\"index.php\" title=\"Bejelentkezés\">here</a> a "
+"bejelentkezéshez"
 
 # "Download new version"
 #: ../../../../web/MainC.class.php:378
 msgid "Descargar nueva versión"
 msgstr "Új verzió letöltése"
+
+#: ../../../../web/MainC.class.php:389
+msgid "Avisos de sysPass"
+msgstr ""
 
 # "Sort by Customer"
 #: ../../../../web/SearchC.class.php:270
@@ -3552,7 +3568,7 @@ msgstr "Dobja el a fájlokat (max. 5) vagy kattintson a választáshoz"
 #: ../../../../inc/themes/classic/account.inc:201
 #: ../../../../inc/themes/classic/config.inc:193
 #: ../../../../inc/themes/material-blue/account.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:274
+#: ../../../../inc/themes/material-blue/config.inc:272
 msgid "Tamaño máximo de archivo"
 msgstr "Maximális fájl méret"
 
@@ -3699,7 +3715,7 @@ msgstr "Kérés módosítás"
 #: ../../../../inc/themes/classic/wiki.inc:110
 #: ../../../../inc/themes/material-blue/account.inc:461
 #: ../../../../inc/themes/material-blue/categories.inc:72
-#: ../../../../inc/themes/material-blue/config.inc:390
+#: ../../../../inc/themes/material-blue/config.inc:388
 #: ../../../../inc/themes/material-blue/customers.inc:73
 #: ../../../../inc/themes/material-blue/customfields.inc:74
 #: ../../../../inc/themes/material-blue/editpass.inc:60
@@ -3707,7 +3723,7 @@ msgstr "Kérés módosítás"
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
 #: ../../../../inc/themes/material-blue/profiles.inc:177
-#: ../../../../inc/themes/material-blue/security.inc:64
+#: ../../../../inc/themes/material-blue/security.inc:62
 #: ../../../../inc/themes/material-blue/tokens.inc:63
 #: ../../../../inc/themes/material-blue/users.inc:235
 #: ../../../../inc/themes/material-blue/userspass.inc:40
@@ -3804,12 +3820,16 @@ msgstr "Segítség :: GYIK :: Változások Listája"
 
 #: ../../../../inc/themes/classic/backup.inc:50
 #: ../../../../inc/themes/material-blue/backup.inc:52
-msgid "La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración."
+msgid ""
+"La copia de seguridad permite guardar y descargar tanto la base de datos de "
+"sysPass como los archivos de la aplicación y su configuración."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:52
 #: ../../../../inc/themes/material-blue/backup.inc:54
-msgid "Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable."
+msgid ""
+"Con este método es posible guardar todos los datos de sysPass en otro lugar "
+"o utilizarlos para hacer la aplicación portable."
 msgstr ""
 
 # "Import Accounts"
@@ -3845,7 +3865,9 @@ msgstr "Jelszó (ismét)"
 
 #: ../../../../inc/themes/classic/backup.inc:118
 #: ../../../../inc/themes/material-blue/backup.inc:134
-msgid "La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass."
+msgid ""
+"La exportación de cuentas permite guardar las cuentas y sus datos en formato "
+"XML para posteriormente poder ser importados en otras instancias de sysPass."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:120
@@ -3855,12 +3877,16 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:122
 #: ../../../../inc/themes/material-blue/backup.inc:138
-msgid "Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad."
+msgid ""
+"Las claves de las cuentas son exportadas de forma encriptada para mayor "
+"seguridad."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:124
 #: ../../../../inc/themes/material-blue/backup.inc:140
-msgid "Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML."
+msgid ""
+"Es posible establecer una clave de exportación para guardar todos los datos "
+"encriptados en el archivo XML."
 msgstr ""
 
 # "Javascript is needed in order to run correctly"
@@ -3928,7 +3954,9 @@ msgstr "Nyomkövetés engedélyezése"
 #: ../../../../inc/themes/classic/config.inc:62
 #: ../../../../inc/themes/material-blue/config.inc:70
 #, fuzzy
-msgid "Muestra información relativa a la configuración de la aplicación y rendimiento."
+msgid ""
+"Muestra información relativa a la configuración de la aplicación y "
+"rendimiento."
 msgstr "Mutat néhány információt az alkalmazásról és a teljesítményrõl"
 
 # "Maintenance mode."
@@ -3941,8 +3969,12 @@ msgstr "Fenntartás mód"
 #: ../../../../inc/themes/classic/config.inc:78
 #: ../../../../inc/themes/material-blue/config.inc:88
 #, fuzzy
-msgid "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración."
-msgstr "Ezen a módon nem tudsz bejelentkezni az alkalmazásba. Hogy kikapcsold, módosítanod kell a konfigurációs fájlt"
+msgid ""
+"En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
+"necesario modificar el archivo de configuración."
+msgstr ""
+"Ezen a módon nem tudsz bejelentkezni az alkalmazásba. Hogy kikapcsold, "
+"módosítanod kell a konfigurációs fájlt"
 
 # "Check for updates"
 #: ../../../../inc/themes/classic/config.inc:90
@@ -3954,7 +3986,9 @@ msgstr "Frissítések keresése"
 #: ../../../../inc/themes/classic/config.inc:94
 #: ../../../../inc/themes/material-blue/config.inc:106
 #, fuzzy
-msgid "Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)."
+msgid ""
+"Comprobar actualizaciones de la aplicación (sólo para los usuarios "
+"administradores)."
 msgstr "Azlkalmazás frissítések keresése (csak rendszergazda esetén)"
 
 # "Check for updates"
@@ -3968,7 +4002,9 @@ msgstr "Ellenõrzés"
 #: ../../../../inc/themes/classic/config.inc:110
 #: ../../../../inc/themes/material-blue/config.inc:124
 #, fuzzy
-msgid "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores)."
+msgid ""
+"Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
+"para los usuarios administradores)."
 msgstr "Azlkalmazás frissítések keresése (csak rendszergazda esetén)"
 
 # "Account name as link"
@@ -3981,82 +4017,88 @@ msgstr "Fiók neve linkként"
 #: ../../../../inc/themes/classic/config.inc:126
 #: ../../../../inc/themes/material-blue/config.inc:149
 #, fuzzy
-msgid "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta."
+msgid ""
+"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
+"de la cuenta."
 msgstr "Fiók nevére való keresés engedélyezése"
 
 # "Files management"
 #: ../../../../inc/themes/classic/config.inc:138
-#: ../../../../inc/themes/material-blue/config.inc:232
+#: ../../../../inc/themes/material-blue/config.inc:230
 msgid "Gestión de archivos"
 msgstr "Fájl menedzsment"
 
 # "Enables upload/download accounts files."
 #: ../../../../inc/themes/classic/config.inc:142
-#: ../../../../inc/themes/material-blue/config.inc:236
+#: ../../../../inc/themes/material-blue/config.inc:234
 #, fuzzy
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr "Fájlok Fel/Letöltésének engedélyezése"
 
 # "Global searches"
 #: ../../../../inc/themes/classic/config.inc:154
-#: ../../../../inc/themes/material-blue/config.inc:164
+#: ../../../../inc/themes/material-blue/config.inc:163
 msgid "Búsquedas globales"
 msgstr "Gblobális Keresések"
 
 #: ../../../../inc/themes/classic/config.inc:158
-#: ../../../../inc/themes/material-blue/config.inc:168
-msgid "Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos."
+#: ../../../../inc/themes/material-blue/config.inc:167
+msgid ""
+"Permite que todos los usuarios puedan realizar búsquedas en todas las "
+"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
 msgstr ""
 
 # "Allowed file extensions"
 #: ../../../../inc/themes/classic/config.inc:170
-#: ../../../../inc/themes/material-blue/config.inc:251
+#: ../../../../inc/themes/material-blue/config.inc:249
 msgid "Extensiones de archivos permitidas"
 msgstr "Engedélyezett fájl kiterjesztés"
 
 #: ../../../../inc/themes/classic/config.inc:174
-#: ../../../../inc/themes/material-blue/config.inc:255
+#: ../../../../inc/themes/material-blue/config.inc:253
 #, fuzzy
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr "Fájlok Fel/Letöltésének engedélyezése"
 
 # "Extensions max length is 4 characters."
 #: ../../../../inc/themes/classic/config.inc:178
-#: ../../../../inc/themes/material-blue/config.inc:259
+#: ../../../../inc/themes/material-blue/config.inc:257
 #, fuzzy
 msgid "Se permite un máximo de 4 caracteres."
 msgstr "A kiterjesztések hossza maximum 4 karakter lehet"
 
 # "Write extension and press enter to add."
 #: ../../../../inc/themes/classic/config.inc:182
-#: ../../../../inc/themes/material-blue/config.inc:263
+#: ../../../../inc/themes/material-blue/config.inc:261
 #, fuzzy
-msgid "Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración."
+msgid ""
+"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
+"configuración."
 msgstr "Írj kiterjesztést, majd nyomj entert a hozzáadáshoz"
 
 # "Sets up the max upload file size."
 #: ../../../../inc/themes/classic/config.inc:197
-#: ../../../../inc/themes/material-blue/config.inc:278
+#: ../../../../inc/themes/material-blue/config.inc:276
 #, fuzzy
 msgid "Establece el tamaño máximo para subir archivos."
 msgstr "A feltölthetõ fájlméret maximális értékének beállítása"
 
 # "The absolute maximum is 16MB."
 #: ../../../../inc/themes/classic/config.inc:201
-#: ../../../../inc/themes/material-blue/config.inc:282
+#: ../../../../inc/themes/material-blue/config.inc:280
 #, fuzzy
 msgid "El máximo absuluto es de 16MB."
 msgstr "A maximum 16MB"
 
 # "Results per page"
 #: ../../../../inc/themes/classic/config.inc:212
-#: ../../../../inc/themes/material-blue/config.inc:183
+#: ../../../../inc/themes/material-blue/config.inc:181
 msgid "Resultados por página"
 msgstr "Eredmény / oldal"
 
 # "Number of results that are shown per page when searching"
 #: ../../../../inc/themes/classic/config.inc:216
-#: ../../../../inc/themes/material-blue/config.inc:187
+#: ../../../../inc/themes/material-blue/config.inc:185
 #, fuzzy
 msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
 msgstr "Keresési találok száma oldalanként"
@@ -4074,32 +4116,32 @@ msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr "Enables to show account's search results like a card format."
 
 #: ../../../../inc/themes/classic/config.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:203
+#: ../../../../inc/themes/material-blue/config.inc:201
 #, fuzzy
 msgid "Imagen para mostrar clave"
 msgstr "Mester jelszó szükséges a jelszavak titkosításához"
 
 # "Error on retrieving accounts' passwords"
 #: ../../../../inc/themes/classic/config.inc:247
-#: ../../../../inc/themes/material-blue/config.inc:207
+#: ../../../../inc/themes/material-blue/config.inc:205
 #, fuzzy
 msgid "Generar una imagen con el texto de la clave de la cuenta."
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
 #: ../../../../inc/themes/classic/config.inc:250
-#: ../../../../inc/themes/material-blue/config.inc:210
+#: ../../../../inc/themes/material-blue/config.inc:208
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
 
 # "Add extension"
 #: ../../../../inc/themes/classic/config.inc:285
-#: ../../../../inc/themes/material-blue/config.inc:400
+#: ../../../../inc/themes/material-blue/config.inc:398
 msgid "Añadir extensión"
 msgstr "Kiterjesztés hozzáadása"
 
 # "Delete extension"
 #: ../../../../inc/themes/classic/config.inc:286
-#: ../../../../inc/themes/material-blue/config.inc:401
+#: ../../../../inc/themes/material-blue/config.inc:399
 msgid "Eliminar extensión"
 msgstr "Kiterjesztés törlése"
 
@@ -4137,8 +4179,8 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/encryption.inc:8
 #: ../../../../inc/themes/material-blue/install.inc:49
 #: ../../../../inc/themes/material-blue/install.inc:56
-#: ../../../../inc/themes/material-blue/login.inc:24
-#: ../../../../inc/themes/material-blue/login.inc:46
+#: ../../../../inc/themes/material-blue/login.inc:25
+#: ../../../../inc/themes/material-blue/login.inc:48
 msgid "Clave Maestra"
 msgstr "Mester jelszó"
 
@@ -4218,12 +4260,16 @@ msgstr "Minden felhasználónak úrja be kell írnia az új mester jelszót"
 
 #: ../../../../inc/themes/classic/encryption.inc:98
 #: ../../../../inc/themes/material-blue/encryption.inc:112
-msgid "La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras."
+msgid ""
+"La clave maestra es utilizada para encriptar las claves de las cuentas de "
+"sysPass para mantenerlas seguras."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:100
 #: ../../../../inc/themes/material-blue/encryption.inc:114
-msgid "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos."
+msgid ""
+"Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
+"que incluya números, letras y símbolos."
 msgstr ""
 
 # "Master Password"
@@ -4260,7 +4306,10 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:157
 #: ../../../../inc/themes/material-blue/encryption.inc:176
-msgid "La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original."
+msgid ""
+"La clave temporal es utilizada como clave maestra para los usuarios que "
+"necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
+"la clave maestra original."
 msgstr ""
 
 # "General"
@@ -4496,25 +4545,34 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Dobja el a fájlokat vagy kattintson a választáshoz"
 
 #: ../../../../inc/themes/classic/import.inc:175
-msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV."
+msgid ""
+"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
+"arhcivos XML y CSV."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:177
 #: ../../../../inc/themes/material-blue/import.inc:106
-msgid "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
+msgid ""
+"Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:179
 #: ../../../../inc/themes/material-blue/import.inc:108
-msgid "Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha."
+msgid ""
+"Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
+"flecha."
 msgstr ""
 
 # Import from KeePass or KeePassX. The customer name will be KeePass or KeePassX.
 #: ../../../../inc/themes/classic/import.inc:181
 #: ../../../../inc/themes/material-blue/import.inc:110
 #, fuzzy
-msgid "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos."
-msgstr "Import from KeePass or KeePassX. The customer name will be KeePass or KeePassX."
+msgid ""
+"Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
+"KeePass o KeePassX y la categoría igual al nombre de los grupos."
+msgstr ""
+"Import from KeePass or KeePassX. The customer name will be KeePass or "
+"KeePassX."
 
 # "Import form a CSV file with the format"
 #: ../../../../inc/themes/classic/import.inc:183
@@ -4533,8 +4591,12 @@ msgstr "Fiók_név;ügyfél;kategória;url;felhasználó;jelszó;jegyzetek"
 #: ../../../../inc/themes/classic/import.inc:187
 #: ../../../../inc/themes/material-blue/import.inc:116
 #, fuzzy
-msgid "En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente."
-msgstr "Amennyiben az ügyfél vagy a kategória nem létezik, automatikusan lesznek létrehozva"
+msgid ""
+"En todos los casos, si el cliente o la categoría no están creados, se crean "
+"automáticamente."
+msgstr ""
+"Amennyiben az ügyfél vagy a kategória nem létezik, automatikusan lesznek "
+"létrehozva"
 
 # "Request description"
 #: ../../../../inc/themes/classic/info.inc:4
@@ -4579,7 +4641,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/info.inc:44
 #: ../../../../inc/themes/classic/ldap.inc:32
 #: ../../../../inc/themes/classic/mail.inc:21
-#: ../../../../inc/themes/material-blue/config.inc:318
+#: ../../../../inc/themes/material-blue/config.inc:316
 #: ../../../../inc/themes/material-blue/info.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:35
 #: ../../../../inc/themes/material-blue/ldap.inc:58
@@ -4732,7 +4794,8 @@ msgstr "LDAP bázis a felhasználó keresésekhez"
 #: ../../../../inc/themes/classic/ldap.inc:120
 #: ../../../../inc/themes/material-blue/ldap.inc:143
 #, fuzzy
-msgid "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
+msgid ""
+"Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr "LDAP csoport felhasználóinak belépési jgosultságia"
 
 #: ../../../../inc/themes/classic/ldap.inc:124
@@ -4744,7 +4807,8 @@ msgstr ""
 #: ../../../../inc/themes/classic/ldap.inc:148
 #: ../../../../inc/themes/material-blue/ldap.inc:174
 #, fuzzy
-msgid "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid ""
+"Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Define the default users group for new LDAP users"
 
 # Default Profile
@@ -4758,7 +4822,8 @@ msgstr "A profilt használja:"
 #: ../../../../inc/themes/classic/ldap.inc:169
 #: ../../../../inc/themes/material-blue/ldap.inc:194
 #, fuzzy
-msgid "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid ""
+"Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Define the default users profile for new LDAP users"
 
 # Active Directory
@@ -4789,22 +4854,22 @@ msgstr "LDAP kapcsolat ellenõrzése"
 
 # "Lost your password?"
 #: ../../../../inc/themes/classic/login.inc:46
-#: ../../../../inc/themes/material-blue/login.inc:69
+#: ../../../../inc/themes/material-blue/login.inc:73
 msgid "¿Olvidó su clave?"
 msgstr "Elvesztette jelszavát?"
 
 # "Application successfully updated"
 #: ../../../../inc/themes/classic/login.inc:59
-#: ../../../../inc/themes/material-blue/login.inc:82
+#: ../../../../inc/themes/material-blue/login.inc:85
 msgid "Aplicación actualizada correctamente"
 msgstr "Az alkalmazás frissítése sikeres"
 
 # "New Category"
 #: ../../../../inc/themes/classic/login.inc:64
 #: ../../../../inc/themes/classic/login.inc:65
-#: ../../../../inc/themes/material-blue/login.inc:87
-#: ../../../../inc/themes/material-blue/login.inc:88
 #: ../../../../inc/themes/material-blue/login.inc:90
+#: ../../../../inc/themes/material-blue/login.inc:91
+#: ../../../../inc/themes/material-blue/login.inc:93
 #, fuzzy
 msgid "Nuevas Características"
 msgstr "Új Kategória"
@@ -4817,7 +4882,7 @@ msgstr "Email értesítés engedélyezése"
 
 # "Port"
 #: ../../../../inc/themes/classic/mail.inc:29
-#: ../../../../inc/themes/material-blue/config.inc:332
+#: ../../../../inc/themes/material-blue/config.inc:330
 #: ../../../../inc/themes/material-blue/mail.inc:36
 #: ../../../../inc/themes/material-blue/mail.inc:43
 msgid "Puerto"
@@ -5221,21 +5286,26 @@ msgstr ""
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr ""
 
+#: ../../../../inc/themes/classic/searchbox.inc:15
+#: ../../../../inc/themes/material-blue/searchbox.inc:20
+msgid "Buscar cuentas con archivos con el nombre 'file_name'"
+msgstr ""
+
 # "Global search"
-#: ../../../../inc/themes/classic/searchbox.inc:18
+#: ../../../../inc/themes/classic/searchbox.inc:19
 #: ../../../../inc/themes/material-blue/searchbox.inc:25
 #: ../../../../inc/themes/material-blue/searchbox.inc:28
 msgid "Búsqueda global"
 msgstr "Globális keresés"
 
 # "APP"
-#: ../../../../inc/themes/classic/searchbox.inc:41
+#: ../../../../inc/themes/classic/searchbox.inc:42
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "CPP"
 msgstr "APP"
 
 # "Accounts per page"
-#: ../../../../inc/themes/classic/searchbox.inc:41
+#: ../../../../inc/themes/classic/searchbox.inc:42
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "Cuentas por página"
 msgstr "Fiók/oldal"
@@ -5253,35 +5323,41 @@ msgid "Autenticación en 2 pasos"
 msgstr "Fiók Aktiválás"
 
 #: ../../../../inc/themes/classic/security.inc:17
-#: ../../../../inc/themes/material-blue/security.inc:17
-msgid "Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator."
+#: ../../../../inc/themes/material-blue/security.inc:15
+msgid ""
+"Habilita la autentificación en 2 pasos que requiere de la introducción de un "
+"token generado por una aplicación como Google Authenticator."
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:21
-#: ../../../../inc/themes/material-blue/security.inc:21
-msgid "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 dígitos."
+#: ../../../../inc/themes/material-blue/security.inc:19
+msgid ""
+"Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
+"dígitos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:29
-#: ../../../../inc/themes/material-blue/security.inc:29
+#: ../../../../inc/themes/material-blue/security.inc:27
 msgid "Activar"
 msgstr ""
 
 # "Error on retrieving accounts history"
 #: ../../../../inc/themes/classic/security.inc:34
-#: ../../../../inc/themes/material-blue/security.inc:35
+#: ../../../../inc/themes/material-blue/security.inc:33
 #, fuzzy
 msgid "Error al obtener el código QR. Inténtelo de nuevo"
 msgstr "Hiba a fiókok elõzményeinek betöltése közben"
 
 #: ../../../../inc/themes/classic/security.inc:39
-#: ../../../../inc/themes/material-blue/security.inc:43
+#: ../../../../inc/themes/material-blue/security.inc:41
 msgid "Código"
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:44
-#: ../../../../inc/themes/material-blue/security.inc:48
-msgid "Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado."
+#: ../../../../inc/themes/material-blue/security.inc:46
+msgid ""
+"Una vez activada, sólo es posible acceder si se dispone del dispositivo "
+"generador de códigos asociado."
 msgstr ""
 
 # "Change user password"
@@ -5437,7 +5513,9 @@ msgstr "Wiki linkek engedélyezése"
 #: ../../../../inc/themes/classic/wiki.inc:15
 #: ../../../../inc/themes/material-blue/wiki.inc:15
 #, fuzzy
-msgid "Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda."
+msgid ""
+"Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
+"la búsqueda."
 msgstr "Külsõ Wiki forrásokban való keresés engedélyezése"
 
 # "Wiki search URL"
@@ -5488,7 +5566,9 @@ msgstr "Wiki oldal adatainak elérése"
 #: ../../../../inc/themes/classic/wiki.inc:62
 #: ../../../../inc/themes/material-blue/wiki.inc:70
 #, fuzzy
-msgid "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki."
+msgid ""
+"El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
+"de la Wiki."
 msgstr "A fiók neve wiki keresési paraméterként való használata"
 
 # "Account name preffix"
@@ -5501,7 +5581,8 @@ msgstr "Fiók név elõtag"
 #: ../../../../inc/themes/classic/wiki.inc:85
 #: ../../../../inc/themes/material-blue/wiki.inc:97
 #, fuzzy
-msgid "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
+msgid ""
+"Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr "Elõtag választás a fiókok tartalmaznak-e wiki linket"
 
 # "Add filter"
@@ -5542,42 +5623,42 @@ msgid "Realizar"
 msgstr "Archívum készítés"
 
 # "Results per page"
-#: ../../../../inc/themes/material-blue/config.inc:197
+#: ../../../../inc/themes/material-blue/config.inc:195
 #, fuzzy
 msgid "Número de resultados por página"
 msgstr "Keresési találok száma oldalanként"
 
 # "Maximum file size"
-#: ../../../../inc/themes/material-blue/config.inc:292
+#: ../../../../inc/themes/material-blue/config.inc:290
 #, fuzzy
 msgid "Tamaño máximo de archivo en bytes"
 msgstr "Maximális fájl méret"
 
-#: ../../../../inc/themes/material-blue/config.inc:299
+#: ../../../../inc/themes/material-blue/config.inc:297
 msgid "Proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:305
+#: ../../../../inc/themes/material-blue/config.inc:303
 msgid "Usar Proxy"
 msgstr ""
 
 # "Server"
-#: ../../../../inc/themes/material-blue/config.inc:326
+#: ../../../../inc/themes/material-blue/config.inc:324
 #, fuzzy
 msgid "Servidor proxy"
 msgstr "Szerver"
 
-#: ../../../../inc/themes/material-blue/config.inc:340
+#: ../../../../inc/themes/material-blue/config.inc:338
 msgid "Puerto del servidor proxy"
 msgstr ""
 
 # "Access user"
-#: ../../../../inc/themes/material-blue/config.inc:354
+#: ../../../../inc/themes/material-blue/config.inc:352
 #, fuzzy
 msgid "Usuario del servidor proxy"
 msgstr "Felhasználó elérése"
 
-#: ../../../../inc/themes/material-blue/config.inc:368
+#: ../../../../inc/themes/material-blue/config.inc:366
 msgid "Clave del servidor proxy"
 msgstr ""
 
@@ -5599,7 +5680,9 @@ msgid "Preferencias de usuario"
 msgstr "Dupla felhasználó bejelentkezés"
 
 #: ../../../../inc/themes/material-blue/import.inc:104
-msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV."
+msgid ""
+"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
+"archivos XML y CSV."
 msgstr ""
 
 # sysPass administrator's login
@@ -5651,7 +5734,9 @@ msgid "Clave del usuario de conexión a LDAP."
 msgstr "LDAP bind felhasználói jelszó"
 
 #: ../../../../inc/themes/material-blue/mail.inc:118
-msgid "Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos."
+msgid ""
+"Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
+"cuentas sin permisos."
 msgstr ""
 
 # "Add new account"
@@ -5695,10 +5780,6 @@ msgstr "Beállítások"
 #, fuzzy
 msgid "Realizar copia de seguridad y exportar"
 msgstr "archívum készítés"
-
-#: ../../../../inc/themes/material-blue/searchbox.inc:20
-msgid "Buscar cuentas con archivos con el nombre 'file_name'"
-msgstr ""
 
 # "Enable Authentication"
 #: ../../../../inc/themes/material-blue/security.inc:4

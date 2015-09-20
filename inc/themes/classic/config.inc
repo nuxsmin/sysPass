@@ -98,7 +98,7 @@
                 <td class="valField">
                     <label for="updates"><?php echo ($chkUpdates) ? 'SI' : 'NO'; ?></label>
                     <input type="checkbox" name="updates" id="updates"
-                           class="checkbox" <?php echo $chkUpdates, ' ', $isDisabled; ?> />
+                           class="checkbox" <?php echo $chkUpdates; ?> />
                 </td>
             </tr>
             <tr>
@@ -112,9 +112,9 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="notices"><?php echo ($chkUpdates) ? 'SI' : 'NO'; ?></label>
+                    <label for="notices"><?php echo ($chkNotices) ? 'SI' : 'NO'; ?></label>
                     <input type="checkbox" name="notices" id="notices"
-                           class="checkbox" <?php echo $chkNotices, ' ', $isDisabled; ?> />
+                           class="checkbox" <?php echo $chkNotices; ?> />
                 </td>
             </tr>
             <tr>
@@ -162,7 +162,7 @@
                 <td class="valField">
                     <label for="globalsearch"><?php echo ($chkGlobalSearch) ? 'SI' : 'NO'; ?></label>
                     <input type="checkbox" name="globalsearch" id="globalsearch"
-                           class="checkbox" <?php echo $chkGlobalSearch, ' ', $isDisabled; ?> />
+                           class="checkbox" <?php echo $chkGlobalSearch; ?> />
                 </td>
             </tr>
             <tr>
@@ -254,7 +254,7 @@
                 <td class="valField">
                     <label for="account_passtoimage"><?php echo ($chkAccountPassToImage) ? 'SI' : 'NO'; ?></label>
                     <input type="checkbox" name="account_passtoimage" id="account_passtoimage"
-                           class="checkbox" <?php echo $chkAccountPassToImage, ' ', $isDisabled; ?> />
+                           class="checkbox" <?php echo $chkAccountPassToImage; ?> />
                 </td>
             </tr>
         </table>

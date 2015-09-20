@@ -199,7 +199,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.2-beta';
+        return '1.2-rc1';
     }
 
     /**
@@ -236,7 +236,7 @@ class Util
             $description = $updateInfo->body;
             $date = $updateInfo->published_at;
 
-            preg_match("/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/", $version, $realVer);
+            preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
 
             if (is_array($realVer) && Init::isLoggedIn()) {
                 $appVersion = implode('', self::getVersion(true));

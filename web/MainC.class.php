@@ -106,7 +106,7 @@ class MainC extends Controller implements ActionsInterface
         if (is_null($onLoad)) {
             $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')');
 
-            if (Session::getUserIsAdminApp()) {
+            if (Session::getUserIsAdminApp() || Util::demoIsEnabled()) {
                 $onLoad[] = 'checkUpds()';
             }
 
@@ -375,7 +375,7 @@ class MainC extends Controller implements ActionsInterface
             $this->view->assign('hasUpdates', true);
             $this->view->assign('title', $updates['title']);
             $this->view->assign('url', $updates['url']);
-            $this->view->assign('description', _('Descargar nueva versión') . ' - ' . $version . '<br><br>' . $description);
+            $this->view->assign('description', sprintf('%s - %s <br><br>%s', _('Descargar nueva versión'), $version, $description));
         } else {
             $this->view->assign('hasUpdates', false);
             $this->view->assign('status', $updates);
@@ -386,7 +386,7 @@ class MainC extends Controller implements ActionsInterface
         $noticesTitle = '';
 
         if ($notices !== false && $numNotices > 0){
-            $noticesTitle = 'sysPass Notices<br><br>';
+            $noticesTitle = sprintf('%s <br><br>', _('Avisos de sysPass'));
 
             foreach ($notices as $notice){
                 $noticesTitle .= sprintf('%s <br>', $notice[0]);

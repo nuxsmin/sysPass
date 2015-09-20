@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-05 15:29+0100\n"
-"PO-Revision-Date: 2015-09-05 15:30+0100\n"
+"POT-Creation-Date: 2015-09-19 12:41+0100\n"
+"PO-Revision-Date: 2015-09-19 12:41+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <nuxsmin@syspass.org>\n"
 "Language: ru_RU\n"
@@ -20,7 +20,8 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.6.10\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
 #: ../../../../ajax/ajax_2fa.php:35 ../../../../ajax/ajax_accountSave.php:41
@@ -593,7 +594,7 @@ msgid "Faltan parámetros de Proxy"
 msgstr "Пропущены настройки Wiki"
 
 #: ../../../../ajax/ajax_configSave.php:125
-#: ../../../../web/ConfigC.class.php:122
+#: ../../../../web/ConfigC.class.php:126
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
@@ -604,7 +605,7 @@ msgid "Faltan parámetros de Wiki"
 msgstr "Пропущены настройки Wiki"
 
 #: ../../../../ajax/ajax_configSave.php:147
-#: ../../../../web/ConfigC.class.php:254
+#: ../../../../web/ConfigC.class.php:262
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
@@ -615,7 +616,7 @@ msgid "Faltan parámetros de LDAP"
 msgstr "Пропущены настройки LDAP"
 
 #: ../../../../ajax/ajax_configSave.php:179
-#: ../../../../web/ConfigC.class.php:286
+#: ../../../../web/ConfigC.class.php:294
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
@@ -626,7 +627,7 @@ msgid "Faltan parámetros de Correo"
 msgstr "Пропущены настройки почты"
 
 #: ../../../../ajax/ajax_configSave.php:216
-#: ../../../../web/ConfigC.class.php:316
+#: ../../../../web/ConfigC.class.php:324
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
@@ -706,14 +707,14 @@ msgstr "Сгенерировать пароль"
 #: ../../../../inc/themes/classic/userspass.inc:11
 #: ../../../../inc/themes/material-blue/account.inc:95
 #: ../../../../inc/themes/material-blue/account.inc:100
-#: ../../../../inc/themes/material-blue/config.inc:360
+#: ../../../../inc/themes/material-blue/config.inc:358
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
 #: ../../../../inc/themes/material-blue/install.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:105
-#: ../../../../inc/themes/material-blue/login.inc:16
-#: ../../../../inc/themes/material-blue/login.inc:38
+#: ../../../../inc/themes/material-blue/login.inc:17
+#: ../../../../inc/themes/material-blue/login.inc:40
 #: ../../../../inc/themes/material-blue/mail.inc:73
 #: ../../../../inc/themes/material-blue/mail.inc:80
 #: ../../../../inc/themes/material-blue/passreset.inc:31
@@ -792,12 +793,12 @@ msgstr "Ошибка входа"
 #: ../../../../inc/themes/classic/search.inc:52
 #: ../../../../inc/themes/classic/tokens.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:80
-#: ../../../../inc/themes/material-blue/config.inc:346
+#: ../../../../inc/themes/material-blue/config.inc:344
 #: ../../../../inc/themes/material-blue/editpass.inc:22
 #: ../../../../inc/themes/material-blue/eventlog.inc:24
 #: ../../../../inc/themes/material-blue/info.inc:39
 #: ../../../../inc/themes/material-blue/login.inc:10
-#: ../../../../inc/themes/material-blue/login.inc:32
+#: ../../../../inc/themes/material-blue/login.inc:33
 #: ../../../../inc/themes/material-blue/mail.inc:61
 #: ../../../../inc/themes/material-blue/mail.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:17
@@ -993,7 +994,8 @@ msgstr "В скором времени вы получите email для зав
 
 #: ../../../../ajax/ajax_passReset.php:60
 msgid "No se ha podido realizar la solicitud. Consulte con el administrador."
-msgstr "Запрос не может быть выполнен. Пожалуйста, свяжитесь с администратором."
+msgstr ""
+"Запрос не может быть выполнен. Пожалуйста, свяжитесь с администратором."
 
 #: ../../../../ajax/ajax_passReset.php:72
 #: ../../../../inc/UserBase.class.php:568
@@ -1146,7 +1148,7 @@ msgstr "Help :: FAQ :: Changelog"
 #: ../../../../inc/XmlImportBase.class.php:28
 #: ../../../../web/AccountC.class.php:38
 #: ../../../../web/AccountsMgmtC.class.php:32
-#: ../../../../web/ConfigC.class.php:30 ../../../../web/EventlogC.class.php:28
+#: ../../../../web/ConfigC.class.php:31 ../../../../web/EventlogC.class.php:28
 #: ../../../../web/SearchC.class.php:30
 #: ../../../../web/UsersMgmtC.class.php:39
 #: ../../../../web/UsersPrefsC.class.php:32
@@ -1324,7 +1326,7 @@ msgstr "Показать историю"
 #: ../../../../inc/themes/classic/account.inc:188
 #: ../../../../inc/themes/classic/profiles.inc:50
 #: ../../../../inc/themes/material-blue/account.inc:230
-#: ../../../../inc/themes/material-blue/config.inc:226
+#: ../../../../inc/themes/material-blue/config.inc:224
 #: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Archivos"
 msgstr "Файлы"
@@ -1386,14 +1388,14 @@ msgstr "Конфигурация"
 msgid "Configuración General"
 msgstr "Основная конфигурация"
 
-#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:145
+#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:149
 #: ../../../../inc/themes/classic/profiles.inc:65
 #: ../../../../inc/themes/material-blue/profiles.inc:77
 #, fuzzy
 msgid "Encriptación"
 msgstr "Ошибка в модуле шифрования"
 
-#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:187
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:195
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
@@ -1489,22 +1491,26 @@ msgstr "Для завершения, пожалуйста пройдите по 
 
 #: ../../../../inc/Auth.class.php:199
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
-msgstr "Если Вы не запрашивали данное действие, пожалуйста, проигнорируйте данное письмо."
+msgstr ""
+"Если Вы не запрашивали данное действие, пожалуйста, проигнорируйте данное "
+"письмо."
 
-#: ../../../../inc/Backup.class.php:161
+#: ../../../../inc/Backup.class.php:166
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Данная операция возможна только в Linux"
 
-#: ../../../../inc/Backup.class.php:163
+#: ../../../../inc/Backup.class.php:168
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Ошибка при создании резервной копии в режиме совместимости"
 
-#: ../../../../inc/Backup.class.php:217
+#: ../../../../inc/Backup.class.php:222
+#: ../../../../inc/XmlExport.class.php:464
 #, fuzzy
 msgid "No es posible crear el directorio de backups"
 msgstr "Невозможно создать заказчика"
 
-#: ../../../../inc/Backup.class.php:222
+#: ../../../../inc/Backup.class.php:227
+#: ../../../../inc/XmlExport.class.php:469
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Проверьте права на папку резервных копий"
 
@@ -1612,7 +1618,7 @@ msgstr "Пожалуйста, проверьте формат файла CSV"
 #: ../../../../inc/Migrate.class.php:349
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:209
+#: ../../../../web/ConfigC.class.php:217
 msgid "Importar Cuentas"
 msgstr "Импорт учетных записей"
 
@@ -1981,15 +1987,20 @@ msgstr "Файл структуры базы данных не существу�
 
 #: ../../../../inc/Installer.class.php:382
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
-msgstr "Невозможно создать базу данных программы. Пожалуйста, скачайте её заново."
+msgstr ""
+"Невозможно создать базу данных программы. Пожалуйста, скачайте её заново."
 
 #: ../../../../inc/Installer.class.php:390
 msgid "Error al seleccionar la BBDD"
 msgstr "Ошибка выбора базы данных."
 
 #: ../../../../inc/Installer.class.php:391
-msgid "No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista."
-msgstr "Невозможно использовать базу данных для создания её структуры. Проверьте права доступа к базе данных."
+msgid ""
+"No es posible usar la Base de Datos para crear la estructura. Compruebe los "
+"permisos y que no exista."
+msgstr ""
+"Невозможно использовать базу данных для создания её структуры. Проверьте "
+"права доступа к базе данных."
 
 #: ../../../../inc/Installer.class.php:409
 msgid "Error al crear la estructura de la Base de Datos."
@@ -2273,7 +2284,7 @@ msgstr "См. журнал событий для получения подроб
 #: ../../../../inc/Upgrade.class.php:52 ../../../../inc/Upgrade.class.php:58
 #: ../../../../inc/themes/classic/login.inc:32
 #: ../../../../inc/themes/material-blue/2fa.inc:26
-#: ../../../../inc/themes/material-blue/login.inc:60
+#: ../../../../inc/themes/material-blue/login.inc:64
 msgid "Acceder"
 msgstr "Войти"
 
@@ -2353,7 +2364,8 @@ msgid "Versión de PHP requerida >= "
 msgstr "Необходим PHP версии >= 5.1"
 
 #: ../../../../inc/Util.class.php:123
-msgid "Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgid ""
+"Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Пожалуйста, обновите PHP для использования sysPass"
 
 #: ../../../../inc/Util.class.php:159
@@ -2366,12 +2378,12 @@ msgstr "Модуль недоступен"
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "Без этого модуля программа не может работать корректно"
 
-#: ../../../../inc/XmlExport.class.php:104
+#: ../../../../inc/XmlExport.class.php:124
 #, fuzzy
-msgid "Importar XML"
+msgid "Exportar XML"
 msgstr "Импорт CSV/XML"
 
-#: ../../../../inc/XmlExport.class.php:389
+#: ../../../../inc/XmlExport.class.php:409
 #, fuzzy
 msgid "Error al crear el archivo XML"
 msgstr "Ошибка при создании пользователя"
@@ -2402,7 +2414,7 @@ msgstr "Произошла ошибка"
 
 #: ../../../../js/strings.js.php:29
 #: ../../../../inc/themes/classic/login.inc:52
-#: ../../../../inc/themes/material-blue/login.inc:75
+#: ../../../../inc/themes/material-blue/login.inc:77
 msgid "Sesión finalizada"
 msgstr "Сессия завершена"
 
@@ -2655,25 +2667,25 @@ msgstr "Удалить учетную запись"
 msgid "Campos Personalizados"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:178
+#: ../../../../web/ConfigC.class.php:186
 msgid "Último backup"
 msgstr "Последняя резервная копия"
 
-#: ../../../../web/ConfigC.class.php:178
+#: ../../../../web/ConfigC.class.php:186
 msgid "No se encontraron backups"
 msgstr "Резервные копии не найдены"
 
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:193
 #, fuzzy
 msgid "Última exportación"
 msgstr "Последнее изменение"
 
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:193
 #, fuzzy
 msgid "No se encontró archivo de exportación"
 msgstr "Ошибка записи файла конфигурации"
 
-#: ../../../../web/ConfigC.class.php:230
+#: ../../../../web/ConfigC.class.php:238
 #, fuzzy
 msgid "Información"
 msgstr "Показывает информацию о программе и производительности."
@@ -2740,7 +2752,7 @@ msgstr "Запрос на изменение учетной записи"
 #: ../../../../web/MainC.class.php:205
 #: ../../../../inc/themes/classic/2fa.inc:9
 #: ../../../../inc/themes/material-blue/2fa.inc:9
-#: ../../../../inc/themes/material-blue/security.inc:13
+#: ../../../../inc/themes/material-blue/security.inc:11
 #, fuzzy
 msgid "Autentificación en 2 pasos"
 msgstr "Включить аутентификацию"
@@ -2790,8 +2802,11 @@ msgid "No se encuentra el generador de números aleatorios."
 msgstr "Не могу найти генератор случайных чисел."
 
 #: ../../../../web/MainC.class.php:263
-msgid "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
-msgstr "Без этой функции, атакующий может завладеть вашим аккаунтом при сбросе пароля."
+msgid ""
+"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgstr ""
+"Без этой функции, атакующий может завладеть вашим аккаунтом при сбросе "
+"пароля."
 
 #: ../../../../web/MainC.class.php:282
 msgid "Instalación finalizada"
@@ -2804,6 +2819,10 @@ msgstr "Назмите <a href=\"index.php\" title=\"войти\">здесь</a>
 #: ../../../../web/MainC.class.php:378
 msgid "Descargar nueva versión"
 msgstr "Скачать новую версию"
+
+#: ../../../../web/MainC.class.php:389
+msgid "Avisos de sysPass"
+msgstr ""
 
 #: ../../../../web/SearchC.class.php:270
 msgid "Ordenar por Cliente"
@@ -2985,7 +3004,7 @@ msgstr "Перетащите файлы сюда (не более 5) или на
 #: ../../../../inc/themes/classic/account.inc:201
 #: ../../../../inc/themes/classic/config.inc:193
 #: ../../../../inc/themes/material-blue/account.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:274
+#: ../../../../inc/themes/material-blue/config.inc:272
 msgid "Tamaño máximo de archivo"
 msgstr "Максимальный размер файла"
 
@@ -3112,7 +3131,7 @@ msgstr "Запросить изменение"
 #: ../../../../inc/themes/classic/wiki.inc:110
 #: ../../../../inc/themes/material-blue/account.inc:461
 #: ../../../../inc/themes/material-blue/categories.inc:72
-#: ../../../../inc/themes/material-blue/config.inc:390
+#: ../../../../inc/themes/material-blue/config.inc:388
 #: ../../../../inc/themes/material-blue/customers.inc:73
 #: ../../../../inc/themes/material-blue/customfields.inc:74
 #: ../../../../inc/themes/material-blue/editpass.inc:60
@@ -3120,7 +3139,7 @@ msgstr "Запросить изменение"
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
 #: ../../../../inc/themes/material-blue/profiles.inc:177
-#: ../../../../inc/themes/material-blue/security.inc:64
+#: ../../../../inc/themes/material-blue/security.inc:62
 #: ../../../../inc/themes/material-blue/tokens.inc:63
 #: ../../../../inc/themes/material-blue/users.inc:235
 #: ../../../../inc/themes/material-blue/userspass.inc:40
@@ -3210,12 +3229,16 @@ msgstr "Help :: FAQ :: Changelog"
 
 #: ../../../../inc/themes/classic/backup.inc:50
 #: ../../../../inc/themes/material-blue/backup.inc:52
-msgid "La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración."
+msgid ""
+"La copia de seguridad permite guardar y descargar tanto la base de datos de "
+"sysPass como los archivos de la aplicación y su configuración."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:52
 #: ../../../../inc/themes/material-blue/backup.inc:54
-msgid "Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable."
+msgid ""
+"Con este método es posible guardar todos los datos de sysPass en otro lugar "
+"o utilizarlos para hacer la aplicación portable."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:60
@@ -3247,7 +3270,9 @@ msgstr "Подтверждение пароля"
 
 #: ../../../../inc/themes/classic/backup.inc:118
 #: ../../../../inc/themes/material-blue/backup.inc:134
-msgid "La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass."
+msgid ""
+"La exportación de cuentas permite guardar las cuentas y sus datos en formato "
+"XML para posteriormente poder ser importados en otras instancias de sysPass."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:120
@@ -3257,12 +3282,16 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:122
 #: ../../../../inc/themes/material-blue/backup.inc:138
-msgid "Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad."
+msgid ""
+"Las claves de las cuentas son exportadas de forma encriptada para mayor "
+"seguridad."
 msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:124
 #: ../../../../inc/themes/material-blue/backup.inc:140
-msgid "Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML."
+msgid ""
+"Es posible establecer una clave de exportación para guardar todos los datos "
+"encriptados en el archivo XML."
 msgstr ""
 
 #: ../../../../inc/themes/classic/body.inc:4
@@ -3320,7 +3349,9 @@ msgstr "Включить отладку"
 #: ../../../../inc/themes/classic/config.inc:62
 #: ../../../../inc/themes/material-blue/config.inc:70
 #, fuzzy
-msgid "Muestra información relativa a la configuración de la aplicación y rendimiento."
+msgid ""
+"Muestra información relativa a la configuración de la aplicación y "
+"rendimiento."
 msgstr "Показывает информацию о программе и производительности."
 
 #: ../../../../inc/themes/classic/config.inc:74
@@ -3331,8 +3362,12 @@ msgstr "Режим обслуживания"
 #: ../../../../inc/themes/classic/config.inc:78
 #: ../../../../inc/themes/material-blue/config.inc:88
 #, fuzzy
-msgid "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración."
-msgstr "В данном режиме войти в программу невозможно. Для его отключения необходимо редактировать файл конфигурации."
+msgid ""
+"En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
+"necesario modificar el archivo de configuración."
+msgstr ""
+"В данном режиме войти в программу невозможно. Для его отключения необходимо "
+"редактировать файл конфигурации."
 
 #: ../../../../inc/themes/classic/config.inc:90
 #: ../../../../inc/themes/material-blue/config.inc:102
@@ -3342,7 +3377,9 @@ msgstr "Проверка обновлений"
 #: ../../../../inc/themes/classic/config.inc:94
 #: ../../../../inc/themes/material-blue/config.inc:106
 #, fuzzy
-msgid "Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)."
+msgid ""
+"Comprobar actualizaciones de la aplicación (sólo para los usuarios "
+"administradores)."
 msgstr "Проверяет обновления программы (только для администраторов)."
 
 #: ../../../../inc/themes/classic/config.inc:106
@@ -3354,7 +3391,9 @@ msgstr "Проверить"
 #: ../../../../inc/themes/classic/config.inc:110
 #: ../../../../inc/themes/material-blue/config.inc:124
 #, fuzzy
-msgid "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores)."
+msgid ""
+"Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
+"para los usuarios administradores)."
 msgstr "Проверяет обновления программы (только для администраторов)."
 
 #: ../../../../inc/themes/classic/config.inc:122
@@ -3365,72 +3404,78 @@ msgstr "Имя учетной записи как ссылка"
 #: ../../../../inc/themes/classic/config.inc:126
 #: ../../../../inc/themes/material-blue/config.inc:149
 #, fuzzy
-msgid "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta."
+msgid ""
+"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
+"de la cuenta."
 msgstr "Превращает имя учетной записи в ссылку на её детали на странице поиска"
 
 #: ../../../../inc/themes/classic/config.inc:138
-#: ../../../../inc/themes/material-blue/config.inc:232
+#: ../../../../inc/themes/material-blue/config.inc:230
 msgid "Gestión de archivos"
 msgstr "Управление файлами"
 
 #: ../../../../inc/themes/classic/config.inc:142
-#: ../../../../inc/themes/material-blue/config.inc:236
+#: ../../../../inc/themes/material-blue/config.inc:234
 #, fuzzy
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr "Включает загрузку/скачивание файлов учетной записи"
 
 #: ../../../../inc/themes/classic/config.inc:154
-#: ../../../../inc/themes/material-blue/config.inc:164
+#: ../../../../inc/themes/material-blue/config.inc:163
 msgid "Búsquedas globales"
 msgstr "Глобальные поиски"
 
 #: ../../../../inc/themes/classic/config.inc:158
-#: ../../../../inc/themes/material-blue/config.inc:168
-msgid "Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos."
+#: ../../../../inc/themes/material-blue/config.inc:167
+msgid ""
+"Permite que todos los usuarios puedan realizar búsquedas en todas las "
+"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:170
-#: ../../../../inc/themes/material-blue/config.inc:251
+#: ../../../../inc/themes/material-blue/config.inc:249
 msgid "Extensiones de archivos permitidas"
 msgstr "Разрешенные расширения файлов"
 
 #: ../../../../inc/themes/classic/config.inc:174
-#: ../../../../inc/themes/material-blue/config.inc:255
+#: ../../../../inc/themes/material-blue/config.inc:253
 #, fuzzy
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr "Включает загрузку/скачивание файлов учетной записи"
 
 #: ../../../../inc/themes/classic/config.inc:178
-#: ../../../../inc/themes/material-blue/config.inc:259
+#: ../../../../inc/themes/material-blue/config.inc:257
 #, fuzzy
 msgid "Se permite un máximo de 4 caracteres."
 msgstr "Максимальная длина расширения 4 символа."
 
 #: ../../../../inc/themes/classic/config.inc:182
-#: ../../../../inc/themes/material-blue/config.inc:263
+#: ../../../../inc/themes/material-blue/config.inc:261
 #, fuzzy
-msgid "Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración."
+msgid ""
+"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
+"configuración."
 msgstr "Введите расширение и нажмите Enter для добавления."
 
 #: ../../../../inc/themes/classic/config.inc:197
-#: ../../../../inc/themes/material-blue/config.inc:278
+#: ../../../../inc/themes/material-blue/config.inc:276
 #, fuzzy
 msgid "Establece el tamaño máximo para subir archivos."
 msgstr "Максимальный размер загружаемого файла."
 
 #: ../../../../inc/themes/classic/config.inc:201
-#: ../../../../inc/themes/material-blue/config.inc:282
+#: ../../../../inc/themes/material-blue/config.inc:280
 #, fuzzy
 msgid "El máximo absuluto es de 16MB."
 msgstr "Абсолютный максимум 16MB."
 
 #: ../../../../inc/themes/classic/config.inc:212
-#: ../../../../inc/themes/material-blue/config.inc:183
+#: ../../../../inc/themes/material-blue/config.inc:181
 msgid "Resultados por página"
 msgstr "Результатов на страницу"
 
 #: ../../../../inc/themes/classic/config.inc:216
-#: ../../../../inc/themes/material-blue/config.inc:187
+#: ../../../../inc/themes/material-blue/config.inc:185
 #, fuzzy
 msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
 msgstr "Число результатов поиска на страницу"
@@ -3444,29 +3489,29 @@ msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr "Включает показ учетных записей в результатах поиска в виде карточек."
 
 #: ../../../../inc/themes/classic/config.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:203
+#: ../../../../inc/themes/material-blue/config.inc:201
 #, fuzzy
 msgid "Imagen para mostrar clave"
 msgstr "Показать пароль"
 
 #: ../../../../inc/themes/classic/config.inc:247
-#: ../../../../inc/themes/material-blue/config.inc:207
+#: ../../../../inc/themes/material-blue/config.inc:205
 #, fuzzy
 msgid "Generar una imagen con el texto de la clave de la cuenta."
 msgstr "Ошибка получения паролей для учетной записи"
 
 #: ../../../../inc/themes/classic/config.inc:250
-#: ../../../../inc/themes/material-blue/config.inc:210
+#: ../../../../inc/themes/material-blue/config.inc:208
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
 
 #: ../../../../inc/themes/classic/config.inc:285
-#: ../../../../inc/themes/material-blue/config.inc:400
+#: ../../../../inc/themes/material-blue/config.inc:398
 msgid "Añadir extensión"
 msgstr "Добавить расширение"
 
 #: ../../../../inc/themes/classic/config.inc:286
-#: ../../../../inc/themes/material-blue/config.inc:401
+#: ../../../../inc/themes/material-blue/config.inc:399
 msgid "Eliminar extensión"
 msgstr "Удалить расширение"
 
@@ -3500,8 +3545,8 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/encryption.inc:8
 #: ../../../../inc/themes/material-blue/install.inc:49
 #: ../../../../inc/themes/material-blue/install.inc:56
-#: ../../../../inc/themes/material-blue/login.inc:24
-#: ../../../../inc/themes/material-blue/login.inc:46
+#: ../../../../inc/themes/material-blue/login.inc:25
+#: ../../../../inc/themes/material-blue/login.inc:48
 msgid "Clave Maestra"
 msgstr "Мастер-пароль"
 
@@ -3570,12 +3615,16 @@ msgstr "Пользователям потребуется ввести новы�
 
 #: ../../../../inc/themes/classic/encryption.inc:98
 #: ../../../../inc/themes/material-blue/encryption.inc:112
-msgid "La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras."
+msgid ""
+"La clave maestra es utilizada para encriptar las claves de las cuentas de "
+"sysPass para mantenerlas seguras."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:100
 #: ../../../../inc/themes/material-blue/encryption.inc:114
-msgid "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos."
+msgid ""
+"Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
+"que incluya números, letras y símbolos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:108
@@ -3610,7 +3659,10 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:157
 #: ../../../../inc/themes/material-blue/encryption.inc:176
-msgid "La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original."
+msgid ""
+"La clave temporal es utilizada como clave maestra para los usuarios que "
+"necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
+"la clave maestra original."
 msgstr ""
 
 #: ../../../../inc/themes/classic/encryption.inc:159
@@ -3813,24 +3865,32 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Перетащите файлы сюда или нажниме для выбора"
 
 #: ../../../../inc/themes/classic/import.inc:175
-msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV."
+msgid ""
+"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
+"arhcivos XML y CSV."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:177
 #: ../../../../inc/themes/material-blue/import.inc:106
-msgid "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
+msgid ""
+"Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:179
 #: ../../../../inc/themes/material-blue/import.inc:108
-msgid "Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha."
+msgid ""
+"Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
+"flecha."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:181
 #: ../../../../inc/themes/material-blue/import.inc:110
 #, fuzzy
-msgid "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos."
-msgstr "Импорт из KeePass или KeePassX. Имя заказчика будет KeePass или KeePassX."
+msgid ""
+"Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
+"KeePass o KeePassX y la categoría igual al nombre de los grupos."
+msgstr ""
+"Импорт из KeePass или KeePassX. Имя заказчика будет KeePass или KeePassX."
 
 #: ../../../../inc/themes/classic/import.inc:183
 #: ../../../../inc/themes/material-blue/import.inc:112
@@ -3846,7 +3906,9 @@ msgstr "account_name;customer;category;url;user;password;notes"
 #: ../../../../inc/themes/classic/import.inc:187
 #: ../../../../inc/themes/material-blue/import.inc:116
 #, fuzzy
-msgid "En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente."
+msgid ""
+"En todos los casos, si el cliente o la categoría no están creados, se crean "
+"automáticamente."
 msgstr "Если заказчика или категории нет, они будут автоматически созданы."
 
 #: ../../../../inc/themes/classic/info.inc:4
@@ -3887,7 +3949,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/info.inc:44
 #: ../../../../inc/themes/classic/ldap.inc:32
 #: ../../../../inc/themes/classic/mail.inc:21
-#: ../../../../inc/themes/material-blue/config.inc:318
+#: ../../../../inc/themes/material-blue/config.inc:316
 #: ../../../../inc/themes/material-blue/info.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:35
 #: ../../../../inc/themes/material-blue/ldap.inc:58
@@ -4014,8 +4076,10 @@ msgstr "Откуда начинать поиск в LDAP."
 #: ../../../../inc/themes/classic/ldap.inc:120
 #: ../../../../inc/themes/material-blue/ldap.inc:143
 #, fuzzy
-msgid "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
-msgstr "Пользователи из LDAP должны состоять в указанной группе для получения доступа"
+msgid ""
+"Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
+msgstr ""
+"Пользователи из LDAP должны состоять в указанной группе для получения доступа"
 
 #: ../../../../inc/themes/classic/ldap.inc:124
 #: ../../../../inc/themes/material-blue/ldap.inc:147
@@ -4024,7 +4088,8 @@ msgstr ""
 
 #: ../../../../inc/themes/classic/ldap.inc:148
 #: ../../../../inc/themes/material-blue/ldap.inc:174
-msgid "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid ""
+"Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Задает группу по умолчанию для новых пользователей из LDAP"
 
 #: ../../../../inc/themes/classic/ldap.inc:165
@@ -4035,7 +4100,8 @@ msgstr "Профиль по умолчанию"
 #: ../../../../inc/themes/classic/ldap.inc:169
 #: ../../../../inc/themes/material-blue/ldap.inc:194
 #, fuzzy
-msgid "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid ""
+"Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Задает профиль по умолчанию для новых пользователей из LDAP"
 
 #: ../../../../inc/themes/classic/ldap.inc:186
@@ -4059,20 +4125,20 @@ msgid "Comprobar conexión con LDAP"
 msgstr "Проверить подключение к LDAP"
 
 #: ../../../../inc/themes/classic/login.inc:46
-#: ../../../../inc/themes/material-blue/login.inc:69
+#: ../../../../inc/themes/material-blue/login.inc:73
 msgid "¿Olvidó su clave?"
 msgstr "Забыли пароль?"
 
 #: ../../../../inc/themes/classic/login.inc:59
-#: ../../../../inc/themes/material-blue/login.inc:82
+#: ../../../../inc/themes/material-blue/login.inc:85
 msgid "Aplicación actualizada correctamente"
 msgstr "Программа успешно обновлена"
 
 #: ../../../../inc/themes/classic/login.inc:64
 #: ../../../../inc/themes/classic/login.inc:65
-#: ../../../../inc/themes/material-blue/login.inc:87
-#: ../../../../inc/themes/material-blue/login.inc:88
 #: ../../../../inc/themes/material-blue/login.inc:90
+#: ../../../../inc/themes/material-blue/login.inc:91
+#: ../../../../inc/themes/material-blue/login.inc:93
 msgid "Nuevas Características"
 msgstr "Новые возможности"
 
@@ -4082,7 +4148,7 @@ msgid "Habilitar notificaciones de correo"
 msgstr "Включить уведомления по email"
 
 #: ../../../../inc/themes/classic/mail.inc:29
-#: ../../../../inc/themes/material-blue/config.inc:332
+#: ../../../../inc/themes/material-blue/config.inc:330
 #: ../../../../inc/themes/material-blue/mail.inc:36
 #: ../../../../inc/themes/material-blue/mail.inc:43
 msgid "Puerto"
@@ -4423,18 +4489,23 @@ msgstr ""
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr ""
 
-#: ../../../../inc/themes/classic/searchbox.inc:18
+#: ../../../../inc/themes/classic/searchbox.inc:15
+#: ../../../../inc/themes/material-blue/searchbox.inc:20
+msgid "Buscar cuentas con archivos con el nombre 'file_name'"
+msgstr ""
+
+#: ../../../../inc/themes/classic/searchbox.inc:19
 #: ../../../../inc/themes/material-blue/searchbox.inc:25
 #: ../../../../inc/themes/material-blue/searchbox.inc:28
 msgid "Búsqueda global"
 msgstr "Глобальный поиск"
 
-#: ../../../../inc/themes/classic/searchbox.inc:41
+#: ../../../../inc/themes/classic/searchbox.inc:42
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "CPP"
 msgstr "APP"
 
-#: ../../../../inc/themes/classic/searchbox.inc:41
+#: ../../../../inc/themes/classic/searchbox.inc:42
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "Cuentas por página"
 msgstr "Учетных записей на страницу"
@@ -4450,35 +4521,41 @@ msgid "Autenticación en 2 pasos"
 msgstr "Активация учетной записи"
 
 #: ../../../../inc/themes/classic/security.inc:17
-#: ../../../../inc/themes/material-blue/security.inc:17
-msgid "Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator."
+#: ../../../../inc/themes/material-blue/security.inc:15
+msgid ""
+"Habilita la autentificación en 2 pasos que requiere de la introducción de un "
+"token generado por una aplicación como Google Authenticator."
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:21
-#: ../../../../inc/themes/material-blue/security.inc:21
-msgid "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 dígitos."
+#: ../../../../inc/themes/material-blue/security.inc:19
+msgid ""
+"Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
+"dígitos."
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:29
-#: ../../../../inc/themes/material-blue/security.inc:29
+#: ../../../../inc/themes/material-blue/security.inc:27
 msgid "Activar"
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:34
-#: ../../../../inc/themes/material-blue/security.inc:35
+#: ../../../../inc/themes/material-blue/security.inc:33
 #, fuzzy
 msgid "Error al obtener el código QR. Inténtelo de nuevo"
 msgstr "Ошибка при получении истории учетных записей"
 
 #: ../../../../inc/themes/classic/security.inc:39
-#: ../../../../inc/themes/material-blue/security.inc:43
+#: ../../../../inc/themes/material-blue/security.inc:41
 #, fuzzy
 msgid "Código"
 msgstr "Введите код безопасности"
 
 #: ../../../../inc/themes/classic/security.inc:44
-#: ../../../../inc/themes/material-blue/security.inc:48
-msgid "Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado."
+#: ../../../../inc/themes/material-blue/security.inc:46
+msgid ""
+"Una vez activada, sólo es posible acceder si se dispone del dispositivo "
+"generador de códigos asociado."
 msgstr ""
 
 #: ../../../../inc/themes/classic/sessionbar.inc:6
@@ -4607,8 +4684,12 @@ msgstr "Включить ссылки Wiki"
 #: ../../../../inc/themes/classic/wiki.inc:15
 #: ../../../../inc/themes/material-blue/wiki.inc:15
 #, fuzzy
-msgid "Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda."
-msgstr "Включает возможность добавления внешней ссылки на страницу результатов поиска учетной записи в Wiki."
+msgid ""
+"Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
+"la búsqueda."
+msgstr ""
+"Включает возможность добавления внешней ссылки на страницу результатов "
+"поиска учетной записи в Wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:27
 #: ../../../../inc/themes/material-blue/wiki.inc:30
@@ -4651,7 +4732,9 @@ msgstr "URL страницы с данными из wiki."
 #: ../../../../inc/themes/classic/wiki.inc:62
 #: ../../../../inc/themes/material-blue/wiki.inc:70
 #, fuzzy
-msgid "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki."
+msgid ""
+"El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
+"de la Wiki."
 msgstr "Имя учетной записи используется как параметр поиска в wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:81
@@ -4662,7 +4745,8 @@ msgstr "Префикс учетной записи"
 #: ../../../../inc/themes/classic/wiki.inc:85
 #: ../../../../inc/themes/material-blue/wiki.inc:97
 #, fuzzy
-msgid "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
+msgid ""
+"Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr "Префикс учетных записей, для которых создавать ссылку на wiki"
 
 #: ../../../../inc/themes/classic/wiki.inc:121
@@ -4697,39 +4781,39 @@ msgstr "Подтверждение пароля"
 msgid "Realizar"
 msgstr "Выполнить резервное копирование"
 
-#: ../../../../inc/themes/material-blue/config.inc:197
+#: ../../../../inc/themes/material-blue/config.inc:195
 #, fuzzy
 msgid "Número de resultados por página"
 msgstr "Число результатов поиска на страницу"
 
-#: ../../../../inc/themes/material-blue/config.inc:292
+#: ../../../../inc/themes/material-blue/config.inc:290
 #, fuzzy
 msgid "Tamaño máximo de archivo en bytes"
 msgstr "Максимальный размер файла"
 
-#: ../../../../inc/themes/material-blue/config.inc:299
+#: ../../../../inc/themes/material-blue/config.inc:297
 msgid "Proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:305
+#: ../../../../inc/themes/material-blue/config.inc:303
 msgid "Usar Proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:326
+#: ../../../../inc/themes/material-blue/config.inc:324
 #, fuzzy
 msgid "Servidor proxy"
 msgstr "Сервер"
 
-#: ../../../../inc/themes/material-blue/config.inc:340
+#: ../../../../inc/themes/material-blue/config.inc:338
 msgid "Puerto del servidor proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:354
+#: ../../../../inc/themes/material-blue/config.inc:352
 #, fuzzy
 msgid "Usuario del servidor proxy"
 msgstr "Пользователь доступа"
 
-#: ../../../../inc/themes/material-blue/config.inc:368
+#: ../../../../inc/themes/material-blue/config.inc:366
 msgid "Clave del servidor proxy"
 msgstr ""
 
@@ -4749,7 +4833,9 @@ msgid "Preferencias de usuario"
 msgstr "Указанный логин уже существует"
 
 #: ../../../../inc/themes/material-blue/import.inc:104
-msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV."
+msgid ""
+"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
+"archivos XML y CSV."
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/install.inc:31
@@ -4793,7 +4879,9 @@ msgid "Clave del usuario de conexión a LDAP."
 msgstr "Пароль пользователя для подключения к LDAP"
 
 #: ../../../../inc/themes/material-blue/mail.inc:118
-msgid "Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos."
+msgid ""
+"Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
+"cuentas sin permisos."
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/profiles.inc:25
@@ -4830,10 +4918,6 @@ msgstr "Опции"
 #, fuzzy
 msgid "Realizar copia de seguridad y exportar"
 msgstr "Выполнить резервное копирование"
-
-#: ../../../../inc/themes/material-blue/searchbox.inc:20
-msgid "Buscar cuentas con archivos con el nombre 'file_name'"
-msgstr ""
 
 #: ../../../../inc/themes/material-blue/security.inc:4
 #, fuzzy

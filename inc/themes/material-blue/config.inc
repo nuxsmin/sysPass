@@ -110,7 +110,7 @@
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
                         <input type="checkbox" id="updates" class="mdl-switch__input fg-blue100" name="updates"
-                            <?php echo $chkUpdates, ' ', $isDisabled; ?>/>
+                            <?php echo $chkUpdates; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -128,7 +128,7 @@
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notices">
                         <input type="checkbox" id="notices" class="mdl-switch__input fg-blue100" name="notices"
-                            <?php echo $chkNotices, ' ', $isDisabled; ?>/>
+                            <?php echo $chkNotices; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -153,8 +153,7 @@
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
                         <input type="checkbox" id="account_link" class="mdl-switch__input fg-blue100"
-                               name="account_link"
-                            <?php echo $chkAccountLink, ' ', $isDisabled; ?>/>
+                               name="account_link" <?php echo $chkAccountLink; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -172,8 +171,7 @@
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="globalsearch">
                         <input type="checkbox" id="globalsearch" class="mdl-switch__input fg-blue100"
-                               name="globalsearch"
-                            <?php echo $chkGlobalSearch, ' ', $isDisabled; ?>/>
+                               name="globalsearch" <?php echo $chkGlobalSearch; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -215,7 +213,7 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_passtoimage">
                         <input type="checkbox" id="account_passtoimage" class="mdl-switch__input fg-blue100"
                                name="account_passtoimage"
-                            <?php echo $chkAccountPassToImage, ' ', $isDisabled; ?>/>
+                            <?php echo $chkAccountPassToImage; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
