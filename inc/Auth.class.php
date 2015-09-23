@@ -62,19 +62,11 @@ class Auth
         }
 
         $userDN = Ldap::$ldapSearchData[0]['dn'];
-        // Mapeo de los atributos
-        $attribsMap = array(
-            'groupMembership' => 'group',
-            'memberOf' => 'group',
-            'displayname' => 'name',
-            'fullname' => 'name',
-            'mail' => 'mail',
-            'lockoutTime' => 'expire');
 
         // Realizamos la conexión con el usuario real y obtenemos los atributos
         try {
             Ldap::ldapBind($userDN, $userPass);
-            $attribs = Ldap::getLDAPAttr($attribsMap);
+            $attribs = Ldap::getLDAPAttr();
         } catch (\Exception $e) {
             return ldap_errno(Ldap::getConn());
         }
@@ -84,26 +76,30 @@ class Auth
             return 701;
         }
 
-        // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del usuario
-        if (isset($attribs['group'])) {
-            if (is_array($attribs['group'])) {
-                foreach ($attribs['group'] as $group) {
-                    if (is_int($group)) {
-                        continue;
-                    }
+        if (Ldap::getLdapGroup() !== '*') {
+            // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del usuario
+            if (isset($attribs['group'])) {
+                if (is_array($attribs['group'])) {
+                    foreach ($attribs['group'] as $group) {
+                        if (is_int($group)) {
+                            continue;
+                        }
 
-                    // Comprobamos que el usuario está en el grupo indicado
-                    if (self::checkLDAPGroup($group)) {
-                        $ldapGroupAccess = true;
-                        break;
+                        // Comprobamos que el usuario está en el grupo indicado
+                        if (self::checkLDAPGroup($group)) {
+                            $ldapGroupAccess = true;
+                            break;
+                        }
                     }
+                } else {
+                    $ldapGroupAccess = self::checkLDAPGroup($attribs['group']);
                 }
+                // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
             } else {
-                $ldapGroupAccess = self::checkLDAPGroup($attribs['group']);
+                $ldapGroupAccess = (Ldap::searchUserInGroup($userDN) || LdapADS::searchADUserInGroup($userLogin));
             }
-            // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
         } else {
-            $ldapGroupAccess = (Ldap::searchUserInGroup($userDN) || LdapADS::searchADUserInGroup($userLogin));
+            $ldapGroupAccess = true;
         }
 
         if ($ldapGroupAccess === false) {

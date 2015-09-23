@@ -46,6 +46,23 @@ class Ldap
     private static $_bindPass;
     private static $_ldapGroup;
 
+    // Mapeo de los atributos
+    private static $_attribsMap = array(
+        'groupMembership' => 'group',
+        'memberOf' => 'group',
+        'displayname' => 'name',
+        'fullname' => 'name',
+        'mail' => 'mail',
+        'lockoutTime' => 'expire');
+
+    /**
+     * @return mixed
+     */
+    public static function getLdapGroup()
+    {
+        return self::$_ldapGroup;
+    }
+
     /**
      * @return mixed
      */
@@ -70,10 +87,10 @@ class Ldap
      * Comprobar la conexión al servidor de LDAP.
      *
      * @param string $ldapServer con la dirección del servidor
-     * @param string $bindDN con el usuario de conexión
-     * @param string $bindPass con la clave del usuario de conexión
+     * @param string $bindDN     con el usuario de conexión
+     * @param string $bindPass   con la clave del usuario de conexión
      * @param string $searchBase con la base para las búsquedas
-     * @param string $ldapGroup con el grupo con los usuarios de acceso
+     * @param string $ldapGroup  con el grupo con los usuarios de acceso
      * @return false|int Con el número de entradas encontradas
      */
     public static function checkLDAPConn($ldapServer, $bindDN, $bindPass, $searchBase, $ldapGroup)
@@ -123,7 +140,7 @@ class Ldap
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $userDN con el DN del usuario
+     * @param string $userDN   con el DN del usuario
      * @param string $userPass con la clave del usuario
      * @throws \Exception
      * @return bool
@@ -313,11 +330,11 @@ class Ldap
     /**
      * Obtener los atributos del usuario.
      *
-     * @param array $attribs con los atributos a obtener
      * @return array con los atributos disponibles y sus valores
      */
-    public static function getLDAPAttr($attribs)
+    public static function getLDAPAttr()
     {
+        $attribs = self::$_attribsMap;
         $res = array();
 
         foreach (self::$ldapSearchData as $entryValue) {
