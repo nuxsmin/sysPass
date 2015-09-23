@@ -25,6 +25,8 @@
 
 namespace SP\Auth;
 
+use SP\Exts\Google2FA;
+use SP\Exts\Base2n;
 use SP\UserUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -132,10 +134,9 @@ class Auth2FA
     private function genUserInitializationKey()
     {
         $userIV = UserUtil::getUserIVById($this->_userId);
-        $base32 = new \Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
+        $base32 = new Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
         $key = substr($base32->encode($userIV), 0, 16);
 
         return $key;
     }
-
 }

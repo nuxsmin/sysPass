@@ -84,7 +84,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_MGM_CATEGORIES_NEW,
                     'title' => _('Nueva Categoría'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'icon' => 'add',
                     'skip' => true
@@ -92,14 +92,14 @@ class AccountsMgmtC extends Controller implements ActionsInterface
                 'edit' => array(
                     'id' => self::ACTION_MGM_CATEGORIES_EDIT,
                     'title' => _('Editar Categoría'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_MGM_CATEGORIES_DELETE,
                     'title' => _('Eliminar Categoría'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_CATEGORIES_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_CATEGORIES_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true
@@ -143,21 +143,21 @@ class AccountsMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_MGM_CUSTOMERS_NEW,
                     'title' => _('Nuevo Cliente'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'skip' => true
                 ),
                 'edit' => array(
                     'id' => self::ACTION_MGM_CUSTOMERS_EDIT,
                     'title' => _('Editar Cliente'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_MGM_CUSTOMERS_DELETE,
                     'title' => _('Eliminar Cliente'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMERS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMERS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true
@@ -271,21 +271,21 @@ class AccountsMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_MGM_CUSTOMFIELDS_NEW,
                     'title' => _('Nuevo Campo'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'skip' => true
                 ),
                 'edit' => array(
                     'id' => self::ACTION_MGM_CUSTOMFIELDS_EDIT,
                     'title' => _('Editar Campo'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_MGM_CUSTOMFIELDS_DELETE,
                     'title' => _('Eliminar Campo'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMFIELDS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMFIELDS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true

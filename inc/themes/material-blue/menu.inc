@@ -10,7 +10,7 @@
                 <?php continue; ?>
             <?php endif; ?>
 
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" title="<?php echo _($action['title']); ?>" OnClick="doAction(<?php echo $action['name']; ?>)">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" title="<?php echo _($action['title']); ?>" OnClick="sysPassUtil.Common.doAction(<?php echo $action['name']; ?>)">
                 <i class="material-icons"><?php echo $action['icon']; ?></i>
             </button>
         <?php endforeach; ?>

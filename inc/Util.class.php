@@ -26,6 +26,7 @@
 namespace SP;
 
 use CssMin;
+use phpseclib\Crypt\RSA;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -332,7 +333,7 @@ class Util
      */
     public static function logout()
     {
-        exit('<script>doLogout();</script>');
+        exit('<script>sysPassUtil.Common.doLogout();</script>');
     }
 
     /**
@@ -469,6 +470,17 @@ class Util
     }
 
     /**
+     * Comprobar si se utiliza HTTPS
+     *
+     * @return bool
+     */
+    public static function httpsEnabled() {
+        return
+            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || $_SERVER['SERVER_PORT'] == 443;
+    }
+
+    /**
      * Establecer variable de sesión para recargar la aplicación.
      */
     public static function reload()
@@ -559,7 +571,6 @@ class Util
                 if ($type == 'js') {
                     echo self::jsCompress(file_get_contents($filePath));
                 } elseif ($type == 'css') {
-                    require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'cssmin' . DIRECTORY_SEPARATOR . 'class.cssmin.php';
                     echo CssMin::minify(file_get_contents($filePath));
                 }
             } else {

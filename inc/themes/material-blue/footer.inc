@@ -2,14 +2,14 @@
             <footer>
                 <?php if ($loggedIn): ?>
                     <div id="session">
-                        <i class="material-icons" title="<?php echo _('Salir'); ?>" OnClick="doLogout();">exit_to_app</i>
+                        <i class="material-icons" title="<?php echo _('Salir'); ?>" OnClick="sysPassUtil.Common.doLogout();">exit_to_app</i>
                         <?php if ($showPassIcon): ?>
                             <i class="material-icons" title="<?php echo _('Cambiar clave de usuario'); ?>"
                                data-itemid="<?php echo $userId; ?>"
-                               Onclick="usrUpdPass(this,<?php echo \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')">security</i>
+                               Onclick="sysPassUtil.Common.usrUpdPass(this,<?php echo \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')">security</i>
                         <?php endif; ?>
                         <i class="material-icons" title="<?php echo _('Preferencias de usuario'); ?>"
-                           OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES; ?>)">account_circle</i>
+                           OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES; ?>)">account_circle</i>
                         <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
                     </div>
                 <?php endif; ?>
@@ -23,8 +23,9 @@
                     title="<?php echo _('Un proyecto de cygnux.org'); ?>">cygnux.org</a>
                 </div> <!-- Close Project -->
                 <div id="status">
-                    <?php echo (DEBUG) ? 'Debug ON' : ''; ?>
-                    <?php echo ($isDemoMode) ? 'Demo' : ''; ?>
+                    <span class="status-info"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></span>
+                    <span class="status-info active-tooltip" title="<?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?>"><?php echo ($httpsEnabled) ? _('Seguro') : _('Inseguro'); ?></span>
+                    <span class="status-info"><?php echo ($isDemoMode) ? 'Demo' : ''; ?></span>
                     <div id="updates"></div>
                 </div>
             </footer> <!-- Close footer -->

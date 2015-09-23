@@ -14,7 +14,6 @@
                        for="h"><?php echo _('Código de Seguridad'); ?></label>
             </div>
 
-
             <input type="hidden" name="a" value="<?php echo $action; ?>">
             <input type="hidden" name="t" value="<?php echo $time; ?>">
             <input type="hidden" name="upgrade" value="1">

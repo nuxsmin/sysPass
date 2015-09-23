@@ -475,28 +475,6 @@ class UserUtil
         return $queryRes->user_mIV;
     }
 
-    /**
-     * Establece las variables de sesión del usuario.
-     *
-     * @param User $User
-     * @throws SPException
-     */
-    public static function setUserSession(User $User)
-    {
-        Session::setUserId($User->getUserId());
-        Session::setUserName($User->getUserName());
-        Session::setUserLogin($User->getUserLogin());
-        Session::setUserProfileId($User->getUserProfileId());
-        Session::setUserGroupId($User->getUserGroupId());
-        Session::setUserGroupName($User->getUserGroupName());
-        Session::setUserEMail($User->getUserEmail());
-        Session::setUserIsAdminApp($User->isUserIsAdminApp());
-        Session::setUserIsAdminAcc($User->isUserIsAdminAcc());
-        Session::setUserIsLdap($User->isUserIsLdap());
-        Session::setUserProfile(Profile::getProfile($User->getUserProfileId()));
-
-        self::setUserLastLogin($User->getUserId());
-    }
 
     /**
      * Actualiza el último inicio de sesión del usuario en la BBDD.
@@ -504,7 +482,7 @@ class UserUtil
      * @param $userId int El id del usuario
      * @return bool
      */
-    private static function setUserLastLogin($userId)
+    public static function setUserLastLogin($userId)
     {
         $query = 'UPDATE usrData SET user_lastLogin = NOW(),user_count = user_count + 1 WHERE user_id = :id LIMIT 1';
 

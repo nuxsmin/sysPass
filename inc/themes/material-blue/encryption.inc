@@ -8,7 +8,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Maestra'); ?>
     </div>
 
-    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <?php if ($lastUpdateMPass > 0): ?>
                 <tr>
@@ -124,7 +124,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Temporal'); ?>
     </div>
 
-    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <tr>
                 <td class="descField">
@@ -176,7 +176,7 @@ echo $encryption_tabIndex; ?>">
             <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
         </div>
 
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+        <button form="frmTempMasterPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
                 title="<?php echo _('Generar'); ?>">
             <i class="material-icons">play_circle_filled</i>
         </button>

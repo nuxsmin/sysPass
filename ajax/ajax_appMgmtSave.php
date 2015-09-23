@@ -51,7 +51,7 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 $customFields = SP\Request::analyze('customfield');
 
 // Acción al cerrar la vista
-$doActionOnClose = "doAction('$onCloseAction','',$activeTab);";
+$doActionOnClose = "sysPassUtil.Common.doAction('$onCloseAction','',$activeTab);";
 
 $userLogin = UserUtil::getUserLoginById($itemId);
 
@@ -138,13 +138,24 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Error al actualizar el usuario'));
         }
     } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS) {
+
+
         if (SP\Util::demoIsEnabled() && UserUtil::getUserLoginById($itemId) == 'demo') {
             SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
         } elseif (!$User->getUserPass() || !$userPassR) {
             SP\Common::printJSON(_('La clave no puede estar en blanco'), 2);
-        } elseif ($User->getUserPass() != $userPassR) {
+        }
+
+        // Desencriptar con la clave RSA
+        $CryptPKI = new \SP\CryptPKI();
+        $clearUserPass = $CryptPKI->decryptRSA(base64_decode($User->getUserPass()));
+        $clearUserPassR = $CryptPKI->decryptRSA(base64_decode($userPassR));
+
+        if ($clearUserPass != $clearUserPassR) {
             SP\Common::printJSON(_('Las claves no coinciden'), 2);
         }
+
+        $User->setUserPass($clearUserPass);
 
         if ($User->updateUserPass()) {
             SP\Common::printJSON(_('Clave actualizada'), 0);

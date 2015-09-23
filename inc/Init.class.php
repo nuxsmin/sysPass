@@ -98,7 +98,7 @@ class Init
         if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
             // Registro del cargador de clases (PHP >= 5.1.2)
             if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-                spl_autoload_register(array('SP\Init', 'loadClass'), true);
+                spl_autoload_register('SP\Init::loadClass', true);
             } else {
                 spl_autoload_register(array('SP\Init', 'loadClass'));
             }
@@ -164,6 +164,9 @@ class Init
             error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
             ini_set('display_errors', 'Off');
         }
+
+        // Cargar las extensiones
+        self::loadExtensions();
 
         // Iniciar la sesión de PHP
         self::startSession();
@@ -260,13 +263,11 @@ class Init
         // Eliminar \\ para las clases con namespace definido
         $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
 
-//        error_log($class);
-
         // Buscar la clase en los directorios de include
-        foreach (explode(':', get_include_path()) as $iPath) {
-            $classFile = $iPath . DIRECTORY_SEPARATOR . $class . '.class.php';
+        foreach (explode(':', get_include_path()) as $includePath) {
+            $classFile = $includePath . DIRECTORY_SEPARATOR . $class . '.class.php';
             if (is_readable($classFile)) {
-                require_once $classFile;
+               require $classFile;
             }
         }
     }
@@ -400,7 +401,7 @@ class Init
     private static function checkInitSourceInclude()
     {
         $srcScript = pathinfo($_SERVER["SCRIPT_NAME"], PATHINFO_BASENAME);
-        $skipInit = array('js.php', 'css.php', 'api.php');
+        $skipInit = array('js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php');
 
         return (in_array($srcScript, $skipInit));
     }
@@ -708,7 +709,7 @@ class Init
      */
     public static function isLoggedIn()
     {
-        if (Session::getUserLogin(false)
+        if (Session::getUserLogin()
             && Session::get2FApassed()
         ) {
             // TODO: refrescar variables de sesión.
@@ -728,5 +729,17 @@ class Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
+    }
+
+    /**
+     * Cargar las clases de las extensiones de sysPass
+     */
+    private static function loadExtensions()
+    {
+        // Utilizar un cargador de clases PSR-0
+        require EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
+
+        $phpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
+        $phpSecLoader->register();
     }
 }

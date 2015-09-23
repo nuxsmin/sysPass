@@ -2,7 +2,7 @@
     <h2 class="midround"><?php echo $header; ?></H2>
 
     <form method="post" name="frmCustomFields" id="frmCustomFields"
-          onsubmit="appMgmtSave('frmCustomFields'); return false;">
+          onsubmit="sysPassUtil.Common.appMgmtSave('frmCustomFields'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -67,8 +67,7 @@
 </div>
 <script>
     $(function () {
-        chosenDetect();
-
-        checkboxDetect('#fancyContainer');
+        sysPassUtil.Common.chosenDetect();
+        sysPassUtil.Common.checkboxDetect('#fancyContainer');
     });
 </script>

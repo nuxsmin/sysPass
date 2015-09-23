@@ -160,6 +160,7 @@ switch ($actionId) {
         $controller->getEventlog();
         break;
     case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES:
+    case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
         $tpl->addTemplate('tabs-start');
 
         $controller = new \SP\Controller\UsersPrefsC($tpl);

@@ -119,7 +119,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_USR_USERS_NEW,
                     'title' => _('Nuevo Usuario'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_USERS_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_USERS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'icon' => 'add',
                     'skip' => true
@@ -127,28 +127,28 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'view' => array(
                     'id' => self::ACTION_USR_USERS_VIEW,
                     'title' => _('Ver Detalles de Usuario'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_USERS_VIEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_USERS_VIEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/view.png',
                     'icon' => 'visibility'
                 ),
                 'edit' => array(
                     'id' => self::ACTION_USR_USERS_EDIT,
                     'title' => _('Editar Usuario'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_USERS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_USERS_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'pass' => array(
                     'id' => self::ACTION_USR_USERS_EDITPASS,
                     'title' => _('Cambiar Clave de Usuario'),
-                    'onclick' => 'usrUpdPass(this,' . self::ACTION_USR_USERS_EDITPASS . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.usrUpdPass(this,' . self::ACTION_USR_USERS_EDITPASS . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/key.png',
                     'icon' => 'lock_outline'
                 ),
                 'del' => array(
                     'id' => self::ACTION_USR_USERS_DELETE,
                     'title' => _('Eliminar Usuario'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_USR_USERS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_USR_USERS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true
@@ -192,7 +192,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_USR_GROUPS_NEW,
                     'title' => _('Nuevo Grupo'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_GROUPS_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_GROUPS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'icon' => 'add',
                     'skip' => true
@@ -200,14 +200,14 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'edit' => array(
                     'id' => self::ACTION_USR_GROUPS_EDIT,
                     'title' => _('Editar Grupo'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_GROUPS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_GROUPS_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_USR_GROUPS_DELETE,
                     'title' => _('Eliminar Grupo'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_USR_GROUPS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_USR_GROUPS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true
@@ -250,7 +250,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_USR_PROFILES_NEW,
                     'title' => _('Nuevo Perfil'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_PROFILES_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'icon' => 'add',
                     'skip' => true
@@ -258,21 +258,21 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'view' => array(
                     'id' => self::ACTION_USR_PROFILES_VIEW,
                     'title' => _('Ver Detalles de Perfil'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_VIEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_PROFILES_VIEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/view.png',
                     'icon' => 'visibility'
                 ),
                 'edit' => array(
                     'id' => self::ACTION_USR_PROFILES_EDIT,
                     'title' => _('Editar Perfil'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_USR_PROFILES_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_PROFILES_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_USR_PROFILES_DELETE,
                     'title' => _('Eliminar Perfil'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_USR_PROFILES_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_USR_PROFILES_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true
@@ -397,7 +397,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'new' => array(
                     'id' => self::ACTION_MGM_APITOKENS_NEW,
                     'title' => _('Nueva Autorización'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_APITOKENS_NEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_APITOKENS_NEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/new.png',
                     'icon' => 'add',
                     'skip' => true
@@ -405,21 +405,21 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'view' => array(
                     'id' => self::ACTION_MGM_APITOKENS_VIEW,
                     'title' => _('Ver token de Autorización'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_APITOKENS_VIEW . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_APITOKENS_VIEW . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/view.png',
                     'icon' => 'visibility'
                 ),
                 'edit' => array(
                     'id' => self::ACTION_MGM_APITOKENS_EDIT,
                     'title' => _('Editar Autorización'),
-                    'onclick' => 'appMgmtData(this,' . self::ACTION_MGM_APITOKENS_EDIT . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_APITOKENS_EDIT . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/edit.png',
                     'icon' => 'mode_edit'
                 ),
                 'del' => array(
                     'id' => self::ACTION_MGM_APITOKENS_DELETE,
                     'title' => _('Eliminar Autorización'),
-                    'onclick' => 'appMgmtDelete(this,' . self::ACTION_MGM_APITOKENS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_APITOKENS_DELETE . ',\'' . $this->view->sk . '\')',
                     'img' => 'imgs/delete.png',
                     'icon' => 'delete',
                     'isdelete' => true
@@ -450,8 +450,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
         $this->view->assign('actions', \SP\ApiTokens::getTokenActions());
         $this->view->assign('token', $token);
+        $this->view->assign('gotData', is_object($token));
 
-        if (isset($this->view->isView)) {
+        if ($this->view->isView === true) {
             $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
             Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
         }

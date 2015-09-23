@@ -7,7 +7,7 @@ echo $import_tabIndex; ?>">
         <?php echo _('Importar phpPMS'); ?>
     </div>
 
-    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="configMgmt('import', this); return false;">
+    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="sysPassUtil.Common.configMgmt('import', this); return false;">
         <table class="data round">
             <tr>
                 <td class="descField">
@@ -138,7 +138,7 @@ echo $import_tabIndex; ?>">
                     <?php echo _('Clave de Importación'); ?>
                 </td>
                 <td class="valField">
-                    <input type="password" name="importPwd" class="passwordfield__input-show" maxlength="255">
+                    <input type="password" name="importPwd" id="importPwd" class="passwordfield__input-show" maxlength="255">
                 </td>
             </tr>
             <tr>
@@ -191,7 +191,7 @@ echo $import_tabIndex; ?>">
 
 <script>
     $(function () {
-        importFile('<?php echo Common::getSessionKey(true); ?>');
+        sysPassUtil.Common.importFile('<?php echo $sk; ?>');
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");
         });

@@ -8,7 +8,7 @@ echo $encryption_tabIndex; ?>">
         <?php echo _('Clave Maestra'); ?>
     </div>
 
-    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmCrypt" id="frmCrypt" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <?php if ($lastUpdateMPass > 0): ?>
                 <tr>
@@ -109,7 +109,7 @@ echo $encryption_tabIndex; ?>">
     </div>
 
     <form method="post" name="frmTempMasterPass" id="frmTempMasterPass"
-          onsubmit="configMgmt('config', this); return false;">
+          onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table class="data tblConfig round">
             <tr>
                 <td class="descField">
@@ -164,11 +164,7 @@ echo $encryption_tabIndex; ?>">
 
 <script>
     $(function () {
-        $("#tmpass_maxtime").spinner({
-            step: 60, min: 60, numberFormat: "n", stop: function (event, ui) {
-                accSearch(0);
-            }
-        });
+        $("#tmpass_maxtime").spinner({step: 60, min: 60, numberFormat: "n"});
         $("#help_tmpass_button").click(function () {
             $("#help_tmpass").dialog("open");
         });

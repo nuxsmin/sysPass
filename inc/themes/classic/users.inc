@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></h2>
 
-    <form method="post" name="frmUsers" id="frmUsers" onsubmit="appMgmtSave('frmUsers'); return false;">
+    <form method="post" name="frmUsers" id="frmUsers" onsubmit="sysPassUtil.Common.appMgmtSave('frmUsers'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -196,8 +196,8 @@
     $(function() {
         $("#btnUserOptions").buttonset();
 
-        passwordDetect();
+        sysPassUtil.passwordDetect();
 
-        chosenDetect();
+        sysPassUtil.Common.chosenDetect();
     });
 </script>

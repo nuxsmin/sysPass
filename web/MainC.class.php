@@ -29,6 +29,7 @@ use SP\Init;
 use SP\Installer;
 use SP\Request;
 use SP\Session;
+use SP\SessionUtil;
 use SP\SPException;
 use SP\Util;
 
@@ -44,7 +45,8 @@ class MainC extends Controller implements ActionsInterface
      * Constructor
      *
      * @param      $template  \SP\Template con instancia de plantilla
-     * @param null $page      nombre de página para la clase del body
+     * @param null $page      El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(\SP\Template $template = null, $page = null, $initialize = true)
     {
@@ -65,16 +67,20 @@ class MainC extends Controller implements ActionsInterface
             $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
             $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
             $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
+            $this->view->assign('httpsEnabled', Util::httpsEnabled());
 
-            $this->getHeader();
-            $this->setHeaders();
+            // Cargar la clave pública en la sesión
+            SessionUtil::loadPublicKey();
+
+            $this->getHtmlHeader();
+            $this->setResponseHeaders();
         }
     }
 
     /**
      * Obtener los datos para la cabcera de la página
      */
-    public function getHeader()
+    public function getHtmlHeader()
     {
         $cssVersionHash = md5(implode(Util::getVersion()) . Util::resultsCardsIsEnabled());
         $jsVersionHash = md5(implode(Util::getVersion()));
@@ -86,7 +92,7 @@ class MainC extends Controller implements ActionsInterface
     /**
      * Establecer las cabeceras HTTP
      */
-    private function setHeaders()
+    private function setResponseHeaders()
     {
         // UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
@@ -104,10 +110,10 @@ class MainC extends Controller implements ActionsInterface
     public function getMain($onLoad = null)
     {
         if (is_null($onLoad)) {
-            $onLoad = array('doAction(' . self::ACTION_ACC_SEARCH . ')');
+            $onLoad = array('sysPassUtil.Common.doAction(' . self::ACTION_ACC_SEARCH . ')');
 
             if (Session::getUserIsAdminApp() || Util::demoIsEnabled()) {
-                $onLoad[] = 'checkUpds()';
+                $onLoad[] = 'sysPassUtil.Common.checkUpds()';
             }
 
             $this->view->assign('onLoad', implode(';', $onLoad));

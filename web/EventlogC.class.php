@@ -47,6 +47,8 @@ class EventlogC extends Controller implements ActionsInterface
     public function __construct(\SP\Template $template = null)
     {
         parent::__construct($template);
+
+        $this->view->assign('sk', \SP\Common::getSessionKey(true));
     }
 
     /**
@@ -88,7 +90,7 @@ class EventlogC extends Controller implements ActionsInterface
     {
         if ($this->view->clear && $this->view->sk && \SP\Common::checkSessionKey($this->view->sk)) {
             if (\SP\Log::clearEvents()) {
-                \SP\Common::printJSON(_('Registro de eventos vaciado'), 0, "doAction(" . ActionsInterface::ACTION_EVL . "); scrollUp();");
+                \SP\Common::printJSON(_('Registro de eventos vaciado'), 0, "sysPassUtil.Common.doAction(" . ActionsInterface::ACTION_EVL . "); sysPassUtil.Common.scrollUp();");
             } else {
                 \SP\Common::printJSON(_('Error al vaciar el registro de eventos'));
             }

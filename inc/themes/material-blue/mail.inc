@@ -4,7 +4,7 @@
         <?php echo _('Correo'); ?>
     </div>
 
-    <form method="post" name="frmMail" id="frmMail" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmMail" id="frmMail" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table id="tblMail" class="data tblConfig round">
             <tr>
                 <td class="descField">

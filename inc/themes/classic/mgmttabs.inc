@@ -64,7 +64,7 @@
                         <?php endforeach; ?>
                         <?php if ($numActions > $maxNumActions): ?>
                             <img src="imgs/action.png" title="<?php echo _('Más Acciones'); ?>"
-                                 OnClick="showOptional(this)"/>
+                                 OnClick="sysPassUtil.Common.showOptional(this)"/>
                         <?php endif; ?>
                     </li>
                 </ul>

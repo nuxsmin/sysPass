@@ -4,7 +4,7 @@
         <?php echo _('LDAP'); ?>
     </div>
 
-    <form method="post" name="frmLdap" id="frmLdap" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmLdap" id="frmLdap" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table id="tblLdap" class="data tblConfig round">
             <?php if ($ldapIsAvailable || $isDemoMode): ?>
                 <tr>
@@ -229,7 +229,7 @@
                     </td>
                     <td class="valField">
                         <img src="imgs/refresh.png" class="inputImg"
-                             title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="checkLdapConn();"/>
+                             title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="sysPassUtil.Common.checkLdapConn();"/>
                     </td>
                 </tr>
             <?php else: ?>

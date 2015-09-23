@@ -1,6 +1,6 @@
 <div id="boxLogin" class="round shadow">
     <?php if (!$isLogout): ?>
-        <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="doLogin(); return false;">
+        <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="sysPassUtil.Common.doLogin(); return false;">
             <div id="boxData">
                 <?php if ($demoEnabled): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

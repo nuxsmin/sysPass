@@ -66,7 +66,6 @@ $stringsJsLang = array(
     39 => _('Seleccionar Acción'),
     40 => _('SI'),
     41 => _('NO'),
+    43 => _('Aceptar'),
+    44 => _('Cancelar')
 );
-
-
-

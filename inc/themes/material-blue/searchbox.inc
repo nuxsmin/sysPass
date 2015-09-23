@@ -1,5 +1,5 @@
 <div id="searchbox">
-    <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return accSearch(0);">
+    <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return sysPassUtil.Common.accSearch(0);">
         <div id="tblTools" class="round shadow">
             <div id="toolsLeft">
                 <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear_all</i>
@@ -60,19 +60,19 @@
 <script>
     $(function(){
         $('#frmSearch select').on('change', function (e) {
-            clearSearch(1);
-            accSearch(0)
+            sysPassUtil.Common.clearSearch(1);
+            sysPassUtil.Common.accSearch(0, e)
         });
         $('#frmSearch #btnClear').click(function (e) {
-            clearSearch();
-            accSearch(0);
+            sysPassUtil.Common.clearSearch();
+            sysPassUtil.Common.accSearch(0, e);
         })
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
-            accSearch(1, e)
+            sysPassUtil.Common.accSearch(1, e)
         });
-        $('#frmSearch #rpp').on('change', function () {
-            accSearch(0);
+        $('#frmSearch #rpp').on('change', function (e) {
+            sysPassUtil.Common.accSearch(0, e);
         })
 
         <?php if ( $showGlobalSearch ): ?>
@@ -84,7 +84,7 @@
                     $('input[name="gsearch"]').val(0);
                 }
 
-                accSearch(0);
+                sysPassUtil.Common.accSearch(0);
             }
         );
         <?php endif; ?>

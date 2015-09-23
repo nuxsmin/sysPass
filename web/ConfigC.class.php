@@ -168,10 +168,9 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('siteName', \SP\Util::getAppInfo('appname'));
         $this->view->assign('backupDir', \SP\Init::$SERVERROOT . '/backup');
         $this->view->assign('backupPath', \SP\Init::$WEBROOT . '/backup');
+
         $backupHash =  Config::getValue('backup_hash');
         $exportHash =  Config::getValue('export_hash');
-
-        error_log($backupHash);
 
         $this->view->assign('backupFile',
             array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName  . '-' . $backupHash . '.tar.gz',

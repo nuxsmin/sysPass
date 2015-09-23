@@ -21,7 +21,7 @@
  * @author Phil
  **/
 
-namespace SP\Auth;
+namespace SP\Exts;
 
 /**
  * Class Google2FA

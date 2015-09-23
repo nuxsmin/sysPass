@@ -98,7 +98,7 @@
 </div>
 <div class="action fullWidth">
     <button type="button" title="<?php echo _('Vaciar registro de eventos'); ?>" class="button-action"
-            OnClick="clearEventlog('<?php echo Common::getSessionKey(); ?>');">
+            OnClick="sysPassUtil.Common.clearEventlog('<?php echo $sk; ?>');">
         <img src="<?php \SP\Init::$WEBURI; ?>imgs/clear.png" alt="save"/>
     </button>
 </div>

@@ -4,7 +4,7 @@
         <?php echo _('Sitio'); ?>
     </div>
 
-    <form method="post" name="frmConfig" id="frmConfig" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmConfig" id="frmConfig" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table id="tblSite" class="data tblConfig round">
             <tr>
                 <td class="descField"><?php echo _('Idioma'); ?></td>

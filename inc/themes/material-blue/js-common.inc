@@ -1,8 +1,8 @@
 <script type="text/javascript">
     $(function () {
-        chosenDetect();
+        sysPassUtil.Common.chosenDetect();
 
-        passwordDetect();
+        sysPassUtil.passwordDetect();
 
         $(".download").button({
             icons: {primary: "	ui-icon-arrowthickstop-1-s"}

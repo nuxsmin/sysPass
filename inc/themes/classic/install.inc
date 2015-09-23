@@ -111,6 +111,6 @@
 </div>
 <script>
     $(function(){
-       checkboxDetect('#actions');
+        sysPassUtil.Common.checkboxDetect('#actions');
     });
 </script>

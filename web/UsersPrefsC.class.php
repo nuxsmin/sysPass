@@ -83,6 +83,7 @@ class UsersPrefsC extends Controller implements ActionsInterface
 
         $this->view->append('tabs', array('title' => _('Seguridad')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'security');
+        $this->view->assign('actionId', $this->getAction(), 'security');
     }
 
     /**

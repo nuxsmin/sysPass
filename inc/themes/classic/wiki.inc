@@ -4,7 +4,7 @@
         <?php echo _('Wiki'); ?>
     </div>
 
-    <form method="post" name="frmWiki" id="frmWiki" onsubmit="configMgmt('config', this); return false;">
+    <form method="post" name="frmWiki" id="frmWiki" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table id="tblWiki" class="data tblConfig round">
             <tr>
                 <td class="descField">

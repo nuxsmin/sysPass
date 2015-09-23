@@ -1,5 +1,5 @@
 <!-- Start Tab - Import -->
-<div id="tabs-<?php use SP\Acl;
+<div id="tabs-<?php
 use SP\Common;
 
 echo $import_tabIndex; ?>">
@@ -121,7 +121,7 @@ echo $import_tabIndex; ?>">
         <?php echo _('Importar phpPMS'); ?>
     </div>
 
-    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="configMgmt('import', this); return false;">
+    <form method="post" name="frmMigrate" id="frmMigrate" onsubmit="sysPassUtil.Common.configMgmt('import', this); return false;">
         <table class="data round">
             <tr>
                 <td class="descField">
@@ -223,7 +223,7 @@ echo $import_tabIndex; ?>">
 <script>
     $(function () {
         // Preparar la zona de importación
-        importFile('<?php echo Common::getSessionKey(true); ?>');
+        sysPassUtil.Common.importFile('<?php echo Common::getSessionKey(true); ?>');
 
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");

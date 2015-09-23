@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 use SP\UserLdap;
 use SP\UserUtil;
 
@@ -45,11 +46,18 @@ if (!$userLogin || !$userPass) {
     SP\Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
+try {
+    $CryptPKI = new \SP\CryptPKI();
+    $clearUserPass = $CryptPKI->decryptRSA(base64_decode($userPass));
+} catch (Exception $e) {
+    SP\Common::printJSON(_('Error en clave RSA'));
+}
+
 $User = new SP\User();
 $User->setUserLogin($userLogin);
-$User->setUserPass($userPass);
+$User->setUserPass($clearUserPass);
 
-if ($resLdap = SP\Auth::authUserLDAP($userLogin, $userPass)) {
+if ($resLdap = SP\Auth::authUserLDAP($userLogin, $clearUserPass)) {
     $User->setUserName(SP\Auth::$userName);
     $User->setUserEmail(SP\Auth::$userEmail);
 }
@@ -105,7 +113,7 @@ if ($resLdap === true) {
     $Log->addDescription('(MySQL)');
 
     // Autentificamos con la BBDD
-    if (!SP\Auth::authUserMySQL($userLogin, $userPass)) {
+    if (!SP\Auth::authUserMySQL($userLogin, $clearUserPass)) {
         $Log->addDescription(_('Login incorrecto'));
         $Log->addDescription(_('Usuario') . ": " . $userLogin);
         $Log->writeLog();
@@ -137,11 +145,13 @@ if (!$masterPass
 ) {
     SP\Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
-    if (SP\Config::checkTempMasterPass($masterPass)) {
-        $masterPass = SP\Config::getTempMasterPass($masterPass);
+    $clearMasterPass = $CryptPKI->decryptRSA(base64_decode($masterPass));
+
+    if (SP\Config::checkTempMasterPass($clearMasterPass)) {
+        $clearMasterPass = SP\Config::getTempMasterPass($clearMasterPass);
     }
 
-    if (!$User->updateUserMPass($masterPass)) {
+    if (!$User->updateUserMPass($clearMasterPass)) {
         $Log->addDescription(_('Clave maestra incorrecta'));
         $Log->writeLog();
 
@@ -161,8 +171,11 @@ if ($User->isUserChangePass()) {
 
 // Obtenemos la clave maestra del usuario
 if ($User->getUserMPass()) {
-    // Establecemos las variables de sesión
-    UserUtil::setUserSession($User);
+    // Actualizar el último login del usuario
+    UserUtil::setUserLastLogin($User->getUserId());
+
+    // Cargar las variables de sesión del usuario
+    SessionUtil::loadUserSession($User);
 
     $Log->addDescription(sprintf('%s : %s', _('Usuario'), $userLogin));
     $Log->addDescription(sprintf('%s : %s', _('Perfil'), SP\Profile::getProfileNameById($User->getUserProfileId())));

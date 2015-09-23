@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmCategories" id="frmCategories" onsubmit="appMgmtSave('frmCategories'); return false;">
+    <form method="post" name="frmCategories" id="frmCategories" onsubmit="sysPassUtil.Common.appMgmtSave('frmCategories'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>

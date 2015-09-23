@@ -277,7 +277,7 @@ class Config
         }
 
         // Establecer los permisos del archivo de configuración
-        @chmod($configFile, 0640);
+        chmod($configFile, 0640);
 
         // Actualizar la caché de configuración de la sesión
         Cache::setSessionCacheConfig();

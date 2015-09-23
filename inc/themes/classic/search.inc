@@ -1,7 +1,5 @@
 <div id="resBuscar">
-    <?php use SP\Acl;
-
-    if (!$accounts): ?>
+    <?php if (!$accounts): ?>
         <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
     <?php else: ?>
         <div id="data-search-header" class="data-header data-header-minimal">
@@ -95,40 +93,40 @@
 
                             <?php if ($account['showView']): ?>
                                 <img src="imgs/view.png" title="<?php echo _('Detalles de Cuenta'); ?>"
-                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                     OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif ?>
 
                             <?php if ($account['showViewPass']): ?>
                                 <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
-                                     onClick="viewPass(<?php echo $account['id']; ?>, 1)"/>
+                                     onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)"/>
                                 <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
                                 <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                                     onmousedown="viewPass(<?php echo $account['id']; ?>, false)"
+                                     onmousedown="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, false)"
                                      class="actions-optional clip-pass-button" data-clipboard-target="clip-pass-text"/>
                                 <?php endif; ?>
                             <?php endif ?>
 
                             <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
                                 <img src="imgs/action.png" title="<?php echo _('Más Acciones'); ?>"
-                                     OnClick="showOptional(this)"/>
+                                     OnClick="sysPassUtil.Common.showOptional(this)"/>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
                                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                     OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
                                 <img src="imgs/btn_copy.png" title="<?php echo _('Copiar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                     OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)" />
+                                     OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)" />
                             <?php endif; ?>
 
                         </div>
@@ -137,7 +135,7 @@
                         <div class="account-actions round">
                             <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>"
                                  class="inputImg"
-                                 OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                 OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -175,27 +173,29 @@
         <div id="clip-pass-text" style="visibility: hidden"></div>
 
         <script>
-            passToClip = 0;
+            $(function(){
+                sysPassUtil.Common.passToClip = 0;
 
-            function clipboard() {
-                var client = new ZeroClipboard($('.clip-pass-button'), {
-                    swfPath: "js/ZeroClipboard.swf",
-                    debug: false,
-                    title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
-                });
+                function clipboard() {
+                    var client = new ZeroClipboard($('.clip-pass-button'), {
+                        swfPath: "js/ZeroClipboard.swf",
+                        debug: false,
+                        title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
+                    });
 
-                client.on("aftercopy", function (e) {
-                    resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-                });
+                    client.on("aftercopy", function (e) {
+                        sysPassUtil.Common.resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+                    });
 
-                client.on("error", function (e) {
-                    ZeroClipboard.destroy();
-                });
-            }
+                    client.on("error", function (e) {
+                        ZeroClipboard.destroy();
+                    });
+                }
 
-            clipboard();
+                clipboard();
 
-            showSearchOrder();
+                sysPassUtil.Common.showSearchOrder();
+            });
         </script>
     <?php endif; ?>
     <script>

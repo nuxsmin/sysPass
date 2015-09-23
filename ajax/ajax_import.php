@@ -49,9 +49,16 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
     SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
+try {
+    $CryptPKI = new \SP\CryptPKI();
+    $clearImportPwd = $CryptPKI->decryptRSA(base64_decode($importPwd));
+} catch (Exception $e) {
+    SP\Common::printJSON(_('Error en clave RSA'));
+}
+
 SP\Import::setDefUser($defaultUser);
 SP\Import::setDefGroup($defaultGroup);
-SP\Import::setImportPwd($importPwd);
+SP\Import::setImportPwd($clearImportPwd);
 SP\Import::setCsvDelimiter($csvDelimiter);
 
 $res = SP\Import::doImport($_FILES["inFile"]);

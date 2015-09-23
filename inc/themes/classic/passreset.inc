@@ -8,7 +8,7 @@
     </div>
 
     <form id="passreset" action="" method="post"
-          onsubmit="sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
+          onsubmit="sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
         <fieldset id="resetdata">
             <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
             <?php if (!$passReset): ?>

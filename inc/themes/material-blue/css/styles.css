@@ -885,7 +885,6 @@ a:hover, a:active, a:focus {
     top: auto;
     bottom: 0;
     margin: 0 .2em 1px 0;
-    border-bottom: auto;
     border-top: 0;
 }
 
@@ -1168,6 +1167,11 @@ footer #status {
     padding: 0 1em;
 }
 
+footer #status .status-info{
+    padding: .5em;
+    text-decoration: underline;
+}
+
 footer #session {
     float: left;
     width: 50em;
@@ -1175,7 +1179,6 @@ footer #session {
     padding: .2em 1em;
     color: #999;
     font-size: 10px;
-    text-align: left;
 }
 
 footer a, footer a:visited {
@@ -1750,6 +1753,10 @@ fieldset.warning a {
 
 .no-title .ui-dialog-titlebar {
     display: none;
+}
+
+.ui-dialog {
+    z-index: 9999 !important;
 }
 
 @media all and (max-width: 1024px) {

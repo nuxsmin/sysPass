@@ -8,7 +8,7 @@
 </div>
 
 <?php if ($showform): ?>
-<form method="post" name="frmaccount" id="frmAccount" onsubmit="saveAccount('frmAccount'); return false;">
+<form method="post" name="frmaccount" id="frmAccount" onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
     <?php endif; ?>
         <table class="data round">
             <tr>
@@ -231,11 +231,11 @@
         <td class="valField">
             <div id="downFiles"></div>
             <?php if ($accountIsHistory): ?>
-                <script>getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
+                <script>sysPassUtil.Common.getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
             <?php else: ?>
-                <script>getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
+                <script>sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
                 <?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
-                    <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
+                    <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUpload">
                         <input type="file" id="inFile" name="inFile"/>
                     </form>
                     <div id="dropzone" class="round"
@@ -243,7 +243,7 @@
                         title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
                         <i class="material-icons md-60 fg-green80">cloud_upload</i>
                     </div>
-                    <script> dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
+                    <script> sysPassUtil.Common.dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
                 <?php endif; ?>
             <?php endif; ?>
         </td>
@@ -265,8 +265,9 @@
                 $('#selHistory').on('change', function (e) {
                     var historyId = $('#selHistory').val();
 
-                    if (historyId > 0)
-                        doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
+                    if(historyId > 0) {
+                        sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
+                    }
                 });
 
                 $('#selHistory').chosen({
@@ -397,7 +398,7 @@
 <?php endif; ?>
 
 <?php if ($gotData && $accountIsHistory): ?>
-    <form method="post" name="frmaccount" id="frmAccount" onsubmit="saveAccount('frmAccount'); return false;">
+    <form method="post" name="frmAccount" id="frmAccount" onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
         <input type="hidden" name="actionId"
                value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
@@ -409,44 +410,44 @@
 
 <div class="action">
         <?php if ($showDelete): ?>
-            <button id="btnDelete" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80" OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
+            <button id="btnDelete" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80" OnClick="sysPassUtil.Common.delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
                 <i class="material-icons">delete</i>
             </button>
         <?php endif; ?>
 
         <?php if ($showViewPass): ?>
-            <button id="btnViewPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)" title="<?php echo _('Ver Clave'); ?>">
+            <button id="btnViewPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" onClick="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)" title="<?php echo _('Ver Clave'); ?>">
                 <i class="material-icons">lock_open</i>
             </button>
             <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
-            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored clip-pass-button" onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" data-clipboard-target="clip-pass-text">
+            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored clip-pass-button" onmousedown="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" data-clipboard-target="clip-pass-text">
                 <i class="material-icons">content_paste</i>
            </button>
             <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($showEditPass): ?>
-            <button id="btnEditPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Clave de Cuenta'); ?>">
+            <button id="btnEditPass" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Clave de Cuenta'); ?>">
                 <i class="material-icons">lock_outline</i>
             </button>
         <?php endif; ?>
 
         <?php if ($gotData && $accountIsHistory): ?>
-            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Ver Actual'); ?>">
+            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Ver Actual'); ?>">
                 <i class="material-icons">arrow_back</i>
             </button>
         <?php else: ?>
-            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Atrás'); ?>">
+            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"  title="<?php echo _('Atrás'); ?>">
                 <i class="material-icons">arrow_back</i>
             </button>
         <?php endif; ?>
 
         <?php if ($showEdit): ?>
-            <button id="btnEdit" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Cuenta'); ?>">
+            <button id="btnEdit" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80" OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Modificar Cuenta'); ?>">
                 <i class="material-icons">mode_edit</i>
             </button>
         <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
-            <button id="btnRequest" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Solicitar Modificación'); ?>">
+            <button id="btnRequest" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)" title="<?php echo _('Solicitar Modificación'); ?>">
                 <i class="material-icons">email</i>
             </button>
         <?php endif; ?>
@@ -458,7 +459,7 @@
         <?php endif; ?>
 
         <?php if ($showSave): ?>
-            <button id="btnSave" name="btnRestore" type="submit" form="frmAccount" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" title="<?php echo _('Guardar'); ?>">
+            <button id="btnSave" name="btnSave" type="submit" form="frmAccount" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" title="<?php echo _('Guardar'); ?>">
                 <i class="material-icons">save</i>
             </button>
         <?php endif; ?>
@@ -493,7 +494,7 @@
                 });
 
                 client.on("aftercopy", function (e) {
-                    resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+                    sysPassUtil.Common.resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
                 });
 
                 client.on("error", function (e) {

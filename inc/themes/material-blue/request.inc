@@ -1,6 +1,6 @@
 <div id="title" class="midroundup titleNormal"><?php echo _('Solicitar Modificación de Cuenta'); ?></div>
 
-<form method="post" name="requestmodify" id="frmRequestModify" onsubmit="sendRequest(); return false;">
+<form method="post" name="requestmodify" id="frmRequestModify" onsubmit="sysPassUtil.Common.sendRequest(); return false;">
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -38,7 +38,7 @@
 <div class="action">
     <button id="btnBack" type="button"
             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-            OnClick="doAction('<?php echo $lastAction; ?>', <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>)"
+            OnClick="sysPassUtil.Common.doAction('<?php echo $lastAction; ?>', <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>)"
             title="<?php echo _('Atrás'); ?>">
         <i class="material-icons">arrow_back</i>
     </button>

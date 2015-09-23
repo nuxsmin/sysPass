@@ -287,12 +287,15 @@ a:focus {
     opacity: 0.4;
 }
 
-#container #actionsBar {
+#container #actionsBar-wrap {
     display: inline-block;
-    position: relative;
-    top: 10em;
+    position: absolute;
+    top: 15em;
     left: 5em;
-    height: 100%;
+    width: 10em;
+}
+
+#container #actionsBar {
     width: 5em;
     text-align: center;
 }
@@ -332,11 +335,10 @@ a:focus {
 
 #container #content {
     display: inline-block;
-    position: relative;
-    top: 1em;
-    left: 10em;
+    position: absolute;
+    top: 9em;
+    left: 15em;
     width: 85%;
-    margin: 50px auto 80px auto;
 }
 
 #content td.descField, #fancyContainer td.descField {
@@ -508,7 +510,7 @@ a:focus {
     width: 55%;
 }
 
-#content .data #files-list li div.files-item-info img{
+#content .data #files-list li div.files-item-info img {
     margin: 0 .5em;
 }
 
@@ -1202,19 +1204,26 @@ footer #project {
 
 footer #updates {
     float: left;
-    width: 20%;
+    width: 5em;
     text-align: left;
     padding-left: 20px;
 }
 
-footer #updates div {display: inline-block; margin: 0 .5em}
+footer #updates div {
+    display: inline-block;
+    margin: 0 .5em
+}
 
 footer #status {
     float: left;
-    width: 20%;
     text-align: left;
     color: #b94a48;
     padding: 0 1em;
+}
+
+footer #status .status-info{
+    padding: .5em;
+    text-decoration: underline;
 }
 
 footer a, footer a:visited {
@@ -1592,7 +1601,7 @@ footer img {
 }
 
 .action .button-action img,
-.action-in-box .button-action img{
+.action-in-box .button-action img {
     width: 24px;
     height: 24px;
 }

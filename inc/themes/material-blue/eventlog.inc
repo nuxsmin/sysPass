@@ -97,7 +97,7 @@
 </div>
 <div class="action fullWidth">
     <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-            title="<?php echo _('Vaciar registro de eventos'); ?>" OnClick="clearEventlog('<?php echo Common::getSessionKey(); ?>');">
+            title="<?php echo _('Vaciar registro de eventos'); ?>" OnClick="sysPassUtil.Common.clearEventlog('<?php echo $sk; ?>');">
         <i class="material-icons">clear_all</i>
     </button>
 </div>

@@ -39,7 +39,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="adminpass" name="adminpass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
                            value="<?php echo $adminpass; ?>" maxlength="255" autocomplete="off"
-                           onKeyUp="checkPassLevel(this.value,'adminaccount')">
+                           onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'adminaccount')">
                     <label class="mdl-textfield__label"
                            for="adminlogin"><?php echo _('Clave'); ?></label>
                 </div>
@@ -51,7 +51,7 @@
                     <input id="masterpassword" name="masterpassword" type="password" required
                            class="mdl-textfield__input fg-blue100 passwordfield__input"
                            value="<?php echo $masterpassword; ?>" maxlength="255" autocomplete="off"
-                           onKeyUp="checkPassLevel(this.value,'masterpwd')">
+                           onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'masterpwd')">
                     <label class="mdl-textfield__label"
                            for="masterpassword"><?php echo _('Clave Maestra'); ?></label>
                 </div>

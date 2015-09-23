@@ -50,8 +50,7 @@
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>
         <input type="hidden" name="activeTab" value="<?php echo $security_tabIndex; ?>"/>
-        <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo $security_actionId; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
 
@@ -70,7 +69,7 @@
             var url = $(this).data('url');
             var data = $(this).serialize();
 
-            sendAjax(data, url);
+            sysPassUtil.Common.sendAjax(data, url);
 
             return false;
         });

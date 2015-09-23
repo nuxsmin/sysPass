@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmGroups" id="frmGroups" onsubmit="appMgmtSave('frmGroups'); return false;">
+    <form method="post" name="frmGroups" id="frmGroups" onsubmit="sysPassUtil.Common.appMgmtSave('frmGroups'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -31,7 +31,7 @@
             <tr>
                 <td class="descField"><?php echo _('Usuarios'); ?></td>
                 <td class="valField">
-                    <select id="selUsers" name="users[]" multiple="multiple" class="select-box sel-chosen-user" <?php echo $isDisabled; ?>>
+                    <select id="selUsers" name="users[]" multiple="multiple" class="select-box sel-chosen-user">
                         <option value="0"></option>
                         <?php foreach ($users as $id => $name): ?>
                             <?php $selected = (in_array($id, $groupUsers)) ? 'selected' : ''; ?>
@@ -92,6 +92,6 @@
 </div>
 <script>
     $(function(){
-        chosenDetect();
+        sysPassUtil.Common.chosenDetect();
     });
 </script>

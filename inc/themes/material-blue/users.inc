@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></h2>
 
-    <form method="post" name="frmUsers" id="frmUsers" onsubmit="appMgmtSave('frmUsers'); return false;">
+    <form method="post" name="frmUsers" id="frmUsers" onsubmit="sysPassUtil.Common.appMgmtSave('frmUsers'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -91,7 +91,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="userpass" name="pass" type="password" required
                                    class="mdl-textfield__input passwordfield__input fg-blue100"
-                                   maxlength="50" OnKeyUp="checkPassLevel(this.value)">
+                                   maxlength="50" OnKeyUp="sysPassUtil.Common.checkPassLevel(this.value)">
                             <label class="mdl-textfield__label"
                                    for="userpass"><?php echo _('Clave'); ?></label>
                         </div>
@@ -240,8 +240,8 @@
 </div>
 <script>
     $(function () {
-        chosenDetect();
+        sysPassUtil.Common.chosenDetect();
 
-        passwordDetect();
+        sysPassUtil.passwordDetect();
     });
 </script>

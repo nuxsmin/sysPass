@@ -1,11 +1,11 @@
-<div>
-    <?php if (!empty($noticesTitle)): ?>
+<?php if (!empty($noticesTitle)): ?>
+    <div>
         <a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank"
            class="active-tooltip" title="<?php echo $noticesTitle; ?>">
             <i class="material-icons fg-orange40">feedback</i>
         </a>
-    <?php endif; ?>
-</div>
+    </div>
+<?php endif; ?>
 <div>
     <?php if ($hasUpdates): ?>
         <a id="link-updates" class="active-tooltip" href="<?php echo $url; ?>" target="_blank"

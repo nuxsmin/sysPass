@@ -160,7 +160,7 @@ class AccountC extends Controller implements ActionsInterface
      *
      * @return bool
      */
-    protected function checkAccess()
+    protected function checkAccess($action = null)
     {
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);

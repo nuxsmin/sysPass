@@ -25,7 +25,7 @@
                 <td class="valField">
                     <label for="security_2faenabled"><?php echo ($chk2FAEnabled) ? 'SI' : 'NO'; ?></label>
                     <input type="checkbox" name="security_2faenabled" id="security_2faenabled"
-                           class="checkbox" <?php echo $chk2FAEnabled, ' ', $isDisabled; ?> />
+                           class="checkbox" <?php echo $chk2FAEnabled; ?> />
                     <span class="alt-label"><?php echo _('Activar'); ?></span>
                     <?php if (!$chk2FAEnabled && $qrCode): ?>
                         <br><br>
@@ -48,8 +48,7 @@
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>
         <input type="hidden" name="activeTab" value="<?php echo $security_tabIndex; ?>"/>
-        <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo $security_actionId; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
 
@@ -66,7 +65,7 @@
             var url = $(this).data('url');
             var data = $(this).serialize();
 
-            sendAjax(data, url);
+            sysPassUtil.Common.sendAjax(data, url);
 
             return false;
         });

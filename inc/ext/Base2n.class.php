@@ -1,4 +1,7 @@
 <?php
+
+namespace SP\Exts;
+
 /**
  * Binary-to-text PHP Utilities
  *

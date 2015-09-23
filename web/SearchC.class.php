@@ -135,10 +135,10 @@ class SearchC extends Controller implements ActionsInterface
         $limitLast = ((\SP\AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? \SP\AccountSearch::$queryNumRows - $this->view->limitCount : floor(\SP\AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
 
         $this->view->assign('pagerOnnClick', array(
-            'first' => 'searchSort(' . $this->view->searchKey . ', 0,1)',
-            'last' => 'searchSort(' . $this->view->searchKey . ',' . $limitLast . ',1)',
-            'prev' => 'searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart - $this->view->limitCount) . ',1)',
-            'next' => 'searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart + $this->view->limitCount) . ',1)',
+            'first' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ', 0,1)',
+            'last' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . $limitLast . ',1)',
+            'prev' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart - $this->view->limitCount) . ',1)',
+            'next' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart + $this->view->limitCount) . ',1)',
         ));
 
         // Variables de configuración
@@ -269,31 +269,31 @@ class SearchC extends Controller implements ActionsInterface
                 'key' => \SP\AccountSearch::SORT_CUSTOMER,
                 'title' => _('Ordenar por Cliente'),
                 'name' => _('Cliente'),
-                'function' => 'searchSort(' . \SP\AccountSearch::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
+                'function' => 'sysPassUtil.Common.searchSort(' . \SP\AccountSearch::SORT_CUSTOMER . ',' . $this->view->limitStart . ')'
             ),
             array(
                 'key' => \SP\AccountSearch::SORT_NAME,
                 'title' => _('Ordenar por Nombre'),
                 'name' => _('Nombre'),
-                'function' => 'searchSort(' . \SP\AccountSearch::SORT_NAME . ',' . $this->view->limitStart . ')'
+                'function' => 'sysPassUtil.Common.searchSort(' . \SP\AccountSearch::SORT_NAME . ',' . $this->view->limitStart . ')'
             ),
             array(
                 'key' => \SP\AccountSearch::SORT_CATEGORY,
                 'title' => _('Ordenar por Categoría'),
                 'name' => _('Categoría'),
-                'function' => 'searchSort(' . \SP\AccountSearch::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
+                'function' => 'sysPassUtil.Common.searchSort(' . \SP\AccountSearch::SORT_CATEGORY . ',' . $this->view->limitStart . ')'
             ),
             array(
                 'key' => \SP\AccountSearch::SORT_LOGIN,
                 'title' => _('Ordenar por Usuario'),
                 'name' => _('Usuario'),
-                'function' => 'searchSort(' . \SP\AccountSearch::SORT_LOGIN . ',' . $this->view->limitStart . ')'
+                'function' => 'sysPassUtil.Common.searchSort(' . \SP\AccountSearch::SORT_LOGIN . ',' . $this->view->limitStart . ')'
             ),
             array(
                 'key' => \SP\AccountSearch::SORT_URL,
                 'title' => _('Ordenar por URL / IP'),
                 'name' => _('URL / IP'),
-                'function' => 'searchSort(' . \SP\AccountSearch::SORT_URL . ',' . $this->view->limitStart . ')'
+                'function' => 'sysPassUtil.Common.searchSort(' . \SP\AccountSearch::SORT_URL . ',' . $this->view->limitStart . ')'
             )
         ));
     }

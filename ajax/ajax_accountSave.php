@@ -77,10 +77,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
         SP\Common::printJSON(_('Es necesario un nombre de cliente'));
     } elseif (!$accountLogin) {
         SP\Common::printJSON(_('Es necesario un usuario'));
-    } elseif (!$accountPassword) {
-        SP\Common::printJSON(_('Es necesario una clave'));
-    } elseif ($accountPassword != $accountPasswordR) {
-        SP\Common::printJSON(_('Las claves no coinciden'));
+    } elseif (!$accountPassword || !$accountPasswordR) {
+        SP\Common::printJSON(_('Es necesaria una clave'));
     } elseif (!$categoryId) {
         SP\Common::printJSON(_('Es necesario una categoría'));
     }
@@ -101,10 +99,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
     }
 } elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS) {
     // Comprobaciones para modficación de clave
-    if (!$accountPassword && !$accountPasswordR) {
-        SP\Common::printJSON(_('La clave no puede estar en blanco'));
-    } elseif ($accountPassword != $accountPasswordR) {
-        SP\Common::printJSON(_('Las claves no coinciden'));
+    if (!$accountPassword || !$accountPasswordR) {
+        SP\Common::printJSON(_('Es necesaria una clave'));
     }
 } elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE) {
     if (!$accountId) {
@@ -117,9 +113,18 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
 if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
+    // Desencriptar con la clave RSA
+    $CryptPKI = new \SP\CryptPKI();
+    $clearAccountPass = $CryptPKI->decryptRSA(base64_decode($accountPassword));
+    $clearAccountPassR = $CryptPKI->decryptRSA(base64_decode($accountPasswordR));
+
+    if ($clearAccountPass != $clearAccountPassR) {
+        SP\Common::printJSON(_('Las claves no coinciden'));
+    }
+
     // Encriptar clave de cuenta
     try {
-        $accountEncPass = SP\Crypt::encryptData($accountPassword);
+        $accountEncPass = SP\Crypt::encryptData($clearAccountPass);
     } catch (\SP\SPException $e) {
         SP\Common::printJSON($e->getMessage());
     }
@@ -225,7 +230,7 @@ switch ($actionId) {
 
         // Eliminar cuenta
         if ($Account->deleteAccount() && \SP\CustomFields::deleteCustomFieldForItem($accountId, \SP\Controller\ActionsInterface::ACTION_ACC_NEW)) {
-            SP\Common::printJSON(_('Cuenta eliminada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
+            SP\Common::printJSON(_('Cuenta eliminada'), 0, "sysPassUtil.Common.doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
         }
 
         SP\Common::printJSON(_('Error al eliminar la cuenta'));

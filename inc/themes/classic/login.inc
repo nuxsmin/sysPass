@@ -1,6 +1,6 @@
     <div id="boxLogin" class="round shadow">
         <div id="boxData">
-            <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return doLogin();">
+            <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return sysPassUtil.Common.doLogin();">
                 <?php use SP\Html;
 
                 if ($demoEnabled): ?>
@@ -8,24 +8,24 @@
                            value=""
                            title="> demo <"/><br/>
                     <input type="password" name="pass" id="pass" class="round5" placeholder="<?php echo _('Clave'); ?>"
-                           value=""
-                           title="> syspass <"/><br/>
+                           value="" title="> syspass <"/>
+                    <br/>
                     <span id="smpass" style="display: none">
                         <input type="password" name="mpass" id="mpass" class="round5"
                                placeholder="<?php echo _('Clave Maestra'); ?>"
-                               value="" title="> 12345678900 <" disabled/>
+                               title="> 12345678900 <" disabled/>
                         <br/>
                     </span>
                 <?php else: ?>
                     <input type="text" name="user" id="user" class="round5" placeholder="<?php echo _('Usuario'); ?>"
                            value=""/><br/>
                     <input type="password" name="pass" id="pass" class="round5" placeholder="<?php echo _('Clave'); ?>"
-                           value=""
-                           autocomplete="off"/><br/>
+                           autocomplete="off"/>
+                    <br/>
                     <span id="smpass" style="display: none">
                         <input type="password" name="mpass" id="mpass" class="round5"
                                placeholder="<?php echo _('Clave Maestra'); ?>"
-                               value="" autocomplete="off" disabled/>
+                               autocomplete="off" disabled/>
                         <br/>
                     </span>
                 <?php endif; ?>

@@ -39,7 +39,7 @@
                         <div class="field-name"><?php echo _('Nombre'); ?></div>
                         <?php if ($account['show'] && $accountLink): ?>
                             <a title="<?php echo _('Detalles de Cuenta'); ?>"
-                               OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"><?php echo $account['name']; ?></a>
+                               OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"><?php echo $account['name']; ?></a>
                         <?php else: ?>
                             <div class="field-text"><?php echo $account['name']; ?></div>
                         <?php endif; ?>
@@ -106,41 +106,41 @@
 
                             <?php if ($account['showView']): ?>
                                 <i class="material-icons fg-blue80" title="<?php echo _('Detalles de Cuenta'); ?>"
-                                   OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">visibility</i>
+                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">visibility</i>
                             <?php endif ?>
 
                             <?php if ($account['showViewPass']): ?>
                                 <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
-                                   onClick="viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
+                                   onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
                                 <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
                                 <i id="clipboard" class="material-icons fg-blue80 actions-optional clip-pass-button"
                                    data-clipboard-target="clip-pass-text"
                                    title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                                   onmousedown="viewPass(<?php echo $account['id']; ?>, false)">content_paste</i>
+                                   onmousedown="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, false)">content_paste</i>
                                 <?php endif ?>
                             <?php endif ?>
 
                             <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
                                 <i class="material-icons"
-                                   title="<?php echo _('Más Acciones'); ?>" OnClick="showOptional(this)">settings</i>
+                                   title="<?php echo _('Más Acciones'); ?>" OnClick="sysPassUtil.Common.showOptional(this)">settings</i>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
                                 <i class="material-icons fg-orange80 actions-optional"
                                    title="<?php echo _('Modificar Cuenta'); ?>"
-                                   OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">mode_edit</i>
+                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">mode_edit</i>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
                                 <i class="material-icons fg-blue80 actions-optional"
                                    title="<?php echo _('Copiar Cuenta'); ?>"
-                                   OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">content_copy</i>
+                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">content_copy</i>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
                                 <i class="material-icons fg-red80 actions-optional"
                                    title="<?php echo _('Eliminar Cuenta'); ?>"
-                                   OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">delete</i>
+                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">delete</i>
                             <?php endif; ?>
 
                         </div>
@@ -149,7 +149,7 @@
                         <div class="account-actions round">
                             <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>"
                                  class="inputImg"
-                                 OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                                 OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -208,7 +208,7 @@
 
                 clipboard();
 
-                showSearchOrder();
+                sysPassUtil.Common.showSearchOrder();
             })
 
         </script>
@@ -221,7 +221,7 @@
             $(this).click(function () {
                 var key = $(this).parent().data('key');
                 $(this).parent().find('a').addClass('filterOn');
-                searchSort(key, <?php echo $limitStart; ?>, 0);
+                sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 0);
             });
         });
 
@@ -229,7 +229,7 @@
             $(this).click(function () {
                 var key = $(this).parent().data('key');
                 $(this).parent().find('a').addClass('filterOn');
-                searchSort(key, <?php echo $limitStart; ?>, 1);
+                sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 1);
             });
         });
     </script>

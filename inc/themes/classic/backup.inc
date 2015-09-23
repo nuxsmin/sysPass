@@ -34,7 +34,7 @@
         </tr>
     </table>
 
-    <form method="post" name="frmBackup" id="frmBackup" onsubmit="configMgmt('export', this); return false;">
+    <form method="post" name="frmBackup" id="frmBackup" onsubmit="sysPassUtil.Common.configMgmt('export', this); return false;">
         <input type="hidden" name="activeTab" value="<?php echo $backup_tabIndex; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP; ?>"/>
@@ -60,7 +60,7 @@
         <?php echo _('Exportar Cuentas'); ?>
     </div>
 
-    <form method="post" name="frmExport" id="frmExport" onsubmit="configMgmt('export', this); return false;">
+    <form method="post" name="frmExport" id="frmExport" onsubmit="sysPassUtil.Common.configMgmt('export', this); return false;">
         <table class="data round">
             <tr>
                 <td class="descField">

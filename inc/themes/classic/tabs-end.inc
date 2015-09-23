@@ -7,7 +7,7 @@
             $("input:visible:first").focus();
         },
         activate: function( event, ui ) {
-            setContentSize();
+            sysPassUtil.Common.setContentSize();
         }
     });
 </script>

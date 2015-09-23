@@ -25,9 +25,7 @@
 
 define('APP_ROOT', '..');
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
-
-require_once 'strings.js.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 $themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . \SP\Init::$THEME . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.php';
 
@@ -39,20 +37,15 @@ $jsFilesBase = array(
     array('href' => 'js/jquery.fancybox.pack.js', 'min' => false),
     array('href' => 'js/jquery.powertip.min.js', 'min' => false),
     array('href' => 'js/chosen.jquery.min.js', 'min' => false),
-    array('href' => 'js/alertify.js', 'min' => true),
+    array('href' => 'js/alertify.js', 'min' => false),
     array('href' => 'js/jquery.fileDownload.js', 'min' => true),
     array('href' => 'js/jquery.filedrop.js', 'min' => true),
     array('href' => 'js/jquery.tagsinput.js', 'min' => true),
     array('href' => 'js/ZeroClipboard.min.js', 'min' => false),
-    array('href' => 'js/zxcvbn-async.js', 'min' => true)
+    array('href' => 'js/jsencrypt.min.js', 'min' => false),
+    array('href' => 'js/zxcvbn-async.js', 'min' => true),
+    array('href' => 'js/functions.js', 'min' => true),
 );
-
-?>
-
-var APP_ROOT = '<?php echo SP\Init::$WEBURI; ?>';
-var LANG = ['<?php echo implode("','", SP\Util::arrayJSEscape($stringsJsLang)) ?>'];
-
-<?php
 
 if (file_exists($themeJsPath)){
     include $themeJsPath;

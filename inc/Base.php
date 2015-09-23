@@ -27,9 +27,9 @@ define('MODEL_PATH', __DIR__);
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
 define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'ext');
-define('DEBUG', false);
+define('DEBUG', true);
 
-require_once MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
+require MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
 
 // Empezar a calcular el tiempo y memoria utilizados
 $memInit = memory_get_usage();

@@ -47,26 +47,26 @@
 <script>
     $(function(){
         $('#frmSearch select').on('change', function (e) {
-            clearSearch(1);
-            accSearch(0)
+            sysPassUtil.Common.clearSearch(1);
+            sysPassUtil.Common.accSearch(0)
         });
 
         $('#frmSearch #btnClear').click(function (e) {
-            clearSearch();
-            accSearch(0);
+            sysPassUtil.Common.clearSearch();
+            sysPassUtil.Common.accSearch(0);
         });
 
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
-            accSearch(1, e)
+            sysPassUtil.Common.accSearch(1, e)
         });
 
         $('#frmSearch #rpp').on('change', function () {
-            accSearch(0);
+            sysPassUtil.Common.accSearch(0);
         });
 
         $("#rpp").spinner({step: 3, max: 50, min: 6, numberFormat: "n", stop: function(event, ui) {
-            accSearch(0);
+            sysPassUtil.Common.accSearch(0);
         }});
 
         <?php if ( $showGlobalSearch ): ?>
@@ -78,7 +78,7 @@
                     $('input[name="gsearch"]').val(0);
                 }
 
-                accSearch(0);
+                sysPassUtil.Common.accSearch(0);
             }
         );
         <?php endif; ?>

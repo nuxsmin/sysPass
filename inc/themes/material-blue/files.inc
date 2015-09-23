@@ -7,19 +7,19 @@
                     <?php if ($file['thumb']): ?>
                         <img src="data:image/png;base64,<?php echo $file['thumb']; ?>"
                              title="<?php echo $file['name']; ?>" alt="thumbnail"
-                             OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');"/>
+                             OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');"/>
                     <?php endif; ?>
                 </div>
                 <div class="files-item-actions">
                     <?php if ($deleteEnabled === 1): ?>
                         <i class="material-icons fg-red80"
                            title="<?php echo _('Eliminar Archivo'); ?>"
-                           OnClick="delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>);">delete</i>
+                           OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>);">delete</i>
                     <?php endif; ?>
                     <i class="material-icons fg-blue80" title="<?php echo _('Descargar Archivo'); ?>"
-                       OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'download');">file_download</i>
+                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'download');">file_download</i>
                     <i class="material-icons fg-blue80" title="<?php echo _('Ver Archivo'); ?>"
-                       OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');">visibility</i>
+                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');">visibility</i>
                 </div>
             </li>
         <?php endforeach; ?>

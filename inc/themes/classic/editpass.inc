@@ -2,7 +2,7 @@
 
 echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
-<form method="post" name="editpass" id="frmEditPass" onsubmit="saveAccount('frmEditPass'); return false;">
+<form method="post" name="editpass" id="frmEditPass" onsubmit="sysPassUtil.Common.saveAccount('frmEditPass'); return false;">
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -24,13 +24,12 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
-                <input type="password" maxlength="255" name="password" class="password passwordfield__input" onKeyUp="checkPassLevel(this.value)"
-                       autocomplete="off">
+                <input type="password" maxlength="255" id="accountpass" name="pass" class="password passwordfield__input" autocomplete="off">
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
-            <td class="valField"><input type="password" class="password" maxlength="255" name="password2" autocomplete="off">
+            <td class="valField"><input type="password" class="password" maxlength="255" id="accountpassR" name="passR" autocomplete="off">
                 <span class="passLevel fullround" title="<?php echo _('Nivel de fortaleza de la clave'); ?>"></span>
             </td>
         </tr>
@@ -44,7 +43,7 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
 <div class="action">
     <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
-            OnClick="doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)">
+            OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)">
         <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
     </button>
 

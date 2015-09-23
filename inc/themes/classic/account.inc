@@ -1,6 +1,6 @@
 <div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 <?php if ($showform): ?>
-<form method="post" name="frmaccount" id="frmAccount" onsubmit="saveAccount('frmAccount'); return false;">
+<form method="post" name="frmaccount" id="frmAccount" onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
     <?php endif; ?>
     <?php if ($gotData && $accountIsHistory): ?>
     <table class="data round tblIcon">
@@ -189,9 +189,9 @@
         <td class="valField">
             <div id="downFiles"></div>
             <?php if ($accountIsHistory): ?>
-                <script>getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
+                <script>sysPassUtil.Common.getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
             <?php else: ?>
-                <script>getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
+                <script>sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
                 <?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
                     <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
                         <input type="file" id="inFile" name="inFile"/>
@@ -201,7 +201,7 @@
                          title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
                         <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                     </div>
-                    <script> dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
+                    <script>sysPassUtil.Common.dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
                 <?php endif; ?>
             <?php endif; ?>
         </td>
@@ -224,7 +224,7 @@
                     var historyId = $('#selHistory').val();
 
                     if (historyId > 0)
-                        doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
+                        sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
                 });
 
                 $('#selHistory').chosen({
@@ -351,7 +351,7 @@
 <?php endif; ?>
 
 <?php if ($gotData && $accountIsHistory): ?>
-    <form method="post" name="frmaccount" id="frmAccount">
+    <form method="post" name="frmAccount" id="frmAccount" onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
         <input type="hidden" name="actionId"
                value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
@@ -364,7 +364,7 @@
 <div class="action">
     <?php if ($showDelete): ?>
         <button type="button" title="<?php echo _('Eliminar Cuenta'); ?>" class="button-action"
-            OnClick="delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');">
+            OnClick="sysPassUtil.Common.delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/delete.png" alt="save" />
         </button>
     <?php endif; ?>
@@ -377,13 +377,13 @@
 
     <?php if ($showViewPass): ?>
         <button type="button" title="<?php echo _('Ver Clave'); ?>" class="button-action"
-            onClick="viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)">
+            onClick="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/user-pass.png" alt="save" />
         </button>
 
         <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
         <button type="button" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" class="button-action clip-pass-button"
-            onmousedown="viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
+            onmousedown="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
             data-clipboard-target="clip-pass-text">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/clipboard.png" alt="save" />
         </button>
@@ -392,31 +392,31 @@
 
     <?php if ($showEditPass): ?>
         <button type="button" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="button-action"
-            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)">
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/key.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($gotData && $accountIsHistory): ?>
         <button type="button" title="<?php echo _('Ver Actual'); ?>" class="button-action"
-            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)">
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
         </button>
     <?php else: ?>
         <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
-            OnClick="doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)">
+            OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($showEdit): ?>
         <button type="button" title="<?php echo _('Modificar Cuenta'); ?>" class="button-action"
-            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/edit.png" alt="save" />
         </button>
     <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
         <button type="button" title="<?php echo _('Solicitar Modificación'); ?>" class="button-action"
-            OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/request.png" alt="save" />
         </button>
     <?php endif; ?>
@@ -458,9 +458,9 @@
     <div id="clip-pass-text" style="visibility: hidden"></div>
 
     <script>
-        passToClip = 0;
-
         $(function(){
+            sysPassUtil.Common.passToClip = 0;
+
             function clipboard() {
                 var client = new ZeroClipboard($('.clip-pass-button'), {
                     swfPath: "js/ZeroClipboard.swf",
@@ -469,7 +469,7 @@
                 });
 
                 client.on("aftercopy", function (e) {
-                    resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
+                    sysPassUtil.Common.resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
                 });
 
                 client.on("error", function (e) {

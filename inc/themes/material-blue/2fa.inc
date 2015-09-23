@@ -33,7 +33,7 @@
 <script>
     $(function () {
         $('#frmPassReset').on('submit', function () {
-            sendAjax($(this).serialize(),'/ajax/ajax_2fa.php');
+            sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_2fa.php');
             return false;
         })
     })

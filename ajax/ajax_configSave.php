@@ -45,7 +45,7 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
 $actionId = SP\Request::analyze('actionId', 0);
 $activeTab = SP\Request::analyze('activeTab', 0);
 
-$doActionOnClose = "doAction($actionId,'',$activeTab);";
+$doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
 if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
     || $actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI
@@ -55,11 +55,6 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
     $log = SP\Log::newLog(_('Modificar Configuración'));
 
     if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
-
-        if ($filesEnabled && $filesAllowedSize >= 16384) {
-            SP\Common::printJSON(_('El tamaño máximo por archivo es de 16MB'));
-        }
-
         // General
         $siteLang = SP\Request::analyze('sitelang');
         $siteTheme = SP\Request::analyze('sitetheme');
@@ -101,6 +96,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         SP\Config::setValue('files_allowed_size', $filesAllowedSize);
         SP\Config::setValue('files_allowed_exts', $filesAllowedExts);
 
+        if ($filesEnabled && $filesAllowedSize >= 16384) {
+            SP\Common::printJSON(_('El tamaño máximo por archivo es de 16MB'));
+        }
+
         // Proxy
         $proxyEnabled = SP\Request::analyze('proxy_enabled', false, false, true);
         $proxyServer = SP\Request::analyze('proxy_server');
@@ -123,9 +122,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         }
 
         $log->addDescription(_('General'));
-    }
-
-    if ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI ) {
+    } elseif ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI ) {
         // Wiki
         $wikiEnabled = SP\Request::analyze('wiki_enabled', false, false, true);
         $wikiSearchUrl = SP\Request::analyze('wiki_searchurl');
@@ -145,9 +142,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         }
 
         $log->addDescription(_('Wiki'));
-    }
-
-    if ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_LDAP ) {
+    } elseif ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_LDAP ) {
         // LDAP
         $ldapEnabled = SP\Request::analyze('ldap_enabled', false, false, true);
         $ldapADSEnabled = SP\Request::analyze('ldap_ads', false, false, true);
@@ -177,9 +172,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         }
 
         $log->addDescription(_('LDAP'));
-    }
-
-    if ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_MAIL ) {
+    } elseif ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_MAIL ) {
         // Mail
         $mailEnabled = SP\Request::analyze('mail_enabled', false, false, true);
         $mailServer = SP\Request::analyze('mail_server');
@@ -220,8 +213,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
 
     SP\Email::sendEmail($log);
 
-    // Recargar la aplicación completa para establecer nuevos valores
-    SP\Util::reload();
+    if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
+        // Recargar la aplicación completa para establecer nuevos valores
+        SP\Util::reload();
+    }
 
     SP\Common::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
 } elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION) {
@@ -237,26 +232,38 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         SP\Common::printJSON(_('Clave maestra no indicada'));
     } elseif ($confirmPassChange == 0) {
         SP\Common::printJSON(_('Se ha de confirmar el cambio de clave'));
-    } elseif ($newMasterPass == $currentMasterPass) {
+    }
+
+    try {
+        // Desencriptar con la clave RSA
+        $CryptPKI = new \SP\CryptPKI();
+        $clearCurMasterPass = $CryptPKI->decryptRSA(base64_decode($currentMasterPass));
+        $clearNewMasterPass = $CryptPKI->decryptRSA(base64_decode($newMasterPass));
+        $clearNewMasterPassR = $CryptPKI->decryptRSA(base64_decode($newMasterPassR));
+    } catch (Exception $e) {
+        SP\Common::printJSON(_('Error en clave RSA'));
+    }
+
+    if ($clearNewMasterPass == $clearCurMasterPass) {
         SP\Common::printJSON(_('Las claves son idénticas'));
-    } elseif ($newMasterPass != $newMasterPassR) {
+    } elseif ($clearNewMasterPass != $clearNewMasterPassR) {
         SP\Common::printJSON(_('Las claves maestras no coinciden'));
-    } elseif (!SP\Crypt::checkHashPass($currentMasterPass, SP\Config::getConfigDbValue('masterPwd'))) {
+    } elseif (!SP\Crypt::checkHashPass($clearCurMasterPass, SP\Config::getConfigDbValue('masterPwd'))) {
         SP\Common::printJSON(_('La clave maestra actual no coincide'));
     }
 
-    $hashMPass = SP\Crypt::mkHashPassword($newMasterPass);
+    $hashMPass = SP\Crypt::mkHashPassword($clearNewMasterPass);
 
     if (!$noAccountPassChange) {
-        $account = new SP\Account();
+        $Account = new SP\Account();
 
-        if (!$account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
+        if (!$Account->updateAccountsMasterPass($clearCurMasterPass, $clearNewMasterPass)) {
             SP\Common::printJSON(_('Errores al actualizar las claves de las cuentas'));
         }
 
-        $accountHistory = new SP\AccountHistory();
+        $AccountHistory = new SP\AccountHistory();
 
-        if (!$accountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
+        if (!$AccountHistory->updateAccountsMasterPass($clearCurMasterPass, $clearNewMasterPass, $hashMPass)) {
             SP\Common::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
         }
     }

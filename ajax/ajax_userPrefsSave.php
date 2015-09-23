@@ -45,13 +45,12 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
 // Variables POST del formulario
 $actionId = SP\Request::analyze('actionId', 0);
 $itemId = SP\Request::analyze('itemId', 0);
-$onCloseAction = SP\Request::analyze('onCloseAction');
 $activeTab = SP\Request::analyze('activeTab', 0);
 
 // Acción al cerrar la vista
-$doActionOnClose = "doAction('$onCloseAction','',$activeTab);";
+$doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY){
+if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
     if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() == 'demo') {
         SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
     }
@@ -63,7 +62,7 @@ if($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY
     $userLogin = UserUtil::getUserLoginById($itemId);
     $twoFa = new \SP\Auth\Auth2FA($itemId, $userLogin);
 
-    if(!$twoFa->verifyKey($pin)){
+    if (!$twoFa->verifyKey($pin)) {
         SP\Common::printJSON(_('Código incorrecto'));
     }
 
@@ -71,11 +70,11 @@ if($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY
     $preferences->setId($itemId);
     $preferences->setUse2Fa(\SP\Util::boolval($twoFaEnabled));
 
-    if(!$preferences->updatePreferences()){
+    if (!$preferences->updatePreferences()) {
         SP\Common::printJSON(_('Error al actualizar preferencias'));
     }
 
-    SP\Common::printJSON(_('Preferencias actualizadas'), 0);
+    SP\Common::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else {
     SP\Common::printJSON(_('Acción Inválida'));
 }

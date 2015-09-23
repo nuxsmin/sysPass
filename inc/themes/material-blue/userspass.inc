@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo _('Cambio de Clave'); ?></h2>
 
-    <form method="post" name="updUsrPass" id="frmUpdUsrPass" onsubmit="appMgmtSave('frmUpdUsrPass'); return false;">
+    <form method="post" name="updUsrPass" id="frmUpdUsrPass" onsubmit="sysPassUtil.Common.appMgmtSave('frmUpdUsrPass'); return false;">
         <table class="fancydata">
 
             <tr>
@@ -47,7 +47,7 @@
     $(function () {
         $('#passGen').click(function () {
             $('#resFancyAccion').hide();
-            password(11, true, true);
+            sysPassUtil.password(11, true, true);
         });
 
         $('#pass').focus(function() {

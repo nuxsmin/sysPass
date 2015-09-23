@@ -39,7 +39,26 @@ class Session
      */
     public static function getUserId()
     {
-        return isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
+        return self::getSessionKey('uid', 0);
+    }
+
+    /**
+     * Devolver una variable de sesión
+     *
+     * @param mixed $key
+     * @param mixed $default
+     * @return bool|int
+     */
+    public static function getSessionKey($key, $default = '')
+    {
+        if (isset($_SESSION[$key])) {
+            if (is_numeric($default)) {
+                return (int)$_SESSION[$key];
+            }
+            return $_SESSION[$key];
+        }
+
+        return $default;
     }
 
     /**
@@ -49,7 +68,18 @@ class Session
      */
     public static function setUserId($userId)
     {
-        $_SESSION['uid'] = (int)$userId;
+        self::setSessionKey('uid', $userId);
+    }
+
+    /**
+     * Establecer una variable de sesión
+     *
+     * @param mixed $key   El nombre de la variable
+     * @param mixed $value El valor de la variable
+     */
+    public static function setSessionKey($key, $value)
+    {
+        $_SESSION[$key] = $value;
     }
 
     /**
@@ -59,7 +89,7 @@ class Session
      */
     public static function getUserIsAdminApp()
     {
-        return (bool)$_SESSION["uisadminapp"];
+        return self::getSessionKey('uisadminapp', false);
     }
 
     /**
@@ -69,7 +99,7 @@ class Session
      */
     public static function setUserIsAdminApp($bool)
     {
-        $_SESSION["uisadminapp"] = (bool)$bool;
+        self::setSessionKey('uisadminapp', $bool);
     }
 
     /**
@@ -79,7 +109,7 @@ class Session
      */
     public static function getUserIsAdminAcc()
     {
-        return (bool)$_SESSION["uisadminacc"];
+        return self::getSessionKey('uisadminacc', false);
     }
 
     /**
@@ -89,7 +119,7 @@ class Session
      */
     public static function setUserIsAdminAcc($bool)
     {
-        $_SESSION["uisadminacc"] = (bool)$bool;
+        self::setSessionKey('uisadminacc', $bool);
     }
 
     /**
@@ -99,7 +129,7 @@ class Session
      */
     public static function getUserProfileId()
     {
-        return (int)$_SESSION["uprofile"];
+        return self::getSessionKey('uprofile', 0);
     }
 
     /**
@@ -109,18 +139,17 @@ class Session
      */
     public static function setUserProfileId($profileId)
     {
-        $_SESSION["uprofile"] = (int)$profileId;
+        self::setSessionKey('uprofile', $profileId);
     }
 
     /**
      * Obtiene el login de usuario de la sesión.
      *
-     * @param bool $default valor devuelto en caso de no estar establecida la variable de sesión
-     * @return string
+     * @return mixed
      */
-    public static function getUserLogin($default = false)
+    public static function getUserLogin()
     {
-        return isset($_SESSION['ulogin']) ? (string)$_SESSION['ulogin'] : $default;
+        return self::getSessionKey('ulogin', false);
     }
 
     /**
@@ -130,7 +159,7 @@ class Session
      */
     public static function setUserLogin($userLogin)
     {
-        $_SESSION['ulogin'] = (string)$userLogin;
+        self::setSessionKey('ulogin', $userLogin);
     }
 
     /**
@@ -140,7 +169,7 @@ class Session
      */
     public static function getUserName()
     {
-        return (string)$_SESSION['uname'];
+        return self::getSessionKey('uname');
     }
 
     /**
@@ -150,7 +179,7 @@ class Session
      */
     public static function setUserName($userName)
     {
-        $_SESSION['uname'] = (string)$userName;
+        self::setSessionKey('uname', $userName);
     }
 
     /**
@@ -160,7 +189,7 @@ class Session
      */
     public static function getUserGroupId()
     {
-        return (int)$_SESSION['ugroup'];
+        return self::getSessionKey('ugroup', 0);
     }
 
     /**
@@ -170,7 +199,7 @@ class Session
      */
     public static function setUserGroupId($groupId)
     {
-        $_SESSION['ugroup'] = (int)$groupId;
+        self::setSessionKey('ugroup', $groupId);
     }
 
     /**
@@ -180,7 +209,7 @@ class Session
      */
     public static function getUserGroupName()
     {
-        return (string)$_SESSION['ugroupn'];
+        return self::getSessionKey('ugroupn');
     }
 
     /**
@@ -190,7 +219,7 @@ class Session
      */
     public static function setUserGroupName($groupName)
     {
-        $_SESSION['ugroupn'] = (string)$groupName;
+        self::setSessionKey('ugroupn', $groupName);
     }
 
     /**
@@ -200,7 +229,7 @@ class Session
      */
     public static function getUserEMail()
     {
-        return (string)$_SESSION['uemail'];
+        return self::getSessionKey('uemail');
     }
 
     /**
@@ -210,7 +239,7 @@ class Session
      */
     public static function setUserEMail($userEmail)
     {
-        $_SESSION['uemail'] = (string)$userEmail;
+        self::setSessionKey('uemail', $userEmail);
     }
 
     /**
@@ -220,7 +249,7 @@ class Session
      */
     public static function getUserIsLdap()
     {
-        return (bool)$_SESSION['uisldap'];
+        return self::getSessionKey('uisldap', false);
     }
 
     /**
@@ -230,7 +259,7 @@ class Session
      */
     public static function setUserIsLdap($bool)
     {
-        $_SESSION['uisldap'] = (bool)$bool;
+        self::setSessionKey('uisldap', $bool);
     }
 
     /**
@@ -240,7 +269,7 @@ class Session
      */
     public static function getUserProfile()
     {
-        return $_SESSION["usrprofile"];
+        return self::getSessionKey('usrprofile');
     }
 
     /**
@@ -250,7 +279,7 @@ class Session
      */
     public static function setUserProfile(\SP\Profile $profile)
     {
-        $_SESSION["usrprofile"] = $profile;
+        self::setSessionKey('usrprofile', $profile);
     }
 
     /**
@@ -258,7 +287,7 @@ class Session
      */
     public static function getSearchFilters()
     {
-        return (isset($_SESSION["searchFilters"])) ? $_SESSION["searchFilters"] : null;
+        return self::getSessionKey('searchFilters', null);
     }
 
     /**
@@ -266,7 +295,7 @@ class Session
      */
     public static function setSearchFilters(\SP\AccountSearch $searchFilters)
     {
-        $_SESSION["searchFilters"] = $searchFilters;
+        self::setSessionKey('searchFilters', $searchFilters);
     }
 
     /**
@@ -276,7 +305,7 @@ class Session
      */
     public static function setAccountParentId($id)
     {
-        $_SESSION["accParentId"] = (int)$id;
+        self::setSessionKey('accParentId', $id);
     }
 
     /**
@@ -286,7 +315,7 @@ class Session
      */
     public static function getAccountParentId()
     {
-        return (isset($_SESSION["accParentId"])) ? $_SESSION["accParentId"] : null;
+        return self::getSessionKey('accParentId', null);
     }
 
     /**
@@ -296,7 +325,7 @@ class Session
      */
     public static function setUpdated($bool = true)
     {
-        $_SESSION["updated"] = $bool;
+        self::setSessionKey('updated', $bool);
     }
 
     /**
@@ -306,7 +335,7 @@ class Session
      */
     public static function getUpdated()
     {
-        return (isset($_SESSION["updated"])) ? $_SESSION["updated"] : false;
+        return self::getSessionKey('updated', false);
     }
 
     /**
@@ -316,7 +345,7 @@ class Session
      */
     public static function getSessionTimeout()
     {
-        return (isset($_SESSION["sessionTimeout"])) ? $_SESSION["sessionTimeout"] : null;
+        return self::getSessionKey('sessionTimeout', null);
     }
 
     /**
@@ -326,7 +355,7 @@ class Session
      */
     public static function setSessionTimeout($timeout)
     {
-        $_SESSION["sessionTimeout"] = $timeout;
+        self::setSessionKey('sessionTimeout', $timeout);
     }
 
     /**
@@ -336,7 +365,7 @@ class Session
      */
     public static function getReload()
     {
-        return (isset($_SESSION["reload"])) ? $_SESSION["reload"] : false;
+        return self::getSessionKey('reload', false);
     }
 
     /**
@@ -346,7 +375,7 @@ class Session
      */
     public static function setReload($bool)
     {
-        $_SESSION["reload"] = $bool;
+        self::setSessionKey('reload', $bool);
     }
 
     /**
@@ -356,7 +385,7 @@ class Session
      */
     public static function getSecurityKey()
     {
-        return (isset($_SESSION["sk"])) ? $_SESSION["sk"] : null;
+        return self::getSessionKey('sk', null);
     }
 
     /**
@@ -366,7 +395,7 @@ class Session
      */
     public static function setSecurityKey($sk)
     {
-        $_SESSION["sk"] = $sk;
+        self::setSessionKey('sk', $sk);
     }
 
     /**
@@ -376,7 +405,7 @@ class Session
      */
     public static function getMPass()
     {
-        return $_SESSION["mPass"];
+        return self::getSessionKey('mPass');
     }
 
     /**
@@ -386,7 +415,7 @@ class Session
      */
     public static function setMPass($mpass)
     {
-        $_SESSION["mPass"] = $mpass;
+        self::setSessionKey('mPass', $mpass);
     }
 
     /**
@@ -396,7 +425,7 @@ class Session
      */
     public static function getMPassPwd()
     {
-        return $_SESSION["mPassPwd"];
+        return self::getSessionKey('mPassPwd');
     }
 
     /**
@@ -406,7 +435,7 @@ class Session
      */
     public static function setMPassPwd($mPassPwd)
     {
-        $_SESSION["mPassPwd"] = $mPassPwd;
+        self::setSessionKey('mPassPwd', $mPassPwd);
     }
 
     /**
@@ -416,7 +445,7 @@ class Session
      */
     public static function getMPassIV()
     {
-        return $_SESSION["mPassIV"];
+        return self::getSessionKey('mPassIV');
     }
 
     /**
@@ -426,7 +455,7 @@ class Session
      */
     public static function setMPassIV($mPassIV)
     {
-        $_SESSION["mPassIV"] = $mPassIV;
+        self::setSessionKey('mPassIV', $mPassIV);
     }
 
     /**
@@ -436,7 +465,7 @@ class Session
      */
     public static function getSidStartTime()
     {
-        return (isset($_SESSION['sidStartTime'])) ? (int)$_SESSION['sidStartTime'] : 0;
+        return self::getSessionKey('sidStartTime', 0);
     }
 
     /**
@@ -446,7 +475,7 @@ class Session
      */
     public static function setSidStartTime($time)
     {
-        $_SESSION['sidStartTime'] = (int)$time;
+        self::setSessionKey('sidStartTime', $time);
     }
 
     /**
@@ -456,7 +485,7 @@ class Session
      */
     public static function getStartActivity()
     {
-        return (isset($_SESSION['startActivity'])) ? (int)$_SESSION['startActivity'] : 0;
+        return self::getSessionKey('startActivity', 0);
     }
 
     /**
@@ -466,7 +495,7 @@ class Session
      */
     public static function setStartActivity($time)
     {
-        $_SESSION['startActivity'] = $time;
+        self::setSessionKey('startActivity', $time);
     }
 
     /**
@@ -476,7 +505,7 @@ class Session
      */
     public static function getLastActivity()
     {
-        return (isset($_SESSION['lastActivity'])) ? $_SESSION['lastActivity'] : 0;
+        return self::getSessionKey('lastActivity', 0);
     }
 
     /**
@@ -486,7 +515,7 @@ class Session
      */
     public static function setLastActivity($time)
     {
-        $_SESSION['lastActivity'] = $time;
+        self::setSessionKey('lastActivity', $time);
     }
 
     /**
@@ -496,7 +525,7 @@ class Session
      */
     public static function getLastAcountId()
     {
-        return (isset($_SESSION['lastAccountId'])) ? $_SESSION['lastAccountId'] : 0;
+        return self::getSessionKey('lastAccountId', 0);
     }
 
     /**
@@ -506,7 +535,7 @@ class Session
      */
     public static function setLastAcountId($id)
     {
-        $_SESSION['lastAccountId'] = $id;
+        self::setSessionKey('lastAccountId', $id);
     }
 
     /**
@@ -516,7 +545,7 @@ class Session
      */
     public static function getTheme()
     {
-        return (isset($_SESSION['theme'])) ? $_SESSION['theme'] : '';
+        return self::getSessionKey('theme');
     }
 
     /**
@@ -526,7 +555,7 @@ class Session
      */
     public static function setTheme($theme)
     {
-        $_SESSION['theme'] = $theme;
+        self::setSessionKey('theme', $theme);
     }
 
     /**
@@ -536,7 +565,7 @@ class Session
      */
     public static function get2FApassed()
     {
-        return $_SESSION['2fapass'];
+        return self::getSessionKey('2fapass', false);
     }
 
     /**
@@ -546,6 +575,26 @@ class Session
      */
     public static function set2FApassed($passed)
     {
-        $_SESSION['2fapass'] = $passed;
+        self::setSessionKey('2fapass', $passed);
+    }
+
+    /**
+     * Devolver la clave pública
+     *
+     * @return mixed
+     */
+    public static function getPublicKey()
+    {
+        return self::getSessionKey('pubkey');
+    }
+
+    /**
+     * Establecer la clave pública
+     *
+     * @param $key
+     */
+    public static function setPublicKey($key)
+    {
+        self::setSessionKey('pubkey', $key);
     }
 }

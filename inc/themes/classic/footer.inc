@@ -2,8 +2,9 @@
             <footer>
                 <div id="updates"></div>
                 <div id="status">
-                    <?php echo (DEBUG) ? 'Debug ON' : ''; ?>
-                    <?php echo ($isDemoMode) ? 'Demo' : ''; ?>
+                    <span class="status-info"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></span>
+                    <span class="status-info active-tooltip" title="<?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?>"><?php echo ($httpsEnabled) ? _('Seguro') : _('Inseguro'); ?></span>
+                    <span class="status-info"><?php echo ($isDemoMode) ? 'Demo' : ''; ?></span>
                 </div>
                 <div id="project">
                     <a href="<?php echo $appInfo['appwebsite']; ?>" target="_blank"

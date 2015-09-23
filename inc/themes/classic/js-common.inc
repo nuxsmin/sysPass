@@ -1,10 +1,10 @@
 <script>
     $(function () {
-        chosenDetect();
+        sysPassUtil.Common.chosenDetect();
 
-        passwordDetect();
+        sysPassUtil.passwordDetect();
 
-        checkboxDetect('#content');
+        sysPassUtil.Common.checkboxDetect('#content');
 
         $('.download').button({
             icons: {primary: "	ui-icon-arrowthickstop-1-s"}

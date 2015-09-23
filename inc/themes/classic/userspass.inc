@@ -1,7 +1,7 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo _('Cambio de Clave'); ?></h2>
 
-    <form method="post" name="updUsrPass" id="frmUpdUsrPass" onsubmit="appMgmtSave('frmUpdUsrPass'); return false;">
+    <form method="post" name="updUsrPass" id="frmUpdUsrPass" onsubmit="sysPassUtil.Common.appMgmtSave('frmUpdUsrPass'); return false;">
         <table class="fancydata">
             <tr>
                 <td class="descField">
@@ -11,7 +11,7 @@
                     <input type="password" id="fancypass" name="pass" title="<?php echo _('Clave'); ?>"
                            class="txtpass passwordfield__input"
                            OnFocus="$('#passLevel').show(); $('#resFancyAccion').hide();"
-                           OnKeyUp="checkPassLevel(this.value, 'fancyContainer')"/>
+                           OnKeyUp="sysPassUtil.Common.checkPassLevel(this.value, 'fancyContainer')"/>
                 </td>
             </tr>
             <tr>
