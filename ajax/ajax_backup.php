@@ -24,36 +24,59 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+SP\Request::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
+    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$doBackup = SP_Common::parseParams('p', 'backup', 0);
-$frmOnCloseAction = SP_Common::parseParams('p', 'onCloseAction');
-$frmActiveTab = SP_Common::parseParams('p', 'activeTab', 0);
+$actionId = SP\Request::analyze('actionId', 0);
+$onCloseAction = SP\Request::analyze('onCloseAction');
+$activeTab = SP\Request::analyze('activeTab', 0);
+$exportPassword = SP\Request::analyze('exportPwd', '', false, false, false);
+$exportPasswordR = SP\Request::analyze('exportPwdR', '', false, false, false);
 
-$doActionOnClose = "doAction('$frmOnCloseAction','',$frmActiveTab);";
+$doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if ($doBackup) {
-    if (!SP_Backup::doBackup()) {
-        SP_Common::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
+if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
+    if (!SP\Backup::doBackup()) {
+        SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Error al realizar el backup'));
+
+        SP\Common::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 
-    $message['action'] = _('Realizar Backup');
-    $message['text'][] = _('Copia de la aplicación y base de datos realizada correctamente');
+    SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Copia de la aplicación y base de datos realizada correctamente'));
 
-    SP_Log::wrLogInfo($message);
-    SP_Common::sendEmail($message);
+    SP\Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
+} elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_EXPORT) {
+    try {
+        $CryptPKI = new \SP\CryptPKI();
+        $clearExportPwd = $CryptPKI->decryptRSA(base64_decode($exportPassword));
+        $clearExportPwdR = $CryptPKI->decryptRSA(base64_decode($exportPasswordR));
+    } catch (Exception $e) {
+        SP\Common::printJSON(_('Error en clave RSA'));
+    }
 
-    SP_Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
+    if (!empty($clearExportPwd) && $clearExportPwd !== $clearExportPwdR){
+        SP\Common::printJSON(_('Las claves no coinciden'));
+    }
+
+    if(!\SP\XmlExport::doExport($clearExportPwd)){
+        SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Error al realizar la exportación de cuentas'));
+
+        SP\Common::printJSON(_('Error al realizar la exportación') . ';;' . _('Revise el registro de eventos para más detalles'));
+    }
+
+    SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Exportación de cuentas realizada correctamente'));
+
+    SP\Common::printJSON(_('Proceso de exportación finalizado'), 0, $doActionOnClose);
 }

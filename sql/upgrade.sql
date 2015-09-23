@@ -16,3 +16,23 @@ ALTER TABLE `usrData` ADD COLUMN `user_isChangePass` BIT(1) NULL DEFAULT b'0' AF
 -- To 1.1.2.12
 ALTER TABLE `usrData` CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(32) NULL DEFAULT NULL ,CHANGE COLUMN `user_lastLogin` `user_lastLogin` DATETIME NULL DEFAULT NULL ,CHANGE COLUMN `user_lastUpdate` `user_lastUpdate` DATETIME NULL DEFAULT NULL, CHANGE COLUMN `user_mIV` `user_mIV` VARBINARY(32) NULL ;
 ALTER TABLE `accounts` CHANGE COLUMN `account_login` `account_login` VARCHAR(50) NULL DEFAULT NULL ;
+-- To 1.1.2.13
+ALTER TABLE `usrData` CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(32) NULL DEFAULT NULL ,CHANGE COLUMN `user_lastLogin` `user_lastLogin` DATETIME NULL DEFAULT NULL ,CHANGE COLUMN `user_lastUpdate` `user_lastUpdate` DATETIME NULL DEFAULT NULL, CHANGE COLUMN `user_mIV` `user_mIV` VARBINARY(32) NULL ;';
+ALTER TABLE `accounts` CHANGE COLUMN `account_login` `account_login` VARCHAR(50) NULL DEFAULT NULL;
+-- To 1.1.2.19
+ALTER TABLE `accounts` CHANGE COLUMN `account_pass` `account_pass` VARBINARY(255) NOT NULL ;
+ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_pass` `acchistory_pass` VARBINARY(255) NOT NULL ;
+-- To 1.1.2.20
+ALTER TABLE `usrData` CHANGE COLUMN `user_pass` `user_pass` VARBINARY(255) NOT NULL,CHANGE COLUMN `user_mPass` `acchistory_pass` VARBINARY(255) DEFAULT NULL ;
+-- To 1.2.0.1:
+ALTER TABLE `accounts` CHANGE COLUMN `account_userEditId` `account_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_userEditId` `acchistory_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `acchistory_dateEdit` `acchistory_dateEdit` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';
+ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_profile` BLOB NOT NULL;
+ALTER TABLE `usrData` ADD `user_preferences` BLOB NULL;
+CREATE TABLE usrToGroups (usertogroup_id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,usertogroup_userId INT UNSIGNED NOT NULL,usertogroup_groupId INT UNSIGNED NOT NULL) DEFAULT CHARSET=utf8;
+CREATE INDEX IDX_accountId ON usrToGroups (usertogroup_userId)
+ALTER TABLE `accFiles` ADD `accFile_thumb` BLOB NULL;
+CREATE TABLE `authTokens` (`authtoken_id` int(11) NOT NULL AUTO_INCREMENT,`authtoken_userId` int(11) NOT NULL,`authtoken_token` varbinary(100) NOT NULL,`authtoken_actionId` smallint(5) unsigned NOT NULL,`authtoken_createdBy` smallint(5) unsigned NOT NULL,`authtoken_startDate` int(10) unsigned NOT NULL,PRIMARY KEY (`authtoken_id`),UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `customFieldsDef` (`customfielddef_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `customfielddef_module` smallint(5) unsigned NOT NULL, `customfielddef_field` blob NOT NULL, PRIMARY KEY (`customfielddef_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `customFieldsData` (`customfielddata_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`customfielddata_moduleId` smallint(5) unsigned NOT NULL,`customfielddata_itemId` int(10) unsigned NOT NULL,`customfielddata_defId` int(10) unsigned NOT NULL,`customfielddata_data` longblob,`customfielddata_iv` varbinary(128) DEFAULT NULL, PRIMARY KEY (`customfielddata_id`), KEY `IDX_DEFID` (`customfielddata_defId`), KEY `IDX_DELETE` (`customfielddata_itemId`,`customfielddata_moduleId`), KEY `IDX_UPDATE` (`customfielddata_moduleId`,`customfielddata_itemId`,`customfielddata_defId`), KEY `IDX_ITEM` (`customfielddata_itemId`), KEY `IDX_MODULE` (`customfielddata_moduleId`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;

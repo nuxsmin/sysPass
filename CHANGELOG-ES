@@ -1,3 +1,24 @@
+=== ** v1.2.0.0-rc1 ===
+
+* [ADD] Mejoras de seguridad para prevenir ataques comunes (SQL Injection, XSS, CSRF)
+* [ADD] Totalmente MVC
+* [ADD] Uso de PDO para consultas a la base de datos
+* [ADD] Uso de PKI para encriptar las claves de los formularios (para canales inseguros)
+* [ADD] Uso de TOTP para autentificación de doble factor
+* [ADD] Campos personalizados para insertarlos en varios módulos
+* [ADD] Exportación a formato XML de sysPass encriptado
+* [ADD] Visualización de claves como imágenes
+* [ADD] Clave maestra temporal para accesos limitados en tiempo
+* [ADD] Generador de claves con opciones de complejidad
+* [ADD] Autorizaciones de acceso a la API
+* [ADD] Nuevo estilo visual com Material Design Lite by Google
+* [ADD] Posibilidad de crear temas personalizados
+* [ADD] Búsquedas especiales
+* [ADD] Previsualización de imágenes en miniatura
+* [MOD] Reescrito el 60% del código para mejorar el rendimiento y la reusabilidad (2x más rápido)
+* [MOD] Mejoras en el manejo de errores
+* [MOD] Mejoras en la ayuda en contexto
+
 === ** v1.1.2.24 ===
 
 * [FIX] Corregido error al guardar extensiones de archivos.

@@ -24,23 +24,32 @@
  */
 
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-$cssFiles = array(
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+
+$themeCssPath = VIEW_PATH . DIRECTORY_SEPARATOR . \SP\Init::$THEME . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'css.php';
+
+$cssFilesBase = array(
     array('href' => 'css/reset.css', 'min' => true),
-    array('href' => 'css/smoothness/jquery-ui.css', 'min' => true),
+    array('href' => 'css/jquery-ui.min.css', 'min' => false),
+    array('href' => 'css/jquery-ui.structure.min.css', 'min' => false),
     array('href' => 'css/jquery.powertip.css', 'min' => true),
     array('href' => 'css/jquery.powertip-yellow.min.css', 'min' => true),
-    array('href' => 'css/chosen.css', 'min' => true),
-    array('href' => 'css/alertify.core.css', 'min' => true),
-    array('href' => 'css/alertify.default.css', 'min' => true),
+    array('href' => 'css/chosen.min.css', 'min' => true),
+    array('href' => 'css/chosen-custom.css', 'min' => true),
+    array('href' => 'css/alertify-bootstrap-3.css', 'min' => false),
     array('href' => 'css/jquery.tagsinput.css', 'min' => true),
-    array('href' => 'js/fancybox/jquery.fancybox.css', 'min' => true),
-    array('href' => 'css/styles.css', 'min' => true)
+    array('href' => 'css/jquery.fancybox.css', 'min' => true),
+    array('href' => 'css/fonts.css', 'min' => true),
+    array('href' => 'css/material-icons.css', 'min' => true),
 );
 
-if (!SP_Util::resultsCardsIsEnabled()) {
-    array_push($cssFiles, array('href' => 'css/search-grid.css', 'min' => true));
+if (file_exists($themeCssPath)){
+    include $themeCssPath;
+
+    foreach ($cssFilesTheme as $file) {
+        array_push($cssFilesBase, $file);
+    }
 }
 
-SP_Util::getMinified('css', $cssFiles);
+SP\Util::getMinified('css', $cssFilesBase);

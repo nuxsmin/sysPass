@@ -1,3 +1,24 @@
+=== ** v1.2.0.0-rc1 ===
+
+* [ADD] Security improvements preventing common threats (SQL Injection, XSS, CSRF)
+* [ADD] Fully MVC
+* [ADD] Using PDO for database queries
+* [ADD] Using PKI for forms passwords encryption (for insecure channels)
+* [ADD] Using TOTP for 2-factor authentication
+* [ADD] Custom fields can be created for several modules
+* [ADD] Export to sysPass encrypted XML file
+* [ADD] View passwords as images
+* [ADD] Temporary master password for limited time logins
+* [ADD] Password generator with complexity options
+* [ADD] API authorizations
+* [ADD] New visual theme with Material Design Lite by Google
+* [ADD] Theming features
+* [ADD] Special searches
+* [ADD] Image thumbnail preview
+* [MOD] 60% of code rewriting for improve performance and reusability (2x faster)
+* [MOD] Better error handling
+* [MOD] Better in-context help
+
 === ** v1.1.2.24 ===
 
 * [FIX] Fixed error on saving files extensions.

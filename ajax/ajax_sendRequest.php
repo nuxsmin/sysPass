@@ -1,5 +1,4 @@
 <?php
-
 /**
  * sysPass
  *
@@ -23,52 +22,57 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+use SP\UserUtil;
+
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+SP\Request::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SP\Common::checkSessionKey($sk)) {
+    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmAccountId = SP_Common::parseParams('p', 'accountid', 0);
-$frmDescription = SP_Common::parseParams('p', 'description');
+$frmAccountId = SP\Request::analyze('accountid', 0);
+$frmDescription = SP\Request::analyze('description');
 
 if (!$frmDescription) {
-    SP_Common::printJSON(_('Es necesaria una descripción'));
+    SP\Common::printJSON(_('Es necesaria una descripción'));
 }
 
-$accountRequestData = SP_Account::getAccountRequestData($frmAccountId);
+$accountRequestData = SP\Account::getAccountRequestData($frmAccountId);
 
 $recipients = array(
-    SP_Users::getUserEmail($accountRequestData->account_userId),
-    SP_Users::getUserEmail($accountRequestData->account_userEditId)
+    UserUtil::getUserEmail($accountRequestData->account_userId),
+    UserUtil::getUserEmail($accountRequestData->account_userEditId)
 );
 
-$requestUsername = SP_Common::parseParams('s', 'uname');
-$requestLogin = SP_Common::parseParams('s', 'ulogin');
+$requestUsername = SP\Session::getUserName();
+$requestLogin = SP\Session::getUserLogin();
 
-$message['action'] = _('Solicitud de Modificación de Cuenta');
-$message['text'][] = SP_Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')';
-$message['text'][] = SP_Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name;
-$message['text'][] = SP_Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name;
-$message['text'][] = SP_Html::strongText(_('Descripción') . ': ') . $frmDescription;
+$log = new \SP\Log(_('Solicitud de Modificación de Cuenta'));
+$log->addDescription(SP\Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')');
+$log->addDescription(SP\Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name);
+$log->addDescription(SP\Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name);
+$log->addDescription(SP\Html::strongText(_('Descripción') . ': ') . $frmDescription);
 
 $mailto = implode(',', $recipients);
 
 if ($mailto
-    && SP_Util::mailrequestIsEnabled()
-    && SP_Common::sendEmail($message, $mailto)
+    && SP\Util::mailrequestIsEnabled()
+    && SP\Email::sendEmail($log, $mailto)
 ) {
-    SP_Log::wrLogInfo($message);
-    SP_Common::printJSON(_('Solicitud enviada'), 0, "doAction('accsearch');");
+    $log->writeLog();
+
+    SP\Common::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
 }
 
-SP_Common::printJSON(_('Error al enviar la solicitud'));
+SP\Common::printJSON(_('Error al enviar la solicitud'));
