@@ -65,9 +65,6 @@ sysPass.Util.Common = function () {
     // Inicializar la encriptación RSA
     var encrypt = new JSEncrypt();
 
-    // Expresión regular para comprobar si una cadena está codificada en base64
-    var base64Matcher = new RegExp("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
-
     //$.ajaxSetup({
     //    error: function(jqXHR, exception) {
     //        if (jqXHR.status === 0) {
@@ -1132,10 +1129,25 @@ sysPass.Util.Common = function () {
         var input = $(inputId);
         var curValue = input.val();
 
+        if (validateBase64(curValue)){
+            return;
+        }
+
         if (curValue !== '') {
             var passEncrypted = encrypt.encrypt(curValue);
             input.val(passEncrypted);
         }
+    };
+
+    /**
+     * Comprobar si una cadena está en Base64
+     * @param string
+     * @returns {boolean}
+     */
+    var validateBase64 = function (string) {
+        // Expresión regular para comprobar si una cadena está codificada en base64
+        var base64Matcher = new RegExp("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
+        return base64Matcher.test(string);
     };
 
     return {
@@ -1158,6 +1170,7 @@ sysPass.Util.Common = function () {
         doLogout: doLogout,
         downFile: downFile,
         dropFile: dropFile,
+        encryptFormValue: encryptFormValue,
         getFiles: getFiles,
         importFile: importFile,
         outputResult: outputResult,

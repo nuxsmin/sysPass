@@ -44,8 +44,8 @@ class MainC extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param      $template  \SP\Template con instancia de plantilla
-     * @param null $page      El nombre de página para la clase del body
+     * @param      $template   \SP\Template con instancia de plantilla
+     * @param null $page       El nombre de página para la clase del body
      * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(\SP\Template $template = null, $page = null, $initialize = true)
@@ -221,8 +221,8 @@ class MainC extends Controller implements ActionsInterface
         // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
         $this->view->assign('getParams');
 
-        if (count($_GET) > 0){
-            foreach ($_GET as $param => $value){
+        if (count($_GET) > 0) {
+            foreach ($_GET as $param => $value) {
                 $getParams['g_' . \SP\Html::sanitize($param)] = \SP\Html::sanitize($value);
             }
 
@@ -271,11 +271,27 @@ class MainC extends Controller implements ActionsInterface
         }
 
         if (Request::analyze('install', false)) {
+
+            try {
+                // Desencriptar con la clave RSA
+                $CryptPKI = new \SP\CryptPKI();
+                $clearAdminPass = $CryptPKI->decryptRSA(base64_decode($this->view->adminpass));
+                $clearMasterPassword = $CryptPKI->decryptRSA(base64_decode($this->view->masterpassword));
+                $clearDbPass = $CryptPKI->decryptRSA(base64_decode($this->view->dbpass));
+            } catch (\Exception $e) {
+                $this->view->append('errors', array(
+                    'type' => SPException::SP_CRITICAL,
+                    'description' => _('Error en clave RSA'),
+                    'hint' => $e->getMessage()
+                ));
+                return false;
+            }
+
             Installer::setUsername($this->view->adminlogin);
-            Installer::setPassword($this->view->adminpass);
-            Installer::setMasterPassword($this->view->masterpassword);
+            Installer::setPassword($clearAdminPass);
+            Installer::setMasterPassword($clearMasterPassword);
             Installer::setDbuser($this->view->dbuser);
-            Installer::setDbpass($this->view->dbpass);
+            Installer::setDbpass($clearDbPass);
             Installer::setDbname($this->view->dbname);
             Installer::setDbhost($this->view->dbhost);
             Installer::setIsHostingMode($this->view->hostingmode);
@@ -289,7 +305,7 @@ class MainC extends Controller implements ActionsInterface
                     'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder')
                 ));
                 $this->view->assign('isCompleted', true);
-                return;
+                return true;
             }
         }
 
@@ -374,7 +390,7 @@ class MainC extends Controller implements ActionsInterface
 
         $this->view->addTemplate('update');
 
-        if (is_array($updates)){
+        if (is_array($updates)) {
             $description = nl2br($updates['description']);
             $version = $updates['version'];
 
@@ -391,10 +407,10 @@ class MainC extends Controller implements ActionsInterface
         $numNotices = count($notices);
         $noticesTitle = '';
 
-        if ($notices !== false && $numNotices > 0){
+        if ($notices !== false && $numNotices > 0) {
             $noticesTitle = sprintf('%s <br><br>', _('Avisos de sysPass'));
 
-            foreach ($notices as $notice){
+            foreach ($notices as $notice) {
                 $noticesTitle .= sprintf('%s <br>', $notice[0]);
             }
 

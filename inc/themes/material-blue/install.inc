@@ -25,7 +25,8 @@
                 <legend><?php echo _('Crear cuenta de admin de sysPass'); ?></legend>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="adminlogin" name="adminlogin" type="text" required class="mdl-textfield__input fg-blue100"
+                    <input id="adminlogin" name="adminlogin" type="text" required
+                           class="mdl-textfield__input fg-blue100"
                            value="<?php echo $adminlogin; ?>" maxlength="80" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="adminlogin"><?php echo _('Usuario administrador de sysPass'); ?></label>
@@ -37,7 +38,8 @@
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="adminpass" name="adminpass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
+                    <input id="adminpass" name="adminpass" type="password" required
+                           class="mdl-textfield__input fg-blue100 passwordfield__input"
                            value="<?php echo $adminpass; ?>" maxlength="255" autocomplete="off"
                            onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'adminaccount')">
                     <label class="mdl-textfield__label"
@@ -84,7 +86,8 @@
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dbpass" name="dbpass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input-show"
+                    <input id="dbpass" name="dbpass" type="password" required
+                           class="mdl-textfield__input fg-blue100 passwordfield__input-show"
                            value="<?php echo $dbpass; ?>" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="dbpass"><?php echo _('Clave acceso BBDD'); ?></label>
@@ -139,9 +142,15 @@
     <?php endif; ?>
 </div>
 <script>
-    $(function(){
-       $('#btnInstall').click(function(){
+    $(function () {
+        $('#frmInstall').submit(function () {
+            sysPassUtil.Common.encryptFormValue('#adminpass');
+            sysPassUtil.Common.encryptFormValue('#masterpassword');
+            sysPassUtil.Common.encryptFormValue('#masterpasswordR');
+            sysPassUtil.Common.encryptFormValue('#dbpass');
+        });
+        $('#btnInstall').click(function () {
             $('#frmInstall').submit();
-       });
+        });
     });
 </script>

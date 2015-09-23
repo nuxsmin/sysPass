@@ -1,76 +1,149 @@
+=== ** v1.2.0.0-rc1 ===
+
+* [ADD] Mejoras de seguridad para prevenir ataques comunes (SQL Injection, XSS, CSRF)
+* [ADD] Totalmente MVC
+* [ADD] Uso de PDO para consultas a la base de datos
+* [ADD] Uso de PKI para encriptar las claves de los formularios (para canales inseguros)
+* [ADD] Uso de TOTP para autentificación de doble factor
+* [ADD] Campos personalizados para insertarlos en varios módulos
+* [ADD] Exportación a formato XML de sysPass encriptado
+* [ADD] Visualización de claves como imágenes
+* [ADD] Clave maestra temporal para accesos limitados en tiempo
+* [ADD] Generador de claves con opciones de complejidad
+* [ADD] Autorizaciones de acceso a la API
+* [ADD] Nuevo estilo visual com Material Design Lite by Google
+* [ADD] Posibilidad de crear temas personalizados
+* [ADD] Búsquedas especiales
+* [ADD] Previsualización de imágenes en miniatura
+* [MOD] Reescrito el 60% del código para mejorar el rendimiento y la reusabilidad (2x más rápido)
+* [MOD] Mejoras en el manejo de errores
+* [MOD] Mejoras en la ayuda en contexto
+
+=== ** v1.1.2.24 ===
+
+* [FIX] Corregido error al guardar extensiones de archivos.
+* [FIX] Corregido error al comprobar actualizaciones.
+* [FIX] Closes #109
+* [FIX] Closes #116, Closes #107
+* [MOD] Cambiada la funcionalidad de generación del token de seguridad para la gestión de clientes, categorias, usuarios, grupos y perfiles.
+* [MOD] Cambiados logo y descripción de la aplicación.
+* [MOD] Añadido número de versión en mensaje de actualización.
+
+=== ** v1.1.2.23 ===
+
+* [FIX] Corregido error al crear clientes, la descripción no era insertada. Gracias a @tejadon
+
+=== ** v1.1.2.22 ===
+
+* [ADD] Añadida detección de cookies habilitadas
+* [ADD] Añadida traducción al Ruso. Gracias a @TitovLab
+* [ADD] Añadida caché de configuración de lenguaje
+* [MOD] Los avisos de PHP no se muestran. Espero que no haya más repuestas de javascript rotas
+* [FIX] Corrección de fallos menores
+* [ADD] Añadida documentación de javascript
+
+=== ** v1.1.2.21 ===
+
+* [FIX] Corregido conflicto con módulo de compresión zlib. Gracias a @tejadon
+* [FIX] Corregida cabecera javascript
+* [FIX] Corregido estilo de la plantilla de instalación
+
+=== ** v1.1.2.20 ===
+
+* [ADD] Añadido puerto de conexión a la base de datos
+* [FIX] Corregidos varios errores en UI
+* [FIX] Corregido bucle infinito cuando ocurre un error de conexión a la BD (necesita más pruebas)
+
+=== ** v1.1.2.19 ===
+
+* [FIX] Corregidos algunos mensajes de PHP
+* [MOD] Se utiliza la ip del servidor de origen para conexión a base de datos remota
+* [MOD] La longitud de la clave de cuenta se aumenta a 255 caracteres
+* [MOD] Se elimina clave de array que no era usada
+* [FIX] Corregido error al guardar clave en la importación de cuentas
+* [MOD] Actualizada versión de compilación. Necesita actualización de la BD (ver http://wiki.syspass.org/es/actualizar)
+
+=== ** v1.1.2.18 ===
+
+* [FIX] Corregido error al verificar pertenencia a grupos de LDAP. Gracias a @danislav
+* [FIX] Corregido error al obtener el atributo email de LDAP. Gracias to @danislav
+* [MOD] Traducciones actualizadas
+* [FIX] Corregido error al mostrar las notas de las cuentas en la búsqueda
+* [FIX] Corregido error al guardar el salt de la clave de usuarios de LDAP
+
 === ** v1.1.2.16-rc2 ===
 
-* Actualizada cabecera y sintáxis de PHPdoc
-* Mejorada la cache de parámetros de configuración para reducir consultas al archivo de configuración
-* Eliminados métodos no usados
-* Cambiados algunos métodos de la clase SP_Crypt a estáticos y factorizadas algunas funciones
-* Añadidas funciones al modo demo
-* Closes #68 and Closes #67
-* Closes #66
-* Corredigo error en la detección del tipo mime en la importación desde CSV
-* Closes #76. Corregido error en el reestablecimiento de clave cuando las notificaciones están deshabilitadas y el cambio de clave es forzado
-* Actualizada traducción al alemán
-* Traducido al francés. Muchas gracias a Cyril
-* Corregidos algunos fallos en traducciones en javascript
-* Corregido error cuando el grupo/perfil por defecto de LDAP no está configurado
-* Corregidos fallos en modo demo
-* Mejorada la gestión de formularios forzando valores del tipo int
-* Deshabilitado el autocompletado de campos de clave (HTML5).
-* Corregido error en manejo de actualizaciones
-* Mejorada la respuesta del navegador mediante la reducción y unión de archivos CSS y JS.
-* Añadida clase CssMin para reducir archivos CSS
-* Algunos valores de configuración son guardados en caché para reducir consultas
-* Mejorada la gestión de URLs
-* Nuevo proceso de actualización mediante código de seguridad para actualizar la base de datos. Ver wiki para más detalles
-* Corregido error en sintaxis de RDN de LDAP
-* Corregido reinicio al finalizar backup
-* Corregido error en clave maestra con ceros a izquierda/derecha
-* Corregidos algunos eventos en el log de errores
-* Closes #47. Grupo y Perfil por defecto pueden seleccionarse para nuevos usuarios de LDAP
-* Closes #48. Modificados campos de BD para permitir el modo STRICT
-* Los errores del instalador son enviados al log del servidor web
-* Closes #41. El grupo de LDAP no es necesario para el login de usuarios
-* Closes #45. Los usuarios de LDAP sin grupo o expirados y guardados en BD, no son permitidos a acceder
-* Nueva funcionalidad de backup sin ejecutar comandos externos. Instalaciones con Windows son soportadas. Módulo PHP Phar requerido.
-* Nuevo modo Active Directory para autentificación de LDAP
-* Corregido XSS en página login debido a valores no formateados en input. Gracias a Daniele
-* Closes #48. Campo de clave pueden ser mostrados para ver clave (instalador)
-* Fixes #52. Ajustar la consulta de usuario a los campos requeridos
-* Añadidos archivos .PO a CVS
-* Comprobaciones adicionales para errores de conexión a BD
-* Closes #46. Mostrar información adicional sobre permisos requeridos en directorios de instalación
-* Corregido error de generación de clave en Chrome
-* Mejorada la subida de archivos (HTML5)
-* Forzado uso de UTF-8 en conexiones de BD
-* Corregido error en claves con carácteres especiales
-* Corregido filtro de búsqueda cuando la página es >1
-* Corregido cierre de sesión al mostrar claves
-* Closes #40. Error al importar claves en blanco
-* Convertir valores a string al importar datos de cuentas
-* Corregido color del cliente en búsquedas
-* Closes 40. Las cuentas pueden ser importadas desde archivo XML de KeePass o KeePassX
-* Nuevo estilo de lista cambiable para búsquedas. Closes #38
-* Corregida altura incorrecta en resultados de búqueda en IE 10
-* Forzada recarga de página en cambios de configuración
-* CLoses #20. Copiar claves de cuentas al portapapeles (usando Flash).
-* Evitar hacer búsquedas al pulsar teclas no alfanuméricas
-* CLoses #30. Corregido error al visualizar claves con carácteres especiales. Gracias a @chadrempp
-* Corregido error al guardar claves con carácteres especiales
-* Closes #26. Enviar email al usuario cuando es forzado a cambiar de clave
-* Habilitada la restauración de claves desde el historial
-* Traducido al húngaro. Gracias a Tóth Tamás
-* Habilitada la autentificación en el envío de emails
-* Traducción al alemán. Gracias a Uwe Steinmann.
-* Closes #26. Habilitado el restablecimiento de claves de usuarios por el administrador
-* Mejorada el manejo de emails usando la clase PHPmailer. todos los email son enviados en formato HTML y la autentificación y seguridad están disponibles
-* Mejorado el código Javascript mediante refactorización
-* La IP del cliente es guardada en el registro de eventos
-* Fixes #29
-* Corregido error al guardar usuario/grupos cuando la cuenta es editada por un usuario externo
-* Mejorada la detección de pertenecia a grupos de LDAP. El usuario no necesita tener el atributo "group"
-* Mejorada la detección de actualizaciones de BD
-* Incrementada la longitud del campo 'user_login'
-* Corregido charset en algunas tablas
+* [MOD] Actualizada cabecera y sintáxis de PHPdoc
+* [MOD] Mejorada la cache de parámetros de configuración para reducir consultas al archivo de configuración
+* [MOD] Eliminados métodos no usados
+* [MOD] Cambiados algunos métodos de la clase SP_Crypt a estáticos y factorizadas algunas funciones
+* [ADD] Añadidas funciones al modo demo
+* [ADD] Closes #68 and Closes #67
+* [ADD] Closes #66
+* [FIX] Corregido error en la detección del tipo mime en la importación desde CSV
+* [FIX] Closes #76. Corregido error en el reestablecimiento de clave cuando las notificaciones están deshabilitadas y el cambio de clave es forzado
+* [MOD] Actualizada traducción al alemán
+* [ADD] Traducido al francés. Muchas gracias a Cyril
+* [FIX] Corregidos algunos fallos en traducciones en javascript
+* [FIX] Corregido error cuando el grupo/perfil por defecto de LDAP no está configurado
+* [FIX] Corregidos fallos en modo demo
+* [MOD] Mejorada la gestión de formularios forzando valores del tipo int
+* [MOD] Deshabilitado el autocompletado de campos de clave (HTML5).
+* [FIX] Corregido error en manejo de actualizaciones
+* [ADD] Mejorada la respuesta del navegador mediante la reducción y unión de archivos CSS y JS.
+* [ADD] Añadida clase CssMin para reducir archivos CSS
+* [ADD] Algunos valores de configuración son guardados en caché para reducir consultas
+* [MOD] Mejorada la gestión de URLs
+* [ADD] Nuevo proceso de actualización mediante código de seguridad para actualizar la base de datos. Ver wiki para más detalles
+* [FIX] Corregido error en sintaxis de RDN de LDAP
+* [FIX] Corregido reinicio al finalizar backup
+* [FIX] Corregido error en clave maestra con ceros a izquierda/derecha
+* [FIX] Corregidos algunos eventos en el log de errores
+* [ADD] Closes #47. Grupo y Perfil por defecto pueden seleccionarse para nuevos usuarios de LDAP
+* [MOD] Closes #48. Modificados campos de BD para permitir el modo STRICT
+* [ADD] Los errores del instalador son enviados al log del servidor web
+* [MOD] Closes #41. El grupo de LDAP no es necesario para el login de usuarios
+* [MOD] Closes #45. Los usuarios de LDAP sin grupo o expirados y guardados en BD, no son permitidos a acceder
+* [ADD] Nueva funcionalidad de backup sin ejecutar comandos externos. Instalaciones con Windows son soportadas. Módulo PHP Phar requerido.
+* [ADD] Nuevo modo Active Directory para autentificación de LDAP
+* [FIX] Corregido XSS en página login debido a valores no formateados en input. Gracias a Daniele
+* [ADD] Closes #48. Campo de clave pueden ser mostrados para ver clave (instalador)
+* [FIX] Fixes #52. Ajustar la consulta de usuario a los campos requeridos
+* [ADD] Añadidos archivos .PO a CVS
+* [ADD] Comprobaciones adicionales para errores de conexión a BD
+* [MOD] Closes #46. Mostrar información adicional sobre permisos requeridos en directorios de instalación
+* [FIX] Corregido error de generación de clave en Chrome
+* [ADD] Mejorada la subida de archivos (HTML5)
+* [MOD] Forzado uso de UTF-8 en conexiones de BD
+* [FIX] Corregido error en claves con carácteres especiales
+* [FIX] Corregido filtro de búsqueda cuando la página es >1
+* [FIX] Corregido cierre de sesión al mostrar claves
+* [FIX] Closes #40. Error al importar claves en blanco
+* [MOD] Convertir valores a string al importar datos de cuentas
+* [FIX] Corregido color del cliente en búsquedas
+* [ADD] Closes 40. Las cuentas pueden ser importadas desde archivo XML de KeePass o KeePassX
+* [ADD] Nuevo estilo de lista cambiable para búsquedas. Closes #38
+* [FIX] Corregida altura incorrecta en resultados de búqueda en IE 10
+* [ADD] Forzada recarga de página en cambios de configuración
+* [ADD] Closes #20. Copiar claves de cuentas al portapapeles (usando Flash).
+* [MOD] Evitar hacer búsquedas al pulsar teclas no alfanuméricas
+* [FIX] Closes #30. Corregido error al visualizar claves con carácteres especiales. Gracias a @chadrempp
+* [FIX] Corregido error al guardar claves con carácteres especiales
+* [MOD] Closes #26. Enviar email al usuario cuando es forzado a cambiar de clave
+* [ADD] Habilitada la restauración de claves desde el historial
+* [ADD] Traducido al húngaro. Gracias a Tóth Tamás
+* [ADD] Habilitada la autentificación en el envío de emails
+* [ADD] Traducción al alemán. Gracias a Uwe Steinmann.
+* [ADD] Closes #26. Habilitado el restablecimiento de claves de usuarios por el administrador
+* [ADD] Mejorada el manejo de emails usando la clase PHPmailer. todos los email son enviados en formato HTML y la autentificación y seguridad están disponibles
+* [MOD] Mejorado el código Javascript mediante refactorización
+* [ADD] La IP del cliente es guardada en el registro de eventos
+* [FIX] Fixes #29
+* [FIX] Corregido error al guardar usuario/grupos cuando la cuenta es editada por un usuario externo
+* [MOD] Mejorada la detección de pertenecia a grupos de LDAP. El usuario no necesita tener el atributo "group"
+* [MOD] Mejorada la detección de actualizaciones de BD
+* [MOD] Incrementada la longitud del campo 'user_login'
+* [FIX] Corregido charset en algunas tablas
 
 === ** v1.0.9 ** ===
 

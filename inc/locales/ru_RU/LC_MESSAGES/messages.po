@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-19 12:41+0100\n"
-"PO-Revision-Date: 2015-09-19 12:41+0100\n"
+"POT-Creation-Date: 2015-09-23 13:00+0100\n"
+"PO-Revision-Date: 2015-09-23 13:00+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <nuxsmin@syspass.org>\n"
 "Language: ru_RU\n"
@@ -41,7 +41,7 @@ msgstr "ОШИБОЧНЫЙ ЗАПРОС"
 msgid "Código correcto"
 msgstr "Введите код безопасности"
 
-#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:67
+#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:66
 #, fuzzy
 msgid "Código incorrecto"
 msgstr "Ошибка входа"
@@ -58,101 +58,96 @@ msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Сессия истекла или ошибка сессии"
 
 #: ../../../../ajax/ajax_accountSave.php:75
-#: ../../../../ajax/ajax_accountSave.php:92
+#: ../../../../ajax/ajax_accountSave.php:90
 msgid "Es necesario un nombre de cuenta"
 msgstr "Необходимо имя учетной записи"
 
 #: ../../../../ajax/ajax_accountSave.php:77
-#: ../../../../ajax/ajax_accountSave.php:90
-#: ../../../../ajax/ajax_appMgmtSave.php:326
+#: ../../../../ajax/ajax_accountSave.php:88
+#: ../../../../ajax/ajax_appMgmtSave.php:337
 msgid "Es necesario un nombre de cliente"
 msgstr "Необходимо имя заказчика"
 
 #: ../../../../ajax/ajax_accountSave.php:79
-#: ../../../../ajax/ajax_accountSave.php:94
+#: ../../../../ajax/ajax_accountSave.php:92
 msgid "Es necesario un usuario"
 msgstr "Необходимо имя пользователя"
 
 #: ../../../../ajax/ajax_accountSave.php:81
-msgid "Es necesario una clave"
+#: ../../../../ajax/ajax_accountSave.php:103
+#, fuzzy
+msgid "Es necesaria una clave"
 msgstr "Необходим пароль"
 
 #: ../../../../ajax/ajax_accountSave.php:83
-#: ../../../../ajax/ajax_accountSave.php:107
-#: ../../../../ajax/ajax_appMgmtSave.php:111
-#: ../../../../ajax/ajax_appMgmtSave.php:146
-#: ../../../../ajax/ajax_backup.php:62
-msgid "Las claves no coinciden"
-msgstr "Пароль и подтверждение не совпадают"
-
-#: ../../../../ajax/ajax_accountSave.php:85
-#: ../../../../ajax/ajax_accountSave.php:96
+#: ../../../../ajax/ajax_accountSave.php:94
 #, fuzzy
 msgid "Es necesario una categoría"
 msgstr "Необходим пароль"
 
-#: ../../../../ajax/ajax_accountSave.php:100
-#: ../../../../ajax/ajax_accountSave.php:111
+#: ../../../../ajax/ajax_accountSave.php:98
+#: ../../../../ajax/ajax_accountSave.php:107
 msgid "Id inválido"
 msgstr "Ошибочный ID"
 
-#: ../../../../ajax/ajax_accountSave.php:105
-#: ../../../../ajax/ajax_appMgmtSave.php:109
-#: ../../../../ajax/ajax_appMgmtSave.php:144
-msgid "La clave no puede estar en blanco"
-msgstr "Пароль не может быть пустым"
-
-#: ../../../../ajax/ajax_accountSave.php:114
-#: ../../../../ajax/ajax_accountSave.php:258
-#: ../../../../ajax/ajax_appMgmtSave.php:532
-#: ../../../../ajax/ajax_configSave.php:290
-#: ../../../../ajax/ajax_userPrefsSave.php:80 ../../../../api.php:53
+#: ../../../../ajax/ajax_accountSave.php:110
+#: ../../../../ajax/ajax_accountSave.php:263
+#: ../../../../ajax/ajax_appMgmtSave.php:543
+#: ../../../../ajax/ajax_configSave.php:297
+#: ../../../../ajax/ajax_userPrefsSave.php:79 ../../../../api.php:53
 msgid "Acción Inválida"
 msgstr "Ошибочное действие"
 
-#: ../../../../ajax/ajax_accountSave.php:168
+#: ../../../../ajax/ajax_accountSave.php:122
+#: ../../../../ajax/ajax_appMgmtSave.php:111
+#: ../../../../ajax/ajax_appMgmtSave.php:155
+#: ../../../../ajax/ajax_backup.php:70
+msgid "Las claves no coinciden"
+msgstr "Пароль и подтверждение не совпадают"
+
+#: ../../../../ajax/ajax_accountSave.php:173
 msgid "Cuenta creada"
 msgstr "Аккаунт создан"
 
-#: ../../../../ajax/ajax_accountSave.php:171
+#: ../../../../ajax/ajax_accountSave.php:176
 msgid "Error al crear la cuenta"
 msgstr "Ошибка при создании учетной записи"
 
-#: ../../../../ajax/ajax_accountSave.php:206
+#: ../../../../ajax/ajax_accountSave.php:211
 msgid "Sin cambios"
 msgstr "Нет изменений"
 
-#: ../../../../ajax/ajax_accountSave.php:218
+#: ../../../../ajax/ajax_accountSave.php:223
 msgid "Cuenta actualizada"
 msgstr "Информация об учетной записи изменена"
 
-#: ../../../../ajax/ajax_accountSave.php:221
+#: ../../../../ajax/ajax_accountSave.php:226
 msgid "Error al modificar la cuenta"
 msgstr "Ошибка при изменении учетной записи"
 
-#: ../../../../ajax/ajax_accountSave.php:228
+#: ../../../../ajax/ajax_accountSave.php:233
 msgid "Cuenta eliminada"
 msgstr "Аккаунт удален"
 
-#: ../../../../ajax/ajax_accountSave.php:231
+#: ../../../../ajax/ajax_accountSave.php:236
 msgid "Error al eliminar la cuenta"
 msgstr "Ошибка при удалении учетной записи"
 
-#: ../../../../ajax/ajax_accountSave.php:241
-#: ../../../../ajax/ajax_appMgmtSave.php:150
+#: ../../../../ajax/ajax_accountSave.php:246
+#: ../../../../ajax/ajax_appMgmtSave.php:161
 #: ../../../../ajax/ajax_passReset.php:74
 msgid "Clave actualizada"
 msgstr "Пароль изменен"
 
-#: ../../../../ajax/ajax_accountSave.php:244
+#: ../../../../ajax/ajax_accountSave.php:249
 msgid "Error al actualizar la clave"
 msgstr "Ошибка изменения пароля"
 
-#: ../../../../ajax/ajax_accountSave.php:251
+#: ../../../../ajax/ajax_accountSave.php:256
 msgid "Cuenta restaurada"
 msgstr "Аккаунт восстановлен"
 
-#: ../../../../ajax/ajax_accountSave.php:254
+#: ../../../../ajax/ajax_accountSave.php:259
 msgid "Error al restaurar cuenta"
 msgstr "Ошибка восстановления учетной записи"
 
@@ -287,11 +282,11 @@ msgid "Es necesario un email"
 msgstr "Необходим email"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:95
-#: ../../../../ajax/ajax_appMgmtSave.php:142
-#: ../../../../ajax/ajax_appMgmtSave.php:157
-#: ../../../../ajax/ajax_configSave.php:265
+#: ../../../../ajax/ajax_appMgmtSave.php:144
+#: ../../../../ajax/ajax_appMgmtSave.php:168
+#: ../../../../ajax/ajax_configSave.php:272
 #: ../../../../ajax/ajax_import.php:39 ../../../../ajax/ajax_migrate.php:39
-#: ../../../../ajax/ajax_userPrefsSave.php:56
+#: ../../../../ajax/ajax_userPrefsSave.php:55
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, это DEMO!!"
 
@@ -302,6 +297,11 @@ msgstr "Указанный логин уже существует"
 #: ../../../../ajax/ajax_appMgmtSave.php:103
 msgid "Email de usuario duplicado"
 msgstr "Указанный email уже существует"
+
+#: ../../../../ajax/ajax_appMgmtSave.php:109
+#: ../../../../ajax/ajax_appMgmtSave.php:146
+msgid "La clave no puede estar en blanco"
+msgstr "Пароль не может быть пустым"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:122
 msgid "Usuario creado"
@@ -320,49 +320,49 @@ msgstr "Данные пользователя обновлены"
 msgid "Error al actualizar el usuario"
 msgstr "Ошибка при обновлении данных пользователя"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:153
+#: ../../../../ajax/ajax_appMgmtSave.php:164
 #: ../../../../ajax/ajax_passReset.php:78
 msgid "Error al modificar la clave"
 msgstr "Ошибка изменения пароля"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:159
+#: ../../../../ajax/ajax_appMgmtSave.php:170
 msgid "No es posible eliminar, usuario en uso"
 msgstr "Не могу удалить, пользователь работает"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:163
+#: ../../../../ajax/ajax_appMgmtSave.php:174
 msgid "Usuario eliminado"
 msgstr "Пользователь удален"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:166
+#: ../../../../ajax/ajax_appMgmtSave.php:177
 msgid "Error al eliminar el usuario"
 msgstr "Ошибка удаления пользователя"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:181
+#: ../../../../ajax/ajax_appMgmtSave.php:192
 msgid "Es necesario un nombre de grupo"
 msgstr "Необходимо имя группы"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:189
+#: ../../../../ajax/ajax_appMgmtSave.php:200
 msgid "Nombre de grupo duplicado"
 msgstr "Указанное имя группы уже существует"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:201
+#: ../../../../ajax/ajax_appMgmtSave.php:212
 msgid "Grupo creado"
 msgstr "Группа создана"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:203
+#: ../../../../ajax/ajax_appMgmtSave.php:214
 msgid "Error al crear el grupo"
 msgstr "Ошибка при создании группы"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:214
+#: ../../../../ajax/ajax_appMgmtSave.php:225
 msgid "Grupo actualizado"
 msgstr "Группа обновлена"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:217
+#: ../../../../ajax/ajax_appMgmtSave.php:228
 msgid "Error al actualizar el grupo"
 msgstr "Ошибка при обновлении группы"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:226
-#: ../../../../ajax/ajax_appMgmtSave.php:303
+#: ../../../../ajax/ajax_appMgmtSave.php:237
+#: ../../../../ajax/ajax_appMgmtSave.php:314
 #: ../../../../inc/CustomFieldsBase.class.php:83
 #: ../../../../inc/themes/classic/account.inc:109
 #: ../../../../inc/themes/classic/groups.inc:24
@@ -373,7 +373,7 @@ msgstr "Ошибка при обновлении группы"
 msgid "Usuarios"
 msgstr "Пользователи"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:230
+#: ../../../../ajax/ajax_appMgmtSave.php:241
 #: ../../../../inc/Category.class.php:266
 #: ../../../../inc/CustomFieldsBase.class.php:80
 #: ../../../../inc/Customer.class.php:150
@@ -383,134 +383,134 @@ msgstr "Пользователи"
 msgid "Cuentas"
 msgstr "Учетные записи"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:233
-#: ../../../../ajax/ajax_appMgmtSave.php:305
+#: ../../../../ajax/ajax_appMgmtSave.php:244
+#: ../../../../ajax/ajax_appMgmtSave.php:316
 #: ../../../../inc/Category.class.php:119
 #: ../../../../inc/Customer.class.php:150
 msgid "No es posible eliminar"
 msgstr "Невозможно удалить"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:233
+#: ../../../../ajax/ajax_appMgmtSave.php:244
 msgid "Grupo en uso por:"
 msgstr "Группа используется:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:238
+#: ../../../../ajax/ajax_appMgmtSave.php:249
 msgid "Grupo eliminado"
 msgstr "Группа удалена"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:241
+#: ../../../../ajax/ajax_appMgmtSave.php:252
 msgid "Error al eliminar el grupo"
 msgstr "Ошибка при удалении группы"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:280
+#: ../../../../ajax/ajax_appMgmtSave.php:291
 msgid "Es necesario un nombre de perfil"
 msgstr "Необходимо имя профиля"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:282
+#: ../../../../ajax/ajax_appMgmtSave.php:293
 msgid "Nombre de perfil duplicado"
 msgstr "Профиль с таким именем уже существует"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:287
+#: ../../../../ajax/ajax_appMgmtSave.php:298
 msgid "Perfil creado"
 msgstr "Профиль создан"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:290
+#: ../../../../ajax/ajax_appMgmtSave.php:301
 msgid "Error al crear el perfil"
 msgstr "Ошибка при создании профиля"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:293
+#: ../../../../ajax/ajax_appMgmtSave.php:304
 msgid "Perfil actualizado"
 msgstr "Профиль изменен"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:296
+#: ../../../../ajax/ajax_appMgmtSave.php:307
 msgid "Error al actualizar el perfil"
 msgstr "Ошибка при изменении профиля"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:305
+#: ../../../../ajax/ajax_appMgmtSave.php:316
 msgid "Perfil en uso por:"
 msgstr "Профиль используется:"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:308
+#: ../../../../ajax/ajax_appMgmtSave.php:319
 msgid "Perfil eliminado"
 msgstr "Профиль удален"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:311
+#: ../../../../ajax/ajax_appMgmtSave.php:322
 msgid "Error al eliminar el perfil"
 msgstr "Ошибка при удалении профиля"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:346
+#: ../../../../ajax/ajax_appMgmtSave.php:357
 msgid "Cliente creado"
 msgstr "Заказчик добавлен"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:361
+#: ../../../../ajax/ajax_appMgmtSave.php:372
 msgid "Cliente actualizado"
 msgstr "Информация о заказчике обновлена"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:371
+#: ../../../../ajax/ajax_appMgmtSave.php:382
 msgid "Cliente eliminado"
 msgstr "Заказчик удален"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:385
+#: ../../../../ajax/ajax_appMgmtSave.php:396
 msgid "Es necesario un nombre de categoría"
 msgstr "Необходимо имя категории"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:405
+#: ../../../../ajax/ajax_appMgmtSave.php:416
 msgid "Categoría creada"
 msgstr "Категория создана"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:420
+#: ../../../../ajax/ajax_appMgmtSave.php:431
 msgid "Categoría actualizada"
 msgstr "Информация о категории изменена"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:431
+#: ../../../../ajax/ajax_appMgmtSave.php:442
 msgid "Categoría eliminada"
 msgstr "Категория удалена"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:447
+#: ../../../../ajax/ajax_appMgmtSave.php:458
 #, fuzzy
 msgid "Usuario o acción no indicado"
 msgstr "Пользователь / пароль не введены"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:457
+#: ../../../../ajax/ajax_appMgmtSave.php:468
 #, fuzzy
 msgid "Autorización creada"
 msgstr "Аккаунт создан"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:465
+#: ../../../../ajax/ajax_appMgmtSave.php:476
 #, fuzzy
 msgid "Autorización actualizada"
 msgstr "Информация об учетной записи изменена"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:475
+#: ../../../../ajax/ajax_appMgmtSave.php:486
 #, fuzzy
 msgid "Autorización eliminada"
 msgstr "Аккаунт удален"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:492
+#: ../../../../ajax/ajax_appMgmtSave.php:503
 #, fuzzy
 msgid "Nombre del campo no indicado"
 msgstr "Имя заказчика"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:494
+#: ../../../../ajax/ajax_appMgmtSave.php:505
 #, fuzzy
 msgid "Tipo del campo no indicado"
 msgstr "Данный тип файлов запрещен"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:496
+#: ../../../../ajax/ajax_appMgmtSave.php:507
 msgid "Módulo del campo no indicado"
 msgstr ""
 
-#: ../../../../ajax/ajax_appMgmtSave.php:510
+#: ../../../../ajax/ajax_appMgmtSave.php:521
 #, fuzzy
 msgid "Campo creado"
 msgstr "Пользователь создан"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:519
+#: ../../../../ajax/ajax_appMgmtSave.php:530
 #, fuzzy
 msgid "Campo actualizado"
 msgstr "Обновлено"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:529
+#: ../../../../ajax/ajax_appMgmtSave.php:540
 #, fuzzy
 msgid "Campo eliminado"
 msgstr "Пользователь удален"
@@ -524,7 +524,7 @@ msgstr "Выполнить резервное копирование"
 msgid "Error al realizar el backup"
 msgstr "Ошибка при выполнении резервной копии"
 
-#: ../../../../ajax/ajax_backup.php:54 ../../../../ajax/ajax_backup.php:68
+#: ../../../../ajax/ajax_backup.php:54 ../../../../ajax/ajax_backup.php:76
 #: ../../../../ajax/ajax_checkLdap.php:57 ../../../../inc/Import.class.php:128
 #: ../../../../inc/Migrate.class.php:93
 msgid "Revise el registro de eventos para más detalles"
@@ -538,32 +538,39 @@ msgstr "Резервная копия программы и базы успеш�
 msgid "Proceso de backup finalizado"
 msgstr "Процесс резервного копирования закончен."
 
-#: ../../../../ajax/ajax_backup.php:66 ../../../../ajax/ajax_backup.php:71
+#: ../../../../ajax/ajax_backup.php:66
+#: ../../../../ajax/ajax_configSave.php:244
+#: ../../../../ajax/ajax_doLogin.php:53 ../../../../ajax/ajax_import.php:56
+#, fuzzy
+msgid "Error en clave RSA"
+msgstr "Ошибка запроса"
+
+#: ../../../../ajax/ajax_backup.php:74 ../../../../ajax/ajax_backup.php:79
 #, fuzzy
 msgid "Realizar Exportación"
 msgstr "Выполнить резервное копирование"
 
-#: ../../../../ajax/ajax_backup.php:66
+#: ../../../../ajax/ajax_backup.php:74
 #, fuzzy
 msgid "Error al realizar la exportación de cuentas"
 msgstr "Ошибка создания файлов учетных записей"
 
-#: ../../../../ajax/ajax_backup.php:68
+#: ../../../../ajax/ajax_backup.php:76
 #, fuzzy
 msgid "Error al realizar la exportación"
 msgstr "Ошибка при выполнении резервной копии"
 
-#: ../../../../ajax/ajax_backup.php:71
+#: ../../../../ajax/ajax_backup.php:79
 #, fuzzy
 msgid "Exportación de cuentas realizada correctamente"
 msgstr "Конфигурация была успешно обновлена."
 
-#: ../../../../ajax/ajax_backup.php:73
+#: ../../../../ajax/ajax_backup.php:81
 #, fuzzy
 msgid "Proceso de exportación finalizado"
 msgstr "Процесс резервного копирования закончен."
 
-#: ../../../../ajax/ajax_checkLdap.php:51 ../../../../inc/Ldap.class.php:248
+#: ../../../../ajax/ajax_checkLdap.php:51 ../../../../inc/Ldap.class.php:265
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "Параметры LDAP не указаны"
 
@@ -583,117 +590,117 @@ msgstr "Найдено объектов"
 msgid "Modificar Configuración"
 msgstr "Изменить конфигурацию"
 
-#: ../../../../ajax/ajax_configSave.php:60
+#: ../../../../ajax/ajax_configSave.php:100
 #, fuzzy
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "Максимальный размер файла 16MB"
 
-#: ../../../../ajax/ajax_configSave.php:114
+#: ../../../../ajax/ajax_configSave.php:113
 #, fuzzy
 msgid "Faltan parámetros de Proxy"
 msgstr "Пропущены настройки Wiki"
 
-#: ../../../../ajax/ajax_configSave.php:125
+#: ../../../../ajax/ajax_configSave.php:124
 #: ../../../../web/ConfigC.class.php:126
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
 msgstr "Основное"
 
-#: ../../../../ajax/ajax_configSave.php:137
+#: ../../../../ajax/ajax_configSave.php:134
 msgid "Faltan parámetros de Wiki"
 msgstr "Пропущены настройки Wiki"
 
-#: ../../../../ajax/ajax_configSave.php:147
-#: ../../../../web/ConfigC.class.php:262
+#: ../../../../ajax/ajax_configSave.php:144
+#: ../../../../web/ConfigC.class.php:261
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../ajax/ajax_configSave.php:164
+#: ../../../../ajax/ajax_configSave.php:159
 msgid "Faltan parámetros de LDAP"
 msgstr "Пропущены настройки LDAP"
 
-#: ../../../../ajax/ajax_configSave.php:179
-#: ../../../../web/ConfigC.class.php:294
+#: ../../../../ajax/ajax_configSave.php:174
+#: ../../../../web/ConfigC.class.php:293
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../ajax/ajax_configSave.php:196
+#: ../../../../ajax/ajax_configSave.php:189
 msgid "Faltan parámetros de Correo"
 msgstr "Пропущены настройки почты"
 
-#: ../../../../ajax/ajax_configSave.php:216
-#: ../../../../web/ConfigC.class.php:324
+#: ../../../../ajax/ajax_configSave.php:209
+#: ../../../../web/ConfigC.class.php:323
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../../ajax/ajax_configSave.php:226
+#: ../../../../ajax/ajax_configSave.php:221
 msgid "Configuración actualizada"
 msgstr "Конфигурация изменена"
 
-#: ../../../../ajax/ajax_configSave.php:235
-#: ../../../../ajax/ajax_configSave.php:275
+#: ../../../../ajax/ajax_configSave.php:230
+#: ../../../../ajax/ajax_configSave.php:282
 #: ../../../../ajax/ajax_viewpass.php:60
 #: ../../../../inc/Controller.class.php:169
 msgid "Clave maestra actualizada"
 msgstr "Мастер-пароль изменен"
 
-#: ../../../../ajax/ajax_configSave.php:235
+#: ../../../../ajax/ajax_configSave.php:230
 #: ../../../../ajax/ajax_viewpass.php:60
 #: ../../../../inc/Controller.class.php:169
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Перезайдите для вступления изменений"
 
-#: ../../../../ajax/ajax_configSave.php:237
+#: ../../../../ajax/ajax_configSave.php:232
 msgid "Clave maestra no indicada"
 msgstr "Необходим мастер-пароль"
 
-#: ../../../../ajax/ajax_configSave.php:239
+#: ../../../../ajax/ajax_configSave.php:234
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "Изменение пароля должно быть подтверждено"
 
-#: ../../../../ajax/ajax_configSave.php:241
+#: ../../../../ajax/ajax_configSave.php:248
 msgid "Las claves son idénticas"
 msgstr "Пароли одинаковы"
 
-#: ../../../../ajax/ajax_configSave.php:243
+#: ../../../../ajax/ajax_configSave.php:250
 msgid "Las claves maestras no coinciden"
 msgstr "Мастер-пароль не совпадает"
 
-#: ../../../../ajax/ajax_configSave.php:245
+#: ../../../../ajax/ajax_configSave.php:252
 msgid "La clave maestra actual no coincide"
 msgstr "Текущий мастер-пароль ошибочен"
 
-#: ../../../../ajax/ajax_configSave.php:254
+#: ../../../../ajax/ajax_configSave.php:261
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Ошибка при изменении паролей учетной записи"
 
-#: ../../../../ajax/ajax_configSave.php:260
+#: ../../../../ajax/ajax_configSave.php:267
 #, fuzzy
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Ошибка при изменении паролей учетной записи"
 
-#: ../../../../ajax/ajax_configSave.php:273
+#: ../../../../ajax/ajax_configSave.php:280
 #: ../../../../inc/Account.class.php:497
 msgid "Actualizar Clave Maestra"
 msgstr "Изменить мастер-пароль"
 
-#: ../../../../ajax/ajax_configSave.php:277
+#: ../../../../ajax/ajax_configSave.php:284
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Ошибка при сохранении хеша мастер-пароля"
 
-#: ../../../../ajax/ajax_configSave.php:285
+#: ../../../../ajax/ajax_configSave.php:292
 #, fuzzy
 msgid "Generar Clave Temporal"
 msgstr "Сгенерировать пароль"
 
-#: ../../../../ajax/ajax_configSave.php:285
+#: ../../../../ajax/ajax_configSave.php:292
 #: ../../../../inc/themes/classic/account.inc:83
 #: ../../../../inc/themes/classic/editpass.inc:25
 #: ../../../../inc/themes/classic/install.inc:38
@@ -725,31 +732,31 @@ msgstr "Сгенерировать пароль"
 msgid "Clave"
 msgstr "Пароль"
 
-#: ../../../../ajax/ajax_configSave.php:287
+#: ../../../../ajax/ajax_configSave.php:294
 #, fuzzy
 msgid "Clave Temporal Generada"
 msgstr "Сгенерированный пароль"
 
-#: ../../../../ajax/ajax_doLogin.php:45
+#: ../../../../ajax/ajax_doLogin.php:46
 msgid "Usuario/Clave no introducidos"
 msgstr "Пользователь / пароль не введены"
 
-#: ../../../../ajax/ajax_doLogin.php:57
+#: ../../../../ajax/ajax_doLogin.php:65
 #, fuzzy
 msgid "Inicio sesión"
 msgstr "Начало сессии (LDAP)"
 
-#: ../../../../ajax/ajax_doLogin.php:62
+#: ../../../../ajax/ajax_doLogin.php:70
 #, fuzzy
 msgid "Servidor Login"
 msgstr "Логин"
 
-#: ../../../../ajax/ajax_doLogin.php:68
+#: ../../../../ajax/ajax_doLogin.php:76
 msgid "Error al guardar los datos de LDAP"
 msgstr "Ошибка сохранении данных пользователя из LDAP"
 
-#: ../../../../ajax/ajax_doLogin.php:71 ../../../../ajax/ajax_doLogin.php:79
-#: ../../../../ajax/ajax_doLogin.php:131 ../../../../ajax/ajax_doLogin.php:172
+#: ../../../../ajax/ajax_doLogin.php:79 ../../../../ajax/ajax_doLogin.php:87
+#: ../../../../ajax/ajax_doLogin.php:139 ../../../../ajax/ajax_doLogin.php:185
 #: ../../../../inc/ApiTokens.class.php:140
 #: ../../../../inc/ApiTokens.class.php:186
 #: ../../../../inc/ApiTokens.class.php:217
@@ -762,20 +769,20 @@ msgstr "Ошибка сохранении данных пользователя 
 msgid "Error interno"
 msgstr "Внутренняя ошибка"
 
-#: ../../../../ajax/ajax_doLogin.php:76
+#: ../../../../ajax/ajax_doLogin.php:84
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr "Ошибка изменения пароля пользователя в БД"
 
-#: ../../../../ajax/ajax_doLogin.php:84 ../../../../ajax/ajax_doLogin.php:109
+#: ../../../../ajax/ajax_doLogin.php:92 ../../../../ajax/ajax_doLogin.php:117
 msgid "Login incorrecto"
 msgstr "Ошибка входа"
 
-#: ../../../../ajax/ajax_doLogin.php:85 ../../../../ajax/ajax_doLogin.php:92
-#: ../../../../ajax/ajax_doLogin.php:99 ../../../../ajax/ajax_doLogin.php:110
-#: ../../../../ajax/ajax_doLogin.php:120 ../../../../ajax/ajax_doLogin.php:167
+#: ../../../../ajax/ajax_doLogin.php:93 ../../../../ajax/ajax_doLogin.php:100
+#: ../../../../ajax/ajax_doLogin.php:107 ../../../../ajax/ajax_doLogin.php:118
+#: ../../../../ajax/ajax_doLogin.php:128 ../../../../ajax/ajax_doLogin.php:180
 #: ../../../../inc/ApiTokens.class.php:190
-#: ../../../../inc/ApiTokens.class.php:308 ../../../../inc/Auth.class.php:112
-#: ../../../../inc/Init.class.php:516 ../../../../inc/UserBase.class.php:382
+#: ../../../../inc/ApiTokens.class.php:308 ../../../../inc/Auth.class.php:108
+#: ../../../../inc/Init.class.php:517 ../../../../inc/UserBase.class.php:382
 #: ../../../../inc/UserBase.class.php:526 ../../../../res/test.php:64
 #: ../../../../web/SearchC.class.php:289
 #: ../../../../web/UsersMgmtC.class.php:392
@@ -790,7 +797,7 @@ msgstr "Ошибка входа"
 #: ../../../../inc/themes/classic/mail.inc:47
 #: ../../../../inc/themes/classic/passreset.inc:17
 #: ../../../../inc/themes/classic/request.inc:17
-#: ../../../../inc/themes/classic/search.inc:52
+#: ../../../../inc/themes/classic/search.inc:50
 #: ../../../../inc/themes/classic/tokens.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:80
 #: ../../../../inc/themes/material-blue/config.inc:344
@@ -808,36 +815,36 @@ msgstr "Ошибка входа"
 msgid "Usuario"
 msgstr "Пользователь"
 
-#: ../../../../ajax/ajax_doLogin.php:88 ../../../../ajax/ajax_doLogin.php:102
-#: ../../../../ajax/ajax_doLogin.php:113
+#: ../../../../ajax/ajax_doLogin.php:96 ../../../../ajax/ajax_doLogin.php:110
+#: ../../../../ajax/ajax_doLogin.php:121
 msgid "Usuario/Clave incorrectos"
 msgstr "Неправильный пользователь / пароль"
 
-#: ../../../../ajax/ajax_doLogin.php:91 ../../../../ajax/ajax_doLogin.php:95
+#: ../../../../ajax/ajax_doLogin.php:99 ../../../../ajax/ajax_doLogin.php:103
 msgid "Cuenta expirada"
 msgstr "Аккаунт просрочен"
 
-#: ../../../../ajax/ajax_doLogin.php:98
+#: ../../../../ajax/ajax_doLogin.php:106
 msgid "El usuario no tiene grupos asociados"
 msgstr "Для пользователя не указаны группы"
 
-#: ../../../../ajax/ajax_doLogin.php:119 ../../../../ajax/ajax_doLogin.php:123
+#: ../../../../ajax/ajax_doLogin.php:127 ../../../../ajax/ajax_doLogin.php:131
 msgid "Usuario deshabilitado"
 msgstr "Пользователь заблокирован"
 
-#: ../../../../ajax/ajax_doLogin.php:128
+#: ../../../../ajax/ajax_doLogin.php:136
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr "Ошибка получения данных о пользователе из DB"
 
-#: ../../../../ajax/ajax_doLogin.php:138
+#: ../../../../ajax/ajax_doLogin.php:146
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "Мастер-пароль не сохранен или ошибочен"
 
-#: ../../../../ajax/ajax_doLogin.php:145 ../../../../ajax/ajax_doLogin.php:148
+#: ../../../../ajax/ajax_doLogin.php:155 ../../../../ajax/ajax_doLogin.php:158
 msgid "Clave maestra incorrecta"
 msgstr "Неправильный мастер-пароль"
 
-#: ../../../../ajax/ajax_doLogin.php:168
+#: ../../../../ajax/ajax_doLogin.php:181
 #: ../../../../inc/ProfileBase.class.php:512
 #: ../../../../inc/ProfileBase.class.php:550
 #: ../../../../inc/ProfileBase.class.php:593
@@ -847,7 +854,7 @@ msgstr "Неправильный мастер-пароль"
 msgid "Perfil"
 msgstr "Профиль"
 
-#: ../../../../ajax/ajax_doLogin.php:169 ../../../../inc/Groups.class.php:158
+#: ../../../../ajax/ajax_doLogin.php:182 ../../../../inc/Groups.class.php:158
 #: ../../../../inc/Groups.class.php:259 ../../../../inc/Groups.class.php:375
 #: ../../../../web/UsersMgmtC.class.php:90
 #: ../../../../inc/themes/classic/ldap.inc:116
@@ -999,14 +1006,14 @@ msgstr ""
 
 #: ../../../../ajax/ajax_passReset.php:72
 #: ../../../../inc/UserBase.class.php:568
-#: ../../../../inc/UserUtil.class.php:686
+#: ../../../../inc/UserUtil.class.php:664
 msgid "Modificar Clave Usuario"
 msgstr "Изменить пароль пользователя"
 
 #: ../../../../ajax/ajax_passReset.php:72
 #: ../../../../inc/UserBase.class.php:568
 #: ../../../../inc/UserBase.class.php:592
-#: ../../../../inc/UserUtil.class.php:686
+#: ../../../../inc/UserUtil.class.php:664
 #: ../../../../web/UsersMgmtC.class.php:88
 #: ../../../../inc/themes/classic/users.inc:21
 #: ../../../../inc/themes/material-blue/users.inc:24
@@ -1047,7 +1054,7 @@ msgstr "Учетная запись"
 #: ../../../../inc/themes/classic/account.inc:23
 #: ../../../../inc/themes/classic/editpass.inc:12
 #: ../../../../inc/themes/classic/request.inc:9
-#: ../../../../inc/themes/classic/search.inc:21
+#: ../../../../inc/themes/classic/search.inc:19
 #: ../../../../inc/themes/material-blue/account.inc:29
 #: ../../../../inc/themes/material-blue/editpass.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:10
@@ -1074,12 +1081,12 @@ msgstr "Описание"
 msgid "Error al enviar la solicitud"
 msgstr "Ошибка при отправке запроса"
 
-#: ../../../../ajax/ajax_userPrefsSave.php:75
+#: ../../../../ajax/ajax_userPrefsSave.php:74
 #, fuzzy
 msgid "Error al actualizar preferencias"
 msgstr "Ошибка изменения пароля"
 
-#: ../../../../ajax/ajax_userPrefsSave.php:78
+#: ../../../../ajax/ajax_userPrefsSave.php:77
 #, fuzzy
 msgid "Preferencias actualizadas"
 msgstr "Обновлены учетные записи:"
@@ -1096,8 +1103,8 @@ msgstr "Нет прав для доступа к данной учетной з�
 #: ../../../../ajax/ajax_viewpass.php:68 ../../../../inc/Acl.class.php:133
 #: ../../../../inc/themes/classic/account.inc:379
 #: ../../../../inc/themes/classic/profiles.inc:23
-#: ../../../../inc/themes/classic/search.inc:102
-#: ../../../../inc/themes/material-blue/account.inc:418
+#: ../../../../inc/themes/classic/search.inc:100
+#: ../../../../inc/themes/material-blue/account.inc:419
 #: ../../../../inc/themes/material-blue/profiles.inc:35
 #: ../../../../inc/themes/material-blue/search.inc:113
 msgid "Ver Clave"
@@ -1120,7 +1127,7 @@ msgstr "Help :: FAQ :: Changelog"
 #: ../../../../inc/AccountSearch.class.php:28 ../../../../inc/Acl.class.php:29
 #: ../../../../inc/Api.class.php:30 ../../../../inc/ApiRequest.class.php:28
 #: ../../../../inc/ApiTokens.class.php:28 ../../../../inc/Auth.class.php:29
-#: ../../../../inc/Auth2FA.class.php:30 ../../../../inc/Backup.class.php:28
+#: ../../../../inc/Auth2FA.class.php:32 ../../../../inc/Backup.class.php:28
 #: ../../../../inc/Category.class.php:29 ../../../../inc/Common.class.php:28
 #: ../../../../inc/Config.class.php:28 ../../../../inc/Controller.class.php:31
 #: ../../../../inc/Crypt.class.php:28 ../../../../inc/CsvImport.class.php:28
@@ -1143,7 +1150,7 @@ msgstr "Help :: FAQ :: Changelog"
 #: ../../../../inc/Upgrade.class.php:29 ../../../../inc/User.class.php:28
 #: ../../../../inc/UserLdap.class.php:28
 #: ../../../../inc/UserPreferences.class.php:28
-#: ../../../../inc/UserUtil.class.php:28 ../../../../inc/Util.class.php:30
+#: ../../../../inc/UserUtil.class.php:28 ../../../../inc/Util.class.php:31
 #: ../../../../inc/XmlImport.class.php:28
 #: ../../../../inc/XmlImportBase.class.php:28
 #: ../../../../web/AccountC.class.php:38
@@ -1184,7 +1191,7 @@ msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Ошибка получения паролей для учетной записи"
 
 #: ../../../../inc/Account.class.php:400 ../../../../inc/Acl.class.php:129
-#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:155
+#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:161
 msgid "Nueva Cuenta"
 msgstr "Новая учетная запись"
 
@@ -1195,8 +1202,8 @@ msgstr "ОШИБКА: Сбой операции"
 #: ../../../../inc/Account.class.php:423 ../../../../inc/Acl.class.php:134
 #: ../../../../web/AccountC.class.php:352
 #: ../../../../inc/themes/classic/account.inc:366
-#: ../../../../inc/themes/classic/search.inc:129
-#: ../../../../inc/themes/material-blue/account.inc:412
+#: ../../../../inc/themes/classic/search.inc:127
+#: ../../../../inc/themes/material-blue/account.inc:413
 #: ../../../../inc/themes/material-blue/search.inc:142
 msgid "Eliminar Cuenta"
 msgstr "Удалить учетную запись"
@@ -1302,7 +1309,7 @@ msgid "Ver Cuenta"
 msgstr "Просмотр деталей учетной записи"
 
 #: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:259
-#: ../../../../inc/themes/classic/search.inc:123
+#: ../../../../inc/themes/classic/search.inc:121
 #: ../../../../inc/themes/material-blue/search.inc:136
 msgid "Copiar Cuenta"
 msgstr "Скопировать учетную запись"
@@ -1377,7 +1384,7 @@ msgid "Gestión Perfiles"
 msgstr "Управление профилями"
 
 #: ../../../../inc/Acl.class.php:146 ../../../../inc/Config.class.php:118
-#: ../../../../inc/Config.class.php:400 ../../../../web/MainC.class.php:173
+#: ../../../../inc/Config.class.php:400 ../../../../web/MainC.class.php:179
 #: ../../../../inc/themes/classic/profiles.inc:57
 #: ../../../../inc/themes/material-blue/profiles.inc:66
 msgid "Configuración"
@@ -1395,7 +1402,7 @@ msgstr "Основная конфигурация"
 msgid "Encriptación"
 msgstr "Ошибка в модуле шифрования"
 
-#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:195
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:194
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
@@ -1468,12 +1475,12 @@ msgstr "Обновить"
 msgid "Eliminar Autorización"
 msgstr "Удалить учетную запись"
 
-#: ../../../../inc/Auth.class.php:111
+#: ../../../../inc/Auth.class.php:107
 #, fuzzy
 msgid "Usuario no pertenece al grupo"
 msgstr "Пользователь не состоит в группах"
 
-#: ../../../../inc/Auth.class.php:191
+#: ../../../../inc/Auth.class.php:187
 #: ../../../../inc/themes/classic/users.inc:117
 #: ../../../../inc/themes/classic/userspass.inc:2
 #: ../../../../inc/themes/material-blue/users.inc:161
@@ -1481,15 +1488,15 @@ msgstr "Пользователь не состоит в группах"
 msgid "Cambio de Clave"
 msgstr "Изменение пароля"
 
-#: ../../../../inc/Auth.class.php:193
+#: ../../../../inc/Auth.class.php:189
 msgid "Se ha solicitado el cambio de su clave de usuario."
 msgstr "Запрос на смену пароля выполнен."
 
-#: ../../../../inc/Auth.class.php:195
+#: ../../../../inc/Auth.class.php:191
 msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
 msgstr "Для завершения, пожалуйста пройдите по ссылке :"
 
-#: ../../../../inc/Auth.class.php:199
+#: ../../../../inc/Auth.class.php:195
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr ""
 "Если Вы не запрашивали данное действие, пожалуйста, проигнорируйте данное "
@@ -1528,7 +1535,7 @@ msgstr "Ошибка при создании категории"
 #: ../../../../inc/Category.class.php:182
 #: ../../../../web/SearchC.class.php:283
 #: ../../../../inc/themes/classic/account.inc:42
-#: ../../../../inc/themes/classic/search.inc:46
+#: ../../../../inc/themes/classic/search.inc:44
 #: ../../../../inc/themes/material-blue/account.inc:50
 #: ../../../../inc/themes/material-blue/search.inc:49
 msgid "Categoría"
@@ -1582,7 +1589,7 @@ msgstr "Опция недоступна"
 #: ../../../../inc/Controller.class.php:165
 #: ../../../../inc/Controller.class.php:166
 #: ../../../../inc/Controller.class.php:167
-#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:289
+#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:290
 msgid "Consulte con el administrador"
 msgstr "Пожалуйста, свяжитесь с администратором"
 
@@ -1602,6 +1609,17 @@ msgstr "Модуль криптографии не может быть загр�
 msgid "Error al generar datos cifrados"
 msgstr "Ошибка при создании шифрованных данных"
 
+#: ../../../../inc/CryptPKI.class.php:44
+#, fuzzy
+msgid "No es posible generar las claves RSA"
+msgstr "Невозможно создать заказчика"
+
+#: ../../../../inc/CryptPKI.class.php:110
+#: ../../../../inc/CryptPKI.class.php:141
+#, fuzzy
+msgid "El archivo de clave no existe"
+msgstr "Файл не существует"
+
 #: ../../../../inc/CsvImportBase.class.php:109
 #, fuzzy, php-format
 msgid "El número de campos es incorrecto (%d)"
@@ -1618,7 +1636,7 @@ msgstr "Пожалуйста, проверьте формат файла CSV"
 #: ../../../../inc/Migrate.class.php:349
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:217
+#: ../../../../web/ConfigC.class.php:216
 msgid "Importar Cuentas"
 msgstr "Импорт учетных записей"
 
@@ -1700,7 +1718,7 @@ msgstr "Невозможно подключиться к базе данных"
 msgid "Compruebe los datos de conexión"
 msgstr "Пожалуйста, проверьте параметры подключения"
 
-#: ../../../../inc/Email.class.php:59 ../../../../inc/UserUtil.class.php:589
+#: ../../../../inc/Email.class.php:59 ../../../../inc/UserUtil.class.php:567
 msgid "N/D"
 msgstr "N/A"
 
@@ -1798,82 +1816,82 @@ msgstr "Пожалуйста, проверьте формат файла"
 msgid "Importación finalizada"
 msgstr "Импорт завершен"
 
-#: ../../../../inc/Init.class.php:196
+#: ../../../../inc/Init.class.php:199
 msgid "Error en la verificación de la base de datos"
 msgstr "Ошибка проверки базы данных"
 
-#: ../../../../inc/Init.class.php:285
+#: ../../../../inc/Init.class.php:286
 msgid "Sesion"
 msgstr "Сессия"
 
-#: ../../../../inc/Init.class.php:285 ../../../../inc/Init.class.php:289
+#: ../../../../inc/Init.class.php:286 ../../../../inc/Init.class.php:290
 msgid "La sesión no puede ser inicializada"
 msgstr "Сессия не может быть запущена"
 
-#: ../../../../inc/Init.class.php:416
+#: ../../../../inc/Init.class.php:417
 msgid "El directorio \"/config\" no existe"
 msgstr "Папка \"/config\" не существует."
 
-#: ../../../../inc/Init.class.php:421
+#: ../../../../inc/Init.class.php:422
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Невозможно произвести запись в папку \"/config\""
 
-#: ../../../../inc/Init.class.php:429
+#: ../../../../inc/Init.class.php:430
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "Права для папки \"/config\" заданы неверно "
 
-#: ../../../../inc/Init.class.php:429
+#: ../../../../inc/Init.class.php:430
 msgid "Actual:"
 msgstr "Текущие:"
 
-#: ../../../../inc/Init.class.php:429
+#: ../../../../inc/Init.class.php:430
 msgid "Necesario: 750"
 msgstr "Требуемые: 750"
 
-#: ../../../../inc/Init.class.php:478
+#: ../../../../inc/Init.class.php:479
 msgid "Aplicación en mantenimiento"
 msgstr "Программа на ослуживании"
 
-#: ../../../../inc/Init.class.php:478
+#: ../../../../inc/Init.class.php:479
 msgid "En breve estará operativa"
 msgstr "Скоро работа будет возобновлена"
 
-#: ../../../../inc/Init.class.php:515
+#: ../../../../inc/Init.class.php:516
 msgid "Finalizar sesión"
 msgstr "Завершить сессию"
 
-#: ../../../../inc/Init.class.php:517
+#: ../../../../inc/Init.class.php:518
 msgid "Tiempo inactivo"
 msgstr "Время бездействия"
 
-#: ../../../../inc/Init.class.php:518
+#: ../../../../inc/Init.class.php:519
 msgid "Tiempo total"
 msgstr "Общее время"
 
-#: ../../../../inc/Init.class.php:557
+#: ../../../../inc/Init.class.php:558
 msgid "La aplicación necesita actualizarse"
 msgstr "Необходимо обновить программу"
 
-#: ../../../../inc/Init.class.php:557
+#: ../../../../inc/Init.class.php:558
 #, fuzzy, php-format
 msgid "Si es un administrador pulse en el enlace: %s"
 msgstr "Если Вы администратор, нажмите на ссылку:"
 
-#: ../../../../inc/Init.class.php:557
+#: ../../../../inc/Init.class.php:558
 #: ../../../../inc/themes/classic/upgrade.inc:20
-#: ../../../../inc/themes/material-blue/upgrade.inc:25
+#: ../../../../inc/themes/material-blue/upgrade.inc:24
 msgid "Actualizar"
 msgstr "Обновить"
 
-#: ../../../../inc/Init.class.php:588
+#: ../../../../inc/Init.class.php:589
 msgid "Actualización"
 msgstr "Обновить"
 
-#: ../../../../inc/Init.class.php:589
+#: ../../../../inc/Init.class.php:590
 msgid "Actualización de versión realizada."
 msgstr "Обновление версии завершено."
 
-#: ../../../../inc/Init.class.php:590
+#: ../../../../inc/Init.class.php:591
 #: ../../../../inc/themes/classic/info.inc:33
 #: ../../../../inc/themes/material-blue/info.inc:33
 msgid "Versión"
@@ -2029,39 +2047,39 @@ msgstr "Ошибка создания пользователя \"admin\""
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Ошибка обновления мастер-пароля для пользователя \"admin\""
 
-#: ../../../../inc/Ldap.class.php:110 ../../../../inc/Ldap.class.php:114
+#: ../../../../inc/Ldap.class.php:127 ../../../../inc/Ldap.class.php:131
 msgid "No es posible conectar con el servidor de LDAP"
 msgstr "Невозможно подключиться к серверу LDAP"
 
-#: ../../../../inc/Ldap.class.php:139 ../../../../inc/Ldap.class.php:144
+#: ../../../../inc/Ldap.class.php:156 ../../../../inc/Ldap.class.php:161
 msgid "Error al conectar (BIND)"
 msgstr "Ошибка подключения (BIND)"
 
-#: ../../../../inc/Ldap.class.php:167 ../../../../inc/Ldap.class.php:172
+#: ../../../../inc/Ldap.class.php:184 ../../../../inc/Ldap.class.php:189
 msgid "Error al buscar objetos en DN base"
 msgstr "Ошибка поиска объектов в DN"
 
-#: ../../../../inc/Ldap.class.php:200 ../../../../inc/Ldap.class.php:205
-#: ../../../../inc/Ldap.class.php:212 ../../../../inc/Ldap.class.php:216
-#: ../../../../inc/Ldap.class.php:225 ../../../../inc/Ldap.class.php:229
+#: ../../../../inc/Ldap.class.php:217 ../../../../inc/Ldap.class.php:222
+#: ../../../../inc/Ldap.class.php:229 ../../../../inc/Ldap.class.php:233
+#: ../../../../inc/Ldap.class.php:242 ../../../../inc/Ldap.class.php:246
 msgid "Error al buscar RDN de grupo"
 msgstr "Ошибка поиска группы в RDN"
 
-#: ../../../../inc/Ldap.class.php:278 ../../../../inc/Ldap.class.php:283
-#: ../../../../inc/Ldap.class.php:297 ../../../../inc/Ldap.class.php:301
+#: ../../../../inc/Ldap.class.php:295 ../../../../inc/Ldap.class.php:300
+#: ../../../../inc/Ldap.class.php:314 ../../../../inc/Ldap.class.php:318
 msgid "Error al buscar el DN del usuario"
 msgstr "Ошибка поиска пользователя в DN"
 
-#: ../../../../inc/Ldap.class.php:290 ../../../../inc/Ldap.class.php:294
+#: ../../../../inc/Ldap.class.php:307 ../../../../inc/Ldap.class.php:311
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Ошибка поиска пользователя в LDAP"
 
-#: ../../../../inc/Ldap.class.php:375 ../../../../inc/Ldap.class.php:380
+#: ../../../../inc/Ldap.class.php:392 ../../../../inc/Ldap.class.php:397
 #: ../../../../inc/LdapADS.class.php:99 ../../../../inc/LdapADS.class.php:104
 msgid "Error al buscar el grupo de usuarios"
 msgstr "Ошибка поиска групп пользователя"
 
-#: ../../../../inc/Ldap.class.php:387
+#: ../../../../inc/Ldap.class.php:404
 #, fuzzy
 msgid "Usuario verificado en grupo"
 msgstr "Группа используется:"
@@ -2348,33 +2366,33 @@ msgstr "Вы получите письмо в скором времени."
 msgid "Nuevo usuario de LDAP"
 msgstr "Пользователь LDAP"
 
-#: ../../../../inc/UserUtil.class.php:727
+#: ../../../../inc/UserUtil.class.php:705
 #, fuzzy
 msgid "Migrar Grupos"
 msgstr "Ошибка импорта учетной записи"
 
-#: ../../../../inc/UserUtil.class.php:727
+#: ../../../../inc/UserUtil.class.php:705
 #, fuzzy
 msgid "Error al migrar grupo del usuario"
 msgstr "Ошибка поиска пользователя в DN"
 
-#: ../../../../inc/Util.class.php:122
+#: ../../../../inc/Util.class.php:123
 #, fuzzy
 msgid "Versión de PHP requerida >= "
 msgstr "Необходим PHP версии >= 5.1"
 
-#: ../../../../inc/Util.class.php:123
+#: ../../../../inc/Util.class.php:124
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Пожалуйста, обновите PHP для использования sysPass"
 
-#: ../../../../inc/Util.class.php:159
+#: ../../../../inc/Util.class.php:160
 #: ../../../../inc/themes/classic/ldap.inc:212
 #: ../../../../inc/themes/material-blue/ldap.inc:238
 msgid "Módulo no disponible"
 msgstr "Модуль недоступен"
 
-#: ../../../../inc/Util.class.php:160
+#: ../../../../inc/Util.class.php:161
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "Без этого модуля программа не может работать корректно"
 
@@ -2534,7 +2552,7 @@ msgid "Reset"
 msgstr ""
 
 #: ../../../../js/strings.js.php:58
-#: ../../../../inc/themes/classic/editpass.inc:34
+#: ../../../../inc/themes/classic/editpass.inc:33
 msgid "Nivel de fortaleza de la clave"
 msgstr "Уровень длины пароля"
 
@@ -2594,10 +2612,18 @@ msgstr "ДА"
 msgid "NO"
 msgstr "НЕТ"
 
+#: ../../../../js/strings.js.php:69
+msgid "Aceptar"
+msgstr ""
+
+#: ../../../../js/strings.js.php:70
+msgid "Cancelar"
+msgstr ""
+
 #: ../../../../web/AccountC.class.php:380
 #: ../../../../web/AccountC.class.php:411
-#: ../../../../inc/themes/classic/search.inc:38
-#: ../../../../inc/themes/classic/search.inc:97
+#: ../../../../inc/themes/classic/search.inc:36
+#: ../../../../inc/themes/classic/search.inc:95
 #: ../../../../inc/themes/material-blue/search.inc:41
 #: ../../../../inc/themes/material-blue/search.inc:108
 msgid "Detalles de Cuenta"
@@ -2605,7 +2631,7 @@ msgstr "Детали учетной записи"
 
 #: ../../../../web/AccountC.class.php:468
 #: ../../../../inc/themes/classic/account.inc:394
-#: ../../../../inc/themes/material-blue/account.inc:429
+#: ../../../../inc/themes/material-blue/account.inc:430
 msgid "Modificar Clave de Cuenta"
 msgstr "Изменить пароль учетной записи"
 
@@ -2625,7 +2651,7 @@ msgstr "Изменить пароль учетной записи"
 #: ../../../../inc/themes/classic/info.inc:25
 #: ../../../../inc/themes/classic/profiles.inc:8
 #: ../../../../inc/themes/classic/request.inc:6
-#: ../../../../inc/themes/classic/search.inc:36
+#: ../../../../inc/themes/classic/search.inc:34
 #: ../../../../inc/themes/classic/users.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:15
 #: ../../../../inc/themes/material-blue/categories.inc:8
@@ -2667,89 +2693,89 @@ msgstr "Удалить учетную запись"
 msgid "Campos Personalizados"
 msgstr ""
 
-#: ../../../../web/ConfigC.class.php:186
+#: ../../../../web/ConfigC.class.php:185
 msgid "Último backup"
 msgstr "Последняя резервная копия"
 
-#: ../../../../web/ConfigC.class.php:186
+#: ../../../../web/ConfigC.class.php:185
 msgid "No se encontraron backups"
 msgstr "Резервные копии не найдены"
 
-#: ../../../../web/ConfigC.class.php:193
+#: ../../../../web/ConfigC.class.php:192
 #, fuzzy
 msgid "Última exportación"
 msgstr "Последнее изменение"
 
-#: ../../../../web/ConfigC.class.php:193
+#: ../../../../web/ConfigC.class.php:192
 #, fuzzy
 msgid "No se encontró archivo de exportación"
 msgstr "Ошибка записи файла конфигурации"
 
-#: ../../../../web/ConfigC.class.php:238
+#: ../../../../web/ConfigC.class.php:237
 #, fuzzy
 msgid "Información"
 msgstr "Показывает информацию о программе и производительности."
 
-#: ../../../../web/EventlogC.class.php:91
+#: ../../../../web/EventlogC.class.php:93
 msgid "Registro de eventos vaciado"
 msgstr "Журнал очищен"
 
-#: ../../../../web/EventlogC.class.php:93
+#: ../../../../web/EventlogC.class.php:95
 msgid "Error al vaciar el registro de eventos"
 msgstr "Ошибка очистки журнала"
 
-#: ../../../../web/MainC.class.php:131
+#: ../../../../web/MainC.class.php:137
 #: ../../../../web/UsersMgmtC.class.php:100
 msgid "Admin Aplicación"
 msgstr "Администратор программы"
 
-#: ../../../../web/MainC.class.php:149
+#: ../../../../web/MainC.class.php:155
 msgid "Buscar"
 msgstr "Поиск"
 
-#: ../../../../web/MainC.class.php:161
+#: ../../../../web/MainC.class.php:167
 #: ../../../../web/UsersMgmtC.class.php:163
 msgid "Gestión de Usuarios"
 msgstr "Управление пользователями"
 
-#: ../../../../web/MainC.class.php:167
+#: ../../../../web/MainC.class.php:173
 msgid "Gestión de Clientes y Categorías"
 msgstr "Управление заказчиками и категориями"
 
-#: ../../../../web/MainC.class.php:179
+#: ../../../../web/MainC.class.php:185
 #: ../../../../inc/themes/classic/eventlog.inc:4
 #: ../../../../inc/themes/material-blue/eventlog.inc:3
 msgid "Registro de Eventos"
 msgstr "Журнал событий"
 
-#: ../../../../web/MainC.class.php:199
+#: ../../../../web/MainC.class.php:205
 msgid "Nuevo estilo visual basado en Material Design Lite by Google"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:200
+#: ../../../../web/MainC.class.php:206
 #, fuzzy
 msgid "Usuarios en múltiples grupos"
 msgstr "Импорт групп пользователей"
 
-#: ../../../../web/MainC.class.php:201
+#: ../../../../web/MainC.class.php:207
 #, fuzzy
 msgid "Previsualización de imágenes"
 msgstr "Запрос на изменение учетной записи"
 
-#: ../../../../web/MainC.class.php:202
+#: ../../../../web/MainC.class.php:208
 msgid "Mostrar claves como imágenes"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:203
+#: ../../../../web/MainC.class.php:209
 msgid "Campos personalizados"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:204
+#: ../../../../web/MainC.class.php:210
 #, fuzzy
 msgid "API de consultas"
 msgstr "Запрос на изменение учетной записи"
 
-#: ../../../../web/MainC.class.php:205
+#: ../../../../web/MainC.class.php:211
 #: ../../../../inc/themes/classic/2fa.inc:9
 #: ../../../../inc/themes/material-blue/2fa.inc:9
 #: ../../../../inc/themes/material-blue/security.inc:11
@@ -2757,70 +2783,70 @@ msgstr "Запрос на изменение учетной записи"
 msgid "Autentificación en 2 pasos"
 msgstr "Включить аутентификацию"
 
-#: ../../../../web/MainC.class.php:206
+#: ../../../../web/MainC.class.php:212
 #, fuzzy
 msgid "Complejidad de generador de claves"
 msgstr "Не могу найти генератор случайных чисел."
 
-#: ../../../../web/MainC.class.php:207
+#: ../../../../web/MainC.class.php:213
 msgid "Consultas especiales"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:208
+#: ../../../../web/MainC.class.php:214
 #, fuzzy
 msgid "Exportación a XML"
 msgstr "Файл XML не поддерживается"
 
-#: ../../../../web/MainC.class.php:209
+#: ../../../../web/MainC.class.php:215
 #, fuzzy
 msgid "Clave maestra temporal"
 msgstr "Мастер-пароль"
 
-#: ../../../../web/MainC.class.php:210
+#: ../../../../web/MainC.class.php:216
 #, fuzzy
 msgid "Importación de cuentas desde sysPass, KeePass, KeePassX y CSV"
 msgstr "Импорт учетных записей из KeePass, KeePassX и CSV"
 
-#: ../../../../web/MainC.class.php:211
+#: ../../../../web/MainC.class.php:217
 msgid "Optimización del código y mayor rapidez de carga"
 msgstr "Оптимизация кода"
 
-#: ../../../../web/MainC.class.php:212
+#: ../../../../web/MainC.class.php:218
 msgid "Mejoras de seguridad en XSS e inyección SQL"
 msgstr "Улучшена защита от XSS и SQL инъекций"
 
-#: ../../../../web/MainC.class.php:254
+#: ../../../../web/MainC.class.php:260
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr "Данная версия PHP уязвима NULL Byte attack (CVE-2006-7243)"
 
-#: ../../../../web/MainC.class.php:255
+#: ../../../../web/MainC.class.php:261
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Пожалуйста, обновите версию PHP для безопасного использования sysPass"
 
-#: ../../../../web/MainC.class.php:262
+#: ../../../../web/MainC.class.php:268
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Не могу найти генератор случайных чисел."
 
-#: ../../../../web/MainC.class.php:263
+#: ../../../../web/MainC.class.php:269
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr ""
 "Без этой функции, атакующий может завладеть вашим аккаунтом при сбросе "
 "пароля."
 
-#: ../../../../web/MainC.class.php:282
+#: ../../../../web/MainC.class.php:288
 msgid "Instalación finalizada"
 msgstr "Установка завершена"
 
-#: ../../../../web/MainC.class.php:283
+#: ../../../../web/MainC.class.php:289
 msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
 msgstr "Назмите <a href=\"index.php\" title=\"войти\">здесь</a> для входа"
 
-#: ../../../../web/MainC.class.php:378
+#: ../../../../web/MainC.class.php:384
 msgid "Descargar nueva versión"
 msgstr "Скачать новую версию"
 
-#: ../../../../web/MainC.class.php:389
+#: ../../../../web/MainC.class.php:395
 msgid "Avisos de sysPass"
 msgstr ""
 
@@ -2848,7 +2874,7 @@ msgstr "Сортировать по URL / IP"
 #: ../../../../inc/themes/classic/account.inc:58
 #: ../../../../inc/themes/classic/editpass.inc:16
 #: ../../../../inc/themes/classic/request.inc:13
-#: ../../../../inc/themes/classic/search.inc:59
+#: ../../../../inc/themes/classic/search.inc:57
 #: ../../../../inc/themes/material-blue/account.inc:66
 #: ../../../../inc/themes/material-blue/editpass.inc:17
 #: ../../../../inc/themes/material-blue/request.inc:15
@@ -2908,12 +2934,12 @@ msgstr "Просмотр информации пользователя"
 msgid "Gestión de Autorizaciones API"
 msgstr "Управление файлами отключено"
 
-#: ../../../../web/UsersMgmtC.class.php:455
+#: ../../../../web/UsersMgmtC.class.php:456
 #, fuzzy
 msgid "Token de autorización visualizado"
 msgstr "Конфигурация изменена"
 
-#: ../../../../web/UsersMgmtC.class.php:456
+#: ../../../../web/UsersMgmtC.class.php:457
 msgid "Autorizaciones"
 msgstr ""
 
@@ -2954,7 +2980,7 @@ msgid "Usuario de acceso"
 msgstr "Пользователь доступа"
 
 #: ../../../../inc/themes/classic/account.inc:90
-#: ../../../../inc/themes/classic/editpass.inc:32
+#: ../../../../inc/themes/classic/editpass.inc:31
 #: ../../../../inc/themes/classic/users.inc:83
 #: ../../../../inc/themes/classic/userspass.inc:19
 #: ../../../../inc/themes/classic/userspass.inc:21
@@ -2969,7 +2995,7 @@ msgid "Clave (repetir)"
 msgstr "Подтверждение пароля"
 
 #: ../../../../inc/themes/classic/account.inc:97
-#: ../../../../inc/themes/classic/search.inc:75
+#: ../../../../inc/themes/classic/search.inc:73
 #: ../../../../inc/themes/classic/users.inc:91
 #: ../../../../inc/themes/material-blue/account.inc:116
 #: ../../../../inc/themes/material-blue/search.inc:82
@@ -3014,101 +3040,101 @@ msgid "Historial"
 msgstr "История"
 
 #: ../../../../inc/themes/classic/account.inc:232
-#: ../../../../inc/themes/material-blue/account.inc:274
+#: ../../../../inc/themes/material-blue/account.inc:275
 msgid "Seleccionar fecha"
 msgstr "Выберите дату"
 
 #: ../../../../inc/themes/classic/account.inc:241
 #: ../../../../inc/themes/classic/users.inc:164
-#: ../../../../inc/themes/material-blue/account.inc:283
+#: ../../../../inc/themes/material-blue/account.inc:284
 #: ../../../../inc/themes/material-blue/users.inc:208
 msgid "Última Modificación"
 msgstr "Последнее изменение"
 
 #: ../../../../inc/themes/classic/account.inc:243
-#: ../../../../inc/themes/material-blue/account.inc:285
+#: ../../../../inc/themes/material-blue/account.inc:286
 msgid "por"
 msgstr "выполнено"
 
 #: ../../../../inc/themes/classic/account.inc:286
-#: ../../../../inc/themes/material-blue/account.inc:332
+#: ../../../../inc/themes/material-blue/account.inc:333
 msgid "Visitas"
 msgstr "Просмотров"
 
 #: ../../../../inc/themes/classic/account.inc:290
-#: ../../../../inc/themes/material-blue/account.inc:336
+#: ../../../../inc/themes/material-blue/account.inc:337
 msgid "Fecha Alta"
 msgstr "Дата создания"
 
 #: ../../../../inc/themes/classic/account.inc:294
-#: ../../../../inc/themes/material-blue/account.inc:340
+#: ../../../../inc/themes/material-blue/account.inc:341
 msgid "Creador"
 msgstr "Создатель"
 
 #: ../../../../inc/themes/classic/account.inc:298
 #: ../../../../inc/themes/material-blue/account.inc:200
-#: ../../../../inc/themes/material-blue/account.inc:344
+#: ../../../../inc/themes/material-blue/account.inc:345
 msgid "Grupo Principal"
 msgstr "Основная группа"
 
 #: ../../../../inc/themes/classic/account.inc:303
-#: ../../../../inc/themes/material-blue/account.inc:349
+#: ../../../../inc/themes/material-blue/account.inc:350
 msgid "Usuarios Secundarios"
 msgstr "Вторичные пользователи"
 
 #: ../../../../inc/themes/classic/account.inc:322
-#: ../../../../inc/themes/material-blue/account.inc:368
+#: ../../../../inc/themes/material-blue/account.inc:369
 msgid "Grupos Secundarios"
 msgstr "Вторичные группы"
 
 #: ../../../../inc/themes/classic/account.inc:342
-#: ../../../../inc/themes/material-blue/account.inc:388
+#: ../../../../inc/themes/material-blue/account.inc:389
 msgid "Fecha Edición"
 msgstr "Дата изменения"
 
 #: ../../../../inc/themes/classic/account.inc:346
-#: ../../../../inc/themes/material-blue/account.inc:392
+#: ../../../../inc/themes/material-blue/account.inc:393
 msgid "Editor"
 msgstr "Изменил"
 
 #: ../../../../inc/themes/classic/account.inc:373
-#: ../../../../inc/themes/material-blue/account.inc:455
+#: ../../../../inc/themes/material-blue/account.inc:456
 msgid "Restaurar cuenta desde este punto"
 msgstr "Восстановить учетную запись из текущей точки"
 
 #: ../../../../inc/themes/classic/account.inc:385
 #: ../../../../inc/themes/classic/account.inc:468
-#: ../../../../inc/themes/classic/search.inc:105
-#: ../../../../inc/themes/classic/search.inc:184
-#: ../../../../inc/themes/material-blue/account.inc:422
-#: ../../../../inc/themes/material-blue/account.inc:492
+#: ../../../../inc/themes/classic/search.inc:103
+#: ../../../../inc/themes/classic/search.inc:183
+#: ../../../../inc/themes/material-blue/account.inc:423
+#: ../../../../inc/themes/material-blue/account.inc:493
 #: ../../../../inc/themes/material-blue/search.inc:118
 #: ../../../../inc/themes/material-blue/search.inc:197
 msgid "Copiar Clave en Portapapeles"
 msgstr "Копировать пароль в буфер"
 
 #: ../../../../inc/themes/classic/account.inc:401
-#: ../../../../inc/themes/material-blue/account.inc:435
+#: ../../../../inc/themes/material-blue/account.inc:436
 msgid "Ver Actual"
 msgstr "Просмотр текущей версии"
 
 #: ../../../../inc/themes/classic/account.inc:406
-#: ../../../../inc/themes/classic/editpass.inc:46
+#: ../../../../inc/themes/classic/editpass.inc:45
 #: ../../../../inc/themes/classic/passreset.inc:46
 #: ../../../../inc/themes/material-blue/passreset.inc:43
 msgid "Volver"
 msgstr "Назад"
 
 #: ../../../../inc/themes/classic/account.inc:413
-#: ../../../../inc/themes/classic/search.inc:117
-#: ../../../../inc/themes/material-blue/account.inc:445
+#: ../../../../inc/themes/classic/search.inc:115
+#: ../../../../inc/themes/material-blue/account.inc:446
 #: ../../../../inc/themes/material-blue/search.inc:130
 msgid "Modificar Cuenta"
 msgstr "Редактировать учетную запись"
 
 #: ../../../../inc/themes/classic/account.inc:418
-#: ../../../../inc/themes/classic/search.inc:138
-#: ../../../../inc/themes/material-blue/account.inc:449
+#: ../../../../inc/themes/classic/search.inc:136
+#: ../../../../inc/themes/material-blue/account.inc:450
 #: ../../../../inc/themes/material-blue/search.inc:150
 msgid "Solicitar Modificación"
 msgstr "Запросить изменение"
@@ -3118,18 +3144,18 @@ msgstr "Запросить изменение"
 #: ../../../../inc/themes/classic/config.inc:275
 #: ../../../../inc/themes/classic/customers.inc:62
 #: ../../../../inc/themes/classic/customfields.inc:63
-#: ../../../../inc/themes/classic/editpass.inc:51
+#: ../../../../inc/themes/classic/editpass.inc:50
 #: ../../../../inc/themes/classic/encryption.inc:102
 #: ../../../../inc/themes/classic/groups.inc:77
 #: ../../../../inc/themes/classic/ldap.inc:229
 #: ../../../../inc/themes/classic/mail.inc:107
 #: ../../../../inc/themes/classic/profiles.inc:168
-#: ../../../../inc/themes/classic/security.inc:58
+#: ../../../../inc/themes/classic/security.inc:57
 #: ../../../../inc/themes/classic/tokens.inc:59
 #: ../../../../inc/themes/classic/users.inc:189
 #: ../../../../inc/themes/classic/userspass.inc:35
 #: ../../../../inc/themes/classic/wiki.inc:110
-#: ../../../../inc/themes/material-blue/account.inc:461
+#: ../../../../inc/themes/material-blue/account.inc:462
 #: ../../../../inc/themes/material-blue/categories.inc:72
 #: ../../../../inc/themes/material-blue/config.inc:388
 #: ../../../../inc/themes/material-blue/customers.inc:73
@@ -3139,7 +3165,7 @@ msgstr "Запросить изменение"
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
 #: ../../../../inc/themes/material-blue/profiles.inc:177
-#: ../../../../inc/themes/material-blue/security.inc:62
+#: ../../../../inc/themes/material-blue/security.inc:61
 #: ../../../../inc/themes/material-blue/tokens.inc:63
 #: ../../../../inc/themes/material-blue/users.inc:235
 #: ../../../../inc/themes/material-blue/userspass.inc:40
@@ -3148,18 +3174,18 @@ msgid "Guardar"
 msgstr "Сохранить"
 
 #: ../../../../inc/themes/classic/account.inc:435
-#: ../../../../inc/themes/material-blue/account.inc:471
+#: ../../../../inc/themes/material-blue/account.inc:472
 msgid "Seleccionar grupos secundarios"
 msgstr "Выберите вторичные группы"
 
 #: ../../../../inc/themes/classic/account.inc:439
-#: ../../../../inc/themes/material-blue/account.inc:474
+#: ../../../../inc/themes/material-blue/account.inc:475
 msgid "Seleccionar usuarios"
 msgstr "Выберите пользователей"
 
 #: ../../../../inc/themes/classic/account.inc:472
-#: ../../../../inc/themes/classic/search.inc:188
-#: ../../../../inc/themes/material-blue/account.inc:496
+#: ../../../../inc/themes/classic/search.inc:187
+#: ../../../../inc/themes/material-blue/account.inc:497
 #: ../../../../inc/themes/material-blue/search.inc:201
 msgid "Clave Copiada al Portapapeles"
 msgstr "Пароль скопирован в буфер"
@@ -3672,7 +3698,7 @@ msgid "Generar"
 msgstr "Сгенерировать пароль"
 
 #: ../../../../inc/themes/classic/eventlog.inc:8
-#: ../../../../inc/themes/classic/search.inc:5
+#: ../../../../inc/themes/classic/search.inc:3
 #: ../../../../inc/themes/material-blue/eventlog.inc:7
 #: ../../../../inc/themes/material-blue/search.inc:3
 msgid "No se encontraron registros"
@@ -3694,28 +3720,28 @@ msgid "IP"
 msgstr "IP"
 
 #: ../../../../inc/themes/classic/eventlog.inc:86
-#: ../../../../inc/themes/classic/search.inc:161
+#: ../../../../inc/themes/classic/search.inc:159
 #: ../../../../inc/themes/material-blue/eventlog.inc:85
 #: ../../../../inc/themes/material-blue/search.inc:173
 msgid "Primera página"
 msgstr "Первая страница"
 
 #: ../../../../inc/themes/classic/eventlog.inc:88
-#: ../../../../inc/themes/classic/search.inc:163
+#: ../../../../inc/themes/classic/search.inc:161
 #: ../../../../inc/themes/material-blue/eventlog.inc:87
 #: ../../../../inc/themes/material-blue/search.inc:175
 msgid "Página anterior"
 msgstr "Прошлая страница"
 
 #: ../../../../inc/themes/classic/eventlog.inc:93
-#: ../../../../inc/themes/classic/search.inc:168
+#: ../../../../inc/themes/classic/search.inc:166
 #: ../../../../inc/themes/material-blue/eventlog.inc:92
 #: ../../../../inc/themes/material-blue/search.inc:180
 msgid "Página siguiente"
 msgstr "Следующая страница"
 
 #: ../../../../inc/themes/classic/eventlog.inc:95
-#: ../../../../inc/themes/classic/search.inc:170
+#: ../../../../inc/themes/classic/search.inc:168
 #: ../../../../inc/themes/material-blue/eventlog.inc:94
 #: ../../../../inc/themes/material-blue/search.inc:182
 msgid "Última página"
@@ -3726,12 +3752,35 @@ msgstr "Последняя страница"
 msgid "Ver Archivo"
 msgstr "Показать файл"
 
-#: ../../../../inc/themes/classic/footer.inc:10
+#: ../../../../inc/themes/classic/footer.inc:6
+#: ../../../../inc/themes/material-blue/footer.inc:27
+msgid "Indica si la conexión utiliza HTTPS."
+msgstr ""
+
+#: ../../../../inc/themes/classic/footer.inc:6
+#: ../../../../inc/themes/material-blue/footer.inc:27
+msgid ""
+"Las claves de formularios enviados se encriptan mediante PKI, el resto de "
+"datos no."
+msgstr ""
+
+#: ../../../../inc/themes/classic/footer.inc:6
+#: ../../../../inc/themes/material-blue/footer.inc:27
+#, fuzzy
+msgid "Seguro"
+msgstr "Безопасность"
+
+#: ../../../../inc/themes/classic/footer.inc:6
+#: ../../../../inc/themes/material-blue/footer.inc:27
+msgid "Inseguro"
+msgstr ""
+
+#: ../../../../inc/themes/classic/footer.inc:11
 #: ../../../../inc/themes/material-blue/footer.inc:18
 msgid "Ayuda :: FAQ :: Changelog"
 msgstr "Help :: FAQ :: Changelog"
 
-#: ../../../../inc/themes/classic/footer.inc:13
+#: ../../../../inc/themes/classic/footer.inc:14
 #: ../../../../inc/themes/material-blue/footer.inc:23
 msgid "Un proyecto de cygnux.org"
 msgstr "Проект cygnux.org"
@@ -4176,7 +4225,7 @@ msgid "Habilitar peticiones por correo"
 msgstr "Включить запросы по email"
 
 #: ../../../../inc/themes/classic/mgmttabs.inc:66
-#: ../../../../inc/themes/classic/search.inc:112
+#: ../../../../inc/themes/classic/search.inc:110
 #: ../../../../inc/themes/material-blue/search.inc:125
 msgid "Más Acciones"
 msgstr "Другие действия"
@@ -4422,7 +4471,7 @@ msgid "Descripción de la petición"
 msgstr "Описание запроса"
 
 #: ../../../../inc/themes/classic/request.inc:33
-#: ../../../../inc/themes/material-blue/account.inc:439
+#: ../../../../inc/themes/material-blue/account.inc:440
 #: ../../../../inc/themes/material-blue/editpass.inc:55
 #: ../../../../inc/themes/material-blue/request.inc:42
 msgid "Atrás"
@@ -4433,32 +4482,32 @@ msgstr "Назад"
 msgid "Enviar"
 msgstr "Отправить"
 
-#: ../../../../inc/themes/classic/search.inc:26
+#: ../../../../inc/themes/classic/search.inc:24
 #: ../../../../inc/themes/material-blue/search.inc:29
 msgid "Buscar en Wiki"
 msgstr "Поиск в Wiki"
 
-#: ../../../../inc/themes/classic/search.inc:62
+#: ../../../../inc/themes/classic/search.inc:60
 #: ../../../../inc/themes/material-blue/search.inc:65
 msgid "Abrir enlace a"
 msgstr "Открыть ссылку"
 
-#: ../../../../inc/themes/classic/search.inc:80
+#: ../../../../inc/themes/classic/search.inc:78
 #: ../../../../inc/themes/material-blue/search.inc:89
 msgid "Archivos adjuntos"
 msgstr "Вложения"
 
-#: ../../../../inc/themes/classic/search.inc:87
+#: ../../../../inc/themes/classic/search.inc:85
 #: ../../../../inc/themes/material-blue/search.inc:98
 msgid "Enlace a Wiki"
 msgstr "Ссылка на Wiki"
 
-#: ../../../../inc/themes/classic/search.inc:151
+#: ../../../../inc/themes/classic/search.inc:149
 #: ../../../../inc/themes/material-blue/search.inc:163
 msgid "Filtro ON"
 msgstr "Включен фильтр"
 
-#: ../../../../inc/themes/classic/search.inc:155
+#: ../../../../inc/themes/classic/search.inc:153
 #: ../../../../inc/themes/material-blue/search.inc:167
 msgid "Global ON"
 msgstr "Глобальный"
@@ -4617,7 +4666,7 @@ msgid "Código de Seguridad"
 msgstr "Код безопасности"
 
 #: ../../../../inc/themes/classic/upgrade.inc:21
-#: ../../../../inc/themes/material-blue/upgrade.inc:26
+#: ../../../../inc/themes/material-blue/upgrade.inc:25
 msgid "Iniciar Actualización"
 msgstr "Начать обновление"
 
