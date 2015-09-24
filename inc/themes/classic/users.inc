@@ -138,7 +138,7 @@
                                 <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                                        type="<?php echo $field->typeName; ?>"
                                        class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
-                                       maxlength="50"
+                                       maxlength="500s"
                                        value="<?php echo (!$isView) ? \SP\Html::sanitize($field->value) : ''; ?>"
                                     <?php echo ($field->required) ? 'required' : ''; ?>>
                             <?php else: ?>
