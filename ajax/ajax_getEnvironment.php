@@ -39,4 +39,3 @@ $data = array(
 );
 
 SP\Common::printJSON($data, 0);
-
