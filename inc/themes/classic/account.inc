@@ -264,7 +264,7 @@
                             <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                             type="<?php echo $field->typeName; ?>"
                             class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
-                            maxlength="50" value="<?php echo ($gotData) ? \SP\Html::sanitize($field->value) : ''; ?>"
+                            maxlength="500" value="<?php echo ($gotData) ? \SP\Html::sanitize($field->value) : ''; ?>"
                             <?php echo ($field->required) ? 'required' : ''; ?>>
                     <?php else: ?>
                         <?php if($field->type === \SP\CustomFields::TYPE_PASSWORD && !$showViewPass):?>
