@@ -119,7 +119,7 @@ class Upgrade
                 break;
             case 12002:
                 $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(255);';
-                $queries[] = 'ALTER TABLE usrData CHANGE user_pass user_pass VARBINARY(128);';
+                $queries[] = 'ALTER TABLE usrData CHANGE user_pass user_pass VARBINARY(255);';
                 $queries[] = 'ALTER TABLE usrData CHANGE user_hashSalt user_hashSalt VARBINARY(128);';
                 $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
                 break;

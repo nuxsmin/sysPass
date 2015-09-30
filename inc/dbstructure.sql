@@ -50,7 +50,7 @@ CREATE TABLE `accHistory` (
   `acchistory_dateEdit` datetime NOT NULL,
   `acchistory_isModify` bit(1) DEFAULT NULL,
   `acchistory_isDeleted` bit(1) DEFAULT NULL,
-  `acchistory_mPassHash` varbinary(128) NOT NULL,
+  `acchistory_mPassHash` varbinary(255) NOT NULL,
   `accHistory_otherUserEdit` bit(1) DEFAULT b'0',
   `accHistory_otherGroupEdit` bit(1) DEFAULT b'0',
   PRIMARY KEY (`acchistory_id`),
@@ -123,7 +123,7 @@ CREATE TABLE `categories` (
 
 CREATE TABLE `config` (
   `config_parameter` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `config_value` varchar(128) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `config_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
   UNIQUE KEY `vacParameter` (`config_parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -189,7 +189,7 @@ CREATE TABLE `usrData` (
   `user_isAdminAcc` bit(1) NOT NULL DEFAULT b'0',
   `user_isLdap` bit(1) NOT NULL DEFAULT b'0',
   `user_isDisabled` bit(1) NOT NULL DEFAULT b'0',
-  `user_hashSalt` varbinary(40) NOT NULL,
+  `user_hashSalt` varbinary(128) NOT NULL,
   `user_isMigrate` bit(1) DEFAULT b'0',
   `user_isChangePass` bit(1) DEFAULT b'0',
   `user_preferences` blob,
