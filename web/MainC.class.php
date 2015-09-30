@@ -246,10 +246,10 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('isCompleted', false);
         $this->view->assign('version', \SP\Util::getVersionString());
         $this->view->assign('adminlogin', Request::analyze('adminlogin', 'admin'));
-        $this->view->assign('adminpass', Request::analyze('adminpass', '', false, false, false));
-        $this->view->assign('masterpassword', Request::analyze('masterpassword', '', false, false, false));
+        $this->view->assign('adminpass', Request::analyzeEncrypted('adminpass'));
+        $this->view->assign('masterpassword', Request::analyzeEncrypted('masterpassword'));
         $this->view->assign('dbuser', Request::analyze('dbuser', 'root'));
-        $this->view->assign('dbpass', Request::analyze('dbpass', '', false, false, false));
+        $this->view->assign('dbpass', Request::analyzeEncrypted('dbpass'));
         $this->view->assign('dbname', Request::analyze('dbname', 'syspass'));
         $this->view->assign('dbhost', Request::analyze('dbhost', 'localhost'));
         $this->view->assign('hostingmode', Request::analyze('hostingmode', false));
@@ -271,27 +271,11 @@ class MainC extends Controller implements ActionsInterface
         }
 
         if (Request::analyze('install', false)) {
-
-            try {
-                // Desencriptar con la clave RSA
-                $CryptPKI = new \SP\CryptPKI();
-                $clearAdminPass = $CryptPKI->decryptRSA(base64_decode($this->view->adminpass));
-                $clearMasterPassword = $CryptPKI->decryptRSA(base64_decode($this->view->masterpassword));
-                $clearDbPass = $CryptPKI->decryptRSA(base64_decode($this->view->dbpass));
-            } catch (\Exception $e) {
-                $this->view->append('errors', array(
-                    'type' => SPException::SP_CRITICAL,
-                    'description' => _('Error en clave RSA'),
-                    'hint' => $e->getMessage()
-                ));
-                return false;
-            }
-
             Installer::setUsername($this->view->adminlogin);
-            Installer::setPassword($clearAdminPass);
-            Installer::setMasterPassword($clearMasterPassword);
+            Installer::setPassword($this->view->adminpass);
+            Installer::setMasterPassword($this->view->masterpassword);
             Installer::setDbuser($this->view->dbuser);
-            Installer::setDbpass($clearDbPass);
+            Installer::setDbpass($this->view->dbpass);
             Installer::setDbname($this->view->dbname);
             Installer::setDbhost($this->view->dbhost);
             Installer::setIsHostingMode($this->view->hostingmode);

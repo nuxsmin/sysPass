@@ -31,9 +31,9 @@
                 </p>
                 <p>
                     <input type="password" name="passR" id="passR"
-                           title="<?php echo _('Nueva Clave (Verificar)'); ?>"
-                           placeholder="<?php echo _('Clave (Verificar)'); ?>"
-                           value="<?php echo Util::init_var('passv'); ?>" required/>
+                           title="<?php echo _('Clave'); ?>"
+                           placeholder="<?php echo _('Clave (repetir)'); ?>"
+                           value="<?php echo Util::init_var('passR'); ?>" required/>
                 </p>
                 <input type="hidden" name="time" value="<?php echo $time; ?>">
                 <input type="hidden" name="hash" value="<?php echo $hash; ?>">
@@ -54,3 +54,17 @@
         </div>
     </form>
 </div>
+<script>
+    $(function(){
+        $('#btnBack').click(function(){
+            window.history.back();
+        });
+
+        $('#frmPassReset').submit(function(){
+            sysPassUtil.Common.encryptFormValue('#pass');
+            sysPassUtil.Common.encryptFormValue('#passR');
+
+            sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php');
+        });
+    })
+</script>

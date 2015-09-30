@@ -77,7 +77,7 @@ class UserUtil
      */
     public static function migrateUser($userLogin, $userPass)
     {
-        $passdata = UserUtil::makeUserPass($userPass);
+        $passdata = UserUtil::makeUserPassHash($userPass);
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'
@@ -115,10 +115,10 @@ class UserUtil
      * @param string $userPass con la clave del usuario
      * @return array con la clave y salt del usuario
      */
-    public static function makeUserPass($userPass)
+    public static function makeUserPassHash($userPass)
     {
         $salt = Crypt::makeHashSalt();
-        $userPass = sha1($salt . $userPass);
+        $userPass = crypt($userPass, $salt);
 
         return array('salt' => $salt, 'pass' => $userPass);
     }
@@ -505,16 +505,14 @@ class UserUtil
             return false;
         }
 
-        $configMPass = Config::getConfigDbValue('masterPwd');
+        $configHashMPass = Config::getConfigDbValue('masterPwd');
 
-        if ($configMPass === false) {
+        if ($configHashMPass === false) {
             return false;
         }
 
         // Comprobamos el hash de la clave del usuario con la guardada
-        $ret = Crypt::checkHashPass($userMPass, $configMPass);
-
-        return $ret;
+        return Crypt::checkHashPass($userMPass, $configHashMPass, true);
     }
 
     /**
@@ -641,7 +639,7 @@ class UserUtil
      */
     public static function updateUserPass($userId, $userPass)
     {
-        $passdata = UserUtil::makeUserPass($userPass);
+        $passdata = UserUtil::makeUserPassHash($userPass);
         $userLogin = UserUtil::getUserLoginById($userId);
 
         $query = 'UPDATE usrData SET '
@@ -707,5 +705,15 @@ class UserUtil
         }
 
         return true;
+    }
+
+    /**
+     * Establecer el campo isMigrate de cada usuario
+     */
+    public static function setMigrateUsers()
+    {
+        $query = 'UPDATE usrData SET user_isMigrate = 1';
+
+        return DB::getQuery($query, __FUNCTION__);
     }
 }

@@ -340,7 +340,7 @@ abstract class UserBase
      */
     public function addUser()
     {
-        $passdata = UserUtil::makeUserPass($this->_userPass);
+        $passdata = UserUtil::makeUserPassHash($this->_userPass);
 
         $query = 'INSERT INTO usrData SET '
             . 'user_name = :name,'
@@ -545,7 +545,7 @@ abstract class UserBase
      */
     public function updateUserPass()
     {
-        $passdata = UserUtil::makeUserPass($this->_userPass);
+        $passdata = UserUtil::makeUserPassHash($this->_userPass);
         $userLogin = UserUtil::getUserLoginById($this->_userId);
 
         $query = 'UPDATE usrData SET '

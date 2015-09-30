@@ -28,59 +28,25 @@ namespace SP;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Esta clase es la encargada de realizar el encriptad/desencriptado de claves
+ * Esta clase es la encargada de realizar el encriptado/desencriptado de claves
  */
 class Crypt
 {
     public static $strInitialVector;
 
     /**
-     * Comprobar si el módulo de encriptación está disponible.
-     *
-     * @return bool
-     */
-    public static function checkCryptModule()
-    {
-        return mcrypt_module_self_test(MCRYPT_RIJNDAEL_256);
-    }
-
-    /**
      * Generar un hash de una clave utilizando un salt.
      *
      * @param string $pwd con la clave a 'hashear'
+     * @param bool   $appendSalt Añidor el salt al hash
      * @return string con el hash de la clave
      */
-    public static function mkHashPassword($pwd)
+    public static function mkHashPassword($pwd, $appendSalt = true)
     {
-        $salt = bin2hex(self::getIV()); // Obtenemos 256 bits aleatorios en hexadecimal
-        $hash = hash("sha256", $salt . $pwd); // Añadimos el salt a la clave y rehacemos el hash
-        $hashPwd = $salt . $hash;
-        return $hashPwd;
-    }
+        $salt = self::makeHashSalt();
+        $hash = crypt($pwd, $salt);
 
-    /**
-     * Comprobar el hash de una clave.
-     *
-     * @param string $pwd         con la clave a comprobar
-     * @param string $correctHash con el hash a comprobar
-     * @return bool
-     */
-    public static function checkHashPass($pwd, $correctHash)
-    {
-        // Obtenemos el salt de la clave
-        $salt = substr($correctHash, 0, 64);
-        // Obtenemos el hash SHA256
-        $validHash = substr($correctHash, 64, 64);
-
-        // Re-hash de la clave a comprobar
-        $testHash = hash("sha256", $salt . $pwd);
-
-        // Si los hashes son idénticos, la clave es válida
-        if ($testHash === $validHash) {
-            return true;
-        }
-
-        return false;
+        return ($appendSalt === true) ? $salt . $hash : $hash;
     }
 
     /**
@@ -90,59 +56,9 @@ class Crypt
      */
     public static function makeHashSalt()
     {
-        return self::getIV();
-    }
+        $salt = '$2y$07$' . bin2hex(self::getIV()) . '$';
 
-    /**
-     * Generar datos encriptados.
-     * Esta función llama a los métodos privados para encriptar datos.
-     *
-     * @param string $data       con los datos a encriptar
-     * @param string $masterPwd con la clave maestra
-     * @return bool
-     */
-    public static function mkEncrypt($data, $masterPwd = "")
-    {
-        $masterPwd = (!$masterPwd) ? self::getSessionMasterPass() : $masterPwd;
-
-        self::$strInitialVector = self::getIV();
-        $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
-
-        return $cryptValue;
-    }
-
-    /**
-     * Desencriptar la clave maestra de la sesión.
-     *
-     * @return string con la clave maestra
-     */
-    public static function getSessionMasterPass()
-    {
-        return self::getDecrypt(Session::getMPass(), Session::getMPassIV(), Session::getMPassPwd());
-    }
-
-    /**
-     * Desencriptar datos con la clave maestra.
-     *
-     * @param string $strEncrypted Los datos a desencriptar
-     * @param string $cryptIV      con el IV
-     * @param string $strPassword  La clave maestra
-     * @return string con los datos desencriptados
-     */
-    public static function getDecrypt($strEncrypted, $cryptIV, $strPassword = null)
-    {
-        if (is_null($strPassword)){
-            $strPassword = self::getSessionMasterPass();
-        }
-
-        $mcryptRes = self::getMcryptResource();
-        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
-        $strDecrypted = trim(mdecrypt_generic($mcryptRes, $strEncrypted));
-
-        mcrypt_generic_deinit($mcryptRes);
-        mcrypt_module_close($mcryptRes);
-
-        return $strDecrypted;
+        return $salt;
     }
 
     /**
@@ -170,22 +86,43 @@ class Crypt
     }
 
     /**
-     * Encriptar datos con la clave maestra.
+     * Método para obtener un recurso del módulo mcrypt.
+     * Se utiliza el algoritmo RIJNDAEL_256 en modo CBC
      *
-     * @param string $strValue    con los datos a encriptar
-     * @param string $strPassword con la clave maestra
-     * @param string $cryptIV     con el IV
-     * @return string con los datos encriptados
+     * @return resource
      */
-    private static function encrypt($strValue, $strPassword, $cryptIV)
+    private static function getMcryptResource()
     {
-        $mcryptRes = self::getMcryptResource();
+        return mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_CBC, '');
+    }
 
-        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
-        $strEncrypted = mcrypt_generic($mcryptRes, $strValue);
-        mcrypt_generic_deinit($mcryptRes);
+    /**
+     * Comprobar el hash de una clave.
+     *
+     * @param string $pwd          con la clave a comprobar
+     * @param string $originalHash con el hash a comprobar
+     * @param bool   $isMPass      si es la clave maestra
+     * @return bool
+     */
+    public static function checkHashPass($pwd, $originalHash, $isMPass = false)
+    {
+        // Obtenemos el salt de la clave
+        $salt = substr($originalHash, 0, 72);
+        // Obtenemos el hash SHA256
+        $validHash = substr($originalHash, 72);
+        // Re-hash de la clave a comprobar
+        $testHash = crypt($pwd, $salt);
 
-        return $strEncrypted;
+        // Comprobar si el hash está en formato anterior a 12002
+        if ($isMPass && strlen($originalHash) === 128) {
+            Config::setConfigDbValue('masterPwd', self::mkHashPassword($pwd));
+            Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'));
+
+            return (hash("sha256", substr($originalHash, 0, 64) . $pwd) == substr($originalHash, 64, 64));
+        }
+
+        // Si los hashes son idénticos, la clave es válida
+        return $testHash == $validHash;
     }
 
     /**
@@ -205,14 +142,22 @@ class Crypt
     }
 
     /**
-     * Método para obtener un recurso del módulo mcrypt.
-     * Se utiliza el algoritmo RIJNDAEL_256 en modo CBC
+     * Encriptar datos con la clave maestra.
      *
-     * @return resource
+     * @param string $strValue    con los datos a encriptar
+     * @param string $strPassword con la clave maestra
+     * @param string $cryptIV     con el IV
+     * @return string con los datos encriptados
      */
-    private static function getMcryptResource()
+    private static function encrypt($strValue, $strPassword, $cryptIV)
     {
-        return mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_CBC, '');
+        $mcryptRes = self::getMcryptResource();
+
+        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
+        $strEncrypted = mcrypt_generic($mcryptRes, $strValue);
+        mcrypt_generic_deinit($mcryptRes);
+
+        return $strEncrypted;
     }
 
     /**
@@ -251,5 +196,91 @@ class Crypt
         $encData['iv'] = Crypt::$strInitialVector;
 
         return $encData;
+    }
+
+    /**
+     * Comprobar si el módulo de encriptación está disponible.
+     *
+     * @return bool
+     */
+    public static function checkCryptModule()
+    {
+        return mcrypt_module_self_test(MCRYPT_RIJNDAEL_256);
+    }
+
+    /**
+     * Generar datos encriptados.
+     * Esta función llama a los métodos privados para encriptar datos.
+     *
+     * @param string $data      con los datos a encriptar
+     * @param string $masterPwd con la clave maestra
+     * @return bool
+     */
+    public static function mkEncrypt($data, $masterPwd = "")
+    {
+        $masterPwd = (!$masterPwd) ? self::getSessionMasterPass() : $masterPwd;
+
+        self::$strInitialVector = self::getIV();
+        $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
+
+        return $cryptValue;
+    }
+
+    /**
+     * Desencriptar la clave maestra de la sesión.
+     *
+     * @return string con la clave maestra
+     */
+    public static function getSessionMasterPass()
+    {
+        return self::getDecrypt(Session::getMPass(), Session::getMPassIV(), Session::getMPassPwd());
+    }
+
+    /**
+     * Desencriptar datos con la clave maestra.
+     *
+     * @param string $strEncrypted Los datos a desencriptar
+     * @param string $cryptIV      con el IV
+     * @param string $strPassword  La clave maestra
+     * @return string con los datos desencriptados
+     */
+    public static function getDecrypt($strEncrypted, $cryptIV, $strPassword = null)
+    {
+        if (is_null($strPassword)) {
+            $strPassword = self::getSessionMasterPass();
+        }
+
+        $mcryptRes = self::getMcryptResource();
+        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
+        $strDecrypted = trim(mdecrypt_generic($mcryptRes, $strEncrypted));
+
+        mcrypt_generic_deinit($mcryptRes);
+        mcrypt_module_close($mcryptRes);
+
+        return $strDecrypted;
+    }
+
+    /**
+     * Generar una key para su uso con el algoritmo AES
+     *
+     * @param string $string La cadena de la que deriva la key
+     * @param null   $salt   El salt utilizado
+     * @return string
+     */
+    public static function generateAesKey($string, $salt = null)
+    {
+        if (is_null($salt)) {
+            $salt = Config::getValue('passwordsalt');
+        }
+
+        $salt = '$2y$07$' . $salt . '$';
+        $key = substr(crypt($string, $salt), 7, 32);
+
+        return $key;
+    }
+
+    public static function checkPassword($pwd, $salt)
+    {
+        $testHash = crypt($pwd, $salt);
     }
 }

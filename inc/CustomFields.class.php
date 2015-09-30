@@ -121,26 +121,73 @@ class CustomFields extends CustomFieldsBase
     public static function getCustomFieldsData($moduleId, $itemId)
     {
         $query = 'SELECT customfielddata_id, ' .
-            'customfielddata_defId, ' .
             'customfielddef_id, ' .
             'customfielddata_data, ' .
             'customfielddata_iv, ' .
             'customfielddef_field ' .
             'FROM customFieldsData ' .
-            'RIGHT JOIN customFieldsDef ON customfielddata_defId = customfielddef_id ' .
-            'WHERE customfielddef_module = :moduleidA ' .
+            'JOIN customFieldsDef ON customfielddata_defId = customfielddef_id ' .
+            'WHERE customfielddef_module = :moduleid ' .
             'AND customfielddata_itemId = :itemid ' .
-            'UNION ' .
-            'SELECT customfielddata_id, ' .
-            'customfielddata_defId, ' .
-            'customfielddef_id, ' .
-            'customfielddata_data, ' .
-            'customfielddata_iv, ' .
-            'customfielddef_field ' .
+            'ORDER BY customfielddef_id';
+
+        $data['moduleid'] = $moduleId;
+        $data['itemid'] = $itemId;
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        $queryMerge = array_merge($queryRes, self::getCustomFieldsNoData($moduleId, $itemId));
+
+        $customFields = array();
+
+        foreach ($queryMerge as $customField) {
+            /**
+             * @var CustomFieldDef
+             */
+            $field = unserialize($customField->customfielddef_field);
+
+            $attribs = new \stdClass();
+            $attribs->id = $customField->customfielddef_id;
+            $attribs->name = 'cf_' . strtolower(self::cleanFieldName($field->getName()));
+            $attribs->text = $field->getName();
+            $attribs->type = $field->getType();
+            $attribs->typeName = self::getFieldsTypes($field->getType());
+            $attribs->value = (isset($customField->customfielddata_data)) ? self::formatValue(Crypt::getDecrypt($customField->customfielddata_data, $customField->customfielddata_iv)) : '';
+            $attribs->help = $field->getHelp();
+            $attribs->required = $field->isRequired();
+
+            $customFields[] = $attribs;
+        }
+
+        return $customFields;
+    }
+
+    /**
+     * Devuelve los campos personalizados sin datos de un elemento
+     *
+     * @param $moduleId int El id del módulo
+     * @param $itemId   int EL id del elemento
+     * @return array
+     */
+    private static function getCustomFieldsNoData($moduleId, $itemId)
+    {
+        $query = 'SELECT customfielddef_field,' .
+            'customfielddef_id ' .
+            'FROM customFieldsDef ' .
+            'WHERE customfielddef_module = :moduleidA ' .
+            'AND customfielddef_id NOT IN ' .
+            '(SELECT customfielddef_id ' .
             'FROM customFieldsData ' .
-            'RIGHT JOIN customFieldsDef ON customfielddata_defId = customfielddef_id ' .
+            'JOIN customFieldsDef ON customfielddata_defId = customfielddef_id ' .
             'WHERE customfielddef_module = :moduleidB ' .
-            'AND ISNULL(customfielddata_itemId)';
+            'AND customfielddata_itemId = :itemid) ' .
+            'ORDER BY customfielddef_id';
 
         $data['moduleidA'] = $moduleId;
         $data['moduleidB'] = $moduleId;
@@ -154,28 +201,7 @@ class CustomFields extends CustomFieldsBase
             return array();
         }
 
-        $customFields = array();
-
-        foreach ($queryRes as $customField) {
-            /**
-             * @var CustomFieldDef
-             */
-            $field = unserialize($customField->customfielddef_field);
-
-            $attribs = new \stdClass();
-            $attribs->id = $customField->customfielddef_id;
-            $attribs->name = 'cf_' . strtolower(self::cleanFieldName($field->getName()));
-            $attribs->text = $field->getName();
-            $attribs->type = $field->getType();
-            $attribs->typeName = self::getFieldsTypes($field->getType());
-            $attribs->value = (!is_null($customField->customfielddata_data)) ? self::formatValue(Crypt::getDecrypt($customField->customfielddata_data, $customField->customfielddata_iv)) : '';
-            $attribs->help = $field->getHelp();
-            $attribs->required = $field->isRequired();
-
-            $customFields[] = $attribs;
-        }
-
-        return $customFields;
+        return $queryRes;
     }
 
     /**
@@ -208,25 +234,6 @@ class CustomFields extends CustomFieldsBase
 
         $data['moduleid'] = $moduleId;
         $data['defid'] = $defId;
-
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
-
-        return $queryRes;
-    }
-
-    /**
-     * Eliminar los datos de un campo personalizado o los de una definición de campos
-     *
-     * @param int $itemId El Id del elemento asociado al campo
-     * @return bool
-     */
-    public static function deleteCustomFieldForItem($itemId, $moduleId)
-    {
-        $query = 'DELETE FROM customFieldsData ' .
-            'WHERE customfielddata_itemId = :itemid ' .
-            'AND customfielddata_moduleId = :moduleid LIMIT 1';
-        $data['itemid'] = $itemId;
-        $data['moduleid'] = $moduleId;
 
         $queryRes = DB::getQuery($query, __FUNCTION__, $data);
 
@@ -277,7 +284,7 @@ class CustomFields extends CustomFieldsBase
             return $this->addCustomField();
         }
 
-        if (empty($this->_value)){
+        if (empty($this->_value)) {
             return self::deleteCustomFieldForItem($this->_itemId, $this->_module);
         }
 
@@ -337,7 +344,7 @@ class CustomFields extends CustomFieldsBase
      */
     public function addCustomField()
     {
-        if (empty($this->_value)){
+        if (empty($this->_value)) {
             return true;
         }
 
@@ -355,6 +362,25 @@ class CustomFields extends CustomFieldsBase
         $data['defid'] = $this->_id;
         $data['data'] = $cryptData['data'];
         $data['iv'] = $cryptData['iv'];
+
+        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+
+        return $queryRes;
+    }
+
+    /**
+     * Eliminar los datos de un campo personalizado o los de una definición de campos
+     *
+     * @param int $itemId El Id del elemento asociado al campo
+     * @return bool
+     */
+    public static function deleteCustomFieldForItem($itemId, $moduleId)
+    {
+        $query = 'DELETE FROM customFieldsData ' .
+            'WHERE customfielddata_itemId = :itemid ' .
+            'AND customfielddata_moduleId = :moduleid LIMIT 1';
+        $data['itemid'] = $itemId;
+        $data['moduleid'] = $moduleId;
 
         $queryRes = DB::getQuery($query, __FUNCTION__, $data);
 

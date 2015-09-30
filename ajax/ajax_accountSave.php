@@ -49,8 +49,8 @@ $customerId = SP\Request::analyze('customerId', 0);
 $newCustomer = SP\Request::analyze('customer_new');
 $accountName = SP\Request::analyze('name');
 $accountLogin = SP\Request::analyze('login');
-$accountPassword = SP\Request::analyze('pass', '', false, false, false);
-$accountPasswordR = SP\Request::analyze('passR', '', false, false, false);
+$accountPassword = SP\Request::analyzeEncrypted('pass');
+$accountPasswordR = SP\Request::analyzeEncrypted('passR');
 $categoryId = SP\Request::analyze('categoryId', 0);
 $accountOtherGroups = SP\Request::analyze('othergroups');
 $accountOtherUsers = SP\Request::analyze('otherusers');
@@ -113,18 +113,13 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
 if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
-    // Desencriptar con la clave RSA
-    $CryptPKI = new \SP\CryptPKI();
-    $clearAccountPass = $CryptPKI->decryptRSA(base64_decode($accountPassword));
-    $clearAccountPassR = $CryptPKI->decryptRSA(base64_decode($accountPasswordR));
-
-    if ($clearAccountPass != $clearAccountPassR) {
+    if ($accountPassword != $accountPasswordR) {
         SP\Common::printJSON(_('Las claves no coinciden'));
     }
 
     // Encriptar clave de cuenta
     try {
-        $accountEncPass = SP\Crypt::encryptData($clearAccountPass);
+        $accountEncPass = SP\Crypt::encryptData($accountPassword);
     } catch (\SP\SPException $e) {
         SP\Common::printJSON($e->getMessage());
     }

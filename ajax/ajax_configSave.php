@@ -57,7 +57,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
     if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL) {
         // General
         $siteLang = SP\Request::analyze('sitelang');
-        $siteTheme = SP\Request::analyze('sitetheme');
+        $siteTheme = SP\Request::analyze('sitetheme', 'material-blue');
         $sessionTimeout = SP\Request::analyze('session_timeout', 300);
         $logEnabled = SP\Request::analyze('log_enabled', false, false, true);
         $debugEnabled = SP\Request::analyze('debug', false, false, true);
@@ -105,7 +105,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $proxyServer = SP\Request::analyze('proxy_server');
         $proxyPort = SP\Request::analyze('proxy_port', 0);
         $proxyUser = SP\Request::analyze('proxy_user');
-        $proxyPass = SP\Request::analyze('proxy_pass');
+        $proxyPass = SP\Request::analyzeEncrypted('proxy_pass');
 
 
         // Valores para Proxy
@@ -152,7 +152,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $ldapDefaultGroup = SP\Request::analyze('ldap_defaultgroup', 0);
         $ldapDefaultProfile = SP\Request::analyze('ldap_defaultprofile', 0);
         $ldapBindUser = SP\Request::analyze('ldap_binduser');
-        $ldapBindPass = SP\Request::analyze('ldap_bindpass', '', false, false, false);
+        $ldapBindPass = SP\Request::analyzeEncrypted('ldap_bindpass');
 
         // Valores para la configuración de LDAP
         if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
@@ -178,7 +178,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $mailServer = SP\Request::analyze('mail_server');
         $mailPort = SP\Request::analyze('mail_port', 25);
         $mailUser = SP\Request::analyze('mail_user');
-        $mailPass = SP\Request::analyze('mail_pass', '', false, false, false);
+        $mailPass = SP\Request::analyzeEncrypted('mail_pass');
         $mailSecurity = SP\Request::analyze('mail_security');
         $mailFrom = SP\Request::analyze('mail_from');
         $mailRequests = SP\Request::analyze('mail_requestsenabled', false, false, true);
@@ -220,9 +220,9 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
 
     SP\Common::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
 } elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION) {
-    $currentMasterPass = SP\Request::analyze('curMasterPwd', '', false, false, false);
-    $newMasterPass = SP\Request::analyze('newMasterPwd', '', false, false, false);
-    $newMasterPassR = SP\Request::analyze('newMasterPwdR', '', false, false, false);
+    $currentMasterPass = SP\Request::analyzeEncrypted('curMasterPwd');
+    $newMasterPass = SP\Request::analyzeEncrypted('newMasterPwd');
+    $newMasterPassR = SP\Request::analyzeEncrypted('newMasterPwdR');
     $confirmPassChange = SP\Request::analyze('confirmPassChange', 0, false, 1);
     $noAccountPassChange = SP\Request::analyze('chkNoAccountChange', 0, false, 1);
 
@@ -234,36 +234,26 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         SP\Common::printJSON(_('Se ha de confirmar el cambio de clave'));
     }
 
-    try {
-        // Desencriptar con la clave RSA
-        $CryptPKI = new \SP\CryptPKI();
-        $clearCurMasterPass = $CryptPKI->decryptRSA(base64_decode($currentMasterPass));
-        $clearNewMasterPass = $CryptPKI->decryptRSA(base64_decode($newMasterPass));
-        $clearNewMasterPassR = $CryptPKI->decryptRSA(base64_decode($newMasterPassR));
-    } catch (Exception $e) {
-        SP\Common::printJSON(_('Error en clave RSA'));
-    }
-
-    if ($clearNewMasterPass == $clearCurMasterPass) {
+    if ($newMasterPass == $currentMasterPass) {
         SP\Common::printJSON(_('Las claves son idénticas'));
-    } elseif ($clearNewMasterPass != $clearNewMasterPassR) {
+    } elseif ($newMasterPass != $newMasterPassR) {
         SP\Common::printJSON(_('Las claves maestras no coinciden'));
-    } elseif (!SP\Crypt::checkHashPass($clearCurMasterPass, SP\Config::getConfigDbValue('masterPwd'))) {
+    } elseif (!SP\Crypt::checkHashPass($currentMasterPass, SP\Config::getConfigDbValue('masterPwd'), true)) {
         SP\Common::printJSON(_('La clave maestra actual no coincide'));
     }
 
-    $hashMPass = SP\Crypt::mkHashPassword($clearNewMasterPass);
+    $hashMPass = SP\Crypt::mkHashPassword($newMasterPass);
 
     if (!$noAccountPassChange) {
         $Account = new SP\Account();
 
-        if (!$Account->updateAccountsMasterPass($clearCurMasterPass, $clearNewMasterPass)) {
+        if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
             SP\Common::printJSON(_('Errores al actualizar las claves de las cuentas'));
         }
 
         $AccountHistory = new SP\AccountHistory();
 
-        if (!$AccountHistory->updateAccountsMasterPass($clearCurMasterPass, $clearNewMasterPass, $hashMPass)) {
+        if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
             SP\Common::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
         }
     }

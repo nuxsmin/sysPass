@@ -46,7 +46,7 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
 }
 
 $frmDBUser = SP\Request::analyze('dbuser');
-$frmDBPass = SP\Request::analyze('dbpass');
+$frmDBPass = SP\Request::analyzeEncrypted('dbpass');
 $frmDBName = SP\Request::analyze('dbname');
 $frmDBHost = SP\Request::analyze('dbhost');
 $frmMigrateEnabled = SP\Request::analyze('chkmigrate', 0, false, 1);

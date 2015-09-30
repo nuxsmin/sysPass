@@ -33,7 +33,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001);
+    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002);
     private static $_cfgUpgrade = array(1124);
 
     /**
@@ -116,6 +116,12 @@ class Upgrade
                 $queries[] = 'CREATE TABLE `authTokens` (`authtoken_id` int(11) NOT NULL AUTO_INCREMENT,`authtoken_userId` int(11) NOT NULL,`authtoken_token` varbinary(100) NOT NULL,`authtoken_actionId` smallint(5) unsigned NOT NULL,`authtoken_createdBy` smallint(5) unsigned NOT NULL,`authtoken_startDate` int(10) unsigned NOT NULL,PRIMARY KEY (`authtoken_id`),UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                 $queries[] = 'CREATE TABLE `customFieldsDef` (`customfielddef_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `customfielddef_module` smallint(5) unsigned NOT NULL, `customfielddef_field` blob NOT NULL, PRIMARY KEY (`customfielddef_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                 $queries[] = 'CREATE TABLE `customFieldsData` (`customfielddata_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`customfielddata_moduleId` smallint(5) unsigned NOT NULL,`customfielddata_itemId` int(10) unsigned NOT NULL,`customfielddata_defId` int(10) unsigned NOT NULL,`customfielddata_data` longblob,`customfielddata_iv` varbinary(128) DEFAULT NULL, PRIMARY KEY (`customfielddata_id`), KEY `IDX_DEFID` (`customfielddata_defId`), KEY `IDX_DELETE` (`customfielddata_itemId`,`customfielddata_moduleId`), KEY `IDX_UPDATE` (`customfielddata_moduleId`,`customfielddata_itemId`,`customfielddata_defId`), KEY `IDX_ITEM` (`customfielddata_itemId`), KEY `IDX_MODULE` (`customfielddata_moduleId`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+                break;
+            case 12002:
+                $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(255);';
+                $queries[] = 'ALTER TABLE usrData CHANGE user_pass user_pass VARBINARY(128);';
+                $queries[] = 'ALTER TABLE usrData CHANGE user_hashSalt user_hashSalt VARBINARY(128);';
+                $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
                 break;
             default :
                 $log->addDescription(_('No es necesario actualizar la Base de Datos.'));
@@ -227,6 +233,9 @@ class Upgrade
         switch ($version){
             case 12001:
                 return (Profile::migrateProfiles() && UserUtil::migrateUsersGroup());
+                break;
+            case 12002:
+                return (UserUtil::setMigrateUsers());
                 break;
             default:
                 break;

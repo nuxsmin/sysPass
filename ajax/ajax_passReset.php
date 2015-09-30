@@ -39,8 +39,8 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
 
 $userLogin = SP\Request::analyze('login');
 $userEmail = SP\Request::analyze('email');
-$userPass = SP\Request::analyze('pass');
-$userPassV = SP\Request::analyze('passv');
+$userPass = SP\Request::analyzeEncrypted('pass');
+$userPassR = SP\Request::analyzeEncrypted('passR');
 $hash = SP\Request::analyze('hash');
 $time = SP\Request::analyze('time');
 
@@ -64,7 +64,7 @@ if ($userLogin && $userEmail) {
     SP\Email::sendEmail($log);
 }
 
-if ($userPass && $userPassV && $userPass === $userPassV) {
+if ($userPass && $userPassR && $userPass === $userPassR) {
     $userId = UserUtil::checkHashPassRecover($hash);
 
     if ($userId) {

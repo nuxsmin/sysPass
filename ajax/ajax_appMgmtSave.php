@@ -61,7 +61,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_DELETE
 ) {
     $isLdap = SP\Request::analyze('isLdap', 0);
-    $userPassR = SP\Request::analyze('passR', '', false, false, false);
+    $userPassR = SP\Request::analyzeEncrypted('passR');
 
     $User = new SP\User();
     $User->setUserId($itemId);
@@ -75,7 +75,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $User->setUserIsAdminAcc(SP\Request::analyze('adminacc', 0, false, 1));
     $User->setUserIsDisabled(SP\Request::analyze('disabled', 0, false, 1));
     $User->setUserChangePass(SP\Request::analyze('changepass', 0, false, 1));
-    $User->setUserPass(SP\Request::analyze('pass', '', false, false, false));
+    $User->setUserPass(SP\Request::analyzeEncrypted('pass'));
 
     // Nuevo usuario o editar
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
@@ -105,7 +105,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         }
 
         if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW) {
-            if (!$User->getUserPass() && !$userPassR) {
+            if (!$User->getUserPass() || !$userPassR) {
                 SP\Common::printJSON(_('La clave no puede estar en blanco'), 2);
             } elseif ($User->getUserPass() != $userPassR) {
                 SP\Common::printJSON(_('Las claves no coinciden'), 2);
@@ -144,18 +144,9 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
         } elseif (!$User->getUserPass() || !$userPassR) {
             SP\Common::printJSON(_('La clave no puede estar en blanco'), 2);
-        }
-
-        // Desencriptar con la clave RSA
-        $CryptPKI = new \SP\CryptPKI();
-        $clearUserPass = $CryptPKI->decryptRSA(base64_decode($User->getUserPass()));
-        $clearUserPassR = $CryptPKI->decryptRSA(base64_decode($userPassR));
-
-        if ($clearUserPass != $clearUserPassR) {
+        } elseif ($User->getUserPass() != $userPassR) {
             SP\Common::printJSON(_('Las claves no coinciden'), 2);
         }
-
-        $User->setUserPass($clearUserPass);
 
         if ($User->updateUserPass()) {
             SP\Common::printJSON(_('Clave actualizada'), 0);
@@ -452,13 +443,13 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $ApiTokens->setRefreshToken(SP\Request::analyze('refreshtoken', false, false, true));
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW
-        || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT)
-    {
+        || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT
+    ) {
         if ($ApiTokens->getUserId() === 0 || $ApiTokens->getActionId() === 0) {
             SP\Common::printJSON(_('Usuario o acción no indicado'), 2);
         }
 
-        if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW){
+        if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_NEW) {
             try {
                 $ApiTokens->addToken();
             } catch (\SP\SPException $e) {
@@ -466,7 +457,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             }
 
             SP\Common::printJSON(_('Autorización creada'), 0, $doActionOnClose);
-        } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT){
+        } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_EDIT) {
             try {
                 $ApiTokens->updateToken();
             } catch (\SP\SPException $e) {
@@ -476,7 +467,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Autorización actualizada'), 0, $doActionOnClose);
         }
 
-    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_DELETE){
+    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS_DELETE) {
         try {
             $ApiTokens->deleteToken();
         } catch (\SP\SPException $e) {
@@ -497,8 +488,8 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $frmFieldRequired = SP\Request::analyze('required', false, false, true);
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW
-        || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT)
-    {
+        || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT
+    ) {
         if (!$frmFieldName) {
             SP\Common::printJSON(_('Nombre del campo no indicado'), 2);
         } elseif ($frmFieldType === 0) {
@@ -511,7 +502,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         $CustomFieldDef->setHelp($frmFieldHelp);
         $CustomFieldDef->setRequired($frmFieldRequired);
 
-        if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW){
+        if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW) {
             try {
                 $CustomFieldDef->addCustomField();
             } catch (\SP\SPException $e) {
@@ -519,7 +510,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             }
 
             SP\Common::printJSON(_('Campo creado'), 0, $doActionOnClose);
-        } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT){
+        } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT) {
             try {
                 $CustomFieldDef->setId($itemId);
                 $CustomFieldDef->updateCustomField();
@@ -530,7 +521,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
             SP\Common::printJSON(_('Campo actualizado'), 0, $doActionOnClose);
         }
 
-    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE){
+    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE) {
         try {
             \SP\CustomFieldDef::deleteCustomField($itemId);
         } catch (\SP\SPException $e) {

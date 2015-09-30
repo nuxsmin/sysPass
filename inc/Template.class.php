@@ -86,7 +86,7 @@ class Template
         $template = VIEW_PATH . DIRECTORY_SEPARATOR . Init::$THEME . DIRECTORY_SEPARATOR . $file . '.inc';
 
         if (!is_readable($template)) {
-            throw new InvalidArgumentException('No es posible obtener la plantilla "' . $file . '"');
+            throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
         $this->setTemplate($template);
@@ -125,7 +125,7 @@ class Template
     public function __get($name)
     {
         if (!array_key_exists($name, $this->_vars)) {
-            throw new InvalidArgumentException('No es posible obtener la variable "' . $name . '"');
+            throw new InvalidArgumentException(sprintf(_('No es posible obtener la variable "%s"'), $name));
         }
 
         return $this->_vars[$name];
@@ -168,7 +168,7 @@ class Template
     public function __unset($name)
     {
         if (!isset($this->_vars[$name])) {
-            throw new InvalidArgumentException('No es posible destruir la variable "' . $name . '"');
+            throw new InvalidArgumentException(sprintf(_('No es posible destruir la variable "%s"'), $name));
         }
 
         unset($this->_vars[$name]);
@@ -207,8 +207,6 @@ class Template
         if (!is_null($scope)) {
             $name = $scope . '_' . $name;
         }
-
-//        error_log('SET: ' . $name . ' -> ' . $value);
 
         $this->_vars[$name] = $value;
     }
