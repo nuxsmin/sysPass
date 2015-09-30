@@ -155,17 +155,16 @@ class Auth
             }
         }
 
-        $query = 'SELECT user_login, user_pass '
+        $query = 'SELECT user_login, user_pass, user_hashSalt '
             . 'FROM usrData '
-            . 'WHERE user_login = :login AND user_isMigrate = 0 '
-            . 'AND user_pass = SHA1(CONCAT(user_hashSalt, :pass)) LIMIT 1';
+            . 'WHERE user_login = :login AND user_isMigrate = 0 LIMIT 1';
 
         $data['login'] = $userLogin;
-        $data['pass'] = $userPass;
 
-        $ret = (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
+        $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return $ret;
+        return ($queryRes !== false
+            && $queryRes->user_pass == crypt($userPass, $queryRes->user_hashSalt));
     }
 
     /**
@@ -203,7 +202,6 @@ class Auth
     /**
      * Comprobar el token de seguridad
      *
-     * @param $userId   int El id del usuario
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
      * @return bool

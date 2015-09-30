@@ -42,8 +42,8 @@ if (!$sk || !SP\Common::checkSessionKey($sk)) {
 $actionId = SP\Request::analyze('actionId', 0);
 $onCloseAction = SP\Request::analyze('onCloseAction');
 $activeTab = SP\Request::analyze('activeTab', 0);
-$exportPassword = SP\Request::analyze('exportPwd', '', false, false, false);
-$exportPasswordR = SP\Request::analyze('exportPwdR', '', false, false, false);
+$exportPassword = SP\Request::analyzeEncrypted('exportPwd');
+$exportPasswordR = SP\Request::analyzeEncrypted('exportPwdR');
 
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
@@ -58,19 +58,11 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
 
     SP\Common::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
 } elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_EXPORT) {
-    try {
-        $CryptPKI = new \SP\CryptPKI();
-        $clearExportPwd = $CryptPKI->decryptRSA(base64_decode($exportPassword));
-        $clearExportPwdR = $CryptPKI->decryptRSA(base64_decode($exportPasswordR));
-    } catch (Exception $e) {
-        SP\Common::printJSON(_('Error en clave RSA'));
-    }
-
-    if (!empty($clearExportPwd) && $clearExportPwd !== $clearExportPwdR){
+    if (!empty($exportPassword) && $exportPassword !== $exportPasswordR){
         SP\Common::printJSON(_('Las claves no coinciden'));
     }
 
-    if(!\SP\XmlExport::doExport($clearExportPwd)){
+    if(!\SP\XmlExport::doExport($exportPassword)){
         SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Error al realizar la exportación de cuentas'));
 
         SP\Common::printJSON(_('Error al realizar la exportación') . ';;' . _('Revise el registro de eventos para más detalles'));

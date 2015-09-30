@@ -1,3 +1,9 @@
+=== ** v1.2.0.0-rc2 ===
+
+* [ADD] Cambiado a BCRYPT para generar el hash de las claves y derivaciones. AVISO: La clave maestra debe de ser introducida por los usuarios (es posible usar una clave temporal)
+* [MOD] Algunos ajustes en la desencriptación de claves de los formularios
+* [FIX] Corregido error cuando los campos personalizados en blanco son obtenidos para un elemento.
+
 === ** v1.2.0.0-rc1 ===
 
 * [ADD] Mejoras de seguridad para prevenir ataques comunes (SQL Injection, XSS, CSRF)

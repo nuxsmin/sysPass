@@ -45,7 +45,7 @@ $frmLdapServer = SP\Request::analyze('ldap_server');
 $frmLdapBase = SP\Request::analyze('ldap_base');
 $frmLdapGroup = SP\Request::analyze('ldap_group');
 $frmLdapBindUser = SP\Request::analyze('ldap_binduser');
-$frmLdapBindPass = SP\Request::analyze('ldap_bindpass');
+$frmLdapBindPass = SP\Request::analyzeEncrypted('ldap_bindpass');
 
 if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
     SP\Common::printJSON(_('Los parámetros de LDAP no están configurados'));

@@ -48,7 +48,7 @@ class User extends UserBase
             return false;
         }
 
-        if (Crypt::checkHashPass($masterPwd, $configMPass)) {
+        if (Crypt::checkHashPass($masterPwd, $configMPass, true)) {
             $strUserMPwd = Crypt::mkCustomMPassEncrypt(self::getCypherPass($this->_userPass), $masterPwd);
 
             if (!$strUserMPwd) {
@@ -78,10 +78,7 @@ class User extends UserBase
      */
     private function getCypherPass()
     {
-        $configSalt = Config::getConfigDbValue('passwordsalt');
-        $cypherPass = substr(sha1($configSalt . $this->_userPass), 0, 32);
-
-        return $cypherPass;
+        return Crypt::generateAesKey($this->_userPass . $this->_userLogin);
     }
 
     /**

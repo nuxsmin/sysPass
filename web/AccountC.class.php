@@ -488,9 +488,12 @@ class AccountC extends Controller implements ActionsInterface
      */
     private function getCustomFieldsForItem()
     {
+        // Establecer el id de la cuenta en activo y no del historial
+        $id = (Session::getLastAcountId() !== 0) ? Session::getLastAcountId() : $this->getId();
+
         // Se comprueba que hayan campos con valores para la cuenta actual
-        if($this->isGotData() && CustomFields::checkCustomFieldExists(ActionsInterface::ACTION_ACC_NEW, $this->_id)){
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData(ActionsInterface::ACTION_ACC_NEW, $this->_id));
+        if($this->isGotData() && CustomFields::checkCustomFieldExists(ActionsInterface::ACTION_ACC_NEW, $id)){
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData(ActionsInterface::ACTION_ACC_NEW, $id));
         } else {
             $this->view->assign('customFields', CustomFields::getCustomFieldsForModule(ActionsInterface::ACTION_ACC_NEW));
         }

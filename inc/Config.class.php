@@ -357,8 +357,8 @@ class Config
     public static function setTempMasterPass($maxTime = 14400)
     {
         // Encriptar la clave maestra con hash aleatorio generado
-        $randomHash = Util::generate_random_bytes(32);
-        $pass = Crypt::mkCustomMPassEncrypt($randomHash, Crypt::getSessionMasterPass());
+        $randomKey = Crypt::generateAesKey(Util::generate_random_bytes());
+        $pass = Crypt::mkCustomMPassEncrypt($randomKey, Crypt::getSessionMasterPass());
 
         if (!is_array($pass)) {
             return false;
@@ -366,19 +366,19 @@ class Config
 
         self::setConfigDbValue('tempmaster_pass', bin2hex($pass[0]), false);
         self::setConfigDbValue('tempmaster_passiv', bin2hex($pass[1]), false);
-        self::setConfigDbValue('tempmaster_passhash', sha1($randomHash), false);
+        self::setConfigDbValue('tempmaster_passhash', Crypt::mkHashPassword($randomKey), false);
         self::setConfigDbValue('tempmaster_passtime', time(), false);
         self::setConfigDbValue('tempmaster_maxtime', time() + $maxTime, false);
         self::setConfigDbValue('tempmaster_attempts', 0, false);
 
-        return $randomHash;
+        return $randomKey;
     }
 
     /**
      * Guardar un parámetro de configuración en la BBDD.
      *
      * @param string $param con el parámetro a guardar
-     * @param string $value con el calor a guardar
+     * @param string $value con el valor a guardar
      * @param bool   $email enviar email?
      * @return bool
      */
@@ -431,7 +431,10 @@ class Config
             return false;
         }
 
-        $isValid = (self::getConfigDbValue('tempmaster_passhash') == sha1($pass));
+        Crypt::checkHashPass($pass, self::getConfigDbValue('tempmaster_passhash'));
+
+//        $isValid = (self::getConfigDbValue('tempmaster_passhash') == sha1($pass));
+        $isValid = Crypt::checkHashPass($pass, self::getConfigDbValue('tempmaster_passhash'));
 
         if (!$isValid) {
             self::setConfigDbValue('tempmaster_attempts', $attempts + 1, false);

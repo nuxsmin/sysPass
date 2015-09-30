@@ -21,7 +21,7 @@
             <tr>
                 <td class="descField"><?php echo _('Tema Visual'); ?></td>
                 <td class="valField">
-                    <select name="sitetheme" id="sel-sitetheme" size="1" class="sel-chosen-ns">
+                    <select name="sitetheme" id="sel-sitetheme" size="1" class="sel-chosen-ns" <?php echo $isDisabled; ?>>
                         <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
                             <option
                                 value='<?php echo $themeDir; ?>' <?php echo ($currentTheme == $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>

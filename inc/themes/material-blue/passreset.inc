@@ -4,8 +4,7 @@
         <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
-    <form id="frmPassReset" action="" method="post"
-          onsubmit="sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
+    <form id="frmPassReset" action="" method="post">
         <fieldset id="resetdata">
             <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
             <?php if (!$passReset): ?>
@@ -29,6 +28,12 @@
                            value="<?php echo SP\Util::init_var('pass'); ?>" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="pass"><?php echo _('Clave'); ?></label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="passR" name="passR" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
+                           value="<?php echo SP\Util::init_var('passR'); ?>" maxlength="255" autocomplete="off">
+                    <label class="mdl-textfield__label"
+                           for="pass"><?php echo _('Clave (repetir)'); ?></label>
                 </div>
                 <input type="hidden" name="time" value="<?php echo $time; ?>">
                 <input type="hidden" name="hash" value="<?php echo $hash; ?>">
@@ -62,6 +67,13 @@
     $(function(){
         $('#btnBack').click(function(){
             window.history.back();
-        })
+        });
+
+        $('#frmPassReset').submit(function(){
+            sysPassUtil.Common.encryptFormValue('#pass');
+            sysPassUtil.Common.encryptFormValue('#passR');
+
+            sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php');
+        });
     })
 </script>

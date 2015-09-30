@@ -77,7 +77,6 @@ class Util
      */
     public static function generate_random_bytes($length = 30)
     {
-
         // Try to use openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
             $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length, $strong));
@@ -200,7 +199,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.2-rc1';
+        return '1.2-rc2';
     }
 
     /**
@@ -317,7 +316,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '01';
+        $build = '02';
         $version = array(1, 2, 0);
 
         if ($retBuild) {

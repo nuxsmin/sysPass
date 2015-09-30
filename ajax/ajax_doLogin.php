@@ -39,25 +39,18 @@ if (!SP\Request::analyze('login', false)) {
 }
 
 $userLogin = SP\Request::analyze('user');
-$userPass = SP\Request::analyze('pass', '', false, false, false);
-$masterPass = SP\Request::analyze('mpass');
+$userPass = SP\Request::analyzeEncrypted('pass');
+$masterPass = SP\Request::analyzeEncrypted('mpass');
 
 if (!$userLogin || !$userPass) {
     SP\Common::printJSON(_('Usuario/Clave no introducidos'));
 }
 
-try {
-    $CryptPKI = new \SP\CryptPKI();
-    $clearUserPass = $CryptPKI->decryptRSA(base64_decode($userPass));
-} catch (Exception $e) {
-    SP\Common::printJSON(_('Error en clave RSA'));
-}
-
 $User = new SP\User();
 $User->setUserLogin($userLogin);
-$User->setUserPass($clearUserPass);
+$User->setUserPass($userPass);
 
-if ($resLdap = SP\Auth::authUserLDAP($userLogin, $clearUserPass)) {
+if ($resLdap = SP\Auth::authUserLDAP($userLogin, $userPass)) {
     $User->setUserName(SP\Auth::$userName);
     $User->setUserEmail(SP\Auth::$userEmail);
 }
@@ -113,7 +106,7 @@ if ($resLdap === true) {
     $Log->addDescription('(MySQL)');
 
     // Autentificamos con la BBDD
-    if (!SP\Auth::authUserMySQL($userLogin, $clearUserPass)) {
+    if (!SP\Auth::authUserMySQL($userLogin, $userPass)) {
         $Log->addDescription(_('Login incorrecto'));
         $Log->addDescription(_('Usuario') . ": " . $userLogin);
         $Log->writeLog();
@@ -145,13 +138,11 @@ if (!$masterPass
 ) {
     SP\Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
-    $clearMasterPass = $CryptPKI->decryptRSA(base64_decode($masterPass));
-
-    if (SP\Config::checkTempMasterPass($clearMasterPass)) {
-        $clearMasterPass = SP\Config::getTempMasterPass($clearMasterPass);
+    if (SP\Config::checkTempMasterPass($masterPass)) {
+        $masterPass = SP\Config::getTempMasterPass($masterPass);
     }
 
-    if (!$User->updateUserMPass($clearMasterPass)) {
+    if (!$User->updateUserMPass($masterPass)) {
         $Log->addDescription(_('Clave maestra incorrecta'));
         $Log->writeLog();
 

@@ -1,3 +1,9 @@
+=== ** v1.2.0.0-rc2 ===
+
+* [ADD] Switched to BCRYPT for hashing passwords and key derivation. WARNING: Master password should be reentered by users (you can use a temporary password)
+* [MOD] Some tweaks on forms passwords decryption
+* [FIX] Fixed issue when blank custom fields are retrieved for an item.
+
 === ** v1.2.0.0-rc1 ===
 
 * [ADD] Security improvements preventing common threats (SQL Injection, XSS, CSRF)

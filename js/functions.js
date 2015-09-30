@@ -420,8 +420,10 @@ sysPass.Util.Common = function () {
                     location.href = description;
                 } else if (status === 3 || status === 4) {
                     resMsg("error", description);
+                    $('#user').val('').focus();
+                    $('#pass').val('');
                     $("#mpass").prop('disabled', false);
-                    $('#smpass').show().focus();
+                    $('#smpass').val('').show();
                 } else if (status === 5) {
                     resMsg("warn", description, '', "location.href = 'index.php';");
                 } else {
@@ -538,6 +540,10 @@ sysPass.Util.Common = function () {
 
         switch (action) {
             case "config":
+                encryptFormValue('#proxy_pass');
+                encryptFormValue('#ldap_bindpass');
+                encryptFormValue('#mail_pass');
+
                 encryptFormValue('#curMasterPwd');
                 encryptFormValue('#newMasterPwd');
                 encryptFormValue('#newMasterPwdR');
@@ -552,6 +558,7 @@ sysPass.Util.Common = function () {
                 break;
             case "import":
                 encryptFormValue('#importPwd');
+                encryptFormValue('#dbpass');
 
                 url = '/ajax/ajax_migrate.php';
                 break;
@@ -1129,25 +1136,10 @@ sysPass.Util.Common = function () {
         var input = $(inputId);
         var curValue = input.val();
 
-        if (validateBase64(curValue)){
-            return;
-        }
-
         if (curValue !== '') {
             var passEncrypted = encrypt.encrypt(curValue);
             input.val(passEncrypted);
         }
-    };
-
-    /**
-     * Comprobar si una cadena está en Base64
-     * @param string
-     * @returns {boolean}
-     */
-    var validateBase64 = function (string) {
-        // Expresión regular para comprobar si una cadena está codificada en base64
-        var base64Matcher = new RegExp("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
-        return base64Matcher.test(string);
     };
 
     return {

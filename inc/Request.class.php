@@ -25,7 +25,6 @@
 
 namespace SP;
 
-
 /**
  * Clase Request para la gestión de peticiones HTTP
  *
@@ -111,5 +110,26 @@ class Request
             Init::initError(_('No es posible acceder directamente a este archivo'));
             exit();
         }
+    }
+
+    /**
+     * Analizar un valor encriptado y devolverlo desencriptado
+     *
+     * @param $param
+     * @return string
+     */
+    public static function analyzeEncrypted($param)
+    {
+        $encryptedData = self::analyze($param, '', false, false, false);
+
+        if ($encryptedData === ''){
+            return '';
+        }
+
+        // Desencriptar con la clave RSA
+        $CryptPKI = new CryptPKI();
+        $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
+
+        return $clearData;
     }
 }
