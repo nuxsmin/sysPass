@@ -158,7 +158,7 @@ class Upgrade
     public static function needDBUpgrade($version)
     {
         $upgrades = array_filter(self::$_dbUpgrade, function ($uVersions) use ($version) {
-            return ($uVersions >= $version);
+            return ($uVersions > $version);
         });
 
         return (count($upgrades) > 0);
