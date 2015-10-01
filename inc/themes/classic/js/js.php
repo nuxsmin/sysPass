@@ -23,6 +23,8 @@
  *
  */
 
+use SP\Themes;
+
 $jsFilesTheme = array(
-    array('href' => \SP\Init::$THEMEPATH . '/js/functions.js', 'min' => true)
+    array('href' => Themes::$themePath . '/js/functions.js', 'min' => true)
 );

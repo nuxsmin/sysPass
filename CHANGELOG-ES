@@ -1,3 +1,8 @@
+=== ** v1.2.0.0-rc3 ===
+
+* [ADD] Nuevas preferencias de usuario disponibles
+* [MOD] Las fuentes CSS son ahora almacenadas localmente para el tema Material Blue
+
 === ** v1.2.0.0-rc2 ===
 
 * [ADD] Cambiado a BCRYPT para generar el hash de las claves y derivaciones. AVISO: La clave maestra debe de ser introducida por los usuarios (es posible usar una clave temporal)

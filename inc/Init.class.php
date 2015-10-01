@@ -57,29 +57,9 @@ class Init
     public static $WEBURI = '';
 
     /**
-     * @var string Language used/detected
-     */
-    public static $LANG = '';
-
-    /**
      * @var bool True if sysPass has been updated. Only for notices.
      */
     public static $UPDATED = false;
-
-    /**
-     * @var string
-     */
-    public static $THEMEURI = '';
-
-    /**
-     * @var string
-     */
-    public static $THEMEPATH = '';
-
-    /**
-     * @var string
-     */
-    public static $THEME = '';
 
     /**
      * @var string
@@ -175,10 +155,10 @@ class Init
         self::setPaths();
 
         // Cargar el lenguaje
-        self::selectLang();
+        Language::setLanguage();
 
         // Establecer el tema de sysPass
-        self::selectTheme();
+        Themes::setTheme();
 
         // Comprobar si es necesario inicialización
         if (self::checkInitSourceInclude()) {
@@ -226,7 +206,7 @@ class Init
         }
 
         // Manejar la redirección para usuarios logeados
-        if (isset($_REQUEST['redirect_url']) && self::isLoggedIn()) {
+        if (Request::analyze('redirect_url', '', true) && self::isLoggedIn()) {
             $location = 'index.php';
 
             // Denegar la regirección si la URL contiene una @
@@ -349,48 +329,6 @@ class Init
 
         $protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
         self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
-    }
-
-    /**
-     * Establece el lenguaje de la aplicación.
-     * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
-     */
-    private static function selectLang()
-    {
-        $browserLang = str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
-        $configLang = Config::getValue('sitelang');
-        $localesDir = self::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'locales';
-
-        // Establecer a en_US si no existe la traducción o no es español
-        if (!file_exists($localesDir . DIRECTORY_SEPARATOR . $browserLang)
-            && !preg_match('/^es_.*/i', $browserLang)
-            && !$configLang
-        ) {
-            self::$LANG = 'en_US';
-        } else {
-            self::$LANG = ($configLang) ? $configLang : $browserLang;
-        }
-
-        self::$LANG = self::$LANG . ".utf8";
-
-        putenv("LANG=" . self::$LANG);
-        setlocale(LC_MESSAGES, self::$LANG);
-        setlocale(LC_ALL, self::$LANG);
-        bindtextdomain("messages", $localesDir);
-        textdomain("messages");
-        bind_textdomain_codeset("messages", 'UTF-8');
-    }
-
-    /**
-     * Establecer el tema visual de sysPass desde la configuración
-     */
-    private static function selectTheme()
-    {
-        self::$THEME = Config::getValue('sitetheme', 'material-blue');
-        self::$THEMEURI = self::$WEBURI . '/inc/themes/' . self::$THEME;
-        self::$THEMEPATH = DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . self::$THEME;
-
-        Session::setTheme(self::$THEME);
     }
 
     /**

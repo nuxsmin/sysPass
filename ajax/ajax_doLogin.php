@@ -176,16 +176,19 @@ if ($User->getUserMPass()) {
     SP\Common::printJSON(_('Error interno'));
 }
 
-$userPrefs = new \SP\UserPreferences();
-$prefs = $userPrefs->getPreferences($User->getUserId());
+$UserPrefs = \SP\UserPreferences::getPreferences($User->getUserId());
 
-if ($prefs->isUse2Fa()) {
+if ($UserPrefs->isUse2Fa()) {
     SP\Session::set2FApassed(false);
     $url = SP\Init::$WEBURI . '/index.php?a=2fa&i=' . $User->getUserId() . '&t=' . time() . '&f=1';
     SP\Common::printJSON($url, 0);
 } else {
     SP\Session::set2FApassed(true);
 }
+
+SP\Language::setLanguage(true);
+SP\Themes::setTheme(true);
+SP\Session::setUserPreferences($UserPrefs);
 
 $params = array();
 

@@ -84,7 +84,9 @@ class AccountSearch
      */
     function __construct()
     {
-        $this->setLimitCount(Config::getValue('account_count'));
+        $userResultsPerPage = Session::getUserPreferences()->getResultsPerPage();
+
+        $this->setLimitCount(($userResultsPerPage > 0) ? $userResultsPerPage : Config::getValue('account_count'));
     }
 
     /**

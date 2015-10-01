@@ -27,7 +27,9 @@ define('MODEL_PATH', __DIR__);
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
 define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'ext');
-define('DEBUG', false);
+define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
+
+define('DEBUG', true);
 
 require MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
 

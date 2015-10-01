@@ -25,6 +25,7 @@
 
 namespace SP\Controller;
 
+use SP\Session;
 use SP\UserUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -125,7 +126,6 @@ class SearchC extends Controller implements ActionsInterface
      */
     private function processSearchResults(&$results)
     {
-
         // Variables para la barra de navegación
         $this->view->assign('firstPage', ceil(($this->view->limitStart + 1) / $this->view->limitCount));
         $this->view->assign('lastPage', ceil(\SP\AccountSearch::$queryNumRows / $this->view->limitCount));
@@ -141,8 +141,10 @@ class SearchC extends Controller implements ActionsInterface
             'next' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart + $this->view->limitCount) . ',1)',
         ));
 
+        $accountLink = Session::getUserPreferences()->isAccountLink();
+
         // Variables de configuración
-        $this->view->assign('accountLink', \SP\Config::getValue('account_link', 0));
+        $this->view->assign('accountLink', (is_null($accountLink) ? \SP\Config::getValue('account_link', 0) : $accountLink));
         $this->view->assign('requestEnabled', \SP\Util::mailrequestIsEnabled());
         $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
         $maxTextLength = (\SP\Util::resultsCardsIsEnabled()) ? 40 : 60;

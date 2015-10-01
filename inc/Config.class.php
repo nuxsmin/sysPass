@@ -314,7 +314,7 @@ class Config
         self::setValue('ldap_userattr', '');
         self::setValue('mail_server', '');
         self::setValue('mail_from', '');
-        self::setValue('site_lang', str_replace('.utf8', '', Init::$LANG));
+        self::setValue('site_lang', str_replace('.utf8', '', Language::$globalLang));
         self::setValue('session_timeout', '300');
         self::setValue('account_link', 1);
         self::setValue('account_count', 12);

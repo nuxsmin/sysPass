@@ -6,7 +6,7 @@ In order to update from 1.1 you need to follow the steps at http://wiki.syspass.
 
 ----------------
 
-### sysPass - Sysadmin Password Manager
+### sysPass - Systems Password Manager
 
 ----------------
 

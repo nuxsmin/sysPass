@@ -1055,13 +1055,6 @@ a:hover, a:active, a:focus {
     font-size: 18px;
     color: white;
     background-color: rgb(96, 125, 139);
-    /*background-color: #536dfe;*/
-    /*background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #536dfe), color-stop(90%, #536dfe));*/
-    /*background-image: -webkit-linear-gradient(#536dfe 20%, #536dfe 90%);*/
-    /*background-image: -moz-linear-gradient(#536dfe 20%, #536dfe 90%);*/
-    /*background-image: -o-linear-gradient(#536dfe 20%, #536dfe 90%);*/
-    /*background-image: linear-gradient(#536dfe 20%, #536dfe 90%);*/
-    /*background: #536dfe url("../inc/themes/material-blue/css/images/ui-bg_highlight-hard_100_536DFE_1x100.png") repeat-x scroll 50% 50%;*/
     margin: 0 0 20px 0;
     padding: .5em 0;
     line-height: 1em;
