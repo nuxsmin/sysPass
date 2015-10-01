@@ -38,13 +38,32 @@ class UserPreferences
      * @var int
      */
     private $_id = 0;
-
     /**
      * Usar autentificación en 2 pasos
      *
      * @var bool
      */
     private $_use2Fa = false;
+    /**
+     * Lenguaje del usuario
+     *
+     * @var string
+     */
+    private $_lang = '';
+    /**
+     * Tema del usuario
+     *
+     * @var string
+     */
+    private $_theme = '';
+    /**
+     * @var int
+     */
+    private $_resultsPerPage = 0;
+    /**
+     * @var bool
+     */
+    private $_accountLink = null;
 
     /**
      * Obtener las preferencas de un usuario
@@ -73,6 +92,70 @@ class UserPreferences
         }
 
         return $preferences;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResultsPerPage()
+    {
+        return $this->_resultsPerPage;
+    }
+
+    /**
+     * @param int $resultsPerPage
+     */
+    public function setResultsPerPage($resultsPerPage)
+    {
+        $this->_resultsPerPage = $resultsPerPage;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAccountLink()
+    {
+        return $this->_accountLink;
+    }
+
+    /**
+     * @param boolean $accountLink
+     */
+    public function setAccountLink($accountLink)
+    {
+        $this->_accountLink = $accountLink;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->_theme;
+    }
+
+    /**
+     * @param string $theme
+     */
+    public function setTheme($theme)
+    {
+        $this->_theme = $theme;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLang()
+    {
+        return $this->_lang;
+    }
+
+    /**
+     * @param string $lang
+     */
+    public function setLang($lang)
+    {
+        $this->_lang = $lang;
     }
 
     /**

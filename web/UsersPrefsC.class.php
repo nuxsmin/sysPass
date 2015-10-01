@@ -26,7 +26,9 @@
 namespace SP\Controller;
 
 use SP\Auth\Auth2FA;
+use SP\Language;
 use SP\Session;
+use SP\Themes;
 use SP\UserPreferences;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -38,7 +40,19 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class UsersPrefsC extends Controller implements ActionsInterface
 {
+    /**
+     * @var int
+     */
     private $_tabIndex = 0;
+    /**
+     * @var UserPreferences
+     */
+    private $_userPrefs;
+    /**
+     * @var int
+     */
+    private $_userId;
+
 
     /**
      * Constructor
@@ -49,8 +63,11 @@ class UsersPrefsC extends Controller implements ActionsInterface
     {
         parent::__construct($template);
 
+
         $this->view->assign('tabs', array());
         $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->_userId = Session::getUserId();
+        $this->_userPrefs = UserPreferences::getPreferences($this->_userId);
     }
 
     /**
@@ -60,30 +77,43 @@ class UsersPrefsC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PREFERENCES_SECURITY);
 
-//        if (!$this->checkAccess()) {
-//            $this->showError(self::ERR_PAGE_NO_PERMISSION);
-//            return;
-//        }
-
         $this->view->addTemplate('security');
 
-        $userId = Session::getUserId();
 
-        $userPrefs = UserPreferences::getPreferences($userId);
+        $twoFa = new Auth2FA($this->_userId, Session::getUserLogin());
 
-        $twoFa = new Auth2FA($userId, Session::getUserLogin());
-
-        $this->view->assign('userId', $userId);
-
-        if (!$userPrefs->isUse2Fa()) {
+        if (!$this->_userPrefs->isUse2Fa()) {
             $this->view->assign('qrCode', $twoFa->getUserQRCode());
         }
 
-        $this->view->assign('chk2FAEnabled', $userPrefs->isUse2Fa());
+        $this->view->assign('userId', $this->_userId);
+        $this->view->assign('chk2FAEnabled', $this->_userPrefs->isUse2Fa());
 
         $this->view->append('tabs', array('title' => _('Seguridad')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'security');
         $this->view->assign('actionId', $this->getAction(), 'security');
+    }
+
+    /**
+     * Obtener la pestaña de preferencias
+     */
+    public function getPreferencesTab()
+    {
+        $this->setAction(self::ACTION_USR_PREFERENCES_GENERAL);
+
+        $this->view->addTemplate('preferences');
+
+        $this->view->assign('userId', $this->_userId);
+        $this->view->assign('langsAvailable',Language::getAvailableLanguages());
+        $this->view->assign('currentLang', $this->_userPrefs->getLang());
+        $this->view->assign('themesAvailable', Themes::getThemesAvailable());
+        $this->view->assign('currentTheme', ($this->_userPrefs->getTheme()) ? $this->_userPrefs->getTheme() : \SP\Config::getValue('sitetheme'));
+        $this->view->assign('chkAccountLink',  ($this->_userPrefs->isAccountLink()) ? 'checked="checked"' : '');
+        $this->view->assign('resultsPerPage', ($this->_userPrefs->getResultsPerPage()) ? $this->_userPrefs->getResultsPerPage() : \SP\Config::getValue('account_count'));
+
+        $this->view->append('tabs', array('title' => _('Preferencias')));
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'preferences');
+        $this->view->assign('actionId', $this->getAction(), 'preferences');
     }
 
     /**

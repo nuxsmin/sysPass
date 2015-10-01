@@ -562,6 +562,9 @@ sysPass.Util.Common = function () {
 
                 url = '/ajax/ajax_migrate.php';
                 break;
+            case "preferences":
+                url = '/ajax/ajax_userPrefsSave.php';
+                break;
             default:
                 return;
         }

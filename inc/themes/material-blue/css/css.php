@@ -23,13 +23,14 @@
  *
  */
 
+use SP\Themes;
+
 $cssFilesTheme = array(
-//    array('href' => 'https://fonts.googleapis.com/icon?family=Material+Icons', 'min' => false),
-    array('href' => 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700', 'min' => false),
-    array('href' => \SP\Init::$THEMEPATH . '/css/material.min.css', 'min' => false),
-    array('href' => \SP\Init::$THEMEPATH . '/css/material-custom.css', 'min' => true),
-    array('href' => \SP\Init::$THEMEPATH . '/css/jquery-ui.theme.css', 'min' => true),
-    array('href' => \SP\Init::$THEMEPATH . '/css/styles.css', 'min' => true),
-    array('href' => \SP\Init::$THEMEPATH . '/css/search-grid.css', 'min' => true),
-    array('href' => \SP\Init::$THEMEPATH . '/css/alertify.custom.css', 'min' => true)
+    array('href' => Themes::$themePath . '/css/fonts.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/material.min.css', 'min' => false),
+    array('href' => Themes::$themePath . '/css/material-custom.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/jquery-ui.theme.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/styles.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/search-grid.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/alertify.custom.css', 'min' => true)
 );

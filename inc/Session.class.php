@@ -597,4 +597,44 @@ class Session
     {
         self::setSessionKey('pubkey', $key);
     }
+
+    /**
+     * Establecer el lenguaje de la sesión
+     *
+     * @param $locale
+     */
+    public static function setLocale($locale)
+    {
+        self::setSessionKey('locale', $locale);
+    }
+
+    /**
+     * Devuelve el lenguaje de la sesión
+     *
+     * @return string
+     */
+    public static function getLocale()
+    {
+        return self::getSessionKey('locale');
+    }
+
+    /**
+     * Obtiene el objeto de preferencias de usuario de la sesión.
+     *
+     * @return UserPreferences
+     */
+    public static function getUserPreferences()
+    {
+        return self::getSessionKey('usrpreferences');
+    }
+
+    /**
+     * Establece el objeto de preferencias de usuario en la sesión.
+     *
+     * @param \SP\UserPreferences $preferences
+     */
+    public static function setUserPreferences(\SP\UserPreferences $preferences)
+    {
+        self::setSessionKey('usrpreferences', $preferences);
+    }
 }

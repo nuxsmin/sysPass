@@ -50,11 +50,37 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 // Acción al cerrar la vista
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
-    if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() == 'demo') {
-        SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() === 'demo') {
+    SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+}
+
+if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
+    $userLang = SP\Request::analyze('userlang');
+    $userTheme = SP\Request::analyze('usertheme', 'material-blue');
+    $resultsPerPage = SP\Request::analyze('resultsperpage', 12);
+    $accountLink = SP\Request::analyze('account_link', false, false, true);
+
+    // No se instancia la clase ya que es necesario guardar los atributos ya guardados
+    $UserPrefs = \SP\UserPreferences::getPreferences($itemId);
+    $UserPrefs->setId($itemId);
+    $UserPrefs->setLang($userLang);
+    $UserPrefs->setTheme($userTheme);
+    $UserPrefs->setResultsPerPage($resultsPerPage);
+    $UserPrefs->setAccountLink($accountLink);
+
+    if (!$UserPrefs->updatePreferences()) {
+        SP\Common::printJSON(_('Error al actualizar preferencias'));
     }
 
+    // Forzar la detección del lenguaje tras actualizar
+    SP\Language::setLanguage(true);
+    SP\Themes::setTheme(true);
+    // Actualizar las preferencias en la sesión y recargar la página
+    SP\Session::setUserPreferences($UserPrefs);
+    SP\Util::reload();
+
+    SP\Common::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+} else if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
     // Variables POST del formulario
     $twoFaEnabled = SP\Request::analyze('security_2faenabled', 0, false, 1);
     $pin = SP\Request::analyze('security_pin', 0);
@@ -66,11 +92,12 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURIT
         SP\Common::printJSON(_('Código incorrecto'));
     }
 
-    $preferences = new \SP\UserPreferences();
-    $preferences->setId($itemId);
-    $preferences->setUse2Fa(\SP\Util::boolval($twoFaEnabled));
+    // No se instancia la clase ya que es necesario guardar los atributos ya guardados
+    $UserPrefs = \SP\UserPreferences::getPreferences($itemId);
+    $UserPrefs->setId($itemId);
+    $UserPrefs->setUse2Fa(\SP\Util::boolval($twoFaEnabled));
 
-    if (!$preferences->updatePreferences()) {
+    if (!$UserPrefs->updatePreferences()) {
         SP\Common::printJSON(_('Error al actualizar preferencias'));
     }
 

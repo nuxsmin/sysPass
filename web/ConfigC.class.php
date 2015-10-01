@@ -26,7 +26,9 @@
 namespace SP\Controller;
 
 use SP\Config;
+use SP\Language;
 use SP\Session;
+use SP\Themes;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -67,34 +69,11 @@ class ConfigC extends Controller implements ActionsInterface
             return;
         }
 
-        $themesAvailable = array();
-
-        $dirThemes = dir(VIEW_PATH);
-
-        while (false !== ($theme = $dirThemes->read())) {
-            if($theme != '.' && $theme != '..') {
-                include VIEW_PATH . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'index.php';
-
-                $themesAvailable[$theme] = $themeInfo['name'];
-            }
-        }
-
-        $dirThemes->close();
-
         $this->view->addTemplate('config');
 
-        $this->view->assign('langsAvailable',
-            array(
-                'Español' => 'es_ES',
-                'English' => 'en_US',
-                'Deutsch' => 'de_DE',
-                'Magyar' => 'hu_HU',
-                'Français' => 'fr_FR'
-            )
-        );
-
+        $this->view->assign('langsAvailable',Language::getAvailableLanguages());
         $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
-        $this->view->assign('themesAvailable', $themesAvailable);
+        $this->view->assign('themesAvailable', Themes::getThemesAvailable());
         $this->view->assign('currentTheme', \SP\Config::getValue('sitetheme'));
         $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkDebug', (\SP\Config::getValue('debug')) ? 'checked="checked"' : '');

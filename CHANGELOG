@@ -1,3 +1,8 @@
+=== ** v1.2.0.0-rc3 ===
+
+* [ADD] New user preferences available
+* [MOD] CSS fonts are now stored locally for Material Blue theme
+
 === ** v1.2.0.0-rc2 ===
 
 * [ADD] Switched to BCRYPT for hashing passwords and key derivation. WARNING: Master password should be reentered by users (you can use a temporary password)

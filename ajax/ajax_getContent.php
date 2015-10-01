@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\Themes;
 
 define('APP_ROOT', '..');
 
@@ -54,7 +55,7 @@ $tpl->assign('userId', SP\Session::getUserId());
 $tpl->assign('userGroupId', SP\Session::getUserGroupId());
 $tpl->assign('userIsAdminApp', SP\Session::getUserIsAdminApp());
 $tpl->assign('userIsAdminAcc', SP\Session::getUserIsAdminAcc());
-$tpl->assign('themeUri', \SP\Init::$THEMEURI);
+$tpl->assign('themeUri', Themes::$themeUri);
 
 // Control de ruta de acciones
 if ($actionId != \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH) {
@@ -160,10 +161,12 @@ switch ($actionId) {
         $controller->getEventlog();
         break;
     case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES:
+    case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL:
     case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
         $tpl->addTemplate('tabs-start');
 
         $controller = new \SP\Controller\UsersPrefsC($tpl);
+        $controller->getPreferencesTab();
         $controller->getSecurityTab();
 
         $tpl->addTemplate('tabs-end');

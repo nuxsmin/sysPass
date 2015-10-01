@@ -23,11 +23,13 @@
  *
  */
 
+use SP\Themes;
+
 $cssFilesTheme = array(
-    array('href' => \SP\Init::$THEMEPATH . '/css/jquery-ui.theme.min.css', 'min' => true),
-    array('href' => \SP\Init::$THEMEPATH . '/css/styles.css', 'min' => true)
+    array('href' => Themes::$themePath . '/css/jquery-ui.theme.min.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/styles.css', 'min' => true)
 );
 
 if (!SP\Util::resultsCardsIsEnabled()) {
-    array_push($cssFilesTheme, array('href' => \SP\Init::$THEMEPATH . '/css/search-grid.css', 'min' => true));
+    array_push($cssFilesTheme, array('href' => Themes::$themePath . '/css/search-grid.css', 'min' => true));
 }
