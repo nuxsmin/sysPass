@@ -92,7 +92,7 @@ class Themes
 
             $theme = ($userTheme) ? $userTheme : $globalTheme;
 
-            Session::setLocale($theme);
+            Session::setTheme($theme);
         }
 
         self::setThemePaths($theme);

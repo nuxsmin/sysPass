@@ -50,10 +50,6 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 // Acción al cerrar la vista
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() === 'demo') {
-    SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
-}
-
 if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $userLang = SP\Request::analyze('userlang');
     $userTheme = SP\Request::analyze('usertheme', 'material-blue');
@@ -81,6 +77,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
 
     SP\Common::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
+    if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() === 'demo') {
+        SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+    }
+
     // Variables POST del formulario
     $twoFaEnabled = SP\Request::analyze('security_2faenabled', 0, false, 1);
     $pin = SP\Request::analyze('security_pin', 0);
