@@ -383,8 +383,7 @@
 
         <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
         <button type="button" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" class="button-action clip-pass-button"
-            onmousedown="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
-            data-clipboard-target="clip-pass-text">
+            data-account-id="<?php echo $accountId; ?>">
             <img src="<?php \SP\Init::$WEBURI; ?>imgs/clipboard.png" alt="save" />
         </button>
         <?php endif; ?>
@@ -456,28 +455,4 @@
 
 <?php if ($showViewPass): ?>
     <div id="clip-pass-text" style="visibility: hidden"></div>
-
-    <script>
-        $(function(){
-            sysPassUtil.Common.passToClip = 0;
-
-            function clipboard() {
-                var client = new ZeroClipboard($('.clip-pass-button'), {
-                    swfPath: "js/ZeroClipboard.swf",
-                    debug: false,
-                    title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
-                });
-
-                client.on("aftercopy", function (e) {
-                    sysPassUtil.Common.resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-                });
-
-                client.on("error", function (e) {
-                    ZeroClipboard.destroy();
-                });
-            }
-
-            clipboard();
-        });
-    </script>
 <?php endif; ?>

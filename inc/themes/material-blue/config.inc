@@ -8,7 +8,18 @@
 
         <table id="tblSite" class="data tblConfig round">
             <tr>
-                <td class="descField"><?php echo _('Idioma'); ?></td>
+                <td class="descField">
+                    <?php echo _('Idioma'); ?>
+                    <div id="help-sitelang" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-sitelang">
+                        <p>
+                            <?php echo _('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
+                        </p>
+                        <p>
+                            <?php echo _('Para mejorar/añadir las traducciones, puede colaborar en http:://translate.syspass.org'); ?>
+                        </p>
+                    </div>
+                </td>
                 <td class="valField">
                     <select name="sitelang" id="sel-sitelang" size="1" class="sel-chosen-ns">
                         <?php foreach ($langsAvailable as $langName => $langValue): ?>
@@ -19,7 +30,15 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Tema Visual'); ?></td>
+                <td class="descField">
+                    <?php echo _('Tema Visual'); ?>
+                    <div id="help-sitetheme" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-sitetheme">
+                        <p>
+                            <?php echo _('Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias.'); ?>
+                        </p>
+                    </div>
+                </td>
                 <td class="valField">
                     <select name="sitetheme" id="sel-sitetheme" size="1" class="sel-chosen-ns" <?php echo $isDisabled; ?>>
                         <?php foreach ($themesAvailable as $themeDir => $themeName): ?>

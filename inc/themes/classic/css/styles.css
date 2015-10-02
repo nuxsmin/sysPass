@@ -1606,6 +1606,10 @@ footer img {
     height: 24px;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 /*Login Page*/
 #boxLogin {
     width: 450px;

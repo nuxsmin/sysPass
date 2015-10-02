@@ -420,7 +420,7 @@
                 <i class="material-icons">lock_open</i>
             </button>
             <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
-            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored clip-pass-button" onmousedown="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" data-clipboard-target="clip-pass-text">
+            <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored clip-pass-button" onmousedown="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" data-account-id="<?php echo $accountId; ?>">
                 <i class="material-icons">content_paste</i>
            </button>
             <?php endif; ?>
@@ -481,28 +481,4 @@
 
 <?php if ($showViewPass): ?>
     <div id="clip-pass-text" style="visibility: hidden"></div>
-
-    <script>
-        passToClip = 0;
-
-        $(function(){
-            function clipboard() {
-                var client = new ZeroClipboard($('.clip-pass-button'), {
-                    swfPath: "js/ZeroClipboard.swf",
-                    debug: false,
-                    title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
-                });
-
-                client.on("aftercopy", function (e) {
-                    sysPassUtil.Common.resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-                });
-
-                client.on("error", function (e) {
-                    ZeroClipboard.destroy();
-                });
-            }
-
-            clipboard();
-        });
-    </script>
 <?php endif; ?>

@@ -40,6 +40,8 @@ class AccountSearch
     const SORT_LOGIN = 3;
     const SORT_URL = 4;
     const SORT_CUSTOMER = 5;
+    const SORT_DIR_ASC = 0;
+    const SORT_DIR_DESC = 1;
 
     /**
      * @var int El número de registros de la última consulta
@@ -78,6 +80,10 @@ class AccountSearch
      * @var int
      */
     private $_limitCount = 12;
+    /**
+     * @var bool
+     */
+    private $_sortViews = false;
 
     /**
      * Constructor
@@ -87,6 +93,7 @@ class AccountSearch
         $userResultsPerPage = Session::getUserPreferences()->getResultsPerPage();
 
         $this->setLimitCount(($userResultsPerPage > 0) ? $userResultsPerPage : Config::getValue('account_count'));
+        $this->setSortViews(Session::getUserPreferences()->isSortViews());
     }
 
     /**
@@ -231,27 +238,6 @@ class AccountSearch
         $arrFilterUser = array();
         $arrQueryWhere = array();
 
-        switch ($this->_sortKey) {
-            case self::SORT_NAME:
-                $orderKey = 'account_name';
-                break;
-            case self::SORT_CATEGORY:
-                $orderKey = 'category_name';
-                break;
-            case self::SORT_LOGIN:
-                $orderKey = 'account_login';
-                break;
-            case self::SORT_URL:
-                $orderKey = 'account_url';
-                break;
-            case self::SORT_CUSTOMER:
-                $orderKey = 'customer_name';
-                break;
-            default :
-                $orderKey = 'customer_name, account_name';
-                break;
-        }
-
         if ($this->_txtSearch) {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
@@ -331,9 +317,6 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
-        $orderDir = ($this->_sortOrder === 0) ? 'ASC' : 'DESC';
-        $queryOrder = 'ORDER BY ' . $orderKey . ' ' . $orderDir;
-
         if ($this->_limitCount != 99) {
             $queryLimit = 'LIMIT :limitStart,:limitCount';
 
@@ -373,7 +356,7 @@ class AccountSearch
             'LEFT JOIN accGroups ON accgroup_accountId = account_id ' .
             $queryWhere . ' ' .
             'GROUP BY account_id ' .
-            $queryOrder . ' ' .
+            $this->getOrderString() . ' ' .
             $queryLimit;
 
 //        print_r($query);
@@ -393,6 +376,8 @@ class AccountSearch
 //            var_dump($data);
             return false;
         }
+
+        error_log(print_r($query, true));
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         self::$queryNumRows = DB::$lastNumRows;
@@ -441,6 +426,22 @@ class AccountSearch
     }
 
     /**
+     * @return boolean
+     */
+    public function isSortViews()
+    {
+        return $this->_sortViews;
+    }
+
+    /**
+     * @param boolean $sortViews
+     */
+    public function setSortViews($sortViews)
+    {
+        $this->_sortViews = $sortViews;
+    }
+
+    /**
      * Obtiene el número de cuentas que un usuario puede ver.
      *
      * @return false|int con el número de registros
@@ -472,5 +473,43 @@ class AccountSearch
         }
 
         return $queryRes->numacc;
+    }
+
+    /**
+     * Devuelve la cadena de ordenación de la consulta
+     *
+     * @return string
+     */
+    private function getOrderString()
+    {
+        switch ($this->_sortKey) {
+            case self::SORT_NAME:
+                $orderKey[] = 'account_name';
+                break;
+            case self::SORT_CATEGORY:
+                $orderKey[] = 'category_name';
+                break;
+            case self::SORT_LOGIN:
+                $orderKey[] = 'account_login';
+                break;
+            case self::SORT_URL:
+                $orderKey[] = 'account_url';
+                break;
+            case self::SORT_CUSTOMER:
+                $orderKey[] = 'customer_name';
+                break;
+            default :
+                $orderKey[] = 'customer_name';
+                $orderKey[] = 'account_name';
+                break;
+        }
+
+        if ($this->isSortViews() && !$this->getSortKey()) {
+            array_unshift($orderKey, 'account_countView DESC');
+            $this->setSortOrder(self::SORT_DIR_DESC);
+        }
+
+        $orderDir = ($this->_sortOrder === self::SORT_DIR_ASC) ? 'ASC' : 'DESC';
+        return sprintf('ORDER BY %s %s', implode(',', $orderKey), $orderDir);
     }
 }

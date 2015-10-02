@@ -4,11 +4,20 @@
     <?php else: ?>
         <div id="data-search-header" class="data-header data-header-minimal">
             <ul>
-                <?php foreach($sortFields as $field): ?>
-                <li>
-                    <a id="search-sort-<?php echo $field['key']; ?>" class="round" onClick="<?php echo $field['function']; ?>"
-                       title="<?php echo $field['title']; ?>"><?php echo $field['name']; ?></a>
-                </li>
+                <?php foreach ($sortFields as $field): ?>
+                    <li data-key="<?php echo $field['key']; ?>">
+                        <a id="search-sort-<?php echo $field['key']; ?>"
+                           class="round <?php echo ($searchKey == $field['key']) ? 'filterOn' : ''; ?>"
+                           title="<?php echo $field['title']; ?>"><?php echo $field['name']; ?></a>
+                        <div
+                            class="icon material-icons sort-down cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
+                            arrow_drop_down
+                        </div>
+                        <div
+                            class="icon material-icons sort-up cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 1) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
+                            arrow_drop_up
+                        </div>
+                    </li>
                 <?php endforeach; ?>
             </ul>
         </div>
@@ -75,7 +84,7 @@
 
                             <?php if ($account['show'] && $account['numFiles'] > 0): ?>
                                 <img src="imgs/attach.png"
-                                     title="<?php echo _('Archivos adjuntos'), ': ' , $account['numFiles']; ?>"/>
+                                     title="<?php echo _('Archivos adjuntos'), ': ', $account['numFiles']; ?>"/>
                             <?php endif; ?>
 
                             <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
@@ -99,9 +108,11 @@
                             <?php if ($account['showViewPass']): ?>
                                 <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
                                      onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)"/>
-                                <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
-                                <img src="imgs/clipboard.png" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" data-account-id="<?php echo $account['id']; ?>"
-                                     class="actions-optional clip-pass-button"/>
+                                <?php if (!\SP\Util::accountPassToImageIsEnabled()): ?>
+                                    <img src="imgs/clipboard.png"
+                                         title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
+                                         data-account-id="<?php echo $account['id']; ?>"
+                                         class="actions-optional clip-pass-button"/>
                                 <?php endif; ?>
                             <?php endif ?>
 
@@ -125,7 +136,7 @@
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
                                      class="actions-optional"
-                                     OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)" />
+                                     OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                         </div>
@@ -170,15 +181,27 @@
         </div>
 
         <div id="clip-pass-text" style="visibility: hidden"></div>
-
-        <script>
-            $(function(){
-                sysPassUtil.Common.showSearchOrder();
-            });
-        </script>
     <?php endif; ?>
     <script>
-        // Actualizar el token de seguridad
-        $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
+        $(function () {
+            // Actualizar el token de seguridad
+            $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
+
+            $('#data-search-header').find('.sort-down').each(function () {
+                $(this).click(function () {
+                    var key = $(this).parent().data('key');
+                    $(this).parent().find('a').addClass('filterOn');
+                    sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 0);
+                });
+            });
+
+            $('#data-search-header').find('.sort-up').each(function () {
+                $(this).click(function () {
+                    var key = $(this).parent().data('key');
+                    $(this).parent().find('a').addClass('filterOn');
+                    sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 1);
+                });
+            });
+        })
     </script>
 </div>

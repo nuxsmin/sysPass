@@ -69,6 +69,24 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Ordernar resultados por visitas'); ?>
+                    <div id="help-sort_views" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-sort_views">
+                        <p>
+                            <?php echo _('Ordena los resultados de búsqueda por el número de visitas de las cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sort_views">
+                        <input type="checkbox" id="sort_views" class="mdl-switch__input fg-blue100"
+                               name="sort_views" <?php echo ($chkSortViews) ? 'checked' : ''; ?>/>
+                        <span class="mdl-switch__label"><?php echo _('Activar'); ?></span>
+                    </label>
+                </td>
+            </tr>
         </table>
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>

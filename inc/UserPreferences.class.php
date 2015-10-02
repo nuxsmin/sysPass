@@ -64,6 +64,10 @@ class UserPreferences
      * @var bool
      */
     private $_accountLink = null;
+    /**
+     * @var bool
+     */
+    private $_sortViews = false;
 
     /**
      * Obtener las preferencas de un usuario
@@ -92,6 +96,22 @@ class UserPreferences
         }
 
         return $preferences;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSortViews()
+    {
+        return $this->_sortViews;
+    }
+
+    /**
+     * @param boolean $sortViews
+     */
+    public function setSortViews($sortViews)
+    {
+        $this->_sortViews = $sortViews;
     }
 
     /**

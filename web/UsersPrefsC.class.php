@@ -110,6 +110,7 @@ class UsersPrefsC extends Controller implements ActionsInterface
         $this->view->assign('currentTheme', ($this->_userPrefs->getTheme()) ? $this->_userPrefs->getTheme() : \SP\Config::getValue('sitetheme'));
         $this->view->assign('chkAccountLink',  ($this->_userPrefs->isAccountLink()) ? 'checked="checked"' : '');
         $this->view->assign('resultsPerPage', ($this->_userPrefs->getResultsPerPage()) ? $this->_userPrefs->getResultsPerPage() : \SP\Config::getValue('account_count'));
+        $this->view->assign('chkSortViews', ($this->_userPrefs->isSortViews()) ? 'checked="checked"' : '');
 
         $this->view->append('tabs', array('title' => _('Preferencias')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'preferences');

@@ -183,33 +183,27 @@
         </div>
 
         <div id="clip-pass-text" style="visibility: hidden"></div>
-
-        <script>
-            passToClip = 0;
-
-            $(function () {
-                sysPassUtil.Common.showSearchOrder();
-            })
-        </script>
     <?php endif; ?>
     <script>
-        // Actualizar el token de seguridad
-        $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
+        $(function () {
+            // Actualizar el token de seguridad
+            $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
 
-        $('#data-search-header').find('.sort-down').each(function () {
-            $(this).click(function () {
-                var key = $(this).parent().data('key');
-                $(this).parent().find('a').addClass('filterOn');
-                sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 0);
+            $('#data-search-header').find('.sort-down').each(function () {
+                $(this).click(function () {
+                    var key = $(this).parent().data('key');
+                    $(this).parent().find('a').addClass('filterOn');
+                    sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 0);
+                });
             });
-        });
 
-        $('#data-search-header').find('.sort-up').each(function () {
-            $(this).click(function () {
-                var key = $(this).parent().data('key');
-                $(this).parent().find('a').addClass('filterOn');
-                sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 1);
+            $('#data-search-header').find('.sort-up').each(function () {
+                $(this).click(function () {
+                    var key = $(this).parent().data('key');
+                    $(this).parent().find('a').addClass('filterOn');
+                    sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 1);
+                });
             });
-        });
+        })
     </script>
 </div>

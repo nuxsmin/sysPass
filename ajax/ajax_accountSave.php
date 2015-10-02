@@ -69,7 +69,9 @@ if ($accountMainGroupId === 0) {
     $accountMainGroupId = SP\Session::getUserGroupId();
 }
 
-if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
+if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_COPY
+) {
     // Comprobaciones para nueva cuenta
     if (!$accountName) {
         SP\Common::printJSON(_('Es necesario un nombre de cuenta'));
@@ -111,6 +113,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW) {
 }
 
 if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
+    || $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_COPY
     || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
     if ($accountPassword != $accountPasswordR) {
@@ -129,6 +132,7 @@ $Account = new SP\Account;
 
 switch ($actionId) {
     case \SP\Controller\ActionsInterface::ACTION_ACC_NEW:
+    case \SP\Controller\ActionsInterface::ACTION_ACC_COPY:
         SP\Customer::$customerName = $newCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente

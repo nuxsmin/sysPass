@@ -38,6 +38,13 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class SearchC extends Controller implements ActionsInterface
 {
     /**
+     * Indica si el filtrado de cuentas está activo
+     *
+     * @var bool
+     */
+    private $_filterOn = false;
+
+    /**
      * Constructor
      *
      * @param $template \SP\Template con instancia de plantilla
@@ -110,6 +117,12 @@ class SearchC extends Controller implements ActionsInterface
 
         $resQuery = $search->getAccounts();
 
+        $this->_filterOn = ($this->view->searchKey > 1
+            || $this->view->searchCustomer
+            || $this->view->searchCategory
+            || $this->view->searchTxt
+            || $search->isSortViews());
+
         if (!$resQuery) {
             $this->view->assign('accounts', false);
             return;
@@ -130,7 +143,7 @@ class SearchC extends Controller implements ActionsInterface
         $this->view->assign('firstPage', ceil(($this->view->limitStart + 1) / $this->view->limitCount));
         $this->view->assign('lastPage', ceil(\SP\AccountSearch::$queryNumRows / $this->view->limitCount));
         $this->view->assign('totalRows', \SP\AccountSearch::$queryNumRows);
-        $this->view->assign('filterOn', ($this->view->searchKey > 1 || $this->view->searchCustomer || $this->view->searchCategory || $this->view->searchTxt) ? true : false);
+        $this->view->assign('filterOn', $this->_filterOn);
 
         $limitLast = ((\SP\AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? \SP\AccountSearch::$queryNumRows - $this->view->limitCount : floor(\SP\AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
 

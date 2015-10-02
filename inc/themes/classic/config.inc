@@ -7,7 +7,18 @@
     <form method="post" name="frmConfig" id="frmConfig" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
         <table id="tblSite" class="data tblConfig round">
             <tr>
-                <td class="descField"><?php echo _('Idioma'); ?></td>
+                <td class="descField">
+                    <?php echo _('Idioma'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <div class="tooltip" for="help-sitelang" style="display: none;">
+                        <p>
+                            <?php echo _('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
+                        </p>
+                        <p>
+                            <?php echo _('Para mejorar/añadir las traducciones, puede colaborar en http:://translate.syspass.org'); ?>
+                        </p>
+                    </div>
+                </td>
                 <td class="valField">
                     <select name="sitelang" id="sel-sitelang" size="1" class="sel-chosen-ns">
                         <?php foreach ($langsAvailable as $langName => $langValue): ?>
@@ -18,7 +29,15 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Tema Visual'); ?></td>
+                <td class="descField">
+                    <?php echo _('Tema Visual'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <div class="tooltip" for="help-sitetheme" style="display: none;">
+                        <p>
+                            <?php echo _('Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias.'); ?>
+                        </p>
+                    </div>
+                </td>
                 <td class="valField">
                     <select name="sitetheme" id="sel-sitetheme" size="1" class="sel-chosen-ns">
                         <?php foreach ($themesAvailable as $themeDir => $themeName): ?>

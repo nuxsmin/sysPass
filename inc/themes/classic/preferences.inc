@@ -67,6 +67,23 @@
                            value="<?php echo $resultsPerPage; ?>"/>
                 </td>
             </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('Ordernar resultados por visitas'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-sort_views" style="display:none;">
+                        <p>
+                            <?php echo _('Ordena los resultados de búsqueda por el número de visitas de las cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label for="sort_views"><?php echo ($chkSortViews) ? _('SI') : _('NO'); ?></label>
+                    <input type="checkbox" name="sort_views" id="sort_views"
+                           class="checkbox" <?php echo $chkSortViews; ?> />
+                </td>
+            </tr>
         </table>
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>

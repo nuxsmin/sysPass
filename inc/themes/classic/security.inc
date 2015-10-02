@@ -23,7 +23,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="security_2faenabled"><?php echo ($chk2FAEnabled) ? 'SI' : 'NO'; ?></label>
+                    <label for="security_2faenabled"><?php echo ($chk2FAEnabled) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="security_2faenabled" id="security_2faenabled"
                            class="checkbox" <?php echo $chk2FAEnabled; ?> />
                     <span class="alt-label"><?php echo _('Activar'); ?></span>

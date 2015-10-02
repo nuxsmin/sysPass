@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-02 03:26+0100\n"
-"PO-Revision-Date: 2015-10-02 03:26+0100\n"
+"POT-Creation-Date: 2015-10-02 12:38+0100\n"
+"PO-Revision-Date: 2015-10-02 12:39+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -362,7 +362,7 @@ msgstr "Users"
 #: ../../../../inc/CustomFieldsBase.class.php:80
 #: ../../../../inc/Customer.class.php:150
 #: ../../../../inc/themes/classic/profiles.inc:15
-#: ../../../../inc/themes/material-blue/config.inc:139
+#: ../../../../inc/themes/material-blue/config.inc:158
 #: ../../../../inc/themes/material-blue/profiles.inc:19
 msgid "Cuentas"
 msgstr "Accounts"
@@ -674,7 +674,7 @@ msgstr "Generate Temporary Password"
 #: ../../../../inc/themes/classic/userspass.inc:11
 #: ../../../../inc/themes/material-blue/account.inc:95
 #: ../../../../inc/themes/material-blue/account.inc:100
-#: ../../../../inc/themes/material-blue/config.inc:358
+#: ../../../../inc/themes/material-blue/config.inc:377
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
@@ -757,7 +757,7 @@ msgstr "Incorrect login"
 #: ../../../../inc/themes/classic/search.inc:50
 #: ../../../../inc/themes/classic/tokens.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:80
-#: ../../../../inc/themes/material-blue/config.inc:344
+#: ../../../../inc/themes/material-blue/config.inc:363
 #: ../../../../inc/themes/material-blue/editpass.inc:22
 #: ../../../../inc/themes/material-blue/eventlog.inc:24
 #: ../../../../inc/themes/material-blue/info.inc:39
@@ -1277,7 +1277,7 @@ msgstr "View History"
 #: ../../../../inc/themes/classic/account.inc:188
 #: ../../../../inc/themes/classic/profiles.inc:50
 #: ../../../../inc/themes/material-blue/account.inc:230
-#: ../../../../inc/themes/material-blue/config.inc:224
+#: ../../../../inc/themes/material-blue/config.inc:243
 #: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Archivos"
 msgstr "Files"
@@ -2935,9 +2935,9 @@ msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
 msgstr "Drop files here (max. 5) or click to select"
 
 #: ../../../../inc/themes/classic/account.inc:201
-#: ../../../../inc/themes/classic/config.inc:193
+#: ../../../../inc/themes/classic/config.inc:212
 #: ../../../../inc/themes/material-blue/account.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:272
+#: ../../../../inc/themes/material-blue/config.inc:291
 msgid "Tamaño máximo de archivo"
 msgstr "Maximum file size"
 
@@ -3046,7 +3046,7 @@ msgstr "Request Modification"
 
 #: ../../../../inc/themes/classic/account.inc:425
 #: ../../../../inc/themes/classic/categories.inc:62
-#: ../../../../inc/themes/classic/config.inc:275
+#: ../../../../inc/themes/classic/config.inc:294
 #: ../../../../inc/themes/classic/customers.inc:62
 #: ../../../../inc/themes/classic/customfields.inc:63
 #: ../../../../inc/themes/classic/editpass.inc:50
@@ -3063,7 +3063,7 @@ msgstr "Request Modification"
 #: ../../../../inc/themes/classic/wiki.inc:110
 #: ../../../../inc/themes/material-blue/account.inc:462
 #: ../../../../inc/themes/material-blue/categories.inc:72
-#: ../../../../inc/themes/material-blue/config.inc:388
+#: ../../../../inc/themes/material-blue/config.inc:407
 #: ../../../../inc/themes/material-blue/customers.inc:73
 #: ../../../../inc/themes/material-blue/customfields.inc:74
 #: ../../../../inc/themes/material-blue/editpass.inc:60
@@ -3246,56 +3246,83 @@ msgstr "Category description"
 msgid "Sitio"
 msgstr "Site"
 
-#: ../../../../inc/themes/classic/config.inc:10
+#: ../../../../inc/themes/classic/config.inc:11
 #: ../../../../inc/themes/classic/preferences.inc:12
-#: ../../../../inc/themes/material-blue/config.inc:11
+#: ../../../../inc/themes/material-blue/config.inc:12
 #: ../../../../inc/themes/material-blue/preferences.inc:12
 msgid "Idioma"
 msgstr "Language"
 
-#: ../../../../inc/themes/classic/config.inc:21
+#: ../../../../inc/themes/classic/config.inc:15
+#: ../../../../inc/themes/material-blue/config.inc:16
+msgid ""
+"Establece el idioma global de la aplicación. Es posible establecer un idioma "
+"por usuario en las preferencias."
+msgstr ""
+"Set the global app language. You can set a per user language at the user "
+"preferences."
+
+#: ../../../../inc/themes/classic/config.inc:18
+#: ../../../../inc/themes/material-blue/config.inc:19
+msgid ""
+"Para mejorar/añadir las traducciones, puede colaborar en http:://translate."
+"syspass.org"
+msgstr ""
+"To improve/add the translations, you can get involved at http:://translate."
+"syspass.org"
+
+#: ../../../../inc/themes/classic/config.inc:33
 #: ../../../../inc/themes/classic/preferences.inc:24
-#: ../../../../inc/themes/material-blue/config.inc:22
+#: ../../../../inc/themes/material-blue/config.inc:34
 #: ../../../../inc/themes/material-blue/preferences.inc:23
 msgid "Tema Visual"
 msgstr "Visual Theme"
 
-#: ../../../../inc/themes/classic/config.inc:33
-#: ../../../../inc/themes/material-blue/config.inc:34
-#: ../../../../inc/themes/material-blue/config.inc:42
+#: ../../../../inc/themes/classic/config.inc:37
+#: ../../../../inc/themes/material-blue/config.inc:38
+msgid ""
+"Establece el tema visual global de la aplicación. Es posible establecer un "
+"tema visual por usuario en las preferencias."
+msgstr ""
+"Set the global app visual theme. You can set a per user visual theme at the "
+"user preferences."
+
+#: ../../../../inc/themes/classic/config.inc:52
+#: ../../../../inc/themes/material-blue/config.inc:53
+#: ../../../../inc/themes/material-blue/config.inc:61
 msgid "Timeout de sesión (s)"
 msgstr "Session timeout (s)"
 
-#: ../../../../inc/themes/classic/config.inc:42
-#: ../../../../inc/themes/material-blue/config.inc:48
+#: ../../../../inc/themes/classic/config.inc:61
+#: ../../../../inc/themes/material-blue/config.inc:67
 msgid "Habilitar log de eventos"
 msgstr "Enable event log"
 
-#: ../../../../inc/themes/classic/config.inc:46
-#: ../../../../inc/themes/material-blue/config.inc:52
+#: ../../../../inc/themes/classic/config.inc:65
+#: ../../../../inc/themes/material-blue/config.inc:71
 msgid "Guarda las acciones realizadas en la aplicación."
 msgstr "Saves the actions done by the application."
 
-#: ../../../../inc/themes/classic/config.inc:58
-#: ../../../../inc/themes/material-blue/config.inc:66
+#: ../../../../inc/themes/classic/config.inc:77
+#: ../../../../inc/themes/material-blue/config.inc:85
 msgid "Habilitar depuración"
 msgstr "Enable debug"
 
-#: ../../../../inc/themes/classic/config.inc:62
-#: ../../../../inc/themes/material-blue/config.inc:70
+#: ../../../../inc/themes/classic/config.inc:81
+#: ../../../../inc/themes/material-blue/config.inc:89
 msgid ""
 "Muestra información relativa a la configuración de la aplicación y "
 "rendimiento."
 msgstr ""
 "Shows some information about application configuration and performance."
 
-#: ../../../../inc/themes/classic/config.inc:74
-#: ../../../../inc/themes/material-blue/config.inc:84
+#: ../../../../inc/themes/classic/config.inc:93
+#: ../../../../inc/themes/material-blue/config.inc:103
 msgid "Modo mantenimiento"
 msgstr "Maintenance mode"
 
-#: ../../../../inc/themes/classic/config.inc:78
-#: ../../../../inc/themes/material-blue/config.inc:88
+#: ../../../../inc/themes/classic/config.inc:97
+#: ../../../../inc/themes/material-blue/config.inc:107
 msgid ""
 "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
 "necesario modificar el archivo de configuración."
@@ -3303,25 +3330,25 @@ msgstr ""
 "In this mode nobody can login to the application. To disable it, you need to "
 "modify the configuration file."
 
-#: ../../../../inc/themes/classic/config.inc:90
-#: ../../../../inc/themes/material-blue/config.inc:102
+#: ../../../../inc/themes/classic/config.inc:109
+#: ../../../../inc/themes/material-blue/config.inc:121
 msgid "Comprobar actualizaciones"
 msgstr "Check for updates"
 
-#: ../../../../inc/themes/classic/config.inc:94
-#: ../../../../inc/themes/material-blue/config.inc:106
+#: ../../../../inc/themes/classic/config.inc:113
+#: ../../../../inc/themes/material-blue/config.inc:125
 msgid ""
 "Comprobar actualizaciones de la aplicación (sólo para los usuarios "
 "administradores)."
 msgstr "Check for application updates (only for administrators)."
 
-#: ../../../../inc/themes/classic/config.inc:106
-#: ../../../../inc/themes/material-blue/config.inc:120
+#: ../../../../inc/themes/classic/config.inc:125
+#: ../../../../inc/themes/material-blue/config.inc:139
 msgid "Comprobar notificaciones"
 msgstr "Check for notices"
 
-#: ../../../../inc/themes/classic/config.inc:110
-#: ../../../../inc/themes/material-blue/config.inc:124
+#: ../../../../inc/themes/classic/config.inc:129
+#: ../../../../inc/themes/material-blue/config.inc:143
 msgid ""
 "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
 "para los usuarios administradores)."
@@ -3329,39 +3356,39 @@ msgstr ""
 "Check if there are sysPass security or warning notices (only for "
 "administrators)."
 
-#: ../../../../inc/themes/classic/config.inc:122
+#: ../../../../inc/themes/classic/config.inc:141
 #: ../../../../inc/themes/classic/preferences.inc:38
-#: ../../../../inc/themes/material-blue/config.inc:145
+#: ../../../../inc/themes/material-blue/config.inc:164
 #: ../../../../inc/themes/material-blue/preferences.inc:36
 msgid "Nombre de cuenta como enlace"
 msgstr "Account name as link"
 
-#: ../../../../inc/themes/classic/config.inc:126
+#: ../../../../inc/themes/classic/config.inc:145
 #: ../../../../inc/themes/classic/preferences.inc:43
-#: ../../../../inc/themes/material-blue/config.inc:149
+#: ../../../../inc/themes/material-blue/config.inc:168
 #: ../../../../inc/themes/material-blue/preferences.inc:40
 msgid ""
 "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
 "de la cuenta."
 msgstr "Enables the account name as a link to account details."
 
-#: ../../../../inc/themes/classic/config.inc:138
-#: ../../../../inc/themes/material-blue/config.inc:230
+#: ../../../../inc/themes/classic/config.inc:157
+#: ../../../../inc/themes/material-blue/config.inc:249
 msgid "Gestión de archivos"
 msgstr "Files management"
 
-#: ../../../../inc/themes/classic/config.inc:142
-#: ../../../../inc/themes/material-blue/config.inc:234
+#: ../../../../inc/themes/classic/config.inc:161
+#: ../../../../inc/themes/material-blue/config.inc:253
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr "Enables the uploads/downloads of account files."
 
-#: ../../../../inc/themes/classic/config.inc:154
-#: ../../../../inc/themes/material-blue/config.inc:163
+#: ../../../../inc/themes/classic/config.inc:173
+#: ../../../../inc/themes/material-blue/config.inc:182
 msgid "Búsquedas globales"
 msgstr "Global searches"
 
-#: ../../../../inc/themes/classic/config.inc:158
-#: ../../../../inc/themes/material-blue/config.inc:167
+#: ../../../../inc/themes/classic/config.inc:177
+#: ../../../../inc/themes/material-blue/config.inc:186
 msgid ""
 "Permite que todos los usuarios puedan realizar búsquedas en todas las "
 "cuentas, pero no pueden ver el contenido de las que no tienen permisos."
@@ -3369,23 +3396,23 @@ msgstr ""
 "Allows to the users to do searches that includes all account, even if they "
 "don't have permissions, but they can't view the accounts details."
 
-#: ../../../../inc/themes/classic/config.inc:170
-#: ../../../../inc/themes/material-blue/config.inc:249
+#: ../../../../inc/themes/classic/config.inc:189
+#: ../../../../inc/themes/material-blue/config.inc:268
 msgid "Extensiones de archivos permitidas"
 msgstr "Allowed file extensions"
 
-#: ../../../../inc/themes/classic/config.inc:174
-#: ../../../../inc/themes/material-blue/config.inc:253
+#: ../../../../inc/themes/classic/config.inc:193
+#: ../../../../inc/themes/material-blue/config.inc:272
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr "Allowed file extensions for file uploading."
 
-#: ../../../../inc/themes/classic/config.inc:178
-#: ../../../../inc/themes/material-blue/config.inc:257
+#: ../../../../inc/themes/classic/config.inc:197
+#: ../../../../inc/themes/material-blue/config.inc:276
 msgid "Se permite un máximo de 4 caracteres."
 msgstr "Max 4 characters allowed."
 
-#: ../../../../inc/themes/classic/config.inc:182
-#: ../../../../inc/themes/material-blue/config.inc:261
+#: ../../../../inc/themes/classic/config.inc:201
+#: ../../../../inc/themes/material-blue/config.inc:280
 msgid ""
 "Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
 "configuración."
@@ -3393,61 +3420,61 @@ msgstr ""
 "Write the extension and press enter to add. You need to save the "
 "configuration."
 
-#: ../../../../inc/themes/classic/config.inc:197
-#: ../../../../inc/themes/material-blue/config.inc:276
+#: ../../../../inc/themes/classic/config.inc:216
+#: ../../../../inc/themes/material-blue/config.inc:295
 msgid "Establece el tamaño máximo para subir archivos."
 msgstr "Set the maximum file size for uploading."
 
-#: ../../../../inc/themes/classic/config.inc:201
-#: ../../../../inc/themes/material-blue/config.inc:280
+#: ../../../../inc/themes/classic/config.inc:220
+#: ../../../../inc/themes/material-blue/config.inc:299
 msgid "El máximo absuluto es de 16MB."
 msgstr "The absolute maximum is 16MB."
 
-#: ../../../../inc/themes/classic/config.inc:212
+#: ../../../../inc/themes/classic/config.inc:231
 #: ../../../../inc/themes/classic/preferences.inc:56
-#: ../../../../inc/themes/material-blue/config.inc:181
+#: ../../../../inc/themes/material-blue/config.inc:200
 #: ../../../../inc/themes/material-blue/preferences.inc:54
 msgid "Resultados por página"
 msgstr "Results per page"
 
-#: ../../../../inc/themes/classic/config.inc:216
+#: ../../../../inc/themes/classic/config.inc:235
 #: ../../../../inc/themes/classic/preferences.inc:61
-#: ../../../../inc/themes/material-blue/config.inc:185
+#: ../../../../inc/themes/material-blue/config.inc:204
 #: ../../../../inc/themes/material-blue/preferences.inc:58
 msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
 msgstr "Number of results per page to show when doing searches."
 
-#: ../../../../inc/themes/classic/config.inc:227
+#: ../../../../inc/themes/classic/config.inc:246
 msgid "Resultados en Tarjetas"
 msgstr "Results like Cards"
 
-#: ../../../../inc/themes/classic/config.inc:231
+#: ../../../../inc/themes/classic/config.inc:250
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr "Enables to show account's search results like a card format."
 
-#: ../../../../inc/themes/classic/config.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:201
+#: ../../../../inc/themes/classic/config.inc:262
+#: ../../../../inc/themes/material-blue/config.inc:220
 msgid "Imagen para mostrar clave"
 msgstr "Image to show password"
 
-#: ../../../../inc/themes/classic/config.inc:247
-#: ../../../../inc/themes/material-blue/config.inc:205
+#: ../../../../inc/themes/classic/config.inc:266
+#: ../../../../inc/themes/material-blue/config.inc:224
 msgid "Generar una imagen con el texto de la clave de la cuenta."
 msgstr "Generate an image with a text of the account password."
 
-#: ../../../../inc/themes/classic/config.inc:250
-#: ../../../../inc/themes/material-blue/config.inc:208
+#: ../../../../inc/themes/classic/config.inc:269
+#: ../../../../inc/themes/material-blue/config.inc:227
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
 "Useful for environments where copy password to clipboard is a security risk."
 
-#: ../../../../inc/themes/classic/config.inc:285
-#: ../../../../inc/themes/material-blue/config.inc:398
+#: ../../../../inc/themes/classic/config.inc:304
+#: ../../../../inc/themes/material-blue/config.inc:417
 msgid "Añadir extensión"
 msgstr "Add extension"
 
-#: ../../../../inc/themes/classic/config.inc:286
-#: ../../../../inc/themes/material-blue/config.inc:399
+#: ../../../../inc/themes/classic/config.inc:305
+#: ../../../../inc/themes/material-blue/config.inc:418
 msgid "Eliminar extensión"
 msgstr "Delete extension"
 
@@ -3896,7 +3923,7 @@ msgstr "Used Memory"
 #: ../../../../inc/themes/classic/info.inc:44
 #: ../../../../inc/themes/classic/ldap.inc:32
 #: ../../../../inc/themes/classic/mail.inc:21
-#: ../../../../inc/themes/material-blue/config.inc:316
+#: ../../../../inc/themes/material-blue/config.inc:335
 #: ../../../../inc/themes/material-blue/info.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:35
 #: ../../../../inc/themes/material-blue/ldap.inc:58
@@ -4086,7 +4113,7 @@ msgid "Habilitar notificaciones de correo"
 msgstr "Enable email notifications"
 
 #: ../../../../inc/themes/classic/mail.inc:29
-#: ../../../../inc/themes/material-blue/config.inc:330
+#: ../../../../inc/themes/material-blue/config.inc:349
 #: ../../../../inc/themes/material-blue/mail.inc:36
 #: ../../../../inc/themes/material-blue/mail.inc:43
 msgid "Puerto"
@@ -4689,36 +4716,36 @@ msgstr "Password (Repeat)"
 msgid "Realizar"
 msgstr "Perform"
 
-#: ../../../../inc/themes/material-blue/config.inc:195
+#: ../../../../inc/themes/material-blue/config.inc:214
 #: ../../../../inc/themes/material-blue/preferences.inc:68
 msgid "Número de resultados por página"
 msgstr "Results per page"
 
-#: ../../../../inc/themes/material-blue/config.inc:290
+#: ../../../../inc/themes/material-blue/config.inc:309
 msgid "Tamaño máximo de archivo en bytes"
 msgstr "Maximum file size in bytes"
 
-#: ../../../../inc/themes/material-blue/config.inc:297
+#: ../../../../inc/themes/material-blue/config.inc:316
 msgid "Proxy"
 msgstr "Proxy"
 
-#: ../../../../inc/themes/material-blue/config.inc:303
+#: ../../../../inc/themes/material-blue/config.inc:322
 msgid "Usar Proxy"
 msgstr "Use Proxy"
 
-#: ../../../../inc/themes/material-blue/config.inc:324
+#: ../../../../inc/themes/material-blue/config.inc:343
 msgid "Servidor proxy"
 msgstr "Proxy server"
 
-#: ../../../../inc/themes/material-blue/config.inc:338
+#: ../../../../inc/themes/material-blue/config.inc:357
 msgid "Puerto del servidor proxy"
 msgstr "Proxy server port"
 
-#: ../../../../inc/themes/material-blue/config.inc:352
+#: ../../../../inc/themes/material-blue/config.inc:371
 msgid "Usuario del servidor proxy"
 msgstr "Proxy server user"
 
-#: ../../../../inc/themes/material-blue/config.inc:366
+#: ../../../../inc/themes/material-blue/config.inc:385
 msgid "Clave del servidor proxy"
 msgstr "Proxy server password"
 

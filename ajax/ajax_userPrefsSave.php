@@ -55,6 +55,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     $userTheme = SP\Request::analyze('usertheme', 'material-blue');
     $resultsPerPage = SP\Request::analyze('resultsperpage', 12);
     $accountLink = SP\Request::analyze('account_link', false, false, true);
+    $sortViews = SP\Request::analyze('sort_views', false, false, true);
 
     // No se instancia la clase ya que es necesario guardar los atributos ya guardados
     $UserPrefs = \SP\UserPreferences::getPreferences($itemId);
@@ -63,6 +64,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     $UserPrefs->setTheme($userTheme);
     $UserPrefs->setResultsPerPage($resultsPerPage);
     $UserPrefs->setAccountLink($accountLink);
+    $UserPrefs->setSortViews($sortViews);
 
     if (!$UserPrefs->updatePreferences()) {
         SP\Common::printJSON(_('Error al actualizar preferencias'));
