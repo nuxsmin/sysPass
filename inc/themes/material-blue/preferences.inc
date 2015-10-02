@@ -71,7 +71,7 @@
             </tr>
             <tr>
                 <td class="descField">
-                    <?php echo _('Ordernar resultados por visitas'); ?>
+                    <?php echo _('Ordenar resultados por visitas'); ?>
                     <div id="help-sort_views" class="icon material-icons fg-blue80">help_outline</div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-sort_views">
                         <p>

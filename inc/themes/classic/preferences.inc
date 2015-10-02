@@ -70,7 +70,7 @@
 
             <tr>
                 <td class="descField">
-                    <?php echo _('Ordernar resultados por visitas'); ?>
+                    <?php echo _('Ordenar resultados por visitas'); ?>
                     <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-sort_views" style="display:none;">
                         <p>
