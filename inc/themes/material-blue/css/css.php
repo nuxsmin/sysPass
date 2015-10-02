@@ -29,7 +29,7 @@ $cssFilesTheme = array(
     array('href' => Themes::$themePath . '/css/fonts.css', 'min' => true),
     array('href' => Themes::$themePath . '/css/material.min.css', 'min' => false),
     array('href' => Themes::$themePath . '/css/material-custom.css', 'min' => true),
-    array('href' => Themes::$themePath . '/css/jquery-ui.theme.css', 'min' => true),
+    array('href' => Themes::$themePath . '/css/jquery-ui.theme.min.css', 'min' => false),
     array('href' => Themes::$themePath . '/css/styles.css', 'min' => true),
     array('href' => Themes::$themePath . '/css/search-grid.css', 'min' => true),
     array('href' => Themes::$themePath . '/css/alertify.custom.css', 'min' => true)

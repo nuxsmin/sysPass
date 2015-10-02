@@ -65,6 +65,10 @@ sysPass.Util.Common = function () {
     // Inicializar la encriptación RSA
     var encrypt = new JSEncrypt();
 
+    $(document).ready(function () {
+        initializeClipboard();
+    });
+
     //$.ajaxSetup({
     //    error: function(jqXHR, exception) {
     //        if (jqXHR.status === 0) {
@@ -109,10 +113,10 @@ sysPass.Util.Common = function () {
                 APP_ROOT = json.app_root;
                 LANG = json.lang;
                 PK = json.pk;
+
+                encrypt.setPublicKey(PK);
             }
         });
-
-        encrypt.setPublicKey(PK);
     };
 
     getEnvironment();
@@ -302,16 +306,17 @@ sysPass.Util.Common = function () {
                         var content;
                         var pass = '';
                         var clipboardUserButton =
-                            '<button id="dialog-clip-user-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                            '<button class="dialog-clip-user-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" data-clipboard-target=".dialog-user-text">' +
                             '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
                             '<span class="ui-button-text">' + LANG[33] + '</span>' +
                             '</button>';
                         var clipboardPassButton =
-                            '<button id="dialog-clip-pass-button-' + id + '" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary">' +
+                            '<button class="dialog-clip-pass-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" data-clipboard-target=".dialog-pass-text">' +
                             '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
                             '<span class="ui-button-text">' + LANG[34] + '</span>' +
                             '</button>';
                         var useImage = json.useimage;
+                        var user = '<p class="dialog-user-text">' + json.acclogin + '</p>';
 
                         if (json.status === 0) {
                             if (useImage === 0) {
@@ -321,7 +326,7 @@ sysPass.Util.Common = function () {
                                 clipboardPassButton = '';
                             }
 
-                            content = pass + '<br>' + '<div class="dialog-buttons">' + clipboardUserButton + clipboardPassButton + '</div>';
+                            content = user + pass + '<div class="dialog-buttons">' + clipboardUserButton + clipboardPassButton + '</div>';
                         } else {
                             content = '<span class="altTxtRed">' + json.description + '</span>';
 
@@ -340,31 +345,6 @@ sysPass.Util.Common = function () {
 
                         // Recentrar después de insertar el contenido
                         $(this).dialog('option', 'position', 'center');
-
-                        // Carga de objeto flash para copiar al portapapeles
-                        var clientPass = new ZeroClipboard($("#dialog-clip-pass-button-" + id), {swfPath: APP_ROOT + "/js/ZeroClipboard.swf"});
-                        var clientUser = new ZeroClipboard($("#dialog-clip-user-button-" + id), {swfPath: APP_ROOT + "/js/ZeroClipboard.swf"});
-
-                        clientPass.on('ready', function (e) {
-                            $("#dialog-clip-pass-button-" + id).attr("data-clip", 1);
-                            clientPass.on('copy', function (e) {
-                                //e.clipboardData.setData('text/plain', json.accpass);
-                                clientPass.setText(json.accpass);
-                            });
-                            clientPass.on('aftercopy', function (e) {
-                                $('.dialog-pass-text').addClass('dialog-clip-pass-copy round');
-                            });
-                        });
-
-                        clientPass.on('error', function (e) {
-                            ZeroClipboard.destroy();
-                        });
-
-                        clientUser.on('ready', function (e) {
-                            clientUser.on('copy', function (e) {
-                                clientUser.setText(json.acclogin);
-                            });
-                        });
 
                         // Cerrar Dialog a los 30s
                         var thisDialog = $(this);
@@ -1143,6 +1123,38 @@ sysPass.Util.Common = function () {
             var passEncrypted = encrypt.encrypt(curValue);
             input.val(passEncrypted);
         }
+    };
+
+    var initializeClipboard = function () {
+        var clipboard = new Clipboard('.clip-pass-button', {
+            text: function (trigger) {
+                sysPassUtil.Common.viewPass(trigger.getAttribute('data-account-id'), false);
+                return $('#clip-pass-text').html();
+            }
+        });
+
+        clipboard.on('success', function (e) {
+            sysPassUtil.Common.resMsg("ok", LANG[45]);
+        });
+
+        clipboard.on('error', function (e) {
+            sysPassUtil.Common.resMsg("error", LANG[46]);
+        });
+
+        // Portapapeles para claves visualizadas
+
+        // Inicializar el objeto para copiar al portapapeles
+        var clipboardPass = new Clipboard(".dialog-clip-pass-button");
+        var clipboardUser = new Clipboard(".dialog-clip-user-button");
+
+        clipboardPass.on('success', function (e) {
+            $('.dialog-pass-text').addClass('dialog-clip-pass-copy round');
+            e.clearSelection();
+        });
+
+        clipboardUser.on('success', function (e) {
+            e.clearSelection();
+        });
     };
 
     return {

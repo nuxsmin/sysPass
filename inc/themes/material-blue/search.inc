@@ -113,10 +113,8 @@
                                 <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
                                    onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
                                 <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
-                                <i id="clipboard" class="material-icons fg-blue80 actions-optional clip-pass-button"
-                                   data-clipboard-target="clip-pass-text"
-                                   title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                                   onmousedown="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, false)">content_paste</i>
+                                <i class="material-icons fg-blue80 actions-optional clip-pass-button" data-account-id="<?php echo $account['id']; ?>"
+                                   title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
                                 <?php endif ?>
                             <?php endif ?>
 
@@ -190,27 +188,8 @@
             passToClip = 0;
 
             $(function () {
-                function clipboard() {
-                    var client = new ZeroClipboard($('.clip-pass-button'), {
-                        swfPath: "<?php echo \SP\Init::$WEBURI; ?>/js/ZeroClipboard.swf",
-                        debug: false,
-                        title: '<?php echo _('Copiar Clave en Portapapeles'); ?>'
-                    });
-
-                    client.on("aftercopy", function (e) {
-                        resMsg("ok", "<?php echo _('Clave Copiada al Portapapeles'); ?>");
-                    });
-
-                    client.on("error", function (e) {
-                        ZeroClipboard.destroy();
-                    });
-                }
-
-                clipboard();
-
                 sysPassUtil.Common.showSearchOrder();
             })
-
         </script>
     <?php endif; ?>
     <script>

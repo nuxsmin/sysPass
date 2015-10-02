@@ -67,5 +67,7 @@ $stringsJsLang = array(
     40 => _('SI'),
     41 => _('NO'),
     43 => _('Aceptar'),
-    44 => _('Cancelar')
+    44 => _('Cancelar'),
+    45 => _('Clave Copiada al Portapapeles'),
+    46 => _('Error al copiar al portapapeles'),
 );
