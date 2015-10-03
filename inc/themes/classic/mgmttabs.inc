@@ -1,6 +1,10 @@
 <?php foreach ($tabs as $index => $tab): ?>
     <div id="tabs-<?php echo $index; ?>">
         <div class="action fullWidth">
+            <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
+                    OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $lastAccountId; ?>)">
+                <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+            </button>
             <button type="submit" form="frmSecurity" title="<?php echo $tab['props']['actions']['new']['title']; ?>"
                     class="button-action" data-itemid="0" data-activetab="<?php echo $index; ?>"
                     data-nextactionid="<?php echo (isset($onCloseAction)) ? $onCloseAction : ''; ?>"

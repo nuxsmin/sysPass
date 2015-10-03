@@ -257,6 +257,72 @@ class CustomFields extends CustomFieldsBase
     }
 
     /**
+     * Actualizar los datos encriptados con una nueva clave
+     *
+     * @param string $currentMasterPass La clave maestra actual
+     * @param string $newMasterPassword La nueva clave maestra
+     * @return bool
+     * @throws SPException
+     */
+    public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
+    {
+        $Log = new Log();
+        $Log->setAction(_('Campos Personalizados'));
+
+        $query = 'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($query, __FUNCTION__);
+
+        if ($queryRes === false) {
+            $Log->addDescription(_('Error al actualizar datos encriptados'));
+            return false;
+        }
+
+        $Log->addDescription(_('Actualizando datos encriptados'));
+        $Log->writeLog(true);
+
+        $errors = array();
+        $success = array();
+
+        foreach ($queryRes as $customField) {
+            $fieldData = Crypt::getDecrypt($customField->customfielddata_data, $customField->customfielddata_iv, $currentMasterPass);
+            $fieldCryptData = Crypt::encryptData($fieldData, $newMasterPassword);
+
+            $query = 'UPDATE customFieldsData SET ' .
+                'customfielddata_data = :data, ' .
+                'customfielddata_iv = :iv ' .
+                'WHERE customfielddata_id = :id ';
+
+            $data['id'] = $customField->customfielddata_id;
+            $data['data'] = $fieldCryptData['data'];
+            $data['iv'] = $fieldCryptData['iv'];
+
+            if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+                $errors[] = $customField->customfielddata_id;
+            } else {
+                $success[] = $customField->customfielddata_id;
+            }
+        }
+
+        if (count($errors) > 0) {
+            $Log->addDescription(_('Registros no actualizados') . ': ' . implode(',', $errors));
+            $Log->writeLog(true);
+        }
+
+        if (count($success) > 0) {
+            $Log->addDescription(_('Registros actualizados') . ': ' . implode(',', $success));
+            $Log->writeLog(true);
+        }
+
+        $Log->addDescription(_('Fin'));
+        $Log->writeLog();
+
+        return (count($errors) === 0);
+    }
+
+    /**
      * @return int
      */
     public function getItemId()

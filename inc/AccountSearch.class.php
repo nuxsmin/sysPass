@@ -377,8 +377,6 @@ class AccountSearch
             return false;
         }
 
-        error_log(print_r($query, true));
-
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         self::$queryNumRows = DB::$lastNumRows;
 

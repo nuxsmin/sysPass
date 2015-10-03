@@ -103,7 +103,7 @@ td > input:focus, td > select:hover, td > textarea:focus {
 }
 
 input {
-    width: 200px;
+    width: 240px;
 }
 
 input.inputImg, img.inputImg {

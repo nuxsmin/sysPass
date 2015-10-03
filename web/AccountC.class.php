@@ -151,6 +151,7 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->assign('showform', true);
         $this->view->assign('nextaction', Acl::ACTION_ACC_SEARCH);
 
+        Session::setLastAcountId(0);
         $this->setCommonData();
         $this->setShowData();
     }

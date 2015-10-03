@@ -9,6 +9,11 @@
                         <i class="material-icons" title="<?php echo $tab['props']['actions']['new']['title']; ?>">add</i>
                     </button>
                 </li>
+                <li>
+                    <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>, <?php echo $lastAccountId; ?>)"  title="<?php echo _('Atrás'); ?>">
+                        <i class="material-icons">arrow_back</i>
+                    </button>
+                </li>
             </ul>
         </div>
 

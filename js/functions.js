@@ -300,7 +300,7 @@ sysPass.Util.Common = function () {
 
                 $('<div></div>').dialog({
                     modal: true,
-                    title: json.title,
+                    title: LANG[47],
                     width: 'auto',
                     open: function () {
                         var content;
@@ -757,6 +757,7 @@ sysPass.Util.Common = function () {
                         break;
                     case 1:
                         $.fancybox.close();
+                        $(":input[type=password]").val('');
                         resMsg("error", description, undefined, action);
                         break;
                     case 2:

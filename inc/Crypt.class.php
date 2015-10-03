@@ -163,11 +163,12 @@ class Crypt
     /**
      * Encriptar datos. Devuelve un array con los datos encriptados y el IV.
      *
-     * @param $data string Los datos a encriptar
-     * @throws SPException
+     * @param mixed  $data string Los datos a encriptar
+     * @param string $pwd La clave de encriptación
      * @return array
+     * @throws SPException
      */
-    public static function encryptData($data)
+    public static function encryptData($data, $pwd = null)
     {
         if (empty($data)) {
             return array('data' => '', 'iv' => '');
@@ -183,7 +184,7 @@ class Crypt
         }
 
         // Encriptar datos
-        $encData['data'] = Crypt::mkEncrypt($data);
+        $encData['data'] = Crypt::mkEncrypt($data, $pwd);
 
         if (!empty($data) && ($encData['data'] === false || is_null($encData['data']))) {
             throw new SPException(
@@ -216,9 +217,9 @@ class Crypt
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
-    public static function mkEncrypt($data, $masterPwd = "")
+    public static function mkEncrypt($data, $masterPwd = null)
     {
-        $masterPwd = (!$masterPwd) ? self::getSessionMasterPass() : $masterPwd;
+        $masterPwd = (is_null($masterPwd)) ? self::getSessionMasterPass() : $masterPwd;
 
         self::$strInitialVector = self::getIV();
         $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
@@ -239,20 +240,20 @@ class Crypt
     /**
      * Desencriptar datos con la clave maestra.
      *
-     * @param string $strEncrypted Los datos a desencriptar
+     * @param string $cryptData Los datos a desencriptar
      * @param string $cryptIV      con el IV
-     * @param string $strPassword  La clave maestra
+     * @param string $password  La clave maestra
      * @return string con los datos desencriptados
      */
-    public static function getDecrypt($strEncrypted, $cryptIV, $strPassword = null)
+    public static function getDecrypt($cryptData, $cryptIV, $password = null)
     {
-        if (is_null($strPassword)) {
-            $strPassword = self::getSessionMasterPass();
+        if (is_null($password)) {
+            $password = self::getSessionMasterPass();
         }
 
         $mcryptRes = self::getMcryptResource();
-        mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
-        $strDecrypted = trim(mdecrypt_generic($mcryptRes, $strEncrypted));
+        mcrypt_generic_init($mcryptRes, $password, $cryptIV);
+        $strDecrypted = trim(mdecrypt_generic($mcryptRes, $cryptData));
 
         mcrypt_generic_deinit($mcryptRes);
         mcrypt_module_close($mcryptRes);

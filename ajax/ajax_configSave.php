@@ -256,6 +256,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
             SP\Common::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
         }
+
+        if (!\SP\CustomFields::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)){
+            SP\Common::printJSON(_('Errores al actualizar datos de campos personalizados'));
+        }
     }
 
     if (SP\Util::demoIsEnabled()) {

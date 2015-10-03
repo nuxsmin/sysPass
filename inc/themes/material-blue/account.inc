@@ -57,6 +57,9 @@
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                             <?php endforeach; ?>
                         </select>
+                        <?php if(\SP\Acl::checkUserAccess(\SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
+                            <i class="material-icons" title="<?php echo _('Nueva Categoría'); ?>" onclick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_MGM; ?>,<?php echo $actionId; ?>, 0)">add</i>
+                        <?php endif; ?>
                     <?php else: ?>
                         <?php echo $accountData->category_name; ?>
                     <?php endif; ?>

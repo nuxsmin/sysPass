@@ -135,9 +135,10 @@ class Log extends ActionLog
     /**
      * Escribir un nuevo evento en el registro de eventos
      *
+     * @param bool $resetDescription Restablecer la descripción
      * @return bool
      */
-    public function writeLog(){
+    public function writeLog($resetDescription = false){
         if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
             error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription());
         }
@@ -159,6 +160,10 @@ class Log extends ActionLog
         $data['ipAddress'] = $_SERVER['REMOTE_ADDR'];
         $data['action'] = $this->getAction();
         $data['description'] = $this->getDescription();
+
+        if ($resetDescription === true){
+            $this->resetDescription();
+        }
 
         return DB::getQuery($query, __FUNCTION__, $data);
     }

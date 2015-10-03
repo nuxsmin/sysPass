@@ -50,6 +50,7 @@ $tpl = new SP\Template();
 $tpl->assign('actionId', $actionId);
 $tpl->assign('id', $itemId);
 $tpl->assign('activeTabId', $itemId);
+$tpl->assign('lastAccountId', \SP\Session::getLastAcountId());
 $tpl->assign('queryTimeStart', microtime());
 $tpl->assign('userId', SP\Session::getUserId());
 $tpl->assign('userGroupId', SP\Session::getUserGroupId());
