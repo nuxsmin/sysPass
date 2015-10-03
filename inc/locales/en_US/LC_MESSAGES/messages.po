@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-03 02:43+0100\n"
-"PO-Revision-Date: 2015-10-03 02:45+0100\n"
+"POT-Creation-Date: 2015-10-03 03:13+0100\n"
+"PO-Revision-Date: 2015-10-03 03:13+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -2489,8 +2489,8 @@ msgid "Complejidad"
 msgstr "Complexity"
 
 #: ../../../../js/strings.js.php:57
-msgid "Reset"
-msgstr "Restablecer"
+msgid "Restablecer"
+msgstr "Reset"
 
 #: ../../../../js/strings.js.php:58
 #: ../../../../inc/themes/classic/editpass.inc:33
@@ -4875,6 +4875,9 @@ msgstr "Make a backup and export"
 #: ../../../../inc/themes/material-blue/security.inc:4
 msgid "Autentificación"
 msgstr "Authentication"
+
+#~ msgid "Reset"
+#~ msgstr "Restablecer"
 
 #~ msgid "Error en clave RSA"
 #~ msgstr "Error on RSA key"
