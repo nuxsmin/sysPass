@@ -76,10 +76,10 @@ class EventlogC extends Controller implements ActionsInterface
         $limitLast = (\SP\Log::$numRows % self::MAX_ROWS == 0) ? \SP\Log::$numRows - self::MAX_ROWS : floor(\SP\Log::$numRows / self::MAX_ROWS) * self::MAX_ROWS;
 
         $this->view->assign('pagerOnnClick', array(
-            'first' => 'navLog(0,' . $this->view->limitStart . ')',
-            'last' => 'navLog(' . $limitLast . ',' . $this->view->limitStart . ')',
-            'prev' => 'navLog(' . ($this->view->limitStart - self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
-            'next' => 'navLog(' . ($this->view->limitStart + self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
+            'first' => 'sysPassUtil.Common.navLog(0,' . $this->view->limitStart . ')',
+            'last' => 'sysPassUtil.Common.navLog(' . $limitLast . ',' . $this->view->limitStart . ')',
+            'prev' => 'sysPassUtil.Common.navLog(' . ($this->view->limitStart - self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
+            'next' => 'sysPassUtil.Common.navLog(' . ($this->view->limitStart + self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
         ));
     }
 

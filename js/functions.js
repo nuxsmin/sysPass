@@ -1181,6 +1181,7 @@ sysPass.Util.Common = function () {
         encryptFormValue: encryptFormValue,
         getFiles: getFiles,
         importFile: importFile,
+        navLog: navLog,
         outputResult: outputResult,
         resMsg: resMsg,
         searchSort: searchSort,
