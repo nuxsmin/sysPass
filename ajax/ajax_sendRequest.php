@@ -66,7 +66,7 @@ $log->addDescription(SP\Html::strongText(_('Descripción') . ': ') . $frmDescrip
 
 $mailto = implode(',', $recipients);
 
-if ($mailto
+if (strlen($mailto) > 1
     && SP\Util::mailrequestIsEnabled()
     && SP\Email::sendEmail($log, $mailto)
 ) {

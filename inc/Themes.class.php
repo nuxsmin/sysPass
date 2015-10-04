@@ -130,4 +130,22 @@ class Themes
         self::$themeUri = Init::$WEBURI . '/inc/themes/' . $theme;
         self::$themePath = DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme;
     }
+
+    /**
+     * Obtener la información del tema desde el archivo de información
+     *
+     * @return array
+     *
+     */
+    public static function getThemeInfo()
+    {
+        $themeFile = Init::$SERVERROOT . self::$themePath . DIRECTORY_SEPARATOR . 'index.php';
+        $themeInfo = array();
+
+        if (file_exists($themeFile)) {
+            include $themeFile;
+        }
+
+        return $themeInfo;
+    }
 }

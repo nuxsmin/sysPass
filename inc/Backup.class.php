@@ -52,6 +52,7 @@ class Backup
 
         try {
             self::checkBackupDir($backupDstDir);
+            self::deleteOldBackups($backupDstDir);
             self::backupTables('*', $bakFileDB);
             self::backupApp($bakFileApp);
         } catch (\Exception $e) {
@@ -228,5 +229,16 @@ class Backup
         }
 
         return true;
+    }
+
+    /**
+     * Eliminar las copias de seguridad anteriores
+     *
+     * @param string $backupDir El directorio de backups
+     */
+    private static function deleteOldBackups($backupDir)
+    {
+        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.tar.gz'));
+        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.sql'));
     }
 }

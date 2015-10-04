@@ -1,3 +1,26 @@
+=== ** v1.2.0.0-rc4 ===
+
+* [ADD] New copy-to-clipboard using only Javascript NO flash needed (gooood).
+* [ADD] New method to optimize/minimize CSS and JS files.
+* [ADD] Temporary password can be viewed within session.
+* [ADD] Old backup and export files are deleted when performing a new backup/export.
+* [ADD] Added the ability to force the connection through HTTPS.
+* [ADD] Added back button on some modules.
+* [ADD] Added link to add category from new account form.
+* [ADD] New user preferences option to sort accounts searching by views.
+* [MOD] CSS and JS files are now minimized by default.
+* [MOD] Updated translations.
+* [MOD] UI tweaks.
+* [FIX] Fixed issue on enabling secondary users/groups edit on accounts.
+* [FIX] Fixed issue when sending email request to blank recipients.
+* [FIX] Fixed event log navigation bar issue.
+* [FIX] Fixed issue that custom fields data were not encrypted again when master password is changed.
+* [FIX] Fixed issue on copy-to-clipboard when viewing account details.
+* [FIX] Fixed issue when sorting accounts search.
+* [FIX] Fixed issue when copying accounts (Invalid action message).
+* [FIX] Fixed issue while retrieving the public key when no session is active from Javascript to sign.
+* [FIX] Fixed language detection issue.
+
 === ** v1.2.0.0-rc3 ===
 
 * [ADD] New user preferences available

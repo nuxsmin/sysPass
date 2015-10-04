@@ -286,5 +286,6 @@ sysPass.Util.Theme = function () {
     };
 };
 
+// Inicializar funciones del Tema
 var sysPassUtil = new sysPass.Util.Theme();
 sysPassUtil.init();

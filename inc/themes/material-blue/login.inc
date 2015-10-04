@@ -1,6 +1,7 @@
 <div id="boxLogin" class="round shadow">
     <?php if (!$isLogout): ?>
-        <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="sysPassUtil.Common.doLogin(); return false;">
+        <form method="post" name="frmLogin" id="frmLogin" action=""
+              OnSubmit="sysPassUtil.Common.doLogin(); return false;">
             <div id="boxData">
                 <?php if ($demoEnabled): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -69,15 +70,19 @@
 
         <!-- Close boxData -->
         <?php if ($mailEnabled): ?>
-            <div id="boxActions">
-                <a href="index.php?a=passreset"><?php echo _('¿Olvidó su clave?'); ?></a>
-            </div>
-        <?php endif; ?>
+        <div id="boxActions">
+            <a href="index.php?a=passreset"><?php echo _('¿Olvidó su clave?'); ?></a>
+        </div>
+    <?php endif; ?>
     <?php else: ?>
         <div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
-        <script>$('#boxLogout').fadeOut(1500, function () {
-                location.href = 'index.php';
-            });</script>
+        <script>
+            window.onload = function () {
+                $('#boxLogout').fadeOut(1500, function () {
+                    location.href = 'index.php';
+                });
+            }
+        </script>
     <?php endif; ?>
 </div><!-- Close boxLogin -->
 

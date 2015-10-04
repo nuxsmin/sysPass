@@ -33,8 +33,8 @@ sysPass.createNS = function (namespace) {
     return parent;
 };
 
+// Namespace principasl de sysPass
 sysPass.createNS('sysPass.Util');
-
 sysPass.Util.Common = function () {
     "use strict";
 

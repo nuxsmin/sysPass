@@ -1,3 +1,26 @@
+=== ** v1.2.0.0-rc4 ===
+
+* [ADD] Nueva función para copiar al portapapeles SIN flash, sólo Javascript (biennnnn).
+* [ADD] Nuevo método para optimizar(/reducir los archivos CSS y JS.
+* [ADD] La clave temporar generada es posible verla hasta el fin de la sesión.
+* [ADD] Las copias y exports antiguos son eliminados cada vez se se hace uno nuevo.
+* [ADD] Añadida la opción para forzar la conexión por HTTPS.
+* [ADD] Añadido botón de volver en algunos módulos.
+* [ADD] Añadido un enlace para añadir categorías desde las cuentas.
+* [ADD] Nuevas preferencias de usuario para ordenar cuentas por orden de visitas.
+* [MOD] Los archivos CSS y JS son reducidos por defectos.
+* [MOD] Traducciones actualizadas.
+* [MOD] Mejoras visuales.
+* [FIX] Corregido fallo al habilitar la edición de cuentas por usuarios/grupos secundarios.
+* [FIX] Corregido fallo al enviar peticiones de acceso por email sin destinatarios.
+* [FIX] Corregido fallo en la navegación por el log de eventos.
+* [FIX] Corregido fallo que impedia que los campos personalizados fueran reencriptados tras cambio de clave maestra.
+* [FIX] Corregido fallo al copiar al portapapeles cuando se visualizaba una cuenta.
+* [FIX] Corregido fallo al ordenar la búsqueda de cuentas.
+* [FIX] Corregido fallo al copiar cuentas (mensaje de Acción inválida).
+* [FIX] Corregido fallo al obtener la clave pública cuando no había una sesión iniciada.
+* [FIX] Corregido fallo en la nueva detección del lenguaje.
+
 === ** v1.2.0.0-rc3 ===
 
 * [ADD] Nuevas preferencias de usuario disponibles

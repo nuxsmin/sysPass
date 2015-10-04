@@ -294,8 +294,6 @@ class Account extends AccountBase implements AccountInterface
             . 'category_name,'
             . 'account_login,'
             . 'account_url,'
-//            . 'account_pass,'
-//            . 'account_IV,'
             . 'account_notes,'
             . 'account_countView,'
             . 'account_countDecrypt,'

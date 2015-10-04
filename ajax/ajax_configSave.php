@@ -59,6 +59,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $siteLang = SP\Request::analyze('sitelang');
         $siteTheme = SP\Request::analyze('sitetheme', 'material-blue');
         $sessionTimeout = SP\Request::analyze('session_timeout', 300);
+        $httpsEnabled = SP\Request::analyze('https_enabled', false, false, true);
         $logEnabled = SP\Request::analyze('log_enabled', false, false, true);
         $debugEnabled = SP\Request::analyze('debug', false, false, true);
         $maintenanceEnabled = SP\Request::analyze('maintenance', false, false, true);
@@ -68,6 +69,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         SP\Config::setValue('sitelang', $siteLang);
         SP\Config::setValue('sitetheme', $siteTheme);
         SP\Config::setValue('session_timeout', $sessionTimeout);
+        SP\Config::setValue('https_enabled', $httpsEnabled);
         SP\Config::setValue('log_enabled', $logEnabled);
         SP\Config::setValue('debug', $debugEnabled);
         SP\Config::setValue('maintenance', $maintenanceEnabled);
@@ -121,8 +123,8 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
             SP\Config::setValue('proxy_enabled', false);
         }
 
-        $log->addDescription(_('General'));
-    } elseif ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI ) {
+        $log->addDescription(sprintf('%s: %s', _('Sección'), _('General')));
+    } elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_WIKI) {
         // Wiki
         $wikiEnabled = SP\Request::analyze('wiki_enabled', false, false, true);
         $wikiSearchUrl = SP\Request::analyze('wiki_searchurl');
@@ -141,8 +143,8 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
             SP\Config::setValue('wiki_enabled', false);
         }
 
-        $log->addDescription(_('Wiki'));
-    } elseif ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_LDAP ) {
+        $log->addDescription(sprintf('%s: %s', _('Sección'), _('Wiki')));
+    } elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_LDAP) {
         // LDAP
         $ldapEnabled = SP\Request::analyze('ldap_enabled', false, false, true);
         $ldapADSEnabled = SP\Request::analyze('ldap_ads', false, false, true);
@@ -171,8 +173,8 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
             SP\Config::setValue('ldap_enabled', false);
         }
 
-        $log->addDescription(_('LDAP'));
-    } elseif ( $actionId === SP\Controller\ActionsInterface::ACTION_CFG_MAIL ) {
+        $log->addDescription(sprintf('%s: %s', _('Sección'), _('LDAP')));
+    } elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_MAIL) {
         // Mail
         $mailEnabled = SP\Request::analyze('mail_enabled', false, false, true);
         $mailServer = SP\Request::analyze('mail_server');
@@ -206,7 +208,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
             SP\Config::setValue('mail_authenabled', false);
         }
 
-        $log->addDescription(_('Correo'));
+        $log->addDescription(sprintf('%s: %s', _('Sección'), _('Correo')));
     }
 
     $log->writeLog();
@@ -257,7 +259,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
             SP\Common::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
         }
 
-        if (!\SP\CustomFields::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)){
+        if (!\SP\CustomFields::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
             SP\Common::printJSON(_('Errores al actualizar datos de campos personalizados'));
         }
     }

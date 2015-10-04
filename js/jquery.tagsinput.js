@@ -1,5 +1,4 @@
 /*
-
  jQuery Tags Input Plugin 1.3.3
 
  Copyright (c) 2011 XOXCO, Inc
@@ -11,7 +10,6 @@
  http://www.opensource.org/licenses/mit-license.php
 
  ben@xoxco.com
-
  */
 
 (function ($) {

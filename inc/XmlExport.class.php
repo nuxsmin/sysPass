@@ -82,6 +82,7 @@ class XmlExport
 
         $xml->setExportDir(Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'backup');
         $xml->setExportFile();
+        $xml->deleteOldExports();
 
         return $xml->makeXML();
     }
@@ -470,5 +471,13 @@ class XmlExport
         }
 
         return true;
+    }
+
+    /**
+     * Eliminar los archivos de exportación anteriores
+     */
+    private function deleteOldExports()
+    {
+        array_map('unlink', glob($this->_exportDir . DIRECTORY_SEPARATOR . '*.xml'));
     }
 }

@@ -16,6 +16,3 @@
             <!-- Close Project -->
             </footer> <!-- Close footer -->
         </div> <!-- Close wrap -->
-    </body> <!-- Close BODY...almost done..go..go..go -->
-</html> <!-- Close HTML...ufff too much work!! :)) -->
-<!-- Insert coin . . . -->

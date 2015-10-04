@@ -50,9 +50,13 @@
 
 <?php if ($isLogout): ?>
     <div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
-    <script>$('#boxLogout').fadeOut(1500, function () {
-            location.href = 'index.php';
-        });</script>
+    <script>
+        window.onload = function () {
+            $('#boxLogout').fadeOut(1500, function () {
+                location.href = 'index.php';
+            });
+        }
+    </script>
 <?php endif; ?>
 
 <?php if ($updated): ?>

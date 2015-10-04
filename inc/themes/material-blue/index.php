@@ -27,5 +27,15 @@ $themeInfo = array(
     'name' => 'Material Blue',
     'creator' => 'nuxsmin',
     'version' => '1.0',
-    'targetversion' => '1.2.0'
+    'targetversion' => '1.2.0',
+    'js' => array(
+        'material.min.js',
+        'functions.min.js'),
+    'css' => array(
+        'fonts.min.css',
+        'material.min.css',
+        'material-custom.min.css',
+        'jquery-ui.theme.min.css',
+        'styles.min.css',
+        'alertify-custom.min.css')
 );

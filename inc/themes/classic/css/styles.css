@@ -1,3 +1,4 @@
+/* Estilos de sysPass */
 * {
     font-family: Verdana, Tahoma, sans-serif;
 }
@@ -1221,7 +1222,7 @@ footer #status {
     padding: 0 1em;
 }
 
-footer #status .status-info{
+footer #status .status-info {
     padding: .5em;
     text-decoration: underline;
 }

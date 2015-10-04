@@ -75,6 +75,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('currentLang', \SP\Config::getValue('sitelang'));
         $this->view->assign('themesAvailable', Themes::getThemesAvailable());
         $this->view->assign('currentTheme', \SP\Config::getValue('sitetheme'));
+        $this->view->assign('chkHttps', (\SP\Config::getValue('https_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkDebug', (\SP\Config::getValue('debug')) ? 'checked="checked"' : '');
         $this->view->assign('chkMaintenance', (\SP\Config::getValue('maintenance')) ? 'checked="checked"' : '');
@@ -124,6 +125,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('lastUpdateMPass', \SP\Config::getConfigDbValue("lastupdatempass"));
         $this->view->assign('tempMasterPassTime', \SP\Config::getConfigDbValue("tempmaster_passtime"));
         $this->view->assign('tempMasterMaxTime', \SP\Config::getConfigDbValue("tempmaster_maxtime"));
+        $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
 
         $this->view->append('tabs', array('title' => _('Encriptación')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');

@@ -140,6 +140,16 @@ echo $encryption_tabIndex; ?>">
                            value="3600"/>
                 </td>
             </tr>
+            <?php if(!empty($tempMasterPass)): ?>
+                <tr>
+                    <td class="descField">
+                        <?php echo _('Clave'); ?>
+                    </td>
+                    <td class="valField">
+                        <?php echo $tempMasterPass; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
         <input type="hidden" name="actionId"

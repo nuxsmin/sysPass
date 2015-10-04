@@ -132,4 +132,37 @@ class Request
 
         return $clearData;
     }
+
+    /**
+     * Devolver las cabeceras enviadas desde el cliente.
+     *
+     * @param string $header nombre de la cabecera a devolver
+     * @return array
+     */
+    public static function getRequestHeaders($header = '')
+    {
+        if (!function_exists('apache_request_headers')) {
+            function apache_request_headers()
+            {
+                foreach ($_SERVER as $key => $value) {
+                    if (substr($key, 0, 5) == "HTTP_") {
+                        $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
+                        $headers[$key] = $value;
+                    } else {
+                        $headers[$key] = $value;
+                    }
+                }
+            }
+        } else {
+            $headers = apache_request_headers();
+        }
+
+        if (!empty($header) && array_key_exists($header, $headers)) {
+            return $headers[$header];
+        } elseif (!empty($header)) {
+            return false;
+        }
+
+        return $headers;
+    }
 }

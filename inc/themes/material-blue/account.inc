@@ -158,7 +158,7 @@
                                 </select>
                                 <br><br>
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ueditenabled">
-                                  <input type="checkbox" id="ueditenabled" class="mdl-switch__input" <?php echo $chkUserEdit; ?>/>
+                                  <input name="ueditenabled" type="checkbox" id="ueditenabled" class="mdl-switch__input" <?php echo $chkUserEdit; ?>/>
                                   <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
                                 </label>
 
@@ -190,7 +190,7 @@
                                 </select>
                                 <br><br>
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="geditenabled">
-                                  <input type="checkbox" id="geditenabled" class="mdl-switch__input" <?php echo $chkGroupEdit; ?>/>
+                                  <input name="geditenabled" type="checkbox" id="geditenabled" class="mdl-switch__input" <?php echo $chkGroupEdit; ?>/>
                                   <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
                                 </label
 

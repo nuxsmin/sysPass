@@ -371,6 +371,9 @@ class Config
         self::setConfigDbValue('tempmaster_maxtime', time() + $maxTime, false);
         self::setConfigDbValue('tempmaster_attempts', 0, false);
 
+        // Guardar la clave temporal hasta que finalice la sesión
+        Session::setTemporaryMasterPass($randomKey);
+
         return $randomKey;
     }
 
@@ -433,7 +436,6 @@ class Config
 
         Crypt::checkHashPass($pass, self::getConfigDbValue('tempmaster_passhash'));
 
-//        $isValid = (self::getConfigDbValue('tempmaster_passhash') == sha1($pass));
         $isValid = Crypt::checkHashPass($pass, self::getConfigDbValue('tempmaster_passhash'));
 
         if (!$isValid) {

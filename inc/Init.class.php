@@ -160,6 +160,9 @@ class Init
         // Establecer el tema de sysPass
         Themes::setTheme();
 
+        // Comprobar si es necesario cambiar a HTTPS
+        self::checkHttps();
+
         // Comprobar si es necesario inicialización
         if (self::checkInitSourceInclude()) {
             return;
@@ -295,7 +298,6 @@ class Init
     private static function setPaths()
     {
         // Calcular los directorios raíz
-//        self::$SERVERROOT = str_replace("\\", DIRECTORY_SEPARATOR, substr(__DIR__, 0, -4));
         $dir = (defined(__DIR__)) ? __DIR__ : dirname(__FILE__);
 
         self::$SERVERROOT = substr($dir, 0, strripos($dir, '/'));
@@ -650,7 +652,6 @@ class Init
         if (Session::getUserLogin()
             && Session::get2FApassed()
         ) {
-            // TODO: refrescar variables de sesión.
             return true;
         }
 
@@ -679,5 +680,17 @@ class Init
 
         $phpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
         $phpSecLoader->register();
+    }
+
+    /**
+     * Comprobar y forzar (si es necesario) la coneción HTTPS
+     */
+    private static function checkHttps()
+    {
+        if(Util::forceHttpsIsEnabled() && !Util::httpsEnabled()){
+            $port = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+            header('Location: ' . $fullUrl);
+        }
     }
 }

@@ -464,7 +464,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     private function getCustomFieldsForItem()
     {
         // Se comprueba que hayan campos con valores para el elemento actual
-        if (!$this->view->isView && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
+        if ($this->view->itemId && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
             $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
         } else {
             $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));

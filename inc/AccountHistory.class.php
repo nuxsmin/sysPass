@@ -358,8 +358,6 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function createAccount()
     {
-        // FIXME: continuar
-
         $query = 'INSERT INTO accHistory SET '
             . 'acchistory_accountId = :account_id,'
             . 'acchistory_customerId = :accountCustomerId,'

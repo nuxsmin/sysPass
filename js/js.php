@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -23,39 +23,39 @@
  *
  */
 
-use SP\Themes;
+use SP\Minify;
 
 define('APP_ROOT', '..');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$themeJsPath = VIEW_PATH . DIRECTORY_SEPARATOR . Themes::$theme . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'js.php';
+$file = \SP\Request::analyze('f');
+$base = \SP\Request::analyze('b');
 
-$jsFilesBase = array(
-    array('href' => 'js/jquery-1.11.2.min.js', 'min' => false),
-//    array('href' => 'js/jquery-migrate-1.2.1.min.js', 'min' => false),
-    array('href' => 'js/jquery.placeholder.js', 'min' => true),
-    array('href' => 'js/jquery-ui.min.js', 'min' => false),
-    array('href' => 'js/jquery.fancybox.pack.js', 'min' => false),
-    array('href' => 'js/jquery.powertip.min.js', 'min' => false),
-    array('href' => 'js/chosen.jquery.min.js', 'min' => false),
-    array('href' => 'js/alertify.js', 'min' => false),
-    array('href' => 'js/jquery.fileDownload.js', 'min' => true),
-    array('href' => 'js/jquery.filedrop.js', 'min' => true),
-    array('href' => 'js/jquery.tagsinput.js', 'min' => true),
-//    array('href' => 'js/ZeroClipboard.min.js', 'min' => false),
-    array('href' => 'js/clipboard.min.js', 'min' => false),
-    array('href' => 'js/jsencrypt.min.js', 'min' => false),
-    array('href' => 'js/zxcvbn-async.js', 'min' => true),
-    array('href' => 'js/functions.js', 'min' => true),
-);
+if (!$file) {
+    $Minify = new Minify();
+    $Minify->setType(Minify::FILETYPE_JS);
+    $Minify->setBase(__DIR__);
+    $Minify->addFile('jquery-1.11.2.min.js');
+    $Minify->addFile('jquery-ui.min.js');
+    $Minify->addFile('jquery.fancybox.pack.js');
+    $Minify->addFile('jquery.powertip.min.js');
+    $Minify->addFile('chosen.jquery.min.js');
+    $Minify->addFile('alertify.min.js');
+    $Minify->addFile('jquery.fileDownload.min.js');
+    $Minify->addFile('jquery.filedrop.min.js');
+    $Minify->addFile('jquery.tagsinput.min.js');
+    $Minify->addFile('clipboard.min.js');
+    $Minify->addFile('zxcvbn-async.min.js');
+    $Minify->addFile('jsencrypt.min.js');
+    $Minify->addFile('functions.min.js');
+    $Minify->getMinified();
+} elseif ($file && $base) {
+    $base = \SP\Request::analyze('b');
 
-if (file_exists($themeJsPath)){
-    include $themeJsPath;
-
-    foreach ($jsFilesTheme as $file) {
-        array_push($jsFilesBase, $file);
-    }
+    $Minify = new Minify();
+    $Minify->setType(Minify::FILETYPE_JS);
+    $Minify->setBase(\SP\Init::$SERVERROOT . urldecode($base));
+    $Minify->addFile(urldecode($file));
+    $Minify->getMinified();
 }
-
-SP\Util::getMinified('js', $jsFilesBase, false);

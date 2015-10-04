@@ -23,35 +23,36 @@
  *
  */
 
-use SP\Themes;
+use SP\Minify;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$themeCssPath = VIEW_PATH . DIRECTORY_SEPARATOR . Themes::$theme . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'css.php';
+$file = \SP\Request::analyze('f');
+$base = \SP\Request::analyze('b');
 
-$cssFilesBase = array(
-    array('href' => 'css/reset.css', 'min' => true),
-    array('href' => 'css/jquery-ui.min.css', 'min' => false),
-    array('href' => 'css/jquery-ui.structure.min.css', 'min' => false),
-    array('href' => 'css/jquery.powertip.css', 'min' => true),
-    array('href' => 'css/jquery.powertip-yellow.min.css', 'min' => true),
-    array('href' => 'css/chosen.min.css', 'min' => true),
-    array('href' => 'css/chosen-custom.css', 'min' => true),
-    array('href' => 'css/alertify-bootstrap-3.css', 'min' => false),
-    array('href' => 'css/jquery.tagsinput.css', 'min' => true),
-    array('href' => 'css/jquery.fancybox.css', 'min' => true),
-    array('href' => 'css/fonts.css', 'min' => true),
-    array('href' => 'css/material-icons.css', 'min' => true),
-);
+if (!$file) {
+    $Minify = new Minify();
+    $Minify->setType(Minify::FILETYPE_CSS);
+    $Minify->setBase(__DIR__);
+    $Minify->addFile('reset.min.css');
+    $Minify->addFile('jquery-ui.min.css');
+    $Minify->addFile('jquery-ui.structure.min.css');
+    $Minify->addFile('chosen.min.css');
+    $Minify->addFile('chosen-custom.min.css');
+    $Minify->addFile('alertify-bootstrap-3.min.css');
+    $Minify->addFile('jquery.tagsinput.min.css');
+    $Minify->addFile('jquery.fancybox.min.css');
+    $Minify->addFile('fonts.min.css');
+    $Minify->addFile('material-icons.min.css');
+    $Minify->getMinified();
+} elseif ($file && $base) {
+    $base = \SP\Request::analyze('b');
 
-if (file_exists($themeCssPath)){
-    include $themeCssPath;
-
-    foreach ($cssFilesTheme as $file) {
-        array_push($cssFilesBase, $file);
-    }
+    $Minify = new Minify();
+    $Minify->setType(Minify::FILETYPE_CSS);
+    $Minify->setBase(\SP\Init::$SERVERROOT . urldecode($base));
+    $Minify->addFile(urldecode($file));
+    $Minify->getMinified();
 }
-
-SP\Util::getMinified('css', $cssFilesBase);

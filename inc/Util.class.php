@@ -199,7 +199,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.2-rc3';
+        return '1.2-rc4';
     }
 
     /**
@@ -211,13 +211,11 @@ class Util
      */
     public static function checkUpdates()
     {
-        if (!self::curlIsAvailable() || !Config::getValue('checkupdates')) {
+        if (!Config::getValue('checkupdates')) {
             return false;
         }
 
-        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
-
-        $data = self::getDataFromUrl($githubUrl);
+        $data = self::getDataFromUrl(self::getAppInfo('appupdates'));
 
         if ($data) {
             $updateInfo = json_decode($data);
@@ -272,9 +270,7 @@ class Util
             return false;
         }
 
-        $githubUrl = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
-
-        $data = self::getDataFromUrl($githubUrl);
+        $data = self::getDataFromUrl(self::getAppInfo('appnotices'));
 
         if ($data) {
             $noticesData = json_decode($data);
@@ -316,7 +312,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '03';
+        $build = '04';
         $version = array(1, 2, 0);
 
         if ($retBuild) {
@@ -469,6 +465,16 @@ class Util
     }
 
     /**
+     * Comprobar si está habilitado forzar la conexión por HTTPS
+     *
+     * @return bool
+     */
+    public static function forceHttpsIsEnabled()
+    {
+        return self::boolval(Config::getValue('https_enabled', false));
+    }
+
+    /**
      * Comprobar si se utiliza HTTPS
      *
      * @return bool
@@ -500,174 +506,6 @@ class Util
         }
     }
 
-    /**
-     * Devolver al navegador archivos CSS y JS comprimidos
-     * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
-     * devuelve el código HTTP/304
-     *
-     * @param string $type  tipo de recurso a devolver
-     * @param array  $files archivos a parsear
-     * @param bool   $disableMinify Deshabilitar minimizar
-     */
-    public static function getMinified($type, &$files, $disableMinify = false)
-    {
-        $offset = 3600 * 24 * 30;
-        $nextCheck = time() + $offset;
-        $expire = 'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', $nextCheck);
-        //$etag = md5(implode(SP_Util::getVersion()));
-        $etag = self::getEtag($files);
-        $etagMatch = self::getRequestHeaders('If-None-Match');
-        $cacheControl = self::getRequestHeaders('Cache-Control');
-        $pragma = self::getRequestHeaders('Pragma');
-
-        header('Etag: ' . $etag);
-        header("Cache-Control: public, max-age={$offset}, must-revalidate");
-        header("Pragma: public; maxage={$offset}");
-        header($expire);
-
-        // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag == $etagMatch && !($cacheControl == 'no-cache' || $pragma == 'no-cache')) {
-            header($_SERVER["SERVER_PROTOCOL"] . " 304 Not Modified");
-            exit;
-        }
-
-        $path = Init::$SERVERROOT . DIRECTORY_SEPARATOR;
-
-        if ($type == 'js') {
-            header("Content-type: application/x-javascript; charset: UTF-8");
-        } elseif ($type == 'css') {
-            header("Content-type: text/css; charset: UTF-8");
-        }
-
-        flush();
-
-        if (self::checkZlib() || !ob_start('ob_gzhandler')) {
-            ob_start();
-        }
-
-        foreach ($files as $file) {
-            $filePath = $path . $file['href'];
-
-            // Obtener el recurso desde una URL
-            if (preg_match('#^https?://.*#', $file['href'])){
-                $data = self::getDataFromUrl($file['href']);
-
-                if($data !== false){
-                    echo '/* URL: ' . $file['href'] . ' */' . PHP_EOL;
-                    echo $data;
-                }
-
-                continue;
-            }
-
-            if(!file_exists($filePath)){
-                error_log('File not found: ' . $filePath);
-                continue;
-            }
-
-            if ($file['min'] === true && $disableMinify === false) {
-                echo '/* MINIFIED FILE: ' . $file['href'] . ' */' . PHP_EOL;
-                if ($type == 'js') {
-                    echo self::jsCompress(file_get_contents($filePath));
-                } elseif ($type == 'css') {
-                    echo CssMin::minify(file_get_contents($filePath));
-                }
-            } else {
-                echo '/* FILE: ' . $file['href'] . ' */' . PHP_EOL;
-                echo file_get_contents($filePath);
-            }
-
-            echo PHP_EOL;
-        }
-
-        ob_end_flush();
-    }
-
-    /**
-     * Calcular el hash MD5 de varios archivos.
-     *
-     * @param array $files archivos a calcular
-     * @return string Con el hash
-     */
-    private static function getEtag(&$files)
-    {
-        $md5Sum = '';
-        $path = Init::$SERVERROOT . DIRECTORY_SEPARATOR;
-
-        foreach ($files as $file) {
-            if(preg_match('#^https?://.*#', $file['href'])){
-                continue;
-            }
-            $md5Sum .= md5_file($path . $file['href']);
-        }
-
-        return md5($md5Sum);
-    }
-
-    /**
-     * Devolver las cabeceras enviadas desde el cliente.
-     *
-     * @param string $header nombre de la cabecera a devolver
-     * @return array
-     */
-    public static function getRequestHeaders($header = '')
-    {
-        if (!function_exists('apache_request_headers')) {
-            function apache_request_headers()
-            {
-                foreach ($_SERVER as $key => $value) {
-                    if (substr($key, 0, 5) == "HTTP_") {
-                        $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
-                        $headers[$key] = $value;
-                    } else {
-                        $headers[$key] = $value;
-                    }
-                }
-            }
-        } else {
-            $headers = apache_request_headers();
-        }
-
-        if (!empty($header) && array_key_exists($header, $headers)) {
-            return $headers[$header];
-        } elseif (!empty($header)) {
-            return false;
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Comprobar si la salida comprimida en con zlib está activada.
-     * No es compatible con ob_gzhandler()
-     *
-     * @return bool
-     */
-    public static function checkZlib()
-    {
-        return self::boolval(ini_get('zlib.output_compression'));
-    }
-
-    /**
-     * Comprimir código javascript.
-     *
-     * @param string $buffer código a comprimir
-     * @return string
-     */
-    private static function jsCompress($buffer)
-    {
-        $regexReplace = array(
-            '#/\*[^*]*\*+([^/][^*]*\*+)*/#',
-            '#^[\s\t]*//.*$#m',
-            '#[\s\t]+$#m',
-            '#^[\s\t]+#m',
-            '#\s*//\s.*$#m'
-        );
-        $buffer = preg_replace($regexReplace, '', $buffer);
-        // remove tabs, spaces, newlines, etc.
-        $buffer = str_replace(array("\r\n", "\r", "\n", "\t"), '', $buffer);
-        return $buffer;
-    }
 
     /**
      * Recorrer un array y escapar los carácteres no válidos en Javascript.
@@ -697,9 +535,10 @@ class Util
             'appwebsite' => 'http://www.syspass.org',
             'appblog' => 'http://www.cygnux.org',
             'appdoc' => 'http://wiki.syspass.org',
-            'appupdates' => 'http://sourceforge.net/api/file/index/project-id/775555/mtime/desc/limit/20/rss',
-            'apphelp' => 'help.syspass.org',
-            'appchangelog' => '');
+            'appupdates' => 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest',
+            'appnotices' => 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices',
+            'apphelp' => 'https://github.com/nuxsmin/sysPass/issues',
+            'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG');
 
         if (!is_null($index) && isset($appinfo[$index])) {
             return $appinfo[$index];
@@ -714,9 +553,9 @@ class Util
      * @param $url string La URL
      * @return bool|string
      */
-    private static function getDataFromUrl($url)
+    public static function getDataFromUrl($url)
     {
-        if (!self::curlIsAvailable() || !Config::getValue('checkupdates')) {
+        if (!self::curlIsAvailable()) {
             return false;
         }
 

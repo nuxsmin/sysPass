@@ -1,3 +1,4 @@
+/* Estilos de sysPass*/
 * {
     font-family: Roboto-Regular, Verdana, Tahoma, sans-serif;
 }
@@ -192,7 +193,7 @@ a:hover, a:active, a:focus {
 
 #wrap-loading {
     position: fixed;
-    z-index: 1000;
+    z-index: 9999;
     top: 50%;
     left: 50%;
     padding: 1em;

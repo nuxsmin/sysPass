@@ -49,9 +49,6 @@ class Cache
             return $config[$param];
         }
 
-        // FIXME
-//        error_log('CONFIG_CACHE_VALUE_MISS');
-
         return null;
     }
 
@@ -80,9 +77,6 @@ class Cache
      */
     public static function setSessionCacheConfig()
     {
-        // FIXME
-//        error_log('CONFIG_CACHE_MISS');
-
         $_SESSION['cache']['config'] = Config::getConfig();
         $_SESSION['cache']['config']['expires'] = time() + self::EXPIRE_TIME;
     }

@@ -53,8 +53,6 @@ class DBConnectionFactory
     public static function getFactory()
     {
         if (!self::$_factory) {
-//             FIXME
-//            error_log('NEW FACTORY');
             self::$_factory = new DBConnectionFactory();
         }
 
@@ -72,8 +70,6 @@ class DBConnectionFactory
     public function getConnection()
     {
         if (!$this->_db) {
-//             FIXME
-//            error_log('NEW DB_CONNECTION');
             $isInstalled = Config::getValue('installed');
 
             $dbhost = Config::getValue('dbhost');

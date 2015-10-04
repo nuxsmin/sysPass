@@ -64,6 +64,24 @@
             </tr>
             <tr>
                 <td class="descField">
+                    <?php echo _('Forzar HTTPS'); ?>
+                    <div id="help-https" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-https">
+                        <p>
+                            <?php echo _('Fuerza para que todas las conexiones sean a través de HTTPS.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="https_enabled">
+                        <input type="checkbox" id="https_enabled" class="mdl-switch__input fg-blue100" name="https_enabled"
+                            <?php echo $chkHttps, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
                     <?php echo _('Habilitar log de eventos'); ?>
                     <div id="help-eventlog" class="icon material-icons fg-blue80">help_outline</div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">

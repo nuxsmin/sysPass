@@ -31,6 +31,7 @@ use SP\Request;
 use SP\Session;
 use SP\SessionUtil;
 use SP\SPException;
+use SP\Themes;
 use SP\Util;
 
 /**
@@ -56,7 +57,7 @@ class MainC extends Controller implements ActionsInterface
             $this->view->assign('startTime', microtime());
 
             $this->view->addTemplate('header');
-            $this->view->addTemplate('body');
+            $this->view->addTemplate('body-start');
 
             $this->view->assign('sk', \SP\Common::getSessionKey(true));
             $this->view->assign('appInfo', Util::getAppInfo());
@@ -72,7 +73,7 @@ class MainC extends Controller implements ActionsInterface
             // Cargar la clave pública en la sesión
             SessionUtil::loadPublicKey();
 
-            $this->getHtmlHeader();
+            $this->getResourcesLinks();
             $this->setResponseHeaders();
         }
     }
@@ -80,13 +81,33 @@ class MainC extends Controller implements ActionsInterface
     /**
      * Obtener los datos para la cabcera de la página
      */
-    public function getHtmlHeader()
+    public function getResourcesLinks()
     {
-        $cssVersionHash = md5(implode(Util::getVersion()) . Util::resultsCardsIsEnabled());
-        $jsVersionHash = md5(implode(Util::getVersion()));
+        $cssVersionHash = 'v=' . md5(implode(Util::getVersion()) . Util::resultsCardsIsEnabled());
+        $this->view->assign('cssLink', Init::$WEBROOT . '/css/css.php?' . $cssVersionHash);
 
-        $this->view->assign('cssLink', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
-        $this->view->assign('jsLink', Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
+        $jsVersionHash = 'v=' . md5(implode(Util::getVersion()));
+        $this->view->assign('jsLink', Init::$WEBROOT . '/js/js.php?' . $jsVersionHash);
+
+        $themeInfo = Themes::getThemeInfo();
+
+        if (isset($themeInfo['js'])) {
+            $themeJsBase = 'b=' . urlencode(Themes::$themePath . DIRECTORY_SEPARATOR . 'js');
+            $themeJsFiles = 'f=' . urlencode(implode(',', $themeInfo['js']));
+
+            $this->view->assign('jsLinkTheme', Init::$WEBROOT . '/js/js.php?' . $themeJsFiles . '&' . $themeJsBase . '&' . $jsVersionHash);
+        }
+
+        if (isset($themeInfo['css'])) {
+            if (!\SP\Util::resultsCardsIsEnabled()) {
+                array_push($themeInfo['css'], 'search-grid.min.css');
+            }
+
+            $themeCssBase = 'b=' . urlencode(Themes::$themePath . DIRECTORY_SEPARATOR . 'css');
+            $themeCssFiles = 'f=' . urlencode(implode(',', $themeInfo['css']));
+
+            $this->view->assign('cssLinkTheme', Init::$WEBROOT . '/css/css.php?' . $themeCssFiles . '&' . $themeCssBase . '&' . $jsVersionHash);
+        }
     }
 
     /**
@@ -125,6 +146,7 @@ class MainC extends Controller implements ActionsInterface
         $this->getMenu();
 
         $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
     }
 
     /**
@@ -196,6 +218,7 @@ class MainC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('login');
         $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
 
         $this->view->assign('demoEnabled', Util::demoIsEnabled());
         $this->view->assign('mailEnabled', Util::mailIsEnabled());
@@ -238,6 +261,7 @@ class MainC extends Controller implements ActionsInterface
         $this->view->addTemplate('install');
         $this->view->addTemplate('js-common');
         $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
 
         $this->view->assign('modulesErrors', Util::checkModules());
         $this->view->assign('versionErrors', Util::checkPhpVersion());
@@ -329,6 +353,7 @@ class MainC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
     }
 
     /**
@@ -338,6 +363,7 @@ class MainC extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('upgrade');
         $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
 
         $this->view->assign('action', Request::analyze('a'));
         $this->view->assign('time', Request::analyze('t'));
@@ -362,7 +388,7 @@ class MainC extends Controller implements ActionsInterface
         }
 
         $this->view->addTemplate('footer');
-
+        $this->view->addTemplate('body-end');
     }
 
     /**
@@ -402,6 +428,5 @@ class MainC extends Controller implements ActionsInterface
 
         $this->view->assign('numNotices', $numNotices);
         $this->view->assign('noticesTitle', $noticesTitle);
-
     }
 }

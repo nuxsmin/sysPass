@@ -637,4 +637,24 @@ class Session
     {
         self::setSessionKey('usrpreferences', $preferences);
     }
+
+    /**
+     * Devolver la clave maestra temporal
+     *
+     * @return string
+     */
+    public static function getTemporaryMasterPass()
+    {
+        return self::getSessionKey('tempmasterpass');
+    }
+
+    /**
+     * Establece la clave maestra temporal
+     *
+     * @param string $password
+     */
+    public static function setTemporaryMasterPass($password)
+    {
+        self::setSessionKey('tempmasterpass', $password);
+    }
 }

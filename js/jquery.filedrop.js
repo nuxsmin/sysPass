@@ -1,5 +1,3 @@
-/*global jQuery:false, alert:false */
-
 /*
  * Default text - jQuery plugin for html5 dragging files from desktop to browser
  *

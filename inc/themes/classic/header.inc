@@ -5,5 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="icon" TYPE="image/png" href="<?php echo $logoIcon; ?>">
         <link rel="stylesheet" href="<?php echo $cssLink;?>" />
-        <script type="text/javascript" src="<?php echo $jsLink?>"></script>
+        <?php if (isset($cssLinkTheme)): ?>
+            <link rel="stylesheet" href="<?php echo $cssLinkTheme; ?>"/>
+        <?php endif; ?>
     </head>
