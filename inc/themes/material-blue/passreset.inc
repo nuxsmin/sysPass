@@ -30,7 +30,7 @@
                            for="pass"><?php echo _('Clave'); ?></label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="passR" name="passR" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
+                    <input id="passR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
                            value="<?php echo SP\Util::init_var('passR'); ?>" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="pass"><?php echo _('Clave (repetir)'); ?></label>
@@ -43,7 +43,7 @@
         </fieldset>
 
         <div class="buttons">
-            <button id="btnBack" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+            <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                 <i class="material-icons" title="<?php echo _('Volver a iniciar sesión'); ?>">arrow_back</i>
                 <?php echo _('Volver'); ?>
             </button>
@@ -64,16 +64,16 @@
 </div>
 
 <script>
-    $(function(){
+    window.onload = function () {
+        sysPassUtil.passwordDetect();
+
         $('#btnBack').click(function(){
             window.history.back();
         });
 
         $('#frmPassReset').submit(function(){
-            sysPassUtil.Common.encryptFormValue('#pass');
-            sysPassUtil.Common.encryptFormValue('#passR');
-
             sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php');
+            return false;
         });
-    })
+    };
 </script>

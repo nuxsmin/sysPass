@@ -201,20 +201,16 @@ class Ldap
     protected static function searchGroupDN()
     {
         $log = new Log(__FUNCTION__);
-        $groupName = array();
-
-        if (preg_match('/^cn=([\w\s-]+),.*/i', self::$_ldapGroup, $groupName)) {
-            $filter = '(cn=' . $groupName[1] . ')';
-        } else {
-            $filter = '(cn=' . self::$_ldapGroup . ')';
-        }
-
+        $groupName = self::getGroupName();
+        $filter = ($groupName) ? $groupName : self::$_ldapGroup ;
+        $filter = '(cn=' . $filter . ')';
         $filterAttr = array("dn", "cn");
 
         $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar RDN de grupo'));
+            $log->addDescription(sprintf('%s: %s', _('Grupo'), $filter));
             $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
@@ -227,19 +223,17 @@ class Ldap
 
             if (!$ldapSearchData) {
                 $log->addDescription(_('Error al buscar RDN de grupo'));
+                $log->addDescription(sprintf('%s: %s', _('Grupo'), $filter));
                 $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
                 $log->writeLog();
 
                 throw new \Exception(_('Error al buscar RDN de grupo'));
             }
 
-//            $log->addDescription(_('RDN de grupo encontrado'));
-//            $log->addDescription('RDN: ' . $ldapSearchData[0]["dn"]);
-//            $log->writeLog();
-
             return $ldapSearchData[0]["dn"];
         } else {
             $log->addDescription(_('Error al buscar RDN de grupo'));
+            $log->addDescription(sprintf('%s: %s', _('Grupo'), $filter));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
@@ -293,6 +287,7 @@ class Ldap
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar el DN del usuario'));
+            $log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
             $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
@@ -305,6 +300,7 @@ class Ldap
 
             if (!self::$ldapSearchData) {
                 $log->addDescription(_('Error al localizar el usuario en LDAP'));
+                $log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
                 $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
                 $log->writeLog();
 
@@ -312,6 +308,7 @@ class Ldap
             }
         } else {
             $log->addDescription(_('Error al buscar el DN del usuario'));
+            $log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
 
@@ -371,25 +368,21 @@ class Ldap
 
         $ldapGroup = Config::getValue('ldap_group');
 
-        // El filtro de grupo no está establecido
-        if (empty($ldapGroup)) {
+        // Comprobar el filtro de grupo y obtener el nombre
+        if (empty($ldapGroup) || !$groupDN = self::getGroupName()) {
             return true;
-        }
-
-        // Obtenemos el DN del grupo
-        if (!$groupDN = self::searchGroupDN()) {
-            return false;
         }
 
         $userDN = self::escapeLdapDN($userDN);
 
-        $filter = '(&(|(' . $groupDN . ')(cn=' . $ldapGroup . '))(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
         $filterAttr = array("member", "uniqueMember");
 
         $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
 
         if (!$searchRes) {
             $log->addDescription(_('Error al buscar el grupo de usuarios'));
+            $log->addDescription(sprintf('%s: %s', _('Grupo'), $ldapGroup));
             $log->addDescription(sprintf('LDAP ERROR: %s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
             $log->addDescription('LDAP FILTER: ' . $filter);
             $log->writeLog();
@@ -408,6 +401,20 @@ class Ldap
     }
 
     /**
+     * Obtener el nombre del grupo a partir del CN
+     *
+     * @return bool
+     */
+    private static function getGroupName()
+    {
+        if (isset(self::$_ldapGroup) && preg_match('/^cn=([\w\s-]+),.*/i', self::$_ldapGroup, $groupName)) {
+            return $groupName[1];
+        }
+
+        return false;
+    }
+
+    /**
      * Escapar carácteres especiales en el RDN de LDAP.
      *
      * @param string $dn con el RDN del usuario
@@ -418,6 +425,5 @@ class Ldap
         $chars = array('/(,)(?!uid|cn|ou|dc)/i', '/(?<!uid|cn|ou|dc)(=)/i', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
         return preg_replace($chars, '\\\$1', $dn);
     }
-
 
 }

@@ -353,11 +353,8 @@ class UserUtil
             'AND userpassr_used = 0 ' .
             'AND userpassr_date >= :date';
 
-        $data['login'] = self::getUserIdByLogin($login);
+        $data['id'] = self::getUserIdByLogin($login);
         $data['date'] = time() - self::MAX_PASS_RECOVER_TIME;
-
-        $db = new DB();
-        $db->setParamData($data);
 
         return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= self::MAX_PASS_RECOVER_LIMIT);
     }

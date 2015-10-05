@@ -7,7 +7,7 @@
         echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
-    <form id="passreset" action="" method="post"
+    <form id="frmPassReset" action="" method="post"
           onsubmit="sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
         <fieldset id="resetdata">
             <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
@@ -27,7 +27,7 @@
                     <input type="password" name="pass" id="pass" title="<?php echo _('Nueva Clave'); ?>"
                            class="passwordfield__input"
                            placeholder="<?php echo _('Clave'); ?>" value="<?php echo Util::init_var('pass'); ?>"
-                           onKeyUp="checkPassLevel(this.value)" required/>
+                           required/>
                 </p>
                 <p>
                     <input type="password" name="passR" id="passR"
@@ -55,16 +55,16 @@
     </form>
 </div>
 <script>
-    $(function(){
-        $('#btnBack').click(function(){
+    window.onload = function () {
+        sysPassUtil.passwordDetect();
+
+        $('#btnBack').click(function () {
             window.history.back();
         });
 
-        $('#frmPassReset').submit(function(){
-            sysPassUtil.Common.encryptFormValue('#pass');
-            sysPassUtil.Common.encryptFormValue('#passR');
-
-            sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php');
+        $('#frmPassReset').submit(function () {
+            sysPassUtil.Common.sendAjax($(this).serialize(), '/ajax/ajax_passReset.php');
+            return false;
         });
-    })
+    };
 </script>

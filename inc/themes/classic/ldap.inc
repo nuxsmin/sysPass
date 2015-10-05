@@ -203,7 +203,7 @@
                     </td>
                     <td class="valField">
                         <img src="imgs/refresh.png" class="inputImg"
-                             title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="sysPassUtil.Common.checkLdapConn();"/>
+                             title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="sysPassUtil.Common.checkLdapConn('frmLdap');"/>
                     </td>
                 </tr>
             <?php else: ?>

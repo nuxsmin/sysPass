@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-30 03:01+0100\n"
-"PO-Revision-Date: 2015-09-30 03:01+0100\n"
+"POT-Creation-Date: 2015-10-05 02:34+0100\n"
+"PO-Revision-Date: 2015-10-05 02:34+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: hu_HU\n"
@@ -42,7 +42,7 @@ msgid "Código correcto"
 msgstr "Hibás felhasználónév vagy jelszó"
 
 # "Incorrect login"
-#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:66
+#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:94
 #, fuzzy
 msgid "Código incorrecto"
 msgstr "Hibás felhasználónév vagy jelszó"
@@ -60,55 +60,55 @@ msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "A munkamenet nem indult el, vagy idõtúllépés miatt bezáródott"
 
 # "Account name needed"
-#: ../../../../ajax/ajax_accountSave.php:75
-#: ../../../../ajax/ajax_accountSave.php:90
+#: ../../../../ajax/ajax_accountSave.php:77
+#: ../../../../ajax/ajax_accountSave.php:92
 msgid "Es necesario un nombre de cuenta"
 msgstr "Fiók név szükséges"
 
 # "Customer name needed"
-#: ../../../../ajax/ajax_accountSave.php:77
-#: ../../../../ajax/ajax_accountSave.php:88
+#: ../../../../ajax/ajax_accountSave.php:79
+#: ../../../../ajax/ajax_accountSave.php:90
 #: ../../../../ajax/ajax_appMgmtSave.php:328
 msgid "Es necesario un nombre de cliente"
 msgstr "Ügyfél név szükséges"
 
 # "Username needed"
-#: ../../../../ajax/ajax_accountSave.php:79
-#: ../../../../ajax/ajax_accountSave.php:92
+#: ../../../../ajax/ajax_accountSave.php:81
+#: ../../../../ajax/ajax_accountSave.php:94
 msgid "Es necesario un usuario"
 msgstr "Felhasználónév szükséges"
 
 # "Password needed"
-#: ../../../../ajax/ajax_accountSave.php:81
-#: ../../../../ajax/ajax_accountSave.php:103
+#: ../../../../ajax/ajax_accountSave.php:83
+#: ../../../../ajax/ajax_accountSave.php:105
 #, fuzzy
 msgid "Es necesaria una clave"
 msgstr "Jelszó szükséges"
 
 # "Category name needed"
-#: ../../../../ajax/ajax_accountSave.php:83
-#: ../../../../ajax/ajax_accountSave.php:94
+#: ../../../../ajax/ajax_accountSave.php:85
+#: ../../../../ajax/ajax_accountSave.php:96
 #, fuzzy
 msgid "Es necesario una categoría"
 msgstr "Jelszó szükséges"
 
 # "Invalid Id"
-#: ../../../../ajax/ajax_accountSave.php:98
-#: ../../../../ajax/ajax_accountSave.php:107
+#: ../../../../ajax/ajax_accountSave.php:100
+#: ../../../../ajax/ajax_accountSave.php:109
 msgid "Id inválido"
 msgstr "Érvénytelen Id"
 
 # "Invalid Action"
-#: ../../../../ajax/ajax_accountSave.php:110
-#: ../../../../ajax/ajax_accountSave.php:258
+#: ../../../../ajax/ajax_accountSave.php:112
+#: ../../../../ajax/ajax_accountSave.php:262
 #: ../../../../ajax/ajax_appMgmtSave.php:534
-#: ../../../../ajax/ajax_configSave.php:287
-#: ../../../../ajax/ajax_userPrefsSave.php:79 ../../../../api.php:53
+#: ../../../../ajax/ajax_configSave.php:293
+#: ../../../../ajax/ajax_userPrefsSave.php:108 ../../../../api.php:53
 msgid "Acción Inválida"
 msgstr "Érvénytelen Akció"
 
 # "Passwords mismatch"
-#: ../../../../ajax/ajax_accountSave.php:117
+#: ../../../../ajax/ajax_accountSave.php:120
 #: ../../../../ajax/ajax_appMgmtSave.php:111
 #: ../../../../ajax/ajax_appMgmtSave.php:148
 #: ../../../../ajax/ajax_backup.php:62
@@ -116,59 +116,59 @@ msgid "Las claves no coinciden"
 msgstr "A jelszó nem egyezik"
 
 # "Account added"
-#: ../../../../ajax/ajax_accountSave.php:168
+#: ../../../../ajax/ajax_accountSave.php:172
 msgid "Cuenta creada"
 msgstr "Fiók hozzáadva"
 
 # "Error on account creation"
-#: ../../../../ajax/ajax_accountSave.php:171
+#: ../../../../ajax/ajax_accountSave.php:175
 msgid "Error al crear la cuenta"
 msgstr "Hiba a fiók létrehozása közben"
 
 # "No changes"
-#: ../../../../ajax/ajax_accountSave.php:206
+#: ../../../../ajax/ajax_accountSave.php:210
 msgid "Sin cambios"
 msgstr "Nincsenek változások"
 
 # "Account updated"
-#: ../../../../ajax/ajax_accountSave.php:218
+#: ../../../../ajax/ajax_accountSave.php:222
 msgid "Cuenta actualizada"
 msgstr "Fiók frissítve"
 
 # "Error on updating account"
-#: ../../../../ajax/ajax_accountSave.php:221
+#: ../../../../ajax/ajax_accountSave.php:225
 msgid "Error al modificar la cuenta"
 msgstr "Hiba a fiók frissítése közben"
 
 # "Account deleted"
-#: ../../../../ajax/ajax_accountSave.php:228
+#: ../../../../ajax/ajax_accountSave.php:232
 msgid "Cuenta eliminada"
 msgstr "Fiók törölve"
 
 # "Error on account deletion"
-#: ../../../../ajax/ajax_accountSave.php:231
+#: ../../../../ajax/ajax_accountSave.php:235
 msgid "Error al eliminar la cuenta"
 msgstr "Hiba a fiók törlése közben"
 
 # "Password updated"
-#: ../../../../ajax/ajax_accountSave.php:241
+#: ../../../../ajax/ajax_accountSave.php:245
 #: ../../../../ajax/ajax_appMgmtSave.php:152
 #: ../../../../ajax/ajax_passReset.php:74
 msgid "Clave actualizada"
 msgstr "Jelszó frissítve"
 
 # "Error on updating password"
-#: ../../../../ajax/ajax_accountSave.php:244
+#: ../../../../ajax/ajax_accountSave.php:248
 msgid "Error al actualizar la clave"
 msgstr "Hiba a jelszó frissítése közben"
 
 # "Account restored"
-#: ../../../../ajax/ajax_accountSave.php:251
+#: ../../../../ajax/ajax_accountSave.php:255
 msgid "Cuenta restaurada"
 msgstr "Fiók restaurált"
 
 # "Error on restoring account"
-#: ../../../../ajax/ajax_accountSave.php:254
+#: ../../../../ajax/ajax_accountSave.php:258
 msgid "Error al restaurar cuenta"
 msgstr "Hiba történt helyreállítása számla"
 
@@ -264,6 +264,8 @@ msgstr "Kategória módosítás"
 #: ../../../../ajax/ajax_appMgmtData.php:143
 #: ../../../../inc/Category.class.php:83
 #: ../../../../web/AccountsMgmtC.class.php:86
+#: ../../../../inc/themes/classic/account.inc:53
+#: ../../../../inc/themes/material-blue/account.inc:61
 msgid "Nueva Categoría"
 msgstr "Új Kategória"
 
@@ -331,9 +333,9 @@ msgstr "Email szükséges"
 #: ../../../../ajax/ajax_appMgmtSave.php:95
 #: ../../../../ajax/ajax_appMgmtSave.php:144
 #: ../../../../ajax/ajax_appMgmtSave.php:159
-#: ../../../../ajax/ajax_configSave.php:262
+#: ../../../../ajax/ajax_configSave.php:268
 #: ../../../../ajax/ajax_import.php:39 ../../../../ajax/ajax_migrate.php:39
-#: ../../../../ajax/ajax_userPrefsSave.php:55
+#: ../../../../ajax/ajax_userPrefsSave.php:83
 msgid "Ey, esto es una DEMO!!"
 msgstr "Aj, ez egy próbaverzió"
 
@@ -429,10 +431,10 @@ msgstr "Hiba a csoport frissítése közben"
 #: ../../../../ajax/ajax_appMgmtSave.php:228
 #: ../../../../ajax/ajax_appMgmtSave.php:305
 #: ../../../../inc/CustomFieldsBase.class.php:83
-#: ../../../../inc/themes/classic/account.inc:109
+#: ../../../../inc/themes/classic/account.inc:112
 #: ../../../../inc/themes/classic/groups.inc:24
 #: ../../../../inc/themes/classic/profiles.inc:85
-#: ../../../../inc/themes/material-blue/account.inc:134
+#: ../../../../inc/themes/material-blue/account.inc:137
 #: ../../../../inc/themes/material-blue/groups.inc:32
 #: ../../../../inc/themes/material-blue/profiles.inc:99
 msgid "Usuarios"
@@ -444,7 +446,7 @@ msgstr "Felhasználók"
 #: ../../../../inc/CustomFieldsBase.class.php:80
 #: ../../../../inc/Customer.class.php:150
 #: ../../../../inc/themes/classic/profiles.inc:15
-#: ../../../../inc/themes/material-blue/config.inc:139
+#: ../../../../inc/themes/material-blue/config.inc:176
 #: ../../../../inc/themes/material-blue/profiles.inc:19
 msgid "Cuentas"
 msgstr "Fiókok"
@@ -695,141 +697,157 @@ msgid "Modificar Configuración"
 msgstr "Konfiguráció szerkesztése"
 
 # "Maximum file upload size in 16MB"
-#: ../../../../ajax/ajax_configSave.php:100
+#: ../../../../ajax/ajax_configSave.php:102
 #, fuzzy
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "Maximálisan feltölthetõ fájl mérete 16MB"
 
 # "Missing Mail parameters"
-#: ../../../../ajax/ajax_configSave.php:113
+#: ../../../../ajax/ajax_configSave.php:115
 #, fuzzy
 msgid "Faltan parámetros de Proxy"
 msgstr "Hiányzó Wiki paraméter"
 
+# "Action"
+#: ../../../../ajax/ajax_configSave.php:126
+#: ../../../../ajax/ajax_configSave.php:146
+#: ../../../../ajax/ajax_configSave.php:176
+#: ../../../../ajax/ajax_configSave.php:211
+#, fuzzy
+msgid "Sección"
+msgstr "Akció"
+
 # "General"
-#: ../../../../ajax/ajax_configSave.php:124
-#: ../../../../web/ConfigC.class.php:126
+#: ../../../../ajax/ajax_configSave.php:126
+#: ../../../../web/ConfigC.class.php:106
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
 msgstr "Általános"
 
 # "Missing Wiki parameters"
-#: ../../../../ajax/ajax_configSave.php:134
+#: ../../../../ajax/ajax_configSave.php:136
 msgid "Faltan parámetros de Wiki"
 msgstr "Hiányzó Wiki paraméter"
 
 # "Wiki"
-#: ../../../../ajax/ajax_configSave.php:144
-#: ../../../../web/ConfigC.class.php:261
+#: ../../../../ajax/ajax_configSave.php:146
+#: ../../../../web/ConfigC.class.php:242
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
 msgstr "Wiki"
 
 # "Missing LDAP parameters"
-#: ../../../../ajax/ajax_configSave.php:159
+#: ../../../../ajax/ajax_configSave.php:161
 msgid "Faltan parámetros de LDAP"
 msgstr "Hiányzó LDAP paraméter"
 
 # "LDAP"
-#: ../../../../ajax/ajax_configSave.php:174
-#: ../../../../web/ConfigC.class.php:293
+#: ../../../../ajax/ajax_configSave.php:176
+#: ../../../../web/ConfigC.class.php:274
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
 msgstr "LDAP"
 
 # "Missing Mail parameters"
-#: ../../../../ajax/ajax_configSave.php:189
+#: ../../../../ajax/ajax_configSave.php:191
 msgid "Faltan parámetros de Correo"
 msgstr "Hiányzó mail paraméter"
 
 # "Mail"
-#: ../../../../ajax/ajax_configSave.php:209
-#: ../../../../web/ConfigC.class.php:323
+#: ../../../../ajax/ajax_configSave.php:211
+#: ../../../../web/ConfigC.class.php:304
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
 msgstr "Mail"
 
 # "Configuration updated"
-#: ../../../../ajax/ajax_configSave.php:221
+#: ../../../../ajax/ajax_configSave.php:223
 msgid "Configuración actualizada"
 msgstr "Beállítások frissítve"
 
 # "Master Password updated"
-#: ../../../../ajax/ajax_configSave.php:230
-#: ../../../../ajax/ajax_configSave.php:272
+#: ../../../../ajax/ajax_configSave.php:232
+#: ../../../../ajax/ajax_configSave.php:278
 #: ../../../../ajax/ajax_viewpass.php:60
 #: ../../../../inc/Controller.class.php:169
 msgid "Clave maestra actualizada"
 msgstr "A mester jelszó frissítve"
 
 # "Restart session to update"
-#: ../../../../ajax/ajax_configSave.php:230
+#: ../../../../ajax/ajax_configSave.php:232
 #: ../../../../ajax/ajax_viewpass.php:60
 #: ../../../../inc/Controller.class.php:169
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Indítsa újra a munkamenetot a frissítéshez"
 
 # "Master Password needed"
-#: ../../../../ajax/ajax_configSave.php:232
+#: ../../../../ajax/ajax_configSave.php:234
 msgid "Clave maestra no indicada"
 msgstr "Mester jelszó szükséges"
 
 # "Password update must be confirmed"
-#: ../../../../ajax/ajax_configSave.php:234
+#: ../../../../ajax/ajax_configSave.php:236
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "A jelszó frissítéshez megerõsítés szükséges"
 
 # "Password are the same"
-#: ../../../../ajax/ajax_configSave.php:238
+#: ../../../../ajax/ajax_configSave.php:240
 msgid "Las claves son idénticas"
 msgstr "A jelszó megegyezik"
 
 # "Master passwords mismatch"
-#: ../../../../ajax/ajax_configSave.php:240
+#: ../../../../ajax/ajax_configSave.php:242
 msgid "Las claves maestras no coinciden"
 msgstr "A mester jelszó nem egyezik"
 
 # "Current master password mismatch"
-#: ../../../../ajax/ajax_configSave.php:242
+#: ../../../../ajax/ajax_configSave.php:244
 msgid "La clave maestra actual no coincide"
 msgstr "A jelenlegi mester jelszó nem egyezik"
 
 # "Error on updating accounts' passwords"
-#: ../../../../ajax/ajax_configSave.php:251
+#: ../../../../ajax/ajax_configSave.php:253
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Hiba a fiókok jelszavainak frissítése közben"
 
 # "Error on updating accounts' passwords"
-#: ../../../../ajax/ajax_configSave.php:257
+#: ../../../../ajax/ajax_configSave.php:259
 #, fuzzy
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Hiba a fiókok jelszavainak frissítése közben"
 
+# "Error on updating accounts' passwords"
+#: ../../../../ajax/ajax_configSave.php:263
+#, fuzzy
+msgid "Errores al actualizar datos de campos personalizados"
+msgstr "Hiba a fiókok jelszavainak frissítése közben"
+
 # "Update Master Password"
-#: ../../../../ajax/ajax_configSave.php:270
-#: ../../../../inc/Account.class.php:497
+#: ../../../../ajax/ajax_configSave.php:276
+#: ../../../../inc/Account.class.php:495
 msgid "Actualizar Clave Maestra"
 msgstr "Frissítse a mester jelszót"
 
 # "Error on saving master password's hash"
-#: ../../../../ajax/ajax_configSave.php:274
+#: ../../../../ajax/ajax_configSave.php:280
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Hiba a mester jelszó hash-ének elmentése közben"
 
 # "Generate random password"
-#: ../../../../ajax/ajax_configSave.php:282
+#: ../../../../ajax/ajax_configSave.php:288
 #, fuzzy
 msgid "Generar Clave Temporal"
 msgstr "Generate Temporary Password"
 
 # "Password"
-#: ../../../../ajax/ajax_configSave.php:282
-#: ../../../../inc/themes/classic/account.inc:83
+#: ../../../../ajax/ajax_configSave.php:288
+#: ../../../../inc/themes/classic/account.inc:86
 #: ../../../../inc/themes/classic/editpass.inc:25
+#: ../../../../inc/themes/classic/encryption.inc:146
 #: ../../../../inc/themes/classic/install.inc:38
 #: ../../../../inc/themes/classic/install.inc:39
 #: ../../../../inc/themes/classic/login.inc:10
@@ -840,16 +858,17 @@ msgstr "Generate Temporary Password"
 #: ../../../../inc/themes/classic/users.inc:75
 #: ../../../../inc/themes/classic/userspass.inc:8
 #: ../../../../inc/themes/classic/userspass.inc:11
-#: ../../../../inc/themes/material-blue/account.inc:95
-#: ../../../../inc/themes/material-blue/account.inc:100
-#: ../../../../inc/themes/material-blue/config.inc:358
+#: ../../../../inc/themes/material-blue/account.inc:98
+#: ../../../../inc/themes/material-blue/account.inc:103
+#: ../../../../inc/themes/material-blue/config.inc:395
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
+#: ../../../../inc/themes/material-blue/encryption.inc:164
 #: ../../../../inc/themes/material-blue/install.inc:46
 #: ../../../../inc/themes/material-blue/ldap.inc:105
-#: ../../../../inc/themes/material-blue/login.inc:17
-#: ../../../../inc/themes/material-blue/login.inc:40
+#: ../../../../inc/themes/material-blue/login.inc:18
+#: ../../../../inc/themes/material-blue/login.inc:41
 #: ../../../../inc/themes/material-blue/mail.inc:73
 #: ../../../../inc/themes/material-blue/mail.inc:80
 #: ../../../../inc/themes/material-blue/passreset.inc:30
@@ -861,7 +880,7 @@ msgid "Clave"
 msgstr "Jelszó"
 
 # "Generated Password"
-#: ../../../../ajax/ajax_configSave.php:284
+#: ../../../../ajax/ajax_configSave.php:290
 #, fuzzy
 msgid "Clave Temporal Generada"
 msgstr "Generált Jelszó"
@@ -897,8 +916,8 @@ msgstr "Hiba az LDAP felhasználók adatainak elmentése közben"
 #: ../../../../inc/ApiTokens.class.php:243
 #: ../../../../inc/ApiTokens.class.php:262
 #: ../../../../inc/ApiTokens.class.php:304
-#: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:180
-#: ../../../../inc/Crypt.class.php:191
+#: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:181
+#: ../../../../inc/Crypt.class.php:192
 #: ../../../../inc/XmlImportBase.class.php:74
 msgid "Error interno"
 msgstr "Belsõ hiba"
@@ -919,11 +938,11 @@ msgstr "Hibás felhasználónév vagy jelszó"
 #: ../../../../ajax/ajax_doLogin.php:121 ../../../../ajax/ajax_doLogin.php:171
 #: ../../../../inc/ApiTokens.class.php:190
 #: ../../../../inc/ApiTokens.class.php:308 ../../../../inc/Auth.class.php:108
-#: ../../../../inc/Init.class.php:517 ../../../../inc/UserBase.class.php:382
+#: ../../../../inc/Init.class.php:457 ../../../../inc/UserBase.class.php:382
 #: ../../../../inc/UserBase.class.php:526 ../../../../res/test.php:64
-#: ../../../../web/SearchC.class.php:289
+#: ../../../../web/SearchC.class.php:304
 #: ../../../../web/UsersMgmtC.class.php:392
-#: ../../../../inc/themes/classic/account.inc:70
+#: ../../../../inc/themes/classic/account.inc:73
 #: ../../../../inc/themes/classic/editpass.inc:21
 #: ../../../../inc/themes/classic/eventlog.inc:25
 #: ../../../../inc/themes/classic/info.inc:39
@@ -934,15 +953,15 @@ msgstr "Hibás felhasználónév vagy jelszó"
 #: ../../../../inc/themes/classic/mail.inc:47
 #: ../../../../inc/themes/classic/passreset.inc:17
 #: ../../../../inc/themes/classic/request.inc:17
-#: ../../../../inc/themes/classic/search.inc:50
+#: ../../../../inc/themes/classic/search.inc:59
 #: ../../../../inc/themes/classic/tokens.inc:8
-#: ../../../../inc/themes/material-blue/account.inc:80
-#: ../../../../inc/themes/material-blue/config.inc:344
+#: ../../../../inc/themes/material-blue/account.inc:83
+#: ../../../../inc/themes/material-blue/config.inc:381
 #: ../../../../inc/themes/material-blue/editpass.inc:22
 #: ../../../../inc/themes/material-blue/eventlog.inc:24
 #: ../../../../inc/themes/material-blue/info.inc:39
-#: ../../../../inc/themes/material-blue/login.inc:10
-#: ../../../../inc/themes/material-blue/login.inc:33
+#: ../../../../inc/themes/material-blue/login.inc:11
+#: ../../../../inc/themes/material-blue/login.inc:34
 #: ../../../../inc/themes/material-blue/mail.inc:61
 #: ../../../../inc/themes/material-blue/mail.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:16
@@ -1119,7 +1138,7 @@ msgid "Error al eliminar el archivo"
 msgstr "Hiba a fájlok törlése közben"
 
 # "Incorrect parameters"
-#: ../../../../ajax/ajax_getContent.php:41
+#: ../../../../ajax/ajax_getContent.php:42
 #: ../../../../inc/ApiRequest.class.php:55
 #: ../../../../inc/CustomFieldDef.class.php:38
 #: ../../../../inc/CustomFields.class.php:48
@@ -1221,8 +1240,8 @@ msgstr "Kérõ"
 # "Account"
 #: ../../../../ajax/ajax_sendRequest.php:63
 #: ../../../../ajax/ajax_viewpass.php:70 ../../../../inc/Account.class.php:165
-#: ../../../../inc/Account.class.php:219 ../../../../inc/Account.class.php:402
-#: ../../../../inc/Account.class.php:425 ../../../../inc/Account.class.php:667
+#: ../../../../inc/Account.class.php:219 ../../../../inc/Account.class.php:400
+#: ../../../../inc/Account.class.php:423 ../../../../inc/Account.class.php:665
 #: ../../../../inc/Files.class.php:64
 msgid "Cuenta"
 msgstr "Fiók"
@@ -1230,15 +1249,15 @@ msgstr "Fiók"
 # "Customer"
 #: ../../../../ajax/ajax_sendRequest.php:64
 #: ../../../../inc/Account.class.php:164 ../../../../inc/Account.class.php:218
-#: ../../../../inc/Account.class.php:401 ../../../../inc/Account.class.php:424
-#: ../../../../inc/Account.class.php:666 ../../../../inc/Customer.class.php:65
+#: ../../../../inc/Account.class.php:399 ../../../../inc/Account.class.php:422
+#: ../../../../inc/Account.class.php:664 ../../../../inc/Customer.class.php:65
 #: ../../../../inc/Customer.class.php:115
 #: ../../../../inc/Customer.class.php:163
-#: ../../../../web/SearchC.class.php:271
+#: ../../../../web/SearchC.class.php:286
 #: ../../../../inc/themes/classic/account.inc:23
 #: ../../../../inc/themes/classic/editpass.inc:12
 #: ../../../../inc/themes/classic/request.inc:9
-#: ../../../../inc/themes/classic/search.inc:19
+#: ../../../../inc/themes/classic/search.inc:28
 #: ../../../../inc/themes/material-blue/account.inc:29
 #: ../../../../inc/themes/material-blue/editpass.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:10
@@ -1268,13 +1287,15 @@ msgid "Error al enviar la solicitud"
 msgstr "Hiba a kérés küldése közben"
 
 # "Error on updating profile"
-#: ../../../../ajax/ajax_userPrefsSave.php:74
+#: ../../../../ajax/ajax_userPrefsSave.php:70
+#: ../../../../ajax/ajax_userPrefsSave.php:103
 #, fuzzy
 msgid "Error al actualizar preferencias"
 msgstr "Hiba a jelszó frissítése közben"
 
 # "Accounts updated:"
-#: ../../../../ajax/ajax_userPrefsSave.php:77
+#: ../../../../ajax/ajax_userPrefsSave.php:80
+#: ../../../../ajax/ajax_userPrefsSave.php:106
 #, fuzzy
 msgid "Preferencias actualizadas"
 msgstr "Fiókok frissítve"
@@ -1292,17 +1313,17 @@ msgstr "Nincs jogosultságod belépni ebbe a fiókba"
 
 # "View password"
 #: ../../../../ajax/ajax_viewpass.php:68 ../../../../inc/Acl.class.php:133
-#: ../../../../inc/themes/classic/account.inc:379
+#: ../../../../inc/themes/classic/account.inc:382
 #: ../../../../inc/themes/classic/profiles.inc:23
-#: ../../../../inc/themes/classic/search.inc:100
-#: ../../../../inc/themes/material-blue/account.inc:419
+#: ../../../../inc/themes/classic/search.inc:109
+#: ../../../../inc/themes/material-blue/account.inc:422
 #: ../../../../inc/themes/material-blue/profiles.inc:35
 #: ../../../../inc/themes/material-blue/search.inc:113
 msgid "Ver Clave"
 msgstr "Jelszó"
 
 # "View account password"
-#: ../../../../ajax/ajax_viewpass.php:79
+#: ../../../../ajax/ajax_viewpass.php:79 ../../../../js/strings.js.php:73
 #, fuzzy
 msgid "Clave de Cuenta"
 msgstr "Fiók jelszavának szerkesztése"
@@ -1335,30 +1356,31 @@ msgstr "Segítség :: GYIK :: Változások Listája"
 #: ../../../../inc/Installer.class.php:29
 #: ../../../../inc/KeepassImport.class.php:28
 #: ../../../../inc/KeepassXImport.class.php:28
-#: ../../../../inc/Ldap.class.php:29 ../../../../inc/LdapADS.class.php:28
-#: ../../../../inc/Log.class.php:28 ../../../../inc/Migrate.class.php:28
+#: ../../../../inc/Language.class.php:28 ../../../../inc/Ldap.class.php:29
+#: ../../../../inc/LdapADS.class.php:28 ../../../../inc/Log.class.php:28
+#: ../../../../inc/Migrate.class.php:28 ../../../../inc/Minify.class.php:30
 #: ../../../../inc/Profile.class.php:29
 #: ../../../../inc/ProfileBase.class.php:28
 #: ../../../../inc/Request.class.php:110 ../../../../inc/Session.class.php:28
 #: ../../../../inc/SyspassImport.class.php:28
-#: ../../../../inc/Upgrade.class.php:29 ../../../../inc/User.class.php:28
-#: ../../../../inc/UserLdap.class.php:28
+#: ../../../../inc/Themes.class.php:28 ../../../../inc/Upgrade.class.php:29
+#: ../../../../inc/User.class.php:28 ../../../../inc/UserLdap.class.php:28
 #: ../../../../inc/UserPreferences.class.php:28
 #: ../../../../inc/UserUtil.class.php:28 ../../../../inc/Util.class.php:31
 #: ../../../../inc/XmlImport.class.php:28
 #: ../../../../inc/XmlImportBase.class.php:28
 #: ../../../../web/AccountC.class.php:38
 #: ../../../../web/AccountsMgmtC.class.php:32
-#: ../../../../web/ConfigC.class.php:31 ../../../../web/EventlogC.class.php:28
-#: ../../../../web/SearchC.class.php:30
+#: ../../../../web/ConfigC.class.php:33 ../../../../web/EventlogC.class.php:28
+#: ../../../../web/SearchC.class.php:31
 #: ../../../../web/UsersMgmtC.class.php:39
-#: ../../../../web/UsersPrefsC.class.php:32
+#: ../../../../web/UsersPrefsC.class.php:34
 msgid "No es posible acceder directamente a este archivo"
 msgstr "A fájl közvetlen elérése meghiúsult"
 
 # "Error on updating history"
 #: ../../../../inc/Account.class.php:112 ../../../../inc/Account.class.php:185
-#: ../../../../inc/Account.class.php:636
+#: ../../../../inc/Account.class.php:634
 msgid "Error al actualizar el historial"
 msgstr "Hiba az elõzmények frissítése közben"
 
@@ -1368,12 +1390,12 @@ msgid "Actualizar Cuenta"
 msgstr "Frissítés Számla"
 
 # "Error on updating secondary groups"
-#: ../../../../inc/Account.class.php:120 ../../../../inc/Account.class.php:383
+#: ../../../../inc/Account.class.php:120 ../../../../inc/Account.class.php:381
 msgid "Error al actualizar los grupos secundarios"
 msgstr "Hiba a másodlagos csoportok frissítése közben"
 
 # "Error on updating account's users"
-#: ../../../../inc/Account.class.php:126 ../../../../inc/Account.class.php:391
+#: ../../../../inc/Account.class.php:126 ../../../../inc/Account.class.php:389
 msgid "Error al actualizar los usuarios de la cuenta"
 msgstr "Hiba a fiók felhasználóinak frissítése közben"
 
@@ -1383,112 +1405,113 @@ msgid "Restaurar Cuenta"
 msgstr "Restore Számla"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/Account.class.php:326
+#: ../../../../inc/Account.class.php:324
 #: ../../../../inc/AccountHistory.class.php:343
-#: ../../../../inc/AccountHistory.class.php:505
+#: ../../../../inc/AccountHistory.class.php:503
 #, fuzzy
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
 # "New Account"
-#: ../../../../inc/Account.class.php:400 ../../../../inc/Acl.class.php:129
-#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:161
+#: ../../../../inc/Account.class.php:398 ../../../../inc/Acl.class.php:129
+#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:183
 msgid "Nueva Cuenta"
 msgstr "Új fiók"
 
 # "ERROR: Operation failed"
-#: ../../../../inc/Account.class.php:418
+#: ../../../../inc/Account.class.php:416
 msgid "ERROR: Error en la operación."
 msgstr "HIBA: A mûvelet meghiusult"
 
 # "Delete Account"
-#: ../../../../inc/Account.class.php:423 ../../../../inc/Acl.class.php:134
-#: ../../../../web/AccountC.class.php:352
-#: ../../../../inc/themes/classic/account.inc:366
-#: ../../../../inc/themes/classic/search.inc:127
-#: ../../../../inc/themes/material-blue/account.inc:413
-#: ../../../../inc/themes/material-blue/search.inc:142
+#: ../../../../inc/Account.class.php:421 ../../../../inc/Acl.class.php:134
+#: ../../../../web/AccountC.class.php:353
+#: ../../../../inc/themes/classic/account.inc:369
+#: ../../../../inc/themes/classic/search.inc:137
+#: ../../../../inc/themes/material-blue/account.inc:416
+#: ../../../../inc/themes/material-blue/search.inc:140
 msgid "Eliminar Cuenta"
 msgstr "Fiók törlése"
 
 # "Error on deleting account's groups"
-#: ../../../../inc/Account.class.php:436
+#: ../../../../inc/Account.class.php:434
 msgid "Error al eliminar grupos asociados a la cuenta"
 msgstr "Hiba a felhasználó csoportok törlése közben"
 
 # "Error on deleting account's users"
-#: ../../../../inc/Account.class.php:440
+#: ../../../../inc/Account.class.php:438
 msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Hiba a fiók felhasználók törlése közben"
 
 # "Error on deleting account's files"
-#: ../../../../inc/Account.class.php:444
+#: ../../../../inc/Account.class.php:442
 msgid "Error al eliminar archivos asociados a la cuenta"
 msgstr "Hiba a fiók fájljainak törlése közben"
 
 # "Start"
-#: ../../../../inc/Account.class.php:498
+#: ../../../../inc/Account.class.php:496
 #: ../../../../inc/AccountHistory.class.php:124
 #: ../../../../inc/XmlImport.class.php:62
 msgid "Inicio"
 msgstr "Start"
 
 # "Error on encryption module"
-#: ../../../../inc/Account.class.php:503
+#: ../../../../inc/Account.class.php:501
 #: ../../../../inc/AccountHistory.class.php:130
 msgid "Error en el módulo de encriptación"
 msgstr "Titkosító modul hiba"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/Account.class.php:511
+#: ../../../../inc/Account.class.php:509
 #: ../../../../inc/AccountHistory.class.php:138
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
 # "View account password"
-#: ../../../../inc/Account.class.php:527
+#: ../../../../inc/Account.class.php:525
 #: ../../../../inc/AccountHistory.class.php:160
 #, fuzzy
 msgid "Clave de cuenta vacía"
 msgstr "Fiók jelszavának szerkesztése"
 
-#: ../../../../inc/Account.class.php:532
+#: ../../../../inc/Account.class.php:530
 #: ../../../../inc/AccountHistory.class.php:165
 #, fuzzy
 msgid "IV de encriptación incorrecto"
 msgstr "A mezõk száma helytelen"
 
 # "All accounts passwords will be encrypted again."
-#: ../../../../inc/Account.class.php:541
+#: ../../../../inc/Account.class.php:539
 #: ../../../../inc/AccountHistory.class.php:174
 #, fuzzy
 msgid "No es posible desencriptar la clave de la cuenta"
 msgstr "Minden fiók jelszó újra titkosítva lesz"
 
 # "Error on updating account's password"
-#: ../../../../inc/Account.class.php:547
+#: ../../../../inc/Account.class.php:545
 msgid "Fallo al actualizar la clave de la cuenta"
 msgstr "Hiba a fiók jelszavának frissítése közben"
 
 # "Accounts updated:"
-#: ../../../../inc/Account.class.php:561
+#: ../../../../inc/Account.class.php:559
 #, fuzzy
 msgid "Cuentas actualizadas"
 msgstr "Fiókok frissítve"
 
 # "End"
-#: ../../../../inc/Account.class.php:566
+#: ../../../../inc/Account.class.php:564
 #: ../../../../inc/AccountHistory.class.php:199
+#: ../../../../inc/CustomFields.class.php:319
 msgid "Fin"
 msgstr "Vége"
 
 # "Update Password"
-#: ../../../../inc/Account.class.php:665
+#: ../../../../inc/Account.class.php:663
 msgid "Modificar Clave"
 msgstr "Jelszó frissítés"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/Account.class.php:700
+#: ../../../../inc/Account.class.php:698
 #, fuzzy
 msgid "No se pudieron obtener los datos de las cuentas"
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
@@ -1510,6 +1533,7 @@ msgstr "Hiba a elõzmények mester jelszavának frissítése közben"
 
 # "Records updated"
 #: ../../../../inc/AccountHistory.class.php:194
+#: ../../../../inc/CustomFields.class.php:315
 #, fuzzy
 msgid "Registros actualizados"
 msgstr "Rekordok frissítve"
@@ -1532,14 +1556,14 @@ msgid "Ver Cuenta"
 msgstr "Fiók adatok"
 
 # "Copy Account"
-#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:259
-#: ../../../../inc/themes/classic/search.inc:121
-#: ../../../../inc/themes/material-blue/search.inc:136
+#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:260
+#: ../../../../inc/themes/classic/search.inc:131
+#: ../../../../inc/themes/material-blue/search.inc:134
 msgid "Copiar Cuenta"
 msgstr "Fiók másolása"
 
 # "Edit Account"
-#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:323
+#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:324
 msgid "Editar Cuenta"
 msgstr "Fiók módosítás"
 
@@ -1558,10 +1582,10 @@ msgstr "Elõzmények"
 
 # "Files"
 #: ../../../../inc/Acl.class.php:135
-#: ../../../../inc/themes/classic/account.inc:188
+#: ../../../../inc/themes/classic/account.inc:191
 #: ../../../../inc/themes/classic/profiles.inc:50
-#: ../../../../inc/themes/material-blue/account.inc:230
-#: ../../../../inc/themes/material-blue/config.inc:224
+#: ../../../../inc/themes/material-blue/account.inc:233
+#: ../../../../inc/themes/material-blue/config.inc:261
 #: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Archivos"
 msgstr "Fájlok"
@@ -1621,7 +1645,7 @@ msgstr "Profil Menedzsment"
 
 # "Configuration"
 #: ../../../../inc/Acl.class.php:146 ../../../../inc/Config.class.php:118
-#: ../../../../inc/Config.class.php:400 ../../../../web/MainC.class.php:179
+#: ../../../../inc/Config.class.php:403 ../../../../web/MainC.class.php:201
 #: ../../../../inc/themes/classic/profiles.inc:57
 #: ../../../../inc/themes/material-blue/profiles.inc:66
 msgid "Configuración"
@@ -1634,7 +1658,7 @@ msgid "Configuración General"
 msgstr "Általános beállítások"
 
 # "Description"
-#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:149
+#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:130
 #: ../../../../inc/themes/classic/profiles.inc:65
 #: ../../../../inc/themes/material-blue/profiles.inc:77
 #, fuzzy
@@ -1642,7 +1666,7 @@ msgid "Encriptación"
 msgstr "A Crypto modul nem tölthetõ be"
 
 # "Backup"
-#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:194
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:175
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
@@ -1756,25 +1780,25 @@ msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr "Amennyiben nincs szüksége erre a folyamatra, zárja be ezt az üzenetet"
 
 # "This operation is only available on Linux environments"
-#: ../../../../inc/Backup.class.php:166
+#: ../../../../inc/Backup.class.php:167
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Ez a mûvelet csak Linux környezetben érhetõ el"
 
 # Error while doing backup in compatibility mode
-#: ../../../../inc/Backup.class.php:168
+#: ../../../../inc/Backup.class.php:169
 #, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Error while doing backup in compatibility mode"
 
 # "Unable to create backup directory"
-#: ../../../../inc/Backup.class.php:222
-#: ../../../../inc/XmlExport.class.php:464
+#: ../../../../inc/Backup.class.php:223
+#: ../../../../inc/XmlExport.class.php:465
 msgid "No es posible crear el directorio de backups"
 msgstr "Arcív mappa létrehozása meghiusúlt"
 
 # "Check backup directory permissions"
-#: ../../../../inc/Backup.class.php:227
-#: ../../../../inc/XmlExport.class.php:469
+#: ../../../../inc/Backup.class.php:228
+#: ../../../../inc/XmlExport.class.php:470
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Ellenõrizze az archiválás mappa jogosultságait"
 
@@ -1793,9 +1817,9 @@ msgstr "Hiba a kategória létrehozása közben"
 #: ../../../../inc/Category.class.php:83
 #: ../../../../inc/Category.class.php:132
 #: ../../../../inc/Category.class.php:182
-#: ../../../../web/SearchC.class.php:283
+#: ../../../../web/SearchC.class.php:298
 #: ../../../../inc/themes/classic/account.inc:42
-#: ../../../../inc/themes/classic/search.inc:44
+#: ../../../../inc/themes/classic/search.inc:53
 #: ../../../../inc/themes/material-blue/account.inc:50
 #: ../../../../inc/themes/material-blue/search.inc:49
 msgid "Categoría"
@@ -1828,7 +1852,7 @@ msgid "Modificar Categoría"
 msgstr "Kategória szerkesztés"
 
 # "Update Configuration"
-#: ../../../../inc/Config.class.php:118 ../../../../inc/Config.class.php:401
+#: ../../../../inc/Config.class.php:118 ../../../../inc/Config.class.php:404
 msgid "Modificar configuración"
 msgstr "Konfiguráció frissítése"
 
@@ -1843,12 +1867,12 @@ msgid "Compruebe los permisos del directorio \"config\""
 msgstr "Kérem, ellenõrizze a 'config' mappa jogosultságait"
 
 # "Parameter"
-#: ../../../../inc/Config.class.php:402
+#: ../../../../inc/Config.class.php:405
 msgid "Parámetro"
 msgstr "Paraméter"
 
 # "Value"
-#: ../../../../inc/Config.class.php:403
+#: ../../../../inc/Config.class.php:406
 msgid "Valor"
 msgstr "Érték"
 
@@ -1861,7 +1885,7 @@ msgstr "Beállítás nem elérhetõ"
 #: ../../../../inc/Controller.class.php:165
 #: ../../../../inc/Controller.class.php:166
 #: ../../../../inc/Controller.class.php:167
-#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:290
+#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:273
 msgid "Consulte con el administrador"
 msgstr "Kérem, keresse a rendszergazdát"
 
@@ -1886,12 +1910,12 @@ msgid ""
 msgstr ""
 
 # "Crypto module can't be loaded"
-#: ../../../../inc/Crypt.class.php:181
+#: ../../../../inc/Crypt.class.php:182
 msgid "No se puede usar el módulo de encriptación"
 msgstr "A Crypto modul nem tölthetõ be"
 
 # "Error on creating encryption data"
-#: ../../../../inc/Crypt.class.php:192
+#: ../../../../inc/Crypt.class.php:193
 msgid "Error al generar datos cifrados"
 msgstr "Hiba a titkosítási folyamat közben"
 
@@ -1927,7 +1951,7 @@ msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
 #: ../../../../inc/Migrate.class.php:349
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:216
+#: ../../../../web/ConfigC.class.php:197
 msgid "Importar Cuentas"
 msgstr "Fiókok importálása"
 
@@ -1948,6 +1972,29 @@ msgstr "Hiba a fiók importálása közben"
 msgid "Cuenta importada: %s"
 msgstr "Munkamenet idõ"
 
+#: ../../../../inc/CustomFields.class.php:270
+#: ../../../../web/AccountsMgmtC.class.php:300
+#: ../../../../inc/themes/classic/profiles.inc:107
+#: ../../../../inc/themes/material-blue/profiles.inc:124
+msgid "Campos Personalizados"
+msgstr ""
+
+# "Error on updating profile"
+#: ../../../../inc/CustomFields.class.php:279
+#, fuzzy
+msgid "Error al actualizar datos encriptados"
+msgstr "Hiba a jelszó frissítése közben"
+
+#: ../../../../inc/CustomFields.class.php:283
+msgid "Actualizando datos encriptados"
+msgstr ""
+
+# "Records updated"
+#: ../../../../inc/CustomFields.class.php:310
+#, fuzzy
+msgid "Registros no actualizados"
+msgstr "Rekordok frissítve"
+
 # "Categories"
 #: ../../../../inc/CustomFieldsBase.class.php:81
 #: ../../../../inc/themes/classic/profiles.inc:98
@@ -1964,9 +2011,9 @@ msgstr "Ügyfél"
 
 # "Groups"
 #: ../../../../inc/CustomFieldsBase.class.php:84
-#: ../../../../inc/themes/classic/account.inc:140
+#: ../../../../inc/themes/classic/account.inc:143
 #: ../../../../inc/themes/classic/profiles.inc:89
-#: ../../../../inc/themes/material-blue/account.inc:166
+#: ../../../../inc/themes/material-blue/account.inc:169
 #: ../../../../inc/themes/material-blue/profiles.inc:104
 msgid "Grupos"
 msgstr "Csoportok"
@@ -2008,17 +2055,17 @@ msgid "Eliminar Cliente"
 msgstr "Ügyfél törlése"
 
 # "Unable to connect to DB"
-#: ../../../../inc/DBConnectionFactory.class.php:87
-#: ../../../../inc/DBConnectionFactory.class.php:89
-#: ../../../../inc/DBConnectionFactory.class.php:103
+#: ../../../../inc/DBConnectionFactory.class.php:83
+#: ../../../../inc/DBConnectionFactory.class.php:85
+#: ../../../../inc/DBConnectionFactory.class.php:99
 #: ../../../../inc/Installer.class.php:235
 #: ../../../../inc/Migrate.class.php:115
 msgid "No es posible conectar con la BD"
 msgstr "Csatlakozás a DB-hez meghiusúlt"
 
 # Please, check connection parameters
-#: ../../../../inc/DBConnectionFactory.class.php:87
-#: ../../../../inc/DBConnectionFactory.class.php:89
+#: ../../../../inc/DBConnectionFactory.class.php:83
+#: ../../../../inc/DBConnectionFactory.class.php:85
 #: ../../../../inc/Installer.class.php:236
 #: ../../../../inc/Migrate.class.php:116
 #, fuzzy
@@ -2143,85 +2190,85 @@ msgid "Importación finalizada"
 msgstr "Importálás kész"
 
 # "Error on checking database"
-#: ../../../../inc/Init.class.php:199
+#: ../../../../inc/Init.class.php:182
 msgid "Error en la verificación de la base de datos"
 msgstr "Hiba az adatbázis ellenõrzése közben"
 
 # "Session"
-#: ../../../../inc/Init.class.php:286
+#: ../../../../inc/Init.class.php:269
 msgid "Sesion"
 msgstr "Munkamenet"
 
 # "Session cannot be initialized."
-#: ../../../../inc/Init.class.php:286 ../../../../inc/Init.class.php:290
+#: ../../../../inc/Init.class.php:269 ../../../../inc/Init.class.php:273
 msgid "La sesión no puede ser inicializada"
 msgstr "A munkamenetot nem lehet elindítani"
 
 # "\"/config\" directory doesn't exist."
-#: ../../../../inc/Init.class.php:417
+#: ../../../../inc/Init.class.php:357
 msgid "El directorio \"/config\" no existe"
 msgstr "\"/config\" mappa nem létezik"
 
 # "Unable to write into \"/config\" directory"
-#: ../../../../inc/Init.class.php:422
+#: ../../../../inc/Init.class.php:362
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Nem lehet a \"/config\" mappába írni"
 
 # "\"/config\" directory permissions are incorrect"
-#: ../../../../inc/Init.class.php:430
+#: ../../../../inc/Init.class.php:370
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "\"/config\" mappa jogosultságai helytelenek"
 
 # Current
-#: ../../../../inc/Init.class.php:430
+#: ../../../../inc/Init.class.php:370
 #, fuzzy
 msgid "Actual:"
 msgstr "Általános"
 
 # Needed: 750
-#: ../../../../inc/Init.class.php:430
+#: ../../../../inc/Init.class.php:370
 #, fuzzy
 msgid "Necesario: 750"
 msgstr "Felhasználónév szükséges"
 
 # "Application in maintenance"
-#: ../../../../inc/Init.class.php:479
+#: ../../../../inc/Init.class.php:419
 msgid "Aplicación en mantenimiento"
 msgstr "Az alkalmazás fut"
 
 # "It will be running in short"
-#: ../../../../inc/Init.class.php:479
+#: ../../../../inc/Init.class.php:419
 msgid "En breve estará operativa"
 msgstr "Hamar végezni fog"
 
 # "Logout session"
-#: ../../../../inc/Init.class.php:516
+#: ../../../../inc/Init.class.php:456
 msgid "Finalizar sesión"
 msgstr "Kijelentkezés"
 
 # "Inactive time"
-#: ../../../../inc/Init.class.php:518
+#: ../../../../inc/Init.class.php:458
 msgid "Tiempo inactivo"
 msgstr "Idõ kikapcsolása"
 
 # "Total time"
-#: ../../../../inc/Init.class.php:519
+#: ../../../../inc/Init.class.php:459
 msgid "Tiempo total"
 msgstr "Teljes idõ"
 
 # "The application needs to be updated"
-#: ../../../../inc/Init.class.php:558
+#: ../../../../inc/Init.class.php:498
 msgid "La aplicación necesita actualizarse"
 msgstr "Frissítsd az alkalmazást"
 
 # If you are an administrator, click on the link:
-#: ../../../../inc/Init.class.php:558
+#: ../../../../inc/Init.class.php:498
 #, fuzzy, php-format
 msgid "Si es un administrador pulse en el enlace: %s"
 msgstr "If you are an administrator, click on the link:"
 
 # Update
-#: ../../../../inc/Init.class.php:558
+#: ../../../../inc/Init.class.php:498
 #: ../../../../inc/themes/classic/upgrade.inc:20
 #: ../../../../inc/themes/material-blue/upgrade.inc:24
 #, fuzzy
@@ -2229,17 +2276,17 @@ msgid "Actualizar"
 msgstr "Frissítés Számla"
 
 # "Update"
-#: ../../../../inc/Init.class.php:589
+#: ../../../../inc/Init.class.php:529
 msgid "Actualización"
 msgstr "Frissítés"
 
 # "Version updating done."
-#: ../../../../inc/Init.class.php:590
+#: ../../../../inc/Init.class.php:530
 msgid "Actualización de versión realizada."
 msgstr "Verzió frissítés kész"
 
 # "Version"
-#: ../../../../inc/Init.class.php:591
+#: ../../../../inc/Init.class.php:531
 #: ../../../../inc/themes/classic/info.inc:33
 #: ../../../../inc/themes/material-blue/info.inc:33
 msgid "Versión"
@@ -2759,7 +2806,7 @@ msgstr "Részletes leírást az esemény naplóban olvashat"
 #: ../../../../inc/Upgrade.class.php:52 ../../../../inc/Upgrade.class.php:58
 #: ../../../../inc/themes/classic/login.inc:32
 #: ../../../../inc/themes/material-blue/2fa.inc:26
-#: ../../../../inc/themes/material-blue/login.inc:64
+#: ../../../../inc/themes/material-blue/login.inc:65
 msgid "Acceder"
 msgstr "Belépés"
 
@@ -2851,38 +2898,38 @@ msgid "Error al migrar grupo del usuario"
 msgstr "Hiba a DN felhasználó keresése közben"
 
 # Required PHP version >= 5.1
-#: ../../../../inc/Util.class.php:123
+#: ../../../../inc/Util.class.php:122
 #, fuzzy
 msgid "Versión de PHP requerida >= "
 msgstr "Szükséges PHP verzió> = 5.1"
 
 # "Please update PHP version to run sysPass in a secure way"
-#: ../../../../inc/Util.class.php:124
+#: ../../../../inc/Util.class.php:123
 #, fuzzy
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
 # "Module unavilable"
-#: ../../../../inc/Util.class.php:160
+#: ../../../../inc/Util.class.php:159
 #: ../../../../inc/themes/classic/ldap.inc:212
 #: ../../../../inc/themes/material-blue/ldap.inc:238
 msgid "Módulo no disponible"
 msgstr "Modul nem elérhetõ"
 
 # "Without this module the application couldn't run correctly"
-#: ../../../../inc/Util.class.php:161
+#: ../../../../inc/Util.class.php:160
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "E modul nélkül az alkalmazás nem futtatható megfelelõen"
 
 # CSV/XML Import
-#: ../../../../inc/XmlExport.class.php:124
+#: ../../../../inc/XmlExport.class.php:125
 #, fuzzy
 msgid "Exportar XML"
 msgstr "Fiókok importálása"
 
 # "Error on creating user"
-#: ../../../../inc/XmlExport.class.php:409
+#: ../../../../inc/XmlExport.class.php:410
 #, fuzzy
 msgid "Error al crear el archivo XML"
 msgstr "Hiba az ügyfél létrehozása közben"
@@ -2922,7 +2969,7 @@ msgstr "Hiba történt"
 # "Session finished"
 #: ../../../../js/strings.js.php:29
 #: ../../../../inc/themes/classic/login.inc:52
-#: ../../../../inc/themes/material-blue/login.inc:77
+#: ../../../../inc/themes/material-blue/login.inc:78
 msgid "Sesión finalizada"
 msgstr "Munkamenet befejezõdött"
 
@@ -3004,7 +3051,7 @@ msgstr "Túl sok fájl"
 # "Unable to save file.<br>Max file size:"
 #: ../../../../js/strings.js.php:45
 #, fuzzy, php-format
-msgid "No es posible guardar el archivo.%sTamaño máximo:"
+msgid "No es posible guardar el archivo \"%s\" Tamaño máximo:"
 msgstr "Nem lehet elmenteni a fájlt.<br>Maximális fájl méret:"
 
 # "Extension not allowed"
@@ -3064,7 +3111,7 @@ msgid "Complejidad"
 msgstr ""
 
 #: ../../../../js/strings.js.php:57
-msgid "Reset"
+msgid "Restablecer"
 msgstr ""
 
 # "Password strength level"
@@ -3116,22 +3163,26 @@ msgstr "Akció"
 
 # "YES"
 #: ../../../../js/strings.js.php:67
-#: ../../../../inc/themes/classic/account.inc:133
-#: ../../../../inc/themes/classic/account.inc:164
-#: ../../../../inc/themes/classic/account.inc:449
+#: ../../../../inc/themes/classic/account.inc:136
+#: ../../../../inc/themes/classic/account.inc:167
+#: ../../../../inc/themes/classic/account.inc:451
 #: ../../../../inc/themes/classic/install.inc:99
+#: ../../../../inc/themes/classic/preferences.inc:82
+#: ../../../../inc/themes/classic/security.inc:26
 msgid "SI"
 msgstr "Igen"
 
 # "NO"
 #: ../../../../js/strings.js.php:68
-#: ../../../../inc/themes/classic/account.inc:133
-#: ../../../../inc/themes/classic/account.inc:164
-#: ../../../../inc/themes/classic/account.inc:447
+#: ../../../../inc/themes/classic/account.inc:136
+#: ../../../../inc/themes/classic/account.inc:167
+#: ../../../../inc/themes/classic/account.inc:449
 #: ../../../../inc/themes/classic/encryption.inc:61
 #: ../../../../inc/themes/classic/encryption.inc:80
 #: ../../../../inc/themes/classic/import.inc:70
 #: ../../../../inc/themes/classic/install.inc:99
+#: ../../../../inc/themes/classic/preferences.inc:82
+#: ../../../../inc/themes/classic/security.inc:26
 #: ../../../../inc/themes/classic/tokens.inc:36
 msgid "NO"
 msgstr "Nem"
@@ -3144,20 +3195,32 @@ msgstr ""
 msgid "Cancelar"
 msgstr ""
 
+# Password Copied to Clipboard
+#: ../../../../js/strings.js.php:71
+#, fuzzy
+msgid "Clave Copiada al Portapapeles"
+msgstr "Hiba a jelszó frissítése közben"
+
+# Password Copied to Clipboard
+#: ../../../../js/strings.js.php:72
+#, fuzzy
+msgid "Error al copiar al portapapeles"
+msgstr "Hiba a jelszó frissítése közben"
+
 # "Account Details"
-#: ../../../../web/AccountC.class.php:380
-#: ../../../../web/AccountC.class.php:411
-#: ../../../../inc/themes/classic/search.inc:36
-#: ../../../../inc/themes/classic/search.inc:95
+#: ../../../../web/AccountC.class.php:381
+#: ../../../../web/AccountC.class.php:412
+#: ../../../../inc/themes/classic/search.inc:45
+#: ../../../../inc/themes/classic/search.inc:104
 #: ../../../../inc/themes/material-blue/search.inc:41
 #: ../../../../inc/themes/material-blue/search.inc:108
 msgid "Detalles de Cuenta"
 msgstr "Fiók adatok"
 
 # "Edit Account Password"
-#: ../../../../web/AccountC.class.php:468
-#: ../../../../inc/themes/classic/account.inc:394
-#: ../../../../inc/themes/material-blue/account.inc:430
+#: ../../../../web/AccountC.class.php:469
+#: ../../../../inc/themes/classic/account.inc:396
+#: ../../../../inc/themes/material-blue/account.inc:433
 msgid "Modificar Clave de Cuenta"
 msgstr "Fiók jelszavának szerkesztése"
 
@@ -3165,7 +3228,7 @@ msgstr "Fiók jelszavának szerkesztése"
 #: ../../../../web/AccountsMgmtC.class.php:79
 #: ../../../../web/AccountsMgmtC.class.php:138
 #: ../../../../web/AccountsMgmtC.class.php:266
-#: ../../../../web/SearchC.class.php:277
+#: ../../../../web/SearchC.class.php:292
 #: ../../../../web/UsersMgmtC.class.php:87
 #: ../../../../web/UsersMgmtC.class.php:187
 #: ../../../../web/UsersMgmtC.class.php:245
@@ -3178,7 +3241,7 @@ msgstr "Fiók jelszavának szerkesztése"
 #: ../../../../inc/themes/classic/info.inc:25
 #: ../../../../inc/themes/classic/profiles.inc:8
 #: ../../../../inc/themes/classic/request.inc:6
-#: ../../../../inc/themes/classic/search.inc:34
+#: ../../../../inc/themes/classic/search.inc:43
 #: ../../../../inc/themes/classic/users.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:15
 #: ../../../../inc/themes/material-blue/categories.inc:8
@@ -3217,36 +3280,30 @@ msgstr "Modul nem elérhetõ"
 msgid "Eliminar Campo"
 msgstr "Profil törlése"
 
-#: ../../../../web/AccountsMgmtC.class.php:300
-#: ../../../../inc/themes/classic/profiles.inc:107
-#: ../../../../inc/themes/material-blue/profiles.inc:124
-msgid "Campos Personalizados"
-msgstr ""
-
 # "Last backup"
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:166
 msgid "Último backup"
 msgstr "Utolsó Archiválás"
 
 # "There're no backups available"
-#: ../../../../web/ConfigC.class.php:185
+#: ../../../../web/ConfigC.class.php:166
 msgid "No se encontraron backups"
 msgstr "Nincsenek elérhetõ Archívumok"
 
 # "Last Modification"
-#: ../../../../web/ConfigC.class.php:192
+#: ../../../../web/ConfigC.class.php:173
 #, fuzzy
 msgid "Última exportación"
 msgstr "Utolsó oldal"
 
 # "Unable to write on configuration file"
-#: ../../../../web/ConfigC.class.php:192
+#: ../../../../web/ConfigC.class.php:173
 #, fuzzy
 msgid "No se encontró archivo de exportación"
 msgstr "Nem lehet a konfigurációs fájlba írni"
 
 # "Configuration"
-#: ../../../../web/ConfigC.class.php:237
+#: ../../../../web/ConfigC.class.php:218
 #, fuzzy
 msgid "Información"
 msgstr "Mutat néhány információt az alkalmazásról és a teljesítményrõl"
@@ -3262,65 +3319,65 @@ msgid "Error al vaciar el registro de eventos"
 msgstr "Hiba az esemény napló törlése közben"
 
 # "Application Admin"
-#: ../../../../web/MainC.class.php:137
+#: ../../../../web/MainC.class.php:159
 #: ../../../../web/UsersMgmtC.class.php:100
 msgid "Admin Aplicación"
 msgstr "Admin alkalmazás"
 
 # "Search"
-#: ../../../../web/MainC.class.php:155
+#: ../../../../web/MainC.class.php:177
 msgid "Buscar"
 msgstr "Keresés"
 
 # "Users Management"
-#: ../../../../web/MainC.class.php:167
+#: ../../../../web/MainC.class.php:189
 #: ../../../../web/UsersMgmtC.class.php:163
 msgid "Gestión de Usuarios"
 msgstr "Felhasználó Menedzsment"
 
 # "Customer and Categories management"
-#: ../../../../web/MainC.class.php:173
+#: ../../../../web/MainC.class.php:195
 msgid "Gestión de Clientes y Categorías"
 msgstr "Ügyfél és Kategória Menedzsment"
 
 # "Event Log"
-#: ../../../../web/MainC.class.php:185
+#: ../../../../web/MainC.class.php:207
 #: ../../../../inc/themes/classic/eventlog.inc:4
 #: ../../../../inc/themes/material-blue/eventlog.inc:3
 msgid "Registro de Eventos"
 msgstr "Esemény napló"
 
-#: ../../../../web/MainC.class.php:205
+#: ../../../../web/MainC.class.php:228
 msgid "Nuevo estilo visual basado en Material Design Lite by Google"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:206
+#: ../../../../web/MainC.class.php:229
 #, fuzzy
 msgid "Usuarios en múltiples grupos"
 msgstr "Felhasználó csoportok importálása"
 
 # "Customers Management"
-#: ../../../../web/MainC.class.php:207
+#: ../../../../web/MainC.class.php:230
 #, fuzzy
 msgid "Previsualización de imágenes"
 msgstr "Kérés fiók módosításához"
 
-#: ../../../../web/MainC.class.php:208
+#: ../../../../web/MainC.class.php:231
 msgid "Mostrar claves como imágenes"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:209
+#: ../../../../web/MainC.class.php:232
 msgid "Campos personalizados"
 msgstr ""
 
 # "Query error"
-#: ../../../../web/MainC.class.php:210
+#: ../../../../web/MainC.class.php:233
 #, fuzzy
 msgid "API de consultas"
 msgstr "Kérés fiók módosításához"
 
 # "Enable Authentication"
-#: ../../../../web/MainC.class.php:211
+#: ../../../../web/MainC.class.php:234
 #: ../../../../inc/themes/classic/2fa.inc:9
 #: ../../../../inc/themes/material-blue/2fa.inc:9
 #: ../../../../inc/themes/material-blue/security.inc:11
@@ -3328,118 +3385,112 @@ msgstr "Kérés fiók módosításához"
 msgid "Autentificación en 2 pasos"
 msgstr "Engedélyezése Hitelesítés"
 
-#: ../../../../web/MainC.class.php:212
+#: ../../../../web/MainC.class.php:235
 #, fuzzy
 msgid "Complejidad de generador de claves"
 msgstr "Nem találom a véletlen szám generátort"
 
-#: ../../../../web/MainC.class.php:213
+#: ../../../../web/MainC.class.php:236
 msgid "Consultas especiales"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:214
+#: ../../../../web/MainC.class.php:237
 msgid "Exportación a XML"
 msgstr ""
 
 # "Master password too short"
-#: ../../../../web/MainC.class.php:215
+#: ../../../../web/MainC.class.php:238
 #, fuzzy
 msgid "Clave maestra temporal"
 msgstr "Generate Temporary Password"
 
-#: ../../../../web/MainC.class.php:216
+#: ../../../../web/MainC.class.php:239
 msgid "Importación de cuentas desde sysPass, KeePass, KeePassX y CSV"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:217
+#: ../../../../web/MainC.class.php:240
 msgid "Optimización del código y mayor rapidez de carga"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:218
+#: ../../../../web/MainC.class.php:241
 msgid "Mejoras de seguridad en XSS e inyección SQL"
 msgstr ""
 
 # "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
-#: ../../../../web/MainC.class.php:260
+#: ../../../../web/MainC.class.php:284
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr ""
 "Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
 
 # "Please update PHP version to run sysPass in a secure way"
-#: ../../../../web/MainC.class.php:261
+#: ../../../../web/MainC.class.php:285
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
 # "Cannot find random number generator."
-#: ../../../../web/MainC.class.php:268
+#: ../../../../web/MainC.class.php:292
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Nem találom a véletlen szám generátort"
 
 # "Without this function, an attacker could take your account on password reset."
-#: ../../../../web/MainC.class.php:269
+#: ../../../../web/MainC.class.php:293
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr "E funkció nélkül egy támadó alapállapotba állíthatja jelszavát"
 
-# "Query error"
-#: ../../../../web/MainC.class.php:284
-#, fuzzy
-msgid "Error en clave RSA"
-msgstr "Lekérdezési hiba"
-
 # "Installation finished"
-#: ../../../../web/MainC.class.php:304
+#: ../../../../web/MainC.class.php:312
 msgid "Instalación finalizada"
 msgstr "A telepítés befejezõdött"
 
 # "Click <a href=\"index.php\" title=\"Login\">here</a> to access"
-#: ../../../../web/MainC.class.php:305
+#: ../../../../web/MainC.class.php:313
 msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
 msgstr ""
 "Kattinst <a href=\"index.php\" title=\"Bejelentkezés\">here</a> a "
 "bejelentkezéshez"
 
 # "Download new version"
-#: ../../../../web/MainC.class.php:400
+#: ../../../../web/MainC.class.php:410
 msgid "Descargar nueva versión"
 msgstr "Új verzió letöltése"
 
-#: ../../../../web/MainC.class.php:411
+#: ../../../../web/MainC.class.php:421
 msgid "Avisos de sysPass"
 msgstr ""
 
 # "Sort by Customer"
-#: ../../../../web/SearchC.class.php:270
+#: ../../../../web/SearchC.class.php:285
 msgid "Ordenar por Cliente"
 msgstr "Rendezés Ügyfél szerint"
 
 # "Sort by Name"
-#: ../../../../web/SearchC.class.php:276
+#: ../../../../web/SearchC.class.php:291
 msgid "Ordenar por Nombre"
 msgstr "Rendezés Név szerint"
 
 # "Sort by Category"
-#: ../../../../web/SearchC.class.php:282
+#: ../../../../web/SearchC.class.php:297
 msgid "Ordenar por Categoría"
 msgstr "Rendezés Kategória szerint"
 
 # "Sort by Username"
-#: ../../../../web/SearchC.class.php:288
+#: ../../../../web/SearchC.class.php:303
 msgid "Ordenar por Usuario"
 msgstr "Rendezés Felhasználónév szerint"
 
 # "Sort by URL / IP"
-#: ../../../../web/SearchC.class.php:294
+#: ../../../../web/SearchC.class.php:309
 msgid "Ordenar por URL / IP"
 msgstr "Rendezés URL / IP szerint"
 
 # "URL / IP"
-#: ../../../../web/SearchC.class.php:295
-#: ../../../../inc/themes/classic/account.inc:58
+#: ../../../../web/SearchC.class.php:310
+#: ../../../../inc/themes/classic/account.inc:61
 #: ../../../../inc/themes/classic/editpass.inc:16
 #: ../../../../inc/themes/classic/request.inc:13
-#: ../../../../inc/themes/classic/search.inc:57
-#: ../../../../inc/themes/material-blue/account.inc:66
+#: ../../../../inc/themes/classic/search.inc:66
+#: ../../../../inc/themes/material-blue/account.inc:69
 #: ../../../../inc/themes/material-blue/editpass.inc:17
 #: ../../../../inc/themes/material-blue/request.inc:15
 #: ../../../../inc/themes/material-blue/search.inc:62
@@ -3519,11 +3570,16 @@ msgid "Autorizaciones"
 msgstr ""
 
 # "Security"
-#: ../../../../web/UsersPrefsC.class.php:84
+#: ../../../../web/UsersPrefsC.class.php:92
 #: ../../../../inc/themes/classic/mail.inc:63
 #: ../../../../inc/themes/material-blue/mail.inc:86
 msgid "Seguridad"
 msgstr "Biztonság"
+
+#: ../../../../web/UsersPrefsC.class.php:115
+#: ../../../../inc/themes/classic/sessionbar.inc:9
+msgid "Preferencias"
+msgstr ""
 
 # Enter Security Code
 #: ../../../../inc/themes/classic/2fa.inc:14
@@ -3550,25 +3606,25 @@ msgid "Buscar en desplegable o introducir"
 msgstr "Keress lentebb, vagy nyomj entert"
 
 # "Access URL or IP"
-#: ../../../../inc/themes/classic/account.inc:61
-#: ../../../../inc/themes/material-blue/account.inc:72
+#: ../../../../inc/themes/classic/account.inc:64
+#: ../../../../inc/themes/material-blue/account.inc:75
 msgid "URL o IP de acceso"
 msgstr "URL vagy IP elérés"
 
 # "Access user"
-#: ../../../../inc/themes/classic/account.inc:73
-#: ../../../../inc/themes/material-blue/account.inc:86
+#: ../../../../inc/themes/classic/account.inc:76
+#: ../../../../inc/themes/material-blue/account.inc:89
 msgid "Usuario de acceso"
 msgstr "Felhasználó elérése"
 
 # "Password (repeat)"
-#: ../../../../inc/themes/classic/account.inc:90
+#: ../../../../inc/themes/classic/account.inc:93
 #: ../../../../inc/themes/classic/editpass.inc:31
 #: ../../../../inc/themes/classic/passreset.inc:35
 #: ../../../../inc/themes/classic/users.inc:83
 #: ../../../../inc/themes/classic/userspass.inc:19
 #: ../../../../inc/themes/classic/userspass.inc:21
-#: ../../../../inc/themes/material-blue/account.inc:105
+#: ../../../../inc/themes/material-blue/account.inc:108
 #: ../../../../inc/themes/material-blue/editpass.inc:36
 #: ../../../../inc/themes/material-blue/install.inc:66
 #: ../../../../inc/themes/material-blue/passreset.inc:36
@@ -3580,179 +3636,176 @@ msgid "Clave (repetir)"
 msgstr "Jelszó (ismét)"
 
 # "Notes"
-#: ../../../../inc/themes/classic/account.inc:97
-#: ../../../../inc/themes/classic/search.inc:73
+#: ../../../../inc/themes/classic/account.inc:100
+#: ../../../../inc/themes/classic/search.inc:82
 #: ../../../../inc/themes/classic/users.inc:91
-#: ../../../../inc/themes/material-blue/account.inc:116
+#: ../../../../inc/themes/material-blue/account.inc:119
 #: ../../../../inc/themes/material-blue/search.inc:82
 #: ../../../../inc/themes/material-blue/users.inc:116
 msgid "Notas"
 msgstr "Jegyzetek"
 
 # "Notes about the account"
-#: ../../../../inc/themes/classic/account.inc:99
-#: ../../../../inc/themes/material-blue/account.inc:121
+#: ../../../../inc/themes/classic/account.inc:102
+#: ../../../../inc/themes/material-blue/account.inc:124
 #: ../../../../inc/themes/material-blue/users.inc:123
 msgid "Notas sobre la cuenta"
 msgstr "Jegyzetek a fiókokról"
 
 # "Permissions"
-#: ../../../../inc/themes/classic/account.inc:105
-#: ../../../../inc/themes/material-blue/account.inc:130
+#: ../../../../inc/themes/classic/account.inc:108
+#: ../../../../inc/themes/material-blue/account.inc:133
 #: ../../../../inc/themes/material-blue/search.inc:75
 msgid "Permisos"
 msgstr "Jofosultságok"
 
 # "Enable Edit"
-#: ../../../../inc/themes/classic/account.inc:132
-#: ../../../../inc/themes/classic/account.inc:163
-#: ../../../../inc/themes/material-blue/account.inc:159
-#: ../../../../inc/themes/material-blue/account.inc:191
+#: ../../../../inc/themes/classic/account.inc:135
+#: ../../../../inc/themes/classic/account.inc:166
+#: ../../../../inc/themes/material-blue/account.inc:162
+#: ../../../../inc/themes/material-blue/account.inc:194
 msgid "Hablitar edición"
 msgstr "Szerkesztés engedélyezése"
 
 # "Drop files here (max. 5) or click to select"
-#: ../../../../inc/themes/classic/account.inc:201
-#: ../../../../inc/themes/material-blue/account.inc:243
+#: ../../../../inc/themes/classic/account.inc:204
+#: ../../../../inc/themes/material-blue/account.inc:246
 msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
 msgstr "Dobja el a fájlokat (max. 5) vagy kattintson a választáshoz"
 
 # "Maximum file size"
-#: ../../../../inc/themes/classic/account.inc:201
-#: ../../../../inc/themes/classic/config.inc:193
-#: ../../../../inc/themes/material-blue/account.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:272
+#: ../../../../inc/themes/classic/account.inc:204
+#: ../../../../inc/themes/classic/config.inc:212
+#: ../../../../inc/themes/material-blue/account.inc:246
+#: ../../../../inc/themes/material-blue/config.inc:309
 msgid "Tamaño máximo de archivo"
 msgstr "Maximális fájl méret"
 
 # "History"
-#: ../../../../inc/themes/classic/account.inc:213
-#: ../../../../inc/themes/material-blue/account.inc:255
+#: ../../../../inc/themes/classic/account.inc:216
+#: ../../../../inc/themes/material-blue/account.inc:258
 msgid "Historial"
 msgstr "Elõzmények"
 
 # "Select date"
-#: ../../../../inc/themes/classic/account.inc:232
-#: ../../../../inc/themes/material-blue/account.inc:275
+#: ../../../../inc/themes/classic/account.inc:235
+#: ../../../../inc/themes/material-blue/account.inc:278
 msgid "Seleccionar fecha"
 msgstr "Válassz dátumot"
 
 # "Last Modification"
-#: ../../../../inc/themes/classic/account.inc:241
+#: ../../../../inc/themes/classic/account.inc:244
 #: ../../../../inc/themes/classic/users.inc:164
-#: ../../../../inc/themes/material-blue/account.inc:284
+#: ../../../../inc/themes/material-blue/account.inc:287
 #: ../../../../inc/themes/material-blue/users.inc:208
 msgid "Última Modificación"
 msgstr "Utoljára módosítva"
 
 # "by"
-#: ../../../../inc/themes/classic/account.inc:243
-#: ../../../../inc/themes/material-blue/account.inc:286
+#: ../../../../inc/themes/classic/account.inc:246
+#: ../../../../inc/themes/material-blue/account.inc:289
 msgid "por"
 msgstr "által"
 
 # "Visits"
-#: ../../../../inc/themes/classic/account.inc:286
-#: ../../../../inc/themes/material-blue/account.inc:333
+#: ../../../../inc/themes/classic/account.inc:289
+#: ../../../../inc/themes/material-blue/account.inc:336
 msgid "Visitas"
 msgstr "Látogatók"
 
 # "Date Added"
-#: ../../../../inc/themes/classic/account.inc:290
-#: ../../../../inc/themes/material-blue/account.inc:337
+#: ../../../../inc/themes/classic/account.inc:293
+#: ../../../../inc/themes/material-blue/account.inc:340
 msgid "Fecha Alta"
 msgstr "Dátum hozzáadva"
 
 # "Creator"
-#: ../../../../inc/themes/classic/account.inc:294
-#: ../../../../inc/themes/material-blue/account.inc:341
+#: ../../../../inc/themes/classic/account.inc:297
+#: ../../../../inc/themes/material-blue/account.inc:344
 msgid "Creador"
 msgstr "Készítõ"
 
 # "Main Group"
-#: ../../../../inc/themes/classic/account.inc:298
-#: ../../../../inc/themes/material-blue/account.inc:200
-#: ../../../../inc/themes/material-blue/account.inc:345
+#: ../../../../inc/themes/classic/account.inc:301
+#: ../../../../inc/themes/material-blue/account.inc:203
+#: ../../../../inc/themes/material-blue/account.inc:348
 msgid "Grupo Principal"
 msgstr "Fõcsoport"
 
 # "Secondary Users"
-#: ../../../../inc/themes/classic/account.inc:303
-#: ../../../../inc/themes/material-blue/account.inc:350
+#: ../../../../inc/themes/classic/account.inc:306
+#: ../../../../inc/themes/material-blue/account.inc:353
 msgid "Usuarios Secundarios"
 msgstr "Másodlagos felhasználók"
 
 # "Secondary Groups"
-#: ../../../../inc/themes/classic/account.inc:322
-#: ../../../../inc/themes/material-blue/account.inc:369
+#: ../../../../inc/themes/classic/account.inc:325
+#: ../../../../inc/themes/material-blue/account.inc:372
 msgid "Grupos Secundarios"
 msgstr "Másodlagos csoportok"
 
 # "Date Modified"
-#: ../../../../inc/themes/classic/account.inc:342
-#: ../../../../inc/themes/material-blue/account.inc:389
+#: ../../../../inc/themes/classic/account.inc:345
+#: ../../../../inc/themes/material-blue/account.inc:392
 msgid "Fecha Edición"
 msgstr "Adat módosítva"
 
 # "Editor"
-#: ../../../../inc/themes/classic/account.inc:346
-#: ../../../../inc/themes/material-blue/account.inc:393
+#: ../../../../inc/themes/classic/account.inc:349
+#: ../../../../inc/themes/material-blue/account.inc:396
 msgid "Editor"
 msgstr "Szerkesztõ"
 
 # "Restore account from this point"
-#: ../../../../inc/themes/classic/account.inc:373
-#: ../../../../inc/themes/material-blue/account.inc:456
+#: ../../../../inc/themes/classic/account.inc:376
+#: ../../../../inc/themes/material-blue/account.inc:459
 msgid "Restaurar cuenta desde este punto"
 msgstr "Restore véve ezen a ponton"
 
 # Copy Password to Clipboard
-#: ../../../../inc/themes/classic/account.inc:385
-#: ../../../../inc/themes/classic/account.inc:468
-#: ../../../../inc/themes/classic/search.inc:103
-#: ../../../../inc/themes/classic/search.inc:183
-#: ../../../../inc/themes/material-blue/account.inc:423
-#: ../../../../inc/themes/material-blue/account.inc:493
-#: ../../../../inc/themes/material-blue/search.inc:118
-#: ../../../../inc/themes/material-blue/search.inc:197
+#: ../../../../inc/themes/classic/account.inc:388
+#: ../../../../inc/themes/classic/search.inc:113
+#: ../../../../inc/themes/material-blue/account.inc:426
+#: ../../../../inc/themes/material-blue/search.inc:117
 #, fuzzy
 msgid "Copiar Clave en Portapapeles"
 msgstr "A jelszó nem lehet üres"
 
 # "View Current"
-#: ../../../../inc/themes/classic/account.inc:401
-#: ../../../../inc/themes/material-blue/account.inc:436
+#: ../../../../inc/themes/classic/account.inc:403
+#: ../../../../inc/themes/material-blue/account.inc:439
 msgid "Ver Actual"
 msgstr "Általános"
 
 # "Back"
-#: ../../../../inc/themes/classic/account.inc:406
+#: ../../../../inc/themes/classic/account.inc:408
 #: ../../../../inc/themes/classic/editpass.inc:45
+#: ../../../../inc/themes/classic/mgmttabs.inc:4
 #: ../../../../inc/themes/classic/passreset.inc:46
 #: ../../../../inc/themes/material-blue/passreset.inc:48
 msgid "Volver"
 msgstr "Vissza"
 
 # "Edit Account"
-#: ../../../../inc/themes/classic/account.inc:413
-#: ../../../../inc/themes/classic/search.inc:115
-#: ../../../../inc/themes/material-blue/account.inc:446
-#: ../../../../inc/themes/material-blue/search.inc:130
+#: ../../../../inc/themes/classic/account.inc:415
+#: ../../../../inc/themes/classic/search.inc:125
+#: ../../../../inc/themes/material-blue/account.inc:449
+#: ../../../../inc/themes/material-blue/search.inc:128
 msgid "Modificar Cuenta"
 msgstr "Fiók módosítás"
 
 # "Request Modification"
-#: ../../../../inc/themes/classic/account.inc:418
-#: ../../../../inc/themes/classic/search.inc:136
-#: ../../../../inc/themes/material-blue/account.inc:450
-#: ../../../../inc/themes/material-blue/search.inc:150
+#: ../../../../inc/themes/classic/account.inc:420
+#: ../../../../inc/themes/classic/search.inc:146
+#: ../../../../inc/themes/material-blue/account.inc:453
+#: ../../../../inc/themes/material-blue/search.inc:148
 msgid "Solicitar Modificación"
 msgstr "Kérés módosítás"
 
 # "Save"
-#: ../../../../inc/themes/classic/account.inc:425
+#: ../../../../inc/themes/classic/account.inc:427
 #: ../../../../inc/themes/classic/categories.inc:62
-#: ../../../../inc/themes/classic/config.inc:275
+#: ../../../../inc/themes/classic/config.inc:294
 #: ../../../../inc/themes/classic/customers.inc:62
 #: ../../../../inc/themes/classic/customfields.inc:63
 #: ../../../../inc/themes/classic/editpass.inc:50
@@ -3760,21 +3813,23 @@ msgstr "Kérés módosítás"
 #: ../../../../inc/themes/classic/groups.inc:77
 #: ../../../../inc/themes/classic/ldap.inc:229
 #: ../../../../inc/themes/classic/mail.inc:107
+#: ../../../../inc/themes/classic/preferences.inc:96
 #: ../../../../inc/themes/classic/profiles.inc:168
 #: ../../../../inc/themes/classic/security.inc:57
 #: ../../../../inc/themes/classic/tokens.inc:59
 #: ../../../../inc/themes/classic/users.inc:189
 #: ../../../../inc/themes/classic/userspass.inc:35
 #: ../../../../inc/themes/classic/wiki.inc:110
-#: ../../../../inc/themes/material-blue/account.inc:462
+#: ../../../../inc/themes/material-blue/account.inc:465
 #: ../../../../inc/themes/material-blue/categories.inc:72
-#: ../../../../inc/themes/material-blue/config.inc:388
+#: ../../../../inc/themes/material-blue/config.inc:425
 #: ../../../../inc/themes/material-blue/customers.inc:73
 #: ../../../../inc/themes/material-blue/customfields.inc:74
 #: ../../../../inc/themes/material-blue/editpass.inc:60
 #: ../../../../inc/themes/material-blue/groups.inc:88
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
+#: ../../../../inc/themes/material-blue/preferences.inc:101
 #: ../../../../inc/themes/material-blue/profiles.inc:177
 #: ../../../../inc/themes/material-blue/security.inc:61
 #: ../../../../inc/themes/material-blue/tokens.inc:63
@@ -3785,25 +3840,16 @@ msgid "Guardar"
 msgstr "Mentés"
 
 # "Select secondary groups"
-#: ../../../../inc/themes/classic/account.inc:435
-#: ../../../../inc/themes/material-blue/account.inc:472
+#: ../../../../inc/themes/classic/account.inc:437
+#: ../../../../inc/themes/material-blue/account.inc:475
 msgid "Seleccionar grupos secundarios"
 msgstr " Válassz másodlagos csoportot"
 
 # "Select users"
-#: ../../../../inc/themes/classic/account.inc:439
-#: ../../../../inc/themes/material-blue/account.inc:475
+#: ../../../../inc/themes/classic/account.inc:441
+#: ../../../../inc/themes/material-blue/account.inc:478
 msgid "Seleccionar usuarios"
 msgstr "Válassz felhasználót"
-
-# Password Copied to Clipboard
-#: ../../../../inc/themes/classic/account.inc:472
-#: ../../../../inc/themes/classic/search.inc:187
-#: ../../../../inc/themes/material-blue/account.inc:497
-#: ../../../../inc/themes/material-blue/search.inc:201
-#, fuzzy
-msgid "Clave Copiada al Portapapeles"
-msgstr "Hiba a jelszó frissítése közben"
 
 # "Result"
 #: ../../../../inc/themes/classic/backup.inc:10
@@ -3833,8 +3879,8 @@ msgstr "Nincsenek letölthetõ Archívumok"
 #: ../../../../inc/themes/classic/backup.inc:117
 #: ../../../../inc/themes/classic/encryption.inc:93
 #: ../../../../inc/themes/classic/encryption.inc:97
-#: ../../../../inc/themes/classic/encryption.inc:152
-#: ../../../../inc/themes/classic/encryption.inc:156
+#: ../../../../inc/themes/classic/encryption.inc:162
+#: ../../../../inc/themes/classic/encryption.inc:166
 #: ../../../../inc/themes/classic/import.inc:15
 #: ../../../../inc/themes/classic/import.inc:37
 #: ../../../../inc/themes/classic/import.inc:51
@@ -3862,8 +3908,8 @@ msgstr "Nincsenek letölthetõ Archívumok"
 #: ../../../../inc/themes/material-blue/backup.inc:133
 #: ../../../../inc/themes/material-blue/encryption.inc:107
 #: ../../../../inc/themes/material-blue/encryption.inc:111
-#: ../../../../inc/themes/material-blue/encryption.inc:171
-#: ../../../../inc/themes/material-blue/encryption.inc:175
+#: ../../../../inc/themes/material-blue/encryption.inc:181
+#: ../../../../inc/themes/material-blue/encryption.inc:185
 #: ../../../../inc/themes/material-blue/import.inc:99
 #: ../../../../inc/themes/material-blue/import.inc:103
 #: ../../../../inc/themes/material-blue/js-common.inc:11
@@ -3943,8 +3989,8 @@ msgid ""
 msgstr ""
 
 # "Javascript is needed in order to run correctly"
-#: ../../../../inc/themes/classic/body.inc:4
-#: ../../../../inc/themes/material-blue/body.inc:4
+#: ../../../../inc/themes/classic/body-start.inc:4
+#: ../../../../inc/themes/material-blue/body-start.inc:4
 msgid "Javascript es necesario para el correcto funcionamiento"
 msgstr "Java szkript szükséges a megfelelõ mûködéshez"
 
@@ -3962,50 +4008,77 @@ msgstr "Kategória leírás"
 
 # "Site"
 #: ../../../../inc/themes/classic/config.inc:4
+#: ../../../../inc/themes/classic/preferences.inc:4
 #: ../../../../inc/themes/material-blue/config.inc:4
+#: ../../../../inc/themes/material-blue/preferences.inc:4
 msgid "Sitio"
 msgstr "Oldal"
 
 # "Language"
-#: ../../../../inc/themes/classic/config.inc:10
-#: ../../../../inc/themes/material-blue/config.inc:11
+#: ../../../../inc/themes/classic/config.inc:11
+#: ../../../../inc/themes/classic/preferences.inc:12
+#: ../../../../inc/themes/material-blue/config.inc:12
+#: ../../../../inc/themes/material-blue/preferences.inc:12
 msgid "Idioma"
 msgstr "Nyelv"
 
-#: ../../../../inc/themes/classic/config.inc:21
-#: ../../../../inc/themes/material-blue/config.inc:22
+#: ../../../../inc/themes/classic/config.inc:15
+#: ../../../../inc/themes/material-blue/config.inc:16
+msgid ""
+"Establece el idioma global de la aplicación. Es posible establecer un idioma "
+"por usuario en las preferencias."
+msgstr ""
+
+#: ../../../../inc/themes/classic/config.inc:18
+#: ../../../../inc/themes/material-blue/config.inc:19
+msgid ""
+"Para mejorar/añadir las traducciones, puede colaborar en http:://translate."
+"syspass.org"
+msgstr ""
+
+#: ../../../../inc/themes/classic/config.inc:33
+#: ../../../../inc/themes/classic/preferences.inc:24
+#: ../../../../inc/themes/material-blue/config.inc:34
+#: ../../../../inc/themes/material-blue/preferences.inc:23
 msgid "Tema Visual"
 msgstr ""
 
+#: ../../../../inc/themes/classic/config.inc:37
+#: ../../../../inc/themes/material-blue/config.inc:38
+msgid ""
+"Establece el tema visual global de la aplicación. Es posible establecer un "
+"tema visual por usuario en las preferencias."
+msgstr ""
+
 # "Session timeout (s)"
-#: ../../../../inc/themes/classic/config.inc:33
-#: ../../../../inc/themes/material-blue/config.inc:34
-#: ../../../../inc/themes/material-blue/config.inc:42
+#: ../../../../inc/themes/classic/config.inc:52
+#: ../../../../inc/themes/material-blue/config.inc:53
+#: ../../../../inc/themes/material-blue/config.inc:61
 msgid "Timeout de sesión (s)"
 msgstr "Munkamenet idõ"
 
 # "Enable event log"
-#: ../../../../inc/themes/classic/config.inc:42
-#: ../../../../inc/themes/material-blue/config.inc:48
+#: ../../../../inc/themes/classic/config.inc:61
+#: ../../../../inc/themes/material-blue/config.inc:85
 msgid "Habilitar log de eventos"
 msgstr "Esemény napló engedélyezése"
 
 # "It saves the actions done by the application."
-#: ../../../../inc/themes/classic/config.inc:46
-#: ../../../../inc/themes/material-blue/config.inc:52
+#: ../../../../inc/themes/classic/config.inc:65
+#: ../../../../inc/themes/material-blue/config.inc:89
 #, fuzzy
 msgid "Guarda las acciones realizadas en la aplicación."
 msgstr "Ez elmenti az akciók kimenetét"
 
 # "Enable debug"
-#: ../../../../inc/themes/classic/config.inc:58
-#: ../../../../inc/themes/material-blue/config.inc:66
+#: ../../../../inc/themes/classic/config.inc:77
+#: ../../../../inc/themes/material-blue/config.inc:103
 msgid "Habilitar depuración"
 msgstr "Nyomkövetés engedélyezése"
 
 # "Shows some information about application and performance."
-#: ../../../../inc/themes/classic/config.inc:62
-#: ../../../../inc/themes/material-blue/config.inc:70
+#: ../../../../inc/themes/classic/config.inc:81
+#: ../../../../inc/themes/material-blue/config.inc:107
 #, fuzzy
 msgid ""
 "Muestra información relativa a la configuración de la aplicación y "
@@ -4013,14 +4086,14 @@ msgid ""
 msgstr "Mutat néhány információt az alkalmazásról és a teljesítményrõl"
 
 # "Maintenance mode."
-#: ../../../../inc/themes/classic/config.inc:74
-#: ../../../../inc/themes/material-blue/config.inc:84
+#: ../../../../inc/themes/classic/config.inc:93
+#: ../../../../inc/themes/material-blue/config.inc:121
 msgid "Modo mantenimiento"
 msgstr "Fenntartás mód"
 
 # "In this mode you cannot login to application. To disable it, you need to modify configuration file."
-#: ../../../../inc/themes/classic/config.inc:78
-#: ../../../../inc/themes/material-blue/config.inc:88
+#: ../../../../inc/themes/classic/config.inc:97
+#: ../../../../inc/themes/material-blue/config.inc:125
 #, fuzzy
 msgid ""
 "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
@@ -4030,14 +4103,14 @@ msgstr ""
 "módosítanod kell a konfigurációs fájlt"
 
 # "Check for updates"
-#: ../../../../inc/themes/classic/config.inc:90
-#: ../../../../inc/themes/material-blue/config.inc:102
+#: ../../../../inc/themes/classic/config.inc:109
+#: ../../../../inc/themes/material-blue/config.inc:139
 msgid "Comprobar actualizaciones"
 msgstr "Frissítések keresése"
 
 # "Check for application updates (only for administrators)."
-#: ../../../../inc/themes/classic/config.inc:94
-#: ../../../../inc/themes/material-blue/config.inc:106
+#: ../../../../inc/themes/classic/config.inc:113
+#: ../../../../inc/themes/material-blue/config.inc:143
 #, fuzzy
 msgid ""
 "Comprobar actualizaciones de la aplicación (sólo para los usuarios "
@@ -4045,15 +4118,15 @@ msgid ""
 msgstr "Azlkalmazás frissítések keresése (csak rendszergazda esetén)"
 
 # "Check for updates"
-#: ../../../../inc/themes/classic/config.inc:106
-#: ../../../../inc/themes/material-blue/config.inc:120
+#: ../../../../inc/themes/classic/config.inc:125
+#: ../../../../inc/themes/material-blue/config.inc:157
 #, fuzzy
 msgid "Comprobar notificaciones"
 msgstr "Ellenõrzés"
 
 # "Check for application updates (only for administrators)."
-#: ../../../../inc/themes/classic/config.inc:110
-#: ../../../../inc/themes/material-blue/config.inc:124
+#: ../../../../inc/themes/classic/config.inc:129
+#: ../../../../inc/themes/material-blue/config.inc:161
 #, fuzzy
 msgid ""
 "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
@@ -4061,14 +4134,18 @@ msgid ""
 msgstr "Azlkalmazás frissítések keresése (csak rendszergazda esetén)"
 
 # "Account name as link"
-#: ../../../../inc/themes/classic/config.inc:122
-#: ../../../../inc/themes/material-blue/config.inc:145
+#: ../../../../inc/themes/classic/config.inc:141
+#: ../../../../inc/themes/classic/preferences.inc:38
+#: ../../../../inc/themes/material-blue/config.inc:182
+#: ../../../../inc/themes/material-blue/preferences.inc:36
 msgid "Nombre de cuenta como enlace"
 msgstr "Fiók neve linkként"
 
 # "Enables account name as a link to account details in search page."
-#: ../../../../inc/themes/classic/config.inc:126
-#: ../../../../inc/themes/material-blue/config.inc:149
+#: ../../../../inc/themes/classic/config.inc:145
+#: ../../../../inc/themes/classic/preferences.inc:43
+#: ../../../../inc/themes/material-blue/config.inc:186
+#: ../../../../inc/themes/material-blue/preferences.inc:40
 #, fuzzy
 msgid ""
 "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
@@ -4076,53 +4153,53 @@ msgid ""
 msgstr "Fiók nevére való keresés engedélyezése"
 
 # "Files management"
-#: ../../../../inc/themes/classic/config.inc:138
-#: ../../../../inc/themes/material-blue/config.inc:230
+#: ../../../../inc/themes/classic/config.inc:157
+#: ../../../../inc/themes/material-blue/config.inc:267
 msgid "Gestión de archivos"
 msgstr "Fájl menedzsment"
 
 # "Enables upload/download accounts files."
-#: ../../../../inc/themes/classic/config.inc:142
-#: ../../../../inc/themes/material-blue/config.inc:234
+#: ../../../../inc/themes/classic/config.inc:161
+#: ../../../../inc/themes/material-blue/config.inc:271
 #, fuzzy
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr "Fájlok Fel/Letöltésének engedélyezése"
 
 # "Global searches"
-#: ../../../../inc/themes/classic/config.inc:154
-#: ../../../../inc/themes/material-blue/config.inc:163
+#: ../../../../inc/themes/classic/config.inc:173
+#: ../../../../inc/themes/material-blue/config.inc:200
 msgid "Búsquedas globales"
 msgstr "Gblobális Keresések"
 
-#: ../../../../inc/themes/classic/config.inc:158
-#: ../../../../inc/themes/material-blue/config.inc:167
+#: ../../../../inc/themes/classic/config.inc:177
+#: ../../../../inc/themes/material-blue/config.inc:204
 msgid ""
 "Permite que todos los usuarios puedan realizar búsquedas en todas las "
 "cuentas, pero no pueden ver el contenido de las que no tienen permisos."
 msgstr ""
 
 # "Allowed file extensions"
-#: ../../../../inc/themes/classic/config.inc:170
-#: ../../../../inc/themes/material-blue/config.inc:249
+#: ../../../../inc/themes/classic/config.inc:189
+#: ../../../../inc/themes/material-blue/config.inc:286
 msgid "Extensiones de archivos permitidas"
 msgstr "Engedélyezett fájl kiterjesztés"
 
-#: ../../../../inc/themes/classic/config.inc:174
-#: ../../../../inc/themes/material-blue/config.inc:253
+#: ../../../../inc/themes/classic/config.inc:193
+#: ../../../../inc/themes/material-blue/config.inc:290
 #, fuzzy
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr "Fájlok Fel/Letöltésének engedélyezése"
 
 # "Extensions max length is 4 characters."
-#: ../../../../inc/themes/classic/config.inc:178
-#: ../../../../inc/themes/material-blue/config.inc:257
+#: ../../../../inc/themes/classic/config.inc:197
+#: ../../../../inc/themes/material-blue/config.inc:294
 #, fuzzy
 msgid "Se permite un máximo de 4 caracteres."
 msgstr "A kiterjesztések hossza maximum 4 karakter lehet"
 
 # "Write extension and press enter to add."
-#: ../../../../inc/themes/classic/config.inc:182
-#: ../../../../inc/themes/material-blue/config.inc:261
+#: ../../../../inc/themes/classic/config.inc:201
+#: ../../../../inc/themes/material-blue/config.inc:298
 #, fuzzy
 msgid ""
 "Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
@@ -4130,71 +4207,75 @@ msgid ""
 msgstr "Írj kiterjesztést, majd nyomj entert a hozzáadáshoz"
 
 # "Sets up the max upload file size."
-#: ../../../../inc/themes/classic/config.inc:197
-#: ../../../../inc/themes/material-blue/config.inc:276
+#: ../../../../inc/themes/classic/config.inc:216
+#: ../../../../inc/themes/material-blue/config.inc:313
 #, fuzzy
 msgid "Establece el tamaño máximo para subir archivos."
 msgstr "A feltölthetõ fájlméret maximális értékének beállítása"
 
 # "The absolute maximum is 16MB."
-#: ../../../../inc/themes/classic/config.inc:201
-#: ../../../../inc/themes/material-blue/config.inc:280
+#: ../../../../inc/themes/classic/config.inc:220
+#: ../../../../inc/themes/material-blue/config.inc:317
 #, fuzzy
 msgid "El máximo absuluto es de 16MB."
 msgstr "A maximum 16MB"
 
 # "Results per page"
-#: ../../../../inc/themes/classic/config.inc:212
-#: ../../../../inc/themes/material-blue/config.inc:181
+#: ../../../../inc/themes/classic/config.inc:231
+#: ../../../../inc/themes/classic/preferences.inc:56
+#: ../../../../inc/themes/material-blue/config.inc:218
+#: ../../../../inc/themes/material-blue/preferences.inc:54
 msgid "Resultados por página"
 msgstr "Eredmény / oldal"
 
 # "Number of results that are shown per page when searching"
-#: ../../../../inc/themes/classic/config.inc:216
-#: ../../../../inc/themes/material-blue/config.inc:185
+#: ../../../../inc/themes/classic/config.inc:235
+#: ../../../../inc/themes/classic/preferences.inc:61
+#: ../../../../inc/themes/material-blue/config.inc:222
+#: ../../../../inc/themes/material-blue/preferences.inc:58
 #, fuzzy
 msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
 msgstr "Keresési találok száma oldalanként"
 
 # Results like Cards
-#: ../../../../inc/themes/classic/config.inc:227
+#: ../../../../inc/themes/classic/config.inc:246
 #, fuzzy
 msgid "Resultados en Tarjetas"
 msgstr "Nincsenek eredmények"
 
 # Enables to show account's search results like a card format.
-#: ../../../../inc/themes/classic/config.inc:231
+#: ../../../../inc/themes/classic/config.inc:250
 #, fuzzy
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr "Enables to show account's search results like a card format."
 
-#: ../../../../inc/themes/classic/config.inc:243
-#: ../../../../inc/themes/material-blue/config.inc:201
+#: ../../../../inc/themes/classic/config.inc:262
+#: ../../../../inc/themes/material-blue/config.inc:238
 #, fuzzy
 msgid "Imagen para mostrar clave"
 msgstr "Mester jelszó szükséges a jelszavak titkosításához"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/themes/classic/config.inc:247
-#: ../../../../inc/themes/material-blue/config.inc:205
+#: ../../../../inc/themes/classic/config.inc:266
+#: ../../../../inc/themes/material-blue/config.inc:242
 #, fuzzy
 msgid "Generar una imagen con el texto de la clave de la cuenta."
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
-#: ../../../../inc/themes/classic/config.inc:250
-#: ../../../../inc/themes/material-blue/config.inc:208
+#: ../../../../inc/themes/classic/config.inc:269
+#: ../../../../inc/themes/material-blue/config.inc:245
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
 
 # "Add extension"
-#: ../../../../inc/themes/classic/config.inc:285
-#: ../../../../inc/themes/material-blue/config.inc:398
+#: ../../../../inc/themes/classic/config.inc:304
+#: ../../../../inc/themes/material-blue/config.inc:435
 msgid "Añadir extensión"
 msgstr "Kiterjesztés hozzáadása"
 
 # "Delete extension"
-#: ../../../../inc/themes/classic/config.inc:286
-#: ../../../../inc/themes/material-blue/config.inc:399
+#: ../../../../inc/themes/classic/config.inc:305
+#: ../../../../inc/themes/material-blue/config.inc:436
 msgid "Eliminar extensión"
 msgstr "Kiterjesztés törlése"
 
@@ -4232,8 +4313,8 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/encryption.inc:8
 #: ../../../../inc/themes/material-blue/install.inc:51
 #: ../../../../inc/themes/material-blue/install.inc:58
-#: ../../../../inc/themes/material-blue/login.inc:25
-#: ../../../../inc/themes/material-blue/login.inc:48
+#: ../../../../inc/themes/material-blue/login.inc:26
+#: ../../../../inc/themes/material-blue/login.inc:49
 msgid "Clave Maestra"
 msgstr "Mester jelszó"
 
@@ -4357,8 +4438,8 @@ msgstr "Munkamenet idõ"
 msgid "Validez"
 msgstr ""
 
-#: ../../../../inc/themes/classic/encryption.inc:157
-#: ../../../../inc/themes/material-blue/encryption.inc:176
+#: ../../../../inc/themes/classic/encryption.inc:167
+#: ../../../../inc/themes/material-blue/encryption.inc:186
 msgid ""
 "La clave temporal es utilizada como clave maestra para los usuarios que "
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
@@ -4366,8 +4447,8 @@ msgid ""
 msgstr ""
 
 # "General"
-#: ../../../../inc/themes/classic/encryption.inc:159
-#: ../../../../inc/themes/material-blue/encryption.inc:180
+#: ../../../../inc/themes/classic/encryption.inc:169
+#: ../../../../inc/themes/material-blue/encryption.inc:190
 #, fuzzy
 msgid "Generar"
 msgstr "Generate Temporary Password"
@@ -4400,33 +4481,33 @@ msgstr "IP"
 
 # "First page"
 #: ../../../../inc/themes/classic/eventlog.inc:86
-#: ../../../../inc/themes/classic/search.inc:159
+#: ../../../../inc/themes/classic/search.inc:169
 #: ../../../../inc/themes/material-blue/eventlog.inc:85
-#: ../../../../inc/themes/material-blue/search.inc:173
+#: ../../../../inc/themes/material-blue/search.inc:171
 msgid "Primera página"
 msgstr "Elsõ oldal"
 
 # "Previous page"
 #: ../../../../inc/themes/classic/eventlog.inc:88
-#: ../../../../inc/themes/classic/search.inc:161
+#: ../../../../inc/themes/classic/search.inc:171
 #: ../../../../inc/themes/material-blue/eventlog.inc:87
-#: ../../../../inc/themes/material-blue/search.inc:175
+#: ../../../../inc/themes/material-blue/search.inc:173
 msgid "Página anterior"
 msgstr "Elõzõ oldal"
 
 # "Next page"
 #: ../../../../inc/themes/classic/eventlog.inc:93
-#: ../../../../inc/themes/classic/search.inc:166
+#: ../../../../inc/themes/classic/search.inc:176
 #: ../../../../inc/themes/material-blue/eventlog.inc:92
-#: ../../../../inc/themes/material-blue/search.inc:180
+#: ../../../../inc/themes/material-blue/search.inc:178
 msgid "Página siguiente"
 msgstr "Következõ oldal"
 
 # "Last page"
 #: ../../../../inc/themes/classic/eventlog.inc:95
-#: ../../../../inc/themes/classic/search.inc:168
+#: ../../../../inc/themes/classic/search.inc:178
 #: ../../../../inc/themes/material-blue/eventlog.inc:94
-#: ../../../../inc/themes/material-blue/search.inc:182
+#: ../../../../inc/themes/material-blue/search.inc:180
 msgid "Última página"
 msgstr "Utolsó oldal"
 
@@ -4716,7 +4797,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/info.inc:44
 #: ../../../../inc/themes/classic/ldap.inc:32
 #: ../../../../inc/themes/classic/mail.inc:21
-#: ../../../../inc/themes/material-blue/config.inc:316
+#: ../../../../inc/themes/material-blue/config.inc:353
 #: ../../../../inc/themes/material-blue/info.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:35
 #: ../../../../inc/themes/material-blue/ldap.inc:58
@@ -4929,22 +5010,22 @@ msgstr "LDAP kapcsolat ellenõrzése"
 
 # "Lost your password?"
 #: ../../../../inc/themes/classic/login.inc:46
-#: ../../../../inc/themes/material-blue/login.inc:73
+#: ../../../../inc/themes/material-blue/login.inc:74
 msgid "¿Olvidó su clave?"
 msgstr "Elvesztette jelszavát?"
 
 # "Application successfully updated"
-#: ../../../../inc/themes/classic/login.inc:59
-#: ../../../../inc/themes/material-blue/login.inc:85
+#: ../../../../inc/themes/classic/login.inc:63
+#: ../../../../inc/themes/material-blue/login.inc:90
 msgid "Aplicación actualizada correctamente"
 msgstr "Az alkalmazás frissítése sikeres"
 
 # "New Category"
-#: ../../../../inc/themes/classic/login.inc:64
-#: ../../../../inc/themes/classic/login.inc:65
-#: ../../../../inc/themes/material-blue/login.inc:90
-#: ../../../../inc/themes/material-blue/login.inc:91
-#: ../../../../inc/themes/material-blue/login.inc:93
+#: ../../../../inc/themes/classic/login.inc:68
+#: ../../../../inc/themes/classic/login.inc:69
+#: ../../../../inc/themes/material-blue/login.inc:95
+#: ../../../../inc/themes/material-blue/login.inc:96
+#: ../../../../inc/themes/material-blue/login.inc:98
 #, fuzzy
 msgid "Nuevas Características"
 msgstr "Új Kategória"
@@ -4957,7 +5038,7 @@ msgstr "Email értesítés engedélyezése"
 
 # "Port"
 #: ../../../../inc/themes/classic/mail.inc:29
-#: ../../../../inc/themes/material-blue/config.inc:330
+#: ../../../../inc/themes/material-blue/config.inc:367
 #: ../../../../inc/themes/material-blue/mail.inc:36
 #: ../../../../inc/themes/material-blue/mail.inc:43
 msgid "Puerto"
@@ -4989,9 +5070,9 @@ msgid "Habilitar peticiones por correo"
 msgstr "Email kérések engedélyezése"
 
 # "More Actions"
-#: ../../../../inc/themes/classic/mgmttabs.inc:66
-#: ../../../../inc/themes/classic/search.inc:110
-#: ../../../../inc/themes/material-blue/search.inc:125
+#: ../../../../inc/themes/classic/mgmttabs.inc:70
+#: ../../../../inc/themes/classic/search.inc:120
+#: ../../../../inc/themes/material-blue/search.inc:123
 msgid "Más Acciones"
 msgstr "Több akció"
 
@@ -5054,6 +5135,21 @@ msgstr "Változtatás"
 #: ../../../../inc/themes/classic/passreset.inc:52
 msgid "Cambiar Clave"
 msgstr "Változtatsd meg a jelszót"
+
+# "Results per page"
+#: ../../../../inc/themes/classic/preferences.inc:73
+#: ../../../../inc/themes/material-blue/preferences.inc:74
+#, fuzzy
+msgid "Ordenar resultados por visitas"
+msgstr "Keresési találok száma oldalanként"
+
+# Enables to show account's search results like a card format.
+#: ../../../../inc/themes/classic/preferences.inc:77
+#: ../../../../inc/themes/material-blue/preferences.inc:78
+#, fuzzy
+msgid ""
+"Ordena los resultados de búsqueda por el número de visitas de las cuentas."
+msgstr "Enables to show account's search results like a card format."
 
 # "Profile name"
 #: ../../../../inc/themes/classic/profiles.inc:11
@@ -5274,8 +5370,9 @@ msgstr "Kérés leírás"
 
 # "Back"
 #: ../../../../inc/themes/classic/request.inc:33
-#: ../../../../inc/themes/material-blue/account.inc:440
+#: ../../../../inc/themes/material-blue/account.inc:443
 #: ../../../../inc/themes/material-blue/editpass.inc:55
+#: ../../../../inc/themes/material-blue/mgmttabs.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:42
 msgid "Atrás"
 msgstr "Vissza"
@@ -5287,38 +5384,38 @@ msgid "Enviar"
 msgstr "Küldés"
 
 # "Search in Wiki"
-#: ../../../../inc/themes/classic/search.inc:24
+#: ../../../../inc/themes/classic/search.inc:33
 #: ../../../../inc/themes/material-blue/search.inc:29
 msgid "Buscar en Wiki"
 msgstr "Keresés a Wikiben"
 
 # "Open link to"
-#: ../../../../inc/themes/classic/search.inc:60
+#: ../../../../inc/themes/classic/search.inc:69
 #: ../../../../inc/themes/material-blue/search.inc:65
 msgid "Abrir enlace a"
 msgstr "Nyissa meg a linket, hogy"
 
 # "Attachments"
-#: ../../../../inc/themes/classic/search.inc:78
+#: ../../../../inc/themes/classic/search.inc:87
 #: ../../../../inc/themes/material-blue/search.inc:89
 msgid "Archivos adjuntos"
 msgstr "Csatolmányok"
 
 # "Link to Wiki"
-#: ../../../../inc/themes/classic/search.inc:85
+#: ../../../../inc/themes/classic/search.inc:94
 #: ../../../../inc/themes/material-blue/search.inc:98
 msgid "Enlace a Wiki"
 msgstr "Wiki link"
 
 # "Filter ON"
-#: ../../../../inc/themes/classic/search.inc:149
-#: ../../../../inc/themes/material-blue/search.inc:163
+#: ../../../../inc/themes/classic/search.inc:159
+#: ../../../../inc/themes/material-blue/search.inc:161
 msgid "Filtro ON"
 msgstr "Szûrõ bekapcsolva"
 
 # "Global ON"
-#: ../../../../inc/themes/classic/search.inc:153
-#: ../../../../inc/themes/material-blue/search.inc:167
+#: ../../../../inc/themes/classic/search.inc:163
+#: ../../../../inc/themes/material-blue/search.inc:165
 msgid "Global ON"
 msgstr "Global On"
 
@@ -5329,48 +5426,48 @@ msgid "Limpiar"
 msgstr "Tiszta"
 
 # "Text to search"
-#: ../../../../inc/themes/classic/searchbox.inc:6
+#: ../../../../inc/themes/classic/searchbox.inc:7
 #: ../../../../inc/themes/material-blue/searchbox.inc:10
 msgid "Texto a buscar"
 msgstr "Keresendõ szöveg"
 
 # "Incorrect parameters"
-#: ../../../../inc/themes/classic/searchbox.inc:10
+#: ../../../../inc/themes/classic/searchbox.inc:12
 #: ../../../../inc/themes/material-blue/searchbox.inc:15
 #, fuzzy
 msgid "Parámetros especiales:"
 msgstr "Helytelen paraméter"
 
-#: ../../../../inc/themes/classic/searchbox.inc:13
+#: ../../../../inc/themes/classic/searchbox.inc:15
 #: ../../../../inc/themes/material-blue/searchbox.inc:18
 msgid "Buscar cuentas a las que 'login' tenga acceso"
 msgstr ""
 
-#: ../../../../inc/themes/classic/searchbox.inc:14
+#: ../../../../inc/themes/classic/searchbox.inc:17
 #: ../../../../inc/themes/material-blue/searchbox.inc:19
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr ""
 
-#: ../../../../inc/themes/classic/searchbox.inc:15
+#: ../../../../inc/themes/classic/searchbox.inc:19
 #: ../../../../inc/themes/material-blue/searchbox.inc:20
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
 msgstr ""
 
 # "Global search"
-#: ../../../../inc/themes/classic/searchbox.inc:19
+#: ../../../../inc/themes/classic/searchbox.inc:24
 #: ../../../../inc/themes/material-blue/searchbox.inc:25
 #: ../../../../inc/themes/material-blue/searchbox.inc:28
 msgid "Búsqueda global"
 msgstr "Globális keresés"
 
 # "APP"
-#: ../../../../inc/themes/classic/searchbox.inc:42
+#: ../../../../inc/themes/classic/searchbox.inc:50
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "CPP"
 msgstr "APP"
 
 # "Accounts per page"
-#: ../../../../inc/themes/classic/searchbox.inc:42
+#: ../../../../inc/themes/classic/searchbox.inc:51
 #: ../../../../inc/themes/material-blue/searchbox.inc:54
 msgid "Cuentas por página"
 msgstr "Fiók/oldal"
@@ -5402,6 +5499,7 @@ msgid ""
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:29
+#: ../../../../inc/themes/material-blue/preferences.inc:86
 #: ../../../../inc/themes/material-blue/security.inc:27
 msgid "Activar"
 msgstr ""
@@ -5430,10 +5528,6 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/footer.inc:7
 msgid "Cambiar clave de usuario"
 msgstr "Változatsd meg a felhasználói jelszót"
-
-#: ../../../../inc/themes/classic/sessionbar.inc:9
-msgid "Preferencias"
-msgstr ""
 
 # "Logout"
 #: ../../../../inc/themes/classic/sessionbar.inc:15
@@ -5673,7 +5767,7 @@ msgid "Seleccionar o escribir para crear uno nuevo"
 msgstr ""
 
 # "Password (repeat)"
-#: ../../../../inc/themes/material-blue/account.inc:110
+#: ../../../../inc/themes/material-blue/account.inc:113
 #, fuzzy
 msgid "Clave (Repetir)"
 msgstr "Jelszó (ismét)"
@@ -5687,43 +5781,52 @@ msgstr "Jelszó (ismét)"
 msgid "Realizar"
 msgstr "Archívum készítés"
 
+#: ../../../../inc/themes/material-blue/config.inc:67
+msgid "Forzar HTTPS"
+msgstr ""
+
+#: ../../../../inc/themes/material-blue/config.inc:71
+msgid "Fuerza para que todas las conexiones sean a través de HTTPS."
+msgstr ""
+
 # "Results per page"
-#: ../../../../inc/themes/material-blue/config.inc:195
+#: ../../../../inc/themes/material-blue/config.inc:232
+#: ../../../../inc/themes/material-blue/preferences.inc:68
 #, fuzzy
 msgid "Número de resultados por página"
 msgstr "Keresési találok száma oldalanként"
 
 # "Maximum file size"
-#: ../../../../inc/themes/material-blue/config.inc:290
+#: ../../../../inc/themes/material-blue/config.inc:327
 #, fuzzy
 msgid "Tamaño máximo de archivo en bytes"
 msgstr "Maximális fájl méret"
 
-#: ../../../../inc/themes/material-blue/config.inc:297
+#: ../../../../inc/themes/material-blue/config.inc:334
 msgid "Proxy"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/config.inc:303
+#: ../../../../inc/themes/material-blue/config.inc:340
 msgid "Usar Proxy"
 msgstr ""
 
 # "Server"
-#: ../../../../inc/themes/material-blue/config.inc:324
+#: ../../../../inc/themes/material-blue/config.inc:361
 #, fuzzy
 msgid "Servidor proxy"
 msgstr "Szerver"
 
-#: ../../../../inc/themes/material-blue/config.inc:338
+#: ../../../../inc/themes/material-blue/config.inc:375
 msgid "Puerto del servidor proxy"
 msgstr ""
 
 # "Access user"
-#: ../../../../inc/themes/material-blue/config.inc:352
+#: ../../../../inc/themes/material-blue/config.inc:389
 #, fuzzy
 msgid "Usuario del servidor proxy"
 msgstr "Felhasználó elérése"
 
-#: ../../../../inc/themes/material-blue/config.inc:366
+#: ../../../../inc/themes/material-blue/config.inc:403
 msgid "Clave del servidor proxy"
 msgstr ""
 
@@ -5851,11 +5954,3 @@ msgstr "archívum készítés"
 #, fuzzy
 msgid "Autentificación"
 msgstr "Engedélyezése Hitelesítés"
-
-# "New Password (Verify)"
-#~ msgid "Nueva Clave (Verificar)"
-#~ msgstr "Új jelszó (megerõsítés)"
-
-# "Password (Verify)"
-#~ msgid "Clave (Verificar)"
-#~ msgstr "Jelszó (Megerõsítés)"

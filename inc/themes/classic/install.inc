@@ -110,13 +110,9 @@
     <?php endif; ?>
 </div>
 <script>
-    $(function(){
-        $('#frmInstall').submit(function () {
-            sysPassUtil.Common.encryptFormValue('#adminpass');
-            sysPassUtil.Common.encryptFormValue('#masterpassword');
-            sysPassUtil.Common.encryptFormValue('#dbpass');
-        });
+    window.onload = function () {
+        sysPassUtil.passwordDetect();
 
         sysPassUtil.Common.checkboxDetect('#actions');
-    });
+    };
 </script>

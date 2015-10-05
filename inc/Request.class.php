@@ -126,9 +126,13 @@ class Request
             return '';
         }
 
-        // Desencriptar con la clave RSA
-        $CryptPKI = new CryptPKI();
-        $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
+        try {
+            // Desencriptar con la clave RSA
+            $CryptPKI = new CryptPKI();
+            $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
+        } catch (\Exception $e) {
+            return '';
+        }
 
         return $clearData;
     }

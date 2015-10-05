@@ -401,10 +401,11 @@ class DB
      *
      * @param      $query       string La consulta a realizar
      * @param      $querySource string La función orígen de la consulta
+     * @param array $data               Los valores de los parámetros de la consulta
      * @param      $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */
-    public static function getQuery($query, $querySource, &$data = null, $getRawData = false)
+    public static function getQuery($query, $querySource, array &$data = null, $getRawData = false)
     {
         if (empty($query)) {
             return false;

@@ -62,9 +62,7 @@ if ($userLogin && $userEmail) {
 
     $log->writeLog();
     SP\Email::sendEmail($log);
-}
-
-if ($userPass && $userPassR && $userPass === $userPassR) {
+} elseif ($userPass && $userPassR && $userPass === $userPassR) {
     $userId = UserUtil::checkHashPassRecover($hash);
 
     if ($userId) {

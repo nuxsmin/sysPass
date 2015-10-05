@@ -4,7 +4,7 @@
         <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
-    <form id="frmPassReset" action="" method="post">
+    <form id="frmPass2fa" action="" method="post">
         <fieldset id="resetdata">
             <legend><?php echo _('Autentificación en 2 pasos'); ?></legend>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -31,10 +31,10 @@
 </div>
 
 <script>
-    $(function () {
-        $('#frmPassReset').on('submit', function () {
+    window.onload = function () {
+        $('#frmPass2fa').on('submit', function () {
             sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_2fa.php');
             return false;
         })
-    })
+    };
 </script>

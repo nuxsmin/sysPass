@@ -40,7 +40,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="adminpass" name="adminpass" type="password" required
                            class="mdl-textfield__input fg-blue100 passwordfield__input"
-                           value="<?php echo $adminpass; ?>" maxlength="255" autocomplete="off"
+                           value="" maxlength="255" autocomplete="off"
                            onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'adminaccount')">
                     <label class="mdl-textfield__label"
                            for="adminlogin"><?php echo _('Clave'); ?></label>
@@ -52,7 +52,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="masterpassword" name="masterpassword" type="password" required
                            class="mdl-textfield__input fg-blue100 passwordfield__input"
-                           value="<?php echo $masterpassword; ?>" maxlength="255" autocomplete="off"
+                           value="" maxlength="255" autocomplete="off"
                            onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'masterpwd')">
                     <label class="mdl-textfield__label"
                            for="masterpassword"><?php echo _('Clave Maestra'); ?></label>
@@ -61,7 +61,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="masterpasswordR" name="masterpasswordr" type="password" required
                            class="mdl-textfield__input fg-blue100"
-                           value="<?php echo $masterpasswordr; ?>" maxlength="255" autocomplete="off">
+                           value="" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="masterpasswordR"><?php echo _('Clave (repetir)'); ?></label>
                 </div>
@@ -88,7 +88,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dbpass" name="dbpass" type="password" required
                            class="mdl-textfield__input fg-blue100 passwordfield__input-show"
-                           value="<?php echo $dbpass; ?>" autocomplete="off" autofocus>
+                           value="" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="dbpass"><?php echo _('Clave acceso BBDD'); ?></label>
                 </div>
@@ -142,15 +142,11 @@
     <?php endif; ?>
 </div>
 <script>
-    $(function () {
-        $('#frmInstall').submit(function () {
-            sysPassUtil.Common.encryptFormValue('#adminpass');
-            sysPassUtil.Common.encryptFormValue('#masterpassword');
-            sysPassUtil.Common.encryptFormValue('#masterpasswordR');
-            sysPassUtil.Common.encryptFormValue('#dbpass');
-        });
+    window.onload = function () {
+        sysPassUtil.passwordDetect();
+
         $('#btnInstall').click(function () {
             $('#frmInstall').submit();
         });
-    });
+    };
 </script>
