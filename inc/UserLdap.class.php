@@ -63,7 +63,7 @@ class UserLdap
         $data['name'] = $User->getUserName();
         $data['login'] = $User->getUserLogin();
         $data['pass'] = $passdata['pass'];
-        $data['hashSalt'] = $passdata['hash'];
+        $data['hashSalt'] = $passdata['salt'];
         $data['email'] = $User->getUserEmail();
         $data['notes'] = 'LDAP';
         $data['groupId'] = $groupId;

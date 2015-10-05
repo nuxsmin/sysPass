@@ -42,6 +42,10 @@ class LdapADS extends Ldap
      */
     public static function getADServer($server)
     {
+        if (preg_match('/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/', $server)){
+            return $server;
+        }
+
         $serverDomain = '';
         $serverFQDN = explode('.', $server);
 
