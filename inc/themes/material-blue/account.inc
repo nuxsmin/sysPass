@@ -319,6 +319,8 @@
                     <?php else: ?>
                         <?php if($field->type === \SP\CustomFields::TYPE_PASSWORD && !$showViewPass):?>
                             ****
+                        <?php elseif($field->type === \SP\CustomFields::TYPE_COLOR):?>
+                            <span class="round custom-input-color" style="background-color: <?php echo $field->value; ?>;"></span>
                         <?php else:?>
                             <?php echo $field->value; ?>
                         <?php endif; ?>

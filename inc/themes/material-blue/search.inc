@@ -145,9 +145,9 @@
                     <?php elseif ($requestEnabled || $isDemoMode): ?>
                         <div class="account-spacer"></div>
                         <div class="account-actions round">
-                            <img src="imgs/request.png" title="<?php echo _('Solicitar Modificación'); ?>"
-                                 class="inputImg"
-                                 OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
+                            <i class="material-icons fg-blue80"
+                               title="<?php echo _('Solicitar Modificación'); ?>"
+                               OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">email</i>
                         </div>
                     <?php endif; ?>
                 </div>

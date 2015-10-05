@@ -101,7 +101,7 @@ class CustomFieldDef extends CustomFieldsBase
                 $attribs->id = $customField->customfielddef_id;
                 $attribs->module = self::getFieldsModules($customField->customfielddef_module);
                 $attribs->name = $field->getName();
-                $attribs->typeName = self::getFieldsTypes($field->getType());
+                $attribs->typeName = self::getFieldsTypes($field->getType(), true);
                 $attribs->type = $field->getType();
 
                 $customFields[] = $attribs;

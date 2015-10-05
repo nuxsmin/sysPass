@@ -29,10 +29,18 @@ use SP\Controller\ActionsInterface;
 
 abstract class CustomFieldsBase
 {
+    /**
+     * Tipos de Campos
+     */
     const TYPE_TEXT = 1;
     const TYPE_PASSWORD = 2;
     const TYPE_DATE = 3;
     const TYPE_NUMBER = 4;
+    const TYPE_EMAIL = 5;
+    const TYPE_TELEPHONE = 6;
+    const TYPE_URL = 7;
+    const TYPE_COLOR = 8;
+
     /**
      * @var string
      */
@@ -58,17 +66,28 @@ abstract class CustomFieldsBase
      */
     private $_help = '';
 
-    public static function getFieldsTypes($typeId = null)
+    /**
+     * Devolver los tipos de campos soportados
+     *
+     * @param int  $typeId El tipo de campo
+     * @param bool $nice Devolver en formato "bonito"
+     * @return array
+     */
+    public static function getFieldsTypes($typeId = null, $nice = false)
     {
         $types = array(
-            self::TYPE_TEXT => 'text',
-            self::TYPE_PASSWORD => 'password',
-            self::TYPE_DATE => 'date',
-            self::TYPE_NUMBER => 'number'
+            self::TYPE_TEXT => array('text', _('Texto')),
+            self::TYPE_PASSWORD => array('password', _('Clave')),
+            self::TYPE_DATE => array('date', _('Fecha')),
+            self::TYPE_NUMBER => array('number', _('Número')),
+            self::TYPE_EMAIL => array('email', _('Email')),
+            self::TYPE_TELEPHONE => array('tel', _('Teléfono')),
+            self::TYPE_URL => array('url', _('Link')),
+            self::TYPE_COLOR => array('color', _('Color'))
         );
 
         if (!is_null($typeId)) {
-            return $types[$typeId];
+            return ($nice === false) ? $types[$typeId][0] : $types[$typeId][1];
         }
 
         return $types;
