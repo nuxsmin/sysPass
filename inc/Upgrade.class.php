@@ -214,7 +214,7 @@ class Upgrade
         foreach ($mapParams as $newParam => $oldParam) {
             if (array_key_exists($oldParam, $currData)) {
                 Config::setValue($newParam, $currData[$oldParam]);
-                Config::deleteKey($oldParam);
+                Config::deleteParam($oldParam);
             }
         }
 
@@ -232,10 +232,10 @@ class Upgrade
     private static function auxUpgrades($version){
         switch ($version){
             case 12001:
-                return (Profile::migrateProfiles() && UserUtil::migrateUsersGroup());
+                return (Profile::migrateProfiles() && UserMigrate::migrateUsersGroup());
                 break;
             case 12002:
-                return (UserUtil::setMigrateUsers());
+                return (UserMigrate::setMigrateUsers());
                 break;
             default:
                 break;

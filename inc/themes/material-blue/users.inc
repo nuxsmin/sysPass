@@ -43,7 +43,7 @@
                 <td class="descField"><?php echo _('Perfil'); ?></td>
                 <td class="valField">
                     <select id="selProfile" name="profileid"
-                            class="select-box sel-chosen-profile" required>
+                            class="select-box sel-chosen-profile" required <?php echo $isDisabled; ?>>
                         <option value="0"></option>
                         <?php foreach ($profiles as $id => $name): ?>
                             <option
@@ -57,7 +57,7 @@
                 <td class="descField"><?php echo _('Grupo'); ?></td>
                 <td class="valField">
                     <select id="selGroup" name="groupid"
-                            class="select-box sel-chosen-usergroup" required>
+                            class="select-box sel-chosen-usergroup" required <?php echo $isDisabled; ?>>
                         <option value="0"></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option

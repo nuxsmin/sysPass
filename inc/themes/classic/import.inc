@@ -1,8 +1,5 @@
 <!-- Start Tab - Import -->
-<div id="tabs-<?php use SP\Acl;
-use SP\Common;
-
-echo $import_tabIndex; ?>">
+<div id="tabs-<?php echo $import_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Importar phpPMS'); ?>
     </div>

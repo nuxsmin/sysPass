@@ -25,9 +25,6 @@
 
 namespace SP;
 
-use CssMin;
-use phpseclib\Crypt\RSA;
-
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -199,7 +196,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.2-rc4';
+        return '1.2-rc5';
     }
 
     /**
@@ -312,7 +309,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '04';
+        $build = '05';
         $version = array(1, 2, 0);
 
         if ($retBuild) {
@@ -548,7 +545,7 @@ class Util
     }
 
     /**
-     * Obtener datos desde una URL
+     * Obtener datos desde una URL usando CURL
      *
      * @param $url string La URL
      * @return bool|string

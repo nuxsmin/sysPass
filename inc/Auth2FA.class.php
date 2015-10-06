@@ -27,7 +27,8 @@ namespace SP\Auth;
 
 use SP\Exts\Google2FA;
 use SP\Exts\Base2n;
-use SP\UserUtil;
+use SP\UserPass;
+use SP\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -59,11 +60,29 @@ class Auth2FA
      */
     private $_userLogin = '';
 
+    /**
+     * @param int    $userId    El Id de usuario
+     * @param string $userLogin El login de usuario
+     */
     public function __construct($userId, $userLogin = null)
     {
         $this->_userId = $userId;
         $this->_userLogin = $userLogin;
         $this->_initializationKey = $this->genUserInitializationKey();
+    }
+
+    /**
+     * Generar una clave de inicialización codificada en Base32
+     *
+     * @return string
+     */
+    private function genUserInitializationKey()
+    {
+        $userIV = UserPass::getUserIVById($this->_userId);
+        $base32 = new Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
+        $key = substr($base32->encode($userIV), 0, 16);
+
+        return $key;
     }
 
     /**
@@ -93,25 +112,14 @@ class Auth2FA
         return Google2FA::verify_key($this->_initializationKey, $key);
     }
 
-    public function getUserQRUrl(){
-        $qrUrl = 'https://www.google.com/chart?chs=150x150&chld=M|0&cht=qr&chl=';
-        $qrUrl .= urlencode('otpauth://totp/sysPass:syspass/' . $this->_userLogin . '?secret=' . $this->_initializationKey . '&issuer=sysPass');
-
-        return $qrUrl;
-    }
-
+    /**
+     * Devolver el código QR de la peticíón HTTP en base64
+     *
+     * @return bool|string
+     */
     public function getUserQRCode()
     {
-        $ch = curl_init($this->getUserQRUrl());
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass 2FA");
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-
-        $data = curl_exec($ch);
-        curl_close($ch);
+        $data = Util::getDataFromUrl($this->getUserQRUrl());
 
         if ($data === false) {
             return false;
@@ -120,6 +128,26 @@ class Auth2FA
         return base64_encode($data);
     }
 
+    /**
+     * Devolver la cadena con la URL para solicitar el código QR
+     *
+     * @return string
+     */
+    public function getUserQRUrl()
+    {
+        $qrUrl = 'https://www.google.com/chart?chs=150x150&chld=M|0&cht=qr&chl=';
+        $qrUrl .= urlencode('otpauth://totp/sysPass:syspass/' . $this->_userLogin . '?secret=' . $this->_initializationKey . '&issuer=sysPass');
+
+        return $qrUrl;
+    }
+
+    /**
+     * Comprobar el token del usuario
+     *
+     * @param int $userToken EL código del usuario
+     * @return bool
+     * @throws \Exception
+     */
     public function checkUserToken($userToken)
     {
         $timeStamp = Google2FA::get_timestamp();
@@ -129,14 +157,5 @@ class Auth2FA
         error_log($totp . '/' . $userToken);
 
         return ($totp == $userToken);
-    }
-
-    private function genUserInitializationKey()
-    {
-        $userIV = UserUtil::getUserIVById($this->_userId);
-        $base32 = new Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
-        $key = substr($base32->encode($userIV), 0, 16);
-
-        return $key;
     }
 }

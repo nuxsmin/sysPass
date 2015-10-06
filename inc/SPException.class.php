@@ -25,6 +25,8 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */

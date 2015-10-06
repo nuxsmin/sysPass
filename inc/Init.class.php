@@ -482,7 +482,7 @@ class Init
 
         $update = false;
         $configVersion = (int)str_replace('.', '', Config::getValue('version'));
-        $databaseVersion = (int)str_replace('.', '', Config::getConfigDbValue('version'));
+        $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
         $appVersion = (int)implode(Util::getVersion(true));
 
         if ($databaseVersion < $appVersion
@@ -503,9 +503,9 @@ class Init
 
                 if ($action === 'upgrade' && $hash === Config::getValue('upgrade_key', 0)) {
                     if (Upgrade::doUpgrade($databaseVersion)) {
-                        Config::setConfigDbValue('version', $appVersion);
+                        ConfigDB::setValue('version', $appVersion);
                         Config::setValue('maintenance', false);
-                        Config::deleteKey('upgrade_key');
+                        Config::deleteParam('upgrade_key');
                         $update = true;
                     }
                 } else {
@@ -544,17 +544,6 @@ class Init
     {
         $sessionLifeTime = self::getSessionLifeTime();
 
-        // Regenerar el Id de sesión periódicamente para evitar fijación
-        if (Session::getSidStartTime() === 0) {
-            Session::setSidStartTime(time());
-            Session::setStartActivity(time());
-        } else if (Session::getUserId() && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
-            session_regenerate_id(true);
-            Session::setSidStartTime(time());
-            // Recargar los permisos del perfil de usuario
-            Session::setUserProfile(Profile::getProfile(Session::getUserProfileId()));
-        }
-
         // Timeout de sesión
         if (Session::getLastActivity() && (time() - Session::getLastActivity() > $sessionLifeTime)) {
             if (isset($_COOKIE[session_name()])) {
@@ -566,6 +555,21 @@ class Init
             session_unset();
             session_destroy();
             session_start();
+            return;
+        }
+
+        // Regenerar el Id de sesión periódicamente para evitar fijación
+        if (Session::getSidStartTime() === 0) {
+            Session::setSidStartTime(time());
+            Session::setStartActivity(time());
+        } else if (Session::getUserId() && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
+            $sessionMPass = SessionUtil::getSessionMPass();
+            session_regenerate_id(true);
+            Session::setSidStartTime(time());
+            // Recargar los permisos del perfil de usuario
+            Session::setUserProfile(Profile::getProfile(Session::getUserProfileId()));
+            // Regenerar la clave maestra
+            SessionUtil::saveSessionMPass($sessionMPass);
         }
 
         Session::setLastActivity(time());

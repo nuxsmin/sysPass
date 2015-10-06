@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -32,13 +33,13 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $frmLdapServer = SP\Request::analyze('ldap_server');
@@ -48,13 +49,13 @@ $frmLdapBindUser = SP\Request::analyze('ldap_binduser');
 $frmLdapBindPass = SP\Request::analyzeEncrypted('ldap_bindpass');
 
 if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
-    SP\Common::printJSON(_('Los parámetros de LDAP no están configurados'));
+    SP\Response::printJSON(_('Los parámetros de LDAP no están configurados'));
 }
 
 $resCheckLdap = SP\Ldap::checkLDAPConn($frmLdapServer, $frmLdapBindUser, $frmLdapBindPass, $frmLdapBase, $frmLdapGroup);
 
 if ($resCheckLdap === false) {
-    SP\Common::printJSON(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
+    SP\Response::printJSON(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
 } else {
-    SP\Common::printJSON(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
+    SP\Response::printJSON(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
 }

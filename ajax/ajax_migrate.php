@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -32,17 +33,17 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 if (SP\Util::demoIsEnabled()) {
-    SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+    SP\Response::printJSON(_('Ey, esto es una DEMO!!'));
 }
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $frmDBUser = SP\Request::analyze('dbuser');
@@ -52,15 +53,15 @@ $frmDBHost = SP\Request::analyze('dbhost');
 $frmMigrateEnabled = SP\Request::analyze('chkmigrate', 0, false, 1);
 
 if (!$frmMigrateEnabled) {
-    SP\Common::printJSON(_('Confirmar la importación de cuentas'));
+    SP\Response::printJSON(_('Confirmar la importación de cuentas'));
 } elseif (!$frmDBUser) {
-    SP\Common::printJSON(_('Es necesario un usuario de conexión'));
+    SP\Response::printJSON(_('Es necesario un usuario de conexión'));
 } elseif (!$frmDBPass) {
-    SP\Common::printJSON(_('Es necesaria una clave de conexión'));
+    SP\Response::printJSON(_('Es necesaria una clave de conexión'));
 } elseif (!$frmDBName) {
-    SP\Common::printJSON(_('Es necesario el nombre de la BBDD'));
+    SP\Response::printJSON(_('Es necesario el nombre de la BBDD'));
 } elseif (!$frmDBHost) {
-    SP\Common::printJSON(_('Es necesario un nombre de host'));
+    SP\Response::printJSON(_('Es necesario un nombre de host'));
 }
 
 $options['dbhost'] = $frmDBHost;
@@ -78,9 +79,9 @@ if (is_array($res['error'])) {
     }
 
     $out = implode('<br>', $errors);
-    SP\Common::printJSON($out);
+    SP\Response::printJSON($out);
 } elseif (is_array($res['ok'])) {
     $out = implode('<br>', $res['ok']);
 
-    SP\Common::printJSON($out, 0);
+    SP\Response::printJSON($out, 0);
 }

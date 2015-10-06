@@ -1,8 +1,5 @@
 <!-- Start Tab - Import -->
-<div id="tabs-<?php
-use SP\Common;
-
-echo $import_tabIndex; ?>">
+<div id="tabs-<?php echo $import_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Importar CSV/XML'); ?>
     </div>
@@ -223,7 +220,7 @@ echo $import_tabIndex; ?>">
 <script>
     $(function () {
         // Preparar la zona de importación
-        sysPassUtil.Common.importFile('<?php echo Common::getSessionKey(true); ?>');
+        sysPassUtil.Common.importFile('<?php echo SP\SessionUtil::getSessionKey(true); ?>');
 
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");

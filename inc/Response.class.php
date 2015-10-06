@@ -30,7 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es encargada de ejecutar acciones comunes para las funciones
  */
-class Common
+class Response
 {
     /**
      * Devuelve una respuesta en formato XML con el estado y el mensaje.
@@ -94,36 +94,5 @@ class Common
 
         header('Content-type: application/json');
         exit(json_encode($json));
-    }
-
-    /**
-     * Devuelve un hash para verificación de formularios.
-     * Esta función genera un hash que permite verificar la autenticidad de un formulario
-     *
-     * @param bool $new si es necesrio regenerar el hash
-     * @return string con el hash de verificación
-     */
-    public static function getSessionKey($new = false)
-    {
-        $hash = sha1(time());
-
-        // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
-        if (is_null(Session::getSecurityKey()) || $new === true) {
-            Session::setSecurityKey($hash);
-            return $hash;
-        }
-
-        return Session::getSecurityKey();
-    }
-
-    /**
-     * Comprobar el hash de verificación de formularios.
-     *
-     * @param string $key con el hash a comprobar
-     * @return bool|string si no es correcto el hash devuelve bool. Si lo es, devuelve el hash actual.
-     */
-    public static function checkSessionKey($key)
-    {
-        return (!is_null(Session::getSecurityKey()) && Session::getSecurityKey() == $key);
     }
 }

@@ -29,6 +29,11 @@ use CssMin;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class Minify para la gestión de archivos JS y CSS
+ *
+ * @package SP
+ */
 class Minify
 {
     /**

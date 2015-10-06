@@ -25,6 +25,8 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Clase XmlExport para realizar la exportación de las cuentas de sysPass a formato XML
  *

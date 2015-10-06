@@ -28,7 +28,7 @@ namespace SP;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Class Language para el manejo del languaje utilizado por la aplicación
+ * Class Language para el manejo del lenguaje utilizado por la aplicación
  *
  * @package SP
  */

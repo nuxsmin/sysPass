@@ -27,6 +27,11 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class ImportBase abstracta para manejo de archivos de importación
+ *
+ * @package SP
+ */
 abstract class ImportBase
 {
     /**

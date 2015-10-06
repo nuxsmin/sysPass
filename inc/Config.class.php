@@ -29,156 +29,41 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 /**
  * Esta clase es responsable de leer y escribir la configuración del archivo config.php
- * y en la base de datos
  */
-class Config
+class Config implements ConfigInterface
 {
     /**
      * @var array
      */
-    private static $_config;
-    /**
-     * @var array
-     */
-    private static $_cache = array();
+    protected static $_cache;
     /**
      * @var bool
      */
-    private static $_init = false;
+    protected static $_init;
 
     /**
-     * @param null $key La clave a obtener
-     * @return mixed
-     */
-    public static function getArrConfigValue($key = null)
-    {
-        if (!is_null($key) && isset(self::$_config[$key])) {
-            return self::$_config[$key];
-        }
-
-        return self::$_config;
-    }
-
-    /**
-     * @param $key   string La clave a actualizar
-     * @param $value mixed El valor a actualizar
-     */
-    public static function setArrConfigValue($key, $value)
-    {
-//        if (isset(self::$_config[$key])) {
-        self::$_config[$key] = $value;
-//        }
-    }
-
-    /**
-     * Obtener un array con la configuración almacenada en la BBDD.
+     * Obtiene un valor de configuración desde el archivo
      *
-     * @return bool
-     */
-    public static function getConfigDb()
-    {
-        $query = 'SELECT config_parameter, config_value FROM config';
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        foreach ($queryRes as $config) {
-            self::$_config[$config->config_parameter] = $config->config_value;
-        }
-    }
-
-    /**
-     * Guardar la configuración en la BBDD.
-     *
-     * @param bool $mkInsert realizar un 'insert'?
-     * @return bool
-     */
-    public static function writeConfigDb($mkInsert = false)
-    {
-        foreach (self::$_config as $param => $value) {
-            if ($mkInsert) {
-                $query = 'INSERT INTO config VALUES (:param,:value) ON DUPLICATE KEY UPDATE config_value = :valuedup';
-
-                $data['valuedup'] = $value;
-            } else {
-                $query = 'UPDATE config SET config_value = :value WHERE config_parameter = :param';
-            }
-
-            $data['param'] = $param;
-            $data['value'] = $value;
-
-            if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-                return false;
-            }
-        }
-
-        Log::writeNewLogAndEmail(_('Configuración'), _('Modificar configuración'));
-
-        return true;
-    }
-
-    /**
-     * Cargar la configuración desde la BBDD a variable global $CFG.
-     *
-     * @param bool $force reescribir la variable global $CFG?
-     * @return bool
-     */
-    public static function getDBConfig($force = false)
-    {
-        global $CFG;
-
-        if (isset ($CFG) && !$force) {
-            return true;
-        }
-
-        $query = 'SELECT config_parameter, config_value FROM config';
-
-        $queryRes = DB::getResults($query, __FUNCTION__);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        foreach ($queryRes as $config) {
-            $cfgParam = $config->config_parameter;
-            $cfgValue = $config->config_value;
-
-            if (strstr($cfgValue, "||")) {
-                $cfgValue = explode("||", $cfgValue);
-            }
-
-            $CFG["$cfgParam"] = $cfgValue;
-        }
-
-        return true;
-    }
-
-    /**
-     * Obtiene un valor de configuración desde el archivo config.php
-     *
-     * @param string $key     clave
+     * @param string $param   clave
      * @param string $default = null valor por defecto
      * @return string el valor o $default
      */
-    public static function getValue($key, $default = null)
+    public static function getValue($param, $default = null)
     {
-        $param = Cache::getSessionCacheConfigValue($key);
+        $params = Cache::getSessionCacheConfigValue($param);
 
-        return (!is_null($param)) ? $param : $default;
+        return (!is_null($params)) ? $params : $default;
     }
 
     /**
-     * Lista todas las claves de configuración guardadas en config.php.
+     * Lista todas las claves de configuración guardadas
      *
      * @param bool $full obtener todas las claves y sus valores
      * @return array con nombres de claves
      */
     public static function getKeys($full = false)
     {
-        self::readData();
+        self::readConfig();
 
         if ($full) {
             return self::$_cache;
@@ -192,20 +77,18 @@ class Config
      *
      * @return bool
      */
-    private static function readData()
+    public static function readConfig()
     {
         if (self::$_init) {
             return true;
         }
 
-        $configFile = self::getConfigFile();;
-
-        if (!file_exists($configFile)) {
+        if (!file_exists(CONFIG_FILE)) {
             return false;
         }
 
         // Include the file, save the data from $CONFIG
-        include_once $configFile;
+        include_once CONFIG_FILE;
 
         if (isset($CONFIG) && is_array($CONFIG)) {
             self::$_cache = $CONFIG;
@@ -218,33 +101,23 @@ class Config
     }
 
     /**
-     * Devolver la ruta al archivo de configuración
-     *
-     * @return string Con la ruta
-     */
-    private static function getConfigFile()
-    {
-        return Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
-    }
-
-    /**
      * Elimina una clave de la configuración.
-     * Esta función elimina una clave de configmgmt.php. Si no tiene permiso
-     * de escritura en configmgmt.php, devolverá false.
+     * Esta función elimina una clave de config.php. Si no tiene permiso
+     * de escritura en config.php, devolverá false.
      *
-     * @param string $key clave
+     * @param string $param clave
      * @return bool
      */
-    public static function deleteKey($key)
+    public static function deleteParam($param)
     {
-        self::readData();
+        self::readConfig();
 
-        if (isset(self::$_cache[$key])) {
+        if (isset(self::$_cache[$param])) {
             // Eliminar la clave de la caché
-            unset(self::$_cache[$key]);
+            unset(self::$_cache[$param]);
 
             // Guardar los cambios en la configuración
-            self::writeData();
+            self::writeConfig();
         }
 
         return true;
@@ -254,8 +127,9 @@ class Config
      * Escribe en archivo de configuración.
      *
      * @return bool
+     * @throws SPException
      */
-    public static function writeData()
+    public static function writeConfig()
     {
         // Ordenar las claves de la configuración
         ksort(self::$_cache);
@@ -267,17 +141,15 @@ class Config
         $content .= trim(var_export(self::$_cache, true), ',');
         $content .= ";\n";
 
-        $configFile = self::getConfigFile();
-
         // Escribir el archivo de configuración
-        $result = @file_put_contents($configFile, $content);
+        $result = @file_put_contents(CONFIG_FILE, $content);
 
         if (!$result) {
-            Init::initError(_('No es posible escribir el archivo de configuración'), _('Compruebe los permisos del directorio "config"'));
+            throw new SPException(SPException::SP_CRITICAL, _('No es posible escribir el archivo de configuración'), _('Compruebe los permisos del directorio "config"'));
         }
 
         // Establecer los permisos del archivo de configuración
-        chmod($configFile, 0640);
+        chmod(CONFIG_FILE, 0640);
 
         // Actualizar la caché de configuración de la sesión
         Cache::setSessionCacheConfig();
@@ -290,39 +162,57 @@ class Config
      */
     public static function setDefaultValues()
     {
-        self::setValue('debug', false);
-        self::setValue('log_enabled', true);
-        self::setValue('ldap_enabled', false);
-        self::setValue('mail_enabled', false);
-        self::setValue('wiki_enabled', false);
-        self::setValue('demo_enabled', false);
-        self::setValue('files_enabled', true);
-        self::setValue('proxy_enabled', false);
-        self::setValue('checkupdates', true);
-        self::setValue('checknotices', true);
-        self::setValue('globalsearch', false);
-        self::setValue('account_passtoimage', false);
-        self::setValue('resultsascards', false);
-        self::setValue('files_allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
-        self::setValue('files_allowed_size', 1024);
-        self::setValue('wiki_searchurl', '');
-        self::setValue('wiki_pageurl', '');
-        self::setValue('wiki_filter', '');
-        self::setValue('ldap_server', '');
-        self::setValue('ldap_base', '');
-        self::setValue('ldap_group', '');
-        self::setValue('ldap_userattr', '');
-        self::setValue('mail_server', '');
-        self::setValue('mail_from', '');
-        self::setValue('site_lang', str_replace('.utf8', '', Language::$globalLang));
-        self::setValue('session_timeout', '300');
-        self::setValue('account_link', 1);
-        self::setValue('account_count', 12);
-        self::setValue('sitetheme', 'material-blue');
-        self::setValue('proxy_server', '');
-        self::setValue('proxy_port', '');
-        self::setValue('proxy_user', '');
-        self::setValue('proxy_pass', '');
+        self::setCacheConfigValue('debug', false);
+        self::setCacheConfigValue('log_enabled', true);
+        self::setCacheConfigValue('ldap_enabled', false);
+        self::setCacheConfigValue('mail_enabled', false);
+        self::setCacheConfigValue('wiki_enabled', false);
+        self::setCacheConfigValue('demo_enabled', false);
+        self::setCacheConfigValue('files_enabled', true);
+        self::setCacheConfigValue('proxy_enabled', false);
+        self::setCacheConfigValue('checkupdates', true);
+        self::setCacheConfigValue('checknotices', true);
+        self::setCacheConfigValue('globalsearch', false);
+        self::setCacheConfigValue('account_passtoimage', false);
+        self::setCacheConfigValue('resultsascards', false);
+        self::setCacheConfigValue('files_allowed_exts', 'PDF,JPG,GIF,PNG,ODT,ODS,DOC,DOCX,XLS,XSL,VSD,TXT,CSV,BAK');
+        self::setCacheConfigValue('files_allowed_size', 1024);
+        self::setCacheConfigValue('wiki_searchurl', '');
+        self::setCacheConfigValue('wiki_pageurl', '');
+        self::setCacheConfigValue('wiki_filter', '');
+        self::setCacheConfigValue('ldap_server', '');
+        self::setCacheConfigValue('ldap_base', '');
+        self::setCacheConfigValue('ldap_group', '');
+        self::setCacheConfigValue('ldap_userattr', '');
+        self::setCacheConfigValue('mail_server', '');
+        self::setCacheConfigValue('mail_from', '');
+        self::setCacheConfigValue('site_lang', str_replace('.utf8', '', Language::$globalLang));
+        self::setCacheConfigValue('session_timeout', '300');
+        self::setCacheConfigValue('account_link', 1);
+        self::setCacheConfigValue('account_count', 12);
+        self::setCacheConfigValue('sitetheme', 'material-blue');
+        self::setCacheConfigValue('proxy_server', '');
+        self::setCacheConfigValue('proxy_port', '');
+        self::setCacheConfigValue('proxy_user', '');
+        self::setCacheConfigValue('proxy_pass', '');
+
+        self::writeConfig();
+    }
+
+    /**
+     * Actualizar el array de parámetros de configuración
+     *
+     * @param $param   string El parámetro a actualizar
+     * @param $value   mixed  El valor a actualizar
+     */
+    public static function setCacheConfigValue($param, $value)
+    {
+        // Comprobar que la configuración está cargada
+        if (count(self::$_cache) === 0){
+            self::readConfig();
+        }
+
+        self::$_cache[$param] = $value;
     }
 
     /**
@@ -330,154 +220,23 @@ class Config
      * Esta función establece el valor y reescribe config.php. Si el archivo
      * no se puede escribir, devolverá false.
      *
-     * @param string $key   clave
+     * @param string $param clave
      * @param string $value valor
      * @return bool
      */
-    public static function setValue($key, $value)
+    public static function setValue($param, $value)
     {
-        self::readData();
+        self::readConfig();
 
         // Añadir/Modificar el parámetro
-        self::$_cache[$key] = $value;
+        self::$_cache[$param] = $value;
         // Generar el hash de la configuración
         self::$_cache['config_hash'] = md5(implode(self::$_cache));
 
         // Guardar los cambios
-        self::writeData();
+        self::writeConfig();
 
         return true;
-    }
-
-    /**
-     * Crea una clave temporal para encriptar la clave maestra y guardarla.
-     *
-     * @return bool|string
-     */
-    public static function setTempMasterPass($maxTime = 14400)
-    {
-        // Encriptar la clave maestra con hash aleatorio generado
-        $randomKey = Crypt::generateAesKey(Util::generate_random_bytes());
-        $pass = Crypt::mkCustomMPassEncrypt($randomKey, Crypt::getSessionMasterPass());
-
-        if (!is_array($pass)) {
-            return false;
-        }
-
-        self::setConfigDbValue('tempmaster_pass', bin2hex($pass[0]), false);
-        self::setConfigDbValue('tempmaster_passiv', bin2hex($pass[1]), false);
-        self::setConfigDbValue('tempmaster_passhash', Crypt::mkHashPassword($randomKey), false);
-        self::setConfigDbValue('tempmaster_passtime', time(), false);
-        self::setConfigDbValue('tempmaster_maxtime', time() + $maxTime, false);
-        self::setConfigDbValue('tempmaster_attempts', 0, false);
-
-        // Guardar la clave temporal hasta que finalice la sesión
-        Session::setTemporaryMasterPass($randomKey);
-
-        return $randomKey;
-    }
-
-    /**
-     * Guardar un parámetro de configuración en la BBDD.
-     *
-     * @param string $param con el parámetro a guardar
-     * @param string $value con el valor a guardar
-     * @param bool   $email enviar email?
-     * @return bool
-     */
-    public static function setConfigDbValue($param, $value, $email = true)
-    {
-        $query = "INSERT INTO config "
-            . "SET config_parameter = :param,"
-            . "config_value = :value "
-            . "ON DUPLICATE KEY UPDATE config_value = :valuedup";
-
-        $data['param'] = $param;
-        $data['value'] = $value;
-        $data['valuedup'] = $value;
-
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
-            return false;
-        }
-
-        $log = new Log(_('Configuración'));
-        $log->addDescription(_('Modificar configuración'));
-        $log->addDescription(_('Parámetro') . ': ' . $param);
-        $log->addDescription(_('Valor') . ': ' . $value);
-        $log->writeLog();
-
-        if ($email === true) {
-            Email::sendEmail($log);
-        }
-
-        return true;
-    }
-
-    /**
-     * Comprueba si la clave temporal es válida
-     *
-     * @param string $pass clave a comprobar
-     * @return bool
-     */
-    public static function checkTempMasterPass($pass)
-    {
-        $passTime = self::getConfigDbValue('tempmaster_passtime');
-        $passMaxTime = self::getConfigDbValue('tempmaster_maxtime');
-        $attempts = self::getConfigDbValue('tempmaster_attempts');
-
-        // Comprobar si el tiempo de validez se ha superado
-        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5) {
-            self::setConfigDbValue('tempmaster_pass', '', false);
-            self::setConfigDbValue('tempmaster_passiv', '', false);
-            self::setConfigDbValue('tempmaster_passhash', '', false);
-
-            return false;
-        }
-
-        Crypt::checkHashPass($pass, self::getConfigDbValue('tempmaster_passhash'));
-
-        $isValid = Crypt::checkHashPass($pass, self::getConfigDbValue('tempmaster_passhash'));
-
-        if (!$isValid) {
-            self::setConfigDbValue('tempmaster_attempts', $attempts + 1, false);
-        }
-
-        return $isValid;
-    }
-
-    /**
-     * Obtiene un valor desde la configuración en la BBDD.
-     *
-     * @param string $param con el parámetro de configuración
-     * @return false|string con el valor
-     */
-    public static function getConfigDbValue($param)
-    {
-        $query = 'SELECT config_value FROM config WHERE config_parameter = :parameter LIMIT 1';
-
-        $data['parameter'] = $param;
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->config_value;
-    }
-
-    /**
-     * Devuelve la clave maestra que ha sido encriptada con la clave temporal
-     *
-     * @param $pass string con la clave utilizada para encriptar
-     * @return string con la clave maestra desencriptada
-     */
-    public static function getTempMasterPass($pass)
-    {
-        $passLogin = hex2bin(self::getConfigDbValue('tempmaster_pass'));
-        $passLoginIV = hex2bin(self::getConfigDbValue('tempmaster_passiv'));
-
-        return Crypt::getDecrypt($passLogin, $passLoginIV, $pass);
     }
 
     /**
@@ -487,10 +246,20 @@ class Config
      */
     public static function getConfig()
     {
-        if (self::readData()) {
+        if (self::readConfig()) {
             return self::$_cache;
         }
 
         return false;
+    }
+
+    /**
+     * Obtener un parámetro del array de parámetros de configuración
+     *
+     * @param $param   string El parámetro a obtener
+     */
+    public static function getCacheConfigValue($param)
+    {
+        return self::$_cache[$param];
     }
 }

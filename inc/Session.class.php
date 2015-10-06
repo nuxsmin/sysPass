@@ -657,4 +657,24 @@ class Session
     {
         self::setSessionKey('tempmasterpass', $password);
     }
+
+    /**
+     * Devolver el color asociado a una cuenta
+     *
+     * @return string
+     */
+    public static function getAccountColor()
+    {
+        return self::getSessionKey('accountcolor');
+    }
+
+    /**
+     * Establece l color asociado a una cuenta
+     *
+     * @param array $color
+     */
+    public static function setAccountColor(array $color)
+    {
+        self::setSessionKey('accountcolor', $color);
+    }
 }

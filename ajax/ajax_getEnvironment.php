@@ -41,4 +41,4 @@ $data = array(
     'pk' => $publicKey
 );
 
-SP\Common::printJSON($data, 0);
+SP\Response::printJSON($data, 0);

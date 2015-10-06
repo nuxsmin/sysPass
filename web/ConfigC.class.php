@@ -26,8 +26,10 @@
 namespace SP\Controller;
 
 use SP\Config;
+use SP\ConfigDB;
 use SP\Language;
 use SP\Session;
+use SP\SessionUtil;
 use SP\Themes;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -51,7 +53,7 @@ class ConfigC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('tabs', array());
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('isDemoMode', (\SP\Util::demoIsEnabled() && !Session::getUserIsAdminApp()));
         $this->view->assign('isDisabled', (\SP\Util::demoIsEnabled() && !Session::getUserIsAdminApp()) ? 'DISABLED' : '');
     }
@@ -122,9 +124,9 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->addTemplate('encryption');
 
-        $this->view->assign('lastUpdateMPass', \SP\Config::getConfigDbValue("lastupdatempass"));
-        $this->view->assign('tempMasterPassTime', \SP\Config::getConfigDbValue("tempmaster_passtime"));
-        $this->view->assign('tempMasterMaxTime', \SP\Config::getConfigDbValue("tempmaster_maxtime"));
+        $this->view->assign('lastUpdateMPass', ConfigDB::getValue("lastupdatempass"));
+        $this->view->assign('tempMasterPassTime', ConfigDB::getValue("tempmaster_passtime"));
+        $this->view->assign('tempMasterMaxTime', ConfigDB::getValue("tempmaster_maxtime"));
         $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
 
         $this->view->append('tabs', array('title' => _('Encriptación')));

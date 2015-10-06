@@ -122,25 +122,42 @@ class Account extends AccountBase implements AccountInterface
             $Log->resetDescription();
         }
 
-        if (!UserUtil::updateUsersForAccount($this->getAccountId(), $this->getAccountUsersId())) {
+        if (!UserAccounts::updateUsersForAccount($this->getAccountId(), $this->getAccountUsersId())) {
             $Log->addDescription(_('Error al actualizar los usuarios de la cuenta'));
             $Log->writeLog();
             $Log->resetDescription();
         }
 
-        $query = 'UPDATE accounts SET '
-            . 'account_customerId = :accountCustomerId,'
-            . 'account_categoryId = :accountCategoryId,'
-            . 'account_name = :accountName,'
-            . 'account_login = :accountLogin,'
-            . 'account_url = :accountUrl,'
-            . 'account_notes = :accountNotes,'
-            . 'account_userEditId = :accountUserEditId,'
-            . 'account_userGroupId = :accountUserGroupId,'
-            . 'account_dateEdit = NOW(),'
-            . 'account_otherUserEdit = :accountOtherUserEdit,'
-            . 'account_otherGroupEdit = :accountOtherGroupEdit '
-            . 'WHERE account_id = :accountId';
+        if ($this->getAccountUserGroupId()) {
+            $query = 'UPDATE accounts SET '
+                . 'account_customerId = :accountCustomerId,'
+                . 'account_categoryId = :accountCategoryId,'
+                . 'account_name = :accountName,'
+                . 'account_login = :accountLogin,'
+                . 'account_url = :accountUrl,'
+                . 'account_notes = :accountNotes,'
+                . 'account_userEditId = :accountUserEditId,'
+                . 'account_userGroupId = :accountUserGroupId,'
+                . 'account_dateEdit = NOW(),'
+                . 'account_otherUserEdit = :accountOtherUserEdit,'
+                . 'account_otherGroupEdit = :accountOtherGroupEdit '
+                . 'WHERE account_id = :accountId';
+
+            $data['accountUserGroupId'] = $this->getAccountUserGroupId();
+        } else {
+            $query = 'UPDATE accounts SET '
+                . 'account_customerId = :accountCustomerId,'
+                . 'account_categoryId = :accountCategoryId,'
+                . 'account_name = :accountName,'
+                . 'account_login = :accountLogin,'
+                . 'account_url = :accountUrl,'
+                . 'account_notes = :accountNotes,'
+                . 'account_userEditId = :accountUserEditId,'
+                . 'account_dateEdit = NOW(),'
+                . 'account_otherUserEdit = :accountOtherUserEdit,'
+                . 'account_otherGroupEdit = :accountOtherGroupEdit '
+                . 'WHERE account_id = :accountId';
+        }
 
         $data['accountCustomerId'] = $this->getAccountCustomerId();
         $data['accountCategoryId'] = $this->getAccountCategoryId();
@@ -149,7 +166,6 @@ class Account extends AccountBase implements AccountInterface
         $data['accountUrl'] = $this->getAccountUrl();
         $data['accountNotes'] = $this->getAccountNotes();
         $data['accountUserEditId'] = $this->getAccountUserEditId();
-        $data['accountUserGroupId'] = ($this->getAccountUserGroupId()) ? $this->getAccountUserGroupId() : 'account_userGroupId';
         $data['accountOtherUserEdit'] = intval($this->getAccountOtherUserEdit());
         $data['accountOtherGroupEdit'] = intval($this->getAccountOtherGroupEdit());
         $data['accountId'] = $this->getAccountId();
@@ -195,6 +211,7 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_login = src.acchistory_login,'
             . 'dst.account_url = src.acchistory_url,'
             . 'dst.account_notes = src.acchistory_notes,'
+            . 'dst.account_userGroupId = src.acchistory_userGroupId,'
             . 'dst.account_userEditId = :accountUserEditId,'
             . 'dst.account_dateEdit = NOW(),'
             . 'dst.account_otherUserEdit = src.acchistory_otherUserEdit + 0,'
@@ -385,7 +402,7 @@ class Account extends AccountBase implements AccountInterface
         }
 
         if (is_array($this->getAccountUsersId())) {
-            if (!UserUtil::addUsersForAccount($this->getAccountId(), $this->getAccountUsersId())) {
+            if (!UserAccounts::addUsersForAccount($this->getAccountId(), $this->getAccountUsersId())) {
                 $Log->addDescription(_('Error al actualizar los usuarios de la cuenta'));
                 $Log->writeLog();
                 $Log->resetDescription();
@@ -434,7 +451,7 @@ class Account extends AccountBase implements AccountInterface
             $Log->addDescription(_('Error al eliminar grupos asociados a la cuenta'));
         }
 
-        if (!UserUtil::deleteUsersForAccount($this->getAccountId())) {
+        if (!UserAccounts::deleteUsersForAccount($this->getAccountId())) {
             $Log->addDescription(_('Error al eliminar usuarios asociados a la cuenta'));
         }
 

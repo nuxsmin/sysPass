@@ -79,8 +79,8 @@ class Api
 
             if (Auth::authUserMySQL($userLogin, $userPass)
                 && !UserUtil::checkUserIsDisabled($userLogin)
-                && UserUtil::checkUserMPass($User)
-                && UserUtil::checkUserUpdateMPass($userLogin)
+                && UserPass::checkUserMPass($User)
+                && UserPass::checkUserUpdateMPass($userLogin)
                 && !$User->isUserChangePass()
             ) {
                 $this->_mPass = $User->getUserMPass(true);

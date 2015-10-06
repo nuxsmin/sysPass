@@ -1,6 +1,5 @@
 <div id="title" class="midroundup titleNormal">
-    <?php use SP\Common;
-    echo _('Registro de Eventos'); ?>
+    <?php echo _('Registro de Eventos'); ?>
 </div>
 
 <?php if (!$events): ?>

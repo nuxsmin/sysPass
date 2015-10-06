@@ -25,13 +25,14 @@
 
 namespace SP\Controller;
 
-use SP\Common;
+use SP\Response;
 use SP\CustomFields;
 use SP\DB;
 use SP\Groups;
 use SP\Log;
 use SP\Profile;
 use SP\Session;
+use SP\SessionUtil;
 use SP\Template;
 use SP\UserUtil;
 use SP\Util;
@@ -64,7 +65,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('isDemo', Util::demoIsEnabled());
-        $this->view->assign('sk', Common::getSessionKey());
+        $this->view->assign('sk', SessionUtil::getSessionKey());
     }
 
     /**
@@ -74,7 +75,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_USERS);
 
-        $this->view->assign('sk', Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -175,7 +176,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_GROUPS);
 
-        $this->view->assign('sk', Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -233,7 +234,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PROFILES);
 
-        $this->view->assign('sk', Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         if (!$this->checkAccess()) {
             return;
@@ -372,7 +373,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
 
         // Obtener de nuevo el token de seguridad por si se habñia regenerado antes
-        $this->view->assign('sk', Common::getSessionKey());
+        $this->view->assign('sk', SessionUtil::getSessionKey());
     }
 
     /**

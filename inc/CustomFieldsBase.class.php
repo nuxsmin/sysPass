@@ -25,8 +25,15 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Controller\ActionsInterface;
 
+/**
+ * Class CustomFieldsBase para la definición de campos personalizados
+ *
+ * @package SP
+ */
 abstract class CustomFieldsBase
 {
     /**

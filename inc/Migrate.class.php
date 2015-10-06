@@ -32,7 +32,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Migrate
 {
-//    private static $dbuser;
     private static $_dbc; // Database connection
     private static $_customersByName;
     private static $_currentQuery;

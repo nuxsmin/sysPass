@@ -23,6 +23,7 @@
  *
  */
 
+use SP\SessionUtil;
 use SP\UserUtil;
 
 define('APP_ROOT', '..');
@@ -32,20 +33,20 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 SP\Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $frmAccountId = SP\Request::analyze('accountid', 0);
 $frmDescription = SP\Request::analyze('description');
 
 if (!$frmDescription) {
-    SP\Common::printJSON(_('Es necesaria una descripción'));
+    SP\Response::printJSON(_('Es necesaria una descripción'));
 }
 
 $accountRequestData = SP\Account::getAccountRequestData($frmAccountId);
@@ -72,7 +73,7 @@ if (strlen($mailto) > 1
 ) {
     $log->writeLog();
 
-    SP\Common::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
+    SP\Response::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
 }
 
-SP\Common::printJSON(_('Error al enviar la solicitud'));
+SP\Response::printJSON(_('Error al enviar la solicitud'));

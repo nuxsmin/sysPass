@@ -25,7 +25,7 @@
 
 define('APP_ROOT', '.');
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 if (!\SP\Init::checkPostLoginActions()) {
     $controller = new SP\Controller\MainC(null, 'main');

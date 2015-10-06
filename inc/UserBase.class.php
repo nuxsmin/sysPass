@@ -25,6 +25,8 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Class UserBase
  *
@@ -340,7 +342,7 @@ abstract class UserBase
      */
     public function addUser()
     {
-        $passdata = UserUtil::makeUserPassHash($this->_userPass);
+        $passdata = UserPass::makeUserPassHash($this->_userPass);
 
         $query = 'INSERT INTO usrData SET '
             . 'user_name = :name,'
@@ -545,7 +547,7 @@ abstract class UserBase
      */
     public function updateUserPass()
     {
-        $passdata = UserUtil::makeUserPassHash($this->_userPass);
+        $passdata = UserPass::makeUserPassHash($this->_userPass);
         $userLogin = UserUtil::getUserLoginById($this->_userId);
 
         $query = 'UPDATE usrData SET '

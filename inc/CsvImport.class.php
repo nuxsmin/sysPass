@@ -27,9 +27,13 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class CsvImport para importar cuentas desde archivos CSV
+ *
+ * @package SP
+ */
 class CsvImport extends CsvImportBase
 {
-
     /**
      * Iniciar la importación desde XML.
      *

@@ -27,6 +27,11 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class XmlImportBase abstracta para manejar archivos de importación en formato XML
+ *
+ * @package SP
+ */
 abstract class XmlImportBase extends ImportBase
 {
     /**

@@ -115,7 +115,7 @@ class Crypt
 
         // Comprobar si el hash está en formato anterior a 12002
         if ($isMPass && strlen($originalHash) === 128) {
-            Config::setConfigDbValue('masterPwd', self::mkHashPassword($pwd));
+            ConfigDB::setValue('masterPwd', self::mkHashPassword($pwd));
             Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'));
 
             return (hash("sha256", substr($originalHash, 0, 64) . $pwd) == substr($originalHash, 64, 64));
@@ -219,22 +219,12 @@ class Crypt
      */
     public static function mkEncrypt($data, $masterPwd = null)
     {
-        $masterPwd = (is_null($masterPwd)) ? self::getSessionMasterPass() : $masterPwd;
+        $masterPwd = (is_null($masterPwd)) ? SessionUtil::getSessionMPass() : $masterPwd;
 
         self::$strInitialVector = self::getIV();
         $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
 
         return $cryptValue;
-    }
-
-    /**
-     * Desencriptar la clave maestra de la sesión.
-     *
-     * @return string con la clave maestra
-     */
-    public static function getSessionMasterPass()
-    {
-        return self::getDecrypt(Session::getMPass(), Session::getMPassIV(), Session::getMPassPwd());
     }
 
     /**
@@ -248,7 +238,8 @@ class Crypt
     public static function getDecrypt($cryptData, $cryptIV, $password = null)
     {
         if (is_null($password)) {
-            $password = self::getSessionMasterPass();
+            $password = SessionUtil::getSessionMPass();
+//            self::getSessionMasterPass();
         }
 
         $mcryptRes = self::getMcryptResource();

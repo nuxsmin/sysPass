@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -42,8 +43,8 @@ if (!SP\Util::fileIsEnabled()) {
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printXML(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printXML(_('CONSULTA INVÁLIDA'));
 }
 
 $controller = new SP\Controller\AccountsMgmtC();

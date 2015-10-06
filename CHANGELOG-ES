@@ -1,4 +1,14 @@
-=== ** v1.2.0.0-rc4 ===
+=== ** v1.2.0.05-rc5 ===
+
+* [ADD] Nuevas clases para mejorar el rendimiento y la legibilidad del código.
+* [ADD] Mejora de seguridad para la gestión de la clave maestra de la sesión.
+* [MOD] Ajustes visuales menores.
+* [MOD] Mejorada la gestión de la configuración.
+* [MOD] Limpieza de código.
+* [FIX] Corregido error al guardar una cuenta en la que el usuario no tenía permisos para cambiar el grupo principal.
+* [FIX] Corregido error al restaurar una cuenta donde el grupo principal no se restauraba.
+
+=== ** v1.2.0.04-rc4 ===
 
 * [ADD] Nueva función para copiar al portapapeles SIN flash, sólo Javascript (biennnnn).
 * [ADD] Nuevo método para optimizar(/reducir los archivos CSS y JS.
@@ -21,18 +31,18 @@
 * [FIX] Corregido fallo al obtener la clave pública cuando no había una sesión iniciada.
 * [FIX] Corregido fallo en la nueva detección del lenguaje.
 
-=== ** v1.2.0.0-rc3 ===
+=== ** v1.2.0.03-rc3 ===
 
 * [ADD] Nuevas preferencias de usuario disponibles
 * [MOD] Las fuentes CSS son ahora almacenadas localmente para el tema Material Blue
 
-=== ** v1.2.0.0-rc2 ===
+=== ** v1.2.0.02-rc2 ===
 
 * [ADD] Cambiado a BCRYPT para generar el hash de las claves y derivaciones. AVISO: La clave maestra debe de ser introducida por los usuarios (es posible usar una clave temporal)
 * [MOD] Algunos ajustes en la desencriptación de claves de los formularios
 * [FIX] Corregido error cuando los campos personalizados en blanco son obtenidos para un elemento.
 
-=== ** v1.2.0.0-rc1 ===
+=== ** v1.2.0.01-rc1 ===
 
 * [ADD] Mejoras de seguridad para prevenir ataques comunes (SQL Injection, XSS, CSRF)
 * [ADD] Totalmente MVC

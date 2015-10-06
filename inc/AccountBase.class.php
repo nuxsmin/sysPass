@@ -301,7 +301,7 @@ abstract class AccountBase
         if (!isset($cacheUsers[$accId])
             || time() > $cacheUsers['expires']
         ) {
-            $cacheUsers[$accId] = UserUtil::getUsersForAccount($accId);
+            $cacheUsers[$accId] = UserAccounts::getUsersForAccount($accId);
             $cacheUsers['expires'] = time() + self::CACHE_EXPIRE_TIME;
         }
 

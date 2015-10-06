@@ -199,7 +199,7 @@ class Installer
                 return $error;
             }
 
-            Config::setConfigDbValue('version', implode(Util::getVersion(true)));
+            ConfigDB::setValue('version', implode(Util::getVersion(true)));
             Config::setValue('installed', 1);
         }
 
@@ -484,9 +484,9 @@ class Installer
         }
 
         // Guardar el hash de la clave maestra
-        Config::setArrConfigValue('masterPwd', Crypt::mkHashPassword(self::$_masterPassword));
-        Config::setArrConfigValue('lastupdatempass', time());
-        Config::writeConfigDb(true);
+        ConfigDB::setCacheConfigValue('masterPwd', Crypt::mkHashPassword(self::$_masterPassword));
+        ConfigDB::setCacheConfigValue('lastupdatempass', time());
+        ConfigDB::writeConfig(true);
 
         if (!$User->updateUserMPass(self::$_masterPassword)) {
             self::rollback();
@@ -508,8 +508,8 @@ class Installer
             self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'" . self::$_dbhost . "';");
             self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'%';");
         } catch (\PDOException $e) {
-            Config::deleteKey('dbuser');
-            Config::deleteKey('dbpass');
+            Config::deleteParam('dbuser');
+            Config::deleteParam('dbpass');
         }
     }
 

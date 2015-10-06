@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -32,13 +33,13 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
@@ -65,7 +66,7 @@ $customFields = SP\Request::analyze('customfield');
 // Datos del Usuario
 $currentUserId = SP\Session::getUserId();
 
-if ($accountMainGroupId === 0) {
+if (!$accountMainGroupId === 0) {
     $accountMainGroupId = SP\Session::getUserGroupId();
 }
 
@@ -74,42 +75,42 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW
 ) {
     // Comprobaciones para nueva cuenta
     if (!$accountName) {
-        SP\Common::printJSON(_('Es necesario un nombre de cuenta'));
+        SP\Response::printJSON(_('Es necesario un nombre de cuenta'));
     } elseif (!$customerId && !$newCustomer) {
-        SP\Common::printJSON(_('Es necesario un nombre de cliente'));
+        SP\Response::printJSON(_('Es necesario un nombre de cliente'));
     } elseif (!$accountLogin) {
-        SP\Common::printJSON(_('Es necesario un usuario'));
+        SP\Response::printJSON(_('Es necesario un usuario'));
     } elseif (!$accountPassword || !$accountPasswordR) {
-        SP\Common::printJSON(_('Es necesaria una clave'));
+        SP\Response::printJSON(_('Es necesaria una clave'));
     } elseif (!$categoryId) {
-        SP\Common::printJSON(_('Es necesario una categoría'));
+        SP\Response::printJSON(_('Es necesario una categoría'));
     }
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT) {
     // Comprobaciones para modificación de cuenta
     if (!$customerId && !$newCustomer) {
-        SP\Common::printJSON(_('Es necesario un nombre de cliente'));
+        SP\Response::printJSON(_('Es necesario un nombre de cliente'));
     } elseif (!$accountName) {
-        SP\Common::printJSON(_('Es necesario un nombre de cuenta'));
+        SP\Response::printJSON(_('Es necesario un nombre de cuenta'));
     } elseif (!$accountLogin) {
-        SP\Common::printJSON(_('Es necesario un usuario'));
+        SP\Response::printJSON(_('Es necesario un usuario'));
     } elseif (!$categoryId) {
-        SP\Common::printJSON(_('Es necesario una categoría'));
+        SP\Response::printJSON(_('Es necesario una categoría'));
     }
 } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_DELETE) {
     if (!$accountId) {
-        SP\Common::printJSON(_('Id inválido'));
+        SP\Response::printJSON(_('Id inválido'));
     }
 } elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS) {
     // Comprobaciones para modficación de clave
     if (!$accountPassword || !$accountPasswordR) {
-        SP\Common::printJSON(_('Es necesaria una clave'));
+        SP\Response::printJSON(_('Es necesaria una clave'));
     }
 } elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE) {
     if (!$accountId) {
-        SP\Common::printJSON(_('Id inválido'));
+        SP\Response::printJSON(_('Id inválido'));
     }
 } else {
-    SP\Common::printJSON(_('Acción Inválida'));
+    SP\Response::printJSON(_('Acción Inválida'));
 }
 
 if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
@@ -117,14 +118,14 @@ if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
     || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
     if ($accountPassword != $accountPasswordR) {
-        SP\Common::printJSON(_('Las claves no coinciden'));
+        SP\Response::printJSON(_('Las claves no coinciden'));
     }
 
     // Encriptar clave de cuenta
     try {
         $accountEncPass = SP\Crypt::encryptData($accountPassword);
     } catch (\SP\SPException $e) {
-        SP\Common::printJSON($e->getMessage());
+        SP\Response::printJSON($e->getMessage());
     }
 }
 
@@ -141,7 +142,7 @@ switch ($actionId) {
                 SP\Customer::addCustomer();
                 $customerId = SP\Customer::$customerLastId;
             } catch (\SP\SPException $e) {
-                SP\Common::printJSON($e->getMessage());
+                SP\Response::printJSON($e->getMessage());
             }
         }
 
@@ -169,10 +170,10 @@ switch ($actionId) {
                 }
             }
 
-            SP\Common::printJSON(_('Cuenta creada'), 0);
+            SP\Response::printJSON(_('Cuenta creada'), 0);
         }
 
-        SP\Common::printJSON(_('Error al crear la cuenta'), 0);
+        SP\Response::printJSON(_('Error al crear la cuenta'), 0);
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT:
         SP\Customer::$customerName = $newCustomer;
@@ -183,7 +184,7 @@ switch ($actionId) {
                 SP\Customer::addCustomer();
                 $customerId = SP\Customer::$customerLastId;
             } catch (\SP\SPException $e) {
-                SP\Common::printJSON($e->getMessage());
+                SP\Response::printJSON($e->getMessage());
             }
         }
 
@@ -207,7 +208,7 @@ switch ($actionId) {
 
         // Comprobar si han habido cambios
         if ($accountChangesHash == $Account->calcChangesHash()) {
-            SP\Common::printJSON(_('Sin cambios'), 0);
+            SP\Response::printJSON(_('Sin cambios'), 0);
         }
 
         // Actualizar cuenta
@@ -219,20 +220,20 @@ switch ($actionId) {
                 }
             }
 
-            SP\Common::printJSON(_('Cuenta actualizada'), 0);
+            SP\Response::printJSON(_('Cuenta actualizada'), 0);
         }
 
-        SP\Common::printJSON(_('Error al modificar la cuenta'));
+        SP\Response::printJSON(_('Error al modificar la cuenta'));
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_DELETE:
         $Account->setAccountId($accountId);
 
         // Eliminar cuenta
         if ($Account->deleteAccount() && \SP\CustomFields::deleteCustomFieldForItem($accountId, \SP\Controller\ActionsInterface::ACTION_ACC_NEW)) {
-            SP\Common::printJSON(_('Cuenta eliminada'), 0, "sysPassUtil.Common.doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
+            SP\Response::printJSON(_('Cuenta eliminada'), 0, "sysPassUtil.Common.doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
         }
 
-        SP\Common::printJSON(_('Error al eliminar la cuenta'));
+        SP\Response::printJSON(_('Error al eliminar la cuenta'));
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS:
         $Account->setAccountId($accountId);
@@ -242,22 +243,22 @@ switch ($actionId) {
 
         // Actualizar clave de cuenta
         if ($Account->updateAccountPass()) {
-            SP\Common::printJSON(_('Clave actualizada'), 0);
+            SP\Response::printJSON(_('Clave actualizada'), 0);
         }
 
-        SP\Common::printJSON(_('Error al actualizar la clave'));
+        SP\Response::printJSON(_('Error al actualizar la clave'));
         break;
     case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE:
         $Account->setAccountId(SP\AccountHistory::getAccountIdFromId($accountId));
         $Account->setAccountUserEditId($currentUserId);
 
         if ($Account->restoreFromHistory($accountId)) {
-            SP\Common::printJSON(_('Cuenta restaurada'), 0);
+            SP\Response::printJSON(_('Cuenta restaurada'), 0);
         }
 
-        SP\Common::printJSON(_('Error al restaurar cuenta'));
+        SP\Response::printJSON(_('Error al restaurar cuenta'));
 
         break;
     default:
-        SP\Common::printJSON(_('Acción Inválida'));
+        SP\Response::printJSON(_('Acción Inválida'));
 }

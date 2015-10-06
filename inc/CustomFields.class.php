@@ -25,7 +25,13 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class CustomFields para la gestión de campos personalizados de los módulos
+ *
+ * @package SP
+ */
 class CustomFields extends CustomFieldsBase
 {
     /**

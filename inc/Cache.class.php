@@ -25,6 +25,8 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Clase base para guardar/obtener elementos de la caché
  */

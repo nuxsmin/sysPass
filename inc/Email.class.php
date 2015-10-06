@@ -130,11 +130,13 @@ class Email
 
         $mail->isSMTP();
         $mail->CharSet = 'utf-8';
-        $mail->SMTPAuth = $mailAuth;
         $mail->Host = $mailServer;
         $mail->Port = $mailPort;
-        $mail->Username = $mailUser;
-        $mail->Password = $mailPass;
+        if ($mailAuth) {
+            $mail->SMTPAuth = $mailAuth;
+            $mail->Username = $mailUser;
+            $mail->Password = $mailPass;
+        }
         $mail->SMTPSecure = strtolower(Config::getValue('mail_security'));
         //$mail->SMTPDebug = 2;
         //$mail->Debugoutput = 'error_log';

@@ -26,6 +26,8 @@
 namespace SP\Controller;
 
 use SP\Session;
+use SP\SessionUtil;
+use SP\UserAccounts;
 use SP\UserUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -43,6 +45,30 @@ class SearchC extends Controller implements ActionsInterface
      * @var bool
      */
     private $_filterOn = false;
+    /**
+     * Colores para resaltar las cuentas
+     *
+     * @var array
+     */
+    private $_colors = array(
+        '2196F3',
+        '03A9F4',
+        '00BCD4',
+        '009688',
+        '4CAF50',
+        '8BC34A',
+        'CDDC39',
+        'FFC107',
+        '795548',
+        '607D8B',
+        '9E9E9E',
+        'FF5722',
+        'F44336',
+        'E91E63',
+        '9C27B0',
+        '673AB7',
+        '3F51B5',
+    );
 
     /**
      * Constructor
@@ -53,7 +79,7 @@ class SearchC extends Controller implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->setVars();
     }
 
@@ -170,26 +196,6 @@ class SearchC extends Controller implements ActionsInterface
             $this->view->assign('wikiPageUrl', \SP\Config::getValue('wiki_pageurl'));
         }
 
-        $colors = array(
-            '2196F3',
-            '03A9F4',
-            '00BCD4',
-            '009688',
-            '4CAF50',
-            '8BC34A',
-            'CDDC39',
-            'FFC107',
-            '795548',
-            '607D8B',
-            '9E9E9E',
-            'FF5722',
-            'F44336',
-            'E91E63',
-            '9C27B0',
-            '673AB7',
-            '3F51B5',
-        );
-
         $this->setSortFields();
 
         $objAccount = new \SP\Account();
@@ -213,19 +219,10 @@ class SearchC extends Controller implements ActionsInterface
 
             $show = ($accView || $accViewPass || $accEdit || $accCopy || $accDel);
 
-            // Se asigna el color de forma aleatoria a cada cliente
-            $color = array_rand($colors);
-
-            if (!isset($customerColor) || !array_key_exists($account->account_customerId, $customerColor)) {
-                $customerColor[$account->account_customerId] = '#' . $colors[$color];
-            }
-
-            $hexColor = $customerColor[$account->account_customerId];
-
             // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
             if ($show) {
                 $secondaryGroups = \SP\Groups::getGroupsNameForAccount($account->account_id);
-                $secondaryUsers = UserUtil::getUsersNameForAccount($account->account_id);
+                $secondaryUsers = UserAccounts::getUsersNameForAccount($account->account_id);
 
                 $secondaryAccesses = '<em>(G) ' . $account->usergroup_name . '*</em><br>';
 
@@ -257,7 +254,7 @@ class SearchC extends Controller implements ActionsInterface
                 'category_name' => $account->category_name,
                 'customer_name' => \SP\Html::truncate($account->customer_name, $maxTextLength),
                 'customer_link' => ($wikiEnabled) ? $wikiSearchUrl . $account->customer_name : '',
-                'color' => $hexColor,
+                'color' => $this->pickAccountColor($account->account_customerId),
                 'url' => $account->account_url,
                 'url_short' => \SP\Html::truncate($account->account_url, $maxTextLength),
                 'url_islink' => (preg_match("#^https?://.*#i", $account->account_url)) ? true : false,
@@ -311,5 +308,29 @@ class SearchC extends Controller implements ActionsInterface
                 'function' => 'sysPassUtil.Common.searchSort(' . \SP\AccountSearch::SORT_URL . ',' . $this->view->limitStart . ')'
             )
         ));
+    }
+
+    /**
+     * Seleccionar un color para la cuenta
+     *
+     * @param int $id El id del elemento a asignar
+     * @return mixed
+     */
+    private function pickAccountColor($id)
+    {
+        $accountColor = Session::getAccountColor();
+
+        if (!isset($accountColor)
+            || !is_array($accountColor)
+            || !isset($accountColor[$id])
+        ) {
+            // Se asigna el color de forma aleatoria a cada id
+            $color = array_rand($this->_colors);
+
+            $accountColor[$id] = '#' . $this->_colors[$color];
+            Session::setAccountColor($accountColor);
+        }
+
+        return $accountColor[$id];
     }
 }

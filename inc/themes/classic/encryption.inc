@@ -1,8 +1,5 @@
 <!-- Start Tab - Encryption -->
-<div id="tabs-<?php use SP\Acl;
-use SP\Common;
-
-echo $encryption_tabIndex; ?>">
+<div id="tabs-<?php echo $encryption_tabIndex; ?>">
 
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Clave Maestra'); ?>

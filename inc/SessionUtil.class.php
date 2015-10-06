@@ -25,7 +25,13 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class SessionUtil para las utilidades de la sesión
+ *
+ * @package SP
+ */
 class SessionUtil
 {
     /**
@@ -56,5 +62,61 @@ class SessionUtil
     {
         $CryptPKI = new CryptPKI();
         Session::setPublicKey($CryptPKI->getPublicKey());
+    }
+
+    /**
+     * Guardar la clave maestra encriptada en la sesión
+     */
+    public static function saveSessionMPass($masterPass)
+    {
+        $mPassPwd = Crypt::generateAesKey(session_id());
+        $sessionMasterPass = Crypt::mkCustomMPassEncrypt($mPassPwd, $masterPass);
+
+        Session::setMPass($sessionMasterPass[0]);
+        Session::setMPassIV($sessionMasterPass[1]);
+
+        return true;
+    }
+
+    /**
+     * Desencriptar la clave maestra de la sesión.
+     *
+     * @return string con la clave maestra
+     */
+    public static function getSessionMPass()
+    {
+        $cryptPass = Crypt::generateAesKey(session_id());
+        return Crypt::getDecrypt(Session::getMPass(), Session::getMPassIV(), $cryptPass);
+    }
+
+    /**
+     * Devuelve un hash para verificación de formularios.
+     * Esta función genera un hash que permite verificar la autenticidad de un formulario
+     *
+     * @param bool $new si es necesrio regenerar el hash
+     * @return string con el hash de verificación
+     */
+    public static function getSessionKey($new = false)
+    {
+        $hash = sha1(time());
+
+        // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
+        if (is_null(Session::getSecurityKey()) || $new === true) {
+            Session::setSecurityKey($hash);
+            return $hash;
+        }
+
+        return Session::getSecurityKey();
+    }
+
+    /**
+     * Comprobar el hash de verificación de formularios.
+     *
+     * @param string $key con el hash a comprobar
+     * @return bool|string si no es correcto el hash devuelve bool. Si lo es, devuelve el hash actual.
+     */
+    public static function checkSessionKey($key)
+    {
+        return (!is_null(Session::getSecurityKey()) && Session::getSecurityKey() == $key);
     }
 }

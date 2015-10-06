@@ -28,6 +28,7 @@ namespace SP\Controller;
 use SP\Auth\Auth2FA;
 use SP\Language;
 use SP\Session;
+use SP\SessionUtil;
 use SP\Themes;
 use SP\UserPreferences;
 
@@ -65,7 +66,7 @@ class UsersPrefsC extends Controller implements ActionsInterface
 
 
         $this->view->assign('tabs', array());
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->_userId = Session::getUserId();
         $this->_userPrefs = UserPreferences::getPreferences($this->_userId);
     }

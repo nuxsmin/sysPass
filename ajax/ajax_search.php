@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -37,7 +38,7 @@ if (!SP\Init::isLoggedIn()) {
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     die('<div class="error round">' . _('CONSULTA INVÁLIDA') . '</div>');
 }
 

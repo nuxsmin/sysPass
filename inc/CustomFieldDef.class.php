@@ -25,6 +25,13 @@
 
 namespace SP;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+/**
+ * Class CustomFieldDef para la gestión de definiciones de campos personalizados
+ *
+ * @package SP
+ */
 class CustomFieldDef extends CustomFieldsBase
 {
     /**

@@ -23,6 +23,9 @@
  *
  */
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+define('CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
 define('MODEL_PATH', __DIR__);
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');

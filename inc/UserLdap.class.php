@@ -44,7 +44,7 @@ class UserLdap
      */
     public static function newUserLDAP(User $User)
     {
-        $passdata = UserUtil::makeUserPassHash($User->getUserPass());
+        $passdata = UserPass::makeUserPassHash($User->getUserPass());
         $groupId = Config::getValue('ldap_defaultgroup', 0);
         $profileId = Config::getValue('ldap_defaultprofile', 0);
 
@@ -95,7 +95,7 @@ class UserLdap
      */
     public static function updateLDAPUserInDB(User $User)
     {
-        $passdata = UserUtil::makeUserPassHash($User->getUserPass());
+        $passdata = UserPass::makeUserPassHash($User->getUserPass());
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'

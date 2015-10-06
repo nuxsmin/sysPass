@@ -25,7 +25,7 @@
 
 define('APP_ROOT', '.');
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 try {
     $ApiRequest = new \SP\ApiRequest();
@@ -53,7 +53,7 @@ try {
             throw new Exception(_('Acción Inválida'));
     }
 } catch (Exception $e) {
-    \SP\Common::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\ApiRequest::getHelp()));
+    \SP\Response::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\ApiRequest::getHelp()));
 }
 
 header('Content-type: application/json');

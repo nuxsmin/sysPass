@@ -83,7 +83,6 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sort_views">
                         <input type="checkbox" id="sort_views" class="mdl-switch__input fg-blue100"
                                name="sort_views" <?php echo ($chkSortViews) ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"><?php echo _('Activar'); ?></span>
                     </label>
                 </td>
             </tr>

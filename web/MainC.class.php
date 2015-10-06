@@ -59,7 +59,7 @@ class MainC extends Controller implements ActionsInterface
             $this->view->addTemplate('header');
             $this->view->addTemplate('body-start');
 
-            $this->view->assign('sk', \SP\Common::getSessionKey(true));
+            $this->view->assign('sk', SessionUtil::getSessionKey(true));
             $this->view->assign('appInfo', Util::getAppInfo());
             $this->view->assign('appVersion', Util::getVersionString());
             $this->view->assign('isDemoMode', Util::demoIsEnabled());
@@ -186,13 +186,13 @@ class MainC extends Controller implements ActionsInterface
                 'checkaccess' => 1),
             array(
                 'name' => self::ACTION_USR,
-                'title' => _('Gestión de Usuarios'),
+                'title' => _('Usuarios y Accesos'),
                 'img' => 'users.png',
                 'icon' => 'account_box',
                 'checkaccess' => 1),
             array(
                 'name' => self::ACTION_MGM,
-                'title' => _('Gestión de Clientes y Categorías'),
+                'title' => _('Elementos y Personalización'),
                 'img' => 'appmgmt.png',
                 'icon' => 'group_work',
                 'checkaccess' => 1),

@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\UserPass;
 use SP\UserUtil;
 
 define('APP_ROOT', '..');
@@ -33,7 +34,7 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $accountId = SP\Request::analyze('accountid', false);
@@ -51,13 +52,13 @@ $account->setAccountId($accountId);
 $accountData = $account->getAccountPassData();
 
 if ($isHistory && !$account->checkAccountMPass()) {
-    SP\Common::printJSON(_('La clave maestra no coincide'));
+    SP\Response::printJSON(_('La clave maestra no coincide'));
 }
 
 if (!SP\Acl::checkAccountAccess(SP\Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP\Acl::checkUserAccess(SP\Acl::ACTION_ACC_VIEW_PASS)) {
-    SP\Common::printJSON(_('No tiene permisos para acceder a esta cuenta'));
-} elseif (!UserUtil::checkUserUpdateMPass()) {
-    SP\Common::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+    SP\Response::printJSON(_('No tiene permisos para acceder a esta cuenta'));
+} elseif (!UserPass::checkUserUpdateMPass()) {
+    SP\Response::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
 $accountClearPass = SP\Crypt::getDecrypt($accountData->pass, $accountData->iv);
@@ -82,4 +83,4 @@ $data = array(
     'useimage' => $useImage
 );
 
-SP\Common::printJSON($data, 0);
+SP\Response::printJSON($data, 0);

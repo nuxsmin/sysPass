@@ -28,6 +28,7 @@ namespace SP\Controller;
 use SP\ApiTokens;
 use SP\CustomFieldDef;
 use SP\CustomFields;
+use SP\SessionUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -57,7 +58,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('isDemo', \SP\Util::demoIsEnabled());
-        $this->view->assign('sk', \SP\Common::getSessionKey());
+        $this->view->assign('sk', SessionUtil::getSessionKey());
     }
 
     /**
@@ -71,7 +72,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         $categoriesTableProp = array(
             'tblId' => 'tblCategories',
@@ -130,7 +131,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         $customersTableProp = array(
             'tblId' => 'tblCustomers',
@@ -244,7 +245,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
 
         $this->view->addTemplate('files');
 
-        $this->view->assign('sk', \SP\Common::getSessionKey());
+        $this->view->assign('sk', SessionUtil::getSessionKey());
     }
 
     /**
@@ -258,7 +259,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         $tableProp = array(
             'tblId' => 'tblCustomFields',

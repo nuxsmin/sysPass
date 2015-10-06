@@ -23,6 +23,8 @@
  *
  */
 
+use SP\SessionUtil;
+
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
@@ -31,8 +33,8 @@ SP\Request::checkReferer('POST');
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $userId = SP\Request::analyze('itemId', 0);
@@ -52,8 +54,8 @@ if($userId && $pin && $twoFa->verifyKey($pin)){
 
     $urlParams = isset($params) ? '?' . implode('&', $params) : '';
 
-    SP\Common::printJSON(_('Código correcto'), 0, 'redirect(\'index.php\')');
+    SP\Response::printJSON(_('Código correcto'), 0, 'redirect(\'index.php\')');
 } else {
     \SP\Session::set2FApassed(false);
-    SP\Common::printJSON(_('Código incorrecto'));
+    SP\Response::printJSON(_('Código incorrecto'));
 }

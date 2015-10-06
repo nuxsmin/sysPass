@@ -42,14 +42,14 @@ class User extends UserBase
      */
     public function updateUserMPass($masterPwd)
     {
-        $configMPass = Config::getConfigDbValue('masterPwd');
+        $configMPass = ConfigDB::getValue('masterPwd');
 
         if (!$configMPass) {
             return false;
         }
 
         if (Crypt::checkHashPass($masterPwd, $configMPass, true)) {
-            $strUserMPwd = Crypt::mkCustomMPassEncrypt(self::getCypherPass($this->_userPass), $masterPwd);
+            $strUserMPwd = Crypt::mkCustomMPassEncrypt(self::getCypherPass(), $masterPwd);
 
             if (!$strUserMPwd) {
                 return false;
@@ -106,18 +106,7 @@ class User extends UserBase
                 return false;
             }
 
-            if ($showPass == true) {
-                return $clearMasterPass;
-            } else {
-                $mPassPwd = Util::generate_random_bytes(32);
-                Session::setMPassPwd($mPassPwd);
-
-                $sessionMasterPass = Crypt::mkCustomMPassEncrypt($mPassPwd, $clearMasterPass);
-
-                Session::setMPass($sessionMasterPass[0]);
-                Session::setMPassIV($sessionMasterPass[1]);
-                return true;
-            }
+            return ($showPass == true) ? $clearMasterPass : SessionUtil::saveSessionMPass($clearMasterPass);
         }
 
         return false;

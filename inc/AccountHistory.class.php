@@ -27,6 +27,11 @@ namespace SP;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+/**
+ * Class AccountHistory par el manejo del historial de cuentas
+ *
+ * @package SP
+ */
 class AccountHistory extends AccountBase implements AccountInterface
 {
     private $_isDelete = false;
@@ -230,7 +235,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             'AND acchistory_mPassHash = :mPassHash';
 
         $data['id'] = (is_null($id)) ? $this->getAccountId() : $id;
-        $data['mPassHash'] = Config::getConfigDbValue('masterPwd');
+        $data['mPassHash'] = ConfigDB::getValue('masterPwd');
 
         return (DB::getResults($query, __FUNCTION__, $data) !== false);
     }
@@ -395,7 +400,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $data['accountOtherGroupEdit'] = $this->getAccountOtherGroupEdit();
         $data['isModify'] = $this->isIsModify();
         $data['isDelete'] = $this->isIsDelete();
-        $data['masterPwd'] = Config::getConfigDbValue('masterPwd');
+        $data['masterPwd'] = ConfigDB::getValue('masterPwd');
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
@@ -479,7 +484,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $data['account_id'] = $id;
         $data['isModify'] = ($isDelete === false) ? 1 : 0;
         $data['isDelete'] = ($isDelete === false) ? 0 : 1;
-        $data['masterPwd'] = Config::getConfigDbValue('masterPwd');
+        $data['masterPwd'] = ConfigDB::getValue('masterPwd');
 
         return DB::getQuery($query, __FUNCTION__, $data);
     }

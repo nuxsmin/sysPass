@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -32,11 +33,11 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 if (SP\Util::demoIsEnabled()) {
-    SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+    SP\Response::printJSON(_('Ey, esto es una DEMO!!'));
 }
 
 $sk = SP\Request::analyze('sk', false);
@@ -45,8 +46,8 @@ $defaultGroup = SP\Request::analyze('defGroup', 0);
 $importPwd = SP\Request::analyzeEncrypted('importPwd');
 $csvDelimiter = SP\Request::analyze('csvDelimiter');
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 SP\Import::setDefUser($defaultUser);
@@ -61,9 +62,9 @@ if (isset($res['error']) && is_array($res['error'])) {
 
     $out = implode('\n\n', $res['error']);
 
-    SP\Common::printJSON($out);
+    SP\Response::printJSON($out);
 } else if (is_array($res['ok'])) {
     $out = implode('\n\n', $res['ok']);
 
-    SP\Common::printJSON($out, 0);
+    SP\Response::printJSON($out, 0);
 }

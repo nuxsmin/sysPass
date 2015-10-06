@@ -23,9 +23,12 @@
  *
  */
 
+use SP\CryptMasterPass;
 use SP\Request;
 use SP\SessionUtil;
 use SP\UserLdap;
+use SP\UserPass;
+use SP\UserPassRecover;
 use SP\UserUtil;
 
 define('APP_ROOT', '..');
@@ -43,7 +46,7 @@ $userPass = SP\Request::analyzeEncrypted('pass');
 $masterPass = SP\Request::analyzeEncrypted('mpass');
 
 if (!$userLogin || !$userPass) {
-    SP\Common::printJSON(_('Usuario/Clave no introducidos'));
+    SP\Response::printJSON(_('Usuario/Clave no introducidos'));
 }
 
 $User = new SP\User();
@@ -69,7 +72,7 @@ if ($resLdap === true) {
             $Log->addDescription(_('Error al guardar los datos de LDAP'));
             $Log->writeLog();
 
-            SP\Common::printJSON(_('Error interno'));
+            SP\Response::printJSON(_('Error interno'));
         }
     } else {
         // Actualizamos la clave del usuario en MySQL
@@ -77,7 +80,7 @@ if ($resLdap === true) {
             $Log->addDescription(_('Error al actualizar la clave del usuario en la BBDD'));
             $Log->writeLog();
 
-            SP\Common::printJSON(_('Error interno'));
+            SP\Response::printJSON(_('Error interno'));
         }
     }
 } else if ($resLdap == 49) {
@@ -86,21 +89,21 @@ if ($resLdap === true) {
     $Log->addDescription(_('Usuario') . ": " . $userLogin);
     $Log->writeLog();
 
-    SP\Common::printJSON(_('Usuario/Clave incorrectos'));
+    SP\Response::printJSON(_('Usuario/Clave incorrectos'));
 } else if ($resLdap === 701) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('Cuenta expirada'));
     $Log->addDescription(_('Usuario') . ": " . $userLogin);
     $Log->writeLog();
 
-    SP\Common::printJSON(_('Cuenta expirada'));
+    SP\Response::printJSON(_('Cuenta expirada'));
 } else if ($resLdap === 702) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('El usuario no tiene grupos asociados'));
     $Log->addDescription(_('Usuario') . ": " . $userLogin);
     $Log->writeLog();
 
-    SP\Common::printJSON(_('Usuario/Clave incorrectos'));
+    SP\Response::printJSON(_('Usuario/Clave incorrectos'));
 } else { // Autentificamos por MySQL (ha fallado LDAP)
     $Log->resetDescription();
     $Log->addDescription('(MySQL)');
@@ -111,7 +114,7 @@ if ($resLdap === true) {
         $Log->addDescription(_('Usuario') . ": " . $userLogin);
         $Log->writeLog();
 
-        SP\Common::printJSON(_('Usuario/Clave incorrectos'));
+        SP\Response::printJSON(_('Usuario/Clave incorrectos'));
     }
 }
 
@@ -121,7 +124,7 @@ if (UserUtil::checkUserIsDisabled($userLogin)) {
     $Log->addDescription(_('Usuario') . ": " . $userLogin);
     $Log->writeLog();
 
-    SP\Common::printJSON(_('Usuario deshabilitado'));
+    SP\Response::printJSON(_('Usuario deshabilitado'));
 }
 
 // Obtenemos los datos del usuario
@@ -129,24 +132,24 @@ if (!$User->getUserInfo()) {
     $Log->addDescription(_('Error al obtener los datos del usuario de la BBDD'));
     $Log->writeLog();
 
-    SP\Common::printJSON(_('Error interno'));
+    SP\Response::printJSON(_('Error interno'));
 }
 
 // Comprobamos que la clave maestra del usuario es correcta y está actualizada
 if (!$masterPass
-    && (!UserUtil::checkUserMPass($User) || !UserUtil::checkUserUpdateMPass($userLogin))
+    && (!UserPass::checkUserMPass($User) || !UserPass::checkUserUpdateMPass($userLogin))
 ) {
-    SP\Common::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
+    SP\Response::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
 } elseif ($masterPass) {
-    if (SP\Config::checkTempMasterPass($masterPass)) {
-        $masterPass = SP\Config::getTempMasterPass($masterPass);
+    if (CryptMasterPass::checkTempMasterPass($masterPass)) {
+        $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
     }
 
     if (!$User->updateUserMPass($masterPass)) {
         $Log->addDescription(_('Clave maestra incorrecta'));
         $Log->writeLog();
 
-        SP\Common::printJSON(_('Clave maestra incorrecta'), 4);
+        SP\Response::printJSON(_('Clave maestra incorrecta'), 4);
     }
 }
 
@@ -154,9 +157,9 @@ if (!$masterPass
 if ($User->isUserChangePass()) {
     $hash = SP\Util::generate_random_bytes();
 
-    if (UserUtil::addPassRecover($userLogin, $hash)) {
+    if (UserPassRecover::addPassRecover($userLogin, $hash)) {
         $url = SP\Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1';
-        SP\Common::printJSON($url, 0);
+        SP\Response::printJSON($url, 0);
     }
 }
 
@@ -173,7 +176,7 @@ if ($User->getUserMPass()) {
     $Log->addDescription(sprintf('%s : %s', _('Grupo'), SP\Groups::getGroupNameById($User->getUserGroupId())));
     $Log->writeLog();
 } else {
-    SP\Common::printJSON(_('Error interno'));
+    SP\Response::printJSON(_('Error interno'));
 }
 
 $UserPrefs = \SP\UserPreferences::getPreferences($User->getUserId());
@@ -181,7 +184,7 @@ $UserPrefs = \SP\UserPreferences::getPreferences($User->getUserId());
 if ($UserPrefs->isUse2Fa()) {
     SP\Session::set2FApassed(false);
     $url = SP\Init::$WEBURI . '/index.php?a=2fa&i=' . $User->getUserId() . '&t=' . time() . '&f=1';
-    SP\Common::printJSON($url, 0);
+    SP\Response::printJSON($url, 0);
 } else {
     SP\Session::set2FApassed(true);
 }
@@ -204,4 +207,4 @@ foreach ($_POST as $param => $value) {
 
 $urlParams = (count($params) > 0) ? '?' . implode('&', $params) : '';
 
-SP\Common::printJSON('index.php' . $urlParams, 0);
+SP\Response::printJSON('index.php' . $urlParams, 0);

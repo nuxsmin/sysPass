@@ -24,6 +24,7 @@
  */
 
 use SP\Request;
+use SP\SessionUtil;
 use SP\UserUtil;
 
 define('APP_ROOT', '..');
@@ -33,13 +34,13 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!SP\Init::isLoggedIn()) {
-    SP\Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP\Common::checkSessionKey($sk)) {
-    SP\Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
@@ -67,7 +68,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     $UserPrefs->setSortViews($sortViews);
 
     if (!$UserPrefs->updatePreferences()) {
-        SP\Common::printJSON(_('Error al actualizar preferencias'));
+        SP\Response::printJSON(_('Error al actualizar preferencias'));
     }
 
     // Forzar la detección del lenguaje tras actualizar
@@ -77,10 +78,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     SP\Session::setUserPreferences($UserPrefs);
     SP\Util::reload();
 
-    SP\Common::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+    SP\Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
     if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() === 'demo') {
-        SP\Common::printJSON(_('Ey, esto es una DEMO!!'));
+        SP\Response::printJSON(_('Ey, esto es una DEMO!!'));
     }
 
     // Variables POST del formulario
@@ -91,7 +92,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     $twoFa = new \SP\Auth\Auth2FA($itemId, $userLogin);
 
     if (!$twoFa->verifyKey($pin)) {
-        SP\Common::printJSON(_('Código incorrecto'));
+        SP\Response::printJSON(_('Código incorrecto'));
     }
 
     // No se instancia la clase ya que es necesario guardar los atributos ya guardados
@@ -100,10 +101,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     $UserPrefs->setUse2Fa(\SP\Util::boolval($twoFaEnabled));
 
     if (!$UserPrefs->updatePreferences()) {
-        SP\Common::printJSON(_('Error al actualizar preferencias'));
+        SP\Response::printJSON(_('Error al actualizar preferencias'));
     }
 
-    SP\Common::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+    SP\Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else {
-    SP\Common::printJSON(_('Acción Inválida'));
+    SP\Response::printJSON(_('Acción Inválida'));
 }

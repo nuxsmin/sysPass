@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\SessionUtil;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -48,7 +50,7 @@ class EventlogC extends Controller implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->view->assign('sk', \SP\Common::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
     }
 
     /**
@@ -88,11 +90,11 @@ class EventlogC extends Controller implements ActionsInterface
      */
     public function checkClear()
     {
-        if ($this->view->clear && $this->view->sk && \SP\Common::checkSessionKey($this->view->sk)) {
+        if ($this->view->clear && $this->view->sk && SessionUtil::checkSessionKey($this->view->sk)) {
             if (\SP\Log::clearEvents()) {
-                \SP\Common::printJSON(_('Registro de eventos vaciado'), 0, "sysPassUtil.Common.doAction(" . ActionsInterface::ACTION_EVL . "); sysPassUtil.Common.scrollUp();");
+                \SP\Response::printJSON(_('Registro de eventos vaciado'), 0, "sysPassUtil.Common.doAction(" . ActionsInterface::ACTION_EVL . "); sysPassUtil.Common.scrollUp();");
             } else {
-                \SP\Common::printJSON(_('Error al vaciar el registro de eventos'));
+                \SP\Response::printJSON(_('Error al vaciar el registro de eventos'));
             }
         }
     }
