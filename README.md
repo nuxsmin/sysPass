@@ -1,3 +1,5 @@
+![sysPass logo](http://www.syspass.org/assets/imgs/syspass.png)
+
 #### ACTUALIZAR / UPDATE
 
 Para actualizar desde 1.1 seguir los pasos en http://wiki.syspass.org/doku.php/es:actualizar
@@ -23,6 +25,10 @@ PHP web based Passwords Management System for business and personal use.
 Accounts passwords are encrypted with an unique master password, group/role based access, file uploading, LDAP integration, event/actions auditing and more....
 
 Installation instructions and changelog at Wiki
+
+----------------
+
+![sysPass main screen](http://www.syspass.org/assets/imgs/search.png)
 
 ----------------
 
