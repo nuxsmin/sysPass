@@ -230,18 +230,15 @@ CREATE TABLE `usrToGroups` (
   KEY `IDX_usertogroup_userId` (`usertogroup_userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `publicLinks` (
+CREATE TABLE `publicLinks`(
   `publicLink_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `publicLink_accountId` INT NOT NULL,
+  `publicLink_itemId` INT,
   `publicLink_hash` VARBINARY(100) NOT NULL,
-  `publicLink_pass` VARBINARY(32) NOT NULL,
-  `publicLink_passIV` VARBINARY(32) NOT NULL,
-  `publicLink_userId` INT NOT NULL,
-  `publicLink_dateAdd` INT NOT NULL,
-  `publicLink_dateExpire` INT NOT NULL,
-  `publicLink_countViews` SMALLINT DEFAULT 0,
-  `publicLink_typeId` SMALLINT NOT NULL
+  `publicLink_linkData` LONGBLOB
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId);
+CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash);
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

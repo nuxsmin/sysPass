@@ -33,7 +33,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002);
+    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 12101);
     private static $_cfgUpgrade = array(1124);
 
     /**
@@ -124,9 +124,9 @@ class Upgrade
                 $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
                 break;
             case 12101:
-                $queries[] = 'CREATE TABLE `publicLinks` (`publicLink_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`publicLink_accountId` INT NOT NULL,`publicLink_hash` VARBINARY(100) NOT NULL,`publicLink_pass` VARBINARY(32) NOT NULL,`publicLink_passIV` VARBINARY(32) NOT NULL,`publicLink_userId` INT NOT NULL,`publicLink_dateAdd` INT NOT NULL,`publicLink_dateExpire` INT NOT NULL,`publicLink_countViews` SMALLINT DEFAULT 0,`publicLink_typeId` SMALLINT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
-                $queries[] = 'ALTER TABLE `publicLinks` ADD CONSTRAINT unique_publicLink_accountId UNIQUE (`publicLink_accountId`);';
-                $queries[] = 'ALTER TABLE `publicLinks` ADD CONSTRAINT unique_publicLink_hash UNIQUE (`publicLink_hash`);';
+                $queries[] = 'CREATE TABLE publicLinks(publicLink_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,publicLink_itemId INT,publicLink_hash VARBINARY(100) NOT NULL,publicLink_linkData LONGBLOB);';
+                $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId)';
+                $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
                 break;
             default :
                 $log->addDescription(_('No es necesario actualizar la Base de Datos.'));
