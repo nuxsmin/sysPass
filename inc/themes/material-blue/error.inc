@@ -1,9 +1,7 @@
 <div id="actions" align="center">
 
     <?php if ($showLogo): ?>
-        <div id="logo">
-            <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
-        </div>
+        <div id="logo"></div>
     <?php endif; ?>
 
     <?php if (count($errors) > 0): ?>
@@ -18,4 +16,11 @@
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
+    <div class="buttons">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+                onclick="window.location.href='index.php'">
+            <i class="material-icons" title="<?php echo _('Volver'); ?>">arrow_back</i>
+            <?php echo _('Volver'); ?>
+        </button>
+    </div>
 </div>

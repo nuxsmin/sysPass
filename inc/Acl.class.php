@@ -89,6 +89,10 @@ class Acl implements Controller\ActionsInterface
                 return ($curUserIsAdminApp || $curUserProfile->isMgmCustomers());
             case self::ACTION_MGM_CUSTOMFIELDS:
                 return ($curUserIsAdminApp || $curUserProfile->isMgmCustomFields());
+            case self::ACTION_MGM_PUBLICLINKS:
+                return ($curUserIsAdminApp || $curUserProfile->isMgmPublicLinks());
+            case self::ACTION_MGM_PUBLICLINKS_NEW:
+                return ($curUserIsAdminApp || $curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
             case self::ACTION_CFG_ENCRYPTION:
                 return ($curUserIsAdminApp || $curUserProfile->isConfigEncryption());
             case self::ACTION_CFG_BACKUP:

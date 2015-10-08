@@ -49,7 +49,7 @@ class ImageUtil
         $im = imagecreatetruecolor(strlen($text) * 20, 30);
 
         // Colores de la imagen
-        $bgColor = imagecolorallocate($im, 255, 255, 255);
+        $bgColor = imagecolorallocate($im, 245, 245, 245);
 //        $shadowColor = imagecolorallocate($im, 128, 128, 128);
         $fgColor = imagecolorallocate($im, 128, 128, 128);
 

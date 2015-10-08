@@ -590,7 +590,7 @@ class Init
     }
 
     /**
-     * Comprobar si hay que ejecutar acciones de URL antes del login.
+     * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
      *
      * @return bool
      */
@@ -612,6 +612,10 @@ class Init
                 $controller->get2FA();
                 $controller->view();
                 break;
+            case 'link':
+                $controller->getPublicLink();
+                $controller->view();
+                break;
             default:
                 return false;
         }
@@ -620,7 +624,7 @@ class Init
     }
 
     /**
-     * Comprobar si hay que ejecutar acciones de URL después del login.
+     * Comprobar si hay que ejecutar acciones de URL después de realizar login.
      *
      * @return bool
      */

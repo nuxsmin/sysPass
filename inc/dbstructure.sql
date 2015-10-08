@@ -230,6 +230,19 @@ CREATE TABLE `usrToGroups` (
   KEY `IDX_usertogroup_userId` (`usertogroup_userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `publicLinks` (
+  `publicLink_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `publicLink_accountId` INT NOT NULL,
+  `publicLink_hash` VARBINARY(100) NOT NULL,
+  `publicLink_pass` VARBINARY(32) NOT NULL,
+  `publicLink_passIV` VARBINARY(32) NOT NULL,
+  `publicLink_userId` INT NOT NULL,
+  `publicLink_dateAdd` INT NOT NULL,
+  `publicLink_dateExpire` INT NOT NULL,
+  `publicLink_countViews` SMALLINT DEFAULT 0,
+  `publicLink_typeId` SMALLINT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

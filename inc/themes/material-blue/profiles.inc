@@ -57,7 +57,12 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accfiles">
                             <input type="checkbox" id="profile_accfiles" class="mdl-switch__input fg-blue100"
                                    name="profile_accfiles" <?php echo ($profile->isAccFiles()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label" title="<?php echo _('Var archivos de cuenta'); ?>"><?php echo _('Archivos'); ?></span>
+                            <span class="mdl-switch__label" title="<?php echo _('Ver archivos de cuenta'); ?>"><?php echo _('Archivos'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accpublinks">
+                            <input type="checkbox" id="profile_accpublinks" class="mdl-switch__input fg-blue100"
+                                   name="profile_accpublinks" <?php echo ($profile->isAccPublicLinks()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Publicar enlace a cuenta'); ?>"><?php echo _('Publicar Enlace'); ?></span>
                         </label>
                     </div>
                 </td>
@@ -127,6 +132,11 @@
                             <input type="checkbox" id="profile_apitokens" class="mdl-switch__input fg-blue100"
                                    name="profile_apitokens" <?php echo ($profile->isMgmApiTokens()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label" title="<?php echo _('Gestión de autorizaciones API'); ?>"><?php echo _('Autorizaciones API'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_publinks">
+                            <input type="checkbox" id="profile_publinks" class="mdl-switch__input fg-blue100"
+                                   name="profile_publinks" <?php echo ($profile->isMgmPublicLinks()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label" title="<?php echo _('Gestión de enlaces'); ?>"><?php echo _('Enlaces Públicos'); ?></span>
                         </label>
                     </div>
                 </td>

@@ -472,6 +472,16 @@ class Util
     }
 
     /**
+     * Comprobar si está habilitado la publicación de enlaces
+     *
+     * @return bool
+     */
+    public static function publicLinksIsEnabled()
+    {
+        return self::boolval(Config::getValue('publinks_enabled', false));
+    }
+
+    /**
      * Comprobar si se utiliza HTTPS
      *
      * @return bool
@@ -586,5 +596,18 @@ class Util
         }
 
         return $data;
+    }
+
+    /**
+     * Obtener la URL de acceso al servidor
+     *
+     * @return string
+     */
+    public static function getServerUrl()
+    {
+        $urlScheme = (self::httpsEnabled()) ? 'https://' : 'http://';
+        $urlPort = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+
+        return $urlScheme . $_SERVER['SERVER_NAME'] . $urlPort;
     }
 }

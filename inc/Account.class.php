@@ -38,67 +38,6 @@ class Account extends AccountBase implements AccountInterface
     private $_cacheParams;
 
     /**
-     * Obtener los datos de usuario y modificador de una cuenta.
-     *
-     * @param int $accountId con el Id de la cuenta
-     * @return false|object con el id de usuario y modificador.
-     */
-    public static function getAccountRequestData($accountId)
-    {
-        $query = 'SELECT account_userId,'
-            . 'account_userEditId,'
-            . 'account_name,'
-            . 'customer_name '
-            . 'FROM accounts '
-            . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'WHERE account_id = :id LIMIT 1';
-
-        $data['id'] = $accountId;
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes;
-    }
-
-    /**
-     * Obtiene el listado con el nombre de los usuaios de una cuenta.
-     *
-     * @param int $accountId con el Id de la cuenta
-     * @return false|array con los nombres de los usuarios ordenados
-     */
-    public static function getAccountUsersName($accountId)
-    {
-        $query = 'SELECT user_name '
-            . 'FROM accUsers '
-            . 'JOIN usrData ON accuser_userId = user_id '
-            . 'WHERE accuser_accountId = :id';
-
-        $data['id'] = $accountId;
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        if (!is_array($queryRes)) {
-            return false;
-        }
-
-        foreach ($queryRes as $users) {
-            $usersName[] = $users->user_name;
-        }
-
-        sort($usersName, SORT_STRING);
-
-        return $usersName;
-    }
-
-    /**
      * Actualiza los datos de una cuenta en la BBDD.
      *
      * @return bool
@@ -323,7 +262,8 @@ class Account extends AccountBase implements AccountInterface
             . 'u2.user_name as user_editName,'
             . 'u2.user_login as user_editLogin,'
             . 'usergroup_name,'
-            . 'customer_name, '
+            . 'customer_name,'
+            . 'publicLink_hash,'
             . 'CONCAT(account_name,account_categoryId,account_customerId,account_login,account_url,account_notes,BIN(account_otherUserEdit),BIN(account_otherGroupEdit)) as modHash '
             . 'FROM accounts '
             . 'LEFT JOIN categories ON account_categoryId = category_id '
@@ -331,6 +271,7 @@ class Account extends AccountBase implements AccountInterface
             . 'LEFT JOIN usrData u1 ON account_userId = u1.user_id '
             . 'LEFT JOIN usrData u2 ON account_userEditId = u2.user_id '
             . 'LEFT JOIN customers ON account_customerId = customer_id '
+            . 'LEFT JOIN publicLinks ON account_id = publicLink_itemId '
             . 'WHERE account_id = :id LIMIT 1';
 
         $data['id'] = $this->getAccountId();
@@ -686,35 +627,5 @@ class Account extends AccountBase implements AccountInterface
         }
 
         return true;
-    }
-
-    /**
-     * Obtener los datos de todas las cuentas
-     *
-     * @return array
-     * @throws SPException
-     */
-    public static function getAccountsData()
-    {
-        $query = 'SELECT account_id,'
-            . 'account_name,'
-            . 'account_categoryId,'
-            . 'account_customerId,'
-            . 'account_login,'
-            . 'account_url,'
-            . 'account_pass,'
-            . 'account_IV,'
-            . 'account_notes '
-            . 'FROM accounts';
-
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
-
-        if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de las cuentas'));
-        }
-
-        return $queryRes;
     }
 }

@@ -23,6 +23,7 @@
  *
  */
 
+use SP\AccountUtil;
 use SP\SessionUtil;
 use SP\UserUtil;
 
@@ -49,7 +50,7 @@ if (!$frmDescription) {
     SP\Response::printJSON(_('Es necesaria una descripción'));
 }
 
-$accountRequestData = SP\Account::getAccountRequestData($frmAccountId);
+$accountRequestData = AccountUtil::getAccountRequestData($frmAccountId);
 
 $recipients = array(
     UserUtil::getUserEmail($accountRequestData->account_userId),

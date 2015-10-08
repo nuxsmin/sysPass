@@ -1,6 +1,8 @@
 <div id="actions" class="upgrade" align="center">
     <div id="logo">
-        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
+        <div id="pageDesc">
+            <h1><?php echo _('Actualización') . ' ' . $version; ?></h1>
+        </div>
     </div>
 
     <form id="upgrade" action="index.php" method="get">

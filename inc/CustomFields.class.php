@@ -92,7 +92,7 @@ class CustomFields extends CustomFieldsBase
 
         foreach ($queryRes as $customField) {
             /**
-             * @var CustomFieldDef
+             * @var CustomFieldDef $field
              */
             $field = unserialize($customField->customfielddef_field);
 
@@ -154,7 +154,7 @@ class CustomFields extends CustomFieldsBase
 
         foreach ($queryMerge as $customField) {
             /**
-             * @var CustomFieldDef
+             * @var CustomFieldDef $field
              */
             $field = unserialize($customField->customfielddef_field);
 

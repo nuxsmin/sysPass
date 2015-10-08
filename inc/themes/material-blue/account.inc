@@ -399,6 +399,14 @@
                 <td class="valField"><?php echo ($accountData->user_editName) ? $accountData->user_editName : $accountData->user_editLogin; ?></td>
             </tr>
         <?php endif; ?>
+        <?php if($showLink && $accountData->publicLink_hash): ?>
+        <tr>
+            <td class="descField"><?php echo _('Enlace Público'); ?></td>
+            <td class="valField">
+                <a href="<?php echo $publicLinkUrl; ?>" target="_blank"> <?php echo $publicLinkUrl; ?></a>
+            </td>
+        </tr>
+        <?php endif; ?>
     </table>
 <?php endif; ?>
 
@@ -417,6 +425,12 @@
         <?php if ($showDelete): ?>
             <button id="btnDelete" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80" OnClick="sysPassUtil.Common.delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Eliminar Cuenta'); ?>">
                 <i class="material-icons">delete</i>
+            </button>
+        <?php endif; ?>
+
+        <?php if ($showLink && $showViewPass): ?>
+            <button id="btnLink" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" OnClick="sysPassUtil.Common.linksMgmtSave(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>,'<?php echo $sk; ?>');" title="<?php echo _('Crear Enlace Público'); ?>">
+                <i class="material-icons">link</i>
             </button>
         <?php endif; ?>
 

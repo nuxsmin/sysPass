@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+use SP\PublicLink;
+use SP\PublicLinkUtil;
 use SP\Response;
 use SP\CustomFields;
 use SP\DB;
@@ -393,7 +395,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
             'tblHeaders' => array(_('Usuario'), _('Acción')),
             'tblRowSrc' => array('user_login', 'authtoken_actionId'),
             'tblRowSrcId' => 'authtoken_id',
-            'onCloseAction' => self::ACTION_USR,
+            'onCloseAction' => self::ACTION_MGM_APITOKENS,
             'actions' => array(
                 'new' => array(
                     'id' => self::ACTION_MGM_APITOKENS_NEW,
@@ -470,5 +472,70 @@ class UsersMgmtC extends Controller implements ActionsInterface
         } else {
             $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
         }
+    }
+
+    /**
+     * Obtener los datos para la pestaña de tokens de API
+     */
+    public function getPublicLinksList()
+    {
+        $this->setAction(self::ACTION_MGM_PUBLICLINKS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $linksTableProp = array(
+            'tblId' => 'tblLinks',
+            'header' => '',
+            'tblHeaders' => array(_('Cuenta'), _('Fecha Creación'), _('Fecha Caducidad'), _('Usuario'), _('Notificar'), _('Visitas')),
+            'tblRowSrc' => array('publicLink_account', 'publicLink_dateAdd', 'publicLink_dateExpire', 'publicLink_user', 'publicLink_notify', 'publicLink_views'),
+            'tblRowSrcId' => 'publicLink_id',
+            'onCloseAction' => self::ACTION_MGM_PUBLICLINKS,
+            'actions' => array(
+                'view' => array(
+                    'id' => self::ACTION_MGM_PUBLICLINKS_VIEW,
+                    'title' => _('Ver Enlace'),
+                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_PUBLICLINKS_VIEW . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/view.png',
+                    'icon' => 'visibility'
+                ),
+                'refresh' => array(
+                    'id' => self::ACTION_MGM_PUBLICLINKS_VIEW,
+                    'title' => _('Renovar Enlace'),
+                    'onclick' => 'sysPassUtil.Common.linksMgmtRefresh(this,' . self::ACTION_MGM_PUBLICLINKS_REFRESH . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/view.png',
+                    'icon' => 'refresh'
+                ),
+                'del' => array(
+                    'id' => self::ACTION_MGM_PUBLICLINKS_DELETE,
+                    'title' => _('Eliminar Enlace'),
+                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_PUBLICLINKS_DELETE . ',\'' . $this->view->sk . '\')',
+                    'img' => 'imgs/delete.png',
+                    'icon' => 'delete',
+                    'isdelete' => true
+                )
+            )
+        );
+
+        $linksTableProp['cellWidth'] = floor(65 / count($linksTableProp['tblHeaders']));
+
+        $this->view->append(
+            'tabs', array(
+                'title' => _('Gestión de Enlaces'),
+                'query' => \SP\PublicLinkUtil::getLinks(),
+                'props' => $linksTableProp,
+                'time' => round(microtime() - $this->view->queryTimeStart, 5))
+        );
+    }
+
+    /**
+     * Obtener los datos para la ficha de enlace público
+     */
+    public function getPublicLink()
+    {
+        $this->view->addTemplate('publiclinks');
+
+        $this->view->assign('link', PublicLinkUtil::getLinks($this->view->itemId)[0]);
     }
 }

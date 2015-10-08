@@ -77,6 +77,10 @@ abstract class ProfileBase
     /**
      * @var bool
      */
+    protected $_accPublicLinks = false;
+    /**
+     * @var bool
+     */
     protected $_configGeneral = false;
     /**
      * @var bool
@@ -114,22 +118,10 @@ abstract class ProfileBase
      * @var bool
      */
     protected $_mgmApiTokens = false;
-
     /**
-     * @return boolean
+     * @var bool
      */
-    public function isMgmApiTokens()
-    {
-        return $this->_mgmApiTokens;
-    }
-
-    /**
-     * @param boolean $mgmApiTokens
-     */
-    public function setMgmApiTokens($mgmApiTokens)
-    {
-        $this->_mgmApiTokens = $mgmApiTokens;
-    }
+    protected $_mgmPublicLinks = false;
     /**
      * @var bool
      */
@@ -174,7 +166,7 @@ abstract class ProfileBase
      */
     public static function getProfiles()
     {
-        if (Util::demoIsEnabled()){
+        if (Util::demoIsEnabled()) {
             $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo" ORDER BY userprofile_name';
         } else {
             $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles ORDER BY userprofile_name';
@@ -183,6 +175,54 @@ abstract class ProfileBase
         DB::setReturnArray();
 
         return DB::getResults($query, __FUNCTION__);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAccPublicLinks()
+    {
+        return $this->_accPublicLinks;
+    }
+
+    /**
+     * @param boolean $accPublicLinks
+     */
+    public function setAccPublicLinks($accPublicLinks)
+    {
+        $this->_accPublicLinks = $accPublicLinks;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmPublicLinks()
+    {
+        return $this->_mgmPublicLinks;
+    }
+
+    /**
+     * @param boolean $mgmPublicLinks
+     */
+    public function setMgmPublicLinks($mgmPublicLinks)
+    {
+        $this->_mgmPublicLinks = $mgmPublicLinks;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmApiTokens()
+    {
+        return $this->_mgmApiTokens;
+    }
+
+    /**
+     * @param boolean $mgmApiTokens
+     */
+    public function setMgmApiTokens($mgmApiTokens)
+    {
+        $this->_mgmApiTokens = $mgmApiTokens;
     }
 
     /**

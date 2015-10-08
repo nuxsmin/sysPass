@@ -105,6 +105,17 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
             SP\Response::printJSON(_('El tamaño máximo por archivo es de 16MB'));
         }
 
+        // Public Links
+        $pubLinksEnabled = SP\Request::analyze('publinks_enabled', false, false, true);
+        $pubLinksImageEnabled = SP\Request::analyze('publinks_image_enabled', false, false, true);
+        $pubLinksMaxTime = SP\Request::analyze('publinks_maxtime', 10);
+        $pubLinksMaxViews = SP\Request::analyze('publinks_maxviews', 3);
+
+        SP\Config::setCacheConfigValue('publinks_enabled', $pubLinksEnabled);
+        SP\Config::setCacheConfigValue('publinks_image_enabled', $pubLinksImageEnabled);
+        SP\Config::setCacheConfigValue('publinks_maxtime', $pubLinksMaxTime * 60);
+        SP\Config::setCacheConfigValue('publinks_maxviews', $pubLinksMaxViews);
+
         // Proxy
         $proxyEnabled = SP\Request::analyze('proxy_enabled', false, false, true);
         $proxyServer = SP\Request::analyze('proxy_server');

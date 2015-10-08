@@ -98,6 +98,12 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('accountCount', \SP\Config::getValue('account_count'));
 
         // Proxy
+        $this->view->assign('chkPubLinks', (\SP\Config::getValue('publinks_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkPubLinksImage', (\SP\Config::getValue('publinks_image_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('pubLinksMaxTime', \SP\Config::getValue('publinks_maxtime') / 60);
+        $this->view->assign('pubLinksMaxViews', \SP\Config::getValue('publinks_maxviews'));
+
+        // Proxy
         $this->view->assign('chkProxy', (\SP\Config::getValue('proxy_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('proxyServer', \SP\Config::getValue('proxy_server'));
         $this->view->assign('proxyPort', \SP\Config::getValue('proxy_port'));

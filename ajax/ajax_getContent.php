@@ -118,12 +118,17 @@ switch ($actionId) {
         $controller->getRequestAccountAccess();
         break;
     case \SP\Controller\ActionsInterface::ACTION_USR:
+    case \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS:
+    case \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS:
         $controller = new SP\Controller\UsersMgmtC($tpl);
         $controller->useTabs();
         $controller->getUsersList();
         $controller->getGroupsList();
         $controller->getProfilesList();
         $controller->getAPITokensList();
+        if (\SP\Util::publicLinksIsEnabled()) {
+            $controller->getPublicLinksList();
+        }
         break;
     case \SP\Controller\ActionsInterface::ACTION_MGM:
         $controller = new SP\Controller\AccountsMgmtC($tpl);

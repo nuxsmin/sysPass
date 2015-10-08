@@ -263,6 +263,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $Profile->setAccEditPass(SP\Request::analyze('profile_acceditpass', 0, false, 1));
     $Profile->setAccDelete(SP\Request::analyze('profile_accdel', 0, false, 1));
     $Profile->setAccFiles(SP\Request::analyze('profile_accfiles', 0, false, 1));
+    $Profile->setAccPublicLinks(SP\Request::analyze('profile_accpublinks', 0, false, 1));
     $Profile->setConfigGeneral(SP\Request::analyze('profile_config', 0, false, 1));
     $Profile->setConfigEncryption(SP\Request::analyze('profile_configmpw', 0, false, 1));
     $Profile->setConfigBackup(SP\Request::analyze('profile_configback', 0, false, 1));
@@ -274,6 +275,7 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
     $Profile->setMgmGroups(SP\Request::analyze('profile_groups', 0, false, 1));
     $Profile->setMgmProfiles(SP\Request::analyze('profile_profiles', 0, false, 1));
     $Profile->setMgmApiTokens(SP\Request::analyze('profile_apitokens', 0, false, 1));
+    $Profile->setMgmPublicLinks(SP\Request::analyze('profile_publinks', 0, false, 1));
     $Profile->setEvl(SP\Request::analyze('profile_eventlog', 0, false, 1));
 
     if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_PROFILES_NEW
@@ -530,6 +532,42 @@ if ($actionId === \SP\Controller\ActionsInterface::ACTION_USR_USERS_NEW
         }
 
         SP\Response::printJSON(_('Campo eliminado'), 0, $doActionOnClose);
+    }
+} elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH
+) {
+    if ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW) {
+        $frmFieldNotify = SP\Request::analyze('notify', false, false, true);
+        $doActionOnClose = "sysPassUtil.Common.doAction(" . \SP\Controller\ActionsInterface::ACTION_ACC_VIEW . ",'',$itemId);";
+
+        try {
+            $PublicLink = new \SP\PublicLink($itemId, \SP\PublicLink::TYPE_ACCOUNT);
+            $PublicLink->setNotify($frmFieldNotify);
+            $PublicLink->newLink();
+        } catch (\SP\SPException $e) {
+            SP\Response::printJSON($e->getMessage());
+        }
+
+        SP\Response::printJSON(_('Enlace creado'), 0, $doActionOnClose);
+    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE) {
+        try {
+            $PublicLink = new \SP\PublicLink($itemId, \SP\PublicLink::TYPE_ACCOUNT);
+            $PublicLink->deleteLink();
+        } catch (\SP\SPException $e) {
+            SP\Response::printJSON($e->getMessage());
+        }
+
+        SP\Response::printJSON(_('Enlace eliminado'), 0, $doActionOnClose);
+    } elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH) {
+        try {
+            $PublicLink = \SP\PublicLink::getLinkById($itemId);
+            $PublicLink->refreshLink();
+        } catch (\SP\SPException $e) {
+            SP\Response::printJSON($e->getMessage());
+        }
+
+        SP\Response::printJSON(_('Enlace actualizado'), 0, $doActionOnClose);
     }
 } else {
     SP\Response::printJSON(_('Acción Inválida'));

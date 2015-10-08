@@ -176,6 +176,13 @@ switch ($actionId) {
         $controller = new SP\Controller\AccountsMgmtC($tpl);
         $controller->getCustomField();
         break;
+    case \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS_VIEW:
+        $tpl->assign('header', _('Ver Enlace Público'));
+        $tpl->assign('onCloseAction', \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS);
+        $tpl->assign('isView', true);
+        $controller = new SP\Controller\UsersMgmtC($tpl);
+        $controller->getPublicLink();
+        break;
     default :
         exit();
         break;

@@ -126,7 +126,7 @@ class Crypt
     }
 
     /**
-     * Generar la clave maestra encriptada con la clave del usuario.
+     * Generar la clave maestra encriptada con una clave
      *
      * @param string $customPwd con la clave a encriptar
      * @param string $masterPwd con la clave maestra

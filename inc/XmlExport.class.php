@@ -316,7 +316,7 @@ class XmlExport
      */
     private function createAccounts()
     {
-        $accounts = Account::getAccountsData();
+        $accounts = AccountUtil::getAccountsData();
 
         if (count($accounts) === 0) {
             return;

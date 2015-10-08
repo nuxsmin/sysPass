@@ -1,7 +1,8 @@
 <div id="actions" class="installer" align="center">
     <div id="logo">
-        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
-        <span id="pageDesc"><?php echo _('Instalación ') . ' ' . $version; ?></span>
+        <div id="pageDesc">
+            <h1><?php echo _('Instalación ') . ' ' . $version; ?></h1>
+        </div>
     </div>
 
     <?php if (count($errors) > 0): ?>

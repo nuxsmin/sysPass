@@ -123,6 +123,11 @@ class Upgrade
                 $queries[] = 'ALTER TABLE usrData CHANGE user_hashSalt user_hashSalt VARBINARY(128);';
                 $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
                 break;
+            case 12101:
+                $queries[] = 'CREATE TABLE `publicLinks` (`publicLink_id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`publicLink_accountId` INT NOT NULL,`publicLink_hash` VARBINARY(100) NOT NULL,`publicLink_pass` VARBINARY(32) NOT NULL,`publicLink_passIV` VARBINARY(32) NOT NULL,`publicLink_userId` INT NOT NULL,`publicLink_dateAdd` INT NOT NULL,`publicLink_dateExpire` INT NOT NULL,`publicLink_countViews` SMALLINT DEFAULT 0,`publicLink_typeId` SMALLINT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+                $queries[] = 'ALTER TABLE `publicLinks` ADD CONSTRAINT unique_publicLink_accountId UNIQUE (`publicLink_accountId`);';
+                $queries[] = 'ALTER TABLE `publicLinks` ADD CONSTRAINT unique_publicLink_hash UNIQUE (`publicLink_hash`);';
+                break;
             default :
                 $log->addDescription(_('No es necesario actualizar la Base de Datos.'));
                 return true;

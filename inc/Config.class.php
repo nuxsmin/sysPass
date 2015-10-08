@@ -46,7 +46,7 @@ class Config implements ConfigInterface
      *
      * @param string $param   clave
      * @param string $default = null valor por defecto
-     * @return string el valor o $default
+     * @return mixed el valor o $default
      */
     public static function getValue($param, $default = null)
     {

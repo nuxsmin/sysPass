@@ -25,8 +25,10 @@
 
 namespace SP\Controller;
 
+use SP\Config;
 use SP\Init;
 use SP\Installer;
+use SP\PublicLink;
 use SP\Request;
 use SP\Session;
 use SP\SessionUtil;
@@ -63,8 +65,8 @@ class MainC extends Controller implements ActionsInterface
             $this->view->assign('appInfo', Util::getAppInfo());
             $this->view->assign('appVersion', Util::getVersionString());
             $this->view->assign('isDemoMode', Util::demoIsEnabled());
-            $this->view->assign('page', $page);
             $this->view->assign('loggedIn', \SP\Init::isLoggedIn());
+            $this->view->assign('page', $page);
             $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
             $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
             $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
@@ -427,5 +429,35 @@ class MainC extends Controller implements ActionsInterface
 
         $this->view->assign('numNotices', $numNotices);
         $this->view->assign('noticesTitle', $noticesTitle);
+    }
+
+    /**
+     * Obtener la vista para mostrar un enlace publicado
+     *
+     * @return bool
+     */
+    public function getPublicLink()
+    {
+        $hash = Request::analyze('h');
+
+        $PublicLink = PublicLink::getLinkByHash($hash);
+
+        $this->view->assign('showLogo', true);
+
+        if (!$PublicLink
+            || time() > $PublicLink->getDateExpire()
+            || $PublicLink->getCountViews() >= $PublicLink->getMaxCountViews()
+        ){
+            $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
+        } else {
+            $PublicLink->addLinkView();
+
+            $controller = new AccountC($this->view, null, $PublicLink->getItemId());
+            $controller->getAccountFromLink($PublicLink);
+        }
+
+        $this->getSessionBar();
+        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
     }
 }

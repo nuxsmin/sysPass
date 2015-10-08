@@ -2,6 +2,7 @@
     <div id="tabs-<?php echo $index; ?>">
         <div class="action fullWidth">
             <ul>
+                <?php if (isset($tab['props']['actions']['new'])): ?>
                 <li>
                     <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-js-ripple-effect" data-itemid="0" data-activetab="<?php echo $index; ?>"
                             data-nextactionid="<?php echo (isset($onCloseAction)) ? $onCloseAction : ''; ?>"
@@ -9,6 +10,7 @@
                         <i class="material-icons" title="<?php echo $tab['props']['actions']['new']['title']; ?>">add</i>
                     </button>
                 </li>
+                <?php endif; ?>
                 <li>
                     <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>, <?php echo $lastAccountId; ?>)"  title="<?php echo _('Atrás'); ?>">
                         <i class="material-icons">arrow_back</i>
@@ -55,7 +57,7 @@
                             </li>
                         <?php else: ?>
                             <li class="cell-data" style="width: <?php echo $tab['props']['cellWidth'] ?>%;">
-                                <?php echo ($item->$rowSrc) ? $item->$rowSrc : '&nbsp;'; // Fix height ?>
+                                <?php echo (!is_null($item->$rowSrc)) ? $item->$rowSrc : '&nbsp;'; // Fix height ?>
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>

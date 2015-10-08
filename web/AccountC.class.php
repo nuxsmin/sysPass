@@ -28,6 +28,11 @@ namespace SP\Controller;
 use SP\Account;
 use SP\AccountHistory;
 use SP\Acl;
+use SP\Config;
+use SP\Crypt;
+use SP\Init;
+use SP\PublicLink;
+use SP\Request;
 use SP\Response;
 use SP\CustomFields;
 use SP\Groups;
@@ -37,6 +42,7 @@ use SP\SPException;
 use SP\UserAccounts;
 use SP\UserPass;
 use SP\UserUtil;
+use SP\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -67,11 +73,11 @@ class AccountC extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param \SP\Template $template              instancia del motor de plantillas
-     * @param              $lastAction            int con la última acción realizada
-     * @param null         $accountId             int con el id de la cuenta
+     * @param \SP\Template $template   instancia del motor de plantillas
+     * @param int          $lastAction int con la última acción realizada
+     * @param int          $accountId  int con el id de la cuenta
      */
-    public function __construct(\SP\Template $template = null, $lastAction, $accountId = null)
+    public function __construct(\SP\Template $template = null, $lastAction = null, $accountId = null)
     {
         parent::__construct($template);
 
@@ -85,19 +91,11 @@ class AccountC extends Controller implements ActionsInterface
     }
 
     /**
-     * @return Account|AccountHistory
+     * @param int $id
      */
-    private function getAccount()
+    private function setId($id)
     {
-        return $this->_account;
-    }
-
-    /**
-     * @param Account|AccountHistory $account
-     */
-    private function setAccount($account)
-    {
-        $this->_account = $account;
+        $this->_id = $id;
     }
 
     /**
@@ -106,30 +104,6 @@ class AccountC extends Controller implements ActionsInterface
     private function isGotData()
     {
         return $this->_gotData;
-    }
-
-    /**
-     * @param boolean $gotData
-     */
-    private function setGotData($gotData)
-    {
-        $this->_gotData = $gotData;
-    }
-
-    /**
-     * @return int
-     */
-    private function getId()
-    {
-        return $this->_id;
-    }
-
-    /**
-     * @param int $id
-     */
-    private function setId($id)
-    {
-        $this->_id = $id;
     }
 
     /**
@@ -200,6 +174,9 @@ class AccountC extends Controller implements ActionsInterface
             $this->view->assign('maxFileSize', round(\SP\Config::getValue('files_allowed_size') / 1024, 1));
             $this->view->assign('filesAllowedExts', \SP\Config::getValue('files_allowed_exts'));
             $this->view->assign('filesDelete', ($this->_action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
+
+            $publicLinkUrl = Init::$WEBURI . '/?h=' . $this->view->accountData->publicLink_hash . '&a=link';
+            $this->view->assign('publicLinkUrl', $publicLinkUrl);
         }
 
         $this->view->assign('accountParentId', Session::getLastAcountId());
@@ -211,10 +188,44 @@ class AccountC extends Controller implements ActionsInterface
     }
 
     /**
+     * @return Account|AccountHistory
+     */
+    private function getAccount()
+    {
+        return $this->_account;
+    }
+
+    /**
+     * @return int
+     */
+    private function getId()
+    {
+        return $this->_id;
+    }
+
+    /**
+     * Obtener la lista de campos personalizados y sus valores
+     */
+    private function getCustomFieldsForItem()
+    {
+        // Establecer el id de la cuenta en activo y no del historial
+        $id = (Session::getLastAcountId() !== 0) ? Session::getLastAcountId() : $this->getId();
+
+        // Se comprueba que hayan campos con valores para la cuenta actual
+        if ($this->isGotData() && CustomFields::checkCustomFieldExists(ActionsInterface::ACTION_ACC_NEW, $id)) {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData(ActionsInterface::ACTION_ACC_NEW, $id));
+        } else {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule(ActionsInterface::ACTION_ACC_NEW));
+        }
+    }
+
+    /**
      * Establecer variables para los interfaces que muestran datos
      */
     private function setShowData()
     {
+        $aclData = ($this->isGotData()) ? $this->_account->getAccountDataForACL() : null;
+
         $this->view->assign('showHistory', (($this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)
             && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_HISTORY)
             && ($this->view->isModified || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)));
@@ -223,23 +234,24 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->assign('showFiles', (($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)
             && (\SP\Util::fileIsEnabled() && Acl::checkUserAccess(Acl::ACTION_ACC_FILES))));
         $this->view->assign('showViewPass', (($this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)
-            && (Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $this->_account->getAccountDataForACL())
+            && (Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $aclData)
                 && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS))));
         $this->view->assign('showSave', ($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_NEW || $this->_action == Acl::ACTION_ACC_COPY));
         $this->view->assign('showEdit', ($this->_action == Acl::ACTION_ACC_VIEW
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->_account->getAccountDataForACL())
+            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)
             && !$this->_account->getAccountIsHistory()));
         $this->view->assign('showEditPass', ($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_VIEW
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS, $this->_account->getAccountDataForACL())
+            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT_PASS)
             && !$this->_account->getAccountIsHistory()));
         $this->view->assign('showDelete', ($this->_action == Acl::ACTION_ACC_DELETE || $this->_action == Acl::ACTION_ACC_EDIT
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_DELETE, $this->_account->getAccountDataForACL())
+            && Acl::checkAccountAccess(Acl::ACTION_ACC_DELETE, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_DELETE)));
         $this->view->assign('showRestore', ($this->_action == Acl::ACTION_ACC_VIEW_HISTORY
             && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->_account->getAccountDataForACL($this->_account->getAccountParentId()))
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)));
+        $this->view->assign('showLink', \SP\Util::publicLinksIsEnabled() && Acl::checkUserAccess(Acl::ACTION_MGM_PUBLICLINKS));
     }
 
     /**
@@ -298,12 +310,28 @@ class AccountC extends Controller implements ActionsInterface
     }
 
     /**
+     * @param Account|AccountHistory $account
+     */
+    private function setAccount($account)
+    {
+        $this->_account = $account;
+    }
+
+    /**
      * Establecer variables que contienen la información detallada de la cuenta.
      */
     private function setAccountDetails()
     {
         $this->_account->setAccountUsersId(UserAccounts::getUsersForAccount($this->getId()));
         $this->_account->setAccountUserGroupsId(Groups::getGroupsForAccount($this->getId()));
+    }
+
+    /**
+     * @param boolean $gotData
+     */
+    private function setGotData($gotData)
+    {
+        $this->_gotData = $gotData;
     }
 
     /**
@@ -488,18 +516,42 @@ class AccountC extends Controller implements ActionsInterface
     }
 
     /**
-     * Obtener la lista de campos personalizados y sus valores
+     * Obtener la vista de detalles de cuenta para enlaces públicos
+     *
+     * @param PublicLink $PublicLink
+     * @return bool
      */
-    private function getCustomFieldsForItem()
+    public function getAccountFromLink(PublicLink $PublicLink)
     {
-        // Establecer el id de la cuenta en activo y no del historial
-        $id = (Session::getLastAcountId() !== 0) ? Session::getLastAcountId() : $this->getId();
+        $this->setAction(self::ACTION_ACC_VIEW);
 
-        // Se comprueba que hayan campos con valores para la cuenta actual
-        if($this->isGotData() && CustomFields::checkCustomFieldExists(ActionsInterface::ACTION_ACC_NEW, $id)){
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData(ActionsInterface::ACTION_ACC_NEW, $id));
-        } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule(ActionsInterface::ACTION_ACC_NEW));
+        // Obtener los datos de la cuenta antes y comprobar el acceso
+        if (!$this->setAccountData()) {
+            return false;
         }
+
+        $this->view->addTemplate('account-link');
+        $this->view->assign('title',
+            array(
+                'class' => 'titleNormal',
+                'name' => _('Detalles de Cuenta'),
+                'icon' => 'visibility'
+            )
+        );
+        $this->view->assign('showform', false);
+        $this->_account->incrementViewCounter();
+        $this->_account->incrementDecryptCounter();
+        $this->_account->getAccountPassData();
+
+        // Desencriptar la clave de la cuenta
+        $pass = Crypt::generateAesKey($PublicLink->getLinkHash());
+        $masterPass = Crypt::getDecrypt($PublicLink->getPass(), $PublicLink->getPassIV(), $pass);
+        $accountPass = Crypt::getDecrypt($this->_account->getAccountPass(), $this->_account->getAccountIV(), $masterPass);
+
+        if (Config::getValue('publinks_image_enabled', false)) {
+            $accountPass = \SP\ImageUtil::convertText($accountPass);
+        }
+
+        $this->view->assign('accountPass', $accountPass);
     }
 }
