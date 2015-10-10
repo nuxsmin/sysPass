@@ -38,15 +38,15 @@ class Crypt
      * Generar un hash de una clave utilizando un salt.
      *
      * @param string $pwd con la clave a 'hashear'
-     * @param bool   $appendSalt Añidor el salt al hash
+     * @param bool   $prefixSalt Añadir el salt al hash
      * @return string con el hash de la clave
      */
-    public static function mkHashPassword($pwd, $appendSalt = true)
+    public static function mkHashPassword($pwd, $prefixSalt = true)
     {
         $salt = self::makeHashSalt();
         $hash = crypt($pwd, $salt);
 
-        return ($appendSalt === true) ? $salt . $hash : $hash;
+        return ($prefixSalt === true) ? $salt . $hash : $hash;
     }
 
     /**
@@ -100,25 +100,29 @@ class Crypt
      * Comprobar el hash de una clave.
      *
      * @param string $pwd          con la clave a comprobar
-     * @param string $originalHash con el hash a comprobar
+     * @param string $checkedHash con el hash a comprobar
      * @param bool   $isMPass      si es la clave maestra
      * @return bool
      */
-    public static function checkHashPass($pwd, $originalHash, $isMPass = false)
+    public static function checkHashPass($pwd, $checkedHash, $isMPass = false)
     {
         // Obtenemos el salt de la clave
-        $salt = substr($originalHash, 0, 72);
+        $salt = substr($checkedHash, 0, 72);
         // Obtenemos el hash SHA256
-        $validHash = substr($originalHash, 72);
+        $validHash = substr($checkedHash, 72);
         // Re-hash de la clave a comprobar
         $testHash = crypt($pwd, $salt);
 
         // Comprobar si el hash está en formato anterior a 12002
-        if ($isMPass && strlen($originalHash) === 128) {
-            ConfigDB::setValue('masterPwd', self::mkHashPassword($pwd));
-            Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'));
+        if ($isMPass && strlen($checkedHash) === 128) {
+            $check = (hash("sha256", substr($checkedHash, 0, 64) . $pwd) == substr($checkedHash, 64, 64));
 
-            return (hash("sha256", substr($originalHash, 0, 64) . $pwd) == substr($originalHash, 64, 64));
+            if ($check) {
+                ConfigDB::setValue('masterPwd', self::mkHashPassword($pwd));
+                Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'));
+            }
+
+            return $check;
         }
 
         // Si los hashes son idénticos, la clave es válida

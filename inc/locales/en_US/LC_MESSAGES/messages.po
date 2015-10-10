@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-09 00:26+0100\n"
-"PO-Revision-Date: 2015-10-09 00:28+0100\n"
+"POT-Creation-Date: 2015-10-09 01:00+0100\n"
+"PO-Revision-Date: 2015-10-09 01:00+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -4994,18 +4994,3 @@ msgstr "Make a backup and export"
 #: ../../../../inc/themes/material-blue/security.inc:4
 msgid "Autentificación"
 msgstr "Authentication"
-
-#~ msgid "Gestión de Clientes y Categorías"
-#~ msgstr "Customer and Categories management"
-
-#~ msgid "Reset"
-#~ msgstr "Restablecer"
-
-#~ msgid "Error en clave RSA"
-#~ msgstr "Error on RSA key"
-
-#~ msgid "Nueva Clave (Verificar)"
-#~ msgstr "New Password (Verify)"
-
-#~ msgid "Clave (Verificar)"
-#~ msgstr "Password (Verify)"
