@@ -145,7 +145,7 @@ class Request
      */
     public static function getRequestHeaders($header = '')
     {
-        if (!function_exists('apache_request_headers')) {
+        if (!function_exists('\apache_request_headers')) {
             function apache_request_headers()
             {
                 foreach ($_SERVER as $key => $value) {
@@ -168,5 +168,15 @@ class Request
         }
 
         return $headers;
+    }
+
+    /**
+     * Comprobar si se realiza una recarga de la página
+     * 
+     * @return bool
+     */
+    public static function checkReload()
+    {
+        return (self::getRequestHeaders('Cache-Control') == 'max-age=0');
     }
 }

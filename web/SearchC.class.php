@@ -181,9 +181,11 @@ class SearchC extends Controller implements ActionsInterface
         ));
 
         $accountLink = Session::getUserPreferences()->isAccountLink();
+        $topNavbar = Session::getUserPreferences()->isTopNavbar();
 
         // Variables de configuración
         $this->view->assign('accountLink', (is_null($accountLink) ? \SP\Config::getValue('account_link', 0) : $accountLink));
+        $this->view->assign('topNavbar', $topNavbar);
         $this->view->assign('requestEnabled', \SP\Util::mailrequestIsEnabled());
         $this->view->assign('isDemoMode', \SP\Util::demoIsEnabled());
         $maxTextLength = (\SP\Util::resultsCardsIsEnabled()) ? 40 : 60;

@@ -254,12 +254,18 @@ class Installer
             // Comprobar si el usuario sumistrado existe
             $query = "SELECT COUNT(*) FROM mysql.user WHERE user='" . self::$_username . "' AND host='" . self::$_dbhost . "'";
 
-            // Si no existe el usuario, se intenta crear
-            if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
-                // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                if (self::$_dbuser != Config::getValue('dbuser')) {
-                    self::createDBUser();
+            try {
+                // Si no existe el usuario, se intenta crear
+                if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
+                    // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
+                    if (self::$_dbuser != Config::getValue('dbuser')) {
+                        self::createDBUser();
+                    }
                 }
+            } catch (\PDOException $e) {
+                throw new SPException(SPException::SP_CRITICAL
+                    , _('No es posible comprobar el usuario de sysPass') . ' (' . self::$_username . ')'
+                    , _('Compruebe los permisos del usuario de conexión a la BD'));
             }
         }
 

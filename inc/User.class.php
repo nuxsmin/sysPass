@@ -42,16 +42,21 @@ class User extends UserBase
      */
     public function updateUserMPass($masterPwd)
     {
-        $configMPass = ConfigDB::getValue('masterPwd');
+        $configHashMPass = ConfigDB::getValue('masterPwd');
 
-        if (!$configMPass) {
+        if ($configHashMPass === false) {
             return false;
         }
 
-        if (Crypt::checkHashPass($masterPwd, $configMPass, true)) {
-            $strUserMPwd = Crypt::mkCustomMPassEncrypt(self::getCypherPass(), $masterPwd);
+        if (is_null($configHashMPass)){
+            $configHashMPass = Crypt::mkHashPassword($masterPwd);
+            ConfigDB::setValue('masterPwd', $configHashMPass);
+        }
 
-            if (!$strUserMPwd) {
+        if (Crypt::checkHashPass($masterPwd, $configHashMPass, true)) {
+            $cryptMPass = Crypt::mkCustomMPassEncrypt(self::getCypherPass(), $masterPwd);
+
+            if (!$cryptMPass) {
                 return false;
             }
         } else {
@@ -64,8 +69,8 @@ class User extends UserBase
             . 'user_lastUpdateMPass = UNIX_TIMESTAMP() '
             . 'WHERE user_id = :id LIMIT 1';
 
-        $data['mPass'] = $strUserMPwd[0];
-        $data['mIV'] = $strUserMPwd[1];
+        $data['mPass'] = $cryptMPass[0];
+        $data['mIV'] = $cryptMPass[1];
         $data['id'] = $this->_userId;
 
         return DB::getQuery($query, __FUNCTION__, $data);
@@ -106,7 +111,7 @@ class User extends UserBase
                 return false;
             }
 
-            return ($showPass == true) ? $clearMasterPass : SessionUtil::saveSessionMPass($clearMasterPass);
+            return ($showPass === true) ? $clearMasterPass : SessionUtil::saveSessionMPass($clearMasterPass);
         }
 
         return false;

@@ -2,6 +2,36 @@
     <?php if (!$accounts): ?>
         <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
     <?php else: ?>
+        <?php if ($topNavbar): ?>
+            <div id="pageNav" class="round shadow">
+                <div id="pageNavLeft">
+                    <?php echo $totalRows; ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
+                    <?php if ($filterOn): ?>
+                        <span class="filterOn round"><?php echo _('Filtro ON'); ?></span>
+                    <?php endif; ?>
+                    &nbsp;
+                    <?php if ($searchGlobal): ?>
+                        <span class="globalOn round"><?php echo _('Global ON'); ?></span>
+                    <?php endif; ?>
+                </div>
+                <div id="pageNavRight">
+                    <?php if ($limitStart >= 1): ?>
+                        <img src="imgs/arrow_first.png" onClick="<?php echo $pagerOnnClick['first']; ?>"
+                             title="<?php echo _('Primera página'); ?>"/>
+                        <img src="imgs/arrow_left.png" onClick="<?php echo $pagerOnnClick['prev']; ?>"
+                             title="<?php echo _('Página anterior'); ?>"/>
+                    <?php endif; ?>
+                    &nbsp;<?php echo $firstPage, '/', $lastPage; ?>&nbsp;
+                    <?php if ($limitStart < $totalRows && $firstPage != $lastPage): ?>
+                        <img src="imgs/arrow_right.png" onClick="<?php echo $pagerOnnClick['next']; ?>"
+                             title="<?php echo _('Página siguiente'); ?>"/>
+                        <img src="imgs/arrow_last.png" onClick="<?php echo $pagerOnnClick['last']; ?>"
+                             title="<?php echo _('Última página'); ?>"/>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div id="data-search-header" class="data-header data-header-minimal">
             <ul>
                 <?php foreach ($sortFields as $field): ?>
@@ -11,8 +41,14 @@
                             <?php echo $field['name']; ?>
                         </a>
 
-                        <div class="icon material-icons sort-down cursor-pointer <?php echo ($searchKey ==  $field['key'] && $searchOrder === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">arrow_drop_down</div>
-                        <div class="icon material-icons sort-up cursor-pointer <?php echo ($searchKey ==  $field['key'] && $searchOrder === 1) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">arrow_drop_up</div>
+                        <div
+                            class="icon material-icons sort-down cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
+                            arrow_drop_down
+                        </div>
+                        <div
+                            class="icon material-icons sort-up cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 1) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
+                            arrow_drop_up
+                        </div>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -112,15 +148,17 @@
                             <?php if ($account['showViewPass']): ?>
                                 <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
                                    onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
-                                <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
-                                <i class="material-icons fg-blue80 actions-optional clip-pass-button" data-account-id="<?php echo $account['id']; ?>"
-                                   title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
+                                <?php if (!\SP\Util::accountPassToImageIsEnabled()): ?>
+                                    <i class="material-icons fg-blue80 actions-optional clip-pass-button"
+                                       data-account-id="<?php echo $account['id']; ?>"
+                                       title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
                                 <?php endif ?>
                             <?php endif ?>
 
                             <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
                                 <i class="material-icons"
-                                   title="<?php echo _('Más Acciones'); ?>" OnClick="sysPassUtil.Common.showOptional(this)">settings</i>
+                                   title="<?php echo _('Más Acciones'); ?>"
+                                   OnClick="sysPassUtil.Common.showOptional(this)">settings</i>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>

@@ -55,7 +55,7 @@ class UserPass
 
         $configHashMPass = ConfigDB::getValue('masterPwd');
 
-        if ($configHashMPass === false) {
+        if ($configHashMPass === false || is_null($configHashMPass)) {
             return false;
         }
 

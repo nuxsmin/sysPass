@@ -86,6 +86,23 @@
                     </label>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Barra de navegación superior'); ?>
+                    <div id="help-top_navbar" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-top_navbar">
+                        <p>
+                            <?php echo _('Mostrar una barra de navegación superior en las búsquedas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="top_navbar">
+                        <input type="checkbox" id="top_navbar" class="mdl-switch__input fg-blue100"
+                               name="top_navbar" <?php echo ($chkTopNavbar) ? 'checked' : ''; ?>/>
+                    </label>
+                </td>
+            </tr>
         </table>
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>

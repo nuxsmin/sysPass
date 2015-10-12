@@ -68,6 +68,10 @@ class UserPreferences
      * @var bool
      */
     private $_sortViews = false;
+    /**
+     * @var bool
+     */
+    private $_topNavbar = false;
 
     /**
      * Obtener las preferencas de un usuario
@@ -96,6 +100,22 @@ class UserPreferences
         }
 
         return $preferences;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTopNavbar()
+    {
+        return $this->_topNavbar;
+    }
+
+    /**
+     * @param boolean $topNavbar
+     */
+    public function setTopNavbar($topNavbar)
+    {
+        $this->_topNavbar = $topNavbar;
     }
 
     /**

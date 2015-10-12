@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-05 02:34+0100\n"
-"PO-Revision-Date: 2015-10-05 02:34+0100\n"
+"POT-Creation-Date: 2015-10-09 00:51+0100\n"
+"PO-Revision-Date: 2015-10-09 00:51+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: hu_HU\n"
@@ -23,152 +23,152 @@ msgstr ""
 "X-Poedit-SearchPath-0: ../../../..\n"
 
 # "INVALID QUERY"
-#: ../../../../ajax/ajax_2fa.php:35 ../../../../ajax/ajax_accountSave.php:41
-#: ../../../../ajax/ajax_appMgmtSave.php:42
-#: ../../../../ajax/ajax_backup.php:39 ../../../../ajax/ajax_checkLdap.php:41
-#: ../../../../ajax/ajax_configSave.php:41 ../../../../ajax/ajax_files.php:41
-#: ../../../../ajax/ajax_getFiles.php:46 ../../../../ajax/ajax_import.php:49
-#: ../../../../ajax/ajax_migrate.php:45 ../../../../ajax/ajax_passReset.php:37
-#: ../../../../ajax/ajax_search.php:41
-#: ../../../../ajax/ajax_sendRequest.php:41
-#: ../../../../ajax/ajax_userPrefsSave.php:42
+#: ../../../../ajax/ajax_2fa.php:37 ../../../../ajax/ajax_accountSave.php:42
+#: ../../../../ajax/ajax_appMgmtSave.php:43
+#: ../../../../ajax/ajax_backup.php:41 ../../../../ajax/ajax_checkLdap.php:42
+#: ../../../../ajax/ajax_configSave.php:44 ../../../../ajax/ajax_files.php:42
+#: ../../../../ajax/ajax_getFiles.php:47 ../../../../ajax/ajax_import.php:50
+#: ../../../../ajax/ajax_migrate.php:46 ../../../../ajax/ajax_passReset.php:40
+#: ../../../../ajax/ajax_search.php:42
+#: ../../../../ajax/ajax_sendRequest.php:42
+#: ../../../../ajax/ajax_userPrefsSave.php:43
 msgid "CONSULTA INVÁLIDA"
 msgstr "Érvénytelen lekérdezés"
 
 # "Incorrect login"
-#: ../../../../ajax/ajax_2fa.php:55
+#: ../../../../ajax/ajax_2fa.php:57
 #, fuzzy
 msgid "Código correcto"
 msgstr "Hibás felhasználónév vagy jelszó"
 
 # "Incorrect login"
-#: ../../../../ajax/ajax_2fa.php:58 ../../../../ajax/ajax_userPrefsSave.php:94
+#: ../../../../ajax/ajax_2fa.php:60 ../../../../ajax/ajax_userPrefsSave.php:97
 #, fuzzy
 msgid "Código incorrecto"
 msgstr "Hibás felhasználónév vagy jelszó"
 
 # "Session not started or timeout"
-#: ../../../../ajax/ajax_accountSave.php:35
-#: ../../../../ajax/ajax_appMgmtSave.php:36
-#: ../../../../ajax/ajax_backup.php:33 ../../../../ajax/ajax_checkLdap.php:35
-#: ../../../../ajax/ajax_configSave.php:35 ../../../../ajax/ajax_import.php:35
-#: ../../../../ajax/ajax_migrate.php:35
-#: ../../../../ajax/ajax_sendRequest.php:35
-#: ../../../../ajax/ajax_userPrefsSave.php:36
-#: ../../../../ajax/ajax_viewpass.php:36
+#: ../../../../ajax/ajax_accountSave.php:36
+#: ../../../../ajax/ajax_appMgmtSave.php:37
+#: ../../../../ajax/ajax_backup.php:35 ../../../../ajax/ajax_checkLdap.php:36
+#: ../../../../ajax/ajax_configSave.php:38 ../../../../ajax/ajax_import.php:36
+#: ../../../../ajax/ajax_migrate.php:36
+#: ../../../../ajax/ajax_sendRequest.php:36
+#: ../../../../ajax/ajax_userPrefsSave.php:37
+#: ../../../../ajax/ajax_viewpass.php:37
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "A munkamenet nem indult el, vagy idõtúllépés miatt bezáródott"
 
 # "Account name needed"
-#: ../../../../ajax/ajax_accountSave.php:77
-#: ../../../../ajax/ajax_accountSave.php:92
+#: ../../../../ajax/ajax_accountSave.php:78
+#: ../../../../ajax/ajax_accountSave.php:93
 msgid "Es necesario un nombre de cuenta"
 msgstr "Fiók név szükséges"
 
 # "Customer name needed"
-#: ../../../../ajax/ajax_accountSave.php:79
-#: ../../../../ajax/ajax_accountSave.php:90
-#: ../../../../ajax/ajax_appMgmtSave.php:328
+#: ../../../../ajax/ajax_accountSave.php:80
+#: ../../../../ajax/ajax_accountSave.php:91
+#: ../../../../ajax/ajax_appMgmtSave.php:329
 msgid "Es necesario un nombre de cliente"
 msgstr "Ügyfél név szükséges"
 
 # "Username needed"
-#: ../../../../ajax/ajax_accountSave.php:81
-#: ../../../../ajax/ajax_accountSave.php:94
+#: ../../../../ajax/ajax_accountSave.php:82
+#: ../../../../ajax/ajax_accountSave.php:95
 msgid "Es necesario un usuario"
 msgstr "Felhasználónév szükséges"
 
 # "Password needed"
-#: ../../../../ajax/ajax_accountSave.php:83
-#: ../../../../ajax/ajax_accountSave.php:105
+#: ../../../../ajax/ajax_accountSave.php:84
+#: ../../../../ajax/ajax_accountSave.php:106
 #, fuzzy
 msgid "Es necesaria una clave"
 msgstr "Jelszó szükséges"
 
 # "Category name needed"
-#: ../../../../ajax/ajax_accountSave.php:85
-#: ../../../../ajax/ajax_accountSave.php:96
+#: ../../../../ajax/ajax_accountSave.php:86
+#: ../../../../ajax/ajax_accountSave.php:97
 #, fuzzy
 msgid "Es necesario una categoría"
 msgstr "Jelszó szükséges"
 
 # "Invalid Id"
-#: ../../../../ajax/ajax_accountSave.php:100
-#: ../../../../ajax/ajax_accountSave.php:109
+#: ../../../../ajax/ajax_accountSave.php:101
+#: ../../../../ajax/ajax_accountSave.php:110
 msgid "Id inválido"
 msgstr "Érvénytelen Id"
 
 # "Invalid Action"
-#: ../../../../ajax/ajax_accountSave.php:112
-#: ../../../../ajax/ajax_accountSave.php:262
-#: ../../../../ajax/ajax_appMgmtSave.php:534
-#: ../../../../ajax/ajax_configSave.php:293
-#: ../../../../ajax/ajax_userPrefsSave.php:108 ../../../../api.php:53
+#: ../../../../ajax/ajax_accountSave.php:113
+#: ../../../../ajax/ajax_accountSave.php:263
+#: ../../../../ajax/ajax_appMgmtSave.php:535
+#: ../../../../ajax/ajax_configSave.php:324
+#: ../../../../ajax/ajax_userPrefsSave.php:111 ../../../../api.php:53
 msgid "Acción Inválida"
 msgstr "Érvénytelen Akció"
 
 # "Passwords mismatch"
-#: ../../../../ajax/ajax_accountSave.php:120
-#: ../../../../ajax/ajax_appMgmtSave.php:111
-#: ../../../../ajax/ajax_appMgmtSave.php:148
-#: ../../../../ajax/ajax_backup.php:62
+#: ../../../../ajax/ajax_accountSave.php:121
+#: ../../../../ajax/ajax_appMgmtSave.php:112
+#: ../../../../ajax/ajax_appMgmtSave.php:149
+#: ../../../../ajax/ajax_backup.php:68
 msgid "Las claves no coinciden"
 msgstr "A jelszó nem egyezik"
 
 # "Account added"
-#: ../../../../ajax/ajax_accountSave.php:172
+#: ../../../../ajax/ajax_accountSave.php:173
 msgid "Cuenta creada"
 msgstr "Fiók hozzáadva"
 
 # "Error on account creation"
-#: ../../../../ajax/ajax_accountSave.php:175
+#: ../../../../ajax/ajax_accountSave.php:176
 msgid "Error al crear la cuenta"
 msgstr "Hiba a fiók létrehozása közben"
 
 # "No changes"
-#: ../../../../ajax/ajax_accountSave.php:210
+#: ../../../../ajax/ajax_accountSave.php:211
 msgid "Sin cambios"
 msgstr "Nincsenek változások"
 
 # "Account updated"
-#: ../../../../ajax/ajax_accountSave.php:222
+#: ../../../../ajax/ajax_accountSave.php:223
 msgid "Cuenta actualizada"
 msgstr "Fiók frissítve"
 
 # "Error on updating account"
-#: ../../../../ajax/ajax_accountSave.php:225
+#: ../../../../ajax/ajax_accountSave.php:226
 msgid "Error al modificar la cuenta"
 msgstr "Hiba a fiók frissítése közben"
 
 # "Account deleted"
-#: ../../../../ajax/ajax_accountSave.php:232
+#: ../../../../ajax/ajax_accountSave.php:233
 msgid "Cuenta eliminada"
 msgstr "Fiók törölve"
 
 # "Error on account deletion"
-#: ../../../../ajax/ajax_accountSave.php:235
+#: ../../../../ajax/ajax_accountSave.php:236
 msgid "Error al eliminar la cuenta"
 msgstr "Hiba a fiók törlése közben"
 
 # "Password updated"
-#: ../../../../ajax/ajax_accountSave.php:245
-#: ../../../../ajax/ajax_appMgmtSave.php:152
-#: ../../../../ajax/ajax_passReset.php:74
+#: ../../../../ajax/ajax_accountSave.php:246
+#: ../../../../ajax/ajax_appMgmtSave.php:153
+#: ../../../../ajax/ajax_passReset.php:75
 msgid "Clave actualizada"
 msgstr "Jelszó frissítve"
 
 # "Error on updating password"
-#: ../../../../ajax/ajax_accountSave.php:248
+#: ../../../../ajax/ajax_accountSave.php:249
 msgid "Error al actualizar la clave"
 msgstr "Hiba a jelszó frissítése közben"
 
 # "Account restored"
-#: ../../../../ajax/ajax_accountSave.php:255
+#: ../../../../ajax/ajax_accountSave.php:256
 msgid "Cuenta restaurada"
 msgstr "Fiók restaurált"
 
 # "Error on restoring account"
-#: ../../../../ajax/ajax_accountSave.php:258
+#: ../../../../ajax/ajax_accountSave.php:259
 msgid "Error al restaurar cuenta"
 msgstr "Hiba történt helyreállítása számla"
 
@@ -180,14 +180,14 @@ msgstr "Felhasználó részletek"
 
 # "Edit User"
 #: ../../../../ajax/ajax_appMgmtData.php:61
-#: ../../../../web/UsersMgmtC.class.php:136
+#: ../../../../web/UsersMgmtC.class.php:137
 msgid "Editar Usuario"
 msgstr "Felhasználó módosítás"
 
 # "New User"
 #: ../../../../ajax/ajax_appMgmtData.php:67
-#: ../../../../inc/UserBase.class.php:381
-#: ../../../../web/UsersMgmtC.class.php:121
+#: ../../../../inc/UserBase.class.php:383
+#: ../../../../web/UsersMgmtC.class.php:122
 msgid "Nuevo Usuario"
 msgstr "Új felhasználó"
 
@@ -199,14 +199,14 @@ msgstr "Nézet"
 
 # "Edit Group"
 #: ../../../../ajax/ajax_appMgmtData.php:80
-#: ../../../../web/UsersMgmtC.class.php:202
+#: ../../../../web/UsersMgmtC.class.php:203
 msgid "Editar Grupo"
 msgstr "Csoport módosítás"
 
 # "New Group"
 #: ../../../../ajax/ajax_appMgmtData.php:86
 #: ../../../../inc/Groups.class.php:152 ../../../../inc/Groups.class.php:253
-#: ../../../../web/UsersMgmtC.class.php:194
+#: ../../../../web/UsersMgmtC.class.php:195
 msgid "Nuevo Grupo"
 msgstr "Új csoport"
 
@@ -218,14 +218,14 @@ msgstr "Nézet"
 
 # "Edit Profile"
 #: ../../../../ajax/ajax_appMgmtData.php:99
-#: ../../../../web/UsersMgmtC.class.php:267
+#: ../../../../web/UsersMgmtC.class.php:268
 msgid "Editar Perfil"
 msgstr "Profil módosítás"
 
 # "New Profile"
 #: ../../../../ajax/ajax_appMgmtData.php:105
 #: ../../../../inc/ProfileBase.class.php:512
-#: ../../../../web/UsersMgmtC.class.php:252
+#: ../../../../web/UsersMgmtC.class.php:253
 msgid "Nuevo Perfil"
 msgstr "Új profil"
 
@@ -237,14 +237,14 @@ msgstr "Nézet"
 
 # "Edit Customer"
 #: ../../../../ajax/ajax_appMgmtData.php:118
-#: ../../../../web/AccountsMgmtC.class.php:152
+#: ../../../../web/AccountsMgmtC.class.php:153
 msgid "Editar Cliente"
 msgstr "Ügyfél módosítás"
 
 # "New Customer"
 #: ../../../../ajax/ajax_appMgmtData.php:124
 #: ../../../../inc/Customer.class.php:65
-#: ../../../../web/AccountsMgmtC.class.php:145
+#: ../../../../web/AccountsMgmtC.class.php:146
 msgid "Nuevo Cliente"
 msgstr "Új ügyfél"
 
@@ -256,14 +256,14 @@ msgstr "Nézet"
 
 # "Edit Category"
 #: ../../../../ajax/ajax_appMgmtData.php:137
-#: ../../../../web/AccountsMgmtC.class.php:94
+#: ../../../../web/AccountsMgmtC.class.php:95
 msgid "Editar Categoría"
 msgstr "Kategória módosítás"
 
 # "New Category"
 #: ../../../../ajax/ajax_appMgmtData.php:143
 #: ../../../../inc/Category.class.php:83
-#: ../../../../web/AccountsMgmtC.class.php:86
+#: ../../../../web/AccountsMgmtC.class.php:87
 #: ../../../../inc/themes/classic/account.inc:53
 #: ../../../../inc/themes/material-blue/account.inc:61
 msgid "Nueva Categoría"
@@ -278,159 +278,160 @@ msgstr "Nézet"
 # "Update"
 #: ../../../../ajax/ajax_appMgmtData.php:156
 #: ../../../../inc/ApiTokens.class.php:189
-#: ../../../../web/UsersMgmtC.class.php:399
+#: ../../../../web/UsersMgmtC.class.php:400
 #, fuzzy
 msgid "Nueva Autorización"
 msgstr "Új Kategória"
 
 # Start Update
 #: ../../../../ajax/ajax_appMgmtData.php:162
-#: ../../../../web/UsersMgmtC.class.php:414
+#: ../../../../web/UsersMgmtC.class.php:415
 #, fuzzy
 msgid "Editar Autorización"
 msgstr "Módosítás"
 
 # "New Group"
 #: ../../../../ajax/ajax_appMgmtData.php:168
-#: ../../../../web/AccountsMgmtC.class.php:273
+#: ../../../../web/AccountsMgmtC.class.php:274
 #, fuzzy
 msgid "Nuevo Campo"
 msgstr "Új felhasználó"
 
 # "Edit Password"
 #: ../../../../ajax/ajax_appMgmtData.php:174
-#: ../../../../web/AccountsMgmtC.class.php:280
+#: ../../../../web/AccountsMgmtC.class.php:281
 #, fuzzy
 msgid "Editar Campo"
 msgstr "Módosítás"
 
 # "Username required"
-#: ../../../../ajax/ajax_appMgmtSave.php:85
+#: ../../../../ajax/ajax_appMgmtSave.php:86
 msgid "Es necesario un nombre de usuario"
 msgstr "Felhasználónév szükséges"
 
 # "Login required"
-#: ../../../../ajax/ajax_appMgmtSave.php:87
+#: ../../../../ajax/ajax_appMgmtSave.php:88
 msgid "Es necesario un login"
 msgstr "Bejelentkezés szükséges"
 
 # "Profile required"
-#: ../../../../ajax/ajax_appMgmtSave.php:89
+#: ../../../../ajax/ajax_appMgmtSave.php:90
 msgid "Es necesario un perfil"
 msgstr "Profil szükséges"
 
 # "Group required"
-#: ../../../../ajax/ajax_appMgmtSave.php:91
+#: ../../../../ajax/ajax_appMgmtSave.php:92
 msgid "Es necesario un grupo"
 msgstr "Csoport szükséges"
 
 # "Email required"
-#: ../../../../ajax/ajax_appMgmtSave.php:93
+#: ../../../../ajax/ajax_appMgmtSave.php:94
 msgid "Es necesario un email"
 msgstr "Email szükséges"
 
 # "Ey, this is a DEMO!!"
-#: ../../../../ajax/ajax_appMgmtSave.php:95
-#: ../../../../ajax/ajax_appMgmtSave.php:144
-#: ../../../../ajax/ajax_appMgmtSave.php:159
-#: ../../../../ajax/ajax_configSave.php:268
-#: ../../../../ajax/ajax_import.php:39 ../../../../ajax/ajax_migrate.php:39
-#: ../../../../ajax/ajax_userPrefsSave.php:83
+#: ../../../../ajax/ajax_appMgmtSave.php:96
+#: ../../../../ajax/ajax_appMgmtSave.php:145
+#: ../../../../ajax/ajax_appMgmtSave.php:160
+#: ../../../../ajax/ajax_backup.php:54
+#: ../../../../ajax/ajax_configSave.php:297
+#: ../../../../ajax/ajax_import.php:40 ../../../../ajax/ajax_migrate.php:40
+#: ../../../../ajax/ajax_userPrefsSave.php:86
 msgid "Ey, esto es una DEMO!!"
 msgstr "Aj, ez egy próbaverzió"
 
 # "Duplicated user login "
-#: ../../../../ajax/ajax_appMgmtSave.php:100
+#: ../../../../ajax/ajax_appMgmtSave.php:101
 msgid "Login de usuario duplicado"
 msgstr "Dupla felhasználó bejelentkezés"
 
 # "Duplicated user email"
-#: ../../../../ajax/ajax_appMgmtSave.php:103
+#: ../../../../ajax/ajax_appMgmtSave.php:104
 msgid "Email de usuario duplicado"
 msgstr "Kettõzött felhasználó Email"
 
 # "Password cannot be blank"
-#: ../../../../ajax/ajax_appMgmtSave.php:109
-#: ../../../../ajax/ajax_appMgmtSave.php:146
+#: ../../../../ajax/ajax_appMgmtSave.php:110
+#: ../../../../ajax/ajax_appMgmtSave.php:147
 msgid "La clave no puede estar en blanco"
 msgstr "A jelszó nem lehet üres"
 
 # "User added"
-#: ../../../../ajax/ajax_appMgmtSave.php:122
+#: ../../../../ajax/ajax_appMgmtSave.php:123
 msgid "Usuario creado"
 msgstr "Felhasználó hozzáadva"
 
 # "Error on creating user"
-#: ../../../../ajax/ajax_appMgmtSave.php:125
+#: ../../../../ajax/ajax_appMgmtSave.php:126
 msgid "Error al crear el usuario"
 msgstr "Hiba a felhasználó létrehozása közben"
 
 # "User updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:135
-#: ../../../../inc/UserUtil.class.php:103
+#: ../../../../ajax/ajax_appMgmtSave.php:136
+#: ../../../../inc/UserMigrate.class.php:89
 msgid "Usuario actualizado"
 msgstr "Felhasználó frissítve"
 
 # "Error on user update"
-#: ../../../../ajax/ajax_appMgmtSave.php:138
+#: ../../../../ajax/ajax_appMgmtSave.php:139
 msgid "Error al actualizar el usuario"
 msgstr "Hiba a felhasználó frissítése közben"
 
 # "Error on updating password"
-#: ../../../../ajax/ajax_appMgmtSave.php:155
-#: ../../../../ajax/ajax_passReset.php:78
+#: ../../../../ajax/ajax_appMgmtSave.php:156
+#: ../../../../ajax/ajax_passReset.php:79
 msgid "Error al modificar la clave"
 msgstr "Hiba a jelszó frissítése közben"
 
 # "Unable to delete, user in use"
-#: ../../../../ajax/ajax_appMgmtSave.php:161
+#: ../../../../ajax/ajax_appMgmtSave.php:162
 msgid "No es posible eliminar, usuario en uso"
 msgstr "Nem lehet törölni, a felhaszánáló használatban van"
 
 # "User deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:165
+#: ../../../../ajax/ajax_appMgmtSave.php:166
 msgid "Usuario eliminado"
 msgstr "Felhasználó törölve"
 
 # "Error on user deletion"
-#: ../../../../ajax/ajax_appMgmtSave.php:168
+#: ../../../../ajax/ajax_appMgmtSave.php:169
 msgid "Error al eliminar el usuario"
 msgstr "Hiba a felhasználó törlése közben"
 
 # "Group name required"
-#: ../../../../ajax/ajax_appMgmtSave.php:183
+#: ../../../../ajax/ajax_appMgmtSave.php:184
 msgid "Es necesario un nombre de grupo"
 msgstr "Csoport név szükséges"
 
 # "Duplicated group name"
-#: ../../../../ajax/ajax_appMgmtSave.php:191
+#: ../../../../ajax/ajax_appMgmtSave.php:192
 msgid "Nombre de grupo duplicado"
 msgstr "Kettõzött csoport név"
 
 # "Group added"
-#: ../../../../ajax/ajax_appMgmtSave.php:203
+#: ../../../../ajax/ajax_appMgmtSave.php:204
 msgid "Grupo creado"
 msgstr "Csoport hozzáadva"
 
 # "Error on group creation"
-#: ../../../../ajax/ajax_appMgmtSave.php:205
+#: ../../../../ajax/ajax_appMgmtSave.php:206
 msgid "Error al crear el grupo"
 msgstr "Hiba a csoport létrehozása közben"
 
 # "Group updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:216
+#: ../../../../ajax/ajax_appMgmtSave.php:217
 msgid "Grupo actualizado"
 msgstr "Csoport frissítve"
 
 # "Error on updating group"
-#: ../../../../ajax/ajax_appMgmtSave.php:219
+#: ../../../../ajax/ajax_appMgmtSave.php:220
 msgid "Error al actualizar el grupo"
 msgstr "Hiba a csoport frissítése közben"
 
 # "Users"
-#: ../../../../ajax/ajax_appMgmtSave.php:228
-#: ../../../../ajax/ajax_appMgmtSave.php:305
-#: ../../../../inc/CustomFieldsBase.class.php:83
+#: ../../../../ajax/ajax_appMgmtSave.php:229
+#: ../../../../ajax/ajax_appMgmtSave.php:306
+#: ../../../../inc/CustomFieldsBase.class.php:109
 #: ../../../../inc/themes/classic/account.inc:112
 #: ../../../../inc/themes/classic/groups.inc:24
 #: ../../../../inc/themes/classic/profiles.inc:85
@@ -441,9 +442,9 @@ msgid "Usuarios"
 msgstr "Felhasználók"
 
 # "Accounts"
-#: ../../../../ajax/ajax_appMgmtSave.php:232
+#: ../../../../ajax/ajax_appMgmtSave.php:233
 #: ../../../../inc/Category.class.php:266
-#: ../../../../inc/CustomFieldsBase.class.php:80
+#: ../../../../inc/CustomFieldsBase.class.php:106
 #: ../../../../inc/Customer.class.php:150
 #: ../../../../inc/themes/classic/profiles.inc:15
 #: ../../../../inc/themes/material-blue/config.inc:176
@@ -452,402 +453,451 @@ msgid "Cuentas"
 msgstr "Fiókok"
 
 # "Unable to delete"
-#: ../../../../ajax/ajax_appMgmtSave.php:235
-#: ../../../../ajax/ajax_appMgmtSave.php:307
+#: ../../../../ajax/ajax_appMgmtSave.php:236
+#: ../../../../ajax/ajax_appMgmtSave.php:308
 #: ../../../../inc/Category.class.php:119
 #: ../../../../inc/Customer.class.php:150
 msgid "No es posible eliminar"
 msgstr "Nem lehet törölni"
 
 # "Group in use by:"
-#: ../../../../ajax/ajax_appMgmtSave.php:235
+#: ../../../../ajax/ajax_appMgmtSave.php:236
 msgid "Grupo en uso por:"
 msgstr "Csoportot használja a:"
 
 # "Group deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:240
+#: ../../../../ajax/ajax_appMgmtSave.php:241
 msgid "Grupo eliminado"
 msgstr "Csoport törölve"
 
 # "Error on group deletion"
-#: ../../../../ajax/ajax_appMgmtSave.php:243
+#: ../../../../ajax/ajax_appMgmtSave.php:244
 msgid "Error al eliminar el grupo"
 msgstr "Hiba a csoport törlése közben"
 
 # "Profile name needed"
-#: ../../../../ajax/ajax_appMgmtSave.php:282
+#: ../../../../ajax/ajax_appMgmtSave.php:283
 msgid "Es necesario un nombre de perfil"
 msgstr "Profil név szükséges"
 
 # "Duplicated profile name"
-#: ../../../../ajax/ajax_appMgmtSave.php:284
+#: ../../../../ajax/ajax_appMgmtSave.php:285
 msgid "Nombre de perfil duplicado"
 msgstr "Kettözõtt profil név"
 
 # "Profile added"
-#: ../../../../ajax/ajax_appMgmtSave.php:289
+#: ../../../../ajax/ajax_appMgmtSave.php:290
 msgid "Perfil creado"
 msgstr "Profil hozzáadva"
 
 # "Error on creating profile"
-#: ../../../../ajax/ajax_appMgmtSave.php:292
+#: ../../../../ajax/ajax_appMgmtSave.php:293
 msgid "Error al crear el perfil"
 msgstr "Hiba a profil létrehozása közben"
 
 # "Profile updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:295
+#: ../../../../ajax/ajax_appMgmtSave.php:296
 msgid "Perfil actualizado"
 msgstr "Profil frissítve"
 
 # "Error on updating profile"
-#: ../../../../ajax/ajax_appMgmtSave.php:298
+#: ../../../../ajax/ajax_appMgmtSave.php:299
 msgid "Error al actualizar el perfil"
 msgstr "Hiba a profil frissítése közben"
 
 # "Profiles in use by:"
-#: ../../../../ajax/ajax_appMgmtSave.php:307
+#: ../../../../ajax/ajax_appMgmtSave.php:308
 msgid "Perfil en uso por:"
 msgstr "A profilt használja:"
 
 # "Profile deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:310
+#: ../../../../ajax/ajax_appMgmtSave.php:311
 msgid "Perfil eliminado"
 msgstr "Profil törölve"
 
 # "Error on profile deletion"
-#: ../../../../ajax/ajax_appMgmtSave.php:313
+#: ../../../../ajax/ajax_appMgmtSave.php:314
 msgid "Error al eliminar el perfil"
 msgstr "Hiba a profil törlése közben"
 
 # "Customer added"
-#: ../../../../ajax/ajax_appMgmtSave.php:348
+#: ../../../../ajax/ajax_appMgmtSave.php:349
 msgid "Cliente creado"
 msgstr "Ügyfél hozzáadva"
 
 # "Customer updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:363
+#: ../../../../ajax/ajax_appMgmtSave.php:364
 msgid "Cliente actualizado"
 msgstr "Ügyfél frissítve"
 
 # "Customer deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:373
+#: ../../../../ajax/ajax_appMgmtSave.php:374
 msgid "Cliente eliminado"
 msgstr "Ügyfél törölve"
 
 # "Category name needed"
-#: ../../../../ajax/ajax_appMgmtSave.php:387
+#: ../../../../ajax/ajax_appMgmtSave.php:388
 msgid "Es necesario un nombre de categoría"
 msgstr "Kategória név szükséges"
 
 # "Category added"
-#: ../../../../ajax/ajax_appMgmtSave.php:407
+#: ../../../../ajax/ajax_appMgmtSave.php:408
 msgid "Categoría creada"
 msgstr "Kategória hozzáadva"
 
 # "Category updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:422
+#: ../../../../ajax/ajax_appMgmtSave.php:423
 msgid "Categoría actualizada"
 msgstr "Kategória frissítve"
 
 # "Category deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:433
+#: ../../../../ajax/ajax_appMgmtSave.php:434
 msgid "Categoría eliminada"
 msgstr "Kategória törölve"
 
 # "User/Pass not entered"
-#: ../../../../ajax/ajax_appMgmtSave.php:449
+#: ../../../../ajax/ajax_appMgmtSave.php:450
 #, fuzzy
 msgid "Usuario o acción no indicado"
 msgstr "Felhasználó/jelszó nem lett kitöltve"
 
 # "Account Activation"
-#: ../../../../ajax/ajax_appMgmtSave.php:459
+#: ../../../../ajax/ajax_appMgmtSave.php:460
 #, fuzzy
 msgid "Autorización creada"
 msgstr "Fiók hozzáadva"
 
 # "Configuration updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:467
+#: ../../../../ajax/ajax_appMgmtSave.php:468
 #, fuzzy
 msgid "Autorización actualizada"
 msgstr "Fiók frissítve"
 
 # "Account deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:477
+#: ../../../../ajax/ajax_appMgmtSave.php:478
 #, fuzzy
 msgid "Autorización eliminada"
 msgstr "Fiók törölve"
 
 # "Duplicated group name"
-#: ../../../../ajax/ajax_appMgmtSave.php:494
+#: ../../../../ajax/ajax_appMgmtSave.php:495
 #, fuzzy
 msgid "Nombre del campo no indicado"
 msgstr "Ügyfél név"
 
 # "File type not allowed"
-#: ../../../../ajax/ajax_appMgmtSave.php:496
+#: ../../../../ajax/ajax_appMgmtSave.php:497
 #, fuzzy
 msgid "Tipo del campo no indicado"
 msgstr "Fájltípus nem engedélyezett"
 
-#: ../../../../ajax/ajax_appMgmtSave.php:498
+#: ../../../../ajax/ajax_appMgmtSave.php:499
 msgid "Módulo del campo no indicado"
 msgstr ""
 
 # "Group added"
-#: ../../../../ajax/ajax_appMgmtSave.php:512
+#: ../../../../ajax/ajax_appMgmtSave.php:513
 #, fuzzy
 msgid "Campo creado"
 msgstr "Felhasználó hozzáadva"
 
 # "Group updated"
-#: ../../../../ajax/ajax_appMgmtSave.php:521
+#: ../../../../ajax/ajax_appMgmtSave.php:522
 #, fuzzy
 msgid "Campo actualizado"
 msgstr "Frissítve"
 
 # "Group deleted"
-#: ../../../../ajax/ajax_appMgmtSave.php:531
+#: ../../../../ajax/ajax_appMgmtSave.php:532
 #, fuzzy
 msgid "Campo eliminado"
 msgstr "Felhasználó törölve"
 
 # "Make Backup"
-#: ../../../../ajax/ajax_backup.php:52 ../../../../ajax/ajax_backup.php:57
+#: ../../../../ajax/ajax_backup.php:58 ../../../../ajax/ajax_backup.php:63
 #: ../../../../inc/themes/classic/backup.inc:54
 msgid "Realizar Backup"
 msgstr "Archívum készítés"
 
 # "Error while doing backup"
-#: ../../../../ajax/ajax_backup.php:52 ../../../../ajax/ajax_backup.php:54
+#: ../../../../ajax/ajax_backup.php:58 ../../../../ajax/ajax_backup.php:60
 msgid "Error al realizar el backup"
 msgstr "Hiba Archiválás közben"
 
 # "Please, check the event log for more details"
-#: ../../../../ajax/ajax_backup.php:54 ../../../../ajax/ajax_backup.php:68
-#: ../../../../ajax/ajax_checkLdap.php:57 ../../../../inc/Import.class.php:128
-#: ../../../../inc/Migrate.class.php:93
+#: ../../../../ajax/ajax_backup.php:60 ../../../../ajax/ajax_backup.php:74
+#: ../../../../ajax/ajax_checkLdap.php:58 ../../../../inc/Import.class.php:128
+#: ../../../../inc/Migrate.class.php:92
 msgid "Revise el registro de eventos para más detalles"
 msgstr "Részletes leírást az esemény naplóban olvashat"
 
 # Application and database backup successfully done
-#: ../../../../ajax/ajax_backup.php:57
+#: ../../../../ajax/ajax_backup.php:63
 #, fuzzy
 msgid "Copia de la aplicación y base de datos realizada correctamente"
 msgstr "Application and database backup successfully done"
 
 # "Backup process finished"
-#: ../../../../ajax/ajax_backup.php:59
+#: ../../../../ajax/ajax_backup.php:65
 msgid "Proceso de backup finalizado"
 msgstr "Archiválás kész"
 
 # "Enable debug"
-#: ../../../../ajax/ajax_backup.php:66 ../../../../ajax/ajax_backup.php:71
+#: ../../../../ajax/ajax_backup.php:72 ../../../../ajax/ajax_backup.php:77
 #, fuzzy
 msgid "Realizar Exportación"
 msgstr "Archívum készítés"
 
 # "Error on creating accounts files"
-#: ../../../../ajax/ajax_backup.php:66
+#: ../../../../ajax/ajax_backup.php:72
 #, fuzzy
 msgid "Error al realizar la exportación de cuentas"
 msgstr "Hiba a fiók fájlok létrehozása közben"
 
 # "Error while doing backup"
-#: ../../../../ajax/ajax_backup.php:68
+#: ../../../../ajax/ajax_backup.php:74
 #, fuzzy
 msgid "Error al realizar la exportación"
 msgstr "Hiba Archiválás közben"
 
 # "Application successfully updated"
-#: ../../../../ajax/ajax_backup.php:71
+#: ../../../../ajax/ajax_backup.php:77
 #, fuzzy
 msgid "Exportación de cuentas realizada correctamente"
 msgstr "A beállítások elmentve"
 
 # "Backup process finished"
-#: ../../../../ajax/ajax_backup.php:73
+#: ../../../../ajax/ajax_backup.php:79
 #, fuzzy
 msgid "Proceso de exportación finalizado"
 msgstr "Archiválás kész"
 
 # "LDAP parameters are not set"
-#: ../../../../ajax/ajax_checkLdap.php:51 ../../../../inc/Ldap.class.php:265
+#: ../../../../ajax/ajax_checkLdap.php:52 ../../../../inc/Ldap.class.php:259
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "LDAP paraméterek nem lettek elmentve"
 
 # "LDAP connection error"
-#: ../../../../ajax/ajax_checkLdap.php:57
+#: ../../../../ajax/ajax_checkLdap.php:58
 msgid "Error de conexión a LDAP"
 msgstr "LDAP kapcsolódási hiba"
 
 # "LDAP connection OK"
-#: ../../../../ajax/ajax_checkLdap.php:59
+#: ../../../../ajax/ajax_checkLdap.php:60
 msgid "Conexión a LDAP correcta"
 msgstr "LDAP kapcsolat"
 
 # "Objects found"
-#: ../../../../ajax/ajax_checkLdap.php:59
+#: ../../../../ajax/ajax_checkLdap.php:60
 msgid "Objetos encontrados"
 msgstr "Objektum találatok"
 
 # "Edit Configuration"
-#: ../../../../ajax/ajax_configSave.php:55
+#: ../../../../ajax/ajax_configSave.php:58
 msgid "Modificar Configuración"
 msgstr "Konfiguráció szerkesztése"
 
 # "Maximum file upload size in 16MB"
-#: ../../../../ajax/ajax_configSave.php:102
+#: ../../../../ajax/ajax_configSave.php:105
 #, fuzzy
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "Maximálisan feltölthetõ fájl mérete 16MB"
 
 # "Missing Mail parameters"
-#: ../../../../ajax/ajax_configSave.php:115
+#: ../../../../ajax/ajax_configSave.php:118
 #, fuzzy
 msgid "Faltan parámetros de Proxy"
 msgstr "Hiányzó Wiki paraméter"
 
-# "Action"
+# "User disabled"
 #: ../../../../ajax/ajax_configSave.php:126
-#: ../../../../ajax/ajax_configSave.php:146
-#: ../../../../ajax/ajax_configSave.php:176
-#: ../../../../ajax/ajax_configSave.php:211
+#, fuzzy
+msgid "Proxy habiltado"
+msgstr "Felhasználó letiltva"
+
+# "User disabled"
+#: ../../../../ajax/ajax_configSave.php:130
+#, fuzzy
+msgid "Proxy deshabilitado"
+msgstr "Felhasználó letiltva"
+
+# "Action"
+#: ../../../../ajax/ajax_configSave.php:133
+#: ../../../../ajax/ajax_configSave.php:157
+#: ../../../../ajax/ajax_configSave.php:191
+#: ../../../../ajax/ajax_configSave.php:230
 #, fuzzy
 msgid "Sección"
 msgstr "Akció"
 
 # "General"
-#: ../../../../ajax/ajax_configSave.php:126
-#: ../../../../web/ConfigC.class.php:106
+#: ../../../../ajax/ajax_configSave.php:133
+#: ../../../../web/ConfigC.class.php:108
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
 msgstr "Általános"
 
 # "Missing Wiki parameters"
-#: ../../../../ajax/ajax_configSave.php:136
+#: ../../../../ajax/ajax_configSave.php:143
 msgid "Faltan parámetros de Wiki"
 msgstr "Hiányzó Wiki paraméter"
 
+# "Disabled"
+#: ../../../../ajax/ajax_configSave.php:150
+#, fuzzy
+msgid "Wiki habiltada"
+msgstr "Inaktív"
+
+# "Disabled"
+#: ../../../../ajax/ajax_configSave.php:154
+#, fuzzy
+msgid "Wiki deshabilitada"
+msgstr "Inaktív"
+
 # "Wiki"
-#: ../../../../ajax/ajax_configSave.php:146
-#: ../../../../web/ConfigC.class.php:242
+#: ../../../../ajax/ajax_configSave.php:157
+#: ../../../../web/ConfigC.class.php:244
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
 msgstr "Wiki"
 
 # "Missing LDAP parameters"
-#: ../../../../ajax/ajax_configSave.php:161
+#: ../../../../ajax/ajax_configSave.php:172
 msgid "Faltan parámetros de LDAP"
 msgstr "Hiányzó LDAP paraméter"
 
+# "Disabled"
+#: ../../../../ajax/ajax_configSave.php:184
+#, fuzzy
+msgid "LDAP habiltado"
+msgstr "Inaktív"
+
+# "Disabled"
+#: ../../../../ajax/ajax_configSave.php:188
+#, fuzzy
+msgid "LDAP deshabilitado"
+msgstr "Inaktív"
+
 # "LDAP"
-#: ../../../../ajax/ajax_configSave.php:176
-#: ../../../../web/ConfigC.class.php:274
+#: ../../../../ajax/ajax_configSave.php:191
+#: ../../../../web/ConfigC.class.php:276
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
 msgstr "LDAP"
 
 # "Missing Mail parameters"
-#: ../../../../ajax/ajax_configSave.php:191
+#: ../../../../ajax/ajax_configSave.php:206
 msgid "Faltan parámetros de Correo"
 msgstr "Hiányzó mail paraméter"
 
+# "Email sent"
+#: ../../../../ajax/ajax_configSave.php:221
+#, fuzzy
+msgid "Correo habiltado"
+msgstr "Email elküldve"
+
+# "User disabled"
+#: ../../../../ajax/ajax_configSave.php:227
+#, fuzzy
+msgid "Correo deshabilitado"
+msgstr "Felhasználó letiltva"
+
 # "Mail"
-#: ../../../../ajax/ajax_configSave.php:211
-#: ../../../../web/ConfigC.class.php:304
+#: ../../../../ajax/ajax_configSave.php:230
+#: ../../../../web/ConfigC.class.php:306
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
 msgstr "Mail"
 
 # "Configuration updated"
-#: ../../../../ajax/ajax_configSave.php:223
+#: ../../../../ajax/ajax_configSave.php:252
 msgid "Configuración actualizada"
 msgstr "Beállítások frissítve"
 
 # "Master Password updated"
-#: ../../../../ajax/ajax_configSave.php:232
-#: ../../../../ajax/ajax_configSave.php:278
-#: ../../../../ajax/ajax_viewpass.php:60
+#: ../../../../ajax/ajax_configSave.php:261
+#: ../../../../ajax/ajax_configSave.php:307
+#: ../../../../ajax/ajax_viewpass.php:61
 #: ../../../../inc/Controller.class.php:169
 msgid "Clave maestra actualizada"
 msgstr "A mester jelszó frissítve"
 
 # "Restart session to update"
-#: ../../../../ajax/ajax_configSave.php:232
-#: ../../../../ajax/ajax_viewpass.php:60
+#: ../../../../ajax/ajax_configSave.php:261
+#: ../../../../ajax/ajax_viewpass.php:61
 #: ../../../../inc/Controller.class.php:169
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Indítsa újra a munkamenetot a frissítéshez"
 
 # "Master Password needed"
-#: ../../../../ajax/ajax_configSave.php:234
+#: ../../../../ajax/ajax_configSave.php:263
 msgid "Clave maestra no indicada"
 msgstr "Mester jelszó szükséges"
 
 # "Password update must be confirmed"
-#: ../../../../ajax/ajax_configSave.php:236
+#: ../../../../ajax/ajax_configSave.php:265
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "A jelszó frissítéshez megerõsítés szükséges"
 
 # "Password are the same"
-#: ../../../../ajax/ajax_configSave.php:240
+#: ../../../../ajax/ajax_configSave.php:269
 msgid "Las claves son idénticas"
 msgstr "A jelszó megegyezik"
 
 # "Master passwords mismatch"
-#: ../../../../ajax/ajax_configSave.php:242
+#: ../../../../ajax/ajax_configSave.php:271
 msgid "Las claves maestras no coinciden"
 msgstr "A mester jelszó nem egyezik"
 
 # "Current master password mismatch"
-#: ../../../../ajax/ajax_configSave.php:244
+#: ../../../../ajax/ajax_configSave.php:273
 msgid "La clave maestra actual no coincide"
 msgstr "A jelenlegi mester jelszó nem egyezik"
 
 # "Error on updating accounts' passwords"
-#: ../../../../ajax/ajax_configSave.php:253
+#: ../../../../ajax/ajax_configSave.php:282
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Hiba a fiókok jelszavainak frissítése közben"
 
 # "Error on updating accounts' passwords"
-#: ../../../../ajax/ajax_configSave.php:259
+#: ../../../../ajax/ajax_configSave.php:288
 #, fuzzy
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Hiba a fiókok jelszavainak frissítése közben"
 
 # "Error on updating accounts' passwords"
-#: ../../../../ajax/ajax_configSave.php:263
+#: ../../../../ajax/ajax_configSave.php:292
 #, fuzzy
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Hiba a fiókok jelszavainak frissítése közben"
 
 # "Update Master Password"
-#: ../../../../ajax/ajax_configSave.php:276
-#: ../../../../inc/Account.class.php:495
+#: ../../../../ajax/ajax_configSave.php:305
+#: ../../../../inc/Account.class.php:512
 msgid "Actualizar Clave Maestra"
 msgstr "Frissítse a mester jelszót"
 
 # "Error on saving master password's hash"
-#: ../../../../ajax/ajax_configSave.php:280
+#: ../../../../ajax/ajax_configSave.php:309
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Hiba a mester jelszó hash-ének elmentése közben"
 
 # "Generate random password"
-#: ../../../../ajax/ajax_configSave.php:288
+#: ../../../../ajax/ajax_configSave.php:317
 #, fuzzy
 msgid "Generar Clave Temporal"
 msgstr "Generate Temporary Password"
 
 # "Password"
-#: ../../../../ajax/ajax_configSave.php:288
+#: ../../../../ajax/ajax_configSave.php:317
+#: ../../../../inc/CustomFieldsBase.class.php:87
 #: ../../../../inc/themes/classic/account.inc:86
 #: ../../../../inc/themes/classic/editpass.inc:25
-#: ../../../../inc/themes/classic/encryption.inc:146
+#: ../../../../inc/themes/classic/encryption.inc:143
 #: ../../../../inc/themes/classic/install.inc:38
 #: ../../../../inc/themes/classic/install.inc:39
 #: ../../../../inc/themes/classic/login.inc:10
@@ -864,7 +914,7 @@ msgstr "Generate Temporary Password"
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
-#: ../../../../inc/themes/material-blue/encryption.inc:164
+#: ../../../../inc/themes/material-blue/encryption.inc:161
 #: ../../../../inc/themes/material-blue/install.inc:46
 #: ../../../../inc/themes/material-blue/ldap.inc:105
 #: ../../../../inc/themes/material-blue/login.inc:18
@@ -880,36 +930,42 @@ msgid "Clave"
 msgstr "Jelszó"
 
 # "Generated Password"
-#: ../../../../ajax/ajax_configSave.php:290
+#: ../../../../ajax/ajax_configSave.php:319
 #, fuzzy
 msgid "Clave Temporal Generada"
 msgstr "Generált Jelszó"
 
+# "Generate random password"
+#: ../../../../ajax/ajax_configSave.php:321
+#, fuzzy
+msgid "Error al generar clave temporal"
+msgstr "Generate Temporary Password"
+
 # "User/Pass not entered"
-#: ../../../../ajax/ajax_doLogin.php:46
+#: ../../../../ajax/ajax_doLogin.php:49
 msgid "Usuario/Clave no introducidos"
 msgstr "Felhasználó/jelszó nem lett kitöltve"
 
 # "Session start (LDAP)"
-#: ../../../../ajax/ajax_doLogin.php:58
+#: ../../../../ajax/ajax_doLogin.php:61
 #, fuzzy
 msgid "Inicio sesión"
 msgstr "munkamenet elindult (LDAP)"
 
 # "Server"
-#: ../../../../ajax/ajax_doLogin.php:63
+#: ../../../../ajax/ajax_doLogin.php:66
 #, fuzzy
 msgid "Servidor Login"
 msgstr "Belépés"
 
 # "Error on saving LDAP user data"
-#: ../../../../ajax/ajax_doLogin.php:69
+#: ../../../../ajax/ajax_doLogin.php:72
 msgid "Error al guardar los datos de LDAP"
 msgstr "Hiba az LDAP felhasználók adatainak elmentése közben"
 
 # "Internal error"
-#: ../../../../ajax/ajax_doLogin.php:72 ../../../../ajax/ajax_doLogin.php:80
-#: ../../../../ajax/ajax_doLogin.php:132 ../../../../ajax/ajax_doLogin.php:176
+#: ../../../../ajax/ajax_doLogin.php:75 ../../../../ajax/ajax_doLogin.php:83
+#: ../../../../ajax/ajax_doLogin.php:135 ../../../../ajax/ajax_doLogin.php:179
 #: ../../../../inc/ApiTokens.class.php:140
 #: ../../../../inc/ApiTokens.class.php:186
 #: ../../../../inc/ApiTokens.class.php:217
@@ -918,33 +974,35 @@ msgstr "Hiba az LDAP felhasználók adatainak elmentése közben"
 #: ../../../../inc/ApiTokens.class.php:304
 #: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:181
 #: ../../../../inc/Crypt.class.php:192
-#: ../../../../inc/XmlImportBase.class.php:74
+#: ../../../../inc/XmlImportBase.class.php:79
 msgid "Error interno"
 msgstr "Belsõ hiba"
 
 # "Error on updating user password in BD"
-#: ../../../../ajax/ajax_doLogin.php:77
+#: ../../../../ajax/ajax_doLogin.php:80
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr "Adatbázis Hiba a felhasználói jelszó frissítése közben"
 
 # "Incorrect login"
-#: ../../../../ajax/ajax_doLogin.php:85 ../../../../ajax/ajax_doLogin.php:110
+#: ../../../../ajax/ajax_doLogin.php:88 ../../../../ajax/ajax_doLogin.php:113
 msgid "Login incorrecto"
 msgstr "Hibás felhasználónév vagy jelszó"
 
 # "User"
-#: ../../../../ajax/ajax_doLogin.php:86 ../../../../ajax/ajax_doLogin.php:93
-#: ../../../../ajax/ajax_doLogin.php:100 ../../../../ajax/ajax_doLogin.php:111
-#: ../../../../ajax/ajax_doLogin.php:121 ../../../../ajax/ajax_doLogin.php:171
+#: ../../../../ajax/ajax_doLogin.php:89 ../../../../ajax/ajax_doLogin.php:96
+#: ../../../../ajax/ajax_doLogin.php:103 ../../../../ajax/ajax_doLogin.php:114
+#: ../../../../ajax/ajax_doLogin.php:124 ../../../../ajax/ajax_doLogin.php:174
 #: ../../../../inc/ApiTokens.class.php:190
 #: ../../../../inc/ApiTokens.class.php:308 ../../../../inc/Auth.class.php:108
-#: ../../../../inc/Init.class.php:457 ../../../../inc/UserBase.class.php:382
-#: ../../../../inc/UserBase.class.php:526 ../../../../res/test.php:64
-#: ../../../../web/SearchC.class.php:304
-#: ../../../../web/UsersMgmtC.class.php:392
+#: ../../../../inc/Init.class.php:457 ../../../../inc/Ldap.class.php:290
+#: ../../../../inc/Ldap.class.php:303 ../../../../inc/Ldap.class.php:311
+#: ../../../../inc/UserBase.class.php:384
+#: ../../../../inc/UserBase.class.php:528 ../../../../res/test.php:64
+#: ../../../../web/SearchC.class.php:303
+#: ../../../../web/UsersMgmtC.class.php:393
 #: ../../../../inc/themes/classic/account.inc:73
 #: ../../../../inc/themes/classic/editpass.inc:21
-#: ../../../../inc/themes/classic/eventlog.inc:25
+#: ../../../../inc/themes/classic/eventlog.inc:23
 #: ../../../../inc/themes/classic/info.inc:39
 #: ../../../../inc/themes/classic/install.inc:27
 #: ../../../../inc/themes/classic/install.inc:28
@@ -958,7 +1016,7 @@ msgstr "Hibás felhasználónév vagy jelszó"
 #: ../../../../inc/themes/material-blue/account.inc:83
 #: ../../../../inc/themes/material-blue/config.inc:381
 #: ../../../../inc/themes/material-blue/editpass.inc:22
-#: ../../../../inc/themes/material-blue/eventlog.inc:24
+#: ../../../../inc/themes/material-blue/eventlog.inc:23
 #: ../../../../inc/themes/material-blue/info.inc:39
 #: ../../../../inc/themes/material-blue/login.inc:11
 #: ../../../../inc/themes/material-blue/login.inc:34
@@ -966,63 +1024,65 @@ msgstr "Hibás felhasználónév vagy jelszó"
 #: ../../../../inc/themes/material-blue/mail.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:16
 #: ../../../../inc/themes/material-blue/request.inc:20
-#: ../../../../inc/themes/material-blue/search.inc:55
+#: ../../../../inc/themes/material-blue/search.inc:91
 #: ../../../../inc/themes/material-blue/tokens.inc:8
 msgid "Usuario"
 msgstr "Felhasználó"
 
 # "Wrong user/pass"
-#: ../../../../ajax/ajax_doLogin.php:89 ../../../../ajax/ajax_doLogin.php:103
-#: ../../../../ajax/ajax_doLogin.php:114
+#: ../../../../ajax/ajax_doLogin.php:92 ../../../../ajax/ajax_doLogin.php:106
+#: ../../../../ajax/ajax_doLogin.php:117
 msgid "Usuario/Clave incorrectos"
 msgstr "Hibás felhasználó/jelszó"
 
 # Account Expired
-#: ../../../../ajax/ajax_doLogin.php:92 ../../../../ajax/ajax_doLogin.php:96
+#: ../../../../ajax/ajax_doLogin.php:95 ../../../../ajax/ajax_doLogin.php:99
 #, fuzzy
 msgid "Cuenta expirada"
 msgstr "Fiók"
 
 # "The user have no associated groups"
-#: ../../../../ajax/ajax_doLogin.php:99
+#: ../../../../ajax/ajax_doLogin.php:102
 msgid "El usuario no tiene grupos asociados"
 msgstr "a felhasználó nincs csoporthoz társítva"
 
 # "User disabled"
-#: ../../../../ajax/ajax_doLogin.php:120 ../../../../ajax/ajax_doLogin.php:124
+#: ../../../../ajax/ajax_doLogin.php:123 ../../../../ajax/ajax_doLogin.php:127
 msgid "Usuario deshabilitado"
 msgstr "Felhasználó letiltva"
 
 # "Error on retrieving user data from DB"
-#: ../../../../ajax/ajax_doLogin.php:129
+#: ../../../../ajax/ajax_doLogin.php:132
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr "Hiba a felhasználói adatok adatbázisból való betöltése közben"
 
 # "The master password not saved or is incorrect"
-#: ../../../../ajax/ajax_doLogin.php:139
+#: ../../../../ajax/ajax_doLogin.php:142
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "A mester jelszó nem lett elmentve, vagy helytelen"
 
 # "Invalid Master Password"
-#: ../../../../ajax/ajax_doLogin.php:146 ../../../../ajax/ajax_doLogin.php:149
+#: ../../../../ajax/ajax_doLogin.php:149 ../../../../ajax/ajax_doLogin.php:152
 msgid "Clave maestra incorrecta"
 msgstr "Érvénytelen mester jelszó"
 
 # "Profile"
-#: ../../../../ajax/ajax_doLogin.php:172
+#: ../../../../ajax/ajax_doLogin.php:175
 #: ../../../../inc/ProfileBase.class.php:512
 #: ../../../../inc/ProfileBase.class.php:550
 #: ../../../../inc/ProfileBase.class.php:593
-#: ../../../../web/UsersMgmtC.class.php:89
+#: ../../../../web/UsersMgmtC.class.php:90
 #: ../../../../inc/themes/classic/users.inc:37
 #: ../../../../inc/themes/material-blue/users.inc:43
 msgid "Perfil"
 msgstr "Profil"
 
 # "Group"
-#: ../../../../ajax/ajax_doLogin.php:173 ../../../../inc/Groups.class.php:158
+#: ../../../../ajax/ajax_doLogin.php:176 ../../../../inc/Groups.class.php:158
 #: ../../../../inc/Groups.class.php:259 ../../../../inc/Groups.class.php:375
-#: ../../../../web/UsersMgmtC.class.php:90
+#: ../../../../inc/Ldap.class.php:213 ../../../../inc/Ldap.class.php:226
+#: ../../../../inc/Ldap.class.php:236 ../../../../inc/Ldap.class.php:385
+#: ../../../../web/UsersMgmtC.class.php:91
 #: ../../../../inc/themes/classic/ldap.inc:116
 #: ../../../../inc/themes/classic/users.inc:49
 #: ../../../../inc/themes/material-blue/ldap.inc:139
@@ -1032,32 +1092,32 @@ msgid "Grupo"
 msgstr "Csoport"
 
 # "Files management disabled"
-#: ../../../../ajax/ajax_files.php:45 ../../../../ajax/ajax_getFiles.php:39
+#: ../../../../ajax/ajax_files.php:46 ../../../../ajax/ajax_getFiles.php:40
 msgid "Gestión de archivos deshabilitada"
 msgstr "Fálj menedzsment inaktív"
 
 # "Upload File"
-#: ../../../../ajax/ajax_files.php:59 ../../../../inc/Files.class.php:63
+#: ../../../../ajax/ajax_files.php:60 ../../../../inc/Files.class.php:63
 msgid "Subir Archivo"
 msgstr "Fájl feltöltés"
 
 # "There are no allowed extensions"
-#: ../../../../ajax/ajax_files.php:68
+#: ../../../../ajax/ajax_files.php:69
 msgid "No hay extensiones permitidas"
 msgstr "Tiltott kiterjesztések"
 
 # "File type not allowed"
-#: ../../../../ajax/ajax_files.php:79 ../../../../inc/FileImport.class.php:115
+#: ../../../../ajax/ajax_files.php:80 ../../../../inc/FileImport.class.php:115
 msgid "Tipo de archivo no soportado"
 msgstr "Fájltípus nem engedélyezett"
 
 # "Invalid file"
-#: ../../../../ajax/ajax_files.php:85
+#: ../../../../ajax/ajax_files.php:86
 msgid "Archivo inválido"
 msgstr "Érvénytelen fájl"
 
 # "Internal error while reading file"
-#: ../../../../ajax/ajax_files.php:101 ../../../../ajax/ajax_files.php:118
+#: ../../../../ajax/ajax_files.php:102 ../../../../ajax/ajax_files.php:119
 #: ../../../../inc/FileImport.class.php:131
 #: ../../../../inc/FileImport.class.php:149
 #: ../../../../inc/FileImport.class.php:167
@@ -1065,195 +1125,195 @@ msgid "Error interno al leer el archivo"
 msgstr "Belsõ hiba a fájl olvasása közben"
 
 # "File is bigger than"
-#: ../../../../ajax/ajax_files.php:108
+#: ../../../../ajax/ajax_files.php:109
 msgid "El archivo es mayor de "
 msgstr "A fájl nagyobb, mint"
 
 # "File saved"
-#: ../../../../ajax/ajax_files.php:125
+#: ../../../../ajax/ajax_files.php:126
 msgid "Archivo guardado"
 msgstr "Fájl elmentve"
 
 # "Error on file save"
-#: ../../../../ajax/ajax_files.php:130
+#: ../../../../ajax/ajax_files.php:131
 msgid "No se pudo guardar el archivo"
 msgstr "Hiba a fájl mentése közben"
 
 # "Invalid file ID"
-#: ../../../../ajax/ajax_files.php:140 ../../../../ajax/ajax_files.php:199
+#: ../../../../ajax/ajax_files.php:141 ../../../../ajax/ajax_files.php:200
 msgid "No es un ID de archivo válido"
 msgstr "Helytelen fájl ID"
 
 # "File doesn't exist"
-#: ../../../../ajax/ajax_files.php:148
+#: ../../../../ajax/ajax_files.php:149
 msgid "El archivo no existe"
 msgstr "A fájl nem létezik"
 
 # "Download File"
-#: ../../../../ajax/ajax_files.php:157
+#: ../../../../ajax/ajax_files.php:158
 #: ../../../../inc/themes/classic/files.inc:19
 #: ../../../../inc/themes/material-blue/files.inc:19
 msgid "Descargar Archivo"
 msgstr "Fájl letöltés"
 
 # "ID"
-#: ../../../../ajax/ajax_files.php:158 ../../../../ajax/ajax_viewpass.php:69
+#: ../../../../ajax/ajax_files.php:159 ../../../../ajax/ajax_viewpass.php:70
 #: ../../../../inc/Files.class.php:112
-#: ../../../../inc/themes/classic/eventlog.inc:16
-#: ../../../../inc/themes/material-blue/eventlog.inc:15
+#: ../../../../inc/themes/classic/eventlog.inc:14
+#: ../../../../inc/themes/material-blue/eventlog.inc:14
 msgid "ID"
 msgstr "ID"
 
 # "File"
-#: ../../../../ajax/ajax_files.php:159 ../../../../inc/Files.class.php:65
+#: ../../../../ajax/ajax_files.php:160 ../../../../inc/Files.class.php:65
 #: ../../../../inc/Files.class.php:113
-#: ../../../../inc/themes/classic/import.inc:155
-#: ../../../../inc/themes/material-blue/import.inc:83
+#: ../../../../inc/themes/classic/import.inc:152
+#: ../../../../inc/themes/material-blue/import.inc:80
 msgid "Archivo"
 msgstr "Fájl"
 
 # "Type"
-#: ../../../../ajax/ajax_files.php:160 ../../../../inc/Files.class.php:66
+#: ../../../../ajax/ajax_files.php:161 ../../../../inc/Files.class.php:66
 #: ../../../../inc/Files.class.php:114
-#: ../../../../web/AccountsMgmtC.class.php:266
+#: ../../../../web/AccountsMgmtC.class.php:267
 #: ../../../../inc/themes/classic/customfields.inc:16
 #: ../../../../inc/themes/material-blue/customfields.inc:19
 msgid "Tipo"
 msgstr "Típus"
 
 # "Size"
-#: ../../../../ajax/ajax_files.php:161 ../../../../inc/Files.class.php:67
+#: ../../../../ajax/ajax_files.php:162 ../../../../inc/Files.class.php:67
 #: ../../../../inc/Files.class.php:115
 msgid "Tamaño"
 msgstr "Méret"
 
 # "File deleted"
-#: ../../../../ajax/ajax_files.php:203
+#: ../../../../ajax/ajax_files.php:204
 msgid "Archivo eliminado"
 msgstr "Fájl törölve"
 
 # "Error on file deletion"
-#: ../../../../ajax/ajax_files.php:208
+#: ../../../../ajax/ajax_files.php:209
 msgid "Error al eliminar el archivo"
 msgstr "Hiba a fájlok törlése közben"
 
 # "Incorrect parameters"
 #: ../../../../ajax/ajax_getContent.php:42
 #: ../../../../inc/ApiRequest.class.php:55
-#: ../../../../inc/CustomFieldDef.class.php:38
-#: ../../../../inc/CustomFields.class.php:48
+#: ../../../../inc/CustomFieldDef.class.php:45
+#: ../../../../inc/CustomFields.class.php:54
 msgid "Parámetros incorrectos"
 msgstr "Helytelen paraméter"
 
 # "Confirm account import"
-#: ../../../../ajax/ajax_migrate.php:55
+#: ../../../../ajax/ajax_migrate.php:56
 msgid "Confirmar la importación de cuentas"
 msgstr "Fiók importálás megerõsítése"
 
 # "Connection username needed"
-#: ../../../../ajax/ajax_migrate.php:57
+#: ../../../../ajax/ajax_migrate.php:58
 msgid "Es necesario un usuario de conexión"
 msgstr "Kapcsolati felhasználónév szükséges"
 
 # "Connection password needed"
-#: ../../../../ajax/ajax_migrate.php:59
+#: ../../../../ajax/ajax_migrate.php:60
 msgid "Es necesaria una clave de conexión"
 msgstr "Kapcsolati jelszó szükséges"
 
 # "Database name needed"
-#: ../../../../ajax/ajax_migrate.php:61
+#: ../../../../ajax/ajax_migrate.php:62
 msgid "Es necesario el nombre de la BBDD"
 msgstr "Adatbázis név szükséges"
 
 # "Host name needed"
-#: ../../../../ajax/ajax_migrate.php:63
+#: ../../../../ajax/ajax_migrate.php:64
 msgid "Es necesario un nombre de host"
 msgstr "Host név szükséges"
 
 # "Password Recovery"
-#: ../../../../ajax/ajax_passReset.php:47
 #: ../../../../ajax/ajax_passReset.php:50
+#: ../../../../ajax/ajax_passReset.php:53
 msgid "Recuperación de Clave"
 msgstr "Jelszó visszaállítás"
 
 # "Requested for"
-#: ../../../../ajax/ajax_passReset.php:53
-#: ../../../../ajax/ajax_passReset.php:58
+#: ../../../../ajax/ajax_passReset.php:56
+#: ../../../../ajax/ajax_passReset.php:61
 msgid "Solicitado para"
 msgstr "Kért, hogy"
 
 # "Request sent"
-#: ../../../../ajax/ajax_passReset.php:55
-#: ../../../../ajax/ajax_sendRequest.php:75
+#: ../../../../ajax/ajax_passReset.php:58
+#: ../../../../ajax/ajax_sendRequest.php:76
 msgid "Solicitud enviada"
 msgstr "Kérést elküldve"
 
 # "You will receive an email to complete the request in short."
-#: ../../../../ajax/ajax_passReset.php:55
+#: ../../../../ajax/ajax_passReset.php:58
 msgid "En breve recibirá un correo para completar la solicitud."
 msgstr "A kérés befejezéséhez email értesítõt küldünk"
 
 # "The request can't be done. Please contact with the administrator"
-#: ../../../../ajax/ajax_passReset.php:60
+#: ../../../../ajax/ajax_passReset.php:63
 msgid "No se ha podido realizar la solicitud. Consulte con el administrador."
 msgstr ""
 "A kérést nem lehet befejezni. Kérem lépjen kapcsolatba a rendszergazdával"
 
 # "Edit User Password"
-#: ../../../../ajax/ajax_passReset.php:72
-#: ../../../../inc/UserBase.class.php:568
-#: ../../../../inc/UserUtil.class.php:662
+#: ../../../../ajax/ajax_passReset.php:73
+#: ../../../../inc/UserBase.class.php:570
+#: ../../../../inc/UserPass.class.php:127
 msgid "Modificar Clave Usuario"
 msgstr "Felhasználó jelszavának szerkesztése"
 
 # "Login"
-#: ../../../../ajax/ajax_passReset.php:72
-#: ../../../../inc/UserBase.class.php:568
-#: ../../../../inc/UserBase.class.php:592
-#: ../../../../inc/UserUtil.class.php:662
-#: ../../../../web/UsersMgmtC.class.php:88
+#: ../../../../ajax/ajax_passReset.php:73
+#: ../../../../inc/UserBase.class.php:570
+#: ../../../../inc/UserBase.class.php:594
+#: ../../../../inc/UserPass.class.php:127
+#: ../../../../web/UsersMgmtC.class.php:89
 #: ../../../../inc/themes/classic/users.inc:21
 #: ../../../../inc/themes/material-blue/users.inc:24
 msgid "Login"
 msgstr "Belépés"
 
 # "The password is incorrect or not the same"
-#: ../../../../ajax/ajax_passReset.php:80
+#: ../../../../ajax/ajax_passReset.php:81
 msgid "La clave es incorrecta o no coincide"
 msgstr "A jelszó helytelen, vagy nem egyezik"
 
 # "Description is needed"
-#: ../../../../ajax/ajax_sendRequest.php:48
+#: ../../../../ajax/ajax_sendRequest.php:49
 msgid "Es necesaria una descripción"
 msgstr "Leírás szükséges"
 
 # "Request for Account Modification"
-#: ../../../../ajax/ajax_sendRequest.php:61
+#: ../../../../ajax/ajax_sendRequest.php:62
 msgid "Solicitud de Modificación de Cuenta"
 msgstr "Kérés fiók módosításához"
 
 # "Requester"
-#: ../../../../ajax/ajax_sendRequest.php:62
+#: ../../../../ajax/ajax_sendRequest.php:63
 msgid "Solicitante"
 msgstr "Kérõ"
 
 # "Account"
-#: ../../../../ajax/ajax_sendRequest.php:63
-#: ../../../../ajax/ajax_viewpass.php:70 ../../../../inc/Account.class.php:165
-#: ../../../../inc/Account.class.php:219 ../../../../inc/Account.class.php:400
-#: ../../../../inc/Account.class.php:423 ../../../../inc/Account.class.php:665
+#: ../../../../ajax/ajax_sendRequest.php:64
+#: ../../../../ajax/ajax_viewpass.php:71 ../../../../inc/Account.class.php:181
+#: ../../../../inc/Account.class.php:236 ../../../../inc/Account.class.php:417
+#: ../../../../inc/Account.class.php:440 ../../../../inc/Account.class.php:682
 #: ../../../../inc/Files.class.php:64
 msgid "Cuenta"
 msgstr "Fiók"
 
 # "Customer"
-#: ../../../../ajax/ajax_sendRequest.php:64
-#: ../../../../inc/Account.class.php:164 ../../../../inc/Account.class.php:218
-#: ../../../../inc/Account.class.php:399 ../../../../inc/Account.class.php:422
-#: ../../../../inc/Account.class.php:664 ../../../../inc/Customer.class.php:65
+#: ../../../../ajax/ajax_sendRequest.php:65
+#: ../../../../inc/Account.class.php:180 ../../../../inc/Account.class.php:235
+#: ../../../../inc/Account.class.php:416 ../../../../inc/Account.class.php:439
+#: ../../../../inc/Account.class.php:681 ../../../../inc/Customer.class.php:65
 #: ../../../../inc/Customer.class.php:115
 #: ../../../../inc/Customer.class.php:163
-#: ../../../../web/SearchC.class.php:286
+#: ../../../../web/SearchC.class.php:285
 #: ../../../../inc/themes/classic/account.inc:23
 #: ../../../../inc/themes/classic/editpass.inc:12
 #: ../../../../inc/themes/classic/request.inc:9
@@ -1261,69 +1321,69 @@ msgstr "Fiók"
 #: ../../../../inc/themes/material-blue/account.inc:29
 #: ../../../../inc/themes/material-blue/editpass.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:10
-#: ../../../../inc/themes/material-blue/search.inc:24
+#: ../../../../inc/themes/material-blue/search.inc:60
 msgid "Cliente"
 msgstr "Ügyfél"
 
 # "Description"
-#: ../../../../ajax/ajax_sendRequest.php:65
-#: ../../../../web/AccountsMgmtC.class.php:79
-#: ../../../../web/AccountsMgmtC.class.php:138
-#: ../../../../web/UsersMgmtC.class.php:187
+#: ../../../../ajax/ajax_sendRequest.php:66
+#: ../../../../web/AccountsMgmtC.class.php:80
+#: ../../../../web/AccountsMgmtC.class.php:139
+#: ../../../../web/UsersMgmtC.class.php:188
 #: ../../../../inc/themes/classic/categories.inc:16
 #: ../../../../inc/themes/classic/customers.inc:16
-#: ../../../../inc/themes/classic/eventlog.inc:31
+#: ../../../../inc/themes/classic/eventlog.inc:29
 #: ../../../../inc/themes/classic/groups.inc:16
 #: ../../../../inc/themes/material-blue/categories.inc:20
 #: ../../../../inc/themes/material-blue/customers.inc:20
-#: ../../../../inc/themes/material-blue/eventlog.inc:30
+#: ../../../../inc/themes/material-blue/eventlog.inc:29
 #: ../../../../inc/themes/material-blue/groups.inc:20
 msgid "Descripción"
 msgstr "Leírás"
 
 # "Error on sending request"
-#: ../../../../ajax/ajax_sendRequest.php:78
+#: ../../../../ajax/ajax_sendRequest.php:79
 msgid "Error al enviar la solicitud"
 msgstr "Hiba a kérés küldése közben"
 
 # "Error on updating profile"
-#: ../../../../ajax/ajax_userPrefsSave.php:70
-#: ../../../../ajax/ajax_userPrefsSave.php:103
+#: ../../../../ajax/ajax_userPrefsSave.php:73
+#: ../../../../ajax/ajax_userPrefsSave.php:106
 #, fuzzy
 msgid "Error al actualizar preferencias"
 msgstr "Hiba a jelszó frissítése közben"
 
 # "Accounts updated:"
-#: ../../../../ajax/ajax_userPrefsSave.php:80
-#: ../../../../ajax/ajax_userPrefsSave.php:106
+#: ../../../../ajax/ajax_userPrefsSave.php:83
+#: ../../../../ajax/ajax_userPrefsSave.php:109
 #, fuzzy
 msgid "Preferencias actualizadas"
 msgstr "Fiókok frissítve"
 
 # "Master password mismatch"
-#: ../../../../ajax/ajax_viewpass.php:54
+#: ../../../../ajax/ajax_viewpass.php:55
 msgid "La clave maestra no coincide"
 msgstr "A mester jelszó nem egyezik"
 
 # "You don't have permission to access to this account"
-#: ../../../../ajax/ajax_viewpass.php:58
+#: ../../../../ajax/ajax_viewpass.php:59
 #: ../../../../inc/Controller.class.php:166
 msgid "No tiene permisos para acceder a esta cuenta"
 msgstr "Nincs jogosultságod belépni ebbe a fiókba"
 
 # "View password"
-#: ../../../../ajax/ajax_viewpass.php:68 ../../../../inc/Acl.class.php:133
+#: ../../../../ajax/ajax_viewpass.php:69 ../../../../inc/Acl.class.php:133
 #: ../../../../inc/themes/classic/account.inc:382
 #: ../../../../inc/themes/classic/profiles.inc:23
 #: ../../../../inc/themes/classic/search.inc:109
-#: ../../../../inc/themes/material-blue/account.inc:422
+#: ../../../../inc/themes/material-blue/account.inc:424
 #: ../../../../inc/themes/material-blue/profiles.inc:35
-#: ../../../../inc/themes/material-blue/search.inc:113
+#: ../../../../inc/themes/material-blue/search.inc:149
 msgid "Ver Clave"
 msgstr "Jelszó"
 
 # "View account password"
-#: ../../../../ajax/ajax_viewpass.php:79 ../../../../js/strings.js.php:73
+#: ../../../../ajax/ajax_viewpass.php:80 ../../../../js/strings.js.php:73
 #, fuzzy
 msgid "Clave de Cuenta"
 msgstr "Fiók jelszavának szerkesztése"
@@ -1342,11 +1402,19 @@ msgstr "Segítség :: GYIK :: Változások Listája"
 #: ../../../../inc/AccountSearch.class.php:28 ../../../../inc/Acl.class.php:29
 #: ../../../../inc/Api.class.php:30 ../../../../inc/ApiRequest.class.php:28
 #: ../../../../inc/ApiTokens.class.php:28 ../../../../inc/Auth.class.php:29
-#: ../../../../inc/Auth2FA.class.php:32 ../../../../inc/Backup.class.php:28
-#: ../../../../inc/Category.class.php:29 ../../../../inc/Common.class.php:28
-#: ../../../../inc/Config.class.php:28 ../../../../inc/Controller.class.php:31
-#: ../../../../inc/Crypt.class.php:28 ../../../../inc/CsvImport.class.php:28
+#: ../../../../inc/Auth2FA.class.php:33 ../../../../inc/Backup.class.php:28
+#: ../../../../inc/Base.php:26 ../../../../inc/Cache.class.php:28
+#: ../../../../inc/Category.class.php:29 ../../../../inc/Config.class.php:28
+#: ../../../../inc/ConfigDB.class.php:28
+#: ../../../../inc/ConfigInterface.class.php:28
+#: ../../../../inc/Controller.class.php:31 ../../../../inc/Crypt.class.php:28
+#: ../../../../inc/CryptMasterPass.class.php:28
+#: ../../../../inc/CryptPKI.class.php:28
+#: ../../../../inc/CsvImport.class.php:28
 #: ../../../../inc/CsvImportBase.class.php:28
+#: ../../../../inc/CustomFieldDef.class.php:28
+#: ../../../../inc/CustomFields.class.php:28
+#: ../../../../inc/CustomFieldsBase.class.php:28
 #: ../../../../inc/Customer.class.php:29 ../../../../inc/DB.class.php:28
 #: ../../../../inc/DBConnectionFactory.class.php:30
 #: ../../../../inc/FileImport.class.php:28 ../../../../inc/Files.class.php:29
@@ -1361,26 +1429,35 @@ msgstr "Segítség :: GYIK :: Változások Listája"
 #: ../../../../inc/Migrate.class.php:28 ../../../../inc/Minify.class.php:30
 #: ../../../../inc/Profile.class.php:29
 #: ../../../../inc/ProfileBase.class.php:28
-#: ../../../../inc/Request.class.php:110 ../../../../inc/Session.class.php:28
+#: ../../../../inc/Request.class.php:110 ../../../../inc/Response.class.php:28
+#: ../../../../inc/SPException.class.php:28
+#: ../../../../inc/Session.class.php:28
+#: ../../../../inc/SessionUtil.class.php:28
 #: ../../../../inc/SyspassImport.class.php:28
-#: ../../../../inc/Themes.class.php:28 ../../../../inc/Upgrade.class.php:29
-#: ../../../../inc/User.class.php:28 ../../../../inc/UserLdap.class.php:28
+#: ../../../../inc/Template.class.php:27 ../../../../inc/Themes.class.php:28
+#: ../../../../inc/Upgrade.class.php:29 ../../../../inc/User.class.php:28
+#: ../../../../inc/UserAccounts.class.php:28
+#: ../../../../inc/UserBase.class.php:28 ../../../../inc/UserLdap.class.php:28
+#: ../../../../inc/UserMigrate.class.php:28
+#: ../../../../inc/UserPass.class.php:28
+#: ../../../../inc/UserPassRecover.class.php:28
 #: ../../../../inc/UserPreferences.class.php:28
-#: ../../../../inc/UserUtil.class.php:28 ../../../../inc/Util.class.php:31
+#: ../../../../inc/UserUtil.class.php:28 ../../../../inc/Util.class.php:28
+#: ../../../../inc/XmlExport.class.php:28
 #: ../../../../inc/XmlImport.class.php:28
 #: ../../../../inc/XmlImportBase.class.php:28
-#: ../../../../web/AccountC.class.php:38
-#: ../../../../web/AccountsMgmtC.class.php:32
-#: ../../../../web/ConfigC.class.php:33 ../../../../web/EventlogC.class.php:28
-#: ../../../../web/SearchC.class.php:31
-#: ../../../../web/UsersMgmtC.class.php:39
-#: ../../../../web/UsersPrefsC.class.php:34
+#: ../../../../web/AccountC.class.php:41
+#: ../../../../web/AccountsMgmtC.class.php:33
+#: ../../../../web/ConfigC.class.php:35 ../../../../web/EventlogC.class.php:30
+#: ../../../../web/SearchC.class.php:33
+#: ../../../../web/UsersMgmtC.class.php:40
+#: ../../../../web/UsersPrefsC.class.php:35
 msgid "No es posible acceder directamente a este archivo"
 msgstr "A fájl közvetlen elérése meghiúsult"
 
 # "Error on updating history"
-#: ../../../../inc/Account.class.php:112 ../../../../inc/Account.class.php:185
-#: ../../../../inc/Account.class.php:634
+#: ../../../../inc/Account.class.php:112 ../../../../inc/Account.class.php:201
+#: ../../../../inc/Account.class.php:651
 msgid "Error al actualizar el historial"
 msgstr "Hiba az elõzmények frissítése közben"
 
@@ -1390,150 +1467,150 @@ msgid "Actualizar Cuenta"
 msgstr "Frissítés Számla"
 
 # "Error on updating secondary groups"
-#: ../../../../inc/Account.class.php:120 ../../../../inc/Account.class.php:381
+#: ../../../../inc/Account.class.php:120 ../../../../inc/Account.class.php:398
 msgid "Error al actualizar los grupos secundarios"
 msgstr "Hiba a másodlagos csoportok frissítése közben"
 
 # "Error on updating account's users"
-#: ../../../../inc/Account.class.php:126 ../../../../inc/Account.class.php:389
+#: ../../../../inc/Account.class.php:126 ../../../../inc/Account.class.php:406
 msgid "Error al actualizar los usuarios de la cuenta"
 msgstr "Hiba a fiók felhasználóinak frissítése közben"
 
 # "Restore Account"
-#: ../../../../inc/Account.class.php:217
+#: ../../../../inc/Account.class.php:234
 msgid "Restaurar Cuenta"
 msgstr "Restore Számla"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/Account.class.php:324
-#: ../../../../inc/AccountHistory.class.php:343
-#: ../../../../inc/AccountHistory.class.php:503
+#: ../../../../inc/Account.class.php:341
+#: ../../../../inc/AccountHistory.class.php:348
+#: ../../../../inc/AccountHistory.class.php:508
 #, fuzzy
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
 # "New Account"
-#: ../../../../inc/Account.class.php:398 ../../../../inc/Acl.class.php:129
-#: ../../../../web/AccountC.class.php:147 ../../../../web/MainC.class.php:183
+#: ../../../../inc/Account.class.php:415 ../../../../inc/Acl.class.php:129
+#: ../../../../web/AccountC.class.php:150 ../../../../web/MainC.class.php:183
 msgid "Nueva Cuenta"
 msgstr "Új fiók"
 
 # "ERROR: Operation failed"
-#: ../../../../inc/Account.class.php:416
+#: ../../../../inc/Account.class.php:433
 msgid "ERROR: Error en la operación."
 msgstr "HIBA: A mûvelet meghiusult"
 
 # "Delete Account"
-#: ../../../../inc/Account.class.php:421 ../../../../inc/Acl.class.php:134
-#: ../../../../web/AccountC.class.php:353
+#: ../../../../inc/Account.class.php:438 ../../../../inc/Acl.class.php:134
+#: ../../../../web/AccountC.class.php:356
 #: ../../../../inc/themes/classic/account.inc:369
 #: ../../../../inc/themes/classic/search.inc:137
-#: ../../../../inc/themes/material-blue/account.inc:416
-#: ../../../../inc/themes/material-blue/search.inc:140
+#: ../../../../inc/themes/material-blue/account.inc:418
+#: ../../../../inc/themes/material-blue/search.inc:178
 msgid "Eliminar Cuenta"
 msgstr "Fiók törlése"
 
 # "Error on deleting account's groups"
-#: ../../../../inc/Account.class.php:434
+#: ../../../../inc/Account.class.php:451
 msgid "Error al eliminar grupos asociados a la cuenta"
 msgstr "Hiba a felhasználó csoportok törlése közben"
 
 # "Error on deleting account's users"
-#: ../../../../inc/Account.class.php:438
+#: ../../../../inc/Account.class.php:455
 msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Hiba a fiók felhasználók törlése közben"
 
 # "Error on deleting account's files"
-#: ../../../../inc/Account.class.php:442
+#: ../../../../inc/Account.class.php:459
 msgid "Error al eliminar archivos asociados a la cuenta"
 msgstr "Hiba a fiók fájljainak törlése közben"
 
 # "Start"
-#: ../../../../inc/Account.class.php:496
-#: ../../../../inc/AccountHistory.class.php:124
+#: ../../../../inc/Account.class.php:513
+#: ../../../../inc/AccountHistory.class.php:129
 #: ../../../../inc/XmlImport.class.php:62
 msgid "Inicio"
 msgstr "Start"
 
 # "Error on encryption module"
-#: ../../../../inc/Account.class.php:501
-#: ../../../../inc/AccountHistory.class.php:130
+#: ../../../../inc/Account.class.php:518
+#: ../../../../inc/AccountHistory.class.php:135
 msgid "Error en el módulo de encriptación"
 msgstr "Titkosító modul hiba"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/Account.class.php:509
-#: ../../../../inc/AccountHistory.class.php:138
+#: ../../../../inc/Account.class.php:526
+#: ../../../../inc/AccountHistory.class.php:143
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
 # "View account password"
-#: ../../../../inc/Account.class.php:525
-#: ../../../../inc/AccountHistory.class.php:160
+#: ../../../../inc/Account.class.php:542
+#: ../../../../inc/AccountHistory.class.php:165
 #, fuzzy
 msgid "Clave de cuenta vacía"
 msgstr "Fiók jelszavának szerkesztése"
 
-#: ../../../../inc/Account.class.php:530
-#: ../../../../inc/AccountHistory.class.php:165
+#: ../../../../inc/Account.class.php:547
+#: ../../../../inc/AccountHistory.class.php:170
 #, fuzzy
 msgid "IV de encriptación incorrecto"
 msgstr "A mezõk száma helytelen"
 
 # "All accounts passwords will be encrypted again."
-#: ../../../../inc/Account.class.php:539
-#: ../../../../inc/AccountHistory.class.php:174
+#: ../../../../inc/Account.class.php:556
+#: ../../../../inc/AccountHistory.class.php:179
 #, fuzzy
 msgid "No es posible desencriptar la clave de la cuenta"
 msgstr "Minden fiók jelszó újra titkosítva lesz"
 
 # "Error on updating account's password"
-#: ../../../../inc/Account.class.php:545
+#: ../../../../inc/Account.class.php:562
 msgid "Fallo al actualizar la clave de la cuenta"
 msgstr "Hiba a fiók jelszavának frissítése közben"
 
 # "Accounts updated:"
-#: ../../../../inc/Account.class.php:559
+#: ../../../../inc/Account.class.php:576
 #, fuzzy
 msgid "Cuentas actualizadas"
 msgstr "Fiókok frissítve"
 
 # "End"
-#: ../../../../inc/Account.class.php:564
-#: ../../../../inc/AccountHistory.class.php:199
-#: ../../../../inc/CustomFields.class.php:319
+#: ../../../../inc/Account.class.php:581
+#: ../../../../inc/AccountHistory.class.php:204
+#: ../../../../inc/CustomFields.class.php:325
 msgid "Fin"
 msgstr "Vége"
 
 # "Update Password"
-#: ../../../../inc/Account.class.php:663
+#: ../../../../inc/Account.class.php:680
 msgid "Modificar Clave"
 msgstr "Jelszó frissítés"
 
 # "Error on retrieving accounts' passwords"
-#: ../../../../inc/Account.class.php:698
+#: ../../../../inc/Account.class.php:715
 #, fuzzy
 msgid "No se pudieron obtener los datos de las cuentas"
 msgstr "Hiba a fiókok jelszavainak betöltése közben"
 
 # "Update Master Password (H)"
-#: ../../../../inc/AccountHistory.class.php:123
+#: ../../../../inc/AccountHistory.class.php:128
 msgid "Actualizar Clave Maestra (H)"
 msgstr "Frissítse a mester jelszót (H)"
 
 # "Record's Master password mismatch"
-#: ../../../../inc/AccountHistory.class.php:155
+#: ../../../../inc/AccountHistory.class.php:160
 msgid "La clave maestra del registro no coincide"
 msgstr "A rekord mester jelszava nem egyezik"
 
 # "Error on updating history's master password"
-#: ../../../../inc/AccountHistory.class.php:180
+#: ../../../../inc/AccountHistory.class.php:185
 msgid "Fallo al actualizar la clave del histórico"
 msgstr "Hiba a elõzmények mester jelszavának frissítése közben"
 
 # "Records updated"
-#: ../../../../inc/AccountHistory.class.php:194
-#: ../../../../inc/CustomFields.class.php:315
+#: ../../../../inc/AccountHistory.class.php:199
+#: ../../../../inc/CustomFields.class.php:321
 #, fuzzy
 msgid "Registros actualizados"
 msgstr "Rekordok frissítve"
@@ -1556,14 +1633,14 @@ msgid "Ver Cuenta"
 msgstr "Fiók adatok"
 
 # "Copy Account"
-#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:260
+#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:263
 #: ../../../../inc/themes/classic/search.inc:131
-#: ../../../../inc/themes/material-blue/search.inc:134
+#: ../../../../inc/themes/material-blue/search.inc:172
 msgid "Copiar Cuenta"
 msgstr "Fiók másolása"
 
 # "Edit Account"
-#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:324
+#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:327
 msgid "Editar Cuenta"
 msgstr "Fiók módosítás"
 
@@ -1644,8 +1721,8 @@ msgid "Gestión Perfiles"
 msgstr "Profil Menedzsment"
 
 # "Configuration"
-#: ../../../../inc/Acl.class.php:146 ../../../../inc/Config.class.php:118
-#: ../../../../inc/Config.class.php:403 ../../../../web/MainC.class.php:201
+#: ../../../../inc/Acl.class.php:146 ../../../../inc/ConfigDB.class.php:91
+#: ../../../../inc/ConfigDB.class.php:119 ../../../../web/MainC.class.php:201
 #: ../../../../inc/themes/classic/profiles.inc:57
 #: ../../../../inc/themes/material-blue/profiles.inc:66
 msgid "Configuración"
@@ -1658,7 +1735,7 @@ msgid "Configuración General"
 msgstr "Általános beállítások"
 
 # "Description"
-#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:130
+#: ../../../../inc/Acl.class.php:148 ../../../../web/ConfigC.class.php:132
 #: ../../../../inc/themes/classic/profiles.inc:65
 #: ../../../../inc/themes/material-blue/profiles.inc:77
 #, fuzzy
@@ -1666,7 +1743,7 @@ msgid "Encriptación"
 msgstr "A Crypto modul nem tölthetõ be"
 
 # "Backup"
-#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:175
+#: ../../../../inc/Acl.class.php:149 ../../../../web/ConfigC.class.php:177
 #: ../../../../inc/themes/classic/backup.inc:4
 #: ../../../../inc/themes/material-blue/backup.inc:4
 msgid "Copia de Seguridad"
@@ -1744,7 +1821,7 @@ msgstr "Frissítés Számla"
 
 # "Delete File"
 #: ../../../../inc/ApiTokens.class.php:331
-#: ../../../../web/UsersMgmtC.class.php:421
+#: ../../../../web/UsersMgmtC.class.php:422
 #, fuzzy
 msgid "Eliminar Autorización"
 msgstr "Profil törlése"
@@ -1792,13 +1869,13 @@ msgstr "Error while doing backup in compatibility mode"
 
 # "Unable to create backup directory"
 #: ../../../../inc/Backup.class.php:223
-#: ../../../../inc/XmlExport.class.php:465
+#: ../../../../inc/XmlExport.class.php:467
 msgid "No es posible crear el directorio de backups"
 msgstr "Arcív mappa létrehozása meghiusúlt"
 
 # "Check backup directory permissions"
 #: ../../../../inc/Backup.class.php:228
-#: ../../../../inc/XmlExport.class.php:470
+#: ../../../../inc/XmlExport.class.php:472
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Ellenõrizze az archiválás mappa jogosultságait"
 
@@ -1817,11 +1894,11 @@ msgstr "Hiba a kategória létrehozása közben"
 #: ../../../../inc/Category.class.php:83
 #: ../../../../inc/Category.class.php:132
 #: ../../../../inc/Category.class.php:182
-#: ../../../../web/SearchC.class.php:298
+#: ../../../../web/SearchC.class.php:297
 #: ../../../../inc/themes/classic/account.inc:42
 #: ../../../../inc/themes/classic/search.inc:53
 #: ../../../../inc/themes/material-blue/account.inc:50
-#: ../../../../inc/themes/material-blue/search.inc:49
+#: ../../../../inc/themes/material-blue/search.inc:85
 msgid "Categoría"
 msgstr "Kategória"
 
@@ -1837,7 +1914,7 @@ msgstr "Hiba a kategória törlése közben"
 
 # "Delete Category"
 #: ../../../../inc/Category.class.php:132
-#: ../../../../web/AccountsMgmtC.class.php:101
+#: ../../../../web/AccountsMgmtC.class.php:102
 msgid "Eliminar Categoría"
 msgstr "Kategória törlése"
 
@@ -1851,28 +1928,29 @@ msgstr "Hiba a kategória frissítése közben"
 msgid "Modificar Categoría"
 msgstr "Kategória szerkesztés"
 
-# "Update Configuration"
-#: ../../../../inc/Config.class.php:118 ../../../../inc/Config.class.php:404
-msgid "Modificar configuración"
-msgstr "Konfiguráció frissítése"
-
 # "Unable to write on configuration file"
-#: ../../../../inc/Config.class.php:276
+#: ../../../../inc/Config.class.php:148
 msgid "No es posible escribir el archivo de configuración"
 msgstr "Nem lehet a konfigurációs fájlba írni"
 
 # "Please, check 'config' directory permissions"
-#: ../../../../inc/Config.class.php:276
+#: ../../../../inc/Config.class.php:148
 msgid "Compruebe los permisos del directorio \"config\""
 msgstr "Kérem, ellenõrizze a 'config' mappa jogosultságait"
 
+# "Update Configuration"
+#: ../../../../inc/ConfigDB.class.php:91
+#: ../../../../inc/ConfigDB.class.php:120
+msgid "Modificar configuración"
+msgstr "Konfiguráció frissítése"
+
 # "Parameter"
-#: ../../../../inc/Config.class.php:405
+#: ../../../../inc/ConfigDB.class.php:121
 msgid "Parámetro"
 msgstr "Paraméter"
 
 # "Value"
-#: ../../../../inc/Config.class.php:406
+#: ../../../../inc/ConfigDB.class.php:122
 msgid "Valor"
 msgstr "Érték"
 
@@ -1900,7 +1978,7 @@ msgid "No tiene permisos para realizar esta operación"
 msgstr "Nincs jogosultságod végrehajtani ezt a mûveletet"
 
 # "Warning"
-#: ../../../../inc/Crypt.class.php:119 ../../../../inc/Email.class.php:146
+#: ../../../../inc/Crypt.class.php:119 ../../../../inc/Email.class.php:148
 msgid "Aviso"
 msgstr "Figyelem"
 
@@ -1920,14 +1998,14 @@ msgid "Error al generar datos cifrados"
 msgstr "Hiba a titkosítási folyamat közben"
 
 # "Unable to create customer"
-#: ../../../../inc/CryptPKI.class.php:44
+#: ../../../../inc/CryptPKI.class.php:46
 #, fuzzy
 msgid "No es posible generar las claves RSA"
 msgstr "Ügyfél létrehozása meghiusúlt"
 
 # "File doesn't exist"
-#: ../../../../inc/CryptPKI.class.php:110
-#: ../../../../inc/CryptPKI.class.php:141
+#: ../../../../inc/CryptPKI.class.php:112
+#: ../../../../inc/CryptPKI.class.php:143
 #, fuzzy
 msgid "El archivo de clave no existe"
 msgstr "A fájl nem létezik"
@@ -1948,10 +2026,10 @@ msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
 #: ../../../../inc/CsvImportBase.class.php:140
 #: ../../../../inc/CsvImportBase.class.php:145
 #: ../../../../inc/Import.class.php:118 ../../../../inc/Import.class.php:124
-#: ../../../../inc/Migrate.class.php:349
+#: ../../../../inc/Migrate.class.php:348
 #: ../../../../inc/XmlImport.class.php:62
 #: ../../../../inc/XmlImport.class.php:63
-#: ../../../../web/ConfigC.class.php:197
+#: ../../../../web/ConfigC.class.php:199
 msgid "Importar Cuentas"
 msgstr "Fiókok importálása"
 
@@ -1972,45 +2050,81 @@ msgstr "Hiba a fiók importálása közben"
 msgid "Cuenta importada: %s"
 msgstr "Munkamenet idõ"
 
-#: ../../../../inc/CustomFields.class.php:270
-#: ../../../../web/AccountsMgmtC.class.php:300
+#: ../../../../inc/CustomFields.class.php:276
+#: ../../../../web/AccountsMgmtC.class.php:301
 #: ../../../../inc/themes/classic/profiles.inc:107
 #: ../../../../inc/themes/material-blue/profiles.inc:124
 msgid "Campos Personalizados"
 msgstr ""
 
 # "Error on updating profile"
-#: ../../../../inc/CustomFields.class.php:279
+#: ../../../../inc/CustomFields.class.php:285
 #, fuzzy
 msgid "Error al actualizar datos encriptados"
 msgstr "Hiba a jelszó frissítése közben"
 
-#: ../../../../inc/CustomFields.class.php:283
+#: ../../../../inc/CustomFields.class.php:289
 msgid "Actualizando datos encriptados"
 msgstr ""
 
 # "Records updated"
-#: ../../../../inc/CustomFields.class.php:310
+#: ../../../../inc/CustomFields.class.php:316
 #, fuzzy
 msgid "Registros no actualizados"
 msgstr "Rekordok frissítve"
 
+# "Text to search"
+#: ../../../../inc/CustomFieldsBase.class.php:86
+#, fuzzy
+msgid "Texto"
+msgstr "Keresendõ szöveg"
+
+# "Date Added"
+#: ../../../../inc/CustomFieldsBase.class.php:88
+#, fuzzy
+msgid "Fecha"
+msgstr "Dátum hozzáadva"
+
+#: ../../../../inc/CustomFieldsBase.class.php:89
+msgid "Número"
+msgstr ""
+
+# "Email"
+#: ../../../../inc/CustomFieldsBase.class.php:90
+#: ../../../../inc/themes/classic/passreset.inc:22
+#: ../../../../inc/themes/classic/users.inc:61
+#: ../../../../inc/themes/material-blue/users.inc:71
+msgid "Email"
+msgstr "Email"
+
+#: ../../../../inc/CustomFieldsBase.class.php:91
+msgid "Teléfono"
+msgstr ""
+
+#: ../../../../inc/CustomFieldsBase.class.php:92
+msgid "Link"
+msgstr ""
+
+#: ../../../../inc/CustomFieldsBase.class.php:93
+msgid "Color"
+msgstr ""
+
 # "Categories"
-#: ../../../../inc/CustomFieldsBase.class.php:81
+#: ../../../../inc/CustomFieldsBase.class.php:107
 #: ../../../../inc/themes/classic/profiles.inc:98
 #: ../../../../inc/themes/material-blue/profiles.inc:114
 msgid "Categorías"
 msgstr "Kategóriák"
 
 # "Customers"
-#: ../../../../inc/CustomFieldsBase.class.php:82
+#: ../../../../inc/CustomFieldsBase.class.php:108
 #: ../../../../inc/themes/classic/profiles.inc:103
 #: ../../../../inc/themes/material-blue/profiles.inc:119
 msgid "Clientes"
 msgstr "Ügyfél"
 
 # "Groups"
-#: ../../../../inc/CustomFieldsBase.class.php:84
+#: ../../../../inc/CustomFieldsBase.class.php:110
 #: ../../../../inc/themes/classic/account.inc:143
 #: ../../../../inc/themes/classic/profiles.inc:89
 #: ../../../../inc/themes/material-blue/account.inc:169
@@ -2050,7 +2164,7 @@ msgstr "Hiba az ügyfél törlése közben"
 
 # "Delete Customer"
 #: ../../../../inc/Customer.class.php:163
-#: ../../../../web/AccountsMgmtC.class.php:159
+#: ../../../../web/AccountsMgmtC.class.php:160
 msgid "Eliminar Cliente"
 msgstr "Ügyfél törlése"
 
@@ -2059,7 +2173,7 @@ msgstr "Ügyfél törlése"
 #: ../../../../inc/DBConnectionFactory.class.php:85
 #: ../../../../inc/DBConnectionFactory.class.php:99
 #: ../../../../inc/Installer.class.php:235
-#: ../../../../inc/Migrate.class.php:115
+#: ../../../../inc/Migrate.class.php:114
 msgid "No es posible conectar con la BD"
 msgstr "Csatlakozás a DB-hez meghiusúlt"
 
@@ -2067,18 +2181,18 @@ msgstr "Csatlakozás a DB-hez meghiusúlt"
 #: ../../../../inc/DBConnectionFactory.class.php:83
 #: ../../../../inc/DBConnectionFactory.class.php:85
 #: ../../../../inc/Installer.class.php:236
-#: ../../../../inc/Migrate.class.php:116
+#: ../../../../inc/Migrate.class.php:115
 #, fuzzy
 msgid "Compruebe los datos de conexión"
 msgstr "Please, check connection parameters"
 
 # "N/A"
-#: ../../../../inc/Email.class.php:59 ../../../../inc/UserUtil.class.php:565
+#: ../../../../inc/Email.class.php:59 ../../../../inc/UserUtil.class.php:182
 msgid "N/D"
 msgstr "n.a."
 
 # "Action"
-#: ../../../../inc/Email.class.php:60 ../../../../web/UsersMgmtC.class.php:392
+#: ../../../../inc/Email.class.php:60 ../../../../web/UsersMgmtC.class.php:393
 #: ../../../../inc/themes/classic/tokens.inc:20
 #: ../../../../inc/themes/material-blue/tokens.inc:20
 msgid "Acción"
@@ -2161,7 +2275,7 @@ msgstr "Hiba a fiók felhasználóinak frissítése közben"
 
 # "Delete Group"
 #: ../../../../inc/Groups.class.php:369
-#: ../../../../web/UsersMgmtC.class.php:209
+#: ../../../../web/UsersMgmtC.class.php:210
 msgid "Eliminar Grupo"
 msgstr "Csoport törlése"
 
@@ -2185,7 +2299,7 @@ msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
 
 # "Import finished"
 #: ../../../../inc/Import.class.php:124 ../../../../inc/Import.class.php:127
-#: ../../../../inc/Migrate.class.php:92
+#: ../../../../inc/Migrate.class.php:91
 msgid "Importación finalizada"
 msgstr "Importálás kész"
 
@@ -2492,37 +2606,37 @@ msgid "Error al buscar objetos en DN base"
 msgstr "Hiba a keresés közben"
 
 # "Error on searching group RDN"
-#: ../../../../inc/Ldap.class.php:217 ../../../../inc/Ldap.class.php:222
-#: ../../../../inc/Ldap.class.php:229 ../../../../inc/Ldap.class.php:233
-#: ../../../../inc/Ldap.class.php:242 ../../../../inc/Ldap.class.php:246
+#: ../../../../inc/Ldap.class.php:212 ../../../../inc/Ldap.class.php:218
+#: ../../../../inc/Ldap.class.php:225 ../../../../inc/Ldap.class.php:230
+#: ../../../../inc/Ldap.class.php:235 ../../../../inc/Ldap.class.php:240
 msgid "Error al buscar RDN de grupo"
 msgstr "Hiba az RDN csoport keresése közben"
 
 # "Error on searching user DN"
-#: ../../../../inc/Ldap.class.php:295 ../../../../inc/Ldap.class.php:300
-#: ../../../../inc/Ldap.class.php:314 ../../../../inc/Ldap.class.php:318
+#: ../../../../inc/Ldap.class.php:289 ../../../../inc/Ldap.class.php:295
+#: ../../../../inc/Ldap.class.php:310 ../../../../inc/Ldap.class.php:315
 msgid "Error al buscar el DN del usuario"
 msgstr "Hiba a DN felhasználó keresése közben"
 
 # "Error on searching user on LDAP"
-#: ../../../../inc/Ldap.class.php:307 ../../../../inc/Ldap.class.php:311
+#: ../../../../inc/Ldap.class.php:302 ../../../../inc/Ldap.class.php:307
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Hiba az LDAP felhasználók keresése közben"
 
 # "Error on searching users group"
-#: ../../../../inc/Ldap.class.php:392 ../../../../inc/Ldap.class.php:397
-#: ../../../../inc/LdapADS.class.php:99 ../../../../inc/LdapADS.class.php:104
+#: ../../../../inc/Ldap.class.php:384 ../../../../inc/Ldap.class.php:390
+#: ../../../../inc/LdapADS.class.php:103 ../../../../inc/LdapADS.class.php:108
 msgid "Error al buscar el grupo de usuarios"
 msgstr "Hiba a keresése közben"
 
 # "User deleted"
-#: ../../../../inc/Ldap.class.php:404
+#: ../../../../inc/Ldap.class.php:397
 #, fuzzy
 msgid "Usuario verificado en grupo"
 msgstr "Csoportot használja a:"
 
 # "No group found with that name"
-#: ../../../../inc/LdapADS.class.php:108 ../../../../inc/LdapADS.class.php:113
+#: ../../../../inc/LdapADS.class.php:112 ../../../../inc/LdapADS.class.php:117
 msgid "No se encontró el grupo con ese nombre"
 msgstr "Nincs ilyen nevû csoport"
 
@@ -2533,177 +2647,177 @@ msgstr "Események törlése"
 
 # "Clear event log"
 #: ../../../../inc/Log.class.php:88
-#: ../../../../inc/themes/classic/eventlog.inc:100
-#: ../../../../inc/themes/material-blue/eventlog.inc:100
+#: ../../../../inc/themes/classic/eventlog.inc:98
+#: ../../../../inc/themes/material-blue/eventlog.inc:99
 msgid "Vaciar registro de eventos"
 msgstr "Esemény napló törlése"
 
 # "Missing parameters"
-#: ../../../../inc/Migrate.class.php:52
+#: ../../../../inc/Migrate.class.php:51
 msgid "Faltan parámetros"
 msgstr "Hiányzó paraméter"
 
 # "Incompatible version"
-#: ../../../../inc/Migrate.class.php:149
+#: ../../../../inc/Migrate.class.php:148
 msgid "La versión no es compatible"
 msgstr "Nem kompatibilis verzió"
 
 # "Please, update to last version of phpPMS"
-#: ../../../../inc/Migrate.class.php:150
+#: ../../../../inc/Migrate.class.php:149
 msgid "Actualice a la última versión de phpPMS"
 msgstr "Kérem, telepítse a phpPMS legfrissebb változatát"
 
 # "Error on retrieving configuration"
-#: ../../../../inc/Migrate.class.php:168
+#: ../../../../inc/Migrate.class.php:167
 msgid "Error al obtener la configuración"
 msgstr "Hiba a konfiguráció betöltése közben"
 
 # "Error on cleaning table"
-#: ../../../../inc/Migrate.class.php:211 ../../../../inc/Migrate.class.php:224
+#: ../../../../inc/Migrate.class.php:210 ../../../../inc/Migrate.class.php:223
 msgid "Error al vaciar tabla"
 msgstr "Hiba a tábla törlése közben"
 
 # "Current user is not application administrator"
-#: ../../../../inc/Migrate.class.php:229
+#: ../../../../inc/Migrate.class.php:228
 msgid "Usuario actual no es administrador de la aplicación"
 msgstr "A jelenlegi felhasználó nem rendszergazda"
 
 # "Unable to create customer"
-#: ../../../../inc/Migrate.class.php:274
+#: ../../../../inc/Migrate.class.php:273
 msgid "No es posible crear el cliente"
 msgstr "Ügyfél létrehozása meghiusúlt"
 
 # "Please, contact to developer"
-#: ../../../../inc/Migrate.class.php:275
+#: ../../../../inc/Migrate.class.php:274
 msgid "Contacte con el desarrollador"
 msgstr "Kérem, keresse a fejlesztõt"
 
 # "Import Customers"
-#: ../../../../inc/Migrate.class.php:279
+#: ../../../../inc/Migrate.class.php:278
 msgid "Importar Clientes"
 msgstr "Ügyfelek importálása"
 
 # "Records"
-#: ../../../../inc/Migrate.class.php:281 ../../../../inc/Migrate.class.php:351
-#: ../../../../inc/Migrate.class.php:452 ../../../../inc/Migrate.class.php:525
-#: ../../../../inc/Migrate.class.php:633 ../../../../inc/Migrate.class.php:698
-#: ../../../../inc/Migrate.class.php:772 ../../../../inc/Migrate.class.php:862
-#: ../../../../inc/Migrate.class.php:933
+#: ../../../../inc/Migrate.class.php:280 ../../../../inc/Migrate.class.php:350
+#: ../../../../inc/Migrate.class.php:451 ../../../../inc/Migrate.class.php:524
+#: ../../../../inc/Migrate.class.php:632 ../../../../inc/Migrate.class.php:697
+#: ../../../../inc/Migrate.class.php:771 ../../../../inc/Migrate.class.php:861
+#: ../../../../inc/Migrate.class.php:932
 msgid "Registros"
 msgstr "Rekordok"
 
 # "Error on retrieving customer"
-#: ../../../../inc/Migrate.class.php:303
+#: ../../../../inc/Migrate.class.php:302
 msgid "Error al obtener los clientes"
 msgstr "Hiba az ügyfél betöltése közben"
 
 # "Error on retrieving accounts"
-#: ../../../../inc/Migrate.class.php:345
+#: ../../../../inc/Migrate.class.php:344
 msgid "Error al obtener cuentas"
 msgstr "Hiba a fiókok betöltése közben"
 
 # "Customer not found"
-#: ../../../../inc/Migrate.class.php:374
+#: ../../../../inc/Migrate.class.php:373
 msgid "Cliente no encontrado"
 msgstr "Nincs ügyfél találat"
 
 # "Error on importing account"
-#: ../../../../inc/Migrate.class.php:417
+#: ../../../../inc/Migrate.class.php:416
 msgid "Error al migrar cuenta"
 msgstr "Hiba a fiók importálása közben"
 
 # "Error on retrieving accounts groups"
-#: ../../../../inc/Migrate.class.php:446
+#: ../../../../inc/Migrate.class.php:445
 msgid "Error al obtener los grupos de cuentas"
 msgstr "Hiba a fiók csoportok betöltése közben"
 
 # "Import Accounts Groups"
-#: ../../../../inc/Migrate.class.php:450
+#: ../../../../inc/Migrate.class.php:449
 msgid "Importar Grupos de Cuentas"
 msgstr "Fiók csoportok importálása"
 
 # "Error on accounts groups creation"
-#: ../../../../inc/Migrate.class.php:472
+#: ../../../../inc/Migrate.class.php:471
 msgid "Error al crear grupos de cuentas"
 msgstr "Hiba a fiók csoportok létrehozása közben"
 
 # "Error on retrieving accounts history"
-#: ../../../../inc/Migrate.class.php:519
+#: ../../../../inc/Migrate.class.php:518
 msgid "Error al obtener el historico de cuentas"
 msgstr "Hiba a fiókok elõzményeinek betöltése közben"
 
 # "Import Accounts History"
-#: ../../../../inc/Migrate.class.php:523
+#: ../../../../inc/Migrate.class.php:522
 msgid "Importar Histórico de Cuentas"
 msgstr "Fiók elõzmények importálása"
 
 # "Error on creating accounts history"
-#: ../../../../inc/Migrate.class.php:592
+#: ../../../../inc/Migrate.class.php:591
 msgid "Error al crear historico de cuentas"
 msgstr "Hiba a fiók elõzmények létrehozása közben"
 
 # "Error on retrieving accounts files"
-#: ../../../../inc/Migrate.class.php:627
+#: ../../../../inc/Migrate.class.php:626
 msgid "Error al obtener los archivos de cuentas"
 msgstr "Hiba a fiókok fájljainak betöltése közben"
 
 # "Import Accounts Files"
-#: ../../../../inc/Migrate.class.php:631
+#: ../../../../inc/Migrate.class.php:630
 msgid "Importar Archivos de Cuentas"
 msgstr "Fiók fájljainak importálása"
 
 # "Error on creating accounts files"
-#: ../../../../inc/Migrate.class.php:663
+#: ../../../../inc/Migrate.class.php:662
 msgid "Error al crear archivos de cuentas"
 msgstr "Hiba a fiók fájlok létrehozása közben"
 
 # "Error on retrieving accounts categories"
-#: ../../../../inc/Migrate.class.php:692
+#: ../../../../inc/Migrate.class.php:691
 msgid "Error al obtener las categorías de cuentas"
 msgstr "Hiba a fiók kategóriák elérése közben"
 
 # "Import Accounts Categories"
-#: ../../../../inc/Migrate.class.php:696
+#: ../../../../inc/Migrate.class.php:695
 msgid "Importar Categorías de Cuentas"
 msgstr "Fiók kategóriák importálása"
 
 # "Error on retrieving accounts categories"
-#: ../../../../inc/Migrate.class.php:718
+#: ../../../../inc/Migrate.class.php:717
 msgid "Error al crear categorías de cuentas"
 msgstr "Hiba a fiók kategóriák elérése közben"
 
 # "Error on retrieving users"
-#: ../../../../inc/Migrate.class.php:766
+#: ../../../../inc/Migrate.class.php:765
 msgid "Error al obtener los usuarios"
 msgstr "Hiba a felhasználók betöltése közben"
 
 # "Import Users"
-#: ../../../../inc/Migrate.class.php:770
+#: ../../../../inc/Migrate.class.php:769
 msgid "Importar Usuarios"
 msgstr "Felhasználók importálása"
 
 # "Error on creating users"
-#: ../../../../inc/Migrate.class.php:827
+#: ../../../../inc/Migrate.class.php:826
 msgid "Error al crear usuarios"
 msgstr "Hiba a profil létrehozása közben"
 
 # "Error on retrieving users groups"
-#: ../../../../inc/Migrate.class.php:856
+#: ../../../../inc/Migrate.class.php:855
 msgid "Error al obtener los grupos de usuarios"
 msgstr "Hiba a felhasználói csoportok betöltése közben"
 
 # "Import Users Groups"
-#: ../../../../inc/Migrate.class.php:860
+#: ../../../../inc/Migrate.class.php:859
 msgid "Importar Grupos de Usuarios"
 msgstr "Felhasználó csoportok importálása"
 
 # "Error on adding users groups"
-#: ../../../../inc/Migrate.class.php:886
+#: ../../../../inc/Migrate.class.php:885
 msgid "Error al crear los grupos de usuarios"
 msgstr "Hiba a felhasználói csoportok hozzáadás közben"
 
 # "Import Configuration"
-#: ../../../../inc/Migrate.class.php:931
+#: ../../../../inc/Migrate.class.php:930
 msgid "Importar Configuración"
 msgstr "Konfiguráció importálása"
 
@@ -2740,7 +2854,7 @@ msgstr "Kettözõtt profil név"
 
 # "Delete Profile"
 #: ../../../../inc/ProfileBase.class.php:550
-#: ../../../../web/UsersMgmtC.class.php:274
+#: ../../../../web/UsersMgmtC.class.php:275
 msgid "Eliminar Perfil"
 msgstr "Profil törlése"
 
@@ -2775,19 +2889,19 @@ msgid "No hay cuentas para importar"
 msgstr "Nincsenek letölthetõ Archívumok"
 
 # "Unable to create customer"
-#: ../../../../inc/Template.class.php:89
+#: ../../../../inc/Template.class.php:91
 #, fuzzy, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
 msgstr "Ügyfél létrehozása meghiusúlt"
 
 # "Unable to create customer"
-#: ../../../../inc/Template.class.php:128
+#: ../../../../inc/Template.class.php:130
 #, fuzzy, php-format
 msgid "No es posible obtener la variable \"%s\""
 msgstr "Ügyfél létrehozása meghiusúlt"
 
 # "Unable to create customer"
-#: ../../../../inc/Template.class.php:171
+#: ../../../../inc/Template.class.php:173
 #, fuzzy, php-format
 msgid "No es posible destruir la variable \"%s\""
 msgstr "Ügyfél létrehozása meghiusúlt"
@@ -2847,20 +2961,20 @@ msgid "Actualización de la Configuración realizada correctamente."
 msgstr "A beállítások elmentve"
 
 # Could not perform the password change request.
-#: ../../../../inc/UserBase.class.php:386
-#: ../../../../inc/UserBase.class.php:530
+#: ../../../../inc/UserBase.class.php:388
+#: ../../../../inc/UserBase.class.php:532
 #, fuzzy
 msgid "No se pudo realizar la petición de cambio de clave."
 msgstr "Nem sikerült végrehajtani a jelszócsere kérelmet."
 
 # "Edit User"
-#: ../../../../inc/UserBase.class.php:525
+#: ../../../../inc/UserBase.class.php:527
 msgid "Modificar Usuario"
 msgstr "Felhasználó módosítás"
 
 # "Delete User"
-#: ../../../../inc/UserBase.class.php:592
-#: ../../../../web/UsersMgmtC.class.php:150
+#: ../../../../inc/UserBase.class.php:594
+#: ../../../../web/UsersMgmtC.class.php:151
 msgid "Eliminar Usuario"
 msgstr "felhasználó törlése"
 
@@ -2886,50 +3000,50 @@ msgid "Nuevo usuario de LDAP"
 msgstr "LDAP felhasználó"
 
 # "Edit Group"
-#: ../../../../inc/UserUtil.class.php:703
+#: ../../../../inc/UserMigrate.class.php:113
 #, fuzzy
 msgid "Migrar Grupos"
 msgstr "Csoportok"
 
 # "Error on adding users groups"
-#: ../../../../inc/UserUtil.class.php:703
+#: ../../../../inc/UserMigrate.class.php:113
 #, fuzzy
 msgid "Error al migrar grupo del usuario"
 msgstr "Hiba a DN felhasználó keresése közben"
 
 # Required PHP version >= 5.1
-#: ../../../../inc/Util.class.php:122
+#: ../../../../inc/Util.class.php:119
 #, fuzzy
 msgid "Versión de PHP requerida >= "
 msgstr "Szükséges PHP verzió> = 5.1"
 
 # "Please update PHP version to run sysPass in a secure way"
-#: ../../../../inc/Util.class.php:123
+#: ../../../../inc/Util.class.php:120
 #, fuzzy
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
 # "Module unavilable"
-#: ../../../../inc/Util.class.php:159
+#: ../../../../inc/Util.class.php:156
 #: ../../../../inc/themes/classic/ldap.inc:212
 #: ../../../../inc/themes/material-blue/ldap.inc:238
 msgid "Módulo no disponible"
 msgstr "Modul nem elérhetõ"
 
 # "Without this module the application couldn't run correctly"
-#: ../../../../inc/Util.class.php:160
+#: ../../../../inc/Util.class.php:157
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "E modul nélkül az alkalmazás nem futtatható megfelelõen"
 
 # CSV/XML Import
-#: ../../../../inc/XmlExport.class.php:125
+#: ../../../../inc/XmlExport.class.php:127
 #, fuzzy
 msgid "Exportar XML"
 msgstr "Fiókok importálása"
 
 # "Error on creating user"
-#: ../../../../inc/XmlExport.class.php:410
+#: ../../../../inc/XmlExport.class.php:412
 #, fuzzy
 msgid "Error al crear el archivo XML"
 msgstr "Hiba az ügyfél létrehozása közben"
@@ -2939,19 +3053,19 @@ msgid "Formato detectado"
 msgstr ""
 
 # Unable to process XML file
-#: ../../../../inc/XmlImportBase.class.php:75
+#: ../../../../inc/XmlImportBase.class.php:80
 #, fuzzy
 msgid "No es posible procesar el archivo XML"
 msgstr "Nem lehet a konfigurációs fájlba írni"
 
 # XML file not supported
-#: ../../../../inc/XmlImportBase.class.php:103
+#: ../../../../inc/XmlImportBase.class.php:108
 #, fuzzy
 msgid "Archivo XML no soportado"
 msgstr "Fájltípus nem engedélyezett"
 
 # Unable to detect the application the data was exported from
-#: ../../../../inc/XmlImportBase.class.php:104
+#: ../../../../inc/XmlImportBase.class.php:109
 #, fuzzy
 msgid "No es posible detectar la aplicación que exportó los datos"
 msgstr "Unable to detect the application the data was exported from"
@@ -3177,9 +3291,9 @@ msgstr "Igen"
 #: ../../../../inc/themes/classic/account.inc:136
 #: ../../../../inc/themes/classic/account.inc:167
 #: ../../../../inc/themes/classic/account.inc:449
-#: ../../../../inc/themes/classic/encryption.inc:61
-#: ../../../../inc/themes/classic/encryption.inc:80
-#: ../../../../inc/themes/classic/import.inc:70
+#: ../../../../inc/themes/classic/encryption.inc:58
+#: ../../../../inc/themes/classic/encryption.inc:77
+#: ../../../../inc/themes/classic/import.inc:67
 #: ../../../../inc/themes/classic/install.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:82
 #: ../../../../inc/themes/classic/security.inc:26
@@ -3208,30 +3322,30 @@ msgid "Error al copiar al portapapeles"
 msgstr "Hiba a jelszó frissítése közben"
 
 # "Account Details"
-#: ../../../../web/AccountC.class.php:381
-#: ../../../../web/AccountC.class.php:412
+#: ../../../../web/AccountC.class.php:384
+#: ../../../../web/AccountC.class.php:415
 #: ../../../../inc/themes/classic/search.inc:45
 #: ../../../../inc/themes/classic/search.inc:104
-#: ../../../../inc/themes/material-blue/search.inc:41
-#: ../../../../inc/themes/material-blue/search.inc:108
+#: ../../../../inc/themes/material-blue/search.inc:77
+#: ../../../../inc/themes/material-blue/search.inc:144
 msgid "Detalles de Cuenta"
 msgstr "Fiók adatok"
 
 # "Edit Account Password"
-#: ../../../../web/AccountC.class.php:469
+#: ../../../../web/AccountC.class.php:472
 #: ../../../../inc/themes/classic/account.inc:396
-#: ../../../../inc/themes/material-blue/account.inc:433
+#: ../../../../inc/themes/material-blue/account.inc:435
 msgid "Modificar Clave de Cuenta"
 msgstr "Fiók jelszavának szerkesztése"
 
 # "Name"
-#: ../../../../web/AccountsMgmtC.class.php:79
-#: ../../../../web/AccountsMgmtC.class.php:138
-#: ../../../../web/AccountsMgmtC.class.php:266
-#: ../../../../web/SearchC.class.php:292
-#: ../../../../web/UsersMgmtC.class.php:87
-#: ../../../../web/UsersMgmtC.class.php:187
-#: ../../../../web/UsersMgmtC.class.php:245
+#: ../../../../web/AccountsMgmtC.class.php:80
+#: ../../../../web/AccountsMgmtC.class.php:139
+#: ../../../../web/AccountsMgmtC.class.php:267
+#: ../../../../web/SearchC.class.php:291
+#: ../../../../web/UsersMgmtC.class.php:88
+#: ../../../../web/UsersMgmtC.class.php:188
+#: ../../../../web/UsersMgmtC.class.php:246
 #: ../../../../inc/themes/classic/account.inc:11
 #: ../../../../inc/themes/classic/categories.inc:8
 #: ../../../../inc/themes/classic/customers.inc:8
@@ -3252,22 +3366,22 @@ msgstr "Fiók jelszavának szerkesztése"
 #: ../../../../inc/themes/material-blue/info.inc:25
 #: ../../../../inc/themes/material-blue/profiles.inc:8
 #: ../../../../inc/themes/material-blue/request.inc:6
-#: ../../../../inc/themes/material-blue/search.inc:39
+#: ../../../../inc/themes/material-blue/search.inc:75
 #: ../../../../inc/themes/material-blue/users.inc:8
 msgid "Nombre"
 msgstr "Név"
 
 # "Categories management"
-#: ../../../../web/AccountsMgmtC.class.php:115
+#: ../../../../web/AccountsMgmtC.class.php:116
 msgid "Gestión de Categorías"
 msgstr "Kategória Menedzsment"
 
 # "Customers Management"
-#: ../../../../web/AccountsMgmtC.class.php:172
+#: ../../../../web/AccountsMgmtC.class.php:173
 msgid "Gestión de Clientes"
 msgstr "Ügyfél Menedzsment"
 
-#: ../../../../web/AccountsMgmtC.class.php:266
+#: ../../../../web/AccountsMgmtC.class.php:267
 #: ../../../../inc/themes/classic/customfields.inc:27
 #: ../../../../inc/themes/material-blue/customfields.inc:30
 #, fuzzy
@@ -3275,52 +3389,52 @@ msgid "Módulo"
 msgstr "Modul nem elérhetõ"
 
 # "Delete Group"
-#: ../../../../web/AccountsMgmtC.class.php:287
+#: ../../../../web/AccountsMgmtC.class.php:288
 #, fuzzy
 msgid "Eliminar Campo"
 msgstr "Profil törlése"
 
 # "Last backup"
-#: ../../../../web/ConfigC.class.php:166
+#: ../../../../web/ConfigC.class.php:168
 msgid "Último backup"
 msgstr "Utolsó Archiválás"
 
 # "There're no backups available"
-#: ../../../../web/ConfigC.class.php:166
+#: ../../../../web/ConfigC.class.php:168
 msgid "No se encontraron backups"
 msgstr "Nincsenek elérhetõ Archívumok"
 
 # "Last Modification"
-#: ../../../../web/ConfigC.class.php:173
+#: ../../../../web/ConfigC.class.php:175
 #, fuzzy
 msgid "Última exportación"
 msgstr "Utolsó oldal"
 
 # "Unable to write on configuration file"
-#: ../../../../web/ConfigC.class.php:173
+#: ../../../../web/ConfigC.class.php:175
 #, fuzzy
 msgid "No se encontró archivo de exportación"
 msgstr "Nem lehet a konfigurációs fájlba írni"
 
 # "Configuration"
-#: ../../../../web/ConfigC.class.php:218
+#: ../../../../web/ConfigC.class.php:220
 #, fuzzy
 msgid "Información"
 msgstr "Mutat néhány információt az alkalmazásról és a teljesítményrõl"
 
 # "Event log cleared"
-#: ../../../../web/EventlogC.class.php:93
+#: ../../../../web/EventlogC.class.php:95
 msgid "Registro de eventos vaciado"
 msgstr "Esemény napló törölve"
 
 # "Error on clearing event log"
-#: ../../../../web/EventlogC.class.php:95
+#: ../../../../web/EventlogC.class.php:97
 msgid "Error al vaciar el registro de eventos"
 msgstr "Hiba az esemény napló törlése közben"
 
 # "Application Admin"
 #: ../../../../web/MainC.class.php:159
-#: ../../../../web/UsersMgmtC.class.php:100
+#: ../../../../web/UsersMgmtC.class.php:101
 msgid "Admin Aplicación"
 msgstr "Admin alkalmazás"
 
@@ -3329,21 +3443,22 @@ msgstr "Admin alkalmazás"
 msgid "Buscar"
 msgstr "Keresés"
 
-# "Users Management"
+# "Access user"
 #: ../../../../web/MainC.class.php:189
-#: ../../../../web/UsersMgmtC.class.php:163
-msgid "Gestión de Usuarios"
-msgstr "Felhasználó Menedzsment"
+#, fuzzy
+msgid "Usuarios y Accesos"
+msgstr "Felhasználó elérése"
 
-# "Customer and Categories management"
+# "Delete File"
 #: ../../../../web/MainC.class.php:195
-msgid "Gestión de Clientes y Categorías"
-msgstr "Ügyfél és Kategória Menedzsment"
+#, fuzzy
+msgid "Elementos y Personalización"
+msgstr "Profil törlése"
 
 # "Event Log"
 #: ../../../../web/MainC.class.php:207
-#: ../../../../inc/themes/classic/eventlog.inc:4
-#: ../../../../inc/themes/material-blue/eventlog.inc:3
+#: ../../../../inc/themes/classic/eventlog.inc:2
+#: ../../../../inc/themes/material-blue/eventlog.inc:2
 msgid "Registro de Eventos"
 msgstr "Esemény napló"
 
@@ -3417,75 +3532,75 @@ msgid "Mejoras de seguridad en XSS e inyección SQL"
 msgstr ""
 
 # "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
-#: ../../../../web/MainC.class.php:284
+#: ../../../../web/MainC.class.php:283
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr ""
 "Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
 
 # "Please update PHP version to run sysPass in a secure way"
-#: ../../../../web/MainC.class.php:285
+#: ../../../../web/MainC.class.php:284
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
 # "Cannot find random number generator."
-#: ../../../../web/MainC.class.php:292
+#: ../../../../web/MainC.class.php:291
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Nem találom a véletlen szám generátort"
 
 # "Without this function, an attacker could take your account on password reset."
-#: ../../../../web/MainC.class.php:293
+#: ../../../../web/MainC.class.php:292
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr "E funkció nélkül egy támadó alapállapotba állíthatja jelszavát"
 
 # "Installation finished"
-#: ../../../../web/MainC.class.php:312
+#: ../../../../web/MainC.class.php:311
 msgid "Instalación finalizada"
 msgstr "A telepítés befejezõdött"
 
 # "Click <a href=\"index.php\" title=\"Login\">here</a> to access"
-#: ../../../../web/MainC.class.php:313
+#: ../../../../web/MainC.class.php:312
 msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
 msgstr ""
 "Kattinst <a href=\"index.php\" title=\"Bejelentkezés\">here</a> a "
 "bejelentkezéshez"
 
 # "Download new version"
-#: ../../../../web/MainC.class.php:410
+#: ../../../../web/MainC.class.php:409
 msgid "Descargar nueva versión"
 msgstr "Új verzió letöltése"
 
-#: ../../../../web/MainC.class.php:421
+#: ../../../../web/MainC.class.php:420
 msgid "Avisos de sysPass"
 msgstr ""
 
 # "Sort by Customer"
-#: ../../../../web/SearchC.class.php:285
+#: ../../../../web/SearchC.class.php:284
 msgid "Ordenar por Cliente"
 msgstr "Rendezés Ügyfél szerint"
 
 # "Sort by Name"
-#: ../../../../web/SearchC.class.php:291
+#: ../../../../web/SearchC.class.php:290
 msgid "Ordenar por Nombre"
 msgstr "Rendezés Név szerint"
 
 # "Sort by Category"
-#: ../../../../web/SearchC.class.php:297
+#: ../../../../web/SearchC.class.php:296
 msgid "Ordenar por Categoría"
 msgstr "Rendezés Kategória szerint"
 
 # "Sort by Username"
-#: ../../../../web/SearchC.class.php:303
+#: ../../../../web/SearchC.class.php:302
 msgid "Ordenar por Usuario"
 msgstr "Rendezés Felhasználónév szerint"
 
 # "Sort by URL / IP"
-#: ../../../../web/SearchC.class.php:309
+#: ../../../../web/SearchC.class.php:308
 msgid "Ordenar por URL / IP"
 msgstr "Rendezés URL / IP szerint"
 
 # "URL / IP"
-#: ../../../../web/SearchC.class.php:310
+#: ../../../../web/SearchC.class.php:309
 #: ../../../../inc/themes/classic/account.inc:61
 #: ../../../../inc/themes/classic/editpass.inc:16
 #: ../../../../inc/themes/classic/request.inc:13
@@ -3493,29 +3608,29 @@ msgstr "Rendezés URL / IP szerint"
 #: ../../../../inc/themes/material-blue/account.inc:69
 #: ../../../../inc/themes/material-blue/editpass.inc:17
 #: ../../../../inc/themes/material-blue/request.inc:15
-#: ../../../../inc/themes/material-blue/search.inc:62
+#: ../../../../inc/themes/material-blue/search.inc:98
 msgid "URL / IP"
 msgstr "URL / IP"
 
 # "Properties"
-#: ../../../../web/UsersMgmtC.class.php:91
+#: ../../../../web/UsersMgmtC.class.php:92
 msgid "Propiedades"
 msgstr "Beállítások"
 
 # "Account Admin"
-#: ../../../../web/UsersMgmtC.class.php:104
+#: ../../../../web/UsersMgmtC.class.php:105
 msgid "Admin Cuentas"
 msgstr "Admin Fiók"
 
 # "LDAP User"
-#: ../../../../web/UsersMgmtC.class.php:108
+#: ../../../../web/UsersMgmtC.class.php:109
 #: ../../../../inc/themes/classic/users.inc:28
 #: ../../../../inc/themes/material-blue/users.inc:34
 msgid "Usuario de LDAP"
 msgstr "LDAP felhasználó"
 
 # "Disabled"
-#: ../../../../web/UsersMgmtC.class.php:112
+#: ../../../../web/UsersMgmtC.class.php:113
 #: ../../../../inc/themes/classic/users.inc:113
 #: ../../../../inc/themes/material-blue/users.inc:151
 #: ../../../../inc/themes/material-blue/users.inc:154
@@ -3523,60 +3638,65 @@ msgid "Deshabilitado"
 msgstr "Inaktív"
 
 # "View user details"
-#: ../../../../web/UsersMgmtC.class.php:129
+#: ../../../../web/UsersMgmtC.class.php:130
 msgid "Ver Detalles de Usuario"
 msgstr "Felhasználó részletek"
 
 # "Change user password"
-#: ../../../../web/UsersMgmtC.class.php:143
+#: ../../../../web/UsersMgmtC.class.php:144
 msgid "Cambiar Clave de Usuario"
 msgstr "Változás felhasználói jelszó"
 
+# "Users Management"
+#: ../../../../web/UsersMgmtC.class.php:164
+msgid "Gestión de Usuarios"
+msgstr "Felhasználó Menedzsment"
+
 # "Groups Management"
-#: ../../../../web/UsersMgmtC.class.php:222
+#: ../../../../web/UsersMgmtC.class.php:223
 msgid "Gestión de Grupos"
 msgstr "Csoport Menedzsment"
 
 # "View user details"
-#: ../../../../web/UsersMgmtC.class.php:260
+#: ../../../../web/UsersMgmtC.class.php:261
 #, fuzzy
 msgid "Ver Detalles de Perfil"
 msgstr "Felhasználó részletek"
 
 # "Profiles Management"
-#: ../../../../web/UsersMgmtC.class.php:287
+#: ../../../../web/UsersMgmtC.class.php:288
 msgid "Gestión de Perfiles"
 msgstr "Profil Menedzsment"
 
-#: ../../../../web/UsersMgmtC.class.php:407
+#: ../../../../web/UsersMgmtC.class.php:408
 #, fuzzy
 msgid "Ver token de Autorización"
 msgstr "Felhasználó részletek"
 
 # "Users Management"
-#: ../../../../web/UsersMgmtC.class.php:434
+#: ../../../../web/UsersMgmtC.class.php:435
 #, fuzzy
 msgid "Gestión de Autorizaciones API"
 msgstr "Fálj menedzsment inaktív"
 
 # "Configuration updated"
-#: ../../../../web/UsersMgmtC.class.php:456
+#: ../../../../web/UsersMgmtC.class.php:457
 #, fuzzy
 msgid "Token de autorización visualizado"
 msgstr "Beállítások frissítve"
 
-#: ../../../../web/UsersMgmtC.class.php:457
+#: ../../../../web/UsersMgmtC.class.php:458
 msgid "Autorizaciones"
 msgstr ""
 
 # "Security"
-#: ../../../../web/UsersPrefsC.class.php:92
+#: ../../../../web/UsersPrefsC.class.php:93
 #: ../../../../inc/themes/classic/mail.inc:63
 #: ../../../../inc/themes/material-blue/mail.inc:86
 msgid "Seguridad"
 msgstr "Biztonság"
 
-#: ../../../../web/UsersPrefsC.class.php:115
+#: ../../../../web/UsersPrefsC.class.php:117
 #: ../../../../inc/themes/classic/sessionbar.inc:9
 msgid "Preferencias"
 msgstr ""
@@ -3640,7 +3760,7 @@ msgstr "Jelszó (ismét)"
 #: ../../../../inc/themes/classic/search.inc:82
 #: ../../../../inc/themes/classic/users.inc:91
 #: ../../../../inc/themes/material-blue/account.inc:119
-#: ../../../../inc/themes/material-blue/search.inc:82
+#: ../../../../inc/themes/material-blue/search.inc:118
 #: ../../../../inc/themes/material-blue/users.inc:116
 msgid "Notas"
 msgstr "Jegyzetek"
@@ -3655,7 +3775,7 @@ msgstr "Jegyzetek a fiókokról"
 # "Permissions"
 #: ../../../../inc/themes/classic/account.inc:108
 #: ../../../../inc/themes/material-blue/account.inc:133
-#: ../../../../inc/themes/material-blue/search.inc:75
+#: ../../../../inc/themes/material-blue/search.inc:111
 msgid "Permisos"
 msgstr "Jofosultságok"
 
@@ -3709,71 +3829,71 @@ msgstr "által"
 
 # "Visits"
 #: ../../../../inc/themes/classic/account.inc:289
-#: ../../../../inc/themes/material-blue/account.inc:336
+#: ../../../../inc/themes/material-blue/account.inc:338
 msgid "Visitas"
 msgstr "Látogatók"
 
 # "Date Added"
 #: ../../../../inc/themes/classic/account.inc:293
-#: ../../../../inc/themes/material-blue/account.inc:340
+#: ../../../../inc/themes/material-blue/account.inc:342
 msgid "Fecha Alta"
 msgstr "Dátum hozzáadva"
 
 # "Creator"
 #: ../../../../inc/themes/classic/account.inc:297
-#: ../../../../inc/themes/material-blue/account.inc:344
+#: ../../../../inc/themes/material-blue/account.inc:346
 msgid "Creador"
 msgstr "Készítõ"
 
 # "Main Group"
 #: ../../../../inc/themes/classic/account.inc:301
 #: ../../../../inc/themes/material-blue/account.inc:203
-#: ../../../../inc/themes/material-blue/account.inc:348
+#: ../../../../inc/themes/material-blue/account.inc:350
 msgid "Grupo Principal"
 msgstr "Fõcsoport"
 
 # "Secondary Users"
 #: ../../../../inc/themes/classic/account.inc:306
-#: ../../../../inc/themes/material-blue/account.inc:353
+#: ../../../../inc/themes/material-blue/account.inc:355
 msgid "Usuarios Secundarios"
 msgstr "Másodlagos felhasználók"
 
 # "Secondary Groups"
 #: ../../../../inc/themes/classic/account.inc:325
-#: ../../../../inc/themes/material-blue/account.inc:372
+#: ../../../../inc/themes/material-blue/account.inc:374
 msgid "Grupos Secundarios"
 msgstr "Másodlagos csoportok"
 
 # "Date Modified"
 #: ../../../../inc/themes/classic/account.inc:345
-#: ../../../../inc/themes/material-blue/account.inc:392
+#: ../../../../inc/themes/material-blue/account.inc:394
 msgid "Fecha Edición"
 msgstr "Adat módosítva"
 
 # "Editor"
 #: ../../../../inc/themes/classic/account.inc:349
-#: ../../../../inc/themes/material-blue/account.inc:396
+#: ../../../../inc/themes/material-blue/account.inc:398
 msgid "Editor"
 msgstr "Szerkesztõ"
 
 # "Restore account from this point"
 #: ../../../../inc/themes/classic/account.inc:376
-#: ../../../../inc/themes/material-blue/account.inc:459
+#: ../../../../inc/themes/material-blue/account.inc:461
 msgid "Restaurar cuenta desde este punto"
 msgstr "Restore véve ezen a ponton"
 
 # Copy Password to Clipboard
 #: ../../../../inc/themes/classic/account.inc:388
 #: ../../../../inc/themes/classic/search.inc:113
-#: ../../../../inc/themes/material-blue/account.inc:426
-#: ../../../../inc/themes/material-blue/search.inc:117
+#: ../../../../inc/themes/material-blue/account.inc:428
+#: ../../../../inc/themes/material-blue/search.inc:154
 #, fuzzy
 msgid "Copiar Clave en Portapapeles"
 msgstr "A jelszó nem lehet üres"
 
 # "View Current"
 #: ../../../../inc/themes/classic/account.inc:403
-#: ../../../../inc/themes/material-blue/account.inc:439
+#: ../../../../inc/themes/material-blue/account.inc:441
 msgid "Ver Actual"
 msgstr "Általános"
 
@@ -3789,16 +3909,16 @@ msgstr "Vissza"
 # "Edit Account"
 #: ../../../../inc/themes/classic/account.inc:415
 #: ../../../../inc/themes/classic/search.inc:125
-#: ../../../../inc/themes/material-blue/account.inc:449
-#: ../../../../inc/themes/material-blue/search.inc:128
+#: ../../../../inc/themes/material-blue/account.inc:451
+#: ../../../../inc/themes/material-blue/search.inc:166
 msgid "Modificar Cuenta"
 msgstr "Fiók módosítás"
 
 # "Request Modification"
 #: ../../../../inc/themes/classic/account.inc:420
 #: ../../../../inc/themes/classic/search.inc:146
-#: ../../../../inc/themes/material-blue/account.inc:453
-#: ../../../../inc/themes/material-blue/search.inc:148
+#: ../../../../inc/themes/material-blue/account.inc:455
+#: ../../../../inc/themes/material-blue/search.inc:187
 msgid "Solicitar Modificación"
 msgstr "Kérés módosítás"
 
@@ -3809,7 +3929,7 @@ msgstr "Kérés módosítás"
 #: ../../../../inc/themes/classic/customers.inc:62
 #: ../../../../inc/themes/classic/customfields.inc:63
 #: ../../../../inc/themes/classic/editpass.inc:50
-#: ../../../../inc/themes/classic/encryption.inc:102
+#: ../../../../inc/themes/classic/encryption.inc:99
 #: ../../../../inc/themes/classic/groups.inc:77
 #: ../../../../inc/themes/classic/ldap.inc:229
 #: ../../../../inc/themes/classic/mail.inc:107
@@ -3820,7 +3940,7 @@ msgstr "Kérés módosítás"
 #: ../../../../inc/themes/classic/users.inc:189
 #: ../../../../inc/themes/classic/userspass.inc:35
 #: ../../../../inc/themes/classic/wiki.inc:110
-#: ../../../../inc/themes/material-blue/account.inc:465
+#: ../../../../inc/themes/material-blue/account.inc:467
 #: ../../../../inc/themes/material-blue/categories.inc:72
 #: ../../../../inc/themes/material-blue/config.inc:425
 #: ../../../../inc/themes/material-blue/customers.inc:73
@@ -3829,7 +3949,7 @@ msgstr "Kérés módosítás"
 #: ../../../../inc/themes/material-blue/groups.inc:88
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
-#: ../../../../inc/themes/material-blue/preferences.inc:101
+#: ../../../../inc/themes/material-blue/preferences.inc:117
 #: ../../../../inc/themes/material-blue/profiles.inc:177
 #: ../../../../inc/themes/material-blue/security.inc:61
 #: ../../../../inc/themes/material-blue/tokens.inc:63
@@ -3841,13 +3961,13 @@ msgstr "Mentés"
 
 # "Select secondary groups"
 #: ../../../../inc/themes/classic/account.inc:437
-#: ../../../../inc/themes/material-blue/account.inc:475
+#: ../../../../inc/themes/material-blue/account.inc:477
 msgid "Seleccionar grupos secundarios"
 msgstr " Válassz másodlagos csoportot"
 
 # "Select users"
 #: ../../../../inc/themes/classic/account.inc:441
-#: ../../../../inc/themes/material-blue/account.inc:478
+#: ../../../../inc/themes/material-blue/account.inc:480
 msgid "Seleccionar usuarios"
 msgstr "Válassz felhasználót"
 
@@ -3877,17 +3997,17 @@ msgstr "Nincsenek letölthetõ Archívumok"
 #: ../../../../inc/themes/classic/backup.inc:49
 #: ../../../../inc/themes/classic/backup.inc:113
 #: ../../../../inc/themes/classic/backup.inc:117
-#: ../../../../inc/themes/classic/encryption.inc:93
-#: ../../../../inc/themes/classic/encryption.inc:97
-#: ../../../../inc/themes/classic/encryption.inc:162
-#: ../../../../inc/themes/classic/encryption.inc:166
-#: ../../../../inc/themes/classic/import.inc:15
-#: ../../../../inc/themes/classic/import.inc:37
-#: ../../../../inc/themes/classic/import.inc:51
-#: ../../../../inc/themes/classic/import.inc:97
-#: ../../../../inc/themes/classic/import.inc:118
-#: ../../../../inc/themes/classic/import.inc:170
-#: ../../../../inc/themes/classic/import.inc:174
+#: ../../../../inc/themes/classic/encryption.inc:90
+#: ../../../../inc/themes/classic/encryption.inc:94
+#: ../../../../inc/themes/classic/encryption.inc:159
+#: ../../../../inc/themes/classic/encryption.inc:163
+#: ../../../../inc/themes/classic/import.inc:12
+#: ../../../../inc/themes/classic/import.inc:34
+#: ../../../../inc/themes/classic/import.inc:48
+#: ../../../../inc/themes/classic/import.inc:94
+#: ../../../../inc/themes/classic/import.inc:115
+#: ../../../../inc/themes/classic/import.inc:167
+#: ../../../../inc/themes/classic/import.inc:171
 #: ../../../../inc/themes/classic/js-common.inc:13
 #: ../../../../inc/themes/classic/ldap.inc:13
 #: ../../../../inc/themes/classic/ldap.inc:33
@@ -3906,12 +4026,12 @@ msgstr "Nincsenek letölthetõ Archívumok"
 #: ../../../../inc/themes/material-blue/backup.inc:51
 #: ../../../../inc/themes/material-blue/backup.inc:129
 #: ../../../../inc/themes/material-blue/backup.inc:133
-#: ../../../../inc/themes/material-blue/encryption.inc:107
-#: ../../../../inc/themes/material-blue/encryption.inc:111
-#: ../../../../inc/themes/material-blue/encryption.inc:181
-#: ../../../../inc/themes/material-blue/encryption.inc:185
-#: ../../../../inc/themes/material-blue/import.inc:99
-#: ../../../../inc/themes/material-blue/import.inc:103
+#: ../../../../inc/themes/material-blue/encryption.inc:104
+#: ../../../../inc/themes/material-blue/encryption.inc:108
+#: ../../../../inc/themes/material-blue/encryption.inc:178
+#: ../../../../inc/themes/material-blue/encryption.inc:182
+#: ../../../../inc/themes/material-blue/import.inc:96
+#: ../../../../inc/themes/material-blue/import.inc:100
 #: ../../../../inc/themes/material-blue/js-common.inc:11
 #, fuzzy
 msgid "Ayuda"
@@ -4304,13 +4424,13 @@ msgid "Obligatorio"
 msgstr ""
 
 # "Master Password"
-#: ../../../../inc/themes/classic/encryption.inc:8
+#: ../../../../inc/themes/classic/encryption.inc:5
 #: ../../../../inc/themes/classic/install.inc:46
 #: ../../../../inc/themes/classic/install.inc:50
 #: ../../../../inc/themes/classic/install.inc:51
 #: ../../../../inc/themes/classic/login.inc:15
 #: ../../../../inc/themes/classic/login.inc:27
-#: ../../../../inc/themes/material-blue/encryption.inc:8
+#: ../../../../inc/themes/material-blue/encryption.inc:5
 #: ../../../../inc/themes/material-blue/install.inc:51
 #: ../../../../inc/themes/material-blue/install.inc:58
 #: ../../../../inc/themes/material-blue/login.inc:26
@@ -4319,127 +4439,127 @@ msgid "Clave Maestra"
 msgstr "Mester jelszó"
 
 # "Last Change"
-#: ../../../../inc/themes/classic/encryption.inc:16
-#: ../../../../inc/themes/classic/encryption.inc:116
-#: ../../../../inc/themes/material-blue/encryption.inc:16
-#: ../../../../inc/themes/material-blue/encryption.inc:131
+#: ../../../../inc/themes/classic/encryption.inc:13
+#: ../../../../inc/themes/classic/encryption.inc:113
+#: ../../../../inc/themes/material-blue/encryption.inc:13
+#: ../../../../inc/themes/material-blue/encryption.inc:128
 msgid "Último cambio"
 msgstr "Utolsó változtatás"
 
 # "Current Master Password"
-#: ../../../../inc/themes/classic/encryption.inc:25
-#: ../../../../inc/themes/material-blue/encryption.inc:25
-#: ../../../../inc/themes/material-blue/encryption.inc:31
+#: ../../../../inc/themes/classic/encryption.inc:22
+#: ../../../../inc/themes/material-blue/encryption.inc:22
+#: ../../../../inc/themes/material-blue/encryption.inc:28
 msgid "Clave Maestra actual"
 msgstr "Jelenlegki mester jelszó"
 
 # "New Master Password"
-#: ../../../../inc/themes/classic/encryption.inc:34
-#: ../../../../inc/themes/material-blue/encryption.inc:37
-#: ../../../../inc/themes/material-blue/encryption.inc:43
+#: ../../../../inc/themes/classic/encryption.inc:31
+#: ../../../../inc/themes/material-blue/encryption.inc:34
+#: ../../../../inc/themes/material-blue/encryption.inc:40
 msgid "Nueva Clave Maestra"
 msgstr "Új mester jelszó"
 
 # "New Master Password (repeat)"
-#: ../../../../inc/themes/classic/encryption.inc:43
-#: ../../../../inc/themes/material-blue/encryption.inc:49
-#: ../../../../inc/themes/material-blue/encryption.inc:55
+#: ../../../../inc/themes/classic/encryption.inc:40
+#: ../../../../inc/themes/material-blue/encryption.inc:46
+#: ../../../../inc/themes/material-blue/encryption.inc:52
 msgid "Nueva Clave Maestra (repetir)"
 msgstr "Új mester jelszó (megerõsítés)"
 
 # "Don't modify accounts"
-#: ../../../../inc/themes/classic/encryption.inc:51
-#: ../../../../inc/themes/material-blue/encryption.inc:61
+#: ../../../../inc/themes/classic/encryption.inc:48
+#: ../../../../inc/themes/material-blue/encryption.inc:58
 msgid "No modificar cuentas"
 msgstr "Ne módosítsa a fiókokat"
 
 # "Sets a new master password without re-encrypt the accounts."
-#: ../../../../inc/themes/classic/encryption.inc:56
-#: ../../../../inc/themes/material-blue/encryption.inc:66
+#: ../../../../inc/themes/classic/encryption.inc:53
+#: ../../../../inc/themes/material-blue/encryption.inc:63
 msgid "Establece una nueva clave maestra sin re-encriptar las cuentas"
 msgstr "Új mester jelszó beállítása a fiók újratitkosítása nélkül"
 
 # "Confirm Change"
-#: ../../../../inc/themes/classic/encryption.inc:67
-#: ../../../../inc/themes/material-blue/encryption.inc:79
+#: ../../../../inc/themes/classic/encryption.inc:64
+#: ../../../../inc/themes/material-blue/encryption.inc:76
 msgid "Confirmar cambio"
 msgstr "Változás megerõsítése"
 
 # "Warning"
+#: ../../../../inc/themes/classic/encryption.inc:67
 #: ../../../../inc/themes/classic/encryption.inc:70
 #: ../../../../inc/themes/classic/encryption.inc:73
-#: ../../../../inc/themes/classic/encryption.inc:76
-#: ../../../../inc/themes/classic/import.inc:67
+#: ../../../../inc/themes/classic/import.inc:64
 #: ../../../../inc/themes/classic/security.inc:43
 msgid "Atención"
 msgstr "Figyelem"
 
 # "You should save the new password on a secure place"
-#: ../../../../inc/themes/classic/encryption.inc:71
-#: ../../../../inc/themes/material-blue/encryption.inc:83
+#: ../../../../inc/themes/classic/encryption.inc:68
+#: ../../../../inc/themes/material-blue/encryption.inc:80
 msgid "Guarde la nueva clave en un lugar seguro."
 msgstr "Tárold biztonságos helyen az új jelszót"
 
 # "All accounts passwords will be encrypted again."
-#: ../../../../inc/themes/classic/encryption.inc:74
-#: ../../../../inc/themes/material-blue/encryption.inc:86
+#: ../../../../inc/themes/classic/encryption.inc:71
+#: ../../../../inc/themes/material-blue/encryption.inc:83
 msgid "Se volverán a encriptar las claves de todas las cuentas."
 msgstr "Minden fiók jelszó újra titkosítva lesz"
 
 # "All users must re-enter the new master password."
-#: ../../../../inc/themes/classic/encryption.inc:77
-#: ../../../../inc/themes/material-blue/encryption.inc:89
+#: ../../../../inc/themes/classic/encryption.inc:74
+#: ../../../../inc/themes/material-blue/encryption.inc:86
 msgid "Los usuarios deberán de introducir la nueva clave maestra."
 msgstr "Minden felhasználónak úrja be kell írnia az új mester jelszót"
 
-#: ../../../../inc/themes/classic/encryption.inc:98
-#: ../../../../inc/themes/material-blue/encryption.inc:112
+#: ../../../../inc/themes/classic/encryption.inc:95
+#: ../../../../inc/themes/material-blue/encryption.inc:109
 msgid ""
 "La clave maestra es utilizada para encriptar las claves de las cuentas de "
 "sysPass para mantenerlas seguras."
 msgstr ""
 
-#: ../../../../inc/themes/classic/encryption.inc:100
-#: ../../../../inc/themes/material-blue/encryption.inc:114
+#: ../../../../inc/themes/classic/encryption.inc:97
+#: ../../../../inc/themes/material-blue/encryption.inc:111
 msgid ""
 "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
 "que incluya números, letras y símbolos."
 msgstr ""
 
 # "Master Password"
-#: ../../../../inc/themes/classic/encryption.inc:108
-#: ../../../../inc/themes/material-blue/encryption.inc:124
+#: ../../../../inc/themes/classic/encryption.inc:105
+#: ../../../../inc/themes/material-blue/encryption.inc:121
 #, fuzzy
 msgid "Clave Temporal"
 msgstr "Generate Temporary Password"
 
 # "Generated Password"
-#: ../../../../inc/themes/classic/encryption.inc:119
-#: ../../../../inc/themes/classic/encryption.inc:130
-#: ../../../../inc/themes/material-blue/encryption.inc:134
-#: ../../../../inc/themes/material-blue/encryption.inc:145
+#: ../../../../inc/themes/classic/encryption.inc:116
+#: ../../../../inc/themes/classic/encryption.inc:127
+#: ../../../../inc/themes/material-blue/encryption.inc:131
+#: ../../../../inc/themes/material-blue/encryption.inc:142
 #, fuzzy
 msgid "No generada"
 msgstr "Generált Jelszó"
 
-#: ../../../../inc/themes/classic/encryption.inc:124
-#: ../../../../inc/themes/material-blue/encryption.inc:139
+#: ../../../../inc/themes/classic/encryption.inc:121
+#: ../../../../inc/themes/material-blue/encryption.inc:136
 msgid "Válido hasta"
 msgstr ""
 
-#: ../../../../inc/themes/classic/encryption.inc:136
-#: ../../../../inc/themes/material-blue/encryption.inc:151
-#: ../../../../inc/themes/material-blue/encryption.inc:157
+#: ../../../../inc/themes/classic/encryption.inc:133
+#: ../../../../inc/themes/material-blue/encryption.inc:148
+#: ../../../../inc/themes/material-blue/encryption.inc:154
 #, fuzzy
 msgid "Validez (s)"
 msgstr "Munkamenet idõ"
 
-#: ../../../../inc/themes/classic/encryption.inc:139
+#: ../../../../inc/themes/classic/encryption.inc:136
 msgid "Validez"
 msgstr ""
 
-#: ../../../../inc/themes/classic/encryption.inc:167
-#: ../../../../inc/themes/material-blue/encryption.inc:186
+#: ../../../../inc/themes/classic/encryption.inc:164
+#: ../../../../inc/themes/material-blue/encryption.inc:183
 msgid ""
 "La clave temporal es utilizada como clave maestra para los usuarios que "
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
@@ -4447,67 +4567,71 @@ msgid ""
 msgstr ""
 
 # "General"
-#: ../../../../inc/themes/classic/encryption.inc:169
-#: ../../../../inc/themes/material-blue/encryption.inc:190
+#: ../../../../inc/themes/classic/encryption.inc:166
+#: ../../../../inc/themes/material-blue/encryption.inc:187
 #, fuzzy
 msgid "Generar"
 msgstr "Generate Temporary Password"
 
 # "No records found"
-#: ../../../../inc/themes/classic/eventlog.inc:8
+#: ../../../../inc/themes/classic/eventlog.inc:6
 #: ../../../../inc/themes/classic/search.inc:3
-#: ../../../../inc/themes/material-blue/eventlog.inc:7
+#: ../../../../inc/themes/material-blue/eventlog.inc:6
 #: ../../../../inc/themes/material-blue/search.inc:3
 msgid "No se encontraron registros"
 msgstr "Nem találtam rekordokat"
 
 # "Date / Time"
-#: ../../../../inc/themes/classic/eventlog.inc:19
-#: ../../../../inc/themes/material-blue/eventlog.inc:18
+#: ../../../../inc/themes/classic/eventlog.inc:17
+#: ../../../../inc/themes/material-blue/eventlog.inc:17
 msgid "Fecha / Hora"
 msgstr "Dátum / Idõ"
 
 # "Event"
-#: ../../../../inc/themes/classic/eventlog.inc:22
-#: ../../../../inc/themes/material-blue/eventlog.inc:21
+#: ../../../../inc/themes/classic/eventlog.inc:20
+#: ../../../../inc/themes/material-blue/eventlog.inc:20
 msgid "Evento"
 msgstr "Esemény"
 
 # "IP"
-#: ../../../../inc/themes/classic/eventlog.inc:28
-#: ../../../../inc/themes/material-blue/eventlog.inc:27
+#: ../../../../inc/themes/classic/eventlog.inc:26
+#: ../../../../inc/themes/material-blue/eventlog.inc:26
 msgid "IP"
 msgstr "IP"
 
 # "First page"
-#: ../../../../inc/themes/classic/eventlog.inc:86
+#: ../../../../inc/themes/classic/eventlog.inc:84
 #: ../../../../inc/themes/classic/search.inc:169
-#: ../../../../inc/themes/material-blue/eventlog.inc:85
-#: ../../../../inc/themes/material-blue/search.inc:171
+#: ../../../../inc/themes/material-blue/eventlog.inc:84
+#: ../../../../inc/themes/material-blue/search.inc:20
+#: ../../../../inc/themes/material-blue/search.inc:209
 msgid "Primera página"
 msgstr "Elsõ oldal"
 
 # "Previous page"
-#: ../../../../inc/themes/classic/eventlog.inc:88
+#: ../../../../inc/themes/classic/eventlog.inc:86
 #: ../../../../inc/themes/classic/search.inc:171
-#: ../../../../inc/themes/material-blue/eventlog.inc:87
-#: ../../../../inc/themes/material-blue/search.inc:173
+#: ../../../../inc/themes/material-blue/eventlog.inc:86
+#: ../../../../inc/themes/material-blue/search.inc:22
+#: ../../../../inc/themes/material-blue/search.inc:211
 msgid "Página anterior"
 msgstr "Elõzõ oldal"
 
 # "Next page"
-#: ../../../../inc/themes/classic/eventlog.inc:93
+#: ../../../../inc/themes/classic/eventlog.inc:91
 #: ../../../../inc/themes/classic/search.inc:176
-#: ../../../../inc/themes/material-blue/eventlog.inc:92
-#: ../../../../inc/themes/material-blue/search.inc:178
+#: ../../../../inc/themes/material-blue/eventlog.inc:91
+#: ../../../../inc/themes/material-blue/search.inc:27
+#: ../../../../inc/themes/material-blue/search.inc:216
 msgid "Página siguiente"
 msgstr "Következõ oldal"
 
 # "Last page"
-#: ../../../../inc/themes/classic/eventlog.inc:95
+#: ../../../../inc/themes/classic/eventlog.inc:93
 #: ../../../../inc/themes/classic/search.inc:178
-#: ../../../../inc/themes/material-blue/eventlog.inc:94
-#: ../../../../inc/themes/material-blue/search.inc:180
+#: ../../../../inc/themes/material-blue/eventlog.inc:93
+#: ../../../../inc/themes/material-blue/search.inc:29
+#: ../../../../inc/themes/material-blue/search.inc:218
 msgid "Última página"
 msgstr "Utolsó oldal"
 
@@ -4564,164 +4688,164 @@ msgid "Descripción del grupo"
 msgstr "Csoport leírás"
 
 # "phpPMS Import"
-#: ../../../../inc/themes/classic/import.inc:7
-#: ../../../../inc/themes/material-blue/import.inc:121
+#: ../../../../inc/themes/classic/import.inc:4
+#: ../../../../inc/themes/material-blue/import.inc:118
 msgid "Importar phpPMS"
 msgstr "phpPMS importálása"
 
 # "DB Username"
-#: ../../../../inc/themes/classic/import.inc:14
+#: ../../../../inc/themes/classic/import.inc:11
 #: ../../../../inc/themes/classic/install.inc:63
 #: ../../../../inc/themes/classic/install.inc:64
-#: ../../../../inc/themes/material-blue/import.inc:128
-#: ../../../../inc/themes/material-blue/import.inc:140
+#: ../../../../inc/themes/material-blue/import.inc:125
+#: ../../../../inc/themes/material-blue/import.inc:137
 msgid "Usuario BBDD"
 msgstr "DB felhasználónév"
 
 # "Enter phpPMS database connection user"
-#: ../../../../inc/themes/classic/import.inc:18
-#: ../../../../inc/themes/material-blue/import.inc:132
+#: ../../../../inc/themes/classic/import.inc:15
+#: ../../../../inc/themes/material-blue/import.inc:129
 #, fuzzy
 msgid "Indicar el usuario de conexión a la base de datos de phpPMS."
 msgstr "Írd be az adatbázis kapcsolati felhasználót"
 
 # "DB Password"
-#: ../../../../inc/themes/classic/import.inc:28
+#: ../../../../inc/themes/classic/import.inc:25
 #: ../../../../inc/themes/classic/install.inc:71
 #: ../../../../inc/themes/classic/install.inc:73
-#: ../../../../inc/themes/material-blue/import.inc:146
-#: ../../../../inc/themes/material-blue/import.inc:152
+#: ../../../../inc/themes/material-blue/import.inc:143
+#: ../../../../inc/themes/material-blue/import.inc:149
 msgid "Clave BBDD"
 msgstr "Adatbázis jelszó"
 
 # "DB Name"
-#: ../../../../inc/themes/classic/import.inc:36
+#: ../../../../inc/themes/classic/import.inc:33
 #: ../../../../inc/themes/classic/install.inc:78
 #: ../../../../inc/themes/classic/install.inc:79
-#: ../../../../inc/themes/material-blue/import.inc:158
-#: ../../../../inc/themes/material-blue/import.inc:170
+#: ../../../../inc/themes/material-blue/import.inc:155
+#: ../../../../inc/themes/material-blue/import.inc:167
 msgid "Nombre BBDD"
 msgstr "DB név"
 
 # "Enter phpPMS database name"
-#: ../../../../inc/themes/classic/import.inc:40
-#: ../../../../inc/themes/material-blue/import.inc:162
+#: ../../../../inc/themes/classic/import.inc:37
+#: ../../../../inc/themes/material-blue/import.inc:159
 #, fuzzy
 msgid "Indicar el nombre de la base de datos de phpPMS."
 msgstr "Írd be a phpPMS adatbázis nevét"
 
 # "DB Server"
-#: ../../../../inc/themes/classic/import.inc:50
+#: ../../../../inc/themes/classic/import.inc:47
 #: ../../../../inc/themes/classic/install.inc:87
 #: ../../../../inc/themes/classic/install.inc:88
-#: ../../../../inc/themes/material-blue/import.inc:176
-#: ../../../../inc/themes/material-blue/import.inc:188
+#: ../../../../inc/themes/material-blue/import.inc:173
+#: ../../../../inc/themes/material-blue/import.inc:185
 msgid "Servidor BBDD"
 msgstr "DB szerver"
 
 # "Enter phpPMS database server name"
-#: ../../../../inc/themes/classic/import.inc:54
-#: ../../../../inc/themes/material-blue/import.inc:180
+#: ../../../../inc/themes/classic/import.inc:51
+#: ../../../../inc/themes/material-blue/import.inc:177
 #, fuzzy
 msgid "Indicar el servidor de la base de datos de phpPMS."
 msgstr "Írd be az adatbázis szerver nevét"
 
 # "Confirm"
-#: ../../../../inc/themes/classic/import.inc:64
-#: ../../../../inc/themes/material-blue/import.inc:194
+#: ../../../../inc/themes/classic/import.inc:61
+#: ../../../../inc/themes/material-blue/import.inc:191
 msgid "Confirmar"
 msgstr "Megerõsítés"
 
 # "Current data will be removed (except current user)"
-#: ../../../../inc/themes/classic/import.inc:68
-#: ../../../../inc/themes/material-blue/import.inc:198
+#: ../../../../inc/themes/classic/import.inc:65
+#: ../../../../inc/themes/material-blue/import.inc:195
 msgid "Los datos actuales serán borrados (excepto el usuario actual)"
 msgstr "Jelenlegi adatok törlése (kivéve a jelenlegi felhasználót)"
 
 # "Start"
-#: ../../../../inc/themes/classic/import.inc:83
+#: ../../../../inc/themes/classic/import.inc:80
 msgid "Iniciar"
 msgstr "Start"
 
 # CSV/XML Import
-#: ../../../../inc/themes/classic/import.inc:89
-#: ../../../../inc/themes/material-blue/import.inc:7
+#: ../../../../inc/themes/classic/import.inc:86
+#: ../../../../inc/themes/material-blue/import.inc:4
 #, fuzzy
 msgid "Importar CSV/XML"
 msgstr "Import CSV/XML"
 
 # Default Group
-#: ../../../../inc/themes/classic/import.inc:96
-#: ../../../../inc/themes/material-blue/import.inc:14
+#: ../../../../inc/themes/classic/import.inc:93
+#: ../../../../inc/themes/material-blue/import.inc:11
 #, fuzzy
 msgid "Usuario por Defecto"
 msgstr "Rendezés Felhasználónév szerint"
 
 # Define the default users profile for new LDAP users
-#: ../../../../inc/themes/classic/import.inc:100
-#: ../../../../inc/themes/material-blue/import.inc:18
+#: ../../../../inc/themes/classic/import.inc:97
+#: ../../../../inc/themes/material-blue/import.inc:15
 #, fuzzy
 msgid "Define el usuario por defecto para las cuentas importadas."
 msgstr "Define the default users profile for new LDAP users"
 
 # Default Group
-#: ../../../../inc/themes/classic/import.inc:117
+#: ../../../../inc/themes/classic/import.inc:114
 #: ../../../../inc/themes/classic/ldap.inc:144
-#: ../../../../inc/themes/material-blue/import.inc:36
+#: ../../../../inc/themes/material-blue/import.inc:33
 #: ../../../../inc/themes/material-blue/ldap.inc:170
 #, fuzzy
 msgid "Grupo por Defecto"
 msgstr "Csoportot használja a:"
 
 # Define the default users group for new LDAP users
-#: ../../../../inc/themes/classic/import.inc:121
-#: ../../../../inc/themes/material-blue/import.inc:40
+#: ../../../../inc/themes/classic/import.inc:118
+#: ../../../../inc/themes/material-blue/import.inc:37
 #, fuzzy
 msgid "Define el grupo por defecto para las cuentas importadas."
 msgstr "Define the default users group for new LDAP users"
 
 # "Bind Password"
-#: ../../../../inc/themes/classic/import.inc:138
-#: ../../../../inc/themes/material-blue/import.inc:58
-#: ../../../../inc/themes/material-blue/import.inc:64
+#: ../../../../inc/themes/classic/import.inc:135
+#: ../../../../inc/themes/material-blue/import.inc:55
+#: ../../../../inc/themes/material-blue/import.inc:61
 #, fuzzy
 msgid "Clave de Importación"
 msgstr "Fiók importálás megerõsítése"
 
-#: ../../../../inc/themes/classic/import.inc:146
-#: ../../../../inc/themes/material-blue/import.inc:70
-#: ../../../../inc/themes/material-blue/import.inc:76
+#: ../../../../inc/themes/classic/import.inc:143
+#: ../../../../inc/themes/material-blue/import.inc:67
+#: ../../../../inc/themes/material-blue/import.inc:73
 msgid "Delimitador CSV"
 msgstr ""
 
 # "Drop files here or click to select"
-#: ../../../../inc/themes/classic/import.inc:162
-#: ../../../../inc/themes/material-blue/import.inc:90
+#: ../../../../inc/themes/classic/import.inc:159
+#: ../../../../inc/themes/material-blue/import.inc:87
 msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Dobja el a fájlokat vagy kattintson a választáshoz"
 
-#: ../../../../inc/themes/classic/import.inc:175
+#: ../../../../inc/themes/classic/import.inc:172
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "arhcivos XML y CSV."
 msgstr ""
 
-#: ../../../../inc/themes/classic/import.inc:177
-#: ../../../../inc/themes/material-blue/import.inc:106
+#: ../../../../inc/themes/classic/import.inc:174
+#: ../../../../inc/themes/material-blue/import.inc:103
 msgid ""
 "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr ""
 
-#: ../../../../inc/themes/classic/import.inc:179
-#: ../../../../inc/themes/material-blue/import.inc:108
+#: ../../../../inc/themes/classic/import.inc:176
+#: ../../../../inc/themes/material-blue/import.inc:105
 msgid ""
 "Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
 "flecha."
 msgstr ""
 
 # Import from KeePass or KeePassX. The customer name will be KeePass or KeePassX.
-#: ../../../../inc/themes/classic/import.inc:181
-#: ../../../../inc/themes/material-blue/import.inc:110
+#: ../../../../inc/themes/classic/import.inc:178
+#: ../../../../inc/themes/material-blue/import.inc:107
 #, fuzzy
 msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
@@ -4731,21 +4855,21 @@ msgstr ""
 "KeePassX."
 
 # "Import form a CSV file with the format"
-#: ../../../../inc/themes/classic/import.inc:183
-#: ../../../../inc/themes/material-blue/import.inc:112
+#: ../../../../inc/themes/classic/import.inc:180
+#: ../../../../inc/themes/material-blue/import.inc:109
 #, fuzzy
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
 msgstr "Forma importálása a CSV fájl formátumával együtt"
 
 # "account_name;customer;category;url;user;password;notes"
-#: ../../../../inc/themes/classic/import.inc:185
-#: ../../../../inc/themes/material-blue/import.inc:114
+#: ../../../../inc/themes/classic/import.inc:182
+#: ../../../../inc/themes/material-blue/import.inc:111
 msgid "nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas"
 msgstr "Fiók_név;ügyfél;kategória;url;felhasználó;jelszó;jegyzetek"
 
 # "If the customer or category are not created, they will be automatically created."
-#: ../../../../inc/themes/classic/import.inc:187
-#: ../../../../inc/themes/material-blue/import.inc:116
+#: ../../../../inc/themes/classic/import.inc:184
+#: ../../../../inc/themes/material-blue/import.inc:113
 #, fuzzy
 msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
@@ -5072,7 +5196,7 @@ msgstr "Email kérések engedélyezése"
 # "More Actions"
 #: ../../../../inc/themes/classic/mgmttabs.inc:70
 #: ../../../../inc/themes/classic/search.inc:120
-#: ../../../../inc/themes/material-blue/search.inc:123
+#: ../../../../inc/themes/material-blue/search.inc:160
 msgid "Más Acciones"
 msgstr "Több akció"
 
@@ -5092,13 +5216,6 @@ msgstr "Felhasználó bejelentkezés"
 #: ../../../../inc/themes/material-blue/passreset.inc:23
 msgid "Email del Usuario"
 msgstr "Felhasználó Email"
-
-# "Email"
-#: ../../../../inc/themes/classic/passreset.inc:22
-#: ../../../../inc/themes/classic/users.inc:61
-#: ../../../../inc/themes/material-blue/users.inc:71
-msgid "Email"
-msgstr "Email"
 
 # "New Password"
 #: ../../../../inc/themes/classic/passreset.inc:27
@@ -5370,7 +5487,7 @@ msgstr "Kérés leírás"
 
 # "Back"
 #: ../../../../inc/themes/classic/request.inc:33
-#: ../../../../inc/themes/material-blue/account.inc:443
+#: ../../../../inc/themes/material-blue/account.inc:445
 #: ../../../../inc/themes/material-blue/editpass.inc:55
 #: ../../../../inc/themes/material-blue/mgmttabs.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:42
@@ -5385,37 +5502,39 @@ msgstr "Küldés"
 
 # "Search in Wiki"
 #: ../../../../inc/themes/classic/search.inc:33
-#: ../../../../inc/themes/material-blue/search.inc:29
+#: ../../../../inc/themes/material-blue/search.inc:65
 msgid "Buscar en Wiki"
 msgstr "Keresés a Wikiben"
 
 # "Open link to"
 #: ../../../../inc/themes/classic/search.inc:69
-#: ../../../../inc/themes/material-blue/search.inc:65
+#: ../../../../inc/themes/material-blue/search.inc:101
 msgid "Abrir enlace a"
 msgstr "Nyissa meg a linket, hogy"
 
 # "Attachments"
 #: ../../../../inc/themes/classic/search.inc:87
-#: ../../../../inc/themes/material-blue/search.inc:89
+#: ../../../../inc/themes/material-blue/search.inc:125
 msgid "Archivos adjuntos"
 msgstr "Csatolmányok"
 
 # "Link to Wiki"
 #: ../../../../inc/themes/classic/search.inc:94
-#: ../../../../inc/themes/material-blue/search.inc:98
+#: ../../../../inc/themes/material-blue/search.inc:134
 msgid "Enlace a Wiki"
 msgstr "Wiki link"
 
 # "Filter ON"
 #: ../../../../inc/themes/classic/search.inc:159
-#: ../../../../inc/themes/material-blue/search.inc:161
+#: ../../../../inc/themes/material-blue/search.inc:10
+#: ../../../../inc/themes/material-blue/search.inc:199
 msgid "Filtro ON"
 msgstr "Szûrõ bekapcsolva"
 
 # "Global ON"
 #: ../../../../inc/themes/classic/search.inc:163
-#: ../../../../inc/themes/material-blue/search.inc:165
+#: ../../../../inc/themes/material-blue/search.inc:14
+#: ../../../../inc/themes/material-blue/search.inc:203
 msgid "Global ON"
 msgstr "Global On"
 
@@ -5499,7 +5618,6 @@ msgid ""
 msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:29
-#: ../../../../inc/themes/material-blue/preferences.inc:86
 #: ../../../../inc/themes/material-blue/security.inc:27
 msgid "Activar"
 msgstr ""
@@ -5775,8 +5893,8 @@ msgstr "Jelszó (ismét)"
 # "Performed by"
 #: ../../../../inc/themes/material-blue/backup.inc:58
 #: ../../../../inc/themes/material-blue/backup.inc:144
-#: ../../../../inc/themes/material-blue/encryption.inc:118
-#: ../../../../inc/themes/material-blue/import.inc:217
+#: ../../../../inc/themes/material-blue/encryption.inc:115
+#: ../../../../inc/themes/material-blue/import.inc:214
 #, fuzzy
 msgid "Realizar"
 msgstr "Archívum készítés"
@@ -5847,7 +5965,7 @@ msgstr "Segítség :: GYIK :: Változások Listája"
 msgid "Preferencias de usuario"
 msgstr "Dupla felhasználó bejelentkezés"
 
-#: ../../../../inc/themes/material-blue/import.inc:104
+#: ../../../../inc/themes/material-blue/import.inc:101
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
@@ -5905,6 +6023,14 @@ msgstr "LDAP bind felhasználói jelszó"
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
+msgstr ""
+
+#: ../../../../inc/themes/material-blue/preferences.inc:91
+msgid "Barra de navegación superior"
+msgstr ""
+
+#: ../../../../inc/themes/material-blue/preferences.inc:95
+msgid "Mostrar una barra de navegación superior en las búsquedas."
 msgstr ""
 
 # "Add new account"

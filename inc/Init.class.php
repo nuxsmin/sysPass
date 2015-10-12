@@ -220,6 +220,11 @@ class Init
             }
         }
 
+        // Volver a cargar la configuración si se recarga la página
+        if (Request::checkReload()){
+            Config::readConfig();
+        }
+
         if (self::isLoggedIn() || Request::analyze('isAjax', false, true)) {
             return;
         }
