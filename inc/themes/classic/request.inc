@@ -8,7 +8,7 @@
         <tr>
             <td class="descField"><?php echo _('Cliente'); ?></td><td class="valField"><?php echo $accountData->customer_name; ?></td>
         </tr>
-        <?php if ( $lastAction == \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH ): ?>
+        <?php if ( $lastAction == \SP\Core\ActionsInterface::ACTION_ACC_SEARCH ): ?>
         <tr>
             <td class="descField"><?php echo _('URL / IP'); ?></td>
             <td class="valField"><A href="<?php echo $accountData->account_url; ?>" target="_blank"><?php echo $accountData->account_url; ?></td>
@@ -31,11 +31,11 @@
 </form>
 <div class="action">
     <button type="button" title="<?php echo _('Atrás'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.doAction('<?php echo $lastAction; ?>', <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>)">
-        <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save"/>
+            OnClick="sysPassUtil.Common.doAction('<?php echo $lastAction; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>)">
+        <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save"/>
     </button>
 
     <button type="submit" form="frmUpdUsrPass" title="<?php echo _('Enviar'); ?>" class="button-action">
-        <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+        <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
     </button>
 </div>

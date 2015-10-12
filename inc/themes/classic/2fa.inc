@@ -24,7 +24,7 @@
 
     <div class="action">
         <button type="submit" form="frm2FA" title="<?php echo _('Verificar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
         </button>
     </div>
 </div>

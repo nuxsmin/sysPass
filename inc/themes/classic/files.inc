@@ -3,7 +3,7 @@
         <?php foreach ($files as $file): ?>
             <li class="files-item round">
                 <div class="files-item-info" title="<?php echo $file['name'] ?>">
-                    <?php echo SP\Html::truncate($file['name'], 35); ?> (<?php echo $file['size']; ?> KB)
+                    <?php echo \SP\Html\Html::truncate($file['name'], 35); ?> (<?php echo $file['size']; ?> KB)
                     <?php if ($file['thumb']): ?>
                         <img src="data:image/png;base64,<?php echo $file['thumb']; ?>"
                              title="<?php echo $file['name']; ?>" alt="thumbnail"

@@ -108,7 +108,7 @@
 
     <div class="action">
         <button type="submit" form="frmWiki" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
         </button>
     </div>
 </div> <!-- End Tab - Wiki -->

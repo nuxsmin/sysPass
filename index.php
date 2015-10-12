@@ -27,8 +27,8 @@ define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!\SP\Init::checkPostLoginActions()) {
-    $controller = new SP\Controller\MainC(null, 'main');
+if (!\SP\Core\Init::checkPostLoginActions()) {
+    $controller = new \SP\Controller\MainC(null, 'main');
     $controller->getMain();
     $controller->view();
 }

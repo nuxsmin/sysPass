@@ -1,4 +1,4 @@
-<div id="title" class="midroundup <?php echo $title['class']; ?>"><?php echo $title['name']; ?></div>
+<div id="title" class="midroundup <?php use SP\Util\Checks;echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 <?php if ($showform): ?>
 <form method="post" name="frmaccount" id="frmAccount" onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
     <?php endif; ?>
@@ -49,8 +49,8 @@
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <?php if(\SP\Acl::checkUserAccess(\SP\Controller\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
-                            <i class="material-icons" title="<?php echo _('Nueva Categoría'); ?>" onclick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_MGM; ?>,<?php echo $actionId; ?>, 0)">add</i>
+                        <?php if(\SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
+                            <i class="material-icons" title="<?php echo _('Nueva Categoría'); ?>" onclick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_MGM; ?>,<?php echo $actionId; ?>, 0)">add</i>
                         <?php endif; ?>
                     <?php else: ?>
                         <?php echo $accountData->category_name; ?>
@@ -195,7 +195,7 @@
                 <script>sysPassUtil.Common.getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
             <?php else: ?>
                 <script>sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
-                <?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
+                <?php if ($actionId == \SP\Core\ActionsInterface::ACTION_ACC_EDIT): ?>
                     <form method="post" enctypr="multipart/form-data" name="upload_form" id="fileUpload">
                         <input type="file" id="inFile" name="inFile"/>
                     </form>
@@ -227,7 +227,7 @@
                     var historyId = $('#selHistory').val();
 
                     if (historyId > 0)
-                        sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
+                        sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
                 });
 
                 $('#selHistory').chosen({
@@ -239,7 +239,7 @@
     </tr>
 <?php endif; ?>
 
-<?php if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT): ?>
+<?php if ($actionId == \SP\Core\ActionsInterface::ACTION_ACC_EDIT): ?>
     <tr>
         <td class="descField"><?php echo _('Última Modificación'); ?></td>
         <?php if ($accountData->user_editName): ?>
@@ -266,11 +266,11 @@
                     <?php if ($showform): ?>
                             <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                             type="<?php echo $field->typeName; ?>"
-                            class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
-                            maxlength="500" value="<?php echo ($gotData) ? \SP\Html::sanitize($field->value) : ''; ?>"
+                            class="<?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                            maxlength="500" value="<?php echo ($gotData) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
                             <?php echo ($field->required) ? 'required' : ''; ?>>
                     <?php else: ?>
-                        <?php if($field->type === \SP\CustomFields::TYPE_PASSWORD && !$showViewPass):?>
+                        <?php if($field->type === \SP\Mgmt\CustomFields::TYPE_PASSWORD && !$showViewPass):?>
                             ****
                         <?php else:?>
                             <?php echo $field->value; ?>
@@ -357,7 +357,7 @@
     <form method="post" name="frmAccount" id="frmAccount" onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
         <input type="hidden" name="hash" value="<?php echo $changesHash; ?>">
         <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
+               value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
         <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
@@ -367,65 +367,65 @@
 <div class="action">
     <?php if ($showDelete): ?>
         <button type="button" title="<?php echo _('Eliminar Cuenta'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.delAccount(<?php echo $accountId; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/delete.png" alt="save" />
+            OnClick="sysPassUtil.Common.delAccount(<?php echo $accountId; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');">
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/delete.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($showRestore): ?>
         <button type="submit" form="frmAccount" title="<?php echo _('Restaurar cuenta desde este punto'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/restore.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/restore.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($showViewPass): ?>
         <button type="button" title="<?php echo _('Ver Clave'); ?>" class="button-action"
             onClick="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/user-pass.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/user-pass.png" alt="save" />
         </button>
 
-        <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
+        <?php if(!Checks::accountPassToImageIsEnabled()): ?>
         <button type="button" title="<?php echo _('Copiar Clave en Portapapeles'); ?>" class="button-action clip-pass-button"
             data-account-id="<?php echo $accountId; ?>">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/clipboard.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/clipboard.png" alt="save" />
         </button>
         <?php endif; ?>
     <?php endif; ?>
 
     <?php if ($showEditPass): ?>
         <button type="button" title="<?php echo _('Modificar Clave de Cuenta'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/key.png" alt="save" />
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>, <?php echo $actionId; ?>,<?php echo $accountId; ?>)">
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/key.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($gotData && $accountIsHistory): ?>
         <button type="button" title="<?php echo _('Ver Actual'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)">
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save" />
         </button>
     <?php else: ?>
         <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
             OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($showEdit): ?>
         <button type="button" title="<?php echo _('Modificar Cuenta'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/edit.png" alt="save" />
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/edit.png" alt="save" />
         </button>
-    <?php elseif (!$showEdit && $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_VIEW && \SP\Util::mailrequestIsEnabled()): ?>
+    <?php elseif (!$showEdit && $actionId == \SP\Core\ActionsInterface::ACTION_ACC_VIEW && Checks::mailrequestIsEnabled()): ?>
         <button type="button" title="<?php echo _('Solicitar Modificación'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/request.png" alt="save" />
+            OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)">
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/request.png" alt="save" />
         </button>
     <?php endif; ?>
 
     <?php if ($showSave): ?>
         <button type="submit" form="frmAccount" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
         </button>
     <?php endif; ?>
 </div>

@@ -285,14 +285,14 @@
         <?php endif; ?>
         <input type="hidden" name="activeTab" value="<?php echo $config_tabIndex; ?>"/>
         <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_GENERAL; ?>"/>
+               value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_GENERAL; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 
     <div class="action">
         <button type="submit" form="frmConfig" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
         </button>
     </div>
 </div> <!-- End Tab - Config -->

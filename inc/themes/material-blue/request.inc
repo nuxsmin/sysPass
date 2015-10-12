@@ -10,7 +10,7 @@
             <td class="descField"><?php echo _('Cliente'); ?></td>
             <td class="valField"><?php echo $accountData->customer_name; ?></td>
         </tr>
-        <?php if ($lastAction == \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH): ?>
+        <?php if ($lastAction == \SP\Core\ActionsInterface::ACTION_ACC_SEARCH): ?>
             <tr>
                 <td class="descField"><?php echo _('URL / IP'); ?></td>
                 <td class="valField"><A href="<?php echo $accountData->account_url; ?>"
@@ -38,7 +38,7 @@
 <div class="action">
     <button id="btnBack" type="button"
             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-            OnClick="sysPassUtil.Common.doAction('<?php echo $lastAction; ?>', <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>)"
+            OnClick="sysPassUtil.Common.doAction('<?php echo $lastAction; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>)"
             title="<?php echo _('Atrás'); ?>">
         <i class="material-icons">arrow_back</i>
     </button>

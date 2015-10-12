@@ -23,8 +23,8 @@
  *
  */
 
-use SP\Request;
-use SP\SessionUtil;
+use SP\Http\Request;
+use SP\Core\SessionUtil;
 
 define('APP_ROOT', '..');
 
@@ -32,16 +32,16 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Util\Util::logout();
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     die('<div class="error round">' . _('CONSULTA INVÁLIDA') . '</div>');
 }
 
-$controller = new SP\Controller\SearchC();
+$controller = new \SP\Controller\SearchC();
 $controller->getSearch();
 $controller->view();

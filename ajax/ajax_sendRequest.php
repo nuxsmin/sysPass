@@ -23,31 +23,32 @@
  *
  */
 
-use SP\AccountUtil;
-use SP\SessionUtil;
-use SP\UserUtil;
+use SP\Account\AccountUtil;
+use SP\Core\SessionUtil;
+use SP\Mgmt\User\UserUtil;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Request::checkReferer('POST');
+\SP\Http\Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmAccountId = SP\Request::analyze('accountid', 0);
-$frmDescription = SP\Request::analyze('description');
+$frmAccountId = \SP\Http\Request::analyze('accountid', 0);
+$frmDescription = \SP\Http\Request::analyze('description');
 
 if (!$frmDescription) {
-    SP\Response::printJSON(_('Es necesaria una descripción'));
+    \SP\Http\Response::printJSON(_('Es necesaria una descripción'));
 }
 
 $accountRequestData = AccountUtil::getAccountRequestData($frmAccountId);
@@ -57,24 +58,24 @@ $recipients = array(
     UserUtil::getUserEmail($accountRequestData->account_userEditId)
 );
 
-$requestUsername = SP\Session::getUserName();
-$requestLogin = SP\Session::getUserLogin();
+$requestUsername = \SP\Core\Session::getUserName();
+$requestLogin = \SP\Core\Session::getUserLogin();
 
-$log = new \SP\Log(_('Solicitud de Modificación de Cuenta'));
-$log->addDescription(SP\Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')');
-$log->addDescription(SP\Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name);
-$log->addDescription(SP\Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name);
-$log->addDescription(SP\Html::strongText(_('Descripción') . ': ') . $frmDescription);
+$log = new \SP\Log\Log(_('Solicitud de Modificación de Cuenta'));
+$log->addDescription(\SP\Html\Html::strongText(_('Solicitante') . ': ') . $requestUsername . ' (' . $requestLogin . ')');
+$log->addDescription(\SP\Html\Html::strongText(_('Cuenta') . ': ') . $accountRequestData->account_name);
+$log->addDescription(\SP\Html\Html::strongText(_('Cliente') . ': ') . $accountRequestData->customer_name);
+$log->addDescription(\SP\Html\Html::strongText(_('Descripción') . ': ') . $frmDescription);
 
 $mailto = implode(',', $recipients);
 
 if (strlen($mailto) > 1
-    && SP\Util::mailrequestIsEnabled()
-    && SP\Email::sendEmail($log, $mailto)
+    && Checks::mailrequestIsEnabled()
+    && \SP\Log\Email::sendEmail($log, $mailto)
 ) {
     $log->writeLog();
 
-    SP\Response::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
+    \SP\Http\Response::printJSON(_('Solicitud enviada'), 0, "doAction('" . \SP\Core\ActionsInterface::ACTION_ACC_SEARCH . "');");
 }
 
-SP\Response::printJSON(_('Error al enviar la solicitud'));
+\SP\Http\Response::printJSON(_('Error al enviar la solicitud'));

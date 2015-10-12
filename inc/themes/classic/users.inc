@@ -98,7 +98,7 @@
                 <td class="descField"><?php echo _('Opciones'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnUserOptions" class="btn-checks round5">
-                        <?php if (\SP\Session::getUserIsAdminApp() || $isDemo): ?>
+                        <?php if (\SP\Core\Session::getUserIsAdminApp() || $isDemo): ?>
                             <label for="usradminapp"
                                    title="<?php echo _('Administrador de la aplicación'); ?>"><?php echo _('Admin. Aplicación'); ?></label>
                             <input type="checkbox" id="usradminapp"
@@ -137,9 +137,9 @@
                             <?php if (!$isView): ?>
                                 <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                                        type="<?php echo $field->typeName; ?>"
-                                       class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                                       class="<?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
                                        maxlength="500s"
-                                       value="<?php echo (!$isView) ? \SP\Html::sanitize($field->value) : ''; ?>"
+                                       value="<?php echo (!$isView) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
                                     <?php echo ($field->required) ? 'required' : ''; ?>>
                             <?php else: ?>
                                 <?php echo $field->value; ?>
@@ -187,7 +187,7 @@
         <div id="resCheck"><span id="resFancyAccion"></span></div>
         <div class="action-in-box">
             <button type="submit" form="frmUsers" title="<?php echo _('Guardar'); ?>" class="button-action">
-                <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+                <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
             </button>
         </div>
     <?php endif; ?>

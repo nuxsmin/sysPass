@@ -37,7 +37,7 @@
     <form method="post" name="frmBackup" id="frmBackup" onsubmit="sysPassUtil.Common.configMgmt('export', this);return false;">
         <input type="hidden" name="activeTab" value="<?php echo $backup_tabIndex; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_BACKUP; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 
@@ -119,7 +119,7 @@
 
         <input type="hidden" name="activeTab" value="<?php echo $backup_tabIndex; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_EXPORT; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_EXPORT; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 

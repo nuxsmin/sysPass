@@ -3,13 +3,13 @@
         <div class="action fullWidth">
             <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
                     OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $lastAccountId; ?>)">
-                <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+                <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save" />
             </button>
             <button type="submit" form="frmSecurity" title="<?php echo $tab['props']['actions']['new']['title']; ?>"
                     class="button-action" data-itemid="0" data-activetab="<?php echo $index; ?>"
                     data-nextactionid="<?php echo (isset($onCloseAction)) ? $onCloseAction : ''; ?>"
                     OnClick="<?php echo $tab['props']['actions']['new']['onclick']; ?>">
-                <img src="<?php \SP\Init::$WEBURI; ?>imgs/add.png" alt="save"/>
+                <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/add.png" alt="save"/>
             </button>
         </div>
 
@@ -58,7 +58,7 @@
 
                     <li class="cell-actions round" style="width: <?php echo($numActions * 5 + 2); ?>%;">
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
-                            <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
+                            <?php if (isset($action['skip']) || ($action['id'] == \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php $i++; ?>
                             <img src="<?php echo $action['img']; ?>" title="<?php echo $action['title']; ?>"
                                  class="inputImg <?php echo ($i >= $maxNumActions) ? 'actions-optional' : ''; ?>"

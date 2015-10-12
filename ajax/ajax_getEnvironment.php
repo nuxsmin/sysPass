@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Request;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
@@ -32,13 +32,13 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.j
 
 Request::checkReferer('GET');
 
-$CryptPKI = new SP\CryptPKI();
-$publicKey = (SP\Session::getPublicKey()) ? SP\Session::getPublicKey() : $CryptPKI->getPublicKey();
+$CryptPKI = new \SP\Core\CryptPKI();
+$publicKey = (\SP\Core\Session::getPublicKey()) ? \SP\Core\Session::getPublicKey() : $CryptPKI->getPublicKey();
 
 $data = array(
     'lang' => $stringsJsLang,
-    'app_root' => SP\Init::$WEBURI,
+    'app_root' => \SP\Core\Init::$WEBURI,
     'pk' => $publicKey
 );
 
-SP\Response::printJSON($data, 0);
+\SP\Http\Response::printJSON($data, 0);

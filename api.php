@@ -28,24 +28,24 @@ define('APP_ROOT', '.');
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 try {
-    $ApiRequest = new \SP\ApiRequest();
+    $ApiRequest = new \SP\Api\ApiRequest();
 
     switch ($ApiRequest->getAction()) {
-        case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW:
-            $itemId = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
+        case \SP\Core\ActionsInterface::ACTION_ACC_VIEW:
+            $itemId = \SP\Http\Request::analyze(\SP\Api\ApiRequest::ITEM, 0);
 
             $out = $ApiRequest->getApi()->getAccountData($itemId);
             break;
-        case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_PASS:
-            $ApiRequest->addVar('userPass', \SP\ApiRequest::analyze(\SP\ApiRequest::USER_PASS));
+        case \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS:
+            $ApiRequest->addVar('userPass', \SP\Api\ApiRequest::analyze(\SP\Api\ApiRequest::USER_PASS));
 
-            $itemId = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
+            $itemId = \SP\Http\Request::analyze(\SP\Api\ApiRequest::ITEM, 0);
 
             $out = $ApiRequest->getApi()->getAccountPassword($itemId);
             break;
-        case \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH:
-            $search = \SP\Request::analyze(\SP\ApiRequest::SEARCH);
-            $count = \SP\Request::analyze(\SP\ApiRequest::SEARCH_COUNT, 10);
+        case \SP\Core\ActionsInterface::ACTION_ACC_SEARCH:
+            $search = \SP\Http\Request::analyze(\SP\Api\ApiRequest::SEARCH);
+            $count = \SP\Http\Request::analyze(\SP\Api\ApiRequest::SEARCH_COUNT, 10);
 
             $out = $ApiRequest->getApi()->getAccountSearch($search, $count);
             break;
@@ -53,7 +53,7 @@ try {
             throw new Exception(_('Acción Inválida'));
     }
 } catch (Exception $e) {
-    \SP\Response::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\ApiRequest::getHelp()));
+    \SP\Http\Response::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\Api\ApiRequest::getHelp()));
 }
 
 header('Content-type: application/json');

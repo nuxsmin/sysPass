@@ -26,19 +26,27 @@
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 define('CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
-define('MODEL_PATH', __DIR__);
+define('MODEL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'SP');
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
-define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'ext');
+define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Exts');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 
-define('DEBUG', false);
+define('DEBUG', true);
 
-require MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
+require 'SplClassLoader.php';
+
+$ClassLoader = new SplClassLoader();
+$ClassLoader->setFileExtension('.class.php');
+$ClassLoader->addExcluded('SP\\Profile');
+$ClassLoader->addExcluded('SP\\UserPreferences');
+$ClassLoader->addExcluded('SP\\CustomFieldDef');
+$ClassLoader->addExcluded('SP\\PublicLink');
+$ClassLoader->register();
 
 // Empezar a calcular el tiempo y memoria utilizados
 $memInit = memory_get_usage();
-$timeStart = \SP\Init::microtime_float();
+$timeStart = \SP\Core\Init::microtime_float();
 
 // Inicializar sysPass
-\SP\Init::start();
+\SP\Core\Init::start();

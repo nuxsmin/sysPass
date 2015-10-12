@@ -61,7 +61,7 @@
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <button type="submit" form="frmCustomFields" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
         </button>
     </div>
 </div>

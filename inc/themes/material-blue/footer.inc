@@ -6,10 +6,10 @@
             <?php if ($showPassIcon): ?>
                 <i class="material-icons" title="<?php echo _('Cambiar clave de usuario'); ?>"
                    data-itemid="<?php echo $userId; ?>"
-                   Onclick="sysPassUtil.Common.usrUpdPass(this,<?php echo \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')">security</i>
+                   Onclick="sysPassUtil.Common.usrUpdPass(this,<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')">security</i>
             <?php endif; ?>
             <i class="material-icons" title="<?php echo _('Preferencias de usuario'); ?>"
-               OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES; ?>)">account_circle</i>
+               OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>)">account_circle</i>
             <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
         </div>
     <?php endif; ?>

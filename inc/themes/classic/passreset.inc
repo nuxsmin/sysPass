@@ -1,8 +1,8 @@
 <div id="actions" align="center">
 
     <div id="logo">
-        <img src="<?php use SP\Html;
-        use SP\Util;
+        <img src="<?php use SP\Html\Html;
+        use SP\Util\Util;
 
         echo $logo; ?>" alt="sysPass logo"/>
     </div>

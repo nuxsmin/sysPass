@@ -28,7 +28,7 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Request::checkReferer('GET');
+\SP\Http\Request::checkReferer('GET');
 
 $controller = new \SP\Controller\MainC(null, null, false);
 $controller->getCheckUpdates();

@@ -23,58 +23,59 @@
  *
  */
 
-use SP\SessionUtil;
+use SP\Core\SessionUtil;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Request::checkReferer('POST');
+\SP\Http\Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$actionId = SP\Request::analyze('actionId', 0);
-$onCloseAction = SP\Request::analyze('onCloseAction');
-$activeTab = SP\Request::analyze('activeTab', 0);
-$exportPassword = SP\Request::analyzeEncrypted('exportPwd');
-$exportPasswordR = SP\Request::analyzeEncrypted('exportPwdR');
+$actionId = \SP\Http\Request::analyze('actionId', 0);
+$onCloseAction = \SP\Http\Request::analyze('onCloseAction');
+$activeTab = \SP\Http\Request::analyze('activeTab', 0);
+$exportPassword = \SP\Http\Request::analyzeEncrypted('exportPwd');
+$exportPasswordR = \SP\Http\Request::analyzeEncrypted('exportPwdR');
 
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_BACKUP) {
-    if (SP\Util::demoIsEnabled()) {
-        SP\Response::printJSON(_('Ey, esto es una DEMO!!'));
+if ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_BACKUP) {
+    if (Checks::demoIsEnabled()) {
+        \SP\Http\Response::printJSON(_('Ey, esto es una DEMO!!'));
     }
 
-    if (!SP\Backup::doBackup()) {
-        SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Error al realizar el backup'));
+    if (!\SP\Core\Backup::doBackup()) {
+        \SP\Log\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Error al realizar el backup'));
 
-        SP\Response::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
+        \SP\Http\Response::printJSON(_('Error al realizar el backup') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 
-    SP\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Copia de la aplicación y base de datos realizada correctamente'));
+    \SP\Log\Log::writeNewLogAndEmail(_('Realizar Backup'), _('Copia de la aplicación y base de datos realizada correctamente'));
 
-    SP\Response::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
-} elseif ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_EXPORT) {
+    \SP\Http\Response::printJSON(_('Proceso de backup finalizado'), 0, $doActionOnClose);
+} elseif ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_EXPORT) {
     if (!empty($exportPassword) && $exportPassword !== $exportPasswordR){
-        SP\Response::printJSON(_('Las claves no coinciden'));
+        \SP\Http\Response::printJSON(_('Las claves no coinciden'));
     }
 
-    if(!\SP\XmlExport::doExport($exportPassword)){
-        SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Error al realizar la exportación de cuentas'));
+    if(!\SP\Core\XmlExport::doExport($exportPassword)){
+        \SP\Log\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Error al realizar la exportación de cuentas'));
 
-        SP\Response::printJSON(_('Error al realizar la exportación') . ';;' . _('Revise el registro de eventos para más detalles'));
+        \SP\Http\Response::printJSON(_('Error al realizar la exportación') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 
-    SP\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Exportación de cuentas realizada correctamente'));
+    \SP\Log\Log::writeNewLogAndEmail(_('Realizar Exportación'), _('Exportación de cuentas realizada correctamente'));
 
-    SP\Response::printJSON(_('Proceso de exportación finalizado'), 0, $doActionOnClose);
+    \SP\Http\Response::printJSON(_('Proceso de exportación finalizado'), 0, $doActionOnClose);
 }

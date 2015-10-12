@@ -23,27 +23,27 @@
  *
  */
 
-use SP\SessionUtil;
+use SP\Core\SessionUtil;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Request::checkReferer('POST');
+\SP\Http\Request::checkReferer('POST');
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$userId = SP\Request::analyze('itemId', 0);
-$pin = SP\Request::analyze('security_pin', 0);
+$userId = \SP\Http\Request::analyze('itemId', 0);
+$pin = \SP\Http\Request::analyze('security_pin', 0);
 
 $twoFa = new \SP\Auth\Auth2FA($userId, $userLogin);
 
 if($userId && $pin && $twoFa->verifyKey($pin)){
-    \SP\Session::set2FApassed(true);
+    \SP\Core\Session::set2FApassed(true);
 
     // Comprobar si existen parámetros adicionales en URL via GET
     foreach ($_POST as $param => $value) {
@@ -54,8 +54,8 @@ if($userId && $pin && $twoFa->verifyKey($pin)){
 
     $urlParams = isset($params) ? '?' . implode('&', $params) : '';
 
-    SP\Response::printJSON(_('Código correcto'), 0, 'redirect(\'index.php\')');
+    \SP\Http\Response::printJSON(_('Código correcto'), 0, 'redirect(\'index.php\')');
 } else {
-    \SP\Session::set2FApassed(false);
-    SP\Response::printJSON(_('Código incorrecto'));
+    \SP\Core\Session::set2FApassed(false);
+    \SP\Http\Response::printJSON(_('Código incorrecto'));
 }

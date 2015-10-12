@@ -23,8 +23,9 @@
  *
  */
 
-use SP\Request;
-use SP\SessionUtil;
+use SP\Http\Request;
+use SP\Core\SessionUtil;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
@@ -32,21 +33,21 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('GET');
 
-if (!SP\Init::isLoggedIn()) {
+if (!\SP\Core\Init::isLoggedIn()) {
     return;
 }
 
-if (!SP\Util::fileIsEnabled()) {
+if (!Checks::fileIsEnabled()) {
     echo _('Gestión de archivos deshabilitada');
     return false;
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printXML(_('CONSULTA INVÁLIDA'));
+    \SP\Http\Response::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-$controller = new SP\Controller\AccountsMgmtC();
+$controller = new \SP\Controller\AccountsMgmtC();
 $controller->getFiles();
 $controller->view();

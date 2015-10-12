@@ -81,7 +81,7 @@
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
         <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
+               value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -89,7 +89,7 @@
     <div class="action">
         <button id="help_mpass_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
         </button>
         <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
@@ -97,7 +97,7 @@
             <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
         </div>
         <button type="submit" form="frmCrypt" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
         </button>
     </div>
 
@@ -150,7 +150,7 @@
         </table>
         <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
         <input type="hidden" name="actionId"
-               value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
+               value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -158,13 +158,13 @@
     <div class="action">
         <button id="help_tmpass_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
         </button>
         <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
         </div>
         <button type="submit" form="frmTempMasterPass" title="<?php echo _('Generar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/genpass.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/genpass.png" alt="save"/>
         </button>
     </div>
 </div> <!-- End Tab - Encryption -->

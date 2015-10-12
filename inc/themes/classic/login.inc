@@ -1,7 +1,7 @@
     <div id="boxLogin" class="round shadow">
         <div id="boxData">
             <form method="post" name="frmLogin" id="frmLogin" action="" OnSubmit="return sysPassUtil.Common.doLogin();">
-                <?php use SP\Html;
+                <?php use SP\Html\Html;
 
                 if ($demoEnabled): ?>
                     <input type="text" name="user" id="user" class="round5" placeholder="<?php echo _('Usuario'); ?>"

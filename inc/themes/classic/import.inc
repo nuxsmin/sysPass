@@ -71,14 +71,14 @@
         </table>
 
         <input type="hidden" name="activeTab" value="<?php echo $import_tabIndex; ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_IMPORT; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 
     <div class="action">
         <button type="submit" form="frmMigrate" title="<?php echo _('Iniciar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/start.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/start.png" alt="save"/>
         </button>
     </div>
 
@@ -104,7 +104,7 @@
                         <option value="0"></option>
                         <?php foreach ($users as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -125,7 +125,7 @@
                         <option value="0"></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -166,7 +166,7 @@
     <div class="action">
         <button id="help_import_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
         </button>
         <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>

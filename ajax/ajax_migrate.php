@@ -23,8 +23,9 @@
  *
  */
 
-use SP\Request;
-use SP\SessionUtil;
+use SP\Http\Request;
+use SP\Core\SessionUtil;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
@@ -32,36 +33,36 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-if (SP\Util::demoIsEnabled()) {
-    SP\Response::printJSON(_('Ey, esto es una DEMO!!'));
+if (Checks::demoIsEnabled()) {
+    \SP\Http\Response::printJSON(_('Ey, esto es una DEMO!!'));
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmDBUser = SP\Request::analyze('dbuser');
-$frmDBPass = SP\Request::analyzeEncrypted('dbpass');
-$frmDBName = SP\Request::analyze('dbname');
-$frmDBHost = SP\Request::analyze('dbhost');
-$frmMigrateEnabled = SP\Request::analyze('chkmigrate', 0, false, 1);
+$frmDBUser = \SP\Http\Request::analyze('dbuser');
+$frmDBPass = \SP\Http\Request::analyzeEncrypted('dbpass');
+$frmDBName = \SP\Http\Request::analyze('dbname');
+$frmDBHost = \SP\Http\Request::analyze('dbhost');
+$frmMigrateEnabled = \SP\Http\Request::analyze('chkmigrate', 0, false, 1);
 
 if (!$frmMigrateEnabled) {
-    SP\Response::printJSON(_('Confirmar la importación de cuentas'));
+    \SP\Http\Response::printJSON(_('Confirmar la importación de cuentas'));
 } elseif (!$frmDBUser) {
-    SP\Response::printJSON(_('Es necesario un usuario de conexión'));
+    \SP\Http\Response::printJSON(_('Es necesario un usuario de conexión'));
 } elseif (!$frmDBPass) {
-    SP\Response::printJSON(_('Es necesaria una clave de conexión'));
+    \SP\Http\Response::printJSON(_('Es necesaria una clave de conexión'));
 } elseif (!$frmDBName) {
-    SP\Response::printJSON(_('Es necesario el nombre de la BBDD'));
+    \SP\Http\Response::printJSON(_('Es necesario el nombre de la BBDD'));
 } elseif (!$frmDBHost) {
-    SP\Response::printJSON(_('Es necesario un nombre de host'));
+    \SP\Http\Response::printJSON(_('Es necesario un nombre de host'));
 }
 
 $options['dbhost'] = $frmDBHost;
@@ -69,7 +70,7 @@ $options['dbname'] = $frmDBName;
 $options['dbuser'] = $frmDBUser;
 $options['dbpass'] = $frmDBPass;
 
-$res = SP\Migrate::migrate($options);
+$res = \SP\Import\Migrate::migrate($options);
 
 if (is_array($res['error'])) {
     foreach ($res['error'] as $error) {
@@ -79,9 +80,9 @@ if (is_array($res['error'])) {
     }
 
     $out = implode('<br>', $errors);
-    SP\Response::printJSON($out);
+    \SP\Http\Response::printJSON($out);
 } elseif (is_array($res['ok'])) {
     $out = implode('<br>', $res['ok']);
 
-    SP\Response::printJSON($out, 0);
+    \SP\Http\Response::printJSON($out, 0);
 }

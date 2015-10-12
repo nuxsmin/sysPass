@@ -1,4 +1,4 @@
-<div id="title" class="midroundup <?php use SP\Acl;
+<div id="title" class="midroundup <?php use SP\Core\Acl;
 
 echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
@@ -43,12 +43,12 @@ echo $title['class']; ?>"><?php echo $title['name']; ?></div>
 
 <div class="action">
     <button type="button" title="<?php echo _('Volver'); ?>" class="button-action"
-            OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)">
-        <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save" />
+            OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)">
+        <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save" />
     </button>
 
     <button type="submit" form="frmEditPass" title="<?php echo _('Guardar'); ?>" class="button-action">
-        <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+        <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
     </button>
 </div>
 <script>

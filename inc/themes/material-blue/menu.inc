@@ -1,12 +1,14 @@
 <div id="actionsBar">
-    <div id="actionsBar-logo"><img src="<?php echo $logoNoText; ?>" alt="logo" /></div>
+    <div id="actionsBar-logo"><img src="<?php use SP\Util\Checks;
+
+        echo $logoNoText; ?>" alt="logo" /></div>
     <div id="actionsBar-icons">
         <?php foreach ($actions as $action): ?>
-            <?php if ($action['checkaccess'] && !\SP\Acl::checkUserAccess($action['name'])): ?>
+            <?php if ($action['checkaccess'] && !\SP\Core\Acl::checkUserAccess($action['name'])): ?>
                 <?php continue; ?>
             <?php endif; ?>
 
-            <?php if ($action['name'] == \SP\Controller\ActionsInterface::ACTION_EVL && !\SP\Util::logIsEnabled()): ?>
+            <?php if ($action['name'] == \SP\Core\ActionsInterface::ACTION_EVL && !Checks::logIsEnabled()): ?>
                 <?php continue; ?>
             <?php endif; ?>
 

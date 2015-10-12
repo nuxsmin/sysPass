@@ -23,8 +23,9 @@
  *
  */
 
-use SP\Request;
-use SP\Themes;
+use SP\Http\Request;
+use SP\Core\Themes;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
@@ -32,34 +33,34 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Util\Util::logout();
 }
 
-SP\Util::checkReload();
+\SP\Util\Util::checkReload();
 
-if (!SP\Request::analyze('actionId', 0, true)) {
+if (!\SP\Http\Request::analyze('actionId', 0, true)) {
     die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
 }
 
-$actionId = SP\Request::analyze('actionId');
-$itemId = SP\Request::analyze('itemId', 0);
-$lastAction = SP\Request::analyze('lastAction', \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH);
+$actionId = \SP\Http\Request::analyze('actionId');
+$itemId = \SP\Http\Request::analyze('itemId', 0);
+$lastAction = \SP\Http\Request::analyze('lastAction', \SP\Core\ActionsInterface::ACTION_ACC_SEARCH);
 
-$tpl = new SP\Template();
+$tpl = new \SP\Core\Template();
 $tpl->assign('actionId', $actionId);
 $tpl->assign('id', $itemId);
 $tpl->assign('activeTabId', $itemId);
-$tpl->assign('lastAccountId', \SP\Session::getLastAcountId());
+$tpl->assign('lastAccountId', \SP\Core\Session::getLastAcountId());
 $tpl->assign('queryTimeStart', microtime());
-$tpl->assign('userId', SP\Session::getUserId());
-$tpl->assign('userGroupId', SP\Session::getUserGroupId());
-$tpl->assign('userIsAdminApp', SP\Session::getUserIsAdminApp());
-$tpl->assign('userIsAdminAcc', SP\Session::getUserIsAdminAcc());
+$tpl->assign('userId', \SP\Core\Session::getUserId());
+$tpl->assign('userGroupId', \SP\Core\Session::getUserGroupId());
+$tpl->assign('userIsAdminApp', \SP\Core\Session::getUserIsAdminApp());
+$tpl->assign('userIsAdminAcc', \SP\Core\Session::getUserIsAdminAcc());
 $tpl->assign('themeUri', Themes::$themeUri);
 
 // Control de ruta de acciones
-if ($actionId != \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH) {
+if ($actionId != \SP\Core\ActionsInterface::ACTION_ACC_SEARCH) {
     $actionsPath = &$_SESSION['actionsPath'];
     $actionsPath[] = $actionId;
     $actions = count($actionsPath);
@@ -76,81 +77,81 @@ if ($actionId != \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH) {
 }
 
 switch ($actionId) {
-    case \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH:
-        $_SESSION['actionsPath'] = array(\SP\Controller\ActionsInterface::ACTION_ACC_SEARCH);
+    case \SP\Core\ActionsInterface::ACTION_ACC_SEARCH:
+        $_SESSION['actionsPath'] = array(\SP\Core\ActionsInterface::ACTION_ACC_SEARCH);
 
         $tpl->assign('lastAction', $lastAction);
 
-        $controller = new SP\Controller\SearchC($tpl);
+        $controller = new \SP\Controller\SearchC($tpl);
         $controller->getSearchBox();
         $controller->getSearch();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_NEW:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_NEW:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getNewAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_COPY:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_COPY:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getCopyAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_EDIT:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getEditAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_EDIT_PASS:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getEditPassAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_VIEW:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getViewAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_HISTORY:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getViewHistoryAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_DELETE:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_DELETE:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getDeleteAccount();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST:
-        $controller = new SP\Controller\AccountC($tpl, null, $itemId);
+    case \SP\Core\ActionsInterface::ACTION_ACC_REQUEST:
+        $controller = new \SP\Controller\AccountC($tpl, null, $itemId);
         $controller->getRequestAccountAccess();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_USR:
-    case \SP\Controller\ActionsInterface::ACTION_MGM_APITOKENS:
-    case \SP\Controller\ActionsInterface::ACTION_MGM_PUBLICLINKS:
-        $controller = new SP\Controller\UsersMgmtC($tpl);
+    case \SP\Core\ActionsInterface::ACTION_USR:
+    case \SP\Core\ActionsInterface::ACTION_MGM_APITOKENS:
+    case \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS:
+        $controller = new \SP\Controller\UsersMgmtC($tpl);
         $controller->useTabs();
         $controller->getUsersList();
         $controller->getGroupsList();
         $controller->getProfilesList();
         $controller->getAPITokensList();
-        if (\SP\Util::publicLinksIsEnabled()) {
+        if (Checks::publicLinksIsEnabled()) {
             $controller->getPublicLinksList();
         }
         break;
-    case \SP\Controller\ActionsInterface::ACTION_MGM:
-        $controller = new SP\Controller\AccountsMgmtC($tpl);
+    case \SP\Core\ActionsInterface::ACTION_MGM:
+        $controller = new \SP\Controller\AccountsMgmtC($tpl);
         $controller->useTabs();
         $controller->getCategories();
         $controller->getCustomers();
         $controller->getCustomFields();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_CFG:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_GENERAL:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_WIKI:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_LDAP:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_MAIL:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_BACKUP:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_EXPORT:
-    case \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT:
+    case \SP\Core\ActionsInterface::ACTION_CFG:
+    case \SP\Core\ActionsInterface::ACTION_CFG_GENERAL:
+    case \SP\Core\ActionsInterface::ACTION_CFG_WIKI:
+    case \SP\Core\ActionsInterface::ACTION_CFG_LDAP:
+    case \SP\Core\ActionsInterface::ACTION_CFG_MAIL:
+    case \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION:
+    case \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
+    case \SP\Core\ActionsInterface::ACTION_CFG_BACKUP:
+    case \SP\Core\ActionsInterface::ACTION_CFG_EXPORT:
+    case \SP\Core\ActionsInterface::ACTION_CFG_IMPORT:
         $tpl->assign('onCloseAction', $actionId);
         $tpl->addTemplate('tabs-start');
 
-        $controller = new SP\Controller\ConfigC($tpl);
+        $controller = new \SP\Controller\ConfigC($tpl);
         $controller->getGeneralTab();
         $controller->getWikiTab();
         $controller->getLdapTab();
@@ -162,13 +163,13 @@ switch ($actionId) {
 
         $tpl->addTemplate('tabs-end');
         break;
-    case \SP\Controller\ActionsInterface::ACTION_EVL:
-        $controller = new SP\Controller\EventlogC($tpl);
+    case \SP\Core\ActionsInterface::ACTION_EVL:
+        $controller = new \SP\Controller\EventlogC($tpl);
         $controller->getEventlog();
         break;
-    case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES:
-    case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL:
-    case \SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
+    case \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES:
+    case \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL:
+    case \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
         $tpl->addTemplate('tabs-start');
 
         $controller = new \SP\Controller\UsersPrefsC($tpl);
@@ -180,7 +181,7 @@ switch ($actionId) {
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración
-if (\SP\Session::getUserIsAdminApp() && SP\Config::getValue('debug')) {
+if (\SP\Core\Session::getUserIsAdminApp() && \SP\Config\Config::getValue('debug')) {
     $controller->getDebug();
 }
 

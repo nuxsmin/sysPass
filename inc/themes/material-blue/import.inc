@@ -21,7 +21,7 @@
                             class="select-box sel-chosen-user" required>
                         <option value="0"></option>
                         <?php foreach ($users as $id => $name): ?>
-                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserId()) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>>
                                 <?php echo $name; ?>
                             </option>
                         <?php endforeach; ?>
@@ -43,7 +43,7 @@
                             class="select-box sel-chosen-usergroup" required>
                         <option value="0"></option>
                         <?php foreach ($groups as $id => $name): ?>
-                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Session::getUserGroupId()) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>>
                                 <?php echo $name; ?>
                             </option>
                         <?php endforeach; ?>
@@ -204,7 +204,7 @@
         </table>
 
         <input type="hidden" name="activeTab" value="<?php echo $import_tabIndex; ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo \SP\Controller\ActionsInterface::ACTION_CFG_IMPORT; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_IMPORT; ?>"/>
         <input type="hidden" name="isAjax" value="1"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
@@ -220,7 +220,7 @@
 <script>
     $(function () {
         // Preparar la zona de importación
-        sysPassUtil.Common.importFile('<?php echo SP\SessionUtil::getSessionKey(true); ?>');
+        sysPassUtil.Common.importFile('<?php echo \SP\Core\SessionUtil::getSessionKey(true); ?>');
 
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");

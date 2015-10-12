@@ -36,9 +36,9 @@
                             <?php if (!$isView): ?>
                                 <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                                        type="<?php echo $field->typeName; ?>"
-                                       class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                                       class="<?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
                                        maxlength="500"
-                                       value="<?php echo (!$isView) ? \SP\Html::sanitize($field->value) : ''; ?>"
+                                       value="<?php echo (!$isView) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
                                     <?php echo ($field->required) ? 'required' : ''; ?>>
                             <?php else: ?>
                                 <?php echo $field->value; ?>
@@ -60,7 +60,7 @@
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <button type="submit" form="frmCategories" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
         </button>
     </div>
 </div>

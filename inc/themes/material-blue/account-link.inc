@@ -2,7 +2,9 @@
     <div id="logo"></div>
     <div id="content" class="public-link">
         <div id="title" class="midroundup titleNormal">
-            <?php echo $title['name']; ?>
+            <?php use SP\Util\Checks;
+
+            echo $title['name']; ?>
             <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
         </div>
         <table class="data round">
@@ -44,7 +46,7 @@
             <tr>
                 <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
-                    <?php if(\SP\Util::accountPassToImageIsEnabled()): ?>
+                    <?php if(Checks::accountPassToImageIsEnabled()): ?>
                         <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPass; ?>" />
                     <?php else: ?>
                         <span id="account-pass"><?php echo $accountPass; ?></span>
@@ -55,7 +57,7 @@
         <div id="clip-pass-text" style="visibility: hidden"></div>
 
         <div class="action">
-            <?php if(!\SP\Util::accountPassToImageIsEnabled()): ?>
+            <?php if(!Checks::accountPassToImageIsEnabled()): ?>
                 <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" data-clipboard-target="#account-pass">
                     <i class="material-icons">content_paste</i>
                 </button>

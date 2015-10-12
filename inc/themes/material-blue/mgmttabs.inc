@@ -64,7 +64,7 @@
 
                     <li class="cell-actions round">
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
-                            <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
+                            <?php if (isset($action['skip']) || ($action['id'] == \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php
                                 $i++;
 

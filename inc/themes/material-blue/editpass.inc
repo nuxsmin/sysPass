@@ -51,7 +51,7 @@
 
     <div class="action">
         <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
+                OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
                 title="<?php echo _('Atrás'); ?>">
             <i class="material-icons">arrow_back</i>
         </button>

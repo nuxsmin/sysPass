@@ -23,8 +23,9 @@
  *
  */
 
-use SP\Request;
-use SP\SessionUtil;
+use SP\Http\Request;
+use SP\Core\SessionUtil;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
@@ -32,25 +33,25 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Util\Util::logout();
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     die(_('CONSULTA INVÁLIDA'));
 }
 
-if (!SP\Util::fileIsEnabled()) {
+if (!Checks::fileIsEnabled()) {
     exit(_('Gestión de archivos deshabilitada'));
 }
 
-$action = SP\Request::analyze('action');
-$accountId = SP\Request::analyze('accountId', 0);
-$fileId = SP\Request::analyze('fileId', 0);
+$action = \SP\Http\Request::analyze('action');
+$accountId = \SP\Http\Request::analyze('accountId', 0);
+$fileId = \SP\Http\Request::analyze('fileId', 0);
 
-$log = new \SP\Log();
+$log = new \SP\Log\Log();
 
 if ($action == 'upload') {
     if (!is_array($_FILES["inFile"]) || !$accountId === 0) {
@@ -59,8 +60,8 @@ if ($action == 'upload') {
 
     $log->setAction(_('Subir Archivo'));
 
-    $allowedExts = strtoupper(SP\Config::getValue('files_allowed_exts'));
-    $allowedSize = SP\Config::getValue('files_allowed_size');
+    $allowedExts = strtoupper(\SP\Config\Config::getValue('files_allowed_exts'));
+    $allowedSize = \SP\Config\Config::getValue('files_allowed_size');
 
     if ($allowedExts) {
         // Extensiones aceptadas
@@ -90,14 +91,14 @@ if ($action == 'upload') {
     }
 
     // Variables con información del archivo
-    $fileData['name'] = SP\Html::sanitize($_FILES['inFile']['name']);
-    $tmpName = SP\Html::sanitize($_FILES['inFile']['tmp_name']);
+    $fileData['name'] = \SP\Html\Html::sanitize($_FILES['inFile']['name']);
+    $tmpName = \SP\Html\Html::sanitize($_FILES['inFile']['tmp_name']);
     $fileData['size'] = $_FILES['inFile']['size'];
     $fileData['type'] = $_FILES['inFile']['type'];
 
     if (!file_exists($tmpName)) {
         // Registramos el máximo tamaño permitido por PHP
-        SP\Util::getMaxUpload();
+        \SP\Util\Util::getMaxUpload();
 
         $log->addDescription(_('Error interno al leer el archivo'));
         $log->writeLog();
@@ -122,7 +123,7 @@ if ($action == 'upload') {
         exit($log->getDescription());
     }
 
-    if (SP\Files::fileUpload($accountId, $fileData)) {
+    if (\SP\Mgmt\Files::fileUpload($accountId, $fileData)) {
         $log->addDescription(_('Archivo guardado'));
         $log->writeLog();
 
@@ -143,7 +144,7 @@ if ($action == 'download' || $action == 'view') {
 
     $isView = ($action == 'view') ? true : false;
 
-    $file = SP\Files::fileDownload($fileId);
+    $file = \SP\Mgmt\Files::fileDownload($fileId);
 
     if (!$file) {
         exit(_('El archivo no existe'));
@@ -200,7 +201,7 @@ if ($action == "delete") {
         exit(_('No es un ID de archivo válido'));
     }
 
-    if (SP\Files::fileDelete($fileId)) {
+    if (\SP\Mgmt\Files::fileDelete($fileId)) {
         $log->addDescription(_('Archivo eliminado'));
         $log->writeLog();
 

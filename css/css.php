@@ -23,14 +23,14 @@
  *
  */
 
-use SP\Minify;
+use SP\Html\Minify;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$file = \SP\Request::analyze('f');
-$base = \SP\Request::analyze('b');
+$file = \SP\Http\Request::analyze('f');
+$base = \SP\Http\Request::analyze('b');
 
 if (!$file) {
     $Minify = new Minify();
@@ -48,11 +48,11 @@ if (!$file) {
     $Minify->addFile('material-icons.min.css');
     $Minify->getMinified();
 } elseif ($file && $base) {
-    $base = \SP\Request::analyze('b');
+    $base = \SP\Http\Request::analyze('b');
 
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_CSS);
-    $Minify->setBase(\SP\Init::$SERVERROOT . urldecode($base));
+    $Minify->setBase(\SP\Core\Init::$SERVERROOT . urldecode($base));
     $Minify->addFile(urldecode($file));
     $Minify->getMinified();
 }

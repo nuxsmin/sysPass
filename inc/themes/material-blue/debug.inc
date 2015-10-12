@@ -8,9 +8,9 @@
         <li>SESSION:
             <pre><?php echo print_r($_SESSION, true) ?></pre>
         </li>
-        <li>MASTER PASS: <?php echo SP\SessionUtil::getSessionMPass(); ?></li>
+        <li>MASTER PASS: <?php echo \SP\Core\SessionUtil::getSessionMPass(); ?></li>
         <li>CONFIG FILE:
-            <pre><?php echo print_r(SP\Config::getKeys(true), true); ?></pre>
+            <pre><?php echo print_r(\SP\Config\Config::getKeys(true), true); ?></pre>
         </li>
 </div>
 

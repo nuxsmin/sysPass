@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Request;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
@@ -31,19 +31,19 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Util::logout();
+if (!\SP\Core\Init::isLoggedIn()) {
+    \SP\Util\Util::logout();
 }
 
-$start = SP\Request::analyze('start', 0);
-$clear = SP\Request::analyze('clear', 0);
-$sk = SP\Request::analyze('sk', false);
+$start = \SP\Http\Request::analyze('start', 0);
+$clear = \SP\Http\Request::analyze('clear', 0);
+$sk = \SP\Http\Request::analyze('sk', false);
 
-$tpl = new SP\Template();
+$tpl = new \SP\Core\Template();
 $tpl->assign('limitStart', $start);
 $tpl->assign('clear', $clear);
 $tpl->assign('sk', $sk);
-$controller = new SP\Controller\EventlogC($tpl);
+$controller = new \SP\Controller\EventlogC($tpl);
 $controller->checkClear();
 $controller->getEventlog();
 echo $tpl->render();
