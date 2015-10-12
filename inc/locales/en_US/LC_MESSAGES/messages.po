@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-09 01:00+0100\n"
-"PO-Revision-Date: 2015-10-09 01:00+0100\n"
+"POT-Creation-Date: 2015-10-12 12:36+0100\n"
+"PO-Revision-Date: 2015-10-12 12:37+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -773,8 +773,8 @@ msgstr "Error on saving LDAP user data"
 #: ../../../../inc/ApiTokens.class.php:243
 #: ../../../../inc/ApiTokens.class.php:262
 #: ../../../../inc/ApiTokens.class.php:304
-#: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:181
-#: ../../../../inc/Crypt.class.php:192
+#: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:185
+#: ../../../../inc/Crypt.class.php:196
 #: ../../../../inc/XmlImportBase.class.php:79
 msgid "Error interno"
 msgstr "Internal error"
@@ -792,7 +792,7 @@ msgstr "Incorrect login"
 #: ../../../../ajax/ajax_doLogin.php:124 ../../../../ajax/ajax_doLogin.php:174
 #: ../../../../inc/ApiTokens.class.php:190
 #: ../../../../inc/ApiTokens.class.php:308 ../../../../inc/Auth.class.php:108
-#: ../../../../inc/Init.class.php:457 ../../../../inc/Ldap.class.php:290
+#: ../../../../inc/Init.class.php:462 ../../../../inc/Ldap.class.php:290
 #: ../../../../inc/Ldap.class.php:303 ../../../../inc/Ldap.class.php:311
 #: ../../../../inc/UserBase.class.php:384
 #: ../../../../inc/UserBase.class.php:528 ../../../../res/test.php:64
@@ -1585,7 +1585,7 @@ msgstr "Option unavailable"
 #: ../../../../inc/Controller.class.php:165
 #: ../../../../inc/Controller.class.php:166
 #: ../../../../inc/Controller.class.php:167
-#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:273
+#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:278
 msgid "Consulte con el administrador"
 msgstr "Please, contact to the administrator"
 
@@ -1597,21 +1597,21 @@ msgstr "You don't have permission to access to this page"
 msgid "No tiene permisos para realizar esta operación"
 msgstr "You don't have permission to do this operation"
 
-#: ../../../../inc/Crypt.class.php:119 ../../../../inc/Email.class.php:148
+#: ../../../../inc/Crypt.class.php:122 ../../../../inc/Email.class.php:148
 msgid "Aviso"
 msgstr "Warning"
 
-#: ../../../../inc/Crypt.class.php:119
+#: ../../../../inc/Crypt.class.php:122
 msgid ""
 "Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
 msgstr ""
 "The master password HASH has been regenerated. No further action is needed."
 
-#: ../../../../inc/Crypt.class.php:182
+#: ../../../../inc/Crypt.class.php:186
 msgid "No se puede usar el módulo de encriptación"
 msgstr "Crypto module cannot be loaded"
 
-#: ../../../../inc/Crypt.class.php:193
+#: ../../../../inc/Crypt.class.php:197
 msgid "Error al generar datos cifrados"
 msgstr "Error on creating encryption data"
 
@@ -1867,78 +1867,78 @@ msgstr "Import finished"
 msgid "Error en la verificación de la base de datos"
 msgstr "Error on checking database"
 
-#: ../../../../inc/Init.class.php:269
+#: ../../../../inc/Init.class.php:274
 msgid "Sesion"
 msgstr "Session"
 
-#: ../../../../inc/Init.class.php:269 ../../../../inc/Init.class.php:273
+#: ../../../../inc/Init.class.php:274 ../../../../inc/Init.class.php:278
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
-#: ../../../../inc/Init.class.php:357
+#: ../../../../inc/Init.class.php:362
 msgid "El directorio \"/config\" no existe"
 msgstr "The \"/config\" directory does not exist."
 
-#: ../../../../inc/Init.class.php:362
+#: ../../../../inc/Init.class.php:367
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Unable to write into the \"/config\" directory"
 
-#: ../../../../inc/Init.class.php:370
+#: ../../../../inc/Init.class.php:375
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "The \"/config\" directory permissions are incorrect"
 
-#: ../../../../inc/Init.class.php:370
+#: ../../../../inc/Init.class.php:375
 msgid "Actual:"
 msgstr "Current:"
 
-#: ../../../../inc/Init.class.php:370
+#: ../../../../inc/Init.class.php:375
 msgid "Necesario: 750"
 msgstr "Needed: 750"
 
-#: ../../../../inc/Init.class.php:419
+#: ../../../../inc/Init.class.php:424
 msgid "Aplicación en mantenimiento"
 msgstr "Application in maintenance"
 
-#: ../../../../inc/Init.class.php:419
+#: ../../../../inc/Init.class.php:424
 msgid "En breve estará operativa"
 msgstr "It will be running in short"
 
-#: ../../../../inc/Init.class.php:456
+#: ../../../../inc/Init.class.php:461
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../../inc/Init.class.php:458
+#: ../../../../inc/Init.class.php:463
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../../inc/Init.class.php:459
+#: ../../../../inc/Init.class.php:464
 msgid "Tiempo total"
 msgstr "Total time"
 
-#: ../../../../inc/Init.class.php:498
+#: ../../../../inc/Init.class.php:503
 msgid "La aplicación necesita actualizarse"
 msgstr "The application needs to be updated"
 
-#: ../../../../inc/Init.class.php:498
+#: ../../../../inc/Init.class.php:503
 #, php-format
 msgid "Si es un administrador pulse en el enlace: %s"
 msgstr "If you are an administrator, click on the link: %s"
 
-#: ../../../../inc/Init.class.php:498
+#: ../../../../inc/Init.class.php:503
 #: ../../../../inc/themes/classic/upgrade.inc:20
 #: ../../../../inc/themes/material-blue/upgrade.inc:24
 msgid "Actualizar"
 msgstr "Update"
 
-#: ../../../../inc/Init.class.php:529
+#: ../../../../inc/Init.class.php:534
 msgid "Actualización"
 msgstr "Update"
 
-#: ../../../../inc/Init.class.php:530
+#: ../../../../inc/Init.class.php:535
 msgid "Actualización de versión realizada."
 msgstr "Version updating done."
 
-#: ../../../../inc/Init.class.php:531
+#: ../../../../inc/Init.class.php:536
 #: ../../../../inc/themes/classic/info.inc:33
 #: ../../../../inc/themes/material-blue/info.inc:33
 msgid "Versión"
@@ -2016,49 +2016,57 @@ msgstr "Enter the database server"
 msgid "Servidor donde se instalará la Base de Datos"
 msgstr "Server where the database will be installed"
 
-#: ../../../../inc/Installer.class.php:313
+#: ../../../../inc/Installer.class.php:267
+msgid "No es posible comprobar el usuario de sysPass"
+msgstr "Unable to check the sysPass user"
+
+#: ../../../../inc/Installer.class.php:268
+msgid "Compruebe los permisos del usuario de conexión a la BD"
+msgstr "Please, check the DB connection user rights"
+
+#: ../../../../inc/Installer.class.php:319
 msgid "El usuario de MySQL ya existe"
 msgstr "The MySQL user already exist"
 
-#: ../../../../inc/Installer.class.php:314
+#: ../../../../inc/Installer.class.php:320
 msgid "Indique un nuevo usuario o elimine el existente"
 msgstr "Enter a new username or delete the existing one"
 
-#: ../../../../inc/Installer.class.php:327
+#: ../../../../inc/Installer.class.php:333
 msgid "La BBDD ya existe"
 msgstr "The database already exist"
 
-#: ../../../../inc/Installer.class.php:328
+#: ../../../../inc/Installer.class.php:334
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Enter a new database or delete the existing one"
 
-#: ../../../../inc/Installer.class.php:337
-#: ../../../../inc/Installer.class.php:408
+#: ../../../../inc/Installer.class.php:343
+#: ../../../../inc/Installer.class.php:414
 msgid "Error al crear la BBDD"
 msgstr "Error on DB creation"
 
-#: ../../../../inc/Installer.class.php:338
-#: ../../../../inc/Installer.class.php:349
+#: ../../../../inc/Installer.class.php:344
+#: ../../../../inc/Installer.class.php:355
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Please, check database user permissions"
 
-#: ../../../../inc/Installer.class.php:348
+#: ../../../../inc/Installer.class.php:354
 msgid "Error al establecer permisos de la BBDD"
 msgstr "Error on setting database permissions"
 
-#: ../../../../inc/Installer.class.php:381
+#: ../../../../inc/Installer.class.php:387
 msgid "El archivo de estructura de la BBDD no existe"
 msgstr "The database structure file does not exist"
 
-#: ../../../../inc/Installer.class.php:382
+#: ../../../../inc/Installer.class.php:388
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
 msgstr "Unable to create the application database. Please, download it again."
 
-#: ../../../../inc/Installer.class.php:390
+#: ../../../../inc/Installer.class.php:396
 msgid "Error al seleccionar la BBDD"
 msgstr "Error on selecting database."
 
-#: ../../../../inc/Installer.class.php:391
+#: ../../../../inc/Installer.class.php:397
 msgid ""
 "No es posible usar la Base de Datos para crear la estructura. Compruebe los "
 "permisos y que no exista."
@@ -2066,30 +2074,30 @@ msgstr ""
 "Unable to use the database to create the structure. Check permissions and it "
 "does not exist."
 
-#: ../../../../inc/Installer.class.php:409
+#: ../../../../inc/Installer.class.php:415
 msgid "Error al crear la estructura de la Base de Datos."
 msgstr "Error on creating database structure."
 
-#: ../../../../inc/Installer.class.php:432
+#: ../../../../inc/Installer.class.php:438
 msgid "Error al crear el grupo \"admin\""
 msgstr "Error on creating \"admin\" group"
 
-#: ../../../../inc/Installer.class.php:433
-#: ../../../../inc/Installer.class.php:466
-#: ../../../../inc/Installer.class.php:483
-#: ../../../../inc/Installer.class.php:496
+#: ../../../../inc/Installer.class.php:439
+#: ../../../../inc/Installer.class.php:472
+#: ../../../../inc/Installer.class.php:489
+#: ../../../../inc/Installer.class.php:502
 msgid "Informe al desarrollador"
 msgstr "Warn to developer"
 
-#: ../../../../inc/Installer.class.php:465
+#: ../../../../inc/Installer.class.php:471
 msgid "Error al crear el perfil \"admin\""
 msgstr "Error on creating \"admin\" profile"
 
-#: ../../../../inc/Installer.class.php:482
+#: ../../../../inc/Installer.class.php:488
 msgid "Error al crear el usuario \"admin\""
 msgstr "Error on creating \"admin\" user"
 
-#: ../../../../inc/Installer.class.php:495
+#: ../../../../inc/Installer.class.php:501
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Error on updating master password for user \"admin\""
 

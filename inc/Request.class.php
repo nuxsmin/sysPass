@@ -169,4 +169,14 @@ class Request
 
         return $headers;
     }
+
+    /**
+     * Comprobar si se realiza una recarga de la página
+     * 
+     * @return bool
+     */
+    public static function checkReload()
+    {
+        return (self::getRequestHeaders('Cache-Control') == 'max-age=0');
+    }
 }
