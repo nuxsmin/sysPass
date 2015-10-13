@@ -27,9 +27,13 @@ namespace SP\Controller;
 
 use SP\Api\ApiTokens;
 use SP\Core\ActionsInterface;
+use SP\Html\DataGrid\DataGridAction;
+use SP\Html\DataGrid\DataGridData;
+use SP\Html\DataGrid\DataGridHeader;
+use SP\Html\DataGrid\DataGridIcon;
+use SP\Html\DataGrid\DataGridTab;
 use SP\Mgmt\PublicLinkUtil;
 use SP\Mgmt\CustomFields;
-use SP\Storage\DB;
 use SP\Mgmt\User\Groups;
 use SP\Log\Log;
 use SP\Mgmt\User\Profile;
@@ -39,7 +43,6 @@ use SP\Core\Template;
 use SP\Mgmt\User\UserUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -58,6 +61,22 @@ class UsersMgmtC extends Controller implements ActionsInterface
      * @var int
      */
     private $_module = 0;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconAdd;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconView;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconEdit;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconDelete;
 
     /**
      * Constructor
@@ -69,7 +88,20 @@ class UsersMgmtC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey());
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+
+        $this->setIcons();
+    }
+
+    /**
+     * Establecer los iconos utilizados en el DataGrid
+     */
+    private function setIcons()
+    {
+        $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
+        $this->_iconView = new DataGridIcon('visibility', 'imgs/view.png', 'fg-blue80');
+        $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
+        $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
     }
 
     /**
@@ -79,98 +111,91 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_USERS);
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-
         if (!$this->checkAccess()) {
             return;
         }
 
-        $arrUsersTableProp = array(
-            'tblId' => 'tblUsers',
-            'header' => '',
-            'tblHeaders' => array(
-                _('Nombre'),
-                _('Login'),
-                _('Perfil'),
-                _('Grupo'),
-                _('Propiedades')),
-            'tblRowSrc' => array(
-                'user_name',
-                'user_login',
-                'userprofile_name',
-                'usergroup_name',
-                'images' => array(
-                    'user_isAdminApp' => array(
-                        'img_file' => 'check_blue.png',
-                        'img_title' => _('Admin Aplicación'),
-                        'icon' => 'star'),
-                    'user_isAdminAcc' => array(
-                        'img_file' => 'check_orange.png',
-                        'img_title' => _('Admin Cuentas'),
-                        'icon' => 'star_half'),
-                    'user_isLdap' => array(
-                        'img_file' => 'ldap.png',
-                        'img_title' => _('Usuario de LDAP'),
-                        'icon' => 'business'),
-                    'user_isDisabled' => array(
-                        'img_file' => 'disabled.png',
-                        'img_title' => _('Deshabilitado'),
-                        'icon' => 'error')
-                )
-            ),
-            'tblRowSrcId' => 'user_id',
-            'onCloseAction' => self::ACTION_USR,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_USR_USERS_NEW,
-                    'title' => _('Nuevo Usuario'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_USERS_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'icon' => 'add',
-                    'skip' => true
-                ),
-                'view' => array(
-                    'id' => self::ACTION_USR_USERS_VIEW,
-                    'title' => _('Ver Detalles de Usuario'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_USERS_VIEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png',
-                    'icon' => 'visibility'
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_USR_USERS_EDIT,
-                    'title' => _('Editar Usuario'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_USERS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'pass' => array(
-                    'id' => self::ACTION_USR_USERS_EDITPASS,
-                    'title' => _('Cambiar Clave de Usuario'),
-                    'onclick' => 'sysPassUtil.Common.usrUpdPass(this,' . self::ACTION_USR_USERS_EDITPASS . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/key.png',
-                    'icon' => 'lock_outline'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_USR_USERS_DELETE,
-                    'title' => _('Eliminar Usuario'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_USR_USERS_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                ),
-            )
-        );
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_USR_USERS_NEW);
+        $GridActionNew->setName(_('Nuevo Usuario'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_USR_USERS_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $arrUsersTableProp['cellWidth'] = floor(65 / count($arrUsersTableProp['tblHeaders']));
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_USR_USERS_VIEW);
+        $GridActionView->setName(_('Ver Detalles de Usuario'));
+        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_USR_USERS_VIEW);
+        $GridActionView->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Gestión de Usuarios'),
-                'query' => UserUtil::getUsers(),
-                'props' => $arrUsersTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_USR_USERS_EDIT);
+        $GridActionEdit->setName(_('Editar Usuario'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_USR_USERS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
 
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_USR_USERS_DELETE);
+        $GridActionDel->setName(_('Eliminar Usuario'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_USR_USERS_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
+
+        $GridActionEditPass = new DataGridAction();
+        $GridActionEditPass->setId(self::ACTION_USR_USERS_EDITPASS);
+        $GridActionEditPass->setName(_('Cambiar Clave de Usuario'));
+        $GridActionEditPass->setIcon(new DataGridIcon('lock_outline', 'imgs/pass.png', 'fg-orange80'));
+        $GridActionEditPass->setOnClickFunction('sysPassUtil.Common.usrUpdPass');
+        $GridActionEditPass->setOnClickArgs('this');
+        $GridActionEditPass->setOnClickArgs(self::ACTION_USR_USERS_EDITPASS);
+        $GridActionEditPass->setOnClickArgs($this->view->sk);
+        $GridActionEditPass->setFilterRowSource('user_isLdap');
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Login'));
+        $GridHeaders->addHeader(_('Perfil'));
+        $GridHeaders->addHeader(_('Grupo'));
+        $GridHeaders->addHeader(_('Propiedades'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('user_id');
+        $GridData->addDataRowSource('user_name');
+        $GridData->addDataRowSource('user_login');
+        $GridData->addDataRowSource('userprofile_name');
+        $GridData->addDataRowSource('usergroup_name');
+        $GridData->addDataRowSourceWithIcon('user_isAdminApp', new DataGridIcon('star', 'check_blue.png', null, _('Admin Cuentas')));
+        $GridData->addDataRowSourceWithIcon('user_isAdminAcc', new DataGridIcon('star_half', 'check_orange.png', null, _('Admin Cuentas')));
+        $GridData->addDataRowSourceWithIcon('user_isLdap', new DataGridIcon('business', 'ldap.png', null, _('Usuario de LDAP')));
+        $GridData->addDataRowSourceWithIcon('user_isDisabled', new DataGridIcon('error', 'disabled.png', null, _('Deshabilitado')));
+        $GridData->setData(UserUtil::getUsers());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblUsers');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionEditPass);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Usuarios'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -180,55 +205,61 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_GROUPS);
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-
         if (!$this->checkAccess()) {
             return;
         }
 
-        $arrGroupsTableProp = array(
-            'tblId' => 'tblGroups',
-            'header' => '',
-            'tblHeaders' => array(_('Nombre'), _('Descripción')),
-            'tblRowSrc' => array('usergroup_name', 'usergroup_description'),
-            'tblRowSrcId' => 'usergroup_id',
-            'onCloseAction' => self::ACTION_USR,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_USR_GROUPS_NEW,
-                    'title' => _('Nuevo Grupo'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_GROUPS_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'icon' => 'add',
-                    'skip' => true
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_USR_GROUPS_EDIT,
-                    'title' => _('Editar Grupo'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_GROUPS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_USR_GROUPS_DELETE,
-                    'title' => _('Eliminar Grupo'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_USR_GROUPS_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_USR_GROUPS_NEW);
+        $GridActionNew->setName(_('Nuevo Grupo'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_USR_GROUPS_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $arrGroupsTableProp['cellWidth'] = floor(65 / count($arrGroupsTableProp['tblHeaders']));
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_USR_GROUPS_EDIT);
+        $GridActionEdit->setName(_('Editar Grupo'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_USR_GROUPS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Gestión de Grupos'),
-                'query' => Groups::getGroups(),
-                'props' => $arrGroupsTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_USR_GROUPS_DELETE);
+        $GridActionDel->setName(_('Eliminar Grupo'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_USR_GROUPS_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Descripción'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('usergroup_id');
+        $GridData->addDataRowSource('usergroup_name');
+        $GridData->addDataRowSource('usergroup_description');
+        $GridData->setData(Groups::getGroups());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblGroups');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Grupos'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -238,63 +269,69 @@ class UsersMgmtC extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PROFILES);
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-
         if (!$this->checkAccess()) {
             return;
         }
 
-        $arrProfilesTableProp = array(
-            'tblId' => 'tblProfiles',
-            'header' => '',
-            'tblHeaders' => array(_('Nombre')),
-            'tblRowSrc' => array('userprofile_name'),
-            'tblRowSrcId' => 'userprofile_id',
-            'onCloseAction' => self::ACTION_USR,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_USR_PROFILES_NEW,
-                    'title' => _('Nuevo Perfil'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_PROFILES_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'icon' => 'add',
-                    'skip' => true
-                ),
-                'view' => array(
-                    'id' => self::ACTION_USR_PROFILES_VIEW,
-                    'title' => _('Ver Detalles de Perfil'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_PROFILES_VIEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png',
-                    'icon' => 'visibility'
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_USR_PROFILES_EDIT,
-                    'title' => _('Editar Perfil'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_USR_PROFILES_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_USR_PROFILES_DELETE,
-                    'title' => _('Eliminar Perfil'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_USR_PROFILES_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_USR_PROFILES_NEW);
+        $GridActionNew->setName(_('Nuevo Perfil'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_USR_PROFILES_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $arrProfilesTableProp['cellWidth'] = floor(65 / count($arrProfilesTableProp['tblHeaders']));
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_USR_PROFILES_VIEW);
+        $GridActionView->setName(_('Ver Detalles de Perfil'));
+        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_USR_PROFILES_VIEW);
+        $GridActionView->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Gestión de Perfiles'),
-                'query' => Profile::getProfiles(),
-                'props' => $arrProfilesTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5)
-            )
-        );
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_USR_PROFILES_EDIT);
+        $GridActionEdit->setName(_('Editar Perfil'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_USR_PROFILES_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_USR_PROFILES_DELETE);
+        $GridActionDel->setName(_('Eliminar Perfil'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_USR_PROFILES_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('userprofile_id');
+        $GridData->addDataRowSource('userprofile_name');
+        $GridData->setData(Profile::getProfiles());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblProfiles');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Perfiles'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -302,9 +339,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
      */
     public function useTabs()
     {
-        $this->view->addTemplate('tabs-start');
-        $this->view->addTemplate('mgmttabs');
-        $this->view->addTemplate('tabs-end');
+        $this->view->addTemplate('datatabs-grid');
 
         $this->view->assign('tabs', array());
         $this->view->assign('activeTab', 0);
@@ -326,6 +361,19 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('ro', ($this->view->user['checks']['user_isLdap']) ? 'READONLY' : '');
 
         $this->getCustomFieldsForItem();
+    }
+
+    /**
+     * Obtener la lista de campos personalizados y sus valores
+     */
+    private function getCustomFieldsForItem()
+    {
+        // Se comprueba que hayan campos con valores para el elemento actual
+        if ($this->view->itemId && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
+        } else {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
+        }
     }
 
     /**
@@ -391,56 +439,67 @@ class UsersMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $tokensTableProp = array(
-            'tblId' => 'tblTokens',
-            'header' => '',
-            'tblHeaders' => array(_('Usuario'), _('Acción')),
-            'tblRowSrc' => array('user_login', 'authtoken_actionId'),
-            'tblRowSrcId' => 'authtoken_id',
-            'onCloseAction' => self::ACTION_MGM_APITOKENS,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_MGM_APITOKENS_NEW,
-                    'title' => _('Nueva Autorización'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_APITOKENS_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'icon' => 'add',
-                    'skip' => true
-                ),
-                'view' => array(
-                    'id' => self::ACTION_MGM_APITOKENS_VIEW,
-                    'title' => _('Ver token de Autorización'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_APITOKENS_VIEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png',
-                    'icon' => 'visibility'
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_MGM_APITOKENS_EDIT,
-                    'title' => _('Editar Autorización'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_APITOKENS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_MGM_APITOKENS_DELETE,
-                    'title' => _('Eliminar Autorización'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_APITOKENS_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_MGM_APITOKENS_NEW);
+        $GridActionNew->setName(_('Nueva Autorización'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_MGM_APITOKENS_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $tokensTableProp['cellWidth'] = floor(65 / count($tokensTableProp['tblHeaders']));
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_MGM_APITOKENS_VIEW);
+        $GridActionView->setName(_('Ver token de Autorización'));
+        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_MGM_APITOKENS_VIEW);
+        $GridActionView->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Gestión de Autorizaciones API'),
-                'query' => ApiTokens::getTokens(),
-                'props' => $tokensTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_MGM_APITOKENS_EDIT);
+        $GridActionEdit->setName(_('Editar Autorización'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_MGM_APITOKENS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_APITOKENS_DELETE);
+        $GridActionDel->setName(_('Eliminar Autorización'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_APITOKENS_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Usuario'));
+        $GridHeaders->addHeader(_('Acción'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('authtoken_id');
+        $GridData->addDataRowSource('user_login');
+        $GridData->addDataRowSource('authtoken_actionId');
+        $GridData->setData(ApiTokens::getTokens());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblTokens');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Autorizaciones API'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -464,19 +523,6 @@ class UsersMgmtC extends Controller implements ActionsInterface
     }
 
     /**
-     * Obtener la lista de campos personalizados y sus valores
-     */
-    private function getCustomFieldsForItem()
-    {
-        // Se comprueba que hayan campos con valores para el elemento actual
-        if ($this->view->itemId && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
-        } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
-        }
-    }
-
-    /**
      * Obtener los datos para la pestaña de tokens de API
      */
     public function getPublicLinksList()
@@ -487,48 +533,63 @@ class UsersMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $linksTableProp = array(
-            'tblId' => 'tblLinks',
-            'header' => '',
-            'tblHeaders' => array(_('Cuenta'), _('Fecha Creación'), _('Fecha Caducidad'), _('Usuario'), _('Notificar'), _('Visitas')),
-            'tblRowSrc' => array('publicLink_account', 'publicLink_dateAdd', 'publicLink_dateExpire', 'publicLink_user', 'publicLink_notify', 'publicLink_views'),
-            'tblRowSrcId' => 'publicLink_id',
-            'onCloseAction' => self::ACTION_MGM_PUBLICLINKS,
-            'actions' => array(
-                'view' => array(
-                    'id' => self::ACTION_MGM_PUBLICLINKS_VIEW,
-                    'title' => _('Ver Enlace'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_PUBLICLINKS_VIEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png',
-                    'icon' => 'visibility'
-                ),
-                'refresh' => array(
-                    'id' => self::ACTION_MGM_PUBLICLINKS_VIEW,
-                    'title' => _('Renovar Enlace'),
-                    'onclick' => 'sysPassUtil.Common.linksMgmtRefresh(this,' . self::ACTION_MGM_PUBLICLINKS_REFRESH . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/view.png',
-                    'icon' => 'refresh'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_MGM_PUBLICLINKS_DELETE,
-                    'title' => _('Eliminar Enlace'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_PUBLICLINKS_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_MGM_PUBLICLINKS_VIEW);
+        $GridActionView->setName(_('Ver Enlace'));
+        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_VIEW);
+        $GridActionView->setOnClickArgs($this->view->sk);
 
-        $linksTableProp['cellWidth'] = floor(65 / count($linksTableProp['tblHeaders']));
+        $GridActionRefresh = new DataGridAction();
+        $GridActionRefresh->setId(self::ACTION_MGM_PUBLICLINKS_REFRESH);
+        $GridActionRefresh->setName(_('Renovar Enlace'));
+        $GridActionRefresh->setIcon(new DataGridIcon('refresh', 'imgs/view.png', 'fg-green80'));
+        $GridActionRefresh->setOnClickFunction('sysPassUtil.Common.linksMgmtRefresh');
+        $GridActionRefresh->setOnClickArgs('this');
+        $GridActionRefresh->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_REFRESH);
+        $GridActionRefresh->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Gestión de Enlaces'),
-                'query' => PublicLinkUtil::getLinks(),
-                'props' => $linksTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_PUBLICLINKS_DELETE);
+        $GridActionDel->setName(_('Eliminar Enlace'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Cuenta'));
+        $GridHeaders->addHeader(_('Fecha Creación'));
+        $GridHeaders->addHeader(_('Fecha Caducidad'));
+        $GridHeaders->addHeader(_('Usuario'));
+        $GridHeaders->addHeader(_('Notificar'));
+        $GridHeaders->addHeader(_('Visitas'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('publicLink_id');
+        $GridData->addDataRowSource('publicLink_account');
+        $GridData->addDataRowSource('publicLink_dateAdd');
+        $GridData->addDataRowSource('publicLink_dateExpire');
+        $GridData->addDataRowSource('publicLink_user');
+        $GridData->addDataRowSource('publicLink_notify');
+        $GridData->addDataRowSource('publicLink_views');
+        $GridData->setData(PublicLinkUtil::getLinks());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblLinks');
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionRefresh);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Enlaces'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**

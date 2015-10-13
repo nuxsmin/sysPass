@@ -1,0 +1,110 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+namespace SP\Html\DataGrid;
+
+/**
+ * Class DataGridDataBase para establecer el origen de datos de la matriz
+ *
+ * @package SP\Html\DataGrid
+ */
+abstract class DataGridDataBase implements DataGridDataInterface
+{
+    /**
+     * Los datos de la matriz
+     *
+     * @var array
+     */
+    private $_data = array();
+    /**
+     * Las columnas a mostrar de los datos obtenidos
+     *
+     * @var array
+     */
+    private $_sources = array();
+    /**
+     * La columna que identifica cada elemento de los datos de la matriz
+     *
+     * @var int
+     */
+    private $_sourceId = 0;
+
+    /**
+     * @param $source string
+     */
+    public function addDataRowSource($source)
+    {
+        $this->_sources[] = $source;
+    }
+
+    /**
+     * @param $id string
+     */
+    public function setDataRowSourceId($id)
+    {
+        $this->_sourceId = $id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataRowSources()
+    {
+        return $this->_sources;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataRowSourceId()
+    {
+        return $this->_sourceId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->_data;
+    }
+
+    /**
+     * @param $data array
+     */
+    public function setData(array $data)
+    {
+        $this->_data = $data;
+    }
+
+    /**
+     * @param string       $source
+     * @param DatagridIcon $icon
+     */
+    public function addDataRowSourceWithIcon($source, $icon)
+    {
+        $this->_sources[] = array($source, $icon);
+    }
+}

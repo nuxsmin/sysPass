@@ -45,7 +45,7 @@ class Html
         }
 
         if (is_array($data)) {
-            array_walk_recursive($data, '\SP\Html::sanitize');
+            array_walk_recursive($data, '\SP\Html\Html::sanitize');
         } else {
             $data = strip_tags($data);
 

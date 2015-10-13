@@ -26,6 +26,11 @@
 namespace SP\Controller;
 
 use SP\Core\ActionsInterface;
+use SP\Html\DataGrid\DataGridAction;
+use SP\Html\DataGrid\DataGridData;
+use SP\Html\DataGrid\DataGridHeader;
+use SP\Html\DataGrid\DataGridIcon;
+use SP\Html\DataGrid\DataGridTab;
 use SP\Http\Request;
 use SP\Mgmt\Category;
 use SP\Mgmt\Customer;
@@ -53,6 +58,19 @@ class AccountsMgmtC extends Controller implements ActionsInterface
      * @var int
      */
     private $_module = 0;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconAdd;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconEdit;
+    /**
+     * @var DataGridIcon
+     */
+    private $_iconDelete;
+
 
     /**
      * Constructor
@@ -64,7 +82,9 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey());
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+
+        $this->setIcons();
     }
 
     /**
@@ -78,52 +98,57 @@ class AccountsMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_MGM_CATEGORIES_NEW);
+        $GridActionNew->setName(_('Nueva Categoría'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_MGM_CATEGORIES_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $categoriesTableProp = array(
-            'tblId' => 'tblCategories',
-            'header' => '',
-            'tblHeaders' => array(_('Nombre'), _('Descripción')),
-            'tblRowSrc' => array('category_name', 'category_description'),
-            'tblRowSrcId' => 'category_id',
-            'onCloseAction' => self::ACTION_MGM,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_MGM_CATEGORIES_NEW,
-                    'title' => _('Nueva Categoría'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'icon' => 'add',
-                    'skip' => true
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_MGM_CATEGORIES_EDIT,
-                    'title' => _('Editar Categoría'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CATEGORIES_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_MGM_CATEGORIES_DELETE,
-                    'title' => _('Eliminar Categoría'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_CATEGORIES_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_MGM_CATEGORIES_EDIT);
+        $GridActionEdit->setName(_('Editar Categoría'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_MGM_CATEGORIES_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
 
-        $categoriesTableProp['cellWidth'] = floor(65 / count($categoriesTableProp['tblHeaders']));
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_CATEGORIES_DELETE);
+        $GridActionDel->setName(_('Eliminar Categoría'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_CATEGORIES_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs',
-            array(
-                'title' => _('Gestión de Categorías'),
-                'query' => Category::getCategories(),
-                'props' => $categoriesTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Descripción'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('category_id');
+        $GridData->addDataRowSource('category_name');
+        $GridData->addDataRowSource('category_description');
+        $GridData->setData(Category::getCategories());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblCategories');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Categorías'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -137,50 +162,57 @@ class AccountsMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_MGM_CUSTOMERS_NEW);
+        $GridActionNew->setName(_('Nuevo Cliente'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_MGM_CUSTOMERS_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $customersTableProp = array(
-            'tblId' => 'tblCustomers',
-            'header' => '',
-            'tblHeaders' => array(_('Nombre'), _('Descripción')),
-            'tblRowSrc' => array('customer_name', 'customer_description'),
-            'tblRowSrcId' => 'customer_id',
-            'onCloseAction' => self::ACTION_MGM,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_MGM_CUSTOMERS_NEW,
-                    'title' => _('Nuevo Cliente'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'skip' => true
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_MGM_CUSTOMERS_EDIT,
-                    'title' => _('Editar Cliente'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMERS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_MGM_CUSTOMERS_DELETE,
-                    'title' => _('Eliminar Cliente'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMERS_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_MGM_CUSTOMERS_EDIT);
+        $GridActionEdit->setName(_('Editar Cliente'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_MGM_CUSTOMERS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
 
-        $customersTableProp['cellWidth'] = floor(65 / count($customersTableProp['tblHeaders']));
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_CUSTOMERS_DELETE);
+        $GridActionDel->setName(_('Eliminar Cliente'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_CUSTOMERS_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Gestión de Clientes'),
-                'query' => Customer::getCustomers(),
-                'props' => $customersTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Descripción'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('customer_id');
+        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('customer_description');
+        $GridData->setData(Customer::getCustomers());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblCustomers');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Clientes'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -188,9 +220,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
      */
     public function useTabs()
     {
-        $this->view->addTemplate('tabs-start');
-        $this->view->addTemplate('mgmttabs');
-        $this->view->addTemplate('tabs-end');
+        $this->view->addTemplate('datatabs-grid');
 
         $this->view->assign('tabs', array());
         $this->view->assign('activeTab', 0);
@@ -265,50 +295,59 @@ class AccountsMgmtC extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_MGM_CUSTOMFIELDS_NEW);
+        $GridActionNew->setName(_('Nuevo Campo'));
+        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setIsNew(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_MGM_CUSTOMFIELDS_NEW);
+        $GridActionNew->setOnClickArgs($this->view->sk);
 
-        $tableProp = array(
-            'tblId' => 'tblCustomFields',
-            'header' => '',
-            'tblHeaders' => array(_('Módulo'), _('Nombre'), _('Tipo')),
-            'tblRowSrc' => array('module', 'name', 'typeName'),
-            'tblRowSrcId' => 'id',
-            'onCloseAction' => self::ACTION_MGM,
-            'actions' => array(
-                'new' => array(
-                    'id' => self::ACTION_MGM_CUSTOMFIELDS_NEW,
-                    'title' => _('Nuevo Campo'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_NEW . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/new.png',
-                    'skip' => true
-                ),
-                'edit' => array(
-                    'id' => self::ACTION_MGM_CUSTOMFIELDS_EDIT,
-                    'title' => _('Editar Campo'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtData(this,' . self::ACTION_MGM_CUSTOMFIELDS_EDIT . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/edit.png',
-                    'icon' => 'mode_edit'
-                ),
-                'del' => array(
-                    'id' => self::ACTION_MGM_CUSTOMFIELDS_DELETE,
-                    'title' => _('Eliminar Campo'),
-                    'onclick' => 'sysPassUtil.Common.appMgmtDelete(this,' . self::ACTION_MGM_CUSTOMFIELDS_DELETE . ',\'' . $this->view->sk . '\')',
-                    'img' => 'imgs/delete.png',
-                    'icon' => 'delete',
-                    'isdelete' => true
-                )
-            )
-        );
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_MGM_CUSTOMFIELDS_EDIT);
+        $GridActionEdit->setName(_('Editar Campo'));
+        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_MGM_CUSTOMFIELDS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->view->sk);
 
-        $tableProp['cellWidth'] = floor(65 / count($tableProp['tblHeaders']));
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_CUSTOMFIELDS_DELETE);
+        $GridActionDel->setName(_('Eliminar Campo'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_CUSTOMFIELDS_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
 
-        $this->view->append(
-            'tabs', array(
-                'title' => _('Campos Personalizados'),
-                'query' => CustomFieldDef::getCustomFields(),
-                'props' => $tableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
-        );
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Módulo'));
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Tipo'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('module');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('typeName');
+        $GridData->setData(CustomFieldDef::getCustomFields());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblCustomFields');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Campos Personalizados'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 
     /**
@@ -319,9 +358,9 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $this->view->addTemplate('customfields');
 
         $customField = CustomFieldDef::getCustomFields($this->view->itemId, true);
-        $field = unserialize($customField->customfielddef_field);
+        $field = (is_object($customField)) ? unserialize($customField->customfielddef_field) : null;
 
-        if (get_class($field) === '__PHP_Incomplete_Class') {
+        if (is_object($field) && get_class($field) === '__PHP_Incomplete_Class') {
             $field = Util::castToClass('SP\Mgmt\CustomFieldDef', $field);
         }
 
@@ -330,5 +369,15 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $this->view->assign('field', $field);
         $this->view->assign('types', CustomFieldDef::getFieldsTypes());
         $this->view->assign('modules', CustomFieldDef::getFieldsModules());
+    }
+
+    /**
+     * Establecer los iconos utilizados en el DataGrid
+     */
+    private function setIcons()
+    {
+        $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
+        $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
+        $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
     }
 }
