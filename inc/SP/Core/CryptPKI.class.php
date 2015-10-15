@@ -28,6 +28,7 @@ namespace SP\Core;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use phpseclib\Exception\FileNotFoundException;
+use SP\Log\Log;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI
@@ -109,6 +110,8 @@ class CryptPKI
         $file = $this->getPublicKeyFile();
 
         if (!file_exists($file)) {
+            Log::writeNewLog(__FUNCTION__, _('El archivo de clave no existe'), Log::NOTICE);
+
             throw new FileNotFoundException(_('El archivo de clave no existe'));
         }
 
@@ -140,6 +143,8 @@ class CryptPKI
         $file = $this->getPrivateKeyFile();
 
         if (!file_exists($file)) {
+            Log::writeNewLog(__FUNCTION__, _('El archivo de clave no existe'), Log::NOTICE);
+
             throw new FileNotFoundException(_('El archivo de clave no existe'));
         }
 

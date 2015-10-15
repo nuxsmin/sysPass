@@ -23,9 +23,15 @@
  *
  */
 
+use SP\Account\Account;
+use SP\Account\AccountHistory;
+use SP\Core\Acl;
+use SP\Core\Crypt;
+use SP\Core\Init;
 use SP\Http\Request;
+use SP\Http\Response;
+use SP\Log\Log;
 use SP\Mgmt\User\UserPass;
-use SP\Mgmt\User\UserUtil;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');
@@ -34,42 +40,43 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!Init::isLoggedIn()) {
+    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$accountId = \SP\Http\Request::analyze('accountid', false);
-$isHistory = \SP\Http\Request::analyze('isHistory', false);
+$accountId = Request::analyze('accountid', false);
+$isHistory = Request::analyze('isHistory', false);
 
 if (!$accountId) {
     return;
 }
 
-$account = (!$isHistory) ? new \SP\Account\Account() : new \SP\Account\AccountHistory();
+$Account = (!$isHistory) ? new Account() : new AccountHistory();
 
-$account->setAccountParentId(\SP\Core\Session::getAccountParentId());
-$account->setAccountId($accountId);
+$Account->setAccountParentId(\SP\Core\Session::getAccountParentId());
+$Account->setAccountId($accountId);
 
-$accountData = $account->getAccountPassData();
+$accountData = $Account->getAccountPassData();
 
-if ($isHistory && !$account->checkAccountMPass()) {
-    \SP\Http\Response::printJSON(_('La clave maestra no coincide'));
+if ($isHistory && !$Account->checkAccountMPass()) {
+    Response::printJSON(_('La clave maestra no coincide'));
 }
 
-if (!\SP\Core\Acl::checkAccountAccess(\SP\Core\Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !\SP\Core\Acl::checkUserAccess(\SP\Core\Acl::ACTION_ACC_VIEW_PASS)) {
-    \SP\Http\Response::printJSON(_('No tiene permisos para acceder a esta cuenta'));
+if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS)
+    || !Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())) {
+    Response::printJSON(_('No tiene permisos para acceder a esta cuenta'));
 } elseif (!UserPass::checkUserUpdateMPass()) {
-    \SP\Http\Response::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+    Response::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
-$accountClearPass = \SP\Core\Crypt::getDecrypt($accountData->pass, $accountData->iv);
+$accountClearPass = Crypt::getDecrypt($accountData->pass, $accountData->iv);
 
 if (!$isHistory) {
-    $account->incrementDecryptCounter();
+    $Account->incrementDecryptCounter();
 
-    $log = new \SP\Log\Log(_('Ver Clave'));
-    $log->addDescription(_('ID') . ': ' . $accountId);
-    $log->addDescription(_('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->name);
+    $log = new Log(_('Ver Clave'));
+    $log->addDetails(_('ID'), $accountId);
+    $log->addDetails(_('Cuenta'), $accountData->customer_name . ' / ' . $accountData->name);
     $log->writeLog();
 }
 
@@ -84,4 +91,4 @@ $data = array(
     'useimage' => $useImage
 );
 
-\SP\Http\Response::printJSON($data, 0);
+Response::printJSON($data, 0);

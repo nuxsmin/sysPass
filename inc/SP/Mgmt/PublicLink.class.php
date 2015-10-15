@@ -145,9 +145,10 @@ class PublicLink extends PublicLinkBase
         }
 
         $Log = new Log(_('Nuevo Enlace'));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Tipo')), $this->_typeId));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Cuenta')), $this->_itemId));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
+        $Log->addDescription(_('Enlace creado'));
+        $Log->addDetails(Html::strongText(_('Tipo')), $this->_typeId);
+        $Log->addDetails(Html::strongText(_('Cuenta')), $this->_itemId);
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -186,9 +187,10 @@ class PublicLink extends PublicLinkBase
         $this->updateUseInfo($_SERVER['REMOTE_ADDR']);
 
         $Log = new Log(_('Ver Enlace Público'));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Tipo')), $this->_typeId));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->_itemId)));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
+        $Log->addDescription(_('Enlace visualizado'));
+        $Log->addDetails(Html::strongText(_('Tipo')), $this->_typeId);
+        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->_itemId));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
         $Log->writeLog();
 
         if ($this->isNotify()) {
@@ -219,9 +221,10 @@ class PublicLink extends PublicLinkBase
         }
 
         $Log = new Log(_('Actualizar Enlace'));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Tipo')), $this->_typeId));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->_itemId)));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
+        $Log->addDescription(_('Enlace actualizado'));
+        $Log->addDetails(Html::strongText(_('Tipo')), $this->_typeId);
+        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->_itemId));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);

@@ -29,6 +29,7 @@ use SP\Config\ConfigDB;
 use SP\Core\Crypt;
 use SP\Core\Session;
 use SP\Html\Html;
+use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
 
@@ -131,7 +132,11 @@ class UserPass
 
         self::$queryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), sprintf('%s : %s', Html::strongText(_('Login')), $userLogin));
+        $Log = new Log(_('Modificar Clave Usuario'));
+        $Log->addDetails(Html::strongText(_('Login')), $userLogin);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }

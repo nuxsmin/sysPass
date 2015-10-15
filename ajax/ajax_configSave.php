@@ -23,9 +23,22 @@
  *
  */
 
+use SP\Account\Account;
+use SP\Account\AccountHistory;
+use SP\Config\Config;
 use SP\Config\ConfigDB;
+use SP\Core\ActionsInterface;
+use SP\Core\Crypt;
 use SP\Core\CryptMasterPass;
+use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\Core\SPException;
+use SP\Html\Html;
+use SP\Http\Request;
+use SP\Http\Response;
+use SP\Log\Email;
+use SP\Log\Log;
+use SP\Mgmt\CustomFields;
 use SP\Mgmt\User\UserPass;
 use SP\Util\Checks;
 
@@ -33,305 +46,330 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-\SP\Http\Request::checkReferer('POST');
+Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!Init::isLoggedIn()) {
+    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
-$actionId = \SP\Http\Request::analyze('actionId', 0);
-$activeTab = \SP\Http\Request::analyze('activeTab', 0);
+$actionId = Request::analyze('actionId', 0);
+$activeTab = Request::analyze('activeTab', 0);
 
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_GENERAL
-    || $actionId === \SP\Core\ActionsInterface::ACTION_CFG_WIKI
-    || $actionId === \SP\Core\ActionsInterface::ACTION_CFG_LDAP
-    || $actionId === \SP\Core\ActionsInterface::ACTION_CFG_MAIL
+if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
+    || $actionId === ActionsInterface::ACTION_CFG_WIKI
+    || $actionId === ActionsInterface::ACTION_CFG_LDAP
+    || $actionId === ActionsInterface::ACTION_CFG_MAIL
 ) {
-    $Log = \SP\Log\Log::newLog(_('Modificar Configuración'));
+    $Log = Log::newLog(_('Modificar Configuración'));
 
-    if ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_GENERAL) {
+    if ($actionId === ActionsInterface::ACTION_CFG_GENERAL) {
         // General
-        $siteLang = \SP\Http\Request::analyze('sitelang');
-        $siteTheme = \SP\Http\Request::analyze('sitetheme', 'material-blue');
-        $sessionTimeout = \SP\Http\Request::analyze('session_timeout', 300);
-        $httpsEnabled = \SP\Http\Request::analyze('https_enabled', false, false, true);
-        $logEnabled = \SP\Http\Request::analyze('log_enabled', false, false, true);
-        $debugEnabled = \SP\Http\Request::analyze('debug', false, false, true);
-        $maintenanceEnabled = \SP\Http\Request::analyze('maintenance', false, false, true);
-        $checkUpdatesEnabled = \SP\Http\Request::analyze('updates', false, false, true);
-        $checkNoticesEnabled = \SP\Http\Request::analyze('notices', false, false, true);
+        $siteLang = Request::analyze('sitelang');
+        $siteTheme = Request::analyze('sitetheme', 'material-blue');
+        $sessionTimeout = Request::analyze('session_timeout', 300);
+        $httpsEnabled = Request::analyze('https_enabled', false, false, true);
+        $logEnabled = Request::analyze('log_enabled', false, false, true);
+        $debugEnabled = Request::analyze('debug', false, false, true);
+        $maintenanceEnabled = Request::analyze('maintenance', false, false, true);
+        $checkUpdatesEnabled = Request::analyze('updates', false, false, true);
+        $checkNoticesEnabled = Request::analyze('notices', false, false, true);
 
-        \SP\Config\Config::setCacheConfigValue('sitelang', $siteLang);
-        \SP\Config\Config::setCacheConfigValue('sitetheme', $siteTheme);
-        \SP\Config\Config::setCacheConfigValue('session_timeout', $sessionTimeout);
-        \SP\Config\Config::setCacheConfigValue('https_enabled', $httpsEnabled);
-        \SP\Config\Config::setCacheConfigValue('log_enabled', $logEnabled);
-        \SP\Config\Config::setCacheConfigValue('debug', $debugEnabled);
-        \SP\Config\Config::setCacheConfigValue('maintenance', $maintenanceEnabled);
-        \SP\Config\Config::setCacheConfigValue('checkupdates', $checkUpdatesEnabled);
-        \SP\Config\Config::setCacheConfigValue('checknotices', $checkNoticesEnabled);
+        Config::setCacheConfigValue('sitelang', $siteLang);
+        Config::setCacheConfigValue('sitetheme', $siteTheme);
+        Config::setCacheConfigValue('session_timeout', $sessionTimeout);
+        Config::setCacheConfigValue('https_enabled', $httpsEnabled);
+        Config::setCacheConfigValue('log_enabled', $logEnabled);
+        Config::setCacheConfigValue('debug', $debugEnabled);
+        Config::setCacheConfigValue('maintenance', $maintenanceEnabled);
+        Config::setCacheConfigValue('checkupdates', $checkUpdatesEnabled);
+        Config::setCacheConfigValue('checknotices', $checkNoticesEnabled);
 
         // Accounts
-        $globalSearchEnabled = \SP\Http\Request::analyze('globalsearch', false, false, true);
-        $accountPassToImageEnabled = \SP\Http\Request::analyze('account_passtoimage', false, false, true);
-        $accountLinkEnabled = \SP\Http\Request::analyze('account_link', false, false, true);
-        $accountCount = \SP\Http\Request::analyze('account_count', 10);
-        $resultsAsCardsEnabled = \SP\Http\Request::analyze('resultsascards', false, false, true);
+        $globalSearchEnabled = Request::analyze('globalsearch', false, false, true);
+        $accountPassToImageEnabled = Request::analyze('account_passtoimage', false, false, true);
+        $accountLinkEnabled = Request::analyze('account_link', false, false, true);
+        $accountCount = Request::analyze('account_count', 10);
+        $resultsAsCardsEnabled = Request::analyze('resultsascards', false, false, true);
 
-        \SP\Config\Config::setCacheConfigValue('globalsearch', $globalSearchEnabled);
-        \SP\Config\Config::setCacheConfigValue('account_passtoimage', $accountPassToImageEnabled);
-        \SP\Config\Config::setCacheConfigValue('account_link', $accountLinkEnabled);
-        \SP\Config\Config::setCacheConfigValue('account_count', $accountCount);
-        \SP\Config\Config::setCacheConfigValue('resultsascards', $resultsAsCardsEnabled);
+        Config::setCacheConfigValue('globalsearch', $globalSearchEnabled);
+        Config::setCacheConfigValue('account_passtoimage', $accountPassToImageEnabled);
+        Config::setCacheConfigValue('account_link', $accountLinkEnabled);
+        Config::setCacheConfigValue('account_count', $accountCount);
+        Config::setCacheConfigValue('resultsascards', $resultsAsCardsEnabled);
 
         // Files
-        $filesEnabled = \SP\Http\Request::analyze('files_enabled', false, false, true);
-        $filesAllowedSize = \SP\Http\Request::analyze('files_allowed_size', 1024);
-        $filesAllowedExts = \SP\Http\Request::analyze('files_allowed_exts');
+        $filesEnabled = Request::analyze('files_enabled', false, false, true);
+        $filesAllowedSize = Request::analyze('files_allowed_size', 1024);
+        $filesAllowedExts = Request::analyze('files_allowed_exts');
 
-        \SP\Config\Config::setCacheConfigValue('files_enabled', $filesEnabled);
-        \SP\Config\Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
-        \SP\Config\Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
+        Config::setCacheConfigValue('files_enabled', $filesEnabled);
+        Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
+        Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
 
         if ($filesEnabled && $filesAllowedSize >= 16384) {
-            \SP\Http\Response::printJSON(_('El tamaño máximo por archivo es de 16MB'));
+            Response::printJSON(_('El tamaño máximo por archivo es de 16MB'));
         }
 
         // Public Links
-        $pubLinksEnabled = \SP\Http\Request::analyze('publinks_enabled', false, false, true);
-        $pubLinksImageEnabled = \SP\Http\Request::analyze('publinks_image_enabled', false, false, true);
-        $pubLinksMaxTime = \SP\Http\Request::analyze('publinks_maxtime', 10);
-        $pubLinksMaxViews = \SP\Http\Request::analyze('publinks_maxviews', 3);
+        $pubLinksEnabled = Request::analyze('publinks_enabled', false, false, true);
+        $pubLinksImageEnabled = Request::analyze('publinks_image_enabled', false, false, true);
+        $pubLinksMaxTime = Request::analyze('publinks_maxtime', 10);
+        $pubLinksMaxViews = Request::analyze('publinks_maxviews', 3);
 
-        \SP\Config\Config::setCacheConfigValue('publinks_enabled', $pubLinksEnabled);
-        \SP\Config\Config::setCacheConfigValue('publinks_image_enabled', $pubLinksImageEnabled);
-        \SP\Config\Config::setCacheConfigValue('publinks_maxtime', $pubLinksMaxTime * 60);
-        \SP\Config\Config::setCacheConfigValue('publinks_maxviews', $pubLinksMaxViews);
+        Config::setCacheConfigValue('publinks_enabled', $pubLinksEnabled);
+        Config::setCacheConfigValue('publinks_image_enabled', $pubLinksImageEnabled);
+        Config::setCacheConfigValue('publinks_maxtime', $pubLinksMaxTime * 60);
+        Config::setCacheConfigValue('publinks_maxviews', $pubLinksMaxViews);
 
         // Proxy
-        $proxyEnabled = \SP\Http\Request::analyze('proxy_enabled', false, false, true);
-        $proxyServer = \SP\Http\Request::analyze('proxy_server');
-        $proxyPort = \SP\Http\Request::analyze('proxy_port', 0);
-        $proxyUser = \SP\Http\Request::analyze('proxy_user');
-        $proxyPass = \SP\Http\Request::analyzeEncrypted('proxy_pass');
+        $proxyEnabled = Request::analyze('proxy_enabled', false, false, true);
+        $proxyServer = Request::analyze('proxy_server');
+        $proxyPort = Request::analyze('proxy_port', 0);
+        $proxyUser = Request::analyze('proxy_user');
+        $proxyPass = Request::analyzeEncrypted('proxy_pass');
 
 
         // Valores para Proxy
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            \SP\Http\Response::printJSON(_('Faltan parámetros de Proxy'));
+            Response::printJSON(_('Faltan parámetros de Proxy'));
         } elseif ($proxyEnabled) {
-            \SP\Config\Config::setCacheConfigValue('proxy_enabled', true);
-            \SP\Config\Config::setCacheConfigValue('proxy_server', $proxyServer);
-            \SP\Config\Config::setCacheConfigValue('proxy_port', $proxyPort);
-            \SP\Config\Config::setCacheConfigValue('proxy_user', $proxyUser);
-            \SP\Config\Config::setCacheConfigValue('proxy_pass', $proxyPass);
+            Config::setCacheConfigValue('proxy_enabled', true);
+            Config::setCacheConfigValue('proxy_server', $proxyServer);
+            Config::setCacheConfigValue('proxy_port', $proxyPort);
+            Config::setCacheConfigValue('proxy_user', $proxyUser);
+            Config::setCacheConfigValue('proxy_pass', $proxyPass);
 
             $Log->addDescription(_('Proxy habiltado'));
         } else {
-            \SP\Config\Config::setCacheConfigValue('proxy_enabled', false);
+            Config::setCacheConfigValue('proxy_enabled', false);
 
             $Log->addDescription(_('Proxy deshabilitado'));
         }
 
-        $Log->addDescription(sprintf('%s: %s', _('Sección'), _('General')));
-    } elseif ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_WIKI) {
+        $Log->addDetails(_('Sección'), _('General'));
+    } elseif ($actionId === ActionsInterface::ACTION_CFG_WIKI) {
         // Wiki
-        $wikiEnabled = \SP\Http\Request::analyze('wiki_enabled', false, false, true);
-        $wikiSearchUrl = \SP\Http\Request::analyze('wiki_searchurl');
-        $wikiPageUrl = \SP\Http\Request::analyze('wiki_pageurl');
-        $wikiFilter = \SP\Http\Request::analyze('wiki_filter');
+        $wikiEnabled = Request::analyze('wiki_enabled', false, false, true);
+        $wikiSearchUrl = Request::analyze('wiki_searchurl');
+        $wikiPageUrl = Request::analyze('wiki_pageurl');
+        $wikiFilter = Request::analyze('wiki_filter');
 
         // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            \SP\Http\Response::printJSON(_('Faltan parámetros de Wiki'));
+            Response::printJSON(_('Faltan parámetros de Wiki'));
         } elseif ($wikiEnabled) {
-            \SP\Config\Config::setCacheConfigValue('wiki_enabled', true);
-            \SP\Config\Config::setCacheConfigValue('wiki_searchurl', $wikiSearchUrl);
-            \SP\Config\Config::setCacheConfigValue('wiki_pageurl', $wikiPageUrl);
-            \SP\Config\Config::setCacheConfigValue('wiki_filter', $wikiFilter);
+            Config::setCacheConfigValue('wiki_enabled', true);
+            Config::setCacheConfigValue('wiki_searchurl', $wikiSearchUrl);
+            Config::setCacheConfigValue('wiki_pageurl', $wikiPageUrl);
+            Config::setCacheConfigValue('wiki_filter', $wikiFilter);
 
             $Log->addDescription(_('Wiki habiltada'));
         } else {
-            \SP\Config\Config::setCacheConfigValue('wiki_enabled', false);
+            Config::setCacheConfigValue('wiki_enabled', false);
 
             $Log->addDescription(_('Wiki deshabilitada'));
         }
 
-        $Log->addDescription(sprintf('%s: %s', _('Sección'), _('Wiki')));
-    } elseif ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_LDAP) {
+        $Log->addDetails(_('Sección'), _('Wiki'));
+    } elseif ($actionId === ActionsInterface::ACTION_CFG_LDAP) {
         // LDAP
-        $ldapEnabled = \SP\Http\Request::analyze('ldap_enabled', false, false, true);
-        $ldapADSEnabled = \SP\Http\Request::analyze('ldap_ads', false, false, true);
-        $ldapServer = \SP\Http\Request::analyze('ldap_server');
-        $ldapBase = \SP\Http\Request::analyze('ldap_base');
-        $ldapGroup = \SP\Http\Request::analyze('ldap_group');
-        $ldapDefaultGroup = \SP\Http\Request::analyze('ldap_defaultgroup', 0);
-        $ldapDefaultProfile = \SP\Http\Request::analyze('ldap_defaultprofile', 0);
-        $ldapBindUser = \SP\Http\Request::analyze('ldap_binduser');
-        $ldapBindPass = \SP\Http\Request::analyzeEncrypted('ldap_bindpass');
+        $ldapEnabled = Request::analyze('ldap_enabled', false, false, true);
+        $ldapADSEnabled = Request::analyze('ldap_ads', false, false, true);
+        $ldapServer = Request::analyze('ldap_server');
+        $ldapBase = Request::analyze('ldap_base');
+        $ldapGroup = Request::analyze('ldap_group');
+        $ldapDefaultGroup = Request::analyze('ldap_defaultgroup', 0);
+        $ldapDefaultProfile = Request::analyze('ldap_defaultprofile', 0);
+        $ldapBindUser = Request::analyze('ldap_binduser');
+        $ldapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
         // Valores para la configuración de LDAP
         if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
-            \SP\Http\Response::printJSON(_('Faltan parámetros de LDAP'));
+            Response::printJSON(_('Faltan parámetros de LDAP'));
         } elseif ($ldapEnabled) {
-            \SP\Config\Config::setCacheConfigValue('ldap_enabled', true);
-            \SP\Config\Config::setCacheConfigValue('ldap_ads', $ldapADSEnabled);
-            \SP\Config\Config::setCacheConfigValue('ldap_server', $ldapServer);
-            \SP\Config\Config::setCacheConfigValue('ldap_base', $ldapBase);
-            \SP\Config\Config::setCacheConfigValue('ldap_group', $ldapGroup);
-            \SP\Config\Config::setCacheConfigValue('ldap_defaultgroup', $ldapDefaultGroup);
-            \SP\Config\Config::setCacheConfigValue('ldap_defaultprofile', $ldapDefaultProfile);
-            \SP\Config\Config::setCacheConfigValue('ldap_binduser', $ldapBindUser);
-            \SP\Config\Config::setCacheConfigValue('ldap_bindpass', $ldapBindPass);
+            Config::setCacheConfigValue('ldap_enabled', true);
+            Config::setCacheConfigValue('ldap_ads', $ldapADSEnabled);
+            Config::setCacheConfigValue('ldap_server', $ldapServer);
+            Config::setCacheConfigValue('ldap_base', $ldapBase);
+            Config::setCacheConfigValue('ldap_group', $ldapGroup);
+            Config::setCacheConfigValue('ldap_defaultgroup', $ldapDefaultGroup);
+            Config::setCacheConfigValue('ldap_defaultprofile', $ldapDefaultProfile);
+            Config::setCacheConfigValue('ldap_binduser', $ldapBindUser);
+            Config::setCacheConfigValue('ldap_bindpass', $ldapBindPass);
 
             $Log->addDescription(_('LDAP habiltado'));
         } else {
-            \SP\Config\Config::setCacheConfigValue('ldap_enabled', false);
+            Config::setCacheConfigValue('ldap_enabled', false);
 
             $Log->addDescription(_('LDAP deshabilitado'));
         }
 
-        $Log->addDescription(sprintf('%s: %s', _('Sección'), _('LDAP')));
-    } elseif ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_MAIL) {
+        $Log->addDetails(_('Sección'), _('LDAP'));
+    } elseif ($actionId === ActionsInterface::ACTION_CFG_MAIL) {
         // Mail
-        $mailEnabled = \SP\Http\Request::analyze('mail_enabled', false, false, true);
-        $mailServer = \SP\Http\Request::analyze('mail_server');
-        $mailPort = \SP\Http\Request::analyze('mail_port', 25);
-        $mailUser = \SP\Http\Request::analyze('mail_user');
-        $mailPass = \SP\Http\Request::analyzeEncrypted('mail_pass');
-        $mailSecurity = \SP\Http\Request::analyze('mail_security');
-        $mailFrom = \SP\Http\Request::analyze('mail_from');
-        $mailRequests = \SP\Http\Request::analyze('mail_requestsenabled', false, false, true);
-        $mailAuth = \SP\Http\Request::analyze('mail_authenabled', false, false, true);
+        $mailEnabled = Request::analyze('mail_enabled', false, false, true);
+        $mailServer = Request::analyze('mail_server');
+        $mailPort = Request::analyze('mail_port', 25);
+        $mailUser = Request::analyze('mail_user');
+        $mailPass = Request::analyzeEncrypted('mail_pass');
+        $mailSecurity = Request::analyze('mail_security');
+        $mailFrom = Request::analyze('mail_from');
+        $mailRequests = Request::analyze('mail_requestsenabled', false, false, true);
+        $mailAuth = Request::analyze('mail_authenabled', false, false, true);
 
         // Valores para la configuración del Correo
         if ($mailEnabled && (!$mailServer || !$mailFrom)) {
-            \SP\Http\Response::printJSON(_('Faltan parámetros de Correo'));
+            Response::printJSON(_('Faltan parámetros de Correo'));
         } elseif ($mailEnabled) {
-            \SP\Config\Config::setCacheConfigValue('mail_enabled', true);
-            \SP\Config\Config::setCacheConfigValue('mail_requestsenabled', $mailRequests);
-            \SP\Config\Config::setCacheConfigValue('mail_server', $mailServer);
-            \SP\Config\Config::setCacheConfigValue('mail_port', $mailPort);
-            \SP\Config\Config::setCacheConfigValue('mail_security', $mailSecurity);
-            \SP\Config\Config::setCacheConfigValue('mail_from', $mailFrom);
+            Config::setCacheConfigValue('mail_enabled', true);
+            Config::setCacheConfigValue('mail_requestsenabled', $mailRequests);
+            Config::setCacheConfigValue('mail_server', $mailServer);
+            Config::setCacheConfigValue('mail_port', $mailPort);
+            Config::setCacheConfigValue('mail_security', $mailSecurity);
+            Config::setCacheConfigValue('mail_from', $mailFrom);
 
             if ($mailAuth) {
-                \SP\Config\Config::setCacheConfigValue('mail_authenabled', $mailAuth);
-                \SP\Config\Config::setCacheConfigValue('mail_user', $mailUser);
-                \SP\Config\Config::setCacheConfigValue('mail_pass', $mailPass);
+                Config::setCacheConfigValue('mail_authenabled', $mailAuth);
+                Config::setCacheConfigValue('mail_user', $mailUser);
+                Config::setCacheConfigValue('mail_pass', $mailPass);
             }
 
             $Log->addDescription(_('Correo habiltado'));
         } else {
-            \SP\Config\Config::setCacheConfigValue('mail_enabled', false);
-            \SP\Config\Config::setCacheConfigValue('mail_requestsenabled', false);
-            \SP\Config\Config::setCacheConfigValue('mail_authenabled', false);
+            Config::setCacheConfigValue('mail_enabled', false);
+            Config::setCacheConfigValue('mail_requestsenabled', false);
+            Config::setCacheConfigValue('mail_authenabled', false);
 
             $Log->addDescription(_('Correo deshabilitado'));
         }
 
-        $Log->addDescription(sprintf('%s: %s', _('Sección'), _('Correo')));
+        $Log->addDetails(_('Sección'), _('Correo'));
     }
 
     try {
-        \SP\Config\Config::writeConfig();
-    } catch (\SP\Core\SPException $e){
-        $Log->addDescription($e->getMessage());
-        $Log->addDescription($e->getHint());
+        Config::writeConfig();
+    } catch (SPException $e){
+        $Log->addDescription(_('Error al guardar la configuración'));
+        $Log->addDetails($e->getMessage(), $e->getHint());
         $Log->writeLog();
 
-        \SP\Http\Response::printJSON($e->getMessage());
+        Email::sendEmail($Log);
+
+        Response::printJSON($e->getMessage());
     }
 
     $Log->writeLog();
 
-    \SP\Log\Email::sendEmail($Log);
+    Email::sendEmail($Log);
 
-    if ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_GENERAL) {
+    if ($actionId === ActionsInterface::ACTION_CFG_GENERAL) {
         // Recargar la aplicación completa para establecer nuevos valores
         \SP\Util\Util::reload();
     }
 
-    \SP\Http\Response::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
-} elseif ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION) {
-    $currentMasterPass = \SP\Http\Request::analyzeEncrypted('curMasterPwd');
-    $newMasterPass = \SP\Http\Request::analyzeEncrypted('newMasterPwd');
-    $newMasterPassR = \SP\Http\Request::analyzeEncrypted('newMasterPwdR');
-    $confirmPassChange = \SP\Http\Request::analyze('confirmPassChange', 0, false, 1);
-    $noAccountPassChange = \SP\Http\Request::analyze('chkNoAccountChange', 0, false, 1);
+    Response::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
+} elseif ($actionId === ActionsInterface::ACTION_CFG_ENCRYPTION) {
+    $currentMasterPass = Request::analyzeEncrypted('curMasterPwd');
+    $newMasterPass = Request::analyzeEncrypted('newMasterPwd');
+    $newMasterPassR = Request::analyzeEncrypted('newMasterPwdR');
+    $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
+    $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
     if (!UserPass::checkUserUpdateMPass()) {
-        \SP\Http\Response::printJSON(_('Clave maestra actualizada') . ';;' . _('Reinicie la sesión para cambiarla'));
+        Response::printJSON(_('Clave maestra actualizada') . ';;' . _('Reinicie la sesión para cambiarla'));
     } elseif ($newMasterPass == '' && $currentMasterPass == '') {
-        \SP\Http\Response::printJSON(_('Clave maestra no indicada'));
+        Response::printJSON(_('Clave maestra no indicada'));
     } elseif ($confirmPassChange == 0) {
-        \SP\Http\Response::printJSON(_('Se ha de confirmar el cambio de clave'));
+        Response::printJSON(_('Se ha de confirmar el cambio de clave'));
     }
 
     if ($newMasterPass == $currentMasterPass) {
-        \SP\Http\Response::printJSON(_('Las claves son idénticas'));
+        Response::printJSON(_('Las claves son idénticas'));
     } elseif ($newMasterPass != $newMasterPassR) {
-        \SP\Http\Response::printJSON(_('Las claves maestras no coinciden'));
-    } elseif (!\SP\Core\Crypt::checkHashPass($currentMasterPass, ConfigDB::getValue('masterPwd'), true)) {
-        \SP\Http\Response::printJSON(_('La clave maestra actual no coincide'));
+        Response::printJSON(_('Las claves maestras no coinciden'));
+    } elseif (!Crypt::checkHashPass($currentMasterPass, ConfigDB::getValue('masterPwd'), true)) {
+        Response::printJSON(_('La clave maestra actual no coincide'));
     }
 
-    $hashMPass = \SP\Core\Crypt::mkHashPassword($newMasterPass);
+    $hashMPass = Crypt::mkHashPassword($newMasterPass);
 
     if (!$noAccountPassChange) {
-        $Account = new \SP\Account\Account();
+        $Account = new Account();
 
         if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
-            \SP\Http\Response::printJSON(_('Errores al actualizar las claves de las cuentas'));
+            Response::printJSON(_('Errores al actualizar las claves de las cuentas'));
         }
 
-        $AccountHistory = new \SP\Account\AccountHistory();
+        $AccountHistory = new AccountHistory();
 
         if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
-            \SP\Http\Response::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
+            Response::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
         }
 
-        if (!\SP\Mgmt\CustomFields::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
-            \SP\Http\Response::printJSON(_('Errores al actualizar datos de campos personalizados'));
+        if (!CustomFields::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
+            Response::printJSON(_('Errores al actualizar datos de campos personalizados'));
         }
     }
 
     if (Checks::demoIsEnabled()) {
-        \SP\Http\Response::printJSON(_('Ey, esto es una DEMO!!'));
+        Response::printJSON(_('Ey, esto es una DEMO!!'));
     }
 
 //    ConfigDB::readConfig();
     ConfigDB::setCacheConfigValue('masterPwd', $hashMPass);
     ConfigDB::setCacheConfigValue('lastupdatempass', time());
 
-    if (ConfigDB::writeConfig()) {
-        \SP\Log\Log::writeNewLogAndEmail(_('Actualizar Clave Maestra'));
+    $Log = new Log(_('Actualizar Clave Maestra'));
 
-        \SP\Http\Response::printJSON(_('Clave maestra actualizada'), 0);
+    if (ConfigDB::writeConfig()) {
+        $Log->addDescription(_('Clave maestra actualizada'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        Response::printJSON(_('Clave maestra actualizada'), 0);
     } else {
-        \SP\Http\Response::printJSON(_('Error al guardar el hash de la clave maestra'));
+        $Log->setLogLevel(Log::ERROR);
+        $Log->addDescription(_('Error al guardar el hash de la clave maestra'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        Response::printJSON(_('Error al guardar el hash de la clave maestra'));
     }
 
-} elseif ($actionId === \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS) {
-    $tempMasterMaxTime = \SP\Http\Request::analyze('tmpass_maxtime', 3600);
+} elseif ($actionId === ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS) {
+    $tempMasterMaxTime = Request::analyze('tmpass_maxtime', 3600);
     $tempMasterPass = CryptMasterPass::setTempMasterPass($tempMasterMaxTime);
 
-    if ($tempMasterPass !== false && !empty($tempMasterPass)) {
-        \SP\Log\Email::sendEmail(new \SP\Log\Log(_('Generar Clave Temporal'), \SP\Html\Html::strongText(_('Clave') . ': ') . $tempMasterPass));
+    $Log = new Log('Generar Clave Temporal');
 
-        \SP\Http\Response::printJSON(_('Clave Temporal Generada'), 0, $doActionOnClose);
+    if ($tempMasterPass !== false && !empty($tempMasterPass)) {
+        $Log->addDescription(_('Clave Temporal Generada'));
+        $Log->addDetails(Html::strongText(_('Clave')), $tempMasterPass);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        Response::printJSON(_('Clave Temporal Generada'), 0, $doActionOnClose);
     } else {
-        \SP\Http\Response::printJSON(_('Error al generar clave temporal'));
+        $Log->setLogLevel(Log::ERROR);
+        $Log->addDescription(_('Error al generar clave temporal'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        Response::printJSON(_('Error al generar clave temporal'));
     }
 } else {
-    \SP\Http\Response::printJSON(_('Acción Inválida'));
+    Response::printJSON(_('Acción Inválida'));
 }

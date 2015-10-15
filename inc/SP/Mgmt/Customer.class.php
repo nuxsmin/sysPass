@@ -26,6 +26,7 @@
 
 namespace SP\Mgmt;
 
+use SP\Log\Email;
 use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
@@ -68,7 +69,11 @@ class Customer
 
         self::$customerLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Nuevo Cliente'), Html::strongText(_('Cliente') . ': ') . self::$customerName);
+        $Log = new Log(_('Nuevo Cliente'));
+        $Log->addDetails(Html::strongText(_('Cliente')), self::$customerName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**
@@ -118,7 +123,11 @@ class Customer
             throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el cliente'));
         }
 
-        Log::writeNewLogAndEmail(_('Actualizar Cliente'), Html::strongText(_('Cliente') . ': ') . $customerName . ' > ' . self::$customerName);
+        $Log = new Log(_('Actualizar Cliente'));
+        $Log->addDetails(Html::strongText(_('Cliente')), $customerName . ' > ' . self::$customerName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**
@@ -166,7 +175,11 @@ class Customer
             throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el cliente'));
         }
 
-        Log::writeNewLogAndEmail(_('Eliminar Cliente'), Html::strongText(_('Cliente') . ': ') . $curCustomerName);
+        $Log = new Log(_('Eliminar Cliente'));
+        $Log->addDetails(Html::strongText(_('Cliente')), $curCustomerName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**

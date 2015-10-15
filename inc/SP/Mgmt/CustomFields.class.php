@@ -300,6 +300,7 @@ class CustomFields extends CustomFieldsBase
         $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al actualizar datos encriptados'));
             return false;
         }
@@ -331,12 +332,12 @@ class CustomFields extends CustomFieldsBase
         }
 
         if (count($errors) > 0) {
-            $Log->addDescription(_('Registros no actualizados') . ': ' . implode(',', $errors));
+            $Log->addDetails(_('Registros no actualizados'),implode(',', $errors));
             $Log->writeLog(true);
         }
 
         if (count($success) > 0) {
-            $Log->addDescription(_('Registros actualizados') . ': ' . implode(',', $success));
+            $Log->addDetails(_('Registros actualizados'), implode(',', $success));
             $Log->writeLog(true);
         }
 

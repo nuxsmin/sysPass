@@ -83,7 +83,7 @@ class LdapADS extends Ldap
             return false;
         }
 
-        $log = new Log(__FUNCTION__);
+        $Log = new Log(__FUNCTION__);
 
         $ldapGroup = Config::getValue('ldap_group');
 
@@ -103,19 +103,21 @@ class LdapADS extends Ldap
         $searchRes = @ldap_search(Ldap::$_ldapConn, Ldap::$_searchBase, $filter, $filterAttr);
 
         if (!$searchRes) {
-            $log->addDescription(_('Error al buscar el grupo de usuarios'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(Ldap::$_ldapConn) . '(' . ldap_errno(Ldap::$_ldapConn) . ')');
-            $log->addDescription('LDAP FILTER: ' . $filter);
-            $log->writeLog();
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al buscar el grupo de usuarios'));
+            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(Ldap::$_ldapConn), ldap_errno(Ldap::$_ldapConn)));
+            $Log->addDetails('LDAP FILTER', $filter);
+            $Log->writeLog();
 
             throw new \Exception(_('Error al buscar el grupo de usuarios'));
         }
 
         if (@ldap_count_entries(Ldap::$_ldapConn, $searchRes) === 0) {
-            $log->addDescription(_('No se encontró el grupo con ese nombre'));
-            $log->addDescription('LDAP ERROR: ' . ldap_error(Ldap::$_ldapConn) . '(' . ldap_errno(Ldap::$_ldapConn) . ')');
-            $log->addDescription('LDAP FILTER: ' . $filter);
-            $log->writeLog();
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('No se encontró el grupo con ese nombre'));
+            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(Ldap::$_ldapConn), ldap_errno(Ldap::$_ldapConn)));
+            $Log->addDetails('LDAP FILTER', $filter);
+            $Log->writeLog();
 
             throw new \Exception(_('No se encontró el grupo con ese nombre'));
         }

@@ -7,19 +7,19 @@
                     <?php if ($file['thumb']): ?>
                         <img src="data:image/png;base64,<?php echo $file['thumb']; ?>"
                              title="<?php echo $file['name']; ?>" alt="thumbnail"
-                             OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');"/>
+                             OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>);"/>
                     <?php endif; ?>
                 </div>
                 <div class="files-item-actions">
                     <?php if ($deleteEnabled === 1): ?>
                         <i class="material-icons fg-red80"
                            title="<?php echo _('Eliminar Archivo'); ?>"
-                           OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>);">delete</i>
+                           OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DELETE; ?>);">delete</i>
                     <?php endif; ?>
                     <i class="material-icons fg-blue80" title="<?php echo _('Descargar Archivo'); ?>"
-                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'download');">file_download</i>
+                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DOWNLOAD; ?>, true);">file_download</i>
                     <i class="material-icons fg-blue80" title="<?php echo _('Ver Archivo'); ?>"
-                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');">visibility</i>
+                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>);">visibility</i>
                 </div>
             </li>
         <?php endforeach; ?>

@@ -128,8 +128,8 @@ class Account extends AccountBase implements AccountInterface
         $accountInfo = array('customer_name');
         $this->getAccountInfoById($accountInfo);
 
-        $Log->addDescription(Html::strongText(_('Cliente') . ': ') . $this->_cacheParams['customer_name']);
-        $Log->addDescription(Html::strongText(_('Cuenta') . ': ') . $this->getAccountName() . " (" . $this->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cliente')), $this->_cacheParams['customer_name']);
+        $Log->addDetails(Html::strongText(_('Cuenta')), $this->getAccountName() . " (" . $this->getAccountId() . ")");
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -149,6 +149,7 @@ class Account extends AccountBase implements AccountInterface
 
         // Guardamos una copia de la cuenta en el histórico
         if (!AccountHistory::addHistory($this->getAccountId(), false)) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al actualizar el historial'));
             $Log->writeLog();
             return false;
@@ -183,8 +184,8 @@ class Account extends AccountBase implements AccountInterface
         $this->getAccountInfoById($accountInfo);
 
         $Log->setAction(_('Restaurar Cuenta'));
-        $Log->addDescription(Html::strongText(_('Cliente') . ': ') . $this->_cacheParams['customer_name']);
-        $Log->addDescription(Html::strongText(_('Cuenta') . ': ') . $this->_cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cliente')), $this->_cacheParams['customer_name']);
+        $Log->addDetails(Html::strongText(_('Cuenta')), $this->_cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
 
         $Log->writeLog();
         Email::sendEmail($Log);
@@ -366,8 +367,8 @@ class Account extends AccountBase implements AccountInterface
         $this->getAccountInfoById($accountInfo);
 
         $Log->setAction(_('Nueva Cuenta'));
-        $Log->addDescription(Html::strongText(_('Cliente') . ': ') . $this->_cacheParams['customer_name']);
-        $Log->addDescription(Html::strongText(_('Cuenta') . ': ') . $this->getAccountName() . " (" . $this->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cliente')), $this->_cacheParams['customer_name']);
+        $Log->addDetails(Html::strongText(_('Cuenta')), $this->getAccountName() . " (" . $this->getAccountId() . ")");
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -389,8 +390,8 @@ class Account extends AccountBase implements AccountInterface
         $this->getAccountInfoById($accountInfo);
 
         $Log = new Log(_('Eliminar Cuenta'));
-        $Log->addDescription(Html::strongText(_('Cliente') . ': ') . $this->_cacheParams['customer_name']);
-        $Log->addDescription(Html::strongText(_('Cuenta') . ': ') . $this->_cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cliente')), $this->_cacheParams['customer_name']);
+        $Log->addDetails(Html::strongText(_('Cuenta')), $this->_cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
 
         $query = 'DELETE FROM accounts WHERE account_id = :id LIMIT 1';
 
@@ -401,14 +402,17 @@ class Account extends AccountBase implements AccountInterface
         }
 
         if (!Groups::deleteGroupsForAccount($this->getAccountId())) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al eliminar grupos asociados a la cuenta'));
         }
 
         if (!UserAccounts::deleteUsersForAccount($this->getAccountId())) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al eliminar usuarios asociados a la cuenta'));
         }
 
         if (!Files::deleteAccountFiles($this->getAccountId())) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al eliminar archivos asociados a la cuenta'));
         }
 
@@ -468,6 +472,7 @@ class Account extends AccountBase implements AccountInterface
         $Log->resetDescription();
 
         if (!Crypt::checkCryptModule()) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error en el módulo de encriptación'));
             $Log->writeLog();
             return false;
@@ -476,6 +481,7 @@ class Account extends AccountBase implements AccountInterface
         $accountsPass = $this->getAccountsPassData();
 
         if (!$accountsPass) {
+            $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al obtener las claves de las cuentas'));
             $Log->writeLog();
             return false;
@@ -526,7 +532,7 @@ class Account extends AccountBase implements AccountInterface
         }
 
         if ($accountsOk) {
-            $Log->addDescription(_('Cuentas actualizadas') . ': ' . implode(',', $accountsOk));
+            $Log->addDetails(_('Cuentas actualizadas'), implode(',', $accountsOk));
             $Log->writeLog();
             $Log->resetDescription();
         }
@@ -631,8 +637,8 @@ class Account extends AccountBase implements AccountInterface
             $this->getAccountInfoById($accountInfo);
 
             $Log->setAction(_('Modificar Clave'));
-            $Log->addDescription(Html::strongText(_('Cliente') . ': ') . $this->_cacheParams['customer_name']);
-            $Log->addDescription(Html::strongText(_('Cuenta') . ': ') . $this->_cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
+            $Log->addDetails(Html::strongText(_('Cliente')), $this->_cacheParams['customer_name']);
+            $Log->addDetails(Html::strongText(_('Cuenta')), $this->_cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
             $Log->writeLog();
 
             Email::sendEmail($Log);

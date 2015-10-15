@@ -23,9 +23,17 @@
  *
  */
 
-use SP\Http\Request;
+use SP\Config\Config;
+use SP\Core\ActionsInterface;
+use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\Html\Html;
+use SP\Http\Request;
+use SP\Http\Response;
+use SP\Log\Log;
+use SP\Mgmt\Files;
 use SP\Util\Checks;
+use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -33,44 +41,44 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Util\Util::logout();
+if (!Init::isLoggedIn()) {
+    Util::logout();
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    die(_('CONSULTA INVÁLIDA'));
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 if (!Checks::fileIsEnabled()) {
-    exit(_('Gestión de archivos deshabilitada'));
+    Response::printJSON(_('Gestión de archivos deshabilitada'));
 }
 
-$action = \SP\Http\Request::analyze('action');
-$accountId = \SP\Http\Request::analyze('accountId', 0);
-$fileId = \SP\Http\Request::analyze('fileId', 0);
+$actionId = Request::analyze('actionId', 0);
+$accountId = Request::analyze('accountId', 0);
+$fileId = Request::analyze('fileId', 0);
 
-$log = new \SP\Log\Log();
+$Log = new Log();
 
-if ($action == 'upload') {
+if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     if (!is_array($_FILES["inFile"]) || !$accountId === 0) {
         exit();
     }
 
-    $log->setAction(_('Subir Archivo'));
+    $Log->setAction(_('Subir Archivo'));
 
-    $allowedExts = strtoupper(\SP\Config\Config::getValue('files_allowed_exts'));
-    $allowedSize = \SP\Config\Config::getValue('files_allowed_size');
+    $allowedExts = strtoupper(Config::getValue('files_allowed_exts'));
+    $allowedSize = Config::getValue('files_allowed_size');
 
     if ($allowedExts) {
         // Extensiones aceptadas
         $extsOk = explode(",", $allowedExts);
     } else {
-        $log->addDescription(_('No hay extensiones permitidas'));
-        $log->writeLog();
+        $Log->addDescription(_('No hay extensiones permitidas'));
+        $Log->writeLog();
 
-        exit($log->getDescription());
+        Response::printJSON($Log->getDescription());
     }
 
     if (is_array($_FILES) && $_FILES['inFile']['name']) {
@@ -78,76 +86,71 @@ if ($action == 'upload') {
         $fileData['extension'] = strtoupper(pathinfo($_FILES['inFile']['name'], PATHINFO_EXTENSION));
 
         if (!in_array($fileData['extension'], $extsOk)) {
-            $log->addDescription(_('Tipo de archivo no soportado') . " '" . $fileData['extension'] . "' ");
-            $log->writeLog();
+            $Log->addDescription(_('Tipo de archivo no soportado'));
+            $Log->addDetails(_('Extensión'), $fileData['extension']);
+            $Log->writeLog();
 
-            exit($log->getDescription());
+            Response::printJSON($Log->getDescription());
         }
     } else {
-        $log->addDescription(_('Archivo inválido') . ":<br>" . $_FILES['inFile']['name']);
-        $log->writeLog();
+        $Log->addDescription(_('Archivo inválido'));
+        $Log->addDetails(_('Archivo'), $_FILES['inFile']['name']);
+        $Log->writeLog();
 
-        exit($log->getDescription());
+        Response::printJSON($Log->getDescription());
     }
 
     // Variables con información del archivo
-    $fileData['name'] = \SP\Html\Html::sanitize($_FILES['inFile']['name']);
-    $tmpName = \SP\Html\Html::sanitize($_FILES['inFile']['tmp_name']);
+    $fileData['name'] = Html::sanitize($_FILES['inFile']['name']);
+    $tmpName = Html::sanitize($_FILES['inFile']['tmp_name']);
     $fileData['size'] = $_FILES['inFile']['size'];
     $fileData['type'] = $_FILES['inFile']['type'];
 
     if (!file_exists($tmpName)) {
         // Registramos el máximo tamaño permitido por PHP
-        \SP\Util\Util::getMaxUpload();
+        Util::getMaxUpload();
 
-        $log->addDescription(_('Error interno al leer el archivo'));
-        $log->writeLog();
+        $Log->addDescription(_('Error interno al leer el archivo'));
+        $Log->writeLog();
 
-        exit($log->getDescription());
+        Response::printJSON($Log->getDescription());
     }
 
     if ($fileData['size'] > ($allowedSize * 1000)) {
-        $log->addDescription(_('El archivo es mayor de ') . " " . round(($allowedSize / 1000), 1) . "MB");
-        $log->writeLog();
+        $Log->addDescription(_('Tamaño de archivo superado'));
+        $Log->addDetails(_('Tamaño'), round(($allowedSize / 1000), 1) . 'MB');
+        $Log->writeLog();
 
-        exit($log->getDescription());
+        Response::printJSON($Log->getDescription());
     }
 
     // Leemos el archivo a una variable
     $fileData['content'] = file_get_contents($tmpName);
 
     if ($fileData['content'] === false) {
-        $log->addDescription(_('Error interno al leer el archivo'));
-        $log->writeLog();
+        $Log->addDescription(_('Error interno al leer el archivo'));
+        $Log->writeLog();
 
-        exit($log->getDescription());
+        Response::printJSON($Log->getDescription());
     }
 
-    if (\SP\Mgmt\Files::fileUpload($accountId, $fileData)) {
-        $log->addDescription(_('Archivo guardado'));
-        $log->writeLog();
-
-        exit($log->getDescription());
+    if (Files::fileUpload($accountId, $fileData)) {
+        Response::printJSON(_('Archivo guardado'), 0);
     } else {
-        $log->addDescription(_('No se pudo guardar el archivo'));
-        $log->writeLog();
-
-        exit($log->getDescription());
+        Response::printJSON(_('No se pudo guardar el archivo'));
     }
-}
-
-if ($action == 'download' || $action == 'view') {
+} elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD
+    || $actionId === ActionsInterface::ACTION_ACC_FILES_VIEW
+) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
-        exit(_('No es un ID de archivo válido'));
+        Response::printJSON(_('No es un ID de archivo válido'));
     }
 
-    $isView = ($action == 'view') ? true : false;
-
-    $file = \SP\Mgmt\Files::fileDownload($fileId);
+    $file = Files::fileDownload($fileId);
 
     if (!$file) {
-        exit(_('El archivo no existe'));
+        Response::printJSON(_('El archivo no existe'));
     }
 
     $fileSize = $file->accfile_size;
@@ -156,14 +159,14 @@ if ($action == 'download' || $action == 'view') {
     $fileExt = $file->accfile_extension;
     $fileData = $file->accfile_content;
 
-    $log->setAction(_('Descargar Archivo'));
-    $log->addDescription(_('ID') . ": " . $fileId);
-    $log->addDescription(_('Archivo') . ": " . $fileName);
-    $log->addDescription(_('Tipo') . ": " . $fileType);
-    $log->addDescription(_('Tamaño') . ": " . round($fileSize / 1024, 2) . " KB");
+    $Log->setAction(_('Descargar Archivo'));
+    $Log->addDetails(_('ID'), $fileId);
+    $Log->addDetails(_('Archivo'), $fileName);
+    $Log->addDetails(_('Tipo'), $fileType);
+    $Log->addDetails(_('Tamaño'), round($fileSize / 1024, 2) . " KB");
+    $Log->writeLog();
 
-    if (!$isView) {
-        $log->writeLog();
+    if ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD) {
 
         // Enviamos el archivo al navegador
         header('Set-Cookie: fileDownload=true; path=/');
@@ -179,37 +182,25 @@ if ($action == 'download' || $action == 'view') {
         $extsOkImg = array("JPG", "GIF", "PNG");
 
         if (in_array(strtoupper($fileExt), $extsOkImg)) {
-            $log->writeLog();
-
             $imgData = chunk_split(base64_encode($fileData));
             exit('<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($fileExt) == "TXT") {
-            $log->writeLog();
-
             exit('<div id="fancyView" class="backGrey"><pre>' . htmlentities($fileData) . '</pre></div>');
         } else {
             exit();
         }
     }
-}
-
-if ($action == "delete") {
+} elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DELETE) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
-        exit(_('No es un ID de archivo válido'));
+        Response::printJSON(_('No es un ID de archivo válido'));
+    } elseif (Files::fileDelete($fileId)) {
+        Response::printJSON(_('Archivo eliminado'), 0);
     }
 
-    if (\SP\Mgmt\Files::fileDelete($fileId)) {
-        $log->addDescription(_('Archivo eliminado'));
-        $log->writeLog();
-
-        exit($log->getDescription());
-    } else {
-        $log->addDescription(_('Error al eliminar el archivo'));
-        $log->writeLog();
-
-        exit($log->getDescription());
-    }
+    Response::printJSON(_('Error al eliminar el archivo'));
+} else {
+    Response::printJSON(_('Acción Inválida'));
 }

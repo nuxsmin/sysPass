@@ -82,7 +82,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey());
 
         $this->setIcons();
     }
@@ -97,6 +97,8 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         if (!$this->checkAccess()) {
             return;
         }
+
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CATEGORIES_NEW);
@@ -161,6 +163,8 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         if (!$this->checkAccess()) {
             return;
         }
+
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CUSTOMERS_NEW);
@@ -294,6 +298,8 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         if (!$this->checkAccess()) {
             return;
         }
+
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CUSTOMFIELDS_NEW);

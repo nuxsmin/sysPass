@@ -23,8 +23,11 @@
  *
  */
 
-use SP\Http\Request;
+use SP\Controller\AccountsMgmtC;
+use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\Http\Request;
+use SP\Http\Response;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');
@@ -33,7 +36,7 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('GET');
 
-if (!\SP\Core\Init::isLoggedIn()) {
+if (!Init::isLoggedIn()) {
     return;
 }
 
@@ -42,12 +45,12 @@ if (!Checks::fileIsEnabled()) {
     return false;
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    \SP\Http\Response::printXML(_('CONSULTA INVÁLIDA'));
+    Response::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-$controller = new \SP\Controller\AccountsMgmtC();
-$controller->getFiles();
-$controller->view();
+$Controller = new AccountsMgmtC();
+$Controller->getFiles();
+$Controller->view();

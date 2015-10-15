@@ -26,6 +26,7 @@
 namespace SP\Mgmt\User;
 
 use SP\Html\Html;
+use SP\Log\Email;
 use SP\Log\Log;
 use SP\Core\SPException;
 use SP\Storage\DB;
@@ -559,7 +560,11 @@ abstract class ProfileBase
 
         $this->setId(DB::getLastId());
 
-        Log::writeNewLogAndEmail(_('Nuevo Perfil'), Html::strongText(_('Perfil') . ': ') . $this->getName());
+        $Log = new Log(_('Nuevo Perfil'));
+        $Log->addDetails(Html::strongText(_('Perfil')), $this->getName());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -597,7 +602,11 @@ abstract class ProfileBase
             return false;
         }
 
-        Log::writeNewLogAndEmail(_('Eliminar Perfil'), Html::strongText(_('Perfil') . ': ') . $oldProfileName);
+        $Log = new Log(_('Eliminar Perfil'));
+        $Log->addDetails(Html::strongText(_('Perfil')), $oldProfileName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -640,7 +649,11 @@ abstract class ProfileBase
             return false;
         }
 
-        Log::writeNewLogAndEmail(_('Modificar Perfil'), Html::strongText(_('Perfil') . ': ') . $oldProfileName . ' > ' . $this->getName());
+        $Log = new Log(_('Modificar Perfil'));
+        $Log->addDetails(Html::strongText(_('Perfil')), $oldProfileName . ' > ' . $this->getName());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }

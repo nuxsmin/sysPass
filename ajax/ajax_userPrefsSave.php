@@ -23,10 +23,18 @@
  *
  */
 
+use SP\Core\ActionsInterface;
+use SP\Core\Init;
+use SP\Core\Language;
+use SP\Core\Session;
+use SP\Core\Themes;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
+use SP\Http\Response;
+use SP\Mgmt\User\UserPreferences;
 use SP\Mgmt\User\UserUtil;
 use SP\Util\Checks;
+use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -34,34 +42,34 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!Init::isLoggedIn()) {
+    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
-$actionId = \SP\Http\Request::analyze('actionId', 0);
-$itemId = \SP\Http\Request::analyze('itemId', 0);
-$activeTab = \SP\Http\Request::analyze('activeTab', 0);
+$actionId = Request::analyze('actionId', 0);
+$itemId = Request::analyze('itemId', 0);
+$activeTab = Request::analyze('activeTab', 0);
 
 // Acción al cerrar la vista
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
-if ($actionId === \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
-    $userLang = \SP\Http\Request::analyze('userlang');
-    $userTheme = \SP\Http\Request::analyze('usertheme', 'material-blue');
-    $resultsPerPage = \SP\Http\Request::analyze('resultsperpage', 12);
-    $accountLink = \SP\Http\Request::analyze('account_link', false, false, true);
-    $sortViews = \SP\Http\Request::analyze('sort_views', false, false, true);
-    $topNavbar = \SP\Http\Request::analyze('top_navbar', false, false, true);
+if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
+    $userLang = Request::analyze('userlang');
+    $userTheme = Request::analyze('usertheme', 'material-blue');
+    $resultsPerPage = Request::analyze('resultsperpage', 12);
+    $accountLink = Request::analyze('account_link', false, false, true);
+    $sortViews = Request::analyze('sort_views', false, false, true);
+    $topNavbar = Request::analyze('top_navbar', false, false, true);
 
     // No se instancia la clase ya que es necesario guardar los atributos ya guardados
-    $UserPrefs = \SP\Mgmt\User\UserPreferences::getPreferences($itemId);
+    $UserPrefs = UserPreferences::getPreferences($itemId);
     $UserPrefs->setId($itemId);
     $UserPrefs->setLang($userLang);
     $UserPrefs->setTheme($userTheme);
@@ -71,43 +79,44 @@ if ($actionId === \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $UserPrefs->setTopNavbar($topNavbar);
 
     if (!$UserPrefs->updatePreferences()) {
-        \SP\Http\Response::printJSON(_('Error al actualizar preferencias'));
+        Response::printJSON(_('Error al actualizar preferencias'));
     }
 
     // Forzar la detección del lenguaje tras actualizar
-    \SP\Core\Language::setLanguage(true);
-    \SP\Core\Themes::setTheme(true);
-    // Actualizar las preferencias en la sesión y recargar la página
-    \SP\Core\Session::setUserPreferences($UserPrefs);
-    \SP\Util\Util::reload();
+    Language::setLanguage(true);
+    Themes::setTheme(true);
 
-    \SP\Http\Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
-} else if ($actionId === \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
-    if (Checks::demoIsEnabled() && \SP\Core\Session::getUserLogin() === 'demo') {
-        \SP\Http\Response::printJSON(_('Ey, esto es una DEMO!!'));
+    // Actualizar las preferencias en la sesión y recargar la página
+    Session::setUserPreferences($UserPrefs);
+    Util::reload();
+
+    Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+} else if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
+    if (Checks::demoIsEnabled() && Session::getUserLogin() === 'demo') {
+        Response::printJSON(_('Ey, esto es una DEMO!!'));
     }
 
     // Variables POST del formulario
-    $twoFaEnabled = \SP\Http\Request::analyze('security_2faenabled', 0, false, 1);
-    $pin = \SP\Http\Request::analyze('security_pin', 0);
+    $twoFaEnabled = Request::analyze('security_2faenabled', 0, false, 1);
+    $pin = Request::analyze('security_pin', 0);
 
     $userLogin = UserUtil::getUserLoginById($itemId);
     $twoFa = new \SP\Auth\Auth2FA($itemId, $userLogin);
 
     if (!$twoFa->verifyKey($pin)) {
-        \SP\Http\Response::printJSON(_('Código incorrecto'));
+        Response::printJSON(_('Código incorrecto'));
     }
 
     // No se instancia la clase ya que es necesario guardar los atributos ya guardados
-    $UserPrefs = \SP\Mgmt\User\UserPreferences::getPreferences($itemId);
+    $UserPrefs = UserPreferences::getPreferences($itemId);
     $UserPrefs->setId($itemId);
-    $UserPrefs->setUse2Fa(\SP\Util\Util::boolval($twoFaEnabled));
+    $UserPrefs->setUse2Fa(Util::boolval($twoFaEnabled));
 
     if (!$UserPrefs->updatePreferences()) {
-        \SP\Http\Response::printJSON(_('Error al actualizar preferencias'));
+        Response::printJSON(_('Error al actualizar preferencias'));
     }
 
-    \SP\Http\Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+    Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else {
-    \SP\Http\Response::printJSON(_('Acción Inválida'));
+    Response::printJSON(_('Acción Inválida'));
 }

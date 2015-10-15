@@ -54,13 +54,13 @@ class Email
             return false;
         }
 
-        $mail = self::getEmailObject($mailTo, utf8_decode($log->getAction()));
+        $Mail = self::getEmailObject($mailTo, utf8_decode($log->getAction()));
 
-        if (!is_object($mail)) {
+        if (!is_object($Mail)) {
             return false;
         }
 
-        $mail->isHTML();
+        $Mail->isHTML();
         $log->setNewLineHtml(true);
 
         if ($isEvent === true) {
@@ -68,37 +68,38 @@ class Email
             $body[] = Html::strongText(_('Acción') . ": ") . utf8_decode($log->getAction());
             $body[] = Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
 
-            $mail->addCC(Config::getValue('mail_from'));
+            $Mail->addCC(Config::getValue('mail_from'));
         }
 
         $body[] = utf8_decode($log->getDescription());
+        $body[] = utf8_decode($log->getDetails());
         $body[] = '';
         $body[] = '--';
         $body[] = Util::getAppInfo('appname') . ' - ' . Util::getAppInfo('appdesc');
         $body[] = Html::anchorText(Init::$WEBURI);
 
 
-        $mail->Body = implode(Log::NEWLINE_HTML, $body);
+        $Mail->Body = implode(Log::NEWLINE_HTML, $body);
 
-        $sendMail = $mail->send();
+        $sendMail = $Mail->send();
 
-        $logEmail = new Log(_('Enviar Email'));
+        $Log = new Log(_('Enviar Email'));
 
         // Enviar correo
         if ($sendMail) {
-            $logEmail->addDescription(_('Correo enviado'));
+            $Log->addDescription(_('Correo enviado'));
         } else {
-            $logEmail->addDescription(_('Error al enviar correo'));
-            $logEmail->addDescription('ERROR: ' . $mail->ErrorInfo);
+            $Log->addDescription(_('Error al enviar correo'));
+            $Log->addDescription('ERROR: ' . $Mail->ErrorInfo);
         }
 
-        $logEmail->addDescription(_('Destinatario') . ': ' . $mailTo);
+        $Log->addDescription(_('Destinatario') . ': ' . $mailTo);
 
         if ($isEvent === true){
-            $logEmail->addDescription(_('CC') . ': ' . Config::getValue('mail_from'));
+            $Log->addDescription(_('CC') . ': ' . Config::getValue('mail_from'));
         }
 
-        $logEmail->writeLog();
+        $Log->writeLog();
 
         return $sendMail;
     }
@@ -131,27 +132,27 @@ class Email
             $mailTo = $mailFrom;
         }
 
-        $mail = new \phpmailer\PHPMailer();
+        $Mail = new \phpmailer\PHPMailer();
 
-        $mail->isSMTP();
-        $mail->CharSet = 'utf-8';
-        $mail->Host = $mailServer;
-        $mail->Port = $mailPort;
+        $Mail->isSMTP();
+        $Mail->CharSet = 'utf-8';
+        $Mail->Host = $mailServer;
+        $Mail->Port = $mailPort;
         if ($mailAuth) {
-            $mail->SMTPAuth = $mailAuth;
-            $mail->Username = $mailUser;
-            $mail->Password = $mailPass;
+            $Mail->SMTPAuth = $mailAuth;
+            $Mail->Username = $mailUser;
+            $Mail->Password = $mailPass;
         }
-        $mail->SMTPSecure = strtolower(Config::getValue('mail_security'));
+        $Mail->SMTPSecure = strtolower(Config::getValue('mail_security'));
         //$mail->SMTPDebug = 2;
         //$mail->Debugoutput = 'error_log';
 
-        $mail->setFrom($mailFrom, $appName);
-        $mail->addAddress($mailTo);
-        $mail->addReplyTo($mailFrom, $appName);
-        $mail->WordWrap = 100;
-        $mail->Subject = $appName . ' (' . _('Aviso') . ') - ' . $action;
+        $Mail->setFrom($mailFrom, $appName);
+        $Mail->addAddress($mailTo);
+        $Mail->addReplyTo($mailFrom, $appName);
+        $Mail->WordWrap = 100;
+        $Mail->Subject = $appName . ' (' . _('Aviso') . ') - ' . $action;
 
-        return $mail;
+        return $Mail;
     }
 }

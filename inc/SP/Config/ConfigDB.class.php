@@ -92,7 +92,11 @@ class ConfigDB implements ConfigInterface
             }
         }
 
-        Log::writeNewLogAndEmail(_('Configuración'), _('Modificar configuración'));
+        $Log = new Log(_('Configuración'));
+        $Log->addDescription(_('Modificar configuración'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -122,8 +126,8 @@ class ConfigDB implements ConfigInterface
 
         $log = new Log(_('Configuración'));
         $log->addDescription(_('Modificar configuración'));
-        $log->addDescription(_('Parámetro') . ': ' . $param);
-        $log->addDescription(_('Valor') . ': ' . $value);
+        $log->addDetails(_('Parámetro'), $param);
+        $log->addDetails(_('Valor'), $value);
         $log->writeLog();
 
         if ($email === true) {

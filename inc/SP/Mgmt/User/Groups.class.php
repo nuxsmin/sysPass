@@ -160,7 +160,7 @@ class Groups
             $Log->addDescription(_('Error al añadir los usuarios del grupo'));
         }
 
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Grupo')), self::$groupName));
+        $Log->addDetails(Html::strongText(_('Grupo')), self::$groupName);
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -261,7 +261,7 @@ class Groups
             $Log->addDescription(_('Error al actualizar los usuarios del grupo'));
         }
 
-        $Log->addDescription(sprintf('%s : %s > %s', Html::strongText(_('Grupo')), $groupName, self::$groupName));
+        $Log->addDetails(Html::strongText(_('Grupo')), sprintf('%s > %s', $groupName, self::$groupName));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -377,7 +377,7 @@ class Groups
             $Log->addDescription(_('Error al eliminar los usuarios del grupo'));
         }
 
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Grupo')), $groupName));
+        $Log->addDetails(Html::strongText(_('Grupo')), $groupName);
         $Log->writeLog();
 
         Email::sendEmail($Log);

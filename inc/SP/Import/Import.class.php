@@ -26,6 +26,7 @@
 
 namespace SP\Import;
 
+use SP\Log\Email;
 use SP\Log\Log;
 use SP\Core\SPException;
 
@@ -93,6 +94,8 @@ class Import
      */
     public static function doImport(&$fileData)
     {
+        $Log = new Log(_('Importar Cuentas'));
+
         try {
             $file = new FileImport($fileData);
 
@@ -118,13 +121,19 @@ class Import
             $import->setUserGroupId(self::$defGroup);
             $import->doImport();
         } catch (SPException $e) {
-            Log::writeNewLog(_('Importar Cuentas'), $e->getMessage() . ';;' . $e->getHint());
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription($e->getMessage());
+            $Log->addDetails(_('Ayuda'), $e->getHint());
+            $Log->writeLog();
 
             $result['error'] = array('description' => $e->getMessage(), 'hint' => $e->getHint());
             return $result;
         }
 
-        Log::writeNewLog(_('Importar Cuentas'), _('Importación finalizada'));
+        $Log->addDescription(_('Importación finalizada'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         $result['ok'] = array(
             _('Importación finalizada'),

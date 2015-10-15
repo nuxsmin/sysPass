@@ -78,7 +78,7 @@ class Upgrade
      */
     private static function upgradeTo($version)
     {
-        $log = new Log(_('Actualizar BBDD'));
+        $Log = new Log(_('Actualizar BBDD'));
 
         switch ($version) {
             case 110:
@@ -134,9 +134,10 @@ class Upgrade
                 $queries[] = 'CREATE TABLE publicLinks(publicLink_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,publicLink_itemId INT,publicLink_hash VARBINARY(100) NOT NULL,publicLink_linkData LONGBLOB);';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId)';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
+                $queries[] = 'ALTER TABLE log ADD log_level VARCHAR(20) NOT NULL;';
                 break;
             default :
-                $log->addDescription(_('No es necesario actualizar la Base de Datos.'));
+                $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
                 return true;
         }
 
@@ -144,19 +145,20 @@ class Upgrade
             try {
                 DB::getQuery($query, __FUNCTION__);
             } catch (SPException $e) {
-                $log->addDescription(_('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')');
-                $log->addDescription('ERROR: ' . $e->getMessage() . ' (' . $e->getCode() . ')');
-                $log->writeLog();
+                $Log->setLogLevel(Log::ERROR);
+                $Log->addDescription(_('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')');
+                $Log->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
+                $Log->writeLog();
 
-                Email::sendEmail($log);
+                Email::sendEmail($Log);
                 return false;
             }
         }
 
-        $log->addDescription(_('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')');
-        $log->writeLog();
+        $Log->addDescription(_('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')');
+        $Log->writeLog();
 
-        Email::sendEmail($log);
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -230,7 +232,7 @@ class Upgrade
             }
         }
 
-        Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')');
+        Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')', Log::NOTICE);
 
         return true;
     }

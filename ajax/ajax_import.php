@@ -23,8 +23,11 @@
  *
  */
 
-use SP\Http\Request;
+use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\Http\Request;
+use SP\Http\Response;
+use SP\Import\Import;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');
@@ -33,39 +36,39 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!Init::isLoggedIn()) {
+    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 if (Checks::demoIsEnabled()) {
-    \SP\Http\Response::printJSON(_('Ey, esto es una DEMO!!'));
+    Response::printJSON(_('Ey, esto es una DEMO!!'));
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
-$defaultUser= \SP\Http\Request::analyze('defUser', 0);
-$defaultGroup = \SP\Http\Request::analyze('defGroup', 0);
-$importPwd = \SP\Http\Request::analyzeEncrypted('importPwd');
-$csvDelimiter = \SP\Http\Request::analyze('csvDelimiter');
+$sk = Request::analyze('sk', false);
+$defaultUser= Request::analyze('defUser', 0);
+$defaultGroup = Request::analyze('defGroup', 0);
+$importPwd = Request::analyzeEncrypted('importPwd');
+$csvDelimiter = Request::analyze('csvDelimiter');
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-\SP\Import\Import::setDefUser($defaultUser);
-\SP\Import\Import::setDefGroup($defaultGroup);
-\SP\Import\Import::setImportPwd($importPwd);
-\SP\Import\Import::setCsvDelimiter($csvDelimiter);
+Import::setDefUser($defaultUser);
+Import::setDefGroup($defaultGroup);
+Import::setImportPwd($importPwd);
+Import::setCsvDelimiter($csvDelimiter);
 
-$res = \SP\Import\Import::doImport($_FILES["inFile"]);
+$res = Import::doImport($_FILES["inFile"]);
 
 if (isset($res['error']) && is_array($res['error'])) {
     error_log($res['error']['hint']);
 
     $out = implode('\n\n', $res['error']);
 
-    \SP\Http\Response::printJSON($out);
+    Response::printJSON($out);
 } else if (is_array($res['ok'])) {
     $out = implode('\n\n', $res['ok']);
 
-    \SP\Http\Response::printJSON($out, 0);
+    Response::printJSON($out, 0);
 }

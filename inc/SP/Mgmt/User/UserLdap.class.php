@@ -79,16 +79,22 @@ class UserLdap
             return false;
         }
 
+        $Log = new Log();
+
         if (!$groupId || !$profileId) {
-            $Log = new Log(_('Activación Cuenta'));
+            $Log->setAction(_('Activación Cuenta'));
             $Log->addDescription(_('Su cuenta está pendiente de activación.'));
             $Log->addDescription(_('En breve recibirá un email de confirmación.'));
-            $Log->writeLog();
 
             Email::sendEmail($Log, $User->getUserEmail(), false);
         }
 
-        Log::writeNewLogAndEmail(_('Nuevo usuario de LDAP'), sprintf("%s (%s)", $User->getUserName(), $User->getUserLogin()));
+        $Log->resetDescription();
+        $Log->setAction(_('Nuevo usuario de LDAP'));
+        $Log->addDescription(sprintf("%s (%s)", $User->getUserName(), $User->getUserLogin()));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }

@@ -23,39 +23,39 @@
  *
  */
 
+use SP\Auth\Auth2FA;
+use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Http\Request;
+use SP\Http\Response;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-\SP\Http\Request::checkReferer('POST');
+Request::checkReferer('POST');
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$userId = \SP\Http\Request::analyze('itemId', 0);
-$pin = \SP\Http\Request::analyze('security_pin', 0);
+$userId = Request::analyze('itemId', 0);
+$pin = Request::analyze('security_pin', 0);
 
-$twoFa = new \SP\Auth\Auth2FA($userId, $userLogin);
+$TwoFa = new Auth2FA($userId, $userLogin);
 
-if($userId && $pin && $twoFa->verifyKey($pin)){
-    \SP\Core\Session::set2FApassed(true);
+if ($userId
+    && $pin
+    && $TwoFa->verifyKey($pin)
+) {
+    Session::set2FApassed(true);
 
-    // Comprobar si existen parámetros adicionales en URL via GET
-    foreach ($_POST as $param => $value) {
-        if (preg_match('/g_.*/', $param)) {
-            $params[] = substr($param, 2) . '=' . $value;
-        }
-    }
+    $urlParams = Request::importUrlParamsToGet();
 
-    $urlParams = isset($params) ? '?' . implode('&', $params) : '';
-
-    \SP\Http\Response::printJSON(_('Código correcto'), 0, 'redirect(\'index.php\')');
+    Response::printJSON(_('Código correcto'), 0, 'sysPassUtil.Common.redirect(\'index.php\')');
 } else {
-    \SP\Core\Session::set2FApassed(false);
-    \SP\Http\Response::printJSON(_('Código incorrecto'));
+    Session::set2FApassed(false);
+    Response::printJSON(_('Código incorrecto'));
 }

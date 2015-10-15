@@ -388,7 +388,7 @@ abstract class UserBase
         $this->_userId = DB::getLastId();
 
         $Log = new Log(_('Nuevo Usuario'));
-        $Log->addDescription(sprintf('%s: %s (%s)', Html::strongText(_('Usuario')), $this->_userName, $this->_userLogin));
+        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->_userName, $this->_userLogin));
 
         if ($this->_userChangePass) {
             if (!Auth::mailPassRecover(DBUtil::escape($this->_userLogin), DBUtil::escape($this->_userEmail))) {
@@ -532,7 +532,7 @@ abstract class UserBase
         $this->queryLastId = DB::$lastId;
 
         $Log = new Log(_('Modificar Usuario'));
-        $Log->addDescription(sprintf('%s: %s (%s)', Html::strongText(_('Usuario')), $this->_userName, $this->_userLogin));
+        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->_userName, $this->_userLogin));
 
         if ($this->_userChangePass) {
             if (!Auth::mailPassRecover(DBUtil::escape($this->_userLogin), DBUtil::escape($this->_userEmail))) {
@@ -574,7 +574,11 @@ abstract class UserBase
 
         $this->queryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), sprintf('%s: %s', Html::strongText(_('Login')), $userLogin));
+        $Log = new Log(_('Modificar Clave Usuario'));
+        $Log->addDetails(Html::strongText(_('Login')), $userLogin);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -598,7 +602,11 @@ abstract class UserBase
 
         $this->queryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Eliminar Usuario'), sprintf('%s: %s', Html::strongText(_('Login')), $userLogin));
+        $Log = new Log(_('Eliminar Usuario'));
+        $Log->addDetails(Html::strongText(_('Login')), $userLogin);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }

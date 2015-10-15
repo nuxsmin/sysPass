@@ -82,8 +82,6 @@ class Init
      */
     public static function start()
     {
-//        self::setIncludes();
-
         if (date_default_timezone_get() === 'UTC'){
             date_default_timezone_set('UTC');
         }
@@ -225,13 +223,13 @@ class Init
      */
     private static function loadExtensions()
     {
-        $phpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
-        $phpSecLoader->setPrepend(true);
-        $phpSecLoader->register();
+        $PhpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
+        $PhpSecLoader->setPrepend(true);
+        $PhpSecLoader->register();
 
-        $phpMailedLoader = new \SplClassLoader('phpmailer', EXTENSIONS_PATH);
-        $phpMailedLoader->setPrepend(true);
-        $phpMailedLoader->register();
+        $PhpMailerLoader = new \SplClassLoader('phpmailer', EXTENSIONS_PATH);
+        $PhpMailerLoader->setPrepend(true);
+        $PhpMailerLoader->register();
     }
 
     /**
@@ -261,11 +259,11 @@ class Init
      */
     public static function initError($str, $hint = '')
     {
-        $tpl = new Template();
-        $tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
-        $controller = new Controller\MainC($tpl);
-        $controller->getError(true);
-        $controller->view();
+        $Tpl = new Template();
+        $Tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
+        $Controller = new Controller\MainC($Tpl);
+        $Controller->getError(true);
+        $Controller->view();
         exit;
     }
 
@@ -376,9 +374,9 @@ class Init
                 exit();
             } else {
                 // Comprobar si sysPass está instalada o en modo mantenimiento
-                $controller = new Controller\MainC();
-                $controller->getInstaller();
-                $controller->view();
+                $Controller = new Controller\MainC();
+                $Controller->getInstaller();
+                $Controller->view();
                 exit();
             }
         }
@@ -444,11 +442,11 @@ class Init
         $totalTime = round(((time() - Session::getStartActivity()) / 60), 2);
         $ulogin = Session::getUserLogin();
 
-        $log = new Log(_('Finalizar sesión'));
-        $log->addDescription(_('Usuario') . ": " . $ulogin);
-        $log->addDescription(_('Tiempo inactivo') . ": " . $inactiveTime . " min.");
-        $log->addDescription(_('Tiempo total') . ": " . $totalTime . " min.");
-        $log->writeLog();
+        $Log = new Log(_('Finalizar sesión'));
+        $Log->addDetails(_('Usuario'), $ulogin);
+        $Log->addDetails(_('Tiempo inactivo'), $inactiveTime . ' min.');
+        $Log->addDetails(_('Tiempo total'), $totalTime . ' min.');
+        $Log->writeLog();
     }
 
     /**
@@ -456,9 +454,9 @@ class Init
      */
     private static function goLogin()
     {
-        $controller = new Controller\MainC(null, 'login');
-        $controller->getLogin();
-        $controller->view();
+        $Controller = new Controller\MainC(null, 'login');
+        $Controller->getLogin();
+        $Controller->view();
         exit;
     }
 
@@ -517,12 +515,12 @@ class Init
         }
 
         if ($update === true) {
-            $log = new Log(_('Actualización'));
-            $log->addDescription(_('Actualización de versión realizada.'));
-            $log->addDescription(_('Versión') . ': ' . $appVersion);
-            $log->writeLog();
+            $Log = new Log(_('Actualización'));
+            $Log->addDescription(_('Actualización de versión realizada.'));
+            $Log->addDetails(_('Versión'), $appVersion);
+            $Log->writeLog();
 
-            Email::sendEmail($log);
+            Email::sendEmail($Log);
 
             self::$UPDATED = true;
         }
@@ -592,20 +590,20 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $controller = new Controller\MainC();
+        $Controller = new Controller\MainC();
 
         switch ($action) {
             case 'passreset':
-                $controller->getPassReset();
-                $controller->view();
+                $Controller->getPassReset();
+                $Controller->view();
                 break;
             case '2fa':
-                $controller->get2FA();
-                $controller->view();
+                $Controller->get2FA();
+                $Controller->view();
                 break;
             case 'link':
-                $controller->getPublicLink();
-                $controller->view();
+                $Controller->getPublicLink();
+                $Controller->view();
                 break;
             default:
                 return false;
@@ -669,14 +667,14 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $controller = new Controller\MainC(null, 'main');
+        $Controller = new Controller\MainC(null, 'main');
 
         switch ($action) {
             case 'accView':
                 $itemId = Request::analyze('i');
                 $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
-                $controller->getMain($onLoad);
-                $controller->view();
+                $Controller->getMain($onLoad);
+                $Controller->view();
                 break;
             default:
                 return false;

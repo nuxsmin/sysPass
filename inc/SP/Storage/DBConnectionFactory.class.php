@@ -67,7 +67,7 @@ class DBConnectionFactory
      * Esta función utiliza PDO para conectar con la base de datos.
      *
      * @throws SPException
-     * @return \PDO
+     * @return PDO
      */
 
     public function getConnection()

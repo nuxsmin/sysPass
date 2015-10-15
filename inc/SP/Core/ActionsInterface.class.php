@@ -42,7 +42,11 @@ interface ActionsInterface {
     const ACTION_ACC_COPY = 30;
     const ACTION_ACC_DELETE = 40;
     const ACTION_ACC_FILES = 50;
-    const ACTION_ACC_REQUEST = 51;
+    const ACTION_ACC_FILES_VIEW = 51;
+    const ACTION_ACC_FILES_UPLOAD = 52;
+    const ACTION_ACC_FILES_DOWNLOAD = 53;
+    const ACTION_ACC_FILES_DELETE = 54;
+    const ACTION_ACC_REQUEST = 55;
     const ACTION_MGM = 60;
     const ACTION_MGM_CATEGORIES = 61;
     const ACTION_MGM_CATEGORIES_VIEW = 610;

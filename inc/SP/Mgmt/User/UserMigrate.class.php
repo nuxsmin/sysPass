@@ -89,12 +89,12 @@ class UserMigrate
             return false;
         }
 
-        $log = new Log(__FUNCTION__);
-        $log->addDescription(_('Usuario actualizado'));
-        $log->addDescription('Login: ' . $userLogin);
-        $log->writeLog();
+        $Log = new Log(__FUNCTION__);
+        $Log->addDescription(_('Usuario actualizado'));
+        $Log->addDetails(_('Login'), $userLogin);
+        $Log->writeLog();
 
-        Email::sendEmail($log);
+        Email::sendEmail($Log);
 
         return true;
     }
@@ -114,7 +114,7 @@ class UserMigrate
 
         foreach ($queryRes as $user) {
             if (!Groups::addUsersForGroup(array($user->user_groupId), $user->user_id)) {
-                Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)'), _('Error al migrar grupo del usuario'), $user->user_id);
+                Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)', _('Error al migrar grupo del usuario'), $user->user_id), Log::ERROR);
             }
         }
 

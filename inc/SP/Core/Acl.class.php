@@ -117,7 +117,7 @@ class Acl implements \SP\Core\ActionsInterface
                 return ($curUserIsAdminApp || $curUserProfile->isEvl());
         }
 
-        Log::writeNewLog(__FUNCTION__, sprintf('%s \'%s\'', _('Denegado acceso a'), self::getActionName($action)));
+        Log::writeNewLog(__FUNCTION__, sprintf('%s \'%s\'', _('Denegado acceso a'), self::getActionName($action)), Log::NOTICE);
 
         return false;
     }

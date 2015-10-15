@@ -26,6 +26,7 @@
 
 namespace SP\Mgmt;
 
+use SP\Log\Email;
 use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
@@ -85,7 +86,11 @@ class Category
 
         self::$categoryLastId = DB::$lastId;
 
-        Log::writeNewLogAndEmail(_('Nueva Categoría'), Html::strongText(_('Categoría') . ': ') . self::$categoryName);
+        $Log = new Log(_('Nueva Categoría'));
+        $Log->addDetails(Html::strongText(_('Categoría')), self::$categoryName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**
@@ -134,7 +139,11 @@ class Category
             throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar la categoría'));
         }
 
-        Log::writeNewLogAndEmail(_('Eliminar Categoría'), Html::strongText(_('Categoría') . ': ') . $curCategoryName . ' (' . $id . ')');
+        $Log = new Log(_('Eliminar Categoría'));
+        $Log->addDetails(Html::strongText(_('Categoría')), $curCategoryName . ' (' . $id . ')');
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**
@@ -184,7 +193,11 @@ class Category
             throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar la categoría'));
         }
 
-        Log::writeNewLogAndEmail(_('Modificar Categoría'), Html::strongText(_('Categoría') . ': ') . $curCategoryName . ' > ' . self::$categoryName);
+        $Log = new Log(_('Modificar Categoría'));
+        $Log->addDetails(Html::strongText(_('Categoría')), $curCategoryName . ' > ' . self::$categoryName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**

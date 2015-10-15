@@ -23,8 +23,11 @@
  *
  */
 
-use SP\Http\Request;
+use SP\Auth\Ldap;
+use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\Http\Request;
+use SP\Http\Response;
 
 define('APP_ROOT', '..');
 
@@ -32,30 +35,30 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Http\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+if (!Init::isLoggedIn()) {
+    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    \SP\Http\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$frmLdapServer = \SP\Http\Request::analyze('ldap_server');
-$frmLdapBase = \SP\Http\Request::analyze('ldap_base');
-$frmLdapGroup = \SP\Http\Request::analyze('ldap_group');
-$frmLdapBindUser = \SP\Http\Request::analyze('ldap_binduser');
-$frmLdapBindPass = \SP\Http\Request::analyzeEncrypted('ldap_bindpass');
+$frmLdapServer = Request::analyze('ldap_server');
+$frmLdapBase = Request::analyze('ldap_base');
+$frmLdapGroup = Request::analyze('ldap_group');
+$frmLdapBindUser = Request::analyze('ldap_binduser');
+$frmLdapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
 if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
-    \SP\Http\Response::printJSON(_('Los parámetros de LDAP no están configurados'));
+    Response::printJSON(_('Los parámetros de LDAP no están configurados'));
 }
 
-$resCheckLdap = \SP\Auth\Ldap::checkLDAPConn($frmLdapServer, $frmLdapBindUser, $frmLdapBindPass, $frmLdapBase, $frmLdapGroup);
+$resCheckLdap = Ldap::checkLDAPConn($frmLdapServer, $frmLdapBindUser, $frmLdapBindPass, $frmLdapBase, $frmLdapGroup);
 
 if ($resCheckLdap === false) {
-    \SP\Http\Response::printJSON(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
+    Response::printJSON(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
 } else {
-    \SP\Http\Response::printJSON(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
+    Response::printJSON(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
 }

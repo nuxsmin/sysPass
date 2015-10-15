@@ -29,6 +29,9 @@ use SP\Config\Config;
 use SP\Core\Crypt;
 use SP\Core\SessionUtil;
 use SP\Core\SPException;
+use SP\Html\Html;
+use SP\Log\Email;
+use SP\Log\Log;
 use SP\Storage\DB;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -265,6 +268,13 @@ abstract class PublicLinkBase
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'), _('Revise el registro de eventos para más detalles'));
         }
+
+        $Log = new Log(_('Eliminar Enlace'));
+        $Log->addDescription(_('Enlace eliminado'));
+        $Log->addDetails(Html::strongText(_('ID')), $this->_itemId);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**

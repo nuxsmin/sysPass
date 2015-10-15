@@ -25,7 +25,7 @@
 
 namespace SP\Storage;
 
-use SP\Config\Config;
+use PDO;
 use SP\Log\Log;
 use SP\Core\SPException;
 
@@ -39,19 +39,19 @@ class DB
     /**
      * @var string
      */
-    static $txtError = '';
+    public static $txtError = '';
     /**
      * @var int
      */
-    static $numError = 0;
+    public static $numError = 0;
     /**
      * @var int
      */
-    static $lastNumRows = 0;
+    public static $lastNumRows = 0;
     /**
      * @var int
      */
-    static $lastId = null;
+    public static $lastId = null;
     /**
      * @var bool Resultado como array
      */
@@ -182,7 +182,7 @@ class DB
         if ($isSelect) {
             if (!$getRawData) {
                 $this->_numFields = $queryRes->columnCount();
-                $this->_lastResult = $queryRes->fetchAll(\PDO::FETCH_OBJ);
+                $this->_lastResult = $queryRes->fetchAll(PDO::FETCH_OBJ);
             } else {
                 return $queryRes;
             }
@@ -228,14 +228,14 @@ class DB
                         continue;
                     }
 
-                    if ($param == 'blobcontent') {
-                        $sth->bindValue($param, $value, \PDO::PARAM_LOB);
+                    if ($param === 'blobcontent') {
+                        $sth->bindValue($param, $value, PDO::PARAM_LOB);
                     } elseif (is_int($value)) {
 //                        error_log("INT: " . $param . " -> " . $value);
-                        $sth->bindValue($param, $value, \PDO::PARAM_INT);
+                        $sth->bindValue($param, $value, PDO::PARAM_INT);
                     } else {
 //                        error_log("STR: " . $param . " -> " . $value);
-                        $sth->bindValue($param, $value, \PDO::PARAM_STR);
+                        $sth->bindValue($param, $value, PDO::PARAM_STR);
                     }
 
                     $paramIndex++;
@@ -253,24 +253,6 @@ class DB
             error_log("Exception: " . $e->getMessage());
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
-    }
-
-    /**
-     * Método para registar los eventos de BD en el log
-     *
-     * @param $query     string  La consulta que genera el error
-     * @param $errorMsg  string  El mensaje de error
-     * @param $errorCode int     El código de error
-     */
-    private static function logDBException($query, $errorMsg, $errorCode, $querySource)
-    {
-        $Log = new Log($querySource);
-        $Log->addDescription($errorMsg . '(' . $errorCode . ')');
-        $Log->addDescription("SQL: " . DBUtil::escape($query));
-        $Log->writeLog();
-
-        error_log($query);
-        error_log($errorMsg);
     }
 
     /**
@@ -320,12 +302,30 @@ class DB
     }
 
     /**
+     * Método para registar los eventos de BD en el log
+     *
+     * @param $query     string  La consulta que genera el error
+     * @param $errorMsg  string  El mensaje de error
+     * @param $errorCode int     El código de error
+     */
+    private static function logDBException($query, $errorMsg, $errorCode, $querySource)
+    {
+        $Log = new Log($querySource, Log::ERROR);
+        $Log->addDescription($errorMsg . '(' . $errorCode . ')');
+        $Log->addDetails('SQL', DBUtil::escape($query));
+        $Log->writeLog();
+
+        error_log($query);
+        error_log($errorMsg);
+    }
+
+    /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param      $query       string La consulta a realizar
-     * @param      $querySource string La función orígen de la consulta
-     * @param array $data               Los valores de los parámetros de la consulta
-     * @param      $getRawData  bool   Si se deben de obtener los datos como PDOStatement
+     * @param       $query       string La consulta a realizar
+     * @param       $querySource string La función orígen de la consulta
+     * @param array $data        Los valores de los parámetros de la consulta
+     * @param       $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */
     public static function getQuery($query, $querySource, array &$data = null, $getRawData = false)

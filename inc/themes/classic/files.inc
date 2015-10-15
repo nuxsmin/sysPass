@@ -7,21 +7,21 @@
                     <?php if ($file['thumb']): ?>
                         <img src="data:image/png;base64,<?php echo $file['thumb']; ?>"
                              title="<?php echo $file['name']; ?>" alt="thumbnail"
-                             OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');" />
+                             OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>);" />
                     <?php endif; ?>
                 </div>
                 <div class="files-item-actions">
                     <?php if ($deleteEnabled === 1): ?>
                         <img src="imgs/delete.png" title="<?php echo _('Eliminar Archivo'); ?>" id="btnDelete"
                              class="inputImg" alt="Delete"
-                             OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>);"/>
+                             OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DELETE; ?>);"/>
                     <?php endif; ?>
                     <img src="imgs/download.png" title="<?php echo _('Descargar Archivo'); ?>" id="btnDownload"
                          class="inputImg" alt="download"
-                         OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'download');"/>
+                         OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DOWNLOAD; ?>, true);"/>
                     <img src="imgs/view.png" title="<?php echo _('Ver Archivo'); ?>" id="btnView" class="inputImg"
                          alt="View"
-                         OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', 'view');"/>
+                         OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>);"/>
                 </div>
             </li>
         <?php endforeach; ?>

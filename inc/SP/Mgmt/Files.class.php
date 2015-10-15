@@ -62,19 +62,26 @@ class Files
         $data['size'] = $fileData['size'];
         $data['blobcontent'] = $fileData['content'];
         $data['extension'] = $fileData['extension'];
-        $data['thumbnail'] = ImageUtil::createThumbnail($fileData['content'], $fileData['type']);
+        $data['thumbnail'] = ImageUtil::createThumbnail($fileData['content']);
+
+        $Log = new Log(_('Subir Archivo'));
+        $Log->addDetails(_('Cuenta'), $accountId);
+        $Log->addDetails(_('Archivo'), $fileData['name']);
+        $Log->addDetails(_('Tipo'), $fileData['type']);
+        $Log->addDetails(_('Tamaño'), round($fileData['size'] / 1024, 2) . " KB");
 
         if (DB::getQuery($query, __FUNCTION__, $data) === true) {
-            $log = new Log(_('Subir Archivo'));
-            $log->addDescription(_('Cuenta') . ": " . $accountId);
-            $log->addDescription(_('Archivo') . ": " . $fileData['name']);
-            $log->addDescription(_('Tipo') . ": " . $fileData['type']);
-            $log->addDescription(_('Tamaño') . ": " . round($fileData['size'] / 1024, 2) . " KB");
-            $log->writeLog();
+            $Log->addDescription(_('Archivo subido'));
+            $Log->writeLog();
 
-            Email::sendEmail($log);
+            Email::sendEmail($Log);
 
             return true;
+        } else {
+            $Log->addDescription(_('No se pudo guardar el archivo'));
+            $Log->writeLog();
+
+            Email::sendEmail($Log);
         }
 
         return false;
@@ -112,17 +119,24 @@ class Files
 
         $data['id'] = $fileId;
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === true) {
-            $log = new Log(_('Eliminar Archivo'));
-            $log->addDescription(_('ID') . ": " . $fileId);
-            $log->addDescription(_('Archivo') . ": " . $fileInfo->accfile_name);
-            $log->addDescription(_('Tipo') . ": " . $fileInfo->accfile_type);
-            $log->addDescription(_('Tamaño') . ": " . round($fileInfo->accfile_size / 1024, 2) . " KB");
-            $log->writeLog();
+        $Log = new Log(_('Eliminar Archivo'));
+        $Log->addDetails(_('ID'), $fileId);
+        $Log->addDetails(_('Archivo'), $fileInfo->accfile_name);
+        $Log->addDetails(_('Tipo'), $fileInfo->accfile_type);
+        $Log->addDetails(_('Tamaño'), round($fileInfo->accfile_size / 1024, 2) . " KB");
 
-            Email::sendEmail($log);
+        if (DB::getQuery($query, __FUNCTION__, $data) === true) {
+            $Log->addDescription(_('Archivo eliminado'));
+            $Log->writeLog();
+
+            Email::sendEmail($Log);
 
             return true;
+        } else {
+            $Log->addDescription(_('Error al eliminar el archivo'));
+            $Log->writeLog();
+
+            Email::sendEmail($Log);
         }
 
         return false;

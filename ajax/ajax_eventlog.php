@@ -23,6 +23,9 @@
  *
  */
 
+use SP\Controller\EventlogC;
+use SP\Core\Init;
+use SP\Core\Template;
 use SP\Http\Request;
 
 define('APP_ROOT', '..');
@@ -31,19 +34,19 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
+if (!Init::isLoggedIn()) {
     \SP\Util\Util::logout();
 }
 
-$start = \SP\Http\Request::analyze('start', 0);
-$clear = \SP\Http\Request::analyze('clear', 0);
-$sk = \SP\Http\Request::analyze('sk', false);
+$start = Request::analyze('start', 0);
+$clear = Request::analyze('clear', 0);
+$sk = Request::analyze('sk', false);
 
-$tpl = new \SP\Core\Template();
-$tpl->assign('limitStart', $start);
-$tpl->assign('clear', $clear);
-$tpl->assign('sk', $sk);
-$controller = new \SP\Controller\EventlogC($tpl);
-$controller->checkClear();
-$controller->getEventlog();
-echo $tpl->render();
+$Tpl = new Template();
+$Tpl->assign('limitStart', $start);
+$Tpl->assign('clear', $clear);
+$Tpl->assign('sk', $sk);
+$Controller = new EventlogC($Tpl);
+$Controller->checkClear();
+$Controller->getEventlog();
+echo $Tpl->render();

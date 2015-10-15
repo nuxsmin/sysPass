@@ -283,10 +283,10 @@ class Migrate
             }
         }
 
-        $log = new Log(_('Importar Clientes'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Clientes'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -353,10 +353,10 @@ class Migrate
                 $e->getMessage());
         }
 
-        $log = new Log(_('Importar Cuentas'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Cuentas'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -454,10 +454,10 @@ class Migrate
                 $e->getMessage());
         }
 
-        $log = new Log(_('Importar Grupos de Cuentas'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Grupos de Cuentas'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -527,10 +527,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $log = new Log(_('Importar Histórico de Cuentas'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Histórico de Cuentas'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -635,10 +635,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $log = new Log(_('Importar Archivos de Cuentas'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Archivos de Cuentas'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -700,10 +700,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $log = new Log(_('Importar Categorías de Cuentas'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Categorías de Cuentas'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -774,10 +774,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $log = new Log(_('Importar Usuarios'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Usuarios'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -864,10 +864,10 @@ class Migrate
                 self::$_dbc->error);
         }
 
-        $log = new Log(_('Importar Grupos de Usuarios'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalRecords);
-        $log->writeLog();
+        $Log = new Log(_('Importar Grupos de Usuarios'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalRecords);
+        $Log->writeLog();
     }
 
     /**
@@ -935,9 +935,9 @@ class Migrate
             $num++;
         }
 
-        $log = new Log(_('Importar Configuración'));
-        $log->addDescription('OK');
-        $log->addDescription(_('Registros') . ': ' . $num . '/' . $totalParams);
-        $log->writeLog();
+        $Log = new Log(_('Importar Configuración'));
+        $Log->addDescription('OK');
+        $Log->addDetails(_('Registros'), $num . '/' . $totalParams);
+        $Log->writeLog();
     }
 }

@@ -30,18 +30,16 @@ namespace SP\Log;
  *
  * @package SP
  */
-abstract class ActionLog
+abstract class ActionLog extends LogLevel
 {
     /**
-     * Constante de nueva línea para descriciones
+     * Constante de nueva línea para descripciones
      */
     const NEWLINE_TXT = ';;';
-
     /**
      * Constante de nueva línea para descriciones en formato HTML
      */
     const NEWLINE_HTML = '<br>';
-
     /**
      * Acción realizada
      *
@@ -60,14 +58,23 @@ abstract class ActionLog
      * @var bool
      */
     protected $_newLineHtml = false;
+    /**
+     * @var string
+     */
+    protected $_logLevel = '';
+    /**
+     * @var array
+     */
+    protected $_details = null;
 
     /**
      * Contructor
      *
-     * @param $action      string La acción realizada
-     * @param $description string La descripción de la acción realizada
+     * @param string $action      La acción realizada
+     * @param string $description La descripción de la acción realizada
+     * @param string $level       El nivel del mensaje
      */
-    function __construct($action = null, $description = null)
+    function __construct($action = null, $description = null, $level = Log::INFO)
     {
         if (!is_null($action)) {
             $this->setAction($action);
@@ -76,6 +83,65 @@ abstract class ActionLog
         if (!is_null($description)) {
             $this->addDescription($description);
         }
+
+        $this->_logLevel = $level;
+    }
+
+    /**
+     * Establece la descripción de la acción realizada
+     *
+     * @param string $description
+     */
+    public function addDescription($description = '')
+    {
+        $this->_description[] = $this->formatString($description);
+    }
+
+    /**
+     * Formatear una cadena para guardarla en el registro
+     *
+     * @param $string string La cadena a formatear
+     * @return string
+     */
+    private function formatString($string)
+    {
+        return strip_tags(utf8_encode($string));
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogLevel()
+    {
+        return strtoupper($this->_logLevel);
+    }
+
+    /**
+     * @param string $logLevel
+     */
+    public function setLogLevel($logLevel)
+    {
+        $this->_logLevel = $logLevel;
+    }
+
+    /**
+     * Devuelve los detalles de la acción realizada
+     *
+     * @return string
+     */
+    public function getDetails()
+    {
+        if (is_null($this->_details)) {
+            return '';
+        }
+
+        if (count($this->_details) > 1) {
+            $newline = ($this->_newLineHtml === false) ? self::NEWLINE_TXT : self::NEWLINE_HTML;
+
+            return implode($newline, $this->_details);
+        }
+
+        return $this->_details[0];
     }
 
     /**
@@ -101,15 +167,15 @@ abstract class ActionLog
     /**
      * Devuelve la descripción de la acción realizada
      *
-     * @return array
+     * @return string
      */
     public function getDescription()
     {
-        if(is_null($this->_description)){
+        if (is_null($this->_description)) {
             return '';
         }
 
-        if (count($this->_description) > 1){
+        if (count($this->_description) > 1) {
             $newline = ($this->_newLineHtml === false) ? self::NEWLINE_TXT : self::NEWLINE_HTML;
 
             return implode($newline, $this->_description);
@@ -119,24 +185,14 @@ abstract class ActionLog
     }
 
     /**
-     * Establece la descripción de la acción realizada
+     * Establece los detalles de la acción realizada
      *
-     * @param string $description
+     * @param $key   string
+     * @param $value string
      */
-    public function addDescription($description = '')
+    public function addDetails($key, $value)
     {
-        $this->_description[] = $this->formatString($description);
-    }
-
-    /**
-     * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     * @return string
-     */
-    private function formatString($string)
-    {
-        return strip_tags(utf8_encode($string));
+        $this->_details[] = sprintf('%s: %s', $this->formatString($key), $this->formatString($value));
     }
 
     /**
@@ -144,7 +200,8 @@ abstract class ActionLog
      *
      * @param $bool bool
      */
-    public function setNewLineHtml($bool){
+    public function setNewLineHtml($bool)
+    {
         $this->_newLineHtml = $bool;
     }
 

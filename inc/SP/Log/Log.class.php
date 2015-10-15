@@ -26,7 +26,6 @@
 namespace SP\Log;
 
 use SP\Storage\DB;
-use SP\Log\Email;
 use SP\Core\Session;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -38,7 +37,10 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Log extends ActionLog
 {
-    static $numRows;
+    /**
+     * @var int
+     */
+    public static $numRows = 0;
 
     /**
      * Obtener los eventos guardados.
@@ -50,8 +52,9 @@ class Log extends ActionLog
     {
         $query = 'SELECT ' .
             'log_id,' .
-            'FROM_UNIXTIME(log_date) as log_date,' .
+            'FROM_UNIXTIME(log_date) AS log_date,' .
             'log_action,' .
+            'log_level,' .
             'log_login,' .
             'log_ipAddress,' .
             'log_description ' .
@@ -91,7 +94,7 @@ class Log extends ActionLog
             return false;
         }
 
-        self::writeNewLogAndEmail(_('Vaciar Eventos'), _('Vaciar registro de eventos'));
+        self::writeNewLogAndEmail(_('Vaciar Eventos'), _('Vaciar registro de eventos'), null);
 
         return true;
     }
@@ -99,43 +102,19 @@ class Log extends ActionLog
     /**
      * Obtener una nueva instancia de la clase inicializada
      *
-     * @param      $action string La acción realizada
-     * @param null $description string La descripción de la acción realizada
+     * @param string $action      La acción realizada
+     * @param string $description La descripción de la acción realizada
+     * @param string $level
      * @return Log
      */
-    public static function newLog($action, $description = null)
+    public static function writeNewLogAndEmail($action, $description = null, $level = Log::INFO)
     {
-        return new Log($action, $description);
-    }
+        $Log = new Log($action, $description, $level);
+        $Log->writeLog();
 
-    /**
-     * Escribir un nuevo evento en el registro de eventos
-     *
-     * @param      $action string La acción realizada
-     * @param null $description string La descripción de la acción realizada
-     * @return Log
-     */
-    public static function writeNewLog($action, $description = null){
-        $log = new Log($action, $description);
-        $log->writeLog();
+        Email::sendEmail($Log);
 
-        return $log;
-    }
-
-    /**
-     * Obtener una nueva instancia de la clase inicializada
-     *
-     * @param      $action string La acción realizada
-     * @param null $description string La descripción de la acción realizada
-     * @return Log
-     */
-    public static function writeNewLogAndEmail($action, $description = null){
-        $log = new Log($action, $description);
-        $log->writeLog();
-
-        Email::sendEmail($log);
-
-        return $log;
+        return $Log;
     }
 
     /**
@@ -144,7 +123,8 @@ class Log extends ActionLog
      * @param bool $resetDescription Restablecer la descripción
      * @return bool
      */
-    public function writeLog($resetDescription = false){
+    public function writeLog($resetDescription = false)
+    {
         if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
             error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription());
         }
@@ -153,24 +133,73 @@ class Log extends ActionLog
             return false;
         }
 
+        $this->sendToSyslog();
+        $description = trim($this->getDescription() . self::NEWLINE_TXT . $this->getDetails(), ';');
+
         $query = 'INSERT INTO log SET ' .
             'log_date = UNIX_TIMESTAMP(),' .
             'log_login = :login,' .
             'log_userId = :userId,' .
             'log_ipAddress = :ipAddress,' .
             'log_action = :action,' .
+            'log_level = :level,' .
             'log_description = :description';
 
         $data['login'] = Session::getUserLogin();
         $data['userId'] = Session::getUserId();
         $data['ipAddress'] = $_SERVER['REMOTE_ADDR'];
         $data['action'] = $this->getAction();
-        $data['description'] = $this->getDescription();
+        $data['level'] = $this->getLogLevel();
+        $data['description'] = $description;
 
-        if ($resetDescription === true){
+        if ($resetDescription === true) {
             $this->resetDescription();
         }
 
         return DB::getQuery($query, __FUNCTION__, $data);
+    }
+
+    /**
+     * Enviar mensaje al syslog
+     */
+    private function sendToSyslog()
+    {
+        $msg = 'CEF:0|sysPass|logger|' . implode('.', Util::getVersion(true)) . '|';
+        $msg .= $this->getAction() . '|';
+        $msg .= $this->getDescription() . '|';
+        $msg .= '0|';
+        $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserLogin());
+
+        $Syslog = new Syslog();
+        $Syslog->info($msg);
+    }
+
+    /**
+     * Obtener una nueva instancia de la clase inicializada
+     *
+     * @param string $action      La acción realizada
+     * @param string $description La descripción de la acción realizada
+     * @param string $level
+     * @return Log
+     */
+    public static function newLog($action, $description = null, $level = Log::INFO)
+    {
+        return new Log($action, $description, $level);
+    }
+
+    /**
+     * Escribir un nuevo evento en el registro de eventos
+     *
+     * @param string $action      La acción realizada
+     * @param string $description La descripción de la acción realizada
+     * @param string $level
+     * @return Log
+     */
+    public static function writeNewLog($action, $description = null, $level = Log::INFO)
+    {
+        $Log = new Log($action, $description, $level);
+        $Log->writeLog();
+
+        return $Log;
     }
 }

@@ -17,6 +17,9 @@
                 <?php echo _('Fecha / Hora'); ?>
             </th>
             <th>
+                <?php echo _('Nivel'); ?>
+
+            <th>
                 <?php echo _('Evento'); ?>
             </th>
             <th>
@@ -41,6 +44,9 @@
                 </td>
                 <td class="cell">
                     <?php echo $log->log_date; ?>
+                </td>
+                <td class="cell">
+                    <?php echo $log->log_level; ?>
                 </td>
                 <td class="cell">
                     <?php echo utf8_decode($log->log_action); ?>

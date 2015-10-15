@@ -23,13 +23,15 @@
  *
  */
 
+use SP\Controller\MainC;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-\SP\Http\Request::checkReferer('GET');
+Request::checkReferer('GET');
 
-$controller = new \SP\Controller\MainC(null, null, false);
-$controller->getCheckUpdates();
-$controller->view();
+$Controller = new MainC(null, null, false);
+$Controller->getCheckUpdates();
+$Controller->view();

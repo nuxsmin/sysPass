@@ -266,7 +266,6 @@ class AccountSearch
                     $i++;
                 }
             } else {
-
                 $arrFilterCommon[] = 'account_name LIKE :name';
                 $arrFilterCommon[] = 'account_login LIKE :login';
                 $arrFilterCommon[] = 'account_url LIKE :url';
@@ -317,14 +316,10 @@ class AccountSearch
             $data['userIdgA'] = Session::getUserId();
             $data['userIdgB'] = Session::getUserId();
 
-            // Usuario/Grupo secundario de la cuenta
-//            $data['userGroupId'] = Session::getUserGroupId();
-//            $data['accgroup_groupId'] = Session::getUserGroupId();
-
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
-        if ($this->_limitCount != 99) {
+        if ($this->_limitCount > 0) {
             $queryLimit = 'LIMIT :limitStart,:limitCount';
 
             $data['limitStart'] = $this->_limitStart;
@@ -365,9 +360,6 @@ class AccountSearch
             'GROUP BY account_id ' .
             $this->getOrderString() . ' ' .
             $queryLimit;
-
-//        print_r($query);
-//        error_log($query);
 
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();

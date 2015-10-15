@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\Log\Email;
 use SP\Mgmt\Customer;
 use SP\Log\Log;
 use SP\Mgmt\Category;
@@ -121,6 +122,8 @@ class XmlExport
      */
     public function makeXML()
     {
+        $Log = new Log(_('Exportar XML'));
+
         try {
             $this->checkExportDir();
             $this->createRoot();
@@ -131,9 +134,19 @@ class XmlExport
             $this->createHash();
             $this->writeXML();
         } catch (SPException $e) {
-            Log::writeNewLog(_('Exportar XML'), sprintf('%s (%s)', $e->getMessage(), $e->getHint()));
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al realizar la exportación de cuentas'));
+            $Log->addDetails($e->getMessage(), $e->getHint());
+            $Log->writeLog();
+
+            Email::sendEmail($Log);
             return false;
         }
+
+        $Log->addDescription(_('Exportación de cuentas realizada correctamente'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }

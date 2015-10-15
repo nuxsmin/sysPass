@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,28 +23,21 @@
  *
  */
 
-use SP\Core\CryptPKI;
-use SP\Core\Init;
-use SP\Core\Session;
-use SP\Http\Request;
-use SP\Http\Response;
+namespace SP\Log;
 
-define('APP_ROOT', '..');
-
-require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
-require APP_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.js.php';
-
-Request::checkReferer('GET');
-
-$data = array(
-    'lang' => $stringsJsLang,
-    'app_root' => Init::$WEBURI,
-    'pk' => ''
-);
-
-try {
-    $CryptPKI = new CryptPKI();
-    $data['pk'] = (Session::getPublicKey()) ? Session::getPublicKey() : $CryptPKI->getPublicKey();
-} catch (Exception $e) {}
-
-Response::printJSON($data, 0);
+/**
+ * Class LogLevel
+ *
+ * @package SP\Log
+ */
+class LogLevel
+{
+    const EMERGENCY = 'emergency';
+    const ALERT = 'alert';
+    const CRITICAL = 'critical';
+    const ERROR = 'error';
+    const WARNING = 'warning';
+    const NOTICE = 'notice';
+    const INFO = 'info';
+    const DEBUG = 'debug';
+}

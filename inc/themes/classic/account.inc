@@ -204,7 +204,7 @@
                          title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
                         <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                     </div>
-                    <script>sysPassUtil.Common.dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>); </script>
+                    <script>sysPassUtil.Common.dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_UPLOAD; ?>); </script>
                 <?php endif; ?>
             <?php endif; ?>
         </td>

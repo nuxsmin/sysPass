@@ -125,7 +125,7 @@ class Crypt
 
             if ($check) {
                 ConfigDB::setValue('masterPwd', self::mkHashPassword($pwd));
-                Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'));
+                Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'), Log::NOTICE);
             }
 
             return $check;

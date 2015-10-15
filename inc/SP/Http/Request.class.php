@@ -135,7 +135,7 @@ class Request
             $CryptPKI = new CryptPKI();
             $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
         } catch (\Exception $e) {
-            return '';
+            return $encryptedData;
         }
 
         return $clearData;
@@ -182,5 +182,22 @@ class Request
     public static function checkReload()
     {
         return (self::getRequestHeaders('Cache-Control') == 'max-age=0');
+    }
+
+    /**
+     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
+     */
+    public static function importUrlParamsToGet()
+    {
+        foreach ($_POST as $param => $value) {
+            Html::sanitize($param);
+            Html::sanitize($value);
+
+            if (!strncmp($param, 'g_', 2)) {
+                $params[] = substr($param, 2) . '=' . $value;
+            }
+        }
+
+        return (isset($params) && count($params) > 0) ? implode('&', $params) : '';
     }
 }

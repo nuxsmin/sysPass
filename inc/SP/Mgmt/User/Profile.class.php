@@ -44,6 +44,8 @@ class Profile extends ProfileBase
      */
     public static function migrateProfiles()
     {
+        $Log = new Log(_('Migrar Perfiles'));
+
         $query = 'SELECT userprofile_id AS id,'
             . 'userprofile_name AS name,'
             . 'BIN(userProfile_pView) AS pView,'
@@ -70,7 +72,8 @@ class Profile extends ProfileBase
         $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
-            Log::writeNewLog(_('Migrar Perfiles'), _('Error al obtener perfiles'));
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al obtener perfiles'));
             return false;
         }
 
@@ -124,17 +127,15 @@ class Profile extends ProfileBase
 
         $queryRes = DB::getQuery($query, __FUNCTION__);
 
-        $log = new Log(_('Migrar Perfiles'));
-
         if ($queryRes) {
-            $log->addDescription(_('Operación realizada correctamente'));
+            $Log->addDescription(_('Operación realizada correctamente'));
         } else {
-            $log->addDescription(_('Migrar Perfiles'), _('Fallo al realizar la operación'));
+            $Log->addDescription(_('Fallo al realizar la operación'));
         }
 
-        $log->writeLog();
+        $Log->writeLog();
 
-        Email::sendEmail($log);
+        Email::sendEmail($Log);
 
         return $queryRes;
     }

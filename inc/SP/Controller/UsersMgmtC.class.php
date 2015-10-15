@@ -518,7 +518,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         if ($this->view->isView === true) {
             $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
-            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
+            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg, null);
         }
     }
 

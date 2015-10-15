@@ -195,7 +195,7 @@ class ApiTokens
         }
 
         $Log = new Log(_('Nueva Autorización'));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -313,7 +313,7 @@ class ApiTokens
         }
 
         $Log = new Log(_('Actualizar Autorización'));
-        $Log->addDescription(sprintf('%s : %s', Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId)));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -337,7 +337,7 @@ class ApiTokens
         }
 
         $Log = new Log(_('Eliminar Autorización'));
-        $Log->addDescription(sprintf('%d', $this->_tokenId));
+        $Log->addDetails(_('ID'), $this->_tokenId);
         $Log->writeLog();
 
         Email::sendEmail($Log);

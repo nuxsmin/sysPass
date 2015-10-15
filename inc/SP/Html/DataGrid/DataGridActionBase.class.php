@@ -91,6 +91,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @var string
      */
     private $_filterRowSource = '';
+    /**
+     * Si es una acción de ayuda
+     *
+     * @var bool
+     */
+    private $_isHelper;
 
     /**
      * @return string
@@ -232,6 +238,22 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function isNew()
     {
         return $this->_isNew;
+    }
+
+    /**
+     * @param bool $helper
+     */
+    public function setIsHelper($helper)
+    {
+        $this->_isHelper = $helper;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHelper()
+    {
+        return $this->_isHelper;
     }
 
     /**

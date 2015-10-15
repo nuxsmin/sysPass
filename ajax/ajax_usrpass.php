@@ -23,7 +23,11 @@
  *
  */
 
+use SP\Controller\UsersMgmtC;
+use SP\Core\Init;
+use SP\Core\Template;
 use SP\Http\Request;
+use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -31,19 +35,19 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('GET');
 
-if (!\SP\Core\Init::isLoggedIn()) {
-    \SP\Util\Util::logout();
+if (!Init::isLoggedIn()) {
+    Util::logout();
 }
 
-$userId = \SP\Http\Request::analyze('userId', false);
+$userId = Request::analyze('userId', false);
 
 if (!$userId) {
     return;
 }
 
-$tpl = new \SP\Core\Template();
-$tpl->assign('userId', $userId);
-$controller = new \SP\Controller\UsersMgmtC($tpl);
-$controller->getUserPass();
-$tpl->addTemplate('js-common');
-$controller->view();
+$Tpl = new Template();
+$Tpl->assign('userId', $userId);
+$Controller = new UsersMgmtC($Tpl);
+$Controller->getUserPass();
+$Tpl->addTemplate('js-common');
+$Controller->view();

@@ -118,6 +118,16 @@ interface DataGridActionInterface
     public function isNew();
 
     /**
+     * @param bool $helper
+     */
+    public function setIsHelper($helper);
+
+    /**
+     * @return bool
+     */
+    public function isHelper();
+
+    /**
      * @param $rowSource string
      */
     public function setFilterRowSource($rowSource);

@@ -118,7 +118,7 @@ class Auth
         if ($ldapGroupAccess === false) {
             $log = new Log(__FUNCTION__);
             $log->addDescription(_('Usuario no pertenece al grupo'));
-            $log->addDescription(sprintf('%s : %s', _('Usuario'), $userDN));
+            $log->addDetails(_('Usuario'), $userDN);
             $log->writeLog();
 
             return 702;

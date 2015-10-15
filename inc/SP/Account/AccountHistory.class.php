@@ -133,24 +133,25 @@ class AccountHistory extends AccountBase implements AccountInterface
         $errorCount = 0;
         $demoEnabled = Checks::demoIsEnabled();
 
-        $log = new Log(_('Actualizar Clave Maestra (H)'));
-        $log->addDescription(_('Inicio'));
-        $log->writeLog();
+        $Log = new Log(_('Actualizar Clave Maestra (H)'));
+        $Log->addDescription(_('Inicio'));
+        $Log->writeLog();
 
-        $log->resetDescription();
+        $Log->resetDescription();
 
         if (!Crypt::checkCryptModule()) {
-            $log->addDescription(_('Error en el módulo de encriptación'));
-            $log->writeLog();
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error en el módulo de encriptación'));
+            $Log->writeLog();
             return false;
         }
 
         $accountsPass = $this->getAccountsPassData();
 
         if (!$accountsPass) {
-            $log->addDescription(_('Error al obtener las claves de las cuentas'));
-            $log->writeLog();
-
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al obtener las claves de las cuentas'));
+            $Log->writeLog();
             return false;
         }
 
@@ -165,17 +166,17 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if (!$this->checkAccountMPass()) {
                 $errorCount++;
-                $log->addDescription(_('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
+                $Log->addDescription(_('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
                 continue;
             }
 
             if (strlen($account->acchistory_pass) === 0){
-                $log->addDescription(_('Clave de cuenta vacía') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
+                $Log->addDescription(_('Clave de cuenta vacía') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
                 continue;
             }
 
             if (strlen($account->acchistory_IV) < 32) {
-                $log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
+                $Log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
             }
 
             $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
@@ -184,13 +185,13 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if ($this->getAccountPass() === false) {
                 $errorCount++;
-                $log->addDescription(_('No es posible desencriptar la clave de la cuenta') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
+                $Log->addDescription(_('No es posible desencriptar la clave de la cuenta') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
                 continue;
             }
 
             if (!$this->updateAccountPass($account->acchistory_id, $newHash)) {
                 $errorCount++;
-                $log->addDescription(_('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
+                $Log->addDescription(_('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
                 continue;
             }
 
@@ -198,19 +199,19 @@ class AccountHistory extends AccountBase implements AccountInterface
         }
 
         // Vaciar el array de mensaje de log
-        if (count($log->getDescription()) > 0) {
-            $log->writeLog();
-            $log->resetDescription();
+        if (count($Log->getDescription()) > 0) {
+            $Log->writeLog();
+            $Log->resetDescription();
         }
 
         if ($idOk) {
-            $log->addDescription(_('Registros actualizados') . ': ' . implode(',', $idOk));
-            $log->writeLog();
-            $log->resetDescription();
+            $Log->addDetails(_('Registros actualizados'),implode(',', $idOk));
+            $Log->writeLog();
+            $Log->resetDescription();
         }
 
-        $log->addDescription(_('Fin'));
-        $log->writeLog();
+        $Log->addDescription(_('Fin'));
+        $Log->writeLog();
 
         return true;
     }

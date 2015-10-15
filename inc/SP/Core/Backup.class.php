@@ -26,6 +26,7 @@
 namespace SP\Core;
 
 use SP\Config\Config;
+use SP\Log\Email;
 use SP\Storage\DB;
 use SP\Log\Log;
 use SP\Storage\DBUtil;
@@ -46,6 +47,8 @@ class Backup
      */
     public static function doBackup()
     {
+        $Log = new Log(_('Realizar Backup'));
+
         $siteName = Util::getAppInfo('appname');
         $backupDir = Init::$SERVERROOT;
 
@@ -63,9 +66,19 @@ class Backup
             self::backupTables('*', $bakFileDB);
             self::backupApp($bakFileApp);
         } catch (\Exception $e) {
-            Log::writeNewLogAndEmail(__FUNCTION__, $e->getMessage());
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al realizar el backup'));
+            $Log->addDetails($e->getCode(), $e->getMessage());
+            $Log->writeLog();
+
+            Email::sendEmail($Log);
             return false;
         }
+
+        $Log->addDescription(_('Copia de la aplicación y base de datos realizada correctamente'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return true;
     }

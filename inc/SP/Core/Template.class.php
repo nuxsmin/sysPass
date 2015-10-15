@@ -28,6 +28,7 @@ namespace SP\Core;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use InvalidArgumentException;
+use SP\Log\Log;
 
 /**
  * Clase Template para la manipulación de plantillas
@@ -89,6 +90,7 @@ class Template
         $template = VIEW_PATH . DIRECTORY_SEPARATOR . Themes::$theme . DIRECTORY_SEPARATOR . $file . '.inc';
 
         if (!is_readable($template)) {
+            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
@@ -119,7 +121,7 @@ class Template
     }
 
     /**
-     * Overloadig para controlar la devolución de atributos dinámicos.
+     * Overloading para controlar la devolución de atributos dinámicos.
      *
      * @param string $name Nombre del atributo
      * @return null
