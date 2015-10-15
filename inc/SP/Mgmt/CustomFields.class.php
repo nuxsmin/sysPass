@@ -300,9 +300,10 @@ class CustomFields extends CustomFieldsBase
         $queryRes = DB::getResults($query, __FUNCTION__);
 
         if ($queryRes === false) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al actualizar datos encriptados'));
-            return false;
+            $Log->addDescription(_('Fin'));
+            $Log->writeLog();
+
+            return true;
         }
 
         $Log->addDescription(_('Actualizando datos encriptados'));

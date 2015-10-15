@@ -383,7 +383,7 @@ class Init
     }
 
     /**
-     * Comprobar si el modo mantenimeinto está activado
+     * Comprobar si el modo mantenimiento está activado
      * Esta función comprueba si el modo mantenimiento está activado.
      * Devuelve un error 503 y un reintento de 120s al cliente.
      *

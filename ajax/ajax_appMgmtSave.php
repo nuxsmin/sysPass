@@ -55,7 +55,6 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-
 // Variables POST del formulario
 $actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);

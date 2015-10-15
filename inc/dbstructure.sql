@@ -166,6 +166,7 @@ CREATE TABLE `log` (
   `log_ipAddress` varchar(45) NOT NULL,
   `log_action` varchar(50) NOT NULL,
   `log_description` text NOT NULL,
+  `log_level`varchar (20) NOT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
