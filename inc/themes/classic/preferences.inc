@@ -45,7 +45,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="account_link"><?php echo ($chkAccountLink) ? 'SI' : 'NO'; ?></label>
+                    <label for="account_link"><?php echo ($chkAccountLink) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="account_link" id="account_link"
                            class="checkbox" <?php echo $chkAccountLink; ?> />
                 </td>

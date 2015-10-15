@@ -22,7 +22,7 @@
                         </div>
                     </td>
                     <td class="valField">
-                        <label for="ldapenabled"><?php echo ($chkLdap) ? 'SI' : 'NO'; ?></label>
+                        <label for="ldapenabled"><?php echo ($chkLdap) ? _('SI') : _('NO'); ?></label>
                         <input type="checkbox" name="ldap_enabled" id="ldapenabled"
                                class="checkbox" <?php echo $chkLdap, ' ', $isDisabled; ?> />
                     </td>
@@ -192,7 +192,7 @@
                         </div>
                     </td>
                     <td class="valField">
-                        <label for="ldap_ads"><?php echo ($chkLdapADS) ? 'SI' : 'NO'; ?></label>
+                        <label for="ldap_ads"><?php echo ($chkLdapADS) ? _('SI') : _('NO'); ?></label>
                         <input type="checkbox" name="ldap_ads" id="ldap_ads"
                                class="checkbox" <?php echo $chkLdapADS, ' ', $isDisabled; ?> />
                     </td>

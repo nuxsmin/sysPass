@@ -67,7 +67,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="logenabled"><?php echo ($chkLog) ? 'SI' : 'NO'; ?></label>
+                    <label for="logenabled"><?php echo ($chkLog) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="log_enabled" id="logenabled"
                            class="checkbox" <?php echo $chkLog, ' ', $isDisabled; ?> />
                 </td>
@@ -83,7 +83,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="debug"><?php echo ($chkDebug) ? 'SI' : 'NO'; ?></label>
+                    <label for="debug"><?php echo ($chkDebug) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="debug" id="debug"
                            class="checkbox" <?php echo $chkDebug, ' ', $isDisabled; ?> />
                 </td>
@@ -99,7 +99,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="maintenance"><?php echo ($chkMaintenance) ? 'SI' : 'NO'; ?></label>
+                    <label for="maintenance"><?php echo ($chkMaintenance) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="maintenance" id="maintenance"
                            class="checkbox" <?php echo $chkMaintenance, ' ', $isDisabled; ?> />
                 </td>
@@ -115,7 +115,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="updates"><?php echo ($chkUpdates) ? 'SI' : 'NO'; ?></label>
+                    <label for="updates"><?php echo ($chkUpdates) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="updates" id="updates"
                            class="checkbox" <?php echo $chkUpdates; ?> />
                 </td>
@@ -131,7 +131,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="notices"><?php echo ($chkNotices) ? 'SI' : 'NO'; ?></label>
+                    <label for="notices"><?php echo ($chkNotices) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="notices" id="notices"
                            class="checkbox" <?php echo $chkNotices; ?> />
                 </td>
@@ -147,7 +147,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="account_link"><?php echo ($chkAccountLink) ? 'SI' : 'NO'; ?></label>
+                    <label for="account_link"><?php echo ($chkAccountLink) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="account_link" id="account_link"
                            class="checkbox" <?php echo $chkAccountLink; ?> />
                 </td>
@@ -163,7 +163,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="filesenabled"><?php echo ($chkFiles) ? 'SI' : 'NO'; ?></label>
+                    <label for="filesenabled"><?php echo ($chkFiles) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="files_enabled" id="filesenabled"
                            class="checkbox" <?php echo $chkFiles, ' ', $isDisabled; ?> />
                 </td>
@@ -179,7 +179,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="globalsearch"><?php echo ($chkGlobalSearch) ? 'SI' : 'NO'; ?></label>
+                    <label for="globalsearch"><?php echo ($chkGlobalSearch) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="globalsearch" id="globalsearch"
                            class="checkbox" <?php echo $chkGlobalSearch; ?> />
                 </td>
@@ -252,7 +252,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="resultsascards"><?php echo ($chkResultsAsCards) ? 'SI' : 'NO'; ?></label>
+                    <label for="resultsascards"><?php echo ($chkResultsAsCards) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="resultsascards" id="resultsascards"
                            class="checkbox" <?php echo $chkResultsAsCards, ' ', $isDisabled; ?> />
                 </td>
@@ -271,7 +271,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="account_passtoimage"><?php echo ($chkAccountPassToImage) ? 'SI' : 'NO'; ?></label>
+                    <label for="account_passtoimage"><?php echo ($chkAccountPassToImage) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="account_passtoimage" id="account_passtoimage"
                            class="checkbox" <?php echo $chkAccountPassToImage; ?> />
                 </td>
