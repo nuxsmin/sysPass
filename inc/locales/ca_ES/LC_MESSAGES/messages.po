@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-15 15:10+0100\n"
-"PO-Revision-Date: 2015-10-15 15:10+0100\n"
+"POT-Creation-Date: 2015-10-15 22:43+0100\n"
+"PO-Revision-Date: 2015-10-15 22:43+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: ca_ES\n"
@@ -2008,11 +2008,11 @@ msgstr "Servidor on s'instal·larà la Base de dades"
 
 #: ../../../../inc/Installer.class.php:267
 msgid "No es posible comprobar el usuario de sysPass"
-msgstr ""
+msgstr "No és possible comprovar l'usuari de sysPass"
 
 #: ../../../../inc/Installer.class.php:268
 msgid "Compruebe los permisos del usuario de conexión a la BD"
-msgstr ""
+msgstr "Comprovi els permisos de l'usuari de connexió a la BBDD"
 
 #: ../../../../inc/Installer.class.php:319
 msgid "El usuario de MySQL ya existe"
@@ -2632,11 +2632,29 @@ msgstr "Seleccionar Acció"
 #: ../../../../inc/themes/classic/account.inc:136
 #: ../../../../inc/themes/classic/account.inc:167
 #: ../../../../inc/themes/classic/account.inc:451
+#: ../../../../inc/themes/classic/config.inc:70
+#: ../../../../inc/themes/classic/config.inc:86
+#: ../../../../inc/themes/classic/config.inc:102
+#: ../../../../inc/themes/classic/config.inc:118
+#: ../../../../inc/themes/classic/config.inc:134
+#: ../../../../inc/themes/classic/config.inc:150
+#: ../../../../inc/themes/classic/config.inc:166
+#: ../../../../inc/themes/classic/config.inc:182
+#: ../../../../inc/themes/classic/config.inc:255
+#: ../../../../inc/themes/classic/config.inc:274
+#: ../../../../inc/themes/classic/customfields.inc:46
 #: ../../../../inc/themes/classic/install.inc:99
+#: ../../../../inc/themes/classic/ldap.inc:25
+#: ../../../../inc/themes/classic/ldap.inc:195
+#: ../../../../inc/themes/classic/mail.inc:14
+#: ../../../../inc/themes/classic/mail.inc:40
+#: ../../../../inc/themes/classic/mail.inc:88
+#: ../../../../inc/themes/classic/preferences.inc:48
 #: ../../../../inc/themes/classic/preferences.inc:82
 #: ../../../../inc/themes/classic/preferences.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:116
 #: ../../../../inc/themes/classic/security.inc:26
+#: ../../../../inc/themes/classic/wiki.inc:20
 msgid "SI"
 msgstr "SI"
 
@@ -2644,15 +2662,33 @@ msgstr "SI"
 #: ../../../../inc/themes/classic/account.inc:136
 #: ../../../../inc/themes/classic/account.inc:167
 #: ../../../../inc/themes/classic/account.inc:449
+#: ../../../../inc/themes/classic/config.inc:70
+#: ../../../../inc/themes/classic/config.inc:86
+#: ../../../../inc/themes/classic/config.inc:102
+#: ../../../../inc/themes/classic/config.inc:118
+#: ../../../../inc/themes/classic/config.inc:134
+#: ../../../../inc/themes/classic/config.inc:150
+#: ../../../../inc/themes/classic/config.inc:166
+#: ../../../../inc/themes/classic/config.inc:182
+#: ../../../../inc/themes/classic/config.inc:255
+#: ../../../../inc/themes/classic/config.inc:274
+#: ../../../../inc/themes/classic/customfields.inc:46
 #: ../../../../inc/themes/classic/encryption.inc:58
 #: ../../../../inc/themes/classic/encryption.inc:77
 #: ../../../../inc/themes/classic/import.inc:67
 #: ../../../../inc/themes/classic/install.inc:99
+#: ../../../../inc/themes/classic/ldap.inc:25
+#: ../../../../inc/themes/classic/ldap.inc:195
+#: ../../../../inc/themes/classic/mail.inc:14
+#: ../../../../inc/themes/classic/mail.inc:40
+#: ../../../../inc/themes/classic/mail.inc:88
+#: ../../../../inc/themes/classic/preferences.inc:48
 #: ../../../../inc/themes/classic/preferences.inc:82
 #: ../../../../inc/themes/classic/preferences.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:116
 #: ../../../../inc/themes/classic/security.inc:26
 #: ../../../../inc/themes/classic/tokens.inc:36
+#: ../../../../inc/themes/classic/wiki.inc:20
 msgid "NO"
 msgstr "NO"
 
@@ -4360,13 +4396,13 @@ msgstr "Mostrar una barra de navegació superior en les cerques."
 #: ../../../../inc/themes/classic/preferences.inc:107
 #: ../../../../inc/themes/material-blue/preferences.inc:108
 msgid "Mostrar Acciones Ocultas"
-msgstr ""
+msgstr "Mostrar Accions Ocultes"
 
 #: ../../../../inc/themes/classic/preferences.inc:111
 #: ../../../../inc/themes/material-blue/preferences.inc:112
 msgid ""
 "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
-msgstr ""
+msgstr "Mostrar les accions ocultes per als elements de la cerca de comptes."
 
 #: ../../../../inc/themes/classic/profiles.inc:11
 #: ../../../../inc/themes/material-blue/profiles.inc:14
@@ -5020,7 +5056,3 @@ msgstr "Realitzar còpia de seguretat i exportar"
 #: ../../../../inc/themes/material-blue/security.inc:4
 msgid "Autentificación"
 msgstr "Autenticació"
-
-#, fuzzy
-#~ msgid "Error al actualizar datos encriptados"
-#~ msgstr "Actualitzant dades encriptades"
