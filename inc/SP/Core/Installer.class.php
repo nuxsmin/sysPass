@@ -26,6 +26,8 @@
 
 namespace SP\Core;
 
+use PDO;
+use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Mgmt\User\Groups;
@@ -59,7 +61,7 @@ class Installer
      */
     private static $_dbhost;
     /**
-     * @var \PDO Instancia a de conexión a la BD
+     * @var PDO Instancia a de conexión a la BD
      */
     private static $_dbc;
     /**
@@ -236,8 +238,9 @@ class Installer
     {
         try {
             $dsn = 'mysql:host=' . $dbhost . ';dbport=' . $dbport . ';charset=utf8';
-            self::$_dbc = new \PDO($dsn, $dbadmin, $dbpass);
-        } catch (\PDOException $e) {
+            self::$_dbc = new PDO($dsn, $dbadmin, $dbpass);
+            self::$_dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('No es posible conectar con la BD')
                 , _('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
@@ -269,7 +272,7 @@ class Installer
                         self::createDBUser();
                     }
                 }
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
                     , _('No es posible comprobar el usuario de sysPass') . ' (' . self::$_username . ')'
                     , _('Compruebe los permisos del usuario de conexión a la BD'));
@@ -321,7 +324,7 @@ class Installer
 
         try {
             self::$_dbc->query($query);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('El usuario de MySQL ya existe') . " (" . self::$_dbuser . ")"
                 , _('Indique un nuevo usuario o elimine el existente'));
@@ -341,11 +344,11 @@ class Installer
                 , _('Indique una nueva Base de Datos o elimine la existente'));
         }
 
-        $query = "CREATE DATABASE IF NOT EXISTS `" . self::$_dbname . "`";
+        $query = "CREATE SCHEMA `" . self::$_dbname . "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
 
         try {
             self::$_dbc->query($query);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear la BBDD') . " (" . $e->getMessage() . ")"
                 , _('Verifique los permisos del usuario de la Base de Datos'));
@@ -356,7 +359,7 @@ class Installer
 
             try {
                 self::$_dbc->query($query);
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
                     , _('Error al establecer permisos de la BBDD') . " (" . $e->getMessage() . ")"
                     , _('Verifique los permisos del usuario de la Base de Datos'));
@@ -372,9 +375,8 @@ class Installer
     private static function checkDatabaseExist()
     {
         $query = "SELECT COUNT(*) "
-            . "FROM information_schema.tables "
-            . "WHERE table_schema = '" . self::$_dbname . "' "
-            . "AND table_name = 'usrData' LIMIT 1";
+            . "FROM information_schema.schemata "
+            . "WHERE schema_name = '" . self::$_dbname . "' LIMIT 1";
 
         return (intval(self::$_dbc->query($query)->fetchColumn()) > 0);
     }
@@ -387,7 +389,7 @@ class Installer
      */
     private static function createDBStructure()
     {
-        $fileName = dirname(__FILE__) . '/dbstructure.sql';
+        $fileName = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR. 'dbstructure.sql';
 
         if (!file_exists($fileName)) {
             throw new SPException(SPException::SP_CRITICAL
@@ -397,8 +399,8 @@ class Installer
 
         // Usar la base de datos de sysPass
         try {
-            self::$_dbc->query('USE ' . self::$_dbname);
-        } catch (\PDOException $e) {
+            self::$_dbc->query('USE `' . self::$_dbname. '`');
+        } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al seleccionar la BBDD') . " '" . self::$_dbname . "' (" . $e->getMessage() . ")"
                 , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
@@ -412,10 +414,11 @@ class Installer
                 $buffer = stream_get_line($handle, 1000000, ";\n");
                 if (strlen(trim($buffer)) > 0) {
                     try {
-                        self::$_dbc->query($buffer);
-                    } catch (\PDOException $e) {
+                        $query = str_replace("\n", '', $buffer);
+                        self::$_dbc->query($query);
+                    } catch (PDOException $e) {
                         // drop database on error
-                        self::$_dbc->query("DROP DATABASE " . self::$_dbname . ";");
+                        self::$_dbc->query("DROP DATABASE IF EXISTS " . self::$_dbname . ";");
 
                         throw new SPException(SPException::SP_CRITICAL
                             , _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')'
@@ -520,7 +523,7 @@ class Installer
             self::$_dbc->query("DROP DATABASE IF EXISTS " . self::$_dbname . ";");
             self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'" . self::$_dbhost . "';");
             self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'%';");
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             Config::deleteParam('dbuser');
             Config::deleteParam('dbpass');
         }

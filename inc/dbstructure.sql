@@ -17,7 +17,7 @@ CREATE TABLE `accFiles` (
   `accfile_size` int(11) NOT NULL,
   `accfile_content` mediumblob NOT NULL,
   `accfile_extension` varchar(10) NOT NULL,
-  `accFile_thumb` longblob,
+  `accFile_thumb` mediumblob,
   PRIMARY KEY (`accfile_id`),
   KEY `IDX_accountId` (`accfile_accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -166,7 +166,7 @@ CREATE TABLE `log` (
   `log_ipAddress` varchar(45) NOT NULL,
   `log_action` varchar(50) NOT NULL,
   `log_description` text NOT NULL,
-  `log_level`varchar (20) NOT NULL,
+  `log_level` varchar(20) NOT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -242,7 +242,6 @@ CREATE TABLE `publicLinks`(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

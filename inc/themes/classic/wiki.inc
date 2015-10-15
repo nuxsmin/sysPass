@@ -17,7 +17,7 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <label for="wikienabled"><?php echo ($chkWiki) ? 'SI' : 'NO'; ?></label>
+                    <label for="wikienabled"><?php echo ($chkWiki) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="wiki_enabled" id="wikienabled"
                            class="checkbox" <?php echo $chkWiki, ' ', $isDisabled; ?> />
                 </td>

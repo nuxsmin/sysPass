@@ -11,7 +11,7 @@
                     <?php echo _('Habilitar notificaciones de correo'); ?>
                 </td>
                 <td class="valField">
-                    <label for="mailenabled"><?php echo ($chkMail) ? 'SI' : 'NO'; ?></label>
+                    <label for="mailenabled"><?php echo ($chkMail) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="mail_enabled" id="mailenabled"
                            class="checkbox" <?php echo $chkMail, ' ', $isDisabled; ?> />
                 </td>
@@ -37,7 +37,7 @@
                     <?php echo _('Habilitar Autentificación'); ?>
                 </td>
                 <td class="valField">
-                    <label for="mailauthenabled"><?php echo ($chkMailAuth) ? 'SI' : 'NO'; ?></label>
+                    <label for="mailauthenabled"><?php echo ($chkMailAuth) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="mail_authenabled" id="mailauthenabled"
                            class="checkbox" <?php echo $chkMailAuth, ' ', $isDisabled; ?> />
                 </td>
@@ -85,7 +85,7 @@
                     <?php echo _('Habilitar peticiones por correo'); ?>
                 </td>
                 <td class="valField">
-                    <label for="mailrequestsenabled"><?php echo ($chkMailRequests) ? 'SI' : 'NO'; ?></label>
+                    <label for="mailrequestsenabled"><?php echo ($chkMailRequests) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" name="mail_requestsenabled" id="mailrequestsenabled"
                            class="checkbox" <?php echo $chkMailRequests, ' ', $isDisabled; ?> />
                 </td>

@@ -43,7 +43,7 @@
             <tr>
                 <td class="descField"><?php echo _('Obligatorio'); ?></td>
                 <td class="valField">
-                    <label for="required"><?php echo ($gotData && $field->isRequired()) ? 'SI' : 'NO'; ?></label>
+                    <label for="required"><?php echo ($gotData && $field->isRequired()) ? _('SI') : _('NO'); ?></label>
                     <input type="checkbox" id="required" class="checkbox"
                            name="required" <?php echo ($gotData && $field->isRequired()) ? 'checked' : ''; ?>/>
                 </td>

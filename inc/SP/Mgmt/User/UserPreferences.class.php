@@ -92,7 +92,7 @@ class UserPreferences
 
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        if ($queryRes === false) {
+        if ($queryRes === false || is_null($queryRes->user_preferences)) {
             return new UserPreferences();
         }
 
