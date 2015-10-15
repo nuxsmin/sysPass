@@ -32,7 +32,7 @@ define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
 define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'ext');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 
-define('DEBUG', false);
+define('DEBUG', true);
 
 require MODEL_PATH . DIRECTORY_SEPARATOR . 'Init.class.php';
 

@@ -155,26 +155,26 @@
                                 <?php endif ?>
                             <?php endif ?>
 
-                            <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
+                            <?php if (!$optionalActions && ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass'])): ?>
                                 <i class="material-icons"
                                    title="<?php echo _('Más Acciones'); ?>"
                                    OnClick="sysPassUtil.Common.showOptional(this)">settings</i>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
-                                <i class="material-icons fg-orange80 actions-optional"
+                                <i class="material-icons fg-orange80 <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                    title="<?php echo _('Modificar Cuenta'); ?>"
                                    OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">mode_edit</i>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
-                                <i class="material-icons fg-blue80 actions-optional"
+                                <i class="material-icons fg-blue80 <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                    title="<?php echo _('Copiar Cuenta'); ?>"
                                    OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">content_copy</i>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
-                                <i class="material-icons fg-red80 actions-optional"
+                                <i class="material-icons fg-red80 <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                    title="<?php echo _('Eliminar Cuenta'); ?>"
                                    OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">delete</i>
                             <?php endif; ?>

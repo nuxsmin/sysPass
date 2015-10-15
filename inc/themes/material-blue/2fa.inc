@@ -1,8 +1,6 @@
 <div id="actions" align="center">
 
-    <div id="logo">
-        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
-    </div>
+    <div id="logo"></div>
 
     <form id="frmPass2fa" action="" method="post">
         <fieldset id="resetdata">

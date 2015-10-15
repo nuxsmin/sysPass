@@ -66,7 +66,7 @@ $customFields = SP\Request::analyze('customfield');
 // Datos del Usuario
 $currentUserId = SP\Session::getUserId();
 
-if (!$accountMainGroupId === 0) {
+if ($accountMainGroupId === 0) {
     $accountMainGroupId = SP\Session::getUserGroupId();
 }
 

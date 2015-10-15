@@ -32,13 +32,15 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.j
 
 Request::checkReferer('GET');
 
-$CryptPKI = new SP\CryptPKI();
-$publicKey = (SP\Session::getPublicKey()) ? SP\Session::getPublicKey() : $CryptPKI->getPublicKey();
-
 $data = array(
     'lang' => $stringsJsLang,
     'app_root' => SP\Init::$WEBURI,
-    'pk' => $publicKey
+    'pk' => ''
 );
+
+try {
+    $CryptPKI = new SP\CryptPKI();
+    $data['pk'] = (SP\Session::getPublicKey()) ? SP\Session::getPublicKey() : $CryptPKI->getPublicKey();
+} catch (Exception $e){}
 
 SP\Response::printJSON($data, 0);

@@ -57,7 +57,7 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accfiles">
                             <input type="checkbox" id="profile_accfiles" class="mdl-switch__input fg-blue100"
                                    name="profile_accfiles" <?php echo ($profile->isAccFiles()) ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label" title="<?php echo _('Var archivos de cuenta'); ?>"><?php echo _('Archivos'); ?></span>
+                            <span class="mdl-switch__label" title="<?php echo _('Ver archivos de cuenta'); ?>"><?php echo _('Archivos'); ?></span>
                         </label>
                     </div>
                 </td>

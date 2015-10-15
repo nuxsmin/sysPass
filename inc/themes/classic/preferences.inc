@@ -84,6 +84,40 @@
                            class="checkbox" <?php echo $chkSortViews; ?> />
                 </td>
             </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('Barra de navegación superior'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-top_navbar" style="display:none;">
+                        <p>
+                            <?php echo _('Mostrar una barra de navegación superior en las búsquedas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label for="top_navbar"><?php echo ($chkTopNavbar) ? _('SI') : _('NO'); ?></label>
+                    <input type="checkbox" name="top_navbar" id="top_navbar"
+                           class="checkbox" <?php echo $chkTopNavbar; ?> />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('Mostrar Acciones Ocultas'); ?>
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-optional_actions" style="display:none;">
+                        <p>
+                            <?php echo _('Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label for="optional_actions"><?php echo ($chkOptionalActions) ? _('SI') : _('NO'); ?></label>
+                    <input type="checkbox" name="optional_actions" id="optional_actions"
+                           class="checkbox" <?php echo $chkOptionalActions; ?> />
+                </td>
+            </tr>
         </table>
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>

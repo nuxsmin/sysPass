@@ -1,9 +1,7 @@
 <div id="actions" align="center">
 
     <?php if ($showLogo): ?>
-        <div id="logo">
-            <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
-        </div>
+        <div id="logo"></div>
     <?php endif; ?>
 
     <?php if (count($errors) > 0): ?>

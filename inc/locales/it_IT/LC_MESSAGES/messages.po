@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2015-10-09 00:51+0100\n"
-"PO-Revision-Date: 2015-10-09 00:51+0100\n"
+"POT-Creation-Date: 2015-10-15 14:46+0100\n"
+"PO-Revision-Date: 2015-10-15 14:46+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: it_IT\n"
@@ -27,11 +27,11 @@ msgstr ""
 msgid "CONSULTA INVÁLIDA"
 msgstr ""
 
-#: ../../../../ajax/ajax_2fa.php:57
+#: ../../../../ajax/ajax_2fa.php:48
 msgid "Código correcto"
 msgstr ""
 
-#: ../../../../ajax/ajax_2fa.php:60 ../../../../ajax/ajax_userPrefsSave.php:97
+#: ../../../../ajax/ajax_2fa.php:51 ../../../../ajax/ajax_userPrefsSave.php:99
 msgid "Código incorrecto"
 msgstr ""
 
@@ -81,7 +81,7 @@ msgstr ""
 #: ../../../../ajax/ajax_accountSave.php:263
 #: ../../../../ajax/ajax_appMgmtSave.php:535
 #: ../../../../ajax/ajax_configSave.php:324
-#: ../../../../ajax/ajax_userPrefsSave.php:111 ../../../../api.php:53
+#: ../../../../ajax/ajax_userPrefsSave.php:113 ../../../../api.php:53
 msgid "Acción Inválida"
 msgstr ""
 
@@ -266,7 +266,7 @@ msgstr ""
 #: ../../../../ajax/ajax_backup.php:54
 #: ../../../../ajax/ajax_configSave.php:297
 #: ../../../../ajax/ajax_import.php:40 ../../../../ajax/ajax_migrate.php:40
-#: ../../../../ajax/ajax_userPrefsSave.php:86
+#: ../../../../ajax/ajax_userPrefsSave.php:88
 msgid "Ey, esto es una DEMO!!"
 msgstr ""
 
@@ -720,7 +720,7 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/editpass.inc:31
 #: ../../../../inc/themes/material-blue/editpass.inc:41
 #: ../../../../inc/themes/material-blue/encryption.inc:161
-#: ../../../../inc/themes/material-blue/install.inc:46
+#: ../../../../inc/themes/material-blue/install.inc:47
 #: ../../../../inc/themes/material-blue/ldap.inc:105
 #: ../../../../inc/themes/material-blue/login.inc:18
 #: ../../../../inc/themes/material-blue/login.inc:41
@@ -766,8 +766,8 @@ msgstr ""
 #: ../../../../inc/ApiTokens.class.php:243
 #: ../../../../inc/ApiTokens.class.php:262
 #: ../../../../inc/ApiTokens.class.php:304
-#: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:181
-#: ../../../../inc/Crypt.class.php:192
+#: ../../../../inc/ApiTokens.class.php:328 ../../../../inc/Crypt.class.php:185
+#: ../../../../inc/Crypt.class.php:196
 #: ../../../../inc/XmlImportBase.class.php:79
 msgid "Error interno"
 msgstr ""
@@ -785,11 +785,11 @@ msgstr ""
 #: ../../../../ajax/ajax_doLogin.php:124 ../../../../ajax/ajax_doLogin.php:174
 #: ../../../../inc/ApiTokens.class.php:190
 #: ../../../../inc/ApiTokens.class.php:308 ../../../../inc/Auth.class.php:108
-#: ../../../../inc/Init.class.php:457 ../../../../inc/Ldap.class.php:290
+#: ../../../../inc/Init.class.php:466 ../../../../inc/Ldap.class.php:290
 #: ../../../../inc/Ldap.class.php:303 ../../../../inc/Ldap.class.php:311
 #: ../../../../inc/UserBase.class.php:384
 #: ../../../../inc/UserBase.class.php:528 ../../../../res/test.php:64
-#: ../../../../web/SearchC.class.php:303
+#: ../../../../web/SearchC.class.php:305
 #: ../../../../web/UsersMgmtC.class.php:393
 #: ../../../../inc/themes/classic/account.inc:73
 #: ../../../../inc/themes/classic/editpass.inc:21
@@ -802,7 +802,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/mail.inc:47
 #: ../../../../inc/themes/classic/passreset.inc:17
 #: ../../../../inc/themes/classic/request.inc:17
-#: ../../../../inc/themes/classic/search.inc:59
+#: ../../../../inc/themes/classic/search.inc:89
 #: ../../../../inc/themes/classic/tokens.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:83
 #: ../../../../inc/themes/material-blue/config.inc:381
@@ -1045,7 +1045,7 @@ msgstr ""
 #: ../../../../ajax/ajax_sendRequest.php:64
 #: ../../../../ajax/ajax_viewpass.php:71 ../../../../inc/Account.class.php:181
 #: ../../../../inc/Account.class.php:236 ../../../../inc/Account.class.php:417
-#: ../../../../inc/Account.class.php:440 ../../../../inc/Account.class.php:682
+#: ../../../../inc/Account.class.php:440 ../../../../inc/Account.class.php:684
 #: ../../../../inc/Files.class.php:64
 msgid "Cuenta"
 msgstr ""
@@ -1053,14 +1053,14 @@ msgstr ""
 #: ../../../../ajax/ajax_sendRequest.php:65
 #: ../../../../inc/Account.class.php:180 ../../../../inc/Account.class.php:235
 #: ../../../../inc/Account.class.php:416 ../../../../inc/Account.class.php:439
-#: ../../../../inc/Account.class.php:681 ../../../../inc/Customer.class.php:65
+#: ../../../../inc/Account.class.php:683 ../../../../inc/Customer.class.php:65
 #: ../../../../inc/Customer.class.php:115
 #: ../../../../inc/Customer.class.php:163
-#: ../../../../web/SearchC.class.php:285
+#: ../../../../web/SearchC.class.php:287
 #: ../../../../inc/themes/classic/account.inc:23
 #: ../../../../inc/themes/classic/editpass.inc:12
 #: ../../../../inc/themes/classic/request.inc:9
-#: ../../../../inc/themes/classic/search.inc:28
+#: ../../../../inc/themes/classic/search.inc:58
 #: ../../../../inc/themes/material-blue/account.inc:29
 #: ../../../../inc/themes/material-blue/editpass.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:10
@@ -1087,13 +1087,13 @@ msgstr ""
 msgid "Error al enviar la solicitud"
 msgstr ""
 
-#: ../../../../ajax/ajax_userPrefsSave.php:73
-#: ../../../../ajax/ajax_userPrefsSave.php:106
+#: ../../../../ajax/ajax_userPrefsSave.php:75
+#: ../../../../ajax/ajax_userPrefsSave.php:108
 msgid "Error al actualizar preferencias"
 msgstr ""
 
-#: ../../../../ajax/ajax_userPrefsSave.php:83
-#: ../../../../ajax/ajax_userPrefsSave.php:109
+#: ../../../../ajax/ajax_userPrefsSave.php:85
+#: ../../../../ajax/ajax_userPrefsSave.php:111
 msgid "Preferencias actualizadas"
 msgstr ""
 
@@ -1109,7 +1109,7 @@ msgstr ""
 #: ../../../../ajax/ajax_viewpass.php:69 ../../../../inc/Acl.class.php:133
 #: ../../../../inc/themes/classic/account.inc:382
 #: ../../../../inc/themes/classic/profiles.inc:23
-#: ../../../../inc/themes/classic/search.inc:109
+#: ../../../../inc/themes/classic/search.inc:139
 #: ../../../../inc/themes/material-blue/account.inc:424
 #: ../../../../inc/themes/material-blue/profiles.inc:35
 #: ../../../../inc/themes/material-blue/search.inc:149
@@ -1185,7 +1185,7 @@ msgid "No es posible acceder directamente a este archivo"
 msgstr ""
 
 #: ../../../../inc/Account.class.php:112 ../../../../inc/Account.class.php:201
-#: ../../../../inc/Account.class.php:651
+#: ../../../../inc/Account.class.php:653
 msgid "Error al actualizar el historial"
 msgstr ""
 
@@ -1221,9 +1221,9 @@ msgid "ERROR: Error en la operación."
 msgstr ""
 
 #: ../../../../inc/Account.class.php:438 ../../../../inc/Acl.class.php:134
-#: ../../../../web/AccountC.class.php:356
+#: ../../../../web/AccountC.class.php:358
 #: ../../../../inc/themes/classic/account.inc:369
-#: ../../../../inc/themes/classic/search.inc:137
+#: ../../../../inc/themes/classic/search.inc:167
 #: ../../../../inc/themes/material-blue/account.inc:418
 #: ../../../../inc/themes/material-blue/search.inc:178
 msgid "Eliminar Cuenta"
@@ -1282,15 +1282,16 @@ msgstr ""
 
 #: ../../../../inc/Account.class.php:581
 #: ../../../../inc/AccountHistory.class.php:204
-#: ../../../../inc/CustomFields.class.php:325
+#: ../../../../inc/CustomFields.class.php:285
+#: ../../../../inc/CustomFields.class.php:327
 msgid "Fin"
 msgstr ""
 
-#: ../../../../inc/Account.class.php:680
+#: ../../../../inc/Account.class.php:682
 msgid "Modificar Clave"
 msgstr ""
 
-#: ../../../../inc/Account.class.php:715
+#: ../../../../inc/Account.class.php:717
 msgid "No se pudieron obtener los datos de las cuentas"
 msgstr ""
 
@@ -1307,7 +1308,7 @@ msgid "Fallo al actualizar la clave del histórico"
 msgstr ""
 
 #: ../../../../inc/AccountHistory.class.php:199
-#: ../../../../inc/CustomFields.class.php:321
+#: ../../../../inc/CustomFields.class.php:323
 msgid "Registros actualizados"
 msgstr ""
 
@@ -1323,13 +1324,13 @@ msgstr ""
 msgid "Ver Cuenta"
 msgstr ""
 
-#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:263
-#: ../../../../inc/themes/classic/search.inc:131
+#: ../../../../inc/Acl.class.php:128 ../../../../web/AccountC.class.php:265
+#: ../../../../inc/themes/classic/search.inc:161
 #: ../../../../inc/themes/material-blue/search.inc:172
 msgid "Copiar Cuenta"
 msgstr ""
 
-#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:327
+#: ../../../../inc/Acl.class.php:130 ../../../../web/AccountC.class.php:329
 msgid "Editar Cuenta"
 msgstr ""
 
@@ -1521,9 +1522,9 @@ msgstr ""
 #: ../../../../inc/Category.class.php:83
 #: ../../../../inc/Category.class.php:132
 #: ../../../../inc/Category.class.php:182
-#: ../../../../web/SearchC.class.php:297
+#: ../../../../web/SearchC.class.php:299
 #: ../../../../inc/themes/classic/account.inc:42
-#: ../../../../inc/themes/classic/search.inc:53
+#: ../../../../inc/themes/classic/search.inc:83
 #: ../../../../inc/themes/material-blue/account.inc:50
 #: ../../../../inc/themes/material-blue/search.inc:85
 msgid "Categoría"
@@ -1578,7 +1579,7 @@ msgstr ""
 #: ../../../../inc/Controller.class.php:165
 #: ../../../../inc/Controller.class.php:166
 #: ../../../../inc/Controller.class.php:167
-#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:273
+#: ../../../../inc/Controller.class.php:168 ../../../../inc/Init.class.php:282
 msgid "Consulte con el administrador"
 msgstr ""
 
@@ -1590,20 +1591,20 @@ msgstr ""
 msgid "No tiene permisos para realizar esta operación"
 msgstr ""
 
-#: ../../../../inc/Crypt.class.php:119 ../../../../inc/Email.class.php:148
+#: ../../../../inc/Crypt.class.php:122 ../../../../inc/Email.class.php:148
 msgid "Aviso"
 msgstr ""
 
-#: ../../../../inc/Crypt.class.php:119
+#: ../../../../inc/Crypt.class.php:122
 msgid ""
 "Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
 msgstr ""
 
-#: ../../../../inc/Crypt.class.php:182
+#: ../../../../inc/Crypt.class.php:186
 msgid "No se puede usar el módulo de encriptación"
 msgstr ""
 
-#: ../../../../inc/Crypt.class.php:193
+#: ../../../../inc/Crypt.class.php:197
 msgid "Error al generar datos cifrados"
 msgstr ""
 
@@ -1657,15 +1658,11 @@ msgstr ""
 msgid "Campos Personalizados"
 msgstr ""
 
-#: ../../../../inc/CustomFields.class.php:285
-msgid "Error al actualizar datos encriptados"
-msgstr ""
-
-#: ../../../../inc/CustomFields.class.php:289
+#: ../../../../inc/CustomFields.class.php:291
 msgid "Actualizando datos encriptados"
 msgstr ""
 
-#: ../../../../inc/CustomFields.class.php:316
+#: ../../../../inc/CustomFields.class.php:318
 msgid "Registros no actualizados"
 msgstr ""
 
@@ -1859,78 +1856,78 @@ msgstr ""
 msgid "Error en la verificación de la base de datos"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:269
+#: ../../../../inc/Init.class.php:278
 msgid "Sesion"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:269 ../../../../inc/Init.class.php:273
+#: ../../../../inc/Init.class.php:278 ../../../../inc/Init.class.php:282
 msgid "La sesión no puede ser inicializada"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:357
+#: ../../../../inc/Init.class.php:366
 msgid "El directorio \"/config\" no existe"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:362
+#: ../../../../inc/Init.class.php:371
 msgid "No es posible escribir en el directorio \"config\""
 msgstr ""
 
-#: ../../../../inc/Init.class.php:370
+#: ../../../../inc/Init.class.php:379
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:370
+#: ../../../../inc/Init.class.php:379
 msgid "Actual:"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:370
+#: ../../../../inc/Init.class.php:379
 msgid "Necesario: 750"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:419
+#: ../../../../inc/Init.class.php:428
 msgid "Aplicación en mantenimiento"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:419
+#: ../../../../inc/Init.class.php:428
 msgid "En breve estará operativa"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:456
+#: ../../../../inc/Init.class.php:465
 msgid "Finalizar sesión"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:458
+#: ../../../../inc/Init.class.php:467
 msgid "Tiempo inactivo"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:459
+#: ../../../../inc/Init.class.php:468
 msgid "Tiempo total"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:498
+#: ../../../../inc/Init.class.php:507
 msgid "La aplicación necesita actualizarse"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:498
+#: ../../../../inc/Init.class.php:507
 #, php-format
 msgid "Si es un administrador pulse en el enlace: %s"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:498
+#: ../../../../inc/Init.class.php:507
 #: ../../../../inc/themes/classic/upgrade.inc:20
-#: ../../../../inc/themes/material-blue/upgrade.inc:24
+#: ../../../../inc/themes/material-blue/upgrade.inc:22
 msgid "Actualizar"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:529
+#: ../../../../inc/Init.class.php:538
 msgid "Actualización"
 msgstr ""
 
-#: ../../../../inc/Init.class.php:530
+#: ../../../../inc/Init.class.php:539
 msgid "Actualización de versión realizada."
 msgstr ""
 
-#: ../../../../inc/Init.class.php:531
+#: ../../../../inc/Init.class.php:540
 #: ../../../../inc/themes/classic/info.inc:33
 #: ../../../../inc/themes/material-blue/info.inc:33
 msgid "Versión"
@@ -2008,78 +2005,86 @@ msgstr ""
 msgid "Servidor donde se instalará la Base de Datos"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:313
+#: ../../../../inc/Installer.class.php:267
+msgid "No es posible comprobar el usuario de sysPass"
+msgstr ""
+
+#: ../../../../inc/Installer.class.php:268
+msgid "Compruebe los permisos del usuario de conexión a la BD"
+msgstr ""
+
+#: ../../../../inc/Installer.class.php:319
 msgid "El usuario de MySQL ya existe"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:314
+#: ../../../../inc/Installer.class.php:320
 msgid "Indique un nuevo usuario o elimine el existente"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:327
+#: ../../../../inc/Installer.class.php:333
 msgid "La BBDD ya existe"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:328
+#: ../../../../inc/Installer.class.php:334
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:337
-#: ../../../../inc/Installer.class.php:408
+#: ../../../../inc/Installer.class.php:343
+#: ../../../../inc/Installer.class.php:414
 msgid "Error al crear la BBDD"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:338
-#: ../../../../inc/Installer.class.php:349
+#: ../../../../inc/Installer.class.php:344
+#: ../../../../inc/Installer.class.php:355
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:348
+#: ../../../../inc/Installer.class.php:354
 msgid "Error al establecer permisos de la BBDD"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:381
+#: ../../../../inc/Installer.class.php:387
 msgid "El archivo de estructura de la BBDD no existe"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:382
+#: ../../../../inc/Installer.class.php:388
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:390
+#: ../../../../inc/Installer.class.php:396
 msgid "Error al seleccionar la BBDD"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:391
+#: ../../../../inc/Installer.class.php:397
 msgid ""
 "No es posible usar la Base de Datos para crear la estructura. Compruebe los "
 "permisos y que no exista."
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:409
+#: ../../../../inc/Installer.class.php:415
 msgid "Error al crear la estructura de la Base de Datos."
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:432
+#: ../../../../inc/Installer.class.php:438
 msgid "Error al crear el grupo \"admin\""
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:433
-#: ../../../../inc/Installer.class.php:466
-#: ../../../../inc/Installer.class.php:483
-#: ../../../../inc/Installer.class.php:496
+#: ../../../../inc/Installer.class.php:439
+#: ../../../../inc/Installer.class.php:472
+#: ../../../../inc/Installer.class.php:489
+#: ../../../../inc/Installer.class.php:502
 msgid "Informe al desarrollador"
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:465
+#: ../../../../inc/Installer.class.php:471
 msgid "Error al crear el perfil \"admin\""
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:482
+#: ../../../../inc/Installer.class.php:488
 msgid "Error al crear el usuario \"admin\""
 msgstr ""
 
-#: ../../../../inc/Installer.class.php:495
+#: ../../../../inc/Installer.class.php:501
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr ""
 
@@ -2342,7 +2347,7 @@ msgstr ""
 
 #: ../../../../inc/Upgrade.class.php:52 ../../../../inc/Upgrade.class.php:58
 #: ../../../../inc/themes/classic/login.inc:32
-#: ../../../../inc/themes/material-blue/2fa.inc:26
+#: ../../../../inc/themes/material-blue/2fa.inc:24
 #: ../../../../inc/themes/material-blue/login.inc:65
 msgid "Acceder"
 msgstr ""
@@ -2626,6 +2631,8 @@ msgstr ""
 #: ../../../../inc/themes/classic/account.inc:451
 #: ../../../../inc/themes/classic/install.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:82
+#: ../../../../inc/themes/classic/preferences.inc:99
+#: ../../../../inc/themes/classic/preferences.inc:116
 #: ../../../../inc/themes/classic/security.inc:26
 msgid "SI"
 msgstr ""
@@ -2639,6 +2646,8 @@ msgstr ""
 #: ../../../../inc/themes/classic/import.inc:67
 #: ../../../../inc/themes/classic/install.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:82
+#: ../../../../inc/themes/classic/preferences.inc:99
+#: ../../../../inc/themes/classic/preferences.inc:116
 #: ../../../../inc/themes/classic/security.inc:26
 #: ../../../../inc/themes/classic/tokens.inc:36
 msgid "NO"
@@ -2660,16 +2669,16 @@ msgstr ""
 msgid "Error al copiar al portapapeles"
 msgstr ""
 
-#: ../../../../web/AccountC.class.php:384
-#: ../../../../web/AccountC.class.php:415
-#: ../../../../inc/themes/classic/search.inc:45
-#: ../../../../inc/themes/classic/search.inc:104
+#: ../../../../web/AccountC.class.php:386
+#: ../../../../web/AccountC.class.php:417
+#: ../../../../inc/themes/classic/search.inc:75
+#: ../../../../inc/themes/classic/search.inc:134
 #: ../../../../inc/themes/material-blue/search.inc:77
 #: ../../../../inc/themes/material-blue/search.inc:144
 msgid "Detalles de Cuenta"
 msgstr ""
 
-#: ../../../../web/AccountC.class.php:472
+#: ../../../../web/AccountC.class.php:474
 #: ../../../../inc/themes/classic/account.inc:396
 #: ../../../../inc/themes/material-blue/account.inc:435
 msgid "Modificar Clave de Cuenta"
@@ -2678,7 +2687,7 @@ msgstr ""
 #: ../../../../web/AccountsMgmtC.class.php:80
 #: ../../../../web/AccountsMgmtC.class.php:139
 #: ../../../../web/AccountsMgmtC.class.php:267
-#: ../../../../web/SearchC.class.php:291
+#: ../../../../web/SearchC.class.php:293
 #: ../../../../web/UsersMgmtC.class.php:88
 #: ../../../../web/UsersMgmtC.class.php:188
 #: ../../../../web/UsersMgmtC.class.php:246
@@ -2691,7 +2700,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/info.inc:25
 #: ../../../../inc/themes/classic/profiles.inc:8
 #: ../../../../inc/themes/classic/request.inc:6
-#: ../../../../inc/themes/classic/search.inc:43
+#: ../../../../inc/themes/classic/search.inc:73
 #: ../../../../inc/themes/classic/users.inc:8
 #: ../../../../inc/themes/material-blue/account.inc:15
 #: ../../../../inc/themes/material-blue/categories.inc:8
@@ -2802,7 +2811,7 @@ msgstr ""
 
 #: ../../../../web/MainC.class.php:234
 #: ../../../../inc/themes/classic/2fa.inc:9
-#: ../../../../inc/themes/material-blue/2fa.inc:9
+#: ../../../../inc/themes/material-blue/2fa.inc:7
 #: ../../../../inc/themes/material-blue/security.inc:11
 msgid "Autentificación en 2 pasos"
 msgstr ""
@@ -2835,64 +2844,64 @@ msgstr ""
 msgid "Mejoras de seguridad en XSS e inyección SQL"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:283
+#: ../../../../web/MainC.class.php:282
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:284
+#: ../../../../web/MainC.class.php:283
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:291
+#: ../../../../web/MainC.class.php:290
 msgid "No se encuentra el generador de números aleatorios."
 msgstr ""
 
-#: ../../../../web/MainC.class.php:292
+#: ../../../../web/MainC.class.php:291
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:311
+#: ../../../../web/MainC.class.php:310
 msgid "Instalación finalizada"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:312
+#: ../../../../web/MainC.class.php:311
 msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:409
+#: ../../../../web/MainC.class.php:408
 msgid "Descargar nueva versión"
 msgstr ""
 
-#: ../../../../web/MainC.class.php:420
+#: ../../../../web/MainC.class.php:419
 msgid "Avisos de sysPass"
 msgstr ""
 
-#: ../../../../web/SearchC.class.php:284
+#: ../../../../web/SearchC.class.php:286
 msgid "Ordenar por Cliente"
 msgstr ""
 
-#: ../../../../web/SearchC.class.php:290
+#: ../../../../web/SearchC.class.php:292
 msgid "Ordenar por Nombre"
 msgstr ""
 
-#: ../../../../web/SearchC.class.php:296
+#: ../../../../web/SearchC.class.php:298
 msgid "Ordenar por Categoría"
 msgstr ""
 
-#: ../../../../web/SearchC.class.php:302
+#: ../../../../web/SearchC.class.php:304
 msgid "Ordenar por Usuario"
 msgstr ""
 
-#: ../../../../web/SearchC.class.php:308
+#: ../../../../web/SearchC.class.php:310
 msgid "Ordenar por URL / IP"
 msgstr ""
 
-#: ../../../../web/SearchC.class.php:309
+#: ../../../../web/SearchC.class.php:311
 #: ../../../../inc/themes/classic/account.inc:61
 #: ../../../../inc/themes/classic/editpass.inc:16
 #: ../../../../inc/themes/classic/request.inc:13
-#: ../../../../inc/themes/classic/search.inc:66
+#: ../../../../inc/themes/classic/search.inc:96
 #: ../../../../inc/themes/material-blue/account.inc:69
 #: ../../../../inc/themes/material-blue/editpass.inc:17
 #: ../../../../inc/themes/material-blue/request.inc:15
@@ -2967,13 +2976,13 @@ msgstr ""
 msgid "Seguridad"
 msgstr ""
 
-#: ../../../../web/UsersPrefsC.class.php:117
+#: ../../../../web/UsersPrefsC.class.php:118
 #: ../../../../inc/themes/classic/sessionbar.inc:9
 msgid "Preferencias"
 msgstr ""
 
 #: ../../../../inc/themes/classic/2fa.inc:14
-#: ../../../../inc/themes/material-blue/2fa.inc:14
+#: ../../../../inc/themes/material-blue/2fa.inc:12
 msgid "Introducir código"
 msgstr ""
 
@@ -3008,7 +3017,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/userspass.inc:21
 #: ../../../../inc/themes/material-blue/account.inc:108
 #: ../../../../inc/themes/material-blue/editpass.inc:36
-#: ../../../../inc/themes/material-blue/install.inc:66
+#: ../../../../inc/themes/material-blue/install.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:36
 #: ../../../../inc/themes/material-blue/users.inc:102
 #: ../../../../inc/themes/material-blue/users.inc:109
@@ -3018,7 +3027,7 @@ msgid "Clave (repetir)"
 msgstr ""
 
 #: ../../../../inc/themes/classic/account.inc:100
-#: ../../../../inc/themes/classic/search.inc:82
+#: ../../../../inc/themes/classic/search.inc:112
 #: ../../../../inc/themes/classic/users.inc:91
 #: ../../../../inc/themes/material-blue/account.inc:119
 #: ../../../../inc/themes/material-blue/search.inc:118
@@ -3126,7 +3135,7 @@ msgid "Restaurar cuenta desde este punto"
 msgstr ""
 
 #: ../../../../inc/themes/classic/account.inc:388
-#: ../../../../inc/themes/classic/search.inc:113
+#: ../../../../inc/themes/classic/search.inc:143
 #: ../../../../inc/themes/material-blue/account.inc:428
 #: ../../../../inc/themes/material-blue/search.inc:154
 msgid "Copiar Clave en Portapapeles"
@@ -3146,14 +3155,14 @@ msgid "Volver"
 msgstr ""
 
 #: ../../../../inc/themes/classic/account.inc:415
-#: ../../../../inc/themes/classic/search.inc:125
+#: ../../../../inc/themes/classic/search.inc:155
 #: ../../../../inc/themes/material-blue/account.inc:451
 #: ../../../../inc/themes/material-blue/search.inc:166
 msgid "Modificar Cuenta"
 msgstr ""
 
 #: ../../../../inc/themes/classic/account.inc:420
-#: ../../../../inc/themes/classic/search.inc:146
+#: ../../../../inc/themes/classic/search.inc:176
 #: ../../../../inc/themes/material-blue/account.inc:455
 #: ../../../../inc/themes/material-blue/search.inc:187
 msgid "Solicitar Modificación"
@@ -3169,7 +3178,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/groups.inc:77
 #: ../../../../inc/themes/classic/ldap.inc:229
 #: ../../../../inc/themes/classic/mail.inc:107
-#: ../../../../inc/themes/classic/preferences.inc:96
+#: ../../../../inc/themes/classic/preferences.inc:130
 #: ../../../../inc/themes/classic/profiles.inc:168
 #: ../../../../inc/themes/classic/security.inc:57
 #: ../../../../inc/themes/classic/tokens.inc:59
@@ -3185,7 +3194,7 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/groups.inc:88
 #: ../../../../inc/themes/material-blue/ldap.inc:257
 #: ../../../../inc/themes/material-blue/mail.inc:145
-#: ../../../../inc/themes/material-blue/preferences.inc:117
+#: ../../../../inc/themes/material-blue/preferences.inc:134
 #: ../../../../inc/themes/material-blue/profiles.inc:177
 #: ../../../../inc/themes/material-blue/security.inc:61
 #: ../../../../inc/themes/material-blue/tokens.inc:63
@@ -3595,8 +3604,8 @@ msgstr ""
 #: ../../../../inc/themes/classic/login.inc:15
 #: ../../../../inc/themes/classic/login.inc:27
 #: ../../../../inc/themes/material-blue/encryption.inc:5
-#: ../../../../inc/themes/material-blue/install.inc:51
-#: ../../../../inc/themes/material-blue/install.inc:58
+#: ../../../../inc/themes/material-blue/install.inc:52
+#: ../../../../inc/themes/material-blue/install.inc:59
 #: ../../../../inc/themes/material-blue/login.inc:26
 #: ../../../../inc/themes/material-blue/login.inc:49
 msgid "Clave Maestra"
@@ -3742,7 +3751,8 @@ msgid "IP"
 msgstr ""
 
 #: ../../../../inc/themes/classic/eventlog.inc:84
-#: ../../../../inc/themes/classic/search.inc:169
+#: ../../../../inc/themes/classic/search.inc:20
+#: ../../../../inc/themes/classic/search.inc:199
 #: ../../../../inc/themes/material-blue/eventlog.inc:84
 #: ../../../../inc/themes/material-blue/search.inc:20
 #: ../../../../inc/themes/material-blue/search.inc:209
@@ -3750,7 +3760,8 @@ msgid "Primera página"
 msgstr ""
 
 #: ../../../../inc/themes/classic/eventlog.inc:86
-#: ../../../../inc/themes/classic/search.inc:171
+#: ../../../../inc/themes/classic/search.inc:22
+#: ../../../../inc/themes/classic/search.inc:201
 #: ../../../../inc/themes/material-blue/eventlog.inc:86
 #: ../../../../inc/themes/material-blue/search.inc:22
 #: ../../../../inc/themes/material-blue/search.inc:211
@@ -3758,7 +3769,8 @@ msgid "Página anterior"
 msgstr ""
 
 #: ../../../../inc/themes/classic/eventlog.inc:91
-#: ../../../../inc/themes/classic/search.inc:176
+#: ../../../../inc/themes/classic/search.inc:27
+#: ../../../../inc/themes/classic/search.inc:206
 #: ../../../../inc/themes/material-blue/eventlog.inc:91
 #: ../../../../inc/themes/material-blue/search.inc:27
 #: ../../../../inc/themes/material-blue/search.inc:216
@@ -3766,7 +3778,8 @@ msgid "Página siguiente"
 msgstr ""
 
 #: ../../../../inc/themes/classic/eventlog.inc:93
-#: ../../../../inc/themes/classic/search.inc:178
+#: ../../../../inc/themes/classic/search.inc:29
+#: ../../../../inc/themes/classic/search.inc:208
 #: ../../../../inc/themes/material-blue/eventlog.inc:93
 #: ../../../../inc/themes/material-blue/search.inc:29
 #: ../../../../inc/themes/material-blue/search.inc:218
@@ -3929,9 +3942,10 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:172
+#: ../../../../inc/themes/material-blue/import.inc:101
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
-"arhcivos XML y CSV."
+"archivos XML y CSV."
 msgstr ""
 
 #: ../../../../inc/themes/classic/import.inc:174
@@ -4020,17 +4034,17 @@ msgid "Instalación "
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:25
-#: ../../../../inc/themes/material-blue/install.inc:25
+#: ../../../../inc/themes/material-blue/install.inc:26
 msgid "Crear cuenta de admin de sysPass"
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:32
-#: ../../../../inc/themes/material-blue/install.inc:37
+#: ../../../../inc/themes/material-blue/install.inc:38
 msgid "Login del usuario administrador de sysPass"
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:58
-#: ../../../../inc/themes/material-blue/install.inc:71
+#: ../../../../inc/themes/material-blue/install.inc:72
 msgid "Configurar BBDD"
 msgstr ""
 
@@ -4039,7 +4053,7 @@ msgid "Login de usuario con permisos de administrador de MySQL"
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:83
-#: ../../../../inc/themes/material-blue/install.inc:105
+#: ../../../../inc/themes/material-blue/install.inc:106
 msgid "Nombre de la base de datos para sysPass"
 msgstr ""
 
@@ -4048,18 +4062,18 @@ msgid "Nombre del servidor de la base de datos de sysPass"
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:97
-#: ../../../../inc/themes/material-blue/install.inc:123
+#: ../../../../inc/themes/material-blue/install.inc:124
 msgid "Modo Hosting"
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:104
-#: ../../../../inc/themes/material-blue/install.inc:130
+#: ../../../../inc/themes/material-blue/install.inc:131
 msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
 msgstr ""
 
 #: ../../../../inc/themes/classic/install.inc:108
-#: ../../../../inc/themes/material-blue/install.inc:137
 #: ../../../../inc/themes/material-blue/install.inc:138
+#: ../../../../inc/themes/material-blue/install.inc:139
 msgid "Instalar"
 msgstr ""
 
@@ -4222,7 +4236,7 @@ msgid "Habilitar peticiones por correo"
 msgstr ""
 
 #: ../../../../inc/themes/classic/mgmttabs.inc:70
-#: ../../../../inc/themes/classic/search.inc:120
+#: ../../../../inc/themes/classic/search.inc:150
 #: ../../../../inc/themes/material-blue/search.inc:160
 msgid "Más Acciones"
 msgstr ""
@@ -4251,7 +4265,7 @@ msgid "Volver a iniciar sesión"
 msgstr ""
 
 #: ../../../../inc/themes/classic/passreset.inc:48
-#: ../../../../inc/themes/material-blue/2fa.inc:27
+#: ../../../../inc/themes/material-blue/2fa.inc:25
 #: ../../../../inc/themes/material-blue/passreset.inc:53
 #: ../../../../inc/themes/material-blue/passreset.inc:54
 msgid "Solicitar"
@@ -4280,6 +4294,27 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/preferences.inc:78
 msgid ""
 "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
+msgstr ""
+
+#: ../../../../inc/themes/classic/preferences.inc:90
+#: ../../../../inc/themes/material-blue/preferences.inc:91
+msgid "Barra de navegación superior"
+msgstr ""
+
+#: ../../../../inc/themes/classic/preferences.inc:94
+#: ../../../../inc/themes/material-blue/preferences.inc:95
+msgid "Mostrar una barra de navegación superior en las búsquedas."
+msgstr ""
+
+#: ../../../../inc/themes/classic/preferences.inc:107
+#: ../../../../inc/themes/material-blue/preferences.inc:108
+msgid "Mostrar Acciones Ocultas"
+msgstr ""
+
+#: ../../../../inc/themes/classic/preferences.inc:111
+#: ../../../../inc/themes/material-blue/preferences.inc:112
+msgid ""
+"Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
 msgstr ""
 
 #: ../../../../inc/themes/classic/profiles.inc:11
@@ -4344,6 +4379,7 @@ msgid "Borrar"
 msgstr ""
 
 #: ../../../../inc/themes/classic/profiles.inc:50
+#: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Ver archivos de cuenta"
 msgstr ""
 
@@ -4473,36 +4509,38 @@ msgstr ""
 msgid "Enviar"
 msgstr ""
 
-#: ../../../../inc/themes/classic/search.inc:33
-#: ../../../../inc/themes/material-blue/search.inc:65
-msgid "Buscar en Wiki"
-msgstr ""
-
-#: ../../../../inc/themes/classic/search.inc:69
-#: ../../../../inc/themes/material-blue/search.inc:101
-msgid "Abrir enlace a"
-msgstr ""
-
-#: ../../../../inc/themes/classic/search.inc:87
-#: ../../../../inc/themes/material-blue/search.inc:125
-msgid "Archivos adjuntos"
-msgstr ""
-
-#: ../../../../inc/themes/classic/search.inc:94
-#: ../../../../inc/themes/material-blue/search.inc:134
-msgid "Enlace a Wiki"
-msgstr ""
-
-#: ../../../../inc/themes/classic/search.inc:159
+#: ../../../../inc/themes/classic/search.inc:10
+#: ../../../../inc/themes/classic/search.inc:189
 #: ../../../../inc/themes/material-blue/search.inc:10
 #: ../../../../inc/themes/material-blue/search.inc:199
 msgid "Filtro ON"
 msgstr ""
 
-#: ../../../../inc/themes/classic/search.inc:163
+#: ../../../../inc/themes/classic/search.inc:14
+#: ../../../../inc/themes/classic/search.inc:193
 #: ../../../../inc/themes/material-blue/search.inc:14
 #: ../../../../inc/themes/material-blue/search.inc:203
 msgid "Global ON"
+msgstr ""
+
+#: ../../../../inc/themes/classic/search.inc:63
+#: ../../../../inc/themes/material-blue/search.inc:65
+msgid "Buscar en Wiki"
+msgstr ""
+
+#: ../../../../inc/themes/classic/search.inc:99
+#: ../../../../inc/themes/material-blue/search.inc:101
+msgid "Abrir enlace a"
+msgstr ""
+
+#: ../../../../inc/themes/classic/search.inc:117
+#: ../../../../inc/themes/material-blue/search.inc:125
+msgid "Archivos adjuntos"
+msgstr ""
+
+#: ../../../../inc/themes/classic/search.inc:124
+#: ../../../../inc/themes/material-blue/search.inc:134
+msgid "Enlace a Wiki"
 msgstr ""
 
 #: ../../../../inc/themes/classic/searchbox.inc:5
@@ -4634,7 +4672,7 @@ msgid "Error al comprobar actualizaciones"
 msgstr ""
 
 #: ../../../../inc/themes/classic/upgrade.inc:8
-#: ../../../../inc/themes/material-blue/upgrade.inc:8
+#: ../../../../inc/themes/material-blue/upgrade.inc:6
 msgid "Actualización de BBDD"
 msgstr ""
 
@@ -4643,12 +4681,12 @@ msgid "Introducir Código de Seguridad"
 msgstr ""
 
 #: ../../../../inc/themes/classic/upgrade.inc:11
-#: ../../../../inc/themes/material-blue/upgrade.inc:14
+#: ../../../../inc/themes/material-blue/upgrade.inc:12
 msgid "Código de Seguridad"
 msgstr ""
 
 #: ../../../../inc/themes/classic/upgrade.inc:21
-#: ../../../../inc/themes/material-blue/upgrade.inc:25
+#: ../../../../inc/themes/material-blue/upgrade.inc:23
 msgid "Iniciar Actualización"
 msgstr ""
 
@@ -4853,37 +4891,31 @@ msgstr ""
 msgid "Preferencias de usuario"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/import.inc:101
-msgid ""
-"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
-"archivos XML y CSV."
-msgstr ""
-
-#: ../../../../inc/themes/material-blue/install.inc:32
+#: ../../../../inc/themes/material-blue/install.inc:33
 msgid "Usuario administrador de sysPass"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/install.inc:80
+#: ../../../../inc/themes/material-blue/install.inc:81
 msgid "Usuario acceso BBDD"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/install.inc:85
+#: ../../../../inc/themes/material-blue/install.inc:86
 msgid "Usuario con permisos de administrador de MySQL"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/install.inc:93
+#: ../../../../inc/themes/material-blue/install.inc:94
 msgid "Clave acceso BBDD"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/install.inc:100
+#: ../../../../inc/themes/material-blue/install.inc:101
 msgid "Nombre BBDD para sysPass"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/install.inc:112
+#: ../../../../inc/themes/material-blue/install.inc:113
 msgid "Servidor BBDD para sysPass"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/install.inc:117
+#: ../../../../inc/themes/material-blue/install.inc:118
 msgid "Nombre del servidor para instalar la base de datos de sysPass"
 msgstr ""
 
@@ -4895,14 +4927,6 @@ msgstr ""
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
-msgstr ""
-
-#: ../../../../inc/themes/material-blue/preferences.inc:91
-msgid "Barra de navegación superior"
-msgstr ""
-
-#: ../../../../inc/themes/material-blue/preferences.inc:95
-msgid "Mostrar una barra de navegación superior en las búsquedas."
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/profiles.inc:25
@@ -4919,10 +4943,6 @@ msgstr ""
 
 #: ../../../../inc/themes/material-blue/profiles.inc:55
 msgid "Eliminar"
-msgstr ""
-
-#: ../../../../inc/themes/material-blue/profiles.inc:60
-msgid "Var archivos de cuenta"
 msgstr ""
 
 #: ../../../../inc/themes/material-blue/profiles.inc:77

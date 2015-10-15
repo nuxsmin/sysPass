@@ -267,7 +267,6 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('securityErrors', array());
         $this->view->assign('resInstall', array());
         $this->view->assign('isCompleted', false);
-        $this->view->assign('version', \SP\Util::getVersionString());
         $this->view->assign('adminlogin', Request::analyze('adminlogin', 'admin'));
         $this->view->assign('adminpass', Request::analyzeEncrypted('adminpass'));
         $this->view->assign('masterpassword', Request::analyzeEncrypted('masterpassword'));

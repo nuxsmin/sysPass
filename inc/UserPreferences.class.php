@@ -72,6 +72,10 @@ class UserPreferences
      * @var bool
      */
     private $_topNavbar = false;
+    /**
+     * @var bool
+     */
+    private $_optionalActions = false;
 
     /**
      * Obtener las preferencas de un usuario
@@ -100,6 +104,22 @@ class UserPreferences
         }
 
         return $preferences;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOptionalActions()
+    {
+        return $this->_optionalActions;
+    }
+
+    /**
+     * @param boolean $optionalActions
+     */
+    public function setOptionalActions($optionalActions)
+    {
+        $this->_optionalActions = $optionalActions;
     }
 
     /**

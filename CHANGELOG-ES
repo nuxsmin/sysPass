@@ -1,3 +1,15 @@
+=== ** v1.2.0.06 ===
+
+* [ADD] Nueva traducción al catalán. Gracias a @ferrergl
+* [ADD] Nuevas preferencias como mostrar acciones opcionales o barra de navegación superior.
+* [MOD] Actualizada traducción al alemán. Gracias a @wagnst y @ffflorian
+* [MOD] Actualizada traducción al francés. Gracias a jmrh, grandpas29 y julien
+* [MOD] Volver a claves en plano en formularios cuando PKI no está disponible. No afecta a las cuentas.
+* [FIX] Corregidas algunos textos. Closes #147
+* [FIX] Corregido error al cambiar la clave maestra cuando no hay campos personalizados.
+* [FIX] Corregido error al redirigir desde la página de 2FA.
+* [FIX] Corregido error al guardar el grupo principal de una cuenta.
+
 === ** v1.2.0.05-rc5 ===
 
 * [ADD] Nuevas clases para mejorar el rendimiento y la legibilidad del código.

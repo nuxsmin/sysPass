@@ -45,16 +45,7 @@ $twoFa = new \SP\Auth\Auth2FA($userId, $userLogin);
 if($userId && $pin && $twoFa->verifyKey($pin)){
     \SP\Session::set2FApassed(true);
 
-    // Comprobar si existen parámetros adicionales en URL via GET
-    foreach ($_POST as $param => $value) {
-        if (preg_match('/g_.*/', $param)) {
-            $params[] = substr($param, 2) . '=' . $value;
-        }
-    }
-
-    $urlParams = isset($params) ? '?' . implode('&', $params) : '';
-
-    SP\Response::printJSON(_('Código correcto'), 0, 'redirect(\'index.php\')');
+    SP\Response::printJSON(_('Código correcto'), 0, 'sysPassUtil.Common.redirect(\'index.php\')');
 } else {
     \SP\Session::set2FApassed(false);
     SP\Response::printJSON(_('Código incorrecto'));

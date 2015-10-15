@@ -1,7 +1,5 @@
 <div id="actions" class="upgrade" align="center">
-    <div id="logo">
-        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
-    </div>
+    <div id="logo"></div>
 
     <form id="upgrade" action="index.php" method="get">
         <fieldset>

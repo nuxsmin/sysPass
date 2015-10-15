@@ -2,6 +2,36 @@
     <?php if (!$accounts): ?>
         <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
     <?php else: ?>
+        <?php if ($topNavbar): ?>
+            <div id="pageNav" class="round shadow">
+                <div id="pageNavLeft">
+                    <?php echo $totalRows; ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
+                    <?php if ($filterOn): ?>
+                        <span class="filterOn round"><?php echo _('Filtro ON'); ?></span>
+                    <?php endif; ?>
+                    &nbsp;
+                    <?php if ($searchGlobal): ?>
+                        <span class="globalOn round"><?php echo _('Global ON'); ?></span>
+                    <?php endif; ?>
+                </div>
+                <div id="pageNavRight">
+                    <?php if ($limitStart >= 1): ?>
+                        <img src="imgs/arrow_first.png" onClick="<?php echo $pagerOnnClick['first']; ?>"
+                             title="<?php echo _('Primera página'); ?>"/>
+                        <img src="imgs/arrow_left.png" onClick="<?php echo $pagerOnnClick['prev']; ?>"
+                             title="<?php echo _('Página anterior'); ?>"/>
+                    <?php endif; ?>
+                    &nbsp;<?php echo $firstPage, '/', $lastPage; ?>&nbsp;
+                    <?php if ($limitStart < $totalRows && $firstPage != $lastPage): ?>
+                        <img src="imgs/arrow_right.png" onClick="<?php echo $pagerOnnClick['next']; ?>"
+                             title="<?php echo _('Página siguiente'); ?>"/>
+                        <img src="imgs/arrow_last.png" onClick="<?php echo $pagerOnnClick['last']; ?>"
+                             title="<?php echo _('Última página'); ?>"/>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div id="data-search-header" class="data-header data-header-minimal">
             <ul>
                 <?php foreach ($sortFields as $field): ?>
@@ -116,26 +146,26 @@
                                 <?php endif; ?>
                             <?php endif ?>
 
-                            <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
+                            <?php if (!$optionalActions && ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass'])): ?>
                                 <img src="imgs/action.png" title="<?php echo _('Más Acciones'); ?>"
                                      OnClick="sysPassUtil.Common.showOptional(this)"/>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
                                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>"
-                                     class="actions-optional"
+                                     class="<?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
                                 <img src="imgs/btn_copy.png" title="<?php echo _('Copiar Cuenta'); ?>"
-                                     class="actions-optional"
+                                     class="<?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
-                                     class="actions-optional"
+                                     class="<?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 

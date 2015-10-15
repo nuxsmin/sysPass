@@ -189,16 +189,15 @@ class DB
             return false;
         }
 
-        if (self::$_returnRawData && is_object($doQuery) && get_class($doQuery) == "PDOStatement") {
+        if (self::$_returnRawData
+            && is_object($doQuery)
+            && get_class($doQuery) === 'PDOStatement'
+        ) {
             return $doQuery;
-        }
-
-        if ($db->_numRows == 0) {
+        } elseif ($db->_numRows === 0) {
             self::resetVars();
             return false;
-        }
-
-        if ($db->_numRows == 1 && self::$_retArray === false) {
+        } elseif ($db->_numRows === 1 && self::$_retArray === false) {
             self::resetVars();
             return $db->_lastResult[0];
         }
@@ -316,41 +315,6 @@ class DB
     }
 
     /**
-     * Método para registar los eventos de BD en el log
-     *
-     * @param $query     string  La consulta que genera el error
-     * @param $errorMsg  string  El mensaje de error
-     * @param $errorCode int     El código de error
-     */
-    private static function logDBException($query, $errorMsg, $errorCode, $querySource)
-    {
-        $Log = new Log($querySource);
-        $Log->addDescription($errorMsg . '(' . $errorCode . ')');
-        $Log->addDescription("SQL: " . self::escape($query));
-        $Log->writeLog();
-
-        error_log($query);
-        error_log($errorMsg);
-    }
-
-    /**
-     * Escapar una cadena de texto con funciones de mysqli.
-     *
-     * @param $str string con la cadena a escapar
-     * @return string con la cadena escapada
-     */
-    public static function escape($str)
-    {
-        try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
-
-            return $db->quote(trim($str));
-        } catch (SPException $e) {
-            return $str;
-        }
-    }
-
-    /**
      * Obtener el número de filas de una consulta realizada
      *
      * @param &$query string La consulta para contar los registros
@@ -397,12 +361,47 @@ class DB
     }
 
     /**
+     * Método para registar los eventos de BD en el log
+     *
+     * @param $query     string  La consulta que genera el error
+     * @param $errorMsg  string  El mensaje de error
+     * @param $errorCode int     El código de error
+     */
+    private static function logDBException($query, $errorMsg, $errorCode, $querySource)
+    {
+        $Log = new Log($querySource);
+        $Log->addDescription($errorMsg . '(' . $errorCode . ')');
+        $Log->addDescription("SQL: " . self::escape($query));
+        $Log->writeLog();
+
+        error_log($query);
+        error_log($errorMsg);
+    }
+
+    /**
+     * Escapar una cadena de texto con funciones de mysqli.
+     *
+     * @param $str string con la cadena a escapar
+     * @return string con la cadena escapada
+     */
+    public static function escape($str)
+    {
+        try {
+            $db = DBConnectionFactory::getFactory()->getConnection();
+
+            return $db->quote(trim($str));
+        } catch (SPException $e) {
+            return $str;
+        }
+    }
+
+    /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param      $query       string La consulta a realizar
-     * @param      $querySource string La función orígen de la consulta
-     * @param array $data               Los valores de los parámetros de la consulta
-     * @param      $getRawData  bool   Si se deben de obtener los datos como PDOStatement
+     * @param       $query       string La consulta a realizar
+     * @param       $querySource string La función orígen de la consulta
+     * @param array $data        Los valores de los parámetros de la consulta
+     * @param       $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */
     public static function getQuery($query, $querySource, array &$data = null, $getRawData = false)

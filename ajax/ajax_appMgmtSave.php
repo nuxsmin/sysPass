@@ -52,7 +52,7 @@ $activeTab = SP\Request::analyze('activeTab', 0);
 $customFields = SP\Request::analyze('customfield');
 
 // Acción al cerrar la vista
-$doActionOnClose = "sysPassUtil.Common.doAction('$onCloseAction','',$activeTab);";
+$doActionOnClose = ($onCloseAction) ? "sysPassUtil.Common.doAction('$onCloseAction','',$activeTab);" : '';
 
 $userLogin = UserUtil::getUserLoginById($itemId);
 

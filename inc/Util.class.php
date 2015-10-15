@@ -196,7 +196,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.2-rc5';
+        return '1.2';
     }
 
     /**
@@ -309,7 +309,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '05';
+        $build = '06';
         $version = array(1, 2, 0);
 
         if ($retBuild) {

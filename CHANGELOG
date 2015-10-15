@@ -1,3 +1,15 @@
+=== ** v1.2.0.06 ===
+
+* [ADD] New language translation to Catalan. Thanks to @ferrergl
+* [ADD] Added some user preferences like show optional actions and top navigation bar.
+* [MOD] Updated German translation. Thanks to @wagnst and @ffflorian
+* [MOD] Updated French translation. Thanks to jmrh, grandpas29 and julien
+* [MOD] Fallback to plain passwords on forms when PKI is not available. It does not affect to the accounts.
+* [FIX] Fixed language strings. Closes #147
+* [FIX] Fixed master password changing issue that fails when no custom fields are defined.
+* [FIX] Fixed redirection from 2FA page after login.
+* [FIX] Fixed account main group saving.
+
 === ** v1.2.0.05-rc5 ===
 
 * [ADD] New classes to improve performance and code readability.
