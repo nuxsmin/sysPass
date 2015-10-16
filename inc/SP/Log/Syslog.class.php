@@ -25,6 +25,10 @@
 
 namespace SP\Log;
 
+use SP\Config\Config;
+use SP\Core\SPException;
+use SP\Util\Connection;
+
 /**
  * Class Syslog para envío de mensaje al servicio de syslog
  *
@@ -32,6 +36,19 @@ namespace SP\Log;
  */
 class Syslog extends AbstractLogger
 {
+    /**
+     * @var bool
+     */
+    private $isRemote = false;
+
+    /**
+     * @param boolean $isRemote
+     */
+    public function setIsRemote($isRemote)
+    {
+        $this->isRemote = $isRemote;
+    }
+
     /**
      * Logs with an arbitrary level.
      *
@@ -42,9 +59,28 @@ class Syslog extends AbstractLogger
      */
     public function log($level, $message, array $context = array())
     {
-        openlog("sysPass", LOG_PID, LOG_LOCAL0);
-        syslog($this->getSyslogLevel($level), $message);
-        closelog();
+        if ($this->isRemote === false) {
+            openlog("sysPass", LOG_PID, LOG_LOCAL0);
+            syslog($this->getSyslogLevel($level), $message);
+            closelog();
+        } else {
+            $server = Config::getValue('syslog_server', '127.0.0.1');
+            $port = Config::getValue('syslog_port', 514);
+
+            if (!empty($server)) {
+                $syslogMsg = date('M d H:i:s ') . "sysPass web: $message";
+
+                try {
+                    $Connecion = new Connection($server, $port);
+                    $Connecion->getSocket(Connection::TYPE_UDP);
+                    $Connecion->send($syslogMsg);
+                    $Connecion->closeSocket();
+                } catch (SPException $e) {
+                    error_log($e->getMessage());
+                    error_log($e->getHint());
+                }
+            }
+        }
     }
 
     /**

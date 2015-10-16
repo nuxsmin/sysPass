@@ -220,6 +220,27 @@ class Checks
     }
 
     /**
+     * Comprobar si está habilitado el servidor de syslog.
+     *
+     * @return bool
+     */
+    public static function syslogIsEnabled()
+    {
+        return Util::boolval(Config::getValue('syslog_enabled', false));
+    }
+
+    /**
+     * Comprobar si está habilitado el servidor de syslog.
+     *
+     * @return bool
+     */
+    public static function remoteSyslogIsEnabled()
+    {
+        return Util::boolval(Config::getValue('syslog_remote_enabled', false));
+    }
+
+
+    /**
      * Comprobar si está habilitado el formato de tarjeta en los resultados.
      *
      * @return bool

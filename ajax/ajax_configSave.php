@@ -77,7 +77,6 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $siteTheme = Request::analyze('sitetheme', 'material-blue');
         $sessionTimeout = Request::analyze('session_timeout', 300);
         $httpsEnabled = Request::analyze('https_enabled', false, false, true);
-        $logEnabled = Request::analyze('log_enabled', false, false, true);
         $debugEnabled = Request::analyze('debug', false, false, true);
         $maintenanceEnabled = Request::analyze('maintenance', false, false, true);
         $checkUpdatesEnabled = Request::analyze('updates', false, false, true);
@@ -87,11 +86,32 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         Config::setCacheConfigValue('sitetheme', $siteTheme);
         Config::setCacheConfigValue('session_timeout', $sessionTimeout);
         Config::setCacheConfigValue('https_enabled', $httpsEnabled);
-        Config::setCacheConfigValue('log_enabled', $logEnabled);
         Config::setCacheConfigValue('debug', $debugEnabled);
         Config::setCacheConfigValue('maintenance', $maintenanceEnabled);
         Config::setCacheConfigValue('checkupdates', $checkUpdatesEnabled);
         Config::setCacheConfigValue('checknotices', $checkNoticesEnabled);
+
+        // Events
+        $logEnabled = Request::analyze('log_enabled', false, false, true);
+        $syslogEnabled = Request::analyze('syslog_enabled', false, false, true);
+        $remoteSyslogEnabled = Request::analyze('remotesyslog_enabled', false, false, true);
+        $syslogServer = Request::analyze('remotesyslog_server');
+        $syslogPort = Request::analyze('remotesyslog_port', 0);
+
+        Config::setCacheConfigValue('log_enabled', $logEnabled);
+        Config::setCacheConfigValue('syslog_enabled', $syslogEnabled);
+
+        if ($remoteSyslogEnabled && (!$syslogServer || !$syslogPort)) {
+            Response::printJSON(_('Faltan parámetros de syslog remoto'));
+        } elseif ($remoteSyslogEnabled) {
+            Config::setCacheConfigValue('syslog_remote_enabled', $remoteSyslogEnabled);
+            Config::setCacheConfigValue('syslog_server', $syslogServer);
+            Config::setCacheConfigValue('syslog_port', $syslogPort);
+        } else {
+            Config::setCacheConfigValue('syslog_remote_enabled', false);
+
+            $Log->addDescription(_('Syslog remoto deshabilitado'));
+        }
 
         // Accounts
         $globalSearchEnabled = Request::analyze('globalsearch', false, false, true);
@@ -257,7 +277,7 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
     try {
         Config::writeConfig();
-    } catch (SPException $e){
+    } catch (SPException $e) {
         $Log->addDescription(_('Error al guardar la configuración'));
         $Log->addDetails($e->getMessage(), $e->getHint());
         $Log->writeLog();

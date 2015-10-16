@@ -4,7 +4,8 @@
         <?php echo _('Sitio'); ?>
     </div>
 
-    <form method="post" name="frmConfig" id="frmConfig" onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
+    <form method="post" name="frmConfig" id="frmConfig"
+          onsubmit="sysPassUtil.Common.configMgmt('config', this); return false;">
 
         <table id="tblSite" class="data tblConfig round">
             <tr>
@@ -15,6 +16,7 @@
                         <p>
                             <?php echo _('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
                         </p>
+
                         <p>
                             <?php echo _('Para mejorar/añadir las traducciones, puede colaborar en http:://translate.syspass.org'); ?>
                         </p>
@@ -40,7 +42,8 @@
                     </div>
                 </td>
                 <td class="valField">
-                    <select name="sitetheme" id="sel-sitetheme" size="1" class="sel-chosen-ns" <?php echo $isDisabled; ?>>
+                    <select name="sitetheme" id="sel-sitetheme" size="1"
+                            class="sel-chosen-ns" <?php echo $isDisabled; ?>>
                         <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
                             <option
                                 value='<?php echo $themeDir; ?>' <?php echo ($currentTheme == $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>
@@ -74,26 +77,9 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="https_enabled">
-                        <input type="checkbox" id="https_enabled" class="mdl-switch__input fg-blue100" name="https_enabled"
+                        <input type="checkbox" id="https_enabled" class="mdl-switch__input fg-blue100"
+                               name="https_enabled"
                             <?php echo $chkHttps, ' ', $isDisabled; ?>/>
-                        <span class="mdl-switch__label"></span>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Habilitar log de eventos'); ?>
-                    <div id="help-eventlog" class="icon material-icons fg-blue80">help_outline</div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">
-                        <p>
-                            <?php echo _('Guarda las acciones realizadas en la aplicación.'); ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
-                        <input type="checkbox" id="log_enabled" class="mdl-switch__input fg-blue100" name="log_enabled"
-                            <?php echo $chkLog, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -173,6 +159,83 @@
         </table>
 
         <div id="title" class="midroundup titleNormal">
+            <?php echo _('Eventos'); ?>
+        </div>
+
+        <table id="tblEvents" class="data tblConfig round">
+            <tr>
+                <td class="descField">
+                    <?php echo _('Habilitar log de eventos'); ?>
+                    <div id="help-eventlog" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">
+                        <p>
+                            <?php echo _('Guarda las acciones realizadas en la aplicación.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
+                        <input type="checkbox" id="log_enabled" class="mdl-switch__input fg-blue100" name="log_enabled"
+                            <?php echo $chkLog, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Habilitar Syslog'); ?>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="syslog_enabled">
+                        <input type="checkbox" id="syslog_enabled" class="mdl-switch__input fg-blue100" name="syslog_enabled"
+                            <?php echo $chkSyslog, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Habilitar Syslog Remoto'); ?>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remotesyslog_enabled">
+                        <input type="checkbox" id="remotesyslog_enabled" class="mdl-switch__input fg-blue100" name="remotesyslog_enabled"
+                            <?php echo $chkRemoteSyslog, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Servidor'); ?>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="remotesyslog_server" name="remotesyslog_server" type="text"
+                               class="mdl-textfield__input fg-blue100"
+                               value="<?php echo $remoteSyslogServer; ?>"/>
+                        <label class="mdl-textfield__label"
+                               for="remotesyslog_server"><?php echo _('Nombre o dirección IP'); ?></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Puerto'); ?>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="remotesyslog_port" name="remotesyslog_port" type="number"
+                               pattern="[0-9]{1-5}" step="1" max="65535" class="mdl-textfield__input fg-blue100"
+                               value="<?php echo $remoteSyslogPort; ?>"/>
+                        <label class="mdl-textfield__label"
+                               for="remotesyslog_port"><?php echo _('Puerto'); ?></label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div id="title" class="midroundup titleNormal">
             <?php echo _('Cuentas'); ?>
         </div>
 
@@ -241,6 +304,7 @@
                         <p>
                             <?php echo _('Generar una imagen con el texto de la clave de la cuenta.'); ?>
                         </p>
+
                         <p>
                             <?php echo _('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
                         </p>
@@ -343,9 +407,11 @@
                         <p>
                             <?php echo _('Habilita la posibilidad de generar enlaces públicos para ver los detalles de una cuenta.'); ?>
                         </p>
+
                         <p>
                             <?php echo _('Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace.'); ?>
                         </p>
+
                         <p>
                             <?php echo _('Para crear enlaces, los usuarios tienen que tener activada la opción en su perfl.'); ?>
                         </p>

@@ -83,12 +83,18 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('themesAvailable', Themes::getThemesAvailable());
         $this->view->assign('currentTheme', Config::getValue('sitetheme'));
         $this->view->assign('chkHttps', (Config::getValue('https_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkLog', (Config::getValue('log_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkDebug', (Config::getValue('debug')) ? 'checked="checked"' : '');
         $this->view->assign('chkMaintenance', (Config::getValue('maintenance')) ? 'checked="checked"' : '');
         $this->view->assign('chkUpdates', (Config::getValue('checkupdates')) ? 'checked="checked"' : '');
         $this->view->assign('chkNotices', (Config::getValue('checknotices')) ? 'checked="checked"' : '');
         $this->view->assign('sessionTimeout', Config::getValue('session_timeout'));
+
+        // Events
+        $this->view->assign('chkLog', (Config::getValue('log_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkSyslog', (Config::getValue('syslog_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkRemoteSyslog', (Config::getValue('syslog_remote_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('remoteSyslogServer', Config::getValue('syslog_server'));
+        $this->view->assign('remoteSyslogPort', Config::getValue('syslog_port'));
 
         // Files
         $this->view->assign('chkFiles', (Config::getValue('files_enabled')) ? 'checked="checked"' : '');

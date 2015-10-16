@@ -25,6 +25,7 @@
 
 namespace SP\Log;
 
+use SP\Config\Config;
 use SP\Storage\DB;
 use SP\Core\Session;
 use SP\Util\Checks;
@@ -133,7 +134,10 @@ class Log extends ActionLog
             return false;
         }
 
-        $this->sendToSyslog();
+        if (Checks::syslogIsEnabled()){
+            $this->sendToSyslog();
+        }
+
         $description = trim($this->getDescription() . self::NEWLINE_TXT . $this->getDetails(), ';');
 
         $query = 'INSERT INTO log SET ' .
@@ -171,6 +175,7 @@ class Log extends ActionLog
         $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserLogin());
 
         $Syslog = new Syslog();
+        $Syslog->setIsRemote(Checks::remoteSyslogIsEnabled());
         $Syslog->info($msg);
     }
 
