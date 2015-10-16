@@ -138,7 +138,7 @@ class Log extends ActionLog
             $this->sendToSyslog();
         }
 
-        $description = trim($this->getDescription() . self::NEWLINE_TXT . $this->getDetails(), ';');
+        $description = trim($this->getDescription() . PHP_EOL . $this->getDetails());
 
         $query = 'INSERT INTO log SET ' .
             'log_date = UNIX_TIMESTAMP(),' .
@@ -168,9 +168,11 @@ class Log extends ActionLog
      */
     private function sendToSyslog()
     {
+        $description = trim($this->getDescription() . PHP_EOL . $this->getDetails());
+
         $msg = 'CEF:0|sysPass|logger|' . implode('.', Util::getVersion(true)) . '|';
         $msg .= $this->getAction() . '|';
-        $msg .= $this->getDescription() . '|';
+        $msg .= $description . '|';
         $msg .= '0|';
         $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserLogin());
 

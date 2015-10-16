@@ -59,7 +59,8 @@
                 </td>
                 <td class="cell-description">
                     <?php
-                    $descriptions = explode(';;', $description);
+                    $description = str_replace(';;', PHP_EOL, $description);
+                    $descriptions = explode(PHP_EOL, $description);
 
                     foreach ($descriptions as $text) {
                         if (preg_match('/^SQL.*/', $text)) {

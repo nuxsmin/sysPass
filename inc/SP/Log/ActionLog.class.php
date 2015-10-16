@@ -35,7 +35,7 @@ abstract class ActionLog extends LogLevel
     /**
      * Constante de nueva línea para descripciones
      */
-    const NEWLINE_TXT = ';;';
+    const NEWLINE_TXT = PHP_EOL;
     /**
      * Constante de nueva línea para descriciones en formato HTML
      */
@@ -136,7 +136,7 @@ abstract class ActionLog extends LogLevel
         }
 
         if (count($this->_details) > 1) {
-            $newline = ($this->_newLineHtml === false) ? self::NEWLINE_TXT : self::NEWLINE_HTML;
+            $newline = ($this->_newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
 
             return implode($newline, $this->_details);
         }
@@ -176,7 +176,7 @@ abstract class ActionLog extends LogLevel
         }
 
         if (count($this->_description) > 1) {
-            $newline = ($this->_newLineHtml === false) ? self::NEWLINE_TXT : self::NEWLINE_HTML;
+            $newline = ($this->_newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
 
             return implode($newline, $this->_description);
         }

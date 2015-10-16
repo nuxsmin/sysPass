@@ -48,6 +48,18 @@ class Connection implements ConnectionInterface
      * @var int
      */
     protected $_port = 0;
+    /**
+     * Código de error del socket
+     *
+     * @var int
+     */
+    protected $_errorno = 0;
+    /**
+     * Mensaje de error del socket
+     *
+     * @var string
+     */
+    protected $_errorstr = '';
 
     /**
      * @param $host string El host a conectar
@@ -83,6 +95,8 @@ class Connection implements ConnectionInterface
         if ($this->_socket === false) {
             throw new SPException(SPException::SP_WARNING, $this->getSocketError());
         }
+
+        stream_set_timeout($this->_socket, self::SOCKET_TIMEOUT);
     }
 
     /**
@@ -124,7 +138,8 @@ class Connection implements ConnectionInterface
      */
     public function getSocketError()
     {
-        return socket_strerror(socket_last_error($this->_socket));
+        return sprintf('%s (%d)', $this->_errorstr, $this->_errorno);
+//        return socket_strerror(socket_last_error($this->_socket));
     }
 
     /**
@@ -134,7 +149,7 @@ class Connection implements ConnectionInterface
      */
     private function getUDPSocket()
     {
-        return stream_socket_client('udp://' . $this->_host . ':' . $this->_port, $errno, $errstr, 30);
+        return stream_socket_client('udp://' . $this->_host . ':' . $this->_port, $this->_errorno, $this->_errorstr, self::SOCKET_TIMEOUT);
 //        return @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
     }
 
@@ -145,7 +160,7 @@ class Connection implements ConnectionInterface
      */
     private function getTCPSocket()
     {
-        return stream_socket_client('tcp://' . $this->_host . ':' . $this->_port, $errno, $errstr, 30);
+        return stream_socket_client('tcp://' . $this->_host . ':' . $this->_port, $this->_errorno, $this->_errorstr, self::SOCKET_TIMEOUT);
 //        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     }
 }

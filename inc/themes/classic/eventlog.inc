@@ -59,6 +59,7 @@
                 </td>
                 <td class="cell-description">
                     <?php
+                    $description = str_replace(';;', PHP_EOL, $description);
                     $descriptions = explode(';;', $description);
 
                     foreach ($descriptions as $text) {

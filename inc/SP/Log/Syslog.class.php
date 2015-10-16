@@ -64,22 +64,7 @@ class Syslog extends AbstractLogger
             syslog($this->getSyslogLevel($level), $message);
             closelog();
         } else {
-            $server = Config::getValue('syslog_server', '127.0.0.1');
-            $port = Config::getValue('syslog_port', 514);
-
-            if (!empty($server)) {
-                $syslogMsg = date('M d H:i:s ') . "sysPass web: $message";
-
-                try {
-                    $Connecion = new Connection($server, $port);
-                    $Connecion->getSocket(Connection::TYPE_UDP);
-                    $Connecion->send($syslogMsg);
-                    $Connecion->closeSocket();
-                } catch (SPException $e) {
-                    error_log($e->getMessage());
-                    error_log($e->getHint());
-                }
-            }
+            $this->logRemote($message);
         }
     }
 
@@ -108,6 +93,31 @@ class Syslog extends AbstractLogger
                 return LOG_INFO;
             case LogLevel::DEBUG:
                 return LOG_DEBUG;
+        }
+    }
+
+    /**
+     * Enviar un mensaje a syslog remoto
+     *
+     * @param $message
+     */
+    private function logRemote($message)
+    {
+        $server = Config::getValue('syslog_server');
+        $port = Config::getValue('syslog_port', 514);
+
+        if (!empty($server)) {
+            $syslogMsg = date('M d H:i:s ') . "sysPass web: $message";
+
+            try {
+                $Connecion = new Connection($server, $port);
+                $Connecion->getSocket(Connection::TYPE_UDP);
+                $Connecion->send($syslogMsg);
+                $Connecion->closeSocket();
+            } catch (SPException $e) {
+                error_log($e->getMessage());
+                error_log($e->getHint());
+            }
         }
     }
 }

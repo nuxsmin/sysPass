@@ -34,6 +34,7 @@ interface ConnectionInterface
 {
     const TYPE_TCP = 1;
     const TYPE_UDP = 2;
+    const SOCKET_TIMEOUT = 10;
 
     /**
      * Obtener un socket
