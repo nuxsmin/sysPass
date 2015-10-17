@@ -50,6 +50,20 @@ abstract class DataGridDataBase implements DataGridDataInterface
      * @var int
      */
     private $_sourceId = 0;
+    /**
+     * Las columnas a mostrar de los datos obtenidos que son representadas con iconos
+     *
+     * @var array
+     */
+    private $_sourcesWithIcon = array();
+
+    /**
+     * @return array
+     */
+    public function getDataRowSourcesWithIcon()
+    {
+        return $this->_sourcesWithIcon;
+    }
 
     /**
      * @param $source string
@@ -105,6 +119,6 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function addDataRowSourceWithIcon($source, $icon)
     {
-        $this->_sources[] = array($source, $icon);
+        $this->_sourcesWithIcon[] = array($source, $icon);
     }
 }

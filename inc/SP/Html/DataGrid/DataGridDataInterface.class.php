@@ -68,4 +68,9 @@ interface DataGridDataInterface
      * @return
      */
     public function addDataRowSourceWithIcon($source, $icon);
+
+    /**
+     * @return array
+     */
+    public function getDataRowSourcesWithIcon();
 }

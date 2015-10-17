@@ -73,6 +73,9 @@ interface ActionsInterface {
     const ACTION_MGM_PUBLICLINKS_VIEW = 651;
     const ACTION_MGM_PUBLICLINKS_DELETE = 653;
     const ACTION_MGM_PUBLICLINKS_REFRESH = 654;
+    const ACTION_MGM_FILES = 66;
+    const ACTION_MGM_FILES_VIEW = 661;
+    const ACTION_MGM_FILES_DELETE = 663;
     const ACTION_USR = 70;
     const ACTION_USR_USERS = 71;
     const ACTION_USR_USERS_VIEW= 710;

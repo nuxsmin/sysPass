@@ -160,7 +160,7 @@ class Ldap
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al conectar (BIND)'));
             $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(self::$_ldapConn), ldap_errno(self::$_ldapConn)));
-            $Log->addDetails('LDAP DN: ' . $dn);
+            $Log->addDetails('LDAP DN', $dn);
             $Log->writeLog();
 
             throw new \Exception(_('Error al conectar (BIND)'));

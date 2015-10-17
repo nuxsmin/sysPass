@@ -74,7 +74,7 @@ $customFields = Request::analyze('customfield');
 // Datos del Usuario
 $currentUserId = Session::getUserId();
 
-if (!$accountMainGroupId === 0) {
+if ($accountMainGroupId === 0) {
     $accountMainGroupId = Session::getUserGroupId();
 }
 

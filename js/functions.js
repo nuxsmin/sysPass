@@ -1032,7 +1032,7 @@ sysPass.Util.Common = function () {
             'ldap_base': ldapBase,
             'ldap_group': ldapGroup,
             'ldap_binduser': ldapBindUser,
-            'ldap_bindpass': (PK !== '' ) ? encrypt.encrypt(ldapBindPass) : ldapBindPass,
+            'ldap_bindpass': ldapBindPass,
             'isAjax': 1,
             'sk': sk
         };

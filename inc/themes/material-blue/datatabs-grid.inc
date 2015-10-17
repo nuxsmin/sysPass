@@ -58,21 +58,22 @@
                 <?php foreach ($tab->getData()->getData() as $item): ?>
                     <ul>
                         <?php foreach ($tab->getData()->getDataRowSources() as $rowSrc): ?>
-                            <?php if (is_array($rowSrc)): ?>
-                                <?php if ($item->$rowSrc[0] == 1): ?>
-                                    <li class="cell-nodata"
-                                        style="width: <?php echo $tab->getHeader()->getWidth(); ?>%;">
-                                        <i class="material-icons" title="<?php echo $rowSrc[1]->getTitle(); ?>">
-                                            <?php echo $rowSrc[1]->getIcon(); ?>
-                                        </i>
-                                    </li>
-                                <?php endif; ?>
-                            <?php else: ?>
-                                <li class="cell-data" style="width: <?php echo $tab->getHeader()->getWidth(); ?>%;">
-                                    <?php echo (!is_null($item->$rowSrc)) ? $item->$rowSrc : '&nbsp;'; // Fix height ?>
-                                </li>
-                            <?php endif; ?>
+                            <li class="cell-data" style="width: <?php echo $tab->getHeader()->getWidth(); ?>%;">
+                                <?php echo (!is_null($item->$rowSrc)) ? $item->$rowSrc : '&nbsp;'; // Fix height ?>
+                            </li>
                         <?php endforeach; ?>
+
+                        <?php if (count($tab->getData()->getDataRowSourcesWithIcon()) > 0): ?>
+                            <li class="cell-nodata" style="width: <?php echo $tab->getHeader()->getWidth(); ?>%;">
+                                <?php foreach ($tab->getData()->getDataRowSourcesWithIcon() as $rowSrcIcon): ?>
+                                    <?php if ($item->$rowSrcIcon[0] == 1): ?>
+                                        <i class="material-icons" title="<?php echo $rowSrcIcon[1]->getTitle(); ?>">
+                                            <?php echo $rowSrcIcon[1]->getIcon(); ?>
+                                        </i>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </li>
+                        <?php endif; ?>
 
                         <li class="cell-actions round">
                             <?php foreach ($tab->getDataActions() as $action): ?>
