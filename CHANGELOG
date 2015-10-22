@@ -1,3 +1,11 @@
+=== ** v1.2.0.07 ===
+
+* [FIX] Fixed issue when searching an user groupmembership to access to an account. Thanks to @basil-twisleton
+* [FIX] Closes #157. Fixed issue when adding LDAP users that don't have any default group/profile set, they are disabled. Thanks to @CyrosX
+* [FIX] Closes #154. Modified a string in the ldap template. Thanks to @tsener
+* [MOD] Changed default behavior when creating a new account. Now a blank form is displayed. Thanks to @basil-twisleton
+* [MOD] Closes #155. Extensions cannot contain other characters than "A-Z", "0-9", "_" and "-". Thanks to @tsener
+
 === ** v1.2.0.06 ===
 
 * [ADD] New language translation to Catalan. Thanks to @ferrergl

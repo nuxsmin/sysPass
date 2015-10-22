@@ -83,7 +83,7 @@
                             <input id="ldap_binduser" name="ldap_binduser" type="text"
                                    class="mdl-textfield__input fg-blue100"
                                    maxlength="128" value="<?php echo $ldapBindUser; ?>" <?php echo $isDisabled; ?>/>
-                            <label class="mdl-textfield__label" for="ldap_binduser"><?php echo _('Servidor'); ?></label>
+                            <label class="mdl-textfield__label" for="ldap_binduser"><?php echo _('Usuario'); ?></label>
                         </div>
                     </td>
                 </tr>

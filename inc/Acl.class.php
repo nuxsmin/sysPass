@@ -176,13 +176,15 @@ class Acl implements Controller\ActionsInterface
         $userId = Session::getUserId();
         $userIsAdminApp = Session::getUserIsAdminApp();
         $userIsAdminAcc = Session::getUserIsAdminAcc();
-        $userToGroups = false;
+        $userToGroups = in_array($userGroupId,Groups::getUsersForGroup($accountData['group_id']));
 
-        foreach($accountData['groups_id'] as $groupId){
-            $users = Groups::getUsersForGroup($groupId);
+        if ($userToGroups === false) {
+            foreach ($accountData['groups_id'] as $groupId) {
+                $users = Groups::getUsersForGroup($groupId);
 
-            if ($userGroupId === $groupId || in_array($userId, $users)){
-                $userToGroups = true;
+                if ($userGroupId === $groupId || in_array($userId, $users)) {
+                    $userToGroups = true;
+                }
             }
         }
 

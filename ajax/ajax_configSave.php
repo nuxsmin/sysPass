@@ -97,13 +97,23 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $filesAllowedSize = SP\Request::analyze('files_allowed_size', 1024);
         $filesAllowedExts = SP\Request::analyze('files_allowed_exts');
 
-        SP\Config::setCacheConfigValue('files_enabled', $filesEnabled);
-        SP\Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
-        SP\Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
-
         if ($filesEnabled && $filesAllowedSize >= 16384) {
             SP\Response::printJSON(_('El tamaño máximo por archivo es de 16MB'));
         }
+
+        if (!empty($filesAllowedExts)){
+            $exts = explode(',', $filesAllowedExts);
+
+            array_walk($exts, function(&$value) {
+                if (preg_match('/[^a-z0-9_-]+/i', $value)) {
+                    SP\Response::printJSON(_('Extensión no permitida'));
+                }
+            });
+        }
+
+        SP\Config::setCacheConfigValue('files_enabled', $filesEnabled);
+        SP\Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
+        SP\Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
 
         // Proxy
         $proxyEnabled = SP\Request::analyze('proxy_enabled', false, false, true);

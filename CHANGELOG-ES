@@ -1,3 +1,11 @@
+=== ** v1.2.0.07 ===
+
+* [FIX] Arreglado error cuando se obtenía la pertenencia a grupos de un usuario para acceder a una cuenta. Thanks to @basil-twisleton
+* [FIX] Closes #157. Arreglado error cuando se añaden usuarios desde LDAP que no tienen grupo o perfil por defecto, son deshabilitados. Thanks to @CyrosX
+* [FIX] Closes #154. Modificada cadena en la plantilla de LDAP. Thanks to @tsener
+* [MOD] Cambiado comportamiento al crear una nueva cuenta. Ahora se muestra un formularion en blanco. Thanks to @basil-twisleton
+* [MOD] Closes #155. Las extensiones sólo pueden contener los siguientes caracteres: "A-Z", "0-9", "_" and "-". Thanks to @tsener
+
 === ** v1.2.0.06 ===
 
 * [ADD] Nueva traducción al catalán. Gracias a @ferrergl

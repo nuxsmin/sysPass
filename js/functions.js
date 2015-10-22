@@ -473,6 +473,8 @@ sysPass.Util.Common = function () {
 
                     if (action && id) {
                         doAction(action, 1, id);
+                    } else if (action) {
+                        doAction(action, 1);
                     }
                 } else if (status === 10) {
                     doLogout();

@@ -65,10 +65,10 @@ class UserLdap
         $data['pass'] = $passdata['pass'];
         $data['hashSalt'] = $passdata['salt'];
         $data['email'] = $User->getUserEmail();
-        $data['notes'] = 'LDAP';
+        $data['notes'] = _('Usuario de LDAP');
         $data['groupId'] = $groupId;
         $data['profileId'] = $profileId;
-        $data['isDisabled'] = ($groupId && $profileId);
+        $data['isDisabled'] = (int)($groupId && $profileId);
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
