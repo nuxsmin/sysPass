@@ -47,5 +47,13 @@
                 <?php echo (!$isDemoMode) ? \SP\Html\Html::strongText($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
             </td>
         </tr>
+        <tr>
+            <td class="descField">
+                <?php echo _('Copia de Configuración'); ?>
+            </td>
+            <td class="valField">
+                <?php echo $configBackupDate; ?>
+            </td>
+        </tr>
     </table>
 </div> <!-- End Tab - Info -->

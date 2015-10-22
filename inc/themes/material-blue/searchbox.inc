@@ -1,6 +1,6 @@
-<div id="searchbox">
+<div id="searchbox" class="round shadow">
     <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return sysPassUtil.Common.accSearch(0);">
-        <div id="tblTools" class="round shadow">
+        <div id="tblTools">
             <div id="toolsLeft">
                 <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear_all</i>
 

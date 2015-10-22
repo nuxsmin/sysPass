@@ -38,8 +38,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Util
 {
-
-
     /**
      * Generar una cadena aleatoria usuando criptografía.
      *
@@ -163,6 +161,94 @@ class Util
     }
 
     /**
+     * Obtener datos desde una URL usando CURL
+     *
+     * @param $url string La URL
+     * @return bool|string
+     */
+    public static function getDataFromUrl($url)
+    {
+        if (!Checks::curlIsAvailable()) {
+            return false;
+        }
+
+        $ch = curl_init($url);
+
+        if (Config::getValue('proxy_enabled')) {
+            curl_setopt($ch, CURLOPT_PROXY, Config::getValue('proxy_server'));
+            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getValue('proxy_port'));
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+
+            $proxyUser = Config::getValue('proxy_user');
+
+            if ($proxyUser) {
+                $proxyAuth = $proxyUser . ':' . Config::getValue('proxy_pass');
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
+            }
+        }
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass-App");
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
+        $data = curl_exec($ch);
+
+        if ($data === false) {
+            Log::writeNewLog(__FUNCTION__, curl_error($ch));
+
+            return false;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Devuelve información sobre la aplicación.
+     *
+     * @param string $index con la key a devolver
+     * @return array con las propiedades de la aplicación
+     */
+    public static function getAppInfo($index = null)
+    {
+        $appinfo = array(
+            'appname' => 'sysPass',
+            'appdesc' => 'Systems Password Manager',
+            'appwebsite' => 'http://www.syspass.org',
+            'appblog' => 'http://www.cygnux.org',
+            'appdoc' => 'http://wiki.syspass.org',
+            'appupdates' => 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest',
+            'appnotices' => 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices',
+            'apphelp' => 'https://github.com/nuxsmin/sysPass/issues',
+            'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG');
+
+        if (!is_null($index) && isset($appinfo[$index])) {
+            return $appinfo[$index];
+        }
+
+        return $appinfo;
+    }
+
+    /**
+     * Devuelve la versión de sysPass.
+     *
+     * @param bool $retBuild devolver el número de compilación
+     * @return array con el número de versión
+     */
+    public static function getVersion($retBuild = false)
+    {
+        $build = '01';
+        $version = array(1, 2, 1);
+
+        if ($retBuild) {
+            array_push($version, $build);
+        }
+
+        return $version;
+    }
+
+    /**
      * Comprobar si hay notificaciones de sysPass disponibles desde internet (github.com)
      * Esta función hace una petición a GitHub y parsea el JSON devuelto
      *
@@ -198,26 +284,6 @@ class Util
         return false;
     }
 
-
-    /**
-     * Devuelve la versión de sysPass.
-     *
-     * @param bool $retBuild devolver el número de compilación
-     * @return array con el número de versión
-     */
-    public static function getVersion($retBuild = false)
-    {
-        $build = '01';
-        $version = array(1, 2, 1);
-
-        if ($retBuild) {
-            array_push($version, $build);
-        }
-
-        return $version;
-    }
-
-
     /**
      * Realiza el proceso de logout.
      */
@@ -238,7 +304,6 @@ class Util
 
         Log::writeNewLog(__FUNCTION__, "Max. PHP upload: " . $upload_mb . "MB");
     }
-
 
     /**
      * Checks a variable to see if it should be considered a boolean true or false.
@@ -270,7 +335,6 @@ class Util
         }
     }
 
-
     /**
      * Establecer variable de sesión para recargar la aplicación.
      */
@@ -292,7 +356,6 @@ class Util
         }
     }
 
-
     /**
      * Recorrer un array y escapar los carácteres no válidos en Javascript.
      *
@@ -305,76 +368,6 @@ class Util
             $value = str_replace(array("'", '"'), "\\'", $value);
         });
         return $array;
-    }
-
-    /**
-     * Devuelve información sobre la aplicación.
-     *
-     * @param string $index con la key a devolver
-     * @return array con las propiedades de la aplicación
-     */
-    public static function getAppInfo($index = null)
-    {
-        $appinfo = array(
-            'appname' => 'sysPass',
-            'appdesc' => 'Systems Password Manager',
-            'appwebsite' => 'http://www.syspass.org',
-            'appblog' => 'http://www.cygnux.org',
-            'appdoc' => 'http://wiki.syspass.org',
-            'appupdates' => 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest',
-            'appnotices' => 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices',
-            'apphelp' => 'https://github.com/nuxsmin/sysPass/issues',
-            'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG');
-
-        if (!is_null($index) && isset($appinfo[$index])) {
-            return $appinfo[$index];
-        }
-
-        return $appinfo;
-    }
-
-    /**
-     * Obtener datos desde una URL usando CURL
-     *
-     * @param $url string La URL
-     * @return bool|string
-     */
-    public static function getDataFromUrl($url)
-    {
-        if (!Checks::curlIsAvailable()) {
-            return false;
-        }
-
-        $ch = curl_init($url);
-
-        if (Config::getValue('proxy_enabled')){
-            curl_setopt($ch, CURLOPT_PROXY, Config::getValue('proxy_server'));
-            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getValue('proxy_port'));
-            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-
-            $proxyUser = Config::getValue('proxy_user');
-
-            if ($proxyUser) {
-                $proxyAuth = $proxyUser . ':' . Config::getValue('proxy_pass');
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
-            }
-        }
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass-App");
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-
-        $data = curl_exec($ch);
-
-        if ($data === false) {
-            Log::writeNewLog(__FUNCTION__, curl_error($ch));
-
-            return false;
-        }
-
-        return $data;
     }
 
     /**
@@ -393,7 +386,7 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string $class  Class name
+     * @param string $class Class name
      * @param object $object
      * @return object
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
@@ -401,5 +394,26 @@ class Util
     public static function castToClass($class, $object)
     {
         return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
+    }
+
+    /**
+     * Devuelve la última función llamada tras un error
+     *
+     * @param string $function La función utilizada como base
+     */
+    public static function traceLastCall($function = null)
+    {
+        $backtrace = debug_backtrace(false);
+        $nTraces = count($backtrace);
+
+        if ($nTraces === 1) {
+            return $backtrace[1]['function'];
+        }
+
+        for ($i = 0; $i < $nTraces; $i++) {
+            if ($backtrace[$i]['function'] === $function) {
+                return $backtrace[$i + 1]['function'];
+            }
+        }
     }
 }

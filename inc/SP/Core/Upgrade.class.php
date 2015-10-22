@@ -32,6 +32,7 @@ use SP\Log\Log;
 use SP\Mgmt\User\Profile;
 use SP\Storage\DB;
 use SP\Mgmt\User\UserMigrate;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -135,15 +136,19 @@ class Upgrade
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId)';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
                 $queries[] = 'ALTER TABLE log ADD log_level VARCHAR(20) NOT NULL;';
+                $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(2000);';
                 break;
             default :
                 $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
                 return true;
         }
 
+        $Data = new QueryData();
+
         foreach ($queries as $query) {
             try {
-                DB::getQuery($query, __FUNCTION__);
+                $Data->setQuery($query);
+                DB::getQuery($Data);
             } catch (SPException $e) {
                 $Log->setLogLevel(Log::ERROR);
                 $Log->addDescription(_('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')');

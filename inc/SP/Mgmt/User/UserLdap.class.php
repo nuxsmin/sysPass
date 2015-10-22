@@ -29,6 +29,7 @@ use SP\Config\Config;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -65,17 +66,19 @@ class UserLdap
             . 'user_isLdap = 1,'
             . 'user_isDisabled = :isDisabled';
 
-        $data['name'] = $User->getUserName();
-        $data['login'] = $User->getUserLogin();
-        $data['pass'] = $passdata['pass'];
-        $data['hashSalt'] = $passdata['salt'];
-        $data['email'] = $User->getUserEmail();
-        $data['notes'] = 'LDAP';
-        $data['groupId'] = $groupId;
-        $data['profileId'] = $profileId;
-        $data['isDisabled'] = ($groupId && $profileId);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($User->getUserName(), 'name');
+        $Data->addParam($User->getUserLogin(), 'login');
+        $Data->addParam($User->getUserEmail(), 'email');
+        $Data->addParam('LDAP', 'notes');
+        $Data->addParam($groupId, 'groupId');
+        $Data->addParam($profileId, 'profileId');
+        $Data->addParam((!$groupId || !$profileId), 'isDisabled');
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'hashSalt');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -115,20 +118,21 @@ class UserLdap
             . 'user_email = :email,'
             . 'user_lastUpdate = NOW(),'
             . 'user_isLdap = 1 '
-            . 'WHERE user_id = :id LIMIT 1';
+            . 'WHERE user_login = :login LIMIT 1';
 
-        $data['pass'] = $passdata['pass'];
-        $data['hashSalt'] = $passdata['salt'];
-        $data['name'] = $User->getUserName();
-        $data['email'] = $User->getUserEmail();
-        $data['id'] = UserUtil::getUserIdByLogin($User->getUserLogin());
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($User->getUserLogin(), 'login');
+        $Data->addParam($User->getUserName(), 'name');
+        $Data->addParam($User->getUserEmail(), 'email');
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'hashSalt');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
      * Comprobar si un usuario autentifica mediante LDAP
-     * .
      *
      * @param string $userLogin con el login del usuario
      * @return bool
@@ -137,9 +141,11 @@ class UserLdap
     {
         $query = 'SELECT BIN(user_isLdap) AS user_isLdap FROM usrData WHERE user_login = :login LIMIT 1';
 
-        $data['login'] = $userLogin;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userLogin, 'login');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false && intval($queryRes->user_isLdap) === 1);
     }
@@ -147,14 +153,17 @@ class UserLdap
     /**
      * Comprobar si los datos del usuario de LDAP están en la BBDD.
      *
+     * @param $userLogin
      * @return bool
      */
-    public static function checkLDAPUserInDB($userId)
+    public static function checkLDAPUserInDB($userLogin)
     {
         $query = 'SELECT user_login FROM usrData WHERE user_login = :login LIMIT 1';
 
-        $data['login'] = $userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userLogin, 'login');
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
+        return (DB::getQuery($Data) === true && DB::$lastNumRows === 1);
     }
 }

@@ -34,6 +34,7 @@ use SP\Core\Session;
 use SP\Core\SPException;
 use SP\Storage\DB;
 use SP\Mgmt\User\UserUtil;
+use SP\Storage\QueryData;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -62,9 +63,11 @@ class PublicLink extends PublicLinkBase
             'FROM publicLinks ' .
             'WHERE publicLink_id = :id LIMIT 1';
 
-        $data['id'] = $linkId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($linkId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -96,9 +99,11 @@ class PublicLink extends PublicLinkBase
             'FROM publicLinks ' .
             'WHERE publicLink_hash = :hash LIMIT 1';
 
-        $data['hash'] = $linkHash;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($linkHash, 'hash');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false || DB::$lastNumRows === 0) {
             return false;
@@ -165,9 +170,11 @@ class PublicLink extends PublicLinkBase
     {
         $query = 'SELECT publicLink_id FROM publicLinks WHERE publicLink_itemId = :itemid LIMIT 1';
 
-        $data['itemid'] = $this->_itemId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_itemId, 'itemid');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

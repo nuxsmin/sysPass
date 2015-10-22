@@ -28,6 +28,7 @@ namespace SP\Log;
 use SP\Config\Config;
 use SP\Storage\DB;
 use SP\Core\Session;
+use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -63,7 +64,9 @@ class Log extends ActionLog
             'ORDER BY log_id DESC ' .
             'LIMIT :start, 50';
 
-        $data['start'] = $start;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($start, 'start');
 
         // Obtenemos el número total de registros
         DB::setFullRowCount();
@@ -71,7 +74,7 @@ class Log extends ActionLog
         // Devolver un array siempre
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -91,7 +94,10 @@ class Log extends ActionLog
     {
         $query = 'TRUNCATE TABLE log';
 
-        if (DB::getQuery($query, __FUNCTION__) === false) {
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -149,18 +155,20 @@ class Log extends ActionLog
             'log_level = :level,' .
             'log_description = :description';
 
-        $data['login'] = Session::getUserLogin();
-        $data['userId'] = Session::getUserId();
-        $data['ipAddress'] = $_SERVER['REMOTE_ADDR'];
-        $data['action'] = $this->getAction();
-        $data['level'] = $this->getLogLevel();
-        $data['description'] = $description;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(Session::getUserLogin(), 'login');
+        $Data->addParam(Session::getUserId(), 'userId');
+        $Data->addParam($_SERVER['REMOTE_ADDR'], 'ipAddress');
+        $Data->addParam($this->getAction(), 'action');
+        $Data->addParam($this->getLogLevel(), 'level');
+        $Data->addParam($description, 'description');
 
         if ($resetDescription === true) {
             $this->resetDescription();
         }
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**

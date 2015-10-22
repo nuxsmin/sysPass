@@ -31,6 +31,7 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\DBUtil;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -368,20 +369,22 @@ abstract class UserBase
             . 'user_hashSalt = :salt,'
             . 'user_isLdap = 0';
 
-        $data['name'] = $this->_userName;
-        $data['login'] = $this->_userLogin;
-        $data['email'] = $this->_userEmail;
-        $data['notes'] = $this->_userNotes;
-        $data['groupId'] = $this->_userGroupId;
-        $data['profileId'] = $this->_userProfileId;
-        $data['isAdminApp'] = $this->_userIsAdminApp;
-        $data['isAdminAcc'] = $this->_userIsAdminAcc;
-        $data['isDisabled'] = $this->_userIsDisabled;
-        $data['isChangePass'] = $this->_userChangePass;
-        $data['pass'] = $passdata['pass'];
-        $data['salt'] = $passdata['salt'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userName, 'name');
+        $Data->addParam($this->_userLogin, 'login');
+        $Data->addParam($this->_userEmail, 'email');
+        $Data->addParam($this->_userNotes, 'notes');
+        $Data->addParam($this->_userGroupId, 'groupId');
+        $Data->addParam($this->_userProfileId, 'profileId');
+        $Data->addParam($this->_userIsAdminApp, 'isAdminApp');
+        $Data->addParam($this->_userIsAdminAcc, 'isAdminAcc');
+        $Data->addParam($this->_userIsDisabled, 'isDisabled');
+        $Data->addParam($this->_userChangePass, 'isChangePass');
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'salt');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -430,9 +433,11 @@ abstract class UserBase
             . 'LEFT JOIN usrProfiles ON user_profileId = userprofile_id '
             . 'WHERE user_login = :login LIMIT 1';
 
-        $data['login'] = $this->_userLogin;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userLogin, 'login');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -468,13 +473,15 @@ abstract class UserBase
             . 'OR UPPER(user_email) = :email) '
             . 'AND user_id != :id';
 
-        $data['login'] = $userLogin;
-        $data['email'] = $userEmail;
-        $data['id'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userLogin, 'login');
+        $Data->addParam($this->_userEmail, 'email');
+        $Data->addParam($this->_userId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -513,19 +520,21 @@ abstract class UserBase
             . 'user_lastUpdate = NOW() '
             . 'WHERE user_id = :id LIMIT 1';
 
-        $data['name'] = $this->_userName;
-        $data['login'] = $this->_userLogin;
-        $data['email'] = $this->_userEmail;
-        $data['notes'] = $this->_userNotes;
-        $data['groupId'] = $this->_userGroupId;
-        $data['profileId'] = $this->_userProfileId;
-        $data['isAdminApp'] = $this->_userIsAdminApp;
-        $data['isAdminAcc'] = $this->_userIsAdminAcc;
-        $data['isDisabled'] = $this->_userIsDisabled;
-        $data['isChangePass'] = $this->_userChangePass;
-        $data['id'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userName, 'name');
+        $Data->addParam($this->_userLogin, 'login');
+        $Data->addParam($this->_userEmail, 'email');
+        $Data->addParam($this->_userNotes, 'notes');
+        $Data->addParam($this->_userGroupId, 'groupId');
+        $Data->addParam($this->_userProfileId, 'profileId');
+        $Data->addParam($this->_userIsAdminApp, 'isAdminApp');
+        $Data->addParam($this->_userIsAdminAcc, 'isAdminAcc');
+        $Data->addParam($this->_userIsDisabled, 'isDisabled');
+        $Data->addParam($this->_userChangePass, 'isChangePass');
+        $Data->addParam($this->_userId, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -564,11 +573,13 @@ abstract class UserBase
             . 'user_lastUpdate = NOW() '
             . 'WHERE user_id = :id LIMIT 1';
 
-        $data['pass'] = $passdata['pass'];
-        $data['salt'] = $passdata['salt'];
-        $data['id'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'salt');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -594,9 +605,11 @@ abstract class UserBase
 
         $query = 'DELETE FROM usrData WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userId, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 

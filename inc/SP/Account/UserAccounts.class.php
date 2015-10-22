@@ -26,6 +26,7 @@
 namespace SP\Account;
 
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -71,9 +72,11 @@ class UserAccounts
 
         $query = 'DELETE FROM accUsers WHERE accuser_accountId = :id ' . $queryExcluded;
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -109,7 +112,10 @@ class UserAccounts
 
         $query = 'INSERT INTO accUsers (accuser_accountId, accuser_userId) VALUES ' . implode(',', $values);
 
-        return DB::getQuery($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getQuery($Data);
     }
 
     /**
@@ -122,11 +128,13 @@ class UserAccounts
     {
         $query = 'SELECT accuser_userId FROM accUsers WHERE accuser_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -153,11 +161,13 @@ class UserAccounts
             . 'JOIN usrData ON user_Id = accuser_userId '
             . 'WHERE accuser_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

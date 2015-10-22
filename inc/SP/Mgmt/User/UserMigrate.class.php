@@ -28,6 +28,7 @@ namespace SP\Mgmt\User;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -49,9 +50,11 @@ class UserMigrate
     {
         $query = 'SELECT BIN(user_isMigrate) AS user_isMigrate FROM usrData WHERE user_login = :login LIMIT 1';
 
-        $data['login'] = $userLogin;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userLogin, 'login');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false && $queryRes->user_isMigrate == 1);
     }
@@ -71,7 +74,7 @@ class UserMigrate
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'
-            . 'user_hashSalt = :salt,'
+            . 'user_hashSalt = :hashSalt,'
             . 'user_lastUpdate = NOW(),'
             . 'user_isMigrate = 0 '
             . 'WHERE user_login = :login '
@@ -79,13 +82,15 @@ class UserMigrate
             . 'AND (user_pass = SHA1(CONCAT(user_hashSalt,:passOld)) '
             . 'OR user_pass = MD5(:passOldMd5)) LIMIT 1';
 
-        $data['pass'] = $passdata['pass'];
-        $data['salt'] = $passdata['salt'];
-        $data['login'] = $userLogin;
-        $data['passOld'] = $userPass;
-        $data['passOldMd5'] = $userPass;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userLogin, 'login');
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'hashSalt');
+        $Data->addParam($userPass, 'passOld');
+        $Data->addParam($userPass, 'passOldMd5');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -106,14 +111,17 @@ class UserMigrate
     {
         $query = 'SELECT user_id, user_groupId FROM usrData';
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
         }
 
         foreach ($queryRes as $user) {
-            if (!Groups::addUsersForGroup(array($user->user_groupId), $user->user_id)) {
+            if (!Groups::addUsersForGroup($user->user_groupId, array($user->user_id))) {
                 Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)', _('Error al migrar grupo del usuario'), $user->user_id), Log::ERROR);
             }
         }
@@ -128,6 +136,9 @@ class UserMigrate
     {
         $query = 'UPDATE usrData SET user_isMigrate = 1';
 
-        return DB::getQuery($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getQuery($Data);
     }
 }

@@ -30,6 +30,7 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Core\SPException;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -150,9 +151,11 @@ abstract class ProfileBase
     {
         $query = 'SELECT userprofile_profile FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -183,9 +186,12 @@ abstract class ProfileBase
             $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles ORDER BY userprofile_name';
         }
 
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        return DB::getResults($query, __FUNCTION__);
+        return DB::getResults($Data);
     }
 
     /**
@@ -551,10 +557,12 @@ abstract class ProfileBase
             . 'userprofile_name = :name,'
             . 'userprofile_profile = :profile';
 
-        $data['name'] = $this->getName();
-        $data['profile'] = serialize($this);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getName(), 'name');
+        $Data->addParam(serialize($this), 'profile');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -596,9 +604,11 @@ abstract class ProfileBase
 
         $query = 'DELETE FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
 
-        $data['id'] = $this->getId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getId(), 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -641,11 +651,13 @@ abstract class ProfileBase
             . 'userprofile_profile = :profile '
             . 'WHERE userprofile_id = :id LIMIT 1';
 
-        $data['id'] = $this->getId();
-        $data['name'] = $this->getName();
-        $data['profile'] = serialize($this);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getName(), 'name');
+        $Data->addParam($this->getId(), 'id');
+        $Data->addParam(serialize($this), 'profile');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 

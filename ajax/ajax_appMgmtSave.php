@@ -33,6 +33,7 @@ use SP\Mgmt\Category;
 use SP\Mgmt\Customer;
 use SP\Mgmt\CustomFieldDef;
 use SP\Mgmt\CustomFields;
+use SP\Mgmt\Files;
 use SP\Mgmt\PublicLink;
 use SP\Mgmt\User\Groups;
 use SP\Mgmt\User\Profile;
@@ -580,6 +581,15 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
 
         Response::printJSON(_('Enlace actualizado'), 0, $doActionOnClose);
     }
+} elseif ($actionId === ActionsInterface::ACTION_MGM_FILES_DELETE) {
+    // Verificamos que el ID sea numérico
+    if ($itemId === 0) {
+        Response::printJSON(_('No es un ID de archivo válido'));
+    } elseif (Files::fileDelete($itemId)) {
+        Response::printJSON(_('Archivo eliminado'), 0, $doActionOnClose);
+    }
+
+    Response::printJSON(_('Error al eliminar el archivo'));
 } else {
     Response::printJSON(_('Acción Inválida'));
 }

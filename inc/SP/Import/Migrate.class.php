@@ -32,6 +32,7 @@ use SP\Core\Session;
 use SP\Core\SPException;
 use SP\Storage\DB;
 use SP\Storage\DBUtil;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -213,7 +214,10 @@ class Migrate
         foreach ($tables as $table) {
             $query = 'TRUNCATE TABLE ' . $table;
 
-            if (DB::getQuery($query, __FUNCTION__) === false) {
+            $Data = new QueryData();
+            $Data->setQuery($query);
+
+            if (DB::getQuery($Data) === false) {
                 throw new SPException(SPException::SP_CRITICAL,
                     _('Error al vaciar tabla') . ' (' . $table . ')',
                     DB::$txtError);
@@ -224,9 +228,13 @@ class Migrate
 
         // Limpiar datos de usuarios manteniendo el usuario actual
         if (self::checkAdminAccount($currentUserId)) {
-            $query = 'DELETE FROM usrData WHERE user_id != ' . $currentUserId;
+            $query = 'DELETE FROM usrData WHERE user_id != :userid';
 
-            if (DB::getQuery($query, __FUNCTION__) === false) {
+            $Data = new QueryData();
+            $Data->setQuery($query);
+            $Data->addParam($currentUserId, 'userid');
+
+            if (DB::getQuery($Data) === false) {
                 throw new SPException(SPException::SP_CRITICAL,
                     _('Error al vaciar tabla') . ' (' . $table . ')',
                     DB::$txtError);
@@ -247,9 +255,11 @@ class Migrate
     {
         $query = 'SELECT user_id FROM usrData WHERE user_id = :id AND user_isAdminApp = 1 LIMIT 1';
 
-        $data['id'] = $currentUserId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($currentUserId, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return (DB::$lastNumRows === 0);
     }
@@ -401,24 +411,26 @@ class Migrate
             'account_dateAdd = :dateAdd,' .
             'account_dateEdit = :dateEdit';
 
-        $data['id'] = $account['intAccountId'];
-        $data['userGroupId'] = $account['intUGroupFId'];
-        $data['userId'] = $account['intUserFId'];
-        $data['userEditId'] = $account['intUEditFId'];
-        $data['customerId'] = $customerId;
-        $data['name'] = $account['vacName'];
-        $data['categoryId'] = $account['intCategoryFid'];
-        $data['login'] = $account['vacLogin'];
-        $data['url'] = $account['vacUrl'];
-        $data['pass'] = $account['vacPassword'];
-        $data['iv'] = $account['vacInitialValue'];
-        $data['notes'] = $account['txtNotice'];
-        $data['countView'] = $account['intCountView'];
-        $data['countDecrypt'] = $account['intCountDecrypt'];
-        $data['dateAdd'] = $account['datAdded'];
-        $data['dateEdit'] = $account['datChanged'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($account['intAccountId'], 'id');
+        $Data->addParam($account['intUGroupFId'], 'userGroupId');
+        $Data->addParam($account['intUserFId'], 'userId');
+        $Data->addParam($account['intUEditFId'], 'userEditId');
+        $Data->addParam($customerId, 'customerId');
+        $Data->addParam($account['vacName'], 'name');
+        $Data->addParam($account['intCategoryFid'], 'categoryId');
+        $Data->addParam($account['vacLogin'], 'login');
+        $Data->addParam($account['vacUrl'], 'url');
+        $Data->addParam($account['vacPassword'], 'pass');
+        $Data->addParam($account['vacInitialValue'], 'iv');
+        $Data->addParam($account['txtNotice'], 'notes');
+        $Data->addParam($account['intCountView'], 'countView');
+        $Data->addParam($account['intCountDecrypt'], 'countDecrypt');
+        $Data->addParam($account['datAdded'], 'dateAdd');
+        $Data->addParam($account['datChanged'], 'dateEdit');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             self::$_currentQuery = DBUtil::escape($query);
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al migrar cuenta'),
@@ -469,12 +481,16 @@ class Migrate
      */
     private static function insertAccountsGroups($accountGroup)
     {
-        $query = 'INSERT INTO accGroups SET accgroup_accountId = :accountId,accgroup_groupId = :groudId';
+        $query = 'INSERT INTO accGroups SET ' .
+            'accgroup_accountId = :accountId,' .
+            'accgroup_groupId = :groudId';
 
-        $data['accountId'] = $accountGroup['intAccId'];
-        $data['groupId'] = $accountGroup['intUGroupId'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountGroup['intAccId'], 'accountId');
+        $Data->addParam($accountGroup['intUGroupId'], 'groupId');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear grupos de cuentas'),
                 DB::$txtError);
@@ -575,26 +591,28 @@ class Migrate
             'acchistory_isModify = :isModify,' .
             'acchistory_isDeleted = :isDeleted';
 
-        $data['id'] = $accountHistory['intAccountId'];
-        $data['userGroupId'] = $accountHistory['intUGroupFId'];
-        $data['userId'] = $accountHistory['intUserFId'];
-        $data['userEditId'] = $accountHistory['intUEditFId'];
-        $data['customerId'] = $customerId;
-        $data['name'] = $accountHistory['vacName'];
-        $data['categoryId'] = $accountHistory['intCategoryFid'];
-        $data['login'] = $accountHistory['vacLogin'];
-        $data['url'] = $accountHistory['vacUrl'];
-        $data['pass'] = $accountHistory['vacPassword'];
-        $data['iv'] = $accountHistory['vacInitialValue'];
-        $data['notes'] = $accountHistory['txtNotice'];
-        $data['countView'] = $accountHistory['intCountView'];
-        $data['countDecrypt'] = $accountHistory['intCountDecrypt'];
-        $data['dateAdd'] = $accountHistory['datAdded'];
-        $data['dateEdit'] = $accountHistory['datChanged'];
-        $data['isModify'] = $accountHistory['blnModificada'];
-        $data['isDeleted'] = $accountHistory['blnEliminada'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountHistory['intAccountId'], 'id');
+        $Data->addParam($accountHistory['intUGroupFId'], 'userGroupId');
+        $Data->addParam($accountHistory['intUserFId'], 'userId');
+        $Data->addParam($accountHistory['intUEditFId'], 'userEditId');
+        $Data->addParam($customerId, 'customerId');
+        $Data->addParam($accountHistory['vacName'], 'name');
+        $Data->addParam($accountHistory['intCategoryFid'], 'categoryId');
+        $Data->addParam($accountHistory['vacLogin'], 'login');
+        $Data->addParam($accountHistory['vacUrl'], 'url');
+        $Data->addParam($accountHistory['vacPassword'], 'pass');
+        $Data->addParam($accountHistory['vacInitialValue'], 'iv');
+        $Data->addParam($accountHistory['txtNotice'], 'notes');
+        $Data->addParam($accountHistory['intCountView'], 'countView');
+        $Data->addParam($accountHistory['intCountDecrypt'], 'countDecrypt');
+        $Data->addParam($accountHistory['datAdded'], 'dateAdd');
+        $Data->addParam($accountHistory['datChanged'], 'dateEdit');
+        $Data->addParam($accountHistory['blnModificada'], 'isModify');
+        $Data->addParam($accountHistory['blnEliminada'], 'isDeleted');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear historico de cuentas'),
                 DB::$txtError);
@@ -658,14 +676,16 @@ class Migrate
             . 'accfile_content = :blobcontent,'
             . 'accfile_extension = :extension';
 
-        $data['id'] = $accountFile['intAccountId'];
-        $data['name'] = $accountFile['vacName'];
-        $data['type'] = $accountFile['vacType'];
-        $data['size'] = $accountFile['intSize'];
-        $data['blobcontent'] = $accountFile['blobContent'];
-        $data['extension'] = $accountFile['vacExtension'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountFile['intAccountId'], 'id');
+        $Data->addParam($accountFile['vacName'], 'name');
+        $Data->addParam($accountFile['vacType'], 'type');
+        $Data->addParam($accountFile['intSize'], 'size');
+        $Data->addParam($accountFile['blobContent'], 'blobcontent');
+        $Data->addParam($accountFile['vacExtension'], 'extension');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear archivos de cuentas'),
                 DB::$txtError);
@@ -717,10 +737,12 @@ class Migrate
     {
         $query = 'INSERT INTO categories SET category_id = :id,category_name = :name';
 
-        $data['id'] = $accountCategory['intCategoryId'];
-        $data['name'] = $accountCategory['vacCategoryName'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountCategory['intCategoryId'], 'id');
+        $Data->addParam($accountCategory['vacCategoryName'], 'name');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear categorías de cuentas'),
                 DB::$txtError);
@@ -812,24 +834,26 @@ class Migrate
             . 'user_isDisabled = 1,'
             . 'user_isMigrate = 1';
 
-        $data['id'] = $users['intUserId'];
-        $data['name'] = $users['vacUName'];
-        $data['groupId'] = $users['intUGroupFid'];
-        $data['login'] = $users['vacULogin'];
-        $data['pass'] = $users['vacUPassword'];
-        $data['mpass'] = $users['vacUserMPwd'];
-        $data['miv'] = $users['vacUserMIv'];
-        $data['email'] = $users['vacUEmail'];
-        $data['notes'] = $users['txtUNotes'];
-        $data['count'] = $users['intUCount'];
-        $data['lastLogin'] = $users['datULastLogin'];
-        $data['lastUpdate'] = $users['datULastUpdate'];
-        $data['lastUpdateMPass'] = $users['datUserLastUpdateMPass'];
-        $data['isAdminApp'] = $users['blnIsAdminApp'];
-        $data['isAdminAcc'] = $users['blnIsAdminAcc'];
-        $data['isLdap'] = $users['blnFromLdap'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($users['intUserId'], 'id');
+        $Data->addParam($users['vacUName'], 'name');
+        $Data->addParam($users['intUGroupFid'], 'groupId');
+        $Data->addParam($users['vacULogin'], 'login');
+        $Data->addParam($users['vacUPassword'], 'pass');
+        $Data->addParam($users['vacUserMPwd'], 'mpass');
+        $Data->addParam($users['vacUserMIv'], 'miv');
+        $Data->addParam($users['vacUEmail'], 'email');
+        $Data->addParam($users['txtUNotes'], 'notes');
+        $Data->addParam($users['intUCount'], 'count');
+        $Data->addParam($users['datULastLogin'], 'lastLogin');
+        $Data->addParam($users['datULastUpdate'], 'lastUpdate');
+        $Data->addParam($users['datUserLastUpdateMPass'], 'lastUpdateMPass');
+        $Data->addParam($users['blnIsAdminApp'], 'isAdminApp');
+        $Data->addParam($users['blnIsAdminAcc'], 'isAdminAcc');
+        $Data->addParam($users['blnFromLdap'], 'isLdap');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear usuarios'),
                 DB::$txtError);
@@ -884,11 +908,13 @@ class Migrate
             . 'usergroup_name = :name,'
             . 'usergroup_description = :description';
 
-        $data['id'] = $usersGroups['intUGroupId'];
-        $data['name'] = $usersGroups['vacUGroupName'];
-        $data['description'] = $usersGroups['vacUGroupDesc'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($usersGroups['intUGroupId'], 'id');
+        $Data->addParam($usersGroups['vacUGroupName'], 'name');
+        $Data->addParam($usersGroups['vacUGroupDesc'], 'description');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al crear los grupos de usuarios'),
                 DB::$txtError);

@@ -208,7 +208,7 @@ class Minify
      * @param string $file
      * @param bool   $minify Si es necesario reducir
      */
-    public function addFile($file, $minify = false)
+    public function addFile($file, $minify = true)
     {
         if (strrpos($file, ',')) {
             $files = explode(',', $file);
@@ -224,7 +224,7 @@ class Minify
             $this->_files[] = array(
                 'base' => $this->_base,
                 'name' => $file,
-                'min' => $this->needsMinify($file)
+                'min' => ($minify === true && $this->needsMinify($file))
             );
         }
     }

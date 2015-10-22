@@ -30,6 +30,7 @@ use SP\Core\Crypt;
 use SP\Storage\DB;
 use SP\Log\Log;
 use SP\Core\SPException;
+use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -63,11 +64,13 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'WHERE acchistory_accountId = :id '
             . 'ORDER BY acchistory_id DESC';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -225,9 +228,12 @@ class AccountHistory extends AccountBase implements AccountInterface
     {
         $query = 'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
 
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        return DB::getResults($query, __FUNCTION__);
+        return DB::getResults($Data);
     }
 
     /**
@@ -243,10 +249,12 @@ class AccountHistory extends AccountBase implements AccountInterface
             'WHERE acchistory_id = :id ' .
             'AND acchistory_mPassHash = :mPassHash';
 
-        $data['id'] = (is_null($id)) ? $this->getAccountId() : $id;
-        $data['mPassHash'] = ConfigDB::getValue('masterPwd');
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam((is_null($id)) ? $this->getAccountId() : $id, 'id');
+        $Data->addParam(ConfigDB::getValue('masterPwd'), 'mPassHash');
 
-        return (DB::getResults($query, __FUNCTION__, $data) !== false);
+        return (DB::getResults($Data) !== false);
     }
 
     /**
@@ -266,9 +274,11 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'FROM accHistory '
             . 'WHERE acchistory_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -297,12 +307,14 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_mPassHash = :newHash '
             . 'WHERE acchistory_id = :id';
 
-        $data['accountPass'] = $this->getAccountPass();
-        $data['accountIV'] = $this->getAccountIV();
-        $data['newHash'] = $newHash;
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
+        $Data->addParam($this->getAccountPass(), 'accountPass');
+        $Data->addParam($this->getAccountIV(), 'accountIV');
+        $Data->addParam($newHash, 'newHash');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -349,9 +361,11 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
             . 'WHERE acchistory_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
@@ -394,24 +408,26 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_isDeleted = :isDelete,'
             . 'acchistory_mPassHash = :masterPwd';
 
-        $data['account_id'] = $this->getAccountId();
-        $data['accountCustomerId'] = $this->getAccountCustomerId();
-        $data['accountCategoryId'] = $this->getAccountCategoryId();
-        $data['accountName'] = $this->getAccountName();
-        $data['accountLogin'] = $this->getAccountLogin();
-        $data['accountUrl'] = $this->getAccountUrl();
-        $data['accountPass'] = $this->getAccountPass();
-        $data['accountIV'] = $this->getAccountIV();
-        $data['accountNotes'] = $this->getAccountNotes();
-        $data['accountUserId'] = $this->getAccountUserId();
-        $data['accountUserGroupId'] = $this->getAccountUserGroupId();
-        $data['accountOtherUserEdit'] = $this->getAccountOtherUserEdit();
-        $data['accountOtherGroupEdit'] = $this->getAccountOtherGroupEdit();
-        $data['isModify'] = $this->isIsModify();
-        $data['isDelete'] = $this->isIsDelete();
-        $data['masterPwd'] = ConfigDB::getValue('masterPwd');
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'account_id');
+        $Data->addParam($this->getAccountCustomerId(), 'accountCustomerId');
+        $Data->addParam($this->getAccountCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->getAccountName(), 'accountName');
+        $Data->addParam($this->getAccountLogin(), 'accountLogin');
+        $Data->addParam($this->getAccountUrl(), 'accountUrl');
+        $Data->addParam($this->getAccountPass(), 'accountPass');
+        $Data->addParam($this->getAccountIV(), 'accountIV');
+        $Data->addParam($this->getAccountNotes(), 'accountNotes');
+        $Data->addParam($this->getAccountUserId(), 'accountUserId');
+        $Data->addParam($this->getAccountUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->getAccountOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->isIsModify(), 'isModify');
+        $Data->addParam($this->isIsDelete(), 'isDelete');
+        $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -427,9 +443,11 @@ class AccountHistory extends AccountBase implements AccountInterface
     {
         $query = 'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -490,12 +508,14 @@ class AccountHistory extends AccountBase implements AccountInterface
             . ':masterPwd '
             . 'FROM accounts WHERE account_id = :account_id';
 
-        $data['account_id'] = $id;
-        $data['isModify'] = ($isDelete === false) ? 1 : 0;
-        $data['isDelete'] = ($isDelete === false) ? 0 : 1;
-        $data['masterPwd'] = ConfigDB::getValue('masterPwd');
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'account_id');
+        $Data->addParam(($isDelete === false) ? 1 : 0, 'isModify');
+        $Data->addParam(($isDelete === true) ? 1 : 1, 'isDelete');
+        $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -509,9 +529,11 @@ class AccountHistory extends AccountBase implements AccountInterface
     {
         $query = 'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = :id LIMIT 1';
 
-        $data['id'] = $historyId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($historyId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'), 0);

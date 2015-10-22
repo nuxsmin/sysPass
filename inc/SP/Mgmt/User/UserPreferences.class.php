@@ -27,6 +27,7 @@ namespace SP\Mgmt\User;
 
 use SP\Core\SPException;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -88,9 +89,11 @@ class UserPreferences
     {
         $query = 'SELECT user_preferences FROM usrData WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false || is_null($queryRes->user_preferences)) {
             return new UserPreferences();
@@ -228,10 +231,12 @@ class UserPreferences
             . 'user_preferences = :preferences '
             . 'WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $this->getId();
-        $data['preferences'] = serialize($this);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getId(), 'id');
+        $Data->addParam(serialize($this), 'preferences');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 

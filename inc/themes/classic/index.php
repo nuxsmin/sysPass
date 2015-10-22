@@ -29,5 +29,5 @@ $themeInfo = array(
     'version' => '1.0',
     'targetversion' => '1.2.0',
     'js' => array('functions.min.js'),
-    'css' => array('jquery-ui.theme.min.css', 'styles.min.css')
+    'css' => array('jquery-ui.theme.min.css', 'alertify-custom.min.css', 'styles.min.css')
 );

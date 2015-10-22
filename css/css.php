@@ -41,7 +41,7 @@ if (!$file) {
     $Minify->addFile('jquery-ui.structure.min.css');
     $Minify->addFile('chosen.min.css');
     $Minify->addFile('chosen-custom.min.css');
-    $Minify->addFile('alertify-bootstrap-3.min.css');
+    $Minify->addFile('alertify.min.css');
     $Minify->addFile('jquery.tagsinput.min.css');
     $Minify->addFile('jquery.fancybox.min.css');
     $Minify->addFile('fonts.min.css');

@@ -33,6 +33,7 @@ use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -261,10 +262,12 @@ abstract class PublicLinkBase
     {
         $query = 'DELETE FROM publicLinks WHERE  publicLink_id = :id LIMIT 1';
 
-        $data['id'] = $this->_itemId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_id, 'id');
 
         try {
-            DB::getQuery($query, __FUNCTION__, $data);
+            DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'), _('Revise el registro de eventos para más detalles'));
         }
@@ -289,12 +292,14 @@ abstract class PublicLinkBase
             'publicLink_itemId = :itemid, ' .
             'publicLink_linkData = :linkdata';
 
-        $data['hash'] = $this->createLinkHash();
-        $data['itemid'] = $this->_itemId;
-        $data['linkdata'] = serialize($this);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->createLinkHash(), 'hash');
+        $Data->addParam($this->_itemId, 'itemid');
+        $Data->addParam(serialize($this), 'linkdata');
 
         try {
-            DB::getQuery($query, __FUNCTION__, $data);
+            DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'), _('Revise el registro de eventos para más detalles'));
         }
@@ -351,11 +356,13 @@ abstract class PublicLinkBase
             'publicLink_hash = :hash ' .
             'WHERE publicLink_id = :id LIMIT 1';
 
-        $data['linkdata'] = serialize($this);
-        $data['hash'] = $this->_linkHash;
-        $data['id'] = $this->_id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_linkHash, 'hash');
+        $Data->addParam($this->_id, 'id');
+        $Data->addParam(serialize($this), 'linkdata');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**

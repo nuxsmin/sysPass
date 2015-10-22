@@ -28,6 +28,7 @@ namespace SP\Storage;
 use PDO;
 use SP\Log\Log;
 use SP\Core\SPException;
+use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -76,16 +77,6 @@ class DB
      * @var array Resultados de la consulta
      */
     private $_lastResult = null;
-    /**
-     * @var string Nombre de la función que realiza la consulta
-     */
-    private $_querySource;
-    /**
-     * Datos para el objeto PDOStatement
-     *
-     * @var array
-     */
-    private $_stData;
 
     /**
      * @return int
@@ -106,30 +97,26 @@ class DB
     /**
      * Obtener los resultados de una consulta.
      *
-     * @param  $query       string    con la consulta a realizar
-     * @param  $querySource string    con el nombre de la función que realiza la consulta
-     * @param  $data        array     con los datos de la consulta
+     * @param  $queryData  QueryData Los datos de la consulta
      * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
-    public static function getResults($query, $querySource, &$data = null)
+    public static function getResults(QueryData $queryData)
     {
-        if (empty($query)) {
+        if (empty($queryData->getQuery())) {
             self::resetVars();
             return false;
         }
 
         try {
             $db = new DB();
-            $db->_querySource = $querySource;
-            $db->_stData = $data;
-            $doQuery = $db->doQuery($query, $querySource, self::$_returnRawData);
-            self::$lastNumRows = (self::$_fullRowCount === false) ? $db->_numRows : $db->getFullRowCount($query);
+            $doQuery = $db->doQuery($queryData, self::$_returnRawData);
+            self::$lastNumRows = (self::$_fullRowCount === false) ? $db->_numRows : $db->getFullRowCount($queryData);
         } catch (SPException $e) {
-            self::logDBException($query, $e->getMessage(), $e->getCode(), $querySource);
+            self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             return false;
         }
 
-        if (self::$_returnRawData && is_object($doQuery) && get_class($doQuery) == "PDOStatement") {
+        if (self::$_returnRawData && is_object($doQuery) && get_class($doQuery) === "PDOStatement") {
             return $doQuery;
         }
 
@@ -160,21 +147,20 @@ class DB
     /**
      * Realizar una consulta a la BBDD.
      *
-     * @param $query       string  con la consulta a realizar
-     * @param $querySource string  con el nombre de la función que realiza la consulta
+     * @param $queryData QueryData Los datos de la consulta
      * @param $getRawData  bool    realizar la consulta para obtener registro a registro
      * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
      * @throws SPException
      */
-    public function doQuery(&$query, $querySource, $getRawData = false)
+    public function doQuery(QueryData $queryData, $getRawData = false)
     {
-        $isSelect = preg_match("/^(select|show)\s/i", $query);
+        $isSelect = preg_match("/^(select|show)\s/i", $queryData->getQuery());
 
         // Limpiar valores de caché y errores
         $this->_lastResult = array();
 
         try {
-            $queryRes = $this->prepareQueryData($query);
+            $queryRes = $this->prepareQueryData($queryData);
         } catch (SPException $e) {
             throw $e;
         }
@@ -196,17 +182,17 @@ class DB
     /**
      * Asociar los parámetros de la consulta utilizando el tipo adecuado
      *
-     * @param &$query  string La consulta a realizar
+     * @param $queryData QueryData Los datos de la consulta
      * @param $isCount bool   Indica si es una consulta de contador de registros
      * @return bool|\PDOStatement
      * @throws SPException
      */
-    private function prepareQueryData(&$query, $isCount = false)
+    private function prepareQueryData(QueryData $queryData, $isCount = false)
     {
         if ($isCount === true) {
             // No incluimos en el array de parámetros de posición los valores
             // utilizados para LIMIT
-            preg_match_all('/(\?|:)/', $query, $count);
+            preg_match_all('/(\?|:)/', $queryData->getQuery(), $count);
 
             // Indice a partir del cual no se incluyen valores
             $paramMaxIndex = (count($count[1]) > 0) ? count($count[1]) : 0;
@@ -215,11 +201,11 @@ class DB
         try {
             $db = DBConnectionFactory::getFactory()->getConnection();
 
-            if (is_array($this->_stData)) {
-                $sth = $db->prepare($query);
+            if (is_array($queryData->getParams())) {
+                $sth = $db->prepare($queryData->getQuery());
                 $paramIndex = 0;
 
-                foreach ($this->_stData as $param => $value) {
+                foreach ($queryData->getParams() as $param => $value) {
                     // Si la clave es un número utilizamos marcadores de posición "?" en
                     // la consulta. En caso contrario marcadores de nombre
                     $param = (is_int($param)) ? $param + 1 : ':' . $param;
@@ -243,7 +229,7 @@ class DB
 
                 $sth->execute();
             } else {
-                $sth = $db->query($query);
+                $sth = $db->query($queryData->getQuery());
             }
 
             DB::$lastId = $db->lastInsertId();
@@ -258,13 +244,13 @@ class DB
     /**
      * Obtener el número de filas de una consulta realizada
      *
-     * @param &$query string La consulta para contar los registros
+     * @param $queryData QueryData Los datos de la consulta
      * @return int Número de files de la consulta
      * @throws SPException
      */
-    private function getFullRowCount(&$query)
+    private function getFullRowCount(QueryData $queryData)
     {
-        if (empty($query)) {
+        if (empty($queryData->getQuery())) {
             return 0;
         }
 
@@ -276,18 +262,18 @@ class DB
         );
         $replace = array('', 'SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM', '');
 
-        preg_match('/SELECT DISTINCT\s([\w_]*),.*\sFROM\s([\w_]*)\s(LEFT|RIGHT|WHERE).*/iU', $query, $match);
+//        preg_match('/SELECT DISTINCT\s([\w_]*),.*\sFROM\s([\w_]*)\s(LEFT|RIGHT|WHERE).*/iU', $queryData->getQuery(), $match);
 
-        $query = preg_replace($patterns, $replace, $query);
+        $query = preg_replace($patterns, $replace, $queryData->getQuery());
 
         try {
             $db = DBConnectionFactory::getFactory()->getConnection();
 
-            if (!is_array($this->_stData)) {
+            if (!is_array($queryData->getParams())) {
                 $queryRes = $db->query($query);
                 $num = intval($queryRes->fetchColumn());
             } else {
-                if ($queryRes = $this->prepareQueryData($query, true)) {
+                if ($queryRes = $this->prepareQueryData($queryData, true)) {
                     $num = intval($queryRes->fetchColumn());
                 }
             }
@@ -307,10 +293,14 @@ class DB
      * @param $query     string  La consulta que genera el error
      * @param $errorMsg  string  El mensaje de error
      * @param $errorCode int     El código de error
+     * @param $queryFunction
      */
-    private static function logDBException($query, $errorMsg, $errorCode, $querySource)
+    private static function logDBException($query, $errorMsg, $errorCode, $queryFunction)
     {
-        $Log = new Log($querySource, Log::ERROR);
+        $caller = Util::traceLastCall($queryFunction);
+
+        $Log = new Log($caller, Log::ERROR);
+        $Log->setLogLevel(Log::ERROR);
         $Log->addDescription($errorMsg . '(' . $errorCode . ')');
         $Log->addDetails('SQL', DBUtil::escape($query));
         $Log->writeLog();
@@ -322,26 +312,22 @@ class DB
     /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param       $query       string La consulta a realizar
-     * @param       $querySource string La función orígen de la consulta
-     * @param array $data        Los valores de los parámetros de la consulta
-     * @param       $getRawData  bool   Si se deben de obtener los datos como PDOStatement
+     * @param QueryData       $queryData   Los datos para realizar la consulta
+     * @param                 $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */
-    public static function getQuery($query, $querySource, array &$data = null, $getRawData = false)
+    public static function getQuery(QueryData $queryData, $getRawData = false)
     {
-        if (empty($query)) {
+        if (empty($queryData->getQuery())) {
             return false;
         }
 
         try {
             $db = new DB();
-            $db->_querySource = $querySource;
-            $db->_stData = $data;
-            $db->doQuery($query, $querySource, $getRawData);
+            $db->doQuery($queryData, $getRawData);
             DB::$lastNumRows = $db->_numRows;
         } catch (SPException $e) {
-            self::logDBException($query, $e->getMessage(), $e->getCode(), $querySource);
+            self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             self::$txtError = $e->getMessage();
             self::$numError = $e->getCode();
 
@@ -367,16 +353,5 @@ class DB
     public static function setFullRowCount()
     {
         self::$_fullRowCount = true;
-    }
-
-
-    /**
-     * Establecer los parámetos de la consulta preparada
-     *
-     * @param &$data array Con los datos de los parámetros de la consulta
-     */
-    public function setParamData(&$data)
-    {
-        $this->_stData = $data;
     }
 }

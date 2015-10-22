@@ -26,6 +26,8 @@
 
 namespace SP\Mgmt;
 
+use SP\Account\AccountUtil;
+use SP\Storage\QueryData;
 use SP\Util\ImageUtil;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -56,21 +58,23 @@ class Files
             . "accfile_extension = :extension,"
             . "accfile_thumb = :thumbnail";
 
-        $data['accountId'] = $accountId;
-        $data['name'] = $fileData['name'];
-        $data['type'] = $fileData['type'];
-        $data['size'] = $fileData['size'];
-        $data['blobcontent'] = $fileData['content'];
-        $data['extension'] = $fileData['extension'];
-        $data['thumbnail'] = ImageUtil::createThumbnail($fileData['content']);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'accountId');
+        $Data->addParam($fileData['name'], 'name');
+        $Data->addParam($fileData['type'], 'type');
+        $Data->addParam($fileData['size'], 'size');
+        $Data->addParam($fileData['content'], 'blobcontent');
+        $Data->addParam($fileData['extension'], 'extension');
+        $Data->addParam(ImageUtil::createThumbnail($fileData['content']), 'thumbnail');
 
         $Log = new Log(_('Subir Archivo'));
-        $Log->addDetails(_('Cuenta'), $accountId);
+        $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($accountId));
         $Log->addDetails(_('Archivo'), $fileData['name']);
         $Log->addDetails(_('Tipo'), $fileData['type']);
         $Log->addDetails(_('Tamaño'), round($fileData['size'] / 1024, 2) . " KB");
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === true) {
+        if (DB::getQuery($Data) === true) {
             $Log->addDescription(_('Archivo subido'));
             $Log->writeLog();
 
@@ -99,9 +103,11 @@ class Files
         // Obtenemos el archivo de la BBDD
         $query = 'SELECT * FROM accFiles WHERE accfile_id = :id LIMIT 1';
 
-        $data['id'] = $fileId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($fileId, 'id');
 
-        return DB::getResults($query, __FUNCTION__, $data);
+        return DB::getResults($Data);
     }
 
     /**
@@ -117,15 +123,18 @@ class Files
         // Eliminamos el archivo de la BBDD
         $query = 'DELETE FROM accFiles WHERE accfile_id = :id LIMIT 1';
 
-        $data['id'] = $fileId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($fileId, 'id');
 
         $Log = new Log(_('Eliminar Archivo'));
         $Log->addDetails(_('ID'), $fileId);
+        $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($fileInfo->accfile_accountId));
         $Log->addDetails(_('Archivo'), $fileInfo->accfile_name);
         $Log->addDetails(_('Tipo'), $fileInfo->accfile_type);
         $Log->addDetails(_('Tamaño'), round($fileInfo->accfile_size / 1024, 2) . " KB");
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === true) {
+        if (DB::getQuery($Data) === true) {
             $Log->addDescription(_('Archivo eliminado'));
             $Log->writeLog();
 
@@ -152,13 +161,16 @@ class Files
     {
         $query = "SELECT accfile_name,"
             . "accfile_size,"
-            . "accfile_type "
+            . "accfile_type, "
+            . "accfile_accountId "
             . "FROM accFiles "
             . "WHERE accfile_id = :id LIMIT 1";
 
-        $data['id'] = $fileId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($fileId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         return $queryRes;
     }
@@ -169,7 +181,7 @@ class Files
      * @param int $accountId con el Id de la cuenta
      * @return false|array con los archivos de la cuenta.
      */
-    public static function getFileList($accountId)
+    public static function getAccountFileList($accountId)
     {
         $query = "SELECT accfile_id,"
             . "accfile_name,"
@@ -179,11 +191,13 @@ class Files
             . "FROM accFiles "
             . "WHERE accfile_accountId = :id";
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -215,9 +229,11 @@ class Files
         // Obtenemos los archivos de la BBDD para dicha cuenta
         $query = 'SELECT accfile_id FROM accFiles WHERE accfile_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }
@@ -233,8 +249,42 @@ class Files
     {
         $query = 'DELETE FROM accFiles WHERE accfile_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
+    }
+
+    /**
+     * Obtener el listado de archivos
+     *
+     * @return false|array Con los archivos de las cuentas.
+     */
+    public static function getFileList()
+    {
+        $query = 'SELECT accfile_id,'
+            . 'accfile_name,'
+            . 'CONCAT(ROUND(accfile_size/1000, 2), " KB") AS accfile_size,'
+            . 'accfile_thumb,'
+            . 'accfile_type,'
+            . 'account_name,'
+            . 'customer_name '
+            . 'FROM accFiles '
+            . 'JOIN accounts ON account_id = accfile_accountId '
+            . 'JOIN customers ON customer_id = account_customerId';
+
+        DB::setReturnArray();
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        return $queryRes;
     }
 }

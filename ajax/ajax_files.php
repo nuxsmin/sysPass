@@ -23,6 +23,7 @@
  *
  */
 
+use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
@@ -141,6 +142,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     }
 } elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD
     || $actionId === ActionsInterface::ACTION_ACC_FILES_VIEW
+    || $actionId === ActionsInterface::ACTION_MGM_FILES_VIEW
 ) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
@@ -161,6 +163,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 
     $Log->setAction(_('Descargar Archivo'));
     $Log->addDetails(_('ID'), $fileId);
+    $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($file->accfile_accountId));
     $Log->addDetails(_('Archivo'), $fileName);
     $Log->addDetails(_('Tipo'), $fileType);
     $Log->addDetails(_('Tamaño'), round($fileSize / 1024, 2) . " KB");

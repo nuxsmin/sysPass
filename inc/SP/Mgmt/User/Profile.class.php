@@ -29,6 +29,7 @@ namespace SP\Mgmt\User;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -69,7 +70,10 @@ class Profile extends ProfileBase
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             $Log->setLogLevel(Log::ERROR);
@@ -77,7 +81,7 @@ class Profile extends ProfileBase
             return false;
         }
 
-        foreach ($queryRes as $oldProfile){
+        foreach ($queryRes as $oldProfile) {
             $profile = new Profile();
             $profile->setId($oldProfile->id);
             $profile->setName($oldProfile->name);
@@ -98,7 +102,7 @@ class Profile extends ProfileBase
             $profile->setMgmProfiles($oldProfile->pProfiles);
             $profile->setEvl($oldProfile->pEventlog);
 
-            if ($profile->profileUpdate() === false){
+            if ($profile->profileUpdate() === false) {
                 return false;
             }
         }
@@ -125,7 +129,9 @@ class Profile extends ProfileBase
             . 'DROP COLUMN userProfile_pEdit,'
             . 'DROP COLUMN userProfile_pView';
 
-        $queryRes = DB::getQuery($query, __FUNCTION__);
+        $Data->setQuery($query);
+
+        $queryRes = DB::getQuery($Data);
 
         if ($queryRes) {
             $Log->addDescription(_('Operación realizada correctamente'));
@@ -143,7 +149,7 @@ class Profile extends ProfileBase
     /**
      * Comprobar si un perfil existe
      *
-     * @param $id int El id de perfil
+     * @param $id   int El id de perfil
      * @param $name string El nombre del perfil
      * @return bool
      */
@@ -153,15 +159,18 @@ class Profile extends ProfileBase
             . 'FROM usrProfiles '
             . 'WHERE UPPER(userprofile_name) = :name';
 
-        $data['name'] = $name;
+        $Data = new QueryData();
+        $Data->addParam($name, 'name');
 
         if ($id !== 0) {
             $query .= ' AND userprofile_id != :id';
 
-            $data['id'] = $id;
+            $Data->addParam($id, 'id');
         }
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows >= 1);
+        $Data->setQuery($query);
+
+        return (DB::getQuery($Data) === true && DB::$lastNumRows >= 1);
     }
 
     /**
@@ -186,9 +195,11 @@ class Profile extends ProfileBase
     {
         $query = 'SELECT user_profileId FROM usrData WHERE user_profileId = :id';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }
@@ -203,11 +214,13 @@ class Profile extends ProfileBase
     {
         $query = 'SELECT user_login FROM usrData WHERE user_profileId = :id';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
         DB::setReturnArray();
 
-        return DB::getResults($query, __FUNCTION__, $data);
+        return DB::getResults($Data);
     }
 
     /**
@@ -220,9 +233,11 @@ class Profile extends ProfileBase
     {
         $query = 'SELECT userprofile_name FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

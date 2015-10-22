@@ -340,7 +340,7 @@ abstract class AccountBase
      */
     public function getAccountOtherUserEdit()
     {
-        return $this->_accountOtherUserEdit;
+        return intval($this->_accountOtherUserEdit);
     }
 
     /**
@@ -356,7 +356,7 @@ abstract class AccountBase
      */
     public function getAccountOtherGroupEdit()
     {
-        return $this->_accountOtherGroupEdit;
+        return intval($this->_accountOtherGroupEdit);
     }
 
     /**
@@ -405,7 +405,6 @@ abstract class AccountBase
 
         if ($this->getAccountModHash()) {
             $hashItems = $this->getAccountModHash() . (int)$users . (int)$groups;
-            //error_log("HASH MySQL: ".$hashItems);
         } else {
             $hashItems = $this->getAccountName() .
                 $this->getAccountCategoryId() .
@@ -413,11 +412,10 @@ abstract class AccountBase
                 $this->getAccountLogin() .
                 $this->getAccountUrl() .
                 $this->getAccountNotes() .
-                $this->getAccountOtherUserEdit() .
-                $this->getAccountOtherGroupEdit() .
+                (int)$this->getAccountOtherUserEdit() .
+                (int)$this->getAccountOtherGroupEdit() .
                 (int)$users .
                 (int)$groups;
-            //error_log("HASH PHP: ".$hashItems);
         }
 
         return md5($hashItems);

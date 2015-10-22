@@ -29,6 +29,7 @@ use SP\Core\Crypt;
 use SP\Storage\DB;
 use SP\Log\Log;
 use SP\Core\SPException;
+use SP\Storage\QueryData;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -88,11 +89,13 @@ class CustomFields extends CustomFieldsBase
             'FROM customFieldsDef ' .
             'WHERE customfielddef_module = :module';
 
-        $data['module'] = $moduleId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($moduleId, 'module');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -151,12 +154,14 @@ class CustomFields extends CustomFieldsBase
             'AND customfielddata_itemId = :itemid ' .
             'ORDER BY customfielddef_id';
 
-        $data['moduleid'] = $moduleId;
-        $data['itemid'] = $itemId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($moduleId, 'moduleid');
+        $Data->addParam($itemId, 'itemid');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -213,13 +218,15 @@ class CustomFields extends CustomFieldsBase
             'AND customfielddata_itemId = :itemid) ' .
             'ORDER BY customfielddef_id';
 
-        $data['moduleidA'] = $moduleId;
-        $data['moduleidB'] = $moduleId;
-        $data['itemid'] = $itemId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($moduleId, 'moduleidA');
+        $Data->addParam($moduleId, 'moduleidB');
+        $Data->addParam($itemId, 'itemid');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -256,10 +263,12 @@ class CustomFields extends CustomFieldsBase
             'customfielddata_moduleId = :moduleid ' .
             'WHERE customfielddata_defId = :defid';
 
-        $data['moduleid'] = $moduleId;
-        $data['defid'] = $defId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($moduleId, 'moduleid');
+        $Data->addParam($defId, 'defid');
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes;
     }
@@ -273,9 +282,12 @@ class CustomFields extends CustomFieldsBase
     public static function deleteCustomFieldForDefinition($defId)
     {
         $query = 'DELETE FROM customFieldsData WHERE customfielddata_defId = :defid';
-        $data['defid'] = $defId;
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($defId, 'defid');
+
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes;
     }
@@ -295,9 +307,12 @@ class CustomFields extends CustomFieldsBase
 
         $query = 'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
 
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             $Log->addDescription(_('Fin'));
@@ -321,11 +336,13 @@ class CustomFields extends CustomFieldsBase
                 'customfielddata_iv = :iv ' .
                 'WHERE customfielddata_id = :id ';
 
-            $data['id'] = $customField->customfielddata_id;
-            $data['data'] = $fieldCryptData['data'];
-            $data['iv'] = $fieldCryptData['iv'];
+            $Data = new QueryData();
+            $Data->setQuery($query);
+            $Data->addParam($customField->customfielddata_id, 'id');
+            $Data->addParam($fieldCryptData['data'], 'data');
+            $Data->addParam($fieldCryptData['iv'], 'iv');
 
-            if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+            if (DB::getQuery($Data) === false) {
                 $errors[] = $customField->customfielddata_id;
             } else {
                 $success[] = $customField->customfielddata_id;
@@ -389,13 +406,15 @@ class CustomFields extends CustomFieldsBase
             'AND customfielddata_itemId = :itemid ' .
             'AND customfielddata_defId = :defid';
 
-        $data['itemid'] = $this->_itemId;
-        $data['moduleid'] = $this->_module;
-        $data['defid'] = $this->_id;
-        $data['data'] = $cryptData['data'];
-        $data['iv'] = $cryptData['iv'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_itemId, 'itemid');
+        $Data->addParam($this->_module, 'moduleid');
+        $Data->addParam($this->_id, 'defid');
+        $Data->addParam($cryptData['data'], 'data');
+        $Data->addParam($cryptData['iv'], 'iv');
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes;
     }
@@ -415,15 +434,18 @@ class CustomFields extends CustomFieldsBase
             'WHERE customfielddata_moduleId = :moduleid ' .
             'AND customfielddata_itemId = :itemid ';
 
-        $data['itemid'] = $itemId;
-        $data['moduleid'] = $moduleId;
+        $Data = new QueryData();
 
         if (!is_null($defId)) {
             $query .= 'AND customfielddata_defId = :defid';
-            $data['defid'] = $defId;
+            $Data->addParam($defId, 'defid');
         }
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        $Data->setQuery($query);
+        $Data->addParam($itemId, 'itemid');
+        $Data->addParam($moduleId, 'moduleid');
+
+        DB::getQuery($Data);
 
         return (DB::$lastNumRows >= 1);
     }
@@ -449,13 +471,15 @@ class CustomFields extends CustomFieldsBase
             'customfielddata_data = :data, ' .
             'customfielddata_iv = :iv';
 
-        $data['itemid'] = $this->_itemId;
-        $data['moduleid'] = $this->_module;
-        $data['defid'] = $this->_id;
-        $data['data'] = $cryptData['data'];
-        $data['iv'] = $cryptData['iv'];
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_module, 'moduleid');
+        $Data->addParam($this->_itemId, 'itemid');
+        $Data->addParam($this->_id, 'defid');
+        $Data->addParam($cryptData['data'], 'data');
+        $Data->addParam($cryptData['iv'], 'iv');
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes;
     }
@@ -471,10 +495,13 @@ class CustomFields extends CustomFieldsBase
         $query = 'DELETE FROM customFieldsData ' .
             'WHERE customfielddata_itemId = :itemid ' .
             'AND customfielddata_moduleId = :moduleid LIMIT 1';
-        $data['itemid'] = $itemId;
-        $data['moduleid'] = $moduleId;
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($moduleId, 'moduleid');
+        $Data->addParam($itemId, 'itemid');
+
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes;
     }

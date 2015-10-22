@@ -31,6 +31,7 @@ use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\SPException;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -53,9 +54,11 @@ class Category
     {
         $query = 'SELECT category_id FROM categories WHERE category_name = :name LIMIT 1';
 
-        $data['name'] = $categoryName;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($categoryName, 'name');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false || DB::$lastNumRows === 0) {
             return false;
@@ -77,10 +80,12 @@ class Category
 
         $query = 'INSERT INTO categories SET category_name = :name ,category_description = :description';
 
-        $data['name'] = self::$categoryName;
-        $data['description'] = self::$categoryDescription;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$categoryName, 'name');
+        $Data->addParam(self::$categoryDescription, 'description');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
         }
 
@@ -102,17 +107,20 @@ class Category
     public static function checkDupCategory($id = null)
     {
 
+        $Data = new QueryData();
+
         if (is_null($id)) {
             $query = 'SELECT category_id FROM categories WHERE category_name = :name';
         } else {
             $query = 'SELECT category_id FROM categories WHERE category_name = :name AND category_id <> :id';
 
-            $data['id'] = $id;
+            $Data->addParam($id, 'id');
         }
 
-        $data['name'] = self::$categoryName;
+        $Data->setQuery($query);
+        $Data->addParam(self::$categoryName, 'name');
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
@@ -133,9 +141,11 @@ class Category
 
         $query = 'DELETE FROM categories WHERE category_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar la categoría'));
         }
 
@@ -156,9 +166,11 @@ class Category
     {
         $query = 'SELECT category_name FROM categories WHERE category_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -185,11 +197,13 @@ class Category
             . 'SET category_name = :name, category_description = :description '
             . 'WHERE category_id = :id LIMIT 1';
 
-        $data['name'] = self::$categoryName;
-        $data['description'] = self::$categoryDescription;
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
+        $Data->addParam(self::$categoryName, 'name');
+        $Data->addParam(self::$categoryDescription, 'description');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar la categoría'));
         }
 
@@ -238,18 +252,20 @@ class Category
     {
         $query = 'SELECT category_id, category_name,category_description FROM categories ';
 
-        $data = null;
+        $Data = new QueryData();
 
         if (!is_null($id)) {
             $query .= "WHERE category_id = :id LIMIT 1";
-            $data['id'] = $id;
+            $Data->addParam($id, 'id');
         } else {
             $query .= "ORDER BY category_name";
         }
 
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -301,9 +317,11 @@ class Category
     {
         $query = 'SELECT account_id FROM accounts WHERE account_categoryId = :id';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }

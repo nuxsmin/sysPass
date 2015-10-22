@@ -27,6 +27,7 @@ namespace SP\Account;
 
 use SP\Storage\DB;
 use SP\Core\SPException;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -53,9 +54,11 @@ class AccountUtil
             . 'LEFT JOIN customers ON account_customerId = customer_id '
             . 'WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -77,9 +80,11 @@ class AccountUtil
             . 'JOIN usrData ON accuser_userId = user_id '
             . 'WHERE accuser_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -117,9 +122,12 @@ class AccountUtil
             . 'account_notes '
             . 'FROM accounts';
 
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de las cuentas'));
@@ -137,9 +145,12 @@ class AccountUtil
     public static function getAccountNameById($accountId)
     {
         $query = 'SELECT account_name FROM accounts WHERE account_id = :id LIMIT 1';
-        $data['id'] = $accountId;
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
+
+        $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false) ? $queryRes->account_name : false;
     }

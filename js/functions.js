@@ -572,6 +572,37 @@ sysPass.Util.Common = function () {
         }
     };
 
+    // Función para descargar/ver archivos de una cuenta
+    var viewFile = function (obj, actionId, sk) {
+        var itemId = $(obj).attr('data-itemid');
+
+        var data = {'fileId': itemId, 'sk': sk, 'actionId': actionId};
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: APP_ROOT + "/ajax/ajax_files.php",
+            data: data,
+            success: function (response) {
+                if (typeof response.status !== 'undefined' && response.status === 1) {
+                    resMsg("error", response.description);
+                    return;
+                }
+
+                if (response) {
+                    $.fancybox(response, {padding: [10, 10, 10, 10]});
+                    // Actualizar fancybox para adaptarlo al tamaño de la imagen
+                    setTimeout(function () {
+                        $.fancybox.update();
+                    }, 1000);
+                } else {
+                    resMsg("error", LANG[14]);
+                }
+
+            }
+        });
+    };
+
     // Función para obtener la lista de archivos de una cuenta
     var getFiles = function (id, isDel, sk) {
         var data = {'id': id, 'del': isDel, 'sk': sk};
@@ -995,13 +1026,21 @@ sysPass.Util.Common = function () {
 
         switch (type) {
             case "ok":
-                alertify.success(txt);
+                alertify
+                    .closeLogOnClick(true)
+                    .delay(15000)
+                    .success(txt);
                 break;
             case "error":
-                alertify.error(txt);
+                alertify
+                    .closeLogOnClick(true)
+                    .delay(15000)
+                    .error(txt);
                 break;
             case "warn":
-                alertify.log(txt);
+                alertify
+                    .delay(30000)
+                    .log(txt);
                 break;
             case "nofancyerror":
                 html = '<p class="error round">Oops...<br>' + LANG[1] + '<br>' + txt + '</p>';
@@ -1261,6 +1300,7 @@ sysPass.Util.Common = function () {
         showOptional: showOptional,
         showSearchOrder: showSearchOrder,
         usrUpdPass: usrUpdPass,
+        viewFile: viewFile,
         viewPass: viewPass,
         passwordData: passwordData,
         passToClip: passToClip,

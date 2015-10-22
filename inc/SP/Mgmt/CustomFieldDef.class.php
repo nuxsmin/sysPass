@@ -26,6 +26,7 @@
 namespace SP\Mgmt;
 
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -63,9 +64,11 @@ class CustomFieldDef extends CustomFieldsBase
     {
         $query = 'DELETE FROM customFieldsDef WHERE customfielddef_id= :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes && CustomFields::deleteCustomFieldForDefinition($id);
     }
@@ -81,18 +84,22 @@ class CustomFieldDef extends CustomFieldsBase
     {
         $query = 'SELECT customfielddef_id, customfielddef_module, customfielddef_field FROM customFieldsDef';
 
+        $Data = new QueryData();
+
         if (!is_null($customFieldId)) {
             $query .= ' WHERE customfielddef_id = :id LIMIT 1';
-            $data['id'] = $customFieldId;
+            $Data->addParam($customFieldId, 'id');
         } else {
             $query .= ' ORDER BY customfielddef_module';
         }
+
+        $Data->setQuery($query);
 
         if (!$returnRawData) {
             DB::setReturnArray();
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -136,10 +143,12 @@ class CustomFieldDef extends CustomFieldsBase
     {
         $query = 'INSERT INTO customFieldsDef SET customfielddef_module = :module, customfielddef_field = :field';
 
-        $data['module'] = $this->_module;
-        $data['field'] = serialize($this);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_module, 'module');
+        $Data->addParam(serialize($this), 'field');
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $queryRes = DB::getQuery($Data);
 
         return $queryRes;
     }
@@ -158,11 +167,13 @@ class CustomFieldDef extends CustomFieldsBase
             'customfielddef_field = :field ' .
             'WHERE customfielddef_id= :id LIMIT 1';
 
-        $data['module'] = $this->_module;
-        $data['field'] = serialize($this);
-        $data['id'] = $this->_id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_id, 'id');
+        $Data->addParam($this->_module, 'module');
+        $Data->addParam(serialize($this), 'field');
 
-        $queryRes = DB::getQuery($query, __FUNCTION__, $data);
+        $queryRes = DB::getQuery($Data);
 
         if ($queryRes && $curField->customfielddef_module !== $this->_module) {
             $queryRes = CustomFields::updateCustomFieldModule($this->_module, $this->_id);

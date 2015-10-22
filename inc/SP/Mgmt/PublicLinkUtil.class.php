@@ -28,6 +28,7 @@ namespace SP\Mgmt;
 use SP\Account\AccountUtil;
 use SP\Storage\DB;
 use SP\Mgmt\User\UserUtil;
+use SP\Storage\QueryData;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -47,19 +48,22 @@ class PublicLinkUtil
      */
     public static function getLinks($id = null)
     {
+        $Data = new QueryData();
+
         if (!is_null($id)){
             $query = 'SELECT publicLink_id, publicLink_hash, publicLink_linkData ' .
                 'FROM publicLinks ' .
                 'WHERE publicLink_id = :id LIMIT 1';
-            $data['id'] = $id;
+            $Data->addParam($id, 'id');
         } else {
             $query = 'SELECT publicLink_id, publicLink_hash, publicLink_linkData FROM publicLinks';
-            $data = null;
         }
+
+        $Data->setQuery($query);
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();

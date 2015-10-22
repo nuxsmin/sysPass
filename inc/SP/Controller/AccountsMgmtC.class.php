@@ -65,6 +65,10 @@ class AccountsMgmtC extends Controller implements ActionsInterface
     /**
      * @var DataGridIcon
      */
+    private $_iconView;
+    /**
+     * @var DataGridIcon
+     */
     private $_iconEdit;
     /**
      * @var DataGridIcon
@@ -271,13 +275,13 @@ class AccountsMgmtC extends Controller implements ActionsInterface
     /**
      * Obtener los datos para la vista de archivos de una cuenta
      */
-    public function getFiles()
+    public function getAccountFiles()
     {
         $this->setAction(self::ACTION_ACC_FILES);
 
         $this->view->assign('accountId', Request::analyze('id', 0));
         $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-        $this->view->assign('files', Files::getFileList($this->view->accountId));
+        $this->view->assign('files', Files::getAccountFileList($this->view->accountId));
 
         if (!is_array($this->view->files) || count($this->view->files) === 0) {
             return;
@@ -383,7 +387,69 @@ class AccountsMgmtC extends Controller implements ActionsInterface
     private function setIcons()
     {
         $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
+        $this->_iconView = new DataGridIcon('visibility', 'imgs/view.png', 'fg-blue80');
         $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
         $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
+    }
+
+    /**
+     * Obtener los datos para la pestaña de categorías
+     */
+    public function getFiles()
+    {
+        $this->setAction(self::ACTION_MGM_FILES_VIEW);
+
+        // FIXME: añadir perfil
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_MGM_FILES_VIEW);
+        $GridActionView->setName(_('Ver Archivo'));
+        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.viewFile');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_MGM_FILES_VIEW);
+        $GridActionView->setOnClickArgs($this->view->sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_FILES_DELETE);
+        $GridActionDel->setName(_('Eliminar Archivo'));
+        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIsDelete(true);
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_FILES_DELETE);
+        $GridActionDel->setOnClickArgs($this->view->sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Cuenta'));
+        $GridHeaders->addHeader(_('Cliente'));
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Tipo'));
+        $GridHeaders->addHeader(_('Tamaño'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('accfile_id');
+        $GridData->addDataRowSource('account_name');
+        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('accfile_name');
+        $GridData->addDataRowSource('accfile_type');
+        $GridData->addDataRowSource('accfile_size');
+        $GridData->setData(Files::getFileList());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblFiles');
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Archivos'));
+        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+
+        $this->view->append('tabs', $Grid);
     }
 }

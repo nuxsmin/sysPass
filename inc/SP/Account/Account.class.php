@@ -34,8 +34,8 @@ use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;
 use SP\Core\SPException;
+use SP\Storage\QueryData;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -79,6 +79,8 @@ class Account extends AccountBase implements AccountInterface
             $Log->resetDescription();
         }
 
+        $Data = new QueryData();
+
         if ($this->getAccountUserGroupId()) {
             $query = 'UPDATE accounts SET '
                 . 'account_customerId = :accountCustomerId,'
@@ -94,7 +96,7 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_otherGroupEdit = :accountOtherGroupEdit '
                 . 'WHERE account_id = :accountId';
 
-            $data['accountUserGroupId'] = $this->getAccountUserGroupId();
+            $Data->addParam($this->getAccountUserGroupId(), 'accountUserGroupId');
         } else {
             $query = 'UPDATE accounts SET '
                 . 'account_customerId = :accountCustomerId,'
@@ -108,20 +110,22 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit '
                 . 'WHERE account_id = :accountId';
+
         }
 
-        $data['accountCustomerId'] = $this->getAccountCustomerId();
-        $data['accountCategoryId'] = $this->getAccountCategoryId();
-        $data['accountName'] = $this->getAccountName();
-        $data['accountLogin'] = $this->getAccountLogin();
-        $data['accountUrl'] = $this->getAccountUrl();
-        $data['accountNotes'] = $this->getAccountNotes();
-        $data['accountUserEditId'] = $this->getAccountUserEditId();
-        $data['accountOtherUserEdit'] = intval($this->getAccountOtherUserEdit());
-        $data['accountOtherGroupEdit'] = intval($this->getAccountOtherGroupEdit());
-        $data['accountId'] = $this->getAccountId();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountCustomerId(), 'accountCustomerId');
+        $Data->addParam($this->getAccountCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->getAccountName(), 'accountName');
+        $Data->addParam($this->getAccountLogin(), 'accountLogin');
+        $Data->addParam($this->getAccountUrl(), 'accountUrl');
+        $Data->addParam($this->getAccountNotes(), 'accountNotes');
+        $Data->addParam($this->getAccountUserEditId(), 'accountUserEditId');
+        $Data->addParam($this->getAccountOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->getAccountId(), 'accountId');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -172,11 +176,13 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_IV = src.acchistory_IV '
             . 'WHERE dst.account_id = :accountId';
 
-        $data['id'] = $id;
-        $data['accountId'] = $this->getAccountId();
-        $data['accountUserEditId'] = $this->getAccountUserEditId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
+        $Data->addParam($this->getAccountId(), 'accountId');
+        $Data->addParam($this->getAccountUserEditId(), 'accountUserEditId');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -229,9 +235,11 @@ class Account extends AccountBase implements AccountInterface
             . 'LEFT JOIN customers ON account_customerId = customer_id '
             . 'WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -260,7 +268,6 @@ class Account extends AccountBase implements AccountInterface
             . 'account_customerId,'
             . 'account_userGroupId,'
             . 'account_userEditId,'
-            . 'category_name,'
             . 'account_login,'
             . 'account_url,'
             . 'account_notes,'
@@ -270,14 +277,14 @@ class Account extends AccountBase implements AccountInterface
             . 'account_dateEdit,'
             . 'BIN(account_otherUserEdit) AS account_otherUserEdit,'
             . 'BIN(account_otherGroupEdit) AS account_otherGroupEdit,'
+            . 'category_name,'
+            . 'customer_name,'
+            . 'usergroup_name,'
             . 'u1.user_name,'
             . 'u1.user_login,'
             . 'u2.user_name as user_editName,'
             . 'u2.user_login as user_editLogin,'
-            . 'usergroup_name,'
-            . 'customer_name,'
-            . 'publicLink_hash,'
-            . 'CONCAT(account_name,account_categoryId,account_customerId,account_login,account_url,account_notes,BIN(account_otherUserEdit),BIN(account_otherGroupEdit)) as modHash '
+            . 'publicLink_hash '
             . 'FROM accounts '
             . 'LEFT JOIN categories ON account_categoryId = category_id '
             . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
@@ -287,19 +294,34 @@ class Account extends AccountBase implements AccountInterface
             . 'LEFT JOIN publicLinks ON account_id = publicLink_itemId '
             . 'WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
         }
 
+        // Obtener los usuarios y grupos secundarios
+        $this->setAccountUsersId(UserAccounts::getUsersForAccount($this->getAccountId()));
+        $this->setAccountUserGroupsId(Groups::getGroupsForAccount($this->getAccountId()));
+
+        $this->setAccountName($queryRes->account_name);
+        $this->setAccountCategoryId($queryRes->account_categoryId);
+        $this->setAccountCustomerId($queryRes->account_customerId);
+        $this->setAccountUserGroupId($queryRes->account_userGroupId);
+        $this->setAccountUserEditId($queryRes->account_userEditId);
+        $this->setAccountLogin($queryRes->account_login);
+        $this->setAccountUrl($queryRes->account_url);
+        $this->setAccountUrl($queryRes->account_url);
+        $this->setAccountNotes($queryRes->account_notes);
         $this->setAccountUserId($queryRes->account_userId);
         $this->setAccountUserGroupId($queryRes->account_userGroupId);
         $this->setAccountOtherUserEdit($queryRes->account_otherUserEdit);
         $this->setAccountOtherGroupEdit($queryRes->account_otherGroupEdit);
-        $this->setAccountModHash($queryRes->modHash);
+        $this->setAccountModHash($this->calcChangesHash());
 
         return $queryRes;
     }
@@ -326,20 +348,22 @@ class Account extends AccountBase implements AccountInterface
             . 'account_otherUserEdit = :accountOtherUserEdit,'
             . 'account_otherGroupEdit = :accountOtherGroupEdit';
 
-        $data['accountCustomerId'] = $this->getAccountCustomerId();
-        $data['accountCategoryId'] = $this->getAccountCategoryId();
-        $data['accountName'] = $this->getAccountName();
-        $data['accountLogin'] = $this->getAccountLogin();
-        $data['accountUrl'] = $this->getAccountUrl();
-        $data['accountPass'] = $this->getAccountPass();
-        $data['accountIV'] = $this->getAccountIV();
-        $data['accountNotes'] = $this->getAccountNotes();
-        $data['accountUserId'] = $this->getAccountUserId();
-        $data['accountUserGroupId'] = $this->getAccountUserGroupId();
-        $data['accountOtherUserEdit'] = $this->getAccountOtherUserEdit();
-        $data['accountOtherGroupEdit'] = $this->getAccountOtherGroupEdit();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountCustomerId(), 'accountCustomerId');
+        $Data->addParam($this->getAccountCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->getAccountName(), 'accountName');
+        $Data->addParam($this->getAccountLogin(), 'accountLogin');
+        $Data->addParam($this->getAccountUrl(), 'accountUrl');
+        $Data->addParam($this->getAccountPass(), 'accountPass');
+        $Data->addParam($this->getAccountIV(), 'accountIV');
+        $Data->addParam($this->getAccountNotes(), 'accountNotes');
+        $Data->addParam($this->getAccountUserId(), 'accountUserId');
+        $Data->addParam($this->getAccountUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->getAccountOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -395,9 +419,11 @@ class Account extends AccountBase implements AccountInterface
 
         $query = 'DELETE FROM accounts WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -432,9 +458,11 @@ class Account extends AccountBase implements AccountInterface
     {
         $query = 'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -446,9 +474,11 @@ class Account extends AccountBase implements AccountInterface
     {
         $query = 'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -556,7 +586,10 @@ class Account extends AccountBase implements AccountInterface
 
         DB::setReturnArray();
 
-        return DB::getResults($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getResults($Data);
     }
 
     /**
@@ -578,9 +611,11 @@ class Account extends AccountBase implements AccountInterface
             . 'LEFT JOIN customers ON account_customerId = customer_id '
             . 'WHERE account_id = :id LIMIT 1';
 
-        $data['id'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountId(), 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -622,13 +657,15 @@ class Account extends AccountBase implements AccountInterface
             . 'account_dateEdit = NOW() '
             . 'WHERE account_id = :accountId';
 
-        $data['accountPass'] = $this->getAccountPass();
-        $data['accountIV'] = $this->getAccountIV();
-        $data['accountUserEditId'] = $this->getAccountUserEditId();
-        $data['accountId'] = $this->getAccountId();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getAccountPass(), 'accountPass');
+        $Data->addParam($this->getAccountIV(), 'accountIV');
+        $Data->addParam($this->getAccountUserEditId(), 'accountUserEditId');
+        $Data->addParam($this->getAccountId(), 'accountId');
 
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 

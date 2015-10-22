@@ -31,6 +31,7 @@ use SP\Mgmt\User\Groups;
 use SP\Html\Html;
 use SP\Core\Session;
 use SP\Mgmt\User\UserUtil;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -245,6 +246,8 @@ class AccountSearch
         $arrFilterUser = array();
         $arrQueryWhere = array();
 
+        $Data = new QueryData();
+
         if ($this->_txtSearch) {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
@@ -262,7 +265,8 @@ class AccountSearch
                     }
 
                     $arrFilterCommon[] = $column . ' ' . $rel . ' :' . $parameter;
-                    $data[$parameter] = $value;
+
+                    $Data->addParam($value, $parameter);
                     $i++;
                 }
             } else {
@@ -271,23 +275,23 @@ class AccountSearch
                 $arrFilterCommon[] = 'account_url LIKE :url';
                 $arrFilterCommon[] = 'account_notes LIKE :notes';
 
-                $data['name'] = '%' . $this->_txtSearch . '%';
-                $data['login'] = '%' . $this->_txtSearch . '%';
-                $data['url'] = '%' . $this->_txtSearch . '%';
-                $data['notes'] = '%' . $this->_txtSearch . '%';
+                $Data->addParam('%' . $this->_txtSearch . '%', 'name');
+                $Data->addParam('%' . $this->_txtSearch . '%', 'login');
+                $Data->addParam('%' . $this->_txtSearch . '%', 'url');
+                $Data->addParam('%' . $this->_txtSearch . '%', 'notes');
             }
         }
 
         if ($this->_categoryId !== 0) {
             $arrFilterSelect[] = 'category_id = :categoryId';
 
-            $data['categoryId'] = $this->_categoryId;
+            $Data->addParam($this->_categoryId, 'categoryId');
         }
 
         if ($this->_customerId !== 0) {
             $arrFilterSelect[] = 'account_customerId = :customerId';
 
-            $data['customerId'] = $this->_customerId;
+            $Data->addParam($this->_customerId, 'customerId');
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -308,13 +312,12 @@ class AccountSearch
             $arrFilterUser[] = 'accuser_userId = :accuser_userId';
 
             // Usuario/Grupo principal de la cuenta
-            $data['userId'] = Session::getUserId();
-            $data['accuser_userId'] = Session::getUserId();
-
-            $data['userIduA'] = Session::getUserId();
-            $data['userIduB'] = Session::getUserId();
-            $data['userIdgA'] = Session::getUserId();
-            $data['userIdgB'] = Session::getUserId();
+            $Data->addParam(Session::getUserId(), 'userId');
+            $Data->addParam(Session::getUserId(), 'accuser_userId');
+            $Data->addParam(Session::getUserId(), 'userIduA');
+            $Data->addParam(Session::getUserId(), 'userIduB');
+            $Data->addParam(Session::getUserId(), 'userIdgA');
+            $Data->addParam(Session::getUserId(), 'userIdgB');
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
@@ -322,8 +325,8 @@ class AccountSearch
         if ($this->_limitCount > 0) {
             $queryLimit = 'LIMIT :limitStart,:limitCount';
 
-            $data['limitStart'] = $this->_limitStart;
-            $data['limitCount'] = $this->_limitCount;
+            $Data->addParam($this->_limitStart, 'limitStart');
+            $Data->addParam($this->_limitCount, 'limitCount');
         }
 
         if (count($arrQueryWhere) === 1) {
@@ -361,6 +364,8 @@ class AccountSearch
             $this->getOrderString() . ' ' .
             $queryLimit;
 
+        $Data->setQuery($query);
+
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();
 
@@ -368,11 +373,9 @@ class AccountSearch
         DB::setReturnArray();
 
         // Consulta de la búsqueda de cuentas
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-//            print_r($query);
-//            var_dump($data);
             return false;
         }
 
@@ -445,7 +448,7 @@ class AccountSearch
      */
     public function getAccountMax()
     {
-        $data = null;
+        $Data = new QueryData();
 
         if (!Session::getUserIsAdminApp() && !Session::getUserIsAdminAcc()) {
             $query = 'SELECT COUNT(DISTINCT account_id) as numacc '
@@ -455,15 +458,16 @@ class AccountSearch
                 . 'OR account_userId = :userId '
                 . 'OR accgroup_groupId = :groupId';
 
-            $data['userGroupId'] = Session::getUserGroupId();
-            $data['groupId'] = Session::getUserGroupId();
-            $data['userId'] = Session::getUserId();
-
+            $Data->addParam(Session::getUserGroupId(), 'userGroupId');
+            $Data->addParam(Session::getUserGroupId(), 'groupId');
+            $Data->addParam(Session::getUserId(), 'userId');
         } else {
             $query = "SELECT COUNT(*) as numacc FROM accounts";
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

@@ -36,6 +36,7 @@ use SP\Log\Log;
 use SP\Core\Session;
 use SP\Core\SPException;
 use SP\Mgmt\User\UserUtil;
+use SP\Storage\QueryData;
 
 /**
  * Class ApiTokens para la gestión de autorizaciones de acceso a la API de sysPass
@@ -82,20 +83,22 @@ class ApiTokens
             'FROM authTokens ' .
             'LEFT JOIN usrData ON user_id = authtoken_userId ';
 
-        $data = null;
+        $Data = new QueryData();
 
         if (!is_null($tokenId)) {
             $query .= "WHERE authtoken_id = :id LIMIT 1";
-            $data['id'] = $tokenId;
+            $Data->addParam($tokenId, 'id');
         } else {
             $query .= "ORDER BY user_login";
         }
+
+        $Data->setQuery($query);
 
         if (!$returnRawData) {
             DB::setReturnArray();
         }
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -140,10 +143,12 @@ class ApiTokens
     {
         $query = 'SELECT authtoken_userId FROM authTokens WHERE authtoken_token = :token LIMIT 1';
 
-        $data['token'] = $token;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($token, 'token');
 
         try {
-            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+            $queryRes = DB::getResults($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -183,13 +188,15 @@ class ApiTokens
             'authtoken_token = :token,' .
             'authtoken_startDate = UNIX_TIMESTAMP()';
 
-        $data['userid'] = $this->_userId;
-        $data['actionid'] = $this->_actionId;
-        $data['createdby'] = Session::getUserId();
-        $data['token'] = ($this->getUserToken()) ? $this->_token : sha1(uniqid() . time());
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userId, 'userid');
+        $Data->addParam($this->_actionId, 'actionid');
+        $Data->addParam(Session::getUserId(), 'createdby');
+        $Data->addParam(($this->getUserToken()) ? $this->_token : $this->generateToken(), 'token');
 
         try {
-            DB::getQuery($query, __FUNCTION__, $data);
+            DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -215,12 +222,14 @@ class ApiTokens
             'AND authtoken_id <> :id ' .
             'LIMIT 1';
 
-        $data['id'] = $this->_tokenId;
-        $data['userid'] = $this->_userId;
-        $data['actionid'] = $this->_actionId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_tokenId, 'id');
+        $Data->addParam($this->_userId, 'userid');
+        $Data->addParam($this->_actionId, 'actionid');
 
         try {
-            DB::getResults($query, __FUNCTION__, $data);
+            DB::getResults($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -242,11 +251,13 @@ class ApiTokens
             'authtoken_startDate = UNIX_TIMESTAMP() ' .
             'WHERE authtoken_userId = :userid';
 
-        $data['userid'] = $this->_userId;
-        $data['token'] = sha1(uniqid() . time());
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userId, 'userid');
+        $Data->addParam($this->generateToken(),'token');
 
         try {
-            DB::getQuery($query, __FUNCTION__, $data);
+            DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -262,10 +273,12 @@ class ApiTokens
     {
         $query = 'SELECT authtoken_token FROM authTokens WHERE authtoken_userId = :userid LIMIT 1';
 
-        $data['userid'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userId, 'userid');
 
         try {
-            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+            $queryRes = DB::getResults($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -300,14 +313,16 @@ class ApiTokens
             'authtoken_startDate = UNIX_TIMESTAMP() ' .
             'WHERE authtoken_id = :id LIMIT 1';
 
-        $data['id'] = $this->_tokenId;
-        $data['userid'] = $this->_userId;
-        $data['actionid'] = $this->_actionId;
-        $data['createdby'] = Session::getUserId();
-        $data['token'] = ($this->getUserToken()) ? $this->_token : sha1(uniqid() . time());
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_tokenId, 'id');
+        $Data->addParam($this->_userId, 'userid');
+        $Data->addParam($this->_actionId, 'actionid');
+        $Data->addParam(Session::getUserId(), 'createdby');
+        $Data->addParam(($this->getUserToken()) ? $this->_token : $this->generateToken(), 'token');
 
         try {
-            DB::getQuery($query, __FUNCTION__, $data);
+            DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -328,10 +343,12 @@ class ApiTokens
     {
         $query = 'DELETE FROM authTokens WHERE authtoken_id = :id LIMIT 1';
 
-        $data['id'] = $this->_tokenId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_tokenId, 'id');
 
         try {
-            DB::getQuery($query, __FUNCTION__, $data);
+            DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
@@ -389,5 +406,15 @@ class ApiTokens
     public function setActionId($actionId)
     {
         $this->_actionId = $actionId;
+    }
+
+    /**
+     * Generar un token de acceso
+     *
+     * @return string
+     */
+    private function generateToken()
+    {
+        return sha1(uniqid() . time());
     }
 }

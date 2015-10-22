@@ -32,6 +32,7 @@ use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -93,9 +94,11 @@ class UserPass
 
         $query = 'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         $ret = ($queryRes !== false && $queryRes->user_lastUpdateMPass > $configMPassTime);
 
@@ -117,16 +120,18 @@ class UserPass
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'
-            . 'user_hashSalt = :salt,'
+            . 'user_hashSalt = :hashSalt,'
             . 'user_isChangePass = 0,'
             . 'user_lastUpdate = NOW() '
             . 'WHERE user_id = :id LIMIT 1';
 
-        $data['pass'] = $passdata['pass'];
-        $data['salt'] = $passdata['salt'];
-        $data['id'] = $userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userId, 'id');
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'hashSalt');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -165,9 +170,11 @@ class UserPass
     {
         $query = 'SELECT user_mIV FROM usrData WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

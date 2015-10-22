@@ -52,5 +52,5 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 }
 
 $Controller = new AccountsMgmtC();
-$Controller->getFiles();
+$Controller->getAccountFiles();
 $Controller->view();

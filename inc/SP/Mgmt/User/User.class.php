@@ -29,6 +29,7 @@ use SP\Config\ConfigDB;
 use SP\Core\Crypt;
 use SP\Core\SessionUtil;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -53,7 +54,7 @@ class User extends UserBase
             return false;
         }
 
-        if (is_null($configHashMPass)){
+        if (is_null($configHashMPass)) {
             $configHashMPass = Crypt::mkHashPassword($masterPwd);
             ConfigDB::setValue('masterPwd', $configHashMPass);
         }
@@ -74,11 +75,13 @@ class User extends UserBase
             . 'user_lastUpdateMPass = UNIX_TIMESTAMP() '
             . 'WHERE user_id = :id LIMIT 1';
 
-        $data['mPass'] = $cryptMPass[0];
-        $data['mIV'] = $cryptMPass[1];
-        $data['id'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($cryptMPass[0], 'mPass');
+        $Data->addParam($cryptMPass[1], 'mIV');
+        $Data->addParam($this->_userId, 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -101,9 +104,11 @@ class User extends UserBase
     {
         $query = 'SELECT user_mPass, user_mIV FROM usrData WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $this->_userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_userId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

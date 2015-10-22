@@ -83,9 +83,12 @@ class DBUtil
 
         $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter $strOrder";
 
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();

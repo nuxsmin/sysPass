@@ -161,22 +161,21 @@ class AccountC extends Controller implements ActionsInterface
     private function setCommonData()
     {
         if ($this->isGotData()) {
-//            $this->view->assign('accountParentId', $this->getAccount()->getAccountParentId());
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
             $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountUsersId());
             $this->view->assign('accountOtherUsersName', UserAccounts::getUsersNameForAccount($this->getId()));
             $this->view->assign('accountOtherGroups', $this->getAccount()->getAccountUserGroupsId());
             $this->view->assign('accountOtherGroupsName', \SP\Mgmt\User\Groups::getGroupsNameForAccount($this->getId()));
-            $this->view->assign('changesHash', $this->getAccount()->calcChangesHash());
-            $this->view->assign('chkUserEdit', ($this->view->accountData->account_otherUserEdit) ? 'checked' : '');
-            $this->view->assign('chkGroupEdit', ($this->view->accountData->account_otherGroupEdit) ? 'checked' : '');
+            $this->view->assign('changesHash', $this->getAccount()->getAccountModHash());
+            $this->view->assign('chkUserEdit', ($this->getAccount()->getAccountOtherUserEdit()) ? 'checked' : '');
+            $this->view->assign('chkGroupEdit', ($this->getAccount()->getAccountOtherGroupEdit()) ? 'checked' : '');
             $this->view->assign('historyData', \SP\Account\AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
             $this->view->assign('isModified', ($this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit <> '0000-00-00 00:00:00'));
             $this->view->assign('maxFileSize', round(Config::getValue('files_allowed_size') / 1024, 1));
             $this->view->assign('filesAllowedExts', Config::getValue('files_allowed_exts'));
             $this->view->assign('filesDelete', ($this->_action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
 
-            $publicLinkUrl = Init::$WEBURI . '/?h=' . $this->view->accountData->publicLink_hash . '&a=link';
+            $publicLinkUrl = (Checks::publicLinksIsEnabled() && isset($this->view->accountData->publicLink_hash)) ? Init::$WEBURI . '/?h=' . $this->view->accountData->publicLink_hash . '&a=link' : '';
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
         }
 
@@ -300,7 +299,7 @@ class AccountC extends Controller implements ActionsInterface
             $this->view->assign('accountData', $this->getAccount()->getAccountData());
             $this->view->assign('gotData', true);
 
-            $this->setAccountDetails();
+//            $this->setAccountDetails();
             $this->setGotData(true);
 
             Session::setLastAcountId($this->getId());
@@ -469,7 +468,7 @@ class AccountC extends Controller implements ActionsInterface
             $this->view->assign('accountData', $this->getAccount()->getAccountData());
             $this->view->assign('gotData', true);
 
-            $this->setAccountDetails();
+//            $this->setAccountDetails();
             $this->setGotData(true);
 
             Session::setLastAcountId(Session::getAccountParentId());

@@ -26,6 +26,7 @@
 namespace SP\Mgmt\User;
 
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -61,10 +62,12 @@ class UserPassRecover
             . 'AND userpassr_date >= :date '
             . 'ORDER BY userpassr_date DESC LIMIT 1';
 
-        $data['hash'] = $hash;
-        $data['date'] = time() - self::MAX_PASS_RECOVER_TIME;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($hash, 'hash');
+        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME, 'date');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -83,9 +86,11 @@ class UserPassRecover
     {
         $query = 'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = :hash';
 
-        $data['hash'] = $hash;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($hash, 'hash');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -102,10 +107,12 @@ class UserPassRecover
             'AND userpassr_used = 0 ' .
             'AND userpassr_date >= :date';
 
-        $data['id'] = UserUtil::getUserIdByLogin($login);
-        $data['date'] = time() - self::MAX_PASS_RECOVER_TIME;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(UserUtil::getUserIdByLogin($login), 'id');
+        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME, 'date');
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= self::MAX_PASS_RECOVER_LIMIT);
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= self::MAX_PASS_RECOVER_LIMIT);
     }
 
     /**
@@ -118,15 +125,17 @@ class UserPassRecover
     public static function addPassRecover($login, $hash)
     {
         $query = 'INSERT INTO usrPassRecover SET '
-            . 'userpassr_userId = :userId,'
+            . 'userpassr_userId = :id,'
             . 'userpassr_hash = :hash,'
             . 'userpassr_date = UNIX_TIMESTAMP(),'
             . 'userpassr_used = 0';
 
-        $data['userId'] = UserUtil::getUserIdByLogin($login);
-        $data['hash'] = $hash;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(UserUtil::getUserIdByLogin($login), 'id');
+        $Data->addParam($hash, 'hash');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
 }

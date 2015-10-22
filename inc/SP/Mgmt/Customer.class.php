@@ -32,6 +32,7 @@ use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\SPException;
 use SP\Storage\DBUtil;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -57,13 +58,18 @@ class Customer
             throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
         }
 
-        $query = 'INSERT INTO customers SET customer_name = :name, customer_description = :description, customer_hash = :hash';
+        $query = 'INSERT INTO customers ' .
+            'SET customer_name = :name,'.
+            'customer_description = :description,' .
+            'customer_hash = :hash';
 
-        $data['name'] = self::$customerName;
-        $data['description'] = self::$customerDescription;
-        $data['hash'] = self::mkCustomerHash();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$customerName, 'name');
+        $Data->addParam(self::$customerDescription, 'description');
+        $Data->addParam(self::mkCustomerHash(), 'hash');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al crear el cliente'));
         }
 
@@ -114,12 +120,14 @@ class Customer
             . "customer_hash = :hash "
             . "WHERE customer_id = :id";
 
-        $data['name'] = self::$customerName;
-        $data['description'] = self::$customerDescription;
-        $data['hash'] = self::mkCustomerHash();
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$customerName, 'name');
+        $Data->addParam(self::$customerDescription, 'description');
+        $Data->addParam(self::mkCustomerHash(), 'hash');
+        $Data->addParam($id, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el cliente'));
         }
 
@@ -140,9 +148,11 @@ class Customer
     {
         $query = 'SELECT customer_name FROM customers WHERE customer_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -169,9 +179,11 @@ class Customer
 
         $query = 'DELETE FROM customers WHERE customer_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el cliente'));
         }
 
@@ -190,17 +202,21 @@ class Customer
      */
     public static function checkDupCustomer($id = null)
     {
+        $Data = new QueryData();
+        $Data->addParam($id, 'id');
+
         if (is_null($id)) {
             $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash';
         } else {
             $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash AND customer_id <> :id';
 
-            $data['id'] = $id;
+            $Data->addParam($id, 'id');
         }
 
-        $data['hash'] = self::mkCustomerHash();
+        $Data->setQuery($query);
+        $Data->addParam(self::mkCustomerHash(), 'hash');
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
@@ -212,9 +228,11 @@ class Customer
     {
         $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash LIMIT 1';
 
-        $data['hash'] = self::mkCustomerHash();
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::mkCustomerHash(), 'hash');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -259,19 +277,22 @@ class Customer
      */
     public static function getCustomers($customerId = null, $retAssocArray = false)
     {
-        $query = 'SELECT customer_id, customer_name, customer_description FROM customers ';
-        $data = null;
+        $query = 'SELECT customer_id, customer_name, customer_description FROM customers';
+
+        $Data = new QueryData();
 
         if (!is_null($customerId)) {
             $query .= "WHERE customer_id = :id LIMIT 1";
-            $data['id'] = $customerId;
+            $Data->addParam($customerId, 'id');
         } else {
-            $query .= "ORDER BY customer_name";
+            $query .= " ORDER BY customer_name";
         }
+
+        $Data->setQuery($query);
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -313,9 +334,11 @@ class Customer
     {
         $query = 'SELECT account_id FROM accounts WHERE account_customerId = :id';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }

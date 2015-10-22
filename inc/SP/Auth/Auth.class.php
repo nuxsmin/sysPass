@@ -36,6 +36,7 @@ use SP\Mgmt\User\UserLdap;
 use SP\Mgmt\User\UserMigrate;
 use SP\Mgmt\User\UserPassRecover;
 use SP\Mgmt\User\UserUtil;
+use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -172,9 +173,11 @@ class Auth
             . 'FROM usrData '
             . 'WHERE user_login = :login AND user_isMigrate = 0 LIMIT 1';
 
-        $data['login'] = $userLogin;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userLogin, 'login');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data, __FUNCTION__);
 
         return ($queryRes !== false
             && $queryRes->user_pass == crypt($userPass, $queryRes->user_hashSalt));
@@ -226,10 +229,12 @@ class Auth
             'AND authtoken_token = :token ' .
             'LIMIT 1';
 
-        $data['actionId'] = $actionId;
-        $data['token'] = $token;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($actionId, 'actionId');
+        $Data->addParam($token, 'token');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return (DB::$lastNumRows === 1);
     }

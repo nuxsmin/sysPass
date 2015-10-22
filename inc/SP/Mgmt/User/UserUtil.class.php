@@ -27,6 +27,7 @@ namespace SP\Mgmt\User;
 
 use SP\Core\Session;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -50,9 +51,11 @@ class UserUtil
     {
         $query = 'SELECT user_id FROM usrData WHERE user_login = :login LIMIT 1';
 
-        $data = array('login' => $login);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($login, 'login');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -72,9 +75,11 @@ class UserUtil
     {
         $query = 'SELECT BIN(user_isDisabled) AS user_isDisabled FROM usrData WHERE user_login = :login LIMIT 1';
 
-        $data['login'] = $userLogin;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userLogin, 'login');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         $ret = ($queryRes !== false && intval($queryRes->user_isDisabled) === 1);
 
@@ -92,10 +97,12 @@ class UserUtil
     {
         $query = 'SELECT user_id FROM usrData WHERE user_login = :login AND user_email = :email LIMIT 1';
 
-        $data['login'] = $login;
-        $data['email'] = $email;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($login, 'login');
+        $Data->addParam($email, 'email');
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === true && DB::$lastNumRows === 1);
+        return (DB::getQuery($Data) === true && DB::$lastNumRows === 1);
     }
 
     /**
@@ -108,9 +115,11 @@ class UserUtil
     {
         $query = 'SELECT user_email FROM usrData WHERE user_id = :id AND user_email IS NOT NULL LIMIT 1';
 
-        $data['id'] = $userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userId, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -129,9 +138,11 @@ class UserUtil
     {
         $query = 'UPDATE usrData SET user_lastLogin = NOW(),user_count = user_count + 1 WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $userId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userId, 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
 
@@ -204,6 +215,8 @@ class UserUtil
     {
         $data = null;
 
+        $Data = new QueryData();
+
         if (!is_null($itemId)) {
             $query = 'SELECT user_id,'
                 . 'user_name,'
@@ -226,7 +239,7 @@ class UserUtil
                 . 'LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id '
                 . 'WHERE user_id = :id LIMIT 1';
 
-            $data['id'] = $itemId;
+            $Data->addParam($itemId, 'id');
         } else {
             $query = 'SELECT user_id,'
                 . 'user_name,'
@@ -245,9 +258,11 @@ class UserUtil
             $query .= (!Session::getUserIsAdminApp()) ? 'WHERE user_isAdminApp = 0 ORDER BY user_name' : 'ORDER BY user_name';
         }
 
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        return DB::getResults($query, __FUNCTION__, $data);
+        return DB::getResults($Data);
     }
 
 
@@ -261,9 +276,11 @@ class UserUtil
     {
         $query = 'SELECT user_login FROM usrData WHERE user_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;

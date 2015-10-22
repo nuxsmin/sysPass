@@ -122,8 +122,8 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `config` (
-  `config_parameter` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
-  `config_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `config_parameter` varchar(50) NOT NULL,
+  `config_value` varchar(2000) NOT NULL,
   UNIQUE KEY `vacParameter` (`config_parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

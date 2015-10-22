@@ -28,6 +28,7 @@ namespace SP\Config;
 use SP\Storage\DB;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -56,7 +57,10 @@ class ConfigDB implements ConfigInterface
     {
         $query = 'SELECT config_parameter, config_value FROM config';
 
-        $queryRes = DB::getResults($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -76,18 +80,21 @@ class ConfigDB implements ConfigInterface
     public static function writeConfig($isInsert = false)
     {
         foreach (self::$_cache as $param => $value) {
+            $Data = new QueryData();
+
             if ($isInsert) {
                 $query = 'INSERT INTO config VALUES (:param,:value) ON DUPLICATE KEY UPDATE config_value = :valuedup';
 
-                $data['valuedup'] = $value;
+                $Data->addParam($value, 'valuedup');
             } else {
                 $query = 'UPDATE config SET config_value = :value WHERE config_parameter = :param';
             }
 
-            $data['param'] = $param;
-            $data['value'] = $value;
+            $Data->setQuery($query);
+            $Data->addParam($param, 'param');
+            $Data->addParam($value, 'value');
 
-            if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+            if (DB::getQuery($Data) === false) {
                 return false;
             }
         }
@@ -116,11 +123,13 @@ class ConfigDB implements ConfigInterface
             . "config_value = :value "
             . "ON DUPLICATE KEY UPDATE config_value = :valuedup";
 
-        $data['param'] = $param;
-        $data['value'] = $value;
-        $data['valuedup'] = $value;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($param, 'param');
+        $Data->addParam($value, 'value');
+        $Data->addParam($value, 'valuedup');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -172,11 +181,13 @@ class ConfigDB implements ConfigInterface
      */
     public static function getValue($param, $default = null)
     {
-        $query = 'SELECT config_value FROM config WHERE config_parameter = :parameter LIMIT 1';
+        $query = 'SELECT config_value FROM config WHERE config_parameter = :param LIMIT 1';
 
-        $data['parameter'] = $param;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($param, 'param');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -194,8 +205,11 @@ class ConfigDB implements ConfigInterface
     public static function deleteParam($param)
     {
         $query = 'DELETE FROM config WHERE config_parameter = :param LIMIT 1';
-        $data['param'] = $param;
 
-        return (DB::getQuery($query, __FUNCTION__, $data) !== false);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($param, 'param');
+
+        return (DB::getQuery($Data) !== false);
     }
 }

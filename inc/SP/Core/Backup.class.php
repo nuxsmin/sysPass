@@ -30,6 +30,7 @@ use SP\Log\Email;
 use SP\Storage\DB;
 use SP\Log\Log;
 use SP\Storage\DBUtil;
+use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -99,8 +100,12 @@ class Backup
         try {
             $handle = fopen($backupFile, 'w');
 
+            $Data = new QueryData();
+
             if ($tables == '*') {
-                $resTables = DB::getResults('SHOW TABLES', __FUNCTION__);
+                $Data->setQuery('SHOW TABLES');
+
+                $resTables = DB::getResults($Data);
             } else {
                 $resTables = is_array($tables) ? $tables : explode(',', $tables);
             }
@@ -117,20 +122,25 @@ class Backup
             // Recorrer las tablas y almacenar los datos
             foreach ($resTables as $table) {
                 $tableName = $table->{'Tables_in_' . $dbname};
+
+                $Data->setQuery('SHOW CREATE TABLE ' . $tableName);
+
                 $sqlOut = '-- ' . PHP_EOL;
                 $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
                 $sqlOut .= '-- ' . PHP_EOL;
 
                 // Consulta para crear la tabla
                 $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
-                $txtCreate = DB::getResults('SHOW CREATE TABLE ' . $tableName, __FUNCTION__);
+                $txtCreate = DB::getResults($Data);
                 $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
                 fwrite($handle, $sqlOut);
 
                 DB::setReturnRawData();
 
+                $Data->setQuery('SELECT * FROM ' . $tableName);
+
                 // Consulta para obtener los registros de la tabla
-                $queryRes = DB::getResults('SELECT * FROM ' . $tableName, __FUNCTION__);
+                $queryRes = DB::getResults($Data);
 
                 $numColumns = $queryRes->columnCount();
 

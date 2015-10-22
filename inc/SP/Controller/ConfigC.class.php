@@ -233,6 +233,7 @@ class ConfigC extends Controller implements ActionsInterface
 
         $this->view->assign('dbInfo', DBUtil::getDBinfo());
         $this->view->assign('dbName', Config::getValue('dbname') . '@' . Config::getValue('dbhost'));
+        $this->view->assign('configBackupDate', date("r", ConfigDB::getValue('config_backupdate')));
 
         $this->view->append('tabs', array('title' => _('Información')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');

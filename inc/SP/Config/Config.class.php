@@ -157,6 +157,9 @@ class Config implements ConfigInterface
         // Actualizar la caché de configuración de la sesión
         Cache::setSessionCacheConfig();
 
+        // Backup a BD
+        self::backupToDB();
+
         return true;
     }
 
@@ -264,5 +267,27 @@ class Config implements ConfigInterface
     public static function getCacheConfigValue($param)
     {
         return self::$_cache[$param];
+    }
+
+    /**
+     * Realizar un backup de la configuración en la BD
+     */
+    private static function backupToDB()
+    {
+        $config = json_encode(self::$_cache);
+        ConfigDB::setValue('config_backup', $config);
+        ConfigDB::setValue('config_backupdate', time());
+    }
+
+    /**
+     * Restaurar la configuración desde la BD
+     *
+     * @return array
+     */
+    private static function restoreBackupFromDB()
+    {
+        $configBackup = ConfigDB::getValue('config_backup');
+
+        return json_decode($configBackup);
     }
 }

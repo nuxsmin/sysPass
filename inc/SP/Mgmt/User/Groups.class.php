@@ -30,6 +30,7 @@ use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
+use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -85,18 +86,20 @@ class Groups
             . "usergroup_description "
             . "FROM usrGroups ";
 
-        $data = null;
+        $Data = new QueryData();
 
         if (!is_null($groupId)) {
             $query .= "WHERE usergroup_id = :id LIMIT 1";
-            $data['id'] = $groupId;
+            $Data->addParam($groupId, 'id');
         } else {
             $query .= "ORDER BY usergroup_name";
         }
 
+        $Data->setQuery($query);
+
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -123,16 +126,19 @@ class Groups
         $groupId = (int)self::$groupId;
         $groupName = strtoupper(self::$groupName);
 
+        $Data = new QueryData();
+
         if ($groupId) {
             $query = "SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = :name AND usergroup_id != :id";
-            $data['id'] = $groupId;
+            $Data->addParam($groupId, 'id');
         } else {
             $query = "SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = :name";
         }
 
-        $data['name'] = $groupName;
+        $Data->addParam($groupName, 'name');
+        $Data->setQuery($query);
 
-        return (DB::getQuery($query, __FUNCTION__, $data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
@@ -145,10 +151,12 @@ class Groups
     {
         $query = 'INSERT INTO usrGroups SET usergroup_name = :name, usergroup_description = :description';
 
-        $data['name'] = self::$groupName;
-        $data['description'] = self::$groupDescription;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$groupName, 'name');
+        $Data->addParam(self::$groupDescription, 'description');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -201,7 +209,10 @@ class Groups
 
         $query = 'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . implode(',', $values);
 
-        return DB::getQuery($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getQuery($Data);
     }
 
     /**
@@ -216,11 +227,13 @@ class Groups
 
         $query = 'SELECT usertogroup_userId FROM usrToGroups WHERE usertogroup_groupId = :id';
 
-        $data['id'] = $groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
@@ -245,11 +258,13 @@ class Groups
 
         $query = 'UPDATE usrGroups SET usergroup_name = :name, usergroup_description = :description WHERE usergroup_id = :id';
 
-        $data['name'] = self::$groupName;
-        $data['description'] = self::$groupDescription;
-        $data['id'] = self::$groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$groupName, 'name');
+        $Data->addParam(self::$groupDescription, 'description');
+        $Data->addParam(self::$groupId, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -279,9 +294,11 @@ class Groups
     {
         $query = 'SELECT usergroup_name FROM usrGroups WHERE usergroup_id = :id LIMIT 1';
 
-        $data['id'] = $id;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -300,9 +317,11 @@ class Groups
     {
         $query = 'SELECT usergroup_id FROM usrGroups WHERE usergroup_name = :name LIMIT 1';
 
-        $data['name'] = $name;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($name, 'name');
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -347,9 +366,11 @@ class Groups
 
         $query = 'DELETE FROM usrToGroups WHERE usertogroup_groupId = :id ' . $queryExcluded;
 
-        $data['id'] = $groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId, 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -363,9 +384,11 @@ class Groups
 
         $query = 'DELETE FROM usrGroups WHERE usergroup_id = :id LIMIT 1';
 
-        $data['id'] = self::$groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$groupId, 'id');
 
-        if (DB::getQuery($query, __FUNCTION__, $data) === false) {
+        if (DB::getQuery($Data) === false) {
             return false;
         }
 
@@ -407,10 +430,12 @@ class Groups
         $query = 'SELECT user_groupId as groupId FROM usrData WHERE user_groupId = :idu ' .
             'UNION ALL SELECT usertogroup_groupId as groupId FROM usrToGroups WHERE usertogroup_groupId = :idg';
 
-        $data['idu'] = self::$groupId;
-        $data['idg'] = self::$groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$groupId, 'idu');
+        $Data->addParam(self::$groupId, 'idg');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }
@@ -424,9 +449,11 @@ class Groups
     {
         $query = 'SELECT account_userGroupId FROM accounts WHERE account_userGroupId = :id';
 
-        $data['id'] = self::$groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$groupId, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }
@@ -440,9 +467,11 @@ class Groups
     {
         $query = 'SELECT accgroup_groupId FROM accGroups WHERE accgroup_groupId = :id';
 
-        $data['id'] = self::$groupId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$groupId, 'id');
 
-        DB::getQuery($query, __FUNCTION__, $data);
+        DB::getQuery($Data);
 
         return DB::$lastNumRows;
     }
@@ -461,11 +490,13 @@ class Groups
             . 'JOIN usrGroups ON accgroup_groupId = usergroup_id '
             . 'WHERE accgroup_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return false;
@@ -516,9 +547,11 @@ class Groups
 
         $query = 'DELETE FROM accGroups WHERE accgroup_accountId = :id ' . $queryExcluded;
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
-        return DB::getQuery($query, __FUNCTION__, $data);
+        return DB::getQuery($Data);
     }
 
     /**
@@ -554,7 +587,10 @@ class Groups
 
         $query = 'INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) VALUES ' . implode(',', $values);
 
-        return DB::getQuery($query, __FUNCTION__);
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getQuery($Data);
     }
 
     /**
@@ -567,11 +603,13 @@ class Groups
     {
         $query = 'SELECT accgroup_groupId FROM accGroups WHERE accgroup_accountId = :id';
 
-        $data['id'] = $accountId;
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
