@@ -1,3 +1,12 @@
+=== ** v1.2.0.08 ===
+
+* [FIX] Corregido error al copiar clave al portapapeles en el navegador Chrome. Related #140. Thanks to @basil-twisleton
+* [FIX] Corregida traducción al inglés. Related #140.Thanks to @basil-twisleton
+* [FIX] Corregido error al mostrar una etiqueta select requerida. Related #140.Thanks to @basil-twisleton
+* [FIX] Corregido error al añadir usuario desde LDAP cuando el grupo o perfil no están establecidos (deshabilitado por defecto). Fixes #157
+* [MOD] Modificado comportamiento cuando se añade un nuevo cliente desde la página de cuenta. Related #140.Thanks to @basil-twisleton
+* [MOD] Actualizada traducción al alemán. Thanks to @wagnst
+
 === ** v1.2.0.07 ===
 
 * [FIX] Arreglado error cuando se obtenía la pertenencia a grupos de un usuario para acceder a una cuenta. Thanks to @basil-twisleton

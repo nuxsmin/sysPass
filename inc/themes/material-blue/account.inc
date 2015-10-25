@@ -29,8 +29,9 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer" required>
-                            <option value="0"></option>
+                        <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer sel-chosen-deselect" required="required">
+                            <option value=""></option>
+                            <option value="0"><?php echo _('> Usar texto y crear nuevo'); ?></option>
                             <?php foreach ($customers as $id => $name): ?>
                                 <option
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -50,8 +51,8 @@
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
-                            <option value="0"></option>
+                        <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required="required">
+                            <option value=""></option>
                             <?php foreach ($categories as $id => $name): ?>
                                 <option
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>

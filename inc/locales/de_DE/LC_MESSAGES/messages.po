@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-15 15:10+0100\n"
-"PO-Revision-Date: 2015-10-15 15:10+0100\n"
+"POT-Creation-Date: 2015-10-25 23:35+0100\n"
+"PO-Revision-Date: 2015-10-25 23:45+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -30,7 +30,7 @@ msgstr "Ungültige Anfrage"
 
 #: ../../../../ajax/ajax_2fa.php:48
 msgid "Código correcto"
-msgstr ""
+msgstr "Code bestätigt"
 
 #: ../../../../ajax/ajax_2fa.php:51 ../../../../ajax/ajax_userPrefsSave.php:99
 msgid "Código incorrecto"
@@ -66,22 +66,22 @@ msgstr "Benutzername ist notwendig"
 #: ../../../../ajax/ajax_accountSave.php:84
 #: ../../../../ajax/ajax_accountSave.php:106
 msgid "Es necesaria una clave"
-msgstr "Ein Schlüssel wird benötigt"
+msgstr ""
 
 #: ../../../../ajax/ajax_accountSave.php:86
 #: ../../../../ajax/ajax_accountSave.php:97
 msgid "Es necesario una categoría"
-msgstr "Eine Kategorie wird benötigt"
+msgstr ""
 
 #: ../../../../ajax/ajax_accountSave.php:101
 #: ../../../../ajax/ajax_accountSave.php:110
 msgid "Id inválido"
-msgstr "Ungültige ID"
+msgstr ""
 
 #: ../../../../ajax/ajax_accountSave.php:113
 #: ../../../../ajax/ajax_accountSave.php:263
 #: ../../../../ajax/ajax_appMgmtSave.php:535
-#: ../../../../ajax/ajax_configSave.php:324
+#: ../../../../ajax/ajax_configSave.php:334
 #: ../../../../ajax/ajax_userPrefsSave.php:113 ../../../../api.php:53
 msgid "Acción Inválida"
 msgstr "Ungültige Aktion"
@@ -91,7 +91,7 @@ msgstr "Ungültige Aktion"
 #: ../../../../ajax/ajax_appMgmtSave.php:149
 #: ../../../../ajax/ajax_backup.php:68
 msgid "Las claves no coinciden"
-msgstr "Passwörter stimmen nicht"
+msgstr ""
 
 #: ../../../../ajax/ajax_accountSave.php:173
 msgid "Cuenta creada"
@@ -212,7 +212,7 @@ msgstr "Kategorie ändern"
 #: ../../../../inc/Category.class.php:83
 #: ../../../../web/AccountsMgmtC.class.php:87
 #: ../../../../inc/themes/classic/account.inc:53
-#: ../../../../inc/themes/material-blue/account.inc:61
+#: ../../../../inc/themes/material-blue/account.inc:62
 msgid "Nueva Categoría"
 msgstr "Neue Kategorie"
 
@@ -265,7 +265,7 @@ msgstr "E-Mail ist notwendig"
 #: ../../../../ajax/ajax_appMgmtSave.php:145
 #: ../../../../ajax/ajax_appMgmtSave.php:160
 #: ../../../../ajax/ajax_backup.php:54
-#: ../../../../ajax/ajax_configSave.php:297
+#: ../../../../ajax/ajax_configSave.php:307
 #: ../../../../ajax/ajax_import.php:40 ../../../../ajax/ajax_migrate.php:40
 #: ../../../../ajax/ajax_userPrefsSave.php:88
 msgid "Ey, esto es una DEMO!!"
@@ -328,7 +328,7 @@ msgstr "Duplizierter Gruppenname"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:204
 msgid "Grupo creado"
-msgstr "Gruppe hinzugefügt"
+msgstr ""
 
 #: ../../../../ajax/ajax_appMgmtSave.php:206
 msgid "Error al crear el grupo"
@@ -348,7 +348,7 @@ msgstr "Fehler beim Ändern der Gruppe"
 #: ../../../../inc/themes/classic/account.inc:112
 #: ../../../../inc/themes/classic/groups.inc:24
 #: ../../../../inc/themes/classic/profiles.inc:85
-#: ../../../../inc/themes/material-blue/account.inc:137
+#: ../../../../inc/themes/material-blue/account.inc:138
 #: ../../../../inc/themes/material-blue/groups.inc:32
 #: ../../../../inc/themes/material-blue/profiles.inc:99
 msgid "Usuarios"
@@ -500,7 +500,7 @@ msgstr "Fehler beim Ausführen des Backups"
 #: ../../../../ajax/ajax_checkLdap.php:58 ../../../../inc/Import.class.php:128
 #: ../../../../inc/Migrate.class.php:92
 msgid "Revise el registro de eventos para más detalles"
-msgstr ""
+msgstr "Mehr Details in den Log Dateien"
 
 #: ../../../../ajax/ajax_backup.php:63
 msgid "Copia de la aplicación y base de datos realizada correctamente"
@@ -508,11 +508,11 @@ msgstr "Sicherung der Applikation und der Datenbank erfolgreich durchgeführt"
 
 #: ../../../../ajax/ajax_backup.php:65
 msgid "Proceso de backup finalizado"
-msgstr "Backup beendet"
+msgstr ""
 
 #: ../../../../ajax/ajax_backup.php:72 ../../../../ajax/ajax_backup.php:77
 msgid "Realizar Exportación"
-msgstr "Export ausführen"
+msgstr ""
 
 #: ../../../../ajax/ajax_backup.php:72
 msgid "Error al realizar la exportación de cuentas"
@@ -550,156 +550,160 @@ msgstr "Objekte gefunden"
 msgid "Modificar Configuración"
 msgstr "Konfiguration ändern"
 
-#: ../../../../ajax/ajax_configSave.php:105
+#: ../../../../ajax/ajax_configSave.php:101
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "Die maximale Dateigröße ist 16MB"
 
-#: ../../../../ajax/ajax_configSave.php:118
+#: ../../../../ajax/ajax_configSave.php:109 ../../../../js/strings.js.php:46
+msgid "Extensión no permitida"
+msgstr "Erweiterung nicht erlaubt"
+
+#: ../../../../ajax/ajax_configSave.php:128
 msgid "Faltan parámetros de Proxy"
 msgstr "Proxy Parameter fehlt"
 
-#: ../../../../ajax/ajax_configSave.php:126
+#: ../../../../ajax/ajax_configSave.php:136
 msgid "Proxy habiltado"
 msgstr "Proxy aktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:130
+#: ../../../../ajax/ajax_configSave.php:140
 msgid "Proxy deshabilitado"
 msgstr "Proxy deaktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:133
-#: ../../../../ajax/ajax_configSave.php:157
-#: ../../../../ajax/ajax_configSave.php:191
-#: ../../../../ajax/ajax_configSave.php:230
+#: ../../../../ajax/ajax_configSave.php:143
+#: ../../../../ajax/ajax_configSave.php:167
+#: ../../../../ajax/ajax_configSave.php:201
+#: ../../../../ajax/ajax_configSave.php:240
 msgid "Sección"
 msgstr "Sektion"
 
-#: ../../../../ajax/ajax_configSave.php:133
+#: ../../../../ajax/ajax_configSave.php:143
 #: ../../../../web/ConfigC.class.php:108
 #: ../../../../inc/themes/classic/profiles.inc:61
 #: ../../../../inc/themes/material-blue/profiles.inc:72
 msgid "General"
 msgstr "Allgemein"
 
-#: ../../../../ajax/ajax_configSave.php:143
+#: ../../../../ajax/ajax_configSave.php:153
 msgid "Faltan parámetros de Wiki"
 msgstr "Fehlender Wiki-Parameter"
 
-#: ../../../../ajax/ajax_configSave.php:150
+#: ../../../../ajax/ajax_configSave.php:160
 msgid "Wiki habiltada"
 msgstr "Wiki aktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:154
+#: ../../../../ajax/ajax_configSave.php:164
 msgid "Wiki deshabilitada"
 msgstr "Wiki deaktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:157
+#: ../../../../ajax/ajax_configSave.php:167
 #: ../../../../web/ConfigC.class.php:244
 #: ../../../../inc/themes/classic/wiki.inc:4
 #: ../../../../inc/themes/material-blue/wiki.inc:4
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../ajax/ajax_configSave.php:172
+#: ../../../../ajax/ajax_configSave.php:182
 msgid "Faltan parámetros de LDAP"
 msgstr "Fehlender LDAP-Parameter"
 
-#: ../../../../ajax/ajax_configSave.php:184
+#: ../../../../ajax/ajax_configSave.php:194
 msgid "LDAP habiltado"
 msgstr "LDAP aktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:188
+#: ../../../../ajax/ajax_configSave.php:198
 msgid "LDAP deshabilitado"
 msgstr "LDAP deaktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:191
+#: ../../../../ajax/ajax_configSave.php:201
 #: ../../../../web/ConfigC.class.php:276
 #: ../../../../inc/themes/classic/ldap.inc:4
 #: ../../../../inc/themes/material-blue/ldap.inc:4
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../ajax/ajax_configSave.php:206
+#: ../../../../ajax/ajax_configSave.php:216
 msgid "Faltan parámetros de Correo"
-msgstr ""
+msgstr "Fehlende Mail Parameter"
 
-#: ../../../../ajax/ajax_configSave.php:221
+#: ../../../../ajax/ajax_configSave.php:231
 msgid "Correo habiltado"
 msgstr "Mail aktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:227
+#: ../../../../ajax/ajax_configSave.php:237
 msgid "Correo deshabilitado"
 msgstr "Mail deaktiviert"
 
-#: ../../../../ajax/ajax_configSave.php:230
+#: ../../../../ajax/ajax_configSave.php:240
 #: ../../../../web/ConfigC.class.php:306
 #: ../../../../inc/themes/classic/mail.inc:4
 #: ../../../../inc/themes/material-blue/mail.inc:4
 msgid "Correo"
 msgstr "E-Mail"
 
-#: ../../../../ajax/ajax_configSave.php:252
+#: ../../../../ajax/ajax_configSave.php:262
 msgid "Configuración actualizada"
 msgstr "Konfiguration aktualisiert"
 
-#: ../../../../ajax/ajax_configSave.php:261
-#: ../../../../ajax/ajax_configSave.php:307
+#: ../../../../ajax/ajax_configSave.php:271
+#: ../../../../ajax/ajax_configSave.php:317
 #: ../../../../ajax/ajax_viewpass.php:61
 #: ../../../../inc/Controller.class.php:169
 msgid "Clave maestra actualizada"
 msgstr "Master-Passwort aktualisiert"
 
-#: ../../../../ajax/ajax_configSave.php:261
+#: ../../../../ajax/ajax_configSave.php:271
 #: ../../../../ajax/ajax_viewpass.php:61
 #: ../../../../inc/Controller.class.php:169
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Neue Sitzung beginnen"
 
-#: ../../../../ajax/ajax_configSave.php:263
+#: ../../../../ajax/ajax_configSave.php:273
 msgid "Clave maestra no indicada"
 msgstr "Master-Passwort notwendig"
 
-#: ../../../../ajax/ajax_configSave.php:265
+#: ../../../../ajax/ajax_configSave.php:275
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "Passwort muss bestätigt werden"
 
-#: ../../../../ajax/ajax_configSave.php:269
+#: ../../../../ajax/ajax_configSave.php:279
 msgid "Las claves son idénticas"
 msgstr "Passwörter sind identisch"
 
-#: ../../../../ajax/ajax_configSave.php:271
+#: ../../../../ajax/ajax_configSave.php:281
 msgid "Las claves maestras no coinciden"
 msgstr "Master-Passwort stimmt nicht"
 
-#: ../../../../ajax/ajax_configSave.php:273
+#: ../../../../ajax/ajax_configSave.php:283
 msgid "La clave maestra actual no coincide"
 msgstr "Aktuelles Master-Passwort stimmt nicht"
 
-#: ../../../../ajax/ajax_configSave.php:282
+#: ../../../../ajax/ajax_configSave.php:292
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Fehler beim Ändern der Passwörter eines Kontos"
 
-#: ../../../../ajax/ajax_configSave.php:288
+#: ../../../../ajax/ajax_configSave.php:298
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Fehler beim Aktualisieren des Kontopasswörter in der History"
 
-#: ../../../../ajax/ajax_configSave.php:292
+#: ../../../../ajax/ajax_configSave.php:302
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Fehler beim aktualisieren der Benutzerfelder"
 
-#: ../../../../ajax/ajax_configSave.php:305
+#: ../../../../ajax/ajax_configSave.php:315
 #: ../../../../inc/Account.class.php:512
 msgid "Actualizar Clave Maestra"
 msgstr "Master-Passwort ändern"
 
-#: ../../../../ajax/ajax_configSave.php:309
+#: ../../../../ajax/ajax_configSave.php:319
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Fehler beim Speichern des Hash für das Master-Passwort"
 
-#: ../../../../ajax/ajax_configSave.php:317
+#: ../../../../ajax/ajax_configSave.php:327
 msgid "Generar Clave Temporal"
 msgstr "temporäres Passwort erstellen"
 
-#: ../../../../ajax/ajax_configSave.php:317
+#: ../../../../ajax/ajax_configSave.php:327
 #: ../../../../inc/CustomFieldsBase.class.php:87
 #: ../../../../inc/themes/classic/account.inc:86
 #: ../../../../inc/themes/classic/editpass.inc:25
@@ -714,8 +718,8 @@ msgstr "temporäres Passwort erstellen"
 #: ../../../../inc/themes/classic/users.inc:75
 #: ../../../../inc/themes/classic/userspass.inc:8
 #: ../../../../inc/themes/classic/userspass.inc:11
-#: ../../../../inc/themes/material-blue/account.inc:98
-#: ../../../../inc/themes/material-blue/account.inc:103
+#: ../../../../inc/themes/material-blue/account.inc:99
+#: ../../../../inc/themes/material-blue/account.inc:104
 #: ../../../../inc/themes/material-blue/config.inc:395
 #: ../../../../inc/themes/material-blue/editpass.inc:26
 #: ../../../../inc/themes/material-blue/editpass.inc:31
@@ -735,11 +739,11 @@ msgstr "temporäres Passwort erstellen"
 msgid "Clave"
 msgstr "Passwort"
 
-#: ../../../../ajax/ajax_configSave.php:319
+#: ../../../../ajax/ajax_configSave.php:329
 msgid "Clave Temporal Generada"
 msgstr "temporäres Passwort erstellt"
 
-#: ../../../../ajax/ajax_configSave.php:321
+#: ../../../../ajax/ajax_configSave.php:331
 msgid "Error al generar clave temporal"
 msgstr "Fehler beim erstellen eines temporären Passwortes"
 
@@ -805,11 +809,12 @@ msgstr "Fehlerhafte Anmeldung"
 #: ../../../../inc/themes/classic/request.inc:17
 #: ../../../../inc/themes/classic/search.inc:89
 #: ../../../../inc/themes/classic/tokens.inc:8
-#: ../../../../inc/themes/material-blue/account.inc:83
+#: ../../../../inc/themes/material-blue/account.inc:84
 #: ../../../../inc/themes/material-blue/config.inc:381
 #: ../../../../inc/themes/material-blue/editpass.inc:22
 #: ../../../../inc/themes/material-blue/eventlog.inc:23
 #: ../../../../inc/themes/material-blue/info.inc:39
+#: ../../../../inc/themes/material-blue/ldap.inc:86
 #: ../../../../inc/themes/material-blue/login.inc:11
 #: ../../../../inc/themes/material-blue/login.inc:34
 #: ../../../../inc/themes/material-blue/mail.inc:61
@@ -1112,7 +1117,7 @@ msgstr "Sie haben keine Erlaubnis auf dieses Konto zuzugreifen"
 #: ../../../../inc/themes/classic/account.inc:382
 #: ../../../../inc/themes/classic/profiles.inc:23
 #: ../../../../inc/themes/classic/search.inc:139
-#: ../../../../inc/themes/material-blue/account.inc:424
+#: ../../../../inc/themes/material-blue/account.inc:425
 #: ../../../../inc/themes/material-blue/profiles.inc:35
 #: ../../../../inc/themes/material-blue/search.inc:149
 msgid "Ver Clave"
@@ -1226,7 +1231,7 @@ msgstr "Fehler: Operation fehlgeschlagen"
 #: ../../../../web/AccountC.class.php:358
 #: ../../../../inc/themes/classic/account.inc:369
 #: ../../../../inc/themes/classic/search.inc:167
-#: ../../../../inc/themes/material-blue/account.inc:418
+#: ../../../../inc/themes/material-blue/account.inc:419
 #: ../../../../inc/themes/material-blue/search.inc:178
 msgid "Eliminar Cuenta"
 msgstr "Konto löschen"
@@ -1291,7 +1296,7 @@ msgstr "Ende"
 
 #: ../../../../inc/Account.class.php:682
 msgid "Modificar Clave"
-msgstr ""
+msgstr "Password erneuern"
 
 #: ../../../../inc/Account.class.php:717
 msgid "No se pudieron obtener los datos de las cuentas"
@@ -1344,12 +1349,12 @@ msgstr "Benutzerpasswort ändern"
 #: ../../../../inc/themes/classic/profiles.inc:28
 #: ../../../../inc/themes/material-blue/profiles.inc:40
 msgid "Ver Historial"
-msgstr ""
+msgstr "Verlauf anzeigen"
 
 #: ../../../../inc/Acl.class.php:135
 #: ../../../../inc/themes/classic/account.inc:191
 #: ../../../../inc/themes/classic/profiles.inc:50
-#: ../../../../inc/themes/material-blue/account.inc:233
+#: ../../../../inc/themes/material-blue/account.inc:234
 #: ../../../../inc/themes/material-blue/config.inc:261
 #: ../../../../inc/themes/material-blue/profiles.inc:60
 msgid "Archivos"
@@ -1529,7 +1534,7 @@ msgstr "Fehler beim Anlegen der Kategorie"
 #: ../../../../web/SearchC.class.php:299
 #: ../../../../inc/themes/classic/account.inc:42
 #: ../../../../inc/themes/classic/search.inc:83
-#: ../../../../inc/themes/material-blue/account.inc:50
+#: ../../../../inc/themes/material-blue/account.inc:51
 #: ../../../../inc/themes/material-blue/search.inc:85
 msgid "Categoría"
 msgstr "Kategorie"
@@ -1718,7 +1723,7 @@ msgstr "Kunden"
 #: ../../../../inc/CustomFieldsBase.class.php:110
 #: ../../../../inc/themes/classic/account.inc:143
 #: ../../../../inc/themes/classic/profiles.inc:89
-#: ../../../../inc/themes/material-blue/account.inc:169
+#: ../../../../inc/themes/material-blue/account.inc:170
 #: ../../../../inc/themes/material-blue/profiles.inc:104
 msgid "Grupos"
 msgstr "Gruppen"
@@ -2013,11 +2018,11 @@ msgstr "Server auf dem die Datenbank installiert wird"
 
 #: ../../../../inc/Installer.class.php:267
 msgid "No es posible comprobar el usuario de sysPass"
-msgstr ""
+msgstr "Überprüfung des sysPass Nutzers nicht möglich"
 
 #: ../../../../inc/Installer.class.php:268
 msgid "Compruebe los permisos del usuario de conexión a la BD"
-msgstr ""
+msgstr "Bitte Datenbankverbindung überprüfen"
 
 #: ../../../../inc/Installer.class.php:319
 msgid "El usuario de MySQL ya existe"
@@ -2143,7 +2148,7 @@ msgstr "Protokol löschen"
 #: ../../../../inc/themes/classic/eventlog.inc:98
 #: ../../../../inc/themes/material-blue/eventlog.inc:99
 msgid "Vaciar registro de eventos"
-msgstr ""
+msgstr "Ereignisprotokoll leeren"
 
 #: ../../../../inc/Migrate.class.php:51
 msgid "Faltan parámetros"
@@ -2401,6 +2406,13 @@ msgstr "Benutzer ändern"
 msgid "Eliminar Usuario"
 msgstr "Benutzer löschen"
 
+#: ../../../../inc/UserLdap.class.php:68
+#: ../../../../web/UsersMgmtC.class.php:109
+#: ../../../../inc/themes/classic/users.inc:28
+#: ../../../../inc/themes/material-blue/users.inc:34
+msgid "Usuario de LDAP"
+msgstr "LDAP-Benutzer"
+
 #: ../../../../inc/UserLdap.class.php:78
 msgid "Activación Cuenta"
 msgstr "Kontoaktivierung"
@@ -2551,10 +2563,6 @@ msgstr "Zu viele Dateien"
 msgid "No es posible guardar el archivo \"%s\" Tamaño máximo:"
 msgstr "Unmöglich die Datei \"%s\" zu speichern. Maximal erlaubte Größe:"
 
-#: ../../../../js/strings.js.php:46
-msgid "Extensión no permitida"
-msgstr "Erweiterung nicht erlaubt"
-
 #: ../../../../js/strings.js.php:47
 msgid "Vaciar el registro de eventos?"
 msgstr "Klar Ereignisprotokoll?"
@@ -2640,11 +2648,29 @@ msgstr "Aktion auswählen"
 #: ../../../../inc/themes/classic/account.inc:136
 #: ../../../../inc/themes/classic/account.inc:167
 #: ../../../../inc/themes/classic/account.inc:451
+#: ../../../../inc/themes/classic/config.inc:70
+#: ../../../../inc/themes/classic/config.inc:86
+#: ../../../../inc/themes/classic/config.inc:102
+#: ../../../../inc/themes/classic/config.inc:118
+#: ../../../../inc/themes/classic/config.inc:134
+#: ../../../../inc/themes/classic/config.inc:150
+#: ../../../../inc/themes/classic/config.inc:166
+#: ../../../../inc/themes/classic/config.inc:182
+#: ../../../../inc/themes/classic/config.inc:255
+#: ../../../../inc/themes/classic/config.inc:274
+#: ../../../../inc/themes/classic/customfields.inc:46
 #: ../../../../inc/themes/classic/install.inc:99
+#: ../../../../inc/themes/classic/ldap.inc:25
+#: ../../../../inc/themes/classic/ldap.inc:195
+#: ../../../../inc/themes/classic/mail.inc:14
+#: ../../../../inc/themes/classic/mail.inc:40
+#: ../../../../inc/themes/classic/mail.inc:88
+#: ../../../../inc/themes/classic/preferences.inc:48
 #: ../../../../inc/themes/classic/preferences.inc:82
 #: ../../../../inc/themes/classic/preferences.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:116
 #: ../../../../inc/themes/classic/security.inc:26
+#: ../../../../inc/themes/classic/wiki.inc:20
 msgid "SI"
 msgstr "Ja"
 
@@ -2652,15 +2678,33 @@ msgstr "Ja"
 #: ../../../../inc/themes/classic/account.inc:136
 #: ../../../../inc/themes/classic/account.inc:167
 #: ../../../../inc/themes/classic/account.inc:449
+#: ../../../../inc/themes/classic/config.inc:70
+#: ../../../../inc/themes/classic/config.inc:86
+#: ../../../../inc/themes/classic/config.inc:102
+#: ../../../../inc/themes/classic/config.inc:118
+#: ../../../../inc/themes/classic/config.inc:134
+#: ../../../../inc/themes/classic/config.inc:150
+#: ../../../../inc/themes/classic/config.inc:166
+#: ../../../../inc/themes/classic/config.inc:182
+#: ../../../../inc/themes/classic/config.inc:255
+#: ../../../../inc/themes/classic/config.inc:274
+#: ../../../../inc/themes/classic/customfields.inc:46
 #: ../../../../inc/themes/classic/encryption.inc:58
 #: ../../../../inc/themes/classic/encryption.inc:77
 #: ../../../../inc/themes/classic/import.inc:67
 #: ../../../../inc/themes/classic/install.inc:99
+#: ../../../../inc/themes/classic/ldap.inc:25
+#: ../../../../inc/themes/classic/ldap.inc:195
+#: ../../../../inc/themes/classic/mail.inc:14
+#: ../../../../inc/themes/classic/mail.inc:40
+#: ../../../../inc/themes/classic/mail.inc:88
+#: ../../../../inc/themes/classic/preferences.inc:48
 #: ../../../../inc/themes/classic/preferences.inc:82
 #: ../../../../inc/themes/classic/preferences.inc:99
 #: ../../../../inc/themes/classic/preferences.inc:116
 #: ../../../../inc/themes/classic/security.inc:26
 #: ../../../../inc/themes/classic/tokens.inc:36
+#: ../../../../inc/themes/classic/wiki.inc:20
 msgid "NO"
 msgstr "Nein"
 
@@ -2691,7 +2735,7 @@ msgstr "Kontodetails"
 
 #: ../../../../web/AccountC.class.php:474
 #: ../../../../inc/themes/classic/account.inc:396
-#: ../../../../inc/themes/material-blue/account.inc:435
+#: ../../../../inc/themes/material-blue/account.inc:436
 msgid "Modificar Clave de Cuenta"
 msgstr "Konto-Passwort ändern"
 
@@ -2918,7 +2962,7 @@ msgstr "Nach URL/IP sortieren"
 #: ../../../../inc/themes/classic/editpass.inc:16
 #: ../../../../inc/themes/classic/request.inc:13
 #: ../../../../inc/themes/classic/search.inc:96
-#: ../../../../inc/themes/material-blue/account.inc:69
+#: ../../../../inc/themes/material-blue/account.inc:70
 #: ../../../../inc/themes/material-blue/editpass.inc:17
 #: ../../../../inc/themes/material-blue/request.inc:15
 #: ../../../../inc/themes/material-blue/search.inc:98
@@ -2932,12 +2976,6 @@ msgstr "Eigenschaften"
 #: ../../../../web/UsersMgmtC.class.php:105
 msgid "Admin Cuentas"
 msgstr "Konto-Administrator"
-
-#: ../../../../web/UsersMgmtC.class.php:109
-#: ../../../../inc/themes/classic/users.inc:28
-#: ../../../../inc/themes/material-blue/users.inc:34
-msgid "Usuario de LDAP"
-msgstr "LDAP-Benutzer"
 
 #: ../../../../web/UsersMgmtC.class.php:113
 #: ../../../../inc/themes/classic/users.inc:113
@@ -3016,12 +3054,12 @@ msgid "Buscar en desplegable o introducir"
 msgstr "Weitersuchen"
 
 #: ../../../../inc/themes/classic/account.inc:64
-#: ../../../../inc/themes/material-blue/account.inc:75
+#: ../../../../inc/themes/material-blue/account.inc:76
 msgid "URL o IP de acceso"
 msgstr "Auf URL/IP zugreifen"
 
 #: ../../../../inc/themes/classic/account.inc:76
-#: ../../../../inc/themes/material-blue/account.inc:89
+#: ../../../../inc/themes/material-blue/account.inc:90
 msgid "Usuario de acceso"
 msgstr "Benutzer für Zugriff"
 
@@ -3031,7 +3069,7 @@ msgstr "Benutzer für Zugriff"
 #: ../../../../inc/themes/classic/users.inc:83
 #: ../../../../inc/themes/classic/userspass.inc:19
 #: ../../../../inc/themes/classic/userspass.inc:21
-#: ../../../../inc/themes/material-blue/account.inc:108
+#: ../../../../inc/themes/material-blue/account.inc:109
 #: ../../../../inc/themes/material-blue/editpass.inc:36
 #: ../../../../inc/themes/material-blue/install.inc:67
 #: ../../../../inc/themes/material-blue/passreset.inc:36
@@ -3045,120 +3083,120 @@ msgstr "Passwort (Wiederholung)"
 #: ../../../../inc/themes/classic/account.inc:100
 #: ../../../../inc/themes/classic/search.inc:112
 #: ../../../../inc/themes/classic/users.inc:91
-#: ../../../../inc/themes/material-blue/account.inc:119
+#: ../../../../inc/themes/material-blue/account.inc:120
 #: ../../../../inc/themes/material-blue/search.inc:118
 #: ../../../../inc/themes/material-blue/users.inc:116
 msgid "Notas"
 msgstr "Bemerkungen"
 
 #: ../../../../inc/themes/classic/account.inc:102
-#: ../../../../inc/themes/material-blue/account.inc:124
+#: ../../../../inc/themes/material-blue/account.inc:125
 #: ../../../../inc/themes/material-blue/users.inc:123
 msgid "Notas sobre la cuenta"
 msgstr "Bemerkungen zum Konto"
 
 #: ../../../../inc/themes/classic/account.inc:108
-#: ../../../../inc/themes/material-blue/account.inc:133
+#: ../../../../inc/themes/material-blue/account.inc:134
 #: ../../../../inc/themes/material-blue/search.inc:111
 msgid "Permisos"
 msgstr "Berechtigungen"
 
 #: ../../../../inc/themes/classic/account.inc:135
 #: ../../../../inc/themes/classic/account.inc:166
-#: ../../../../inc/themes/material-blue/account.inc:162
-#: ../../../../inc/themes/material-blue/account.inc:194
+#: ../../../../inc/themes/material-blue/account.inc:163
+#: ../../../../inc/themes/material-blue/account.inc:195
 msgid "Hablitar edición"
 msgstr "Erlaube Änderungen"
 
 #: ../../../../inc/themes/classic/account.inc:204
-#: ../../../../inc/themes/material-blue/account.inc:246
+#: ../../../../inc/themes/material-blue/account.inc:247
 msgid "Soltar archivos aquí (max. 5) o click para seleccionar"
 msgstr "Dateien hier fallen lassen (max. 5) oder zum selektieren anklicken"
 
 #: ../../../../inc/themes/classic/account.inc:204
 #: ../../../../inc/themes/classic/config.inc:212
-#: ../../../../inc/themes/material-blue/account.inc:246
+#: ../../../../inc/themes/material-blue/account.inc:247
 #: ../../../../inc/themes/material-blue/config.inc:309
 msgid "Tamaño máximo de archivo"
 msgstr "Maximale Dateigröße"
 
 #: ../../../../inc/themes/classic/account.inc:216
-#: ../../../../inc/themes/material-blue/account.inc:258
+#: ../../../../inc/themes/material-blue/account.inc:259
 msgid "Historial"
 msgstr "Protokol"
 
 #: ../../../../inc/themes/classic/account.inc:235
-#: ../../../../inc/themes/material-blue/account.inc:278
+#: ../../../../inc/themes/material-blue/account.inc:279
 msgid "Seleccionar fecha"
 msgstr "Datum auswählen"
 
 #: ../../../../inc/themes/classic/account.inc:244
 #: ../../../../inc/themes/classic/users.inc:164
-#: ../../../../inc/themes/material-blue/account.inc:287
+#: ../../../../inc/themes/material-blue/account.inc:288
 #: ../../../../inc/themes/material-blue/users.inc:208
 msgid "Última Modificación"
 msgstr "Letzte Änderung"
 
 #: ../../../../inc/themes/classic/account.inc:246
-#: ../../../../inc/themes/material-blue/account.inc:289
+#: ../../../../inc/themes/material-blue/account.inc:290
 msgid "por"
 msgstr "durch"
 
 #: ../../../../inc/themes/classic/account.inc:289
-#: ../../../../inc/themes/material-blue/account.inc:338
+#: ../../../../inc/themes/material-blue/account.inc:339
 msgid "Visitas"
 msgstr "Besuche"
 
 #: ../../../../inc/themes/classic/account.inc:293
-#: ../../../../inc/themes/material-blue/account.inc:342
+#: ../../../../inc/themes/material-blue/account.inc:343
 msgid "Fecha Alta"
 msgstr "Datum hinzugefügt"
 
 #: ../../../../inc/themes/classic/account.inc:297
-#: ../../../../inc/themes/material-blue/account.inc:346
+#: ../../../../inc/themes/material-blue/account.inc:347
 msgid "Creador"
 msgstr "Erzeuger"
 
 #: ../../../../inc/themes/classic/account.inc:301
-#: ../../../../inc/themes/material-blue/account.inc:203
-#: ../../../../inc/themes/material-blue/account.inc:350
+#: ../../../../inc/themes/material-blue/account.inc:204
+#: ../../../../inc/themes/material-blue/account.inc:351
 msgid "Grupo Principal"
 msgstr "Hauptgruppe"
 
 #: ../../../../inc/themes/classic/account.inc:306
-#: ../../../../inc/themes/material-blue/account.inc:355
+#: ../../../../inc/themes/material-blue/account.inc:356
 msgid "Usuarios Secundarios"
 msgstr "Unter-Benutzer"
 
 #: ../../../../inc/themes/classic/account.inc:325
-#: ../../../../inc/themes/material-blue/account.inc:374
+#: ../../../../inc/themes/material-blue/account.inc:375
 msgid "Grupos Secundarios"
 msgstr "Untergruppe"
 
 #: ../../../../inc/themes/classic/account.inc:345
-#: ../../../../inc/themes/material-blue/account.inc:394
+#: ../../../../inc/themes/material-blue/account.inc:395
 msgid "Fecha Edición"
 msgstr "Änderungsdatum"
 
 #: ../../../../inc/themes/classic/account.inc:349
-#: ../../../../inc/themes/material-blue/account.inc:398
+#: ../../../../inc/themes/material-blue/account.inc:399
 msgid "Editor"
 msgstr "Editor"
 
 #: ../../../../inc/themes/classic/account.inc:376
-#: ../../../../inc/themes/material-blue/account.inc:461
+#: ../../../../inc/themes/material-blue/account.inc:462
 msgid "Restaurar cuenta desde este punto"
 msgstr "Wiederherstellen Konto von diesem Punkt"
 
 #: ../../../../inc/themes/classic/account.inc:388
 #: ../../../../inc/themes/classic/search.inc:143
-#: ../../../../inc/themes/material-blue/account.inc:428
+#: ../../../../inc/themes/material-blue/account.inc:429
 #: ../../../../inc/themes/material-blue/search.inc:154
 msgid "Copiar Clave en Portapapeles"
 msgstr "Passwort in die Zwischenablage kopieren"
 
 #: ../../../../inc/themes/classic/account.inc:403
-#: ../../../../inc/themes/material-blue/account.inc:441
+#: ../../../../inc/themes/material-blue/account.inc:442
 msgid "Ver Actual"
 msgstr "Ansehen"
 
@@ -3172,14 +3210,14 @@ msgstr "Zurück"
 
 #: ../../../../inc/themes/classic/account.inc:415
 #: ../../../../inc/themes/classic/search.inc:155
-#: ../../../../inc/themes/material-blue/account.inc:451
+#: ../../../../inc/themes/material-blue/account.inc:452
 #: ../../../../inc/themes/material-blue/search.inc:166
 msgid "Modificar Cuenta"
 msgstr "Konto ändern"
 
 #: ../../../../inc/themes/classic/account.inc:420
 #: ../../../../inc/themes/classic/search.inc:176
-#: ../../../../inc/themes/material-blue/account.inc:455
+#: ../../../../inc/themes/material-blue/account.inc:456
 #: ../../../../inc/themes/material-blue/search.inc:187
 msgid "Solicitar Modificación"
 msgstr "Änderung initiiert"
@@ -3201,7 +3239,7 @@ msgstr "Änderung initiiert"
 #: ../../../../inc/themes/classic/users.inc:189
 #: ../../../../inc/themes/classic/userspass.inc:35
 #: ../../../../inc/themes/classic/wiki.inc:110
-#: ../../../../inc/themes/material-blue/account.inc:467
+#: ../../../../inc/themes/material-blue/account.inc:468
 #: ../../../../inc/themes/material-blue/categories.inc:72
 #: ../../../../inc/themes/material-blue/config.inc:425
 #: ../../../../inc/themes/material-blue/customers.inc:73
@@ -3221,12 +3259,12 @@ msgid "Guardar"
 msgstr "Speichern"
 
 #: ../../../../inc/themes/classic/account.inc:437
-#: ../../../../inc/themes/material-blue/account.inc:477
+#: ../../../../inc/themes/material-blue/account.inc:478
 msgid "Seleccionar grupos secundarios"
 msgstr "Untergruppe auswählen"
 
 #: ../../../../inc/themes/classic/account.inc:441
-#: ../../../../inc/themes/material-blue/account.inc:480
+#: ../../../../inc/themes/material-blue/account.inc:481
 msgid "Seleccionar usuarios"
 msgstr "Benutzer auswählen"
 
@@ -3290,7 +3328,7 @@ msgstr "Es existieren keine Backups zum Herunterladen"
 #: ../../../../inc/themes/material-blue/import.inc:100
 #: ../../../../inc/themes/material-blue/js-common.inc:11
 msgid "Ayuda"
-msgstr "Hilfe"
+msgstr ""
 
 #: ../../../../inc/themes/classic/backup.inc:50
 #: ../../../../inc/themes/material-blue/backup.inc:52
@@ -3541,12 +3579,12 @@ msgstr "Erlaubte Dateiendungen"
 #: ../../../../inc/themes/classic/config.inc:193
 #: ../../../../inc/themes/material-blue/config.inc:290
 msgid "Extensiones permitidas para la subida de archivos."
-msgstr ""
+msgstr "Erlaubte Dateierweiterungen für Dateiupload."
 
 #: ../../../../inc/themes/classic/config.inc:197
 #: ../../../../inc/themes/material-blue/config.inc:294
 msgid "Se permite un máximo de 4 caracteres."
-msgstr ""
+msgstr "Maximal 4 Zeichen erlaubt."
 
 #: ../../../../inc/themes/classic/config.inc:201
 #: ../../../../inc/themes/material-blue/config.inc:298
@@ -3625,12 +3663,12 @@ msgstr "Beschreibung des Kunden"
 #: ../../../../inc/themes/classic/customfields.inc:38
 #: ../../../../inc/themes/material-blue/customfields.inc:41
 msgid "Texto Ayuda"
-msgstr ""
+msgstr "Hilfetext"
 
 #: ../../../../inc/themes/classic/customfields.inc:44
 #: ../../../../inc/themes/material-blue/customfields.inc:52
 msgid "Obligatorio"
-msgstr ""
+msgstr "Benötigt"
 
 #: ../../../../inc/themes/classic/encryption.inc:5
 #: ../../../../inc/themes/classic/install.inc:46
@@ -3726,19 +3764,19 @@ msgstr ""
 #: ../../../../inc/themes/classic/encryption.inc:105
 #: ../../../../inc/themes/material-blue/encryption.inc:121
 msgid "Clave Temporal"
-msgstr ""
+msgstr "Temporäres Passwort"
 
 #: ../../../../inc/themes/classic/encryption.inc:116
 #: ../../../../inc/themes/classic/encryption.inc:127
 #: ../../../../inc/themes/material-blue/encryption.inc:131
 #: ../../../../inc/themes/material-blue/encryption.inc:142
 msgid "No generada"
-msgstr ""
+msgstr "Nicht generiert"
 
 #: ../../../../inc/themes/classic/encryption.inc:121
 #: ../../../../inc/themes/material-blue/encryption.inc:136
 msgid "Válido hasta"
-msgstr ""
+msgstr "Gültig bis"
 
 #: ../../../../inc/themes/classic/encryption.inc:133
 #: ../../../../inc/themes/material-blue/encryption.inc:148
@@ -3761,7 +3799,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/encryption.inc:166
 #: ../../../../inc/themes/material-blue/encryption.inc:187
 msgid "Generar"
-msgstr ""
+msgstr "Generieren"
 
 #: ../../../../inc/themes/classic/eventlog.inc:6
 #: ../../../../inc/themes/classic/search.inc:3
@@ -3963,7 +4001,7 @@ msgstr ""
 #: ../../../../inc/themes/material-blue/import.inc:55
 #: ../../../../inc/themes/material-blue/import.inc:61
 msgid "Clave de Importación"
-msgstr ""
+msgstr "Passwort importieren"
 
 #: ../../../../inc/themes/classic/import.inc:143
 #: ../../../../inc/themes/material-blue/import.inc:67
@@ -4057,7 +4095,6 @@ msgstr "Benutzer Speicher"
 #: ../../../../inc/themes/material-blue/info.inc:44
 #: ../../../../inc/themes/material-blue/ldap.inc:35
 #: ../../../../inc/themes/material-blue/ldap.inc:58
-#: ../../../../inc/themes/material-blue/ldap.inc:86
 #: ../../../../inc/themes/material-blue/mail.inc:24
 #: ../../../../inc/themes/material-blue/mail.inc:30
 msgid "Servidor"
@@ -4130,7 +4167,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/ldap.inc:36
 #: ../../../../inc/themes/material-blue/ldap.inc:39
 msgid "Nombre o dirección IP del servidor de LDAP."
-msgstr ""
+msgstr "Hostname oder IP Adresse des LDAP Servers"
 
 #: ../../../../inc/themes/classic/ldap.inc:40
 #: ../../../../inc/themes/classic/ldap.inc:65
@@ -4169,7 +4206,7 @@ msgstr "Suchpräfix"
 #: ../../../../inc/themes/classic/ldap.inc:96
 #: ../../../../inc/themes/material-blue/ldap.inc:115
 msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
-msgstr ""
+msgstr "LDAP Basis für die LDAP Nutzer-Suche"
 
 #: ../../../../inc/themes/classic/ldap.inc:120
 #: ../../../../inc/themes/material-blue/ldap.inc:143
@@ -4323,7 +4360,7 @@ msgstr "Passwort ändern"
 #: ../../../../inc/themes/classic/preferences.inc:73
 #: ../../../../inc/themes/material-blue/preferences.inc:74
 msgid "Ordenar resultados por visitas"
-msgstr ""
+msgstr "Sortiere Suchresultate nach Aufrufen"
 
 #: ../../../../inc/themes/classic/preferences.inc:77
 #: ../../../../inc/themes/material-blue/preferences.inc:78
@@ -4344,7 +4381,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/preferences.inc:107
 #: ../../../../inc/themes/material-blue/preferences.inc:108
 msgid "Mostrar Acciones Ocultas"
-msgstr ""
+msgstr "Zeige versteckte Aktionen"
 
 #: ../../../../inc/themes/classic/preferences.inc:111
 #: ../../../../inc/themes/material-blue/preferences.inc:112
@@ -4479,7 +4516,7 @@ msgstr "Kundenverwaltung"
 #: ../../../../inc/themes/classic/profiles.inc:107
 #: ../../../../inc/themes/material-blue/profiles.inc:124
 msgid "Gestión de campos personalizados"
-msgstr ""
+msgstr "Spezifische Feld Verwaltung"
 
 #: ../../../../inc/themes/classic/profiles.inc:112
 #: ../../../../inc/themes/material-blue/profiles.inc:129
@@ -4532,7 +4569,7 @@ msgid "Descripción de la petición"
 msgstr "Beschreibung der Anfrage"
 
 #: ../../../../inc/themes/classic/request.inc:33
-#: ../../../../inc/themes/material-blue/account.inc:445
+#: ../../../../inc/themes/material-blue/account.inc:446
 #: ../../../../inc/themes/material-blue/editpass.inc:55
 #: ../../../../inc/themes/material-blue/mgmttabs.inc:13
 #: ../../../../inc/themes/material-blue/request.inc:42
@@ -4637,14 +4674,14 @@ msgstr "Zwei Faktor Authentifizierung"
 msgid ""
 "Habilita la autentificación en 2 pasos que requiere de la introducción de un "
 "token generado por una aplicación como Google Authenticator."
-msgstr ""
+msgstr "Aktiviert Zwei-Faktor-Authentifizierung"
 
 #: ../../../../inc/themes/classic/security.inc:21
 #: ../../../../inc/themes/material-blue/security.inc:19
 msgid ""
 "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
 "dígitos."
-msgstr ""
+msgstr "Scanne den angegebenen QR-Code und gib den sechs stelligen Code ein."
 
 #: ../../../../inc/themes/classic/security.inc:29
 #: ../../../../inc/themes/material-blue/security.inc:27
@@ -4654,7 +4691,7 @@ msgstr "Aktivieren"
 #: ../../../../inc/themes/classic/security.inc:34
 #: ../../../../inc/themes/material-blue/security.inc:33
 msgid "Error al obtener el código QR. Inténtelo de nuevo"
-msgstr ""
+msgstr "Fehler beim Abrufen des QR-Codes. Bitte erneut versuchen."
 
 #: ../../../../inc/themes/classic/security.inc:39
 #: ../../../../inc/themes/material-blue/security.inc:41
@@ -4689,7 +4726,7 @@ msgstr "Optionen"
 #: ../../../../inc/themes/material-blue/tokens.inc:37
 #: ../../../../inc/themes/material-blue/tokens.inc:40
 msgid "Regenerar Autorización"
-msgstr ""
+msgstr "Autorisierung erneuern"
 
 #: ../../../../inc/themes/classic/tokens.inc:43
 #: ../../../../inc/themes/material-blue/tokens.inc:46
@@ -4704,7 +4741,7 @@ msgstr "Aktualisiert"
 #: ../../../../inc/themes/classic/update.inc:23
 #: ../../../../inc/themes/material-blue/update.inc:22
 msgid "Error al comprobar actualizaciones"
-msgstr ""
+msgstr "Fehler bei der Updateprüfung"
 
 #: ../../../../inc/themes/classic/upgrade.inc:8
 #: ../../../../inc/themes/material-blue/upgrade.inc:6
@@ -4858,11 +4895,15 @@ msgstr "Filter löschen"
 msgid "Histórico"
 msgstr "Vergangenheit"
 
-#: ../../../../inc/themes/material-blue/account.inc:42
-msgid "Seleccionar o escribir para crear uno nuevo"
+#: ../../../../inc/themes/material-blue/account.inc:34
+msgid "> Usar texto y crear nuevo"
 msgstr ""
 
-#: ../../../../inc/themes/material-blue/account.inc:113
+#: ../../../../inc/themes/material-blue/account.inc:43
+msgid "Seleccionar o escribir para crear uno nuevo"
+msgstr "Auswählen oder schreiben um einen neuen zu kreieren"
+
+#: ../../../../inc/themes/material-blue/account.inc:114
 msgid "Clave (Repetir)"
 msgstr "Passwort (wiederholen)"
 
@@ -4879,7 +4920,7 @@ msgstr "HTTPS erzwingen"
 
 #: ../../../../inc/themes/material-blue/config.inc:71
 msgid "Fuerza para que todas las conexiones sean a través de HTTPS."
-msgstr ""
+msgstr "Erzwingt HTTPS bei allen Verbindungen"
 
 #: ../../../../inc/themes/material-blue/config.inc:232
 #: ../../../../inc/themes/material-blue/preferences.inc:68
@@ -4920,7 +4961,7 @@ msgstr "Feldname"
 
 #: ../../../../inc/themes/material-blue/customfields.inc:47
 msgid "Ayuda del campo"
-msgstr ""
+msgstr "Feldhilfe"
 
 #: ../../../../inc/themes/material-blue/footer.inc:11
 msgid "Preferencias de usuario"
@@ -4928,7 +4969,7 @@ msgstr "Benutzereinstellungen"
 
 #: ../../../../inc/themes/material-blue/install.inc:33
 msgid "Usuario administrador de sysPass"
-msgstr ""
+msgstr "sysPass Administrator"
 
 #: ../../../../inc/themes/material-blue/install.inc:81
 msgid "Usuario acceso BBDD"
@@ -4952,7 +4993,7 @@ msgstr "sysPass Datenbankserver"
 
 #: ../../../../inc/themes/material-blue/install.inc:118
 msgid "Nombre del servidor para instalar la base de datos de sysPass"
-msgstr ""
+msgstr "Name des Servers zur Installation der sysPass Datenbank"
 
 #: ../../../../inc/themes/material-blue/ldap.inc:96
 msgid "Clave del usuario de conexión a LDAP."
@@ -4963,6 +5004,8 @@ msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
 msgstr ""
+"Erlaubt, dass Nutzer Änderungen an oder Zugriff auf Konten, zu denen sie "
+"keinen Zugriff haben, erbitten können."
 
 #: ../../../../inc/themes/material-blue/profiles.inc:25
 msgid "Crear nueva cuenta"

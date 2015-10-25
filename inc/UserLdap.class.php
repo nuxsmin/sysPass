@@ -68,7 +68,7 @@ class UserLdap
         $data['notes'] = _('Usuario de LDAP');
         $data['groupId'] = $groupId;
         $data['profileId'] = $profileId;
-        $data['isDisabled'] = (int)($groupId && $profileId);
+        $data['isDisabled'] = ($groupId === 0 || $profileId === 0) ? 1 : 0;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;

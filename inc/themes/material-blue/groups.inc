@@ -32,7 +32,7 @@
                 <td class="descField"><?php echo _('Usuarios'); ?></td>
                 <td class="valField">
                     <select id="selUsers" name="users[]" multiple="multiple" class="select-box sel-chosen-user">
-                        <option value="0"></option>
+                        <option value=""></option>
                         <?php foreach ($users as $id => $name): ?>
                             <?php $selected = (in_array($id, $groupUsers)) ? 'selected' : ''; ?>
                             <option

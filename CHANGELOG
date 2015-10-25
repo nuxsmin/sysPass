@@ -1,3 +1,12 @@
+=== ** v1.2.0.08 ===
+
+* [FIX] Fixed issue on copy password to clipboard on Chrome browser. Related #140. Thanks to @basil-twisleton
+* [FIX] Fixed English translation. Related #140.Thanks to @basil-twisleton
+* [FIX] Fixed displaying required field when it is a select tag. Related #140.Thanks to @basil-twisleton
+* [FIX] Fixed issue when adding an user from LDAP when no group/profile is set (disabled by default). Fixes #157
+* [MOD] Modified behavior when adding a new customer from account page. Related #140.Thanks to @basil-twisleton
+* [MOD] Updated German translation. Thanks to @wagnst
+
 === ** v1.2.0.07 ===
 
 * [FIX] Fixed issue when searching an user groupmembership to access to an account. Thanks to @basil-twisleton

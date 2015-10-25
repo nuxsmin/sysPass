@@ -308,6 +308,7 @@ sysPass.Util.Common = function () {
                     title: LANG[47],
                     width: 'auto',
                     open: function () {
+                        var thisDialog = $(this);
                         var content;
                         var pass = '';
                         var clipboardUserButton =
@@ -335,25 +336,23 @@ sysPass.Util.Common = function () {
                         } else {
                             content = '<span class="altTxtRed">' + json.description + '</span>';
 
-                            $(this).dialog("option", "buttons",
+                            thisDialog.dialog("option", "buttons",
                                 [{
                                     text: "Ok",
                                     icons: {primary: "ui-icon-close"},
                                     click: function () {
-                                        $(this).dialog("close");
+                                        thisDialog.dialog("close");
                                     }
                                 }]
                             );
                         }
 
-                        $(this).html(content);
+                        thisDialog.html(content);
 
                         // Recentrar después de insertar el contenido
-                        $(this).dialog('option', 'position', 'center');
+                        thisDialog.dialog('option', 'position', 'center');
 
                         // Cerrar Dialog a los 30s
-                        var thisDialog = $(this);
-
                         $(this).parent().on('mouseleave', function () {
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
@@ -361,7 +360,7 @@ sysPass.Util.Common = function () {
                             }, 30000);
                         });
                     },
-                    // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
+                    // Forzar la eliminación del objeto para que siga copiando al protapapeles al abrirlo de nuevo
                     close: function () {
                         clearTimeout(timeout);
                         $(this).dialog("destroy");
@@ -983,7 +982,7 @@ sysPass.Util.Common = function () {
             'ldap_base': ldapBase,
             'ldap_group': ldapGroup,
             'ldap_binduser': ldapBindUser,
-            'ldap_bindpass': (PK !== '' ) ? encrypt.encrypt(ldapBindPass) : ldapBindPass,
+            'ldap_bindpass': ldapBindPass,
             'isAjax': 1,
             'sk': sk
         };
@@ -1018,6 +1017,7 @@ sysPass.Util.Common = function () {
 
         $(".sel-chosen-usergroup").chosen({
             placeholder_text_single: LANG[21],
+            placeholder_text_multiple: LANG[21],
             disable_search_threshold: searchTreshold,
             no_results_text: LANG[26],
             width: selectWidth
@@ -1025,6 +1025,7 @@ sysPass.Util.Common = function () {
 
         $(".sel-chosen-user").chosen({
             placeholder_text_single: LANG[22],
+            placeholder_text_multiple: LANG[22],
             disable_search_threshold: searchTreshold,
             no_results_text: LANG[26],
             width: selectWidth
@@ -1043,6 +1044,7 @@ sysPass.Util.Common = function () {
             $(this).chosen({
                 allow_single_deselect: deselect,
                 placeholder_text_single: LANG[24],
+                placeholder_text_multiple: LANG[24],
                 disable_search_threshold: searchTreshold,
                 no_results_text: LANG[26],
                 width: selectWidth
@@ -1055,6 +1057,7 @@ sysPass.Util.Common = function () {
             $(this).chosen({
                 allow_single_deselect: deselect,
                 placeholder_text_single: LANG[25],
+                placeholder_text_multiple: LANG[25],
                 disable_search_threshold: searchTreshold,
                 no_results_text: LANG[26],
                 width: selectWidth
@@ -1067,6 +1070,7 @@ sysPass.Util.Common = function () {
             $(this).chosen({
                 allow_single_deselect: deselect,
                 placeholder_text_single: LANG[39],
+                placeholder_text_multiple: LANG[39],
                 disable_search_threshold: searchTreshold,
                 no_results_text: LANG[26],
                 width: selectWidth

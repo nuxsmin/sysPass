@@ -8,7 +8,7 @@
                 <td class="descField"><?php echo _('Usuario'); ?></td>
                 <td class="valField">
                     <select id="selUsers" name="users" class="select-box sel-chosen-user">
-                        <option value="0"></option>
+                        <option value=""></option>
                         <?php foreach ($users as $id => $name): ?>
                             <?php $selected = ($gotData && $id == $token->authtoken_userId) ? 'selected' : ''; ?>
                             <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
@@ -21,7 +21,7 @@
                 <td class="valField">
                     <select id="selActions" name="actions"
                             class="select-box sel-chosen-action">
-                        <option value="0"></option>
+                        <option value=""></option>
                         <?php foreach ($actions as $id => $name): ?>
                             <?php $selected = ($gotData && $id == $token->authtoken_actionId) ? 'selected' : ''; ?>
                             <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>

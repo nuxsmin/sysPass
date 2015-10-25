@@ -23,8 +23,8 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer">
-                            <option value="0"></option>
+                        <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer" required>
+                            <option value=""></option>
                             <?php foreach ($customers as $id => $name): ?>
                                 <option
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -42,8 +42,8 @@
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
                     <?php if ($showform): ?>
-                        <select id="selCategory" name="categoryId" class="select-box sel-chosen-category">
-                            <option value="0"></option>
+                        <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
+                            <option value=""></option>
                             <?php foreach ($categories as $id => $name): ?>
                                 <option
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>

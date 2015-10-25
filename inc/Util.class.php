@@ -309,7 +309,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '07';
+        $build = '08';
         $version = array(1, 2, 0);
 
         if ($retBuild) {
