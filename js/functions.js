@@ -686,7 +686,7 @@ sysPass.Util.Common = function () {
                 }
             },
             uploadFinished: function (i, file, json) {
-                sysPassUtilhideLoading();
+                sysPassUtil.hideLoading();
 
                 var status = json.status;
                 var description = json.description;
