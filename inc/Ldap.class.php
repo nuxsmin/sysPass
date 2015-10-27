@@ -122,6 +122,11 @@ class Ldap
     {
         $log = new Log(__FUNCTION__);
 
+        // Habilitar la traza si el modo debug está habilitado
+        if (Config::getValue('debug')){
+            @ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
+        }
+
         // Conexión al servidor LDAP
         if (!self::$_ldapConn = @ldap_connect(self::$_ldapServer)) {
             $log->addDescription(sprintf('%s \'%s\'', _('No es posible conectar con el servidor de LDAP'), self::$_ldapServer));
