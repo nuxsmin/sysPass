@@ -149,7 +149,7 @@
                                 <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
                                    onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
                                 <?php if (!\SP\Util::accountPassToImageIsEnabled()): ?>
-                                    <i class="material-icons fg-blue80 actions-optional clip-pass-button"
+                                    <i class="material-icons fg-blue80 clip-pass-button <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                        data-account-id="<?php echo $account['id']; ?>"
                                        title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
                                 <?php endif ?>

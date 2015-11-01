@@ -142,7 +142,7 @@
                                     <img src="imgs/clipboard.png"
                                          title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
                                          data-account-id="<?php echo $account['id']; ?>"
-                                         class="actions-optional clip-pass-button"/>
+                                         class="clip-pass-button <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"/>
                                 <?php endif; ?>
                             <?php endif ?>
 
