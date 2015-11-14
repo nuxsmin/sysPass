@@ -1,7 +1,7 @@
 <div id="actions" class="upgrade" align="center">
     <div id="logo">
         <div id="pageDesc">
-            <h1><?php echo _('Actualización') . ' ' . $appVersion; ?></h1>
+            <h1><?php echo _('Actualización') , ' ' , $appVersion; ?></h1>
         </div>
     </div>
 

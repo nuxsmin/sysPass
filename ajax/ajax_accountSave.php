@@ -145,7 +145,7 @@ switch ($actionId) {
         Customer::$customerName = $newCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente
-        if ($newCustomer) {
+        if ($customerId === 0 && $newCustomer) {
             try {
                 Customer::addCustomer();
                 $customerId = Customer::$customerLastId;
@@ -187,7 +187,7 @@ switch ($actionId) {
         Customer::$customerName = $newCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente
-        if ($newCustomer) {
+        if ($customerId === 0 && $newCustomer) {
             try {
                 Customer::addCustomer();
                 $customerId = Customer::$customerLastId;

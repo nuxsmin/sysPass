@@ -97,6 +97,19 @@ class UsersPrefsC extends Controller implements ActionsInterface
     }
 
     /**
+     * Obtener el índice actual de las pestañas
+     *
+     * @return int
+     */
+    private function getTabIndex()
+    {
+        $index = $this->_tabIndex;
+        $this->_tabIndex++;
+
+        return $index;
+    }
+
+    /**
      * Obtener la pestaña de preferencias
      */
     public function getPreferencesTab()
@@ -106,29 +119,18 @@ class UsersPrefsC extends Controller implements ActionsInterface
         $this->view->addTemplate('preferences');
 
         $this->view->assign('userId', $this->_userId);
-        $this->view->assign('langsAvailable',Language::getAvailableLanguages());
+        $this->view->assign('langsAvailable', Language::getAvailableLanguages());
         $this->view->assign('currentLang', $this->_userPrefs->getLang());
         $this->view->assign('themesAvailable', Themes::getThemesAvailable());
         $this->view->assign('currentTheme', ($this->_userPrefs->getTheme()) ? $this->_userPrefs->getTheme() : \SP\Config\Config::getValue('sitetheme'));
-        $this->view->assign('chkAccountLink',  ($this->_userPrefs->isAccountLink()) ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountLink', ($this->_userPrefs->isAccountLink()) ? 'checked="checked"' : '');
         $this->view->assign('resultsPerPage', ($this->_userPrefs->getResultsPerPage()) ? $this->_userPrefs->getResultsPerPage() : \SP\Config\Config::getValue('account_count'));
         $this->view->assign('chkSortViews', ($this->_userPrefs->isSortViews()) ? 'checked="checked"' : '');
         $this->view->assign('chkTopNavbar', ($this->_userPrefs->isTopNavbar()) ? 'checked="checked"' : '');
+        $this->view->assign('chkOptionalActions', ($this->_userPrefs->isOptionalActions()) ? 'checked="checked"' : '');
 
         $this->view->append('tabs', array('title' => _('Preferencias')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'preferences');
         $this->view->assign('actionId', $this->getAction(), 'preferences');
-    }
-
-    /**
-     * Obtener el índice actual de las pestañas
-     *
-     * @return int
-     */
-    private function getTabIndex(){
-        $index = $this->_tabIndex;
-        $this->_tabIndex++;
-
-        return $index;
     }
 }

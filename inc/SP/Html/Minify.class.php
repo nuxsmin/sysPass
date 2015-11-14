@@ -26,6 +26,7 @@
 namespace SP\Html;
 
 use CssMin;
+use SP\Core\SPException;
 use SP\Http\Request;
 use SP\Util\Util;
 
@@ -117,12 +118,11 @@ class Minify
 
             // Obtener el recurso desde una URL
             if (preg_match('#^https?://.*#', $file['name'])) {
-                $data = Util::getDataFromUrl($file['name']);
-
-                if ($data !== false) {
+                try {
+                    $data = Util::getDataFromUrl($file['name']);
                     echo '/* URL: ' . $file['name'] . ' */' . PHP_EOL;
                     echo $data;
-                }
+                } catch (SPException $e){ }
 
                 continue;
             }

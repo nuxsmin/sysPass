@@ -257,6 +257,14 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('wikiSearchUrl', Config::getValue('wiki_searchurl'));
         $this->view->assign('wikiPageUrl', Config::getValue('wiki_pageurl'));
         $this->view->assign('wikiFilter', Config::getValue('wiki_filter'));
+        $this->view->assign('dokuWikiUrl', Config::getValue('dokuwiki_url'));
+
+        $this->view->assign('chkDokuWiki', (Config::getValue('dokuwiki_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('dokuWikiUrl', Config::getValue('dokuwiki_url'));
+        $this->view->assign('dokuWikiUrlBase', Config::getValue('dokuwiki_urlbase'));
+        $this->view->assign('dokuWikiUser', Config::getValue('dokuwiki_user'));
+        $this->view->assign('dokuWikiPass', Config::getValue('dokuwiki_pass'));
+        $this->view->assign('dokuWikiNamespace', Config::getValue('dokuwiki_namespace'));
 
         $this->view->assign('actionId', $this->getAction(), 'wiki');
         $this->view->append('tabs', array('title' => _('Wiki')));

@@ -67,6 +67,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $accountLink = Request::analyze('account_link', false, false, true);
     $sortViews = Request::analyze('sort_views', false, false, true);
     $topNavbar = Request::analyze('top_navbar', false, false, true);
+    $optionalActions = Request::analyze('optional_actions', false, false, true);
 
     // No se instancia la clase ya que es necesario guardar los atributos ya guardados
     $UserPrefs = UserPreferences::getPreferences($itemId);
@@ -77,6 +78,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $UserPrefs->setAccountLink($accountLink);
     $UserPrefs->setSortViews($sortViews);
     $UserPrefs->setTopNavbar($topNavbar);
+    $UserPrefs->setOptionalActions($optionalActions);
 
     if (!$UserPrefs->updatePreferences()) {
         Response::printJSON(_('Error al actualizar preferencias'));

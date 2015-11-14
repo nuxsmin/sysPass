@@ -127,7 +127,7 @@ class AccountC extends Controller implements ActionsInterface
             )
         );
         $this->view->assign('showform', true);
-        $this->view->assign('nextaction', Acl::ACTION_ACC_SEARCH);
+        $this->view->assign('nextaction', Acl::ACTION_ACC_NEW);
 
         Session::setLastAcountId(0);
         $this->setCommonData();
@@ -141,6 +141,8 @@ class AccountC extends Controller implements ActionsInterface
      */
     protected function checkAccess($action = null)
     {
+        $this->view->assign('showLogo', false);
+
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;

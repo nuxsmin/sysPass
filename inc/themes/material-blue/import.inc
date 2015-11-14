@@ -19,7 +19,7 @@
                 <td class="valField">
                     <select id="import_defaultuser" name="import_defaultuser"
                             class="select-box sel-chosen-user" required>
-                        <option value="0"></option>
+                        <option value=""></option>
                         <?php foreach ($users as $id => $name): ?>
                             <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>>
                                 <?php echo $name; ?>
@@ -41,7 +41,7 @@
                 <td class="valField">
                     <select id="import_defaultgroup" name="import_defaultgroup"
                             class="select-box sel-chosen-usergroup" required>
-                        <option value="0"></option>
+                        <option value=""></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>>
                                 <?php echo $name; ?>

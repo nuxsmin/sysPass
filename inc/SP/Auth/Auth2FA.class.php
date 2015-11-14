@@ -27,6 +27,7 @@ namespace SP\Auth;
 
 use Exts\Google2FA;
 use Exts\Base2n;
+use SP\Core\SPException;
 use SP\Mgmt\User\UserPass;
 use SP\Util\Util;
 
@@ -119,13 +120,12 @@ class Auth2FA
      */
     public function getUserQRCode()
     {
-        $data = Util::getDataFromUrl($this->getUserQRUrl());
-
-        if ($data === false) {
+        try {
+            $data = Util::getDataFromUrl($this->getUserQRUrl());
+            return base64_encode($data);
+        } catch (SPException $e) {
             return false;
         }
-
-        return base64_encode($data);
     }
 
     /**

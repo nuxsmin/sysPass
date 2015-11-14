@@ -96,6 +96,131 @@
             </tr>
         </table>
 
+        <div id="title" class="midroundup titleNormal">
+            <?php echo _('DokuWiki API'); ?>
+        </div>
+
+        <table id="tblDokuWiki" class="data tblConfig round">
+            <tr>
+                <td class="descField">
+                    <?php echo _('Habilitar API de DokuWiki'); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dokuwiki_enabled" style="display:none;">
+                        <p>
+                            <?php echo _('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
+                        </p>
+                        <p>
+                            <?php echo _('Para que esta característica funcione, es necesario habilitar los enlaces Wiki para el filtrado de cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label for="dokuwiki_enabled"><?php echo ($chkDokuWiki) ? _('SI') : _('NO'); ?></label>
+                    <input type="checkbox" name="dokuwiki_enabled" id="dokuwiki_enabled"
+                           class="checkbox" <?php echo $chkDokuWiki, ' ', $isDisabled; ?> />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('URL API'); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dokuwiki_url" style="display:none;">
+                        <p>
+                            <?php echo _('URL de la API de DokuWiki.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Ejemplo:'); ?>
+                        <ul>
+                            <li>http://wiki.syspass.org/lib/exe/xmlrpc.php</li>
+                        </ul>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <input type="text" name="dokuwiki_url" class="txtLong" value="<?php echo $dokuWikiUrl; ?>"
+                           maxlength="128" <?php echo $isDisabled; ?>/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('URL Base'); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dokuwiki_urlbase" style="display:none;">
+                        <p>
+                            <?php echo _('URL base de DokuWiki.'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Ejemplo:'); ?>
+                        <ul>
+                            <li>http://wiki.syspass.org/dokuwiki</li>
+                        </ul>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <input type="text" name="dokuwiki_urlbase" class="txtLong" value="<?php echo $dokuWikiUrlBase; ?>"
+                           maxlength="128" <?php echo $isDisabled; ?>/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('Usuario'); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dokuwiki_user" style="display:none;">
+                        <p>
+                            <?php echo _('Usuario para conectar a la API de DokuWiki.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <input type="text" name="dokuwiki_user" value="<?php echo $dokuWikiUser; ?>"
+                           maxlength="128" <?php echo $isDisabled; ?>/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('Clave'); ?>
+                </td>
+                <td class="valField">
+                    <input type="password" id="dokuwiki_pass" name="dokuwiki_pass" value="<?php echo $dokuWikiPass; ?>"
+                           class="passwordfield__input-show"
+                           maxlength="128" <?php echo $isDisabled; ?>/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField">
+                    <?php echo _('Namespace'); ?>
+                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <div class="tooltip" for="help-dokuwiki_namespace" style="display:none;">
+                        <p>
+                            <?php echo _('Namespace utilizado para buscar las páginas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <input type="text" name="dokuwiki_namespace" value="<?php echo $dokuWikiNamespace; ?>"
+                           maxlength="128" <?php echo $isDisabled; ?>/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="descField"><?php echo _('Comprobar'); ?></td>
+                <td class="valField">
+                    <img src="imgs/refresh.png" class="inputImg"
+                         title="<?php echo _('Comprobar conexión con DokuWiki'); ?>" onclick="sysPassUtil.Common.checkDokuWikiConn('frmWiki');"/>
+                    <span id="dokuWikiResCheck"></span>
+                </td>
+            </tr>
+        </table>
+
+
         <?php if ($isDemoMode): ?>
             <input type="hidden" name="wiki_enabled" value="1"/>
         <?php endif; ?>

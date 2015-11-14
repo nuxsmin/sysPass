@@ -116,16 +116,15 @@ class DB
             return false;
         }
 
-        if (self::$_returnRawData && is_object($doQuery) && get_class($doQuery) === "PDOStatement") {
+        if (self::$_returnRawData
+            && is_object($doQuery)
+            && get_class($doQuery) === "PDOStatement"
+        ) {
             return $doQuery;
-        }
-
-        if ($db->_numRows == 0) {
+        } elseif ($db->_numRows == 0) {
             self::resetVars();
             return false;
-        }
-
-        if ($db->_numRows == 1 && self::$_retArray === false) {
+        } elseif ($db->_numRows == 1 && self::$_retArray === false) {
             self::resetVars();
             return $db->_lastResult[0];
         }
@@ -147,7 +146,7 @@ class DB
     /**
      * Realizar una consulta a la BBDD.
      *
-     * @param $queryData QueryData Los datos de la consulta
+     * @param $queryData   QueryData Los datos de la consulta
      * @param $getRawData  bool    realizar la consulta para obtener registro a registro
      * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
      * @throws SPException
@@ -183,7 +182,7 @@ class DB
      * Asociar los parámetros de la consulta utilizando el tipo adecuado
      *
      * @param $queryData QueryData Los datos de la consulta
-     * @param $isCount bool   Indica si es una consulta de contador de registros
+     * @param $isCount   bool   Indica si es una consulta de contador de registros
      * @return bool|\PDOStatement
      * @throws SPException
      */

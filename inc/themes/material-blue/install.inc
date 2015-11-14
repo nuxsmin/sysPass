@@ -1,7 +1,7 @@
 <div id="actions" class="installer" align="center">
     <div id="logo">
         <div id="pageDesc">
-            <h1><?php echo _('Instalación ') . ' ' . $version; ?></h1>
+            <h1><?php echo _('Instalación ') , ' ' , $appVersion; ?></h1>
         </div>
     </div>
 

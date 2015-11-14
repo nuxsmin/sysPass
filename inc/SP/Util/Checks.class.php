@@ -190,6 +190,16 @@ class Checks
     }
 
     /**
+     * Comprobar si está habilitada la API de DokuWiki.
+     *
+     * @return bool
+     */
+    public static function dokuWikiIsEnabled()
+    {
+        return Util::boolval(Config::getValue('dokuwiki_enabled', false));
+    }
+
+    /**
      * Comprobar si están habilitadas las peticiones por correo.
      *
      * @return bool

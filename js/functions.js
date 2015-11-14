@@ -308,6 +308,7 @@ sysPass.Util.Common = function () {
                     title: LANG[47],
                     width: 'auto',
                     open: function () {
+                        var thisDialog = $(this);
                         var content;
                         var pass = '';
                         var clipboardUserButton =
@@ -335,33 +336,31 @@ sysPass.Util.Common = function () {
                         } else {
                             content = '<span class="altTxtRed">' + json.description + '</span>';
 
-                            $(this).dialog("option", "buttons",
+                            thisDialog.dialog("option", "buttons",
                                 [{
                                     text: "Ok",
                                     icons: {primary: "ui-icon-close"},
                                     click: function () {
-                                        $(this).dialog("close");
+                                        thisDialog.dialog("close");
                                     }
                                 }]
                             );
                         }
 
-                        $(this).html(content);
+                        thisDialog.html(content);
 
                         // Recentrar después de insertar el contenido
-                        $(this).dialog('option', 'position', 'center');
+                        thisDialog.dialog('option', 'position', 'center');
 
                         // Cerrar Dialog a los 30s
-                        var thisDialog = $(this);
-
-                        $(this).parent().on('mouseleave', function () {
+                        thisDialog.parent().on('mouseleave', function () {
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
                                 thisDialog.dialog('close');
                             }, 30000);
                         });
                     },
-                    // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
+                    // Forzar la eliminación del objeto para que siga copiando al protapapeles al abrirlo de nuevo
                     close: function () {
                         clearTimeout(timeout);
                         $(this).dialog("destroy");
@@ -473,6 +472,8 @@ sysPass.Util.Common = function () {
 
                     if (action && id) {
                         doAction(action, 1, id);
+                    } else if (action) {
+                        doAction(action, 1);
                     }
                 } else if (status === 10) {
                     doLogout();
@@ -1057,26 +1058,51 @@ sysPass.Util.Common = function () {
 
     // Función para comprobar la conexión con LDAP
     var checkLdapConn = function (formId) {
-        var form = '#frmLdap';
+        var form = '#' + formId;
 
-        var ldapServer = $(form).find('[name=ldap_server]').val();
-        var ldapBase = $(form).find('[name=ldap_base]').val();
-        var ldapGroup = $(form).find('[name=ldap_group]').val();
-        var ldapBindUser = $(form).find('[name=ldap_binduser]').val();
         var ldapBindPass = $(form).find('[name=ldap_bindpass]').val();
-        var sk = $(form).find('[name=sk]').val();
 
         var data = {
-            'ldap_server': ldapServer,
-            'ldap_base': ldapBase,
-            'ldap_group': ldapGroup,
-            'ldap_binduser': ldapBindUser,
-            'ldap_bindpass': ldapBindPass,
+            'type': 'ldap',
+            'ldap_server': $(form).find('[name=ldap_server]').val(),
+            'ldap_base': $(form).find('[name=ldap_base]').val(),
+            'ldap_group': $(form).find('[name=ldap_group]').val(),
+            'ldap_binduser': $(form).find('[name=ldap_binduser]').val(),
+            'ldap_bindpass': (PK !== '' ) ? encrypt.encrypt(ldapBindPass) : ldapBindPass,
             'isAjax': 1,
-            'sk': sk
+            'sk': $(form).find('[name=sk]').val()
         };
 
-        sendAjax(data, '/ajax/ajax_checkLdap.php');
+        sendAjax(data, '/ajax/ajax_checkConnection.php');
+    };
+
+    var checkDokuWikiConn = function (formId) {
+        var form = '#' + formId;
+
+        var data = {
+            'type': 'dokuwiki',
+            'dokuwiki_url': $(form).find('[name=dokuwiki_url]').val(),
+            'dokuwiki_user': $(form).find('[name=dokuwiki_user]').val(),
+            'dokuwiki_pass': $(form).find('[name=dokuwiki_pass]').val(),
+            'isAjax': 1,
+            'sk': $(form).find('[name=sk]').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: APP_ROOT + '/ajax/ajax_checkConnection.php',
+            data: data,
+            success: function (response) {
+                if (response.status === 1) {
+                    resMsg("error", response.description);
+                } else if (response.status === 0) {
+                    resMsg("ok", response.description);
+                    $('#dokuWikiResCheck').html(response.data);
+                }
+            }
+        });
+
+        //sendAjax(data, 'ajax_checkConnection.php');
     };
 
     // Función para volver al login
@@ -1106,6 +1132,7 @@ sysPass.Util.Common = function () {
 
         $(".sel-chosen-usergroup").chosen({
             placeholder_text_single: LANG[21],
+            placeholder_text_multiple: LANG[21],
             disable_search_threshold: searchTreshold,
             no_results_text: LANG[26],
             width: selectWidth
@@ -1113,6 +1140,7 @@ sysPass.Util.Common = function () {
 
         $(".sel-chosen-user").chosen({
             placeholder_text_single: LANG[22],
+            placeholder_text_multiple: LANG[22],
             disable_search_threshold: searchTreshold,
             no_results_text: LANG[26],
             width: selectWidth
@@ -1120,6 +1148,7 @@ sysPass.Util.Common = function () {
 
         $(".sel-chosen-profile").chosen({
             placeholder_text_single: LANG[23],
+            placeholder_text_multiple: LANG[23],
             disable_search_threshold: searchTreshold,
             no_results_text: LANG[26],
             width: selectWidth
@@ -1131,6 +1160,7 @@ sysPass.Util.Common = function () {
             $(this).chosen({
                 allow_single_deselect: deselect,
                 placeholder_text_single: LANG[24],
+                placeholder_text_multiple: LANG[24],
                 disable_search_threshold: searchTreshold,
                 no_results_text: LANG[26],
                 width: selectWidth
@@ -1143,6 +1173,7 @@ sysPass.Util.Common = function () {
             $(this).chosen({
                 allow_single_deselect: deselect,
                 placeholder_text_single: LANG[25],
+                placeholder_text_multiple: LANG[25],
                 disable_search_threshold: searchTreshold,
                 no_results_text: LANG[26],
                 width: selectWidth
@@ -1155,6 +1186,7 @@ sysPass.Util.Common = function () {
             $(this).chosen({
                 allow_single_deselect: deselect,
                 placeholder_text_single: LANG[39],
+                placeholder_text_multiple: LANG[39],
                 disable_search_threshold: searchTreshold,
                 no_results_text: LANG[26],
                 width: selectWidth
@@ -1263,12 +1295,34 @@ sysPass.Util.Common = function () {
         });
     };
 
+    // Función para mostrar los datos de un registro
+    var viewWiki = function (pageName, actionId, sk) {
+
+        var data = {'pageName' : pageName, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
+        var url = APP_ROOT + '/ajax/ajax_wiki.php';
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'html',
+            url: url,
+            data: data,
+            success: function (response) {
+                $.fancybox(response, {padding: [0, 10, 10, 10]});
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                resMsg("error", txt);
+            }
+        });
+    };
+
     return {
         accSearch: accSearch,
         appMgmtData: appMgmtData,
         appMgmtSave: appMgmtSave,
         appMgmtDelete: appMgmtDelete,
         checkboxDetect: checkboxDetect,
+        checkDokuWikiConn: checkDokuWikiConn,
         checkLdapConn: checkLdapConn,
         checkPassLevel: checkPassLevel,
         checkUpds: checkUpds,
@@ -1302,6 +1356,7 @@ sysPass.Util.Common = function () {
         usrUpdPass: usrUpdPass,
         viewFile: viewFile,
         viewPass: viewPass,
+        viewWiki: viewWiki,
         passwordData: passwordData,
         passToClip: passToClip,
         APP_ROOT: APP_ROOT,

@@ -30,7 +30,7 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer" required>
-                            <option value="0"></option>
+                            <option value=""></option>
                             <?php foreach ($customers as $id => $name): ?>
                                 <option
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -51,7 +51,7 @@
                 <td class="valField">
                     <?php if ($showform): ?>
                         <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
-                            <option value="0"></option>
+                            <option value=""></option>
                             <?php foreach ($categories as $id => $name): ?>
                                 <option
                                     value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>

@@ -255,7 +255,6 @@ class Installer
      */
     private static function setupMySQLDatabase()
     {
-
         // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
         if (!self::$_isHostingMode) {
             self::setDbpass(md5(time() . self::$_password));

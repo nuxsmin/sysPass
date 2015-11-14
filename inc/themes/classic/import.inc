@@ -122,7 +122,7 @@
                 <td class="valField">
                     <select id="import_defaultgroup" name="import_defaultgroup"
                             class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
-                        <option value="0"></option>
+                        <option value=""></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -169,7 +169,7 @@
             <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
         </button>
         <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
-            <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde arhcivos XML y CSV.'); ?></p>
+            <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
 
             <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
 

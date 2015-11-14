@@ -131,13 +131,22 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $filesAllowedSize = Request::analyze('files_allowed_size', 1024);
         $filesAllowedExts = Request::analyze('files_allowed_exts');
 
-        Config::setCacheConfigValue('files_enabled', $filesEnabled);
-        Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
-        Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
-
         if ($filesEnabled && $filesAllowedSize >= 16384) {
             Response::printJSON(_('El tamaño máximo por archivo es de 16MB'));
         }
+
+        if (!empty($filesAllowedExts)) {
+            $exts = explode(',', $filesAllowedExts);
+            array_walk($exts, function (&$value) {
+                if (preg_match('/[^a-z0-9_-]+/i', $value)) {
+                    Response::printJSON(_('Extensión no permitida'));
+                }
+            });
+        }
+
+        Config::setCacheConfigValue('files_enabled', $filesEnabled);
+        Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
+        Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
 
         // Public Links
         $pubLinksEnabled = Request::analyze('publinks_enabled', false, false, true);
@@ -190,13 +199,39 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
             Config::setCacheConfigValue('wiki_enabled', true);
             Config::setCacheConfigValue('wiki_searchurl', $wikiSearchUrl);
             Config::setCacheConfigValue('wiki_pageurl', $wikiPageUrl);
-            Config::setCacheConfigValue('wiki_filter', $wikiFilter);
+            Config::setCacheConfigValue('wiki_filter', strtr($wikiFilter, ',', '|'));
 
             $Log->addDescription(_('Wiki habiltada'));
         } else {
             Config::setCacheConfigValue('wiki_enabled', false);
 
             $Log->addDescription(_('Wiki deshabilitada'));
+        }
+
+        // DokuWiki
+        $dokuWikiEnabled = Request::analyze('dokuwiki_enabled', false, false, true);
+        $dokuWikiUrl = Request::analyze('dokuwiki_url');
+        $dokuWikiUrlBase = Request::analyze('dokuwiki_urlbase');
+        $dokuWikiUser = Request::analyze('dokuwiki_user');
+        $dokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
+        $dokuWikiNamespace = Request::analyze('dokuwiki_namespace');
+
+        // Valores para la conexión a la API de DokuWiki
+        if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
+            Response::printJSON(_('Faltan parámetros de DokuWiki'));
+        } elseif ($dokuWikiEnabled) {
+            Config::setCacheConfigValue('dokuwiki_enabled', true);
+            Config::setCacheConfigValue('dokuwiki_url', $dokuWikiUrl);
+            Config::setCacheConfigValue('dokuwiki_urlbase', trim($dokuWikiUrlBase, '/'));
+            Config::setCacheConfigValue('dokuwiki_user', $dokuWikiUser);
+            Config::setCacheConfigValue('dokuwiki_pass', $dokuWikiPass);
+            Config::setCacheConfigValue('dokuwiki_namespace', $dokuWikiNamespace);
+
+            $Log->addDescription(_('DokuWiki habiltada'));
+        } else {
+            Config::setCacheConfigValue('dokuwiki_enabled', false);
+
+            $Log->addDescription(_('DokuWiki deshabilitada'));
         }
 
         $Log->addDetails(_('Sección'), _('Wiki'));

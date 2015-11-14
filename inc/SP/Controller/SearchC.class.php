@@ -191,10 +191,12 @@ class SearchC extends Controller implements ActionsInterface
 
         $accountLink = Session::getUserPreferences()->isAccountLink();
         $topNavbar = Session::getUserPreferences()->isTopNavbar();
+        $optionalActions = Session::getUserPreferences()->isOptionalActions();
 
         // Variables de configuración
         $this->view->assign('accountLink', (is_null($accountLink) ? Config::getValue('account_link', 0) : $accountLink));
         $this->view->assign('topNavbar', $topNavbar);
+        $this->view->assign('optionalActions', $optionalActions);
         $this->view->assign('requestEnabled', Checks::mailrequestIsEnabled());
         $this->view->assign('isDemoMode', Checks::demoIsEnabled());
         $maxTextLength = (Checks::resultsCardsIsEnabled()) ? 40 : 60;
@@ -203,8 +205,9 @@ class SearchC extends Controller implements ActionsInterface
 
         if ($wikiEnabled) {
             $wikiSearchUrl = Config::getValue('wiki_searchurl', false);
-            $this->view->assign('wikiFilter', explode(',', Config::getValue('wiki_filter')));
+            $this->view->assign('wikiFilter', strtr(Config::getValue('wiki_filter'), ',', '|'));
             $this->view->assign('wikiPageUrl', Config::getValue('wiki_pageurl'));
+            $this->view->assign('dokuWikiEnabled', Checks::dokuWikiIsEnabled());
         }
 
         $this->setSortFields();

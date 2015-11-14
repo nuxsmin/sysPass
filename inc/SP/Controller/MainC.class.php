@@ -28,6 +28,7 @@ namespace SP\Controller;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Installer;
+use SP\Core\Template;
 use SP\Html\Html;
 use SP\Mgmt\PublicLink;
 use SP\Http\Request;
@@ -49,11 +50,11 @@ class MainC extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param      $template   \SP\Core\Template con instancia de plantilla
+     * @param      $template   Template con instancia de plantilla
      * @param null $page       El nombre de página para la clase del body
      * @param bool $initialize Si es una inicialización completa
      */
-    public function __construct(\SP\Core\Template $template = null, $page = null, $initialize = true)
+    public function __construct(Template $template = null, $page = null, $initialize = true)
     {
         parent::__construct($template);
 
@@ -105,6 +106,10 @@ class MainC extends Controller implements ActionsInterface
         if (isset($themeInfo['css'])) {
             if (!Checks::resultsCardsIsEnabled()) {
                 array_push($themeInfo['css'], 'search-grid.min.css');
+            }
+
+            if (Checks::dokuWikiIsEnabled()) {
+                array_push($themeInfo['css'], 'styles-wiki.min.css');
             }
 
             $themeCssBase = 'b=' . urlencode(Themes::$themePath . DIRECTORY_SEPARATOR . 'css');
@@ -271,7 +276,6 @@ class MainC extends Controller implements ActionsInterface
         $this->view->assign('securityErrors', array());
         $this->view->assign('resInstall', array());
         $this->view->assign('isCompleted', false);
-        $this->view->assign('version', Util::getVersionString());
         $this->view->assign('adminlogin', Request::analyze('adminlogin', 'admin'));
         $this->view->assign('adminpass', Request::analyzeEncrypted('adminpass'));
         $this->view->assign('masterpassword', Request::analyzeEncrypted('masterpassword'));

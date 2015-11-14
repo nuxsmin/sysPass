@@ -674,12 +674,52 @@ class Session
     }
 
     /**
-     * Establece l color asociado a una cuenta
+     * Establece el color asociado a una cuenta
      *
      * @param array $color
      */
     public static function setAccountColor(array $color)
     {
         self::setSessionKey('accountcolor', $color);
+    }
+
+    /**
+     * Devolver si hay una cookie de sesión para CURL
+     *
+     * @return string
+     */
+    public static function getCurlCookieSession()
+    {
+        return self::getSessionKey('curlcookiesession', false);
+    }
+
+    /**
+     * Establecer si hay una cookie de sesión para CURL
+     *
+     * @param bool $session
+     */
+    public static function setCurlCookieSession($session)
+    {
+        self::setSessionKey('curlcookiesession', $session);
+    }
+
+    /**
+     * Devolver si hay una sesión a la API de DokuWiki
+     *
+     * @return string
+     */
+    public static function getDokuWikiSession()
+    {
+        return self::getSessionKey('dokuwikisession', false);
+    }
+
+    /**
+     * Establecer si hay una sesión a la API de DokuWiki
+     *
+     * @param bool $session
+     */
+    public static function setDokuWikiSession($session)
+    {
+        self::setSessionKey('dokuwikisession', $session);
     }
 }

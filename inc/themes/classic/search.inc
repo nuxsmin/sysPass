@@ -11,6 +11,7 @@
                         <a id="search-sort-<?php echo $field['key']; ?>"
                            class="round <?php echo ($searchKey == $field['key']) ? 'filterOn' : ''; ?>"
                            title="<?php echo $field['title']; ?>"><?php echo $field['name']; ?></a>
+
                         <div
                             class="icon material-icons sort-down cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
                             arrow_drop_down
@@ -89,14 +90,16 @@
                                      title="<?php echo _('Archivos adjuntos'), ': ', $account['numFiles']; ?>"/>
                             <?php endif; ?>
 
-                            <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
-                                <?php foreach ($wikiFilter as $filter): ?>
-                                    <?php if (preg_match("/^" . preg_quote($filter) . ".*/i", $account['name'])): ?>
+                            <?php if (isset($wikiFilter)): ?>
+                                <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account['name'])): ?>
+                                    <?php if ($dokuWikiEnabled): ?>
+                                        <img src="imgs/wiki.png" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account['name']; ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)"/>
+                                    <?php else: ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
                                             <img src="imgs/wiki.png" title="<?php echo _('Enlace a Wiki'); ?>"/>
                                         </a>
                                     <?php endif; ?>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
 
@@ -114,30 +117,32 @@
                                     <img src="imgs/clipboard.png"
                                          title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
                                          data-account-id="<?php echo $account['id']; ?>"
-                                         class="actions-optional clip-pass-button"/>
+                                         class="clip-pass-button <?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"/>
                                 <?php endif; ?>
                             <?php endif ?>
 
-                            <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
+                            <?php if (!$optionalActions
+                                && ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass'])
+                            ): ?>
                                 <img src="imgs/action.png" title="<?php echo _('Más Acciones'); ?>"
                                      OnClick="sysPassUtil.Common.showOptional(this)"/>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
                                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>"
-                                     class="actions-optional"
+                                     class="<?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
                                 <img src="imgs/btn_copy.png" title="<?php echo _('Copiar Cuenta'); ?>"
-                                     class="actions-optional"
+                                     class="<?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
-                                     class="actions-optional"
+                                     class="<?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif; ?>
 

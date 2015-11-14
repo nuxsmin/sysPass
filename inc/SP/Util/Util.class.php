@@ -28,6 +28,7 @@ namespace SP\Util;
 use SP\Config\Config;
 use SP\Core\Init;
 use SP\Core\Session;
+use SP\Core\SPException;
 use SP\Html\Html;
 use SP\Log\Log;
 
@@ -117,56 +118,59 @@ class Util
             return false;
         }
 
-        $data = self::getDataFromUrl(self::getAppInfo('appupdates'));
-
-        if ($data) {
-            $updateInfo = json_decode($data);
-
-            // $updateInfo[0]->tag_name
-            // $updateInfo[0]->name
-            // $updateInfo[0]->body
-            // $updateInfo[0]->tarball_url
-            // $updateInfo[0]->zipball_url
-            // $updateInfo[0]->published_at
-            // $updateInfo[0]->html_url
-
-            $version = $updateInfo->tag_name;
-            $url = $updateInfo->html_url;
-            $title = $updateInfo->name;
-            $description = $updateInfo->body;
-            $date = $updateInfo->published_at;
-
-            preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
-
-            if (is_array($realVer) && Init::isLoggedIn()) {
-                $appVersion = implode('', self::getVersion(true));
-                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
-
-                if ($pubVersion > $appVersion) {
-                    return array(
-                        'version' => $version,
-                        'url' => $url,
-                        'title' => $title,
-                        'description' => $description,
-                        'date' => $date);
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
+        try {
+            $data = self::getDataFromUrl(self::getAppInfo('appupdates'));
+        } catch (SPException $e) {
+            return false;
         }
 
-        return false;
+        $updateInfo = json_decode($data);
+
+        // $updateInfo[0]->tag_name
+        // $updateInfo[0]->name
+        // $updateInfo[0]->body
+        // $updateInfo[0]->tarball_url
+        // $updateInfo[0]->zipball_url
+        // $updateInfo[0]->published_at
+        // $updateInfo[0]->html_url
+
+        $version = $updateInfo->tag_name;
+        $url = $updateInfo->html_url;
+        $title = $updateInfo->name;
+        $description = $updateInfo->body;
+        $date = $updateInfo->published_at;
+
+        preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
+
+        if (is_array($realVer) && Init::isLoggedIn()) {
+            $appVersion = implode('', self::getVersion(true));
+            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
+
+            if ($pubVersion > $appVersion) {
+                return array(
+                    'version' => $version,
+                    'url' => $url,
+                    'title' => $title,
+                    'description' => $description,
+                    'date' => $date);
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param $url string La URL
+     * @param           $url string La URL
+     * @param array     $data
+     * @param bool|null $useCookie
      * @return bool|string
+     * @throws SPException
      */
-    public static function getDataFromUrl($url)
+    public static function getDataFromUrl($url, array $data = null, $useCookie = false)
     {
         if (!Checks::curlIsAvailable()) {
             return false;
@@ -188,20 +192,50 @@ class Util
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
         curl_setopt($ch, CURLOPT_USERAGENT, "sysPass-App");
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
+        if (!is_null($data)) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $data['type']);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data['data']);
+        }
+
+        if ($useCookie) {
+            $cookie = self::getUserCookieFile();
+
+            if (!Session::getCurlCookieSession()) {
+                curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+                curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
+
+                Session::setCurlCookieSession(true);
+            }
+
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
+        }
 
         $data = curl_exec($ch);
 
         if ($data === false) {
             Log::writeNewLog(__FUNCTION__, curl_error($ch));
 
-            return false;
+            throw new SPException(SPException::SP_WARNING, curl_error($ch));
         }
 
         return $data;
+    }
+
+    /**
+     * Devuelve el nombre de archivo a utilizar para las cookies del usuario
+     *
+     * @return string
+     */
+    public static function getUserCookieFile()
+    {
+        return '/tmp/' . md5('syspass-' . Session::getUserLogin());
     }
 
     /**
@@ -238,7 +272,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '01';
+        $build = '02';
         $version = array(1, 2, 1);
 
         if ($retBuild) {
@@ -260,28 +294,28 @@ class Util
             return false;
         }
 
-        $data = self::getDataFromUrl(self::getAppInfo('appnotices'));
-
-        if ($data) {
-            $noticesData = json_decode($data);
-            $notices = array();
-
-            // $noticesData[0]->title
-            // $noticesData[0]->body
-            // $noticesData[0]->created_at
-
-            foreach ($noticesData as $notice) {
-                $notices[] = array(
-                    $notice->title,
-//                    $notice->body,
-                    $notice->created_at
-                );
-            }
-
-            return $notices;
+        try {
+            $data = self::getDataFromUrl(self::getAppInfo('appnotices'));
+        } catch (SPException $e) {
+            return false;
         }
 
-        return false;
+        $noticesData = json_decode($data);
+        $notices = array();
+
+        // $noticesData[0]->title
+        // $noticesData[0]->body
+        // $noticesData[0]->created_at
+
+        foreach ($noticesData as $notice) {
+            $notices[] = array(
+                $notice->title,
+//              $notice->body,
+                $notice->created_at
+            );
+        }
+
+        return $notices;
     }
 
     /**

@@ -152,6 +152,7 @@ class Language
     {
         return array(
             'Español' => 'es_ES',
+            'Catalá' => 'ca_ES',
             'English' => 'en_US',
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',

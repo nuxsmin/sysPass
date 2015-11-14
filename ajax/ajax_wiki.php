@@ -23,9 +23,7 @@
  *
  */
 
-use SP\Auth\Ldap;
 use SP\Core\Init;
-use SP\Core\SessionUtil;
 use SP\Http\Request;
 use SP\Http\Response;
 
@@ -39,26 +37,18 @@ if (!Init::isLoggedIn()) {
     Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = Request::analyze('sk', false);
+$actionId = Request::analyze('actionId', 0);
 
-if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+$Controller = new \SP\Controller\WikiC();
+
+switch ($actionId) {
+    case \SP\Core\ActionsInterface::ACTION_WIKI_VIEW:
+        $pageName = Request::analyze('pageName');
+        $Controller->getWikiPage($pageName);
+        break;
+    default:
+        exit();
+        break;
 }
 
-$frmLdapServer = Request::analyze('ldap_server');
-$frmLdapBase = Request::analyze('ldap_base');
-$frmLdapGroup = Request::analyze('ldap_group');
-$frmLdapBindUser = Request::analyze('ldap_binduser');
-$frmLdapBindPass = Request::analyzeEncrypted('ldap_bindpass');
-
-if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
-    Response::printJSON(_('Los parámetros de LDAP no están configurados'));
-}
-
-$resCheckLdap = Ldap::checkLDAPConn($frmLdapServer, $frmLdapBindUser, $frmLdapBindPass, $frmLdapBase, $frmLdapGroup);
-
-if ($resCheckLdap === false) {
-    Response::printJSON(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
-} else {
-    Response::printJSON(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
-}
+$Controller->view();

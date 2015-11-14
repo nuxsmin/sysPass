@@ -35,7 +35,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class Acl implements \SP\Core\ActionsInterface
+class Acl implements ActionsInterface
 {
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
@@ -164,7 +164,7 @@ class Acl implements \SP\Core\ActionsInterface
             return 'action';
         }
 
-        if ($shortName){
+        if ($shortName) {
             return $actionName[$action][0];
         }
 
@@ -184,13 +184,14 @@ class Acl implements \SP\Core\ActionsInterface
         $userId = Session::getUserId();
         $userIsAdminApp = Session::getUserIsAdminApp();
         $userIsAdminAcc = Session::getUserIsAdminAcc();
-        $userToGroups = false;
+        $userToGroups = in_array($userGroupId, Groups::getUsersForGroup($accountData['group_id']));
 
-        foreach($accountData['groups_id'] as $groupId){
-            $users = Groups::getUsersForGroup($groupId);
-
-            if ($userGroupId === $groupId || in_array($userId, $users)){
-                $userToGroups = true;
+        if ($userToGroups === false) {
+            foreach ($accountData['groups_id'] as $groupId) {
+                $users = Groups::getUsersForGroup($groupId);
+                if ($userGroupId === $groupId || in_array($userId, $users)) {
+                    $userToGroups = true;
+                }
             }
         }
 
@@ -204,7 +205,7 @@ class Acl implements \SP\Core\ActionsInterface
         $okEdit = ($userId == $accountData['user_id']
             || $userGroupId == $accountData['group_id']
             || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-            || ($userToGroups  && $accountData['othergroup_edit'])
+            || ($userToGroups && $accountData['othergroup_edit'])
             || $userIsAdminApp
             || $userIsAdminAcc);
 

@@ -128,15 +128,16 @@
                                 </div>
                             <?php endif; ?>
 
-                            <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
-                                <?php foreach ($wikiFilter as $filter): ?>
-                                    <?php if (preg_match("/^" . preg_quote($filter) . ".*/i", $account['name'])): ?>
+                            <?php if (isset($wikiFilter)): ?>
+                                <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account['name'])): ?>
+                                    <?php if ($dokuWikiEnabled): ?>
+                                        <i class="material-icons fg-blue100" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account['name']; ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)">library_books</i>
+                                    <?php else: ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
-                                            <i id="viewpass" class="material-icons"
-                                               title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                            <i class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
                                         </a>
                                     <?php endif; ?>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
 
@@ -151,32 +152,34 @@
                                 <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
                                    onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
                                 <?php if (!Checks::accountPassToImageIsEnabled()): ?>
-                                    <i class="material-icons fg-blue80 actions-optional clip-pass-button"
+                                    <i class="material-icons fg-blue80 clip-pass-button <?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                        data-account-id="<?php echo $account['id']; ?>"
                                        title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
                                 <?php endif ?>
                             <?php endif ?>
 
-                            <?php if ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass']): ?>
+                            <?php if (!$optionalActions
+                                && ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass'])
+                            ): ?>
                                 <i class="material-icons"
                                    title="<?php echo _('Más Acciones'); ?>"
                                    OnClick="sysPassUtil.Common.showOptional(this)">settings</i>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
-                                <i class="material-icons fg-orange80 actions-optional"
+                                <i class="material-icons fg-orange80 <?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                    title="<?php echo _('Modificar Cuenta'); ?>"
                                    OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">mode_edit</i>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
-                                <i class="material-icons fg-blue80 actions-optional"
+                                <i class="material-icons fg-blue80 <?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                    title="<?php echo _('Copiar Cuenta'); ?>"
                                    OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">content_copy</i>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
-                                <i class="material-icons fg-red80 actions-optional"
+                                <i class="material-icons fg-red80 <?php echo (!$optionalActions) ? 'actions-optional' : ''; ?>"
                                    title="<?php echo _('Eliminar Cuenta'); ?>"
                                    OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">delete</i>
                             <?php endif; ?>

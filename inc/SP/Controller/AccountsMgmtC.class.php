@@ -393,7 +393,7 @@ class AccountsMgmtC extends Controller implements ActionsInterface
     }
 
     /**
-     * Obtener los datos para la pestaña de categorías
+     * Obtener los datos para la pestaña de archivos
      */
     public function getFiles()
     {

@@ -71,10 +71,10 @@ class UserLdap
         $Data->addParam($User->getUserName(), 'name');
         $Data->addParam($User->getUserLogin(), 'login');
         $Data->addParam($User->getUserEmail(), 'email');
-        $Data->addParam('LDAP', 'notes');
+        $Data->addParam(_('Usuario de LDAP'), 'notes');
         $Data->addParam($groupId, 'groupId');
         $Data->addParam($profileId, 'profileId');
-        $Data->addParam((!$groupId || !$profileId), 'isDisabled');
+        $Data->addParam(($groupId === 0 || $profileId === 0) ? 1 : 0, 'isDisabled');
         $Data->addParam($passdata['pass'], 'pass');
         $Data->addParam($passdata['salt'], 'hashSalt');
 

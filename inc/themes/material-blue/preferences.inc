@@ -103,6 +103,23 @@
                     </label>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Mostrar Acciones Ocultas'); ?>
+                    <div id="help-optional_actions" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-optional_actions">
+                        <p>
+                            <?php echo _('Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="optional_actions">
+                        <input type="checkbox" id="optional_actions" class="mdl-switch__input fg-blue100"
+                               name="optional_actions" <?php echo ($chkOptionalActions) ? 'checked' : ''; ?>/>
+                    </label>
+                </td>
+            </tr>
         </table>
 
         <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>
