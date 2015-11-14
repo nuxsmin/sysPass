@@ -223,12 +223,18 @@ sysPass.Util.Common = function () {
 
         $.ajax({
             type: 'POST',
-            dataType: 'html',
+            dataType: 'json',
             url: APP_ROOT + '/ajax/ajax_search.php',
             data: frmData,
-            success: function (response) {
-                $('#resBuscar').html(response);
+            success: function (json) {
+                $('#resBuscar').html(json.html);
                 $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
+
+
+                if (typeof json.sk !== 'undefined') {
+                    // Actualizar el token de seguridad
+                    $("#frmSearch").find(":input[name='sk']").val(json.sk);
+                }
             },
             error: function () {
                 $('#resBuscar').html(resMsg("nofancyerror"));
@@ -1298,7 +1304,7 @@ sysPass.Util.Common = function () {
     // Función para mostrar los datos de un registro
     var viewWiki = function (pageName, actionId, sk) {
 
-        var data = {'pageName' : pageName, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
+        var data = {'pageName': pageName, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
         var url = APP_ROOT + '/ajax/ajax_wiki.php';
 
         $.ajax({

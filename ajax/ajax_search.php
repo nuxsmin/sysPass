@@ -27,6 +27,7 @@ use SP\Controller\SearchC;
 use SP\Core\Init;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
+use SP\Http\Response;
 use SP\Util\Util;
 
 define('APP_ROOT', '..');
@@ -42,9 +43,15 @@ if (!Init::isLoggedIn()) {
 $sk = \SP\Http\Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    die('<div class="error round">' . _('CONSULTA INVÁLIDA') . '</div>');
+    Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 $Controller = new SearchC();
 $Controller->getSearch();
-$Controller->view();
+
+$data = array(
+    'sk' => SessionUtil::getSessionKey(),
+    'html' => $Controller->render()
+);
+
+Response::printJSON($data, 0);

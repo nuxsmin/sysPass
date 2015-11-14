@@ -37,19 +37,60 @@ use SP\Core\Init;
 class Request
 {
     /**
+     * Comprobar el método utilizado para enviar un formulario.
+     *
+     * @param string $method con el método utilizado.
+     */
+    public static function checkReferer($method)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== strtoupper($method)
+            || !isset($_SERVER['HTTP_REFERER'])
+            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
+        ) {
+            Init::initError(_('No es posible acceder directamente a este archivo'));
+            exit();
+        }
+    }
+
+    /**
+     * Analizar un valor encriptado y devolverlo desencriptado
+     *
+     * @param $param
+     * @return string
+     */
+    public static function analyzeEncrypted($param)
+    {
+        $encryptedData = self::analyze($param, '', false, false, false);
+
+        if ($encryptedData === '') {
+            return '';
+        }
+
+        try {
+            // Desencriptar con la clave RSA
+            $CryptPKI = new CryptPKI();
+            $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
+        } catch (\Exception $e) {
+            return $encryptedData;
+        }
+
+        return $clearData;
+    }
+
+    /**
      * Obtener los valores de variables $_GET y $_POST
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $param     con el parámetro a consultar
-     * @param mixed  $default   valor por defecto a devolver
-     * @param bool   $check     comprobar si el parámetro está presente
-     * @param mixed  $force     valor devuelto si el parámeto está definido
-     * @param bool   $sanitize  escapar/eliminar carácteres especiales
+     * @param string $param    con el parámetro a consultar
+     * @param mixed  $default  valor por defecto a devolver
+     * @param bool   $check    comprobar si el parámetro está presente
+     * @param mixed  $force    valor devuelto si el parámeto está definido
+     * @param bool   $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
     {
-        switch($_SERVER['REQUEST_METHOD']){
+        switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 if (!isset($_GET[$param])) {
                     return ($force) ? !$force : $default;
@@ -83,15 +124,17 @@ class Request
      */
     private static function parse($value, $default, $sanitize)
     {
-        if (is_array($value)){
-            foreach($value as &$data){
+        if (is_array($value)) {
+            foreach ($value as &$data) {
                 self::parse($data, $default, $sanitize);
             }
 
             return $value;
         }
 
-        if ((is_numeric($value) && !is_string($default)) || is_numeric($default)) {
+        if ((is_numeric($value) || is_numeric($default))
+            && !is_string($default)
+        ) {
             return intval($value);
         }
 
@@ -101,44 +144,13 @@ class Request
     }
 
     /**
-     * Comprobar el método utilizado para enviar un formulario.
+     * Comprobar si se realiza una recarga de la página
      *
-     * @param string $method con el método utilizado.
+     * @return bool
      */
-    public static function checkReferer($method)
+    public static function checkReload()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== strtoupper($method)
-            || !isset($_SERVER['HTTP_REFERER'])
-            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
-        ) {
-            Init::initError(_('No es posible acceder directamente a este archivo'));
-            exit();
-        }
-    }
-
-    /**
-     * Analizar un valor encriptado y devolverlo desencriptado
-     *
-     * @param $param
-     * @return string
-     */
-    public static function analyzeEncrypted($param)
-    {
-        $encryptedData = self::analyze($param, '', false, false, false);
-
-        if ($encryptedData === ''){
-            return '';
-        }
-
-        try {
-            // Desencriptar con la clave RSA
-            $CryptPKI = new CryptPKI();
-            $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
-        } catch (\Exception $e) {
-            return $encryptedData;
-        }
-
-        return $clearData;
+        return (self::getRequestHeaders('Cache-Control') == 'max-age=0');
     }
 
     /**
@@ -172,16 +184,6 @@ class Request
         }
 
         return $headers;
-    }
-
-    /**
-     * Comprobar si se realiza una recarga de la página
-     * 
-     * @return bool
-     */
-    public static function checkReload()
-    {
-        return (self::getRequestHeaders('Cache-Control') == 'max-age=0');
     }
 
     /**

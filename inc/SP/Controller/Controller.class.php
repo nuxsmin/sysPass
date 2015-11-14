@@ -104,11 +104,19 @@ abstract class Controller
     }
 
     /**
-     * Renderizar los datos de la plantilla
+     * Renderizar los datos de la plantilla y mostrarlos
      */
     public function view()
     {
         echo $this->view->render();
+    }
+
+    /**
+     * Renderizar los datos de la plantilla y devolverlos
+     */
+    public function render()
+    {
+        return $this->view->render();
     }
 
     /**

@@ -133,7 +133,7 @@ class AccountSearch
      */
     public function setTxtSearch($txtSearch)
     {
-        $this->_txtSearch = $txtSearch;
+        $this->_txtSearch = (string) $txtSearch;
     }
 
     /**

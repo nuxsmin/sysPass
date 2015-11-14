@@ -229,9 +229,6 @@
     <?php endif; ?>
     <script>
         $(function () {
-            // Actualizar el token de seguridad
-            $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
-
             $('#data-search-header').find('.sort-down').each(function () {
                 $(this).click(function () {
                     var key = $(this).parent().data('key');
