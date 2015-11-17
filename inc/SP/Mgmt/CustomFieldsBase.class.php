@@ -47,6 +47,7 @@ abstract class CustomFieldsBase
     const TYPE_TELEPHONE = 6;
     const TYPE_URL = 7;
     const TYPE_COLOR = 8;
+    const TYPE_WIKI = 9;
 
     /**
      * @var string
@@ -84,6 +85,7 @@ abstract class CustomFieldsBase
     {
         $types = array(
             self::TYPE_TEXT => array('text', _('Texto')),
+            self::TYPE_WIKI => array('text', _('Wiki')),
             self::TYPE_PASSWORD => array('password', _('Clave')),
             self::TYPE_DATE => array('date', _('Fecha')),
             self::TYPE_NUMBER => array('number', _('Número')),

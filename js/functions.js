@@ -899,6 +899,35 @@ sysPass.Util.Common = function () {
         sendAjax(data, url);
     };
 
+    var appMgmtSearch = function (form, sk) {
+        var data = $(form).serialize();
+        var target = form.elements.target.value;
+
+        data = data + '&sk=' + sk;
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: APP_ROOT + '/ajax/ajax_appMgmtSearch.php',
+            data: data,
+            success: function (json) {
+                if (json.status === 0) {
+                    $('#' + target).html(json.html);
+                } else {
+                    $('#' + target).html(resMsg('nofancyerror', json.description));
+                }
+            },
+            error: function () {
+                $('#' + target).html(resMsg('nofancyerror', 'error'));
+            },
+            complete: function () {
+                sysPassUtil.hideLoading();
+            }
+        });
+
+        return false;
+    };
+
     // Función para crear un enlace público
     var linksMgmtSave = function (itemId, actionId, sk) {
         var url = '/ajax/ajax_appMgmtSave.php';
@@ -1326,6 +1355,7 @@ sysPass.Util.Common = function () {
         accSearch: accSearch,
         appMgmtData: appMgmtData,
         appMgmtSave: appMgmtSave,
+        appMgmtSearch: appMgmtSearch,
         appMgmtDelete: appMgmtDelete,
         checkboxDetect: checkboxDetect,
         checkDokuWikiConn: checkDokuWikiConn,

@@ -56,6 +56,10 @@ abstract class DataGridDataBase implements DataGridDataInterface
      * @var array
      */
     private $_sourcesWithIcon = array();
+    /**
+     * @var int
+     */
+    private $_dataCount = 0;
 
     /**
      * @return array
@@ -110,6 +114,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function setData(array $data)
     {
+        $this->_dataCount = count($data);
         $this->_data = $data;
     }
 
@@ -120,5 +125,15 @@ abstract class DataGridDataBase implements DataGridDataInterface
     public function addDataRowSourceWithIcon($source, $icon)
     {
         $this->_sourcesWithIcon[] = array($source, $icon);
+    }
+
+    /**
+     * Devolver el número de elementos obtenidos
+     *
+     * @return int
+     */
+    public function getDataCount()
+    {
+        return $this->_dataCount;
     }
 }

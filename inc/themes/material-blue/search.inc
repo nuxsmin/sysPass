@@ -131,7 +131,10 @@
                             <?php if (isset($wikiFilter)): ?>
                                 <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account['name'])): ?>
                                     <?php if ($dokuWikiEnabled): ?>
-                                        <i class="material-icons fg-blue100" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account['name']; ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)">library_books</i>
+                                        <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
+                                            <i class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                        </a>
+                                        <i class="material-icons fg-green100" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account['name']; ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)">library_books</i>
                                     <?php else: ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
                                             <i class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>

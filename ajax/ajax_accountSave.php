@@ -69,6 +69,7 @@ $accountGroupEditEnabled = Request::analyze('geditenabled', 0, false, 1);
 $accountUserEditEnabled = Request::analyze('ueditenabled', 0, false, 1);
 $accountMainGroupId = Request::analyze('mainGroupId', 0);
 $accountChangesHash = Request::analyze('hash');
+$customFieldsHash = Request::analyze('hashcf');
 $customFields = Request::analyze('customfield');
 
 // Datos del Usuario
@@ -138,6 +139,18 @@ if ($actionId == ActionsInterface::ACTION_ACC_NEW
 }
 
 $Account = new Account;
+$Account->setAccountId($accountId);
+$Account->setAccountName($accountName);
+$Account->setAccountCategoryId($categoryId);
+$Account->setAccountCustomerId($customerId);
+$Account->setAccountLogin($accountLogin);
+$Account->setAccountUrl($accountUrl);
+$Account->setAccountNotes($accountNotes);
+$Account->setAccountUserEditId($currentUserId);
+$Account->setAccountUsersId($accountOtherUsers);
+$Account->setAccountUserGroupsId($accountOtherGroups);
+$Account->setAccountOtherUserEdit($accountUserEditEnabled);
+$Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_NEW:
@@ -154,20 +167,10 @@ switch ($actionId) {
             }
         }
 
-        $Account->setAccountName($accountName);
-        $Account->setAccountCategoryId($categoryId);
-        $Account->setAccountCustomerId($customerId);
-        $Account->setAccountLogin($accountLogin);
-        $Account->setAccountUrl($accountUrl);
         $Account->setAccountPass($accountEncPass['data']);
         $Account->setAccountIV($accountEncPass['iv']);
-        $Account->setAccountNotes($accountNotes);
         $Account->setAccountUserId($currentUserId);
         $Account->setAccountUserGroupId($accountMainGroupId);
-        $Account->setAccountUsersId($accountOtherUsers);
-        $Account->setAccountUserGroupsId($accountOtherGroups);
-        $Account->setAccountOtherUserEdit($accountUserEditEnabled);
-        $Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
         // Crear cuenta
         if ($Account->createAccount()) {
@@ -196,36 +199,22 @@ switch ($actionId) {
             }
         }
 
-        $Account->setAccountId($accountId);
-        $Account->setAccountName($accountName);
-        $Account->setAccountCategoryId($categoryId);
-        $Account->setAccountCustomerId($customerId);
-        $Account->setAccountLogin($accountLogin);
-        $Account->setAccountUrl($accountUrl);
-        $Account->setAccountNotes($accountNotes);
-        $Account->setAccountUserEditId($currentUserId);
-        $Account->setAccountUsersId($accountOtherUsers);
-        $Account->setAccountUserGroupsId($accountOtherGroups);
-        $Account->setAccountOtherUserEdit($accountUserEditEnabled);
-        $Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
-
         // Cambiar el grupo principal si el usuario es Admin
         if (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc()) {
             $Account->setAccountUserGroupId($accountMainGroupId);
         }
 
         // Comprobar si han habido cambios
-        if ($accountChangesHash == $Account->calcChangesHash()) {
+        if ($accountChangesHash == $Account->calcChangesHash()
+            && \SP\Mgmt\CustomFieldsUtil::checkHash($customFields, $customFieldsHash)
+        ) {
             Response::printJSON(_('Sin cambios'), 0);
         }
 
         // Actualizar cuenta
         if ($Account->updateAccount()) {
             if (is_array($customFields)) {
-                foreach ($customFields as $id => $value) {
-                    $CustomFields = new CustomFields($id, $accountId, $value);
-                    $CustomFields->updateCustomField();
-                }
+                \SP\Mgmt\CustomFieldsUtil::updateCustonFields($customFields, $accountId);
             }
 
             Response::printJSON(_('Cuenta actualizada'), 0);
@@ -246,10 +235,8 @@ switch ($actionId) {
         Response::printJSON(_('Error al eliminar la cuenta'));
         break;
     case ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $Account->setAccountId($accountId);
         $Account->setAccountPass($accountEncPass['data']);
         $Account->setAccountIV($accountEncPass['iv']);
-        $Account->setAccountUserEditId($currentUserId);
 
         // Actualizar clave de cuenta
         if ($Account->updateAccountPass()) {

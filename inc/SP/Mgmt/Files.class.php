@@ -287,4 +287,47 @@ class Files
 
         return $queryRes;
     }
+
+    /**
+     * Obtener el listado de archivos
+     *
+     * @param string $search La cadena de búsqueda
+     * @return array|false Con los archivos de las cuentas.
+     */
+    public static function getFileListSearch($search)
+    {
+        $query = 'SELECT accfile_id,'
+            . 'accfile_name,'
+            . 'CONCAT(ROUND(accfile_size/1000, 2), " KB") AS accfile_size,'
+            . 'accfile_thumb,'
+            . 'accfile_type,'
+            . 'account_name,'
+            . 'customer_name '
+            . 'FROM accFiles '
+            . 'JOIN accounts ON account_id = accfile_accountId '
+            . 'JOIN customers ON customer_id = account_customerId '
+            . 'WHERE accfile_name LIKE ? '
+            . 'OR accfile_type LIKE ? '
+            . 'OR account_name LIKE ? '
+            . 'OR customer_name LIKE ?';
+
+        DB::setReturnArray();
+
+        $search = '%' . $search . '%';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($search);
+        $Data->addParam($search);
+        $Data->addParam($search);
+        $Data->addParam($search);
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        return $queryRes;
+    }
 }

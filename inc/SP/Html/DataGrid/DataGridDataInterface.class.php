@@ -33,44 +33,66 @@ namespace SP\Html\DataGrid;
 interface DataGridDataInterface
 {
     /**
+     * Establecer los orígenes de datos de la consulta
+     *
      * @param $source string
      */
     public function addDataRowSource($source);
 
     /**
+     * Devolver los orígenes de datos de la consulta
+     *
      * @return array
      */
     public function getDataRowSources();
 
     /**
+     * Establecer el origen de datos utilizado como Id de los elementos
+     *
      * @param $id string
      */
     public function setDataRowSourceId($id);
 
     /**
+     * Devolver el origen de datos utilizado como Id de los elementos
+     *
      * @return string
      */
     public function getDataRowSourceId();
 
     /**
+     * Establecer los datos de la consulta
+     *
      * @param $data array
      */
     public function setData(array $data);
 
     /**
+     * Devolver los datos de la consulta
+     *
      * @return array
      */
     public function getData();
 
     /**
+     * Establecer los orígenes de datos que se muestran con iconos
+     *
      * @param $source string
      * @param $icon DatagridIcon
-     * @return
      */
     public function addDataRowSourceWithIcon($source, $icon);
 
     /**
+     * Devolver los orígenes de datos que se muestran con iconos
+     *
      * @return array
      */
     public function getDataRowSourcesWithIcon();
+
+    /**
+     * Devolver el número de elementos obtenidos
+     *
+     * @return int
+     */
+    public function getDataCount();
 }

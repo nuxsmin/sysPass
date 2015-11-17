@@ -23,58 +23,14 @@
  *
  */
 
-namespace SP\Storage;
+namespace SP\Html\DataGrid;
 
 /**
- * Class QueryData
+ * Class DataGridPager
  *
- * @package SP\Storage
+ * @package SP\Html\DataGrid
  */
-class QueryData
+class DataGridPager extends DataGridPagerBase
 {
-    /**
-     * @var array
-     */
-    protected $_data = array();
-    /**
-     * @var string
-     */
-    protected $_query = '';
 
-    /**
-     * @param $value
-     * @param $name
-     */
-    public function addParam($value, $name = null)
-    {
-        if (!is_null($name)) {
-            $this->_data[$name] = $value;
-        } else {
-            $this->_data[] = $value;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->_data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getQuery()
-    {
-        return $this->_query;
-    }
-
-    /**
-     * @param $query
-     */
-    public function setQuery($query)
-    {
-        $this->_query = $query;
-    }
 }

@@ -98,26 +98,6 @@ interface DataGridActionInterface
     public function isSkip();
 
     /**
-     * @param $delete bool
-     */
-    public function setIsDelete($delete);
-
-    /**
-     * @return bool
-     */
-    public function isDelete();
-
-    /**
-     * @param $new bool
-     */
-    public function setIsNew($new);
-
-    /**
-     * @return bool
-     */
-    public function isNew();
-
-    /**
      * @param bool $helper
      */
     public function setIsHelper($helper);
@@ -136,4 +116,14 @@ interface DataGridActionInterface
      * @return string
      */
     public function getFilterRowSource();
+
+    /**
+     * @param int $type El tipo de acción definido en DataGridActionType
+     */
+    public function setType($type);
+
+    /**
+     * @return int El tipo de acción
+     */
+    public function getType();
 }

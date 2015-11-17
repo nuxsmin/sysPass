@@ -154,4 +154,67 @@ class AccountUtil
 
         return ($queryRes !== false) ? $queryRes->account_name : false;
     }
+
+    /**
+     * Obtener los datos de todas las cuentas y el cliente
+     *
+     * @return array
+     * @throws SPException
+     */
+    public static function getAccountsCustomerData()
+    {
+        $Data = new QueryData();
+        $query = 'SELECT account_id,'
+            . 'account_name,'
+            . 'customer_name '
+            . 'FROM accounts '
+            . 'LEFT JOIN customers ON account_customerId = customer_id ';
+
+        $Data->setQuery($query);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        return $queryRes;
+    }
+
+    /**
+     *  Obtener los datos de todas las cuentas y el cliente mediante una búsqueda
+     *
+     * @param string $search La cadena a buscar
+     * @return array|bool
+     */
+    public static function getAccountsCustomerDataSearch($search)
+    {
+        $Data = new QueryData();
+
+        $search = '%' . $search . '%';
+
+        $query = 'SELECT account_id,'
+            . 'account_name,'
+            . 'customer_name '
+            . 'FROM accounts '
+            . 'LEFT JOIN customers ON account_customerId = customer_id '
+            . 'WHERE account_name LIKE ? '
+            . 'OR customer_name LIKE ?';
+
+        $Data->setQuery($query);
+        $Data->addParam($search);
+        $Data->addParam($search);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        return $queryRes;
+    }
 }

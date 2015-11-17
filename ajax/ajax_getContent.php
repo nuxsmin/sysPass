@@ -146,6 +146,7 @@ switch ($actionId) {
         $Controller->getCustomers();
         $Controller->getCustomFields();
         $Controller->getFiles();
+        $Controller->getAccounts();
         break;
     case ActionsInterface::ACTION_CFG:
     case ActionsInterface::ACTION_CFG_GENERAL:

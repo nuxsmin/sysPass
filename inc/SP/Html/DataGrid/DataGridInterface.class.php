@@ -65,12 +65,12 @@ interface DataGridInterface
     public function getData();
 
     /**
-     * @param DataGridAction $action
+     * @param DataGridActionBase $action
      */
-    public function setDataActions(DataGridAction $action);
+    public function setDataActions(DataGridActionBase $action);
 
     /**
-     * @return DataGridAction
+     * @return DataGridActionBase
      */
     public function getDataActions();
 
@@ -80,7 +80,77 @@ interface DataGridInterface
     public function getGrid();
 
     /**
+     * Establecer el paginador
+     *
+     * @param DataGridPagerBase $pager
+     */
+    public function setPager(DataGridPagerBase $pager);
+
+    /**
+     * Devolver el paginador
+     *
+     * @return DataGridPagerBase
+     */
+    public function getPager();
+
+    /**
      * @param ActionsInterface $action
      */
     public function setOnCloseAction(ActionsInterface $action);
+
+    /**
+     * Establecer la plantilla utilizada para la cabecera
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataHeaderTemplate($template);
+
+    /**
+     * Devolver la plantilla utilizada para la cabecera
+     *
+     * @return string
+     */
+    public function getDataHeaderTemplate();
+
+    /**
+     * Establecer la plantilla utilizada para las acciones
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataActionsTemplate($template);
+
+    /**
+     * Devolver la plantilla utilizada para las acciones
+     *
+     * @return string
+     */
+    public function getDataActionsTemplate();
+
+    /**
+     * Establecer la plantilla utilizada para el paginador
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataPagerTemplate($template);
+
+    /**
+     * Devolver la plantilla utilizada para el paginador
+     *
+     * @return string
+     */
+    public function getDataPagerTemplate();
+
+    /**
+     * Establcer la plantilla utilizada para los datos de la consulta
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataRowTemplate($template);
+
+    /**
+     * Devolver la plantilla utilizada para los datos de la consulta
+     *
+     * @return string
+     */
+    public function getDataRowTemplate();
 }

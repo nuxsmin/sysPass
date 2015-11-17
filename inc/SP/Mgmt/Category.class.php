@@ -45,85 +45,6 @@ class Category
     public static $categoryLastId;
 
     /**
-     * Obtener el id de una categoría por el nombre.
-     *
-     * @param string $categoryName con el nombre de la categoría
-     * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int
-     */
-    public static function getCategoryIdByName($categoryName)
-    {
-        $query = 'SELECT category_id FROM categories WHERE category_name = :name LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($categoryName, 'name');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false || DB::$lastNumRows === 0) {
-            return false;
-        }
-
-        return $queryRes->category_id;
-    }
-
-    /**
-     * Crear una nueva categoría en la BBDD.
-     *
-     * @throws SPException
-     */
-    public static function addCategory()
-    {
-        if (self::checkDupCategory()){
-            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
-        }
-
-        $query = 'INSERT INTO categories SET category_name = :name ,category_description = :description';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam(self::$categoryName, 'name');
-        $Data->addParam(self::$categoryDescription, 'description');
-
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
-        }
-
-        self::$categoryLastId = DB::$lastId;
-
-        $Log = new Log(_('Nueva Categoría'));
-        $Log->addDetails(Html::strongText(_('Categoría')), self::$categoryName);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
-    }
-
-    /**
-     * Comprobar si existe una categoría duplicada.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return bool
-     */
-    public static function checkDupCategory($id = null)
-    {
-
-        $Data = new QueryData();
-
-        if (is_null($id)) {
-            $query = 'SELECT category_id FROM categories WHERE category_name = :name';
-        } else {
-            $query = 'SELECT category_id FROM categories WHERE category_name = :name AND category_id <> :id';
-
-            $Data->addParam($id, 'id');
-        }
-
-        $Data->setQuery($query);
-        $Data->addParam(self::$categoryName, 'name');
-
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
-    }
-
-    /**
      * Eliminar una categoría de la BBDD.
      *
      * @param int $id con el id de la categoría
@@ -157,6 +78,48 @@ class Category
     }
 
     /**
+     * Comprobar si una categoría está en uso por cuentas.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return bool|string
+     */
+    public static function checkCategoryInUse($id)
+    {
+        $numAccounts = self::getCategoriesInAccounts($id);
+
+        $out = '';
+
+        if ($numAccounts) {
+            $out[] = _('Cuentas') . " (" . $numAccounts . ")";
+        }
+
+        if (is_array($out)) {
+            return implode('<br>', $out);
+        }
+
+        return true;
+    }
+
+    /**
+     * Obtener el número de cuentas que usan una categoría.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return false|integer con el número total de cuentas
+     */
+    private static function getCategoriesInAccounts($id)
+    {
+        $query = 'SELECT account_id FROM accounts WHERE account_categoryId = :id';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id, 'id');
+
+        DB::getQuery($Data);
+
+        return DB::$lastNumRows;
+    }
+
+    /**
      * Obtiene el nombre de la categoría a partir del Id.
      *
      * @param int $id con el Id de la categoría a consultar
@@ -187,7 +150,7 @@ class Category
      */
     public static function updateCategory($id)
     {
-        if (self::checkDupCategory($id)){
+        if (self::checkDupCategory($id)) {
             throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
         }
 
@@ -212,6 +175,31 @@ class Category
         $Log->writeLog();
 
         Email::sendEmail($Log);
+    }
+
+    /**
+     * Comprobar si existe una categoría duplicada.
+     *
+     * @param int $id con el Id de la categoría a consultar
+     * @return bool
+     */
+    public static function checkDupCategory($id = null)
+    {
+
+        $Data = new QueryData();
+
+        if (is_null($id)) {
+            $query = 'SELECT category_id FROM categories WHERE category_name = :name';
+        } else {
+            $query = 'SELECT category_id FROM categories WHERE category_name = :name AND category_id <> :id';
+
+            $Data->addParam($id, 'id');
+        }
+
+        $Data->setQuery($query);
+        $Data->addParam(self::$categoryName, 'name');
+
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
@@ -285,55 +273,14 @@ class Category
     }
 
     /**
-     * Comprobar si una categoría está en uso por cuentas.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return bool|string
-     */
-    public static function checkCategoryInUse($id)
-    {
-        $numAccounts = self::getCategoriesInAccounts($id);
-
-        $out = '';
-
-        if ($numAccounts) {
-            $out[] = _('Cuentas') . " (" . $numAccounts . ")";
-        }
-
-        if (is_array($out)) {
-            return implode('<br>', $out);
-        }
-
-        return true;
-    }
-
-    /**
-     * Obtener el número de cuentas que usan una categoría.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return false|integer con el número total de cuentas
-     */
-    private static function getCategoriesInAccounts($id)
-    {
-        $query = 'SELECT account_id FROM accounts WHERE account_categoryId = :id';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-
-        DB::getQuery($Data);
-
-        return DB::$lastNumRows;
-    }
-
-    /**
      * Crear una categoría y devolver el id si existe o de la nueva
      *
-     * @param $name string El nombre de la categoría
+     * @param $name        string El nombre de la categoría
      * @param $description string La descripción de la categoría
      * @return int
      */
-    public static function addCategoryReturnId($name, $description = ''){
+    public static function addCategoryReturnId($name, $description = '')
+    {
         // Comprobamos si existe la categoría o la creamos
         $newCategoryId = self::getCategoryIdByName($name);
 
@@ -344,10 +291,96 @@ class Category
             try {
                 self::addCategory();
                 $newCategoryId = self::$categoryLastId;
-            } catch (SPException $e){
+            } catch (SPException $e) {
             }
         }
 
         return (int)$newCategoryId;
+    }
+
+    /**
+     * Obtener el id de una categoría por el nombre.
+     *
+     * @param string $categoryName con el nombre de la categoría
+     * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int
+     */
+    public static function getCategoryIdByName($categoryName)
+    {
+        $query = 'SELECT category_id FROM categories WHERE category_name = :name LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($categoryName, 'name');
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false || DB::$lastNumRows === 0) {
+            return false;
+        }
+
+        return $queryRes->category_id;
+    }
+
+    /**
+     * Crear una nueva categoría en la BBDD.
+     *
+     * @throws SPException
+     */
+    public static function addCategory()
+    {
+        if (self::checkDupCategory()) {
+            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
+        }
+
+        $query = 'INSERT INTO categories SET category_name = :name ,category_description = :description';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$categoryName, 'name');
+        $Data->addParam(self::$categoryDescription, 'description');
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
+        }
+
+        self::$categoryLastId = DB::$lastId;
+
+        $Log = new Log(_('Nueva Categoría'));
+        $Log->addDetails(Html::strongText(_('Categoría')), self::$categoryName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+    }
+
+    /**
+     * Obtiene el listado de categorías mediante una búsqueda
+     *
+     * @param string $search La cadena de búsqueda
+     * @return array con el id de categoria como clave y en nombre como valor
+     */
+    public static function getCategoriesSearch($search)
+    {
+        $query = 'SELECT category_id, category_name,category_description '
+            . 'FROM categories '
+            . 'WHERE category_name LIKE ? '
+            . 'OR category_description LIKE ? '
+            . 'ORDER BY category_name';
+
+        $search = '%' . $search . '%';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($search);
+        $Data->addParam($search);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        return $queryRes;
     }
 }

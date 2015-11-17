@@ -76,6 +76,107 @@ class CustomFieldDef extends CustomFieldsBase
     /**
      * Devolver los datos de definiciones de campos personalizados
      *
+     * @param string $search La cadena de búsqueda
+     * @return array|bool
+     */
+    public static function getCustomFieldsSearch($search)
+    {
+        $query = 'SELECT customfielddef_id, customfielddef_module, customfielddef_field '
+            . 'FROM customFieldsDef '
+            . ' ORDER BY customfielddef_module';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        $customFields = array();
+
+        foreach ($queryRes as $customField) {
+            /**
+             * @var CustomFieldDef
+             */
+            $field = unserialize($customField->customfielddef_field);
+
+            if (get_class($field) === '__PHP_Incomplete_Class') {
+                $field = Util::castToClass('SP\Mgmt\CustomFieldDef', $field);
+            }
+
+            if (stripos($field->getName(), $search) !== false
+                || stripos(self::getFieldsTypes($field->getType(), true), $search) !== false
+                || stripos(self::getFieldsModules($customField->customfielddef_module), $search) !== false
+            ) {
+                $attribs = new \stdClass();
+                $attribs->id = $customField->customfielddef_id;
+                $attribs->module = self::getFieldsModules($customField->customfielddef_module);
+                $attribs->name = $field->getName();
+                $attribs->typeName = self::getFieldsTypes($field->getType(), true);
+                $attribs->type = $field->getType();
+
+                $customFields[] = $attribs;
+            }
+        }
+
+        return $customFields;
+    }
+
+    /**
+     * Añadir nuevo campo personalizado
+     *
+     * @return bool
+     */
+    public function addCustomField()
+    {
+        $query = 'INSERT INTO customFieldsDef SET customfielddef_module = :module, customfielddef_field = :field';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_module, 'module');
+        $Data->addParam(serialize($this), 'field');
+
+        $queryRes = DB::getQuery($Data);
+
+        return $queryRes;
+    }
+
+    /**
+     * Actualizar campo personalizado
+     *
+     * @return bool
+     */
+    public function updateCustomField()
+    {
+        $curField = self::getCustomFields($this->_id, true);
+
+        $query = 'UPDATE customFieldsDef SET ' .
+            'customfielddef_module = :module, ' .
+            'customfielddef_field = :field ' .
+            'WHERE customfielddef_id= :id LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->_id, 'id');
+        $Data->addParam($this->_module, 'module');
+        $Data->addParam(serialize($this), 'field');
+
+        $queryRes = DB::getQuery($Data);
+
+        if ($queryRes && $curField->customfielddef_module !== $this->_module) {
+            $queryRes = CustomFields::updateCustomFieldModule($this->_module, $this->_id);
+        }
+
+        return $queryRes;
+    }
+
+    /**
+     * Devolver los datos de definiciones de campos personalizados
+     *
      * @param int        $customFieldId El id del campo personalizado
      * @param bool|false $returnRawData Devolver los datos de la consulta sin formatear
      * @return array|bool
@@ -129,54 +230,6 @@ class CustomFieldDef extends CustomFieldsBase
             }
 
             return $customFields;
-        }
-
-        return $queryRes;
-    }
-
-    /**
-     * Añadir nuevo campo personalizado
-     *
-     * @return bool
-     */
-    public function addCustomField()
-    {
-        $query = 'INSERT INTO customFieldsDef SET customfielddef_module = :module, customfielddef_field = :field';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->_module, 'module');
-        $Data->addParam(serialize($this), 'field');
-
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes;
-    }
-
-    /**
-     * Actualizar campo personalizado
-     *
-     * @return bool
-     */
-    public function updateCustomField()
-    {
-        $curField = self::getCustomFields($this->_id, true);
-
-        $query = 'UPDATE customFieldsDef SET ' .
-            'customfielddef_module = :module, ' .
-            'customfielddef_field = :field ' .
-            'WHERE customfielddef_id= :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->_id, 'id');
-        $Data->addParam($this->_module, 'module');
-        $Data->addParam(serialize($this), 'field');
-
-        $queryRes = DB::getQuery($Data);
-
-        if ($queryRes && $curField->customfielddef_module !== $this->_module) {
-            $queryRes = CustomFields::updateCustomFieldModule($this->_module, $this->_id);
         }
 
         return $queryRes;

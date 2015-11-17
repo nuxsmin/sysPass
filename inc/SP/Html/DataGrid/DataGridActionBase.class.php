@@ -68,23 +68,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     private $_icon = null;
     /**
-     * Si es una acción de eliminar elementos
-     *
-     * @var bool
-     */
-    private $_isDelete = false;
-    /**
      * Si se debe de omitir para los elementos del listado
      *
      * @var bool
      */
     private $_isSkip = false;
-    /**
-     * Si es una acción para crear elementos
-     *
-     * @var bool
-     */
-    private $_isNew = false;
     /**
      * La columna de origen de datos que condiciona esta acción
      *
@@ -97,6 +85,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @var bool
      */
     private $_isHelper;
+    /**
+     * El tipo de acción
+     *
+     * @var int
+     */
+    private $_type = 0;
 
     /**
      * @return string
@@ -209,38 +203,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * @param $delete bool
-     */
-    public function setIsDelete($delete)
-    {
-        $this->_isDelete = $delete;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDelete()
-    {
-        return $this->_isDelete;
-    }
-
-    /**
-     * @param bool $new
-     */
-    public function setIsNew($new)
-    {
-        $this->_isNew = $new;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNew()
-    {
-        return $this->_isNew;
-    }
-
-    /**
      * @param bool $helper
      */
     public function setIsHelper($helper)
@@ -270,5 +232,21 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function getFilterRowSource()
     {
         return $this->_filterRowSource;
+    }
+
+    /**
+     * @param int $type El tipo de acción definido en DataGridActionType
+     */
+    public function setType($type)
+    {
+        $this->_type = $type;
+    }
+
+    /**
+     * @return int El tipo de acción
+     */
+    public function getType()
+    {
+        return $this->_type;
     }
 }

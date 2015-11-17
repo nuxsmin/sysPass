@@ -139,7 +139,7 @@ class Request
         }
 
         if (is_string($value)) {
-            return ($sanitize === true) ? Html::sanitize($value) : $value;
+            return ($sanitize === true) ? Html::sanitize($value) : (string)$value;
         }
     }
 

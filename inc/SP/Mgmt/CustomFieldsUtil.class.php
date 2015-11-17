@@ -23,58 +23,41 @@
  *
  */
 
-namespace SP\Storage;
+namespace SP\Mgmt;
 
 /**
- * Class QueryData
+ * Class CustomFieldsUtil utilidades para los campos personalizados
  *
- * @package SP\Storage
+ * @package SP\Mgmt
  */
-class QueryData
+class CustomFieldsUtil
 {
-    /**
-     * @var array
-     */
-    protected $_data = array();
-    /**
-     * @var string
-     */
-    protected $_query = '';
-
-    /**
-     * @param $value
-     * @param $name
-     */
-    public function addParam($value, $name = null)
+    public static function updateCustonFields(array &$fields, $accountId)
     {
-        if (!is_null($name)) {
-            $this->_data[$name] = $value;
-        } else {
-            $this->_data[] = $value;
+        foreach ($fields as $id => $value) {
+            $CustomFields = new CustomFields($id, $accountId, $value);
+            $CustomFields->updateCustomField();
         }
+
+        return true;
     }
 
-    /**
-     * @return array
-     */
-    public function getParams()
+    public static function checkHash(&$fields, $srcHhash)
     {
-        return $this->_data;
-    }
+        if (!is_array($fields)){
+            return true;
+        }
 
-    /**
-     * @return string
-     */
-    public function getQuery()
-    {
-        return $this->_query;
-    }
+        $hash = '';
 
-    /**
-     * @param $query
-     */
-    public function setQuery($query)
-    {
-        $this->_query = $query;
+        foreach ($fields as $value) {
+            $hash .= $value;
+        }
+
+        if (!empty($hash)) {
+            return ($srcHhash == md5($hash));
+        }
+
+        return true;
     }
 }
