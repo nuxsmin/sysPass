@@ -25,7 +25,9 @@
 
 namespace SP\Html\DataGrid;
 
+use InvalidArgumentException;
 use SP\Core\ActionsInterface;
+use SP\Core\Themes;
 use SplObjectStorage;
 
 /**
@@ -54,6 +56,12 @@ abstract class DataGridBase implements DataGridInterface
      */
     private $_data;
     /**
+     * El paginador
+     *
+     * @var DataGridPagerBase
+     */
+    private $_pager;
+    /**
      * Las acciones asociadas a los elementos de la matriz
      *
      * @var DataGridAction[]
@@ -65,6 +73,30 @@ abstract class DataGridBase implements DataGridInterface
      * @var int
      */
     private $_onCloseAction = 0;
+    /**
+     * La pantilla a utilizar para presentar la cabecera
+     *
+     * @var string
+     */
+    private $_headerTemplate;
+    /**
+     * La pantilla a utilizar para presentar las acciones
+     *
+     * @var string
+     */
+    private $_actionsTemplate;
+    /**
+     * La pantilla a utilizar para presentar el paginador
+     *
+     * @var string
+     */
+    private $_pagerTemplate;
+    /**
+     * La pantilla a utilizar para presentar los datos
+     *
+     * @var string
+     */
+    private $_rowsTemplate;
 
     /**
      * @return int
@@ -131,9 +163,9 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @param DataGridAction $action
+     * @param DataGridActionBase $action
      */
-    public function setDataActions(DataGridAction $action)
+    public function setDataActions(DataGridActionBase $action)
     {
         if (is_null($this->_actions)) {
             $this->_actions = new SplObjectStorage();
@@ -151,10 +183,126 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @return mixed
+     * @return $this
      */
     public function getGrid()
     {
-        // TODO: Implement getGrid() method.
+        return $this;
     }
+
+    /**
+     * Establecer la plantilla utilizada para la cabecera
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataHeaderTemplate($template)
+    {
+        $this->_headerTemplate = $this->checkTemplate($template);
+    }
+
+    /**
+     * Comprobar si existe una plantilla y devolver la ruta completa
+     *
+     * @param $template
+     * @return string
+     */
+    protected function checkTemplate($template)
+    {
+        $file = VIEW_PATH . DIRECTORY_SEPARATOR . Themes::$theme . DIRECTORY_SEPARATOR . $template . '.inc';
+
+        if (!is_readable($file)) {
+            throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $template, $file));
+        }
+
+        return $file;
+    }
+
+    /**
+     * Devolver la plantilla utilizada para la cabecera
+     *
+     * @return string
+     */
+    public function getDataHeaderTemplate()
+    {
+        return $this->_headerTemplate;
+    }
+
+    /**
+     * Establecer la plantilla utilizada para las acciones
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataActionsTemplate($template)
+    {
+        $this->_actionsTemplate = $this->checkTemplate($template);
+    }
+
+    /**
+     * Devolver la plantilla utilizada para las acciones
+     *
+     * @return string
+     */
+    public function getDataActionsTemplate()
+    {
+        return $this->_actionsTemplate;
+    }
+
+    /**
+     * Establecer la plantilla utilizada para el paginador
+     *
+     * @param string $template El nombre de la plantilla a utilizar
+     */
+    public function setDataPagerTemplate($template)
+    {
+        $this->_pagerTemplate = $this->checkTemplate($template);
+    }
+
+    /**
+     * Devolver la plantilla utilizada para el paginador
+     *
+     * @return string
+     */
+    public function getDataPagerTemplate()
+    {
+        return $this->_pagerTemplate;
+    }
+
+    /**
+     * @param string $template El nombre de la plantilla a utilizar
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function setDataRowTemplate($template)
+    {
+        $this->_rowsTemplate = $this->checkTemplate($template);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataRowTemplate()
+    {
+        return $this->_rowsTemplate;
+    }
+
+    /**
+     * Establecer el paginador
+     *
+     * @param DataGridPagerBase $pager
+     */
+    public function setPager(DataGridPagerBase $pager)
+    {
+        $this->_pager = $pager;
+    }
+
+    /**
+     * Devolver el paginador
+     *
+     * @return DataGridPagerBase
+     */
+    public function getPager()
+    {
+        return $this->_pager;
+    }
+
 }

@@ -162,6 +162,8 @@ class AccountC extends Controller implements ActionsInterface
      */
     private function setCommonData()
     {
+        $this->getCustomFieldsForItem();
+
         if ($this->isGotData()) {
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
             $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountUsersId());
@@ -186,7 +188,8 @@ class AccountC extends Controller implements ActionsInterface
         $this->view->assign('customers', DBUtil::getValuesForSelect('customers', 'customer_id', 'customer_name'));
         $this->view->assign('otherUsers', DBUtil::getValuesForSelect('usrData', 'user_id', 'user_name'));
         $this->view->assign('otherGroups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->getCustomFieldsForItem();
+
+
     }
 
     /**

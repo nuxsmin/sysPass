@@ -40,8 +40,8 @@ class Html
      */
     public static function sanitize(&$data)
     {
-        if (!$data) {
-            return false;
+        if (empty($data)) {
+            return $data;
         }
 
         if (is_array($data)) {

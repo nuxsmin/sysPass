@@ -63,17 +63,20 @@
             sysPassUtil.Common.clearSearch(1);
             sysPassUtil.Common.accSearch(0, e)
         });
+
         $('#frmSearch #btnClear').click(function (e) {
             sysPassUtil.Common.clearSearch();
             sysPassUtil.Common.accSearch(0, e);
-        })
+        });
+
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
             sysPassUtil.Common.accSearch(1, e)
         });
+
         $('#frmSearch #rpp').on('change', function (e) {
             sysPassUtil.Common.accSearch(0, e);
-        })
+        });
 
         <?php if ( $showGlobalSearch ): ?>
         $('#chkgsearch').click(

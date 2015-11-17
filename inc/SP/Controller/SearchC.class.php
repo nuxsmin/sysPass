@@ -106,7 +106,7 @@ class SearchC extends Controller implements ActionsInterface
         }
 
         // Obtener el filtro de búsqueda desde la sesión
-        $filters = \SP\Core\Session::getSearchFilters();
+        $filters = Session::getSearchFilters();
 
         // Valores POST
         $this->view->assign('searchKey', Request::analyze('skey', $filters->getSortKey()));
@@ -182,7 +182,7 @@ class SearchC extends Controller implements ActionsInterface
 
         $limitLast = ((AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? AccountSearch::$queryNumRows - $this->view->limitCount : floor(AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
 
-        $this->view->assign('pagerOnnClick', array(
+        $this->view->assign('pagerOnClick', array(
             'first' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ', 0,1)',
             'last' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . $limitLast . ',1)',
             'prev' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart - $this->view->limitCount) . ',1)',

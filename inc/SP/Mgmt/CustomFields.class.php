@@ -126,6 +126,8 @@ class CustomFields extends CustomFieldsBase
             $customFields[] = $attribs;
         }
 
+        $customFields['hash'] = '';
+
         return $customFields;
     }
 
@@ -170,6 +172,7 @@ class CustomFields extends CustomFieldsBase
         $queryMerge = array_merge($queryRes, self::getCustomFieldsNoData($moduleId, $itemId));
 
         $customFields = array();
+        $customFieldsHash = '';
 
         foreach ($queryMerge as $customField) {
             /**
@@ -191,8 +194,12 @@ class CustomFields extends CustomFieldsBase
             $attribs->help = $field->getHelp();
             $attribs->required = $field->isRequired();
 
+            $customFieldsHash .= $attribs->value;
+
             $customFields[] = $attribs;
         }
+
+        $customFields['hash'] = md5($customFieldsHash);
 
         return $customFields;
     }
@@ -488,6 +495,7 @@ class CustomFields extends CustomFieldsBase
      * Eliminar los datos de un campo personalizado o los de una definición de campos
      *
      * @param int $itemId El Id del elemento asociado al campo
+     * @param     $moduleId
      * @return bool
      */
     public static function deleteCustomFieldForItem($itemId, $moduleId)

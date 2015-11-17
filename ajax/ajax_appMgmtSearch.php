@@ -23,12 +23,12 @@
  *
  */
 
-use SP\Controller\SearchC;
+use SP\Controller\ItemsMgmtSearch;
 use SP\Core\Init;
-use SP\Http\Request;
 use SP\Core\SessionUtil;
+use SP\Core\Template;
+use SP\Http\Request;
 use SP\Http\Response;
-use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -37,17 +37,43 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Util::logout();
+    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$Controller = new SearchC();
-$Controller->getSearch();
+$actionId = Request::analyze('actionId', 0);
+$search = Request::analyze('search');
+
+$Tpl = new Template();
+$Tpl->assign('index', Request::analyze('activeTab', 0));
+
+$Controller = new ItemsMgmtSearch($Tpl);
+
+switch ($actionId) {
+    case \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
+        $Controller->getCategories($search);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
+        $Controller->getCustomers($search);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
+        $Controller->getCustomFields($search);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_FILES_SEARCH:
+        $Controller->getFiles($search);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
+        $Controller->getAccounts($search);
+        break;
+    default:
+        Response::printJSON(_('Acción Inválida'));
+        break;
+}
 
 $data = array(
     'sk' => SessionUtil::getSessionKey(),

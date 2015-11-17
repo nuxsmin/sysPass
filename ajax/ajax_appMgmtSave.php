@@ -590,6 +590,18 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     }
 
     Response::printJSON(_('Error al eliminar el archivo'));
+} elseif ($actionId === ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE) {
+    $Account = new \SP\Account\Account();
+    $Account->setAccountId($itemId);
+
+    // Eliminar cuenta
+    if ($Account->deleteAccount()
+        && CustomFields::deleteCustomFieldForItem($itemId, ActionsInterface::ACTION_ACC_NEW)
+    ) {
+        Response::printJSON(_('Cuenta eliminada'), 0, $doActionOnClose);
+    }
+
+    Response::printJSON(_('Error al eliminar la cuenta'));
 } else {
     Response::printJSON(_('Acción Inválida'));
 }

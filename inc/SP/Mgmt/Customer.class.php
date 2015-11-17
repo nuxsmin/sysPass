@@ -47,60 +47,6 @@ class Customer
     public static $customerHash;
 
     /**
-     * Crear un nuevo cliente en la BBDD.
-     *
-     * @param null $id El Id del cliente actual (solo para comprobar duplicidad)
-     * @throws SPException
-     */
-    public static function addCustomer($id = null)
-    {
-        if(self::checkDupCustomer($id)){
-            throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
-        }
-
-        $query = 'INSERT INTO customers ' .
-            'SET customer_name = :name,'.
-            'customer_description = :description,' .
-            'customer_hash = :hash';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam(self::$customerName, 'name');
-        $Data->addParam(self::$customerDescription, 'description');
-        $Data->addParam(self::mkCustomerHash(), 'hash');
-
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el cliente'));
-        }
-
-        self::$customerLastId = DB::$lastId;
-
-        $Log = new Log(_('Nuevo Cliente'));
-        $Log->addDetails(Html::strongText(_('Cliente')), self::$customerName);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
-    }
-
-    /**
-     * Crear un hash con el nombre del cliente.
-     * Esta función crear un hash para detectar clientes duplicados mediante
-     * la eliminación de carácteres especiales y capitalización
-     *
-     * @return string con el hash generado
-     */
-    private static function mkCustomerHash()
-    {
-        $charsSrc = array(
-            ".", " ", "_", ", ", "-", ";",
-            "'", "\"", ":", "(", ")", "|", "/");
-        $newValue = strtolower(str_replace($charsSrc, '', DBUtil::escape(self::$customerName)));
-        $hashValue = md5($newValue);
-
-        return $hashValue;
-    }
-
-    /**
      * Actualizar un cliente en la BBDD.
      *
      * @param int $id con el Id del cliente
@@ -108,7 +54,7 @@ class Customer
      */
     public static function updateCustomer($id)
     {
-        if(self::checkDupCustomer($id)){
+        if (self::checkDupCustomer($id)) {
             throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
         }
 
@@ -136,6 +82,49 @@ class Customer
         $Log->writeLog();
 
         Email::sendEmail($Log);
+    }
+
+    /**
+     * Comprobar si existe un cliente duplicado comprobando el hash.
+     *
+     * @param int $id opcional con el Id del cliente
+     * @return bool
+     */
+    public static function checkDupCustomer($id = null)
+    {
+        $Data = new QueryData();
+        $Data->addParam($id, 'id');
+
+        if (is_null($id)) {
+            $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash';
+        } else {
+            $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash AND customer_id <> :id';
+
+            $Data->addParam($id, 'id');
+        }
+
+        $Data->setQuery($query);
+        $Data->addParam(self::mkCustomerHash(), 'hash');
+
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+    }
+
+    /**
+     * Crear un hash con el nombre del cliente.
+     * Esta función crear un hash para detectar clientes duplicados mediante
+     * la eliminación de carácteres especiales y capitalización
+     *
+     * @return string con el hash generado
+     */
+    private static function mkCustomerHash()
+    {
+        $charsSrc = array(
+            ".", " ", "_", ", ", "-", ";",
+            "'", "\"", ":", "(", ")", "|", "/");
+        $newValue = strtolower(str_replace($charsSrc, '', DBUtil::escape(self::$customerName)));
+        $hashValue = md5($newValue);
+
+        return $hashValue;
     }
 
     /**
@@ -195,50 +184,35 @@ class Customer
     }
 
     /**
-     * Comprobar si existe un cliente duplicado comprobando el hash.
+     * Comprobar si un cliente está en uso.
+     * Esta función comprueba si un cliente está en uso por cuentas.
      *
-     * @param int $id opcional con el Id del cliente
-     * @return bool
+     * @param int $id con el Id del cliente a consultar
+     * @return int Con el número de cuentas
      */
-    public static function checkDupCustomer($id = null)
+    public static function checkCustomerInUse($id)
     {
-        $Data = new QueryData();
-        $Data->addParam($id, 'id');
-
-        if (is_null($id)) {
-            $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash';
-        } else {
-            $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash AND customer_id <> :id';
-
-            $Data->addParam($id, 'id');
-        }
-
-        $Data->setQuery($query);
-        $Data->addParam(self::mkCustomerHash(), 'hash');
-
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        $count['accounts'] = self::getCustomerInAccounts($id);
+        return $count;
     }
 
     /**
-     * Obtener el Id de un cliente por su nombre
+     * Obtener el número de cuentas que usan un cliente.
      *
-     * @return false|int Con el Id del cliente
+     * @param int $id con el Id del cliente a consultar
+     * @return int con el número total de cuentas
      */
-    public static function getCustomerByName()
+    private static function getCustomerInAccounts($id)
     {
-        $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash LIMIT 1';
+        $query = 'SELECT account_id FROM accounts WHERE account_customerId = :id';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(self::mkCustomerHash(), 'hash');
+        $Data->addParam($id, 'id');
 
-        $queryRes = DB::getResults($Data);
+        DB::getQuery($Data);
 
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->customer_id;
+        return DB::$lastNumRows;
     }
 
     /**
@@ -312,44 +286,14 @@ class Customer
     }
 
     /**
-     * Comprobar si un cliente está en uso.
-     * Esta función comprueba si un cliente está en uso por cuentas.
-     *
-     * @param int $id con el Id del cliente a consultar
-     * @return int Con el número de cuentas
-     */
-    public static function checkCustomerInUse($id)
-    {
-        $count['accounts'] = self::getCustomerInAccounts($id);
-        return $count;
-    }
-
-    /**
-     * Obtener el número de cuentas que usan un cliente.
-     *
-     * @param int $id con el Id del cliente a consultar
-     * @return int con el número total de cuentas
-     */
-    private static function getCustomerInAccounts($id)
-    {
-        $query = 'SELECT account_id FROM accounts WHERE account_customerId = :id';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-
-        DB::getQuery($Data);
-
-        return DB::$lastNumRows;
-    }
-
-    /**
      * Añadir un cliente
+     *
      * @param $name
      * @param $description
      * @return int
      */
-    public static function addCustomerReturnId($name, $description = ''){
+    public static function addCustomerReturnId($name, $description = '')
+    {
         $customerId = 0;
 
         self::$customerName = $name;
@@ -359,11 +303,101 @@ class Customer
             self::addCustomer();
             $customerId = self::$customerLastId;
         } catch (SPException $e) {
-            if ($e->getType() === SPException::SP_WARNING){
+            if ($e->getType() === SPException::SP_WARNING) {
                 $customerId = self::getCustomerByName();
             }
         }
 
         return (int)$customerId;
+    }
+
+    /**
+     * Crear un nuevo cliente en la BBDD.
+     *
+     * @param null $id El Id del cliente actual (solo para comprobar duplicidad)
+     * @throws SPException
+     */
+    public static function addCustomer($id = null)
+    {
+        if (self::checkDupCustomer($id)) {
+            throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
+        }
+
+        $query = 'INSERT INTO customers ' .
+            'SET customer_name = :name,' .
+            'customer_description = :description,' .
+            'customer_hash = :hash';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::$customerName, 'name');
+        $Data->addParam(self::$customerDescription, 'description');
+        $Data->addParam(self::mkCustomerHash(), 'hash');
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el cliente'));
+        }
+
+        self::$customerLastId = DB::$lastId;
+
+        $Log = new Log(_('Nuevo Cliente'));
+        $Log->addDetails(Html::strongText(_('Cliente')), self::$customerName);
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+    }
+
+    /**
+     * Obtener el Id de un cliente por su nombre
+     *
+     * @return false|int Con el Id del cliente
+     */
+    public static function getCustomerByName()
+    {
+        $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(self::mkCustomerHash(), 'hash');
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->customer_id;
+    }
+
+    /**
+     * Obtener el listado de clientes mediante una búsqueda
+     *
+     * @param string $search La cadena de búsqueda
+     * @return array con el id de cliente como clave y el nombre como valor
+     */
+    public static function getCustomersSearch($search)
+    {
+        $query = 'SELECT customer_id, customer_name, customer_description '
+            . 'FROM customers '
+            . 'WHERE customer_name LIKE ? '
+            . 'OR customer_description LIKE ? '
+            . 'ORDER BY customer_name';
+
+        $search = '%' . $search . '%';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($search);
+        $Data->addParam($search);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        return $queryRes;
     }
 }

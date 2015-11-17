@@ -56,7 +56,9 @@ class Template
      */
     public function __construct($file = null, array $vars = array())
     {
-        $this->addTemplate($file);
+        if (!is_null($file)) {
+            $this->addTemplate($file);
+        }
 
         if (!empty($vars)) {
             $this->setVars($vars);
@@ -71,19 +73,37 @@ class Template
      */
     public function addTemplate($file)
     {
-        if (!is_null($file) && $this->checkTemplate($file)) {
-            return true;
+        try {
+            $template = $this->checkTemplate($file);
+            $this->setTemplate($template);
+        } catch (InvalidArgumentException $e) {
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    /**
+     * Añadir una nueva plantilla dentro de una plantilla
+     *
+     * @param string $file Con el nombre del archivo de plantilla
+     * @return bool
+     */
+    public function includeTemplate($file)
+    {
+        try {
+            $template = $this->checkTemplate($file);
+            return $template;
+        } catch (InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
      * @param string $file Con el nombre del archivo
-     * @return bool
-     * @throws InvalidArgumentException
+     * @return string La ruta al archivo de la plantilla
      */
     private function checkTemplate($file)
     {
@@ -94,8 +114,7 @@ class Template
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
-        $this->setTemplate($template);
-        return true;
+        return $template;
     }
 
     /**

@@ -134,7 +134,7 @@
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
                                             <i class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
                                         </a>
-                                        <i class="material-icons fg-green80" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account['name']; ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)">library_books</i>
+                                        <i class="material-icons fg-green100" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account['name']; ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)">library_books</i>
                                     <?php else: ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
                                             <i class="material-icons" title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
@@ -232,9 +232,6 @@
     <?php endif; ?>
     <script>
         $(function () {
-            // Actualizar el token de seguridad
-            $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
-
             $('#data-search-header').find('.sort-down').each(function () {
                 $(this).click(function () {
                     var key = $(this).parent().data('key');

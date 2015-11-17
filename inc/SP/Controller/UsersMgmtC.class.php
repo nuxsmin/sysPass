@@ -26,12 +26,16 @@
 namespace SP\Controller;
 
 use SP\Api\ApiTokens;
+use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Html\DataGrid\DataGridAction;
+use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridIcon;
+use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Http\Request;
 use SP\Mgmt\PublicLinkUtil;
 use SP\Mgmt\CustomFields;
 use SP\Mgmt\User\Groups;
@@ -117,10 +121,11 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_USR_USERS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Usuario'));
+        $GridActionNew->setTitle(_('Nuevo Usuario'));
         $GridActionNew->setIcon($this->_iconAdd);
         $GridActionNew->setSkip(true);
-        $GridActionNew->setIsNew(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_USR_USERS_NEW);
@@ -128,7 +133,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_USR_USERS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Detalles de Usuario'));
+        $GridActionView->setTitle(_('Ver Detalles de Usuario'));
         $GridActionView->setIcon($this->_iconView);
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
@@ -137,7 +144,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_USR_USERS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Usuario'));
+        $GridActionEdit->setTitle(_('Editar Usuario'));
         $GridActionEdit->setIcon($this->_iconEdit);
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
@@ -146,9 +155,10 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_USR_USERS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Usuario'));
+        $GridActionDel->setTitle(_('Eliminar Usuario'));
         $GridActionDel->setIcon($this->_iconDelete);
-        $GridActionDel->setIsDelete(true);
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_USR_USERS_DELETE);
@@ -156,7 +166,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionEditPass = new DataGridAction();
         $GridActionEditPass->setId(self::ACTION_USR_USERS_EDITPASS);
+        $GridActionEditPass->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEditPass->setName(_('Cambiar Clave de Usuario'));
+        $GridActionEditPass->setTitle(_('Cambiar Clave de Usuario'));
         $GridActionEditPass->setIcon(new DataGridIcon('lock_outline', 'imgs/pass.png', 'fg-orange80'));
         $GridActionEditPass->setOnClickFunction('sysPassUtil.Common.usrUpdPass');
         $GridActionEditPass->setOnClickArgs('this');
@@ -185,12 +197,15 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $Grid = new DataGridTab();
         $Grid->setId('tblUsers');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionEditPass);
         $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Usuarios'));
         $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
@@ -211,10 +226,11 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_USR_GROUPS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Grupo'));
+        $GridActionNew->setTitle(_('Nuevo Grupo'));
         $GridActionNew->setIcon($this->_iconAdd);
         $GridActionNew->setSkip(true);
-        $GridActionNew->setIsNew(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_USR_GROUPS_NEW);
@@ -222,7 +238,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_USR_GROUPS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Grupo'));
+        $GridActionEdit->setTitle(_('Editar Grupo'));
         $GridActionEdit->setIcon($this->_iconEdit);
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
@@ -231,9 +249,10 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_USR_GROUPS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Grupo'));
+        $GridActionDel->setTitle(_('Eliminar Grupo'));
         $GridActionDel->setIcon($this->_iconDelete);
-        $GridActionDel->setIsDelete(true);
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_USR_GROUPS_DELETE);
@@ -251,10 +270,13 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $Grid = new DataGridTab();
         $Grid->setId('tblGroups');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Grupos'));
         $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
@@ -275,10 +297,11 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_USR_PROFILES_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Perfil'));
+        $GridActionNew->setTitle(_('Nuevo Perfil'));
         $GridActionNew->setIcon($this->_iconAdd);
         $GridActionNew->setSkip(true);
-        $GridActionNew->setIsNew(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_USR_PROFILES_NEW);
@@ -286,7 +309,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_USR_PROFILES_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Detalles de Perfil'));
+        $GridActionView->setTitle(_('Ver Detalles de Perfil'));
         $GridActionView->setIcon($this->_iconView);
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
@@ -295,7 +320,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_USR_PROFILES_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Perfil'));
+        $GridActionEdit->setTitle(_('Editar Perfil'));
         $GridActionEdit->setIcon($this->_iconEdit);
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
@@ -304,9 +331,10 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_USR_PROFILES_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Perfil'));
+        $GridActionDel->setTitle(_('Eliminar Perfil'));
         $GridActionDel->setIcon($this->_iconDelete);
-        $GridActionDel->setIsDelete(true);
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_USR_PROFILES_DELETE);
@@ -322,11 +350,14 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $Grid = new DataGridTab();
         $Grid->setId('tblProfiles');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Perfiles'));
         $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
@@ -441,10 +472,11 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_APITOKENS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nueva Autorización'));
+        $GridActionNew->setTitle(_('Nueva Autorización'));
         $GridActionNew->setIcon($this->_iconAdd);
         $GridActionNew->setSkip(true);
-        $GridActionNew->setIsNew(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_MGM_APITOKENS_NEW);
@@ -452,7 +484,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_APITOKENS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver token de Autorización'));
+        $GridActionView->setTitle(_('Ver token de Autorización'));
         $GridActionView->setIcon($this->_iconView);
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
@@ -461,7 +495,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_APITOKENS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Autorización'));
+        $GridActionEdit->setTitle(_('Editar Autorización'));
         $GridActionEdit->setIcon($this->_iconEdit);
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
@@ -470,9 +506,10 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_APITOKENS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Autorización'));
+        $GridActionDel->setTitle(_('Eliminar Autorización'));
         $GridActionDel->setIcon($this->_iconDelete);
-        $GridActionDel->setIsDelete(true);
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_APITOKENS_DELETE);
@@ -490,11 +527,14 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $Grid = new DataGridTab();
         $Grid->setId('tblTokens');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Autorizaciones API'));
         $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
@@ -535,7 +575,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_PUBLICLINKS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Enlace'));
+        $GridActionView->setTitle(_('Ver Enlace'));
         $GridActionView->setIcon($this->_iconView);
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
@@ -545,6 +587,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionRefresh = new DataGridAction();
         $GridActionRefresh->setId(self::ACTION_MGM_PUBLICLINKS_REFRESH);
         $GridActionRefresh->setName(_('Renovar Enlace'));
+        $GridActionRefresh->setTitle(_('Renovar Enlace'));
         $GridActionRefresh->setIcon(new DataGridIcon('refresh', 'imgs/view.png', 'fg-green80'));
         $GridActionRefresh->setOnClickFunction('sysPassUtil.Common.linksMgmtRefresh');
         $GridActionRefresh->setOnClickArgs('this');
@@ -553,9 +596,10 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_PUBLICLINKS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Enlace'));
+        $GridActionDel->setTitle(_('Eliminar Enlace'));
         $GridActionDel->setIcon($this->_iconDelete);
-        $GridActionDel->setIsDelete(true);
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_DELETE);
@@ -581,10 +625,13 @@ class UsersMgmtC extends Controller implements ActionsInterface
 
         $Grid = new DataGridTab();
         $Grid->setId('tblLinks');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionRefresh);
         $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Enlaces'));
         $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
@@ -600,5 +647,24 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->addTemplate('publiclinks');
 
         $this->view->assign('link', PublicLinkUtil::getLinks($this->view->itemId)[0]);
+    }
+
+    /**
+     * Devolver el paginador
+     *
+     * @param int  $numRows El número de registros devueltos
+     * @param bool $filter Si está activo el filtrado
+     * @return DataGridPager
+     */
+    public function getPager($numRows, $filter = false)
+    {
+        $GridPager = new DataGridPager();
+        $GridPager->setFilterOn($filter);
+        $GridPager->setTotalRows($numRows);
+        $GridPager->setLimitStart(Request::analyze('start', 0));
+        $GridPager->setLimitCount(Request::analyze('count', Config::getValue('account_count', 15)));
+        $GridPager->setOnClickFunction('sysPassUtil.Common.searchSort');
+
+        return $GridPager;
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,35 +23,18 @@
  *
  */
 
-use SP\Controller\SearchC;
-use SP\Core\Init;
-use SP\Http\Request;
-use SP\Core\SessionUtil;
-use SP\Http\Response;
-use SP\Util\Util;
+namespace SP\Html\DataGrid;
 
-define('APP_ROOT', '..');
-
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
-
-Request::checkReferer('POST');
-
-if (!Init::isLoggedIn()) {
-    Util::logout();
+/**
+ * Class DataGridActionType para definir los tipos de acciones
+ *
+ * @package SP\Html\DataGrid
+ */
+class DataGridActionType
+{
+    const NEW_ITEM = 1;
+    const VIEW_ITEM = 2;
+    const EDIT_ITEM = 3;
+    const DELETE_ITEM = 4;
+    const SEARCH_ITEM = 5;
 }
-
-$sk = \SP\Http\Request::analyze('sk', false);
-
-if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
-}
-
-$Controller = new SearchC();
-$Controller->getSearch();
-
-$data = array(
-    'sk' => SessionUtil::getSessionKey(),
-    'html' => $Controller->render()
-);
-
-Response::printJSON($data, 0);
