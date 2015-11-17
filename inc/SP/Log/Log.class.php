@@ -134,6 +134,7 @@ class Log extends ActionLog
     {
         if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
             error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription());
+            return false;
         }
 
         if (!Checks::logIsEnabled()) {
