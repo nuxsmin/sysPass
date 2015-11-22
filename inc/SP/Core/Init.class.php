@@ -265,7 +265,7 @@ class Init
     {
         $Tpl = new Template();
         $Tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
-        $Controller = new Controller\MainC($Tpl);
+        $Controller = new Controller\Main($Tpl);
         $Controller->getError(true);
         $Controller->view();
         exit;
@@ -378,7 +378,7 @@ class Init
                 exit();
             } else {
                 // Comprobar si sysPass está instalada o en modo mantenimiento
-                $Controller = new Controller\MainC();
+                $Controller = new Controller\Main();
                 $Controller->getInstaller();
                 $Controller->view();
                 exit();
@@ -458,7 +458,7 @@ class Init
      */
     private static function goLogin()
     {
-        $Controller = new Controller\MainC(null, 'login');
+        $Controller = new Controller\Main(null, 'login');
         $Controller->getLogin();
         $Controller->view();
         exit;
@@ -502,7 +502,7 @@ class Init
                         $update = true;
                     }
                 } else {
-                    $controller = new Controller\MainC();
+                    $controller = new Controller\Main();
                     $controller->getUpgrade();
                     $controller->view();
                     exit();
@@ -594,7 +594,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new Controller\MainC();
+        $Controller = new Controller\Main();
 
         switch ($action) {
             case 'passreset':
@@ -671,7 +671,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new Controller\MainC(null, 'main');
+        $Controller = new Controller\Main(null, 'main');
 
         switch ($action) {
             case 'accView':

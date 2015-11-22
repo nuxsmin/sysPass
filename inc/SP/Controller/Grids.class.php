@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,141 +25,96 @@
 
 namespace SP\Controller;
 
-use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
-use SP\Core\Template;
+use SP\Core\SessionUtil;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
-use SP\Html\DataGrid\DataGridIcon;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Http\Request;
-use SP\Mgmt\Category;
-use SP\Mgmt\Customer;
-use SP\Mgmt\CustomFieldDef;
-use SP\Mgmt\CustomFields;
-use SP\Core\SessionUtil;
-use SP\Mgmt\Files;
-use SP\Util\Checks;
-use SP\Util\Util;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Clase encargada de preparar la presentación de las vistas de gestión de cuentas
+ * Class Grids con las plantillas de tablas de datos
  *
- * @package Controller
+ * @package SP\Controller
  */
-class AccountsMgmtC extends Controller implements ActionsInterface
+class Grids implements ActionsInterface
 {
     /**
-     * Máximo numero de acciones antes de agrupar
+     * @var Icons
      */
-    const MAX_NUM_ACTIONS = 3;
+    private $_icons;
+    /**
+     * @var string
+     */
+    private $_sk;
     /**
      * @var int
      */
-    private $_module = 0;
+    private $_queryTimeStart;
     /**
-     * @var DataGridIcon
+     * @var bool
      */
-    private $_iconAdd;
-    /**
-     * @var DataGridIcon
-     */
-    private $_iconView;
-    /**
-     * @var DataGridIcon
-     */
-    private $_iconEdit;
-    /**
-     * @var DataGridIcon
-     */
-    private $_iconDelete;
-
+    private $_filter = false;
 
     /**
-     * Constructor
-     *
-     * @param $template Template con instancia de plantilla
+     * Grids constructor.
      */
-    public function __construct(Template $template = null)
+    public function __construct()
     {
-        parent::__construct($template);
-
-        $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey());
-
-        $this->setIcons();
+        $this->_sk = SessionUtil::getSessionKey(true);
+        $this->_icons = new Icons();
     }
 
     /**
-     * Obtener los datos para la pestaña de categorías
-     */
-    public function getCategories()
-    {
-        $this->setAction(self::ACTION_MGM_CATEGORIES);
-
-        if (!$this->checkAccess()) {
-            return;
-        }
-
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->append('tabs', $this->getCategoriesGrid());
-    }
-
-    /**
-     * @param string $search
      * @return DataGridTab
      */
-    public function getCategoriesGrid($search = '')
+    public function getCategoriesGrid()
     {
         $GridActionSearch = new DataGridActionSearch();
         $GridActionSearch->setId(self::ACTION_MGM_CATEGORIES_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
-        $GridActionSearch->setName('frmSearchCustomer');
+        $GridActionSearch->setName('frmSearchCategory');
         $GridActionSearch->setTitle(_('Buscar Categoría'));
         $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
         $GridActionSearch->setOnSubmitArgs('this');
-        $GridActionSearch->setOnSubmitArgs($this->view->sk);
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CATEGORIES_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nueva Categoría'));
         $GridActionNew->setTitle(_('Nueva Categoría'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_MGM_CATEGORIES_NEW);
-        $GridActionNew->setOnClickArgs($this->view->sk);
+        $GridActionNew->setOnClickArgs($this->_sk);
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_CATEGORIES_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Categoría'));
         $GridActionEdit->setTitle(_('Editar Categoría'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_MGM_CATEGORIES_EDIT);
-        $GridActionEdit->setOnClickArgs($this->view->sk);
+        $GridActionEdit->setOnClickArgs($this->_sk);
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_CATEGORIES_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Categoría'));
         $GridActionDel->setTitle(_('Eliminar Categoría'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_CATEGORIES_DELETE);
-        $GridActionDel->setOnClickArgs($this->view->sk);
+        $GridActionDel->setOnClickArgs($this->_sk);
 
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Nombre'));
@@ -170,12 +125,6 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridData->addDataRowSource('category_name');
         $GridData->addDataRowSource('category_description');
 
-        if(empty($search)) {
-            $GridData->setData(Category::getCategories());
-        } else {
-            $GridData->setData(Category::getCategoriesSearch($search));
-        }
-
         $Grid = new DataGridTab();
         $Grid->setId('tblCategories');
         $Grid->setDataRowTemplate('datagrid-rows');
@@ -185,34 +134,39 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
-        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
+        $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Categorías'));
-        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
 
         return $Grid;
     }
 
     /**
-     * Obtener los datos para la pestaña de clientes
+     * Devolver el paginador por defecto
+     *
+     * @param DataGridActionSearch $sourceAction
+     * @return DataGridPager
      */
-    public function getCustomers()
+    public function getPager(DataGridActionSearch $sourceAction)
     {
-        $this->setAction(self::ACTION_MGM_CUSTOMERS);
+        $GridPager = new DataGridPager();
+        $GridPager->setOnClickFunction('sysPassUtil.Common.appMgmtNav');
+        $GridPager->setOnClickArgs($sourceAction->getName());
+        $GridPager->setLimitStart(0);
+        $GridPager->setLimitCount(Config::getValue('account_count'));
+        $GridPager->setIconPrev($this->_icons->getIconNavPrev());
+        $GridPager->setIconNext($this->_icons->getIconNavNext());
+        $GridPager->setIconFirst($this->_icons->getIconNavFirst());
+        $GridPager->setIconLast($this->_icons->getIconNavLast());
 
-        if (!$this->checkAccess()) {
-            return;
-        }
-
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->append('tabs', $this->getCustomersGrid());
+        return $GridPager;
     }
 
     /**
-     * @param string $search
      * @return DataGridTab
      */
-    public function getCustomersGrid($search = '')
+    public function getCustomersGrid()
     {
         $GridActionSearch = new DataGridActionSearch();
         $GridActionSearch->setId(self::ACTION_MGM_CUSTOMERS_SEARCH);
@@ -221,41 +175,40 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridActionSearch->setTitle(_('Buscar Cliente'));
         $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
         $GridActionSearch->setOnSubmitArgs('this');
-        $GridActionSearch->setOnSubmitArgs($this->view->sk);
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CUSTOMERS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Cliente'));
         $GridActionNew->setTitle(_('Nuevo Cliente'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_MGM_CUSTOMERS_NEW);
-        $GridActionNew->setOnClickArgs($this->view->sk);
+        $GridActionNew->setOnClickArgs($this->_sk);
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_CUSTOMERS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Cliente'));
         $GridActionEdit->setTitle(_('Editar Cliente'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_MGM_CUSTOMERS_EDIT);
-        $GridActionEdit->setOnClickArgs($this->view->sk);
+        $GridActionEdit->setOnClickArgs($this->_sk);
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_CUSTOMERS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Cliente'));
         $GridActionDel->setTitle(_('Eliminar Cliente'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_CUSTOMERS_DELETE);
-        $GridActionDel->setOnClickArgs($this->view->sk);
+        $GridActionDel->setOnClickArgs($this->_sk);
 
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Nombre'));
@@ -266,12 +219,6 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridData->addDataRowSource('customer_name');
         $GridData->addDataRowSource('customer_description');
 
-        if (empty($search)) {
-            $GridData->setData(Customer::getCustomers());
-        } else {
-            $GridData->setData(Customer::getCustomersSearch($search));
-        }
-
         $Grid = new DataGridTab();
         $Grid->setId('tblCustomers');
         $Grid->setDataRowTemplate('datagrid-rows');
@@ -281,103 +228,18 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
-        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
+        $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Clientes'));
-        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
 
         return $Grid;
     }
 
     /**
-     * Inicializar las plantillas para las pestañas
-     */
-    public function useTabs()
-    {
-        $this->view->addTemplate('datatabs-grid');
-
-        $this->view->assign('tabs', array());
-        $this->view->assign('activeTab', 0);
-        $this->view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
-    }
-
-    /**
-     * Obtener los datos para la ficha de cliente
-     */
-    public function getCustomer()
-    {
-        $this->_module = self::ACTION_MGM_CUSTOMERS;
-        $this->view->addTemplate('customers');
-
-        $this->view->assign('customer', Customer::getCustomerData($this->view->itemId));
-        $this->getCustomFieldsForItem();
-    }
-
-    /**
-     * Obtener los datos para la ficha de categoría
-     */
-    public function getCategory()
-    {
-        $this->_module = self::ACTION_MGM_CATEGORIES;
-        $this->view->addTemplate('categories');
-
-        $this->view->assign('category', Category::getCategoryData($this->view->itemId));
-        $this->getCustomFieldsForItem();
-    }
-
-    /**
-     * Obtener la lista de campos personalizados y sus valores
-     */
-    private function getCustomFieldsForItem()
-    {
-        // Se comprueba que hayan campos con valores para el elemento actual
-        if (!$this->view->isView && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
-        } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
-        }
-    }
-
-    /**
-     * Obtener los datos para la vista de archivos de una cuenta
-     */
-    public function getAccountFiles()
-    {
-        $this->setAction(self::ACTION_ACC_FILES);
-
-        $this->view->assign('accountId', Request::analyze('id', 0));
-        $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-        $this->view->assign('files', Files::getAccountFileList($this->view->accountId));
-
-        if (!is_array($this->view->files) || count($this->view->files) === 0) {
-            return;
-        }
-
-        $this->view->addTemplate('files');
-
-        $this->view->assign('sk', SessionUtil::getSessionKey());
-    }
-
-    /**
-     * Obtener los datos para la pestaña de campos personalizados
-     */
-    public function getCustomFields()
-    {
-        $this->setAction(self::ACTION_MGM_CUSTOMFIELDS);
-
-        if (!$this->checkAccess()) {
-            return;
-        }
-
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->append('tabs', $this->getCustomFieldsGrid());
-    }
-
-    /**
-     * @param string $search
      * @return DataGridTab
      */
-    public function getCustomFieldsGrid($search = '')
+    public function getCustomFieldsGrid()
     {
         $GridActionSearch = new DataGridActionSearch();
         $GridActionSearch->setId(self::ACTION_MGM_CUSTOMFIELDS_SEARCH);
@@ -386,41 +248,40 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridActionSearch->setTitle(_('Buscar Campo'));
         $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
         $GridActionSearch->setOnSubmitArgs('this');
-        $GridActionSearch->setOnSubmitArgs($this->view->sk);
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CUSTOMFIELDS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Campo'));
         $GridActionNew->setTitle(_('Nuevo Campo'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
         $GridActionNew->setOnClickArgs(self::ACTION_MGM_CUSTOMFIELDS_NEW);
-        $GridActionNew->setOnClickArgs($this->view->sk);
+        $GridActionNew->setOnClickArgs($this->_sk);
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_CUSTOMFIELDS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Campo'));
         $GridActionEdit->setTitle(_('Editar Campo'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_MGM_CUSTOMFIELDS_EDIT);
-        $GridActionEdit->setOnClickArgs($this->view->sk);
+        $GridActionEdit->setOnClickArgs($this->_sk);
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_CUSTOMFIELDS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Campo'));
         $GridActionDel->setTitle(_('Eliminar Campo'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_CUSTOMFIELDS_DELETE);
-        $GridActionDel->setOnClickArgs($this->view->sk);
+        $GridActionDel->setOnClickArgs($this->_sk);
 
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Módulo'));
@@ -433,12 +294,6 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('typeName');
 
-        if(empty($search)) {
-            $GridData->setData(CustomFieldDef::getCustomFields());
-        } else {
-            $GridData->setData(CustomFieldDef::getCustomFieldsSearch($search));
-        }
-
         $Grid = new DataGridTab();
         $Grid->setId('tblCustomFields');
         $Grid->setDataRowTemplate('datagrid-rows');
@@ -448,67 +303,18 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
-        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
+        $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Campos Personalizados'));
-        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
 
         return $Grid;
     }
 
     /**
-     * Obtener los datos para la ficha de campo personalizado
-     */
-    public function getCustomField()
-    {
-        $this->view->addTemplate('customfields');
-
-        $customField = CustomFieldDef::getCustomFields($this->view->itemId, true);
-        $field = (is_object($customField)) ? unserialize($customField->customfielddef_field) : null;
-
-        if (is_object($field) && get_class($field) === '__PHP_Incomplete_Class') {
-            $field = Util::castToClass('SP\Mgmt\CustomFieldDef', $field);
-        }
-
-        $this->view->assign('gotData', ($customField && $field instanceof CustomFieldDef));
-        $this->view->assign('customField', $customField);
-        $this->view->assign('field', $field);
-        $this->view->assign('types', CustomFieldDef::getFieldsTypes());
-        $this->view->assign('modules', CustomFieldDef::getFieldsModules());
-    }
-
-    /**
-     * Establecer los iconos utilizados en el DataGrid
-     */
-    private function setIcons()
-    {
-        $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
-        $this->_iconView = new DataGridIcon('visibility', 'imgs/view.png', 'fg-blue80');
-        $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
-        $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
-    }
-
-    /**
-     * Obtener los datos para la pestaña de archivos
-     */
-    public function getFiles()
-    {
-        $this->setAction(self::ACTION_MGM_FILES_VIEW);
-
-        // FIXME: añadir perfil
-        if (!$this->checkAccess()) {
-            return;
-        }
-
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->append('tabs', $this->getFilesGrid());
-    }
-
-    /**
-     * @param string $search
      * @return DataGridTab
      */
-    public function getFilesGrid($search = '')
+    public function getFilesGrid()
     {
         $GridActionSearch = new DataGridActionSearch();
         $GridActionSearch->setId(self::ACTION_MGM_FILES_SEARCH);
@@ -517,27 +323,26 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridActionSearch->setTitle(_('Buscar Archivo'));
         $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
         $GridActionSearch->setOnSubmitArgs('this');
-        $GridActionSearch->setOnSubmitArgs($this->view->sk);
 
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_FILES_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Archivo'));
-        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setIcon($this->_icons->getIconView());
         $GridActionView->setOnClickFunction('sysPassUtil.Common.viewFile');
         $GridActionView->setOnClickArgs('this');
         $GridActionView->setOnClickArgs(self::ACTION_MGM_FILES_VIEW);
-        $GridActionView->setOnClickArgs($this->view->sk);
+        $GridActionView->setOnClickArgs($this->_sk);
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_FILES_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Archivo'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_FILES_DELETE);
-        $GridActionDel->setOnClickArgs($this->view->sk);
+        $GridActionDel->setOnClickArgs($this->_sk);
 
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Cuenta'));
@@ -554,12 +359,6 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridData->addDataRowSource('accfile_type');
         $GridData->addDataRowSource('accfile_size');
 
-        if (empty($search)) {
-            $GridData->setData(Files::getFileList());
-        } else {
-            $GridData->setData(Files::getFileListSearch($search));
-        }
-
         $Grid = new DataGridTab();
         $Grid->setId('tblFiles');
         $Grid->setDataRowTemplate('datagrid-rows');
@@ -568,34 +367,18 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
-        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
+        $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Archivos'));
-        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
 
         return $Grid;
     }
 
     /**
-     * Obtener los datos para la pestaña de cuentas
-     */
-    public function getAccounts()
-    {
-        $this->setAction(self::ACTION_MGM_ACCOUNTS);
-
-        if (!$this->checkAccess()) {
-            return;
-        }
-
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->append('tabs', $this->getAccountsGrid());
-    }
-
-    /**
-     * @param string $search La cadena de búsqueda
      * @return DataGridTab
      */
-    public function getAccountsGrid($search = '')
+    public function getAccountsGrid()
     {
         $GridActionSearch = new DataGridActionSearch();
         $GridActionSearch->setId(self::ACTION_MGM_ACCOUNTS_SEARCH);
@@ -604,18 +387,17 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridActionSearch->setTitle(_('Buscar Cuenta'));
         $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
         $GridActionSearch->setOnSubmitArgs('this');
-        $GridActionSearch->setOnSubmitArgs($this->view->sk);
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_ACCOUNTS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Cuenta'));
         $GridActionDel->setTitle(_('Eliminar Cuenta'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_ACCOUNTS_DELETE);
-        $GridActionDel->setOnClickArgs($this->view->sk);
+        $GridActionDel->setOnClickArgs($this->_sk);
 
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Nombre'));
@@ -626,12 +408,6 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $GridData->addDataRowSource('account_name');
         $GridData->addDataRowSource('customer_name');
 
-        if (empty($search)) {
-            $GridData->setData(AccountUtil::getAccountsCustomerData());
-        } else {
-            $GridData->setData(AccountUtil::getAccountsCustomerDataSearch($search));
-        }
-
         $Grid = new DataGridTab();
         $Grid->setId('tblAccounts');
         $Grid->setDataRowTemplate('datagrid-rows');
@@ -639,30 +415,27 @@ class AccountsMgmtC extends Controller implements ActionsInterface
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
-        $Grid->setPager($this->getPager($GridData->getDataCount(), !empty($search)));
+        $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
         $Grid->setTitle(_('Gestión de Cuentas'));
-        $Grid->setTime(round(microtime() - $this->view->queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
 
         return $Grid;
     }
 
     /**
-     * Devolver el paginador
-     *
-     * @param int  $numRows El número de registros devueltos
-     * @param bool $filter Si está activo el filtrado
-     * @return DataGridPager
+     * @param boolean $filter
      */
-    public function getPager($numRows, $filter = false)
+    public function setFilter($filter)
     {
-        $GridPager = new DataGridPager();
-        $GridPager->setFilterOn($filter);
-        $GridPager->setTotalRows($numRows);
-        $GridPager->setLimitStart(Request::analyze('start', 0));
-        $GridPager->setLimitCount(Request::analyze('count', Config::getValue('account_count', 15)));
-        $GridPager->setOnClickFunction('sysPassUtil.Common.searchSort');
+        $this->_filter = $filter;
+    }
 
-        return $GridPager;
+    /**
+     * @param int $queryTimeStart
+     */
+    public function setQueryTimeStart($queryTimeStart)
+    {
+        $this->_queryTimeStart = $queryTimeStart;
     }
 }

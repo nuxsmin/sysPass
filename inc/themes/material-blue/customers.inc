@@ -29,7 +29,8 @@
             </tr>
 
             <?php if($customFields): ?>
-                <?php foreach($customFields as $field):?>
+                <?php foreach($customFields as $index => $field):?>
+                    <?php if ($index !== 'hash'): ?>
                     <tr>
                         <td class="descField">
                             <?php echo $field->text; ?>
@@ -55,6 +56,7 @@
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
             </tbody>

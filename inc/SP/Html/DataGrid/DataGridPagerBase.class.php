@@ -60,16 +60,109 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * @var array
      */
     protected $_onClickArgs = array();
-
+    /**
+     * @var DataGridIcon
+     */
+    protected $_iconPrev;
+    /**
+     * @var DataGridIcon
+     */
+    protected $_iconNext;
+    /**
+     * @var DataGridIcon
+     */
+    protected $_iconFirst;
+    /**
+     * @var DataGridIcon
+     */
+    protected $_iconLast;
+    /**
+     * @var DataGridActionSearch
+     */
+    protected $_sourceAction;
+    /**
+     * @var string
+     */
+    protected $_sk;
 
     /**
-     * Establecer el campo de la búsqueda
-     *
-     * @param int $searchKey
+     * @param string $sk
      */
-    public function setSearchKey($searchKey)
+    public function setSk($sk)
     {
-        $this->_searchKey = $searchKey;
+        $this->_sk = $sk;
+    }
+
+    /**
+     * @param DataGridActionSearch $sourceAction
+     */
+    public function setSourceAction($sourceAction)
+    {
+        $this->_sourceAction = $sourceAction;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconPrev()
+    {
+        return $this->_iconPrev;
+    }
+
+    /**
+     * @param DataGridIcon $iconPrev
+     */
+    public function setIconPrev($iconPrev)
+    {
+        $this->_iconPrev = $iconPrev;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconNext()
+    {
+        return $this->_iconNext;
+    }
+
+    /**
+     * @param DataGridIcon $iconNext
+     */
+    public function setIconNext($iconNext)
+    {
+        $this->_iconNext = $iconNext;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconFirst()
+    {
+        return $this->_iconFirst;
+    }
+
+    /**
+     * @param DataGridIcon $iconFirst
+     */
+    public function setIconFirst($iconFirst)
+    {
+        $this->_iconFirst = $iconFirst;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconLast()
+    {
+        return $this->_iconLast;
+    }
+
+    /**
+     * @param DataGridIcon $iconLast
+     */
+    public function setIconLast($iconLast)
+    {
+        $this->_iconLast = $iconLast;
     }
 
     /**
@@ -83,13 +176,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el registro de inicio de la página
+     * Establecer el campo de la búsqueda
      *
-     * @param int $limitStart
+     * @param int $searchKey
      */
-    public function setLimitStart($limitStart)
+    public function setSearchKey($searchKey)
     {
-        $this->_limitStart = $limitStart;
+        $this->_searchKey = $searchKey;
     }
 
     /**
@@ -103,13 +196,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el número de registros en una página
+     * Establecer el registro de inicio de la página
      *
-     * @param int $limitCount
+     * @param int $limitStart
      */
-    public function setLimitCount($limitCount)
+    public function setLimitStart($limitStart)
     {
-        $this->_limitCount = $limitCount;
+        $this->_limitStart = $limitStart;
     }
 
     /**
@@ -120,6 +213,16 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     public function getLimitCount()
     {
         return $this->_limitCount;
+    }
+
+    /**
+     * Establecer el número de registros en una página
+     *
+     * @param int $limitCount
+     */
+    public function setLimitCount($limitCount)
+    {
+        $this->_limitCount = $limitCount;
     }
 
     /**
@@ -143,16 +246,6 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el número total de registros obtenidos
-     *
-     * @param int $totalRows
-     */
-    public function setTotalRows($totalRows)
-    {
-        $this->_totalRows = $totalRows;
-    }
-
-    /**
      * Devolver el número total de registros obtenidos
      *
      * @return int
@@ -163,13 +256,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer si está activado el filtro
+     * Establecer el número total de registros obtenidos
      *
-     * @param bool $filterOn
+     * @param int $totalRows
      */
-    public function setFilterOn($filterOn)
+    public function setTotalRows($totalRows)
     {
-        $this->_filterOn = $filterOn;
+        $this->_totalRows = $totalRows;
     }
 
     /**
@@ -180,6 +273,16 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     public function getFilterOn()
     {
         return $this->_filterOn;
+    }
+
+    /**
+     * Establecer si está activado el filtro
+     *
+     * @param bool $filterOn
+     */
+    public function setFilterOn($filterOn)
+    {
+        $this->_filterOn = $filterOn;
     }
 
     /**
@@ -199,19 +302,27 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getOnClick()
     {
+        return $this->_onClickFunction . '(' . implode(',', $this->parseArgs()) . ')';
+    }
+
+    /**
+     * @return array
+     */
+    protected function parseArgs()
+    {
         $args = array();
 
         foreach ($this->_onClickArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;
         }
 
-        return $this->_onClickFunction . '(' . implode(',', $args) . ')';
+        return $args;
     }
 
     /**
      * Establecer los argumentos de la función OnClick
      *
-     * @param string $args
+     * @param mixed $args
      */
     public function setOnClickArgs($args)
     {
@@ -225,7 +336,10 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getOnClickFirst()
     {
-        return $this->_onClickFunction . '(' . $this->_searchKey .', 0, 1)';
+        $args = $this->parseArgs();
+        $args[] = $this->getFirst();
+
+        return $this->_onClickFunction . '(' . implode(',', $args) . ')';
     }
 
     /**
@@ -235,9 +349,10 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getOnClickLast()
     {
-        $limitLast = (($this->_totalRows % $this->_limitCount) == 0) ? $this->_totalRows - $this->_limitCount : floor($this->_totalRows / $this->_limitCount) * $this->_limitCount;
+        $args = $this->parseArgs();
+        $args[] = $this->getLast();
 
-        return $this->_onClickFunction  . '(' . $this->_searchKey . ',' . $limitLast . ',1)';
+        return $this->_onClickFunction . '(' . implode(',', $args) . ')';
     }
 
     /**
@@ -247,7 +362,10 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getOnClickNext()
     {
-        return $this->_onClickFunction . '(' . $this->_searchKey . ',' . ($this->_limitStart + $this->_limitCount) . ',1)';
+        $args = $this->parseArgs();
+        $args[] = $this->getNext();
+
+        return $this->_onClickFunction . '(' . implode(',', $args) . ')';
     }
 
     /**
@@ -257,7 +375,41 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getOnClickPrev()
     {
-        return $this->_onClickFunction  .'(' . $this->_searchKey . ',' . ($this->_limitStart - $this->_limitCount) . ',1)';
+        $args = $this->parseArgs();
+        $args[] = $this->getPrev();
+
+        return $this->_onClickFunction . '(' . implode(',', $args) . ')';
     }
 
+    /**
+     * @return int
+     */
+    public function getFirst()
+    {
+        return 0;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getLast()
+    {
+        return (($this->_totalRows % $this->_limitCount) == 0) ? $this->_totalRows - $this->_limitCount : floor($this->_totalRows / $this->_limitCount) * $this->_limitCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrev()
+    {
+        return ($this->_limitStart - $this->_limitCount);
+    }
+
+    /**
+     * @return int
+     */
+    public function getNext()
+    {
+        return ($this->_limitStart + $this->_limitCount);
+    }
 }

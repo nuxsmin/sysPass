@@ -50,6 +50,7 @@
                                         <label class="mdl-textfield__label"
                                                for="txtSearch"><?php echo $action->getTitle(); ?></label>
                                     </div>
+                                    <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                                     <input type="hidden" name="target" value="data-rows-<?php echo $data->getId(); ?>">
                                     <input type="hidden" name="activeTab" value="<?php echo $index; ?>">
                                     <input type="hidden" name="actionId" value="<?php echo $action->getId(); ?>">

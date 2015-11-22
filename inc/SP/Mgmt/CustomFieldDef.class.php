@@ -76,19 +76,25 @@ class CustomFieldDef extends CustomFieldsBase
     /**
      * Devolver los datos de definiciones de campos personalizados
      *
+     * @param int    $limitCount
+     * @param int    $limitStart
      * @param string $search La cadena de búsqueda
      * @return array|bool
      */
-    public static function getCustomFieldsSearch($search)
+    public static function getCustomFieldsSearch($limitCount, $limitStart = 0, $search = '')
     {
         $query = 'SELECT customfielddef_id, customfielddef_module, customfielddef_field '
             . 'FROM customFieldsDef '
-            . ' ORDER BY customfielddef_module';
+            . 'ORDER BY customfielddef_module '
+            . 'LIMIT ?, ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
 
         DB::setReturnArray();
+        DB::setFullRowCount();
 
         $queryRes = DB::getResults($Data);
 
@@ -108,7 +114,8 @@ class CustomFieldDef extends CustomFieldsBase
                 $field = Util::castToClass('SP\Mgmt\CustomFieldDef', $field);
             }
 
-            if (stripos($field->getName(), $search) !== false
+            if (empty($search)
+                || stripos($field->getName(), $search) !== false
                 || stripos(self::getFieldsTypes($field->getType(), true), $search) !== false
                 || stripos(self::getFieldsModules($customField->customfielddef_module), $search) !== false
             ) {
@@ -122,6 +129,8 @@ class CustomFieldDef extends CustomFieldsBase
                 $customFields[] = $attribs;
             }
         }
+
+        $customFields['count'] = DB::$lastNumRows;
 
         return $customFields;
     }

@@ -305,4 +305,14 @@ abstract class DataGridBase implements DataGridInterface
         return $this->_pager;
     }
 
+    /**
+     * Actualizar los datos del paginador
+     */
+    public function updatePager()
+    {
+        if ($this->_pager instanceof DataGridPagerBase) {
+            $this->_pager->setTotalRows($this->_data->getDataCount());
+        }
+    }
+
 }

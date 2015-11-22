@@ -265,6 +265,9 @@ class DB
 
         $query = preg_replace($patterns, $replace, $queryData->getQuery());
 
+        // Establecer la nueva consulta
+        $queryData->setQuery($query);
+
         try {
             $db = DBConnectionFactory::getFactory()->getConnection();
 

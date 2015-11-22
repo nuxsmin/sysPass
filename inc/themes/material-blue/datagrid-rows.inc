@@ -9,7 +9,8 @@
 <?php if (count($data->getData()->getData()) === 0): ?>
     <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
 <?php else: ?>
-    <?php foreach ($data->getData()->getData() as $item): ?>
+    <?php foreach ($data->getData()->getData() as $index => $item): ?>
+        <?php if($index === 'count'): continue; endif; ?>
         <ul>
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <li class="cell-data" style="width: <?php echo $data->getHeader()->getWidth(); ?>%;">

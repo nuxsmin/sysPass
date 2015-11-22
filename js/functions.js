@@ -899,12 +899,27 @@ sysPass.Util.Common = function () {
         sendAjax(data, url);
     };
 
-    var appMgmtSearch = function (form, sk) {
+    var appMgmtSearch = function (form) {
+        var targetId = form.elements.target.value;
         var data = $(form).serialize();
-        var target = form.elements.target.value;
 
-        data = data + '&sk=' + sk;
+        appMgmtSearchAjax(data, targetId);
 
+        return false;
+    };
+
+    var appMgmtNav = function (formId, count, start) {
+        var form = $('#' + formId);
+        var targetId = form.find('[name=target]').val();
+        var sk = form.find('[name=sk]').val();
+        var data = form.serialize() + '&sk=' + sk + '&start=' + start + '&count=' + count;
+
+        appMgmtSearchAjax(data, targetId);
+
+        return false;
+    };
+
+    var appMgmtSearchAjax = function(data, targetId) {
         $.ajax({
             type: 'POST',
             dataType: 'json',
@@ -912,20 +927,19 @@ sysPass.Util.Common = function () {
             data: data,
             success: function (json) {
                 if (json.status === 0) {
-                    $('#' + target).html(json.html);
+                    $('#' + targetId).html(json.html);
+                    $('form').find('[name=sk]').val(json.sk);
                 } else {
-                    $('#' + target).html(resMsg('nofancyerror', json.description));
+                    $('#' + targetId).html(resMsg('nofancyerror', json.description));
                 }
             },
             error: function () {
-                $('#' + target).html(resMsg('nofancyerror', 'error'));
+                $('#' + targetId).html(resMsg('nofancyerror', 'error'));
             },
-            complete: function () {
+            complete: function (json) {
                 sysPassUtil.hideLoading();
             }
         });
-
-        return false;
     };
 
     // Función para crear un enlace público
@@ -1354,6 +1368,7 @@ sysPass.Util.Common = function () {
     return {
         accSearch: accSearch,
         appMgmtData: appMgmtData,
+        appMgmtNav: appMgmtNav,
         appMgmtSave: appMgmtSave,
         appMgmtSearch: appMgmtSearch,
         appMgmtDelete: appMgmtDelete,

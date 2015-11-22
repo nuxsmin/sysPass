@@ -24,8 +24,8 @@
  */
 
 use SP\Config\Config;
-use SP\Controller\AccountC;
-use SP\Controller\SearchC;
+use SP\Controller\Account;
+use SP\Controller\Search;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Session;
@@ -90,46 +90,49 @@ switch ($actionId) {
 
         $Tpl->assign('lastAction', $lastAction);
 
-        $Controller = new SearchC($Tpl);
+        $Controller = new Search($Tpl);
         $Controller->getSearchBox();
         $Controller->getSearch();
         break;
     case ActionsInterface::ACTION_ACC_NEW:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getNewAccount();
         break;
     case ActionsInterface::ACTION_ACC_COPY:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getCopyAccount();
         break;
     case ActionsInterface::ACTION_ACC_EDIT:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getEditAccount();
         break;
     case ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getEditPassAccount();
         break;
     case ActionsInterface::ACTION_ACC_VIEW:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getViewAccount();
         break;
     case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getViewHistoryAccount();
         break;
     case ActionsInterface::ACTION_ACC_DELETE:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getDeleteAccount();
         break;
     case ActionsInterface::ACTION_ACC_REQUEST:
-        $Controller = new AccountC($Tpl, null, $itemId);
+        $Controller = new Account($Tpl, null, $itemId);
         $Controller->getRequestAccountAccess();
         break;
     case ActionsInterface::ACTION_USR:
+    case ActionsInterface::ACTION_USR_USERS:
+    case ActionsInterface::ACTION_USR_GROUPS:
+    case ActionsInterface::ACTION_USR_PROFILES:
     case ActionsInterface::ACTION_MGM_APITOKENS:
     case ActionsInterface::ACTION_MGM_PUBLICLINKS:
-        $Controller = new \SP\Controller\UsersMgmtC($Tpl);
+        $Controller = new \SP\Controller\UsersMgmt($Tpl);
         $Controller->useTabs();
         $Controller->getUsersList();
         $Controller->getGroupsList();
@@ -140,7 +143,12 @@ switch ($actionId) {
         }
         break;
     case ActionsInterface::ACTION_MGM:
-        $Controller = new \SP\Controller\AccountsMgmtC($Tpl);
+    case ActionsInterface::ACTION_MGM_CATEGORIES:
+    case ActionsInterface::ACTION_MGM_CUSTOMERS:
+    case ActionsInterface::ACTION_MGM_CUSTOMFIELDS:
+    case ActionsInterface::ACTION_MGM_FILES:
+    case ActionsInterface::ACTION_MGM_ACCOUNTS:
+        $Controller = new \SP\Controller\ItemsMgmt($Tpl);
         $Controller->useTabs();
         $Controller->getCategories();
         $Controller->getCustomers();
@@ -161,7 +169,7 @@ switch ($actionId) {
         $Tpl->assign('onCloseAction', $actionId);
         $Tpl->addTemplate('tabs-start');
 
-        $Controller = new \SP\Controller\ConfigC($Tpl);
+        $Controller = new \SP\Controller\ConfigMgmt($Tpl);
         $Controller->getGeneralTab();
         $Controller->getWikiTab();
         $Controller->getLdapTab();
@@ -174,7 +182,7 @@ switch ($actionId) {
         $Tpl->addTemplate('tabs-end');
         break;
     case ActionsInterface::ACTION_EVL:
-        $Controller = new \SP\Controller\EventlogC($Tpl);
+        $Controller = new \SP\Controller\Eventlog($Tpl);
         $Controller->getEventlog();
         break;
     case ActionsInterface::ACTION_USR_PREFERENCES:
@@ -182,7 +190,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
         $Tpl->addTemplate('tabs-start');
 
-        $Controller = new \SP\Controller\UsersPrefsC($Tpl);
+        $Controller = new \SP\Controller\UsersPrefs($Tpl);
         $Controller->getPreferencesTab();
         $Controller->getSecurityTab();
 

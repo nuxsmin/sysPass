@@ -291,10 +291,12 @@ class Files
     /**
      * Obtener el listado de archivos
      *
+     * @param null   $limitCount
+     * @param null   $limitStart
      * @param string $search La cadena de búsqueda
      * @return array|false Con los archivos de las cuentas.
      */
-    public static function getFileListSearch($search)
+    public static function getFileListSearch($limitCount, $limitStart = 0, $search = '')
     {
         $query = 'SELECT accfile_id,'
             . 'accfile_name,'
@@ -305,28 +307,42 @@ class Files
             . 'customer_name '
             . 'FROM accFiles '
             . 'JOIN accounts ON account_id = accfile_accountId '
-            . 'JOIN customers ON customer_id = account_customerId '
-            . 'WHERE accfile_name LIKE ? '
-            . 'OR accfile_type LIKE ? '
-            . 'OR account_name LIKE ? '
-            . 'OR customer_name LIKE ?';
-
-        DB::setReturnArray();
-
-        $search = '%' . $search . '%';
+            . 'JOIN customers ON customer_id = account_customerId';
 
         $Data = new QueryData();
+
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+
+            $query .= ' WHERE accfile_name LIKE ? '
+                . 'OR accfile_type LIKE ? '
+                . 'OR account_name LIKE ? '
+                . 'OR customer_name LIKE ?';
+
+            $Data->addParam($search);
+            $Data->addParam($search);
+            $Data->addParam($search);
+            $Data->addParam($search);
+        }
+
+        $query .= ' ORDER BY accfile_name';
+        $query .= ' LIMIT ?,?';
+
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
+
         $Data->setQuery($query);
-        $Data->addParam($search);
-        $Data->addParam($search);
-        $Data->addParam($search);
-        $Data->addParam($search);
+
+        DB::setReturnArray();
+        DB::setFullRowCount();
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
         }
+
+        $queryRes['count'] = DB::$lastNumRows;
 
         return $queryRes;
     }

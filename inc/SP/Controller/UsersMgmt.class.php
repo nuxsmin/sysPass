@@ -55,7 +55,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class UsersMgmtC extends Controller implements ActionsInterface
+class UsersMgmt extends Controller implements ActionsInterface
 {
     /**
      * Máximo numero de acciones antes de agrupar
@@ -66,21 +66,9 @@ class UsersMgmtC extends Controller implements ActionsInterface
      */
     private $_module = 0;
     /**
-     * @var DataGridIcon
+     * @var Icons
      */
-    private $_iconAdd;
-    /**
-     * @var DataGridIcon
-     */
-    private $_iconView;
-    /**
-     * @var DataGridIcon
-     */
-    private $_iconEdit;
-    /**
-     * @var DataGridIcon
-     */
-    private $_iconDelete;
+    private $_icons;
 
     /**
      * Constructor
@@ -94,18 +82,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('isDemo', Checks::demoIsEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
 
-        $this->setIcons();
-    }
-
-    /**
-     * Establecer los iconos utilizados en el DataGrid
-     */
-    private function setIcons()
-    {
-        $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
-        $this->_iconView = new DataGridIcon('visibility', 'imgs/view.png', 'fg-blue80');
-        $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
-        $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
+        $this->_icons = new Icons();
     }
 
     /**
@@ -124,7 +101,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Usuario'));
         $GridActionNew->setTitle(_('Nuevo Usuario'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
@@ -136,7 +113,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Detalles de Usuario'));
         $GridActionView->setTitle(_('Ver Detalles de Usuario'));
-        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setIcon($this->_icons->getIconView());
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
         $GridActionView->setOnClickArgs(self::ACTION_USR_USERS_VIEW);
@@ -147,7 +124,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Usuario'));
         $GridActionEdit->setTitle(_('Editar Usuario'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_USR_USERS_EDIT);
@@ -158,7 +135,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Usuario'));
         $GridActionDel->setTitle(_('Eliminar Usuario'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_USR_USERS_DELETE);
@@ -229,7 +206,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Grupo'));
         $GridActionNew->setTitle(_('Nuevo Grupo'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
@@ -241,7 +218,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Grupo'));
         $GridActionEdit->setTitle(_('Editar Grupo'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_USR_GROUPS_EDIT);
@@ -252,7 +229,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Grupo'));
         $GridActionDel->setTitle(_('Eliminar Grupo'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_USR_GROUPS_DELETE);
@@ -300,7 +277,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nuevo Perfil'));
         $GridActionNew->setTitle(_('Nuevo Perfil'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
@@ -312,7 +289,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Detalles de Perfil'));
         $GridActionView->setTitle(_('Ver Detalles de Perfil'));
-        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setIcon($this->_icons->getIconView());
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
         $GridActionView->setOnClickArgs(self::ACTION_USR_PROFILES_VIEW);
@@ -323,7 +300,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Perfil'));
         $GridActionEdit->setTitle(_('Editar Perfil'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_USR_PROFILES_EDIT);
@@ -334,7 +311,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Perfil'));
         $GridActionDel->setTitle(_('Eliminar Perfil'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_USR_PROFILES_DELETE);
@@ -475,7 +452,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(_('Nueva Autorización'));
         $GridActionNew->setTitle(_('Nueva Autorización'));
-        $GridActionNew->setIcon($this->_iconAdd);
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionNew->setOnClickArgs('this');
@@ -487,7 +464,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver token de Autorización'));
         $GridActionView->setTitle(_('Ver token de Autorización'));
-        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setIcon($this->_icons->getIconView());
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
         $GridActionView->setOnClickArgs(self::ACTION_MGM_APITOKENS_VIEW);
@@ -498,7 +475,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(_('Editar Autorización'));
         $GridActionEdit->setTitle(_('Editar Autorización'));
-        $GridActionEdit->setIcon($this->_iconEdit);
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionEdit->setOnClickArgs('this');
         $GridActionEdit->setOnClickArgs(self::ACTION_MGM_APITOKENS_EDIT);
@@ -509,7 +486,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Autorización'));
         $GridActionDel->setTitle(_('Eliminar Autorización'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_APITOKENS_DELETE);
@@ -578,7 +555,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Enlace'));
         $GridActionView->setTitle(_('Ver Enlace'));
-        $GridActionView->setIcon($this->_iconView);
+        $GridActionView->setIcon($this->_icons->getIconView());
         $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
         $GridActionView->setOnClickArgs('this');
         $GridActionView->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_VIEW);
@@ -599,7 +576,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Enlace'));
         $GridActionDel->setTitle(_('Eliminar Enlace'));
-        $GridActionDel->setIcon($this->_iconDelete);
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
         $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
         $GridActionDel->setOnClickArgs('this');
         $GridActionDel->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_DELETE);

@@ -372,31 +372,46 @@ class Customer
     /**
      * Obtener el listado de clientes mediante una búsqueda
      *
+     * @param int    $limitCount
+     * @param int    $limitStart
      * @param string $search La cadena de búsqueda
      * @return array con el id de cliente como clave y el nombre como valor
      */
-    public static function getCustomersSearch($search)
+    public static function getCustomersSearch($limitCount, $limitStart = 0, $search = '')
     {
         $query = 'SELECT customer_id, customer_name, customer_description '
-            . 'FROM customers '
-            . 'WHERE customer_name LIKE ? '
-            . 'OR customer_description LIKE ? '
-            . 'ORDER BY customer_name';
-
-        $search = '%' . $search . '%';
+            . 'FROM customers';
 
         $Data = new QueryData();
+
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+
+            $query .= ' WHERE customer_name LIKE ? '
+                . 'OR customer_description LIKE ?';
+
+            $Data->addParam($search);
+            $Data->addParam($search);
+        }
+
+        $query .= ' ORDER BY customer_name';
+        $query .= ' LIMIT ?,?';
+
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
+
         $Data->setQuery($query);
-        $Data->addParam($search);
-        $Data->addParam($search);
 
         DB::setReturnArray();
+        DB::setFullRowCount();
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
         }
+
+        $queryRes['count'] = DB::$lastNumRows;
 
         return $queryRes;
     }

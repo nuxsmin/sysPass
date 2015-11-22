@@ -40,7 +40,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Controller
  */
-class UsersPrefsC extends Controller implements ActionsInterface
+class UsersPrefs extends Controller implements ActionsInterface
 {
     /**
      * @var int
