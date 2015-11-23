@@ -25,9 +25,14 @@
 
 namespace SP\Controller;
 
+use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
-use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\Html\DataGrid\DataGridPagerBase;
+use SP\Mgmt\Category;
+use SP\Mgmt\Customer;
+use SP\Mgmt\CustomFieldDef;
+use SP\Mgmt\Files;
 use SP\Util\Checks;
 
 /**
@@ -38,6 +43,11 @@ use SP\Util\Checks;
 class ItemsMgmtSearch extends Controller implements ActionsInterface
 {
     /**
+     * @var Grids
+     */
+    private $_grids;
+
+    /**
      * Constructor
      *
      * @param $template Template con instancia de plantilla
@@ -47,17 +57,19 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey());
-        $this->view->assign('queryTimeStart', microtime());
+
+        $this->_grids = new Grids();
+        $this->_grids->setQueryTimeStart(microtime());
     }
 
     /**
      * Obtener las cuentas de una búsqueda
      *
      * @param string $search La cadena a buscar
-     * @throws \SP\Core\SPException
+     * @param int    $limitStart
+     * @param int    $limitCount
      */
-    public function getAccounts($search)
+    public function getAccounts($search, $limitStart, $limitCount)
     {
         $this->setAction(self::ACTION_MGM_ACCOUNTS_SEARCH);
 
@@ -67,9 +79,13 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
 
         $this->view->addTemplate('datagrid-rows');
 
-        $AccountMgmt = new AccountsMgmtC($this->view);
+        $Grid = $this->_grids->getAccountsGrid();
+        $Grid->getData()->setData(AccountUtil::getAccountsMgmtDataSearch($limitCount, $limitStart, $search));
+        $Grid->updatePager();
 
-        $this->view->assign('data', $AccountMgmt->getAccountsGrid($search));
+        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+
+        $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
     }
 
@@ -77,9 +93,10 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
      * Obtener los archivos de una búsqueda
      *
      * @param string $search La cadena a buscar
-     * @throws \SP\Core\SPException
+     * @param        $limitStart
+     * @param        $limitCount
      */
-    public function getFiles($search)
+    public function getFiles($search, $limitStart, $limitCount)
     {
         $this->setAction(self::ACTION_MGM_FILES_SEARCH);
 
@@ -89,9 +106,13 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
 
         $this->view->addTemplate('datagrid-rows');
 
-        $AccountMgmt = new AccountsMgmtC($this->view);
+        $Grid = $this->_grids->getFilesGrid();
+        $Grid->getData()->setData(Files::getFileListSearch($limitCount, $limitStart, $search));
+        $Grid->updatePager();
 
-        $this->view->assign('data', $AccountMgmt->getFilesGrid($search));
+        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+
+        $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
     }
 
@@ -99,9 +120,10 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
      * Obtener los campos personalizados de una búsqueda
      *
      * @param string $search La cadena a buscar
-     * @throws \SP\Core\SPException
+     * @param int    $limitStart
+     * @param int    $limitCount
      */
-    public function getCustomFields($search)
+    public function getCustomFields($search, $limitStart, $limitCount)
     {
         $this->setAction(self::ACTION_MGM_CUSTOMFIELDS_SEARCH);
 
@@ -111,9 +133,13 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
 
         $this->view->addTemplate('datagrid-rows');
 
-        $AccountMgmt = new AccountsMgmtC($this->view);
+        $Grid = $this->_grids->getCustomFieldsGrid();
+        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsSearch($limitCount, $limitStart, $search));
+        $Grid->updatePager();
 
-        $this->view->assign('data', $AccountMgmt->getCustomFieldsGrid($search));
+        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+
+        $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
     }
 
@@ -121,9 +147,10 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
      * Obtener los clientes de una búsqueda
      *
      * @param string $search La cadena a buscar
-     * @throws \SP\Core\SPException
+     * @param int    $limitStart
+     * @param int    $limitCount
      */
-    public function getCustomers($search)
+    public function getCustomers($search, $limitStart, $limitCount)
     {
         $this->setAction(self::ACTION_MGM_CUSTOMERS_SEARCH);
 
@@ -133,9 +160,13 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
 
         $this->view->addTemplate('datagrid-rows');
 
-        $AccountMgmt = new AccountsMgmtC($this->view);
+        $Grid = $this->_grids->getCustomersGrid();
+        $Grid->getData()->setData(Customer::getCustomersSearch($limitCount, $limitStart, $search));
+        $Grid->updatePager();
 
-        $this->view->assign('data', $AccountMgmt->getCustomersGrid($search));
+        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+
+        $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
     }
 
@@ -143,9 +174,10 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
      * Obtener las categorías de una búsqueda
      *
      * @param string $search La cadena a buscar
-     * @throws \SP\Core\SPException
+     * @param int    $limitStart
+     * @param int    $limitCount
      */
-    public function getCategories($search)
+    public function getCategories($search, $limitStart, $limitCount)
     {
         $this->setAction(self::ACTION_MGM_CATEGORIES_SEARCH);
 
@@ -155,9 +187,30 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
 
         $this->view->addTemplate('datagrid-rows');
 
-        $AccountMgmt = new AccountsMgmtC($this->view);
+        $Grid = $this->_grids->getCategoriesGrid();
+        $Grid->getData()->setData(Category::getCategoriesSearch($limitCount, $limitStart, $search));
+        $Grid->updatePager();
 
-        $this->view->assign('data', $AccountMgmt->getCategoriesGrid($search));
+        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+
+        $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
     }
+
+    /**
+     * Actualizar los datos del paginador
+     *
+     * @param DataGridPagerBase $Pager
+     * @param bool              $filterOn
+     * @param int               $limitStart
+     * @param int               $limitCount
+     */
+    private function updatePager(DataGridPagerBase $Pager, $filterOn, $limitStart, $limitCount)
+    {
+        $Pager->setLimitStart($limitStart);
+        $Pager->setLimitCount($limitCount);
+        $Pager->setOnClickArgs($limitCount);
+        $Pager->setFilterOn($filterOn);
+    }
+
 }

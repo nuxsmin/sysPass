@@ -23,6 +23,7 @@
  *
  */
 
+use SP\Config\Config;
 use SP\Controller\ItemsMgmtSearch;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
@@ -48,6 +49,8 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 
 $actionId = Request::analyze('actionId', 0);
 $search = Request::analyze('search');
+$limitStart = Request::analyze('start', 0);
+$limitCount = Request::analyze('count', Config::getValue('account_count'));
 
 $Tpl = new Template();
 $Tpl->assign('index', Request::analyze('activeTab', 0));
@@ -56,19 +59,19 @@ $Controller = new ItemsMgmtSearch($Tpl);
 
 switch ($actionId) {
     case \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
-        $Controller->getCategories($search);
+        $Controller->getCategories($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
-        $Controller->getCustomers($search);
+        $Controller->getCustomers($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
-        $Controller->getCustomFields($search);
+        $Controller->getCustomFields($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_FILES_SEARCH:
-        $Controller->getFiles($search);
+        $Controller->getFiles($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
-        $Controller->getAccounts($search);
+        $Controller->getAccounts($search, $limitStart, $limitCount);
         break;
     default:
         Response::printJSON(_('Acción Inválida'));

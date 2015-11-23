@@ -32,6 +32,9 @@ use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Account\UserAccounts;
+use SP\Html\DataGrid\DataGrid;
+use SP\Html\DataGrid\DataGridData;
+use SP\Html\DataGrid\DataGridPager;
 use SP\Html\Html;
 use SP\Http\Request;
 use SP\Mgmt\User\Groups;
@@ -46,8 +49,13 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class SearchC extends Controller implements ActionsInterface
+class Search extends Controller implements ActionsInterface
 {
+    /**
+     * @var Icons
+     */
+    private $_icons;
+
     /**
      * Indica si el filtrado de cuentas está activo
      *
@@ -90,6 +98,7 @@ class SearchC extends Controller implements ActionsInterface
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->setVars();
+        $this->_icons = new Icons();
     }
 
     /**
@@ -283,6 +292,12 @@ class SearchC extends Controller implements ActionsInterface
                 'showDel' => $accDel,
             ));
         }
+
+//        $GridData = new DataGridData();
+//        $GridData->setData($accounts);
+//
+//        $Grid = new DataGrid();
+//        $Grid->setData();
     }
 
     /**
@@ -346,5 +361,25 @@ class SearchC extends Controller implements ActionsInterface
         }
 
         return $accountColor[$id];
+    }
+
+    /**
+     * Devolver el paginador
+     *
+     * @return DataGridPager
+     */
+    public function getPager()
+    {
+        $GridPager = new DataGridPager();
+        $GridPager->setFilterOn($this->_filter);
+        $GridPager->setLimitStart(Request::analyze('start', 1));
+        $GridPager->setLimitCount(Request::analyze('count', Config::getValue('account_count', 15)));
+        $GridPager->setOnClickFunction('sysPassUtil.Common.searchSort');
+        $GridPager->setIconPrev($this->_icons->getIconNavPrev());
+        $GridPager->setIconNext($this->_icons->getIconNavNext());
+        $GridPager->setIconFirst($this->_icons->getIconNavFirst());
+        $GridPager->setIconLast($this->_icons->getIconNavLast());
+
+        return $GridPager;
     }
 }

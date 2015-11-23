@@ -25,7 +25,6 @@
 
 namespace SP\Controller;
 
-use SP\Account\Account;
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
 use SP\Config\Config;
@@ -43,7 +42,6 @@ use SP\Mgmt\User\UserPass;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -52,7 +50,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class AccountC extends Controller implements ActionsInterface
+class Account extends Controller implements ActionsInterface
 {
     /**
      * @var int con la acción a realizar
@@ -296,7 +294,7 @@ class AccountC extends Controller implements ActionsInterface
     private function setAccountData()
     {
         try {
-            $this->setAccount(new Account());
+            $this->setAccount(new \SP\Account\Account());
             $this->_account->setAccountId($this->getId());
             $this->_account->setAccountParentId($this->getId());
 
@@ -465,7 +463,7 @@ class AccountC extends Controller implements ActionsInterface
     private function setAccountDataHistory()
     {
         try {
-            $this->setAccount(new AccountHistory());
+            $this->setAccount(new \SP\Account\AccountHistory());
             $this->_account->setAccountId($this->getId());
             $this->_account->setAccountParentId(Session::getAccountParentId());
 

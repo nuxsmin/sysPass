@@ -1,7 +1,8 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></h2>
 
-    <form method="post" name="frmCategories" id="frmCategories" onsubmit="sysPassUtil.Common.appMgmtSave('frmCategories'); return false;">
+    <form method="post" name="frmCategories" id="frmCategories"
+          onsubmit="sysPassUtil.Common.appMgmtSave('frmCategories'); return false;">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -27,33 +28,40 @@
                     </div>
                 </td>
             </tr>
-            <?php if($customFields): ?>
-                <?php foreach($customFields as $field):?>
-                    <tr>
-                        <td class="descField">
-                            <?php echo $field->text; ?>
-                            <?php if($field->help): ?>
-                                <div id="help-<?php echo $field->name; ?>" class="icon material-icons fg-blue80">help_outline</div>
-                                <div class="mdl-tooltip mdl-tooltip--large" for="help-<?php echo $field->name; ?>">
-                                    <p><?php echo $field->help; ?></p>
-                                </div>
-                            <?php endif; ?>
-                        </td>
-                        <td class="valField">
-                            <?php if (!$isView): ?>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
-                                           type="<?php echo $field->typeName; ?>"
-                                           class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
-                                           maxlength="500" value="<?php echo (!$isView) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
-                                        <?php echo ($field->required) ? 'required' : ''; ?>>
-                                    <label class="mdl-textfield__label" for="<?php echo $field->name; ?>"><?php echo $field->text; ?></label>
-                                </div>
-                            <?php else: ?>
-                                <?php echo $field->value; ?>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
+            <?php if ($customFields): ?>
+                <?php foreach ($customFields as $index => $field): ?>
+                    <?php if ($index !== 'hash'): ?>
+                        <tr>
+                            <td class="descField">
+                                <?php echo $field->text; ?>
+                                <?php if ($field->help): ?>
+                                    <div id="help-<?php echo $field->name; ?>" class="icon material-icons fg-blue80">
+                                        help_outline
+                                    </div>
+                                    <div class="mdl-tooltip mdl-tooltip--large" for="help-<?php echo $field->name; ?>">
+                                        <p><?php echo $field->help; ?></p>
+                                    </div>
+                                <?php endif; ?>
+                            </td>
+                            <td class="valField">
+                                <?php if (!$isView): ?>
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input id="<?php echo $field->name; ?>"
+                                               name="customfield[<?php echo $field->id; ?>]"
+                                               type="<?php echo $field->typeName; ?>"
+                                               class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                                               maxlength="500"
+                                               value="<?php echo (!$isView) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
+                                            <?php echo ($field->required) ? 'required' : ''; ?>>
+                                        <label class="mdl-textfield__label"
+                                               for="<?php echo $field->name; ?>"><?php echo $field->text; ?></label>
+                                    </div>
+                                <?php else: ?>
+                                    <?php echo $field->value; ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
             </tbody>

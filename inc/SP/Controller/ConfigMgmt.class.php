@@ -44,7 +44,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class ConfigC extends Controller implements ActionsInterface
+class ConfigMgmt extends Controller implements ActionsInterface
 {
     private $_tabIndex = 0;
 

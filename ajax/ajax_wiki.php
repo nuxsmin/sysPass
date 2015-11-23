@@ -39,7 +39,7 @@ if (!Init::isLoggedIn()) {
 
 $actionId = Request::analyze('actionId', 0);
 
-$Controller = new \SP\Controller\WikiC();
+$Controller = new \SP\Controller\Wiki();
 
 switch ($actionId) {
     case \SP\Core\ActionsInterface::ACTION_WIKI_VIEW:

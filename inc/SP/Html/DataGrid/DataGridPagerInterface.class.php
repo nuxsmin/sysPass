@@ -151,4 +151,48 @@ interface DataGridPagerInterface
      */
     public function getOnClickPrev();
 
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconPrev();
+
+    /**
+     * @param DataGridIcon $iconPrev
+     */
+    public function setIconPrev($iconPrev);
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconNext();
+
+    /**
+     * @param DataGridIcon $iconNext
+     */
+    public function setIconNext($iconNext);
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconFirst();
+
+    /**
+     * @param DataGridIcon $iconFirst
+     */
+    public function setIconFirst($iconFirst);
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconLast();
+
+    /**
+     * @param DataGridIcon $iconLast
+     */
+    public function setIconLast($iconLast);
+
+    /**
+     * @param DataGridActionSearch $sourceAction
+     */
+    public function setSourceAction($sourceAction);
 }

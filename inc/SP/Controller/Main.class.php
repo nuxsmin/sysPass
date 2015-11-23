@@ -45,7 +45,7 @@ use SP\Util\Util;
  *
  * @package Controller
  */
-class MainC extends Controller implements ActionsInterface
+class Main extends Controller implements ActionsInterface
 {
     /**
      * Constructor
@@ -458,7 +458,7 @@ class MainC extends Controller implements ActionsInterface
         } else {
             $PublicLink->addLinkView();
 
-            $controller = new AccountC($this->view, null, $PublicLink->getItemId());
+            $controller = new Account($this->view, null, $PublicLink->getItemId());
             $controller->getAccountFromLink($PublicLink);
         }
 

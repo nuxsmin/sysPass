@@ -355,31 +355,45 @@ class Category
     /**
      * Obtiene el listado de categorías mediante una búsqueda
      *
+     * @param int    $limitCount
+     * @param int    $limitStart
      * @param string $search La cadena de búsqueda
      * @return array con el id de categoria como clave y en nombre como valor
      */
-    public static function getCategoriesSearch($search)
+    public static function getCategoriesSearch($limitCount, $limitStart = 0, $search = "")
     {
-        $query = 'SELECT category_id, category_name,category_description '
-            . 'FROM categories '
-            . 'WHERE category_name LIKE ? '
-            . 'OR category_description LIKE ? '
-            . 'ORDER BY category_name';
-
-        $search = '%' . $search . '%';
+        $query = 'SELECT category_id, category_name,category_description FROM categories';
 
         $Data = new QueryData();
+
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+
+            $query .= ' WHERE category_name LIKE ? '
+                . 'OR category_description LIKE ?';
+
+            $Data->addParam($search);
+            $Data->addParam($search);
+        }
+
+        $query .= ' ORDER BY category_name';
+        $query .= ' LIMIT ?,?';
+
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
+
         $Data->setQuery($query);
-        $Data->addParam($search);
-        $Data->addParam($search);
 
         DB::setReturnArray();
+        DB::setFullRowCount();
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             return array();
         }
+
+        $queryRes['count'] = DB::$lastNumRows;
 
         return $queryRes;
     }

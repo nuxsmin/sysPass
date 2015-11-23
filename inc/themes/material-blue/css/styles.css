@@ -327,8 +327,7 @@ pre, code, samp, kbd {
 #content #pageNav {
     width: 100%;
     margin-top: 15px;
-    height: 1.5em;
-    padding: 5px 10px 5px 10px;
+    padding: .5em;
     vertical-align: middle;
     font-size: 11px;
     color: #999;
@@ -353,10 +352,8 @@ pre, code, samp, kbd {
 }
 
 #content #pageNav > div {
-    float: left;
-    width: 50%;
-    height: 1.5em;
-    line-height: 1.5em
+    display: inline-block;
+    width: 49%;
 }
 
 #content #pageNav #pageNavLeft {

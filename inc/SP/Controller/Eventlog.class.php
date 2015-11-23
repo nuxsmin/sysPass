@@ -40,7 +40,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class EventlogC extends Controller implements ActionsInterface
+class Eventlog extends Controller implements ActionsInterface
 {
     /**
      * Número de máximo de registros por página

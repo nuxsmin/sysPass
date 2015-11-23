@@ -41,7 +41,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Controller
  */
-class WikiC extends Controller implements ActionsInterface
+class Wiki extends Controller implements ActionsInterface
 {
     /**
      * Constructor
