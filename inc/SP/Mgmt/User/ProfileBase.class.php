@@ -140,59 +140,6 @@ abstract class ProfileBase
      */
     protected $_mgmCustomFields = false;
 
-    /**
-     * Obtener los datos de un perfil
-     *
-     * @param $id int El id del perfil a obtener
-     * @return array|Profile
-     * @throws SPException
-     */
-    public static function getProfile($id)
-    {
-        $query = 'SELECT userprofile_profile FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        /**
-         * @var Profile $profile
-         */
-        $profile = unserialize($queryRes->userprofile_profile);
-
-        if (get_class($profile) === '__PHP_Incomplete_Class') {
-            return Util::castToClass('SP\Mgmt\User\Profile', $profile);
-        }
-
-        return $profile;
-    }
-
-    /**
-     * Obtener los perfiles disponibles
-     *
-     * @return array|bool
-     */
-    public static function getProfiles()
-    {
-        if (Checks::demoIsEnabled()) {
-            $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo" ORDER BY userprofile_name';
-        } else {
-            $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles ORDER BY userprofile_name';
-        }
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
-    }
 
     /**
      * @return boolean

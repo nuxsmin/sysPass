@@ -289,14 +289,14 @@ class Files
     }
 
     /**
-     * Obtener el listado de archivos
+     * Obtener el listado de archivos de una búsqueda
      *
-     * @param null   $limitCount
-     * @param null   $limitStart
+     * @param int $limitCount
+     * @param int $limitStart
      * @param string $search La cadena de búsqueda
      * @return array|false Con los archivos de las cuentas.
      */
-    public static function getFileListSearch($limitCount, $limitStart = 0, $search = '')
+    public static function getFilesMgmtSearch($limitCount, $limitStart = 0, $search = '')
     {
         $query = 'SELECT accfile_id,'
             . 'accfile_name,'

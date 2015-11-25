@@ -24,7 +24,8 @@
  */
 
 use SP\Config\Config;
-use SP\Controller\ItemsMgmtSearch;
+use SP\Controller\AccItemsMgmtSearch;
+use SP\Controller\AppItemsMgmtSearch;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -55,22 +56,45 @@ $limitCount = Request::analyze('count', Config::getValue('account_count'));
 $Tpl = new Template();
 $Tpl->assign('index', Request::analyze('activeTab', 0));
 
-$Controller = new ItemsMgmtSearch($Tpl);
-
 switch ($actionId) {
+    case \SP\Core\ActionsInterface::ACTION_USR_USERS_SEARCH:
+        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller->getUsers($search, $limitStart, $limitCount);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_USR_GROUPS_SEARCH:
+        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller->getGroups($search, $limitStart, $limitCount);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_USR_PROFILES_SEARCH:
+        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller->getProfiles($search, $limitStart, $limitCount);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_APITOKENS_SEARCH:
+        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller->getTokens($search, $limitStart, $limitCount);
+        break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_SEARCH:
+        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller->getPublicLinks($search, $limitStart, $limitCount);
+        break;
     case \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
+        $Controller = new AppItemsMgmtSearch($Tpl);
         $Controller->getCategories($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
+        $Controller = new AppItemsMgmtSearch($Tpl);
         $Controller->getCustomers($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
+        $Controller = new AppItemsMgmtSearch($Tpl);
         $Controller->getCustomFields($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_FILES_SEARCH:
+        $Controller = new AppItemsMgmtSearch($Tpl);
         $Controller->getFiles($search, $limitStart, $limitCount);
         break;
     case \SP\Core\ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
+        $Controller = new AppItemsMgmtSearch($Tpl);
         $Controller->getAccounts($search, $limitStart, $limitCount);
         break;
     default:

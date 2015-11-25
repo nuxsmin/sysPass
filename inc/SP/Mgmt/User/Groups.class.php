@@ -75,7 +75,7 @@ class Groups
     /**
      * Obtener los grupos de usuarios.
      *
-     * @param int  $groupId     opcional, con el Id del grupo a consultar
+     * @param int $groupId opcional, con el Id del grupo a consultar
      * @param bool $returnArray opcional, si se debe de devolver un array asociativo
      * @return false|array con la lista de grupos
      */
@@ -179,7 +179,7 @@ class Groups
     /**
      * Crear asociación de grupos con usuarios.
      *
-     * @param int   $groupId con los grupos del usuario
+     * @param int $groupId con los grupos del usuario
      * @param array $usersId Los usuarios del grupo
      * @return bool
      */
@@ -333,7 +333,7 @@ class Groups
     /**
      * Actualizar la asociación de grupos con usuarios.
      *
-     * @param int   $groupId con el Id del usuario
+     * @param int $groupId con el Id del usuario
      * @param array $usersId con los usuarios del grupo
      * @return bool
      */
@@ -349,7 +349,7 @@ class Groups
     /**
      * Eliminar la asociación de grupos con usuarios.
      *
-     * @param int   $groupId con el Id del grupo
+     * @param int $groupId con el Id del grupo
      * @param array $usersId opcional con los usuarios del grupo
      * @return bool
      */
@@ -514,8 +514,8 @@ class Groups
     /**
      * Actualizar la asociación de grupos con cuentas.
      *
-     * @param int   $accountId con el Id de la cuenta
-     * @param array $groupsId  con los grupos de la cuenta
+     * @param int $accountId con el Id de la cuenta
+     * @param array $groupsId con los grupos de la cuenta
      * @return bool
      */
     public static function updateGroupsForAccount($accountId, $groupsId)
@@ -530,8 +530,8 @@ class Groups
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
-     * @param int   $accountId con el Id de la cuenta
-     * @param array $groupsId  opcional con los grupos de la cuenta
+     * @param int $accountId con el Id de la cuenta
+     * @param array $groupsId opcional con los grupos de la cuenta
      * @return bool
      */
     public static function deleteGroupsForAccount($accountId, $groupsId = null)
@@ -557,8 +557,8 @@ class Groups
     /**
      * Crear asociación de grupos con cuentas.
      *
-     * @param int   $accountId con el Id de la cuenta
-     * @param array $groupsId  con los grupos de la cuenta
+     * @param int $accountId con el Id de la cuenta
+     * @param array $groupsId con los grupos de la cuenta
      * @return bool
      */
     public static function addGroupsForAccount($accountId, $groupsId)
@@ -620,5 +620,52 @@ class Groups
         }
 
         return $groups;
+    }
+
+    /**
+     * Obtener los grupos de usuarios de una búsqueda
+     *
+     * @param $limitCount
+     * @param int $limitStart
+     * @param string $search
+     * @return array
+     */
+    public static function getGroupsMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    {
+        $query = 'SELECT usergroup_id,'
+            . 'usergroup_name,'
+            . 'usergroup_description '
+            . 'FROM usrGroups';
+
+        $Data = new QueryData();
+
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+            $query .= ' WHERE usergroup_name LIKE ? OR usergroup_description LIKE ?';
+
+            $Data->addParam($search);
+            $Data->addParam($search);
+        }
+
+        $query .= ' ORDER BY usergroup_name';
+        $query .= ' LIMIT ?, ?';
+
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
+
+        $Data->setQuery($query);
+
+        DB::setReturnArray();
+        DB::setFullRowCount();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        $queryRes['count'] = DB::$lastNumRows;
+
+        return $queryRes;
     }
 }

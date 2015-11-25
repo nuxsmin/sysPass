@@ -377,7 +377,7 @@ class Customer
      * @param string $search La cadena de búsqueda
      * @return array con el id de cliente como clave y el nombre como valor
      */
-    public static function getCustomersSearch($limitCount, $limitStart = 0, $search = '')
+    public static function getCustomersMgmtSearch($limitCount, $limitStart = 0, $search = '')
     {
         $query = 'SELECT customer_id, customer_name, customer_description '
             . 'FROM customers';

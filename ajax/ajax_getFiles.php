@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Controller\ItemsMgmt;
+use SP\Controller\AppItemsMgmt;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
@@ -51,6 +51,6 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-$Controller = new ItemsMgmt();
+$Controller = new AppItemsMgmt();
 $Controller->getAccountFiles();
 $Controller->view();

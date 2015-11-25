@@ -81,7 +81,7 @@ class CustomFieldDef extends CustomFieldsBase
      * @param string $search La cadena de búsqueda
      * @return array|bool
      */
-    public static function getCustomFieldsSearch($limitCount, $limitStart = 0, $search = '')
+    public static function getCustomFieldsMgmtSearch($limitCount, $limitStart = 0, $search = '')
     {
         $query = 'SELECT customfielddef_id, customfielddef_module, customfielddef_field '
             . 'FROM customFieldsDef '

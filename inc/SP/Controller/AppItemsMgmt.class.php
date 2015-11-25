@@ -35,7 +35,6 @@ use SP\Mgmt\Customer;
 use SP\Mgmt\CustomFieldDef;
 use SP\Core\SessionUtil;
 use SP\Mgmt\Files;
-use SP\Util\Checks;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -44,16 +43,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class ItemsMgmt extends Controller implements ActionsInterface
+class AppItemsMgmt extends GridTabController implements ActionsInterface
 {
-    /**
-     * Máximo numero de acciones antes de agrupar
-     */
-    const MAX_NUM_ACTIONS = 3;
-    /**
-     * @var Grids
-     */
-    private $_grids;
     /**
      * @var int
      */
@@ -69,9 +60,6 @@ class ItemsMgmt extends Controller implements ActionsInterface
         parent::__construct($template);
 
         $this->_limitCount = Config::getValue('account_count');
-
-        $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
     }
 
     /**
@@ -86,7 +74,7 @@ class ItemsMgmt extends Controller implements ActionsInterface
         }
 
         $Grid = $this->_grids->getCategoriesGrid();
-        $Grid->getData()->setData(Category::getCategoriesSearch($this->_limitCount));
+        $Grid->getData()->setData(Category::getCategoriesMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 
@@ -105,26 +93,11 @@ class ItemsMgmt extends Controller implements ActionsInterface
         }
 
         $Grid = $this->_grids->getCustomersGrid();
-        $Grid->getData()->setData(Customer::getCustomersSearch($this->_limitCount));
+        $Grid->getData()->setData(Customer::getCustomersMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 
         $this->view->append('tabs', $Grid);
-    }
-
-    /**
-     * Inicializar las plantillas para las pestañas
-     */
-    public function useTabs()
-    {
-        $this->_grids = new Grids();
-        $this->_grids->setQueryTimeStart($this->view->queryTimeStart);
-
-        $this->view->addTemplate('datatabs-grid');
-
-        $this->view->assign('tabs', array());
-        $this->view->assign('activeTab', 0);
-        $this->view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
     }
 
     /**
@@ -159,7 +132,7 @@ class ItemsMgmt extends Controller implements ActionsInterface
         }
 
         $Grid = $this->_grids->getCustomFieldsGrid();
-        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsSearch($this->_limitCount));
+        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 
@@ -179,7 +152,7 @@ class ItemsMgmt extends Controller implements ActionsInterface
         }
 
         $Grid = $this->_grids->getFilesGrid();
-        $Grid->getData()->setData(Files::getFileListSearch($this->_limitCount));
+        $Grid->getData()->setData(Files::getFilesMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 
@@ -198,7 +171,7 @@ class ItemsMgmt extends Controller implements ActionsInterface
         }
 
         $Grid = $this->_grids->getAccountsGrid();
-        $Grid->getData()->setData(AccountUtil::getAccountsMgmtDataSearch($this->_limitCount));
+        $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 

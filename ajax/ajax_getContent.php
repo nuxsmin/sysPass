@@ -25,7 +25,7 @@
 
 use SP\Config\Config;
 use SP\Controller\Account;
-use SP\Controller\Search;
+use SP\Controller\AccountsSearch;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Session;
@@ -90,7 +90,7 @@ switch ($actionId) {
 
         $Tpl->assign('lastAction', $lastAction);
 
-        $Controller = new Search($Tpl);
+        $Controller = new AccountsSearch($Tpl);
         $Controller->getSearchBox();
         $Controller->getSearch();
         break;
@@ -132,7 +132,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_USR_PROFILES:
     case ActionsInterface::ACTION_MGM_APITOKENS:
     case ActionsInterface::ACTION_MGM_PUBLICLINKS:
-        $Controller = new \SP\Controller\UsersMgmt($Tpl);
+        $Controller = new \SP\Controller\AccItemsMgmt($Tpl);
         $Controller->useTabs();
         $Controller->getUsersList();
         $Controller->getGroupsList();
@@ -148,7 +148,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_MGM_CUSTOMFIELDS:
     case ActionsInterface::ACTION_MGM_FILES:
     case ActionsInterface::ACTION_MGM_ACCOUNTS:
-        $Controller = new \SP\Controller\ItemsMgmt($Tpl);
+        $Controller = new \SP\Controller\AppItemsMgmt($Tpl);
         $Controller->useTabs();
         $Controller->getCategories();
         $Controller->getCustomers();

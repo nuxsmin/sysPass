@@ -27,41 +27,18 @@ namespace SP\Controller;
 
 use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
-use SP\Core\Template;
-use SP\Html\DataGrid\DataGridPagerBase;
 use SP\Mgmt\Category;
 use SP\Mgmt\Customer;
 use SP\Mgmt\CustomFieldDef;
 use SP\Mgmt\Files;
-use SP\Util\Checks;
 
 /**
  * Class ItemsMgmt para las buśquedas en los listados de elementos de gestión
  *
  * @package SP\Controller
  */
-class ItemsMgmtSearch extends Controller implements ActionsInterface
+class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
 {
-    /**
-     * @var Grids
-     */
-    private $_grids;
-
-    /**
-     * Constructor
-     *
-     * @param $template Template con instancia de plantilla
-     */
-    public function __construct(Template $template = null)
-    {
-        parent::__construct($template);
-
-        $this->view->assign('isDemo', Checks::demoIsEnabled());
-
-        $this->_grids = new Grids();
-        $this->_grids->setQueryTimeStart(microtime());
-    }
-
     /**
      * Obtener las cuentas de una búsqueda
      *
@@ -80,7 +57,7 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getAccountsGrid();
-        $Grid->getData()->setData(AccountUtil::getAccountsMgmtDataSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -107,7 +84,7 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getFilesGrid();
-        $Grid->getData()->setData(Files::getFileListSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(Files::getFilesMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -134,7 +111,7 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCustomFieldsGrid();
-        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -161,7 +138,7 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCustomersGrid();
-        $Grid->getData()->setData(Customer::getCustomersSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(Customer::getCustomersMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -188,7 +165,7 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCategoriesGrid();
-        $Grid->getData()->setData(Category::getCategoriesSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(Category::getCategoriesMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -196,21 +173,4 @@ class ItemsMgmtSearch extends Controller implements ActionsInterface
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
     }
-
-    /**
-     * Actualizar los datos del paginador
-     *
-     * @param DataGridPagerBase $Pager
-     * @param bool              $filterOn
-     * @param int               $limitStart
-     * @param int               $limitCount
-     */
-    private function updatePager(DataGridPagerBase $Pager, $filterOn, $limitStart, $limitCount)
-    {
-        $Pager->setLimitStart($limitStart);
-        $Pager->setLimitCount($limitCount);
-        $Pager->setOnClickArgs($limitCount);
-        $Pager->setFilterOn($filterOn);
-    }
-
 }

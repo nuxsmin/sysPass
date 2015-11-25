@@ -50,7 +50,7 @@ class PublicLinkUtil
     {
         $Data = new QueryData();
 
-        if (!is_null($id)){
+        if (!is_null($id)) {
             $query = 'SELECT publicLink_id, publicLink_hash, publicLink_linkData ' .
                 'FROM publicLinks ' .
                 'WHERE publicLink_id = :id LIMIT 1';
@@ -87,10 +87,72 @@ class PublicLinkUtil
             $link->publicLink_notify = ($PublicLink->isNotify()) ? _('ON') : _('OFF');
             $link->publicLink_dateAdd = date("Y-m-d H:i", $PublicLink->getDateAdd());
             $link->publicLink_dateExpire = date("Y-m-d H:i", $PublicLink->getDateExpire());
-            $link->publicLink_views = $PublicLink->getCountViews() . '/' .  $PublicLink->getMaxCountViews();
+            $link->publicLink_views = $PublicLink->getCountViews() . '/' . $PublicLink->getMaxCountViews();
             $link->publicLink_useInfo = $PublicLink->getUseInfo();
 
             $publicLinks[] = $link;
+        }
+
+        return $publicLinks;
+    }
+
+    /**
+     * Obtener los enlaces creados para una búsqueda
+     *
+     * @param $limitCount
+     * @param int $limitStart
+     * @param string $search
+     * @return array|bool
+     */
+    public static function getLinksMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    {
+        $Data = new QueryData();
+
+        $query = 'SELECT publicLink_id, publicLink_hash, publicLink_linkData FROM publicLinks LIMIT ?, ?';
+
+        $Data->setQuery($query);
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
+
+        DB::setReturnArray();
+        DB::setFullRowCount();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        $publicLinks = array();
+        $publicLinks['count'] = DB::$lastNumRows;
+
+        foreach ($queryRes as $data) {
+            /**
+             * @var PublicLink $PublicLink
+             */
+            $PublicLink = unserialize($data->publicLink_linkData);
+
+            if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
+                $PublicLink = Util::castToClass('SP\Mgmt\PublicLink', $PublicLink);
+            }
+
+            $link = new \stdClass();
+            $link->publicLink_id = $data->publicLink_id;
+            $link->publicLink_hash = $data->publicLink_hash;
+            $link->publicLink_account = AccountUtil::getAccountNameById($PublicLink->getItemId());
+            $link->publicLink_user = UserUtil::getUserLoginById($PublicLink->getUserId());
+            $link->publicLink_notify = ($PublicLink->isNotify()) ? _('ON') : _('OFF');
+            $link->publicLink_dateAdd = date("Y-m-d H:i", $PublicLink->getDateAdd());
+            $link->publicLink_dateExpire = date("Y-m-d H:i", $PublicLink->getDateExpire());
+            $link->publicLink_views = $PublicLink->getCountViews() . '/' . $PublicLink->getMaxCountViews();
+            $link->publicLink_useInfo = $PublicLink->getUseInfo();
+
+            if (empty($search)
+                || stripos($link->publicLink_account, $search) !== false
+                || stripos($link->publicLink_user, $search) !== false
+            ){
+                $publicLinks[] = $link;
+            }
         }
 
         return $publicLinks;

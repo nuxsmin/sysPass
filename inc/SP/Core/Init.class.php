@@ -32,6 +32,7 @@ use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\User\Profile;
+use SP\Mgmt\User\ProfileUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -560,7 +561,7 @@ class Init
             session_regenerate_id(true);
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario
-            Session::setUserProfile(Profile::getProfile(Session::getUserProfileId()));
+            Session::setUserProfile(ProfileUtil::getProfile(Session::getUserProfileId()));
             // Regenerar la clave maestra
             SessionUtil::saveSessionMPass($sessionMPass);
         }

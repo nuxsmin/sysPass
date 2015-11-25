@@ -44,7 +44,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class ItemMgmt extends Controller implements ActionsInterface
+class AppItemMgmt extends Controller implements ActionsInterface
 {
     /**
      * @var int

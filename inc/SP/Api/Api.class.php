@@ -75,7 +75,7 @@ class Api
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 
-        $this->_userId = ApiTokens::getUserIdForToken($authToken);
+        $this->_userId = ApiTokensUtil::getUserIdForToken($authToken);
         $this->_actionId = $actionId;
         $this->_auth = true;
 

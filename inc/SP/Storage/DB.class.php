@@ -274,10 +274,8 @@ class DB
             if (!is_array($queryData->getParams())) {
                 $queryRes = $db->query($query);
                 $num = intval($queryRes->fetchColumn());
-            } else {
-                if ($queryRes = $this->prepareQueryData($queryData, true)) {
-                    $num = intval($queryRes->fetchColumn());
-                }
+            } elseif ($queryRes = $this->prepareQueryData($queryData, true)) {
+                $num = intval($queryRes->fetchColumn());
             }
 
             $queryRes->closeCursor();

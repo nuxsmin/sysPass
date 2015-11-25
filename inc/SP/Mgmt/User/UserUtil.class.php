@@ -288,4 +288,66 @@ class UserUtil
 
         return $queryRes->user_login;
     }
+
+    /**
+     * Establecer las variables para la consulta de usuarios.
+     *
+     * @param int $limitCount
+     * @param int $limitStart
+     * @param string $search
+     * @return array|false con la lista de usuarios
+     */
+    public static function getUsersMgmSearch($limitCount, $limitStart = 0, $search = '')
+    {
+        $Data = new QueryData();
+
+        $query = 'SELECT user_id,'
+            . 'user_name,'
+            . 'user_login,'
+            . 'userprofile_name,'
+            . 'usergroup_name,'
+            . 'BIN(user_isAdminApp) AS user_isAdminApp,'
+            . 'BIN(user_isAdminAcc) AS user_isAdminAcc,'
+            . 'BIN(user_isLdap) AS user_isLdap,'
+            . 'BIN(user_isDisabled) AS user_isDisabled,'
+            . 'BIN(user_isChangePass) AS user_isChangePass '
+            . 'FROM usrData '
+            . 'LEFT JOIN usrProfiles ON user_profileId = userprofile_id '
+            . 'LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id';
+
+        if (!empty($search)) {
+            $search = '%' . $search . '%';
+
+            $query .= ' WHERE user_name LIKE ? '
+                . 'OR user_login LIKE ?';
+
+            $query .= (!Session::getUserIsAdminApp()) ? ' AND user_isAdminApp = 0' : '';
+
+            $Data->addParam($search);
+            $Data->addParam($search);
+        } else {
+            $query .= (!Session::getUserIsAdminApp()) ? ' WHERE user_isAdminApp = 0' : '';
+        }
+
+        $query .= ' ORDER BY user_name';
+        $query .= ' LIMIT ?, ?';
+
+        $Data->addParam($limitStart);
+        $Data->addParam($limitCount);
+
+        $Data->setQuery($query);
+
+        DB::setReturnArray();
+        DB::setFullRowCount();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return array();
+        }
+
+        $queryRes['count'] = DB::$lastNumRows;
+
+        return $queryRes;
+    }
 }

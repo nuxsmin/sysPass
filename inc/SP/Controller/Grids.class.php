@@ -424,6 +424,432 @@ class Grids implements ActionsInterface
     }
 
     /**
+     * @return DataGridTab
+     */
+    public function getUsersGrid()
+    {
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_USR_USERS_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchUser');
+        $GridActionSearch->setTitle(_('Buscar Usuario'));
+        $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
+        $GridActionSearch->setOnSubmitArgs('this');
+
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_USR_USERS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setName(_('Nuevo Usuario'));
+        $GridActionNew->setTitle(_('Nuevo Usuario'));
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_USR_USERS_NEW);
+        $GridActionNew->setOnClickArgs($this->_sk);
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_USR_USERS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(_('Ver Detalles de Usuario'));
+        $GridActionView->setTitle(_('Ver Detalles de Usuario'));
+        $GridActionView->setIcon($this->_icons->getIconView());
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_USR_USERS_VIEW);
+        $GridActionView->setOnClickArgs($this->_sk);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_USR_USERS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEdit->setName(_('Editar Usuario'));
+        $GridActionEdit->setTitle(_('Editar Usuario'));
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_USR_USERS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->_sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_USR_USERS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Usuario'));
+        $GridActionDel->setTitle(_('Eliminar Usuario'));
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_USR_USERS_DELETE);
+        $GridActionDel->setOnClickArgs($this->_sk);
+
+        $GridActionEditPass = new DataGridAction();
+        $GridActionEditPass->setId(self::ACTION_USR_USERS_EDITPASS);
+        $GridActionEditPass->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEditPass->setName(_('Cambiar Clave de Usuario'));
+        $GridActionEditPass->setTitle(_('Cambiar Clave de Usuario'));
+        $GridActionEditPass->setIcon($this->_icons->getIconEditPass());
+        $GridActionEditPass->setOnClickFunction('sysPassUtil.Common.usrUpdPass');
+        $GridActionEditPass->setOnClickArgs('this');
+        $GridActionEditPass->setOnClickArgs(self::ACTION_USR_USERS_EDITPASS);
+        $GridActionEditPass->setOnClickArgs($this->_sk);
+        $GridActionEditPass->setFilterRowSource('user_isLdap');
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Login'));
+        $GridHeaders->addHeader(_('Perfil'));
+        $GridHeaders->addHeader(_('Grupo'));
+        $GridHeaders->addHeader(_('Propiedades'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('user_id');
+        $GridData->addDataRowSource('user_name');
+        $GridData->addDataRowSource('user_login');
+        $GridData->addDataRowSource('userprofile_name');
+        $GridData->addDataRowSource('usergroup_name');
+        $GridData->addDataRowSourceWithIcon('user_isAdminApp', $this->_icons->getIconAppAdmin());
+        $GridData->addDataRowSourceWithIcon('user_isAdminAcc', $this->_icons->getIconAccAdmin());
+        $GridData->addDataRowSourceWithIcon('user_isLdap', $this->_icons->getIconLdapUser());
+        $GridData->addDataRowSourceWithIcon('user_isDisabled', $this->_icons->getIconDisabled());
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblUsers');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionEditPass);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridActionSearch));
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Usuarios'));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
+
+        return $Grid;
+    }
+
+    /**
+     * @return DataGridTab
+     */
+    public function getGroupsGrid()
+    {
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_USR_GROUPS_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchGroup');
+        $GridActionSearch->setTitle(_('Buscar Grupo'));
+        $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
+        $GridActionSearch->setOnSubmitArgs('this');
+
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_USR_GROUPS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setName(_('Nuevo Grupo'));
+        $GridActionNew->setTitle(_('Nuevo Grupo'));
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_USR_GROUPS_NEW);
+        $GridActionNew->setOnClickArgs($this->_sk);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_USR_GROUPS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEdit->setName(_('Editar Grupo'));
+        $GridActionEdit->setTitle(_('Editar Grupo'));
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_USR_GROUPS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->_sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_USR_GROUPS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Grupo'));
+        $GridActionDel->setTitle(_('Eliminar Grupo'));
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_USR_GROUPS_DELETE);
+        $GridActionDel->setOnClickArgs($this->_sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(_('Descripción'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('usergroup_id');
+        $GridData->addDataRowSource('usergroup_name');
+        $GridData->addDataRowSource('usergroup_description');
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblGroups');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridActionSearch));
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Grupos'));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
+
+        return $Grid;
+    }
+
+    /**
+     * @return DataGridTab
+     */
+    public function getProfilesGrid()
+    {
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_USR_PROFILES_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchProfile');
+        $GridActionSearch->setTitle(_('Buscar Perfil'));
+        $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
+        $GridActionSearch->setOnSubmitArgs('this');
+
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_USR_PROFILES_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setName(_('Nuevo Perfil'));
+        $GridActionNew->setTitle(_('Nuevo Perfil'));
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_USR_PROFILES_NEW);
+        $GridActionNew->setOnClickArgs($this->_sk);
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_USR_PROFILES_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(_('Ver Detalles de Perfil'));
+        $GridActionView->setTitle(_('Ver Detalles de Perfil'));
+        $GridActionView->setIcon($this->_icons->getIconView());
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_USR_PROFILES_VIEW);
+        $GridActionView->setOnClickArgs($this->_sk);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_USR_PROFILES_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEdit->setName(_('Editar Perfil'));
+        $GridActionEdit->setTitle(_('Editar Perfil'));
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_USR_PROFILES_EDIT);
+        $GridActionEdit->setOnClickArgs($this->_sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_USR_PROFILES_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Perfil'));
+        $GridActionDel->setTitle(_('Eliminar Perfil'));
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_USR_PROFILES_DELETE);
+        $GridActionDel->setOnClickArgs($this->_sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('userprofile_id');
+        $GridData->addDataRowSource('userprofile_name');
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblProfiles');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridActionSearch));
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Perfiles'));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
+
+        return $Grid;
+    }
+
+    /**
+     * @return DataGridTab
+     */
+    public function getTokensGrid()
+    {
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_MGM_APITOKENS_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchToken');
+        $GridActionSearch->setTitle(_('Buscar Token'));
+        $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
+        $GridActionSearch->setOnSubmitArgs('this');
+
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_MGM_APITOKENS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setName(_('Nueva Autorización'));
+        $GridActionNew->setTitle(_('Nueva Autorización'));
+        $GridActionNew->setIcon($this->_icons->getIconAdd());
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_MGM_APITOKENS_NEW);
+        $GridActionNew->setOnClickArgs($this->_sk);
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_MGM_APITOKENS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(_('Ver token de Autorización'));
+        $GridActionView->setTitle(_('Ver token de Autorización'));
+        $GridActionView->setIcon($this->_icons->getIconView());
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_MGM_APITOKENS_VIEW);
+        $GridActionView->setOnClickArgs($this->_sk);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_MGM_APITOKENS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEdit->setName(_('Editar Autorización'));
+        $GridActionEdit->setTitle(_('Editar Autorización'));
+        $GridActionEdit->setIcon($this->_icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_MGM_APITOKENS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->_sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_APITOKENS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Autorización'));
+        $GridActionDel->setTitle(_('Eliminar Autorización'));
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_APITOKENS_DELETE);
+        $GridActionDel->setOnClickArgs($this->_sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Usuario'));
+        $GridHeaders->addHeader(_('Acción'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('authtoken_id');
+        $GridData->addDataRowSource('user_login');
+        $GridData->addDataRowSource('authtoken_actionId');
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblTokens');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridActionSearch));
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Autorizaciones API'));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
+
+        return $Grid;
+    }
+
+    /**
+     * @return DataGridTab
+     */
+    public function getPublicLinksGrid()
+    {
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_MGM_PUBLICLINKS_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchLink');
+        $GridActionSearch->setTitle(_('Buscar Enlace'));
+        $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
+        $GridActionSearch->setOnSubmitArgs('this');
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_MGM_PUBLICLINKS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(_('Ver Enlace'));
+        $GridActionView->setTitle(_('Ver Enlace'));
+        $GridActionView->setIcon($this->_icons->getIconView());
+        $GridActionView->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_VIEW);
+        $GridActionView->setOnClickArgs($this->_sk);
+
+        $GridActionRefresh = new DataGridAction();
+        $GridActionRefresh->setId(self::ACTION_MGM_PUBLICLINKS_REFRESH);
+        $GridActionRefresh->setName(_('Renovar Enlace'));
+        $GridActionRefresh->setTitle(_('Renovar Enlace'));
+        $GridActionRefresh->setIcon($this->_icons->getIconRefresh());
+        $GridActionRefresh->setOnClickFunction('sysPassUtil.Common.linksMgmtRefresh');
+        $GridActionRefresh->setOnClickArgs('this');
+        $GridActionRefresh->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_REFRESH);
+        $GridActionRefresh->setOnClickArgs($this->_sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_PUBLICLINKS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Enlace'));
+        $GridActionDel->setTitle(_('Eliminar Enlace'));
+        $GridActionDel->setIcon($this->_icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_PUBLICLINKS_DELETE);
+        $GridActionDel->setOnClickArgs($this->_sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Cuenta'));
+        $GridHeaders->addHeader(_('Fecha Creación'));
+        $GridHeaders->addHeader(_('Fecha Caducidad'));
+        $GridHeaders->addHeader(_('Usuario'));
+        $GridHeaders->addHeader(_('Notificar'));
+        $GridHeaders->addHeader(_('Visitas'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('publicLink_id');
+        $GridData->addDataRowSource('publicLink_account');
+        $GridData->addDataRowSource('publicLink_dateAdd');
+        $GridData->addDataRowSource('publicLink_dateExpire');
+        $GridData->addDataRowSource('publicLink_user');
+        $GridData->addDataRowSource('publicLink_notify');
+        $GridData->addDataRowSource('publicLink_views');
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblLinks');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionRefresh);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridActionSearch));
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Enlaces'));
+        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
+
+        return $Grid;
+    }
+    /**
      * @param boolean $filter
      */
     public function setFilter($filter)

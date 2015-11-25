@@ -360,7 +360,7 @@ class Category
      * @param string $search La cadena de búsqueda
      * @return array con el id de categoria como clave y en nombre como valor
      */
-    public static function getCategoriesSearch($limitCount, $limitStart = 0, $search = "")
+    public static function getCategoriesMgmtSearch($limitCount, $limitStart = 0, $search = "")
     {
         $query = 'SELECT category_id, category_name,category_description FROM categories';
 

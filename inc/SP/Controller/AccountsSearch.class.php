@@ -32,15 +32,12 @@ use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Account\UserAccounts;
-use SP\Html\DataGrid\DataGrid;
-use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\Html;
 use SP\Http\Request;
 use SP\Mgmt\User\Groups;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -49,7 +46,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package Controller
  */
-class Search extends Controller implements ActionsInterface
+class AccountsSearch extends Controller implements ActionsInterface
 {
     /**
      * @var Icons

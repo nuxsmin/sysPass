@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Controller\Search;
+use SP\Controller\AccountsSearch;
 use SP\Core\Init;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
@@ -46,7 +46,7 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$Controller = new Search();
+$Controller = new AccountsSearch();
 $Controller->getSearch();
 
 $data = array(

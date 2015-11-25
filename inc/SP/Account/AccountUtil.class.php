@@ -163,7 +163,7 @@ class AccountUtil
      * @param string $search La cadena a buscar
      * @return array|bool
      */
-    public static function getAccountsMgmtDataSearch($limitCount, $limitStart = 0, $search = '')
+    public static function getAccountsMgmtSearch($limitCount, $limitStart = 0, $search = '')
     {
         $Data = new QueryData();
 

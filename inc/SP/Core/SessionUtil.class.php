@@ -26,6 +26,7 @@
 namespace SP\Core;
 
 use SP\Mgmt\User\Profile;
+use SP\Mgmt\User\ProfileUtil;
 use SP\Mgmt\User\User;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -55,7 +56,7 @@ class SessionUtil
         Session::setUserIsAdminApp($User->isUserIsAdminApp());
         Session::setUserIsAdminAcc($User->isUserIsAdminAcc());
         Session::setUserIsLdap($User->isUserIsLdap());
-        Session::setUserProfile(Profile::getProfile($User->getUserProfileId()));
+        Session::setUserProfile(ProfileUtil::getProfile($User->getUserProfileId()));
     }
 
     /**
