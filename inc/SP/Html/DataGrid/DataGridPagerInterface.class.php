@@ -35,16 +35,16 @@ interface DataGridPagerInterface
     /**
      * Establecer el campo de la búsqueda
      *
-     * @param int $searchKey
+     * @param int $sortKey
      */
-    public function setSearchKey($searchKey);
+    public function setSortKey($sortKey);
 
     /**
      * Devolver el campo de la búsqueda
      *
      * @return int
      */
-    public function getSearchKey();
+    public function getSortKey();
 
     /**
      * Establecer el registro de inicio de la página
@@ -195,4 +195,14 @@ interface DataGridPagerInterface
      * @param DataGridActionSearch $sourceAction
      */
     public function setSourceAction($sourceAction);
+
+    /**
+     * @return int
+     */
+    public function getSortOrder();
+
+    /**
+     * @param int $sortOrder
+     */
+    public function setSortOrder($sortOrder);
 }

@@ -6,7 +6,7 @@
 ?>
 
 <!-- Rows -->
-<?php if (count($data->getData()->getData()) === 0): ?>
+<?php if ($data->getData()->getDataCount() === 0): ?>
     <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
 <?php else: ?>
     <?php foreach ($data->getData()->getData() as $index => $item): ?>

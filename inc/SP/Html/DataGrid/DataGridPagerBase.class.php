@@ -35,7 +35,11 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     /**
      * @var int
      */
-    protected $_searchKey = 0;
+    protected $_sortKey = 0;
+    /**
+     * @var int
+     */
+    protected $_sortOrder = 0;
     /**
      * @var int
      */
@@ -84,6 +88,22 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * @var string
      */
     protected $_sk;
+
+    /**
+     * @return int
+     */
+    public function getSortOrder()
+    {
+        return $this->_sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder
+     */
+    public function setSortOrder($sortOrder)
+    {
+        $this->_sortOrder = $sortOrder;
+    }
 
     /**
      * @param string $sk
@@ -170,19 +190,19 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      *
      * @return int
      */
-    public function getSearchKey()
+    public function getSortKey()
     {
-        return $this->_searchKey;
+        return $this->_sortKey;
     }
 
     /**
      * Establecer el campo de la búsqueda
      *
-     * @param int $searchKey
+     * @param int $sortKey
      */
-    public function setSearchKey($searchKey)
+    public function setSortKey($sortKey)
     {
-        $this->_searchKey = $searchKey;
+        $this->_sortKey = $sortKey;
     }
 
     /**
@@ -343,6 +363,14 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
+     * @return int
+     */
+    public function getFirst()
+    {
+        return 0;
+    }
+
+    /**
      * Devolver la funcion para ir a la última página
      *
      * @return string
@@ -356,6 +384,14 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
+     * @return float|int
+     */
+    public function getLast()
+    {
+        return (($this->_totalRows % $this->_limitCount) == 0) ? $this->_totalRows - $this->_limitCount : floor($this->_totalRows / $this->_limitCount) * $this->_limitCount;
+    }
+
+    /**
      * Devolver la funcion para ir a la siguiente página
      *
      * @return string
@@ -366,6 +402,14 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
         $args[] = $this->getNext();
 
         return $this->_onClickFunction . '(' . implode(',', $args) . ')';
+    }
+
+    /**
+     * @return int
+     */
+    public function getNext()
+    {
+        return ($this->_limitStart + $this->_limitCount);
     }
 
     /**
@@ -384,32 +428,8 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     /**
      * @return int
      */
-    public function getFirst()
-    {
-        return 0;
-    }
-
-    /**
-     * @return float|int
-     */
-    public function getLast()
-    {
-        return (($this->_totalRows % $this->_limitCount) == 0) ? $this->_totalRows - $this->_limitCount : floor($this->_totalRows / $this->_limitCount) * $this->_limitCount;
-    }
-
-    /**
-     * @return int
-     */
     public function getPrev()
     {
         return ($this->_limitStart - $this->_limitCount);
-    }
-
-    /**
-     * @return int
-     */
-    public function getNext()
-    {
-        return ($this->_limitStart + $this->_limitCount);
     }
 }

@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var $data  SP\Html\DataGrid\DataGridTab
+ * @var $account SP\Controller\AccountsSearchData
+ * @var $this SP\Core\Template
+ */
+?>
 <div id="searchbox" class="round shadow">
     <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return sysPassUtil.Common.accSearch(0);">
         <div id="tblTools">
@@ -29,9 +36,9 @@
                     </label>
                     <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
                 <?php endif; ?>
-                <input type="hidden" name="start" value="<?php echo $limitStart; ?>">
-                <input type="hidden" name="skey" value="<?php echo $searchKey; ?>"/>
-                <input type="hidden" name="sorder" value="<?php echo $searchOrder; ?>"/>
+                <input type="hidden" name="start" value="<?php echo $data->getPager()->getLimitStart(); ?>">
+                <input type="hidden" name="skey" value="<?php echo $data->getPager()->getSortKey(); ?>"/>
+                <input type="hidden" name="sorder" value="<?php echo $data->getPager()->getSortOrder(); ?>"/>
                 <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
                 <select id="selCustomer" name="customer" class="select-box sel-chosen-customer sel-chosen-deselect">
@@ -52,7 +59,7 @@
             <div id="toolsRight">
                 <input type="number" name="rpp" id="rpp" min="3" step="6" pattern=""
                        placeholder="<?php echo _('CPP'); ?>" title="<?php echo _('Cuentas por página'); ?>"
-                       value="<?php echo $limitCount; ?>"/>
+                       value="<?php echo $data->getPager()->getLimitCount(); ?>"/>
             </div>
         </div>
     </form>

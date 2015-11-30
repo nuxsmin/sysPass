@@ -33,6 +33,12 @@ namespace SP\Html\DataGrid;
 abstract class DataGridActionBase implements DataGridActionInterface
 {
     /**
+     * El objeto reflexivo que determina si se muestra la acción
+     *
+     * @var \ReflectionMethod
+     */
+    private $_reflectionFilter;
+    /**
      * El nombre de la acción
      *
      * @var string
@@ -52,6 +58,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     private $_id = 0;
     /**
      * La función javascript del evento OnClick
+     *
      * @var string
      */
     private $_onClickFunction = '';
@@ -64,7 +71,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * El icono de la acción
      *
-     * @var DataGridIcon
+     * @var DataGridIconInterface
      */
     private $_icon = null;
     /**
@@ -91,6 +98,27 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @var int
      */
     private $_type = 0;
+
+    /**
+     * Devolver el método reflexivo que determina si se muestra la acción
+     *
+     * @return \ReflectionMethod
+     */
+    public function getReflectionFilter()
+    {
+        return $this->_reflectionFilter;
+    }
+
+    /**
+     * Establecer el método reflexivo que determina si se muestra la acción
+     *
+     * @param string $class
+     * @param string $method
+     */
+    public function setReflectionFilter($class, $method)
+    {
+        $this->_reflectionFilter = new \ReflectionMethod($class, $method);
+    }
 
     /**
      * @return string
@@ -171,7 +199,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * @return DataGridIcon
+     * @return DataGridIconInterface
      */
     public function getIcon()
     {
@@ -179,7 +207,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * @param $icon DataGridIcon
+     * @param $icon DataGridIconInterface
      */
     public function setIcon($icon)
     {
@@ -219,14 +247,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * @param $rowSource string
-     */
-    public function setFilterRowSource($rowSource)
-    {
-        $this->_filterRowSource = $rowSource;
-    }
-
-    /**
      * @return string
      */
     public function getFilterRowSource()
@@ -235,11 +255,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * @param int $type El tipo de acción definido en DataGridActionType
+     * @param $rowSource string
      */
-    public function setType($type)
+    public function setFilterRowSource($rowSource)
     {
-        $this->_type = $type;
+        $this->_filterRowSource = $rowSource;
     }
 
     /**
@@ -248,5 +268,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function getType()
     {
         return $this->_type;
+    }
+
+    /**
+     * @param int $type El tipo de acción definido en DataGridActionType
+     */
+    public function setType($type)
+    {
+        $this->_type = $type;
     }
 }

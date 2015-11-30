@@ -78,12 +78,12 @@ interface DataGridActionInterface
     public function getOnClick();
 
     /**
-     * @param $icon string
+     * @param $icon DataGridIconInterface
      */
     public function setIcon($icon);
 
     /**
-     * @return string
+     * @return DataGridIconInterface
      */
     public function getIcon();
 

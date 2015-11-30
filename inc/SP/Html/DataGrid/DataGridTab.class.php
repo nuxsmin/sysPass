@@ -38,12 +38,6 @@ class DataGridTab extends DataGridBase
      * @var string
      */
     private $_title = '';
-    /**
-     * Tiempo de ejecución
-     *
-     * @var int
-     */
-    private $_time = 0;
 
     /**
      * @param $title string
@@ -59,22 +53,6 @@ class DataGridTab extends DataGridBase
     public function getTitle()
     {
         return $this->_title;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->_time;
-    }
-
-    /**
-     * @param int $time
-     */
-    public function setTime($time)
-    {
-        $this->_time = $time;
     }
 }
     

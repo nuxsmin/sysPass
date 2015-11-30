@@ -34,66 +34,46 @@ use SP\Html\DataGrid\DataGridIcon;
  */
 class Icons
 {
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconAdd;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconView;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconEdit;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconDelete;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconNavPrev;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconNavNext;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconNavFirst;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconNavLast;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconEditPass;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconAppAdmin;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconAccAdmin;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconLdapUser;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconDisabled;
-
-    /**
-     * @return DataGridIcon
-     */
-    public function getIconRefresh()
-    {
-        return $this->_iconRefresh;
-    }
+    /** @var DataGridIcon */
+    private $_iconViewPass;
+    /** @var DataGridIcon */
+    private $_iconCopy;
+    /** @var DataGridIcon */
+    private $_iconClipboard;
+    /** @var DataGridIcon */
+    private $_iconEmail;
+    /** @var DataGridIcon */
+    private $_iconOptional;
+    /** @var DataGridIcon */
+    private $_iconUp;
+    /** @var DataGridIcon */
+    private $_iconDown;
     /**
      * @var DataGridIcon
      */
@@ -114,6 +94,7 @@ class Icons
     {
         $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
         $this->_iconView = new DataGridIcon('visibility', 'imgs/view.png', 'fg-blue80');
+        $this->_iconViewPass = new DataGridIcon('lock_open', 'imgs/user-pass.png', 'fg-blue80');
         $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
         $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
         $this->_iconEditPass = new DataGridIcon('lock_outline', 'imgs/pass.png', 'fg-orange80');
@@ -122,7 +103,10 @@ class Icons
         $this->_iconLdapUser = new DataGridIcon('business', 'ldap.png', null, _('Usuario de LDAP'));
         $this->_iconDisabled = new DataGridIcon('error', 'disabled.png', null, _('Deshabilitado'));
         $this->_iconRefresh = new DataGridIcon('refresh', 'imgs/view.png', 'fg-green80');
-
+        $this->_iconCopy = new DataGridIcon('content_copy', 'imgs/copy.png', 'fg-blue80');
+        $this->_iconClipboard = new DataGridIcon('content_paste', 'imgs/clipboard.png', 'fg-blue80');
+        $this->_iconEmail = new DataGridIcon('email', 'imgs/request.png', 'fg-blue80');
+        $this->_iconOptional = new DataGridIcon('settings', 'imgs/action.png');
 
         // Iconos de Navegación
         $this->_iconNavPrev = new DataGridIcon('chevron_left', 'imgs/arrow_left.png');
@@ -133,6 +117,66 @@ class Icons
         $this->_iconNavFirst->setTitle(_('Primera página'));
         $this->_iconNavLast = new DataGridIcon('arrow_forward', 'imgs/arrow_last.png');
         $this->_iconNavLast->setTitle(_('Última página'));
+
+        // Iconos de Ordenación
+        $this->_iconUp = new DataGridIcon('arrow_drop_up', 'imgs/arrow_up.png');
+        $this->_iconDown = new DataGridIcon('arrow_drop_down', 'imgs/arrow_down.png');
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconUp()
+    {
+        return $this->_iconUp;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconDown()
+    {
+        return $this->_iconDown;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconViewPass()
+    {
+        return $this->_iconViewPass;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconCopy()
+    {
+        return $this->_iconCopy;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconClipboard()
+    {
+        return $this->_iconClipboard;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconEmail()
+    {
+        return $this->_iconEmail;
+    }
+
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconRefresh()
+    {
+        return $this->_iconRefresh;
     }
 
     /**
@@ -239,4 +283,11 @@ class Icons
         return $this->_iconDelete;
     }
 
+    /**
+     * @return DataGridIcon
+     */
+    public function getIconOptional()
+    {
+        return $this->_iconOptional;
+    }
 }

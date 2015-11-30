@@ -128,7 +128,7 @@ class ApiTokensUtil
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            return false;
+            return array();
         }
 
         foreach ($queryRes as &$token) {

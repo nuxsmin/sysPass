@@ -235,7 +235,7 @@ class AccountSearch
     /**
      * Obtener las cuentas de una búsqueda.
      *
-     * @return bool Resultado de la consulta
+     * @return mixed Resultado de la consulta
      */
     public function getAccounts()
     {

@@ -51,11 +51,11 @@ abstract class DataGridIconBase implements DataGridIconInterface
      */
     private $_title = '';
     /**
-     * Clase CSS del icono
+     * Clases CSS del icono
      *
-     * @var string
+     * @var array
      */
-    private $_class = '';
+    private $_class = array();
 
     /**
      * @return string
@@ -110,7 +110,7 @@ abstract class DataGridIconBase implements DataGridIconInterface
      */
     public function setClass($class)
     {
-        $this->_class = $class;
+        $this->_class[] = $class;
     }
 
     /**
@@ -118,6 +118,6 @@ abstract class DataGridIconBase implements DataGridIconInterface
      */
     public function getClass()
     {
-        return $this->_class;
+        return implode(' ', $this->_class);
     }
 }

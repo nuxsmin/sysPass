@@ -45,32 +45,32 @@ interface DataGridInterface
     public function getId();
 
     /**
-     * @param DataGridHeader $header
+     * @param DataGridHeaderInterface $header
      */
-    public function setHeader(DataGridHeader $header);
+    public function setHeader(DataGridHeaderInterface $header);
 
     /**
-     * @return DataGridHeader
+     * @return DataGridHeaderInterface
      */
     public function getHeader();
 
     /**
-     * @param DataGridData $data
+     * @param DataGridDataInterface $data
      */
-    public function setData(DataGridData $data);
+    public function setData(DataGridDataInterface $data);
 
     /**
-     * @return DataGridData
+     * @return DataGridDataInterface
      */
     public function getData();
 
     /**
-     * @param DataGridActionBase $action
+     * @param DataGridActionInterface $action
      */
-    public function setDataActions(DataGridActionBase $action);
+    public function setDataActions(DataGridActionInterface $action);
 
     /**
-     * @return DataGridActionBase
+     * @return DataGridActionInterface
      */
     public function getDataActions();
 
@@ -82,14 +82,14 @@ interface DataGridInterface
     /**
      * Establecer el paginador
      *
-     * @param DataGridPagerBase $pager
+     * @param DataGridPagerInterface $pager
      */
-    public function setPager(DataGridPagerBase $pager);
+    public function setPager(DataGridPagerInterface $pager);
 
     /**
      * Devolver el paginador
      *
-     * @return DataGridPagerBase
+     * @return DataGridPagerInterface
      */
     public function getPager();
 
@@ -153,4 +153,18 @@ interface DataGridInterface
      * @return string
      */
     public function getDataRowTemplate();
+
+    /**
+     * Devuelve el tiempo total de carga del DataGrid
+     *
+     * @return int
+     */
+    public function getTime();
+
+    /**
+     * Establece el tiempo total de carga del DataGrid
+     *
+     * @param int $time
+     */
+    public function setTime($time);
 }

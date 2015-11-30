@@ -141,6 +141,22 @@ sysPass.Util.Common = function () {
         });
     };
 
+    var accGridAction = function (actionId, lastAction, obj) {
+        var id = $(obj).data('account-id');
+        var sk = $(obj).data('sk');
+
+        doAction(actionId, lastAction, id);
+    };
+
+    var accGridViewPass = function (obj, show) {
+        var id = $(obj).data('account-id');
+        var sk = $(obj).data('sk');
+
+        console.info(show);
+
+        viewPass(id, show);
+    };
+
     // Función para establecer la altura del contenedor ajax
     var setContentSize = function () {
         if ($("#container").hasClass('content-no-auto-resize')) {
@@ -205,7 +221,7 @@ sysPass.Util.Common = function () {
     };
 
     // Función para la búsqueda de cuentas mediante ordenación
-    var searchSort = function (skey, start, dir) {
+    var searchSort = function (skey, dir, start) {
         if (typeof skey === 'undefined' || typeof start === 'undefined') {
             return false;
         }
@@ -283,9 +299,9 @@ sysPass.Util.Common = function () {
     };
 
     // Función para ver la clave de una cuenta
-    var viewPass = function (id, full, history) {
+    var viewPass = function (id, show, history) {
         // Comprobamos si la clave ha sido ya obtenida para copiar
-        if (passToClip === 1 && full === 0) {
+        if (passToClip === 1 && show == false) {
             return;
         }
 
@@ -294,7 +310,7 @@ sysPass.Util.Common = function () {
             url: APP_ROOT + '/ajax/ajax_viewpass.php',
             dataType: "json",
             async: false,
-            data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
+            data: {'accountid': id, 'full': show, 'isHistory': history, 'isAjax': 1},
             success: function (json) {
 
                 if (json.status === 10) {
@@ -302,7 +318,7 @@ sysPass.Util.Common = function () {
                     return;
                 }
 
-                if (full === false) {
+                if (show == false) {
                     // Copiamos la clave en el objeto que tiene acceso al portapapeles
                     $('#clip-pass-text').html(json.accpass);
                     passToClip = 1;
@@ -1367,6 +1383,8 @@ sysPass.Util.Common = function () {
 
     return {
         accSearch: accSearch,
+        accGridAction: accGridAction,
+        accGridViewPass: accGridViewPass,
         appMgmtData: appMgmtData,
         appMgmtNav: appMgmtNav,
         appMgmtSave: appMgmtSave,

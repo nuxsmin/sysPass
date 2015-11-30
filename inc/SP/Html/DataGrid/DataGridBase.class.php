@@ -38,6 +38,12 @@ use SplObjectStorage;
 abstract class DataGridBase implements DataGridInterface
 {
     /**
+     * Tiempo de ejecución
+     *
+     * @var int
+     */
+    protected $_time = 0;
+    /**
      * El id de la matriz
      *
      * @var string
@@ -46,7 +52,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * La cabecera de la matriz
      *
-     * @var DataGridHeader
+     * @var DataGridHeaderInterface
      */
     private $_header;
     /**
@@ -64,7 +70,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Las acciones asociadas a los elementos de la matriz
      *
-     * @var DataGridAction[]
+     * @var DataGridActionInterface[]
      */
     private $_actions = null;
     /**
@@ -131,7 +137,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @return DataGridHeader
+     * @return DataGridHeader|DataGridHeaderSort
      */
     public function getHeader()
     {
@@ -139,15 +145,15 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @param DataGridHeader $header
+     * @param DataGridHeaderInterface $header
      */
-    public function setHeader(DataGridHeader $header)
+    public function setHeader(DataGridHeaderInterface $header)
     {
         $this->_header = $header;
     }
 
     /**
-     * @return DataGridData
+     * @return DataGridDataInterface
      */
     public function getData()
     {
@@ -155,17 +161,17 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @param DataGridData $data
+     * @param DataGridDataInterface $data
      */
-    public function setData(DataGridData $data)
+    public function setData(DataGridDataInterface $data)
     {
         $this->_data = $data;
     }
 
     /**
-     * @param DataGridActionBase $action
+     * @param DataGridActionInterface $action
      */
-    public function setDataActions(DataGridActionBase $action)
+    public function setDataActions(DataGridActionInterface $action)
     {
         if (is_null($this->_actions)) {
             $this->_actions = new SplObjectStorage();
@@ -286,19 +292,9 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Establecer el paginador
-     *
-     * @param DataGridPagerBase $pager
-     */
-    public function setPager(DataGridPagerBase $pager)
-    {
-        $this->_pager = $pager;
-    }
-
-    /**
      * Devolver el paginador
      *
-     * @return DataGridPagerBase
+     * @return DataGridPagerInterface
      */
     public function getPager()
     {
@@ -306,13 +302,38 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
+     * Establecer el paginador
+     *
+     * @param DataGridPagerInterface $pager
+     */
+    public function setPager(DataGridPagerInterface $pager)
+    {
+        $this->_pager = $pager;
+    }
+
+    /**
      * Actualizar los datos del paginador
      */
     public function updatePager()
     {
-        if ($this->_pager instanceof DataGridPagerBase) {
+        if ($this->_pager instanceof DataGridPagerInterface) {
             $this->_pager->setTotalRows($this->_data->getDataCount());
         }
     }
 
+    /**
+     * @return int
+     */
+    public function getTime()
+    {
+        return abs($this->_time);
+    }
+
+    /**
+     * @param int $time
+     */
+    public function setTime($time)
+    {
+        $this->_time = $time;
+    }
 }
