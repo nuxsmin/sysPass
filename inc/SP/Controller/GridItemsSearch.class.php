@@ -8,11 +8,17 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridPagerBase;
 use SP\Util\Checks;
 
+/**
+ * Class GridItemsSearch para construcción de clases que usen el Grid de búsqueda de registros
+ *
+ * @package SP\Controller
+ */
 abstract class GridItemsSearch extends Controller
 {
     /**

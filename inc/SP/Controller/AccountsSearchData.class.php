@@ -25,7 +25,11 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+
 use SP\Html\Html;
+use SP\Util\Checks;
 
 /**
  * Class AccountsSearchData para contener los datos de cada cuenta en la búsqueda
@@ -105,6 +109,14 @@ class AccountsSearchData
     public function isShow()
     {
         return ($this->_showView || $this->_showEdit || $this->_showViewPass || $this->_showCopy || $this->_showDelete);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowCopyPass()
+    {
+        return ($this->isShowViewPass() && !Checks::accountPassToImageIsEnabled());
     }
 
     /**

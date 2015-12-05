@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Auth\Auth2FA;
 use SP\Core\ActionsInterface;
 use SP\Core\Language;
@@ -33,7 +35,6 @@ use SP\Core\SessionUtil;
 use SP\Core\Themes;
 use SP\Mgmt\User\UserPreferences;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Class PreferencesC encargada de mostrar las preferencias de los usuarios

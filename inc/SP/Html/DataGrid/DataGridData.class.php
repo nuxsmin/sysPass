@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Class DataGridData para establecer el origen de datos de la matriz
  *

@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Account\Account;
 use SP\Account\AccountSearch;
 use SP\Config\Config;
@@ -45,8 +47,6 @@ use SP\Http\Request;
 use SP\Mgmt\User\Groups;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase encargada de obtener los datos para presentar la búsqueda
@@ -378,6 +378,8 @@ class AccountsSearch extends Controller implements ActionsInterface
      */
     private function getGrid()
     {
+        $showOptionalActions = Session::getUserPreferences()->isOptionalActions();
+
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_ACC_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
@@ -411,13 +413,16 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionCopyPass->setName(_('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setTitle(_('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setIcon($ClipboardIcon);
-        $GridActionCopyPass->setReflectionFilter('\\SP\\Controller\\AccountsSearchData', 'isShowViewPass');
+        $GridActionCopyPass->setReflectionFilter('\\SP\\Controller\\AccountsSearchData', 'isShowCopyPass');
         $GridActionCopyPass->setOnClickFunction('sysPassUtil.Common.accGridViewPass');
         $GridActionCopyPass->setOnClickArgs('this');
         $GridActionCopyPass->setOnClickArgs(0);
 
         $EditIcon = $this->_icons->getIconEdit();
-        $EditIcon->setClass('actions-optional');
+
+        if (!$showOptionalActions) {
+            $EditIcon->setClass('actions-optional');
+        }
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_ACC_EDIT);
@@ -432,7 +437,10 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionEdit->setOnClickArgs('this');
 
         $CopyIcon = $this->_icons->getIconCopy();
-        $CopyIcon->setClass('actions-optional');
+
+        if (!$showOptionalActions) {
+            $CopyIcon->setClass('actions-optional');
+        }
 
         $GridActionCopy = new DataGridAction();
         $GridActionCopy->setId(self::ACTION_ACC_COPY);
@@ -447,7 +455,10 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionCopy->setOnClickArgs('this');
 
         $DeleteIcon = $this->_icons->getIconDelete();
-        $DeleteIcon->setClass('actions-optional');
+
+        if (!$showOptionalActions) {
+            $DeleteIcon->setClass('actions-optional');
+        }
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_ACC_DELETE);

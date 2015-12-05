@@ -300,11 +300,6 @@ sysPass.Util.Common = function () {
 
     // Función para ver la clave de una cuenta
     var viewPass = function (id, show, history) {
-        // Comprobamos si la clave ha sido ya obtenida para copiar
-        if (passToClip === 1 && show == false) {
-            return;
-        }
-
         $.ajax({
             type: 'POST',
             url: APP_ROOT + '/ajax/ajax_viewpass.php',
@@ -1308,7 +1303,7 @@ sysPass.Util.Common = function () {
     var initializeClipboard = function () {
         var clipboard = new Clipboard('.clip-pass-button', {
             text: function (trigger) {
-                sysPassUtil.Common.viewPass(trigger.getAttribute('data-account-id'), false);
+                sysPassUtil.Common.viewPass(trigger.getAttribute('data-account-id'), 0);
                 return $('#clip-pass-text').html();
             }
         });

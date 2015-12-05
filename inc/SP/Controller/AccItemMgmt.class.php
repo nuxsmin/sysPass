@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Api\ApiTokens;
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
@@ -40,8 +42,6 @@ use SP\Mgmt\User\ProfileUtil;
 use SP\Mgmt\User\UserUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 class AccItemMgmt extends Controller implements ActionsInterface
 {

@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;

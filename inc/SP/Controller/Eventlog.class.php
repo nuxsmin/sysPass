@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
@@ -33,7 +35,6 @@ use SP\Log\Log;
 use SP\Util\Checks;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase encargada de preparar la presentación del registro de eventos

@@ -9,13 +9,13 @@
     <?php if ($data->getData()->getDataCount() === 0): ?>
         <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
     <?php else: ?>
+        <!-- Data Header-->
+        <?php include $data->getDataHeaderTemplate(); ?>
+
         <?php if (\SP\Controller\AccountsSearchData::$topNavbar): ?>
             <!-- Data Pager -->
             <?php include $data->getDataPagerTemplate(); ?>
         <?php endif; ?>
-
-        <!-- Data Header-->
-        <?php include $data->getDataHeaderTemplate(); ?>
 
         <!-- Data Rows-->
         <?php include $data->getDataRowTemplate(); ?>

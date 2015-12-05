@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
@@ -33,8 +35,6 @@ use SP\Core\SPException;
 use SP\Core\Template;
 use SP\Util\Checks;
 use SP\Util\Wiki\DokuWikiApi;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Class WikiC para la gestión de la Wiki

@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
@@ -36,8 +38,6 @@ use SP\Core\Themes;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase encargada de preparar la presentación de las opciones de configuración

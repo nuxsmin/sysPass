@@ -25,11 +25,17 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Util\Checks;
 
+/**
+ * Class GridTabController para la construcción de clases que utilicen el grid de pestañas
+ *
+ * @package SP\Controller
+ */
 abstract class GridTabController extends Controller
 {
     /**

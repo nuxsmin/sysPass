@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Core\ActionsInterface;
 use SP\Core\Template;
 use SP\Http\Request;
@@ -36,8 +38,6 @@ use SP\Core\SessionUtil;
 use SP\Mgmt\Files;
 use SP\Util\Checks;
 use SP\Util\Util;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase encargada de preparar la presentación de las vistas de gestión de cuentas

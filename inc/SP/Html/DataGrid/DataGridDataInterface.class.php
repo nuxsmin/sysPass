@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Interface DataGridDataInterface
  *

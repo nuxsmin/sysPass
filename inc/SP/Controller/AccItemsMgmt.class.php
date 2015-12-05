@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
@@ -33,8 +35,6 @@ use SP\Mgmt\User\Groups;
 use SP\Core\Template;
 use SP\Mgmt\User\ProfileUtil;
 use SP\Mgmt\User\UserUtil;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase encargada de de preparar la presentación de las vistas de gestión de accesos

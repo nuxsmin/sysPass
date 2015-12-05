@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
 use SP\Mgmt\Category;

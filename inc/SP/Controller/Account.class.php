@@ -25,6 +25,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
 use SP\Config\Config;
@@ -42,8 +44,6 @@ use SP\Mgmt\User\UserPass;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Clase encargada de preparar la presentación de las vistas de una cuenta

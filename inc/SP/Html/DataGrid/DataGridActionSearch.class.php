@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Class DataGridActionSearch para definir una acción de búsqueda de datos
  *
