@@ -98,10 +98,10 @@ class AccountSearch
      */
     function __construct()
     {
-        $userResultsPerPage = Session::getUserPreferences()->getResultsPerPage();
+        $userResultsPerPage = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->getResultsPerPage() : 0;
 
-        $this->setLimitCount(($userResultsPerPage > 0) ? $userResultsPerPage : Config::getValue('account_count'));
-        $this->setSortViews(Session::getUserPreferences()->isSortViews());
+        $this->_limitCount = ($userResultsPerPage > 0) ? $userResultsPerPage : Config::getValue('account_count');
+        $this->_sortViews = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->isSortViews() : false;
     }
 
     /**
@@ -133,7 +133,7 @@ class AccountSearch
      */
     public function setTxtSearch($txtSearch)
     {
-        $this->_txtSearch = (string) $txtSearch;
+        $this->_txtSearch = (string)$txtSearch;
     }
 
     /**
@@ -187,22 +187,6 @@ class AccountSearch
     /**
      * @return int
      */
-    public function getSortKey()
-    {
-        return $this->_sortKey;
-    }
-
-    /**
-     * @param int $sortKey
-     */
-    public function setSortKey($sortKey)
-    {
-        $this->_sortKey = $sortKey;
-    }
-
-    /**
-     * @return int
-     */
     public function getLimitStart()
     {
         return $this->_limitStart;
@@ -245,6 +229,7 @@ class AccountSearch
         $arrFilterSelect = array();
         $arrFilterUser = array();
         $arrQueryWhere = array();
+        $queryLimit = '';
 
         $Data = new QueryData();
 
@@ -426,57 +411,6 @@ class AccountSearch
     }
 
     /**
-     * @return boolean
-     */
-    public function isSortViews()
-    {
-        return $this->_sortViews;
-    }
-
-    /**
-     * @param boolean $sortViews
-     */
-    public function setSortViews($sortViews)
-    {
-        $this->_sortViews = $sortViews;
-    }
-
-    /**
-     * Obtiene el número de cuentas que un usuario puede ver.
-     *
-     * @return false|int con el número de registros
-     */
-    public function getAccountMax()
-    {
-        $Data = new QueryData();
-
-        if (!Session::getUserIsAdminApp() && !Session::getUserIsAdminAcc()) {
-            $query = 'SELECT COUNT(DISTINCT account_id) as numacc '
-                . 'FROM accounts '
-                . 'LEFT JOIN accGroups ON account_id = accgroup_accountId '
-                . 'WHERE account_userGroupId = :userGroupId '
-                . 'OR account_userId = :userId '
-                . 'OR accgroup_groupId = :groupId';
-
-            $Data->addParam(Session::getUserGroupId(), 'userGroupId');
-            $Data->addParam(Session::getUserGroupId(), 'groupId');
-            $Data->addParam(Session::getUserId(), 'userId');
-        } else {
-            $query = "SELECT COUNT(*) as numacc FROM accounts";
-        }
-
-        $Data->setQuery($query);
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->numacc;
-    }
-
-    /**
      * Devuelve la cadena de ordenación de la consulta
      *
      * @return string
@@ -512,5 +446,72 @@ class AccountSearch
 
         $orderDir = ($this->_sortOrder === self::SORT_DIR_ASC) ? 'ASC' : 'DESC';
         return sprintf('ORDER BY %s %s', implode(',', $orderKey), $orderDir);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSortViews()
+    {
+        return $this->_sortViews;
+    }
+
+    /**
+     * @param boolean $sortViews
+     */
+    public function setSortViews($sortViews)
+    {
+        $this->_sortViews = $sortViews;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortKey()
+    {
+        return $this->_sortKey;
+    }
+
+    /**
+     * @param int $sortKey
+     */
+    public function setSortKey($sortKey)
+    {
+        $this->_sortKey = $sortKey;
+    }
+
+    /**
+     * Obtiene el número de cuentas que un usuario puede ver.
+     *
+     * @return false|int con el número de registros
+     */
+    public function getAccountMax()
+    {
+        $Data = new QueryData();
+
+        if (!Session::getUserIsAdminApp() && !Session::getUserIsAdminAcc()) {
+            $query = 'SELECT COUNT(DISTINCT account_id) as numacc '
+                . 'FROM accounts '
+                . 'LEFT JOIN accGroups ON account_id = accgroup_accountId '
+                . 'WHERE account_userGroupId = :userGroupId '
+                . 'OR account_userId = :userId '
+                . 'OR accgroup_groupId = :groupId';
+
+            $Data->addParam(Session::getUserGroupId(), 'userGroupId');
+            $Data->addParam(Session::getUserGroupId(), 'groupId');
+            $Data->addParam(Session::getUserId(), 'userId');
+        } else {
+            $query = "SELECT COUNT(*) as numacc FROM accounts";
+        }
+
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->numacc;
     }
 }

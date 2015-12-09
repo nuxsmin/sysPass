@@ -49,6 +49,7 @@ class SplClassLoader
      * specified namespace.
      *
      * @param string $ns The namespace to use.
+     * @param string   $includePath
      */
     public function __construct($ns = null, $includePath = null)
     {

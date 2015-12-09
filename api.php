@@ -23,38 +23,21 @@
  *
  */
 
+use SP\Api\ApiRequest;
+
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-try {
-    $ApiRequest = new \SP\Api\ApiRequest();
-
-    switch ($ApiRequest->getAction()) {
-        case \SP\Core\ActionsInterface::ACTION_ACC_VIEW:
-            $itemId = \SP\Http\Request::analyze(\SP\Api\ApiRequest::ITEM, 0);
-
-            $out = $ApiRequest->getApi()->getAccountData($itemId);
-            break;
-        case \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS:
-            $ApiRequest->addVar('userPass', \SP\Api\ApiRequest::analyze(\SP\Api\ApiRequest::USER_PASS));
-
-            $itemId = \SP\Http\Request::analyze(\SP\Api\ApiRequest::ITEM, 0);
-
-            $out = $ApiRequest->getApi()->getAccountPassword($itemId);
-            break;
-        case \SP\Core\ActionsInterface::ACTION_ACC_SEARCH:
-            $search = \SP\Http\Request::analyze(\SP\Api\ApiRequest::SEARCH);
-            $count = \SP\Http\Request::analyze(\SP\Api\ApiRequest::SEARCH_COUNT, 10);
-
-            $out = $ApiRequest->getApi()->getAccountSearch($search, $count);
-            break;
-        default:
-            throw new Exception(_('Acción Inválida'));
-    }
-} catch (Exception $e) {
-    \SP\Http\Response::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\Api\ApiRequest::getHelp()));
-}
-
 header('Content-type: application/json');
-echo $out;
+
+try {
+    $ApiRequest = new ApiRequest();
+    exit($ApiRequest->runApi());
+} catch (Exception $e) {
+    \SP\Http\Response::printJSON(
+        array(
+            'message' => $e->getMessage(),
+            'help' => ApiRequest::getHelp()
+        ));
+}

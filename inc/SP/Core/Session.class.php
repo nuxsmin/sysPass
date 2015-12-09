@@ -38,6 +38,12 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Session
 {
     /**
+     * Tipos de sesión
+     */
+    const SESSION_INTERACTIVE = 1;
+    const SESSION_API = 2;
+
+    /**
      * Obtiene el id de usuario de la sesión.
      *
      * @return int
@@ -630,7 +636,7 @@ class Session
      */
     public static function getUserPreferences()
     {
-        return self::getSessionKey('usrpreferences');
+        return self::getSessionKey('userpreferences');
     }
 
     /**
@@ -640,7 +646,7 @@ class Session
      */
     public static function setUserPreferences(Mgmt\User\UserPreferences $preferences)
     {
-        self::setSessionKey('usrpreferences', $preferences);
+        self::setSessionKey('userpreferences', $preferences);
     }
 
     /**
@@ -721,5 +727,25 @@ class Session
     public static function setDokuWikiSession($session)
     {
         self::setSessionKey('dokuwikisession', $session);
+    }
+
+    /**
+     * Devolver el tipo de sesion
+     *
+     * @return int
+     */
+    public static function getSessionType()
+    {
+        return self::getSessionKey('sessiontype', 0);
+    }
+
+    /**
+     * Establecer el tipo de sesion
+     *
+     * @param int $type
+     */
+    public static function setSessionType($type)
+    {
+        self::setSessionKey('sessiontype', $type);
     }
 }

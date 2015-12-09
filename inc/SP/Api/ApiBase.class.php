@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,69 +25,76 @@
 
 namespace SP\Api;
 
-use SP\Account\Account;
-use SP\Account\AccountSearch;
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Auth\Auth;
-use SP\Core\ActionsInterface;
 use SP\Core\Acl;
-use SP\Core\Crypt;
 use SP\Core\Session;
 use SP\Core\SPException;
 use SP\Mgmt\User\User;
 use SP\Mgmt\User\UserPass;
 use SP\Mgmt\User\UserUtil;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-
 /**
- * Class Api para la gestión de peticiones a la API de sysPass
+ * Class ApiBase
  *
- * @package SP
+ * @package SP\Api
  */
-class Api
+abstract class ApiBase
 {
     /**
+     * El ID de la acción
+     *
      * @var int
      */
-    private $_userId = 0;
+    protected $_actionId = 0;
     /**
+     * El ID de usuario resuelto
+     *
      * @var int
      */
-    private $_actionId = 0;
+    protected $_userId = 0;
     /**
+     * Indica si la autentificación es correcta
+     *
      * @var bool
      */
-    private $_auth = false;
+    protected $_auth = false;
     /**
-     * @var string
+     * Los parámetros de la acción a ejecutar
+     *
+     * @var mixed
      */
-    private $_mPass = '';
+    protected $_params;
+    /**
+     * @var array
+     */
+    protected $_actionsMap = array();
 
     /**
-     * @param      $actionId  int El id de la acción
-     * @param      $authToken string El token de seguridad
-     * @param null $userPass  string La clave del usuario
+     * @param $params
      * @throws SPException
      */
-    public function __construct($actionId, $authToken, $userPass = null)
+    public function __construct($params)
     {
-        if (!Auth::checkAuthToken($actionId, $authToken)) {
+        if (!Auth::checkAuthToken($this->getActionId($params->action), $params->authToken)) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 
-        $this->_userId = ApiTokensUtil::getUserIdForToken($authToken);
-        $this->_actionId = $actionId;
+        $this->_userId = ApiTokensUtil::getUserIdForToken($params->authToken);
+        $this->_actionId = $this->getActionId($params->action);
         $this->_auth = true;
+        $this->_params = $params;
 
-        if (!is_null($userPass)) {
+        if (isset($params->userPass)) {
             $userLogin = UserUtil::getUserLoginById($this->_userId);
 
             $User = new User();
             $User->setUserId($this->_userId);
             $User->setUserLogin($userLogin);
-            $User->setUserPass($userPass);
+            $User->setUserPass($params->userPass);
 
-            if (Auth::authUserMySQL($userLogin, $userPass)
+            if (Auth::authUserMySQL($userLogin, $params->userPass)
                 && !UserUtil::checkUserIsDisabled($userLogin)
                 && UserPass::checkUserMPass($User)
                 && UserPass::checkUserUpdateMPass($userLogin)
@@ -100,28 +107,18 @@ class Api
         }
 
         Session::setUserId($this->_userId);
+        Session::setSessionType(Session::SESSION_API);
     }
 
     /**
-     * Devolver la clave de una cuenta
+     * Devolver el código de acción a realizar a partir del nombre
      *
-     * @param $accountId
-     * @return string
+     * @param $action string El nombre de la acción
+     * @return int
      */
-    public function getAccountPassword($accountId)
+    protected function getActionId($action)
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW_PASS);
-
-        $Account = new Account($accountId);
-        $Account->getAccountPassData();
-        $Account->incrementDecryptCounter();
-
-        $ret = array(
-            'accountId' => $accountId,
-            'pass' => Crypt::getDecrypt($Account->getAccountPass(), $Account->getAccountIV(), $this->_mPass)
-        );
-
-        return $this->wrapJSON($ret);
+        return (is_array($this->_actionsMap) && isset($this->_actionsMap[$action])) ? $this->_actionsMap[$action] : 0;
     }
 
     /**
@@ -130,7 +127,7 @@ class Api
      * @param $action
      * @throws SPException
      */
-    private function checkActionAccess($action)
+    protected function checkActionAccess($action)
     {
         if ($this->_actionId !== $action) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
@@ -144,7 +141,7 @@ class Api
      * @return bool
      * @throws SPException
      */
-    private function wrapJSON($data)
+    protected function wrapJSON($data)
     {
         $arrStrFrom = array("\\", '"', "'");
         $arrStrTo = array("\\", '\"', "\'");
@@ -177,46 +174,5 @@ class Api
         }
 
         return $json;
-    }
-
-    /**
-     * Devolver los resultados de una búsqueda
-     *
-     * @param string $search El texto de búsqueda
-     * @param int $count El número de cuentas a mostrar
-     * @return string
-     * @throws SPException
-     */
-    public function getAccountSearch($search, $count = 0)
-    {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_SEARCH);
-
-        $Search = new AccountSearch();
-        $Search->setTxtSearch($search);
-
-        if ($count > 0) {
-            $Search->setLimitCount($count);
-        }
-
-        $ret = $Search->getAccounts();
-
-        return $this->wrapJSON($ret);
-    }
-
-    /**
-     * Devolver la clave de una cuenta
-     *
-     * @param $accountId
-     * @return string
-     */
-    public function getAccountData($accountId)
-    {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW);
-
-        $Account = new Account($accountId);
-        $ret = $Account->getAccountData();
-        $Account->incrementViewCounter();
-
-        return $this->wrapJSON($ret);
     }
 }

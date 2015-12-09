@@ -91,6 +91,7 @@ sysPass.Util.Common = function () {
     //    }
     //});
 
+    // Obtener las variables de entorno de sysPass
     var getEnvironment = function () {
         var path = window.location.pathname.split('/');
         var rootPath = function () {

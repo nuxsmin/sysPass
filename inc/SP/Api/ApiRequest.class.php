@@ -25,6 +25,7 @@
 
 namespace SP\Api;
 
+use ReflectionClass;
 use SP\Http\Request;
 use SP\Core\SPException;
 
@@ -37,61 +38,107 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class ApiRequest extends Request
 {
-    const ACTION_ID = 'a';
-    const USER = 'u';
-    const USER_PASS = 'up';
-    const AUTH_TOKEN = 't';
-    const ITEM = 'i';
-    const SEARCH = 's';
-    const SEARCH_COUNT = 'sc';
+    /**
+     * Constantes de acciones
+     */
+    const ACTION = 'action';
+    const USER = 'user';
+    const USER_PASS = 'userPass';
+    const AUTH_TOKEN = 'authToken';
+    const ITEM = 'itemId';
+    const SEARCH = 'searchText';
+    const SEARCH_COUNT = 'searchCount';
 
     /**
      * @var \stdClass
      */
-    private $_vars;
+    private $_params;
 
-    public function __construct(){
-        $authToken = self::analyze(self::AUTH_TOKEN);
-        $actionId = self::analyze(self::ACTION_ID, 0);
+    /** @var string */
+    private $_verb = null;
 
-        if (!$authToken || !$actionId){
+    /** @var ReflectionClass */
+    private $_ApiReflection;
+
+    /**
+     * ApiRequest constructor.
+     */
+    public function __construct()
+    {
+        try {
+            $this->analyzeRequestMethod();
+            $this->getData();
+            $this->checkBasicData();
+            $this->checkAction();
+        } catch (SPException $e) {
+            throw $e;
+        }
+    }
+
+    /**
+     * Analizar y establecer el método HTTP a utilizar
+     *
+     * @throws SPException
+     */
+    private function analyzeRequestMethod()
+    {
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+        // Sólo se permiten estos métodos
+        switch ($requestMethod) {
+            case 'GET':
+            case 'POST':
+            case 'PUT':
+            case 'DELETE':
+                $this->_verb = $requestMethod;
+                break;
+            default:
+                throw new SPException(SPException::SP_WARNING, _('Método inválido'));
+        }
+    }
+
+    /**
+     * Obtener los datos de la petición
+     *
+     * @throws SPException
+     */
+    private function getData()
+    {
+        $data = self::parse(file_get_contents('php://input'), '', true);
+
+        $this->_params = json_decode($data);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_object($this->_params)) {
+            throw new SPException(SPException::SP_WARNING, _('Datos inválidos'));
+        }
+    }
+
+    /**
+     * Comprobar los datos básicos de la petición
+     *
+     * @throws SPException
+     */
+    private function checkBasicData()
+    {
+        if (!isset($this->_params->authToken)
+            || !isset($this->_params->action)
+        ) {
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
-
-        $this->addVar('authToken', $authToken);
-        $this->addVar('actionId', $actionId);
-        $this->addVar('userPass', null);
     }
 
     /**
-     * Añade una nueva variable de petición al array
+     * Comprobar si la API tiene implementada dicha acción
      *
-     * @param $name string El nombre de la variable
-     * @param $value mixed El valor de la variable
+     * @throws SPException
      */
-    public function addVar($name, $value)
+    private function checkAction()
     {
-        $this->_vars->$name = $value;
-    }
+        $this->_ApiReflection = new ReflectionClass('\SP\Api\SyspassApi');
 
-    /**
-     * Obtiene una nueva instancia de la Api
-     *
-     * @return Api
-     */
-    public function getApi()
-    {
-        return new Api($this->_vars->actionId, $this->_vars->authToken, $this->_vars->userPass);
-    }
-
-    /**
-     * Obtener el id de la acción
-     *
-     * @return int
-     */
-    public function getAction()
-    {
-        return $this->_vars->actionId;
+        if (!$this->_ApiReflection->hasMethod($this->_params->action)) {
+            throw new SPException(SPException::SP_WARNING, _('Acción inválida'));
+        }
     }
 
     /**
@@ -103,7 +150,7 @@ class ApiRequest extends Request
     {
         return array(
             self::AUTH_TOKEN => _('Token de autorización'),
-            self::ACTION_ID => _('Acción a realizar'),
+            self::ACTION => _('Acción a realizar'),
             self::USER_PASS => _('Clave de usuario (opcional)'),
             self::SEARCH => _('Cadena a buscar'),
             self::SEARCH_COUNT => _('Numero de cuentas a mostar en la búsqueda'),
@@ -111,4 +158,34 @@ class ApiRequest extends Request
         );
     }
 
+    /**
+     * Añade una nueva variable de petición al array
+     *
+     * @param $name  string El nombre de la variable
+     * @param $value mixed El valor de la variable
+     */
+    public function addVar($name, $value)
+    {
+        $this->_params->$name = $value;
+    }
+
+    /**
+     * Obtiene una nueva instancia de la Api
+     *
+     * @return SyspassApi
+     */
+    public function runApi()
+    {
+        return $this->_ApiReflection->getMethod($this->_params->action)->invoke(new SyspassApi($this->_params));
+    }
+
+    /**
+     * Obtener el id de la acción
+     *
+     * @return int
+     */
+    public function getAction()
+    {
+        return $this->_params->action;
+    }
 }

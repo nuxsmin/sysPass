@@ -212,5 +212,6 @@ if ($UserPrefs->isUse2Fa()) {
 Language::setLanguage(true);
 Themes::setTheme(true);
 Session::setUserPreferences($UserPrefs);
+Session::setSessionType(Session::SESSION_INTERACTIVE);
 
 Response::printJSON('index.php?' . $urlParams, 0);
