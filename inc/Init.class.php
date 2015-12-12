@@ -256,7 +256,7 @@ class Init
         $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
 
         // Buscar la clase en los directorios de include
-        foreach (explode(':', get_include_path()) as $includePath) {
+        foreach (explode(PATH_SEPARATOR, get_include_path()) as $includePath) {
             $classFile = $includePath . DIRECTORY_SEPARATOR . $class . '.class.php';
             if (is_readable($classFile)) {
                require $classFile;
@@ -309,7 +309,7 @@ class Init
         // Calcular los directorios raíz
         $dir = (defined(__DIR__)) ? __DIR__ : dirname(__FILE__);
 
-        self::$SERVERROOT = substr($dir, 0, strripos($dir, '/'));
+        self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
 
         self::$_SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
 
