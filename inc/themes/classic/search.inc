@@ -104,17 +104,17 @@
 
                         <div class="account-info">
                             <?php if ($account['show']): ?>
-                                <img src="imgs/btn_group.png" title="<?php echo $account['accesses']; ?>"/>
+                                <img src="imgs/btn_group.png" title="<?php echo $account['accesses']; ?>" class="active-tooltip"/>
                             <?php endif; ?>
 
                             <?php if ($account['show'] && !empty($account['notes'])): ?>
                                 <img src="imgs/notes.png"
-                                     title="<?php echo _('Notas'); ?><br><br><?php echo $account['notes']; ?>"/>
+                                     title="<?php echo _('Notas'); ?><br><br><?php echo $account['notes']; ?>" class="active-tooltip"/>
                             <?php endif; ?>
 
                             <?php if ($account['show'] && $account['numFiles'] > 0): ?>
                                 <img src="imgs/attach.png"
-                                     title="<?php echo _('Archivos adjuntos'), ': ', $account['numFiles']; ?>"/>
+                                     title="<?php echo _('Archivos adjuntos'), ': ', $account['numFiles']; ?>" class="active-tooltip"/>
                             <?php endif; ?>
 
                             <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
