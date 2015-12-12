@@ -153,7 +153,8 @@ class Language
             'English' => 'en_US',
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
-            'Français' => 'fr_FR'
+            'Français' => 'fr_FR',
+            'русский' => 'ru_RU'
         );
     }
 }
