@@ -90,8 +90,8 @@ class Html
     public static function truncate($str, $len)
     {
         $tail = max(0, $len - 10);
-        $truncate = substr($str, 0, $tail);
-        $truncate .= strrev(preg_replace('~^..+?[\s,:]\b|^...~', '...', strrev(substr($str, $tail, $len - $tail))));
+        $truncate = mb_substr($str, 0, $tail);
+        $truncate .= strrev(preg_replace('~^..+?[\s,:]\b|^...~', '...', strrev(mb_substr($str, $tail, $len - $tail))));
 
         return $truncate;
     }
