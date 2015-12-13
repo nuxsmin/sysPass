@@ -152,13 +152,14 @@
                 <?php echo _('Archivo'); ?>
             </td>
             <td class="valField">
-                <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUpload">
-                    <input type="file" id="inFile" name="inFile"/>
-                </form>
-                <div id="dropzone" class="round"
+                <div id="dropzone" class="round active-tooltip"
+                     data-files-ext="csv,xml"
                      title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
                     <img src="imgs/upload.png" alt="upload" class="opacity50"/>
                 </div>
+                <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">
+                    <input type="file" id="inFile" multiple name="inFile"/>
+                </form>
             </td>
         </tr>
     </table>
@@ -188,7 +189,9 @@
 
 <script>
     $(function () {
-        sysPassUtil.Common.importFile('<?php echo $sk; ?>');
+        var upload = sysPassUtil.Common.fileUpload({targetId: 'dropzone', url: '/ajax/ajax_import.php'});
+        upload.setRequestData({sk: '<?php echo $sk; ?>'});
+
         $("#help_import_button").click(function () {
             $("#help_import").dialog("open");
         });

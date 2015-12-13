@@ -35,7 +35,8 @@ Request::checkReferer('GET');
 $data = array(
     'lang' => $stringsJsLang,
     'app_root' => SP\Init::$WEBURI,
-    'pk' => ''
+    'pk' => '',
+    'max_file_size' => \SP\Config::getValue('files_allowed_size')
 );
 
 try {

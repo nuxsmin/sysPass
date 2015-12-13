@@ -38,7 +38,7 @@ sysPass.createNS('sysPass.Util');
 sysPass.Util.Common = function () {
     "use strict";
 
-    var APP_ROOT, LANG, PK;
+    var APP_ROOT, LANG, PK, MAX_FILE_SIZE;
 
     // Atributos de la ordenación de búsquedas
     var order = {key: 0, dir: 0};
@@ -114,6 +114,7 @@ sysPass.Util.Common = function () {
                 APP_ROOT = json.app_root;
                 LANG = json.lang;
                 PK = json.pk;
+                MAX_FILE_SIZE = json.max_file_size;
 
                 encrypt.setPublicKey(PK);
             }
@@ -143,7 +144,7 @@ sysPass.Util.Common = function () {
 
     // Función para establecer la altura del contenedor ajax
     var setContentSize = function () {
-        if ($("#container").hasClass('content-no-auto-resize')){
+        if ($("#container").hasClass('content-no-auto-resize')) {
             return;
         }
 
@@ -277,18 +278,13 @@ sysPass.Util.Common = function () {
     };
 
     // Función para ver la clave de una cuenta
-    var viewPass = function (id, full, history) {
-        // Comprobamos si la clave ha sido ya obtenida para copiar
-        if (passToClip === 1 && full === 0) {
-            return;
-        }
-
+    var viewPass = function (id, show, history) {
         $.ajax({
             type: 'POST',
             url: APP_ROOT + '/ajax/ajax_viewpass.php',
             dataType: "json",
             async: false,
-            data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
+            data: {'accountid': id, 'full': show, 'isHistory': history, 'isAjax': 1},
             success: function (json) {
 
                 if (json.status === 10) {
@@ -296,10 +292,9 @@ sysPass.Util.Common = function () {
                     return;
                 }
 
-                if (full === false) {
+                if (show === false || show === 0) {
                     // Copiamos la clave en el objeto que tiene acceso al portapapeles
                     $('#clip-pass-text').html(json.accpass);
-                    passToClip = 1;
                     return;
                 }
 
@@ -606,122 +601,158 @@ sysPass.Util.Common = function () {
             });
     };
 
-    // Función para activar el Drag&Drop de archivos en las cuentas
-    var dropFile = function (accountId, sk, maxsize) {
-        var dropfiles = $('#dropzone');
-        var file_exts_ok = dropfiles.attr('data-files-ext').toLowerCase().split(',');
+    // Función para habilitar la subida de archivos en una zona o formulario
+    var fileUpload = function (opts) {
+        var options = {
+            targetId: '',
+            url: ''
+        };
 
-        dropfiles.filedrop({
-            fallback_id: 'inFile',
-            paramname: 'inFile',
-            maxfiles: 5,
-            maxfilesize: maxsize,
-            allowedfileextensions: file_exts_ok,
-            url: APP_ROOT + '/ajax/ajax_files.php',
-            data: {
-                sk: sk,
-                accountId: accountId,
-                action: 'upload',
-                isAjax: 1
-            },
-            uploadFinished: function (i, file, response) {
-                sysPassUtil.hideLoading();
+        var requestDoneAction, requestData = {};
 
-                var sk = $('input[name="sk"]').val();
-                $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accountId + "&del=1&isAjax=1&sk=" + sk);
-
-                resMsg("ok", response);
+        var setFn = {
+            setRequestDoneAction: function (a) {
+                requestDoneAction = a;
             },
-            error: function (err, file) {
-                switch (err) {
-                    case 'BrowserNotSupported':
-                        resMsg("error", LANG[16]);
-                        break;
-                    case 'TooManyFiles':
-                        resMsg("error", LANG[17] + ' (max. ' + this.maxfiles + ')');
-                        break;
-                    case 'FileTooLarge':
-                        resMsg("error", LANG[18] + ' ' + maxsize + ' MB' + '<br>' + file.name);
-                        break;
-                    case 'FileExtensionNotAllowed':
-                        resMsg("error", LANG[19]);
-                        break;
-                    default:
-                        break;
-                }
-            },
-            uploadStarted: function (i, file, len) {
-                sysPassUtil.showLoading();
+            setRequestData: function (d) {
+                requestData = d;
             }
-        });
-    };
+        };
 
-    // Función para activar el Drag&Drop de archivos en la importación de cuentas
-    var importFile = function (sk) {
-        var dropfiles = $('#dropzone');
-        var file_exts_ok = ['csv', 'xml'];
+        options = opts;
 
-        dropfiles.filedrop({
-            fallback_id: 'inFile',
-            paramname: 'inFile',
-            maxfiles: 1,
-            maxfilesize: 1,
-            allowedfileextensions: file_exts_ok,
-            url: APP_ROOT + '/ajax/ajax_import.php',
-            data: {
-                sk: sk,
-                action: 'import',
-                isAjax: 1,
-                importPwd: function () {
-                    return $('input[name="importPwd"]').val();
+        if (typeof options.targetId === "undefined" || options.targetId === "") {
+            return setFn;
+        }
+
+        var dropzone = document.getElementById(options.targetId);
+
+        // Subir un archivo
+        var sendFile = function (file) {
+            if (typeof options.url === "undefined" || options.url === "") {
+                return false;
+            }
+
+            // Objeto FormData para crear datos de un formulario
+            var fd = new FormData();
+            fd.append('inFile', file);
+            fd.append('isAjax', 1);
+
+            Object.keys(requestData).forEach(function (key) {
+                fd.append(key, requestData[key]);
+            });
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                cache: false,
+                processData: false,
+                contentType: false,
+                url: APP_ROOT + options.url,
+                data: fd,
+                success: function (json) {
+                    var status = json.status;
+                    var description = json.description;
+
+                    if (status === 0) {
+                        if (typeof requestDoneAction === "function") {
+                            requestDoneAction();
+                        }
+
+                        resMsg("ok", description);
+                    } else if (status === 10) {
+                        doLogout();
+                    } else {
+                        resMsg("error", description);
+                    }
                 },
-                defUser: function () {
-                    return $('#import_defaultuser').chosen().val();
-                },
-                defGroup: function () {
-                    return $('#import_defaultgroup').chosen().val();
-                },
-                csvDelimiter: function () {
-                    return $('input[name="csvDelimiter"]').val();
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                    resMsg("error", txt);
                 }
-            },
-            uploadFinished: function (i, file, json) {
-                sysPassUtil.hideLoading();
+            });
+        };
 
-                var status = json.status;
-                var description = json.description;
+        var checkFileSize = function (size) {
+            return (size / 1000 > MAX_FILE_SIZE);
+        };
 
-                if (status === 0) {
-                    resMsg("ok", description);
-                } else if (status === 10) {
-                    resMsg("error", description);
-                    doLogout();
+        var checkFileExtension = function (name) {
+            var file_exts_ok = dropzone.getAttribute('data-files-ext').toLowerCase().split(',');
+
+            for (var i = 0; i <= file_exts_ok.length; i++) {
+                if (name.indexOf(file_exts_ok[i]) !== -1) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        // Comprobar los archivos y subirlos
+        var handleFiles = function (filesArray) {
+            if (filesArray.length > 5) {
+                resMsg("error", LANG[17] + ' (Max: 5)');
+                return;
+            }
+
+            for (var i = 0; i < filesArray.length; i++) {
+                var file = filesArray[i];
+                if (checkFileSize(file.size)) {
+                    resMsg("error", LANG[18] + '<br>' + file.name + ' (Max: ' + MAX_FILE_SIZE + ')');
+                } else if (!checkFileExtension(file.name)) {
+                    resMsg("error", LANG[19] + '<br>' + file.name);
                 } else {
-                    resMsg("error", description);
+                    sendFile(filesArray[i]);
                 }
-            },
-            error: function (err, file) {
-                switch (err) {
-                    case 'BrowserNotSupported':
-                        resMsg("error", LANG[16]);
-                        break;
-                    case 'TooManyFiles':
-                        resMsg("error", LANG[17] + ' (max. ' + this.maxfiles + ')');
-                        break;
-                    case 'FileTooLarge':
-                        resMsg("error", LANG[18] + '<br>' + file.name);
-                        break;
-                    case 'FileExtensionNotAllowed':
-                        resMsg("error", LANG[19]);
-                        break;
-                    default:
-                        break;
-                }
-            },
-            uploadStarted: function (i, file, len) {
-                sysPassUtil.showLoading();
             }
-        });
+        };
+
+        // Inicializar la zona de subida de archivos Drag&Drop
+        var init = function () {
+            dropzone.ondragover = dropzone.ondragenter = function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            };
+
+            dropzone.ondrop = function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                handleFiles(event.dataTransfer.files);
+            };
+
+            var fallback = initForm(false);
+
+            dropzone.onclick = function () {
+                fallback.click();
+            };
+        };
+
+        // Inicializar el formulario de archivos en modo compatibilidad
+        var initForm = function (display) {
+            var form = document.getElementById("fileUploadForm");
+            var formTags = form.getElementsByTagName("input");
+
+            form.style.display = (display === false) ? 'none' : '';
+
+            if (formTags[0].type === "file") {
+                formTags[0].addEventListener("change", function () {
+                    handleFiles(this.files);
+                }, false);
+            }
+
+            return formTags[0];
+        };
+
+
+        if (window.File && window.FileList && window.FileReader) {
+            init();
+        } else {
+            initForm(true);
+        }
+
+        return setFn;
     };
 
     // Función para realizar una petición ajax
@@ -1198,10 +1229,9 @@ sysPass.Util.Common = function () {
         doLogin: doLogin,
         doLogout: doLogout,
         downFile: downFile,
-        dropFile: dropFile,
         encryptFormValue: encryptFormValue,
+        fileUpload: fileUpload,
         getFiles: getFiles,
-        importFile: importFile,
         navLog: navLog,
         outputResult: outputResult,
         redirect: redirect,

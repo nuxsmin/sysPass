@@ -53,8 +53,8 @@ $fileId = SP\Request::analyze('fileId', 0);
 $log = new \SP\Log();
 
 if ($action == 'upload') {
-    if (!is_array($_FILES["inFile"]) || !$accountId === 0) {
-        exit();
+    if (!is_array($_FILES["inFile"]) || $accountId === 0) {
+        \SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
     }
 
     $log->setAction(_('Subir Archivo'));
@@ -69,7 +69,7 @@ if ($action == 'upload') {
         $log->addDescription(_('No hay extensiones permitidas'));
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription());
     }
 
     if (is_array($_FILES) && $_FILES['inFile']['name']) {
@@ -80,13 +80,13 @@ if ($action == 'upload') {
             $log->addDescription(_('Tipo de archivo no soportado') . " '" . $fileData['extension'] . "' ");
             $log->writeLog();
 
-            exit($log->getDescription());
+            \SP\Response::printJSON($log->getDescription());
         }
     } else {
         $log->addDescription(_('Archivo inválido') . ":<br>" . $_FILES['inFile']['name']);
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription());
     }
 
     // Variables con información del archivo
@@ -102,14 +102,14 @@ if ($action == 'upload') {
         $log->addDescription(_('Error interno al leer el archivo'));
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription());
     }
 
     if ($fileData['size'] > ($allowedSize * 1000)) {
         $log->addDescription(_('El archivo es mayor de ') . " " . round(($allowedSize / 1000), 1) . "MB");
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription());
     }
 
     // Leemos el archivo a una variable
@@ -119,19 +119,19 @@ if ($action == 'upload') {
         $log->addDescription(_('Error interno al leer el archivo'));
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription());
     }
 
     if (SP\Files::fileUpload($accountId, $fileData)) {
         $log->addDescription(_('Archivo guardado'));
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription(), 0);
     } else {
         $log->addDescription(_('No se pudo guardar el archivo'));
         $log->writeLog();
 
-        exit($log->getDescription());
+        \SP\Response::printJSON($log->getDescription());
     }
 }
 
