@@ -1,3 +1,21 @@
+=== ** v1.2.0.09 ===
+
+* [MOD] Updated French translation. Thanks to @Cyril
+* [FIX] Fixed Update accounts' history master password hash when upgrading from previous versions. Thanks to @TitovLab
+* [MOD] Modified account history select box behavior when account id matches history id.
+* [FIX] Fixed javascript translation in complexity dialog. Thanks to @TitovLab
+* [ADD] Added Russian translation. Thanks to @TitovLab
+* [FIX] Upload files rewritten to fix issue with UTF8 strings. Removed FileDrop JQuery plugin . Thanks to @TitovLab
+* [FIX] Fixed css to fit to card layout.
+* [FIX] Set maximum uplodaded file sizes as set in accounts config. Thanks to  @cgarciaarano
+* [FIX] Fixed tooltip showing in classic theme. Thanks to @gabrielsoltz
+* [FIX] Fixed path and directory separators to be system independent. Thanks to @stawiu
+* [FIX] Fixed number parsing by request analyzer. Thanks to @gabrielsoltz and @GastonLex
+* [FIX] Copy to clipboard action not shown when show optional actions preference is set.
+* [MOD] Enable LDAP debug mode if global debug mode has been enabled.
+* [FIX] Fixed issue when importing accounts from CSV file. Thanks to @basil-twisleton
+* [FIX] Fixed typo on upgrade query to version 1.1.2.20. Related #165
+
 === ** v1.2.0.08 ===
 
 * [FIX] Fixed issue on copy password to clipboard on Chrome browser. Related #140. Thanks to @basil-twisleton

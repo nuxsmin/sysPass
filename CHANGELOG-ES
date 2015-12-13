@@ -1,3 +1,21 @@
+=== ** v1.2.0.09 ===
+
+* [MOD] Actualizada traducción al francés. Gracias a @Cyril
+* [FIX] Corregida la actualización del hash de la clave maestra en las cuentas del histórico cuando se actualiza desde versiones anteriores. Gracias a @TitovLab
+* [MOD] Modificado el comportamiento de selección de cuenta en el histórico.
+* [FIX] Corregida la traducción del diálogo de complejidad de claves. Gracias a @TitovLab
+* [ADD] Añadda traducción al ruso. Gracias a @TitovLab
+* [FIX] Reescrita la función para subir archivos para corregir error en nombre de archivos con caracteres especiales. Eliminado el plugin FileDrop de JQuery. Gracias a @TitovLab
+* [FIX] Corregido CSS para ajustar la vista en formato tarjeta en el tema material-blue.
+* [FIX] Establecido el tamaño de subida global de archivos. Gracias a  @cgarciaarano
+* [FIX] Corregida la funcionalidad de ayuda en tema classic. Gracias a @gabrielsoltz
+* [FIX] Corregidos separadores de directorios y ruta para ser independientes del sistema. Gracias a @stawiu
+* [FIX] Corregido error en el parseo de cadenas de números por el analizador de peticiones. Gracias a @gabrielsoltz y @GastonLex
+* [FIX] Corregida funcionalidad de copiar al portapapeles cuando está activa la visualización de acciones.
+* [MOD] Habilitar modo depuración de LDAP cuando está activo el modo de depuración global.
+* [FIX] Corregido error al importar cuentas desde archivos CSV. Gracias a @basil-twisleton
+* [FIX] Corregido typo en la consulta de actualización a versión 1.1.2.20.
+
 === ** v1.2.0.08 ===
 
 * [FIX] Corregido error al copiar clave al portapapeles en el navegador Chrome. Related #140. Thanks to @basil-twisleton

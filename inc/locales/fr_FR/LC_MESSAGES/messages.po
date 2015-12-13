@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-25 23:36+0100\n"
-"PO-Revision-Date: 2015-10-25 23:36+0100\n"
-"Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
+"POT-Creation-Date: 2015-12-09 12:15+0100\n"
+"PO-Revision-Date: 2015-12-09 12:15+0100\n"
+"Last-Translator: schadeck <schadeck@apt-france.com>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -156,7 +156,7 @@ msgstr "Nouvel Utilisateur"
 
 #: ../../../../ajax/ajax_appMgmtData.php:73
 msgid "Ver Grupo"
-msgstr "Détail Groupe"
+msgstr "Détails Groupe"
 
 #: ../../../../ajax/ajax_appMgmtData.php:80
 #: ../../../../web/UsersMgmtC.class.php:203
@@ -171,7 +171,7 @@ msgstr "Nouveau Groupe"
 
 #: ../../../../ajax/ajax_appMgmtData.php:92
 msgid "Ver Perfil"
-msgstr "Détail Profil"
+msgstr "Détails Profil"
 
 #: ../../../../ajax/ajax_appMgmtData.php:99
 #: ../../../../web/UsersMgmtC.class.php:268
@@ -308,7 +308,7 @@ msgstr "Erreur pendant la modification du mot de passe"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:162
 msgid "No es posible eliminar, usuario en uso"
-msgstr "Impossible à supprimer, utilisateur en activité"
+msgstr "Impossible à supprimer, utilisateur actif"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:166
 msgid "Usuario eliminado"
@@ -425,7 +425,7 @@ msgstr "Client ajouté"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:364
 msgid "Cliente actualizado"
-msgstr "Compte actualisé"
+msgstr "Client actualisé"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:374
 msgid "Cliente eliminado"
@@ -449,7 +449,7 @@ msgstr "Catégorie supprimé"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:450
 msgid "Usuario o acción no indicado"
-msgstr ""
+msgstr "Utilisateur ou action non défini"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:460
 msgid "Autorización creada"
@@ -465,15 +465,15 @@ msgstr "Autorisation supprimée"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:495
 msgid "Nombre del campo no indicado"
-msgstr "Nom de champ pas configurer"
+msgstr "Nom de champ indéfini"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:497
 msgid "Tipo del campo no indicado"
-msgstr "Type de champ pas configurer"
+msgstr "Type de champ indéfini"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:499
 msgid "Módulo del campo no indicado"
-msgstr ""
+msgstr "Module de champ indéfini"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:513
 msgid "Campo creado"
@@ -545,7 +545,7 @@ msgstr "Connexion LDAP OK"
 
 #: ../../../../ajax/ajax_checkLdap.php:60
 msgid "Objetos encontrados"
-msgstr "Objet trouvé"
+msgstr "Objets trouvés"
 
 #: ../../../../ajax/ajax_configSave.php:58
 msgid "Modificar Configuración"
@@ -565,18 +565,18 @@ msgstr "Paramètres Proxy manquant"
 
 #: ../../../../ajax/ajax_configSave.php:136
 msgid "Proxy habiltado"
-msgstr ""
+msgstr "Proxy activé"
 
 #: ../../../../ajax/ajax_configSave.php:140
 msgid "Proxy deshabilitado"
-msgstr ""
+msgstr "Proxy désactivé"
 
 #: ../../../../ajax/ajax_configSave.php:143
 #: ../../../../ajax/ajax_configSave.php:167
 #: ../../../../ajax/ajax_configSave.php:201
 #: ../../../../ajax/ajax_configSave.php:240
 msgid "Sección"
-msgstr ""
+msgstr "Section"
 
 #: ../../../../ajax/ajax_configSave.php:143
 #: ../../../../web/ConfigC.class.php:108
@@ -591,11 +591,11 @@ msgstr "Paramètres Wiki manquants"
 
 #: ../../../../ajax/ajax_configSave.php:160
 msgid "Wiki habiltada"
-msgstr ""
+msgstr "Wiki activé"
 
 #: ../../../../ajax/ajax_configSave.php:164
 msgid "Wiki deshabilitada"
-msgstr ""
+msgstr "Wiki désactivé"
 
 #: ../../../../ajax/ajax_configSave.php:167
 #: ../../../../web/ConfigC.class.php:244
@@ -610,11 +610,11 @@ msgstr "Paramètres LDAP manquants"
 
 #: ../../../../ajax/ajax_configSave.php:194
 msgid "LDAP habiltado"
-msgstr ""
+msgstr "LDAP activé"
 
 #: ../../../../ajax/ajax_configSave.php:198
 msgid "LDAP deshabilitado"
-msgstr ""
+msgstr "LDAP désactivé"
 
 #: ../../../../ajax/ajax_configSave.php:201
 #: ../../../../web/ConfigC.class.php:276
@@ -629,11 +629,11 @@ msgstr "Paramètres de courriel manquants"
 
 #: ../../../../ajax/ajax_configSave.php:231
 msgid "Correo habiltado"
-msgstr ""
+msgstr "Courriel activé"
 
 #: ../../../../ajax/ajax_configSave.php:237
 msgid "Correo deshabilitado"
-msgstr ""
+msgstr "Courriel désactivé"
 
 #: ../../../../ajax/ajax_configSave.php:240
 #: ../../../../web/ConfigC.class.php:306
@@ -689,7 +689,7 @@ msgstr "Erreur lors de la mise à jour des mots de passe dans l'historique"
 
 #: ../../../../ajax/ajax_configSave.php:302
 msgid "Errores al actualizar datos de campos personalizados"
-msgstr ""
+msgstr "Erreur pendant la mise à jour de champs personnalisés"
 
 #: ../../../../ajax/ajax_configSave.php:315
 #: ../../../../inc/Account.class.php:512
@@ -746,7 +746,7 @@ msgstr "Mot de passe temporel generé"
 
 #: ../../../../ajax/ajax_configSave.php:331
 msgid "Error al generar clave temporal"
-msgstr ""
+msgstr "Erreur pendant la génération du mot de passe temporaire"
 
 #: ../../../../ajax/ajax_doLogin.php:49
 msgid "Usuario/Clave no introducidos"
@@ -780,9 +780,7 @@ msgstr "Erreur Interne"
 
 #: ../../../../ajax/ajax_doLogin.php:80
 msgid "Error al actualizar la clave del usuario en la BBDD"
-msgstr ""
-"Erreur pendant l'actualisation du mot de passe utilisateur dans la base de "
-"données"
+msgstr "Erreur pendant l'actualisation du mot de passe utilisateur dans la base de données"
 
 #: ../../../../ajax/ajax_doLogin.php:88 ../../../../ajax/ajax_doLogin.php:113
 msgid "Login incorrecto"
@@ -848,8 +846,7 @@ msgstr "Utilisateur désactivé"
 
 #: ../../../../ajax/ajax_doLogin.php:132
 msgid "Error al obtener los datos del usuario de la BBDD"
-msgstr ""
-"Erreur pendant la récupération des données utilisateur à partir de la BDD"
+msgstr "Erreur pendant la récupération des données utilisateur à partir de la BDD"
 
 #: ../../../../ajax/ajax_doLogin.php:142
 msgid "La clave maestra no ha sido guardada o es incorrecta"
@@ -1100,7 +1097,7 @@ msgstr "Erreur à l'envoie de la demande"
 #: ../../../../ajax/ajax_userPrefsSave.php:75
 #: ../../../../ajax/ajax_userPrefsSave.php:108
 msgid "Error al actualizar preferencias"
-msgstr ""
+msgstr "Erreur pendant l'actualisation des préférences"
 
 #: ../../../../ajax/ajax_userPrefsSave.php:85
 #: ../../../../ajax/ajax_userPrefsSave.php:111
@@ -1132,7 +1129,7 @@ msgstr "Mot de passe du compte"
 
 #: ../../../../api.php:56
 msgid "Ayuda Parámetros"
-msgstr ""
+msgstr "Aide paramètres"
 
 #: ../../../../inc/Account.class.php:28
 #: ../../../../inc/AccountBase.class.php:28
@@ -1275,7 +1272,7 @@ msgstr "Le mot du passe du compte est vide"
 #: ../../../../inc/Account.class.php:547
 #: ../../../../inc/AccountHistory.class.php:170
 msgid "IV de encriptación incorrecto"
-msgstr ""
+msgstr "IV d'encryption incorrect"
 
 #: ../../../../inc/Account.class.php:556
 #: ../../../../inc/AccountHistory.class.php:179
@@ -1385,7 +1382,7 @@ msgstr "Gestion des champs personnalisés"
 
 #: ../../../../inc/Acl.class.php:141
 msgid "Gestión Autorizaciones API"
-msgstr ""
+msgstr "Gestion des autorisations des APIs"
 
 #: ../../../../inc/Acl.class.php:142 ../../../../inc/Acl.class.php:143
 msgid "Gestión Usuarios"
@@ -1443,7 +1440,7 @@ msgstr "Erreur d'encodage"
 
 #: ../../../../inc/ApiRequest.class.php:102
 msgid "Token de autorización"
-msgstr ""
+msgstr "Token d'autorisation"
 
 #: ../../../../inc/ApiRequest.class.php:103
 msgid "Acción a realizar"
@@ -1463,7 +1460,7 @@ msgstr "Nombre de résultats par page à afficher durant une recherche"
 
 #: ../../../../inc/ApiRequest.class.php:107
 msgid "Item a devolver"
-msgstr ""
+msgstr "Item à retourner"
 
 #: ../../../../inc/ApiTokens.class.php:221
 msgid "La autorización ya existe"
@@ -1492,8 +1489,7 @@ msgstr "Changement de Mot de passe"
 
 #: ../../../../inc/Auth.class.php:188
 msgid "Se ha solicitado el cambio de su clave de usuario."
-msgstr ""
-"Une demande de changement de mot de passe pour votre utilisateur a été faite"
+msgstr "Une demande de changement de mot de passe pour votre utilisateur a été faite"
 
 #: ../../../../inc/Auth.class.php:190
 msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
@@ -1501,9 +1497,7 @@ msgstr "Afin de terminer le traitement, veuillez aller sur cet URL:"
 
 #: ../../../../inc/Auth.class.php:194
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
-msgstr ""
-"Si vous n'êtes pas à l'origine de cette demande, ne tenez pas compte de ce "
-"message."
+msgstr "Si vous n'êtes pas à l'origine de cette demande, ne tenez pas compte de ce message."
 
 #: ../../../../inc/Backup.class.php:167
 msgid "Esta operación sólo es posible en entornos Linux"
@@ -1611,7 +1605,7 @@ msgstr "Avertissement"
 #: ../../../../inc/Crypt.class.php:122
 msgid ""
 "Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
-msgstr ""
+msgstr "Le hash du mot de passe maître a été regénéré. Aucune autre action n'est nécessaire"
 
 #: ../../../../inc/Crypt.class.php:186
 msgid "No se puede usar el módulo de encriptación"
@@ -1623,12 +1617,12 @@ msgstr "Erreur pendant la création des données d'encryption"
 
 #: ../../../../inc/CryptPKI.class.php:46
 msgid "No es posible generar las claves RSA"
-msgstr ""
+msgstr "Impossible de générer les clés RSA"
 
 #: ../../../../inc/CryptPKI.class.php:112
 #: ../../../../inc/CryptPKI.class.php:143
 msgid "El archivo de clave no existe"
-msgstr ""
+msgstr "Le fichier de clé n'existe pas"
 
 #: ../../../../inc/CsvImportBase.class.php:109
 #, php-format
@@ -1638,7 +1632,7 @@ msgstr "Mauvais numéro de champs (%d)"
 #: ../../../../inc/CsvImportBase.class.php:110
 #, php-format
 msgid "Compruebe el formato del archivo CSV en línea %s"
-msgstr ""
+msgstr "Veuillez, s'il vous plait, vérifier le format CSV à la ligne %s"
 
 #: ../../../../inc/CsvImportBase.class.php:140
 #: ../../../../inc/CsvImportBase.class.php:145
@@ -1657,7 +1651,7 @@ msgstr "Erreur pendant l'importation des comptes"
 #: ../../../../inc/CsvImportBase.class.php:142
 #, php-format
 msgid "Error procesando línea %s"
-msgstr ""
+msgstr "Erreur de traitement ligne %s"
 
 #: ../../../../inc/CsvImportBase.class.php:145
 #, php-format
@@ -1673,23 +1667,23 @@ msgstr "Champs personnalisés"
 
 #: ../../../../inc/CustomFields.class.php:291
 msgid "Actualizando datos encriptados"
-msgstr ""
+msgstr "Actualisation des données cryptés"
 
 #: ../../../../inc/CustomFields.class.php:318
 msgid "Registros no actualizados"
-msgstr ""
+msgstr "Enregistrements non actualisés"
 
 #: ../../../../inc/CustomFieldsBase.class.php:86
 msgid "Texto"
-msgstr ""
+msgstr "Texte"
 
 #: ../../../../inc/CustomFieldsBase.class.php:88
 msgid "Fecha"
-msgstr ""
+msgstr "Date"
 
 #: ../../../../inc/CustomFieldsBase.class.php:89
 msgid "Número"
-msgstr ""
+msgstr "Numéro"
 
 #: ../../../../inc/CustomFieldsBase.class.php:90
 #: ../../../../inc/themes/classic/passreset.inc:22
@@ -1700,15 +1694,15 @@ msgstr "Courriel"
 
 #: ../../../../inc/CustomFieldsBase.class.php:91
 msgid "Teléfono"
-msgstr ""
+msgstr "Téléphone"
 
 #: ../../../../inc/CustomFieldsBase.class.php:92
 msgid "Link"
-msgstr ""
+msgstr "Lien"
 
 #: ../../../../inc/CustomFieldsBase.class.php:93
 msgid "Color"
-msgstr ""
+msgstr "Couleur"
 
 #: ../../../../inc/CustomFieldsBase.class.php:107
 #: ../../../../inc/themes/classic/profiles.inc:98
@@ -1850,7 +1844,7 @@ msgstr "Supprimer Groupe"
 
 #: ../../../../inc/Groups.class.php:372
 msgid "Error al eliminar los usuarios del grupo"
-msgstr ""
+msgstr "Erreur pendant la supression des utilisateurs du groupe"
 
 #: ../../../../inc/Import.class.php:109
 msgid "Tipo mime no soportado"
@@ -2026,7 +2020,7 @@ msgstr "Impossible à supprimer, utilisateur en activité"
 #: ../../../../inc/Installer.class.php:268
 #, fuzzy
 msgid "Compruebe los permisos del usuario de conexión a la BD"
-msgstr "Vérifiez les permissions du dossier \"config\""
+msgstr "Vérifiez les permissions de l'utilisateur de connexion à la base de données"
 
 #: ../../../../inc/Installer.class.php:319
 msgid "El usuario de MySQL ya existe"
@@ -2042,8 +2036,7 @@ msgstr "La base de données existe déjà"
 
 #: ../../../../inc/Installer.class.php:334
 msgid "Indique una nueva Base de Datos o elimine la existente"
-msgstr ""
-"Saisissez une nouvelle base de données ou supprimez celle qui existe déjà"
+msgstr "Saisissez une nouvelle base de données ou supprimez celle qui existe déjà"
 
 #: ../../../../inc/Installer.class.php:343
 #: ../../../../inc/Installer.class.php:414
@@ -2053,8 +2046,7 @@ msgstr "Erreur pendant la création de la BDD"
 #: ../../../../inc/Installer.class.php:344
 #: ../../../../inc/Installer.class.php:355
 msgid "Verifique los permisos del usuario de la Base de Datos"
-msgstr ""
-"Veuillez vérifier les permissions de l'utilisateur de la base de données"
+msgstr "Veuillez vérifier les permissions de l'utilisateur de la base de données"
 
 #: ../../../../inc/Installer.class.php:354
 msgid "Error al establecer permisos de la BBDD"
@@ -2066,9 +2058,7 @@ msgstr "Fichier de structure de base de données inexistant"
 
 #: ../../../../inc/Installer.class.php:388
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
-msgstr ""
-"Impossible de créer la base de donnée de l'application. Veuillez la "
-"télécharger de nouveau."
+msgstr "Impossible de créer la base de donnée de l'application. Veuillez la télécharger de nouveau."
 
 #: ../../../../inc/Installer.class.php:396
 msgid "Error al seleccionar la BBDD"
@@ -2145,7 +2135,7 @@ msgstr "Erreur pendant la recherche de groupe d'utilisateurs"
 
 #: ../../../../inc/Ldap.class.php:397
 msgid "Usuario verificado en grupo"
-msgstr ""
+msgstr "Utilisateur vérifié dans le groupe"
 
 #: ../../../../inc/LdapADS.class.php:112 ../../../../inc/LdapADS.class.php:117
 msgid "No se encontró el grupo con ese nombre"
@@ -2304,7 +2294,7 @@ msgstr "Migrer des profiles"
 
 #: ../../../../inc/Profile.class.php:69
 msgid "Error al obtener perfiles"
-msgstr ""
+msgstr "Erreur pendant l'obtention des profils"
 
 #: ../../../../inc/Profile.class.php:126
 msgid "Operación realizada correctamente"
@@ -2316,7 +2306,7 @@ msgstr "Erreur pendant l'opération"
 
 #: ../../../../inc/ProfileBase.class.php:164
 msgid "Datos de perfil incorrectos"
-msgstr ""
+msgstr "Données de profil incorrectes"
 
 #: ../../../../inc/ProfileBase.class.php:550
 #: ../../../../web/UsersMgmtC.class.php:275
@@ -2348,17 +2338,17 @@ msgstr "Il n'y a pas de comptes à importer"
 #: ../../../../inc/Template.class.php:91
 #, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
-msgstr ""
+msgstr "Impossible d'obtenir le modèle \"%s\" : %s"
 
 #: ../../../../inc/Template.class.php:130
 #, php-format
 msgid "No es posible obtener la variable \"%s\""
-msgstr ""
+msgstr "Impossible d'obtenir la variable \"%s\""
 
 #: ../../../../inc/Template.class.php:173
 #, php-format
 msgid "No es posible destruir la variable \"%s\""
-msgstr ""
+msgstr "Impossible de détruire la variable \"%s\""
 
 #: ../../../../inc/Upgrade.class.php:51
 msgid "Error al aplicar la actualización de la Base de Datos"
@@ -2442,11 +2432,11 @@ msgstr "Nouvel utilisateur LDAP"
 
 #: ../../../../inc/UserMigrate.class.php:113
 msgid "Migrar Grupos"
-msgstr ""
+msgstr "Migrer les groupes"
 
 #: ../../../../inc/UserMigrate.class.php:113
 msgid "Error al migrar grupo del usuario"
-msgstr ""
+msgstr "Erreur pendant la migration du groupe de l'utilisateur"
 
 #: ../../../../inc/Util.class.php:119
 msgid "Versión de PHP requerida >= "
@@ -2471,7 +2461,7 @@ msgstr "Sans ce module, l'application ne peut pas fonctionner correctement."
 
 #: ../../../../inc/XmlExport.class.php:127
 msgid "Exportar XML"
-msgstr ""
+msgstr "Exporter XML"
 
 #: ../../../../inc/XmlExport.class.php:412
 msgid "Error al crear el archivo XML"
@@ -2479,7 +2469,7 @@ msgstr "Erreur pendant la création du fichier XML"
 
 #: ../../../../inc/XmlImport.class.php:63
 msgid "Formato detectado"
-msgstr ""
+msgstr "Format détecté"
 
 #: ../../../../inc/XmlImportBase.class.php:80
 msgid "No es posible procesar el archivo XML"
@@ -2573,7 +2563,7 @@ msgstr "Trop de fichiers"
 #: ../../../../js/strings.js.php:45
 #, php-format
 msgid "No es posible guardar el archivo \"%s\" Tamaño máximo:"
-msgstr ""
+msgstr "Impossible de conserver l'archive \"%s\" Taille maximum:"
 
 #: ../../../../js/strings.js.php:47
 msgid "Vaciar el registro de eventos?"
@@ -2617,7 +2607,7 @@ msgstr "Compléxité"
 
 #: ../../../../js/strings.js.php:57
 msgid "Restablecer"
-msgstr ""
+msgstr "Rétablir"
 
 #: ../../../../js/strings.js.php:58
 #: ../../../../inc/themes/classic/editpass.inc:33
@@ -2722,11 +2712,11 @@ msgstr "NON"
 
 #: ../../../../js/strings.js.php:69
 msgid "Aceptar"
-msgstr ""
+msgstr "Accepter"
 
 #: ../../../../js/strings.js.php:70
 msgid "Cancelar"
-msgstr ""
+msgstr "Annuler"
 
 #: ../../../../js/strings.js.php:71
 msgid "Clave Copiada al Portapapeles"
@@ -2734,7 +2724,7 @@ msgstr "Mot de passe copié dans le presse papier"
 
 #: ../../../../js/strings.js.php:72
 msgid "Error al copiar al portapapeles"
-msgstr ""
+msgstr "Erreur lors de la copie dans le presse papier"
 
 #: ../../../../web/AccountC.class.php:386
 #: ../../../../web/AccountC.class.php:417
@@ -2840,11 +2830,11 @@ msgstr "Chercher"
 
 #: ../../../../web/MainC.class.php:189
 msgid "Usuarios y Accesos"
-msgstr ""
+msgstr "Utilisateurs et Accès"
 
 #: ../../../../web/MainC.class.php:195
 msgid "Elementos y Personalización"
-msgstr ""
+msgstr "Eléments et personnalisation"
 
 #: ../../../../web/MainC.class.php:207
 #: ../../../../inc/themes/classic/eventlog.inc:2
@@ -2866,7 +2856,7 @@ msgstr "Prévisualisation d'images"
 
 #: ../../../../web/MainC.class.php:231
 msgid "Mostrar claves como imágenes"
-msgstr ""
+msgstr "Montrer les mots de passe comme images"
 
 #: ../../../../web/MainC.class.php:232
 msgid "Campos personalizados"
@@ -2874,7 +2864,7 @@ msgstr "Champs personnalisés"
 
 #: ../../../../web/MainC.class.php:233
 msgid "API de consultas"
-msgstr ""
+msgstr "API de consultation"
 
 #: ../../../../web/MainC.class.php:234
 #: ../../../../inc/themes/classic/2fa.inc:9
@@ -2909,7 +2899,7 @@ msgstr "Un code optimisé et un chargement plus rapide"
 
 #: ../../../../web/MainC.class.php:241
 msgid "Mejoras de seguridad en XSS e inyección SQL"
-msgstr ""
+msgstr "Améliration de la sécurité afin de prévenir les injections XSS et SQL"
 
 #: ../../../../web/MainC.class.php:282
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
@@ -2948,7 +2938,7 @@ msgstr "Télécharger nouvelle version"
 
 #: ../../../../web/MainC.class.php:419
 msgid "Avisos de sysPass"
-msgstr ""
+msgstr "Notifications de sysPass"
 
 #: ../../../../web/SearchC.class.php:286
 msgid "Ordenar por Cliente"
@@ -3023,15 +3013,15 @@ msgstr "Gestion des Profils"
 
 #: ../../../../web/UsersMgmtC.class.php:408
 msgid "Ver token de Autorización"
-msgstr ""
+msgstr "Voir le token d'autorisation"
 
 #: ../../../../web/UsersMgmtC.class.php:435
 msgid "Gestión de Autorizaciones API"
-msgstr ""
+msgstr "API de gestion des autorisations"
 
 #: ../../../../web/UsersMgmtC.class.php:457
 msgid "Token de autorización visualizado"
-msgstr ""
+msgstr "Token d'autorisation vu"
 
 #: ../../../../web/UsersMgmtC.class.php:458
 msgid "Autorizaciones"
@@ -3349,6 +3339,8 @@ msgid ""
 "La copia de seguridad permite guardar y descargar tanto la base de datos de "
 "sysPass como los archivos de la aplicación y su configuración."
 msgstr ""
+"La copie de sécurité permet de sauvegarder et télécharger indépendamment la "
+"base de données sysPass et les fichiers de l'application ainsi que la configuration"
 
 #: ../../../../inc/themes/classic/backup.inc:52
 #: ../../../../inc/themes/material-blue/backup.inc:54
@@ -3356,6 +3348,8 @@ msgid ""
 "Con este método es posible guardar todos los datos de sysPass en otro lugar "
 "o utilizarlos para hacer la aplicación portable."
 msgstr ""
+"Avec cette méthode, il est possible de sauvegarder toutes les données de sysPass "
+"sur un autre emplacement ou de l'utiliser pour en faire une application portable"
 
 #: ../../../../inc/themes/classic/backup.inc:60
 #: ../../../../inc/themes/classic/backup.inc:126
@@ -3386,6 +3380,8 @@ msgid ""
 "La exportación de cuentas permite guardar las cuentas y sus datos en formato "
 "XML para posteriormente poder ser importados en otras instancias de sysPass."
 msgstr ""
+"L'exportation des comptes permet de sauvegarder ces derniers ainsi que leurs "
+"données au format XML afin de les importer dans une autre instance sysPass"
 
 #: ../../../../inc/themes/classic/backup.inc:120
 #: ../../../../inc/themes/material-blue/backup.inc:136
@@ -3445,6 +3441,8 @@ msgid ""
 "Establece el idioma global de la aplicación. Es posible establecer un idioma "
 "por usuario en las preferencias."
 msgstr ""
+"Défini la langue globale de l'application. Vous pouvez également définir la "
+"langue dans les préférences utilisateurs."
 
 #: ../../../../inc/themes/classic/config.inc:18
 #: ../../../../inc/themes/material-blue/config.inc:19
@@ -3452,6 +3450,8 @@ msgid ""
 "Para mejorar/añadir las traducciones, puede colaborar en http:://translate."
 "syspass.org"
 msgstr ""
+"Afin d'améliorer/ajouter les traductions, vous pouvez vous investir sur "
+"http://translate.syspass.org"
 
 #: ../../../../inc/themes/classic/config.inc:33
 #: ../../../../inc/themes/classic/preferences.inc:24
@@ -3466,6 +3466,8 @@ msgid ""
 "Establece el tema visual global de la aplicación. Es posible establecer un "
 "tema visual por usuario en las preferencias."
 msgstr ""
+"Défini le thème visuel global de l'application. Vous pouvez définir le "
+"thème par utilisateur dans les préférences utilisateur."
 
 #: ../../../../inc/themes/classic/config.inc:52
 #: ../../../../inc/themes/material-blue/config.inc:53
@@ -3481,7 +3483,7 @@ msgstr "Active le journal des évènements"
 #: ../../../../inc/themes/classic/config.inc:65
 #: ../../../../inc/themes/material-blue/config.inc:89
 msgid "Guarda las acciones realizadas en la aplicación."
-msgstr ""
+msgstr "Sauvegarde les actions effectuées par l'application."
 
 #: ../../../../inc/themes/classic/config.inc:77
 #: ../../../../inc/themes/material-blue/config.inc:103
@@ -3528,7 +3530,7 @@ msgstr ""
 #: ../../../../inc/themes/classic/config.inc:125
 #: ../../../../inc/themes/material-blue/config.inc:157
 msgid "Comprobar notificaciones"
-msgstr ""
+msgstr "Vérifier les notifications"
 
 #: ../../../../inc/themes/classic/config.inc:129
 #: ../../../../inc/themes/material-blue/config.inc:161
@@ -3536,6 +3538,8 @@ msgid ""
 "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
 "para los usuarios administradores)."
 msgstr ""
+"Vérifier s'il existe des notifications ou alertes de sécurité syspass "
+"(uniquement pour les administrateurs)."
 
 #: ../../../../inc/themes/classic/config.inc:141
 #: ../../../../inc/themes/classic/preferences.inc:38
@@ -3551,7 +3555,7 @@ msgstr "Nom de compte comme lien"
 msgid ""
 "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
 "de la cuenta."
-msgstr ""
+msgstr "Active le nom du compte comme lien vers les détails du compte"
 
 #: ../../../../inc/themes/classic/config.inc:157
 #: ../../../../inc/themes/material-blue/config.inc:267
@@ -3561,7 +3565,7 @@ msgstr "Gestion des fichiers"
 #: ../../../../inc/themes/classic/config.inc:161
 #: ../../../../inc/themes/material-blue/config.inc:271
 msgid "Habilita la subida/descarga de archivos para las cuentas."
-msgstr ""
+msgstr "Active le chargement/téléchargement des fichiers de comptes"
 
 #: ../../../../inc/themes/classic/config.inc:173
 #: ../../../../inc/themes/material-blue/config.inc:200
@@ -3574,6 +3578,8 @@ msgid ""
 "Permite que todos los usuarios puedan realizar búsquedas en todas las "
 "cuentas, pero no pueden ver el contenido de las que no tienen permisos."
 msgstr ""
+"Permet aux utilisateurs d'effectuer des recherches incluant tous les comptes, "
+"S'ils n'ont pas la permission ils ne peuvent pas voir les détails des comptes."
 
 #: ../../../../inc/themes/classic/config.inc:189
 #: ../../../../inc/themes/material-blue/config.inc:286
@@ -3583,12 +3589,12 @@ msgstr "Extensions de fichiers permises"
 #: ../../../../inc/themes/classic/config.inc:193
 #: ../../../../inc/themes/material-blue/config.inc:290
 msgid "Extensiones permitidas para la subida de archivos."
-msgstr ""
+msgstr "Extensions de fichiers autorisées au chargement."
 
 #: ../../../../inc/themes/classic/config.inc:197
 #: ../../../../inc/themes/material-blue/config.inc:294
 msgid "Se permite un máximo de 4 caracteres."
-msgstr ""
+msgstr "4 caractères maximum autorisés."
 
 #: ../../../../inc/themes/classic/config.inc:201
 #: ../../../../inc/themes/material-blue/config.inc:298
@@ -3634,17 +3640,19 @@ msgstr "Active l'affichage des résultats de recherche comme format carte."
 #: ../../../../inc/themes/classic/config.inc:262
 #: ../../../../inc/themes/material-blue/config.inc:238
 msgid "Imagen para mostrar clave"
-msgstr ""
+msgstr "Image pour visualiser le mot de passe"
 
 #: ../../../../inc/themes/classic/config.inc:266
 #: ../../../../inc/themes/material-blue/config.inc:242
 msgid "Generar una imagen con el texto de la clave de la cuenta."
-msgstr ""
+msgstr "Génère une image avec le texte du mot de passe du compte."
 
 #: ../../../../inc/themes/classic/config.inc:269
 #: ../../../../inc/themes/material-blue/config.inc:245
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
+"Utile pour les environnements où copier le mot de passe dans le presse papier "
+"est un risque pour la sécurité."
 
 #: ../../../../inc/themes/classic/config.inc:304
 #: ../../../../inc/themes/material-blue/config.inc:435
@@ -3788,17 +3796,17 @@ msgstr "Pas généré"
 #: ../../../../inc/themes/classic/encryption.inc:121
 #: ../../../../inc/themes/material-blue/encryption.inc:136
 msgid "Válido hasta"
-msgstr ""
+msgstr "Vailde jusqu'à"
 
 #: ../../../../inc/themes/classic/encryption.inc:133
 #: ../../../../inc/themes/material-blue/encryption.inc:148
 #: ../../../../inc/themes/material-blue/encryption.inc:154
 msgid "Validez (s)"
-msgstr ""
+msgstr "Validité (s)"
 
 #: ../../../../inc/themes/classic/encryption.inc:136
 msgid "Validez"
-msgstr ""
+msgstr "Validité"
 
 #: ../../../../inc/themes/classic/encryption.inc:164
 #: ../../../../inc/themes/material-blue/encryption.inc:183
@@ -3807,6 +3815,9 @@ msgid ""
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
 "la clave maestra original."
 msgstr ""
+"Le mot de passe temporaire est utilisé comme mot de passe maître pour les "
+"utilisateurs qui ont besoin de le saisir pendant le login. De cette manière, "
+"il n'est nul besoin de leur demander de saisir le véritable mot de passe maître."
 
 #: ../../../../inc/themes/classic/encryption.inc:166
 #: ../../../../inc/themes/material-blue/encryption.inc:187
@@ -3879,7 +3890,7 @@ msgstr "Voir Fichier"
 #: ../../../../inc/themes/classic/footer.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:29
 msgid "Indica si la conexión utiliza HTTPS."
-msgstr ""
+msgstr "Indique si la connexion utilise le protocol HTTPS."
 
 #: ../../../../inc/themes/classic/footer.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:29
@@ -3887,14 +3898,16 @@ msgid ""
 "Las claves de formularios enviados se encriptan mediante PKI, el resto de "
 "datos no."
 msgstr ""
+"Les mots de passe envoyés à partir du formulaire sont cryptés avec PKI, les "
+"autres données ne le sont pas."
 
 #: ../../../../inc/themes/classic/footer.inc:6
 msgid "Seguro"
-msgstr ""
+msgstr "Sécurisé"
 
 #: ../../../../inc/themes/classic/footer.inc:6
 msgid "Inseguro"
-msgstr ""
+msgstr "Insécurisé"
 
 #: ../../../../inc/themes/classic/footer.inc:11
 #: ../../../../inc/themes/material-blue/footer.inc:18
@@ -3932,7 +3945,7 @@ msgstr "Utilisateur BDD"
 #: ../../../../inc/themes/classic/import.inc:15
 #: ../../../../inc/themes/material-blue/import.inc:129
 msgid "Indicar el usuario de conexión a la base de datos de phpPMS."
-msgstr ""
+msgstr "Indique l'utilisateur de connexion à la base de données phpPMS."
 
 #: ../../../../inc/themes/classic/import.inc:25
 #: ../../../../inc/themes/classic/install.inc:71
@@ -3953,7 +3966,7 @@ msgstr "Nom BDD"
 #: ../../../../inc/themes/classic/import.inc:37
 #: ../../../../inc/themes/material-blue/import.inc:159
 msgid "Indicar el nombre de la base de datos de phpPMS."
-msgstr ""
+msgstr "Indiwue le nom de la base de données de phpPMS."
 
 #: ../../../../inc/themes/classic/import.inc:47
 #: ../../../../inc/themes/classic/install.inc:87
@@ -3966,7 +3979,7 @@ msgstr "Serveur BDD"
 #: ../../../../inc/themes/classic/import.inc:51
 #: ../../../../inc/themes/material-blue/import.inc:177
 msgid "Indicar el servidor de la base de datos de phpPMS."
-msgstr ""
+msgstr "Indique le serveur de la base de données phpPMS."
 
 #: ../../../../inc/themes/classic/import.inc:61
 #: ../../../../inc/themes/material-blue/import.inc:191
@@ -4019,7 +4032,7 @@ msgstr "Importer un mot de passe"
 #: ../../../../inc/themes/material-blue/import.inc:67
 #: ../../../../inc/themes/material-blue/import.inc:73
 msgid "Delimitador CSV"
-msgstr ""
+msgstr "Délimiteur CSV"
 
 #: ../../../../inc/themes/classic/import.inc:159
 #: ../../../../inc/themes/material-blue/import.inc:87
@@ -4032,12 +4045,16 @@ msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
 msgstr ""
+"Permet de réaliser l'importation des comptes, catégories et clients depuis "
+"un fichier archive XML ou CSV."
 
 #: ../../../../inc/themes/classic/import.inc:174
 #: ../../../../inc/themes/material-blue/import.inc:103
 msgid ""
 "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr ""
+"Les formats de fichiers archives XML supportés sont: sysPass, KeePass "
+"et KeePassX"
 
 #: ../../../../inc/themes/classic/import.inc:176
 #: ../../../../inc/themes/material-blue/import.inc:105
@@ -4053,11 +4070,13 @@ msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
 "KeePass o KeePassX y la categoría igual al nombre de los grupos."
 msgstr ""
+"Pour les archives KeePass ou KeePassX, le nom du client sera celui de "
+"KeePass ou de KeePassX et la catégorie sera celle du nom des groupes."
 
 #: ../../../../inc/themes/classic/import.inc:180
 #: ../../../../inc/themes/material-blue/import.inc:109
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
-msgstr ""
+msgstr "L'importation des archives CSV nécessite les formats suivants:"
 
 #: ../../../../inc/themes/classic/import.inc:182
 #: ../../../../inc/themes/material-blue/import.inc:111
@@ -4174,17 +4193,17 @@ msgstr "Activer l'annuaire LDAP"
 #: ../../../../inc/themes/classic/ldap.inc:16
 #: ../../../../inc/themes/material-blue/ldap.inc:16
 msgid "Habilita de autentificación mediante servidor LDAP."
-msgstr ""
+msgstr "Active l'authentification couplé à un serveur LDAP."
 
 #: ../../../../inc/themes/classic/ldap.inc:20
 #: ../../../../inc/themes/material-blue/ldap.inc:20
 msgid "Este método utilizará MySQL en caso de fallo."
-msgstr ""
+msgstr "Cette méthode utilisera MySQL en cas de défaillance."
 
 #: ../../../../inc/themes/classic/ldap.inc:36
 #: ../../../../inc/themes/material-blue/ldap.inc:39
 msgid "Nombre o dirección IP del servidor de LDAP."
-msgstr "Le nom d'hôte ou l'adresse ip du serveur LDAP"
+msgstr "Le nom d'hôte ou l'adresse ip du serveur LDAP."
 
 #: ../../../../inc/themes/classic/ldap.inc:40
 #: ../../../../inc/themes/classic/ldap.inc:65
@@ -4207,7 +4226,7 @@ msgstr "Utilisateur de connexion"
 #: ../../../../inc/themes/classic/ldap.inc:61
 #: ../../../../inc/themes/material-blue/ldap.inc:68
 msgid "Usuario para conectar con el servicio de LDAP."
-msgstr ""
+msgstr "Utilisateur de connexion au service LDAP."
 
 #: ../../../../inc/themes/classic/ldap.inc:81
 #: ../../../../inc/themes/material-blue/ldap.inc:92
@@ -4223,18 +4242,18 @@ msgstr "Base de recherche"
 #: ../../../../inc/themes/classic/ldap.inc:96
 #: ../../../../inc/themes/material-blue/ldap.inc:115
 msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
-msgstr ""
+msgstr "Base dans laquelle se fera la recherche des utilisateurs LDAP."
 
 #: ../../../../inc/themes/classic/ldap.inc:120
 #: ../../../../inc/themes/material-blue/ldap.inc:143
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
-msgstr ""
+msgstr "Groupe LDAP auquel l'utilisateur doit appartenir afin d'autoriser son login."
 
 #: ../../../../inc/themes/classic/ldap.inc:124
 #: ../../../../inc/themes/material-blue/ldap.inc:147
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
-msgstr ""
+msgstr "Ce groupe a besoin d'être placé dans la base de recherche LDAP."
 
 #: ../../../../inc/themes/classic/ldap.inc:148
 #: ../../../../inc/themes/material-blue/ldap.inc:174
@@ -4253,6 +4272,7 @@ msgstr "Profil par défaut"
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr ""
+"Defini le groupe des utilisateurs par défaut pour les nouveaux utilisateurs LDAP."
 
 #: ../../../../inc/themes/classic/ldap.inc:186
 #: ../../../../inc/themes/material-blue/ldap.inc:210
@@ -4378,34 +4398,36 @@ msgstr "Changer Mot de passe"
 #: ../../../../inc/themes/classic/preferences.inc:73
 #: ../../../../inc/themes/material-blue/preferences.inc:74
 msgid "Ordenar resultados por visitas"
-msgstr ""
+msgstr "Trier les résultats par visites"
 
 #: ../../../../inc/themes/classic/preferences.inc:77
 #: ../../../../inc/themes/material-blue/preferences.inc:78
 msgid ""
 "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
 msgstr ""
+"Trie les résultats de recherche sur le nombre de visite des comptes."
 
 #: ../../../../inc/themes/classic/preferences.inc:90
 #: ../../../../inc/themes/material-blue/preferences.inc:91
 msgid "Barra de navegación superior"
-msgstr ""
+msgstr "Barre de navigation en haut"
 
 #: ../../../../inc/themes/classic/preferences.inc:94
 #: ../../../../inc/themes/material-blue/preferences.inc:95
 msgid "Mostrar una barra de navegación superior en las búsquedas."
-msgstr ""
+msgstr "Montrer une barre de navigation en haut lors des recherches."
 
 #: ../../../../inc/themes/classic/preferences.inc:107
 #: ../../../../inc/themes/material-blue/preferences.inc:108
 msgid "Mostrar Acciones Ocultas"
-msgstr ""
+msgstr "Montrer les actions cachées"
 
 #: ../../../../inc/themes/classic/preferences.inc:111
 #: ../../../../inc/themes/material-blue/preferences.inc:112
 msgid ""
 "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
 msgstr ""
+"Montrer les actions cachées pour les éléments de la recherche des comptes."
 
 #: ../../../../inc/themes/classic/profiles.inc:11
 #: ../../../../inc/themes/material-blue/profiles.inc:14
@@ -4494,7 +4516,7 @@ msgstr "Sauvegarde"
 #: ../../../../inc/themes/classic/profiles.inc:74
 #: ../../../../inc/themes/material-blue/profiles.inc:87
 msgid "Realizar importación de cuentas"
-msgstr ""
+msgstr "Effectuer l'importation des comptes"
 
 #: ../../../../inc/themes/classic/profiles.inc:81
 #: ../../../../inc/themes/material-blue/profiles.inc:93
@@ -4539,12 +4561,12 @@ msgstr "Gestion des champs personnalisés"
 #: ../../../../inc/themes/classic/profiles.inc:112
 #: ../../../../inc/themes/material-blue/profiles.inc:129
 msgid "Gestión de autorizaciones API"
-msgstr ""
+msgstr "Gestion des autorisations des APIs"
 
 #: ../../../../inc/themes/classic/profiles.inc:112
 #: ../../../../inc/themes/material-blue/profiles.inc:129
 msgid "Autorizaciones API"
-msgstr ""
+msgstr "Autorisations des APIs"
 
 #: ../../../../inc/themes/classic/profiles.inc:120
 #: ../../../../inc/themes/material-blue/profiles.inc:135
@@ -4651,17 +4673,17 @@ msgstr "Paramètres spéciaux"
 #: ../../../../inc/themes/classic/searchbox.inc:15
 #: ../../../../inc/themes/material-blue/searchbox.inc:18
 msgid "Buscar cuentas a las que 'login' tenga acceso"
-msgstr ""
+msgstr "Rechercher les comptes pour lesquels le 'login' a les droits d'accès"
 
 #: ../../../../inc/themes/classic/searchbox.inc:17
 #: ../../../../inc/themes/material-blue/searchbox.inc:19
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
-msgstr ""
+msgstr "Rechercher les comptes pour lesquels le 'group_name' a les droits d'accès"
 
 #: ../../../../inc/themes/classic/searchbox.inc:19
 #: ../../../../inc/themes/material-blue/searchbox.inc:20
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
-msgstr ""
+msgstr "Rechercher les comptes qui contiennet un archive du nom 'file_name'"
 
 #: ../../../../inc/themes/classic/searchbox.inc:24
 #: ../../../../inc/themes/material-blue/searchbox.inc:25
@@ -4693,6 +4715,8 @@ msgid ""
 "Habilita la autentificación en 2 pasos que requiere de la introducción de un "
 "token generado por una aplicación como Google Authenticator."
 msgstr ""
+"Active l'authentification à 2 facteurs nécessitant la saisie d'un token qui a "
+"été généré par une application tiers comme Google Authenticator."
 
 #: ../../../../inc/themes/classic/security.inc:21
 #: ../../../../inc/themes/material-blue/security.inc:19
@@ -4700,6 +4724,7 @@ msgid ""
 "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
 "dígitos."
 msgstr ""
+"Scannez le code QR fournis puis saisissez le code à 6 chiffres."
 
 #: ../../../../inc/themes/classic/security.inc:29
 #: ../../../../inc/themes/material-blue/security.inc:27
@@ -4722,6 +4747,8 @@ msgid ""
 "Una vez activada, sólo es posible acceder si se dispone del dispositivo "
 "generador de códigos asociado."
 msgstr ""
+"Une fois activé, vous ne pouvez vous connecter que si vous avez "
+"l'équipement permettant de générer le code associé."
 
 #: ../../../../inc/themes/classic/sessionbar.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:7
@@ -4749,7 +4776,7 @@ msgstr "Actualiser l'autorisation"
 #: ../../../../inc/themes/classic/tokens.inc:43
 #: ../../../../inc/themes/material-blue/tokens.inc:46
 msgid "Token"
-msgstr ""
+msgstr "Token"
 
 #: ../../../../inc/themes/classic/update.inc:18
 #: ../../../../inc/themes/material-blue/update.inc:20
@@ -4881,7 +4908,7 @@ msgstr "URL de page Wiki"
 #: ../../../../inc/themes/classic/wiki.inc:58
 #: ../../../../inc/themes/material-blue/wiki.inc:66
 msgid "URL que utiliza la wiki para acceder a los detalles de una página."
-msgstr ""
+msgstr "URL qu'utilise Wiki pour accéder aux détails d'une page."
 
 #: ../../../../inc/themes/classic/wiki.inc:62
 #: ../../../../inc/themes/material-blue/wiki.inc:70
@@ -4889,6 +4916,7 @@ msgid ""
 "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
 "de la Wiki."
 msgstr ""
+"Le nom du compte est utilisé comme paramètre lors de la recherche Wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:81
 #: ../../../../inc/themes/material-blue/wiki.inc:93
@@ -4900,6 +4928,7 @@ msgstr "Préfix de nom de compte"
 msgid ""
 "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr ""
+"Préfix déterminant quels comptes ont un lien vers une page Wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:121
 #: ../../../../inc/themes/material-blue/wiki.inc:135
@@ -4917,11 +4946,11 @@ msgstr "Historique"
 
 #: ../../../../inc/themes/material-blue/account.inc:34
 msgid "> Usar texto y crear nuevo"
-msgstr ""
+msgstr "> Utiliser le texte et créer un nouveau"
 
 #: ../../../../inc/themes/material-blue/account.inc:43
 msgid "Seleccionar o escribir para crear uno nuevo"
-msgstr ""
+msgstr "Sélectionner ou écrire pour en créer un nouveau"
 
 #: ../../../../inc/themes/material-blue/account.inc:114
 msgid "Clave (Repetir)"
@@ -4936,11 +4965,11 @@ msgstr "Effectuer"
 
 #: ../../../../inc/themes/material-blue/config.inc:67
 msgid "Forzar HTTPS"
-msgstr ""
+msgstr "Forcer HTTPS"
 
 #: ../../../../inc/themes/material-blue/config.inc:71
 msgid "Fuerza para que todas las conexiones sean a través de HTTPS."
-msgstr ""
+msgstr "Force l'utilisation du protocol HTTPS pour toutes les connexions."
 
 #: ../../../../inc/themes/material-blue/config.inc:232
 #: ../../../../inc/themes/material-blue/preferences.inc:68
@@ -4961,11 +4990,11 @@ msgstr "Utiliser un serveur Proxy"
 
 #: ../../../../inc/themes/material-blue/config.inc:361
 msgid "Servidor proxy"
-msgstr "Serveur Proxy"
+msgstr "Serveur proxy"
 
 #: ../../../../inc/themes/material-blue/config.inc:375
 msgid "Puerto del servidor proxy"
-msgstr "Port du serveur pro"
+msgstr "Port du serveur proxy"
 
 #: ../../../../inc/themes/material-blue/config.inc:389
 msgid "Usuario del servidor proxy"
@@ -4973,15 +5002,15 @@ msgstr "Utilisateur du serveur proxy"
 
 #: ../../../../inc/themes/material-blue/config.inc:403
 msgid "Clave del servidor proxy"
-msgstr "Mot de passe utilisateur du serveur Proxy"
+msgstr "MDP utilisateur du serveur proxy"
 
 #: ../../../../inc/themes/material-blue/customfields.inc:14
 msgid "Nombre del campo"
-msgstr ""
+msgstr "Nom du champ"
 
 #: ../../../../inc/themes/material-blue/customfields.inc:47
 msgid "Ayuda del campo"
-msgstr ""
+msgstr "Aide du champ"
 
 #: ../../../../inc/themes/material-blue/footer.inc:11
 msgid "Preferencias de usuario"
@@ -4997,7 +5026,7 @@ msgstr "Utilisateur pour accéder à la base de données"
 
 #: ../../../../inc/themes/material-blue/install.inc:86
 msgid "Usuario con permisos de administrador de MySQL"
-msgstr ""
+msgstr "Utilisateur avec les droits administrateur MySQL"
 
 #: ../../../../inc/themes/material-blue/install.inc:94
 msgid "Clave acceso BBDD"
@@ -5017,13 +5046,15 @@ msgstr "Nom du serveur ou installer la base de données syPass"
 
 #: ../../../../inc/themes/material-blue/ldap.inc:96
 msgid "Clave del usuario de conexión a LDAP."
-msgstr ""
+msgstr "Mot de passe de l'utilisateur de connexion à l'annuaire LDAP."
 
 #: ../../../../inc/themes/material-blue/mail.inc:118
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
 msgstr ""
+"Autorise les utilisateurs à effectuer des modifications ou accéder à "
+"des comptes sans permission."
 
 #: ../../../../inc/themes/material-blue/profiles.inc:25
 msgid "Crear nueva cuenta"
