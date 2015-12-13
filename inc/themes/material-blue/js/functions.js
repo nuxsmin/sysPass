@@ -104,7 +104,7 @@ sysPass.Util.Theme = function () {
     var complexityDialog = function () {
         $('<div></div>').dialog({
             modal: true,
-            title: 'Opciones de Complejidad',
+            title: LANG[29],
             width: '400px',
             open: function () {
                 var thisDialog = $(this);
