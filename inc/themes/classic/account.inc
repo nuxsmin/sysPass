@@ -226,7 +226,7 @@
                 <option value="0"></option>
                 <?php foreach ($historyData as $id => $name): ?>
                     <option
-                        value="<?php echo $id; ?>" <?php echo ($gotData && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                        value="<?php echo $id; ?>" <?php echo ($gotData && $accountIsHistory && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                 <?php endforeach; ?>
             </select>
             <script>

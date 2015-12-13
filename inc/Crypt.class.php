@@ -118,7 +118,10 @@ class Crypt
             $check = (hash("sha256", substr($checkedHash, 0, 64) . $pwd) == substr($checkedHash, 64, 64));
 
             if ($check) {
-                ConfigDB::setValue('masterPwd', self::mkHashPassword($pwd));
+                $newHash = self::mkHashPassword($pwd);
+
+                AccountHistory::updateAccountsMPassHash($newHash);
+                ConfigDB::setValue('masterPwd', $newHash);
                 Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'));
             }
 

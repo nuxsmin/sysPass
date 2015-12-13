@@ -267,10 +267,10 @@
         <td class="descField"><?php echo _('Historial'); ?></td>
         <td class="valField">
             <select id="selHistory" name="historyId" class="select-box">
-                <option value="0"></option>
-                <?php foreach ($historyData as $id => $name): ?>
+                <option value=""></option>
+                <?php foreach ($historyData as $id => $date): ?>
                     <option
-                        value="<?php echo $id; ?>" <?php echo ($gotData && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                        value="<?php echo $id; ?>" <?php echo ($gotData && $accountIsHistory && $id === $accountId) ? 'selected' : ''; ?>><?php echo $date; ?></option>
                 <?php endforeach; ?>
             </select>
             <script>

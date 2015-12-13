@@ -510,4 +510,22 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         return $queryRes->acchistory_accountId;
     }
+
+    /**
+     * Actualiza el hash de las cuentas en el histórico.
+     *
+     * @param $newHash string El nuevo hash de la clave maestra
+     * @return bool
+     */
+    public static function updateAccountsMPassHash($newHash)
+    {
+        $query = 'UPDATE accHistory SET '
+            . 'acchistory_mPassHash = :newHash '
+            . 'WHERE acchistory_mPassHash = :oldHash';
+
+        $data['newHash'] = $newHash;
+        $data['oldHash'] = ConfigDB::getValue('masterPwd');
+
+        return DB::getQuery($query, __FUNCTION__, $data);
+    }
 }
