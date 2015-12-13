@@ -102,7 +102,7 @@ class Upgrade
                 $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_pass` `acchistory_pass` VARBINARY(255) NOT NULL ;';
                 break;
             case 11220:
-                $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_pass` `user_pass` VARBINARY(255) NOT NULL,CHANGE COLUMN `user_mPass` `acchistory_pass` VARBINARY(255) DEFAULT NULL ;';
+                $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_pass` `user_pass` VARBINARY(255) NOT NULL,CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(255) DEFAULT NULL ;';
                 break;
             case 12001:
                 $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_userEditId` `account_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL;';
