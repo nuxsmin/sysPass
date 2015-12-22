@@ -1,5 +1,6 @@
 === ** v1.2.0.10 ===
 
+* [MOD] Updated Russian translation. Thanks to @TitovLab
 * [FIX] Fixed user id checking instead login when using webserver auth. Thanks to @TitovLab
 * [FIX] Integer casting for boolean values on users management. Thanks to @maseht
 * [FIX] Fixed multibyte string truncation issue. Thanks to @TitovLab
