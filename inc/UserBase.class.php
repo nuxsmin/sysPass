@@ -367,10 +367,10 @@ abstract class UserBase
         $data['notes'] = $this->_userNotes;
         $data['groupId'] = $this->_userGroupId;
         $data['profileId'] = $this->_userProfileId;
-        $data['isAdminApp'] = $this->_userIsAdminApp;
-        $data['isAdminAcc'] = $this->_userIsAdminAcc;
-        $data['isDisabled'] = $this->_userIsDisabled;
-        $data['isChangePass'] = $this->_userChangePass;
+        $data['isAdminApp'] = intval($this->_userIsAdminApp);
+        $data['isAdminAcc'] = intval($this->_userIsAdminAcc);
+        $data['isDisabled'] = intval($this->_userIsDisabled);
+        $data['isChangePass'] = intval($this->_userChangePass);
         $data['pass'] = $passdata['pass'];
         $data['salt'] = $passdata['salt'];
 
@@ -512,10 +512,10 @@ abstract class UserBase
         $data['notes'] = $this->_userNotes;
         $data['groupId'] = $this->_userGroupId;
         $data['profileId'] = $this->_userProfileId;
-        $data['isAdminApp'] = $this->_userIsAdminApp;
-        $data['isAdminAcc'] = $this->_userIsAdminAcc;
-        $data['isDisabled'] = $this->_userIsDisabled;
-        $data['isChangePass'] = $this->_userChangePass;
+        $data['isAdminApp'] = intval($this->_userIsAdminApp);
+        $data['isAdminAcc'] = intval($this->_userIsAdminAcc);
+        $data['isDisabled'] = intval($this->_userIsDisabled);
+        $data['isChangePass'] = intval($this->_userChangePass);
         $data['id'] = $this->_userId;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
