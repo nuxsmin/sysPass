@@ -1,3 +1,10 @@
+=== ** v1.2.0.10 ===
+
+* [FIX] Corregida la comprobación del usuario cuando se usa la autentificación del servidor. Gracias a @TitovLab
+* [FIX] Casting a entero desde booleano en gestion de usuarios. Gracias a @maseht
+* [FIX] Corregido truncado de cadenas multibyte. Gracias a @TitovLab
+* [FIX] Corregida doble encriptacion de campo personalizado del tipo "password". Gracias a @vvascautan
+
 === ** v1.2.0.09 ===
 
 * [MOD] Actualizada traducción al francés. Gracias a @Cyril

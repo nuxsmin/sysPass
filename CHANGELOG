@@ -1,3 +1,10 @@
+=== ** v1.2.0.10 ===
+
+* [FIX] Fixed user id checking instead login when using webserver auth. Thanks to @TitovLab
+* [FIX] Integer casting for boolean values on users management. Thanks to @maseht
+* [FIX] Fixed multibyte string truncation issue. Thanks to @TitovLab
+* [FIX] Fixed password custom field double encryption. Thanks to @vvascautan
+
 === ** v1.2.0.09 ===
 
 * [MOD] Updated French translation. Thanks to @Cyril
