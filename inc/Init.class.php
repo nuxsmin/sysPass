@@ -133,6 +133,7 @@ class Init
         // Establecer el modo debug si una sesión de xdebug está activa
         if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
             define('DEBUG', true);
+            ini_set('display_errors', 1);
         }
 
         // Establecer el nivel de logging
@@ -203,7 +204,7 @@ class Init
         }
 
         if (isset($_SERVER['PHP_AUTH_USER']) && Session::getUserId()
-            && $_SERVER['PHP_AUTH_USER'] != Session::getUserId()
+            && $_SERVER['PHP_AUTH_USER'] != Session::getUserLogin()
         ) {
             self::logout();
         }
