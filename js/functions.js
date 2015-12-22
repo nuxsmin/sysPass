@@ -1193,6 +1193,10 @@ sysPass.Util.Common = function () {
      */
     var bindPassEncrypt = function () {
         $('body').delegate(':input[type=password]', 'blur', function (e) {
+            if ($(this).hasClass('passwordfield__no-pki')) {
+                return;
+            }
+
             var id = $(this).attr('id');
             encryptFormValue('#' + id);
         });

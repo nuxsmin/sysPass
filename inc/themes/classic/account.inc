@@ -273,7 +273,7 @@
                     <?php if ($showform): ?>
                             <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                             type="<?php echo $field->typeName; ?>"
-                            class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                            class="<?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                             maxlength="500" value="<?php echo ($gotData) ? \SP\Html::sanitize($field->value) : ''; ?>"
                             <?php echo ($field->required) ? 'required' : ''; ?>>
                     <?php else: ?>

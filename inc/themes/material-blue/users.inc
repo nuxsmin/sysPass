@@ -180,7 +180,7 @@
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
                                            type="<?php echo $field->typeName; ?>"
-                                           class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                                           class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                                            maxlength="500" value="<?php echo (!$isView) ? \SP\Html::sanitize($field->value) : ''; ?>"
                                         <?php echo ($field->required) ? 'required' : ''; ?>>
                                     <label class="mdl-textfield__label" for="<?php echo $field->name; ?>"><?php echo $field->text; ?></label>
