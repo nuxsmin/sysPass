@@ -94,12 +94,6 @@ class Init
             }
         }
 
-        error_reporting(E_ALL | E_STRICT);
-
-        if (defined('DEBUG') && DEBUG) {
-            ini_set('display_errors', 1);
-        }
-
         date_default_timezone_set('UTC');
 
         // Intentar desactivar magic quotes.
@@ -107,44 +101,11 @@ class Init
             ini_set('magic_quotes_runtime', 0);
         }
 
-        // Copiar la cabecera http de autentificación para apache+php-fcgid
-        if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];
-        }
-
-        // Establecer las cabeceras de autentificación para apache+php-cgi
-        if (isset($_SERVER['HTTP_AUTHORIZATION'])
-            && preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)
-        ) {
-            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-        }
-
-        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
-        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
-            && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)
-        ) {
-            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-        }
-
-        // Establecer el modo debug si una sesión de xdebug está activa
-        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
-            define('DEBUG', true);
-            ini_set('display_errors', 1);
-        }
+        // Variables de autentificación
+        self::setAuth();
 
         // Establecer el nivel de logging
-        if (defined('DEBUG') && DEBUG) {
-//            error_log('sysPass DEBUG');
-            error_reporting(E_ALL);
-            ini_set('display_errors', 'On');
-        } else {
-            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-            ini_set('display_errors', 'Off');
-        }
+        self::setLogging();
 
         // Cargar las extensiones
         self::loadExtensions();
@@ -196,16 +157,14 @@ class Init
         self::checkPreLoginActions();
 
         // Intentar establecer el tiempo de vida de la sesión en PHP
-        $sessionLifeTime = self::getSessionLifeTime();
-        @ini_set('gc_maxlifetime', (string)$sessionLifeTime);
+        @ini_set('gc_maxlifetime', (string)self::getSessionLifeTime());
 
         if (!Config::getValue("installed", false)) {
             Session::setUserId('');
         }
 
-        if (isset($_SERVER['PHP_AUTH_USER']) && Session::getUserId()
-            && $_SERVER['PHP_AUTH_USER'] != Session::getUserLogin()
-        ) {
+        // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+        if (self::isLoggedIn() && !Auth::checkServerAuthUser(Session::getUserLogin())) {
             self::logout();
         }
 
@@ -213,7 +172,7 @@ class Init
         if (Request::analyze('redirect_url', '', true) && self::isLoggedIn()) {
             $location = 'index.php';
 
-            // Denegar la regirección si la URL contiene una @
+            // Denegar la redirección si la URL contiene una @
             // Esto previene redirecciones como ?redirect_url=:user@domain.com
             if (strpos($location, '@') === false) {
                 header('Location: ' . $location);
@@ -222,7 +181,7 @@ class Init
         }
 
         // Volver a cargar la configuración si se recarga la página
-        if (Request::checkReload()){
+        if (Request::checkReload()) {
             Config::readConfig();
 
             // Restablecer el idioma y el tema visual
@@ -260,9 +219,69 @@ class Init
         foreach (explode(PATH_SEPARATOR, get_include_path()) as $includePath) {
             $classFile = $includePath . DIRECTORY_SEPARATOR . $class . '.class.php';
             if (is_readable($classFile)) {
-               require $classFile;
+                require $classFile;
             }
         }
+    }
+
+    /**
+     * Establecer variables de autentificación
+     */
+    private static function setAuth()
+    {
+        // Copiar la cabecera http de autentificación para apache+php-fcgid
+        if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];
+        }
+
+        // Establecer las cabeceras de autentificación para apache+php-cgi
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])
+            && preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)
+        ) {
+            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
+            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+        }
+
+        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
+            && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)
+        ) {
+            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
+            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+        }
+    }
+
+    /**
+     * Establecer el nivel de logging
+     */
+    private static function setLogging()
+    {
+        // Establecer el modo debug si una sesión de xdebug está activa
+        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
+            define('DEBUG', true);
+        }
+
+        if (defined('DEBUG') && DEBUG) {
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'On');
+        } else {
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            ini_set('display_errors', 'Off');
+        }
+    }
+
+    /**
+     * Cargar las clases de las extensiones de sysPass
+     */
+    private static function loadExtensions()
+    {
+        // Utilizar un cargador de clases PSR-0
+        require EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
+
+        $phpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
+        $phpSecLoader->register();
     }
 
     /**
@@ -341,6 +360,18 @@ class Init
 
         $protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
         self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
+    }
+
+    /**
+     * Comprobar y forzar (si es necesario) la coneción HTTPS
+     */
+    private static function checkHttps()
+    {
+        if (Util::forceHttpsIsEnabled() && !Util::httpsEnabled()) {
+            $port = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+            header('Location: ' . $fullUrl);
+        }
     }
 
     /**
@@ -475,7 +506,7 @@ class Init
      */
     private static function goLogin()
     {
-        $controller = new Controller\MainC(null,'login');
+        $controller = new Controller\MainC(null, 'login');
         $controller->getLogin();
         $controller->view();
         exit;
@@ -630,33 +661,6 @@ class Init
     }
 
     /**
-     * Comprobar si hay que ejecutar acciones de URL después del login.
-     *
-     * @return bool
-     */
-    public static function checkPostLoginActions()
-    {
-        if (!Request::analyze('a', '', true)) {
-            return false;
-        }
-
-        $action = Request::analyze('a');
-        $controller = new Controller\MainC(null , 'main');
-
-        switch ($action) {
-            case 'accView':
-                $itemId = Request::analyze('i');
-                $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
-                $controller->getMain($onLoad);
-                $controller->view();
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * Comprobar si el usuario está logado.
      *
      * @returns bool
@@ -673,6 +677,33 @@ class Init
     }
 
     /**
+     * Comprobar si hay que ejecutar acciones de URL después del login.
+     *
+     * @return bool
+     */
+    public static function checkPostLoginActions()
+    {
+        if (!Request::analyze('a', '', true)) {
+            return false;
+        }
+
+        $action = Request::analyze('a');
+        $controller = new Controller\MainC(null, 'main');
+
+        switch ($action) {
+            case 'accView':
+                $itemId = Request::analyze('i');
+                $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
+                $controller->getMain($onLoad);
+                $controller->view();
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Devuelve el tiempo actual en coma flotante.
      * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
      *
@@ -682,29 +713,5 @@ class Init
     {
         list($usec, $sec) = explode(" ", microtime());
         return ((float)$usec + (float)$sec);
-    }
-
-    /**
-     * Cargar las clases de las extensiones de sysPass
-     */
-    private static function loadExtensions()
-    {
-        // Utilizar un cargador de clases PSR-0
-        require EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
-
-        $phpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
-        $phpSecLoader->register();
-    }
-
-    /**
-     * Comprobar y forzar (si es necesario) la coneción HTTPS
-     */
-    private static function checkHttps()
-    {
-        if(Util::forceHttpsIsEnabled() && !Util::httpsEnabled()){
-            $port = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
-            header('Location: ' . $fullUrl);
-        }
     }
 }

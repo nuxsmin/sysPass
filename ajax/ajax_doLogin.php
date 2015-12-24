@@ -23,6 +23,7 @@
  *
  */
 
+use SP\Auth;
 use SP\CryptMasterPass;
 use SP\Request;
 use SP\SessionUtil;
@@ -63,7 +64,7 @@ $Log = new \SP\Log(_('Inicio sesión'));
 // Autentificamos por LDAP
 if ($resLdap === true) {
     $Log->addDescription('(LDAP)');
-    $Log->addDescription(sprintf('%s : %s', _('Servidor Login'), \SP\Ldap::getLdapServer()));
+    $Log->addDescription(sprintf('%s: %s', _('Servidor Login'), \SP\Ldap::getLdapServer()));
 
     // Verificamos si el usuario existe en la BBDD
     if (!UserLdap::checkLDAPUserInDB($userLogin)) {
@@ -86,21 +87,21 @@ if ($resLdap === true) {
 } else if ($resLdap == 49) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('Login incorrecto'));
-    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
     $Log->writeLog();
 
     SP\Response::printJSON(_('Usuario/Clave incorrectos'));
 } else if ($resLdap === 701) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('Cuenta expirada'));
-    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
     $Log->writeLog();
 
     SP\Response::printJSON(_('Cuenta expirada'));
 } else if ($resLdap === 702) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('El usuario no tiene grupos asociados'));
-    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
     $Log->writeLog();
 
     SP\Response::printJSON(_('Usuario/Clave incorrectos'));
@@ -111,17 +112,27 @@ if ($resLdap === true) {
     // Autentificamos con la BBDD
     if (!SP\Auth::authUserMySQL($userLogin, $userPass)) {
         $Log->addDescription(_('Login incorrecto'));
-        $Log->addDescription(_('Usuario') . ": " . $userLogin);
+        $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
         $Log->writeLog();
 
         SP\Response::printJSON(_('Usuario/Clave incorrectos'));
     }
 }
 
+// Comprobar si concide el login con la autentificación del servidor web
+if (!Auth::checkServerAuthUser($userLogin)){
+    $Log->addDescription(_('Login incorrecto'));
+    $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
+    $Log->addDescription(sprintf('%s: %s (%s)', _('Autentificación'), Auth::getServerAuthType(), Auth::getServerAuthUser()));
+    $Log->writeLog();
+
+    SP\Response::printJSON(_('Usuario/Clave incorrectos'));
+}
+
 // Comprobar si el usuario está deshabilitado
 if (UserUtil::checkUserIsDisabled($userLogin)) {
     $Log->addDescription(_('Usuario deshabilitado'));
-    $Log->addDescription(_('Usuario') . ": " . $userLogin);
+    $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
     $Log->writeLog();
 
     SP\Response::printJSON(_('Usuario deshabilitado'));
@@ -171,9 +182,9 @@ if ($User->getUserMPass()) {
     // Cargar las variables de sesión del usuario
     SessionUtil::loadUserSession($User);
 
-    $Log->addDescription(sprintf('%s : %s', _('Usuario'), $userLogin));
-    $Log->addDescription(sprintf('%s : %s', _('Perfil'), SP\Profile::getProfileNameById($User->getUserProfileId())));
-    $Log->addDescription(sprintf('%s : %s', _('Grupo'), SP\Groups::getGroupNameById($User->getUserGroupId())));
+    $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
+    $Log->addDescription(sprintf('%s: %s', _('Perfil'), SP\Profile::getProfileNameById($User->getUserProfileId())));
+    $Log->addDescription(sprintf('%s: %s', _('Grupo'), SP\Groups::getGroupNameById($User->getUserGroupId())));
     $Log->writeLog();
 } else {
     SP\Response::printJSON(_('Error interno'));

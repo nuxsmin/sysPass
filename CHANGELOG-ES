@@ -1,6 +1,7 @@
 === ** v1.2.0.10 ===
 
-* [ADD] Actualizada traducción al ruso. Gracias a @TitovLab
+* [MOD] Mejorado el login cuando la autentificación del servidor web es usada.
+* [MOD] Actualizada traducción al ruso. Gracias a @TitovLab
 * [FIX] Corregida la comprobación del usuario cuando se usa la autentificación del servidor. Gracias a @TitovLab
 * [FIX] Casting a entero desde booleano en gestion de usuarios. Gracias a @maseht
 * [FIX] Corregido truncado de cadenas multibyte. Gracias a @TitovLab
