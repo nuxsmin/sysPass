@@ -213,7 +213,9 @@ class Init
     public static function loadClass($class)
     {
         // Eliminar \\ para las clases con namespace definido
-        $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
+        if (strripos($class, '\\')) {
+            $class = substr($class, strripos($class, '\\') + 1);
+        }
 
         // Buscar la clase en los directorios de include
         foreach (explode(PATH_SEPARATOR, get_include_path()) as $includePath) {
@@ -543,11 +545,10 @@ class Init
                 $hash = Request::analyze('h');
 
                 if ($action === 'upgrade' && $hash === Config::getValue('upgrade_key', 0)) {
-                    if (Upgrade::doUpgrade($databaseVersion)) {
+                    if ($update = Upgrade::doUpgrade($databaseVersion)) {
                         ConfigDB::setValue('version', $appVersion);
                         Config::setValue('maintenance', false);
                         Config::deleteParam('upgrade_key');
-                        $update = true;
                     }
                 } else {
                     $controller = new Controller\MainC();
