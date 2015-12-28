@@ -25,13 +25,13 @@
 
 namespace SP\Core;
 
+use SP\Auth\Auth;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\User\Profile;
 use SP\Mgmt\User\ProfileUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -83,7 +83,7 @@ class Init
      */
     public static function start()
     {
-        if (date_default_timezone_get() === 'UTC'){
+        if (date_default_timezone_get() === 'UTC') {
             date_default_timezone_set('UTC');
         }
 
@@ -92,43 +92,11 @@ class Init
             ini_set('magic_quotes_runtime', 0);
         }
 
-        // Copiar la cabecera http de autentificación para apache+php-fcgid
-        if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];
-        }
-
-        // Establecer las cabeceras de autentificación para apache+php-cgi
-        if (isset($_SERVER['HTTP_AUTHORIZATION'])
-            && preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)
-        ) {
-            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-        }
-
-        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
-        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
-            && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)
-        ) {
-            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-        }
-
-        // Establecer el modo debug si una sesión de xdebug está activa
-        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
-            define('DEBUG', true);
-        }
+        // Variables de autentificación
+        self::setAuth();
 
         // Establecer el nivel de logging
-        if (defined('DEBUG') && DEBUG) {
-//            error_log('sysPass DEBUG');
-            error_reporting(E_ALL);
-            ini_set('display_errors', 'On');
-        } else {
-            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-            ini_set('display_errors', 'Off');
-        }
+        self::setLogging();
 
         // Cargar las extensiones
         self::loadExtensions();
@@ -188,9 +156,8 @@ class Init
             Session::setUserId('');
         }
 
-        if (isset($_SERVER['PHP_AUTH_USER']) && Session::getUserId()
-            && $_SERVER['PHP_AUTH_USER'] != Session::getUserId()
-        ) {
+        // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+        if (self::isLoggedIn() && !Auth::checkServerAuthUser(Session::getUserLogin())) {
             self::logout();
         }
 
@@ -221,6 +188,51 @@ class Init
 
         // El usuario no está logado y no es una petición, redirigir al login
         self::goLogin();
+    }
+
+    /**
+     * Establecer variables de autentificación
+     */
+    private static function setAuth()
+    {
+        // Copiar la cabecera http de autentificación para apache+php-fcgid
+        if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];
+        }
+        // Establecer las cabeceras de autentificación para apache+php-cgi
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])
+            && preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)
+        ) {
+            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
+            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+        }
+        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
+            && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)
+        ) {
+            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
+            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+        }
+    }
+
+    /**
+     * Establecer el nivel de logging
+     */
+    private static function setLogging()
+    {
+        // Establecer el modo debug si una sesión de xdebug está activa
+        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
+            define('DEBUG', true);
+        }
+        if (defined('DEBUG') && DEBUG) {
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'On');
+        } else {
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            ini_set('display_errors', 'Off');
+        }
     }
 
     /**
@@ -496,11 +508,10 @@ class Init
                 $hash = Request::analyze('h');
 
                 if ($action === 'upgrade' && $hash === Config::getValue('upgrade_key', 0)) {
-                    if (Upgrade::doUpgrade($databaseVersion)) {
+                    if ($update = Upgrade::doUpgrade($databaseVersion)) {
                         ConfigDB::setValue('version', $appVersion);
                         Config::setValue('maintenance', false);
                         Config::deleteParam('upgrade_key');
-                        $update = true;
                     }
                 } else {
                     $controller = new Controller\Main();

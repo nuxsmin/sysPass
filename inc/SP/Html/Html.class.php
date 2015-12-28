@@ -83,17 +83,19 @@ class Html
     /**
      * Truncar un texto a una determinada longitud.
      *
-     * @param string $str con la cadena a truncar
-     * @param int    $len con la longitud máxima de la cadena
+     * @param string $text  la cadena a truncar
+     * @param int    $limit la longitud máxima de la cadena
+     * @param string $ellipsis
      * @return string con el texto truncado
+     *
+     * @link http://www.pjgalbraith.com/truncating-text-html-with-php/
      */
-    public static function truncate($str, $len)
+    public static function truncate($text, $limit, $ellipsis = '...')
     {
-        $tail = max(0, $len - 10);
-        $truncate = substr($str, 0, $tail);
-        $truncate .= strrev(preg_replace('~^..+?[\s,:]\b|^...~', '...', strrev(substr($str, $tail, $len - $tail))));
-
-        return $truncate;
+        if (strlen($text) > $limit) {
+            $text = trim(mb_substr($text, 0, $limit)) . $ellipsis;
+        }
+        return $text;
     }
 
     /**

@@ -23,6 +23,8 @@
  *
  */
 
+use SP\Core\Init;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 define('CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
@@ -46,7 +48,7 @@ $ClassLoader->register();
 
 // Empezar a calcular el tiempo y memoria utilizados
 $memInit = memory_get_usage();
-$timeStart = \SP\Core\Init::microtime_float();
+$timeStart = Init::microtime_float();
 
 // Inicializar sysPass
-\SP\Core\Init::start();
+Init::start();

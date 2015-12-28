@@ -377,10 +377,10 @@ abstract class UserBase
         $Data->addParam($this->_userNotes, 'notes');
         $Data->addParam($this->_userGroupId, 'groupId');
         $Data->addParam($this->_userProfileId, 'profileId');
-        $Data->addParam($this->_userIsAdminApp, 'isAdminApp');
-        $Data->addParam($this->_userIsAdminAcc, 'isAdminAcc');
-        $Data->addParam($this->_userIsDisabled, 'isDisabled');
-        $Data->addParam($this->_userChangePass, 'isChangePass');
+        $Data->addParam(intval($this->_userIsAdminApp), 'isAdminApp');
+        $Data->addParam(intval($this->_userIsAdminAcc), 'isAdminAcc');
+        $Data->addParam(intval($this->_userIsDisabled), 'isDisabled');
+        $Data->addParam(intval($this->_userChangePass), 'isChangePass');
         $Data->addParam($passdata['pass'], 'pass');
         $Data->addParam($passdata['salt'], 'salt');
 
@@ -528,10 +528,10 @@ abstract class UserBase
         $Data->addParam($this->_userNotes, 'notes');
         $Data->addParam($this->_userGroupId, 'groupId');
         $Data->addParam($this->_userProfileId, 'profileId');
-        $Data->addParam($this->_userIsAdminApp, 'isAdminApp');
-        $Data->addParam($this->_userIsAdminAcc, 'isAdminAcc');
-        $Data->addParam($this->_userIsDisabled, 'isDisabled');
-        $Data->addParam($this->_userChangePass, 'isChangePass');
+        $Data->addParam(intval($this->_userIsAdminApp), 'isAdminApp');
+        $Data->addParam(intval($this->_userIsAdminAcc), 'isAdminAcc');
+        $Data->addParam(intval($this->_userIsDisabled), 'isDisabled');
+        $Data->addParam(intval($this->_userChangePass), 'isChangePass');
         $Data->addParam($this->_userId, 'id');
 
         if (DB::getQuery($Data) === false) {

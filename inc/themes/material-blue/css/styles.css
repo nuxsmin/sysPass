@@ -690,7 +690,6 @@ pre, code, samp, kbd {
 
 #content #data-search .account-label {
     width: 310px;
-    height: 195px;
     text-align: left;
     margin: 1em;
     padding: .5em;
@@ -701,7 +700,7 @@ pre, code, samp, kbd {
 
 #content #data-search .account-label .label-field {
     width: 100%;
-    height: 2em
+    height: 2.5em
 }
 
 #content #data-search .account-label .field-name {
@@ -731,7 +730,7 @@ pre, code, samp, kbd {
 }
 
 #content #data-search .account-label .field-url {
-    height: 2.5em
+    height: 3em
 }
 
 #content #data-search .account-label .field-text a {

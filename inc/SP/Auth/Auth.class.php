@@ -238,4 +238,43 @@ class Auth
 
         return (DB::$lastNumRows === 1);
     }
+
+    /**
+     * Comprobar si el usuario es autentificado por el servidor web
+     *
+     * @param $login string El login del usuario a comprobar
+     * @return bool
+     */
+    public static function checkServerAuthUser($login)
+    {
+        if (isset($_SERVER['PHP_AUTH_USER']) || isset($_SERVER['REMOTE_USER'])) {
+            return self::getServerAuthUser() == $login;
+        }
+        return true;
+    }
+
+    /**
+     * Devolver el nombre del usuario autentificado por el servidor web
+     *
+     * @return string
+     */
+    public static function getServerAuthUser()
+    {
+        if (isset($_SERVER['PHP_AUTH_USER'])) {
+            return $_SERVER['PHP_AUTH_USER'];
+        } elseif (isset($_SERVER['REMOTE_USER'])) {
+            return $_SERVER['REMOTE_USER'];
+        }
+        return '';
+    }
+
+    /**
+     * Devuelve el typo de autentificación del servidor web
+     *
+     * @return string
+     */
+    public static function getServerAuthType()
+    {
+        return strtoupper($_SERVER['AUTH_TYPE']);
+    }
 }

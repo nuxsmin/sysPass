@@ -64,7 +64,7 @@ $Log = new Log();
 
 if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     if (!is_array($_FILES["inFile"]) || !$accountId === 0) {
-        exit();
+        Response::printJSON(_('CONSULTA INVÁLIDA'));
     }
 
     $Log->setAction(_('Subir Archivo'));

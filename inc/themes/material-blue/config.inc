@@ -319,6 +319,25 @@
                     </label>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Resultados en Tarjetas'); ?>
+                    <div id="help-resultsascards" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-resultsascards">
+                        <p>
+                            <?php echo _('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resultsascards">
+                        <input type="checkbox" id="resultsascards" class="mdl-switch__input fg-blue100"
+                               name="resultsascards"
+                            <?php echo $chkResultsAsCards; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
         </table>
 
         <div id="title" class="midroundup titleNormal">

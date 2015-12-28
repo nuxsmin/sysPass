@@ -132,6 +132,16 @@ if ($resLdap === true) {
     }
 }
 
+// Comprobar si concide el login con la autentificación del servidor web
+if (!Auth::checkServerAuthUser($userLogin)){
+    $Log->addDescription(_('Login incorrecto'));
+    $Log->addDetails(_('Usuario'), $userLogin);
+    $Log->addDetails(_('Autentificación'), sprintf('%s (%s)', Auth::getServerAuthType(), Auth::getServerAuthUser()));
+    $Log->writeLog();
+
+    Response::printJSON(_('Usuario/Clave incorrectos'));
+}
+
 // Comprobar si el usuario está deshabilitado
 if (UserUtil::checkUserIsDisabled($userLogin)) {
     $Log->addDescription(_('Usuario deshabilitado'));

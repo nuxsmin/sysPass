@@ -23,7 +23,7 @@
     <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     <input type="hidden" name="isAjax" value="1">
 
-<?php endif; ?>
+    <?php endif; ?>
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -247,7 +247,7 @@
                         <option value="0"></option>
                         <?php foreach ($historyData as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($gotData && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($gotData && $accountIsHistory && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <script>
@@ -301,7 +301,7 @@
                                     <input id="<?php echo $field->name; ?>"
                                            name="customfield[<?php echo $field->id; ?>]"
                                            type="<?php echo $field->typeName; ?>"
-                                           class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                                           class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                                            maxlength="500"
                                            value="<?php echo ($gotData) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
                                         <?php echo ($field->required) ? 'required' : ''; ?>>
@@ -325,7 +325,7 @@
         </table>
     <?php endif; ?>
 
-<?php if ($showform): ?>
+    <?php if ($showform): ?>
 </form>>
 <?php endif; ?>
 
@@ -340,17 +340,27 @@
                     <script>sysPassUtil.Common.getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
                 <?php else: ?>
                     <script>sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
-                <?php if ($actionId == \SP\Core\ActionsInterface::ACTION_ACC_EDIT): ?>
-                    <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUpload">
-                        <input type="file" id="inFile" name="inFile"/>
-                    </form>
-                    <div id="dropzone" class="round active-tooltip"
-                         data-files-ext="<?php echo $filesAllowedExts; ?>"
-                         title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
-                        <i class="material-icons md-60 fg-green80">cloud_upload</i>
-                    </div>
-                    <script> sysPassUtil.Common.dropFile(<?php echo $accountId; ?>, '<?php echo $sk; ?>', <?php echo $maxFileSize; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_UPLOAD; ?>); </script>
-                <?php endif; ?>
+                    <?php if ($actionId == \SP\Core\ActionsInterface::ACTION_ACC_EDIT): ?>
+                        <div id="dropzone" class="round active-tooltip"
+                             data-files-ext="<?php echo $filesAllowedExts; ?>"
+                             title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
+                            <i class="material-icons md-60 fg-green80">cloud_upload</i>
+                        </div>
+                        <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">
+                            <input type="file" id="inFile" multiple name="inFile"/>
+                        </form>
+                        <script>
+                            var upload = sysPassUtil.Common.fileUpload({targetId: 'dropzone', url: '/ajax/ajax_files.php'});
+                            upload.setRequestData({
+                                accountId: <?php echo $accountId; ?>,
+                                sk: '<?php echo $sk; ?>',
+                                actionId: <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_UPLOAD; ?>
+                            });
+                            upload.setRequestDoneAction(function () {
+                                sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');
+                            });
+                        </script>
+                    <?php endif; ?>
                 <?php endif; ?>
             </td>
         </tr>

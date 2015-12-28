@@ -43,7 +43,6 @@ if (!$file) {
     $Minify->addFile('chosen.jquery.min.js');
     $Minify->addFile('alertify.min.js');
     $Minify->addFile('jquery.fileDownload.min.js');
-    $Minify->addFile('jquery.filedrop.min.js');
     $Minify->addFile('jquery.tagsinput.min.js');
     $Minify->addFile('clipboard.min.js');
     $Minify->addFile('zxcvbn-async.min.js');

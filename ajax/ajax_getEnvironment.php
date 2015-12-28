@@ -23,6 +23,7 @@
  *
  */
 
+use SP\Config\Config;
 use SP\Core\CryptPKI;
 use SP\Core\Init;
 use SP\Core\Session;
@@ -39,7 +40,8 @@ Request::checkReferer('GET');
 $data = array(
     'lang' => $stringsJsLang,
     'app_root' => Init::$WEBURI,
-    'pk' => ''
+    'pk' => '',
+    'max_file_size' => Config::getValue('files_allowed_size')
 );
 
 try {

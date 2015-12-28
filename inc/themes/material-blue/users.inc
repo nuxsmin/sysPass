@@ -185,7 +185,7 @@
                                         <input id="<?php echo $field->name; ?>"
                                                name="customfield[<?php echo $field->id; ?>]"
                                                type="<?php echo $field->typeName; ?>"
-                                               class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show' : ''; ?>"
+                                               class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                                                maxlength="500"
                                                value="<?php echo (!$isView) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
                                             <?php echo ($field->required) ? 'required' : ''; ?>>

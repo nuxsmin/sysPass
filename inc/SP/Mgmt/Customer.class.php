@@ -93,7 +93,6 @@ class Customer
     public static function checkDupCustomer($id = null)
     {
         $Data = new QueryData();
-        $Data->addParam($id, 'id');
 
         if (is_null($id)) {
             $query = 'SELECT customer_id FROM customers WHERE customer_hash = :hash';
