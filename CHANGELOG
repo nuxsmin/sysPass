@@ -1,3 +1,7 @@
+=== ** v1.2.0.11 ===
+
+* [FIX] Fixed issue when importing accounts from CSV/XML. Form fields were not fully sent.
+
 === ** v1.2.0.10 ===
 
 * [MOD] Improved login when the webserver auth is used.

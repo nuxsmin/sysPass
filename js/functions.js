@@ -608,7 +608,7 @@ sysPass.Util.Common = function () {
             url: ''
         };
 
-        var requestDoneAction, requestData = {};
+        var requestDoneAction, requestData = {}, beforeSendAction;
 
         var setFn = {
             setRequestDoneAction: function (a) {
@@ -616,6 +616,9 @@ sysPass.Util.Common = function () {
             },
             setRequestData: function (d) {
                 requestData = d;
+            },
+            setBeforeSendAction: function (a) {
+                beforeSendAction = a;
             }
         };
 
@@ -719,6 +722,10 @@ sysPass.Util.Common = function () {
                 event.stopPropagation();
                 event.preventDefault();
 
+                if (typeof beforeSendAction === "function") {
+                    beforeSendAction();
+                }
+
                 handleFiles(event.dataTransfer.files);
             };
 
@@ -738,6 +745,10 @@ sysPass.Util.Common = function () {
 
             if (formTags[0].type === "file") {
                 formTags[0].addEventListener("change", function () {
+                    if (typeof beforeSendAction === "function") {
+                        beforeSendAction();
+                    }
+
                     handleFiles(this.files);
                 }, false);
             }

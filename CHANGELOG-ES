@@ -1,3 +1,7 @@
+=== ** v1.2.0.11 ===
+
+* [FIX] Corregido error al importar cuentas desde CSV/XML. Los campos del formulario no eran completamente enviados.
+
 === ** v1.2.0.10 ===
 
 * [MOD] Mejorado el login cuando la autentificación del servidor web es usada.
