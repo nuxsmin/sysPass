@@ -27,6 +27,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Core\Init;
 use SP\Html\DataGrid\DataGridIcon;
 
 /**
@@ -76,9 +77,7 @@ class Icons
     private $_iconUp;
     /** @var DataGridIcon */
     private $_iconDown;
-    /**
-     * @var DataGridIcon
-     */
+    /** @var DataGridIcon */
     private $_iconRefresh;
 
     /**
@@ -94,35 +93,35 @@ class Icons
      */
     private function setIcons()
     {
-        $this->_iconAdd = new DataGridIcon('add', 'imgs/new.png', 'fg-blue80');
-        $this->_iconView = new DataGridIcon('visibility', 'imgs/view.png', 'fg-blue80');
-        $this->_iconViewPass = new DataGridIcon('lock_open', 'imgs/user-pass.png', 'fg-blue80');
-        $this->_iconEdit = new DataGridIcon('mode_edit', 'imgs/edit.png', 'fg-orange80');
-        $this->_iconDelete = new DataGridIcon('delete', 'imgs/delete.png', 'fg-red80');
-        $this->_iconEditPass = new DataGridIcon('lock_outline', 'imgs/pass.png', 'fg-orange80');
-        $this->_iconAppAdmin = new DataGridIcon('star', 'check_blue.png', null, _('Admin Aplicación'));
-        $this->_iconAccAdmin = new DataGridIcon('star_half', 'check_orange.png', null, _('Admin Cuentas'));
-        $this->_iconLdapUser = new DataGridIcon('business', 'ldap.png', null, _('Usuario de LDAP'));
-        $this->_iconDisabled = new DataGridIcon('error', 'disabled.png', null, _('Deshabilitado'));
-        $this->_iconRefresh = new DataGridIcon('refresh', 'imgs/view.png', 'fg-green80');
-        $this->_iconCopy = new DataGridIcon('content_copy', 'imgs/copy.png', 'fg-blue80');
-        $this->_iconClipboard = new DataGridIcon('content_paste', 'imgs/clipboard.png', 'fg-blue80');
-        $this->_iconEmail = new DataGridIcon('email', 'imgs/request.png', 'fg-blue80');
-        $this->_iconOptional = new DataGridIcon('settings', 'imgs/action.png');
+        $this->_iconAdd = new DataGridIcon('add', Init::$WEBURI .'/imgs/add.png', 'fg-blue80');
+        $this->_iconView = new DataGridIcon('visibility', Init::$WEBURI . '/imgs/view.png', 'fg-blue80');
+        $this->_iconViewPass = new DataGridIcon('lock_open', Init::$WEBURI . '/imgs/user-pass.png', 'fg-blue80');
+        $this->_iconEdit = new DataGridIcon('mode_edit', Init::$WEBURI . '/imgs/edit.png', 'fg-orange80');
+        $this->_iconDelete = new DataGridIcon('delete', Init::$WEBURI . '/imgs/delete.png', 'fg-red80');
+        $this->_iconEditPass = new DataGridIcon('lock_outline', Init::$WEBURI . '/imgs/key.png', 'fg-orange80');
+        $this->_iconAppAdmin = new DataGridIcon('star', Init::$WEBURI . '/imgs/check_blue.png', null, _('Admin Aplicación'));
+        $this->_iconAccAdmin = new DataGridIcon('star_half', Init::$WEBURI . '/imgs/check_orange.png', null, _('Admin Cuentas'));
+        $this->_iconLdapUser = new DataGridIcon('business', Init::$WEBURI . '/imgs/ldap.png', null, _('Usuario de LDAP'));
+        $this->_iconDisabled = new DataGridIcon('error', Init::$WEBURI . '/imgs/disabled.png', null, _('Deshabilitado'));
+        $this->_iconRefresh = new DataGridIcon('refresh', Init::$WEBURI . '/imgs/view.png', 'fg-green80');
+        $this->_iconCopy = new DataGridIcon('content_copy', Init::$WEBURI . '/imgs/btn_copy.png', 'fg-blue80');
+        $this->_iconClipboard = new DataGridIcon('content_paste', Init::$WEBURI . '/imgs/clipboard.png', 'fg-blue80');
+        $this->_iconEmail = new DataGridIcon('email', Init::$WEBURI . '/imgs/request.png', 'fg-blue80');
+        $this->_iconOptional = new DataGridIcon('settings', Init::$WEBURI . '/imgs/action.png');
 
         // Iconos de Navegación
-        $this->_iconNavPrev = new DataGridIcon('chevron_left', 'imgs/arrow_left.png');
+        $this->_iconNavPrev = new DataGridIcon('chevron_left', Init::$WEBURI . '/imgs/arrow_left.png');
         $this->_iconNavPrev->setTitle(_('Página anterior'));
-        $this->_iconNavNext = new DataGridIcon('chevron_right', 'imgs/arrow_right.png');
+        $this->_iconNavNext = new DataGridIcon('chevron_right', Init::$WEBURI . '/imgs/arrow_right.png');
         $this->_iconNavNext->setTitle(_('Página siguiente'));
-        $this->_iconNavFirst = new DataGridIcon('arrow_back', 'imgs/arrow_first.png');
+        $this->_iconNavFirst = new DataGridIcon('arrow_back', Init::$WEBURI . '/imgs/arrow_first.png');
         $this->_iconNavFirst->setTitle(_('Primera página'));
-        $this->_iconNavLast = new DataGridIcon('arrow_forward', 'imgs/arrow_last.png');
+        $this->_iconNavLast = new DataGridIcon('arrow_forward', Init::$WEBURI . '/imgs/arrow_last.png');
         $this->_iconNavLast->setTitle(_('Última página'));
 
         // Iconos de Ordenación
-        $this->_iconUp = new DataGridIcon('arrow_drop_up', 'imgs/arrow_up.png');
-        $this->_iconDown = new DataGridIcon('arrow_drop_down', 'imgs/arrow_down.png');
+        $this->_iconUp = new DataGridIcon('arrow_drop_up', Init::$WEBURI . '/imgs/arrow_up.png');
+        $this->_iconDown = new DataGridIcon('arrow_drop_down', Init::$WEBURI . '/imgs/arrow_down.png');
     }
 
     /**

@@ -48,6 +48,10 @@ interface ActionsInterface {
     const ACTION_ACC_FILES_DOWNLOAD = 113;
     const ACTION_ACC_FILES_DELETE = 114;
     const ACTION_ACC_REQUEST = 12;
+    const ACTION_ACC_FAVORITES = 13;
+    const ACTION_ACC_FAVORITES_VIEW = 130;
+    const ACTION_ACC_FAVORITES_ADD = 131;
+    const ACTION_ACC_FAVORITES_DELETE = 133;
     const ACTION_WIKI = 20;
     const ACTION_WIKI_VIEW = 200;
     const ACTION_WIKI_NEW = 201;

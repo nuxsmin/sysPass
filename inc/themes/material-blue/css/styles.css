@@ -1309,7 +1309,7 @@ footer img {
 }
 
 .action li {
-    float: right;
+    display: inline-block;
     width: 2em;
     height: 2em;
     margin-left: 3em

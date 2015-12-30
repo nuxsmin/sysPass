@@ -3,8 +3,8 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $this   SP\Core\Template
- * @var $action SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
+ * @var $this    SP\Core\Template
+ * @var $action  SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
  */
 ?>
 <div id="tabs">
@@ -22,12 +22,12 @@
                         <?php if ($action->getType() === \SP\Html\DataGrid\DataGridActionType::NEW_ITEM): ?>
                             <li>
                                 <button
-                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-js-ripple-effect"
+                                    class="button-action"
                                     data-itemid="0" data-activetab="<?php echo $index; ?>"
                                     data-nextactionid="<?php echo $data->getOnCloseAction(); ?>"
                                     OnClick="<?php echo $action->getOnClick(); ?>"
                                     title="<?php echo $action->getTitle(); ?>">
-                                    <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
+                                    <img src="<?php echo $action->getIcon()->getImage(); ?>"/>
                                 </button>
                             </li>
                         <?php elseif ($action->getType() === \SP\Html\DataGrid\DataGridActionType::SEARCH_ITEM): ?>
@@ -35,13 +35,11 @@
                                 <form method="post" id="<?php echo $action->getName(); ?>"
                                       name="<?php echo $action->getName(); ?>"
                                       onsubmit="<?php echo $action->getOnSubmit(); ?>">
-                                    <i class="material-icons" title="<?php echo _('Limpiar'); ?>" onclick="$('#<?php echo $action->getName(); ?>').trigger('reset').submit();">clear_all</i>
-                                    <div class="mdl-textfield mdl-js-textfield">
-                                        <input class="mdl-textfield__input fg-blue100" type="text" id="txtSearch"
-                                               name="search" value=""/>
-                                        <label class="mdl-textfield__label"
-                                               for="txtSearch"><?php echo $action->getTitle(); ?></label>
-                                    </div>
+                                    <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>"
+                                         class="inputImg btnClear"
+                                         onclick="$('#<?php echo $action->getName(); ?>').trigger('reset').submit();">
+                                    <input class="txtSearch" type="text" name="search" value=""
+                                           title="<?php echo $action->getTitle(); ?>"/>
                                     <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                                     <input type="hidden" name="target" value="data-rows-<?php echo $data->getId(); ?>">
                                     <input type="hidden" name="activeTab" value="<?php echo $index; ?>">
@@ -52,11 +50,11 @@
                         <?php endif; ?>
                     <?php endforeach; ?>
                     <li>
-                        <button type="button"
-                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                        <button id="btnBack" type="button"
+                                class="button-action"
                                 OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>, <?php echo $lastAccountId; ?>)"
                                 title="<?php echo _('Atrás'); ?>">
-                            <i class="material-icons">arrow_back</i>
+                            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save"/>
                         </button>
                     </li>
                 </ul>

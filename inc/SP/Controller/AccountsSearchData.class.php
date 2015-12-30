@@ -82,6 +82,8 @@ class AccountsSearchData
     /** @var  string */
     private $_numFiles;
     /** @var bool */
+    private $_favorite = false;
+    /** @var bool */
     private $_showView = false;
     /** @var bool */
     private $_showViewPass = false;
@@ -93,6 +95,22 @@ class AccountsSearchData
     private $_showDelete = false;
     /** @var int */
     private $_textMaxLength = 60;
+
+    /**
+     * @return boolean
+     */
+    public function isFavorite()
+    {
+        return $this->_favorite;
+    }
+
+    /**
+     * @param boolean $favorite
+     */
+    public function setFavorite($favorite)
+    {
+        $this->_favorite = $favorite;
+    }
 
     /**
      * @return boolean
@@ -117,6 +135,22 @@ class AccountsSearchData
     public function isShowCopyPass()
     {
         return ($this->isShowViewPass() && !Checks::accountPassToImageIsEnabled());
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowViewPass()
+    {
+        return $this->_showViewPass;
+    }
+
+    /**
+     * @param boolean $showViewPass
+     */
+    public function setShowViewPass($showViewPass)
+    {
+        $this->_showViewPass = $showViewPass;
     }
 
     /**
@@ -360,22 +394,6 @@ class AccountsSearchData
     public function setShowView($showView)
     {
         $this->_showView = $showView;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isShowViewPass()
-    {
-        return $this->_showViewPass;
-    }
-
-    /**
-     * @param boolean $showViewPass
-     */
-    public function setShowViewPass($showViewPass)
-    {
-        $this->_showViewPass = $showViewPass;
     }
 
     /**

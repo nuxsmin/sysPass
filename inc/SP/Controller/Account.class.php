@@ -86,6 +86,7 @@ class Account extends Controller implements ActionsInterface
         $this->view->assign('chkUserEdit', '');
         $this->view->assign('chkGroupEdit', '');
         $this->view->assign('gotData', $this->isGotData());
+        $this->view->assign('isView', false);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
     }
 
@@ -124,7 +125,6 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'add'
             )
         );
-        $this->view->assign('showform', true);
         $this->view->assign('nextaction', Acl::ACTION_ACC_NEW);
 
         Session::setLastAcountId(0);
@@ -279,7 +279,6 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'content_copy'
             )
         );
-        $this->view->assign('showform', true);
         $this->view->assign('nextaction', self::ACTION_ACC_COPY);
 
         $this->setCommonData();
@@ -359,7 +358,6 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'mode_edit'
             )
         );
-        $this->view->assign('showform', true);
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
 
         $this->setCommonData();
@@ -388,7 +386,6 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'delete'
             )
         );
-        $this->view->assign('showform', false);
 
         $this->setCommonData();
         $this->setShowData();
@@ -416,7 +413,8 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'visibility'
             )
         );
-        $this->view->assign('showform', false);
+
+        $this->view->assign('isView', true);
 
         \SP\Core\Session::setAccountParentId($this->getId());
         $this->_account->incrementViewCounter();
@@ -447,7 +445,6 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'access_time'
             )
         );
-        $this->view->assign('showform', false);
 
         $this->_account->setAccountIsHistory(1);
 
@@ -541,7 +538,6 @@ class Account extends Controller implements ActionsInterface
                 'icon' => 'visibility'
             )
         );
-        $this->view->assign('showform', false);
         $this->_account->incrementViewCounter();
         $this->_account->incrementDecryptCounter();
         $this->_account->getAccountPassData();

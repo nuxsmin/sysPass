@@ -71,5 +71,7 @@ $stringsJsLang = array(
     45 => _('Clave Copiada al Portapapeles'),
     46 => _('Error al copiar al portapapeles'),
     47 => _('Clave de Cuenta'),
-    48 => _('Recibir notificaciones?')
+    48 => _('Recibir notificaciones?'),
+    49 => _('Marcar Favorito'),
+    50 => _('Eliminar Favorito')
 );

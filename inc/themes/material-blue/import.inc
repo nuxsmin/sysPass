@@ -221,13 +221,14 @@
 <script>
     $(function () {
         var upload = sysPassUtil.Common.fileUpload({targetId: 'dropzone', url: '/ajax/ajax_import.php'});
-        upload.setRequestData({
-            sk: '<?php echo $sk; ?>',
-            csvDelimiter: $('#csvDelimiter').val(),
-            importPwd: $('#importPwd').val(),
-            import_defaultuser: $('#import_defaultuser').val(),
-            import_defaultgroup: $('#import_defaultgroup').val()
-
+        upload.setBeforeSendAction(function(){
+            upload.setRequestData({
+                sk: '<?php echo $sk; ?>',
+                csvDelimiter: $('#csvDelimiter').val(),
+                importPwd: $('#importPwd').val(),
+                import_defaultuser: $('#import_defaultuser').val(),
+                import_defaultgroup: $('#import_defaultgroup').val()
+            });
         });
 
         $("#help_import_button").click(function () {

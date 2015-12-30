@@ -164,6 +164,8 @@ sysPass.Util.Common = function () {
             return;
         }
 
+        //console.info($("#content").height());
+
         // Calculate total height for full body resize
         var totalHeight = $("#content").height() + 200;
         //var totalWidth = $("#wrap").width();
@@ -186,6 +188,7 @@ sysPass.Util.Common = function () {
         document.frmSearch.search.value = "";
         $('#frmSearch').find('select').prop('selectedIndex', 0).trigger("chosen:updated");
         $('#frmSearch').find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
+        $('#frmSearch').find('input[name="searchfav"]').val(0).change();
         order.key = 0;
         order.dir = 0;
     };
@@ -245,7 +248,7 @@ sysPass.Util.Common = function () {
             data: frmData,
             success: function (json) {
                 $('#resBuscar').html(json.html);
-                $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
+                //$('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
 
 
                 if (typeof json.sk !== 'undefined') {
@@ -255,10 +258,6 @@ sysPass.Util.Common = function () {
             },
             error: function () {
                 $('#resBuscar').html(resMsg("nofancyerror"));
-            },
-            complete: function () {
-                sysPassUtil.hideLoading();
-                scrollUp();
             }
         });
     };
@@ -288,13 +287,10 @@ sysPass.Util.Common = function () {
             data: {'start': start, 'current': current},
             success: function (response) {
                 $('#content').html(response);
+                scrollUp();
             },
             error: function () {
                 $('#content').html(resMsg("nofancyerror"));
-            },
-            complete: function () {
-                sysPassUtil.hideLoading();
-                scrollUp();
             }
         });
     };
@@ -673,7 +669,7 @@ sysPass.Util.Common = function () {
             url: ''
         };
 
-        var requestDoneAction, requestData = {};
+        var requestDoneAction, requestData = {}, beforeSendAction;
 
         var setFn = {
             setRequestDoneAction: function (a) {
@@ -681,6 +677,9 @@ sysPass.Util.Common = function () {
             },
             setRequestData: function (d) {
                 requestData = d;
+            },
+            setBeforeSendAction: function (a) {
+                beforeSendAction = a;
             }
         };
 
@@ -784,6 +783,10 @@ sysPass.Util.Common = function () {
                 event.stopPropagation();
                 event.preventDefault();
 
+                if (typeof beforeSendAction === "function") {
+                    beforeSendAction();
+                }
+
                 handleFiles(event.dataTransfer.files);
             };
 
@@ -803,6 +806,10 @@ sysPass.Util.Common = function () {
 
             if (formTags[0].type === "file") {
                 formTags[0].addEventListener("change", function () {
+                    if (typeof beforeSendAction === "function") {
+                        beforeSendAction();
+                    }
+
                     handleFiles(this.files);
                 }, false);
             }
@@ -963,7 +970,7 @@ sysPass.Util.Common = function () {
         return false;
     };
 
-    var appMgmtSearchAjax = function(data, targetId) {
+    var appMgmtSearchAjax = function (data, targetId) {
         $.ajax({
             type: 'POST',
             dataType: 'json',
@@ -979,9 +986,6 @@ sysPass.Util.Common = function () {
             },
             error: function () {
                 $('#' + targetId).html(resMsg('nofancyerror', 'error'));
-            },
-            complete: function (json) {
-                sysPassUtil.hideLoading();
             }
         });
     };
@@ -1394,7 +1398,6 @@ sysPass.Util.Common = function () {
 
     // Función para mostrar los datos de un registro
     var viewWiki = function (pageName, actionId, sk) {
-
         var data = {'pageName': pageName, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
         var url = APP_ROOT + '/ajax/ajax_wiki.php';
 
@@ -1413,10 +1416,52 @@ sysPass.Util.Common = function () {
         });
     };
 
+    var accMgmtFavorites = function (obj) {
+        var data = {
+            'actionId': $(obj).data('status') === 'on' ? $(obj).data('actionid-off') : $(obj).data('actionid-on'),
+            'accountId': $(obj).data('accountid'),
+            'sk': $(obj).data('sk'),
+            'isAjax': 1
+        };
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: APP_ROOT + '/ajax/ajax_accFavorites.php',
+            data: data,
+            success: function (response) {
+                if (response.status === 0) {
+                    resMsg("ok", response.description);
+
+                    if ($(obj).data('status') === 'on') {
+                        $(obj).data('status', 'off');
+                        $(obj).removeClass('fg-orange80');
+                        $(obj).attr('title', LANG[49]);
+                        $(obj).html('star_border');
+                    } else if ($(obj).data('status') === 'off') {
+                        $(obj).data('status', 'on');
+                        $(obj).addClass('fg-orange80');
+                        $(obj).attr('title', LANG[50]);
+                        $(obj).html('star');
+                    }
+                } else if (response.status === 0) {
+                    resMsg("error", response.description);
+                    return true;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                resMsg("error", txt);
+                return false;
+            }
+        });
+    };
+
     return {
         accSearch: accSearch,
         accGridAction: accGridAction,
         accGridViewPass: accGridViewPass,
+        accMgmtFavorites: accMgmtFavorites,
         appMgmtData: appMgmtData,
         appMgmtNav: appMgmtNav,
         appMgmtSave: appMgmtSave,
@@ -1446,6 +1491,7 @@ sysPass.Util.Common = function () {
         outputResult: outputResult,
         redirect: redirect,
         resMsg: resMsg,
+        scrollUp: scrollUp,
         searchSort: searchSort,
         saveAccount: saveAccount,
         sendAjax: sendAjax,
@@ -1463,4 +1509,4 @@ sysPass.Util.Common = function () {
         LANG: LANG,
         PK: PK
     };
-}
+};

@@ -28,6 +28,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Account\Account;
+use SP\Account\AccountFavorites;
 use SP\Account\AccountSearch;
 use SP\Config\Config;
 use SP\Core\Acl;
@@ -104,6 +105,8 @@ class AccountsSearch extends Controller implements ActionsInterface
     private $_limitCount = 0;
     /** @var int */
     private $_queryTimeStart = 0;
+    /** @var bool */
+    private $_isAjax = false;
 
     /**
      * Constructor
@@ -148,6 +151,15 @@ class AccountsSearch extends Controller implements ActionsInterface
         $this->view->assign('searchCategory', Request::analyze('category', $filters->getCategoryId()));
         $this->view->assign('searchTxt', Request::analyze('search', $filters->getTxtSearch()));
         $this->view->assign('searchGlobal', Request::analyze('gsearch', $filters->getGlobalSearch()));
+        $this->view->assign('searchFavorites', Request::analyze('searchfav', $filters->isSearchFavorites()));
+    }
+
+    /**
+     * @param boolean $isAjax
+     */
+    public function setIsAjax($isAjax)
+    {
+        $this->_isAjax = $isAjax;
     }
 
     /**
@@ -168,6 +180,8 @@ class AccountsSearch extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('datasearch-grid');
 
+        $this->view->assign('isAjax', $this->_isAjax);
+
         $search = new AccountSearch();
 
         $search->setGlobalSearch($this->_searchGlobal);
@@ -179,6 +193,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $search->setTxtSearch($this->view->searchTxt);
         $search->setCategoryId($this->view->searchCategory);
         $search->setCustomerId($this->view->searchCustomer);
+        $search->setSearchFavorites($this->view->searchFavorites);
 
         $resQuery = $search->getAccounts();
 
@@ -186,6 +201,7 @@ class AccountsSearch extends Controller implements ActionsInterface
             || $this->view->searchCustomer
             || $this->view->searchCategory
             || $this->view->searchTxt
+            || $this->view->searchFavorites
             || $search->isSortViews());
 
         if (!$resQuery) {
@@ -228,6 +244,8 @@ class AccountsSearch extends Controller implements ActionsInterface
             $this->view->assign('wikiPageUrl', Config::getValue('wiki_pageurl'));
         }
 
+        $favorites = AccountFavorites::getFavorites(Session::getUserId());
+
         $Account = new Account();
         $accountsData['count'] = AccountSearch::$queryNumRows;
 
@@ -251,6 +269,7 @@ class AccountsSearch extends Controller implements ActionsInterface
             $AccountData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? $wikiSearchUrl . $account->customer_name : '');
             $AccountData->setColor($this->pickAccountColor($account->account_customerId));
             $AccountData->setUrl($account->account_url);
+            $AccountData->setFavorite(in_array($account->account_id, $favorites));
             $AccountData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
             $AccountData->setShowView(Acl::checkAccountAccess(self::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_VIEW));
             $AccountData->setShowViewPass(Acl::checkAccountAccess(self::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_VIEW_PASS));
@@ -293,58 +312,6 @@ class AccountsSearch extends Controller implements ActionsInterface
         }
 
         return $accountsData;
-    }
-
-    /**
-     * Devolver la cabecera con los campos de ordenación
-     *
-     * @return DataGridHeaderSort
-     */
-    private function getHeaderSort()
-    {
-        $GridSortCustomer = new DataGridSort();
-        $GridSortCustomer->setName(_('Cliente'));
-        $GridSortCustomer->setTitle(_('Ordenar por Cliente'));
-        $GridSortCustomer->setSortKey(AccountSearch::SORT_CUSTOMER);
-        $GridSortCustomer->setIconUp($this->_icons->getIconUp());
-        $GridSortCustomer->setIconDown($this->_icons->getIconDown());
-
-        $GridSortName = new DataGridSort();
-        $GridSortName->setName(_('Nombre'));
-        $GridSortName->setTitle(_('Ordenar por Nombre'));
-        $GridSortName->setSortKey(AccountSearch::SORT_NAME);
-        $GridSortName->setIconUp($this->_icons->getIconUp());
-        $GridSortName->setIconDown($this->_icons->getIconDown());
-
-        $GridSortCategory = new DataGridSort();
-        $GridSortCategory->setName(_('Categoría'));
-        $GridSortCategory->setTitle(_('Ordenar por Categoría'));
-        $GridSortCategory->setSortKey(AccountSearch::SORT_CATEGORY);
-        $GridSortCategory->setIconUp($this->_icons->getIconUp());
-        $GridSortCategory->setIconDown($this->_icons->getIconDown());
-
-        $GridSortLogin = new DataGridSort();
-        $GridSortLogin->setName(_('Usuario'));
-        $GridSortLogin->setTitle(_('Ordenar por Usuario'));
-        $GridSortLogin->setSortKey(AccountSearch::SORT_LOGIN);
-        $GridSortLogin->setIconUp($this->_icons->getIconUp());
-        $GridSortLogin->setIconDown($this->_icons->getIconDown());
-
-        $GridSortUrl = new DataGridSort();
-        $GridSortUrl->setName(_('URL / IP'));
-        $GridSortUrl->setTitle(_('Ordenar por URL / IP'));
-        $GridSortUrl->setSortKey(AccountSearch::SORT_URL);
-        $GridSortUrl->setIconUp($this->_icons->getIconUp());
-        $GridSortUrl->setIconDown($this->_icons->getIconDown());
-
-        $GridHeaderSort = new DataGridHeaderSort();
-        $GridHeaderSort->addSortField($GridSortCustomer);
-        $GridHeaderSort->addSortField($GridSortName);
-        $GridHeaderSort->addSortField($GridSortCategory);
-        $GridHeaderSort->addSortField($GridSortLogin);
-        $GridHeaderSort->addSortField($GridSortUrl);
-
-        return $GridHeaderSort;
     }
 
     /**
@@ -524,5 +491,57 @@ class AccountsSearch extends Controller implements ActionsInterface
         $Grid->setData(new DataGridData());
 
         return $Grid;
+    }
+
+    /**
+     * Devolver la cabecera con los campos de ordenación
+     *
+     * @return DataGridHeaderSort
+     */
+    private function getHeaderSort()
+    {
+        $GridSortCustomer = new DataGridSort();
+        $GridSortCustomer->setName(_('Cliente'));
+        $GridSortCustomer->setTitle(_('Ordenar por Cliente'));
+        $GridSortCustomer->setSortKey(AccountSearch::SORT_CUSTOMER);
+        $GridSortCustomer->setIconUp($this->_icons->getIconUp());
+        $GridSortCustomer->setIconDown($this->_icons->getIconDown());
+
+        $GridSortName = new DataGridSort();
+        $GridSortName->setName(_('Nombre'));
+        $GridSortName->setTitle(_('Ordenar por Nombre'));
+        $GridSortName->setSortKey(AccountSearch::SORT_NAME);
+        $GridSortName->setIconUp($this->_icons->getIconUp());
+        $GridSortName->setIconDown($this->_icons->getIconDown());
+
+        $GridSortCategory = new DataGridSort();
+        $GridSortCategory->setName(_('Categoría'));
+        $GridSortCategory->setTitle(_('Ordenar por Categoría'));
+        $GridSortCategory->setSortKey(AccountSearch::SORT_CATEGORY);
+        $GridSortCategory->setIconUp($this->_icons->getIconUp());
+        $GridSortCategory->setIconDown($this->_icons->getIconDown());
+
+        $GridSortLogin = new DataGridSort();
+        $GridSortLogin->setName(_('Usuario'));
+        $GridSortLogin->setTitle(_('Ordenar por Usuario'));
+        $GridSortLogin->setSortKey(AccountSearch::SORT_LOGIN);
+        $GridSortLogin->setIconUp($this->_icons->getIconUp());
+        $GridSortLogin->setIconDown($this->_icons->getIconDown());
+
+        $GridSortUrl = new DataGridSort();
+        $GridSortUrl->setName(_('URL / IP'));
+        $GridSortUrl->setTitle(_('Ordenar por URL / IP'));
+        $GridSortUrl->setSortKey(AccountSearch::SORT_URL);
+        $GridSortUrl->setIconUp($this->_icons->getIconUp());
+        $GridSortUrl->setIconDown($this->_icons->getIconDown());
+
+        $GridHeaderSort = new DataGridHeaderSort();
+        $GridHeaderSort->addSortField($GridSortCustomer);
+        $GridHeaderSort->addSortField($GridSortName);
+        $GridHeaderSort->addSortField($GridSortCategory);
+        $GridHeaderSort->addSortField($GridSortLogin);
+        $GridHeaderSort->addSortField($GridSortUrl);
+
+        return $GridHeaderSort;
     }
 }

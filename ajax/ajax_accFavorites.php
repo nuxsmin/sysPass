@@ -23,12 +23,12 @@
  *
  */
 
-use SP\Controller\AccountsSearch;
-use SP\Core\Init;
-use SP\Http\Request;
+use SP\Account\AccountFavorites;
+use SP\Core\ActionsInterface;
+use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Http\Request;
 use SP\Http\Response;
-use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -36,23 +36,30 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!Init::isLoggedIn()) {
-    Util::logout();
-}
-
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
-$Controller = new AccountsSearch();
-$Controller->setIsAjax(true);
-$Controller->getSearch();
+$actionId = Request::analyze('actionId', 0);
+$accountId = Request::analyze('accountId', 0);
+$userId = Session::getUserId();
 
-$data = array(
-    'sk' => SessionUtil::getSessionKey(),
-    'html' => $Controller->render()
-);
+if (!$accountId || !$actionId){
+    Response::printJSON(_('Acción Inválida'));
+}
 
-Response::printJSON($data, 0);
+if ($actionId === ActionsInterface::ACTION_ACC_FAVORITES_ADD) {
+    if (AccountFavorites::addFavorite($accountId, $userId)) {
+        Response::printJSON(_('Favorito añadido'), 0);
+    }
+
+    Response::printJSON(_('Error al añadir favorito'));
+} elseif ($actionId === ActionsInterface::ACTION_ACC_FAVORITES_DELETE) {
+    if (AccountFavorites::deleteFavorite($accountId, $userId)) {
+        Response::printJSON(_('Favorito eliminado'), 0);
+    }
+
+    Response::printJSON(_('Error al eliminar favorito'));
+}

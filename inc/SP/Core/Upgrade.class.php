@@ -137,6 +137,7 @@ class Upgrade
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
                 $queries[] = 'ALTER TABLE log ADD log_level VARCHAR(20) NOT NULL;';
                 $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(2000);';
+                $queries[] = 'CREATE TABLE `accFavorites` (`accfavorite_accountId` SMALLINT UNSIGNED NOT NULL,`accfavorite_userId` SMALLINT UNSIGNED NOT NULL,INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),CONSTRAINT `fk_accFavorites_accounts` FOREIGN KEY (`accfavorite_accountId`) REFERENCES `accounts` (`account_id`)  ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT `fk_accFavorites_users` FOREIGN KEY (`accfavorite_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION)ENGINE=InnoDB DEFAULT CHARSET=utf8;';
                 break;
             default :
                 $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));

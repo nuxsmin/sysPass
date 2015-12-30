@@ -58,13 +58,10 @@
 
                 <div class="account-info">
                     <?php if ($account->isShow()): ?>
-                        <i id="accesses-<?php echo $account->getId(); ?>" class="material-icons">face</i>
+                        <img src="imgs/btn_group.png"
+                             title="<?php echo _('Permisos'), '<br>', $account->getAccesses(); ?>" class="active-tooltip"/>
 
-                        <div class="mdl-tooltip" for="accesses-<?php echo $account->getId(); ?>">
-                            <?php echo _('Permisos'), '<br>', $account->getAccesses(); ?>
-                        </div>
-
-                        <i class="material-icons fg-orange80 icon-favorite" title=""
+                        <i class="material-icons cursor-pointer fg-orange80 icon-favorite" title=""
                            data-actionId-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
                            data-actionId-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
                            data-accountId="<?php echo $account->getId(); ?>"
@@ -72,28 +69,23 @@
                            data-status="<?php echo ($account->isFavorite()) ? 'on' : 'off'; ?>">star</i>
 
                         <?php if (!empty($account->getNotes())): ?>
-                            <i id="notes-<?php echo $account->getId(); ?>" class="material-icons">speaker_notes</i>
-                            <div class="mdl-tooltip" for="notes-<?php echo $account->getId(); ?>">
-                                <?php echo _('Notas'), '<br>', $account->getNotes(); ?>
-                            </div>
+                            <img src="imgs/notes.png"
+                                 title="<?php echo _('Notas'), '<br>', $account->getNotes(); ?>" class="active-tooltip"/>
                         <?php endif; ?>
 
                         <?php if ($account->getNumFiles() > 0): ?>
-                            <i id="attachments-<?php echo $account->getId(); ?>" class="material-icons">attach_file</i>
-                            <div class="mdl-tooltip" for="attachments-<?php echo $account->getId(); ?>">
-                                <?php echo _('Archivos adjuntos'), ': ', $account->getNumFiles(); ?>
-                            </div>
+                            <img src="imgs/attach.png"
+                                 title="<?php echo _('Archivos adjuntos'), ': ', $account->getNumFiles(); ?>" class="active-tooltip"/>
                         <?php endif; ?>
 
                         <?php if (isset($wikiFilter)): ?>
                             <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account->getName())): ?>
                                 <?php if (\SP\Controller\AccountsSearchData::$dokuWikiEnabled): ?>
                                     <a href="<?php echo $wikiPageUrl, $account->getName(); ?>" target="_blank">
-                                        <i class="material-icons"
-                                           title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                        <img src="imgs/wiki.png" title="<?php echo _('Enlace a Wiki'); ?>"/>
                                     </a>
-                                    <i class="material-icons fg-green100" title="<?php echo _('Ver en Wiki'); ?>"
-                                       onClick="sysPassUtil.Common.viewWiki('<?php echo $account->getName() ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)">library_books</i>
+
+                                    <img src="imgs/wiki.png" title="<?php echo _('Ver en Wiki'); ?>" onClick="sysPassUtil.Common.viewWiki('<?php echo $account->getName(); ?>',<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>)"/>
                                 <?php else: ?>
                                     <a href="<?php echo $wikiPageUrl, $account->getName(); ?>" target="_blank">
                                         <i class="material-icons"
@@ -113,11 +105,11 @@
             <div class="account-actions round">
                 <?php foreach ($data->getDataActions() as $action): ?>
                     <?php if ($action->getReflectionFilter()->invoke($account)): ?>
-                        <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"
+                        <img src="<?php echo $action->getIcon()->getImage(); ?>" class="<?php echo $action->getIcon()->getClass(); ?>"
                            title="<?php echo $action->getTitle(); ?>"
                            data-account-id="<?php echo $account->getId(); ?>"
                            data-sk="<?php echo $sk; ?>"
-                           onclick="<?php echo $action->getOnClick(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
+                           onclick="<?php echo $action->getOnClick(); ?>" />
                     <?php endif; ?>
                 <?php endforeach; ?>
             </div>

@@ -122,31 +122,7 @@
             </tr>
 
             <?php if ($customFields): ?>
-                <?php foreach ($customFields as $field): ?>
-                    <tr>
-                        <td class="descField">
-                            <?php echo $field->text; ?>
-                            <?php if ($field->help): ?>
-                                <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
-                                <div class="tooltip" for="help-<?php echo $field->name; ?>" style="display: none;">
-                                    <p><?php echo $field->help; ?></p>
-                                </div>
-                            <?php endif; ?>
-                        </td>
-                        <td class="valField">
-                            <?php if (!$isView): ?>
-                                <input id="<?php echo $field->name; ?>" name="customfield[<?php echo $field->id; ?>]"
-                                       type="<?php echo $field->typeName; ?>"
-                                       class="<?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
-                                       maxlength="500s"
-                                       value="<?php echo (!$isView) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
-                                    <?php echo ($field->required) ? 'required' : ''; ?>>
-                            <?php else: ?>
-                                <?php echo $field->value; ?>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                <?php include 'aux-customfields.inc'; ?>
             <?php endif; ?>
 
             <?php if ($isView): ?>

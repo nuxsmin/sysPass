@@ -278,6 +278,10 @@
             </tr>
         </table>
 
+        <?php include 'config-events.inc'; ?>
+        <?php include 'config-links.inc'; ?>
+        <?php include 'config-proxy.inc'; ?>
+
         <?php if ($isDemoMode): ?>
             <input type="hidden" name="log_enabled" value="1"/>
             <input type="hidden" name="files_enabled" value="1"/>

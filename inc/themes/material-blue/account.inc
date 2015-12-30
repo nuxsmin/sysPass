@@ -1,7 +1,5 @@
 <div id="title" class="midroundup titleNormal">
-    <?php use SP\Util\Checks;
-
-    echo $title['name']; ?>
+    <?php echo $title['name']; ?>
     <?php if ($gotData && $accountIsHistory): ?>
         <i id="history-icon" class="material-icons"
            title="<?php echo _('Histórico'); ?>"><?php echo $title['icon']; ?></i>
@@ -10,7 +8,7 @@
     <?php endif; ?>
 </div>
 
-<?php if ($showform): ?>
+<?php if (!$isView): ?>
 <form method="post" name="frmaccount" id="frmAccount"
       onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
     <input type="hidden" name="hashcf" value="<?php echo $customFields['hash']; ?>"/>
@@ -28,7 +26,7 @@
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
             <td class="valField">
-                <?php if ($showform): ?>
+                <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
@@ -42,7 +40,7 @@
         <tr>
             <td class="descField"><?php echo _('Cliente'); ?></td>
             <td class="valField">
-                <?php if ($showform): ?>
+                <?php if (!$isView): ?>
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer" required>
                         <option value=""></option>
                         <?php foreach ($customers as $id => $name): ?>
@@ -65,7 +63,7 @@
         <tr>
             <td class="descField"><?php echo _('Categoría'); ?></td>
             <td class="valField">
-                <?php if ($showform): ?>
+                <?php if (!$isView): ?>
                     <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
                         <option value=""></option>
                         <?php foreach ($categories as $id => $name): ?>
@@ -85,7 +83,7 @@
         <tr>
             <td class="descField"><?php echo _('URL / IP'); ?></td>
             <td class="valField">
-                <?php if ($showform): ?>
+                <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text" class="mdl-textfield__input fg-blue100"
                                maxlength="255" value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
@@ -99,7 +97,7 @@
         <tr>
             <td class="descField"><?php echo _('Usuario'); ?></td>
             <td class="valField">
-                <?php if ($showform): ?>
+                <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text" required class="mdl-textfield__input fg-blue100"
                                maxlength="50" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
@@ -138,7 +136,7 @@
         <tr>
             <td class="descField"><?php echo _('Notas'); ?></td>
             <td class="valField">
-                <?php if ($showform): ?>
+                <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input fg-blue100" rows="3" id="notes" name="notes"
                                   maxlength="1000"><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
@@ -150,7 +148,7 @@
                 <?php endif; ?>
 
         </tr>
-        <?php if ($showform): ?>
+        <?php if (!$isView): ?>
             <tr>
                 <td class="descField"><?php echo _('Permisos'); ?></td>
                 <td class="valField">
@@ -281,169 +279,22 @@
 
     <?php if ($customFields): ?>
         <table class="data round extra-info secure-info">
-            <?php foreach ($customFields as $index => $field): ?>
-                <?php if ($index !== 'hash'): ?>
-                    <tr>
-                        <td class="descField">
-                            <?php echo $field->text; ?>
-                            <?php if ($field->help): ?>
-                                <div id="help-<?php echo $field->name; ?>" class="icon material-icons fg-blue80">
-                                    help_outline
-                                </div>
-                                <div class="mdl-tooltip mdl-tooltip--large" for="help-<?php echo $field->name; ?>">
-                                    <p><?php echo $field->help; ?></p>
-                                </div>
-                            <?php endif; ?>
-                        </td>
-                        <td class="valField">
-                            <?php if ($showform): ?>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="<?php echo $field->name; ?>"
-                                           name="customfield[<?php echo $field->id; ?>]"
-                                           type="<?php echo $field->typeName; ?>"
-                                           class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
-                                           maxlength="500"
-                                           value="<?php echo ($gotData) ? \SP\Html\Html::sanitize($field->value) : ''; ?>"
-                                        <?php echo ($field->required) ? 'required' : ''; ?>>
-                                    <label class="mdl-textfield__label"
-                                           for="<?php echo $field->name; ?>"><?php echo $field->text; ?></label>
-                                </div>
-                            <?php else: ?>
-                                <?php if ($field->type === \SP\Mgmt\CustomFields::TYPE_PASSWORD && !$showViewPass): ?>
-                                    ****
-                                <?php elseif ($field->type === \SP\Mgmt\CustomFields::TYPE_COLOR): ?>
-                                    <span class="round custom-input-color"
-                                          style="background-color: <?php echo $field->value; ?>;"></span>
-                                <?php else: ?>
-                                    <?php echo $field->value; ?>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-            <?php endforeach; ?>
+            <?php include 'aux-customfields.inc'; ?>
         </table>
     <?php endif; ?>
 
-    <?php if ($showform): ?>
-</form>>
+<?php if (!$isView): ?>
+</form>
 <?php endif; ?>
 
 <!--Files box-->
 <?php if ($showFiles): ?>
-    <table class="data round extra-info secure-info">
-        <tr>
-            <td class="descField"><?php echo _('Archivos'); ?></td>
-            <td class="valField">
-                <div id="downFiles"></div>
-                <?php if ($accountIsHistory): ?>
-                    <script>sysPassUtil.Common.getFiles(<?php echo $accountParentId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');</script>
-                <?php else: ?>
-                    <script>sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');    </script>
-                    <?php if ($actionId == \SP\Core\ActionsInterface::ACTION_ACC_EDIT): ?>
-                        <div id="dropzone" class="round active-tooltip"
-                             data-files-ext="<?php echo $filesAllowedExts; ?>"
-                             title="<?php echo _('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo') . ' ' . $maxFileSize . ' MB'; ?>">
-                            <i class="material-icons md-60 fg-green80">cloud_upload</i>
-                        </div>
-                        <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">
-                            <input type="file" id="inFile" multiple name="inFile"/>
-                        </form>
-                        <script>
-                            var upload = sysPassUtil.Common.fileUpload({targetId: 'dropzone', url: '/ajax/ajax_files.php'});
-                            upload.setRequestData({
-                                accountId: <?php echo $accountId; ?>,
-                                sk: '<?php echo $sk; ?>',
-                                actionId: <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_UPLOAD; ?>
-                            });
-                            upload.setRequestDoneAction(function () {
-                                sysPassUtil.Common.getFiles(<?php echo $accountId; ?>, <?php echo intval($showDelete); ?>, '<?php echo $sk; ?>');
-                            });
-                        </script>
-                    <?php endif; ?>
-                <?php endif; ?>
-            </td>
-        </tr>
-    </table>
+    <?php include 'account-files.inc'; ?>
 <?php endif; ?>
 
 <!--More info about account details-->
 <?php if ($showDetails): ?>
-    <table class="data round extra-info">
-        <tr>
-            <td class="descField"><?php echo _('Visitas'); ?></td>
-            <td class="valField"><?php echo $accountData->account_countView . "(" . $accountData->account_countDecrypt . ")"; ?></td>
-        </tr>
-        <tr>
-            <td class="descField"><?php echo _('Fecha Alta'); ?></td>
-            <td class="valField"><?php echo $accountData->account_dateAdd ?></td>
-        </tr>
-        <tr>
-            <td class="descField"><?php echo _('Creador'); ?></td>
-            <td class="valField"><?php echo ($accountData->user_name) ? $accountData->user_name : $accountData->user_login; ?></td>
-        </tr>
-        <tr>
-            <td class="descField"><?php echo _('Grupo Principal'); ?></td>
-            <td class="valField"><?php echo $accountData->usergroup_name; ?></td>
-        </tr>
-        <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
-            <tr>
-                <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
-                <td class="valField">
-                    <?php
-                    foreach ($accountOtherUsersName as $userId => $userName) {
-                        if ($userId != $accountData->account_userId) {
-                            if (in_array($userId, $accountOtherUsers)) {
-                                $accUsers[] = $userName;
-                            }
-                        }
-                    }
-
-                    $usersEdit = ($accountData->account_otherUserEdit) ? '(+)' : '';
-                    echo $usersEdit . ' ' . implode(" | ", $accUsers);
-                    ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-        <?php if (is_array($accountOtherGroups) && count($accountOtherGroups) > 0): ?>
-            <tr>
-                <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
-                <td class="valField">
-                    <?php
-                    foreach ($accountOtherGroupsName as $groupId => $groupName) {
-                        if ($groupId != $accountData->account_userGroupId) {
-                            if (in_array($groupId, $accountOtherGroups)) {
-                                $accGroups[] = $groupName;
-                            }
-                        }
-                    }
-
-                    $groupsEdit = ($accountData->account_otherGroupEdit) ? '(+)' : '';
-
-                    echo $groupsEdit . ' ' . implode(" | ", $accGroups);
-                    ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-        <?php if ($isModified): ?>
-            <tr>
-                <td class="descField"><?php echo _('Fecha Edición'); ?></td>
-                <td class="valField"><?php echo $accountData->account_dateEdit; ?></td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo _('Editor'); ?></td>
-                <td class="valField"><?php echo ($accountData->user_editName) ? $accountData->user_editName : $accountData->user_editLogin; ?></td>
-            </tr>
-        <?php endif; ?>
-        <?php if ($showLink && $accountData->publicLink_hash): ?>
-            <tr>
-                <td class="descField"><?php echo _('Enlace Público'); ?></td>
-                <td class="valField">
-                    <a href="<?php echo $publicLinkUrl; ?>" target="_blank"> <?php echo $publicLinkUrl; ?></a>
-                </td>
-            </tr>
-        <?php endif; ?>
-    </table>
+    <?php include 'account-details.inc'; ?>
 <?php endif; ?>
 
 <?php if ($gotData && $accountIsHistory): ?>
@@ -458,102 +309,9 @@
     </form>
 <?php endif; ?>
 
-<div class="action">
-    <?php if ($showDelete): ?>
-        <button id="btnDelete" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-red80"
-                OnClick="sysPassUtil.Common.delAccount(<?php echo $accountId; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_DELETE; ?>,'<?php echo $sk; ?>');"
-                title="<?php echo _('Eliminar Cuenta'); ?>">
-            <i class="material-icons">delete</i>
-        </button>
-    <?php endif; ?>
+<?php include 'account-actions.inc'; ?>
 
-    <?php if ($showLink && $showViewPass): ?>
-        <button id="btnLink" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                OnClick="sysPassUtil.Common.linksMgmtSave(<?php echo $accountId; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>,'<?php echo $sk; ?>');"
-                title="<?php echo _('Crear Enlace Público'); ?>">
-            <i class="material-icons">link</i>
-        </button>
-    <?php endif; ?>
-
-    <?php if ($showViewPass): ?>
-        <button id="btnViewPass" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                onClick="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>,1,<?php echo $accountIsHistory; ?>)"
-                title="<?php echo _('Ver Clave'); ?>">
-            <i class="material-icons">lock_open</i>
-        </button>
-        <?php if (!Checks::accountPassToImageIsEnabled()): ?>
-            <button id="btnClipPass"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored clip-pass-button"
-                    onmousedown="sysPassUtil.Common.viewPass(<?php echo $accountId; ?>, false, <?php echo $accountIsHistory; ?>)"
-                    title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
-                    data-account-id="<?php echo $accountId; ?>">
-                <i class="material-icons">content_paste</i>
-            </button>
-        <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if ($showEditPass): ?>
-        <button id="btnEditPass" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80"
-                OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
-                title="<?php echo _('Modificar Clave de Cuenta'); ?>">
-            <i class="material-icons">lock_outline</i>
-        </button>
-    <?php endif; ?>
-
-    <?php if ($gotData && $accountIsHistory): ?>
-        <button id="btnBack" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountParentId; ?>)"
-                title="<?php echo _('Ver Actual'); ?>">
-            <i class="material-icons">arrow_back</i>
-        </button>
-    <?php else: ?>
-        <button id="btnBack" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>,<?php echo $accountParentId; ?>)"
-                title="<?php echo _('Atrás'); ?>">
-            <i class="material-icons">arrow_back</i>
-        </button>
-    <?php endif; ?>
-
-    <?php if ($showEdit): ?>
-        <button id="btnEdit" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-orange80"
-                OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
-                title="<?php echo _('Modificar Cuenta'); ?>">
-            <i class="material-icons">mode_edit</i>
-        </button>
-    <?php elseif (!$showEdit && $actionId == \SP\Core\ActionsInterface::ACTION_ACC_VIEW && Checks::mailrequestIsEnabled()): ?>
-        <button id="btnRequest" type="button"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo $accountId; ?>)"
-                title="<?php echo _('Solicitar Modificación'); ?>">
-            <i class="material-icons">email</i>
-        </button>
-    <?php endif; ?>
-
-    <?php if ($showRestore): ?>
-        <button id="btnRestore" name="btnRestore" type="submit" form="frmAccount"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Restaurar cuenta desde este punto'); ?>">
-            <i class="material-icons">restore</i>
-        </button>
-    <?php endif; ?>
-
-    <?php if ($showSave): ?>
-        <button id="btnSave" name="btnSave" type="submit" form="frmAccount"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
-        </button>
-    <?php endif; ?>
-</div>
-
-<?php if ($showform): ?>
+<?php if (!$isView): ?>
     <script>
         $(function () {
             $("#selGroups").chosen({

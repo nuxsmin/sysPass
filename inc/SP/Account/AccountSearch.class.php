@@ -92,6 +92,10 @@ class AccountSearch
      * @var bool
      */
     private $_sortViews = false;
+    /**
+     * @var bool
+     */
+    private $_searchFavorites = false;
 
     /**
      * Constructor
@@ -102,6 +106,22 @@ class AccountSearch
 
         $this->_limitCount = ($userResultsPerPage > 0) ? $userResultsPerPage : Config::getValue('account_count');
         $this->_sortViews = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->isSortViews() : false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSearchFavorites()
+    {
+        return $this->_searchFavorites;
+    }
+
+    /**
+     * @param boolean $searchFavorites
+     */
+    public function setSearchFavorites($searchFavorites)
+    {
+        $this->_searchFavorites = (bool)$searchFavorites;
     }
 
     /**
@@ -279,6 +299,12 @@ class AccountSearch
             $Data->addParam($this->_customerId, 'customerId');
         }
 
+        if ($this->_searchFavorites === true) {
+            $arrFilterSelect[] = 'accFavorites.accfavorite_userId = :favUserId';
+
+            $Data->addParam(Session::getUserId(), 'favUserId');
+        }
+
         if (count($arrFilterCommon) > 0) {
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterCommon) . ')';
         }
@@ -344,6 +370,7 @@ class AccountSearch
             'LEFT JOIN customers ON customer_id = account_customerId ' .
             'LEFT JOIN accUsers ON accuser_accountId = account_id ' .
             'LEFT JOIN accGroups ON accgroup_accountId = account_id ' .
+            'LEFT JOIN accFavorites ON accfavorite_accountId = account_id ' .
             $queryWhere . ' ' .
             'GROUP BY account_id ' .
             $this->getOrderString() . ' ' .

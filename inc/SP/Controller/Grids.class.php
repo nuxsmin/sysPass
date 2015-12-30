@@ -131,10 +131,10 @@ class Grids implements ActionsInterface
         $Grid->setId('tblCategories');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionSearch);
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
-        $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
         $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
@@ -225,10 +225,10 @@ class Grids implements ActionsInterface
         $Grid->setId('tblCustomers');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionSearch);
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
-        $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
         $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
@@ -300,10 +300,10 @@ class Grids implements ActionsInterface
         $Grid->setId('tblCustomFields');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionSearch);
         $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
-        $Grid->setDataActions($GridActionSearch);
         $Grid->setHeader($GridHeaders);
         $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
@@ -414,8 +414,8 @@ class Grids implements ActionsInterface
         $Grid->setId('tblAccounts');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
-        $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
         $Grid->setPager($this->getPager($GridActionSearch));
         $Grid->setData($GridData);
@@ -517,8 +517,8 @@ class Grids implements ActionsInterface
         $Grid->setId('tblUsers');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
-        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionEditPass);
@@ -592,8 +592,8 @@ class Grids implements ActionsInterface
         $Grid->setId('tblGroups');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
-        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
         $Grid->setHeader($GridHeaders);
@@ -674,8 +674,8 @@ class Grids implements ActionsInterface
         $Grid->setId('tblProfiles');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
-        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
@@ -759,8 +759,8 @@ class Grids implements ActionsInterface
         $Grid->setId('tblTokens');
         $Grid->setDataRowTemplate('datagrid-rows');
         $Grid->setDataPagerTemplate('datagrid-nav-full');
-        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionNew);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionDel);
