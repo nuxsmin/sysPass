@@ -1082,28 +1082,30 @@ sysPass.Util.Common = function () {
     // Funciones para analizar al fortaleza de una clave
     // From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
     var checkPassLevel = function (password, dst) {
-        var level = zxcvbn(password);
+        passwordData.passLength = password.length;
 
-        outputResult(level.score, dst);
+        outputResult(zxcvbn(password), dst);
     };
 
     var outputResult = function (level, dstId) {
         var complexity, selector = '.passLevel-' + dstId;
+        var score = level.score;
 
         complexity = $(selector);
+        complexity.show();
         complexity.removeClass("weak good strong strongest");
 
         if (passwordData.passLength === 0) {
             complexity.attr('title', '').empty();
         } else if (passwordData.passLength < passwordData.minPasswordLength) {
             complexity.attr('title', LANG[11]).addClass("weak");
-        } else if (level === 0) {
-            complexity.attr('title', LANG[9]).addClass("weak");
-        } else if (level === 1 || level === 2) {
-            complexity.attr('title', LANG[8]).addClass("good");
-        } else if (level === 3) {
+        } else if (score === 0) {
+            complexity.attr('title', LANG[9] + ' - ' + level.feedback.warning).addClass("weak");
+        } else if (score === 1 || score === 2) {
+            complexity.attr('title', LANG[8] + ' - ' + level.feedback.warning).addClass("good");
+        } else if (score === 3) {
             complexity.attr('title', LANG[7]).addClass("strong");
-        } else if (level === 4) {
+        } else if (score === 4) {
             complexity.attr('title', LANG[10]).addClass("strongest");
         }
     };
