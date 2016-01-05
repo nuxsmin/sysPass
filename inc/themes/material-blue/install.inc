@@ -108,7 +108,7 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dbhost" name="dbhost" type="text" required class="mdl-textfield__input fg-blue100"
-                           value="<?php echo $dbhost; ?>" autocomplete="off" autofocus pattern="[0-9a-zA-Z$_-]+">
+                           value="<?php echo $dbhost; ?>" autocomplete="off" autofocus pattern="[0-9a-zA-Z_-\.]+">
                     <label class="mdl-textfield__label"
                            for="dbhost"><?php echo _('Servidor BBDD para sysPass'); ?></label>
                 </div>

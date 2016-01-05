@@ -483,8 +483,9 @@ class Init
     {
         self::wrLogoutInfo();
 
-        session_unset();
+        //session_unset();
         session_destroy();
+        session_start();
     }
 
     /**
@@ -580,7 +581,7 @@ class Init
     }
 
     /**
-     * Inicialiar la sesión de usuario
+     * Inicializar la sesión de usuario
      */
     private static function initSession()
     {
@@ -592,11 +593,8 @@ class Init
                 setcookie(session_name(), '', time() - 42000, '/');
             }
 
-            self::wrLogoutInfo();
+            self::logout();
 
-            session_unset();
-            session_destroy();
-            session_start();
             return;
         }
 
