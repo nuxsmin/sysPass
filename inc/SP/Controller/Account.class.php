@@ -33,6 +33,7 @@ use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
+use SP\Core\Template;
 use SP\Mgmt\PublicLink;
 use SP\Mgmt\CustomFields;
 use SP\Mgmt\User\Groups;
@@ -72,11 +73,11 @@ class Account extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param \SP\Core\Template $template   instancia del motor de plantillas
+     * @param Template $template   instancia del motor de plantillas
      * @param int          $lastAction int con la última acción realizada
      * @param int          $accountId  int con el id de la cuenta
      */
-    public function __construct(\SP\Core\Template $template = null, $lastAction = null, $accountId = null)
+    public function __construct(Template $template = null, $lastAction = null, $accountId = null)
     {
         parent::__construct($template);
 
@@ -493,7 +494,7 @@ class Account extends Controller implements ActionsInterface
             return;
         }
 
-        $this->view->addTemplate('editpass');
+        $this->view->addTemplate('account-editpass');
         $this->view->assign('title',
             array(
                 'class' => 'titleOrange',

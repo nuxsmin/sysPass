@@ -25,7 +25,7 @@
                                title="<?php echo _('Login de inicio de sesión'); ?>" class="txtlogin" maxlength="30"
                                value="<?php echo $user['user_login'] ?>" <?php echo $ro; ?> />
                         <?php if ($ro): ?>
-                            <img src="imgs/ldap.png" title="<?php echo _('Usuario de LDAP'); ?>" class="iconMini"/>
+                            <img src="<?php echo $icons->getIconLdapUser()->getIcon(); ?>" title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>" class="iconMini"/>
                         <?php endif; ?>
                     <?php else: ?>
                         <?php echo $user['user_login']; ?>
@@ -162,8 +162,8 @@
     <?php if (!$isView): ?>
         <div id="resCheck"><span id="resFancyAccion"></span></div>
         <div class="action-in-box">
-            <button type="submit" form="frmUsers" title="<?php echo _('Guardar'); ?>" class="button-action">
-                <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+            <button type="submit" form="frmUsers" title="<?php echo $icons->getIconSave()->getTitle(); ?>" class="button-action">
+                <img src="<?php echo $icons->getIconSave()->getIcon(); ?>" alt="save"/>
             </button>
         </div>
     <?php endif; ?>

@@ -102,7 +102,33 @@ CREATE TABLE `customFieldsData` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 -- To 1.2.0.2
-ALTER TABLE config CHANGE config_value config_value VARCHAR(255);
-ALTER TABLE usrData CHANGE user_pass user_pass VARBINARY(255);
-ALTER TABLE usrData CHANGE user_hashSalt user_hashSalt VARBINARY(128);
-ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);
+ALTER TABLE `config` CHANGE config_value config_value VARCHAR(255);
+ALTER TABLE `usrData` CHANGE user_pass user_pass VARBINARY(255);
+ALTER TABLE `usrData` CHANGE user_hashSalt user_hashSalt VARBINARY(128);
+ALTER TABLE `accHistory` CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);
+-- To 1.3.16011001
+CREATE TABLE `publicLinks` (
+  publicLink_id       INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  publicLink_itemId   INT,
+  publicLink_hash     VARBINARY(100)  NOT NULL,
+  publicLink_linkData LONGBLOB
+);
+CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId);
+CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash);
+ALTER TABLE `log` ADD log_level VARCHAR(20) NOT NULL;
+ALTER TABLE `config` CHANGE config_value config_value VARCHAR(2000);
+CREATE TABLE `accFavorites` (
+  `accfavorite_accountId` SMALLINT UNSIGNED NOT NULL,
+  `accfavorite_userId`    SMALLINT UNSIGNED NOT NULL,
+  INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),
+  INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),
+  INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),
+  CONSTRAINT `fk_accFavorites_accounts` FOREIGN KEY (`accfavorite_accountId`) REFERENCES `accounts` (`account_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_accFavorites_users` FOREIGN KEY (`accfavorite_userId`) REFERENCES `usrData` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;

@@ -5,13 +5,13 @@
             <div id="boxData">
                 <?php if ($demoEnabled): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="user" name="user" type="text" class="mdl-textfield__input fg-blue100" maxlength="80"
+                        <input id="user" name="user" type="text" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="80"
                                title="> demo <">
                         <label class="mdl-textfield__label"
                                for="user"><?php echo _('Usuario'); ?></label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="pass" name="pass" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="pass" name="pass" type="password" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="80"
                                title="> syspass <">
                         <label class="mdl-textfield__label"
@@ -20,7 +20,7 @@
 
                     <span id="smpass" style="display: none">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="80" title="> 12345678900 <">
                         <label class="mdl-textfield__label"
                                for="mpass"><?php echo _('Clave Maestra'); ?></label>
@@ -28,13 +28,13 @@
                 </span>
                 <?php else: ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="user" name="user" type="text" class="mdl-textfield__input fg-blue100" maxlength="80"
+                        <input id="user" name="user" type="text" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="80"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
                                for="user"><?php echo _('Usuario'); ?></label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="pass" name="pass" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="pass" name="pass" type="password" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="80"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
@@ -43,7 +43,7 @@
 
                     <span id="smpass" style="display: none">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="mpass" name="mpass" type="password" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="80" autocomplete="off">
                         <label class="mdl-textfield__label"
                                for="mpass"><?php echo _('Clave Maestra'); ?></label>
@@ -61,7 +61,7 @@
             </div>
             <div id="boxButton">
                 <button id="btnLogin" type="submit" form="frmLogin"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored"
+                        class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--indigo-500"
                         title="<?php echo _('Acceder'); ?>">
                     <i class="material-icons">play_arrow</i>
                 </button>

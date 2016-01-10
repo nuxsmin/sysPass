@@ -19,7 +19,7 @@
     <div class="buttons">
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
                 onclick="window.location.href='index.php'">
-            <i class="material-icons" title="<?php echo _('Volver'); ?>">arrow_back</i>
+            <i class="material-icons" title="<?php echo _('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             <?php echo _('Volver'); ?>
         </button>
     </div>

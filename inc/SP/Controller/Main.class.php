@@ -385,7 +385,7 @@ class Main extends Controller implements ActionsInterface
     public function get2FA()
     {
         if (Request::analyze('f', 0) === 1) {
-            $this->view->addTemplate('2fa');
+            $this->view->addTemplate('login-2fa');
 
             $this->view->assign('action', Request::analyze('a'));
             $this->view->assign('userId', Request::analyze('i'));

@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <!-- Start Tab - Security -->
 <div id="tabs-<?php echo $security_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
@@ -9,7 +11,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Autentificación en 2 pasos'); ?>
-                    <div id="help-security_2fa" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-security_2fa" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-security_2fa">
                         <p>
                             <?php echo _('Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator.'); ?>
@@ -22,7 +24,7 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="security_2faenabled">
-                        <input type="checkbox" id="security_2faenabled" class="mdl-switch__input fg-blue100"
+                        <input type="checkbox" id="security_2faenabled" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="security_2faenabled" <?php echo ($chk2FAEnabled) ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"><?php echo _('Activar'); ?></span>
                     </label>
@@ -36,13 +38,13 @@
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="security_pin" name="security_pin" type="text"
-                               pattern="[0-9]{6}" class="mdl-textfield__input fg-blue100" maxlength="6" required/>
+                               pattern="[0-9]{6}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="6" required/>
                         <label class="mdl-textfield__label"
                                for="security_pin"><?php echo _('Código'); ?></label>
                     </div>
                     <br>
 
-                    <div class="icon material-icons fg-orange80">warning</div>
+                    <div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                     <?php echo _('Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado.'); ?>
                 </td>
             </tr>
@@ -57,9 +59,9 @@
     </form>
     <div class="action">
         <button form="frmSecurity" type="submit"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div> <!-- End Tab - Security -->

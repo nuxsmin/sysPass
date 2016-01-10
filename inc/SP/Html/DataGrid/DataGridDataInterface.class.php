@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Html\Assets\IconInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -80,9 +82,9 @@ interface DataGridDataInterface
      * Establecer los orígenes de datos que se muestran con iconos
      *
      * @param $source string
-     * @param $icon DatagridIcon
+     * @param $icon IconInterface
      */
-    public function addDataRowSourceWithIcon($source, $icon);
+    public function addDataRowSourceWithIcon($source, IconInterface $icon);
 
     /**
      * Devolver los orígenes de datos que se muestran con iconos

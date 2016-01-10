@@ -9,7 +9,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Idioma'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-sitelang" style="display: none;">
                         <p>
                             <?php echo _('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
@@ -31,7 +31,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Tema Visual'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-sitetheme" style="display: none;">
                         <p>
                             <?php echo _('Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias.'); ?>
@@ -59,7 +59,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar log de eventos'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-eventlog" style="display: none;">
                         <p>
                             <?php echo _('Guarda las acciones realizadas en la aplicación.'); ?>
@@ -75,7 +75,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar depuración'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-debug" style="display:none;">
                         <p>
                             <?php echo _('Muestra información relativa a la configuración de la aplicación y rendimiento.'); ?>
@@ -91,7 +91,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Modo mantenimiento'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-maintenance" style="display:none;">
                         <p>
                             <?php echo _('En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración.'); ?>
@@ -107,7 +107,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Comprobar actualizaciones'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-updates" style="display: none;">
                         <p>
                             <?php echo _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores).'); ?>
@@ -123,7 +123,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Comprobar notificaciones'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-notices" style="display: none;">
                         <p>
                             <?php echo _('Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores).'); ?>
@@ -139,7 +139,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre de cuenta como enlace'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-account_link" style="display: none;">
                         <p>
                             <?php echo _('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
@@ -155,7 +155,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Gestión de archivos'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-files" style="display:none;">
                         <p>
                             <?php echo _('Habilita la subida/descarga de archivos para las cuentas.'); ?>
@@ -171,7 +171,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Búsquedas globales'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-globalsearch" style="display:none;">
                         <p>
                             <?php echo _('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?>
@@ -187,7 +187,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Extensiones de archivos permitidas'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-allowed_exts" style="display:none;">
                         <p>
                             <?php echo _('Extensiones permitidas para la subida de archivos.'); ?>
@@ -210,7 +210,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Tamaño máximo de archivo'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-files_allowed_size" style="display:none;">
                         <p>
                             <?php echo _('Establece el tamaño máximo para subir archivos.'); ?>
@@ -229,7 +229,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Resultados por página'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" for="help-account_count" style="display:none;">
                         <p>
                             <?php echo _('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
@@ -244,7 +244,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Resultados en Tarjetas'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" style="display:none;">
                         <p>
                             <?php echo _('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
@@ -260,7 +260,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Imagen para mostrar clave'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
                     <div class="tooltip" style="display:none;">
                         <p>
                             <?php echo _('Generar una imagen con el texto de la clave de la cuenta.'); ?>
@@ -295,8 +295,8 @@
     </form>
 
     <div class="action">
-        <button type="submit" form="frmConfig" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+        <button type="submit" form="frmConfig" title="<?php echo $icons->getIconSave()->getTitle(); ?>" class="button-action">
+            <img src="<?php echo $icons->getIconSave()->getIcon(); ?>" alt="save" />
         </button>
     </div>
 </div> <!-- End Tab - Config -->
@@ -316,14 +316,14 @@
                 $tagsbox.animate({scrollTop: $tagsbox.height()});
 
                 if ($tagsbox.find('img:last').attr('alt') != 'warning') {
-                    $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '" />');
+                    $tagsbox.find('div:last').prev().append('<img src="<?php echo $icons->getIconWarning()->getIcon(); ?>" alt="warning" class="iconMini" title="' + LANG[5] + '" />');
                 }
             },
             'onRemoveTag': function () {
                 var $tagsbox = $(this).next();
 
                 if ($tagsbox.find('img:last').attr('alt') != 'warning') {
-                    $tagsbox.find('div:last').prev().append('<img src="imgs/warning.png" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
+                    $tagsbox.find('div:last').prev().append('<img src="<?php echo $icons->getIconWarning()->getIcon(); ?>" alt="warning" class="iconMini" title="' + LANG[5] + '"/>');
                 }
             }
         });

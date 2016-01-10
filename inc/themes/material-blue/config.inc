@@ -1,4 +1,5 @@
 <!-- Start Tab - Config -->
+<?php /** @var $icons \Theme\Icons */ ?>
 <div id="tabs-<?php echo $config_tabIndex; ?>">
 
     <form method="post" name="frmConfig" id="frmConfig"
@@ -24,9 +25,9 @@
 
     <div class="action">
         <button form="frmConfig"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div> <!-- End Tab - Config -->

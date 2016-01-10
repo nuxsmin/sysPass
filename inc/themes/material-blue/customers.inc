@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
@@ -8,7 +10,7 @@
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
+                        <input id="name" name="name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $customer["customer_name"]; ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo _('Nombre del cliente'); ?></label>
@@ -20,7 +22,7 @@
                 <td class="descField"><?php echo _('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="description" name="description" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="description" name="description" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $customer["customer_description"]; ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo _('Descripción del cliente'); ?></label>
@@ -43,9 +45,9 @@
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                form="frmCustomers" title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                form="frmCustomers" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div>

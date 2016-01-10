@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,29 +23,21 @@
  *
  */
 
-namespace SP\Html\DataGrid;
-
-use SP\Html\Assets\IconInterface;
+namespace SP\Html\Assets;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-
 /**
- * Interface DataGridSortInterface para la definicíon de campos de ordenación
+ * Interface IconInterface
  *
- * @package SP\Html\DataGrid
+ * @package SP\Html\Assets
  */
-interface DataGridSortInterface
+interface IconInterface
 {
     /**
-     * @return int
+     * @param $title
      */
-    public function getSortKey();
-
-    /**
-     * @param $key int
-     */
-    public function setSortKey($key);
+    public function setTitle($title);
 
     /**
      * @return string
@@ -53,19 +45,9 @@ interface DataGridSortInterface
     public function getTitle();
 
     /**
-     * @param $title string
+     * @param $class
      */
-    public function setTitle($title);
-
-    /**
-     * @return string
-     */
-    public function getName();
-
-    /**
-     * @param $name string
-     */
-    public function setName($name);
+    public function setClass($class);
 
     /**
      * @return string
@@ -73,27 +55,12 @@ interface DataGridSortInterface
     public function getClass();
 
     /**
-     * @param $class string
+     * @return string
      */
-    public function setClass($class);
+    public function getIcon();
 
     /**
-     * @return IconInterface
+     * @param $icon
      */
-    public function getIconUp();
-
-    /**
-     * @param IconInterface $icon
-     */
-    public function setIconUp(IconInterface $icon);
-
-    /**
-     * @return IconInterface
-     */
-    public function getIconDown();
-
-    /**
-     * @param IconInterface $icon
-     */
-    public function setIconDown(IconInterface $icon);
+    public function setIcon($icon);
 }

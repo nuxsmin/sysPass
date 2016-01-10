@@ -46,7 +46,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('No modificar cuentas'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip"/>
 
                     <div class="tooltip" for="help-chkNoAccountChange" style="display:none;">
                         <p>
@@ -64,13 +64,13 @@
                     <?php echo _('Confirmar cambio'); ?>
                 </td>
                 <td class="valField">
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <img src="<?php echo $icons->getIconWarning()->getIcon(); ?>" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
                     <?php echo _('Guarde la nueva clave en un lugar seguro.'); ?>
                     <br>
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <img src="<?php echo $icons->getIconWarning()->getIcon(); ?>" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
                     <?php echo _('Se volverán a encriptar las claves de todas las cuentas.'); ?>
                     <br>
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <img src="<?php echo $icons->getIconWarning()->getIcon(); ?>" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
                     <?php echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                     <br>
                     <br>
@@ -89,7 +89,7 @@
     <div class="action">
         <button id="help_mpass_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" alt="help"/>
         </button>
         <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
@@ -158,13 +158,13 @@
     <div class="action">
         <button id="help_tmpass_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" alt="save"/>
         </button>
         <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
         </div>
         <button type="submit" form="frmTempMasterPass" title="<?php echo _('Generar'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/genpass.png" alt="save"/>
+            <img src="<?php echo $icons->getIconPlay()->getIcon(); ?>" alt="genpass"/>
         </button>
     </div>
 </div> <!-- End Tab - Encryption -->

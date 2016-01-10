@@ -28,7 +28,7 @@
                            placeholder="<?php echo _('Usuario'); ?>"
                            value="<?php echo $adminlogin; ?>" autocomplete="off" autofocus
                            required/>
-                    <img src="imgs/help.png" class="inputImg"
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" class="inputImg"
                          title="<?php echo _('Login del usuario administrador de sysPass'); ?>"/>
                 </p>
 
@@ -63,7 +63,7 @@
                     <input type="text" name="dbuser" id="dbuser" title="<?php echo _('Usuario BBDD'); ?>"
                            placeholder="<?php echo _('Usuario BBDD'); ?>"
                            value="<?php echo $dbuser; ?>" autocomplete=off" required/>
-                    <img src="imgs/help.png" class="inputImg"
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" class="inputImg"
                          title="<?php echo _('Login de usuario con permisos de administrador de MySQL'); ?>"/>
                 </p>
 
@@ -79,7 +79,7 @@
                            placeholder="<?php echo _('Nombre BBDD'); ?>"
                            value="<?php echo $dbname; ?>" autocomplete=off"
                            pattern="[0-9a-zA-Z$_-]+" required/>
-                    <img src="imgs/help.png" class="inputImg"
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" class="inputImg"
                          title="<?php echo _('Nombre de la base de datos para sysPass'); ?>"/>
                 </p>
 
@@ -87,7 +87,7 @@
                     <input type="text" name="dbhost" id="dbhost" title="<?php echo _('Servidor BBDD'); ?>"
                            placeholder="<?php echo _('Servidor BBDD'); ?>"
                            value="<?php echo $dbhost; ?>" required/>
-                    <img src="imgs/help.png" class="inputImg"
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" class="inputImg"
                          title="<?php echo _('Nombre del servidor de la base de datos de sysPass'); ?>"/>
                 </p>
 
@@ -100,7 +100,7 @@
                     <input type="checkbox" name="hostingmode"
                            id="hostingmode"
                            class="checkbox" <?php echo ($hostingmode) ? 'checked' : ''; ?>/>
-                    <img src="imgs/help.png" class="inputImg"
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" class="inputImg"
                          title="<?php echo _('No crea ni verifica los permisos del usuario sobre la BBDD'); ?>"/>
                 </p>
             </fieldset>

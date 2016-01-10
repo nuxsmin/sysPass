@@ -105,7 +105,7 @@
             <div class="account-actions round">
                 <?php foreach ($data->getDataActions() as $action): ?>
                     <?php if ($action->getReflectionFilter()->invoke($account)): ?>
-                        <img src="<?php echo $action->getIcon()->getImage(); ?>" class="<?php echo $action->getIcon()->getClass(); ?>"
+                        <img src="<?php echo $action->getIcon()->getIcon(); ?>" class="<?php echo $action->getIcon()->getClass(); ?>"
                            title="<?php echo $action->getTitle(); ?>"
                            data-account-id="<?php echo $account->getId(); ?>"
                            data-sk="<?php echo $sk; ?>"

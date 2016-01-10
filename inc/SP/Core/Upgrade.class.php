@@ -41,7 +41,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 12101);
+    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001);
     private static $_cfgUpgrade = array(1124);
 
     /**
@@ -131,8 +131,8 @@ class Upgrade
                 $queries[] = 'ALTER TABLE usrData CHANGE user_hashSalt user_hashSalt VARBINARY(128);';
                 $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
                 break;
-            case 12101:
-                $queries[] = 'CREATE TABLE publicLinks(publicLink_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,publicLink_itemId INT,publicLink_hash VARBINARY(100) NOT NULL,publicLink_linkData LONGBLOB);';
+            case 1316011001:
+                $queries[] = 'CREATE TABLE publicLinks (publicLink_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,publicLink_itemId INT,publicLink_hash VARBINARY(100) NOT NULL,publicLink_linkData LONGBLOB);';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId)';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
                 $queries[] = 'ALTER TABLE log ADD log_level VARCHAR(20) NOT NULL;';

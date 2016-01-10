@@ -30,12 +30,12 @@
     <input type="hidden" name="isAjax" value="1">
 </form>
 <div class="action">
-    <button type="button" title="<?php echo _('Atrás'); ?>" class="button-action"
+    <button type="button" title="<?php echo $icons->getIconBack()->getTitle(); ?>" class="button-action"
             OnClick="sysPassUtil.Common.doAction('<?php echo $lastAction; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>)">
-        <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save"/>
+        <img src="<?php echo $icons->getIconBack()->getIcon(); ?>" alt="save"/>
     </button>
 
     <button type="submit" form="frmUpdUsrPass" title="<?php echo _('Enviar'); ?>" class="button-action">
-        <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
+        <img src="<?php echo $icons->getIconSave()->getIcon(); ?>" alt="save"/>
     </button>
 </div>

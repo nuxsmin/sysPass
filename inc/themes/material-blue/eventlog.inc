@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <div id="title" class="midroundup titleNormal">
     <?php echo _('Registro de Eventos'); ?>
 </div>
@@ -102,8 +104,8 @@
     </div>
 </div>
 <div class="action fullWidth">
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
             title="<?php echo _('Vaciar registro de eventos'); ?>" OnClick="sysPassUtil.Common.clearEventlog('<?php echo $sk; ?>');">
-        <i class="material-icons">clear_all</i>
+        <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
     </button>
 </div>

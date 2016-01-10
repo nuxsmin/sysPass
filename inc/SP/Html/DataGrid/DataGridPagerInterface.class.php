@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Html\Assets\IconInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -154,44 +156,44 @@ interface DataGridPagerInterface
     public function getOnClickPrev();
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconPrev();
 
     /**
-     * @param DataGridIcon $iconPrev
+     * @param IconInterface $iconPrev
      */
-    public function setIconPrev($iconPrev);
+    public function setIconPrev(IconInterface $iconPrev);
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconNext();
 
     /**
-     * @param DataGridIcon $iconNext
+     * @param IconInterface $iconNext
      */
-    public function setIconNext($iconNext);
+    public function setIconNext(IconInterface $iconNext);
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconFirst();
 
     /**
-     * @param DataGridIcon $iconFirst
+     * @param IconInterface $iconFirst
      */
-    public function setIconFirst($iconFirst);
+    public function setIconFirst(IconInterface $iconFirst);
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconLast();
 
     /**
-     * @param DataGridIcon $iconLast
+     * @param IconInterface $iconLast
      */
-    public function setIconLast($iconLast);
+    public function setIconLast(IconInterface $iconLast);
 
     /**
      * @param DataGridActionSearch $sourceAction

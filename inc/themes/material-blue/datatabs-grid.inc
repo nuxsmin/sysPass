@@ -22,7 +22,7 @@
                         <?php if ($action->getType() === \SP\Html\DataGrid\DataGridActionType::NEW_ITEM): ?>
                             <li>
                                 <button
-                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-js-ripple-effect"
+                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200 mdl-js-ripple-effect"
                                     data-itemid="0" data-activetab="<?php echo $index; ?>"
                                     data-nextactionid="<?php echo $data->getOnCloseAction(); ?>"
                                     OnClick="<?php echo $action->getOnClick(); ?>"
@@ -37,7 +37,7 @@
                                       onsubmit="<?php echo $action->getOnSubmit(); ?>">
                                     <i class="material-icons" title="<?php echo _('Limpiar'); ?>" onclick="$('#<?php echo $action->getName(); ?>').trigger('reset').submit();">clear_all</i>
                                     <div class="mdl-textfield mdl-js-textfield">
-                                        <input class="mdl-textfield__input fg-blue100" type="text" id="txtSearch"
+                                        <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="txtSearch"
                                                name="search" value=""/>
                                         <label class="mdl-textfield__label"
                                                for="txtSearch"><?php echo $action->getTitle(); ?></label>
@@ -53,10 +53,10 @@
                     <?php endforeach; ?>
                     <li>
                         <button type="button"
-                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
                                 OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>, <?php echo $lastAccountId; ?>)"
-                                title="<?php echo _('Atrás'); ?>">
-                            <i class="material-icons">arrow_back</i>
+                                title="<?php echo $icons->getIconBack()->getTitle(); ?>">
+                            <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                         </button>
                     </li>
                 </ul>

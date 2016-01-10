@@ -14,11 +14,11 @@
 
                         <div
                             class="icon material-icons sort-down cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
-                            arrow_drop_down
+                            <?php echo $icons->getIconDown()->getIcon(); ?>
                         </div>
                         <div
                             class="icon material-icons sort-up cursor-pointer <?php echo ($searchKey == $field['key'] && $searchOrder === 1) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
-                            arrow_drop_up
+                            <?php echo $icons->getIconUp()->getIcon(); ?>
                         </div>
                     </li>
                 <?php endforeach; ?>
@@ -106,12 +106,12 @@
                         <div class="account-actions round">
 
                             <?php if ($account['showView']): ?>
-                                <img src="imgs/view.png" title="<?php echo _('Detalles de Cuenta'); ?>"
+                                <img src="<?php echo $icons->getIconView()->getIcon(); ?>" title="<?php echo _('Detalles de Cuenta'); ?>"
                                      OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"/>
                             <?php endif ?>
 
                             <?php if ($account['showViewPass']): ?>
-                                <img src="imgs/user-pass.png" title="<?php echo _('Ver Clave'); ?>"
+                                <img src="<?php echo $icons->getIconViewPass()->getIcon(); ?>" title="<?php echo _('Ver Clave'); ?>"
                                      onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)"/>
                                 <?php if (!Checks::accountPassToImageIsEnabled()): ?>
                                     <img src="imgs/clipboard.png"

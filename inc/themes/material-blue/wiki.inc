@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <!-- Start Tab - Wiki -->
 <div id="tabs-<?php echo $wiki_tabIndex; ?>">
     <form method="post" name="frmWiki" id="frmWiki"
@@ -11,7 +13,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar enlaces Wiki'); ?>
-                    <div id="help-wiki_enabled" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-wiki_enabled" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
                         <p>
                             <?php echo _('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
@@ -20,7 +22,7 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
-                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input fg-blue100"
+                        <input type="checkbox" id="wiki_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="wiki_enabled"
                             <?php echo $chkWiki, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
@@ -30,7 +32,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de búsqueda Wiki'); ?>
-                    <div id="help-wiki_searchurl" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-wiki_searchurl" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_searchurl">
                         <p>
                             <?php echo _('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
@@ -52,7 +54,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="wiki_searchurl" name="wiki_searchurl" type="text"
-                               class="mdl-textfield__input fg-blue100"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $wikiSearchUrl; ?>">
                         <label class="mdl-textfield__label"
                                for="wiki_searchurl"><?php echo _('URL de búsqueda Wiki'); ?></label>
@@ -62,7 +64,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de página en Wiki'); ?>
-                    <div id="help-wiki_pageurl" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-wiki_pageurl" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_pageurl">
                         <p>
                             <?php echo _('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
@@ -83,7 +85,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $wikiPageUrl; ?>">
                         <label class="mdl-textfield__label"
                                for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
@@ -93,7 +95,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Prefijo para nombre de cuenta'); ?>
-                    <div id="help-wikifilter" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-wikifilter" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wikifilter">
                         <p>
                             <?php echo _('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
@@ -118,7 +120,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar API de DokuWiki'); ?>
-                    <div id="help-dokuwiki_enabled" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dokuwiki_enabled" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_enabled">
                         <p>
                             <?php echo _('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
@@ -130,7 +132,7 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="dokuwiki_enabled">
-                        <input type="checkbox" id="dokuwiki_enabled" class="mdl-switch__input fg-blue100"
+                        <input type="checkbox" id="dokuwiki_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="dokuwiki_enabled"
                             <?php echo $chkDokuWiki, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
@@ -141,7 +143,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL API'); ?>
-                    <div id="help-dokuwiki_url" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dokuwiki_url" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_url">
                         <p>
                             <?php echo _('URL de la API de DokuWiki.'); ?>
@@ -158,7 +160,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="dokuwiki_url" name="dokuwiki_url" type="text"
-                               class="mdl-textfield__input fg-blue100"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $dokuWikiUrl; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo _('URL API'); ?></label>
                     </div>
@@ -167,7 +169,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL Base'); ?>
-                    <div id="help-dokuwiki_urlbase" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dokuwiki_urlbase" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_urlbase">
                         <p>
                             <?php echo _('URL base de DokuWiki.'); ?>
@@ -184,7 +186,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="dokuwiki_urlbase" name="dokuwiki_urlbase" type="text"
-                               class="mdl-textfield__input fg-blue100"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $dokuWikiUrlBase; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="dokuwiki_urlbase"><?php echo _('URL Base'); ?></label>
                     </div>
@@ -193,7 +195,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario'); ?>
-                    <div id="help-dokuwiki_user" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dokuwiki_user" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_user">
                         <p>
                             <?php echo _('Usuario para conectar a la API de DokuWiki.'); ?>
@@ -203,7 +205,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="dokuwiki_user" name="dokuwiki_user" type="text"
-                               class="mdl-textfield__input fg-blue100"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $dokuWikiUser; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="dokuwiki_user"><?php echo _('Usuario'); ?></label>
                     </div>
@@ -216,7 +218,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="dokuwiki_pass" name="dokuwiki_pass" type="password"
-                               class="mdl-textfield__input passwordfield__input fg-blue100"
+                               class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $dokuWikiPass; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="dokuwiki_pass"><?php echo _('Clave'); ?></label>
                     </div>
@@ -225,7 +227,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Namespace'); ?>
-                    <div id="help-dokuwiki_namespace" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dokuwiki_namespace" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_namespace">
                         <p>
                             <?php echo _('Namespace utilizado para buscar las páginas.'); ?>
@@ -235,7 +237,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="dokuwiki_namespace" name="dokuwiki_namespace" type="text"
-                               class="mdl-textfield__input fg-blue100"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $dokuWikiNamespace; ?>" <?php echo $isDisabled; ?>/>
                         <label class="mdl-textfield__label" for="dokuwiki_namespace"><?php echo _('Namespace'); ?></label>
                     </div>
@@ -263,9 +265,9 @@
 
     <div class="action">
         <button form="frmWiki"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div> <!-- End Tab - Wiki -->
@@ -284,14 +286,14 @@
                 $tagsbox.animate({scrollTop: $tagsbox.height()});
 
                 if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
+                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></div>');
                 }
             },
             onRemoveTag: function () {
                 var $tagsbox = $(this).next();
 
                 if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
+                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></div>');
                 }
             },
             onChange: function () {

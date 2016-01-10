@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Html\Assets\IconInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -42,9 +44,9 @@ class DataGridSort implements DataGridSortInterface
     private $_name = '';
     /** @var array */
     private $_class = array();
-    /** @var DataGridIconInterface */
+    /** @var IconInterface */
     private $_iconUp;
-    /** @var DataGridIconInterface */
+    /** @var IconInterface */
     private $_iconDown;
 
     /**
@@ -112,7 +114,7 @@ class DataGridSort implements DataGridSortInterface
     }
 
     /**
-     * @return DataGridIconInterface
+     * @return IconInterface
      */
     public function getIconUp()
     {
@@ -120,15 +122,15 @@ class DataGridSort implements DataGridSortInterface
     }
 
     /**
-     * @param DataGridIconInterface $icon
+     * @param IconInterface $icon
      */
-    public function setIconUp(DataGridIconInterface $icon)
+    public function setIconUp(IconInterface $icon)
     {
         $this->_iconUp = $icon;
     }
 
     /**
-     * @return DataGridIconInterface
+     * @return IconInterface
      */
     public function getIconDown()
     {
@@ -136,9 +138,9 @@ class DataGridSort implements DataGridSortInterface
     }
 
     /**
-     * @param DataGridIconInterface $icon
+     * @param IconInterface $icon
      */
-    public function setIconDown(DataGridIconInterface $icon)
+    public function setIconDown(IconInterface $icon)
     {
         $this->_iconDown = $icon;
     }

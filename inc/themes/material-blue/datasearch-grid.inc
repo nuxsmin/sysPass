@@ -49,11 +49,11 @@
                 var $this = $(this);
 
                 if ($this.data('status') === 'on') {
-                    $this.addClass('fg-orange80');
+                    $this.addClass('mdl-color-text--amber-A100');
                     $this.attr('title', sysPassUtil.Common.LANG[50]);
                     $this.html('star');
                 } else {
-                    $this.removeClass('fg-orange80');
+                    $this.removeClass('mdl-color-text--amber-A100');
                     $this.attr('title', sysPassUtil.Common.LANG[49]);
                     $this.html('star_border');
                 }

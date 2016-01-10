@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Html\Assets\IconInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -80,12 +82,12 @@ interface DataGridActionInterface
     public function getOnClick();
 
     /**
-     * @param $icon DataGridIconInterface
+     * @param $icon IconInterface
      */
     public function setIcon($icon);
 
     /**
-     * @return DataGridIconInterface
+     * @return IconInterface
      */
     public function getIcon();
 

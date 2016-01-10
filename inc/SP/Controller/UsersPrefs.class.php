@@ -66,7 +66,6 @@ class UsersPrefs extends Controller implements ActionsInterface
     {
         parent::__construct($template);
 
-
         $this->view->assign('tabs', array());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->_userId = Session::getUserId();
@@ -80,7 +79,7 @@ class UsersPrefs extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PREFERENCES_SECURITY);
 
-        $this->view->addTemplate('security');
+        $this->view->addTemplate('preferences-security');
 
 
         $twoFa = new Auth2FA($this->_userId, Session::getUserLogin());
@@ -117,7 +116,7 @@ class UsersPrefs extends Controller implements ActionsInterface
     {
         $this->setAction(self::ACTION_USR_PREFERENCES_GENERAL);
 
-        $this->view->addTemplate('preferences');
+        $this->view->addTemplate('preferences-site');
 
         $this->view->assign('userId', $this->_userId);
         $this->view->assign('langsAvailable', Language::getAvailableLanguages());

@@ -7,7 +7,7 @@
         <td class="descField">
             <?php echo _('Habilitar log de eventos'); ?>
 
-            <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
             <div class="tooltip" for="help-eventlog" style="display: none;">
                 <p>
                     <?php echo _('Guarda las acciones realizadas en la aplicación.'); ?>

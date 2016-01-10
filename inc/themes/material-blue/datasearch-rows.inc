@@ -64,7 +64,7 @@
                             <?php echo _('Permisos'), '<br>', $account->getAccesses(); ?>
                         </div>
 
-                        <i class="material-icons fg-orange80 icon-favorite" title=""
+                        <i class="material-icons mdl-color-text--amber-A100 icon-favorite" title=""
                            data-actionId-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
                            data-actionId-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
                            data-accountId="<?php echo $account->getId(); ?>"

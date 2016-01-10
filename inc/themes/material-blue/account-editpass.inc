@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <div id="title" class="midroundup titleNormal">
     <?php echo $title['name']; ?>
     <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
@@ -26,7 +28,7 @@
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="accountpass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
+                    <input id="accountpass" name="pass" type="password" required class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label" for="accountpass"><?php echo _('Clave'); ?></label>
                 </div>
@@ -36,7 +38,7 @@
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="accountpassR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
+                    <input id="accountpassR" name="passR" type="password" required class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label" for="accountpassR"><?php echo _('Clave'); ?></label>
                 </div>
@@ -50,15 +52,15 @@
     <input type="hidden" name="isAjax" value="1">
 
     <div class="action">
-        <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+        <button id="btnBack" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
                 OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $accountId; ?>)"
-                title="<?php echo _('Atrás'); ?>">
-            <i class="material-icons">arrow_back</i>
+                title="<?php echo $icons->getIconBack()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
         </button>
 
-        <button id="btnSave" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+        <button id="btnSave" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </form>

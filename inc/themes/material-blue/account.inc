@@ -28,7 +28,7 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
+                        <input id="name" name="name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
                     </div>
@@ -50,7 +50,7 @@
                     </select>
                     <br><br>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="customer_new" name="customer_new" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="customer_new" name="customer_new" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo _('Seleccionar o escribir para crear uno nuevo'); ?></label>
@@ -73,7 +73,7 @@
                     </select>
                     <?php if (\SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
                         <i class="material-icons" title="<?php echo _('Nueva Categoría'); ?>"
-                           onclick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_MGM; ?>,<?php echo $actionId; ?>, 0)">add</i>
+                           onclick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_MGM; ?>,<?php echo $actionId; ?>, 0)"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                     <?php endif; ?>
                 <?php else: ?>
                     <?php echo $accountData->category_name; ?>
@@ -85,7 +85,7 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="url" name="url" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" value="<?php echo ($gotData) ? $accountData->account_url : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('URL o IP de acceso'); ?></label>
                     </div>
@@ -99,7 +99,7 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="login" name="login" type="text" required class="mdl-textfield__input fg-blue100"
+                        <input id="login" name="login" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
                     </div>
@@ -114,7 +114,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="accountpass" name="pass" type="password" required
-                               class="mdl-textfield__input fg-blue100 passwordfield__input" maxlength="255"
+                               class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input" maxlength="255"
                                autocomplete="off">
                         <label class="mdl-textfield__label" for="accountpass"><?php echo _('Clave'); ?></label>
                     </div>
@@ -125,7 +125,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="accountpassR" name="passR" type="password" required
-                               class="mdl-textfield__input fg-blue100"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
                                for="accountpassR"><?php echo _('Clave (Repetir)'); ?></label>
@@ -138,7 +138,7 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input fg-blue100" rows="3" id="notes" name="notes"
+                        <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes" name="notes"
                                   maxlength="1000"><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>

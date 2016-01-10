@@ -10,7 +10,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Habilitar LDAP'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_enabled" style="display:none;">
                             <p>
                                 <?php echo _('Habilita de autentificación mediante servidor LDAP.'); ?>
@@ -30,7 +30,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Servidor'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_server" style="display:none;">
                             <p>
                                 <?php echo _('Nombre o dirección IP del servidor de LDAP.'); ?>
@@ -55,7 +55,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Usuario de conexión'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_binduser" style="display:none;">
                             <p>
                                 <?php echo _('Usuario para conectar con el servicio de LDAP.'); ?>
@@ -79,7 +79,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Clave de conexión'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     </td>
                     <td class="valField">
                         <input type="password" id="ldap_bindpass" name="ldap_bindpass" value="<?php echo $ldapBindPass; ?>"
@@ -90,7 +90,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Base de búsqueda'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_base" style="display:none;">
                             <p>
                                 <?php echo _('Base en la que realizar la búsqueda de usuarios de LDAP.'); ?>
@@ -114,7 +114,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Grupo'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_group" style="display:none;">
                             <p>
                                 <?php echo _('Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso.'); ?>
@@ -142,7 +142,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Grupo por Defecto'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_defaultgroup" style="display:none;">
                             <p>
                                 <?php echo _('Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
@@ -163,7 +163,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Perfil por Defecto'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_defaultprofile" style="display:none;">
                             <p>
                                 <?php echo _('Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
@@ -184,7 +184,7 @@
                 <tr>
                     <td class="descField">
                         <?php echo _('Active Directory'); ?>
-                        <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                         <div class="tooltip" for="help-ldap_ads" style="display:none;">
                             <p>
                                 <?php echo _('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
@@ -202,7 +202,7 @@
                         <?php echo _('Comprobar'); ?>
                     </td>
                     <td class="valField">
-                        <img src="imgs/refresh.png" class="inputImg"
+                        <img src="<?php echo $icons->getIconRefresh()->getIcon(); ?>" class="inputImg"
                              title="<?php echo _('Comprobar conexión con LDAP'); ?>" onclick="sysPassUtil.Common.checkLdapConn('frmLdap');"/>
                     </td>
                 </tr>
@@ -226,8 +226,8 @@
     </form>
 
     <div class="action">
-        <button type="submit" form="frmLdap" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+        <button type="submit" form="frmLdap" title="<?php echo $icons->getIconSave()->getTitle(); ?>" class="button-action">
+            <img src="<?php echo $icons->getIconSave()->getIcon(); ?>" alt="save" />
         </button>
     </div>
 </div> <!-- End Tab - LDAP -->

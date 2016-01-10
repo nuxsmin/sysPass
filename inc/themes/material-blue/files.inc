@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <div id="files-wrap" class="round">
     <ul id="files-list">
         <?php foreach ($files as $file): ?>
@@ -12,14 +14,14 @@
                 </div>
                 <div class="files-item-actions">
                     <?php if ($deleteEnabled === 1): ?>
-                        <i class="material-icons fg-red80"
+                        <i class="material-icons <?php echo $icons->getIconDelete()->getClass(); ?>"
                            title="<?php echo _('Eliminar Archivo'); ?>"
-                           OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DELETE; ?>);">delete</i>
+                           OnClick="sysPassUtil.Common.delFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo $accountId; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DELETE; ?>);"><?php echo $icons->getIconDelete()->getIcon(); ?></i>
                     <?php endif; ?>
-                    <i class="material-icons fg-blue80" title="<?php echo _('Descargar Archivo'); ?>"
-                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DOWNLOAD; ?>, true);">file_download</i>
-                    <i class="material-icons fg-blue80" title="<?php echo _('Ver Archivo'); ?>"
-                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>);">visibility</i>
+                    <i class="material-icons <?php echo $icons->getIconDownload()->getClass(); ?>" title="<?php echo _('Descargar Archivo'); ?>"
+                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DOWNLOAD; ?>, true);"><?php echo $icons->getIconDownload()->getIcon(); ?></i>
+                    <i class="material-icons <?php echo $icons->getIconView()->getClass(); ?>" title="<?php echo _('Ver Archivo'); ?>"
+                       OnClick="sysPassUtil.Common.downFile(<?php echo $file['id']; ?>, '<?php echo $sk; ?>', <?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>);"><?php echo $icons->getIconView()->getIcon(); ?></i>
                 </div>
             </li>
         <?php endforeach; ?>

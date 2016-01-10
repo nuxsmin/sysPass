@@ -4,8 +4,8 @@
             <td class="descField">
                 <?php echo $field->text; ?>
                 <?php if ($field->help): ?>
-                    <div id="help-<?php echo $field->name; ?>" class="icon material-icons fg-blue80">
-                        help_outline
+                    <div id="help-<?php echo $field->name; ?>" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                        <?php echo $icons->getIconHelp()->getIcon(); ?>
                     </div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-<?php echo $field->name; ?>">
                         <p><?php echo $field->help; ?></p>
@@ -18,7 +18,7 @@
                         <input id="<?php echo $field->name; ?>"
                                name="customfield[<?php echo $field->id; ?>]"
                                type="<?php echo $field->typeName; ?>"
-                               class="mdl-textfield__input fg-blue100 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
+                               class="mdl-textfield__input mdl-color-text--indigo-400 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                                maxlength="500"
                                value="<?php echo \SP\Html\Html::sanitize($field->value); ?>"
                             <?php echo ($field->required) ? 'required' : ''; ?>>

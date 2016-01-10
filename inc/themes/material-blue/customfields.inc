@@ -8,7 +8,7 @@
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
+                        <input id="name" name="name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo ($gotData) ? $field->getName() : ''; ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo _('Nombre del campo'); ?></label>
@@ -41,7 +41,7 @@
                 <td class="descField"><?php echo _('Texto Ayuda'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="help" name="help" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="help" name="help" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo ($gotData) ? $field->getHelp() : ''; ?>">
                         <label class="mdl-textfield__label"
                                for="help"><?php echo _('Ayuda del campo'); ?></label>
@@ -52,7 +52,7 @@
                 <td class="descField"><?php echo _('Obligatorio'); ?></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="required">
-                        <input type="checkbox" id="required" class="mdl-switch__input fg-blue100" name="required"
+                        <input type="checkbox" id="required" class="mdl-switch__input mdl-color-text--indigo-400" name="required"
                             <?php echo ($gotData && $field->isRequired()) ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
@@ -70,9 +70,9 @@
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                form="frmCustomFields" title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                form="frmCustomFields" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div>

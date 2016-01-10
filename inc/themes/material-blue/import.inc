@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <!-- Start Tab - Import -->
 <div id="tabs-<?php echo $import_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
@@ -9,7 +11,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario por Defecto'); ?>
-                    <div id="help-import_defaultuser" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-import_defaultuser" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultuser">
                         <p>
                             <?php echo _('Define el usuario por defecto para las cuentas importadas.'); ?>
@@ -31,7 +33,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Grupo por Defecto'); ?>
-                    <div id="help-import_defaultgroup" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-import_defaultgroup" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultgroup">
                         <p>
                             <?php echo _('Define el grupo por defecto para las cuentas importadas.'); ?>
@@ -56,7 +58,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input-show"
+                        <input id="importPwd" name="importPwd" type="password" class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                maxlength="255"/>
                         <label class="mdl-textfield__label" for="importPwd"><?php echo _('Clave de Importación'); ?></label>
                     </div>
@@ -68,7 +70,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="csvDelimiter" name="csvDelimiter" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="csvDelimiter" name="csvDelimiter" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="1" value=";"/>
                         <label class="mdl-textfield__label" for="csvDelimiter"><?php echo _('Delimitador CSV'); ?></label>
                     </div>
@@ -83,7 +85,7 @@
                 <div id="dropzone" class="round active-tooltip"
                      data-files-ext="csv,xml"
                      title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
-                    <i class="material-icons md-60 fg-green80">cloud_upload</i>
+                    <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                 </div>
                 <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">
                     <input type="file" id="inFile" multiple name="inFile"/>
@@ -94,8 +96,8 @@
     <div class="action">
         <button id="help_import_button"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                title="<?php echo _('Ayuda'); ?>">
-            <i class="material-icons">help_outline</i>
+                title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         </button>
 
         <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
@@ -124,7 +126,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario BBDD'); ?>
-                    <div id="help-dbuser" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dbuser" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dbuser">
                         <p>
                             <?php echo _('Indicar el usuario de conexión a la base de datos de phpPMS.') ?>
@@ -133,7 +135,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbuser" name="dbuser" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="dbuser" name="dbuser" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbuser"><?php echo _('Usuario BBDD'); ?></label>
                     </div>
@@ -145,7 +147,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input-show"
+                        <input id="dbpass" name="dbpass" type="password" class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbpass"><?php echo _('Clave BBDD'); ?></label>
                     </div>
@@ -154,7 +156,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre BBDD'); ?>
-                    <div id="help-dbname" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dbname" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dbname">
                         <p>
                             <?php echo _('Indicar el nombre de la base de datos de phpPMS.'); ?>
@@ -163,7 +165,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbname" name="dbname" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="dbname" name="dbname" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="dbname"><?php echo _('Nombre BBDD'); ?></label>
                     </div>
@@ -172,7 +174,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Servidor BBDD'); ?>
-                    <div id="help-dbhost" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-dbhost" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dbhost">
                         <p>
                             <?php echo _('Indicar el servidor de la base de datos de phpPMS.'); ?>
@@ -181,7 +183,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="dbhost" name="dbhost" type="text" class="mdl-textfield__input fg-blue100"
+                        <input id="dbhost" name="dbhost" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" value="localhost" required/>
                         <label class="mdl-textfield__label" for="dbhost"><?php echo _('Servidor BBDD'); ?></label>
                     </div>
@@ -192,12 +194,12 @@
                     <?php echo _('Confirmar'); ?>
                 </td>
                 <td class="valField">
-                    <div class="icon material-icons fg-orange80">warning</div>
+                    <div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                     <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
                     <br><br>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkmigrate">
-                        <input type="checkbox" id="chkmigrate" class="mdl-switch__input fg-blue100" name="chkmigrate"/>
+                        <input type="checkbox" id="chkmigrate" class="mdl-switch__input mdl-color-text--indigo-400" name="chkmigrate"/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -211,9 +213,9 @@
     </form>
 
     <div class="action">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80" form="frmMigrate"
-                title="<?php echo _('Realizar'); ?>">
-            <i class="material-icons">play_circle_filled</i>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>" form="frmMigrate"
+                title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
         </button>
     </div>
 </div> <!-- End Tab - Import -->

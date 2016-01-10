@@ -23,7 +23,7 @@
                     <?php foreach ($data->getData()->getDataRowSourcesWithIcon() as $rowSrcIcon): ?>
                         <?php if ($item->$rowSrcIcon[0] == 1): ?>
                             <img class="material-icons" title="<?php echo $rowSrcIcon[1]->getTitle(); ?>"
-                                src="<?php echo $rowSrcIcon[1]->getImage();?>" />
+                                src="<?php echo $rowSrcIcon[1]->getIcon();?>" />
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </li>
@@ -39,7 +39,7 @@
                              data-activetab="<?php echo $index; ?>"
                              data-nextactionid="<?php echo $actionId; ?>"
                              Onclick="<?php echo $action->getOnClick(); ?>"
-                             src="<?php echo $action->getIcon()->getImage(); ?>"/>
+                             src="<?php echo $action->getIcon()->getIcon(); ?>"/>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </li>

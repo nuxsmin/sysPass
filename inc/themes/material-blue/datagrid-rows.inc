@@ -22,7 +22,7 @@
                 <li class="cell-nodata" style="width: <?php echo $data->getHeader()->getWidth(); ?>%;">
                     <?php foreach ($data->getData()->getDataRowSourcesWithIcon() as $rowSrcIcon): ?>
                         <?php if ($item->$rowSrcIcon[0] == 1): ?>
-                            <i class="material-icons" title="<?php echo $rowSrcIcon[1]->getTitle(); ?>">
+                            <i class="material-icons <?php echo $rowSrcIcon[1]->getClass(); ?>" title="<?php echo $rowSrcIcon[1]->getTitle(); ?>">
                                 <?php echo $rowSrcIcon[1]->getIcon(); ?>
                             </i>
                         <?php endif; ?>

@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <!-- Start Tab - Backup -->
 <div id="tabs-<?php echo $backup_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
@@ -44,7 +46,7 @@
     <div class="action">
         <button id="help_backup_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" alt="save"/>
         </button>
         <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
@@ -52,7 +54,7 @@
             <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
         </div>
         <button type="submit" form="frmBackup" title="<?php echo _('Realizar Backup'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/backup.png" alt="save"/>
+            <img src="<?php echo $icons->getIconPlay()->getIcon(); ?>" alt="save"/>
         </button>
     </div>
 
@@ -112,7 +114,7 @@
     <div class="action">
         <button id="help_export_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" alt="save"/>
         </button>
         <div id="help_export" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
@@ -124,7 +126,7 @@
             <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
         </div>
         <button type="submit" form="frmExport" title="<?php echo _('Exportar Cuentas'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/backup.png" alt="save"/>
+            <img src="<?php echo $icons->getIconPlay()->getIcon(); ?>" alt="save"/>
         </button>
     </div>
 

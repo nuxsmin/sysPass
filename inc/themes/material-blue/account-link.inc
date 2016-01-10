@@ -58,7 +58,7 @@
 
         <div class="action">
             <?php if(!Checks::accountPassToImageIsEnabled()): ?>
-                <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" data-clipboard-target="#account-pass">
+                <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200" data-clipboard-target="#account-pass">
                     <i class="material-icons">content_paste</i>
                 </button>
 

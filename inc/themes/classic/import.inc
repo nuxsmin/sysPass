@@ -9,7 +9,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario por Defecto'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-import_defaultuser" style="display: none;">
                         <p>
                             <?php echo _('Define el usuario por defecto para las cuentas importadas.'); ?>
@@ -30,7 +30,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Grupo por Defecto'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-import_defaultuser" style="display: none;">
                         <p>
                             <?php echo _('Define el grupo por defecto para las cuentas importadas.'); ?>
@@ -85,7 +85,7 @@
     <div class="action">
         <button id="help_import_button" type="button" title="<?php echo _('Ayuda'); ?>"
                 class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/help.png" alt="save"/>
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" alt="save"/>
         </button>
         <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
@@ -114,7 +114,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario BBDD'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dbuser" style="display:none;">
                         <p>
                             <?php echo _('Indicar el usuario de conexión a la base de datos de phpPMS.') ?>
@@ -136,7 +136,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Nombre BBDD'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dbname" style="display:none;">
                         <p>
                             <?php echo _('Indicar el nombre de la base de datos de phpPMS.'); ?>
@@ -150,7 +150,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Servidor BBDD'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dbhost" style="display:none;">
                         <p>
                             <?php echo _('Indicar el servidor de la base de datos de phpPMS.'); ?>
@@ -166,7 +166,7 @@
                     <?php echo _('Confirmar'); ?>
                 </td>
                 <td class="valField">
-                    <img src="imgs/warning.png" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
+                    <img src="<?php echo $icons->getIconWarning()->getIcon(); ?>" ALT="<?php echo _('Atención'); ?>" class="iconMini"/>
                     <?php echo _('Los datos actuales serán borrados (excepto el usuario actual)'); ?>
                     <br><br>
                     <label for="chkmigrate"><?php echo _('NO'); ?></label>
@@ -183,7 +183,7 @@
 
     <div class="action">
         <button type="submit" form="frmMigrate" title="<?php echo _('Iniciar'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/start.png" alt="save"/>
+            <img src="<?php echo $icons->getIconPlay()->getIcon(); ?>" alt="save"/>
         </button>
     </div>
 </div> <!-- End Tab - Import -->

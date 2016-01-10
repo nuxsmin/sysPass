@@ -1,10 +1,12 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <?php foreach ($customFields as $index => $field): ?>
     <?php if ($index !== 'hash'): ?>
         <tr>
             <td class="descField">
                 <?php echo $field->text; ?>
                 <?php if ($field->help): ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-<?php echo $field->name; ?>" style="display: none;">
                         <p><?php echo $field->help; ?></p>
                     </div>

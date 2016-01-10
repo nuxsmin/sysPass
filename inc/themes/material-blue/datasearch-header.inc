@@ -14,11 +14,11 @@
                     <?php echo $field->getName(); ?>
                 </a>
                 <div
-                    class="icon material-icons sort-down cursor-pointer <?php echo ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 0) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
+                    class="icon material-icons sort-down cursor-pointer <?php echo ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive'; ?>">
                     <?php echo $field->getIconDown()->getIcon(); ?>
                 </div>
                 <div
-                    class="icon material-icons sort-up cursor-pointer <?php echo ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 1) ? 'fg-orange80' : 'md-dark md-inactive'; ?>">
+                    class="icon material-icons sort-up cursor-pointer <?php echo ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive'; ?>">
                     <?php echo $field->getIconUp()->getIcon(); ?>
                 </div>
             </li>

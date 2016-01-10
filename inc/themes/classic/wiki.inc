@@ -9,7 +9,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar enlaces Wiki'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-wiki_enabled" style="display:none;">
                         <p>
                             <?php echo _('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
@@ -25,7 +25,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de búsqueda Wiki'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-wiki_searchurl" style="display:none;">
                         <p>
                             <?php echo _('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
@@ -52,7 +52,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de página en Wiki'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-wiki_pageurl" style="display:none;">
                         <p>
                             <?php echo _('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
@@ -79,7 +79,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Prefijo para nombre de cuenta'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-wikifilter" style="display:none;">
                         <p>
                             <?php echo _('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
@@ -104,7 +104,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar API de DokuWiki'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dokuwiki_enabled" style="display:none;">
                         <p>
                             <?php echo _('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
@@ -124,7 +124,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL API'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dokuwiki_url" style="display:none;">
                         <p>
                             <?php echo _('URL de la API de DokuWiki.'); ?>
@@ -147,7 +147,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL Base'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dokuwiki_urlbase" style="display:none;">
                         <p>
                             <?php echo _('URL base de DokuWiki.'); ?>
@@ -170,7 +170,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dokuwiki_user" style="display:none;">
                         <p>
                             <?php echo _('Usuario para conectar a la API de DokuWiki.'); ?>
@@ -197,7 +197,7 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Namespace'); ?>
-                    <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-dokuwiki_namespace" style="display:none;">
                         <p>
                             <?php echo _('Namespace utilizado para buscar las páginas.'); ?>
@@ -213,7 +213,7 @@
             <tr>
                 <td class="descField"><?php echo _('Comprobar'); ?></td>
                 <td class="valField">
-                    <img src="imgs/refresh.png" class="inputImg"
+                    <img src="<?php echo $icons->getIconRefresh()->getIcon(); ?>" class="inputImg"
                          title="<?php echo _('Comprobar conexión con DokuWiki'); ?>" onclick="sysPassUtil.Common.checkDokuWikiConn('frmWiki');"/>
                     <span id="dokuWikiResCheck"></span>
                 </td>
@@ -232,8 +232,8 @@
     </form>
 
     <div class="action">
-        <button type="submit" form="frmWiki" title="<?php echo _('Guardar'); ?>" class="button-action">
-            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/check.png" alt="save" />
+        <button type="submit" form="frmWiki" title="<?php echo $icons->getIconSave()->getTitle(); ?>" class="button-action">
+            <img src="<?php echo $icons->getIconSave()->getIcon(); ?>" alt="save" />
         </button>
     </div>
 </div> <!-- End Tab - Wiki -->

@@ -2,7 +2,7 @@
     <div id="session" class="midround shadow">
         <?php if ($showPassIcon): ?>
             <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
-            <img src="imgs/key.png" class="iconMini"
+            <img src="<?php echo $icons->getIconEditPass()->getIcon(); ?>" class="iconMini"
                 title="<?php echo _('Cambiar clave de usuario'); ?>"
                 data-itemid="<?php echo $userId; ?>"
                 Onclick="sysPassUtil.Common.usrUpdPass(this,<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')" />

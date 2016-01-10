@@ -27,7 +27,6 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Api\ApiTokens;
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
@@ -53,10 +52,6 @@ class AccItemMgmt extends Controller implements ActionsInterface
      * @var int
      */
     private $_module = 0;
-    /**
-     * @var Icons
-     */
-    private $_icons;
 
     /**
      * Constructor
@@ -69,8 +64,6 @@ class AccItemMgmt extends Controller implements ActionsInterface
 
         $this->view->assign('isDemo', Checks::demoIsEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-
-        $this->_icons = new Icons();
     }
 
     /**

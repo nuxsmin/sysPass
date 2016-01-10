@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Html\Assets\IconInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -121,10 +123,10 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param string       $source
-     * @param DatagridIcon $icon
+     * @param string   $source
+     * @param IconInterface $icon
      */
-    public function addDataRowSourceWithIcon($source, $icon)
+    public function addDataRowSourceWithIcon($source, IconInterface $icon)
     {
         $this->_sourcesWithIcon[] = array($source, $icon);
     }

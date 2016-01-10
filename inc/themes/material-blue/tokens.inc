@@ -35,7 +35,7 @@
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="refreshtoken"
                                title="<?php echo _('Regenerar Autorización'); ?>">
-                            <input type="checkbox" id="refreshtoken" class="mdl-switch__input fg-blue100"
+                            <input type="checkbox" id="refreshtoken" class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="refreshtoken"/>
                             <span class="mdl-switch__label"><?php echo _('Regenerar Autorización'); ?></span>
                         </label>
@@ -59,9 +59,9 @@
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                form="frmTokens" title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                form="frmTokens" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div>

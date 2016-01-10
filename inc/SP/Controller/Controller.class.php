@@ -32,6 +32,8 @@ use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SPException;
 use SP\Core\Template;
+use SP\Core\Themes;
+use Theme\Icons;
 
 /**
  * Clase base para los controladores
@@ -48,13 +50,23 @@ abstract class Controller
     const ERR_OPERATION_NO_PERMISSION = 4;
 
     /**
-     * @var Template Instancia del motor de plantillas a utilizar
+     * Instancia del motor de plantillas a utilizar
+     *
+     * @var Template
      */
     public $view;
     /**
-     * @var int Módulo a usar
+     * Módulo a usar
+     *
+     * @var int
      */
     protected $_action;
+    /**
+     * Instancia de los iconos del tema visual
+     *
+     * @var Icons
+     */
+    protected $_icons;
 
     /**
      * Constructor
@@ -72,6 +84,8 @@ abstract class Controller
         }
 
         $this->view->assign('timeStart', $timeStart);
+        $this->_icons = Themes::getIcons();
+        $this->view->assign('icons', $this->_icons);
     }
 
     /**

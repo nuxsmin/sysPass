@@ -30,6 +30,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;
+use SP\Core\ThemeIconsBase;
+use SP\Core\Themes;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
@@ -46,7 +48,7 @@ use SP\Html\DataGrid\DataGridTab;
 class Grids implements ActionsInterface
 {
     /**
-     * @var Icons
+     * @var ThemeIconsBase
      */
     private $_icons;
     /**
@@ -68,7 +70,7 @@ class Grids implements ActionsInterface
     public function __construct()
     {
         $this->_sk = SessionUtil::getSessionKey(true);
-        $this->_icons = new Icons();
+        $this->_icons = Themes::getIcons();
     }
 
     /**

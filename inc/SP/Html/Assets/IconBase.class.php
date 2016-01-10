@@ -23,7 +23,7 @@
  *
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\Assets;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -32,64 +32,27 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Html\DataGrid
  */
-abstract class DataGridIconBase implements DataGridIconInterface
+abstract class IconBase implements IconInterface
 {
     /**
-     * El icono a utilizar en la etiqueta <i> (según tema visual)
+     * El nombre del icono o imagen a utilizar
      *
      * @var string
      */
-    private $_icon = '';
-    /**
-     * Imagen a utilizar en el icono (según tema visual)
-     *
-     * @var string
-     */
-    private $_image = '';
+    protected $_icon = '';
+
     /**
      * Título del icono
      *
      * @var string
      */
-    private $_title = '';
+    protected $_title = '';
     /**
      * Clases CSS del icono
      *
      * @var array
      */
-    private $_class = array();
-
-    /**
-     * @return string
-     */
-    public function getIcon()
-    {
-        return $this->_icon;
-    }
-
-    /**
-     * @param $icon
-     */
-    public function setIcon($icon)
-    {
-        $this->_icon = $icon;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImage()
-    {
-        return $this->_image;
-    }
-
-    /**
-     * @param $image
-     */
-    public function setImage($image)
-    {
-        $this->_image = $image;
-    }
+    protected $_class = array();
 
     /**
      * @return string
@@ -121,5 +84,21 @@ abstract class DataGridIconBase implements DataGridIconInterface
     public function getClass()
     {
         return implode(' ', $this->_class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->_icon;
+    }
+
+    /**
+     * @param $icon
+     */
+    public function setIcon($icon)
+    {
+        $this->_icon = $icon;
     }
 }

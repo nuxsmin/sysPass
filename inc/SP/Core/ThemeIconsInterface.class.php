@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,54 +23,19 @@
  *
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Core;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Interface DataGridIconInterface
+ * Interface ThemeIconsInterface
  *
- * @package SP\Html\DataGrid
+ * @package SP\Core
  */
-interface DataGridIconInterface
+interface ThemeIconsInterface
 {
     /**
-     * @param $icon
+     * @return mixed
      */
-    public function setIcon($icon);
-
-    /**
-     * @return string
-     */
-    public function getIcon();
-
-    /**
-     * @param $image
-     */
-    public function setImage($image);
-
-    /**
-     * @return string
-     */
-    public function getImage();
-
-    /**
-     * @param $title
-     */
-    public function setTitle($title);
-
-    /**
-     * @return string
-     */
-    public function getTitle();
-
-    /**
-     * @param $class
-     */
-    public function setClass($class);
-
-    /**
-     * @return string
-     */
-    public function getClass();
+    public function setIcons();
 }

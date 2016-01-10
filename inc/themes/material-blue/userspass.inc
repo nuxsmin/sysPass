@@ -8,7 +8,7 @@
                 <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="fancypass" name="pass" type="password" required class="mdl-textfield__input fg-blue100 passwordfield__input"
+                        <input id="fancypass" name="pass" type="password" required class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                maxlength="50">
                         <label class="mdl-textfield__label" for="userpass"><?php echo _('Clave'); ?></label>
                     </div>
@@ -19,7 +19,7 @@
                 <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="fancypassR" name="passR" type="password" required class="mdl-textfield__input fg-blue100"
+                        <input id="fancypassR" name="passR" type="password" required class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"
                                for="userpassR"><?php echo _('Clave (repetir)'); ?></label>
@@ -36,9 +36,9 @@
         <span id="resFancyAccion"></span>
     </div>
     <div class="action-in-box">
-        <button form="frmUpdUsrPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                 title="<?php echo _('Guardar'); ?>">
-            <i class="material-icons">save</i>
+        <button form="frmUpdUsrPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                 title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div>

@@ -24,13 +24,15 @@
     </div>
     <!-- Close Project -->
     <div id="status">
-        <span class="status-info"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></span>
-                    <span class="status-info active-tooltip"
-                          title="<?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?>">
-                        <i class="material-icons">
-                            <?php echo ($httpsEnabled) ? 'lock' : 'lock_open'; ?>
-                        </i>
-                    </span>
+        <span class="status-info mdl-color-text--red-900"><?php echo (DEBUG) ? 'Debug ON' : ''; ?></span>
+        <span class="status-info active-tooltip"
+              title="<?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?>">
+            <?php if ($httpsEnabled): ?>
+                <i class="material-icons mdl-color-text--teal-500">lock</i>
+            <?php else: ?>
+                <i class="material-icons mdl-color-text--red-900">lock_open</i>
+            <?php endif; ?>
+        </span>
         <span class="status-info"><?php echo ($isDemoMode) ? 'Demo' : ''; ?></span>
 
         <div id="updates"></div>

@@ -57,10 +57,6 @@ use SP\Util\Checks;
 class AccountsSearch extends Controller implements ActionsInterface
 {
     /**
-     * @var Icons
-     */
-    private $_icons;
-    /**
      * Indica si el filtrado de cuentas está activo
      *
      * @var bool
@@ -121,7 +117,6 @@ class AccountsSearch extends Controller implements ActionsInterface
         $this->_sk = SessionUtil::getSessionKey(true);
         $this->view->assign('sk', $this->_sk);
         $this->setVars();
-        $this->_icons = new Icons();
     }
 
     /**

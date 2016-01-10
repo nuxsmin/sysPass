@@ -2,10 +2,10 @@
     <table id="tblTools" class="round shadow">
         <tr>
             <td id="toolsLeft">
-                <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear"/>
+                <img src="<?php echo $icons->getIconClear()->getIcon(); ?>" title="<?php echo _('Limpiar'); ?>" class="inputImg" id="btnClear"/>
                 <input type="text" name="search" id="txtSearch" value="<?php echo $searchTxt; ?>"
                        placeholder="<?php echo _('Texto a buscar'); ?>"/>
-                <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
+                <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip"/>
 
                 <div class="tooltip" style="display:none;">
                     <p>

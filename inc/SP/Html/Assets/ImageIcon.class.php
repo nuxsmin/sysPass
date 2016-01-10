@@ -23,27 +23,25 @@
  *
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\Assets;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Class DataGridIcon para crear los iconos de la matriz
+ * Class ImageIcon para crear los iconos del tipo imagen
  *
- * @package SP\Html\DataGrid
+ * @package SP\Html\Assets
  */
-class DataGridIcon extends DataGridIconBase
+class ImageIcon extends IconBase
 {
     /**
      * @param string $icon
-     * @param string $image
      * @param string $class
      * @param string $title
      */
-    public function __construct($icon, $image, $class = null, $title = null)
+    public function __construct($icon, $class = null, $title = null)
     {
         $this->setIcon($icon);
-        $this->setImage($image);
         $this->setClass($class);
         $this->setTitle($title);
     }

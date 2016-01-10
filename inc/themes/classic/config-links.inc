@@ -6,7 +6,7 @@
     <tr>
         <td class="descField">
             <?php echo _('Habilitar Enlaces Públicos'); ?>
-            <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
             <div class="tooltip" for="help-publinks" style="display: none;">
                 <p>
                     <?php echo _('Habilita la posibilidad de generar enlaces públicos para ver los detalles de una cuenta.'); ?>
@@ -50,7 +50,7 @@
     <tr>
         <td class="descField">
             <?php echo _('Usar imagen para clave'); ?>
-            <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+            <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip" />
             <div class="tooltip" for="help-publinksimage" style="display: none;">
                 <p>
                     <?php echo _('La clave de la cuenta es visualizada como una imagen.'); ?>

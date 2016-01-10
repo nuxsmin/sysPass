@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <div id="title" class="midroundup titleNormal">
     <?php echo _('Sitio'); ?>
 </div>
@@ -6,7 +8,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Idioma'); ?>
-            <div id="help-sitelang" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-sitelang"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-sitelang">
                 <p>
                     <?php echo _('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
@@ -29,7 +32,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Tema Visual'); ?>
-            <div id="help-sitetheme" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-sitetheme"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-sitetheme">
                 <p>
                     <?php echo _('Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias.'); ?>
@@ -53,7 +57,7 @@
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="session_timeout" name="session_timeout" type="number" step="300"
-                       pattern="[0-9]{2,4}" class="mdl-textfield__input fg-blue100" maxlength="5"
+                       pattern="[0-9]{2,4}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
                        value="<?php echo $sessionTimeout; ?>" <?php echo $isDisabled; ?> required/>
                 <label class="mdl-textfield__label"
                        for="session_timeout"><?php echo _('Timeout de sesión (s)'); ?></label>
@@ -63,7 +67,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Forzar HTTPS'); ?>
-            <div id="help-https" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-https"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-https">
                 <p>
                     <?php echo _('Fuerza para que todas las conexiones sean a través de HTTPS.'); ?>
@@ -72,7 +77,7 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="https_enabled">
-                <input type="checkbox" id="https_enabled" class="mdl-switch__input fg-blue100"
+                <input type="checkbox" id="https_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="https_enabled"
                     <?php echo $chkHttps, ' ', $isDisabled; ?>/>
                 <span class="mdl-switch__label"></span>
@@ -82,7 +87,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Habilitar depuración'); ?>
-            <div id="help-debug" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-debug"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-debug">
                 <p>
                     <?php echo _('Muestra información relativa a la configuración de la aplicación y rendimiento.'); ?>
@@ -91,7 +97,7 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
-                <input type="checkbox" id="debug" class="mdl-switch__input fg-blue100" name="debug"
+                <input type="checkbox" id="debug" class="mdl-switch__input mdl-color-text--indigo-400" name="debug"
                     <?php echo $chkDebug, ' ', $isDisabled; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
@@ -100,7 +106,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Modo mantenimiento'); ?>
-            <div id="help-maintenance" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-maintenance"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-maintenance">
                 <p>
                     <?php echo _('En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración.'); ?>
@@ -109,7 +116,7 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
-                <input type="checkbox" id="maintenance" class="mdl-switch__input fg-blue100" name="maintenance"
+                <input type="checkbox" id="maintenance" class="mdl-switch__input mdl-color-text--indigo-400" name="maintenance"
                     <?php echo $chkMaintenance, ' ', $isDisabled; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
@@ -118,7 +125,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Comprobar actualizaciones'); ?>
-            <div id="help-updates" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-updates"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-updates">
                 <p>
                     <?php echo _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores).'); ?>
@@ -127,7 +135,7 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
-                <input type="checkbox" id="updates" class="mdl-switch__input fg-blue100" name="updates"
+                <input type="checkbox" id="updates" class="mdl-switch__input mdl-color-text--indigo-400" name="updates"
                     <?php echo $chkUpdates; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
@@ -136,7 +144,8 @@
     <tr>
         <td class="descField">
             <?php echo _('Comprobar notificaciones'); ?>
-            <div id="help-notices" class="icon material-icons fg-blue80">help_outline</div>
+            <div id="help-notices"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-notices">
                 <p>
                     <?php echo _('Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores).'); ?>
@@ -145,7 +154,7 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notices">
-                <input type="checkbox" id="notices" class="mdl-switch__input fg-blue100" name="notices"
+                <input type="checkbox" id="notices" class="mdl-switch__input mdl-color-text--indigo-400" name="notices"
                     <?php echo $chkNotices; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>

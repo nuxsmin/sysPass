@@ -25,6 +25,8 @@
 
 namespace SP\Html\DataGrid;
 
+use SP\Html\Assets\IconInterface;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -67,19 +69,19 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     protected $_onClickArgs = array();
     /**
-     * @var DataGridIcon
+     * @var IconInterface
      */
     protected $_iconPrev;
     /**
-     * @var DataGridIcon
+     * @var IconInterface
      */
     protected $_iconNext;
     /**
-     * @var DataGridIcon
+     * @var IconInterface
      */
     protected $_iconFirst;
     /**
-     * @var DataGridIcon
+     * @var IconInterface
      */
     protected $_iconLast;
     /**
@@ -124,7 +126,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconPrev()
     {
@@ -132,15 +134,15 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @param DataGridIcon $iconPrev
+     * @param IconInterface $iconPrev
      */
-    public function setIconPrev($iconPrev)
+    public function setIconPrev(IconInterface $iconPrev)
     {
         $this->_iconPrev = $iconPrev;
     }
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconNext()
     {
@@ -148,15 +150,15 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @param DataGridIcon $iconNext
+     * @param IconInterface $iconNext
      */
-    public function setIconNext($iconNext)
+    public function setIconNext(IconInterface $iconNext)
     {
         $this->_iconNext = $iconNext;
     }
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconFirst()
     {
@@ -164,15 +166,15 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @param DataGridIcon $iconFirst
+     * @param IconInterface $iconFirst
      */
-    public function setIconFirst($iconFirst)
+    public function setIconFirst(IconInterface $iconFirst)
     {
         $this->_iconFirst = $iconFirst;
     }
 
     /**
-     * @return DataGridIcon
+     * @return IconInterface
      */
     public function getIconLast()
     {
@@ -180,9 +182,9 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @param DataGridIcon $iconLast
+     * @param IconInterface $iconLast
      */
-    public function setIconLast($iconLast)
+    public function setIconLast(IconInterface $iconLast)
     {
         $this->_iconLast = $iconLast;
     }

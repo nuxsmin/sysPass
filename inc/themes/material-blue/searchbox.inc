@@ -9,14 +9,14 @@
     <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return sysPassUtil.Common.accSearch(0);">
         <div id="tblTools">
             <div id="toolsLeft">
-                <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear_all</i>
+                <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>"><?php echo $icons->getIconClear()->getIcon(); ?></i>
 
                 <div class="mdl-textfield mdl-js-textfield">
-                    <input class="mdl-textfield__input fg-blue100" type="text" id="txtSearch"
+                    <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="txtSearch"
                            name="search" value="<?php echo $searchTxt; ?>"/>
                     <label class="mdl-textfield__label" for="txtSearch"><?php echo _('Texto a buscar'); ?></label>
                 </div>
-                <div id="help-account_search" class="icon material-icons fg-blue80">help_outline</div>
+                <div id="help-account_search" class="icon material-icons mdl-color-text--indigo-A200">help_outline</div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_search">
                     <p>
                         <?php echo _('Parámetros especiales:'); ?>
@@ -33,7 +33,7 @@
                 <?php if ($showGlobalSearch && !$isAdmin): ?>
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="chkgsearch"
                            title="<?php echo _('Búsqueda global'); ?>">
-                        <input type="checkbox" id="chkgsearch" class="mdl-switch__input fg-blue100" name="chkgsearch"
+                        <input type="checkbox" id="chkgsearch" class="mdl-switch__input mdl-color-text--indigo-400" name="chkgsearch"
                             <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
                         <span class="mdl-switch__label" title="<?php echo _('Búsqueda global'); ?>"></span>
                     </label>
@@ -122,10 +122,10 @@
             console.info($(this).val());
 
             if ($(this).val() == 0){
-                icon.removeClass('fg-orange80');
+                icon.removeClass('mdl-color-text--amber-A200');
                 icon.attr('title', '<?php echo _('Mostrar Favoritos'); ?>');
             } else {
-                icon.addClass('fg-orange80');
+                icon.addClass('mdl-color-text--amber-A200');
                 icon.attr('title', '<?php echo _('Mostrar Todos'); ?>');
             }
         });

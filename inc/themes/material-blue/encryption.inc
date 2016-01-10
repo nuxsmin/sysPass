@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <!-- Start Tab - Encryption -->
 <div id="tabs-<?php echo $encryption_tabIndex; ?>">
 
@@ -23,7 +25,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input-show"
+                        <input id="curMasterPwd" name="curMasterPwd" type="password" class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="curMasterPwd"><?php echo _('Clave Maestra actual'); ?></label>
                     </div>
@@ -35,7 +37,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input"
+                        <input id="newMasterPwd" name="newMasterPwd" type="password" class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="newMasterPwd"><?php echo _('Nueva Clave Maestra'); ?></label>
                     </div>
@@ -47,7 +49,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="newMasterPwdR" name="newMasterPwdR" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="newMasterPwdR" name="newMasterPwdR" type="password" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label" for="newMasterPwdR"><?php echo _('Nueva Clave Maestra (repetir)'); ?></label>
                     </div>
@@ -57,7 +59,7 @@
                 <td class="descField">
                     <?php echo _('No modificar cuentas'); ?>
 
-                    <div id="help-chkNoAccountChange" class="icon material-icons fg-blue80">help_outline</div>
+                    <div id="help-chkNoAccountChange" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-chkNoAccountChange">
                         <p>
                             <?php echo _('Establece una nueva clave maestra sin re-encriptar las cuentas'); ?>
@@ -66,7 +68,7 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkNoAccountChange">
-                        <input type="checkbox" id="chkNoAccountChange" class="mdl-switch__input fg-blue100" name="chkNoAccountChange"/>
+                        <input type="checkbox" id="chkNoAccountChange" class="mdl-switch__input mdl-color-text--indigo-400" name="chkNoAccountChange"/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -76,13 +78,13 @@
                     <?php echo _('Confirmar cambio'); ?>
                 </td>
                 <td class="valField">
-                    <div class="icon material-icons fg-orange80">warning</div>
+                    <div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                     <?php echo _('Guarde la nueva clave en un lugar seguro.'); ?>
                     <br>
-                    <div class="icon material-icons fg-orange80">warning</div>
+                    <div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                     <?php echo _('Se volverán a encriptar las claves de todas las cuentas.'); ?>
                     <br>
-                    <div class="icon material-icons fg-orange80">warning</div>
+                    <div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                     <?php echo _('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                     <br>
                     <br>
@@ -101,8 +103,8 @@
     </form>
     <div class="action">
         <button id="help_mpass_button" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                title="<?php echo _('Ayuda'); ?>">
-            <i class="material-icons">help_outline</i>
+                title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         </button>
 
         <div id="help_mpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
@@ -111,9 +113,9 @@
             <p class="help-text"><?php echo _('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
         </div>
 
-        <button form="frmCrypt" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Realizar'); ?>">
-            <i class="material-icons">play_circle_filled</i>
+        <button form="frmCrypt" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
+                title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
         </button>
     </div>
 
@@ -150,7 +152,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="tmpass_maxtime" name="tmpass_maxtime" type="number" step="600"
-                               pattern="[0-9]{2,6}" class="mdl-textfield__input fg-blue100" value="3600" required/>
+                               pattern="[0-9]{2,6}" class="mdl-textfield__input mdl-color-text--indigo-400" value="3600" required/>
                         <label class="mdl-textfield__label" for="tmpass_maxtime"><?php echo _('Validez (s)'); ?></label>
                     </div>
                 </td>
@@ -175,17 +177,17 @@
     <div class="action">
         <button id="help_tmpass_button"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                title="<?php echo _('Ayuda'); ?>">
-            <i class="material-icons">help_outline</i>
+                title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         </button>
 
         <div id="help_tmpass" class="help-box" title="<?php echo _('Ayuda'); ?>">
             <p class="help-text"><?php echo _('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
         </div>
 
-        <button form="frmTempMasterPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
+        <button form="frmTempMasterPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
                 title="<?php echo _('Generar'); ?>">
-            <i class="material-icons">play_circle_filled</i>
+            <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
         </button>
     </div>
 </div> <!-- End Tab - Encryption -->

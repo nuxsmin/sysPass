@@ -1,3 +1,5 @@
+<?php /** @var $icons \Theme\Icons */ ?>
+
 <!-- Start Tab - Backup -->
 <div id="tabs-<?php echo $backup_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
@@ -44,8 +46,8 @@
     <div class="action">
         <button id="help_backup_button" type="button"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                title="<?php echo _('Ayuda'); ?>">
-            <i class="material-icons">help_outline</i>
+                title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         </button>
 
         <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
@@ -54,9 +56,9 @@
             <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
         </div>
 
-        <button form="frmBackup" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                OnClick="configMgmt('backup');" title="<?php echo _('Realizar'); ?>">
-            <i class="material-icons">play_circle_filled</i>
+        <button form="frmBackup" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
+                OnClick="configMgmt('backup');" title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
         </button>
     </div>
 
@@ -95,7 +97,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input fg-blue100 passwordfield__input"
+                        <input id="exportPwd" name="exportPwd" type="password" class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                maxlength="255"/>
                         <label class="mdl-textfield__label"
                                for="exportPwd"><?php echo _('Clave de Exportación'); ?></label>
@@ -108,7 +110,7 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="exportPwdR" name="exportPwdR" type="password" class="mdl-textfield__input fg-blue100"
+                        <input id="exportPwdR" name="exportPwdR" type="password" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255"/>
                         <label class="mdl-textfield__label"
                                for="exportPwdR"><?php echo _('Clave de Exportación (repetir)'); ?></label>
@@ -126,11 +128,11 @@
     <div class="action">
         <button id="help_export_button" type="button"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                title="<?php echo _('Ayuda'); ?>">
-            <i class="material-icons">help_outline</i>
+                title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         </button>
 
-        <div id="help_export" class="help-box" title="<?php echo _('Ayuda'); ?>">
+        <div id="help_export" class="help-box" title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
             <p class="help-text"><?php echo _('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
 
             <p class="help-text"><?php echo _('Los elementos exportados son cuentas, clientes y categorías.'); ?></p>
@@ -140,9 +142,9 @@
             <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
         </div>
 
-        <button form="frmExport" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored bg-green80"
-                title="<?php echo _('Realizar'); ?>">
-            <i class="material-icons">play_circle_filled</i>
+        <button form="frmExport" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getCLassButton(); ?>"
+                title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
+            <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
         </button>
 
     </div>

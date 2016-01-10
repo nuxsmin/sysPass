@@ -27,7 +27,7 @@
                                     data-nextactionid="<?php echo $data->getOnCloseAction(); ?>"
                                     OnClick="<?php echo $action->getOnClick(); ?>"
                                     title="<?php echo $action->getTitle(); ?>">
-                                    <img src="<?php echo $action->getIcon()->getImage(); ?>"/>
+                                    <img src="<?php echo $action->getIcon()->getIcon(); ?>"/>
                                 </button>
                             </li>
                         <?php elseif ($action->getType() === \SP\Html\DataGrid\DataGridActionType::SEARCH_ITEM): ?>
@@ -35,7 +35,7 @@
                                 <form method="post" id="<?php echo $action->getName(); ?>"
                                       name="<?php echo $action->getName(); ?>"
                                       onsubmit="<?php echo $action->getOnSubmit(); ?>">
-                                    <img src="imgs/clear.png" title="<?php echo _('Limpiar'); ?>"
+                                    <img src="<?php echo $icons->getIconClear()->getIcon(); ?>" title="<?php echo _('Limpiar'); ?>"
                                          class="inputImg btnClear"
                                          onclick="$('#<?php echo $action->getName(); ?>').trigger('reset').submit();">
                                     <input class="txtSearch" type="text" name="search" value=""
@@ -53,8 +53,8 @@
                         <button id="btnBack" type="button"
                                 class="button-action"
                                 OnClick="sysPassUtil.Common.doAction(<?php echo $lastAction; ?>, <?php echo $actionId; ?>, <?php echo $lastAccountId; ?>)"
-                                title="<?php echo _('Atrás'); ?>">
-                            <img src="<?php \SP\Core\Init::$WEBURI; ?>imgs/back.png" alt="save"/>
+                                title="<?php echo $icons->getIconBack()->getTitle(); ?>">
+                            <img src="<?php echo $icons->getIconBack()->getIcon(); ?>" alt="save"/>
                         </button>
                     </li>
                 </ul>

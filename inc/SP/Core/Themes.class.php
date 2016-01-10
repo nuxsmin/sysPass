@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Mgmt\User\UserPreferences;
+use Theme\Icons;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -49,6 +50,8 @@ class Themes
      * @var string
      */
     public static $theme = '';
+    /** @var  Icons */
+    private static $icons;
 
     /**
      * Obtener los temas disponibles desde el directorio de temas
@@ -150,5 +153,26 @@ class Themes
         }
 
         return $themeInfo;
+    }
+
+    /**
+     * Obtener los iconos del tema actual
+     *
+     * @return Icons
+     */
+    public static function getIcons()
+    {
+        if (!self::$icons instanceof Icons) {
+
+            $iconsClass = Init::$SERVERROOT . self::$themePath . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.class.php';
+
+            if (file_exists($iconsClass)) {
+                include_once $iconsClass;
+
+                self::$icons = new Icons();
+            }
+        }
+
+        return self::$icons;
     }
 }
