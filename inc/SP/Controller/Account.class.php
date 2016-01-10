@@ -123,7 +123,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleGreen',
                 'name' => _('Nueva Cuenta'),
-                'icon' => 'add'
+                'icon' => $this->_icons->getIconAdd()->getIcon()
             )
         );
         $this->view->assign('nextaction', Acl::ACTION_ACC_NEW);
@@ -277,7 +277,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleGreen',
                 'name' => _('Copiar Cuenta'),
-                'icon' => 'content_copy'
+                'icon' => $this->_icons->getIconCopy()->getIcon()
             )
         );
         $this->view->assign('nextaction', self::ACTION_ACC_COPY);
@@ -356,7 +356,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleOrange',
                 'name' => _('Editar Cuenta'),
-                'icon' => 'mode_edit'
+                'icon' => $this->_icons->getIconEdit()->getIcon()
             )
         );
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
@@ -384,7 +384,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleRed',
                 'name' => _('Eliminar Cuenta'),
-                'icon' => 'delete'
+                'icon' => $this->_icons->getIconDelete()->getIcon()
             )
         );
 
@@ -411,7 +411,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleNormal',
                 'name' => _('Detalles de Cuenta'),
-                'icon' => 'visibility'
+                'icon' => $this->_icons->getIconView()->getIcon()
             )
         );
 
@@ -499,7 +499,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleOrange',
                 'name' => _('Modificar Clave de Cuenta'),
-                'icon' => 'mode_edit'
+                'icon' => $this->_icons->getIconEditPass()->getIcon()
             )
         );
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
@@ -536,7 +536,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleNormal',
                 'name' => _('Detalles de Cuenta'),
-                'icon' => 'visibility'
+                'icon' => $this->_icons->getIconView()->getIcon()
             )
         );
         $this->_account->incrementViewCounter();
