@@ -13,7 +13,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar enlaces Wiki'); ?>
-                    <div id="help-wiki_enabled" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-wiki_enabled"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
                         <p>
                             <?php echo _('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
@@ -32,7 +33,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de búsqueda Wiki'); ?>
-                    <div id="help-wiki_searchurl" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-wiki_searchurl"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_searchurl">
                         <p>
                             <?php echo _('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
@@ -64,7 +66,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL de página en Wiki'); ?>
-                    <div id="help-wiki_pageurl" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-wiki_pageurl"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_pageurl">
                         <p>
                             <?php echo _('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
@@ -85,7 +88,8 @@
                 </td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="wiki_pageurl" name="wiki_pageurl" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
+                        <input id="wiki_pageurl" name="wiki_pageurl" type="text"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $wikiPageUrl; ?>">
                         <label class="mdl-textfield__label"
                                for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
@@ -95,7 +99,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Prefijo para nombre de cuenta'); ?>
-                    <div id="help-wikifilter" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-wikifilter"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-wikifilter">
                         <p>
                             <?php echo _('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
@@ -120,7 +125,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Habilitar API de DokuWiki'); ?>
-                    <div id="help-dokuwiki_enabled" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-dokuwiki_enabled"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_enabled">
                         <p>
                             <?php echo _('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
@@ -132,7 +138,8 @@
                 </td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="dokuwiki_enabled">
-                        <input type="checkbox" id="dokuwiki_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
+                        <input type="checkbox" id="dokuwiki_enabled"
+                               class="mdl-switch__input mdl-color-text--indigo-400"
                                name="dokuwiki_enabled"
                             <?php echo $chkDokuWiki, ' ', $isDisabled; ?>/>
                         <span class="mdl-switch__label"></span>
@@ -143,7 +150,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL API'); ?>
-                    <div id="help-dokuwiki_url" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-dokuwiki_url"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_url">
                         <p>
                             <?php echo _('URL de la API de DokuWiki.'); ?>
@@ -151,9 +159,9 @@
 
                         <p>
                             <?php echo _('Ejemplo:'); ?>
-                            <ul>
-                                <li>http://wiki.syspass.org/lib/exe/xmlrpc.php</li>
-                            </ul>
+                        <ul>
+                            <li>http://wiki.syspass.org/lib/exe/xmlrpc.php</li>
+                        </ul>
                         </p>
                     </div>
                 </td>
@@ -169,7 +177,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('URL Base'); ?>
-                    <div id="help-dokuwiki_urlbase" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-dokuwiki_urlbase"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_urlbase">
                         <p>
                             <?php echo _('URL base de DokuWiki.'); ?>
@@ -195,7 +204,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Usuario'); ?>
-                    <div id="help-dokuwiki_user" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-dokuwiki_user"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_user">
                         <p>
                             <?php echo _('Usuario para conectar a la API de DokuWiki.'); ?>
@@ -227,7 +237,8 @@
             <tr>
                 <td class="descField">
                     <?php echo _('Namespace'); ?>
-                    <div id="help-dokuwiki_namespace" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div id="help-dokuwiki_namespace"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_namespace">
                         <p>
                             <?php echo _('Namespace utilizado para buscar las páginas.'); ?>
@@ -239,7 +250,8 @@
                         <input id="dokuwiki_namespace" name="dokuwiki_namespace" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="128" value="<?php echo $dokuWikiNamespace; ?>" <?php echo $isDisabled; ?>/>
-                        <label class="mdl-textfield__label" for="dokuwiki_namespace"><?php echo _('Namespace'); ?></label>
+                        <label class="mdl-textfield__label"
+                               for="dokuwiki_namespace"><?php echo _('Namespace'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -247,7 +259,8 @@
                 <td class="descField"><?php echo _('Comprobar'); ?></td>
                 <td class="valField">
                     <img src="imgs/refresh.png" class="inputImg"
-                         title="<?php echo _('Comprobar conexión con DokuWiki'); ?>" onclick="sysPassUtil.Common.checkDokuWikiConn('frmWiki');"/>
+                         title="<?php echo _('Comprobar conexión con DokuWiki'); ?>"
+                         onclick="sysPassUtil.Common.checkDokuWikiConn('frmWiki');"/>
                     <span id="dokuWikiResCheck"></span>
                 </td>
             </tr>
@@ -274,6 +287,18 @@
 
 <script>
     $(function () {
+        // Mostrar un aviso tras añadir una etiqueta a la lista
+        var showTagWarning = function (obj) {
+            // Fix scrolling to bottom
+            var $tagsbox = obj.next();
+            $tagsbox.animate({scrollTop: $tagsbox.height()});
+
+            if (!$tagsbox.find('span').hasClass('icon')) {
+                $tagsbox.find('div:last').prev().append('<span class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + sysPassUtil.Common.LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></span>');
+            }
+        };
+
+
         $('#wikifilter').tagsInput({
             'width': '350px',
             'height': '50px',
@@ -281,25 +306,10 @@
             'defaultRemoveText': '<?php echo _('Eliminar filtro'); ?>',
             'removeWithBackspace': false,
             onAddTag: function () {
-                // Fix scrolling to bottom
-                var $tagsbox = $(this).next();
-                $tagsbox.animate({scrollTop: $tagsbox.height()});
-
-                if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></div>');
-                }
+                showTagWarning($(this));
             },
             onRemoveTag: function () {
-                var $tagsbox = $(this).next();
-
-                if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></div>');
-                }
-            },
-            onChange: function () {
-                var $tagsbox = $(this).next();
-                var last_width = $tagsbox.find("span:last").width() + 10;
-                $tagsbox.find(".tag:last").css('width', last_width);
+                showTagWarning($(this));
             }
         });
     })

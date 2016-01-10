@@ -34,6 +34,17 @@
 
 <script>
     $(function () {
+        // Mostrar un aviso tras añadir una etiqueta a la lista
+        var showTagWarning = function (obj) {
+            // Fix scrolling to bottom
+            var $tagsbox = obj.next();
+            $tagsbox.animate({scrollTop: $tagsbox.height()});
+
+            if (!$tagsbox.find('span').hasClass('icon')) {
+                $tagsbox.find('div:last').prev().append('<span class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + sysPassUtil.Common.LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></span>');
+            }
+        };
+
         $('#allowed_exts').tagsInput({
             'width': '350px',
             'defaultText': '<?php echo _('Añadir extensión'); ?>',
@@ -42,20 +53,10 @@
             'tagsToUpper': true,
             'maxChars': 4,
             'onAddTag': function () {
-                // Fix scrolling to bottom
-                var $tagsbox = $(this).next();
-                $tagsbox.animate({scrollTop: $tagsbox.height()});
-
-                if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
-                }
+                showTagWarning($(this))
             },
             'onRemoveTag': function () {
-                var $tagsbox = $(this).next();
-
-                if (!$tagsbox.find('div').hasClass('icon')) {
-                    $tagsbox.find('div:last').prev().append('<div class="icon material-icons fg-orange80" title="' + LANG[5] + '">warning</div>');
-                }
+                showTagWarning($(this))
             }
         });
     })
