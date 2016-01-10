@@ -140,11 +140,13 @@ class Util
         $description = $updateInfo->body;
         $date = $updateInfo->published_at;
 
-        preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
+//        preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
+        preg_match('/v?(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
 
         if (is_array($realVer) && Init::isLoggedIn()) {
             $appVersion = implode('', self::getVersion(true));
-            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
+//            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
+            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3];
 
             if ($pubVersion > $appVersion) {
                 return array(
