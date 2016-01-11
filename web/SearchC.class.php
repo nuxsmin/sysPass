@@ -99,15 +99,19 @@ class SearchC extends Controller implements ActionsInterface
         // Obtener el filtro de búsqueda desde la sesión
         $filters = \SP\Session::getSearchFilters();
 
+        // Comprobar si la búsqueda es realizada desde el fromulario
+        // de lo contrario, se recupera la información de filtros de la sesión
+        $isSearch = (!isset($this->view->actionId));
+
         // Valores POST
-        $this->view->assign('searchKey', \SP\Request::analyze('skey', $filters->getSortKey()));
-        $this->view->assign('searchOrder', \SP\Request::analyze('sorder', $filters->getSortOrder()));
-        $this->view->assign('searchCustomer', \SP\Request::analyze('customer', $filters->getCustomerId()));
-        $this->view->assign('searchCategory', \SP\Request::analyze('category', $filters->getCategoryId()));
-        $this->view->assign('searchTxt', \SP\Request::analyze('search', $filters->getTxtSearch()));
+        $this->view->assign('searchKey', ($isSearch) ? \SP\Request::analyze('skey', 0) : $filters->getSortKey());
+        $this->view->assign('searchOrder', ($isSearch) ? \SP\Request::analyze('sorder', 0) : $filters->getSortOrder());
+        $this->view->assign('searchCustomer', ($isSearch) ? \SP\Request::analyze('customer', 0) : $filters->getCustomerId());
+        $this->view->assign('searchCategory', ($isSearch) ? \SP\Request::analyze('category', 0 ) : $filters->getCategoryId());
+        $this->view->assign('searchTxt', ($isSearch) ? \SP\Request::analyze('search') : $filters->getTxtSearch());
         $this->view->assign('searchGlobal', \SP\Request::analyze('gsearch', $filters->getGlobalSearch()));
-        $this->view->assign('limitStart', \SP\Request::analyze('start', $filters->getLimitStart()));
-        $this->view->assign('limitCount', \SP\Request::analyze('rpp', $filters->getLimitCount()));
+        $this->view->assign('limitStart', ($isSearch) ? \SP\Request::analyze('start', 0) : $filters->getLimitStart());
+        $this->view->assign('limitCount', ($isSearch) ? \SP\Request::analyze('rpp', 0) : $filters->getLimitCount());
     }
 
     /**
