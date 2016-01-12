@@ -60,7 +60,7 @@ class Upgrade
                         _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
                 }
 
-                if(self::auxUpgrades($upgradeVersion) === false){
+                if (self::auxUpgrades($upgradeVersion) === false) {
                     Init::initError(
                         _('Error al aplicar la actualización auxiliar'),
                         _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
@@ -132,6 +132,19 @@ class Upgrade
                 $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
                 break;
             case 1316011001:
+                $queries[] = 'ALTER TABLE `usrData` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `accFiles` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `accGroups` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `accHistory` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `accUsers` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `categories` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `config` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `customers` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `log` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `usrGroups` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `usrPassRecover` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `usrProfiles` ENGINE = InnoDB';
+                $queries[] = 'ALTER TABLE `accounts` ENGINE = InnoDB , DROP INDEX `IDX_searchTxt` , ADD INDEX `IDX_searchTxt` (`account_name` ASC, `account_login` ASC, `account_url` ASC)';
                 $queries[] = 'CREATE TABLE publicLinks (publicLink_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,publicLink_itemId INT,publicLink_hash VARBINARY(100) NOT NULL,publicLink_linkData LONGBLOB);';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId)';
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
@@ -167,6 +180,26 @@ class Upgrade
         Email::sendEmail($Log);
 
         return true;
+    }
+
+    /**
+     * Aplicar actualizaciones auxiliares.
+     *
+     * @param $version int El número de versión
+     * @return bool
+     */
+    private static function auxUpgrades($version)
+    {
+        switch ($version) {
+            case 12001:
+                return (Profile::migrateProfiles() && UserMigrate::migrateUsersGroup());
+                break;
+            case 12002:
+                return (UserMigrate::setMigrateUsers());
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -241,24 +274,5 @@ class Upgrade
         Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')', Log::NOTICE);
 
         return true;
-    }
-
-    /**
-     * Aplicar actualizaciones auxiliares.
-     *
-     * @param $version int El número de versión
-     * @return bool
-     */
-    private static function auxUpgrades($version){
-        switch ($version){
-            case 12001:
-                return (Profile::migrateProfiles() && UserMigrate::migrateUsersGroup());
-                break;
-            case 12002:
-                return (UserMigrate::setMigrateUsers());
-                break;
-            default:
-                break;
-        }
     }
 }

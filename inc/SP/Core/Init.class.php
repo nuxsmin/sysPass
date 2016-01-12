@@ -415,6 +415,7 @@ class Init
                 || Request::analyze('upgrade', 0) === 1
                 || Request::analyze('nodbupgrade', 0) === 1
             ) {
+                error_log(__FUNCTION__);
                 return true;
             }
 
@@ -497,12 +498,15 @@ class Init
             if (Upgrade::needDBUpgrade($databaseVersion)) {
                 if (!self::checkMaintenanceMode(true)) {
                     if (Config::getValue('upgrade_key', 0) === 0) {
-                        Config::setValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
-                        Config::setValue('maintenance', true);
+                        Config::setCacheConfigValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
+                        Config::setCacheConfigValue('maintenance', true);
+                        Config::writeConfig(false);
                     }
 
                     self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
                 }
+
+                error_log('upgrade');
 
                 $action = Request::analyze('a');
                 $hash = Request::analyze('h');

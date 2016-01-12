@@ -129,10 +129,11 @@ class Config implements ConfigInterface
     /**
      * Escribe en archivo de configuración.
      *
+     * @param bool $backup Si es necesario realizar backup
      * @return bool
      * @throws SPException
      */
-    public static function writeConfig()
+    public static function writeConfig($backup = true)
     {
         // Ordenar las claves de la configuración
         ksort(self::$_cache);
@@ -158,7 +159,9 @@ class Config implements ConfigInterface
         Cache::setSessionCacheConfig();
 
         // Backup a BD
-        self::backupToDB();
+        if ($backup === true) {
+            self::backupToDB();
+        }
 
         return true;
     }

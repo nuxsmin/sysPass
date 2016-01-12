@@ -113,6 +113,22 @@ CREATE TABLE `publicLinks` (
   publicLink_hash     VARBINARY(100)  NOT NULL,
   publicLink_linkData LONGBLOB
 );
+ALTER TABLE `usrData` ENGINE = InnoDB ;
+ALTER TABLE `accFiles` ENGINE = InnoDB ;
+ALTER TABLE `accGroups` ENGINE = InnoDB ;
+ALTER TABLE `accHistory` ENGINE = InnoDB ;
+ALTER TABLE `accUsers` ENGINE = InnoDB ;
+ALTER TABLE `categories` ENGINE = InnoDB ;
+ALTER TABLE `config` ENGINE = InnoDB ;
+ALTER TABLE `customers` ENGINE = InnoDB ;
+ALTER TABLE `log` ENGINE = InnoDB;
+ALTER TABLE `usrGroups` ENGINE = InnoDB ;
+ALTER TABLE `usrPassRecover` ENGINE = InnoDB ;
+ALTER TABLE `usrProfiles` ENGINE = InnoDB ;
+ALTER TABLE `accounts`
+ENGINE = InnoDB ,
+DROP INDEX `IDX_searchTxt` ,
+ADD INDEX `IDX_searchTxt` (`account_name` ASC, `account_login` ASC, `account_url` ASC);
 CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId);
 CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash);
 ALTER TABLE `log` ADD log_level VARCHAR(20) NOT NULL;

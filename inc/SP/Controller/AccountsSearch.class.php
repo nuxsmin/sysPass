@@ -135,16 +135,20 @@ class AccountsSearch extends Controller implements ActionsInterface
         // Obtener el filtro de búsqueda desde la sesión
         $filters = Session::getSearchFilters();
 
-        $this->_sortKey = Request::analyze('skey', $filters->getSortKey());
-        $this->_sortOrder = Request::analyze('sorder', $filters->getSortOrder());
-        $this->_searchGlobal = Request::analyze('gsearch', $filters->getGlobalSearch());
-        $this->_limitStart = Request::analyze('start', $filters->getLimitStart());
-        $this->_limitCount = Request::analyze('rpp', $filters->getLimitCount());
+        // Comprobar si la búsqueda es realizada desde el fromulario
+        // de lo contrario, se recupera la información de filtros de la sesión
+        $isSearch = (!isset($this->view->actionId));
+
+        $this->_sortKey = ($isSearch) ? Request::analyze('skey', 0) : $filters->getSortKey();
+        $this->_sortOrder = ($isSearch) ? Request::analyze('sorder', 0) : $filters->getSortOrder();
+        $this->_searchGlobal = ($isSearch) ? Request::analyze('gsearch', 0) : $filters->getGlobalSearch();
+        $this->_limitStart = ($isSearch) ? Request::analyze('start', 0) : $filters->getLimitStart();
+        $this->_limitCount = ($isSearch) ? Request::analyze('rpp', 0) : $filters->getLimitCount();
 
         // Valores POST
-        $this->view->assign('searchCustomer', Request::analyze('customer', $filters->getCustomerId()));
-        $this->view->assign('searchCategory', Request::analyze('category', $filters->getCategoryId()));
-        $this->view->assign('searchTxt', Request::analyze('search', $filters->getTxtSearch()));
+        $this->view->assign('searchCustomer', ($isSearch) ? Request::analyze('customer', 0) : $filters->getCustomerId());
+        $this->view->assign('searchCategory', ($isSearch) ? Request::analyze('category', 0) : $filters->getCategoryId());
+        $this->view->assign('searchTxt', ($isSearch) ? Request::analyze('search') : $filters->getTxtSearch());
         $this->view->assign('searchGlobal', Request::analyze('gsearch', $filters->getGlobalSearch()));
         $this->view->assign('searchFavorites', Request::analyze('searchfav', $filters->isSearchFavorites()));
     }
