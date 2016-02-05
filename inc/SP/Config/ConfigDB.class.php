@@ -42,11 +42,11 @@ class ConfigDB implements ConfigInterface
     /**
      * @var array
      */
-    protected static $_cache;
+    protected static $cache;
     /**
      * @var bool
      */
-    protected static $_init;
+    protected static $init;
 
     /**
      * Obtener un array con la configuración almacenada en la BBDD.
@@ -67,7 +67,7 @@ class ConfigDB implements ConfigInterface
         }
 
         foreach ($queryRes as $config) {
-            self::$_cache[$config->config_parameter] = $config->config_value;
+            self::$cache[$config->config_parameter] = $config->config_value;
         }
     }
 
@@ -79,7 +79,7 @@ class ConfigDB implements ConfigInterface
      */
     public static function writeConfig($isInsert = false)
     {
-        foreach (self::$_cache as $param => $value) {
+        foreach (self::$cache as $param => $value) {
             $Data = new QueryData();
 
             if ($isInsert) {
@@ -154,7 +154,7 @@ class ConfigDB implements ConfigInterface
      */
     public static function setCacheConfigValue($param, $value)
     {
-        self::$_cache[$param] = $value;
+        self::$cache[$param] = $value;
     }
 
     /**
@@ -165,11 +165,11 @@ class ConfigDB implements ConfigInterface
      */
     public static function getCacheConfigValue($param = null)
     {
-        if (!is_null($param) && isset(self::$_cache[$param])) {
-            return self::$_cache[$param];
+        if (!is_null($param) && isset(self::$cache[$param])) {
+            return self::$cache[$param];
         }
 
-        return self::$_cache;
+        return self::$cache;
     }
 
     /**

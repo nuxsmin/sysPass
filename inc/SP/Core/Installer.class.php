@@ -47,46 +47,46 @@ class Installer
     /**
      * @var string Usuario de la BD
      */
-    private static $_dbuser;
+    private static $dbUser;
     /**
      * @var string Clave de la BD
      */
-    private static $_dbpass;
+    private static $dbPass;
     /**
      * @var string Nombre de la BD
      */
-    private static $_dbname;
+    private static $dbName;
     /**
      * @var string Host de la BD
      */
-    private static $_dbhost;
+    private static $dbHost;
     /**
      * @var PDO Instancia a de conexión a la BD
      */
-    private static $_dbc;
+    private static $DB;
     /**
      * @var string Usuario 'admin' de sysPass
      */
-    private static $_username;
+    private static $username;
     /**
      * @var string Clave del usuario 'admin' de sysPass
      */
-    private static $_password;
+    private static $password;
     /**
      * @var string Clave maestra de sysPass
      */
-    private static $_masterPassword;
+    private static $masterPassword;
     /**
      * @var bool Activar/desactivar Modo hosting
      */
-    private static $_isHostingMode;
+    private static $isHostingMode;
 
     /**
      * @param string $dbname
      */
-    public static function setDbname($dbname)
+    public static function setDbName($dbname)
     {
-        self::$_dbname = $dbname;
+        self::$dbName = $dbname;
     }
 
     /**
@@ -94,7 +94,7 @@ class Installer
      */
     public static function setUsername($username)
     {
-        self::$_username = $username;
+        self::$username = $username;
     }
 
     /**
@@ -102,7 +102,7 @@ class Installer
      */
     public static function setPassword($password)
     {
-        self::$_password = $password;
+        self::$password = $password;
     }
 
     /**
@@ -110,7 +110,7 @@ class Installer
      */
     public static function setMasterPassword($masterPassword)
     {
-        self::$_masterPassword = $masterPassword;
+        self::$masterPassword = $masterPassword;
     }
 
     /**
@@ -118,7 +118,7 @@ class Installer
      */
     public static function setIsHostingMode($isHostingMode)
     {
-        self::$_isHostingMode = $isHostingMode;
+        self::$isHostingMode = $isHostingMode;
     }
 
     /**
@@ -130,47 +130,47 @@ class Installer
     {
         $error = array();
 
-        if (!self::$_username) {
+        if (!self::$username) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar nombre de usuario admin'),
                 'hint' => _('Usuario admin para acceso a la aplicación'));
-        } elseif (!self::$_password) {
+        } elseif (!self::$password) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar la clave de admin'),
                 'hint' => _('Clave del usuario admin de la aplicación'));
-        } elseif (!self::$_masterPassword) {
+        } elseif (!self::$masterPassword) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar la clave maestra'),
                 'hint' => _('Clave maestra para encriptar las claves'));
-        } elseif (strlen(self::$_masterPassword) < 11) {
+        } elseif (strlen(self::$masterPassword) < 11) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Clave maestra muy corta'),
                 'hint' => _('La longitud de la clave maestra ha de ser mayor de 11 caracteres'));
-        } elseif (!self::$_dbuser) {
+        } elseif (!self::$dbUser) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el usuario de la BBDD'),
                 'hint' => _('Usuario con permisos de administrador de la Base de Datos'));
-        } elseif (!self::$_dbpass) {
+        } elseif (!self::$dbPass) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar la clave de la BBDD'),
                 'hint' => _('Clave del usuario administrador de la Base de Datos'));
-        } elseif (!self::$_dbname) {
+        } elseif (!self::$dbName) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el nombre de la BBDD'),
                 'hint' => _('Nombre para la BBDD de la aplicación pej. syspass'));
-        } elseif (substr_count(self::$_dbname, '.') >= 1) {
+        } elseif (substr_count(self::$dbName, '.') >= 1) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('El nombre de la BBDD no puede contener "."'),
                 'hint' => _('Elimine los puntos del nombre de la Base de Datos'));
-        } elseif (!self::$_dbhost) {
+        } elseif (!self::$dbHost) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el servidor de la BBDD'),
@@ -178,28 +178,31 @@ class Installer
         }
 
         if (count($error) === 0) { //no errors, good
-            // Generate a random salt that is used to salt the local user passwords
-            Config::setValue('passwordsalt', Util::generate_random_bytes(30));
-            Config::setValue('version', implode(Util::getVersion(true)));
+            $Config = Config::getConfig();
 
-            if (preg_match('/(.*):(\d{1,5})/', self::$_dbhost, $match)) {
-                self::setDbhost($match[1]);
+            // Generate a random salt that is used to salt the local user passwords
+            $Config->setPasswordSalt(Util::generate_random_bytes(30));
+            $Config->setConfigVersion(implode(Util::getVersion(true)));
+
+            if (preg_match('/(.*):(\d{1,5})/', self::$dbHost, $match)) {
+                self::setDbHost($match[1]);
                 $dbport = $match[2];
             } else {
                 $dbport = 3306;
             }
 
             // Save DB connection info
-            Config::setValue('dbhost', self::$_dbhost);
-            Config::setValue('dbname', self::$_dbname);
+            $Config->setDbHost(self::$dbHost);
+            $Config->setDbName(self::$dbName);
 
-            // Set some basic configuration options
-            Config::setDefaultValues();
 
             try {
-                self::checkDatabaseAdmin(self::$_dbhost, self::$_dbuser, self::$_dbpass, $dbport);
+                self::checkDatabaseAdmin(self::$dbHost, self::$dbUser, self::$dbPass, $dbport);
                 self::setupMySQLDatabase();
                 self::createAdminAccount();
+                ConfigDB::setValue('version', implode(Util::getVersion(true)));
+                $Config->setInstalled(true);
+                Config::saveConfig();
             } catch (SPException $e) {
                 $error[] = array(
                     'type' => $e->getType(),
@@ -207,9 +210,6 @@ class Installer
                     'hint' => $e->getHint());
                 return $error;
             }
-
-            ConfigDB::setValue('version', implode(Util::getVersion(true)));
-            Config::setValue('installed', 1);
         }
 
         return $error;
@@ -218,9 +218,9 @@ class Installer
     /**
      * @param string $dbhost
      */
-    public static function setDbhost($dbhost)
+    public static function setDbHost($dbhost)
     {
-        self::$_dbhost = $dbhost;
+        self::$dbHost = $dbhost;
     }
 
     /**
@@ -238,8 +238,8 @@ class Installer
     {
         try {
             $dsn = 'mysql:host=' . $dbhost . ';dbport=' . $dbport . ';charset=utf8';
-            self::$_dbc = new PDO($dsn, $dbadmin, $dbpass);
-            self::$_dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::$DB = new PDO($dsn, $dbadmin, $dbpass);
+            self::$DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('No es posible conectar con la BD')
@@ -256,31 +256,31 @@ class Installer
     private static function setupMySQLDatabase()
     {
         // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
-        if (!self::$_isHostingMode) {
-            self::setDbpass(md5(time() . self::$_password));
-            self::setDbuser(substr('sp_' . self::$_username, 0, 16));
+        if (!self::$isHostingMode) {
+            self::setDbPass(md5(time() . self::$password));
+            self::setDbUser(substr('sp_' . self::$username, 0, 16));
 
             // Comprobar si el usuario sumistrado existe
-            $query = "SELECT COUNT(*) FROM mysql.user WHERE user='" . self::$_username . "' AND host='" . self::$_dbhost . "'";
+            $query = "SELECT COUNT(*) FROM mysql.user WHERE user='" . self::$username . "' AND host='" . self::$dbHost . "'";
 
             try {
                 // Si no existe el usuario, se intenta crear
-                if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
+                if (intval(self::$DB->query($query)->fetchColumn()) === 0) {
                     // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                    if (self::$_dbuser != Config::getValue('dbuser')) {
+                    if (self::$dbUser != Config::getConfig()->getDbUser()) {
                         self::createDBUser();
                     }
                 }
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
-                    , _('No es posible comprobar el usuario de sysPass') . ' (' . self::$_username . ')'
+                    , _('No es posible comprobar el usuario de sysPass') . ' (' . self::$username . ')'
                     , _('Compruebe los permisos del usuario de conexión a la BD'));
             }
         }
 
         // Guardar el nuevo usuario/clave de conexión a la BD
-        Config::setValue('dbuser', self::$_dbuser);
-        Config::setValue('dbpass', self::$_dbpass);
+        Config::getConfig()->setDbUser(self::$dbUser);
+        Config::getConfig()->setDbPass(self::$dbPass);
 
         try {
             self::createMySQLDatabase();
@@ -293,17 +293,17 @@ class Installer
     /**
      * @param string $dbpass
      */
-    public static function setDbpass($dbpass)
+    public static function setDbPass($dbpass)
     {
-        self::$_dbpass = $dbpass;
+        self::$dbPass = $dbpass;
     }
 
     /**
      * @param string $dbuser
      */
-    public static function setDbuser($dbuser)
+    public static function setDbUser($dbuser)
     {
-        self::$_dbuser = $dbuser;
+        self::$dbUser = $dbuser;
     }
 
     /**
@@ -315,17 +315,17 @@ class Installer
      */
     private static function createDBUser()
     {
-        if (self::$_isHostingMode) {
+        if (self::$isHostingMode) {
             return;
         }
 
-        $query = "CREATE USER '" . self::$_dbuser . "'@'localhost' IDENTIFIED BY '" . self::$_dbpass . "'";
+        $query = "CREATE USER '" . self::$dbUser . "'@'localhost' IDENTIFIED BY '" . self::$dbPass . "'";
 
         try {
-            self::$_dbc->query($query);
+            self::$DB->query($query);
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
-                , _('El usuario de MySQL ya existe') . " (" . self::$_dbuser . ")"
+                , _('El usuario de MySQL ya existe') . " (" . self::$dbUser . ")"
                 , _('Indique un nuevo usuario o elimine el existente'));
         }
     }
@@ -343,21 +343,21 @@ class Installer
                 , _('Indique una nueva Base de Datos o elimine la existente'));
         }
 
-        $query = "CREATE SCHEMA `" . self::$_dbname . "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
+        $query = "CREATE SCHEMA `" . self::$dbName . "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
 
         try {
-            self::$_dbc->query($query);
+            self::$DB->query($query);
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear la BBDD') . " (" . $e->getMessage() . ")"
                 , _('Verifique los permisos del usuario de la Base de Datos'));
         }
 
-        if (!self::$_isHostingMode) {
-            $query = "GRANT ALL PRIVILEGES ON `" . self::$_dbname . "`.* TO '" . self::$_dbuser . "'@'" . self::$_dbhost . "' IDENTIFIED BY '" . self::$_dbpass . "';";
+        if (!self::$isHostingMode) {
+            $query = "GRANT ALL PRIVILEGES ON `" . self::$dbName . "`.* TO '" . self::$dbUser . "'@'" . self::$dbHost . "' IDENTIFIED BY '" . self::$dbPass . "';";
 
             try {
-                self::$_dbc->query($query);
+                self::$DB->query($query);
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
                     , _('Error al establecer permisos de la BBDD') . " (" . $e->getMessage() . ")"
@@ -375,9 +375,9 @@ class Installer
     {
         $query = "SELECT COUNT(*) "
             . "FROM information_schema.schemata "
-            . "WHERE schema_name = '" . self::$_dbname . "' LIMIT 1";
+            . "WHERE schema_name = '" . self::$dbName . "' LIMIT 1";
 
-        return (intval(self::$_dbc->query($query)->fetchColumn()) > 0);
+        return (intval(self::$DB->query($query)->fetchColumn()) > 0);
     }
 
     /**
@@ -398,10 +398,10 @@ class Installer
 
         // Usar la base de datos de sysPass
         try {
-            self::$_dbc->query('USE `' . self::$_dbname. '`');
+            self::$DB->query('USE `' . self::$dbName. '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
-                , _('Error al seleccionar la BBDD') . " '" . self::$_dbname . "' (" . $e->getMessage() . ")"
+                , _('Error al seleccionar la BBDD') . " '" . self::$dbName . "' (" . $e->getMessage() . ")"
                 , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
         }
 
@@ -414,10 +414,10 @@ class Installer
                 if (strlen(trim($buffer)) > 0) {
                     try {
                         $query = str_replace("\n", '', $buffer);
-                        self::$_dbc->query($query);
+                        self::$DB->query($query);
                     } catch (PDOException $e) {
                         // drop database on error
-                        self::$_dbc->query("DROP DATABASE IF EXISTS " . self::$_dbname . ";");
+                        self::$DB->query("DROP DATABASE IF EXISTS " . self::$dbName . ";");
 
                         throw new SPException(SPException::SP_CRITICAL
                             , _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')'
@@ -482,8 +482,8 @@ class Installer
         }
 
         // Datos del usuario
-        $User->setUserLogin(self::$_username);
-        $User->setUserPass(self::$_password);
+        $User->setUserLogin(self::$username);
+        $User->setUserPass(self::$password);
         $User->setUserName('Admin');
         $User->setUserProfileId($Profile->getId());
         $User->setUserIsAdminApp(true);
@@ -499,11 +499,11 @@ class Installer
         }
 
         // Guardar el hash de la clave maestra
-        ConfigDB::setCacheConfigValue('masterPwd', Crypt::mkHashPassword(self::$_masterPassword));
+        ConfigDB::setCacheConfigValue('masterPwd', Crypt::mkHashPassword(self::$masterPassword));
         ConfigDB::setCacheConfigValue('lastupdatempass', time());
         ConfigDB::writeConfig(true);
 
-        if (!$User->updateUserMPass(self::$_masterPassword)) {
+        if (!$User->updateUserMPass(self::$masterPassword)) {
             self::rollback();
 
             throw new SPException(SPException::SP_CRITICAL
@@ -519,12 +519,11 @@ class Installer
     private static function rollback()
     {
         try {
-            self::$_dbc->query("DROP DATABASE IF EXISTS " . self::$_dbname . ";");
-            self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'" . self::$_dbhost . "';");
-            self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'%';");
+            self::$DB->query("DROP DATABASE IF EXISTS " . self::$dbName . ";");
+            self::$DB->query("DROP USER '" . self::$dbUser . "'@'" . self::$dbHost . "';");
+            self::$DB->query("DROP USER '" . self::$dbUser . "'@'%';");
         } catch (PDOException $e) {
-            Config::deleteParam('dbuser');
-            Config::deleteParam('dbpass');
+            return false;
         }
     }
 

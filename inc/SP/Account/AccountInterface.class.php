@@ -32,11 +32,26 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 interface AccountInterface
 {
-    public function getAccountData();
+    /**
+     * @return mixed
+     */
+    public function getData();
 
+    /**
+     * @return mixed
+     */
     public function createAccount();
 
+    /**
+     * @return mixed
+     */
     public function deleteAccount();
 
+    /**
+     * @param      $currentMasterPass
+     * @param      $newMasterPass
+     * @param null $newHash
+     * @return mixed
+     */
     public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null);
 }

@@ -33,34 +33,17 @@ use SP\Core\SPException;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Class DBConnectionFactory
+ * Class MySQLHandler
  *
  * Esta clase se encarga de crear las conexiones a la BD
  */
-class DBConnectionFactory
+class MySQLHandler implements DBStorageInterface
 {
     /**
-     * @var DBConnectionFactory
-     */
-    private static $_factory;
-    /**
-     * @var \PDO
+     * @var PDO
      */
     private $_db;
 
-    /**
-     * Obtener una instancia de la clase
-     *
-     * @return DBConnectionFactory
-     */
-    public static function getFactory()
-    {
-        if (!self::$_factory) {
-            self::$_factory = new DBConnectionFactory();
-        }
-
-        return self::$_factory;
-    }
 
     /**
      * Realizar la conexión con la BBDD.
@@ -73,15 +56,18 @@ class DBConnectionFactory
     public function getConnection()
     {
         if (!$this->_db) {
-            $isInstalled = Config::getValue('installed');
+            $Config = Config::getConfig();
 
-            $dbhost = Config::getValue('dbhost');
-            $dbuser = Config::getValue('dbuser');
-            $dbpass = Config::getValue('dbpass');
-            $dbname = Config::getValue('dbname');
-            $dbport = Config::getValue('dbport', 3306);
+            $isInstalled = $Config->isInstalled();
+            $dbhost = $Config->getDbHost();
+            $dbuser = $Config->getDbUser();
+            $dbpass = $Config->getDbPass();
+            $dbname = $Config->getDbName();
+            $dbport = $Config->getDbPort();
 
             if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
+                Init::$DB_STATUS = 0;
+
                 if ($isInstalled) {
                     Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
                 } else {
@@ -94,11 +80,13 @@ class DBConnectionFactory
 //                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
                 $this->_db = new PDO($dsn, $dbuser, $dbpass);
             } catch (\Exception $e) {
+                Init::$DB_STATUS = 0;
+
                 if ($isInstalled) {
                     if ($e->getCode() === 1049) {
-                        Config::setValue('installed', '0');
+                        Config::getConfig()->setInstalled(false);
+                        Config::saveConfig();
                     }
-
                     Init::initError(_('No es posible conectar con la BD'), 'Error ' . $e->getCode() . ': ' . $e->getMessage());
                 } else {
                     throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());

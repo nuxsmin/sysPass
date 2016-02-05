@@ -42,28 +42,28 @@ class FileImport
      *
      * @var string|array
      */
-    protected $_fileContent = null;
+    protected $fileContent = null;
 
     /**
      * Archivo temporal utilizado en la subida HTML
      *
      * @var string
      */
-    protected $_tmpFile = '';
+    protected $tmpFile = '';
 
     /**
      * Tipo Mime del archivo
      *
      * @var string
      */
-    protected $_fileType = '';
+    protected $fileType = '';
 
     /**
      * @return string|array
      */
     public function getFileContent()
     {
-        return $this->_fileContent;
+        return $this->fileContent;
     }
 
     /**
@@ -71,7 +71,7 @@ class FileImport
      */
     public function getTmpFile()
     {
-        return $this->_tmpFile;
+        return $this->tmpFile;
     }
 
     /**
@@ -79,7 +79,7 @@ class FileImport
      */
     public function getFileType()
     {
-        return $this->_fileType;
+        return $this->fileType;
     }
 
 
@@ -122,10 +122,10 @@ class FileImport
         }
 
         // Variables con información del archivo
-        $this->_tmpFile = $fileData['tmp_name'];
-        $this->_fileType = $fileData['type'];
+        $this->tmpFile = $fileData['tmp_name'];
+        $this->fileType = $fileData['type'];
 
-        if (!file_exists($this->_tmpFile) || !is_readable($this->_tmpFile)) {
+        if (!file_exists($this->tmpFile) || !is_readable($this->tmpFile)) {
             // Registramos el máximo tamaño permitido por PHP
             Util::getMaxUpload();
 
@@ -144,9 +144,9 @@ class FileImport
      */
     public function readFileToArray()
     {
-        $this->_fileContent = file($this->_tmpFile, FILE_SKIP_EMPTY_LINES);
+        $this->fileContent = file($this->tmpFile, FILE_SKIP_EMPTY_LINES);
 
-        if ($this->_fileContent === false){
+        if ($this->fileContent === false){
             throw new SPException(
                 SPException::SP_CRITICAL,
                 _('Error interno al leer el archivo'),
@@ -162,9 +162,9 @@ class FileImport
      */
     public function readFileToString()
     {
-        $this->_fileContent = file_get_contents($this->_tmpFile);
+        $this->fileContent = file_get_contents($this->tmpFile);
 
-        if ($this->_fileContent === false){
+        if ($this->fileContent === false){
             throw new SPException(
                 SPException::SP_CRITICAL,
                 _('Error interno al leer el archivo'),

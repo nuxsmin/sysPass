@@ -45,27 +45,27 @@ abstract class ActionLog extends LogLevel
      *
      * @var string
      */
-    protected $_action = __CLASS__;
+    protected $action = __CLASS__;
     /**
      * Detalles de la acción
      *
      * @var array
      */
-    protected $_description = null;
+    protected $description = null;
     /**
      * Formato de nueva línea en HTML
      *
      * @var bool
      */
-    protected $_newLineHtml = false;
+    protected $newLineHtml = false;
     /**
      * @var string
      */
-    protected $_logLevel = '';
+    protected $logLevel = '';
     /**
      * @var array
      */
-    protected $_details = null;
+    protected $details = null;
 
     /**
      * Contructor
@@ -84,7 +84,7 @@ abstract class ActionLog extends LogLevel
             $this->addDescription($description);
         }
 
-        $this->_logLevel = $level;
+        $this->logLevel = $level;
     }
 
     /**
@@ -94,7 +94,7 @@ abstract class ActionLog extends LogLevel
      */
     public function addDescription($description = '')
     {
-        $this->_description[] = $this->formatString($description);
+        $this->description[] = $this->formatString($description);
     }
 
     /**
@@ -113,7 +113,7 @@ abstract class ActionLog extends LogLevel
      */
     public function getLogLevel()
     {
-        return strtoupper($this->_logLevel);
+        return strtoupper($this->logLevel);
     }
 
     /**
@@ -121,7 +121,7 @@ abstract class ActionLog extends LogLevel
      */
     public function setLogLevel($logLevel)
     {
-        $this->_logLevel = $logLevel;
+        $this->logLevel = $logLevel;
     }
 
     /**
@@ -131,17 +131,17 @@ abstract class ActionLog extends LogLevel
      */
     public function getDetails()
     {
-        if (is_null($this->_details)) {
+        if (is_null($this->details)) {
             return '';
         }
 
-        if (count($this->_details) > 1) {
-            $newline = ($this->_newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
+        if (count($this->details) > 1) {
+            $newline = ($this->newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
 
-            return implode($newline, $this->_details);
+            return implode($newline, $this->details);
         }
 
-        return $this->_details[0];
+        return $this->details[0];
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class ActionLog extends LogLevel
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -161,7 +161,7 @@ abstract class ActionLog extends LogLevel
      */
     public function setAction($action)
     {
-        $this->_action = $this->formatString($action);
+        $this->action = $this->formatString($action);
     }
 
     /**
@@ -171,17 +171,17 @@ abstract class ActionLog extends LogLevel
      */
     public function getDescription()
     {
-        if (is_null($this->_description)) {
+        if (is_null($this->description)) {
             return '';
         }
 
-        if (count($this->_description) > 1) {
-            $newline = ($this->_newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
+        if (count($this->description) > 1) {
+            $newline = ($this->newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
 
-            return implode($newline, $this->_description);
+            return implode($newline, $this->description);
         }
 
-        return $this->_description[0];
+        return $this->description[0];
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class ActionLog extends LogLevel
      */
     public function addDetails($key, $value)
     {
-        $this->_details[] = sprintf('%s: %s', $this->formatString($key), $this->formatString($value));
+        $this->details[] = sprintf('%s: %s', $this->formatString($key), $this->formatString($value));
     }
 
     /**
@@ -202,7 +202,7 @@ abstract class ActionLog extends LogLevel
      */
     public function setNewLineHtml($bool)
     {
-        $this->_newLineHtml = $bool;
+        $this->newLineHtml = $bool;
     }
 
     /**
@@ -210,6 +210,6 @@ abstract class ActionLog extends LogLevel
      */
     public function resetDescription()
     {
-        $this->_description = null;
+        $this->description = null;
     }
 }

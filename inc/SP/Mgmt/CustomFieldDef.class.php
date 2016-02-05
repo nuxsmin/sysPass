@@ -49,9 +49,9 @@ class CustomFieldDef extends CustomFieldsBase
             throw new \InvalidArgumentException(_('Parámetros incorrectos'));
         }
 
-        $this->_name = $name;
-        $this->_type = $type;
-        $this->_module = $module;
+        $this->name = $name;
+        $this->type = $type;
+        $this->module = $module;
     }
 
     /**
@@ -146,7 +146,7 @@ class CustomFieldDef extends CustomFieldsBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_module, 'module');
+        $Data->addParam($this->module, 'module');
         $Data->addParam(serialize($this), 'field');
 
         $queryRes = DB::getQuery($Data);
@@ -161,7 +161,7 @@ class CustomFieldDef extends CustomFieldsBase
      */
     public function updateCustomField()
     {
-        $curField = self::getCustomFields($this->_id, true);
+        $curField = self::getCustomFields($this->id, true);
 
         $query = 'UPDATE customFieldsDef SET ' .
             'customfielddef_module = :module, ' .
@@ -170,14 +170,14 @@ class CustomFieldDef extends CustomFieldsBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_id, 'id');
-        $Data->addParam($this->_module, 'module');
+        $Data->addParam($this->id, 'id');
+        $Data->addParam($this->module, 'module');
         $Data->addParam(serialize($this), 'field');
 
         $queryRes = DB::getQuery($Data);
 
-        if ($queryRes && $curField->customfielddef_module !== $this->_module) {
-            $queryRes = CustomFields::updateCustomFieldModule($this->_module, $this->_id);
+        if ($queryRes && $curField->customfielddef_module !== $this->module) {
+            $queryRes = CustomFields::updateCustomFieldModule($this->module, $this->id);
         }
 
         return $queryRes;
@@ -249,6 +249,6 @@ class CustomFieldDef extends CustomFieldsBase
      */
     public function setId($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 }

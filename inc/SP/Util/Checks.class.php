@@ -156,7 +156,7 @@ class Checks
      */
     public static function demoIsEnabled()
     {
-        return Util::boolval(Config::getValue('demo_enabled', false));
+        return Util::boolval(Config::getConfig()->isDemoEnabled());
     }
 
     /**
@@ -166,7 +166,7 @@ class Checks
      */
     public static function fileIsEnabled()
     {
-        return Util::boolval(Config::getValue('files_enabled', false));
+        return Util::boolval(Config::getConfig()->isFilesEnabled());
     }
 
     /**
@@ -176,7 +176,7 @@ class Checks
      */
     public static function mailIsEnabled()
     {
-        return Util::boolval(Config::getValue('mail_enabled', false));
+        return Util::boolval(Config::getConfig()->isMailEnabled());
     }
 
     /**
@@ -186,7 +186,7 @@ class Checks
      */
     public static function wikiIsEnabled()
     {
-        return Util::boolval(Config::getValue('wiki_enabled', false));
+        return Util::boolval(Config::getConfig()->isWikiEnabled());
     }
 
     /**
@@ -196,7 +196,7 @@ class Checks
      */
     public static function dokuWikiIsEnabled()
     {
-        return Util::boolval(Config::getValue('dokuwiki_enabled', false));
+        return Util::boolval(Config::getConfig()->isDokuwikiEnabled());
     }
 
     /**
@@ -206,7 +206,7 @@ class Checks
      */
     public static function mailrequestIsEnabled()
     {
-        return Util::boolval(Config::getValue('mail_requestsenabled', false));
+        return Util::boolval(Config::getConfig()->isMailRequestsEnabled());
     }
 
     /**
@@ -216,7 +216,7 @@ class Checks
      */
     public static function ldapIsEnabled()
     {
-        return Util::boolval(Config::getValue('ldap_enabled', false));
+        return Util::boolval(Config::getConfig()->isLdapEnabled());
     }
 
     /**
@@ -226,7 +226,7 @@ class Checks
      */
     public static function logIsEnabled()
     {
-        return Util::boolval(Config::getValue('log_enabled', false));
+        return Util::boolval(Config::getConfig()->isLogEnabled());
     }
 
     /**
@@ -236,7 +236,7 @@ class Checks
      */
     public static function syslogIsEnabled()
     {
-        return Util::boolval(Config::getValue('syslog_enabled', false));
+        return Util::boolval(Config::getConfig()->isSyslogEnabled());
     }
 
     /**
@@ -246,7 +246,7 @@ class Checks
      */
     public static function remoteSyslogIsEnabled()
     {
-        return Util::boolval(Config::getValue('syslog_remote_enabled', false));
+        return Util::boolval(Config::getConfig()->isSyslogRemoteEnabled());
     }
 
 
@@ -257,7 +257,7 @@ class Checks
      */
     public static function resultsCardsIsEnabled()
     {
-        return Util::boolval(Config::getValue('resultsascards', false));
+        return Util::boolval(Config::getConfig()->isResultsAsCards());
     }
 
     /**
@@ -267,7 +267,7 @@ class Checks
      */
     public static function accountPassToImageIsEnabled()
     {
-        return Util::boolval(Config::getValue('account_passtoimage', false));
+        return Util::boolval(Config::getConfig()->isAccountPassToImage());
     }
 
     /**
@@ -277,7 +277,7 @@ class Checks
      */
     public static function forceHttpsIsEnabled()
     {
-        return Util::boolval(Config::getValue('https_enabled', false));
+        return Util::boolval(Config::getConfig()->isHttpsEnabled());
     }
 
     /**
@@ -287,7 +287,7 @@ class Checks
      */
     public static function publicLinksIsEnabled()
     {
-        return Util::boolval(Config::getValue('publinks_enabled', false));
+        return Util::boolval(Config::getConfig()->isPublinksEnabled());
     }
 
     /**

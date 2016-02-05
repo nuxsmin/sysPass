@@ -55,7 +55,8 @@ class Backup
 
         // Generar hash unico para evitar descargas no permitidas
         $backupUniqueHash = uniqid();
-        Config::setValue('backup_hash', $backupUniqueHash);
+        Config::getConfig()->setBackupHash($backupUniqueHash);
+        Config::saveConfig();
 
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
         $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
@@ -95,7 +96,7 @@ class Backup
      */
     private static function backupTables($tables = '*', $backupFile)
     {
-        $dbname = Config::getValue("dbname");
+        $dbname = Config::getConfig()->getDbName();
 
         try {
             $handle = fopen($backupFile, 'w');

@@ -45,34 +45,34 @@ abstract class DokuWikiApiBase
     /**
      * @var string
      */
-    protected $_apiUser = '';
+    protected $apiUser = '';
     /**
      * @var string
      */
-    protected $_apiPassword = '';
+    protected $apiPassword = '';
     /**
      * @var string
      */
-    protected $_apiUrl = '';
+    protected $apiUrl = '';
     /**
      * @var DOMDocument
      */
-    private $_xml;
+    private $xml;
     /**
      * @var \DOMElement
      */
-    private $_root;
+    private $root;
     /**
      * @var \DOMElement
      */
-    private $_params;
+    private $params;
 
     /**
      * @return string
      */
     public function getXml()
     {
-        return $this->_xml->saveXML();
+        return $this->xml->saveXML();
     }
 
     /**
@@ -85,8 +85,8 @@ abstract class DokuWikiApiBase
     {
         try {
             $this->createMsg('dokuwiki.login');
-            $this->addParam($this->_apiUser);
-            $this->addParam($this->_apiPassword);
+            $this->addParam($this->apiUser);
+            $this->addParam($this->apiPassword);
             return $this->callWiki();
         } catch (SPException $e) {
             throw $e;
@@ -102,16 +102,16 @@ abstract class DokuWikiApiBase
     protected function createMsg($function)
     {
         try {
-            $this->_xml = new DOMDocument('1.0', 'UTF-8');
+            $this->xml = new DOMDocument('1.0', 'UTF-8');
 
-            $xmlMethodCall = $this->_xml->createElement('methodCall');
-            $this->_root = $this->_xml->appendChild($xmlMethodCall);
+            $xmlMethodCall = $this->xml->createElement('methodCall');
+            $this->root = $this->xml->appendChild($xmlMethodCall);
 
-            $xmlMethodName = $this->_xml->createElement('methodName', $function);
-            $this->_root->appendChild($xmlMethodName);
+            $xmlMethodName = $this->xml->createElement('methodName', $function);
+            $this->root->appendChild($xmlMethodName);
 
-            $this->_params = $this->_xml->createElement('params');
-            $this->_root->appendChild($this->_params);
+            $this->params = $this->xml->createElement('params');
+            $this->root->appendChild($this->params);
         } catch (DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
@@ -126,19 +126,19 @@ abstract class DokuWikiApiBase
     protected function addParam($value)
     {
         try {
-            $xmlParam = $this->_xml->createElement('param');
-            $xmlValue = $this->_xml->createElement('value');
+            $xmlParam = $this->xml->createElement('param');
+            $xmlValue = $this->xml->createElement('value');
 
             if (is_numeric($value)) {
-                $xmlValue->appendChild($this->_xml->createElement('int', intval($value)));
+                $xmlValue->appendChild($this->xml->createElement('int', intval($value)));
             } elseif (is_string($value)) {
-                $xmlValue->appendChild($this->_xml->createElement('string', $value));
+                $xmlValue->appendChild($this->xml->createElement('string', $value));
             } elseif (is_bool($value)) {
-                $xmlValue->appendChild($this->_xml->createElement('boolean', intval($value)));
+                $xmlValue->appendChild($this->xml->createElement('boolean', intval($value)));
             }
 
             $xmlParam->appendChild($xmlValue);
-            $this->_params->appendChild($xmlParam);
+            $this->params->appendChild($xmlParam);
         } catch (DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
@@ -151,9 +151,9 @@ abstract class DokuWikiApiBase
     {
         try {
             $data['type'] = array('Content-Type: text/xml');
-            $data['data'] = $this->_xml->saveXML();
+            $data['data'] = $this->xml->saveXML();
 
-            return Util::getDataFromUrl($this->_apiUrl, $data, true);
+            return Util::getDataFromUrl($this->apiUrl, $data, true);
         } catch (SPException $e) {
             throw $e;
         }
@@ -204,11 +204,11 @@ abstract class DokuWikiApiBase
      */
     protected function setConnectionData($url, $user, $pass)
     {
-        $this->_apiUrl = (empty($url)) ? Config::getValue('dokuwiki_url') : $url;
-        $this->_apiUser = (empty($user)) ? Config::getValue('dokuwiki_user') : $user;
-        $this->_apiPassword = (empty($pass)) ? Config::getValue('dokuwiki_pass') : $pass;
+        $this->apiUrl = (empty($url)) ? Config::getConfig()->getDokuwikiUrl() : $url;
+        $this->apiUser = (empty($user)) ? Config::getConfig()->getDokuwikiUser() : $user;
+        $this->apiPassword = (empty($pass)) ? Config::getConfig()->getDokuwikiPass() : $pass;
 
-        if (empty($this->_apiUrl)){
+        if (empty($this->apiUrl)){
             throw new SPException(SPException::SP_WARNING, _('URL de conexión no establecida'));
         }
     }

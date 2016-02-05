@@ -39,11 +39,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Groups
 {
-    static $queryRes;
-    static $groupId;
-    static $groupName;
-    static $groupDescription;
-    static $queryLastId;
+    public static $queryRes;
+    public static $groupId;
+    public static $groupName;
+    public static $groupDescription;
+    public static $queryLastId;
 
     /**
      * Obtener los datos de un grupo.

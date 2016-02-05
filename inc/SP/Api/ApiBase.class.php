@@ -47,29 +47,29 @@ abstract class ApiBase
      *
      * @var int
      */
-    protected $_actionId = 0;
+    protected $actionId = 0;
     /**
      * El ID de usuario resuelto
      *
      * @var int
      */
-    protected $_userId = 0;
+    protected $userId = 0;
     /**
      * Indica si la autentificación es correcta
      *
      * @var bool
      */
-    protected $_auth = false;
+    protected $auth = false;
     /**
      * Los parámetros de la acción a ejecutar
      *
      * @var mixed
      */
-    protected $_params;
+    protected $params;
     /**
      * @var array
      */
-    protected $_actionsMap = array();
+    protected $actionsMap = array();
 
     /**
      * @param $params
@@ -81,16 +81,16 @@ abstract class ApiBase
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 
-        $this->_userId = ApiTokensUtil::getUserIdForToken($params->authToken);
-        $this->_actionId = $this->getActionId($params->action);
-        $this->_auth = true;
-        $this->_params = $params;
+        $this->userId = ApiTokensUtil::getUserIdForToken($params->authToken);
+        $this->actionId = $this->getActionId($params->action);
+        $this->auth = true;
+        $this->params = $params;
 
         if (isset($params->userPass)) {
-            $userLogin = UserUtil::getUserLoginById($this->_userId);
+            $userLogin = UserUtil::getUserLoginById($this->userId);
 
             $User = new User();
-            $User->setUserId($this->_userId);
+            $User->setUserId($this->userId);
             $User->setUserLogin($userLogin);
             $User->setUserPass($params->userPass);
 
@@ -106,7 +106,7 @@ abstract class ApiBase
             }
         }
 
-        Session::setUserId($this->_userId);
+        Session::setUserId($this->userId);
         Session::setSessionType(Session::SESSION_API);
     }
 
@@ -118,7 +118,7 @@ abstract class ApiBase
      */
     protected function getActionId($action)
     {
-        return (is_array($this->_actionsMap) && isset($this->_actionsMap[$action])) ? $this->_actionsMap[$action] : 0;
+        return (is_array($this->actionsMap) && isset($this->actionsMap[$action])) ? $this->actionsMap[$action] : 0;
     }
 
     /**
@@ -129,7 +129,7 @@ abstract class ApiBase
      */
     protected function checkActionAccess($action)
     {
-        if ($this->_actionId !== $action) {
+        if ($this->actionId !== $action) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
     }
@@ -165,7 +165,7 @@ abstract class ApiBase
         }
 
         $json = json_encode(array(
-            'action' => Acl::getActionName($this->_actionId, true),
+            'action' => Acl::getActionName($this->actionId, true),
             'data' => $data,
         ));
 

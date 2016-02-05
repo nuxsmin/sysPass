@@ -32,6 +32,11 @@ namespace SP\Mgmt;
  */
 class CustomFieldsUtil
 {
+    /**
+     * @param array $fields
+     * @param       $accountId
+     * @return bool
+     */
     public static function updateCustonFields(array &$fields, $accountId)
     {
         foreach ($fields as $id => $value) {
@@ -42,6 +47,11 @@ class CustomFieldsUtil
         return true;
     }
 
+    /**
+     * @param $fields
+     * @param $srcHhash
+     * @return bool
+     */
     public static function checkHash(&$fields, $srcHhash)
     {
         if (!is_array($fields)){

@@ -57,7 +57,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->_limitCount = Config::getValue('account_count');
+        $this->_limitCount = Config::getConfig()->getAccountCount();
     }
 
     /**
@@ -71,7 +71,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
             return;
         }
 
-        $Grid = $this->_grids->getUsersGrid();
+        $Grid = $this->Grids->getUsersGrid();
         $Grid->getData()->setData(UserUtil::getUsersMgmSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
@@ -90,7 +90,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
             return;
         }
 
-        $Grid = $this->_grids->getGroupsGrid();
+        $Grid = $this->Grids->getGroupsGrid();
         $Grid->getData()->setData(Groups::getGroupsMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
@@ -109,7 +109,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
             return;
         }
 
-        $Grid = $this->_grids->getProfilesGrid();
+        $Grid = $this->Grids->getProfilesGrid();
         $Grid->getData()->setData(ProfileUtil::getProfilesMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
@@ -128,7 +128,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
             return;
         }
 
-        $Grid = $this->_grids->getTokensGrid();
+        $Grid = $this->Grids->getTokensGrid();
         $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
@@ -147,7 +147,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
             return;
         }
 
-        $Grid = $this->_grids->getPublicLinksGrid();
+        $Grid = $this->Grids->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkUtil::getLinksMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);

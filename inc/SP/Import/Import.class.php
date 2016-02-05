@@ -40,19 +40,19 @@ class Import
     /**
      * @var string
      */
-    static $importPwd = '';
+    public static $importPwd = '';
     /**
      * @var int
      */
-    static $defUser = 0;
+    public static $defUser = 0;
     /**
      * @var int
      */
-    static $defGroup = 0;
+    public static $defGroup = 0;
     /**
      * @var string
      */
-    static $csvDelimiter = '';
+    public static $csvDelimiter = '';
 
     /**
      * @param string $importPwd

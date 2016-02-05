@@ -23,6 +23,8 @@
  *
  */
 
+use SP\Account\Account;
+use SP\Account\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SPException;
@@ -591,8 +593,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
 
     Response::printJSON(_('Error al eliminar el archivo'));
 } elseif ($actionId === ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE) {
-    $Account = new \SP\Account\Account();
-    $Account->setAccountId($itemId);
+    $Account = new Account(new AccountData($itemId));
 
     // Eliminar cuenta
     if ($Account->deleteAccount()

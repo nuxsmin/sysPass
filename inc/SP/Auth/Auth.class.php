@@ -47,8 +47,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Auth
 {
-    static $userName;
-    static $userEmail;
+    public static $userName;
+    public static $userEmail;
 
     /**
      * Autentificación de usuarios con LDAP.
@@ -139,7 +139,7 @@ class Auth
      */
     private static function checkLDAPGroup($group)
     {
-        $ldapGroup = strtolower(Config::getValue('ldap_group'));
+        $ldapGroup = strtolower(Config::getConfig()->getLdapGroup());
         $groupName = array();
 
         preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);

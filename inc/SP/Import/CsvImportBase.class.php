@@ -25,6 +25,7 @@
 
 namespace SP\Import;
 
+use SP\Account\AccountData;
 use SP\Core\Crypt;
 use SP\Mgmt\Customer;
 use SP\Log\Log;
@@ -43,15 +44,15 @@ abstract class CsvImportBase extends ImportBase
     /**
      * @var int
      */
-    protected $_numFields = 7;
+    protected $numFields = 7;
     /**
      * @var array
      */
-    protected $_mapFields = array();
+    protected $mapFields = array();
     /**
      * @var string
      */
-    protected $_fieldDelimiter = ';';
+    protected $fieldDelimiter = ';';
 
     /**
      * Constructor
@@ -62,7 +63,7 @@ abstract class CsvImportBase extends ImportBase
     public function __construct($file)
     {
         try {
-            $this->_file = $file;
+            $this->file = $file;
         } catch (SPException $e) {
             throw $e;
         }
@@ -73,7 +74,7 @@ abstract class CsvImportBase extends ImportBase
      */
     public function setFieldDelimiter($fieldDelimiter)
     {
-        $this->_fieldDelimiter = $fieldDelimiter;
+        $this->fieldDelimiter = $fieldDelimiter;
     }
 
     /**
@@ -81,7 +82,7 @@ abstract class CsvImportBase extends ImportBase
      */
     public function setNumFields($numFields)
     {
-        $this->_numFields = $numFields;
+        $this->numFields = $numFields;
     }
 
     /**
@@ -89,7 +90,7 @@ abstract class CsvImportBase extends ImportBase
      */
     public function setMapFields($mapFields)
     {
-        $this->_mapFields = $mapFields;
+        $this->mapFields = $mapFields;
     }
 
     /**
@@ -101,15 +102,15 @@ abstract class CsvImportBase extends ImportBase
     {
         $line = 0;
 
-        $lines = $this->_file->getFileContent();
+        $lines = $this->file->getFileContent();
 
         foreach($lines as $data) {
             $line++;
-            $fields = explode($this->_fieldDelimiter, $data);
+            $fields = explode($this->fieldDelimiter, $data);
             $numfields = count($fields);
 
             // Comprobar el número de campos de la línea
-            if ($numfields !== $this->_numFields) {
+            if ($numfields !== $this->numFields) {
                 throw new SPException(
                     SPException::SP_CRITICAL,
                     sprintf(_('El número de campos es incorrecto (%d)'), $numfields),
@@ -133,16 +134,17 @@ abstract class CsvImportBase extends ImportBase
             $pass = Crypt::encryptData($password);
 
             // Crear la nueva cuenta
-            $this->setAccountName($accountName);
-            $this->setAccountLogin($login);
-            $this->setCategoryId($categoryId);
-            $this->setCustomerId($customerId);
-            $this->setAccountNotes($notes);
-            $this->setAccountUrl($url);
-            $this->setAccountPass($pass['data']);
-            $this->setAccountPassIV($pass['iv']);
+            $AccountData = new AccountData();
+            $AccountData->setAccountName($accountName);
+            $AccountData->setAccountLogin($login);
+            $AccountData->setAccountCategoryId($categoryId);
+            $AccountData->setAccountCustomerId($customerId);
+            $AccountData->setAccountNotes($notes);
+            $AccountData->setAccountUrl($url);
+            $AccountData->setAccountPass($pass['data']);
+            $AccountData->setAccountIV($pass['iv']);
 
-            if (!$this->addAccount()) {
+            if (!$this->addAccount($AccountData)) {
                 $log = new Log(_('Importar Cuentas'));
                 $log->addDescription(_('Error importando cuenta'));
                 $log->addDescription(sprintf(_('Error procesando línea %s'), $line));

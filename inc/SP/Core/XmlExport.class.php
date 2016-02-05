@@ -45,34 +45,34 @@ class XmlExport
     /**
      * @var \DOMDocument
      */
-    private $_xml;
+    private $xml;
     /**
      * @var \DOMElement
      */
-    private $_root;
+    private $root;
     /**
      * @var string
      */
-    private $_exportPass = null;
+    private $exportPass = null;
     /**
      * @var bool
      */
-    private $_encrypted = false;
+    private $encrypted = false;
     /**
      * @var string
      */
-    private $_exportDir = '';
+    private $exportDir = '';
     /**
      * @var string
      */
-    private $_exportFile = '';
+    private $exportFile = '';
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->_xml = new \DOMDocument('1.0', 'UTF-8');
+        $this->xml = new \DOMDocument('1.0', 'UTF-8');
     }
 
     /**
@@ -104,7 +104,7 @@ class XmlExport
      */
     public function setExportPass($exportPass)
     {
-        $this->_exportPass = $exportPass;
+        $this->exportPass = $exportPass;
     }
 
     /**
@@ -112,7 +112,7 @@ class XmlExport
      */
     public function setEncrypted($encrypted)
     {
-        $this->_encrypted = $encrypted;
+        $this->encrypted = $encrypted;
     }
 
     /**
@@ -159,8 +159,8 @@ class XmlExport
     private function createRoot()
     {
         try {
-            $root = $this->_xml->createElement('Root');
-            $this->_root = $this->_xml->appendChild($root);
+            $root = $this->xml->createElement('Root');
+            $this->root = $this->xml->appendChild($root);
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
@@ -174,13 +174,13 @@ class XmlExport
     private function createMeta()
     {
         try {
-            $nodeMeta = $this->_xml->createElement('Meta');
-            $metaGenerator = $this->_xml->createElement('Generator', 'sysPass');
-            $metaVersion = $this->_xml->createElement('Version', implode('.', Util::getVersion()));
-            $metaTime = $this->_xml->createElement('Time', time());
-            $metaUser = $this->_xml->createElement('User', Session::getUserLogin());
+            $nodeMeta = $this->xml->createElement('Meta');
+            $metaGenerator = $this->xml->createElement('Generator', 'sysPass');
+            $metaVersion = $this->xml->createElement('Version', implode('.', Util::getVersion()));
+            $metaTime = $this->xml->createElement('Time', time());
+            $metaUser = $this->xml->createElement('User', Session::getUserLogin());
             $metaUser->setAttribute('id', Session::getUserId());
-            $metaGroup = $this->_xml->createElement('Group', Session::getUserGroupName());
+            $metaGroup = $this->xml->createElement('Group', Session::getUserGroupName());
             $metaGroup->setAttribute('id', Session::getUserGroupId());
 
             $nodeMeta->appendChild($metaGenerator);
@@ -189,7 +189,7 @@ class XmlExport
             $nodeMeta->appendChild($metaUser);
             $nodeMeta->appendChild($metaGroup);
 
-            $this->_root->appendChild($nodeMeta);
+            $this->root->appendChild($nodeMeta);
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
@@ -210,14 +210,14 @@ class XmlExport
 
         try {
             // Crear el nodo de categorías
-            $nodeCategories = $this->_xml->createElement('Categories');
+            $nodeCategories = $this->xml->createElement('Categories');
 
             foreach ($categories as $category) {
-                $categoryName = $this->_xml->createElement('name', $this->escapeChars($category->category_name));
-                $categoryDescription = $this->_xml->createElement('description', $this->escapeChars($category->category_description));
+                $categoryName = $this->xml->createElement('name', $this->escapeChars($category->category_name));
+                $categoryDescription = $this->xml->createElement('description', $this->escapeChars($category->category_description));
 
                 // Crear el nodo de categoría
-                $nodeCategory = $this->_xml->createElement('Category');
+                $nodeCategory = $this->xml->createElement('Category');
                 $nodeCategory->setAttribute('id', $category->category_id);
                 $nodeCategory->appendChild($categoryName);
                 $nodeCategory->appendChild($categoryDescription);
@@ -257,25 +257,25 @@ class XmlExport
         try {
             // Si se utiliza clave de encriptación los datos se encriptan en un nuevo nodo:
             // Encrypted -> Data
-            if ($this->_encrypted === true) {
+            if ($this->encrypted === true) {
                 // Obtener el nodo en formato XML
-                $nodeXML = $this->_xml->saveXML($node);
+                $nodeXML = $this->xml->saveXML($node);
 
                 // Crear los datos encriptados con la información del nodo
-                $encrypted = Crypt::mkEncrypt($nodeXML, $this->_exportPass);
+                $encrypted = Crypt::mkEncrypt($nodeXML, $this->exportPass);
                 $encryptedIV = Crypt::$strInitialVector;
 
                 // Buscar si existe ya un nodo para el conjunto de datos encriptados
-                $encryptedNode = $this->_root->getElementsByTagName('Encrypted')->item(0);
+                $encryptedNode = $this->root->getElementsByTagName('Encrypted')->item(0);
 
                 if (!$encryptedNode instanceof \DOMElement) {
-                    $encryptedNode = $this->_xml->createElement('Encrypted');
+                    $encryptedNode = $this->xml->createElement('Encrypted');
                 }
 
                 // Crear el nodo hijo con los datos encriptados
-                $encryptedData = $this->_xml->createElement('Data', base64_encode($encrypted));
+                $encryptedData = $this->xml->createElement('Data', base64_encode($encrypted));
 
-                $encryptedDataIV = $this->_xml->createAttribute('iv');
+                $encryptedDataIV = $this->xml->createAttribute('iv');
                 $encryptedDataIV->value = base64_encode($encryptedIV);
 
                 // Añadir nodos de datos
@@ -283,9 +283,9 @@ class XmlExport
                 $encryptedNode->appendChild($encryptedData);
 
                 // Añadir el nodo encriptado
-                $this->_root->appendChild($encryptedNode);
+                $this->root->appendChild($encryptedNode);
             } else {
-                $this->_root->appendChild($node);
+                $this->root->appendChild($node);
             }
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
@@ -307,14 +307,14 @@ class XmlExport
 
         try {
             // Crear el nodo de clientes
-            $nodeCustomers = $this->_xml->createElement('Customers');
+            $nodeCustomers = $this->xml->createElement('Customers');
 
             foreach ($customers as $customer) {
-                $customerName = $this->_xml->createElement('name', $this->escapeChars($customer->customer_name));
-                $customerDescription = $this->_xml->createElement('description', $this->escapeChars($customer->customer_description));
+                $customerName = $this->xml->createElement('name', $this->escapeChars($customer->customer_name));
+                $customerDescription = $this->xml->createElement('description', $this->escapeChars($customer->customer_description));
 
                 // Crear el nodo de categoría
-                $nodeCustomer = $this->_xml->createElement('Customer');
+                $nodeCustomer = $this->xml->createElement('Customer');
                 $nodeCustomer->setAttribute('id', $customer->customer_id);
                 $nodeCustomer->appendChild($customerName);
                 $nodeCustomer->appendChild($customerDescription);
@@ -344,20 +344,20 @@ class XmlExport
 
         try {
             // Crear el nodo de cuentas
-            $nodeAccounts = $this->_xml->createElement('Accounts');
+            $nodeAccounts = $this->xml->createElement('Accounts');
 
             foreach ($accounts as $account) {
-                $accountName = $this->_xml->createElement('name', $this->escapeChars($account->account_name));
-                $accountCustomerId = $this->_xml->createElement('customerId', $account->account_customerId);
-                $accountCategoryId = $this->_xml->createElement('categoryId', $account->account_categoryId);
-                $accountLogin = $this->_xml->createElement('login', $this->escapeChars($account->account_login));
-                $accountUrl = $this->_xml->createElement('url', $this->escapeChars($account->account_url));
-                $accountNotes = $this->_xml->createElement('notes', $this->escapeChars($account->account_notes));
-                $accountPass = $this->_xml->createElement('pass', $this->escapeChars(base64_encode($account->account_pass)));
-                $accountIV = $this->_xml->createElement('passiv', $this->escapeChars(base64_encode($account->account_IV)));
+                $accountName = $this->xml->createElement('name', $this->escapeChars($account->account_name));
+                $accountCustomerId = $this->xml->createElement('customerId', $account->account_customerId);
+                $accountCategoryId = $this->xml->createElement('categoryId', $account->account_categoryId);
+                $accountLogin = $this->xml->createElement('login', $this->escapeChars($account->account_login));
+                $accountUrl = $this->xml->createElement('url', $this->escapeChars($account->account_url));
+                $accountNotes = $this->xml->createElement('notes', $this->escapeChars($account->account_notes));
+                $accountPass = $this->xml->createElement('pass', $this->escapeChars(base64_encode($account->account_pass)));
+                $accountIV = $this->xml->createElement('passiv', $this->escapeChars(base64_encode($account->account_IV)));
 
                 // Crear el nodo de cuenta
-                $nodeAccount = $this->_xml->createElement('Account');
+                $nodeAccount = $this->xml->createElement('Account');
                 $nodeAccount->setAttribute('id', $account->account_id);
                 $nodeAccount->appendChild($accountName);
                 $nodeAccount->appendChild($accountCustomerId);
@@ -384,15 +384,15 @@ class XmlExport
     private function createHash()
     {
         try {
-            if ($this->_encrypted === true) {
+            if ($this->encrypted === true) {
                 $hash = md5($this->getNodeXML('Encrypted'));
             } else {
                 $hash = md5($this->getNodeXML('Categories') . $this->getNodeXML('Customers') . $this->getNodeXML('Accounts'));
             }
 
-            $metaHash = $this->_xml->createElement('Hash', $hash);
+            $metaHash = $this->xml->createElement('Hash', $hash);
 
-            $nodeMeta = $this->_root->getElementsByTagName('Meta')->item(0);
+            $nodeMeta = $this->root->getElementsByTagName('Meta')->item(0);
             $nodeMeta->appendChild($metaHash);
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
@@ -409,7 +409,7 @@ class XmlExport
     private function getNodeXML($node)
     {
         try {
-            $nodeXML = $this->_xml->saveXML($this->_root->getElementsByTagName($node)->item(0));
+            $nodeXML = $this->xml->saveXML($this->root->getElementsByTagName($node)->item(0));
             return $nodeXML;
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
@@ -425,10 +425,10 @@ class XmlExport
     private function writeXML()
     {
         try {
-            $this->_xml->formatOutput = true;
-            $this->_xml->preserveWhiteSpace = false;
+            $this->xml->formatOutput = true;
+            $this->xml->preserveWhiteSpace = false;
 
-            if (!$this->_xml->save($this->_exportFile)) {
+            if (!$this->xml->save($this->exportFile)) {
                 throw new SPException(SPException::SP_CRITICAL, _('Error al crear el archivo XML'));
             }
         } catch (\DOMException $e) {
@@ -443,9 +443,10 @@ class XmlExport
     {
         // Generar hash unico para evitar descargas no permitidas
         $exportUniqueHash = uniqid();
-        Config::setValue('export_hash', $exportUniqueHash);
+        Config::getConfig()->setExportHash($exportUniqueHash);
+        Config::saveConfig();
 
-        $this->_exportFile = $this->_exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
+        $this->exportFile = $this->exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
     }
 
     /**
@@ -453,7 +454,7 @@ class XmlExport
      */
     public function setExportDir($exportDir)
     {
-        $this->_exportDir = $exportDir;
+        $this->exportDir = $exportDir;
     }
 
     /**
@@ -482,13 +483,13 @@ class XmlExport
      */
     private function checkExportDir()
     {
-        if (!is_dir($this->_exportDir)) {
-            if (!@mkdir($this->_exportDir, 0550)) {
-                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->_exportDir . ')');
+        if (!is_dir($this->exportDir)) {
+            if (!@mkdir($this->exportDir, 0550)) {
+                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->exportDir . ')');
             }
         }
 
-        if (!is_writable($this->_exportDir)) {
+        if (!is_writable($this->exportDir)) {
             throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
         }
 
@@ -500,6 +501,6 @@ class XmlExport
      */
     private function deleteOldExports()
     {
-        array_map('unlink', glob($this->_exportDir . DIRECTORY_SEPARATOR . '*.xml'));
+        array_map('unlink', glob($this->exportDir . DIRECTORY_SEPARATOR . '*.xml'));
     }
 }

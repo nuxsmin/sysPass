@@ -39,148 +39,38 @@ abstract class AccountBase
      */
     const CACHE_EXPIRE_TIME = 300;
     /**
+     * @var AccountData
+     */
+    protected $accountData;
+    /**
      * @var int Id de la cuenta padre.
      */
-    private $_accountParentId;
+    private $accountParentId;
     /**
      * @var string Hash con los datos de la cuenta para verificación de cambios.
      */
-    private $_accountModHash;
+    private $accountModHash;
     /**
      * @var int Indica si la cuenta es un registro del hitórico.
      */
-    private $_accountIsHistory = 0;
-    /**
-     * @var int Id de la cuenta.
-     */
-    private $_accountId;
-    /**
-     * @var int Id del usuario principal de la cuenta.
-     */
-    private $_accountUserId;
-    /**
-     * @var array Los Ids de los usuarios secundarios de la cuenta.
-     */
-    private $_accountUsersId;
-    /**
-     * @var array Id del grupo principal de la cuenta.
-     */
-    private $_accountUserGroupId;
-    /**
-     * @var array Los Ids de los grupos secundarios de la cuenta.
-     */
-    private $_accountUserGroupsId;
-    /**
-     * @var int Id del usuario que editó la cuenta.
-     */
-    private $_accountUserEditId;
-    /**
-     * @var string El nombre de la cuenta.
-     */
-    private $_accountName;
-    /**
-     * @var int Id del cliente de la cuenta.
-     */
-    private $_accountCustomerId;
-    /**
-     * @var int Id de la categoría de la cuenta.
-     */
-    private $_accountCategoryId;
-    /**
-     * @var string El nombre de usuario de la cuenta.
-     */
-    private $_accountLogin;
-    /**
-     * @var string La URL de la cuenta.
-     */
-    private $_accountUrl;
-    /**
-     * @var string La clave de la cuenta.
-     */
-    private $_accountPass;
-    /**
-     * @var string El vector de inicialización de la cuenta.
-     */
-    private $_accountIV;
-    /**
-     * @var string Las nosta de la cuenta.
-     */
-    private $_accountNotes;
-    /**
-     * @var bool Si se permite la edición por los usuarios secundarios.
-     */
-    private $_accountOtherUserEdit;
-    /**
-     * @var bool Si se permita la edición por los grupos secundarios.
-     */
-    private $_accountOtherGroupEdit;
+    private $accountIsHistory = 0;
     /**
      * @var array Los Ids de los grupos con acceso a la cuenta
      */
-    private $_cacheUserGroupsId;
+    private $cacheUserGroupsId;
     /**
      * @var array Los Ids de los usuarios con acceso a la cuenta
      */
-    private $_cacheUsersId;
+    private $cacheUsersId;
 
     /**
      * Constructor
      *
-     * @param int $id con el Id de la cuenta a obtener
+     * @param AccountData $accountData
      */
-    public function __construct($id = null)
+    public function __construct(AccountData $accountData = null)
     {
-        if (!is_null($id)) {
-            $this->setAccountId($id);
-        }
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountUserEditId()
-    {
-        return $this->_accountUserEditId;
-    }
-
-    /**
-     * @param int $accountUserEditId
-     */
-    public function setAccountUserEditId($accountUserEditId)
-    {
-        $this->_accountUserEditId = $accountUserEditId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountPass()
-    {
-        return $this->_accountPass;
-    }
-
-    /**
-     * @param string $accountPass
-     */
-    public function setAccountPass($accountPass)
-    {
-        $this->_accountPass = $accountPass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountIV()
-    {
-        return $this->_accountIV;
-    }
-
-    /**
-     * @param string $accountIV
-     */
-    public function setAccountIV($accountIV)
-    {
-        $this->_accountIV = $accountIV;
+        $this->accountData = (!is_null($accountData)) ? $accountData : new AccountData();
     }
 
     /**
@@ -188,7 +78,7 @@ abstract class AccountBase
      */
     public function getAccountIsHistory()
     {
-        return $this->_accountIsHistory;
+        return $this->accountIsHistory;
     }
 
     /**
@@ -196,7 +86,7 @@ abstract class AccountBase
      */
     public function setAccountIsHistory($accountIsHistory)
     {
-        $this->_accountIsHistory = $accountIsHistory;
+        $this->accountIsHistory = $accountIsHistory;
     }
 
     /**
@@ -204,7 +94,7 @@ abstract class AccountBase
      */
     public function getAccountParentId()
     {
-        return $this->_accountParentId;
+        return $this->accountParentId;
     }
 
     /**
@@ -212,7 +102,7 @@ abstract class AccountBase
      */
     public function setAccountParentId($accountParentId)
     {
-        $this->_accountParentId = $accountParentId;
+        $this->accountParentId = $accountParentId;
     }
 
     /**
@@ -223,65 +113,17 @@ abstract class AccountBase
      */
     public function getAccountDataForACL($accountId = null)
     {
-        $accId = (!is_null($accountId)) ? $accountId : $this->getAccountId();
+        $accId = (!is_null($accountId)) ? $accountId : $this->accountData->getAccountId();
 
         return array(
             'id' => $accId,
-            'user_id' => $this->getAccountUserId(),
-            'group_id' => $this->getAccountUserGroupId(),
-            'users_id' => $this->getUsersAccount(),
-            'groups_id' => $this->getGroupsAccount(),
-            'otheruser_edit' => $this->getAccountOtherUserEdit(),
-            'othergroup_edit' => $this->getAccountOtherGroupEdit()
+            'user_id' => $this->accountData->getAccountUserId(),
+            'group_id' => $this->accountData->getAccountUserGroupId(),
+            'users_id' => $this->accountData->getAccountUsersId(),
+            'groups_id' => $this->accountData->getAccountUserGroupsId(),
+            'otheruser_edit' => $this->accountData->getAccountOtherUserEdit(),
+            'othergroup_edit' => $this->accountData->getAccountOtherGroupEdit()
         );
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getAccountId()
-    {
-        return $this->_accountId;
-    }
-
-    /**
-     * @param int $accountId
-     */
-    public function setAccountId($accountId)
-    {
-        $this->_accountId = (int)$accountId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountUserId()
-    {
-        return $this->_accountUserId;
-    }
-
-    /**
-     * @param int $accountUserId
-     */
-    public function setAccountUserId($accountUserId)
-    {
-        $this->_accountUserId = $accountUserId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountUserGroupId()
-    {
-        return $this->_accountUserGroupId;
-    }
-
-    /**
-     * @param int $accountUserGroupId
-     */
-    public function setAccountUserGroupId($accountUserGroupId)
-    {
-        $this->_accountUserGroupId = $accountUserGroupId;
     }
 
     /**
@@ -292,7 +134,7 @@ abstract class AccountBase
      */
     public function getUsersAccount()
     {
-        $accId = $this->getAccountId();
+        $accId = $this->accountData->getAccountId();
 
         $cacheUsers = &$_SESSION['cache']['usersId'];
 
@@ -318,7 +160,7 @@ abstract class AccountBase
      */
     public function getGroupsAccount()
     {
-        $accId = $this->getAccountId();
+        $accId = $this->accountData->getAccountId();
         $cacheUserGroups = &$_SESSION['cache']['userGroupsId'];
 
         if (!is_array($cacheUserGroups)) {
@@ -335,37 +177,6 @@ abstract class AccountBase
         return $cacheUserGroups[$accId];
     }
 
-    /**
-     * @return bool
-     */
-    public function getAccountOtherUserEdit()
-    {
-        return intval($this->_accountOtherUserEdit);
-    }
-
-    /**
-     * @param bool $accountOtherUserEdit
-     */
-    public function setAccountOtherUserEdit($accountOtherUserEdit)
-    {
-        $this->_accountOtherUserEdit = $accountOtherUserEdit;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getAccountOtherGroupEdit()
-    {
-        return intval($this->_accountOtherGroupEdit);
-    }
-
-    /**
-     * @param bool $accountOtherGroupEdit
-     */
-    public function setAccountOtherGroupEdit($accountOtherGroupEdit)
-    {
-        $this->_accountOtherGroupEdit = $accountOtherGroupEdit;
-    }
 
     /**
      * Calcular el hash de los datos de una cuenta.
@@ -379,10 +190,10 @@ abstract class AccountBase
         $groups = 0;
         $users = 0;
 
-        if (is_array($this->getAccountUserGroupsId())) {
-            $groups = implode($this->getAccountUserGroupsId());
-        } elseif (is_array($this->_cacheUserGroupsId)) {
-            foreach ($this->_cacheUserGroupsId as $group) {
+        if (is_array($this->accountData->getAccountUserGroupsId())) {
+            $groups = implode($this->accountData->getAccountUserGroupsId());
+        } elseif (is_array($this->cacheUserGroupsId)) {
+            foreach ($this->cacheUserGroupsId as $group) {
                 if (is_array($group)) {
                     // Ordenar el array para que el hash sea igual
                     sort($group, SORT_NUMERIC);
@@ -391,10 +202,10 @@ abstract class AccountBase
             }
         }
 
-        if (is_array($this->getAccountUsersId())) {
-            $users = implode($this->getAccountUsersId());
-        } elseif (is_array($this->_cacheUsersId)) {
-            foreach ($this->_cacheUsersId as $user) {
+        if (is_array($this->accountData->getAccountUsersId())) {
+            $users = implode($this->accountData->getAccountUsersId());
+        } elseif (is_array($this->cacheUsersId)) {
+            foreach ($this->cacheUsersId as $user) {
                 if (is_array($user)) {
                     // Ordenar el array para que el hash sea igual
                     sort($user, SORT_NUMERIC);
@@ -406,14 +217,14 @@ abstract class AccountBase
         if ($this->getAccountModHash()) {
             $hashItems = $this->getAccountModHash() . (int)$users . (int)$groups;
         } else {
-            $hashItems = $this->getAccountName() .
-                $this->getAccountCategoryId() .
-                $this->getAccountCustomerId() .
-                $this->getAccountLogin() .
-                $this->getAccountUrl() .
-                $this->getAccountNotes() .
-                (int)$this->getAccountOtherUserEdit() .
-                (int)$this->getAccountOtherGroupEdit() .
+            $hashItems = $this->accountData->getAccountName() .
+                $this->accountData->getAccountCategoryId() .
+                $this->accountData->getAccountCustomerId() .
+                $this->accountData->getAccountLogin() .
+                $this->accountData->getAccountUrl() .
+                $this->accountData->getAccountNotes() .
+                (int)$this->accountData->getAccountOtherUserEdit() .
+                (int)$this->accountData->getAccountOtherGroupEdit() .
                 (int)$users .
                 (int)$groups;
         }
@@ -421,44 +232,13 @@ abstract class AccountBase
         return md5($hashItems);
     }
 
-    /**
-     * @return array
-     */
-    public function getAccountUserGroupsId()
-    {
-        return $this->_accountUserGroupsId;
-    }
-
-    /**
-     * @param array $accountUserGroupsId
-     */
-    public function setAccountUserGroupsId($accountUserGroupsId)
-    {
-        $this->_accountUserGroupsId = $accountUserGroupsId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccountUsersId()
-    {
-        return $this->_accountUsersId;
-    }
-
-    /**
-     * @param array $accountUsersId
-     */
-    public function setAccountUsersId($accountUsersId)
-    {
-        $this->_accountUsersId = $accountUsersId;
-    }
 
     /**
      * @return string
      */
     public function getAccountModHash()
     {
-        return $this->_accountModHash;
+        return $this->accountModHash;
     }
 
     /**
@@ -466,103 +246,15 @@ abstract class AccountBase
      */
     public function setAccountModHash($accountModHash)
     {
-        $this->_accountModHash = $accountModHash;
+        $this->accountModHash = $accountModHash;
     }
 
     /**
-     * @return string
+     * @return AccountData
      */
-    public function getAccountName()
+    public function getAccountData()
     {
-        return $this->_accountName;
-    }
-
-    /**
-     * @param string $accountName
-     */
-    public function setAccountName($accountName)
-    {
-        $this->_accountName = $accountName;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountCategoryId()
-    {
-        return $this->_accountCategoryId;
-    }
-
-    /**
-     * @param int $accountCategoryId
-     */
-    public function setAccountCategoryId($accountCategoryId)
-    {
-        $this->_accountCategoryId = $accountCategoryId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountCustomerId()
-    {
-        return $this->_accountCustomerId;
-    }
-
-    /**
-     * @param int $accountCustomerId
-     */
-    public function setAccountCustomerId($accountCustomerId)
-    {
-        $this->_accountCustomerId = $accountCustomerId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountLogin()
-    {
-        return $this->_accountLogin;
-    }
-
-    /**
-     * @param string $accountLogin
-     */
-    public function setAccountLogin($accountLogin)
-    {
-        $this->_accountLogin = $accountLogin;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountUrl()
-    {
-        return $this->_accountUrl;
-    }
-
-    /**
-     * @param string $accountUrl
-     */
-    public function setAccountUrl($accountUrl)
-    {
-        $this->_accountUrl = $accountUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountNotes()
-    {
-        return $this->_accountNotes;
-    }
-
-    /**
-     * @param string $accountNotes
-     */
-    public function setAccountNotes($accountNotes)
-    {
-        $this->_accountNotes = $accountNotes;
+        return $this->accountData;
     }
 
     /**

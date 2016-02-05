@@ -12,6 +12,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridPagerBase;
+use SP\Html\DataGrid\DataGridPagerInterface;
 use SP\Util\Checks;
 
 /**
@@ -44,12 +45,12 @@ abstract class GridItemsSearch extends Controller
     /**
      * Actualizar los datos del paginador
      *
-     * @param DataGridPagerBase $Pager
+     * @param DataGridPagerInterface $Pager
      * @param bool              $filterOn
      * @param int               $limitStart
      * @param int               $limitCount
      */
-    protected function updatePager(DataGridPagerBase $Pager, $filterOn, $limitStart, $limitCount)
+    protected function updatePager(DataGridPagerInterface $Pager, $filterOn, $limitStart, $limitCount)
     {
         $Pager->setLimitStart($limitStart);
         $Pager->setLimitCount($limitCount);

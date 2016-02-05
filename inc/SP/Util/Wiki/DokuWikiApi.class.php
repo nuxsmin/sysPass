@@ -43,7 +43,7 @@ class DokuWikiApi extends DokuWikiApiBase
     /**
      * @var string
      */
-    private $_namespace;
+    private $namespace;
 
     /**
      * Constructor
@@ -58,7 +58,7 @@ class DokuWikiApi extends DokuWikiApiBase
         try {
             $this->setConnectionData($url, $user, $pass);
 
-            if (!empty($this->_apiUser) && Session::getDokuWikiSession() === false) {
+            if (!empty($this->apiUser) && Session::getDokuWikiSession() === false) {
                 $Res = new DokuWikiApiParse($this->doLogin());
                 $this->catchError($Res);
                 $resLogin = $Res->parseParams();
@@ -70,7 +70,7 @@ class DokuWikiApi extends DokuWikiApiBase
                 }
             }
 
-            $this->_namespace = Config::getValue('dokuwiki_namespace');
+            $this->namespace = Config::getConfig()->getDokuwikiNamespace();
         } catch (SPException $e) {
             $this->logException($e);
             throw $e;
@@ -149,8 +149,8 @@ class DokuWikiApi extends DokuWikiApiBase
      */
     public function getPage($page)
     {
-        if (!empty($this->_namespace)) {
-            $page = $this->_namespace . ':' . $page;
+        if (!empty($this->namespace)) {
+            $page = $this->namespace . ':' . $page;
         }
 
         try {
@@ -195,8 +195,8 @@ class DokuWikiApi extends DokuWikiApiBase
      */
     public function getPageInfo($page)
     {
-        if (!empty($this->_namespace)) {
-            $page = $this->_namespace . ':' . $page;
+        if (!empty($this->namespace)) {
+            $page = $this->namespace . ':' . $page;
         }
 
         try {

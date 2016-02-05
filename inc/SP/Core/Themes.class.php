@@ -50,7 +50,9 @@ class Themes
      * @var string
      */
     public static $theme = '';
-    /** @var  Icons */
+    /** @var
+     * Icons
+     */
     private static $icons;
 
     /**
@@ -120,7 +122,7 @@ class Themes
      */
     private function getGlobalTheme()
     {
-        self::$theme = Config::getValue('sitetheme', 'material-blue');
+        self::$theme = Config::getConfig()->getSiteTheme();
 
         return self::$theme;
     }
@@ -163,7 +165,6 @@ class Themes
     public static function getIcons()
     {
         if (!self::$icons instanceof Icons) {
-
             $iconsClass = Init::$SERVERROOT . self::$themePath . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.class.php';
 
             if (file_exists($iconsClass)) {

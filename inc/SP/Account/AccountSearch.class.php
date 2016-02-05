@@ -59,43 +59,43 @@ class AccountSearch
     /**
      * @var bool
      */
-    private $_globalSearch = false;
+    private $globalSearch = false;
     /**
      * @var string
      */
-    private $_txtSearch = '';
+    private $txtSearch = '';
     /**
      * @var int
      */
-    private $_customerId = 0;
+    private $customerId = 0;
     /**
      * @var int
      */
-    private $_categoryId = 0;
+    private $categoryId = 0;
     /**
      * @var int
      */
-    private $_sortOrder = 0;
+    private $sortOrder = 0;
     /**
      * @var int
      */
-    private $_sortKey = 0;
+    private $sortKey = 0;
     /**
      * @var int
      */
-    private $_limitStart = 0;
+    private $limitStart = 0;
     /**
      * @var int
      */
-    private $_limitCount = 12;
+    private $limitCount = 12;
     /**
      * @var bool
      */
-    private $_sortViews = false;
+    private $sortViews = false;
     /**
      * @var bool
      */
-    private $_searchFavorites = false;
+    private $searchFavorites = false;
 
     /**
      * Constructor
@@ -104,8 +104,8 @@ class AccountSearch
     {
         $userResultsPerPage = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->getResultsPerPage() : 0;
 
-        $this->_limitCount = ($userResultsPerPage > 0) ? $userResultsPerPage : Config::getValue('account_count');
-        $this->_sortViews = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->isSortViews() : false;
+        $this->limitCount = ($userResultsPerPage > 0) ? $userResultsPerPage : Config::getConfig()->getAccountCount();
+        $this->sortViews = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->isSortViews() : false;
     }
 
     /**
@@ -113,7 +113,7 @@ class AccountSearch
      */
     public function isSearchFavorites()
     {
-        return $this->_searchFavorites;
+        return $this->searchFavorites;
     }
 
     /**
@@ -121,7 +121,7 @@ class AccountSearch
      */
     public function setSearchFavorites($searchFavorites)
     {
-        $this->_searchFavorites = (bool)$searchFavorites;
+        $this->searchFavorites = (bool)$searchFavorites;
     }
 
     /**
@@ -129,7 +129,7 @@ class AccountSearch
      */
     public function getGlobalSearch()
     {
-        return $this->_globalSearch;
+        return $this->globalSearch;
     }
 
     /**
@@ -137,7 +137,7 @@ class AccountSearch
      */
     public function setGlobalSearch($globalSearch)
     {
-        $this->_globalSearch = $globalSearch;
+        $this->globalSearch = $globalSearch;
     }
 
     /**
@@ -145,7 +145,7 @@ class AccountSearch
      */
     public function getTxtSearch()
     {
-        return $this->_txtSearch;
+        return $this->txtSearch;
     }
 
     /**
@@ -153,7 +153,7 @@ class AccountSearch
      */
     public function setTxtSearch($txtSearch)
     {
-        $this->_txtSearch = (string)$txtSearch;
+        $this->txtSearch = (string)$txtSearch;
     }
 
     /**
@@ -161,7 +161,7 @@ class AccountSearch
      */
     public function getCustomerId()
     {
-        return $this->_customerId;
+        return $this->customerId;
     }
 
     /**
@@ -169,7 +169,7 @@ class AccountSearch
      */
     public function setCustomerId($customerId)
     {
-        $this->_customerId = $customerId;
+        $this->customerId = $customerId;
     }
 
     /**
@@ -177,7 +177,7 @@ class AccountSearch
      */
     public function getCategoryId()
     {
-        return $this->_categoryId;
+        return $this->categoryId;
     }
 
     /**
@@ -185,7 +185,7 @@ class AccountSearch
      */
     public function setCategoryId($categoryId)
     {
-        $this->_categoryId = $categoryId;
+        $this->categoryId = $categoryId;
     }
 
     /**
@@ -193,7 +193,7 @@ class AccountSearch
      */
     public function getSortOrder()
     {
-        return $this->_sortOrder;
+        return $this->sortOrder;
     }
 
     /**
@@ -201,7 +201,7 @@ class AccountSearch
      */
     public function setSortOrder($sortOrder)
     {
-        $this->_sortOrder = $sortOrder;
+        $this->sortOrder = $sortOrder;
     }
 
     /**
@@ -209,7 +209,7 @@ class AccountSearch
      */
     public function getLimitStart()
     {
-        return $this->_limitStart;
+        return $this->limitStart;
     }
 
     /**
@@ -217,7 +217,7 @@ class AccountSearch
      */
     public function setLimitStart($limitStart)
     {
-        $this->_limitStart = $limitStart;
+        $this->limitStart = $limitStart;
     }
 
     /**
@@ -225,7 +225,7 @@ class AccountSearch
      */
     public function getLimitCount()
     {
-        return $this->_limitCount;
+        return $this->limitCount;
     }
 
     /**
@@ -233,7 +233,7 @@ class AccountSearch
      */
     public function setLimitCount($limitCount)
     {
-        $this->_limitCount = $limitCount;
+        $this->limitCount = $limitCount;
     }
 
     /**
@@ -253,7 +253,7 @@ class AccountSearch
 
         $Data = new QueryData();
 
-        if ($this->_txtSearch) {
+        if ($this->txtSearch) {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
 
@@ -280,26 +280,26 @@ class AccountSearch
                 $arrFilterCommon[] = 'account_url LIKE :url';
                 $arrFilterCommon[] = 'account_notes LIKE :notes';
 
-                $Data->addParam('%' . $this->_txtSearch . '%', 'name');
-                $Data->addParam('%' . $this->_txtSearch . '%', 'login');
-                $Data->addParam('%' . $this->_txtSearch . '%', 'url');
-                $Data->addParam('%' . $this->_txtSearch . '%', 'notes');
+                $Data->addParam('%' . $this->txtSearch . '%', 'name');
+                $Data->addParam('%' . $this->txtSearch . '%', 'login');
+                $Data->addParam('%' . $this->txtSearch . '%', 'url');
+                $Data->addParam('%' . $this->txtSearch . '%', 'notes');
             }
         }
 
-        if ($this->_categoryId !== 0) {
+        if ($this->categoryId !== 0) {
             $arrFilterSelect[] = 'category_id = :categoryId';
 
-            $Data->addParam($this->_categoryId, 'categoryId');
+            $Data->addParam($this->categoryId, 'categoryId');
         }
 
-        if ($this->_customerId !== 0) {
+        if ($this->customerId !== 0) {
             $arrFilterSelect[] = 'account_customerId = :customerId';
 
-            $Data->addParam($this->_customerId, 'customerId');
+            $Data->addParam($this->customerId, 'customerId');
         }
 
-        if ($this->_searchFavorites === true) {
+        if ($this->searchFavorites === true) {
             $arrFilterSelect[] = 'accFavorites.accfavorite_userId = :favUserId';
 
             $Data->addParam(Session::getUserId(), 'favUserId');
@@ -313,7 +313,7 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        if (!$isAdmin && !$this->_globalSearch) {
+        if (!$isAdmin && !$this->globalSearch) {
             $subQueryGroupsA = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduA UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgA)';
             $subQueryGroupsB = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduB UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgB)';
 
@@ -333,11 +333,11 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
-        if ($this->_limitCount > 0) {
+        if ($this->limitCount > 0) {
             $queryLimit = 'LIMIT :limitStart,:limitCount';
 
-            $Data->addParam($this->_limitStart, 'limitStart');
-            $Data->addParam($this->_limitCount, 'limitCount');
+            $Data->addParam($this->limitStart, 'limitStart');
+            $Data->addParam($this->limitCount, 'limitCount');
         }
 
         if (count($arrQueryWhere) === 1) {
@@ -408,7 +408,7 @@ class AccountSearch
      */
     private function analyzeQueryString()
     {
-        preg_match('/:(user|group|file)\s(.*)/i', $this->_txtSearch, $filters);
+        preg_match('/:(user|group|file)\s(.*)/i', $this->txtSearch, $filters);
 
         if (!is_array($filters) || count($filters) === 0) {
             return false;
@@ -444,7 +444,7 @@ class AccountSearch
      */
     private function getOrderString()
     {
-        switch ($this->_sortKey) {
+        switch ($this->sortKey) {
             case self::SORT_NAME:
                 $orderKey[] = 'account_name';
                 break;
@@ -471,7 +471,7 @@ class AccountSearch
             $this->setSortOrder(self::SORT_DIR_DESC);
         }
 
-        $orderDir = ($this->_sortOrder === self::SORT_DIR_ASC) ? 'ASC' : 'DESC';
+        $orderDir = ($this->sortOrder === self::SORT_DIR_ASC) ? 'ASC' : 'DESC';
         return sprintf('ORDER BY %s %s', implode(',', $orderKey), $orderDir);
     }
 
@@ -480,7 +480,7 @@ class AccountSearch
      */
     public function isSortViews()
     {
-        return $this->_sortViews;
+        return $this->sortViews;
     }
 
     /**
@@ -488,7 +488,7 @@ class AccountSearch
      */
     public function setSortViews($sortViews)
     {
-        $this->_sortViews = $sortViews;
+        $this->sortViews = $sortViews;
     }
 
     /**
@@ -496,7 +496,7 @@ class AccountSearch
      */
     public function getSortKey()
     {
-        return $this->_sortKey;
+        return $this->sortKey;
     }
 
     /**
@@ -504,7 +504,7 @@ class AccountSearch
      */
     public function setSortKey($sortKey)
     {
-        $this->_sortKey = $sortKey;
+        $this->sortKey = $sortKey;
     }
 
     /**

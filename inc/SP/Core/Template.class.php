@@ -44,11 +44,11 @@ class Template
     /**
      * @var array Variable con los archivos de plantilla a cargar
      */
-    private $_file = array();
+    private $file = array();
     /**
      * @var array Variable con las variables a incluir en la plantilla
      */
-    private $_vars = array();
+    private $vars = array();
 
     /**
      * @param null  $file Archivo de plantilla a añadir
@@ -124,7 +124,7 @@ class Template
      */
     private function setTemplate($file)
     {
-        $this->_file[] = $file;
+        $this->file[] = $file;
     }
 
     /**
@@ -148,11 +148,11 @@ class Template
      */
     public function __get($name)
     {
-        if (!array_key_exists($name, $this->_vars)) {
+        if (!array_key_exists($name, $this->vars)) {
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la variable "%s"'), $name));
         }
 
-        return $this->_vars[$name];
+        return $this->vars[$name];
     }
 
     /**
@@ -165,7 +165,7 @@ class Template
      */
     public function __set($name, $value)
     {
-        $this->_vars[$name] = $value;
+        $this->vars[$name] = $value;
         return null;
     }
 
@@ -178,7 +178,7 @@ class Template
      */
     public function __isset($name)
     {
-        return array_key_exists($name, $this->_vars);
+        return array_key_exists($name, $this->vars);
     }
 
     /**
@@ -191,11 +191,11 @@ class Template
      */
     public function __unset($name)
     {
-        if (!isset($this->_vars[$name])) {
+        if (!isset($this->vars[$name])) {
             throw new InvalidArgumentException(sprintf(_('No es posible destruir la variable "%s"'), $name));
         }
 
-        unset($this->_vars[$name]);
+        unset($this->vars[$name]);
         return $this;
     }
 
@@ -207,12 +207,12 @@ class Template
      */
     public function render()
     {
-        extract($this->_vars);
+        extract($this->vars);
 
         ob_start();
 
         // Añadimos las plantillas
-        foreach ($this->_file as $template) {
+        foreach ($this->file as $template) {
             include_once $template;
         }
 
@@ -232,7 +232,7 @@ class Template
             $name = $scope . '_' . $name;
         }
 
-        $this->_vars[$name] = $value;
+        $this->vars[$name] = $value;
     }
 
     /**
@@ -250,9 +250,9 @@ class Template
         }
 
         if (!is_null($index)) {
-            $this->_vars[$name][$index] = $value;
+            $this->vars[$name][$index] = $value;
         } else {
-            $this->_vars[$name][] = $value;
+            $this->vars[$name][] = $value;
         }
     }
 
@@ -261,7 +261,7 @@ class Template
      */
     public function resetTemplates()
     {
-        $this->_file = array();
+        $this->file = array();
     }
 
     /**
@@ -269,6 +269,6 @@ class Template
      */
     public function resetVariables()
     {
-        $this->_vars = array();
+        $this->vars = array();
     }
 }

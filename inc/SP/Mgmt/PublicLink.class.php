@@ -136,9 +136,9 @@ class PublicLink extends PublicLinkBase
             throw new SPException(SPException::SP_WARNING, _('Enlace ya creado'));
         }
 
-        $this->_dateAdd = time();
-        $this->_userId = Session::getUserId();
-        $this->_maxCountViews = Config::getValue('publinks_maxviews', 3);
+        $this->dateAdd = time();
+        $this->userId = Session::getUserId();
+        $this->maxCountViews = Config::getConfig()->getPublinksMaxViews();
 
         try {
             $this->calcDateExpire();
@@ -151,9 +151,9 @@ class PublicLink extends PublicLinkBase
 
         $Log = new Log(_('Nuevo Enlace'));
         $Log->addDescription(_('Enlace creado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->_typeId);
-        $Log->addDetails(Html::strongText(_('Cuenta')), $this->_itemId);
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
+        $Log->addDetails(Html::strongText(_('Tipo')), $this->typeId);
+        $Log->addDetails(Html::strongText(_('Cuenta')), $this->itemId);
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -172,7 +172,7 @@ class PublicLink extends PublicLinkBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_itemId, 'itemid');
+        $Data->addParam($this->itemId, 'itemid');
 
         $queryRes = DB::getResults($Data);
 
@@ -190,14 +190,14 @@ class PublicLink extends PublicLinkBase
      */
     public function addLinkView()
     {
-        $this->_countViews++;
+        $this->countViews++;
         $this->updateUseInfo($_SERVER['REMOTE_ADDR']);
 
         $Log = new Log(_('Ver Enlace Público'));
         $Log->addDescription(_('Enlace visualizado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->_typeId);
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->_itemId));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
+        $Log->addDetails(Html::strongText(_('Tipo')), $this->typeId);
+        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemId));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
         $Log->writeLog();
 
         if ($this->isNotify()) {
@@ -216,7 +216,7 @@ class PublicLink extends PublicLinkBase
      */
     public function refreshLink()
     {
-        $this->_maxCountViews += Config::getValue('publinks_maxviews', 3);
+        $this->maxCountViews += Config::getConfig()->getPublinksMaxViews();
 
         try {
             $this->calcDateExpire();
@@ -229,9 +229,9 @@ class PublicLink extends PublicLinkBase
 
         $Log = new Log(_('Actualizar Enlace'));
         $Log->addDescription(_('Enlace actualizado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->_typeId);
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->_itemId));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
+        $Log->addDetails(Html::strongText(_('Tipo')), $this->typeId);
+        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemId));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);

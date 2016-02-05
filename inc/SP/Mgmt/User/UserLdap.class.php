@@ -51,8 +51,8 @@ class UserLdap
     public static function newUserLDAP(User $User)
     {
         $passdata = UserPass::makeUserPassHash($User->getUserPass());
-        $groupId = Config::getValue('ldap_defaultgroup', 0);
-        $profileId = Config::getValue('ldap_defaultprofile', 0);
+        $groupId = Config::getConfig()->getLdapDefaultGroup();
+        $profileId = Config::getConfig()->getLdapDefaultProfile();
 
         $query = 'INSERT INTO usrData SET '
             . 'user_name = :name,'

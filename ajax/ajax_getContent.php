@@ -199,7 +199,7 @@ switch ($actionId) {
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración
-if (Session::getUserIsAdminApp() && Config::getValue('debug')) {
+if (Session::getUserIsAdminApp() && Config::getConfig()->isDebug()) {
     $Controller->getDebug();
 }
 

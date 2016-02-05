@@ -42,6 +42,11 @@ use SP\Mgmt\User\UserUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 
+/**
+ * Class AccItemMgmt
+ *
+ * @package SP\Controller
+ */
 class AccItemMgmt extends Controller implements ActionsInterface
 {
     /**
@@ -51,7 +56,7 @@ class AccItemMgmt extends Controller implements ActionsInterface
     /**
      * @var int
      */
-    private $_module = 0;
+    private $module = 0;
 
     /**
      * Constructor
@@ -71,7 +76,7 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     public function getUser()
     {
-        $this->_module = self::ACTION_USR_USERS;
+        $this->module = self::ACTION_USR_USERS;
         $this->view->addTemplate('users');
 
         $this->view->assign('user', UserUtil::getUserData($this->view->itemId));
@@ -89,10 +94,10 @@ class AccItemMgmt extends Controller implements ActionsInterface
     private function getCustomFieldsForItem()
     {
         // Se comprueba que hayan campos con valores para el elemento actual
-        if ($this->view->itemId && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
+        if ($this->view->itemId && CustomFields::checkCustomFieldExists($this->module, $this->view->itemId)) {
+            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->module, $this->view->itemId));
         } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
+            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->module));
         }
     }
 
@@ -101,7 +106,7 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     public function getGroup()
     {
-        $this->_module = self::ACTION_USR_GROUPS;
+        $this->module = self::ACTION_USR_GROUPS;
         $this->view->addTemplate('groups');
 
         $this->view->assign('group', Groups::getGroupData($this->view->itemId));

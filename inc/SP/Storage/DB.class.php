@@ -26,6 +26,7 @@
 namespace SP\Storage;
 
 use PDO;
+use SP\Core\Factory;
 use SP\Log\Log;
 use SP\Core\SPException;
 use SP\Util\Util;
@@ -56,27 +57,27 @@ class DB
     /**
      * @var bool Resultado como array
      */
-    private static $_retArray = false;
+    private static $retArray = false;
     /**
      * @var bool Resultado como un objeto PDO
      */
-    private static $_returnRawData = false;
+    private static $returnRawData = false;
     /**
      * @var bool Contar el número de filas totales
      */
-    private static $_fullRowCount = false;
+    private static $fullRowCount = false;
     /**
      * @var int Número de registros obtenidos
      */
-    private $_numRows = 0;
+    private $numRows = 0;
     /**
      * @var int Número de campos de la consulta
      */
-    private $_numFields = 0;
+    private $numFields = 0;
     /**
      * @var array Resultados de la consulta
      */
-    private $_lastResult = null;
+    private $lastResult = null;
 
     /**
      * @return int
@@ -91,7 +92,7 @@ class DB
      */
     public static function setReturnArray()
     {
-        self::$_retArray = true;
+        self::$retArray = true;
     }
 
     /**
@@ -109,28 +110,28 @@ class DB
 
         try {
             $db = new DB();
-            $doQuery = $db->doQuery($queryData, self::$_returnRawData);
-            self::$lastNumRows = (self::$_fullRowCount === false) ? $db->_numRows : $db->getFullRowCount($queryData);
+            $doQuery = $db->doQuery($queryData, self::$returnRawData);
+            self::$lastNumRows = (self::$fullRowCount === false) ? $db->numRows : $db->getFullRowCount($queryData);
         } catch (SPException $e) {
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             return false;
         }
 
-        if (self::$_returnRawData
+        if (self::$returnRawData
             && is_object($doQuery)
             && get_class($doQuery) === "PDOStatement"
         ) {
             return $doQuery;
-        } elseif ($db->_numRows == 0) {
+        } elseif ($db->numRows == 0) {
             self::resetVars();
             return false;
-        } elseif ($db->_numRows == 1 && self::$_retArray === false) {
+        } elseif ($db->numRows == 1 && self::$retArray === false) {
             self::resetVars();
-            return $db->_lastResult[0];
+            return $db->lastResult[0];
         }
 
         self::resetVars();
-        return $db->_lastResult;
+        return $db->lastResult;
     }
 
     /**
@@ -138,9 +139,9 @@ class DB
      */
     private static function resetVars()
     {
-        self::$_returnRawData = false;
-        self::$_fullRowCount = false;
-        self::$_retArray = false;
+        self::$returnRawData = false;
+        self::$fullRowCount = false;
+        self::$retArray = false;
     }
 
     /**
@@ -156,7 +157,7 @@ class DB
         $isSelect = preg_match("/^(select|show)\s/i", $queryData->getQuery());
 
         // Limpiar valores de caché y errores
-        $this->_lastResult = array();
+        $this->lastResult = array();
 
         try {
             $queryRes = $this->prepareQueryData($queryData);
@@ -166,15 +167,15 @@ class DB
 
         if ($isSelect) {
             if (!$getRawData) {
-                $this->_numFields = $queryRes->columnCount();
-                $this->_lastResult = $queryRes->fetchAll(PDO::FETCH_OBJ);
+                $this->numFields = $queryRes->columnCount();
+                $this->lastResult = $queryRes->fetchAll(PDO::FETCH_OBJ);
             } else {
                 return $queryRes;
             }
 
 //            $queryRes->closeCursor();
 
-            $this->_numRows = count($this->_lastResult);
+            $this->numRows = count($this->lastResult);
         }
     }
 
@@ -198,7 +199,8 @@ class DB
         }
 
         try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
+            /** @var $db PDO */
+            $db = Factory::getDBStorage()->getConnection();
 
             if (is_array($queryData->getParams())) {
                 $sth = $db->prepare($queryData->getQuery());
@@ -235,7 +237,11 @@ class DB
 
             return $sth;
         } catch (\Exception $e) {
+            ob_start();
+            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             error_log("Exception: " . $e->getMessage());
+            error_log(ob_get_clean());
+
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
     }
@@ -269,7 +275,8 @@ class DB
         $queryData->setQuery($query);
 
         try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
+            /** @var $db PDO */
+            $db = Factory::getDBStorage()->getConnection();
 
             if (!is_array($queryData->getParams())) {
                 $queryRes = $db->query($query);
@@ -325,7 +332,7 @@ class DB
         try {
             $db = new DB();
             $db->doQuery($queryData, $getRawData);
-            DB::$lastNumRows = $db->_numRows;
+            DB::$lastNumRows = $db->numRows;
         } catch (SPException $e) {
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             self::$txtError = $e->getMessage();
@@ -344,7 +351,7 @@ class DB
      */
     public static function setReturnRawData($on = true)
     {
-        self::$_returnRawData = (bool)$on;
+        self::$returnRawData = (bool)$on;
     }
 
     /**
@@ -352,6 +359,6 @@ class DB
      */
     public static function setFullRowCount()
     {
-        self::$_fullRowCount = true;
+        self::$fullRowCount = true;
     }
 }

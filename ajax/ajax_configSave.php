@@ -31,6 +31,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\CryptMasterPass;
 use SP\Core\Init;
+use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\SPException;
 use SP\Html\Html;
@@ -70,6 +71,7 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
     || $actionId === ActionsInterface::ACTION_CFG_MAIL
 ) {
     $Log = Log::newLog(_('Modificar Configuración'));
+    $Config = Session::getConfig();
 
     if ($actionId === ActionsInterface::ACTION_CFG_GENERAL) {
         // General
@@ -82,14 +84,14 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $checkUpdatesEnabled = Request::analyze('updates', false, false, true);
         $checkNoticesEnabled = Request::analyze('notices', false, false, true);
 
-        Config::setCacheConfigValue('sitelang', $siteLang);
-        Config::setCacheConfigValue('sitetheme', $siteTheme);
-        Config::setCacheConfigValue('session_timeout', $sessionTimeout);
-        Config::setCacheConfigValue('https_enabled', $httpsEnabled);
-        Config::setCacheConfigValue('debug', $debugEnabled);
-        Config::setCacheConfigValue('maintenance', $maintenanceEnabled);
-        Config::setCacheConfigValue('checkupdates', $checkUpdatesEnabled);
-        Config::setCacheConfigValue('checknotices', $checkNoticesEnabled);
+        $Config->setSiteLang($siteLang);
+        $Config->setSiteTheme($siteTheme);
+        $Config->setSessionTimeout($sessionTimeout);
+        $Config->setHttpsEnabled($httpsEnabled);
+        $Config->setDebug($debugEnabled);
+        $Config->setMaintenance($maintenanceEnabled);
+        $Config->setCheckUpdates($checkUpdatesEnabled);
+        $Config->setChecknotices($checkNoticesEnabled);
 
         // Events
         $logEnabled = Request::analyze('log_enabled', false, false, true);
@@ -98,17 +100,17 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $syslogServer = Request::analyze('remotesyslog_server');
         $syslogPort = Request::analyze('remotesyslog_port', 0);
 
-        Config::setCacheConfigValue('log_enabled', $logEnabled);
-        Config::setCacheConfigValue('syslog_enabled', $syslogEnabled);
+        $Config->setLogEnabled($logEnabled);
+        $Config->setSyslogEnabled($syslogEnabled);
 
         if ($remoteSyslogEnabled && (!$syslogServer || !$syslogPort)) {
             Response::printJSON(_('Faltan parámetros de syslog remoto'));
         } elseif ($remoteSyslogEnabled) {
-            Config::setCacheConfigValue('syslog_remote_enabled', $remoteSyslogEnabled);
-            Config::setCacheConfigValue('syslog_server', $syslogServer);
-            Config::setCacheConfigValue('syslog_port', $syslogPort);
+            $Config->setSyslogRemoteEnabled($remoteSyslogEnabled);
+            $Config->setSyslogServer($syslogServer);
+            $Config->setSyslogPort($syslogPort);
         } else {
-            Config::setCacheConfigValue('syslog_remote_enabled', false);
+            $Config->setSyslogRemoteEnabled(false);
 
             $Log->addDescription(_('Syslog remoto deshabilitado'));
         }
@@ -120,11 +122,11 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $accountCount = Request::analyze('account_count', 10);
         $resultsAsCardsEnabled = Request::analyze('resultsascards', false, false, true);
 
-        Config::setCacheConfigValue('globalsearch', $globalSearchEnabled);
-        Config::setCacheConfigValue('account_passtoimage', $accountPassToImageEnabled);
-        Config::setCacheConfigValue('account_link', $accountLinkEnabled);
-        Config::setCacheConfigValue('account_count', $accountCount);
-        Config::setCacheConfigValue('resultsascards', $resultsAsCardsEnabled);
+        $Config->setGlobalSearch($globalSearchEnabled);
+        $Config->setAccountPassToImage($accountPassToImageEnabled);
+        $Config->setAccountLink($accountLinkEnabled);
+        $Config->setAccountCount($accountCount);
+        $Config->setResultsAsCards($resultsAsCardsEnabled);
 
         // Files
         $filesEnabled = Request::analyze('files_enabled', false, false, true);
@@ -142,11 +144,13 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
                     Response::printJSON(_('Extensión no permitida'));
                 }
             });
+            $Config->setFilesAllowedExts($exts);
+        } else {
+            $Config->setFilesAllowedExts([]);
         }
 
-        Config::setCacheConfigValue('files_enabled', $filesEnabled);
-        Config::setCacheConfigValue('files_allowed_size', $filesAllowedSize);
-        Config::setCacheConfigValue('files_allowed_exts', $filesAllowedExts);
+        $Config->setFilesEnabled($filesEnabled);
+        $Config->setFilesAllowedSize($filesAllowedSize);
 
         // Public Links
         $pubLinksEnabled = Request::analyze('publinks_enabled', false, false, true);
@@ -154,10 +158,10 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $pubLinksMaxTime = Request::analyze('publinks_maxtime', 10);
         $pubLinksMaxViews = Request::analyze('publinks_maxviews', 3);
 
-        Config::setCacheConfigValue('publinks_enabled', $pubLinksEnabled);
-        Config::setCacheConfigValue('publinks_image_enabled', $pubLinksImageEnabled);
-        Config::setCacheConfigValue('publinks_maxtime', $pubLinksMaxTime * 60);
-        Config::setCacheConfigValue('publinks_maxviews', $pubLinksMaxViews);
+        $Config->setPublinksEnabled($pubLinksEnabled);
+        $Config->setPublinksImageEnabled($pubLinksImageEnabled);
+        $Config->setPublinksMaxTime($pubLinksMaxTime * 60);
+        $Config->setPublinksMaxViews($pubLinksMaxViews);
 
         // Proxy
         $proxyEnabled = Request::analyze('proxy_enabled', false, false, true);
@@ -171,15 +175,15 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
             Response::printJSON(_('Faltan parámetros de Proxy'));
         } elseif ($proxyEnabled) {
-            Config::setCacheConfigValue('proxy_enabled', true);
-            Config::setCacheConfigValue('proxy_server', $proxyServer);
-            Config::setCacheConfigValue('proxy_port', $proxyPort);
-            Config::setCacheConfigValue('proxy_user', $proxyUser);
-            Config::setCacheConfigValue('proxy_pass', $proxyPass);
+            $Config->setProxyEnabled(true);
+            $Config->setProxyServer($proxyServer);
+            $Config->setProxyPort($proxyPort);
+            $Config->setProxyUser($proxyUser);
+            $Config->setProxyPass($proxyPass);
 
             $Log->addDescription(_('Proxy habiltado'));
         } else {
-            Config::setCacheConfigValue('proxy_enabled', false);
+            $Config->setProxyEnabled(false);
 
             $Log->addDescription(_('Proxy deshabilitado'));
         }
@@ -196,14 +200,14 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
             Response::printJSON(_('Faltan parámetros de Wiki'));
         } elseif ($wikiEnabled) {
-            Config::setCacheConfigValue('wiki_enabled', true);
-            Config::setCacheConfigValue('wiki_searchurl', $wikiSearchUrl);
-            Config::setCacheConfigValue('wiki_pageurl', $wikiPageUrl);
-            Config::setCacheConfigValue('wiki_filter', strtr($wikiFilter, ',', '|'));
+            $Config->setWikiEnabled(true);
+            $Config->setWikiSearchurl($wikiSearchUrl);
+            $Config->setWikiPageurl($wikiPageUrl);
+            $Config->setWikiFilter(explode(',', $wikiFilter));
 
             $Log->addDescription(_('Wiki habiltada'));
         } else {
-            Config::setCacheConfigValue('wiki_enabled', false);
+            $Config->setWikiEnabled(false);
 
             $Log->addDescription(_('Wiki deshabilitada'));
         }
@@ -220,16 +224,16 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
             Response::printJSON(_('Faltan parámetros de DokuWiki'));
         } elseif ($dokuWikiEnabled) {
-            Config::setCacheConfigValue('dokuwiki_enabled', true);
-            Config::setCacheConfigValue('dokuwiki_url', $dokuWikiUrl);
-            Config::setCacheConfigValue('dokuwiki_urlbase', trim($dokuWikiUrlBase, '/'));
-            Config::setCacheConfigValue('dokuwiki_user', $dokuWikiUser);
-            Config::setCacheConfigValue('dokuwiki_pass', $dokuWikiPass);
-            Config::setCacheConfigValue('dokuwiki_namespace', $dokuWikiNamespace);
+            $Config->setDokuwikiEnabled(true);
+            $Config->setDokuwikiUrl($dokuWikiUrl);
+            $Config->setDokuwikiUrlBase(trim($dokuWikiUrlBase, '/'));
+            $Config->setDokuwikiUser($dokuWikiUser);
+            $Config->setDokuwikiPass($dokuWikiPass);
+            $Config->setDokuwikiNamespace($dokuWikiNamespace);
 
             $Log->addDescription(_('DokuWiki habiltada'));
         } else {
-            Config::setCacheConfigValue('dokuwiki_enabled', false);
+            $Config->setDokuwikiEnabled(false);
 
             $Log->addDescription(_('DokuWiki deshabilitada'));
         }
@@ -251,19 +255,19 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
             Response::printJSON(_('Faltan parámetros de LDAP'));
         } elseif ($ldapEnabled) {
-            Config::setCacheConfigValue('ldap_enabled', true);
-            Config::setCacheConfigValue('ldap_ads', $ldapADSEnabled);
-            Config::setCacheConfigValue('ldap_server', $ldapServer);
-            Config::setCacheConfigValue('ldap_base', $ldapBase);
-            Config::setCacheConfigValue('ldap_group', $ldapGroup);
-            Config::setCacheConfigValue('ldap_defaultgroup', $ldapDefaultGroup);
-            Config::setCacheConfigValue('ldap_defaultprofile', $ldapDefaultProfile);
-            Config::setCacheConfigValue('ldap_binduser', $ldapBindUser);
-            Config::setCacheConfigValue('ldap_bindpass', $ldapBindPass);
+            $Config->setLdapEnabled(true);
+            $Config->setLdapAds($ldapADSEnabled);
+            $Config->setLdapServer($ldapServer);
+            $Config->setLdapBase($ldapBase);
+            $Config->setLdapGroup($ldapGroup);
+            $Config->setLdapDefaultGroup($ldapDefaultGroup);
+            $Config->setLdapDefaultProfile($ldapDefaultProfile);
+            $Config->setLdapBindUser($ldapBindUser);
+            $Config->setLdapBindPass($ldapBindPass);
 
             $Log->addDescription(_('LDAP habiltado'));
         } else {
-            Config::setCacheConfigValue('ldap_enabled', false);
+            $Config->setLdapEnabled(false);
 
             $Log->addDescription(_('LDAP deshabilitado'));
         }
@@ -285,24 +289,24 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         if ($mailEnabled && (!$mailServer || !$mailFrom)) {
             Response::printJSON(_('Faltan parámetros de Correo'));
         } elseif ($mailEnabled) {
-            Config::setCacheConfigValue('mail_enabled', true);
-            Config::setCacheConfigValue('mail_requestsenabled', $mailRequests);
-            Config::setCacheConfigValue('mail_server', $mailServer);
-            Config::setCacheConfigValue('mail_port', $mailPort);
-            Config::setCacheConfigValue('mail_security', $mailSecurity);
-            Config::setCacheConfigValue('mail_from', $mailFrom);
+            $Config->setMailEnabled(true);
+            $Config->setMailRequestsEnabled($mailRequests);
+            $Config->setMailServer($mailServer);
+            $Config->setMailPort($mailPort);
+            $Config->setMailSecurity($mailSecurity);
+            $Config->setMailFrom($mailFrom);
 
             if ($mailAuth) {
-                Config::setCacheConfigValue('mail_authenabled', $mailAuth);
-                Config::setCacheConfigValue('mail_user', $mailUser);
-                Config::setCacheConfigValue('mail_pass', $mailPass);
+                $Config->setMailAuthenabled($mailAuth);
+                $Config->setMailUser($mailUser);
+                $Config->setMailPass($mailPass);
             }
 
             $Log->addDescription(_('Correo habiltado'));
         } else {
-            Config::setCacheConfigValue('mail_enabled', false);
-            Config::setCacheConfigValue('mail_requestsenabled', false);
-            Config::setCacheConfigValue('mail_authenabled', false);
+            $Config->setMailEnabled(false);
+            $Config->setMailRequestsEnabled(false);
+            $Config->setMailAuthenabled(false);
 
             $Log->addDescription(_('Correo deshabilitado'));
         }
@@ -311,7 +315,7 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
     }
 
     try {
-        Config::writeConfig();
+        Config::saveConfig();
     } catch (SPException $e) {
         $Log->addDescription(_('Error al guardar la configuración'));
         $Log->addDetails($e->getMessage(), $e->getHint());

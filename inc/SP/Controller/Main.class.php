@@ -307,10 +307,10 @@ class Main extends Controller implements ActionsInterface
             Installer::setUsername($this->view->adminlogin);
             Installer::setPassword($this->view->adminpass);
             Installer::setMasterPassword($this->view->masterpassword);
-            Installer::setDbuser($this->view->dbuser);
-            Installer::setDbpass($this->view->dbpass);
-            Installer::setDbname($this->view->dbname);
-            Installer::setDbhost($this->view->dbhost);
+            Installer::setDbUser($this->view->dbuser);
+            Installer::setDbPass($this->view->dbpass);
+            Installer::setDbName($this->view->dbname);
+            Installer::setDbHost($this->view->dbhost);
             Installer::setIsHostingMode($this->view->hostingmode);
 
             $this->view->assign('resInstall', Installer::install());

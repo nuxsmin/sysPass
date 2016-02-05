@@ -41,7 +41,7 @@
             <td class="descField"><?php echo _('Cliente'); ?></td>
             <td class="valField">
                 <?php if (!$isView): ?>
-                    <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer" required>
+                    <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer">
                         <option value=""></option>
                         <?php foreach ($customers as $id => $name): ?>
                             <option
@@ -270,7 +270,7 @@
             <tr>
                 <td class="descField"><?php echo _('Última Modificación'); ?></td>
                 <?php if ($accountData->user_editName): ?>
-                    <td class="valField"><?php echo $accountData->account_dateEdit; ?><?php echo _('por'); ?><?php echo $accountData->user_editName; ?></td>
+                    <td class="valField"><?php echo $accountData->account_dateEdit, ' ', _('por'), ' ', $accountData->user_editName; ?></td>
                 <?php endif; ?>
             </tr>
         <?php endif; ?>

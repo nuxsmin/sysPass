@@ -39,6 +39,7 @@ interface ConnectionInterface
     /**
      * Obtener un socket
      *
+     * @param $type
      * @return mixed
      */
     public function getSocket($type);

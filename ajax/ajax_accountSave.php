@@ -24,6 +24,7 @@
  */
 
 use SP\Account\Account;
+use SP\Account\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
@@ -138,19 +139,21 @@ if ($actionId == ActionsInterface::ACTION_ACC_NEW
     }
 }
 
-$Account = new Account;
-$Account->setAccountId($accountId);
-$Account->setAccountName($accountName);
-$Account->setAccountCategoryId($categoryId);
-$Account->setAccountCustomerId($customerId);
-$Account->setAccountLogin($accountLogin);
-$Account->setAccountUrl($accountUrl);
-$Account->setAccountNotes($accountNotes);
-$Account->setAccountUserEditId($currentUserId);
-$Account->setAccountUsersId($accountOtherUsers);
-$Account->setAccountUserGroupsId($accountOtherGroups);
-$Account->setAccountOtherUserEdit($accountUserEditEnabled);
-$Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
+
+$AccountData = new AccountData();
+$AccountData->setAccountId($accountId);
+$AccountData->setAccountName($accountName);
+$AccountData->setAccountCategoryId($categoryId);
+$AccountData->setAccountLogin($accountLogin);
+$AccountData->setAccountUrl($accountUrl);
+$AccountData->setAccountNotes($accountNotes);
+$AccountData->setAccountUserEditId($currentUserId);
+$AccountData->setAccountUsersId($accountOtherUsers);
+$AccountData->setAccountUserGroupsId($accountOtherGroups);
+$AccountData->setAccountOtherUserEdit($accountUserEditEnabled);
+$AccountData->setAccountOtherGroupEdit($accountGroupEditEnabled);
+
+$Account = new Account($AccountData);
 
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_NEW:
@@ -167,16 +170,17 @@ switch ($actionId) {
             }
         }
 
-        $Account->setAccountPass($accountEncPass['data']);
-        $Account->setAccountIV($accountEncPass['iv']);
-        $Account->setAccountUserId($currentUserId);
-        $Account->setAccountUserGroupId($accountMainGroupId);
+        $AccountData->setAccountCustomerId($customerId);
+        $AccountData->setAccountPass($accountEncPass['data']);
+        $AccountData->setAccountIV($accountEncPass['iv']);
+        $AccountData->setAccountUserId($currentUserId);
+        $AccountData->setAccountUserGroupId($accountMainGroupId);
 
         // Crear cuenta
         if ($Account->createAccount()) {
             if (is_array($customFields)) {
                 foreach ($customFields as $id => $value) {
-                    $CustomFields = new CustomFields($id, $Account->getAccountId(), $value);
+                    $CustomFields = new CustomFields($id, $AccountData->getAccountId(), $value);
                     $CustomFields->addCustomField();
                 }
             }
@@ -199,9 +203,11 @@ switch ($actionId) {
             }
         }
 
+        $AccountData->setAccountCustomerId($customerId);
+
         // Cambiar el grupo principal si el usuario es Admin
         if (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc()) {
-            $Account->setAccountUserGroupId($accountMainGroupId);
+            $AccountData->setAccountUserGroupId($accountMainGroupId);
         }
 
         // Comprobar si han habido cambios
@@ -223,8 +229,6 @@ switch ($actionId) {
         Response::printJSON(_('Error al modificar la cuenta'));
         break;
     case ActionsInterface::ACTION_ACC_DELETE:
-        $Account->setAccountId($accountId);
-
         // Eliminar cuenta
         if ($Account->deleteAccount()
             && CustomFields::deleteCustomFieldForItem($accountId, ActionsInterface::ACTION_ACC_NEW)
@@ -235,8 +239,8 @@ switch ($actionId) {
         Response::printJSON(_('Error al eliminar la cuenta'));
         break;
     case ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $Account->setAccountPass($accountEncPass['data']);
-        $Account->setAccountIV($accountEncPass['iv']);
+        $AccountData->setAccountPass($accountEncPass['data']);
+        $AccountData->setAccountIV($accountEncPass['iv']);
 
         // Actualizar clave de cuenta
         if ($Account->updateAccountPass()) {
@@ -246,8 +250,8 @@ switch ($actionId) {
         Response::printJSON(_('Error al actualizar la clave'));
         break;
     case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
-        $Account->setAccountId(\SP\Account\AccountHistory::getAccountIdFromId($accountId));
-        $Account->setAccountUserEditId($currentUserId);
+        $AccountData->setAccountId(\SP\Account\AccountHistory::getAccountIdFromId($accountId));
+        $AccountData->setAccountUserEditId($currentUserId);
 
         if ($Account->restoreFromHistory($accountId)) {
             Response::printJSON(_('Cuenta restaurada'), 0);

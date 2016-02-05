@@ -27,6 +27,7 @@ namespace SP\Storage;
 
 
 use SP\Config\Config;
+use SP\Core\Factory;
 use SP\Core\SPException;
 
 /**
@@ -45,11 +46,11 @@ class DBUtil
     public static function checkDatabaseExist()
     {
         try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
+            $db = Factory::getDBStorage()->getConnection();
 
             $query = 'SELECT COUNT(*) '
                 . 'FROM information_schema.tables '
-                . 'WHERE table_schema=\'' . Config::getValue("dbname") . '\' '
+                . 'WHERE table_schema=\'' . Config::getConfig()->getDbName() . '\' '
                 . 'AND table_name = \'usrData\'';
 
             if ($db->query($query)->fetchColumn() !== 0) {
@@ -112,7 +113,7 @@ class DBUtil
     public static function escape($str)
     {
         try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
+            $db = Factory::getDBStorage()->getConnection();
 
             return $db->quote(trim($str));
         } catch (SPException $e) {
@@ -130,7 +131,7 @@ class DBUtil
         $dbinfo = array();
 
         try {
-            $db = DBConnectionFactory::getFactory()->getConnection();
+            $db = Factory::getDBStorage()->getConnection();
 
             $attributes = array(
                 'SERVER_VERSION',

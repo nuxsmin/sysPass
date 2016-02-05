@@ -114,7 +114,7 @@ class Util
      */
     public static function checkUpdates()
     {
-        if (!Config::getValue('checkupdates')) {
+        if (!Config::getConfig()->isCheckUpdates()) {
             return false;
         }
 
@@ -180,15 +180,15 @@ class Util
 
         $ch = curl_init($url);
 
-        if (Config::getValue('proxy_enabled')) {
-            curl_setopt($ch, CURLOPT_PROXY, Config::getValue('proxy_server'));
-            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getValue('proxy_port'));
+        if (Config::getConfig()->isProxyEnabled()) {
+            curl_setopt($ch, CURLOPT_PROXY, Config::getConfig()->getProxyServer());
+            curl_setopt($ch, CURLOPT_PROXYPORT, Config::getConfig()->getProxyPort());
             curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
 
-            $proxyUser = Config::getValue('proxy_user');
+            $proxyUser = Config::getConfig()->getProxyUser();
 
             if ($proxyUser) {
-                $proxyAuth = $proxyUser . ':' . Config::getValue('proxy_pass');
+                $proxyAuth = $proxyUser . ':' . Config::getConfig()->getProxyPass();
                 curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
             }
         }
@@ -274,7 +274,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '16011001';
+        $build = '16020501';
         $version = array(1, 3);
 
         if ($retBuild) {
@@ -292,7 +292,7 @@ class Util
      */
     public static function checkNotices()
     {
-        if (!Config::getValue('checknotices')) {
+        if (!Config::getConfig()->isChecknotices()) {
             return false;
         }
 

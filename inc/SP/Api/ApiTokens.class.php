@@ -48,30 +48,30 @@ class ApiTokens
     /**
      * @var int
      */
-    private $_tokenId = 0;
+    private $tokenId = 0;
     /**
      * @var int
      */
-    private $_userId = 0;
+    private $userId = 0;
     /**
      * @var int
      */
-    private $_actionId = 0;
+    private $actionId = 0;
     /**
      * @var string
      */
-    private $_token = '';
+    private $token = '';
     /**
      * @var bool
      */
-    private $_refreshToken = false;
+    private $refreshToken = false;
 
     /**
      * @param boolean $refreshToken
      */
     public function setRefreshToken($refreshToken)
     {
-        $this->_refreshToken = $refreshToken;
+        $this->refreshToken = $refreshToken;
     }
 
     /**
@@ -83,7 +83,7 @@ class ApiTokens
     {
         $this->checkTokenExist();
 
-        if ($this->_refreshToken) {
+        if ($this->refreshToken) {
             $this->refreshToken();
         }
 
@@ -96,10 +96,10 @@ class ApiTokens
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userId, 'userid');
-        $Data->addParam($this->_actionId, 'actionid');
+        $Data->addParam($this->userId, 'userid');
+        $Data->addParam($this->actionId, 'actionid');
         $Data->addParam(Session::getUserId(), 'createdby');
-        $Data->addParam(($this->getUserToken()) ? $this->_token : $this->generateToken(), 'token');
+        $Data->addParam(($this->getUserToken()) ? $this->token : $this->generateToken(), 'token');
 
         try {
             DB::getQuery($Data);
@@ -108,7 +108,7 @@ class ApiTokens
         }
 
         $Log = new Log(_('Nueva Autorización'));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -130,9 +130,9 @@ class ApiTokens
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_tokenId, 'id');
-        $Data->addParam($this->_userId, 'userid');
-        $Data->addParam($this->_actionId, 'actionid');
+        $Data->addParam($this->tokenId, 'id');
+        $Data->addParam($this->userId, 'userid');
+        $Data->addParam($this->actionId, 'actionid');
 
         try {
             DB::getResults($Data);
@@ -159,7 +159,7 @@ class ApiTokens
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userId, 'userid');
+        $Data->addParam($this->userId, 'userid');
         $Data->addParam($this->generateToken(),'token');
 
         try {
@@ -181,7 +181,7 @@ class ApiTokens
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userId, 'userid');
+        $Data->addParam($this->userId, 'userid');
 
         try {
             $queryRes = DB::getResults($Data);
@@ -193,7 +193,7 @@ class ApiTokens
             return false;
         }
 
-        $this->_token = $queryRes->authtoken_token;
+        $this->token = $queryRes->authtoken_token;
 
         return true;
     }
@@ -207,7 +207,7 @@ class ApiTokens
     {
         $this->checkTokenExist();
 
-        if ($this->_refreshToken) {
+        if ($this->refreshToken) {
             $this->refreshToken();
         }
 
@@ -221,11 +221,11 @@ class ApiTokens
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_tokenId, 'id');
-        $Data->addParam($this->_userId, 'userid');
-        $Data->addParam($this->_actionId, 'actionid');
+        $Data->addParam($this->tokenId, 'id');
+        $Data->addParam($this->userId, 'userid');
+        $Data->addParam($this->actionId, 'actionid');
         $Data->addParam(Session::getUserId(), 'createdby');
-        $Data->addParam(($this->getUserToken()) ? $this->_token : $this->generateToken(), 'token');
+        $Data->addParam(($this->getUserToken()) ? $this->token : $this->generateToken(), 'token');
 
         try {
             DB::getQuery($Data);
@@ -234,7 +234,7 @@ class ApiTokens
         }
 
         $Log = new Log(_('Actualizar Autorización'));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->_userId));
+        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -251,7 +251,7 @@ class ApiTokens
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_tokenId, 'id');
+        $Data->addParam($this->tokenId, 'id');
 
         try {
             DB::getQuery($Data);
@@ -260,7 +260,7 @@ class ApiTokens
         }
 
         $Log = new Log(_('Eliminar Autorización'));
-        $Log->addDetails(_('ID'), $this->_tokenId);
+        $Log->addDetails(_('ID'), $this->tokenId);
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -271,7 +271,7 @@ class ApiTokens
      */
     public function getUserId()
     {
-        return $this->_userId;
+        return $this->userId;
     }
 
     /**
@@ -279,7 +279,7 @@ class ApiTokens
      */
     public function setUserId($userId)
     {
-        $this->_userId = $userId;
+        $this->userId = $userId;
     }
 
     /**
@@ -287,7 +287,7 @@ class ApiTokens
      */
     public function getTokenId()
     {
-        return $this->_tokenId;
+        return $this->tokenId;
     }
 
     /**
@@ -295,7 +295,7 @@ class ApiTokens
      */
     public function setTokenId($tokenId)
     {
-        $this->_tokenId = $tokenId;
+        $this->tokenId = $tokenId;
     }
 
     /**
@@ -303,7 +303,7 @@ class ApiTokens
      */
     public function getActionId()
     {
-        return $this->_actionId;
+        return $this->actionId;
     }
 
     /**
@@ -311,7 +311,7 @@ class ApiTokens
      */
     public function setActionId($actionId)
     {
-        $this->_actionId = $actionId;
+        $this->actionId = $actionId;
     }
 
     /**

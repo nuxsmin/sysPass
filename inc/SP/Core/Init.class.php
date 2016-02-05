@@ -74,7 +74,14 @@ class Init
     /**
      * @var string
      */
-    private static $_SUBURI = '';
+    private static $SUBURI = '';
+    /**
+     * Estado de la BD
+     * 0 - Fail
+     * 1 - OK
+     * @var int
+     */
+    public static $DB_STATUS = 1;
 
     /**
      * Inicializar la aplicación.
@@ -107,6 +114,9 @@ class Init
         //  Establecer las rutas de la aplicación
         self::setPaths();
 
+        // Cargar la configuración
+        self::loadConfig();
+
         // Cargar el lenguaje
         Language::setLanguage();
 
@@ -120,9 +130,6 @@ class Init
         if (self::checkInitSourceInclude()) {
             return;
         }
-
-        // Comprobar la configuración
-        self::checkConfig();
 
         // Comprobar si está instalado
         self::checkInstalled();
@@ -139,7 +146,7 @@ class Init
         self::checkLogout();
 
         // Comprobar la versión y actualizarla
-        self::checkVersion();
+        self::checkDbVersion();
 
         // Inicializar la sesión
         self::initSession();
@@ -148,11 +155,9 @@ class Init
         self::checkPreLoginActions();
 
         // Intentar establecer el tiempo de vida de la sesión en PHP
-        $sessionLifeTime = self::getSessionLifeTime();
+        @ini_set('gc_maxlifetime', self::getSessionLifeTime());
 
-        @ini_set('gc_maxlifetime', $sessionLifeTime);
-
-        if (!Config::getValue("installed", false)) {
+        if (!Config::getConfig()->isInstalled()) {
             Session::setUserId('');
         }
 
@@ -175,7 +180,7 @@ class Init
 
         // Volver a cargar la configuración si se recarga la página
         if (Request::checkReload()) {
-            Config::readConfig();
+            Config::loadConfig();
 
             // Restablecer el idioma y el tema visual
             Language::setLanguage();
@@ -297,22 +302,22 @@ class Init
 
         self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
 
-        self::$_SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
+        self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
 
         $scriptName = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
         if (substr($scriptName, -1) == '/') {
             $scriptName .= 'index.php';
             // Asegurar que suburi sigue las mismas reglas que scriptName
-            if (substr(self::$_SUBURI, -9) != 'index.php') {
-                if (substr(self::$_SUBURI, -1) != '/') {
-                    self::$_SUBURI .= '/';
+            if (substr(self::$SUBURI, -9) != 'index.php') {
+                if (substr(self::$SUBURI, -1) != '/') {
+                    self::$SUBURI .= '/';
                 }
-                self::$_SUBURI .= 'index.php';
+                self::$SUBURI .= 'index.php';
             }
         }
 
-        $pos = strpos($scriptName, self::$_SUBURI);
+        $pos = strpos($scriptName, self::$SUBURI);
 
         if ($pos === false) {
             $pos = strpos($scriptName, '?');
@@ -326,6 +331,78 @@ class Init
 
         $protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
         self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
+    }
+
+    /**
+     * Cargar la configuración
+     */
+    private static function loadConfig()
+    {
+        // Comprobar si es una versión antigua
+        self::checkConfigVersion();
+
+        // Comprobar la configuración y cargar
+        self::checkConfig();
+        Config::loadConfig();
+    }
+
+    /**
+     * Comprobar la versión de configuración y actualizarla
+     */
+    private static function checkConfigVersion()
+    {
+        $oldConfigCheck = file_exists(CONFIG_FILE);
+        $appVersion = (int)implode(Util::getVersion(true));
+
+        if ($oldConfigCheck) {
+            include_once CONFIG_FILE;
+        }
+
+        $configVersion = ($oldConfigCheck) ? (int)$CONFIG['version'] : Config::getConfig()->getConfigVersion();
+
+
+        if ($configVersion < $appVersion
+            && Upgrade::needConfigUpgrade($appVersion)
+            && Upgrade::upgradeConfig($appVersion)
+        ) {
+            if ($oldConfigCheck) {
+                rename(CONFIG_FILE, CONFIG_FILE . '.old');
+            }
+
+            $Log = new Log(_('Actualización'));
+            $Log->addDescription(_('Actualización de versión realizada.'));
+            $Log->addDetails(_('Versión'), $appVersion);
+            $Log->addDetails(_('Tipo'), 'config');
+            $Log->writeLog();
+
+            Email::sendEmail($Log);
+
+            self::$UPDATED = true;
+        }
+    }
+
+    /**
+     * Comprobar el archivo de configuración.
+     * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
+     */
+    private static function checkConfig()
+    {
+        if (!is_dir(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
+            clearstatcache();
+            self::initError(_('El directorio "/config" no existe'));
+        }
+
+        if (!is_writable(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
+            clearstatcache();
+            self::initError(_('No es posible escribir en el directorio "config"'));
+        }
+
+        $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
+
+        if (!Checks::checkIsWindows() && $configPerms != "750") {
+            clearstatcache();
+            self::initError(_('Los permisos del directorio "/config" son incorrectos'), _('Actual:') . ' ' . $configPerms . ' - ' . _('Necesario: 750'));
+        }
     }
 
     /**
@@ -354,38 +431,14 @@ class Init
     }
 
     /**
-     * Comprobar el archivo de configuración.
-     * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
-     */
-    private static function checkConfig()
-    {
-        if (!is_dir(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
-            clearstatcache();
-            self::initError(_('El directorio "/config" no existe'));
-        }
-
-        if (!is_writable(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
-            clearstatcache();
-            self::initError(_('No es posible escribir en el directorio "config"'));
-        }
-
-        $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
-
-        if (!Checks::checkIsWindows() && $configPerms != "750") {
-            clearstatcache();
-            self::initError(_('Los permisos del directorio "/config" son incorrectos'), _('Actual:') . ' ' . $configPerms . ' - ' . _('Necesario: 750'));
-        }
-    }
-
-    /**
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      */
     private static function checkInstalled()
     {
         // Redirigir al instalador si no está instalada
-        if (!Config::getValue('installed', false)) {
-            if (self::$_SUBURI != '/index.php') {
+        if (!Config::getConfig()->isInstalled()) {
+            if (self::$SUBURI != '/index.php') {
                 $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
                 header("Location: $url");
                 exit();
@@ -409,7 +462,7 @@ class Init
      */
     public static function checkMaintenanceMode($check = false)
     {
-        if (Config::getValue('maintenance', false)) {
+        if (Config::getConfig()->isMaintenance()) {
             if ($check === true
                 || Request::analyze('isAjax', 0) === 1
                 || Request::analyze('upgrade', 0) === 1
@@ -446,9 +499,10 @@ class Init
     private static function logout()
     {
         self::wrLogoutInfo();
+        SessionUtil::cleanSession();
 
-        session_unset();
-        session_destroy();
+//        session_unset();
+//        session_destroy();
     }
 
     /**
@@ -481,14 +535,13 @@ class Init
     /**
      * Comrpueba y actualiza la versión de la aplicación.
      */
-    private static function checkVersion()
+    private static function checkDbVersion()
     {
-        if (self::$_SUBURI != '/index.php' || Request::analyze('logout', 0) === 1) {
+        if (self::$SUBURI != '/index.php' || Request::analyze('logout', 0) === 1) {
             return;
         }
 
         $update = false;
-        $configVersion = (int)str_replace('.', '', Config::getValue('version'));
         $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
         $appVersion = (int)implode(Util::getVersion(true));
 
@@ -497,25 +550,24 @@ class Init
         ) {
             if (Upgrade::needDBUpgrade($databaseVersion)) {
                 if (!self::checkMaintenanceMode(true)) {
-                    if (Config::getValue('upgrade_key', 0) === 0) {
-                        Config::setCacheConfigValue('upgrade_key', sha1(uniqid(mt_rand(), true)));
-                        Config::setCacheConfigValue('maintenance', true);
-                        Config::writeConfig(false);
+                    if (empty(Config::getConfig()->getUpgradeKey())) {
+                        Config::getConfig()->setUpgradeKey(sha1(uniqid(mt_rand(), true)));
+                        Config::getConfig()->setMaintenance(true);
+                        Config::saveConfig();
                     }
 
                     self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
                 }
 
-                error_log('upgrade');
-
                 $action = Request::analyze('a');
                 $hash = Request::analyze('h');
 
-                if ($action === 'upgrade' && $hash === Config::getValue('upgrade_key', 0)) {
+                if ($action === 'upgrade' && $hash === Config::getConfig()->getUpgradeKey()) {
                     if ($update = Upgrade::doUpgrade($databaseVersion)) {
                         ConfigDB::setValue('version', $appVersion);
-                        Config::setValue('maintenance', false);
-                        Config::deleteParam('upgrade_key');
+                        Config::getConfig()->setMaintenance(false);
+                        Config::getConfig()->setUpgradeKey('');
+                        Config::saveConfig();
                     }
                 } else {
                     $controller = new Controller\Main();
@@ -526,18 +578,11 @@ class Init
             }
         }
 
-        if ($configVersion < $appVersion
-            && Upgrade::needConfigUpgrade($appVersion)
-            && Upgrade::upgradeConfig($appVersion)
-        ) {
-            Config::setValue('version', $appVersion);
-            $update = true;
-        }
-
         if ($update === true) {
             $Log = new Log(_('Actualización'));
             $Log->addDescription(_('Actualización de versión realizada.'));
             $Log->addDetails(_('Versión'), $appVersion);
+            $Log->addDetails(_('Tipo'), 'db');
             $Log->writeLog();
 
             Email::sendEmail($Log);
@@ -592,7 +637,7 @@ class Init
     private static function getSessionLifeTime()
     {
         if (is_null(Session::getSessionTimeout())) {
-            Session::setSessionTimeout(Config::getValue('session_timeout', 60 * 5));
+            Session::setSessionTimeout(Config::getConfig()->getSessionTimeout());
         }
 
         return Session::getSessionTimeout();

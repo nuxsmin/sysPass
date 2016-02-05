@@ -26,6 +26,7 @@
 namespace SP\Import;
 
 use SP\Account\Account;
+use SP\Account\AccountData;
 use SP\Mgmt\Customer;
 use SP\Mgmt\Category;
 use SP\Core\Session;
@@ -53,94 +54,46 @@ abstract class ImportBase
      */
     public $userGroupId = 0;
     /**
-     * Nombre de la cuenta.
-     *
-     * @var string
-     */
-    protected $_accountName = '';
-    /**
-     * Id del cliente.
-     *
-     * @var int
-     */
-    protected $_customerId = 0;
-    /**
-     * Id de categoria.
-     *
-     * @var int
-     */
-    protected $_categoryId = 0;
-    /**
-     * Login de la cuenta.
-     *
-     * @var string
-     */
-    protected $_accountLogin = '';
-    /**
-     * Url de la cuenta.
-     *
-     * @var string
-     */
-    protected $_accountUrl = '';
-    /**
-     * Notas de la cuenta.
-     *
-     * @var string
-     */
-    protected $_accountNotes = '';
-    /**
-     * Clave de la cuenta.
-     *
-     * @var string
-     */
-    protected $_accountPass = '';
-    /**
-     * IV de la clave de la cuenta.
-     *
-     * @var string
-     */
-    protected $_accountPassIV = '';
-    /**
      * Nombre de la categoría.
      *
      * @var string
      */
-    protected $_categoryName = '';
+    protected $categoryName = '';
     /**
      * Nombre del cliente.
      *
      * @var string
      */
-    protected $_customerName = '';
+    protected $customerName = '';
     /**
      * Descrición de la categoría.
      *
      * @var string
      */
-    protected $_categoryDescription = '';
+    protected $categoryDescription = '';
     /**
      * Descripción del cliente.
      *
      * @var string
      */
-    protected $_customerDescription = '';
+    protected $customerDescription = '';
     /**
      * @var FileImport
      */
-    protected $_file;
+    protected $file;
     /**
      * La clave de importación
      *
      * @var string
      */
-    protected $_importPass;
+    protected $importPass;
 
     /**
      * @return string
      */
     public function getImportPass()
     {
-        return $this->_importPass;
+        return $this->importPass;
     }
 
     /**
@@ -148,8 +101,16 @@ abstract class ImportBase
      */
     public function setImportPass($importPass)
     {
-        $this->_importPass = $importPass;
+        $this->importPass = $importPass;
     }
+
+    /**
+     * Iniciar la importación desde XML.
+     *
+     * @throws SPException
+     * @return bool
+     */
+    public abstract function doImport();
 
     /**
      * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
@@ -158,7 +119,7 @@ abstract class ImportBase
      */
     protected function parseFileHeader()
     {
-        $handle = @fopen($this->_file->getTmpFile(), "r");
+        $handle = @fopen($this->file->getTmpFile(), "r");
         $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
 
         if ($handle) {
@@ -181,19 +142,12 @@ abstract class ImportBase
     }
 
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws SPException
-     * @return bool
-     */
-    public abstract function doImport();
-
-    /**
      * Añadir una cuenta desde un archivo importado.
      *
+     * @param AccountData $AccountData
      * @return bool
      */
-    protected function addAccount()
+    protected function addAccount(AccountData $AccountData)
     {
         if (is_null($this->getUserId()) || $this->getUserId() === 0) {
             $this->setUserId(Session::getUserId());
@@ -203,19 +157,9 @@ abstract class ImportBase
             $this->setUserGroupId(Session::getUserGroupId());
         }
 
-        $account = new Account;
-        $account->setAccountName($this->getAccountName());
-        $account->setAccountCustomerId($this->getCustomerId());
-        $account->setAccountCategoryId($this->getCategoryId());
-        $account->setAccountLogin($this->getAccountLogin());
-        $account->setAccountUrl($this->getAccountUrl());
-        $account->setAccountPass($this->getAccountPass());
-        $account->setAccountIV($this->getAccountPassIV());
-        $account->setAccountNotes($this->getAccountNotes());
-        $account->setAccountUserId($this->getUserId());
-        $account->setAccountUserGroupId($this->getUserGroupId());
+        $Account = new Account($AccountData);
 
-        return $account->createAccount();
+        return $Account->createAccount();
     }
 
     /**
@@ -251,135 +195,8 @@ abstract class ImportBase
     }
 
     /**
-     * @return string
-     */
-    public function getAccountName()
-    {
-        return $this->_accountName;
-    }
-
-    /**
-     * @param string $_accountName
-     */
-    public function setAccountName($_accountName)
-    {
-        $this->_accountName = $_accountName;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCustomerId()
-    {
-        return $this->_customerId;
-    }
-
-    /**
-     * @param int $_customerId
-     */
-    public function setCustomerId($_customerId)
-    {
-        $this->_customerId = $_customerId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCategoryId()
-    {
-        return $this->_categoryId;
-    }
-
-    /**
-     * @param int $_categoryId
-     */
-    public function setCategoryId($_categoryId)
-    {
-        $this->_categoryId = $_categoryId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountLogin()
-    {
-        return $this->_accountLogin;
-    }
-
-    /**
-     * @param string $_accountLogin
-     */
-    public function setAccountLogin($_accountLogin)
-    {
-        $this->_accountLogin = $_accountLogin;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountUrl()
-    {
-        return $this->_accountUrl;
-    }
-
-    /**
-     * @param string $_accountUrl
-     */
-    public function setAccountUrl($_accountUrl)
-    {
-        $this->_accountUrl = $_accountUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountPass()
-    {
-        return $this->_accountPass;
-    }
-
-    /**
-     * @param string $_accountPass
-     */
-    public function setAccountPass($_accountPass)
-    {
-        $this->_accountPass = $_accountPass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountPassIV()
-    {
-        return $this->_accountPassIV;
-    }
-
-    /**
-     * @param string $_accountPassIV
-     */
-    public function setAccountPassIV($_accountPassIV)
-    {
-        $this->_accountPassIV = $_accountPassIV;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountNotes()
-    {
-        return $this->_accountNotes;
-    }
-
-    /**
-     * @param string $_accountNotes
-     */
-    public function setAccountNotes($_accountNotes)
-    {
-        $this->_accountNotes = $_accountNotes;
-    }
-
-    /**
      * Añadir una categoría y devolver el Id
+     *
      * @return int
      */
     protected function addCategory()
@@ -392,15 +209,15 @@ abstract class ImportBase
      */
     public function getCategoryName()
     {
-        return $this->_categoryName;
+        return $this->categoryName;
     }
 
     /**
-     * @param string $_categoryName
+     * @param string $categoryName
      */
-    public function setCategoryName($_categoryName)
+    public function setCategoryName($categoryName)
     {
-        $this->_categoryName = $_categoryName;
+        $this->categoryName = $categoryName;
     }
 
     /**
@@ -408,7 +225,7 @@ abstract class ImportBase
      */
     public function getCategoryDescription()
     {
-        return $this->_categoryDescription;
+        return $this->categoryDescription;
     }
 
     /**
@@ -416,11 +233,12 @@ abstract class ImportBase
      */
     public function setCategoryDescription($categoryDescription)
     {
-        $this->_categoryDescription = $categoryDescription;
+        $this->categoryDescription = $categoryDescription;
     }
 
     /**
      * Añadir un cliente y devolver el Id
+     *
      * @return int
      */
     protected function addCustomer()
@@ -433,15 +251,15 @@ abstract class ImportBase
      */
     public function getCustomerName()
     {
-        return $this->_customerName;
+        return $this->customerName;
     }
 
     /**
-     * @param string $_customerName
+     * @param string $customerName
      */
-    public function setCustomerName($_customerName)
+    public function setCustomerName($customerName)
     {
-        $this->_customerName = $_customerName;
+        $this->customerName = $customerName;
     }
 
     /**
@@ -449,7 +267,7 @@ abstract class ImportBase
      */
     public function getCustomerDescription()
     {
-        return $this->_customerDescription;
+        return $this->customerDescription;
     }
 
     /**
@@ -457,6 +275,6 @@ abstract class ImportBase
      */
     public function setCustomerDescription($customerDescription)
     {
-        $this->_customerDescription = $customerDescription;
+        $this->customerDescription = $customerDescription;
     }
 }

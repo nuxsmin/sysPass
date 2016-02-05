@@ -27,6 +27,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Account\AccountData;
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
 use SP\Config\Config;
@@ -56,26 +57,26 @@ class Account extends Controller implements ActionsInterface
     /**
      * @var int con la acción a realizar
      */
-    protected $_action;
+    protected $action;
     /**
      * @var Account|AccountHistory instancia para el manejo de datos de una cuenta
      */
-    private $_account;
+    private $account;
     /**
      * @var bool indica si se han obtenido datos de la cuenta
      */
-    private $_gotData = false;
+    private $gotData = false;
     /**
      * @var int con el id de la cuenta
      */
-    private $_id;
+    private $id;
 
     /**
      * Constructor
      *
      * @param Template $template   instancia del motor de plantillas
-     * @param int          $lastAction int con la última acción realizada
-     * @param int          $accountId  int con el id de la cuenta
+     * @param int      $lastAction int con la última acción realizada
+     * @param int      $accountId  int con el id de la cuenta
      */
     public function __construct(Template $template = null, $lastAction = null, $accountId = null)
     {
@@ -96,7 +97,7 @@ class Account extends Controller implements ActionsInterface
      */
     private function setId($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -104,7 +105,7 @@ class Account extends Controller implements ActionsInterface
      */
     private function isGotData()
     {
-        return $this->_gotData;
+        return $this->gotData;
     }
 
     /**
@@ -123,7 +124,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleGreen',
                 'name' => _('Nueva Cuenta'),
-                'icon' => $this->_icons->getIconAdd()->getIcon()
+                'icon' => $this->icons->getIconAdd()->getIcon()
             )
         );
         $this->view->assign('nextaction', Acl::ACTION_ACC_NEW);
@@ -148,7 +149,7 @@ class Account extends Controller implements ActionsInterface
         } elseif (!UserPass::checkUserUpdateMPass()) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
-        } elseif ($this->_id > 0 && !Acl::checkAccountAccess($this->_action, $this->_account->getAccountDataForACL())) {
+        } elseif ($this->id > 0 && !Acl::checkAccountAccess($this->action, $this->account->getAccountDataForACL())) {
             $this->showError(self::ERR_ACCOUNT_NO_PERMISSION);
             return false;
         }
@@ -165,18 +166,18 @@ class Account extends Controller implements ActionsInterface
 
         if ($this->isGotData()) {
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
-            $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountUsersId());
+            $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountData()->getAccountUsersId());
             $this->view->assign('accountOtherUsersName', UserAccounts::getUsersNameForAccount($this->getId()));
-            $this->view->assign('accountOtherGroups', $this->getAccount()->getAccountUserGroupsId());
+            $this->view->assign('accountOtherGroups', $this->getAccount()->getAccountData()->getAccountUserGroupsId());
             $this->view->assign('accountOtherGroupsName', \SP\Mgmt\User\Groups::getGroupsNameForAccount($this->getId()));
             $this->view->assign('changesHash', $this->getAccount()->getAccountModHash());
-            $this->view->assign('chkUserEdit', ($this->getAccount()->getAccountOtherUserEdit()) ? 'checked' : '');
-            $this->view->assign('chkGroupEdit', ($this->getAccount()->getAccountOtherGroupEdit()) ? 'checked' : '');
+            $this->view->assign('chkUserEdit', ($this->getAccount()->getAccountData()->getAccountOtherUserEdit()) ? 'checked' : '');
+            $this->view->assign('chkGroupEdit', ($this->getAccount()->getAccountData()->getAccountOtherGroupEdit()) ? 'checked' : '');
             $this->view->assign('historyData', \SP\Account\AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
             $this->view->assign('isModified', ($this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit <> '0000-00-00 00:00:00'));
-            $this->view->assign('maxFileSize', round(Config::getValue('files_allowed_size') / 1024, 1));
-            $this->view->assign('filesAllowedExts', Config::getValue('files_allowed_exts'));
-            $this->view->assign('filesDelete', ($this->_action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
+            $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
+            $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
+            $this->view->assign('filesDelete', ($this->action == Acl::ACTION_ACC_EDIT) ? 1 : 0);
 
             $publicLinkUrl = (Checks::publicLinksIsEnabled() && isset($this->view->accountData->publicLink_hash)) ? Init::$WEBURI . '/?h=' . $this->view->accountData->publicLink_hash . '&a=link' : '';
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
@@ -189,22 +190,6 @@ class Account extends Controller implements ActionsInterface
         $this->view->assign('otherGroups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
 
 
-    }
-
-    /**
-     * @return Account|AccountHistory
-     */
-    private function getAccount()
-    {
-        return $this->_account;
-    }
-
-    /**
-     * @return int
-     */
-    private function getId()
-    {
-        return $this->_id;
     }
 
     /**
@@ -224,36 +209,52 @@ class Account extends Controller implements ActionsInterface
     }
 
     /**
+     * @return int
+     */
+    private function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return Account|AccountHistory
+     */
+    private function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
      * Establecer variables para los interfaces que muestran datos
      */
     private function setShowData()
     {
-        $aclData = ($this->isGotData()) ? $this->_account->getAccountDataForACL() : null;
+        $aclData = ($this->isGotData()) ? $this->account->getAccountDataForACL() : null;
 
-        $this->view->assign('showHistory', (($this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)
+        $this->view->assign('showHistory', (($this->action == Acl::ACTION_ACC_VIEW || $this->action == Acl::ACTION_ACC_VIEW_HISTORY)
             && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_HISTORY)
-            && ($this->view->isModified || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)));
-        $this->view->assign('showDetails', ($this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY || $this->_action == Acl::ACTION_ACC_DELETE));
-        $this->view->assign('showPass', ($this->_action == Acl::ACTION_ACC_NEW || $this->_action == Acl::ACTION_ACC_COPY));
-        $this->view->assign('showFiles', (($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)
+            && ($this->view->isModified || $this->action == Acl::ACTION_ACC_VIEW_HISTORY)));
+        $this->view->assign('showDetails', ($this->action == Acl::ACTION_ACC_VIEW || $this->action == Acl::ACTION_ACC_VIEW_HISTORY || $this->action == Acl::ACTION_ACC_DELETE));
+        $this->view->assign('showPass', ($this->action == Acl::ACTION_ACC_NEW || $this->action == Acl::ACTION_ACC_COPY));
+        $this->view->assign('showFiles', (($this->action == Acl::ACTION_ACC_EDIT || $this->action == Acl::ACTION_ACC_VIEW || $this->action == Acl::ACTION_ACC_VIEW_HISTORY)
             && (Checks::fileIsEnabled() && Acl::checkUserAccess(Acl::ACTION_ACC_FILES))));
-        $this->view->assign('showViewPass', (($this->_action == Acl::ACTION_ACC_VIEW || $this->_action == Acl::ACTION_ACC_VIEW_HISTORY)
+        $this->view->assign('showViewPass', (($this->action == Acl::ACTION_ACC_VIEW || $this->action == Acl::ACTION_ACC_VIEW_HISTORY)
             && (Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $aclData)
                 && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS))));
-        $this->view->assign('showSave', ($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_NEW || $this->_action == Acl::ACTION_ACC_COPY));
-        $this->view->assign('showEdit', ($this->_action == Acl::ACTION_ACC_VIEW
+        $this->view->assign('showSave', ($this->action == Acl::ACTION_ACC_EDIT || $this->action == Acl::ACTION_ACC_NEW || $this->action == Acl::ACTION_ACC_COPY));
+        $this->view->assign('showEdit', ($this->action == Acl::ACTION_ACC_VIEW
             && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)
-            && !$this->_account->getAccountIsHistory()));
-        $this->view->assign('showEditPass', ($this->_action == Acl::ACTION_ACC_EDIT || $this->_action == Acl::ACTION_ACC_VIEW
+            && !$this->account->getAccountIsHistory()));
+        $this->view->assign('showEditPass', ($this->action == Acl::ACTION_ACC_EDIT || $this->action == Acl::ACTION_ACC_VIEW
             && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT_PASS)
-            && !$this->_account->getAccountIsHistory()));
-        $this->view->assign('showDelete', ($this->_action == Acl::ACTION_ACC_DELETE || $this->_action == Acl::ACTION_ACC_EDIT
+            && !$this->account->getAccountIsHistory()));
+        $this->view->assign('showDelete', ($this->action == Acl::ACTION_ACC_DELETE || $this->action == Acl::ACTION_ACC_EDIT
             && Acl::checkAccountAccess(Acl::ACTION_ACC_DELETE, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_DELETE)));
-        $this->view->assign('showRestore', ($this->_action == Acl::ACTION_ACC_VIEW_HISTORY
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->_account->getAccountDataForACL($this->_account->getAccountParentId()))
+        $this->view->assign('showRestore', ($this->action == Acl::ACTION_ACC_VIEW_HISTORY
+            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->account->getAccountDataForACL($this->account->getAccountParentId()))
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)));
         $this->view->assign('showLink', Checks::publicLinksIsEnabled() && Acl::checkUserAccess(Acl::ACTION_MGM_PUBLICLINKS));
     }
@@ -277,7 +278,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleGreen',
                 'name' => _('Copiar Cuenta'),
-                'icon' => $this->_icons->getIconCopy()->getIcon()
+                'icon' => $this->icons->getIconCopy()->getIcon()
             )
         );
         $this->view->assign('nextaction', self::ACTION_ACC_COPY);
@@ -294,12 +295,11 @@ class Account extends Controller implements ActionsInterface
     private function setAccountData()
     {
         try {
-            $this->setAccount(new \SP\Account\Account());
-            $this->_account->setAccountId($this->getId());
-            $this->_account->setAccountParentId($this->getId());
+            $this->setAccount(new \SP\Account\Account(new AccountData($this->getId())));
+            $this->account->setAccountParentId($this->getId());
 
             $this->view->assign('accountId', $this->getId());
-            $this->view->assign('accountData', $this->getAccount()->getAccountData());
+            $this->view->assign('accountData', $this->getAccount()->getData());
             $this->view->assign('gotData', true);
 
 //            $this->setAccountDetails();
@@ -313,20 +313,11 @@ class Account extends Controller implements ActionsInterface
     }
 
     /**
-     * @param Account|AccountHistory $account
+     * @param \SP\Account\Account|\SP\Account\AccountHistory $account
      */
     private function setAccount($account)
     {
-        $this->_account = $account;
-    }
-
-    /**
-     * Establecer variables que contienen la información detallada de la cuenta.
-     */
-    private function setAccountDetails()
-    {
-        $this->_account->setAccountUsersId(UserAccounts::getUsersForAccount($this->getId()));
-        $this->_account->setAccountUserGroupsId(Groups::getGroupsForAccount($this->getId()));
+        $this->account = $account;
     }
 
     /**
@@ -334,7 +325,7 @@ class Account extends Controller implements ActionsInterface
      */
     private function setGotData($gotData)
     {
-        $this->_gotData = $gotData;
+        $this->gotData = $gotData;
     }
 
     /**
@@ -356,7 +347,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleOrange',
                 'name' => _('Editar Cuenta'),
-                'icon' => $this->_icons->getIconEdit()->getIcon()
+                'icon' => $this->icons->getIconEdit()->getIcon()
             )
         );
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
@@ -384,7 +375,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleRed',
                 'name' => _('Eliminar Cuenta'),
-                'icon' => $this->_icons->getIconDelete()->getIcon()
+                'icon' => $this->icons->getIconDelete()->getIcon()
             )
         );
 
@@ -411,14 +402,14 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleNormal',
                 'name' => _('Detalles de Cuenta'),
-                'icon' => $this->_icons->getIconView()->getIcon()
+                'icon' => $this->icons->getIconView()->getIcon()
             )
         );
 
         $this->view->assign('isView', true);
 
         \SP\Core\Session::setAccountParentId($this->getId());
-        $this->_account->incrementViewCounter();
+        $this->account->incrementViewCounter();
 
         $this->setCommonData();
         $this->setShowData();
@@ -447,7 +438,8 @@ class Account extends Controller implements ActionsInterface
             )
         );
 
-        $this->_account->setAccountIsHistory(1);
+        $this->view->assign('isView', true);
+        $this->account->setAccountIsHistory(1);
 
         $this->setCommonData();
         $this->setShowData();
@@ -461,12 +453,11 @@ class Account extends Controller implements ActionsInterface
     private function setAccountDataHistory()
     {
         try {
-            $this->setAccount(new \SP\Account\AccountHistory());
-            $this->_account->setAccountId($this->getId());
-            $this->_account->setAccountParentId(Session::getAccountParentId());
+            $this->setAccount(new \SP\Account\AccountHistory(new AccountData($this->getId())));
+            $this->account->setAccountParentId(Session::getAccountParentId());
 
             $this->view->assign('accountId', $this->getId());
-            $this->view->assign('accountData', $this->getAccount()->getAccountData());
+            $this->view->assign('accountData', $this->getAccount()->getData());
             $this->view->assign('gotData', true);
 
 //            $this->setAccountDetails();
@@ -499,7 +490,7 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleOrange',
                 'name' => _('Modificar Clave de Cuenta'),
-                'icon' => $this->_icons->getIconEditPass()->getIcon()
+                'icon' => $this->icons->getIconEditPass()->getIcon()
             )
         );
         $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
@@ -536,22 +527,31 @@ class Account extends Controller implements ActionsInterface
             array(
                 'class' => 'titleNormal',
                 'name' => _('Detalles de Cuenta'),
-                'icon' => $this->_icons->getIconView()->getIcon()
+                'icon' => $this->icons->getIconView()->getIcon()
             )
         );
-        $this->_account->incrementViewCounter();
-        $this->_account->incrementDecryptCounter();
-        $this->_account->getAccountPassData();
+        $this->account->incrementViewCounter();
+        $this->account->incrementDecryptCounter();
+        $this->account->getAccountPassData();
 
         // Desencriptar la clave de la cuenta
         $pass = Crypt::generateAesKey($PublicLink->getLinkHash());
         $masterPass = Crypt::getDecrypt($PublicLink->getPass(), $PublicLink->getPassIV(), $pass);
-        $accountPass = Crypt::getDecrypt($this->_account->getAccountPass(), $this->_account->getAccountIV(), $masterPass);
+        $accountPass = Crypt::getDecrypt($this->account->getAccountData()->getAccountPass(), $this->account->getAccountData()->getAccountIV(), $masterPass);
 
-        if (Config::getValue('publinks_image_enabled', false)) {
+        if (Config::getConfig()->isPublinksImageEnabled()) {
             $accountPass = ImageUtil::convertText($accountPass);
         }
 
         $this->view->assign('accountPass', $accountPass);
+    }
+
+    /**
+     * Establecer variables que contienen la información detallada de la cuenta.
+     */
+    private function setAccountDetails()
+    {
+        $this->account->getAccountData()->setAccountUsersId(UserAccounts::getUsersForAccount($this->getId()));
+        $this->account->getAccountData()->setAccountUserGroupsId(Groups::getGroupsForAccount($this->getId()));
     }
 }

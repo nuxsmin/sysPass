@@ -42,39 +42,39 @@ class Icons extends ThemeIconsBase
      */
     public function setIcons()
     {
-        $this->_iconAdd = new FontIcon('add', 'mdl-color-text--indigo-A200', _('Añadir'));
-        $this->_iconView = new FontIcon('visibility', 'mdl-color-text--indigo-A200', _('Ver Detalles'));
-        $this->_iconViewPass = new FontIcon('lock_open', 'mdl-color-text--indigo-A200', _('Ver Clave'));
-        $this->_iconEdit = new FontIcon('mode_edit', 'mdl-color-text--amber-A200', _('Editar'));
-        $this->_iconDelete = new FontIcon('delete', 'mdl-color-text--red-A200', _('Eliminar'));
-        $this->_iconEditPass = new FontIcon('lock_outline', 'mdl-color-text--amber-A200', _('Cambiar Clave'));
-        $this->_iconAppAdmin = new FontIcon('star', 'mdl-color-text--amber-A100', _('Admin Aplicación'));
-        $this->_iconAccAdmin = new FontIcon('star_half', 'mdl-color-text--amber-A100', _('Admin Cuentas'));
-        $this->_iconLdapUser = new FontIcon('business', 'mdl-color-text--deep-purple-A100', _('Usuario de LDAP'));
-        $this->_iconDisabled = new FontIcon('error', 'mdl-color-text--red-A100', _('Deshabilitado'));
-        $this->_iconRefresh = new FontIcon('refresh', 'mdl-color-text--teal-500', _('Actualizar'));
-        $this->_iconCopy = new FontIcon('content_copy', 'mdl-color-text--indigo-A200', _('Copiar'));
-        $this->_iconClipboard = new FontIcon('content_paste', 'mdl-color-text--indigo-A200');
-        $this->_iconEmail = new FontIcon('email', 'mdl-color-text--indigo-A200', _('Email'));
-        $this->_iconOptional = new FontIcon('settings');
-        $this->_iconPublicLink = new FontIcon('link', 'mdl-color-text--teal-500');
-        $this->_iconBack = new FontIcon('arrow_back', 'mdl-color-text--indigo-A200', _('Volver'));
-        $this->_iconRestore = new FontIcon('restore', 'mdl-color-text--teal-500', ('Restaurar'));
-        $this->_iconSave = new FontIcon('save', 'mdl-color-text--teal-500', _('Guardar'));
-        $this->_iconHelp = new FontIcon('help_outline', 'mdl-color-text--indigo-A100', _('Ayuda'));
-        $this->_iconClear = new FontIcon('clear_all', 'mdl-color--indigo-A200', _('Limpiar'));
-        $this->_iconPlay = new FontIcon('play_circle_filled', 'mdl-color-text--teal-500', _('Realizar'));
-        $this->_iconDownload = new FontIcon('file_download', 'mdl-color-text--indigo-A200', _('Descargar'));
-        $this->_iconWarning = new FontIcon('warning', 'mdl-color-text--amber-A100', _('Aviso'));
+        $this->iconAdd = new FontIcon('add', 'mdl-color-text--indigo-A200', _('Añadir'));
+        $this->iconView = new FontIcon('visibility', 'mdl-color-text--indigo-A200', _('Ver Detalles'));
+        $this->iconViewPass = new FontIcon('lock_open', 'mdl-color-text--indigo-A200', _('Ver Clave'));
+        $this->iconEdit = new FontIcon('mode_edit', 'mdl-color-text--amber-A200', _('Editar'));
+        $this->iconDelete = new FontIcon('delete', 'mdl-color-text--red-A200', _('Eliminar'));
+        $this->iconEditPass = new FontIcon('lock_outline', 'mdl-color-text--amber-A200', _('Cambiar Clave'));
+        $this->iconAppAdmin = new FontIcon('star', 'mdl-color-text--amber-A100', _('Admin Aplicación'));
+        $this->iconAccAdmin = new FontIcon('star_half', 'mdl-color-text--amber-A100', _('Admin Cuentas'));
+        $this->iconLdapUser = new FontIcon('business', 'mdl-color-text--deep-purple-A100', _('Usuario de LDAP'));
+        $this->iconDisabled = new FontIcon('error', 'mdl-color-text--red-A100', _('Deshabilitado'));
+        $this->iconRefresh = new FontIcon('refresh', 'mdl-color-text--teal-500', _('Actualizar'));
+        $this->iconCopy = new FontIcon('content_copy', 'mdl-color-text--indigo-A200', _('Copiar'));
+        $this->iconClipboard = new FontIcon('content_paste', 'mdl-color-text--indigo-A200');
+        $this->iconEmail = new FontIcon('email', 'mdl-color-text--indigo-A200', _('Email'));
+        $this->iconOptional = new FontIcon('settings');
+        $this->iconPublicLink = new FontIcon('link', 'mdl-color-text--teal-500');
+        $this->iconBack = new FontIcon('arrow_back', 'mdl-color-text--indigo-A200', _('Volver'));
+        $this->iconRestore = new FontIcon('restore', 'mdl-color-text--teal-500', ('Restaurar'));
+        $this->iconSave = new FontIcon('save', 'mdl-color-text--teal-500', _('Guardar'));
+        $this->iconHelp = new FontIcon('help_outline', 'mdl-color-text--indigo-A100', _('Ayuda'));
+        $this->iconClear = new FontIcon('clear_all', 'mdl-color--indigo-A200', _('Limpiar'));
+        $this->iconPlay = new FontIcon('play_circle_filled', 'mdl-color-text--teal-500', _('Realizar'));
+        $this->iconDownload = new FontIcon('file_download', 'mdl-color-text--indigo-A200', _('Descargar'));
+        $this->iconWarning = new FontIcon('warning', 'mdl-color-text--amber-A100', _('Aviso'));
 
         // Iconos de Navegación
-        $this->_iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));
-        $this->_iconNavNext = new FontIcon('chevron_right', null, _('Página siguiente'));
-        $this->_iconNavFirst = new FontIcon('arrow_back', null, _('Primera página'));
-        $this->_iconNavLast = new FontIcon('arrow_forward', null, _('Última página'));
+        $this->iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));
+        $this->iconNavNext = new FontIcon('chevron_right', null, _('Página siguiente'));
+        $this->iconNavFirst = new FontIcon('arrow_back', null, _('Primera página'));
+        $this->iconNavLast = new FontIcon('arrow_forward', null, _('Última página'));
 
         // Iconos de Ordenación
-        $this->_iconUp = new FontIcon('arrow_drop_up');
-        $this->_iconDown = new FontIcon('arrow_drop_down');
+        $this->iconUp = new FontIcon('arrow_drop_up');
+        $this->iconDown = new FontIcon('arrow_drop_down');
     }
 }

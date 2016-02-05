@@ -90,7 +90,7 @@ class Language
     private function getGlobalLang()
     {
         $browserLang = $this->getBrowserLang();
-        $configLang = Config::getValue('sitelang');
+        $configLang = Config::getConfig()->getSiteLang();
 
         // Establecer a en_US si no existe la traducción o no es español
         if (!$configLang

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,32 +23,33 @@
  *
  */
 
-namespace SP\Import;
-
-use SP\Core\SPException;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+namespace SP\Storage;
 
 /**
- * Class CsvImport para importar cuentas desde archivos CSV
+ * Interface StorageInterface
  *
- * @package SP
+ * @package SMD\Storage
  */
-class CsvImport extends CsvImportBase
+interface FileStorageInterface
 {
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws SPException
-     * @return bool
+     * @return FileStorageInterface
      */
-    public function doImport()
-    {
-        try{
-            $this->file->readFileToArray();
-            $this->processAccounts();
-        } catch (SPException $e){
-            throw $e;
-        }
-    }
+    public function load();
+
+    /**
+     * @return FileStorageInterface
+     */
+    public function save();
+
+    /**
+     * @return mixed
+     */
+    public function getItems();
+
+    /**
+     * @param $items
+     * @return mixed
+     */
+    public function setItems($items);
 }

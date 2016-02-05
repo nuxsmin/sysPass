@@ -25,6 +25,8 @@
 
 namespace SP\Import;
 
+use SimpleXMLElement;
+use SP\Account\AccountData;
 use SP\Core\Crypt;
 use SP\Core\SPException;
 
@@ -36,6 +38,15 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class KeepassXImport extends XmlImportBase
 {
     /**
+     * @var int
+     */
+    private $customerId = 0;
+    /**
+     * @var int
+     */
+    private $categoryId = 0;
+
+    /**
      * Iniciar la importación desde KeePassX.
      *
      * @throws SPException
@@ -44,18 +55,17 @@ class KeepassXImport extends XmlImportBase
     public function doImport()
     {
         $this->setCustomerName('KeePassX');
-        $this->setCustomerId($this->addCustomer());
+        $this->customerId = $this->addCustomer();
 
-        self::processCategories($this->_xml);
+        self::processCategories($this->xml);
     }
-
 
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
-     * @param \SimpleXMLElement $xml con objeto XML del archivo de KeePass
+     * @param SimpleXMLElement $xml con objeto XML del archivo de KeePass
      */
-    protected function processCategories(\SimpleXMLElement $xml)
+    protected function processCategories(SimpleXMLElement $xml)
     {
         foreach ($xml as $node) {
             if ($node->group) {
@@ -64,7 +74,7 @@ class KeepassXImport extends XmlImportBase
                     if ($node->group->entry) {
                         // Crear la categoría
                         $this->setCategoryName($group->title);
-                        $this->setCategoryId($this->addCategory());
+                        $this->categoryId = $this->addCategory();
 
                         // Crear cuentas
                         $this->processAccounts($group->entry);
@@ -80,7 +90,7 @@ class KeepassXImport extends XmlImportBase
             if ($node->entry) {
                 // Crear la categoría
                 $this->setCategoryName($node->title);
-                $this->setCategoryId($this->addCategory());
+                $this->categoryId = $this->addCategory();
 
                 // Crear cuentas
                 $this->processAccounts($node->entry);
@@ -91,10 +101,9 @@ class KeepassXImport extends XmlImportBase
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param \SimpleXMLElement $entries El objeto XML con las entradas
-     * @param string $groupName con nombre del grupo a procesar
+     * @param SimpleXMLElement $entries El objeto XML con las entradas
      */
-    protected function processAccounts(\SimpleXMLElement $entries, $groupName)
+    protected function processAccounts(SimpleXMLElement $entries)
     {
         foreach ($entries as $entry) {
             $notes = (isset($entry->comment)) ? (string)$entry->comment : '';
@@ -105,14 +114,17 @@ class KeepassXImport extends XmlImportBase
 
             $passData = Crypt::encryptData($password);
 
-            $this->setAccountPass($passData['data']);
-            $this->setAccountPassIV($passData['iv']);
-            $this->setAccountNotes($notes);
-            $this->setAccountName($name);
-            $this->setAccountUrl($url);
-            $this->setAccountLogin($username);
+            $AccountData = new AccountData();
+            $AccountData->setAccountPass($passData['data']);
+            $AccountData->setAccountIV($passData['iv']);
+            $AccountData->setAccountNotes($notes);
+            $AccountData->setAccountName($name);
+            $AccountData->setAccountUrl($url);
+            $AccountData->setAccountLogin($username);
+            $AccountData->setAccountCustomerId($this->customerId);
+            $AccountData->setAccountCategoryId($this->categoryId);
 
-            $this->addAccount();
+            $this->addAccount($AccountData);
         }
     }
 }

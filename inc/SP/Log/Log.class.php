@@ -26,6 +26,7 @@
 namespace SP\Log;
 
 use SP\Config\Config;
+use SP\Core\Init;
 use SP\Storage\DB;
 use SP\Core\Session;
 use SP\Storage\QueryData;
@@ -132,7 +133,9 @@ class Log extends ActionLog
      */
     public function writeLog($resetDescription = false)
     {
-        if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
+        if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
+            || Init::$DB_STATUS === 0
+        ) {
             error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription());
             return false;
         }
@@ -141,7 +144,7 @@ class Log extends ActionLog
             return false;
         }
 
-        if (Checks::syslogIsEnabled()){
+        if (Checks::syslogIsEnabled()) {
             $this->sendToSyslog();
         }
 

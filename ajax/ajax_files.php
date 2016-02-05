@@ -69,13 +69,10 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 
     $Log->setAction(_('Subir Archivo'));
 
-    $allowedExts = strtoupper(Config::getValue('files_allowed_exts'));
-    $allowedSize = Config::getValue('files_allowed_size');
+    $allowedExts = Config::getConfig()->getFilesAllowedExts();
+    $allowedSize = Config::getConfig()->getFilesAllowedSize();
 
-    if ($allowedExts) {
-        // Extensiones aceptadas
-        $extsOk = explode(",", $allowedExts);
-    } else {
+    if (count($allowedExts) === 0) {
         $Log->addDescription(_('No hay extensiones permitidas'));
         $Log->writeLog();
 
@@ -86,7 +83,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         // Comprobamos la extensión del archivo
         $fileData['extension'] = strtoupper(pathinfo($_FILES['inFile']['name'], PATHINFO_EXTENSION));
 
-        if (!in_array($fileData['extension'], $extsOk)) {
+        if (!in_array($fileData['extension'], $allowedExts)) {
             $Log->addDescription(_('Tipo de archivo no soportado'));
             $Log->addDetails(_('Extensión'), $fileData['extension']);
             $Log->writeLog();

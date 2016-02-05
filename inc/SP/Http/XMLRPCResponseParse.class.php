@@ -41,15 +41,15 @@ abstract class XMLRPCResponseParse
     /**
      * @var DOMElement
      */
-    private $_root;
+    private $root;
     /**
      * @var string
      */
-    private $_xml;
+    private $xml;
     /**
      * @var array
      */
-    private $_data = array();
+    private $data = array();
 
     /**
      * Constructor
@@ -59,7 +59,7 @@ abstract class XMLRPCResponseParse
     public function __construct($xml)
     {
         try {
-            $this->_xml = $xml;
+            $this->xml = $xml;
 
             $dom = new DOMDocument();
             $dom->loadXML($xml);
@@ -68,7 +68,7 @@ abstract class XMLRPCResponseParse
                 throw new \DOMException(_('Respuesta XML-RPC inválida'));
             }
 
-            $this->_root = $dom->documentElement;
+            $this->root = $dom->documentElement;
         } catch (\DOMException $e) {
             throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         }
@@ -81,7 +81,7 @@ abstract class XMLRPCResponseParse
      */
     public function getError()
     {
-        return $this->parseNodes($this->_root->getElementsByTagName('fault'));
+        return $this->parseNodes($this->root->getElementsByTagName('fault'));
     }
 
     /**
@@ -107,7 +107,7 @@ abstract class XMLRPCResponseParse
                         case 'fault':
                             return $this->parseFault($node);
                         case 'value':
-                            $this->_data = $this->parseValues($node);
+                            $this->data = $this->parseValues($node);
                             break;
                         default:
                             $this->parseNodes($node->childNodes);
@@ -259,9 +259,9 @@ abstract class XMLRPCResponseParse
      */
     public function parseParams()
     {
-        $this->parseNodes($this->_root->getElementsByTagName('params'));
+        $this->parseNodes($this->root->getElementsByTagName('params'));
 
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -271,6 +271,6 @@ abstract class XMLRPCResponseParse
      */
     public function getXml()
     {
-        return $this->_xml;
+        return $this->xml;
     }
 }

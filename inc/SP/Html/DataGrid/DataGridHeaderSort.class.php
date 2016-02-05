@@ -71,7 +71,7 @@ class DataGridHeaderSort extends DataGridHeaderBase
     }
 
     /**
-     * @param DataGridSortInterface[] $field
+     * @param DataGridSortInterface $field
      */
     public function addSortField($field)
     {

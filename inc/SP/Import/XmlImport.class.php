@@ -51,13 +51,13 @@ class XmlImport extends XmlImportBase
 
         switch ($format) {
             case 'syspass':
-                $import = new SyspassImport($this->_file);
+                $import = new SyspassImport($this->file);
                 break;
             case 'keepass':
-                $import = new KeepassImport($this->_file);
+                $import = new KeepassImport($this->file);
                 break;
             case 'keepassx':
-                $import = new KeepassXImport($this->_file);
+                $import = new KeepassXImport($this->file);
                 break;
         }
 

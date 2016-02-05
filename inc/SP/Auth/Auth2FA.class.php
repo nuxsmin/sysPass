@@ -43,23 +43,23 @@ class Auth2FA
     /**
      * @var int
      */
-    private $_timestamp = 0;
+    private $timestamp = 0;
     /**
      * @var string
      */
-    private $_initializationKey = '';
+    private $initializationKey = '';
     /**
      * @var string
      */
-    private $_totp = '';
+    private $totp = '';
     /**
      * @var int
      */
-    private $_userId = 0;
+    private $userId = 0;
     /**
      * @var string
      */
-    private $_userLogin = '';
+    private $userLogin = '';
 
     /**
      * @param int    $userId    El Id de usuario
@@ -67,9 +67,9 @@ class Auth2FA
      */
     public function __construct($userId, $userLogin = null)
     {
-        $this->_userId = $userId;
-        $this->_userLogin = $userLogin;
-        $this->_initializationKey = $this->genUserInitializationKey();
+        $this->userId = $userId;
+        $this->userLogin = $userLogin;
+        $this->initializationKey = $this->genUserInitializationKey();
     }
 
     /**
@@ -79,7 +79,7 @@ class Auth2FA
      */
     private function genUserInitializationKey()
     {
-        $userIV = UserPass::getUserIVById($this->_userId);
+        $userIV = UserPass::getUserIVById($this->userId);
         $base32 = new Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
         $key = substr($base32->encode($userIV), 0, 16);
 
@@ -91,7 +91,7 @@ class Auth2FA
      */
     public function setUserId($userId)
     {
-        $this->_userId = $userId;
+        $this->userId = $userId;
     }
 
     /**
@@ -99,7 +99,7 @@ class Auth2FA
      */
     public function setUserLogin($userLogin)
     {
-        $this->_userLogin = $userLogin;
+        $this->userLogin = $userLogin;
     }
 
     /**
@@ -110,7 +110,7 @@ class Auth2FA
      */
     public function verifyKey($key)
     {
-        return Google2FA::verify_key($this->_initializationKey, $key);
+        return Google2FA::verify_key($this->initializationKey, $key);
     }
 
     /**
@@ -136,7 +136,7 @@ class Auth2FA
     public function getUserQRUrl()
     {
         $qrUrl = 'https://www.google.com/chart?chs=150x150&chld=M|0&cht=qr&chl=';
-        $qrUrl .= urlencode('otpauth://totp/sysPass:syspass/' . $this->_userLogin . '?secret=' . $this->_initializationKey . '&issuer=sysPass');
+        $qrUrl .= urlencode('otpauth://totp/sysPass:syspass/' . $this->userLogin . '?secret=' . $this->initializationKey . '&issuer=sysPass');
 
         return $qrUrl;
     }
@@ -151,7 +151,7 @@ class Auth2FA
     public function checkUserToken($userToken)
     {
         $timeStamp = Google2FA::get_timestamp();
-        $secretkey = Google2FA::base32_decode($this->_initializationKey);
+        $secretkey = Google2FA::base32_decode($this->initializationKey);
         $totp = Google2FA::oath_totp($secretkey, $timeStamp);
 
         error_log($totp . '/' . $userToken);

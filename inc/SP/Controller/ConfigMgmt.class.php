@@ -46,7 +46,8 @@ use SP\Util\Util;
  */
 class ConfigMgmt extends Controller implements ActionsInterface
 {
-    private $_tabIndex = 0;
+    private $tabIndex = 0;
+    private $Config;
 
     /**
      * Constructor
@@ -56,6 +57,8 @@ class ConfigMgmt extends Controller implements ActionsInterface
     public function __construct(\SP\Core\Template $template = null)
     {
         parent::__construct($template);
+
+        $this->Config = Config::getConfig();
 
         $this->view->assign('tabs', array());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
@@ -79,47 +82,47 @@ class ConfigMgmt extends Controller implements ActionsInterface
         $this->view->addTemplate('config');
 
         $this->view->assign('langsAvailable',Language::getAvailableLanguages());
-        $this->view->assign('currentLang', Config::getValue('sitelang'));
+        $this->view->assign('currentLang', $this->Config->getSiteLang());
         $this->view->assign('themesAvailable', Themes::getThemesAvailable());
-        $this->view->assign('currentTheme', Config::getValue('sitetheme'));
-        $this->view->assign('chkHttps', (Config::getValue('https_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkDebug', (Config::getValue('debug')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMaintenance', (Config::getValue('maintenance')) ? 'checked="checked"' : '');
-        $this->view->assign('chkUpdates', (Config::getValue('checkupdates')) ? 'checked="checked"' : '');
-        $this->view->assign('chkNotices', (Config::getValue('checknotices')) ? 'checked="checked"' : '');
-        $this->view->assign('sessionTimeout', Config::getValue('session_timeout'));
+        $this->view->assign('currentTheme', $this->Config->getSiteTheme());
+        $this->view->assign('chkHttps', ($this->Config->isHttpsEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkDebug', ($this->Config->isDebug()) ? 'checked="checked"' : '');
+        $this->view->assign('chkMaintenance', ($this->Config->isMaintenance()) ? 'checked="checked"' : '');
+        $this->view->assign('chkUpdates', ($this->Config->isCheckUpdates()) ? 'checked="checked"' : '');
+        $this->view->assign('chkNotices', ($this->Config->isChecknotices()) ? 'checked="checked"' : '');
+        $this->view->assign('sessionTimeout', $this->Config->getSessionTimeout());
 
         // Events
-        $this->view->assign('chkLog', (Config::getValue('log_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkSyslog', (Config::getValue('syslog_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkRemoteSyslog', (Config::getValue('syslog_remote_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('remoteSyslogServer', Config::getValue('syslog_server'));
-        $this->view->assign('remoteSyslogPort', Config::getValue('syslog_port'));
+        $this->view->assign('chkLog', ($this->Config->isLogEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkSyslog', ($this->Config->isSyslogEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkRemoteSyslog', ($this->Config->isSyslogRemoteEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('remoteSyslogServer', $this->Config->getSyslogServer());
+        $this->view->assign('remoteSyslogPort', $this->Config->getSyslogPort());
 
         // Files
-        $this->view->assign('chkFiles', (Config::getValue('files_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('filesAllowedExts', Config::getValue('files_allowed_exts'));
-        $this->view->assign('filesAllowedSize', Config::getValue('files_allowed_size'));
+        $this->view->assign('chkFiles', ($this->Config->isFilesEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('filesAllowedExts', implode(',', $this->Config->getFilesAllowedExts()));
+        $this->view->assign('filesAllowedSize', $this->Config->getFilesAllowedSize());
 
         // Accounts
-        $this->view->assign('chkGlobalSearch', (Config::getValue('globalsearch')) ? 'checked="checked"' : '');
-        $this->view->assign('chkResultsAsCards', (Config::getValue('resultsascards')) ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountPassToImage', (Config::getValue('account_passtoimage')) ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountLink', (Config::getValue('account_link')) ? 'checked="checked"' : '');
-        $this->view->assign('accountCount', Config::getValue('account_count'));
+        $this->view->assign('chkGlobalSearch', ($this->Config->isGlobalSearch()) ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', ($this->Config->isResultsAsCards()) ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountPassToImage', ($this->Config->isAccountPassToImage()) ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountLink', ($this->Config->isAccountLink()) ? 'checked="checked"' : '');
+        $this->view->assign('accountCount', $this->Config->getAccountCount());
+
+        // PublicLinks
+        $this->view->assign('chkPubLinks', ($this->Config->isPublinksImageEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkPubLinksImage', ($this->Config->isPublinksImageEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
+        $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());
 
         // Proxy
-        $this->view->assign('chkPubLinks', (Config::getValue('publinks_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkPubLinksImage', (Config::getValue('publinks_image_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('pubLinksMaxTime', Config::getValue('publinks_maxtime') / 60);
-        $this->view->assign('pubLinksMaxViews', Config::getValue('publinks_maxviews'));
-
-        // Proxy
-        $this->view->assign('chkProxy', (Config::getValue('proxy_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('proxyServer', Config::getValue('proxy_server'));
-        $this->view->assign('proxyPort', Config::getValue('proxy_port'));
-        $this->view->assign('proxyUser', Config::getValue('proxy_user'));
-        $this->view->assign('proxyPass', Config::getValue('proxy_pass'));
+        $this->view->assign('chkProxy', ($this->Config->isProxyEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('proxyServer', $this->Config->getProxyServer());
+        $this->view->assign('proxyPort', $this->Config->getProxyPort());
+        $this->view->assign('proxyUser', $this->Config->getProxyUser());
+        $this->view->assign('proxyPass', $this->Config->getProxyPass());
 
         $this->view->assign('actionId', $this->getAction(), 'config');
         $this->view->append('tabs', array('title' => _('General')));
@@ -169,8 +172,8 @@ class ConfigMgmt extends Controller implements ActionsInterface
         $this->view->assign('backupDir', Init::$SERVERROOT . '/backup');
         $this->view->assign('backupPath', Init::$WEBROOT . '/backup');
 
-        $backupHash =  Config::getValue('backup_hash');
-        $exportHash =  Config::getValue('export_hash');
+        $backupHash =  $this->Config->getBackupHash();
+        $exportHash =  $this->Config->getExportHash();
 
         $this->view->assign('backupFile',
             array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName  . '-' . $backupHash . '.tar.gz',
@@ -232,7 +235,7 @@ class ConfigMgmt extends Controller implements ActionsInterface
         $this->view->addTemplate('info');
 
         $this->view->assign('dbInfo', DBUtil::getDBinfo());
-        $this->view->assign('dbName', Config::getValue('dbname') . '@' . Config::getValue('dbhost'));
+        $this->view->assign('dbName', $this->Config->getDbName() . '@' . $this->Config->getDbHost());
         $this->view->assign('configBackupDate', date("r", ConfigDB::getValue('config_backupdate')));
 
         $this->view->append('tabs', array('title' => _('Información')));
@@ -253,18 +256,17 @@ class ConfigMgmt extends Controller implements ActionsInterface
 
         $this->view->addTemplate('wiki');
 
-        $this->view->assign('chkWiki', (Config::getValue('wiki_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('wikiSearchUrl', Config::getValue('wiki_searchurl'));
-        $this->view->assign('wikiPageUrl', Config::getValue('wiki_pageurl'));
-        $this->view->assign('wikiFilter', Config::getValue('wiki_filter'));
-        $this->view->assign('dokuWikiUrl', Config::getValue('dokuwiki_url'));
+        $this->view->assign('chkWiki', ($this->Config->isWikiEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('wikiSearchUrl', $this->Config->getWikiSearchurl());
+        $this->view->assign('wikiPageUrl', $this->Config->getWikiPageurl());
+        $this->view->assign('wikiFilter', implode(',', $this->Config->getWikiFilter()));
 
-        $this->view->assign('chkDokuWiki', (Config::getValue('dokuwiki_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('dokuWikiUrl', Config::getValue('dokuwiki_url'));
-        $this->view->assign('dokuWikiUrlBase', Config::getValue('dokuwiki_urlbase'));
-        $this->view->assign('dokuWikiUser', Config::getValue('dokuwiki_user'));
-        $this->view->assign('dokuWikiPass', Config::getValue('dokuwiki_pass'));
-        $this->view->assign('dokuWikiNamespace', Config::getValue('dokuwiki_namespace'));
+        $this->view->assign('chkDokuWiki', ($this->Config->isDokuwikiEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('dokuWikiUrl', $this->Config->getDokuwikiUrl());
+        $this->view->assign('dokuWikiUrlBase', $this->Config->getDokuwikiUrlBase());
+        $this->view->assign('dokuWikiUser', $this->Config->getDokuwikiUser());
+        $this->view->assign('dokuWikiPass', $this->Config->getDokuwikiPass());
+        $this->view->assign('dokuWikiNamespace', $this->Config->getDokuwikiNamespace());
 
         $this->view->assign('actionId', $this->getAction(), 'wiki');
         $this->view->append('tabs', array('title' => _('Wiki')));
@@ -285,18 +287,18 @@ class ConfigMgmt extends Controller implements ActionsInterface
 
         $this->view->addTemplate('ldap');
 
-        $this->view->assign('chkLdap', (Config::getValue('ldap_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkLdapADS', (Config::getValue('ldap_ads')) ? 'checked="checked"' : '');
+        $this->view->assign('chkLdap', ($this->Config->isLdapEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkLdapADS', ($this->Config->isLdapAds()) ? 'checked="checked"' : '');
         $this->view->assign('ldapIsAvailable', Checks::ldapIsAvailable());
-        $this->view->assign('ldapServer', Config::getValue('ldap_server'));
-        $this->view->assign('ldapBindUser', Config::getValue('ldap_binduser'));
-        $this->view->assign('ldapBindPass', Config::getValue('ldap_bindpass'));
-        $this->view->assign('ldapBase', Config::getValue('ldap_base'));
-        $this->view->assign('ldapGroup', Config::getValue('ldap_group'));
+        $this->view->assign('ldapServer', $this->Config->getLdapServer());
+        $this->view->assign('ldapBindUser', $this->Config->getLdapBindUser());
+        $this->view->assign('ldapBindPass', $this->Config->getLdapBindPass());
+        $this->view->assign('ldapBase', $this->Config->getLdapBase());
+        $this->view->assign('ldapGroup', $this->Config->getLdapGroup());
         $this->view->assign('groups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
         $this->view->assign('profiles', DBUtil::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
-        $this->view->assign('ldapDefaultGroup', Config::getValue('ldap_defaultgroup'));
-        $this->view->assign('ldapDefaultProfile', Config::getValue('ldap_defaultprofile'));
+        $this->view->assign('ldapDefaultGroup', $this->Config->getLdapDefaultGroup());
+        $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
 
         $this->view->assign('actionId', $this->getAction(), 'ldap');
         $this->view->append('tabs', array('title' => _('LDAP')));
@@ -317,15 +319,15 @@ class ConfigMgmt extends Controller implements ActionsInterface
 
         $this->view->addTemplate('mail');
 
-        $this->view->assign('chkMail', (Config::getValue('mail_enabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMailRequests', (Config::getValue('mail_requestsenabled')) ? 'checked="checked"' : '');
-        $this->view->assign('chkMailAuth', (Config::getValue('mail_authenabled')) ? 'checked="checked"' : '');
-        $this->view->assign('mailServer', Config::getValue('mail_server','localhost'));
-        $this->view->assign('mailPort', Config::getValue('mail_port',25));
-        $this->view->assign('mailUser', Config::getValue('mail_user'));
-        $this->view->assign('mailPass', Config::getValue('mail_pass'));
-        $this->view->assign('currentMailSecurity', Config::getValue('mail_security'));
-        $this->view->assign('mailFrom', Config::getValue('mail_from'));
+        $this->view->assign('chkMail', ($this->Config->isMailEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkMailRequests', ($this->Config->isMailRequestsEnabled()) ? 'checked="checked"' : '');
+        $this->view->assign('chkMailAuth', ($this->Config->isMailAuthenabled()) ? 'checked="checked"' : '');
+        $this->view->assign('mailServer', $this->Config->getMailServer());
+        $this->view->assign('mailPort', $this->Config->getMailPort());
+        $this->view->assign('mailUser', $this->Config->getMailUser());
+        $this->view->assign('mailPass', $this->Config->getMailPass());
+        $this->view->assign('currentMailSecurity', $this->Config->getMailSecurity());
+        $this->view->assign('mailFrom', $this->Config->getMailFrom());
         $this->view->assign('mailSecurity', array('SSL', 'TLS'));
 
         $this->view->assign('actionId', $this->getAction(), 'mail');
@@ -339,8 +341,8 @@ class ConfigMgmt extends Controller implements ActionsInterface
      * @return int
      */
     private function getTabIndex(){
-        $index = $this->_tabIndex;
-        $this->_tabIndex++;
+        $index = $this->tabIndex;
+        $this->tabIndex++;
 
         return $index;
     }

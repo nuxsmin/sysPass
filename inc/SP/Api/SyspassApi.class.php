@@ -26,6 +26,7 @@
 namespace SP\Api;
 
 use SP\Account\Account;
+use SP\Account\AccountData;
 use SP\Account\AccountSearch;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
@@ -43,7 +44,7 @@ class SyspassApi extends ApiBase
     /**
      * @var array
      */
-    protected $_actionsMap = array(
+    protected $actionsMap = array(
         'getAccountPassword' => ActionsInterface::ACTION_ACC_VIEW_PASS,
         'getAccountSearch' => ActionsInterface::ACTION_ACC_SEARCH,
         'getAccountData' => ActionsInterface::ACTION_ACC_VIEW
@@ -59,19 +60,20 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW_PASS);
 
-        if (!isset($this->_params->accountId)){
+        if (!isset($this->params->accountId)){
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
-        $accountId = intval($this->_params->accountId);
+        $accountId = intval($this->params->accountId);
 
-        $Account = new Account($accountId);
+        $AccountData = new AccountData($accountId);
+        $Account = new Account($AccountData);
         $Account->getAccountPassData();
         $Account->incrementDecryptCounter();
 
         $ret = array(
             'accountId' => $accountId,
-            'pass' => Crypt::getDecrypt($Account->getAccountPass(), $Account->getAccountIV(), $this->_mPass)
+            'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->_mPass)
         );
 
         return $this->wrapJSON($ret);
@@ -87,19 +89,19 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_SEARCH);
 
-        if (!isset($this->_params->searchText)){
+        if (!isset($this->params->searchText)){
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
-        $count = (isset($this->_params->searchCount)) ? intval($this->_params->searchCount) : 0;
+        $count = (isset($this->params->searchCount)) ? intval($this->params->searchCount) : 0;
 
         $Search = new AccountSearch();
-        $Search->setTxtSearch($this->_params->searchText);
+        $Search->setTxtSearch($this->params->searchText);
         $Search->setLimitCount($count);
 
         $ret = $Search->getAccounts();
 
-        return $this->wrapJSON(array($this->_params, $ret));
+        return $this->wrapJSON(array($this->params, $ret));
     }
 
     /**
@@ -112,14 +114,14 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW);
 
-        if (!isset($this->_params->accountId)){
+        if (!isset($this->params->accountId)){
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
-        $accountId = intval($this->_params->accountId);
+        $accountId = intval($this->params->accountId);
 
-        $Account = new Account($accountId);
-        $ret = $Account->getAccountData();
+        $Account = new Account(new AccountData($accountId));
+        $ret = $Account->getData();
         $Account->incrementViewCounter();
 
         return $this->wrapJSON($ret);

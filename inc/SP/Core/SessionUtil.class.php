@@ -123,4 +123,37 @@ class SessionUtil
     {
         return (!is_null(Session::getSecurityKey()) && Session::getSecurityKey() == $key);
     }
+
+    /**
+     * Limpiar la sesión del usuario
+     */
+    public static function cleanSession()
+    {
+        Session::unsetSessionKey('uid');
+        Session::unsetSessionKey('uisadminapp');
+        Session::unsetSessionKey('uisadminacc');
+        Session::unsetSessionKey('uprofile');
+        Session::unsetSessionKey('ulogin');
+        Session::unsetSessionKey('uname');
+        Session::unsetSessionKey('ugroup');
+        Session::unsetSessionKey('ugroupn');
+        Session::unsetSessionKey('uemail');
+        Session::unsetSessionKey('uisldap');
+        Session::unsetSessionKey('usrprofile');
+        Session::unsetSessionKey('searchFilters');
+        Session::unsetSessionKey('accParentId');
+        Session::unsetSessionKey('mPass');
+        Session::unsetSessionKey('mPassPwd');
+        Session::unsetSessionKey('mPassIV');
+        Session::unsetSessionKey('sidStartTime');
+        Session::unsetSessionKey('startActivity');
+        Session::unsetSessionKey('lastActivity');
+        Session::unsetSessionKey('lastAccountId');
+        Session::unsetSessionKey('theme');
+        Session::unsetSessionKey('2fapass');
+        Session::unsetSessionKey('locale');
+        Session::unsetSessionKey('userpreferences');
+        Session::unsetSessionKey('tempmasterpass');
+        Session::unsetSessionKey('accountcolor');
+    }
 }

@@ -41,11 +41,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Migrate
 {
-    private static $_dbc; // Database connection
-    private static $_customersByName;
-    private static $_currentQuery;
-    private static $_result = array();
-    private static $_oldConfig = array();
+    private static $DB; // Database connection
+    private static $customersByName;
+    private static $currentQuery;
+    private static $result = array();
+    private static $oldConfig = array();
 
     /**
      * Iniciar migración desde phpPMS.
@@ -89,18 +89,18 @@ class Migrate
             self::migrateUsersGroups();
             self::migrateConfig();
         } catch (SPException $e) {
-            self::$_result['error'][] = array(
+            self::$result['error'][] = array(
                 'type' => $e->getType(),
                 'description' => $e->getMessage(),
                 'hint' => $e->getHint()
             );
-            return (self::$_result);
+            return (self::$result);
         }
 
-        self::$_result['ok'][] = _('Importación finalizada');
-        self::$_result['ok'][] = _('Revise el registro de eventos para más detalles');
+        self::$result['ok'][] = _('Importación finalizada');
+        self::$result['ok'][] = _('Revise el registro de eventos para más detalles');
 
-        return (self::$_result);
+        return (self::$result);
     }
 
     /**
@@ -117,7 +117,7 @@ class Migrate
     {
         try {
             $dsn = 'mysql:host=' . $dbhost . ';dbname=' . $dbname . ';dbport=' . $dbport . ';charset=utf8';
-            self::$_dbc = new \PDO($dsn, $dbadmin, $dbpass);
+            self::$DB = new \PDO($dsn, $dbadmin, $dbpass);
         } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('No es posible conectar con la BD')
@@ -138,7 +138,7 @@ class Migrate
             . 'WHERE table_schema = \'' . $dbname . '\' '
             . 'AND table_name = \'usrData\' LIMIT 1';
 
-        return (intval(self::$_dbc->query($query)->fetchColumn()) === 0);
+        return (intval(self::$DB->query($query)->fetchColumn()) === 0);
     }
 
     /**
@@ -148,13 +148,13 @@ class Migrate
      */
     private static function checkSourceVersion()
     {
-        if (!isset(self::$_oldConfig['version'])) {
+        if (!isset(self::$oldConfig['version'])) {
             self::getSourceConfig();
         }
 
-        if (self::$_oldConfig['version'] != "0.973b") {
+        if (self::$oldConfig['version'] != "0.973b") {
             throw new SPException(SPException::SP_CRITICAL,
-                _('La versión no es compatible') . '(' . self::$_oldConfig['version'] . ')',
+                _('La versión no es compatible') . '(' . self::$oldConfig['version'] . ')',
                 _('Actualice a la última versión de phpPMS'));
         }
     }
@@ -169,7 +169,7 @@ class Migrate
         $query = 'SELECT vacValue as value,vacParameter as parameter FROM config';
 
         try {
-            self::parseSourceConfig(self::$_dbc->query($query));
+            self::parseSourceConfig(self::$DB->query($query));
         } catch (\PDOException $e) {
 
             throw new SPException(SPException::SP_CRITICAL,
@@ -197,7 +197,7 @@ class Migrate
         }
 
         // Guardar la configuración anterior
-        self::$_oldConfig[$config['parameter']] = $value;
+        self::$oldConfig[$config['parameter']] = $value;
     }
 
     /**
@@ -310,7 +310,7 @@ class Migrate
         $query = 'SELECT DISTINCT vacCliente FROM accounts';
 
         try {
-            foreach (self::$_dbc->query($query) as $row) {
+            foreach (self::$DB->query($query) as $row) {
                 $customers[] = trim($row['vacCliente']);
             }
 
@@ -351,7 +351,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach (self::$_dbc->query($query) as $row) {
+            foreach (self::$DB->query($query) as $row) {
                 if (self::insertAccounts($row)) {
                     $num++;
                 }
@@ -378,17 +378,17 @@ class Migrate
      */
     private static function insertAccounts($account)
     {
-        if (!is_array(self::$_customersByName)) {
+        if (!is_array(self::$customersByName)) {
             $customers = Customer::getCustomers(NULL, true);
-            self::$_customersByName = array_flip($customers);
+            self::$customersByName = array_flip($customers);
         }
 
         $customer = trim($account['vacCliente']);
 
-        if (array_key_exists($customer, self::$_customersByName)) {
-            $customerId = self::$_customersByName[$customer];
+        if (array_key_exists($customer, self::$customersByName)) {
+            $customerId = self::$customersByName[$customer];
         } else {
-            self::$_result['error'][] = _('Cliente no encontrado') . ": " . $account['vacCliente'];
+            self::$result['error'][] = _('Cliente no encontrado') . ": " . $account['vacCliente'];
 
             return false;
         }
@@ -431,7 +431,7 @@ class Migrate
         $Data->addParam($account['datChanged'], 'dateEdit');
 
         if (DB::getQuery($Data) === false) {
-            self::$_currentQuery = DBUtil::escape($query);
+            self::$currentQuery = DBUtil::escape($query);
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al migrar cuenta'),
                 DB::$txtError);
@@ -454,7 +454,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach(self::$_dbc->query($query) as $row){
+            foreach(self::$DB->query($query) as $row){
                 if (self::insertAccountsGroups($row)) {
                     $num++;
                 }
@@ -531,7 +531,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach(self::$_dbc->query($query) as $row){
+            foreach(self::$DB->query($query) as $row){
                 if (self::insertAccountsHistory($row)) {
                     $num++;
                 }
@@ -540,7 +540,7 @@ class Migrate
         } catch(\PDOException $e){
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener el historico de cuentas'),
-                self::$_dbc->error);
+                self::$DB->error);
         }
 
         $Log = new Log(_('Importar Histórico de Cuentas'));
@@ -558,15 +558,15 @@ class Migrate
      */
     private static function insertAccountsHistory($accountHistory)
     {
-        if (!is_array(self::$_customersByName)) {
+        if (!is_array(self::$customersByName)) {
             $customers = Customer::getCustomers(null, true);
-            self::$_customersByName = array_flip($customers);
+            self::$customersByName = array_flip($customers);
         }
 
         $customer = trim($accountHistory['vacCliente']);
 
-        if (array_key_exists($customer, self::$_customersByName)) {
-            $customerId = self::$_customersByName[$customer];
+        if (array_key_exists($customer, self::$customersByName)) {
+            $customerId = self::$customersByName[$customer];
         } else {
             return false;
         }
@@ -641,7 +641,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach(self::$_dbc->query($query) as $row){
+            foreach(self::$DB->query($query) as $row){
                 if (self::insertAccountsFiles($row)) {
                     $num++;
                 }
@@ -650,7 +650,7 @@ class Migrate
         } catch(\PDOException $e){
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los archivos de cuentas'),
-                self::$_dbc->error);
+                self::$DB->error);
         }
 
         $Log = new Log(_('Importar Archivos de Cuentas'));
@@ -708,7 +708,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach(self::$_dbc->query($query) as $row){
+            foreach(self::$DB->query($query) as $row){
                 if (self::insertAccountsCategories($row)) {
                     $num++;
                 }
@@ -717,7 +717,7 @@ class Migrate
         } catch(\PDOException $e){
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener las categorías de cuentas'),
-                self::$_dbc->error);
+                self::$DB->error);
         }
 
         $Log = new Log(_('Importar Categorías de Cuentas'));
@@ -784,7 +784,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach(self::$_dbc->query($query) as $row){
+            foreach(self::$DB->query($query) as $row){
                 if (self::insertUsers($row)) {
                     $num++;
                 }
@@ -793,7 +793,7 @@ class Migrate
         } catch(\PDOException $e){
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los usuarios'),
-                self::$_dbc->error);
+                self::$DB->error);
         }
 
         $Log = new Log(_('Importar Usuarios'));
@@ -876,7 +876,7 @@ class Migrate
         $num = 0;
 
         try {
-            foreach(self::$_dbc->query($query) as $row){
+            foreach(self::$DB->query($query) as $row){
                 if (self::insertUsersGroups($row)) {
                     $num++;
                 }
@@ -885,7 +885,7 @@ class Migrate
         } catch(\PDOException $e){
             throw new SPException(SPException::SP_CRITICAL,
                 _('Error al obtener los grupos de usuarios'),
-                self::$_dbc->error);
+                self::$DB->error);
         }
 
         $Log = new Log(_('Importar Grupos de Usuarios'));
@@ -949,15 +949,16 @@ class Migrate
             'lastupdatempass',
             'passwordsalt');
 
-        $totalParams = count(self::$_oldConfig);
+        $totalParams = count(self::$oldConfig);
         $num = 0;
 
         // Guardar la nueva configuración
-        foreach (self::$_oldConfig as $key => $value) {
+        foreach (self::$oldConfig as $key => $value) {
             if (array_key_exists($key, $skip)) {
                 continue;
             }
-            Config::setValue($key, $value);
+            // FIXME
+//            Config::setValue($key, $value);
             $num++;
         }
 

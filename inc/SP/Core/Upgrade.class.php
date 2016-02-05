@@ -27,6 +27,7 @@
 namespace SP\Core;
 
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\User\Profile;
@@ -41,8 +42,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $_dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001);
-    private static $_cfgUpgrade = array(1124);
+    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001);
+    private static $cfgUpgrade = array(1124, 1316020501);
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -52,7 +53,7 @@ class Upgrade
      */
     public static function doUpgrade($version)
     {
-        foreach (self::$_dbUpgrade as $upgradeVersion) {
+        foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
                 if (self::upgradeTo($upgradeVersion) === false) {
                     Init::initError(
@@ -210,7 +211,7 @@ class Upgrade
      */
     public static function needDBUpgrade($version)
     {
-        $upgrades = array_filter(self::$_dbUpgrade, function ($uVersions) use ($version) {
+        $upgrades = array_filter(self::$dbUpgrade, function ($uVersions) use ($version) {
             return ($uVersions > $version);
         });
 
@@ -225,7 +226,7 @@ class Upgrade
      */
     public static function needConfigUpgrade($version)
     {
-        return (in_array($version, self::$_cfgUpgrade));
+        return (in_array($version, self::$cfgUpgrade));
     }
 
     /**
@@ -236,43 +237,102 @@ class Upgrade
      */
     public static function upgradeConfig($version)
     {
-        $mapParams = array(
-            'files_allowed_exts' => 'allowed_exts',
-            'files_allowed_size' => 'allowed_size',
-            'demo_enabled' => 'demoenabled',
-            'files_enabled' => 'filesenabled',
-            'ldap_base' => 'ldapbase',
-            'ldap_bindpass' => 'ldapbindpass',
-            'ldap_binduser' => 'ldapbinduser',
-            'ldap_enabled' => 'ldapenabled',
-            'ldap_group' => 'ldapgroup',
-            'ldap_server' => 'ldapserver',
-            'log_enabled' => 'logenabled',
-            'mail_enabled' => 'mailenabled',
-            'mail_from' => 'mailfrom',
-            'mail_pass' => 'mailpass',
-            'mail_port' => 'mailport',
-            'mail_requestsenabled' => 'mailrequestsenabled',
-            'mail_security' => 'mailsecurity',
-            'mail_server' => 'mailserver',
-            'mail_user' => 'mailuser',
-            'wiki_enabled' => 'wikienabled',
-            'wiki_filter' => 'wikifilter',
-            'wiki_pageurl' => 'wikipageurl',
-            'wiki_searchurl' => 'wikisearchurl'
-        );
+        $Config = new ConfigData();
 
-        $currData = Config::getKeys(true);
+        if (file_exists(CONFIG_FILE)) {
+            // Include the file, save the data from $CONFIG
+            include CONFIG_FILE;
 
-        foreach ($mapParams as $newParam => $oldParam) {
-            if (array_key_exists($oldParam, $currData)) {
-                Config::setValue($newParam, $currData[$oldParam]);
-                Config::deleteParam($oldParam);
+            if (isset($CONFIG) && is_array($CONFIG)) {
+                error_log('upgrade_old');
+
+                foreach (self::getConfigParams() as $mapTo => $oldParam) {
+                    $mapFrom = function () use ($oldParam) {
+                        if (is_array($oldParam)) {
+                            foreach ($oldParam as $param) {
+                                if (isset($CONFIG[$param])) {
+                                    return $param;
+                                }
+                            }
+
+                            return '';
+                        }
+
+                        return $oldParam;
+                    };
+
+                    if (isset($CONFIG[$mapFrom()])
+                        && method_exists($Config, $mapTo)
+                    ) {
+                        $Config->$mapTo($CONFIG[$mapFrom()]);
+                    }
+                }
             }
         }
+
+        $Config->setConfigVersion($version);
+        Config::saveConfig($Config, false);
 
         Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')', Log::NOTICE);
 
         return true;
+    }
+
+    /**
+     * Devuelve array de métodos y parámetros de configuración
+     *
+     * @return array
+     */
+    private static function getConfigParams()
+    {
+        return [
+            'setAccountCount' => 'account_count',
+            'setCheckUpdates' => 'checkupdates',
+            'setDbHost' => 'dbhost',
+            'setDbName' => 'dbname',
+            'setDbPass' => 'dbpass',
+            'setDbUser' => 'dbuser',
+            'setDebug' => 'debug',
+            'setDemoEnabled' => 'demo_enabled',
+            'setGlobalSearch' => 'globalsearch',
+            'setInstalled' => 'installed',
+            'setMaintenance' => 'maintenance',
+            'setPasswordSalt' => 'passwordsalt',
+            'setSessionTimeout' => 'session_timeout',
+            'setSiteLang' => 'sitelang',
+            'setConfigVersion' => 'version',
+            'setCheckNotices' => 'checknotices',
+            'setConfigHash' => 'config_hash',
+            'setProxyEnabled' => 'proxy_enabled',
+            'setProxyPass' => 'proxy_pass',
+            'setProxyPort' => 'proxy_port',
+            'setProxyServer' => 'proxy_server',
+            'setProxyUser' => 'proxy_user',
+            'setResultsAsCards' => 'resultsascards',
+            'setSiteTheme' => 'sitetheme',
+            'setAccountPassToImage' => 'account_passtoimage',
+            'setFilesAllowedExts' => 'allowed_exts',
+            'setFilesAllowedSize' => 'allowed_size',
+            'setFilesEnabled' => ['filesenabled', 'files_enabled'],
+            'setLdapBase' => ['ldapbase', 'ldap_base'],
+            'setLdapBindPass' => ['ldapbindpass', 'ldap_bindpass'],
+            'setLdapBindUser' => ['ldapbinduser', 'ldap_binduser'],
+            'setLdapEnabled' => ['ldapenabled', 'ldap_enabled'],
+            'setLdapGroup' => ['ldapgroup', 'ldap_group'],
+            'setLdapServer' => ['ldapserver', 'ldap_server'],
+            'setLogEnabled' => ['logenabled', 'log_enabled'],
+            'setMailEnabled' => ['mailenabled', 'mail_enabled'],
+            'setMailFrom' => ['mailfrom', 'mail_from'],
+            'setMailPass' => ['mailpass', 'mail_pass'],
+            'setMailPort' => ['mailport', 'mail_port'],
+            'setMailRequestsEnabled' => ['mailrequestsenabled', 'mail_requestsenabled'],
+            'setMailSecurity' => ['mailsecurity', 'mail_security'],
+            'setMailServer' => ['mailserver', 'mail_server'],
+            'setMailUser' => ['mailuser', 'mail_user'],
+            'setWikiEnabled' => ['wikienabled', 'wiki_enabled'],
+            'setWikiFilter' => ['wikifilter', 'wiki_filter'],
+            'setWikiPageUrl' => ['wikipageurl' . 'wiki_pageurl'],
+            'setWikiSearchUrl' => ['wikisearchurl', 'wiki_searchurl']
+        ];
     }
 }

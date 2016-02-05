@@ -52,13 +52,13 @@ class ApiRequest extends Request
     /**
      * @var \stdClass
      */
-    private $_params;
+    private $params;
 
     /** @var string */
-    private $_verb = null;
+    private $verb = null;
 
     /** @var ReflectionClass */
-    private $_ApiReflection;
+    private $ApiReflection;
 
     /**
      * ApiRequest constructor.
@@ -90,7 +90,7 @@ class ApiRequest extends Request
             case 'POST':
             case 'PUT':
             case 'DELETE':
-                $this->_verb = $requestMethod;
+                $this->verb = $requestMethod;
                 break;
             default:
                 throw new SPException(SPException::SP_WARNING, _('Método inválido'));
@@ -106,9 +106,9 @@ class ApiRequest extends Request
     {
         $data = self::parse(file_get_contents('php://input'), '', true);
 
-        $this->_params = json_decode($data);
+        $this->params = json_decode($data);
 
-        if (json_last_error() !== JSON_ERROR_NONE || !is_object($this->_params)) {
+        if (json_last_error() !== JSON_ERROR_NONE || !is_object($this->params)) {
             throw new SPException(SPException::SP_WARNING, _('Datos inválidos'));
         }
     }
@@ -120,8 +120,8 @@ class ApiRequest extends Request
      */
     private function checkBasicData()
     {
-        if (!isset($this->_params->authToken)
-            || !isset($this->_params->action)
+        if (!isset($this->params->authToken)
+            || !isset($this->params->action)
         ) {
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
@@ -134,9 +134,9 @@ class ApiRequest extends Request
      */
     private function checkAction()
     {
-        $this->_ApiReflection = new ReflectionClass('\SP\Api\SyspassApi');
+        $this->ApiReflection = new ReflectionClass('\SP\Api\SyspassApi');
 
-        if (!$this->_ApiReflection->hasMethod($this->_params->action)) {
+        if (!$this->ApiReflection->hasMethod($this->params->action)) {
             throw new SPException(SPException::SP_WARNING, _('Acción inválida'));
         }
     }
@@ -166,7 +166,7 @@ class ApiRequest extends Request
      */
     public function addVar($name, $value)
     {
-        $this->_params->$name = $value;
+        $this->params->$name = $value;
     }
 
     /**
@@ -176,7 +176,7 @@ class ApiRequest extends Request
      */
     public function runApi()
     {
-        return $this->_ApiReflection->getMethod($this->_params->action)->invoke(new SyspassApi($this->_params));
+        return $this->ApiReflection->getMethod($this->params->action)->invoke(new SyspassApi($this->params));
     }
 
     /**
@@ -186,6 +186,6 @@ class ApiRequest extends Request
      */
     public function getAction()
     {
-        return $this->_params->action;
+        return $this->params->action;
     }
 }

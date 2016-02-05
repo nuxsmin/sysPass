@@ -52,27 +52,27 @@ abstract class CustomFieldsBase
     /**
      * @var string
      */
-    protected $_name = '';
+    protected $name = '';
     /**
      * @var int
      */
-    protected $_type = 0;
+    protected $type = 0;
     /**
      * @var int
      */
-    protected $_module = 0;
+    protected $module = 0;
     /**
      * @var int
      */
-    protected $_id = 0;
+    protected $id = 0;
     /**
      * @var bool
      */
-    protected $_required = false;
+    protected $required = false;
     /**
      * @var string
      */
-    private $_help = '';
+    private $help = '';
 
     /**
      * Devolver los tipos de campos soportados
@@ -125,7 +125,7 @@ abstract class CustomFieldsBase
      */
     public function isRequired()
     {
-        return $this->_required;
+        return $this->required;
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class CustomFieldsBase
      */
     public function setRequired($required)
     {
-        $this->_required = $required;
+        $this->required = $required;
     }
 
     /**
@@ -141,7 +141,7 @@ abstract class CustomFieldsBase
      */
     public function getModule()
     {
-        return $this->_module;
+        return $this->module;
     }
 
     /**
@@ -149,7 +149,7 @@ abstract class CustomFieldsBase
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -157,7 +157,7 @@ abstract class CustomFieldsBase
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -165,7 +165,7 @@ abstract class CustomFieldsBase
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -173,7 +173,7 @@ abstract class CustomFieldsBase
      */
     public function getHelp()
     {
-        return $this->_help;
+        return $this->help;
     }
 
     /**
@@ -181,6 +181,6 @@ abstract class CustomFieldsBase
      */
     public function setHelp($help)
     {
-        $this->_help = $help;
+        $this->help = $help;
     }
 }

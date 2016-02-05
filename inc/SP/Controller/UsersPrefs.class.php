@@ -28,6 +28,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Auth\Auth2FA;
+use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Language;
 use SP\Core\Session;
@@ -46,15 +47,15 @@ class UsersPrefs extends Controller implements ActionsInterface
     /**
      * @var int
      */
-    private $_tabIndex = 0;
+    private $tabIndex = 0;
     /**
      * @var UserPreferences
      */
-    private $_userPrefs;
+    private $userPrefs;
     /**
      * @var int
      */
-    private $_userId;
+    private $userId;
 
 
     /**
@@ -68,8 +69,8 @@ class UsersPrefs extends Controller implements ActionsInterface
 
         $this->view->assign('tabs', array());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->_userId = Session::getUserId();
-        $this->_userPrefs = UserPreferences::getPreferences($this->_userId);
+        $this->userId = Session::getUserId();
+        $this->userPrefs = UserPreferences::getPreferences($this->userId);
     }
 
     /**
@@ -82,14 +83,14 @@ class UsersPrefs extends Controller implements ActionsInterface
         $this->view->addTemplate('preferences-security');
 
 
-        $twoFa = new Auth2FA($this->_userId, Session::getUserLogin());
+        $twoFa = new Auth2FA($this->userId, Session::getUserLogin());
 
-        if (!$this->_userPrefs->isUse2Fa()) {
+        if (!$this->userPrefs->isUse2Fa()) {
             $this->view->assign('qrCode', $twoFa->getUserQRCode());
         }
 
-        $this->view->assign('userId', $this->_userId);
-        $this->view->assign('chk2FAEnabled', $this->_userPrefs->isUse2Fa());
+        $this->view->assign('userId', $this->userId);
+        $this->view->assign('chk2FAEnabled', $this->userPrefs->isUse2Fa());
 
         $this->view->append('tabs', array('title' => _('Seguridad')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'security');
@@ -103,8 +104,8 @@ class UsersPrefs extends Controller implements ActionsInterface
      */
     private function getTabIndex()
     {
-        $index = $this->_tabIndex;
-        $this->_tabIndex++;
+        $index = $this->tabIndex;
+        $this->tabIndex++;
 
         return $index;
     }
@@ -118,16 +119,16 @@ class UsersPrefs extends Controller implements ActionsInterface
 
         $this->view->addTemplate('preferences-site');
 
-        $this->view->assign('userId', $this->_userId);
+        $this->view->assign('userId', $this->userId);
         $this->view->assign('langsAvailable', Language::getAvailableLanguages());
-        $this->view->assign('currentLang', $this->_userPrefs->getLang());
+        $this->view->assign('currentLang', $this->userPrefs->getLang());
         $this->view->assign('themesAvailable', Themes::getThemesAvailable());
-        $this->view->assign('currentTheme', ($this->_userPrefs->getTheme()) ? $this->_userPrefs->getTheme() : \SP\Config\Config::getValue('sitetheme'));
-        $this->view->assign('chkAccountLink', ($this->_userPrefs->isAccountLink()) ? 'checked="checked"' : '');
-        $this->view->assign('resultsPerPage', ($this->_userPrefs->getResultsPerPage()) ? $this->_userPrefs->getResultsPerPage() : \SP\Config\Config::getValue('account_count'));
-        $this->view->assign('chkSortViews', ($this->_userPrefs->isSortViews()) ? 'checked="checked"' : '');
-        $this->view->assign('chkTopNavbar', ($this->_userPrefs->isTopNavbar()) ? 'checked="checked"' : '');
-        $this->view->assign('chkOptionalActions', ($this->_userPrefs->isOptionalActions()) ? 'checked="checked"' : '');
+        $this->view->assign('currentTheme', ($this->userPrefs->getTheme()) ? $this->userPrefs->getTheme() : Config::getConfig()->getSiteTheme());
+        $this->view->assign('chkAccountLink', ($this->userPrefs->isAccountLink()) ? 'checked="checked"' : '');
+        $this->view->assign('resultsPerPage', ($this->userPrefs->getResultsPerPage()) ? $this->userPrefs->getResultsPerPage() : Config::getConfig()->getAccountCount());
+        $this->view->assign('chkSortViews', ($this->userPrefs->isSortViews()) ? 'checked="checked"' : '');
+        $this->view->assign('chkTopNavbar', ($this->userPrefs->isTopNavbar()) ? 'checked="checked"' : '');
+        $this->view->assign('chkOptionalActions', ($this->userPrefs->isOptionalActions()) ? 'checked="checked"' : '');
 
         $this->view->append('tabs', array('title' => _('Preferencias')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'preferences');

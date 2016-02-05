@@ -50,26 +50,26 @@ class Minify
      *
      * @var array
      */
-    private $_files = array();
+    private $files = array();
     /**
      * Tipos de archivos a procesar
      *
      * @var int
      */
-    private $_type = 0;
+    private $type = 0;
     /**
      * Base relativa de búsqueda de los archivos
      *
      * @var string
      */
-    private $_base = '';
+    private $base = '';
 
     /**
      * @param string $base
      */
     public function setBase($base)
     {
-        $this->_base = $base;
+        $this->base = $base;
     }
 
 
@@ -101,9 +101,9 @@ class Minify
             exit;
         }
 
-        if ($this->_type === self::FILETYPE_JS) {
+        if ($this->type === self::FILETYPE_JS) {
             header("Content-type: application/x-javascript; charset: UTF-8");
-        } elseif ($this->_type === self::FILETYPE_CSS) {
+        } elseif ($this->type === self::FILETYPE_CSS) {
             header("Content-type: text/css; charset: UTF-8");
         }
 
@@ -113,7 +113,7 @@ class Minify
             ob_start();
         }
 
-        foreach ($this->_files as $file) {
+        foreach ($this->files as $file) {
             $filePath = $file['base'] . DIRECTORY_SEPARATOR . $file['name'];
 
             // Obtener el recurso desde una URL
@@ -135,9 +135,9 @@ class Minify
 
             if ($file['min'] === true && $disableMinify === false) {
                 echo '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
-                if ($this->_type === self::FILETYPE_JS) {
+                if ($this->type === self::FILETYPE_JS) {
                     echo $this->jsCompress(file_get_contents($filePath));
-                } elseif ($this->_type === self::FILETYPE_CSS) {
+                } elseif ($this->type === self::FILETYPE_CSS) {
                     echo CssMin::minify(file_get_contents($filePath));
                 }
             } else {
@@ -160,7 +160,7 @@ class Minify
     {
         $md5Sum = '';
 
-        foreach ($this->_files as $file) {
+        foreach ($this->files as $file) {
             if (preg_match('#^https?://.*#', $file['name'])) {
                 continue;
             }
@@ -214,15 +214,15 @@ class Minify
             $files = explode(',', $file);
 
             foreach ($files as $file){
-                $this->_files[] = array(
-                    'base' => $this->_base,
+                $this->files[] = array(
+                    'base' => $this->base,
                     'name' => $file,
                     'min' => $this->needsMinify($file)
                 );
             }
         } else {
-            $this->_files[] = array(
-                'base' => $this->_base,
+            $this->files[] = array(
+                'base' => $this->base,
                 'name' => $file,
                 'min' => ($minify === true && $this->needsMinify($file))
             );
@@ -234,7 +234,7 @@ class Minify
      */
     public function setType($type)
     {
-        $this->_type = $type;
+        $this->type = $type;
     }
 
     /**

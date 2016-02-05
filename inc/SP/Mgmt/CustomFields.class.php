@@ -44,11 +44,11 @@ class CustomFields extends CustomFieldsBase
     /**
      * @var string
      */
-    private $_value = '';
+    private $value = '';
     /**
      * @var int
      */
-    private $_itemId = 0;
+    private $itemId = 0;
 
     /**
      * @param $customFieldDefId
@@ -68,12 +68,12 @@ class CustomFields extends CustomFieldsBase
             $field = Util::castToClass('SP\Mgmt\CustomFieldDef', $field);
         }
 
-        $this->_id = $customFieldDefId;
-        $this->_module = $fieldDef->customfielddef_module;
-        $this->_name = $field->getName();
-        $this->_type = $field->getType();
-        $this->_itemId = $itemId;
-        $this->_value = $value;
+        $this->id = $customFieldDefId;
+        $this->module = $fieldDef->customfielddef_module;
+        $this->name = $field->getName();
+        $this->type = $field->getType();
+        $this->itemId = $itemId;
+        $this->value = $value;
     }
 
     /**
@@ -377,7 +377,7 @@ class CustomFields extends CustomFieldsBase
      */
     public function getItemId()
     {
-        return $this->_itemId;
+        return $this->itemId;
     }
 
     /**
@@ -385,7 +385,7 @@ class CustomFields extends CustomFieldsBase
      */
     public function setItemId($itemId)
     {
-        $this->_itemId = $itemId;
+        $this->itemId = $itemId;
     }
 
     /**
@@ -396,15 +396,15 @@ class CustomFields extends CustomFieldsBase
      */
     public function updateCustomField()
     {
-        if (!self::checkCustomFieldExists($this->_module, $this->_itemId, $this->_id)) {
+        if (!self::checkCustomFieldExists($this->module, $this->itemId, $this->id)) {
             return $this->addCustomField();
         }
 
-        if (empty($this->_value)) {
-            return self::deleteCustomFieldForItem($this->_itemId, $this->_module);
+        if (empty($this->value)) {
+            return self::deleteCustomFieldForItem($this->itemId, $this->module);
         }
 
-        $cryptData = Crypt::encryptData($this->_value);
+        $cryptData = Crypt::encryptData($this->value);
 
         $query = 'UPDATE customFieldsData SET ' .
             'customfielddata_data = :data, ' .
@@ -415,9 +415,9 @@ class CustomFields extends CustomFieldsBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_itemId, 'itemid');
-        $Data->addParam($this->_module, 'moduleid');
-        $Data->addParam($this->_id, 'defid');
+        $Data->addParam($this->itemId, 'itemid');
+        $Data->addParam($this->module, 'moduleid');
+        $Data->addParam($this->id, 'defid');
         $Data->addParam($cryptData['data'], 'data');
         $Data->addParam($cryptData['iv'], 'iv');
 
@@ -465,11 +465,11 @@ class CustomFields extends CustomFieldsBase
      */
     public function addCustomField()
     {
-        if (empty($this->_value)) {
+        if (empty($this->value)) {
             return true;
         }
 
-        $cryptData = Crypt::encryptData($this->_value);
+        $cryptData = Crypt::encryptData($this->value);
 
         $query = 'INSERT INTO customFieldsData SET ' .
             'customfielddata_itemId = :itemid, ' .
@@ -480,9 +480,9 @@ class CustomFields extends CustomFieldsBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_module, 'moduleid');
-        $Data->addParam($this->_itemId, 'itemid');
-        $Data->addParam($this->_id, 'defid');
+        $Data->addParam($this->module, 'moduleid');
+        $Data->addParam($this->itemId, 'itemid');
+        $Data->addParam($this->id, 'defid');
         $Data->addParam($cryptData['data'], 'data');
         $Data->addParam($cryptData['iv'], 'iv');
 
@@ -519,6 +519,6 @@ class CustomFields extends CustomFieldsBase
      */
     public function getValue()
     {
-        return $this->_value;
+        return $this->value;
     }
 }

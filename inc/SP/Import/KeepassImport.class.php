@@ -25,6 +25,8 @@
 
 namespace SP\Import;
 
+use SimpleXMLElement;
+use SP\Account\AccountData;
 use SP\Core\Crypt;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -35,22 +37,31 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class KeepassImport extends XmlImportBase
 {
     /**
+     * @var int
+     */
+    private $customerId = 0;
+    /**
+     * @var int
+     */
+    private $categoryId = 0;
+
+    /**
      * Iniciar la importación desde KeePass
      */
     public function doImport()
     {
         $this->setCustomerName('KeePass');
-        $this->setCustomerId($this->addCustomer());
+        $this->customerId = $this->addCustomer();
 
-        $this->processCategories($this->_xml->Root->Group);
+        $this->processCategories($this->xml->Root->Group);
     }
 
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
-     * @param \SimpleXMLElement $xml El objeto XML del archivo de KeePass
+     * @param SimpleXMLElement $xml El objeto XML del archivo de KeePass
      */
-    protected function processCategories(\SimpleXMLElement $xml)
+    protected function processCategories(SimpleXMLElement $xml)
     {
         foreach ($xml as $node) {
             if ($node->Group) {
@@ -59,7 +70,7 @@ class KeepassImport extends XmlImportBase
                     if ($node->Group->Entry) {
                         // Crear la categoría
                         $this->setCategoryName($group->Name);
-                        $this->setCategoryId($this->addCategory());
+                        $this->categoryId = $this->addCategory();
 
                         // Crear cuentas
                         $this->processAccounts($group->Entry);
@@ -75,7 +86,7 @@ class KeepassImport extends XmlImportBase
             if ($node->Entry) {
                 // Crear la categoría
                 $this->setCategoryName($node->Name);
-                $this->setCategoryId($this->addCategory());
+                $this->categoryId = $this->addCategory();
 
                 // Crear cuentas
                 $this->processAccounts($node->Entry);
@@ -86,36 +97,41 @@ class KeepassImport extends XmlImportBase
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param \SimpleXMLElement $entries El objeto XML con las entradas
+     * @param SimpleXMLElement $entries El objeto XML con las entradas
      */
-    protected function processAccounts(\SimpleXMLElement $entries)
+    protected function processAccounts(SimpleXMLElement $entries)
     {
         foreach ($entries as $entry) {
+            $AccountData = new AccountData();
+
             foreach ($entry->String as $account) {
                 $value = (isset($account->Value)) ? (string)$account->Value : '';
                 switch ($account->Key) {
                     case 'Notes':
-                        $this->setAccountNotes($value);
+                        $AccountData->setAccountNotes($value);
                         break;
                     case 'Password':
                         $passData = Crypt::encryptData($value);
 
-                        $this->setAccountPass($passData['data']);
-                        $this->setAccountPassIV($passData['iv']);
+                        $AccountData->setAccountPass($passData['data']);
+                        $AccountData->setAccountIV($passData['iv']);
                         break;
                     case 'Title':
-                        $this->setAccountName($value);
+                        $AccountData->setAccountName($value);
                         break;
                     case 'URL':
-                        $this->setAccountUrl($value);
+                        $AccountData->setAccountUrl($value);
                         break;
                     case 'UserName':
-                        $this->setAccountLogin($value);
+                        $AccountData->setAccountLogin($value);
                         break;
                 }
             }
 
-            $this->addAccount();
+            $AccountData->setAccountCategoryId($this->categoryId);
+            $AccountData->setAccountCustomerId($this->customerId);
+
+            $this->addAccount($AccountData);
         }
     }
 }

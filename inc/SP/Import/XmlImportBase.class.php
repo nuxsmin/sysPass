@@ -39,11 +39,11 @@ abstract class XmlImportBase extends ImportBase
     /**
      * @var \SimpleXMLElement
      */
-    protected $_xml;
+    protected $xml;
     /**
      * @var \DOMDocument
      */
-    protected $_xmlDOM;
+    protected $xmlDOM;
 
     /**
      * Constructor
@@ -54,7 +54,7 @@ abstract class XmlImportBase extends ImportBase
     public function __construct($file)
     {
         try {
-            $this->_file = $file;
+            $this->file = $file;
             $this->readXMLFile();
         } catch (SPException $e) {
             throw $e;
@@ -69,13 +69,13 @@ abstract class XmlImportBase extends ImportBase
      */
     protected function readXMLFile()
     {
-        $this->_xml = simplexml_load_file($this->_file->getTmpFile());
+        $this->xml = simplexml_load_file($this->file->getTmpFile());
 
         // Cargar el XML con DOM
-        $this->_xmlDOM = new \DOMDocument();
-        $this->_xmlDOM->load($this->_file->getTmpFile());
+        $this->xmlDOM = new \DOMDocument();
+        $this->xmlDOM->load($this->file->getTmpFile());
 
-        if ($this->_xml === false) {
+        if ($this->xml === false) {
             throw new SPException(
                 SPException::SP_CRITICAL,
                 _('Error interno'),
@@ -91,9 +91,9 @@ abstract class XmlImportBase extends ImportBase
      */
     public function detectXMLFormat()
     {
-        if ($this->_xml->Meta->Generator == 'KeePass') {
+        if ($this->xml->Meta->Generator == 'KeePass') {
             return 'keepass';
-        } else if ($this->_xml->Meta->Generator == 'sysPass') {
+        } else if ($this->xml->Meta->Generator == 'sysPass') {
             return 'syspass';
         } else if ($xmlApp = $this->parseFileHeader()) {
             switch ($xmlApp) {

@@ -60,7 +60,7 @@ class LdapADS extends Ldap
         $records = dns_get_record($dnsServerQuery, DNS_NS);
 
         if (count($records) === 0) {
-            return parent::$_ldapServer;
+            return parent::$ldapServer;
         }
 
         foreach ($records as $record) {
@@ -79,13 +79,13 @@ class LdapADS extends Ldap
      */
     public static function searchADUserInGroup($userLogin)
     {
-        if (Ldap::$_isADS === false) {
+        if (Ldap::$isADS === false) {
             return false;
         }
 
         $Log = new Log(__FUNCTION__);
 
-        $ldapGroup = Config::getValue('ldap_group');
+        $ldapGroup = Config::getConfig()->getLdapGroup();
 
         // El filtro de grupo no está establecido
         if (empty($ldapGroup)) {
@@ -100,29 +100,29 @@ class LdapADS extends Ldap
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
         $filterAttr = array("sAMAccountName");
 
-        $searchRes = @ldap_search(Ldap::$_ldapConn, Ldap::$_searchBase, $filter, $filterAttr);
+        $searchRes = @ldap_search(Ldap::$ldapConn, Ldap::$searchBase, $filter, $filterAttr);
 
         if (!$searchRes) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al buscar el grupo de usuarios'));
-            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(Ldap::$_ldapConn), ldap_errno(Ldap::$_ldapConn)));
+            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(Ldap::$ldapConn), ldap_errno(Ldap::$ldapConn)));
             $Log->addDetails('LDAP FILTER', $filter);
             $Log->writeLog();
 
             throw new \Exception(_('Error al buscar el grupo de usuarios'));
         }
 
-        if (@ldap_count_entries(Ldap::$_ldapConn, $searchRes) === 0) {
+        if (@ldap_count_entries(Ldap::$ldapConn, $searchRes) === 0) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('No se encontró el grupo con ese nombre'));
-            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(Ldap::$_ldapConn), ldap_errno(Ldap::$_ldapConn)));
+            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error(Ldap::$ldapConn), ldap_errno(Ldap::$ldapConn)));
             $Log->addDetails('LDAP FILTER', $filter);
             $Log->writeLog();
 
             throw new \Exception(_('No se encontró el grupo con ese nombre'));
         }
 
-        foreach (ldap_get_entries(Ldap::$_ldapConn, $searchRes) as $entry) {
+        foreach (ldap_get_entries(Ldap::$ldapConn, $searchRes) as $entry) {
             if ($userLogin === $entry['samaccountname'][0]) {
                 return true;
             }

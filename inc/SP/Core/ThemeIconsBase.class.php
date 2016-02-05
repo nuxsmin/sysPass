@@ -38,73 +38,65 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 abstract class ThemeIconsBase implements ThemeIconsInterface
 {
     /** @var  FontIcon|ImageIcon */
-    protected $_iconAdd;
+    protected $iconAdd;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconView;
+    protected $iconView;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconEdit;
-
-    /**
-     * @return FontIcon|ImageIcon
-     */
-    public function getIconWarning()
-    {
-        return $this->_iconWarning;
-    }
+    protected $iconEdit;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconDelete;
+    protected $iconDelete;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconNavPrev;
+    protected $iconNavPrev;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconNavNext;
+    protected $iconNavNext;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconNavFirst;
+    protected $iconNavFirst;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconNavLast;
+    protected $iconNavLast;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconEditPass;
+    protected $iconEditPass;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconAppAdmin;
+    protected $iconAppAdmin;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconAccAdmin;
+    protected $iconAccAdmin;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconLdapUser;
+    protected $iconLdapUser;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconDisabled;
+    protected $iconDisabled;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconViewPass;
+    protected $iconViewPass;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconCopy;
+    protected $iconCopy;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconClipboard;
+    protected $iconClipboard;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconEmail;
+    protected $iconEmail;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconOptional;
+    protected $iconOptional;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconUp;
+    protected $iconUp;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconDown;
+    protected $iconDown;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconRefresh;
+    protected $iconRefresh;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconPublicLink;
+    protected $iconPublicLink;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconBack;
+    protected $iconBack;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconRestore;
+    protected $iconRestore;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconSave;
+    protected $iconSave;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconHelp;
+    protected $iconHelp;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconClear;
+    protected $iconClear;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconPlay;
+    protected $iconPlay;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconDownload;
+    protected $iconDownload;
     /** @var  FontIcon|ImageIcon */
-    protected $_iconWarning;
+    protected $iconWarning;
 
     /**
      * Icons constructor.
@@ -117,9 +109,17 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     /**
      * @return FontIcon|ImageIcon
      */
+    public function getIconWarning()
+    {
+        return $this->iconWarning;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
     public function getIconDownload()
     {
-        return $this->_iconDownload;
+        return $this->iconDownload;
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconClear()
     {
-        return $this->_iconClear;
+        return $this->iconClear;
     }
 
     /**
@@ -135,7 +135,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconPlay()
     {
-        return $this->_iconPlay;
+        return $this->iconPlay;
     }
 
     /**
@@ -143,7 +143,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconHelp()
     {
-        return $this->_iconHelp;
+        return $this->iconHelp;
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconPublicLink()
     {
-        return $this->_iconPublicLink;
+        return $this->iconPublicLink;
     }
 
     /**
@@ -159,7 +159,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconBack()
     {
-        return $this->_iconBack;
+        return $this->iconBack;
     }
 
     /**
@@ -167,7 +167,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconRestore()
     {
-        return $this->_iconRestore;
+        return $this->iconRestore;
     }
 
     /**
@@ -175,7 +175,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconSave()
     {
-        return $this->_iconSave;
+        return $this->iconSave;
     }
 
     /**
@@ -183,7 +183,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconUp()
     {
-        return $this->_iconUp;
+        return $this->iconUp;
     }
 
     /**
@@ -191,7 +191,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconDown()
     {
-        return $this->_iconDown;
+        return $this->iconDown;
     }
 
     /**
@@ -199,7 +199,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconViewPass()
     {
-        return $this->_iconViewPass;
+        return $this->iconViewPass;
     }
 
     /**
@@ -207,7 +207,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconCopy()
     {
-        return $this->_iconCopy;
+        return $this->iconCopy;
     }
 
     /**
@@ -215,7 +215,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconClipboard()
     {
-        return $this->_iconClipboard;
+        return $this->iconClipboard;
     }
 
     /**
@@ -223,7 +223,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconEmail()
     {
-        return $this->_iconEmail;
+        return $this->iconEmail;
     }
 
     /**
@@ -231,7 +231,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconRefresh()
     {
-        return $this->_iconRefresh;
+        return $this->iconRefresh;
     }
 
     /**
@@ -239,7 +239,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconEditPass()
     {
-        return $this->_iconEditPass;
+        return $this->iconEditPass;
     }
 
     /**
@@ -247,7 +247,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconAppAdmin()
     {
-        return $this->_iconAppAdmin;
+        return $this->iconAppAdmin;
     }
 
     /**
@@ -255,7 +255,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconAccAdmin()
     {
-        return $this->_iconAccAdmin;
+        return $this->iconAccAdmin;
     }
 
     /**
@@ -263,7 +263,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconLdapUser()
     {
-        return $this->_iconLdapUser;
+        return $this->iconLdapUser;
     }
 
     /**
@@ -271,7 +271,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconDisabled()
     {
-        return $this->_iconDisabled;
+        return $this->iconDisabled;
     }
 
     /**
@@ -279,7 +279,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconNavPrev()
     {
-        return $this->_iconNavPrev;
+        return $this->iconNavPrev;
     }
 
     /**
@@ -287,7 +287,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconNavNext()
     {
-        return $this->_iconNavNext;
+        return $this->iconNavNext;
     }
 
     /**
@@ -295,7 +295,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconNavFirst()
     {
-        return $this->_iconNavFirst;
+        return $this->iconNavFirst;
     }
 
     /**
@@ -303,7 +303,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconNavLast()
     {
-        return $this->_iconNavLast;
+        return $this->iconNavLast;
     }
 
     /**
@@ -311,7 +311,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconAdd()
     {
-        return $this->_iconAdd;
+        return $this->iconAdd;
     }
 
     /**
@@ -319,7 +319,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconView()
     {
-        return $this->_iconView;
+        return $this->iconView;
     }
 
     /**
@@ -327,7 +327,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconEdit()
     {
-        return $this->_iconEdit;
+        return $this->iconEdit;
     }
 
     /**
@@ -335,7 +335,7 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconDelete()
     {
-        return $this->_iconDelete;
+        return $this->iconDelete;
     }
 
     /**
@@ -343,6 +343,6 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
      */
     public function getIconOptional()
     {
-        return $this->_iconOptional;
+        return $this->iconOptional;
     }
 }

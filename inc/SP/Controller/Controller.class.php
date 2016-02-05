@@ -60,13 +60,13 @@ abstract class Controller
      *
      * @var int
      */
-    protected $_action;
+    protected $action;
     /**
      * Instancia de los iconos del tema visual
      *
      * @var Icons
      */
-    protected $_icons;
+    protected $icons;
 
     /**
      * Constructor
@@ -84,8 +84,8 @@ abstract class Controller
         }
 
         $this->view->assign('timeStart', $timeStart);
-        $this->_icons = Themes::getIcons();
-        $this->view->assign('icons', $this->_icons);
+        $this->icons = Themes::getIcons();
+        $this->view->assign('icons', $this->icons);
     }
 
     /**
@@ -104,7 +104,7 @@ abstract class Controller
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class Controller
      */
     public function setAction($action)
     {
-        $this->_action = $action;
+        $this->action = $action;
     }
 
     /**
@@ -165,7 +165,7 @@ abstract class Controller
      */
     protected function checkAccess($action = null)
     {
-        $checkAction = $this->_action;
+        $checkAction = $this->action;
 
         if (!is_null($action)) {
             $checkAction = $action;

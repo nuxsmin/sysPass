@@ -51,7 +51,7 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 $actionId = Request::analyze('actionId', 0);
 $search = Request::analyze('search');
 $limitStart = Request::analyze('start', 0);
-$limitCount = Request::analyze('count', Config::getValue('account_count'));
+$limitCount = Request::analyze('count', Config::getConfig()->getAccountCount());
 
 $Tpl = new Template();
 $Tpl->assign('index', Request::analyze('activeTab', 0));

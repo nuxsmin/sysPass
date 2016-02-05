@@ -45,7 +45,7 @@ abstract class GridTabController extends Controller
     /**
      * @var Grids
      */
-    protected $_grids;
+    protected $Grids;
 
     /**
      * Constructor
@@ -65,8 +65,8 @@ abstract class GridTabController extends Controller
      */
     public function useTabs()
     {
-        $this->_grids = new Grids();
-        $this->_grids->setQueryTimeStart($this->view->queryTimeStart);
+        $this->Grids = new Grids();
+        $this->Grids->setQueryTimeStart($this->view->queryTimeStart);
 
         $this->view->addTemplate('datatabs-grid');
 

@@ -68,7 +68,7 @@ class Email
             $body[] = Html::strongText(_('Acción') . ": ") . utf8_decode($log->getAction());
             $body[] = Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
 
-            $Mail->addCC(Config::getValue('mail_from'));
+            $Mail->addCC(Config::getConfig()->getMailFrom());
         }
 
         $body[] = utf8_decode($log->getDescription());
@@ -96,7 +96,7 @@ class Email
         $Log->addDescription(_('Destinatario') . ': ' . $mailTo);
 
         if ($isEvent === true){
-            $Log->addDescription(_('CC') . ': ' . Config::getValue('mail_from'));
+            $Log->addDescription(_('CC') . ': ' . Config::getConfig()->getMailFrom());
         }
 
         $Log->writeLog();
@@ -114,14 +114,14 @@ class Email
     private static function getEmailObject($mailTo, $action)
     {
         $appName = Util::getAppInfo('appname');
-        $mailFrom = Config::getValue('mail_from');
-        $mailServer = Config::getValue('mail_server');
-        $mailPort = Config::getValue('mail_port', 25);
-        $mailAuth = Config::getValue('mail_authenabled', FALSE);
+        $mailFrom = Config::getConfig()->getMailFrom();
+        $mailServer = Config::getConfig()->getMailServer();
+        $mailPort = Config::getConfig()->getMailPort();
+        $mailAuth = Config::getConfig()->isMailAuthenabled();
 
         if ($mailAuth) {
-            $mailUser = Config::getValue('mail_user');
-            $mailPass = Config::getValue('mail_pass');
+            $mailUser = Config::getConfig()->getMailUser();
+            $mailPass = Config::getConfig()->getMailPass();
         }
 
         if (!$mailServer) {
@@ -143,7 +143,7 @@ class Email
             $Mail->Username = $mailUser;
             $Mail->Password = $mailPass;
         }
-        $Mail->SMTPSecure = strtolower(Config::getValue('mail_security'));
+        $Mail->SMTPSecure = strtolower(Config::getConfig()->getMailSecurity());
         //$mail->SMTPDebug = 2;
         //$mail->Debugoutput = 'error_log';
 

@@ -276,7 +276,7 @@ class Crypt
     public static function generateAesKey($string, $salt = null)
     {
         if (is_null($salt)) {
-            $salt = Config::getValue('passwordsalt');
+            $salt = Config::getConfig()->getPasswordSalt();
         }
 
         $salt = '$2y$07$' . $salt . '$';

@@ -79,7 +79,7 @@ class User extends UserBase
         $Data->setQuery($query);
         $Data->addParam($cryptMPass[0], 'mPass');
         $Data->addParam($cryptMPass[1], 'mIV');
-        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($this->userId, 'id');
 
         return DB::getQuery($Data);
     }
@@ -91,7 +91,7 @@ class User extends UserBase
      */
     private function getCypherPass()
     {
-        return Crypt::generateAesKey($this->_userPass . $this->_userLogin);
+        return Crypt::generateAesKey($this->userPass . $this->userLogin);
     }
 
     /**
@@ -106,7 +106,7 @@ class User extends UserBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($this->userId, 'id');
 
         $queryRes = DB::getResults($Data);
 

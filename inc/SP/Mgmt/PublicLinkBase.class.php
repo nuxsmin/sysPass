@@ -47,55 +47,55 @@ abstract class PublicLinkBase
     /**
      * @var int
      */
-    protected $_id = 0;
+    protected $id = 0;
     /**
      * @var int
      */
-    protected $_itemId = 0;
+    protected $itemId = 0;
     /**
      * @var int
      */
-    protected $_userId = 0;
+    protected $userId = 0;
     /**
      * @var string
      */
-    protected $_linkHash = '';
+    protected $linkHash = '';
     /**
      * @var int
      */
-    protected $_typeId = 0;
+    protected $typeId = 0;
     /**
      * @var bool
      */
-    protected $_notify = false;
+    protected $notify = false;
     /**
      * @var int
      */
-    protected $_dateAdd = 0;
+    protected $dateAdd = 0;
     /**
      * @var int
      */
-    protected $_dateExpire = 0;
+    protected $dateExpire = 0;
     /**
      * @var string
      */
-    protected $_pass = '';
+    protected $pass = '';
     /**
      * @var string
      */
-    protected $_passIV = '';
+    protected $passIV = '';
     /**
      * @var int
      */
-    protected $_countViews = 0;
+    protected $countViews = 0;
     /**
      * @var int
      */
-    protected $_maxCountViews = 0;
+    protected $maxCountViews = 0;
     /**
      * @var array
      */
-    private $_useInfo = array();
+    private $useInfo = array();
 
     /**
      * @param int  $itemId El Id del elemento
@@ -104,9 +104,9 @@ abstract class PublicLinkBase
      */
     public function __construct($itemId, $typeId = 0, $notify = false)
     {
-        $this->_itemId = $itemId;
-        $this->_typeId = $typeId;
-        $this->_notify = $notify;
+        $this->itemId = $itemId;
+        $this->typeId = $typeId;
+        $this->notify = $notify;
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class PublicLinkBase
      */
     public function getMaxCountViews()
     {
-        return $this->_maxCountViews;
+        return $this->maxCountViews;
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class PublicLinkBase
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -130,7 +130,7 @@ abstract class PublicLinkBase
      */
     public function setId($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -138,7 +138,7 @@ abstract class PublicLinkBase
      */
     public function getCountViews()
     {
-        return $this->_countViews;
+        return $this->countViews;
     }
 
     /**
@@ -146,7 +146,7 @@ abstract class PublicLinkBase
      */
     public function getDateExpire()
     {
-        return $this->_dateExpire;
+        return $this->dateExpire;
     }
 
     /**
@@ -154,7 +154,7 @@ abstract class PublicLinkBase
      */
     public function getPass()
     {
-        return $this->_pass;
+        return $this->pass;
     }
 
     /**
@@ -162,7 +162,7 @@ abstract class PublicLinkBase
      */
     public function getPassIV()
     {
-        return $this->_passIV;
+        return $this->passIV;
     }
 
     /**
@@ -170,7 +170,7 @@ abstract class PublicLinkBase
      */
     public function getDateAdd()
     {
-        return $this->_dateAdd;
+        return $this->dateAdd;
     }
 
     /**
@@ -178,7 +178,7 @@ abstract class PublicLinkBase
      */
     public function getUseInfo()
     {
-        return $this->_useInfo;
+        return $this->useInfo;
     }
 
     /**
@@ -186,7 +186,7 @@ abstract class PublicLinkBase
      */
     public function isNotify()
     {
-        return $this->_notify;
+        return $this->notify;
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class PublicLinkBase
      */
     public function setNotify($notify)
     {
-        $this->_notify = $notify;
+        $this->notify = $notify;
     }
 
     /**
@@ -202,7 +202,7 @@ abstract class PublicLinkBase
      */
     public function getTypeId()
     {
-        return $this->_typeId;
+        return $this->typeId;
     }
 
     /**
@@ -210,7 +210,7 @@ abstract class PublicLinkBase
      */
     public function setTypeId($typeId)
     {
-        $this->_typeId = $typeId;
+        $this->typeId = $typeId;
     }
 
     /**
@@ -218,7 +218,7 @@ abstract class PublicLinkBase
      */
     public function getItemId()
     {
-        return $this->_itemId;
+        return $this->itemId;
     }
 
     /**
@@ -226,7 +226,7 @@ abstract class PublicLinkBase
      */
     public function setItemId($itemId)
     {
-        $this->_itemId = $itemId;
+        $this->itemId = $itemId;
     }
 
     /**
@@ -234,7 +234,7 @@ abstract class PublicLinkBase
      */
     public function getUserId()
     {
-        return $this->_userId;
+        return $this->userId;
     }
 
     /**
@@ -242,7 +242,7 @@ abstract class PublicLinkBase
      */
     public function setUserId($userId)
     {
-        $this->_userId = $userId;
+        $this->userId = $userId;
     }
 
     /**
@@ -250,7 +250,7 @@ abstract class PublicLinkBase
      */
     public function getLinkHash()
     {
-        return $this->_linkHash;
+        return $this->linkHash;
     }
 
     /**
@@ -264,7 +264,7 @@ abstract class PublicLinkBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_id, 'id');
+        $Data->addParam($this->id, 'id');
 
         try {
             DB::getQuery($Data);
@@ -274,7 +274,7 @@ abstract class PublicLinkBase
 
         $Log = new Log(_('Eliminar Enlace'));
         $Log->addDescription(_('Enlace eliminado'));
-        $Log->addDetails(Html::strongText(_('ID')), $this->_itemId);
+        $Log->addDetails(Html::strongText(_('ID')), $this->itemId);
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -295,7 +295,7 @@ abstract class PublicLinkBase
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->createLinkHash(), 'hash');
-        $Data->addParam($this->_itemId, 'itemid');
+        $Data->addParam($this->itemId, 'itemid');
         $Data->addParam(serialize($this), 'linkdata');
 
         try {
@@ -313,10 +313,10 @@ abstract class PublicLinkBase
      */
     protected function createLinkHash($refresh = false)
     {
-        if (empty($this->_linkHash) || $refresh === true) {
-            $this->_linkHash = hash('sha256', uniqid());
+        if (empty($this->linkHash) || $refresh === true) {
+            $this->linkHash = hash('sha256', uniqid());
         }
-        return $this->_linkHash;
+        return $this->linkHash;
     }
 
     /**
@@ -330,8 +330,8 @@ abstract class PublicLinkBase
         $pass = Crypt::generateAesKey($this->createLinkHash());
         $cryptPass = Crypt::encryptData(SessionUtil::getSessionMPass(), $pass);
 
-        $this->_pass = $cryptPass['data'];
-        $this->_passIV = $cryptPass['iv'];
+        $this->pass = $cryptPass['data'];
+        $this->passIV = $cryptPass['iv'];
     }
 
     /**
@@ -341,7 +341,7 @@ abstract class PublicLinkBase
      */
     protected function calcDateExpire()
     {
-        $this->_dateExpire = time() + (int)Config::getValue('publinks_maxtime', 600);
+        $this->dateExpire = time() + (int)Config::getConfig()->getPublinksMaxTime();
     }
 
     /**
@@ -358,8 +358,8 @@ abstract class PublicLinkBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_linkHash, 'hash');
-        $Data->addParam($this->_id, 'id');
+        $Data->addParam($this->linkHash, 'hash');
+        $Data->addParam($this->id, 'id');
         $Data->addParam(serialize($this), 'linkdata');
 
         return DB::getQuery($Data);
@@ -382,6 +382,6 @@ abstract class PublicLinkBase
      */
     private function setUseInfo($useInfo)
     {
-        $this->_useInfo[] = $useInfo;
+        $this->useInfo[] = $useInfo;
     }
 }

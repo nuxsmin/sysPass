@@ -43,8 +43,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class AccountHistory extends AccountBase implements AccountInterface
 {
-    private $_isDelete = false;
-    private $_isModify = false;
+    private $isDelete = false;
+    private $isModify = false;
 
     /**
      * Obtiene el listado del histórico de una cuenta.
@@ -95,7 +95,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function isIsDelete()
     {
-        return $this->_isDelete;
+        return $this->isDelete;
     }
 
     /**
@@ -103,7 +103,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function setIsDelete($isDelete)
     {
-        $this->_isDelete = $isDelete;
+        $this->isDelete = $isDelete;
     }
 
     /**
@@ -111,7 +111,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function isIsModify()
     {
-        return $this->_isModify;
+        return $this->isModify;
     }
 
     /**
@@ -119,7 +119,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function setIsModify($isModify)
     {
-        $this->_isModify = $isModify;
+        $this->isModify = $isModify;
     }
 
     /**
@@ -325,7 +325,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      * @return object
      * @throws SPException
      */
-    public function getAccountData()
+    public function getData()
     {
         $query = 'SELECT acchistory_accountId as account_id,'
             . 'acchistory_customerId as account_customerId,'
@@ -363,7 +363,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId(), 'id');
 
         $queryRes = DB::getResults($Data);
 
@@ -371,10 +371,10 @@ class AccountHistory extends AccountBase implements AccountInterface
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
         }
 
-        $this->setAccountUserId($queryRes->account_userId);
-        $this->setAccountUserGroupId($queryRes->account_userGroupId);
-        $this->setAccountOtherUserEdit($queryRes->account_otherUserEdit);
-        $this->setAccountOtherGroupEdit($queryRes->account_otherGroupEdit);
+        $this->accountData->setAccountUserId($queryRes->account_userId);
+        $this->accountData->setAccountUserGroupId($queryRes->account_userGroupId);
+        $this->accountData->setAccountOtherUserEdit($queryRes->account_otherUserEdit);
+        $this->accountData->setAccountOtherGroupEdit($queryRes->account_otherGroupEdit);
 
         return $queryRes;
     }
@@ -410,19 +410,19 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->getAccountId(), 'account_id');
-        $Data->addParam($this->getAccountCustomerId(), 'accountCustomerId');
-        $Data->addParam($this->getAccountCategoryId(), 'accountCategoryId');
-        $Data->addParam($this->getAccountName(), 'accountName');
-        $Data->addParam($this->getAccountLogin(), 'accountLogin');
-        $Data->addParam($this->getAccountUrl(), 'accountUrl');
-        $Data->addParam($this->getAccountPass(), 'accountPass');
-        $Data->addParam($this->getAccountIV(), 'accountIV');
-        $Data->addParam($this->getAccountNotes(), 'accountNotes');
-        $Data->addParam($this->getAccountUserId(), 'accountUserId');
-        $Data->addParam($this->getAccountUserGroupId(), 'accountUserGroupId');
-        $Data->addParam($this->getAccountOtherUserEdit(), 'accountOtherUserEdit');
-        $Data->addParam($this->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getAccountId(), 'account_id');
+        $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
+        $Data->addParam($this->accountData->getAccountCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->accountData->getAccountName(), 'accountName');
+        $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
+        $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
+        $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
+        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
+        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
+        $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->isIsModify(), 'isModify');
         $Data->addParam($this->isIsDelete(), 'isDelete');
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
@@ -445,7 +445,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId(), 'id');
 
         if (DB::getQuery($Data) === false) {
             return false;

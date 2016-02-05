@@ -103,8 +103,8 @@ class Syslog extends AbstractLogger
      */
     private function logRemote($message)
     {
-        $server = Config::getValue('syslog_server');
-        $port = Config::getValue('syslog_port', 514);
+        $server = Config::getConfig()->getSyslogServer();
+        $port = Config::getConfig()->getSyslogPort();
 
         if (!empty($server)) {
             $syslogMsg = date('M d H:i:s ') . "sysPass web: $message";

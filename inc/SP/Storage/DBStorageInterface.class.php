@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,32 +23,17 @@
  *
  */
 
-namespace SP\Import;
-
-use SP\Core\SPException;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+namespace SP\Storage;
 
 /**
- * Class CsvImport para importar cuentas desde archivos CSV
+ * Interface DBStorageInterface
  *
- * @package SP
+ * @package SP\Storage
  */
-class CsvImport extends CsvImportBase
+interface DBStorageInterface
 {
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws SPException
-     * @return bool
+     * @return PDO
      */
-    public function doImport()
-    {
-        try{
-            $this->file->readFileToArray();
-            $this->processAccounts();
-        } catch (SPException $e){
-            throw $e;
-        }
-    }
+    public function getConnection();
 }

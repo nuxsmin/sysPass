@@ -70,7 +70,7 @@ class Wiki extends Controller implements ActionsInterface
         $pageInfo = '';
         $headerData = '';
         $pageSearch = '';
-        $wikiUrlBase = Config::getValue('dokuwiki_urlbase');
+        $wikiUrlBase = Config::getConfig()->getDokuwikiUrlBase();
 
         try {
             $DokuWikiApi = new DokuWikiApi();

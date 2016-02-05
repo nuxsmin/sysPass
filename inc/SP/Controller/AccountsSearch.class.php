@@ -28,6 +28,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Account\Account;
+use SP\Account\AccountData;
 use SP\Account\AccountFavorites;
 use SP\Account\AccountSearch;
 use SP\Config\Config;
@@ -61,13 +62,13 @@ class AccountsSearch extends Controller implements ActionsInterface
      *
      * @var bool
      */
-    private $_filterOn = false;
+    private $filterOn = false;
     /**
      * Colores para resaltar las cuentas
      *
      * @var array
      */
-    private $_colors = array(
+    private $colors = array(
         '2196F3',
         '03A9F4',
         '00BCD4',
@@ -125,7 +126,7 @@ class AccountsSearch extends Controller implements ActionsInterface
     private function setVars()
     {
         $this->view->assign('isAdmin', (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc()));
-        $this->view->assign('showGlobalSearch', Config::getValue('globalsearch', false));
+        $this->view->assign('showGlobalSearch', Config::getConfig()->isGlobalSearch());
 
         // Comprobar si está creado el objeto de búsqueda en la sesión
         if (!is_object(Session::getSearchFilters())) {
@@ -196,7 +197,7 @@ class AccountsSearch extends Controller implements ActionsInterface
 
         $resQuery = $search->getAccounts();
 
-        $this->_filterOn = ($this->_sortKey > 1
+        $this->filterOn = ($this->_sortKey > 1
             || $this->view->searchCustomer
             || $this->view->searchCategory
             || $this->view->searchTxt
@@ -238,46 +239,47 @@ class AccountsSearch extends Controller implements ActionsInterface
         $maxTextLength = (Checks::resultsCardsIsEnabled()) ? 40 : 60;
 
         if (AccountsSearchData::$wikiEnabled) {
-            $wikiSearchUrl = Config::getValue('wiki_searchurl', false);
-            $this->view->assign('wikiFilter', strtr(Config::getValue('wiki_filter'), ',', '|'));
-            $this->view->assign('wikiPageUrl', Config::getValue('wiki_pageurl'));
+            $wikiSearchUrl = Config::getConfig()->getWikiSearchurl();
+            $this->view->assign('wikiFilter', implode('|', Config::getConfig()->getWikiFilter()));
+            $this->view->assign('wikiPageUrl', Config::getConfig()->getWikiPageurl());
         }
 
         $favorites = AccountFavorites::getFavorites(Session::getUserId());
 
-        $Account = new Account();
+        $AccountData = new AccountData();
+        $Account = new Account($AccountData);
         $accountsData['count'] = AccountSearch::$queryNumRows;
 
         foreach ($results as $account) {
-            $Account->setAccountId($account->account_id);
-            $Account->setAccountUserId($account->account_userId);
-            $Account->setAccountUserGroupId($account->account_userGroupId);
-            $Account->setAccountOtherUserEdit($account->account_otherUserEdit);
-            $Account->setAccountOtherGroupEdit($account->account_otherGroupEdit);
+            $AccountData->setAccountId($account->account_id);
+            $AccountData->setAccountUserId($account->account_userId);
+            $AccountData->setAccountUserGroupId($account->account_userGroupId);
+            $AccountData->setAccountOtherUserEdit($account->account_otherUserEdit);
+            $AccountData->setAccountOtherGroupEdit($account->account_otherGroupEdit);
 
             // Obtener los datos de la cuenta para aplicar las ACL
             $accountAclData = $Account->getAccountDataForACL();
 
-            $AccountData = new AccountsSearchData();
-            $AccountData->setTextMaxLength($maxTextLength);
-            $AccountData->setId($account->account_id);
-            $AccountData->setName($account->account_name);
-            $AccountData->setLogin($account->account_login);
-            $AccountData->setCategoryName($account->category_name);
-            $AccountData->setCustomerName($account->customer_name);
-            $AccountData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? $wikiSearchUrl . $account->customer_name : '');
-            $AccountData->setColor($this->pickAccountColor($account->account_customerId));
-            $AccountData->setUrl($account->account_url);
-            $AccountData->setFavorite(in_array($account->account_id, $favorites));
-            $AccountData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
-            $AccountData->setShowView(Acl::checkAccountAccess(self::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_VIEW));
-            $AccountData->setShowViewPass(Acl::checkAccountAccess(self::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_VIEW_PASS));
-            $AccountData->setShowEdit(Acl::checkAccountAccess(self::ACTION_ACC_EDIT, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_EDIT));
-            $AccountData->setShowCopy(Acl::checkAccountAccess(self::ACTION_ACC_COPY, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_COPY));
-            $AccountData->setShowDelete(Acl::checkAccountAccess(self::ACTION_ACC_DELETE, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_DELETE));
+            $AccountSearchData = new AccountsSearchData();
+            $AccountSearchData->setTextMaxLength($maxTextLength);
+            $AccountSearchData->setId($account->account_id);
+            $AccountSearchData->setName($account->account_name);
+            $AccountSearchData->setLogin($account->account_login);
+            $AccountSearchData->setCategoryName($account->category_name);
+            $AccountSearchData->setCustomerName($account->customer_name);
+            $AccountSearchData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? $wikiSearchUrl . $account->customer_name : '');
+            $AccountSearchData->setColor($this->pickAccountColor($account->account_customerId));
+            $AccountSearchData->setUrl($account->account_url);
+            $AccountSearchData->setFavorite(in_array($account->account_id, $favorites));
+            $AccountSearchData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
+            $AccountSearchData->setShowView(Acl::checkAccountAccess(self::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_VIEW));
+            $AccountSearchData->setShowViewPass(Acl::checkAccountAccess(self::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_VIEW_PASS));
+            $AccountSearchData->setShowEdit(Acl::checkAccountAccess(self::ACTION_ACC_EDIT, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_EDIT));
+            $AccountSearchData->setShowCopy(Acl::checkAccountAccess(self::ACTION_ACC_COPY, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_COPY));
+            $AccountSearchData->setShowDelete(Acl::checkAccountAccess(self::ACTION_ACC_DELETE, $accountAclData) && Acl::checkUserAccess(self::ACTION_ACC_DELETE));
 
             // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
-            if ($AccountData->isShow()) {
+            if ($AccountSearchData->isShow()) {
                 $secondaryGroups = Groups::getGroupsNameForAccount($account->account_id);
                 $secondaryUsers = UserAccounts::getUsersNameForAccount($account->account_id);
 
@@ -295,7 +297,7 @@ class AccountsSearch extends Controller implements ActionsInterface
                     }
                 }
 
-                $AccountData->setAccesses($secondaryAccesses);
+                $AccountSearchData->setAccesses($secondaryAccesses);
 
                 $accountNotes = '';
 
@@ -304,10 +306,10 @@ class AccountsSearch extends Controller implements ActionsInterface
                     $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
                 }
 
-                $AccountData->setNotes($accountNotes);
+                $AccountSearchData->setNotes($accountNotes);
             }
 
-            $accountsData[] = $AccountData;
+            $accountsData[] = $AccountSearchData;
         }
 
         return $accountsData;
@@ -328,9 +330,9 @@ class AccountsSearch extends Controller implements ActionsInterface
             || !isset($accountColor[$id])
         ) {
             // Se asigna el color de forma aleatoria a cada id
-            $color = array_rand($this->_colors);
+            $color = array_rand($this->colors);
 
-            $accountColor[$id] = '#' . $this->_colors[$color];
+            $accountColor[$id] = '#' . $this->colors[$color];
             Session::setAccountColor($accountColor);
         }
 
@@ -351,7 +353,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Detalles de Cuenta'));
         $GridActionView->setTitle(_('Detalles de Cuenta'));
-        $GridActionView->setIcon($this->_icons->getIconView());
+        $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setReflectionFilter('\\SP\\Controller\\AccountsSearchData', 'isShowView');
         $GridActionView->setOnClickFunction('sysPassUtil.Common.accGridAction');
         $GridActionView->setOnClickArgs(self::ACTION_ACC_VIEW);
@@ -363,14 +365,14 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionViewPass->setType(DataGridActionType::VIEW_ITEM);
         $GridActionViewPass->setName(_('Ver Clave'));
         $GridActionViewPass->setTitle(_('Ver Clave'));
-        $GridActionViewPass->setIcon($this->_icons->getIconViewPass());
+        $GridActionViewPass->setIcon($this->icons->getIconViewPass());
         $GridActionViewPass->setReflectionFilter('\\SP\\Controller\\AccountsSearchData', 'isShowViewPass');
         $GridActionViewPass->setOnClickFunction('sysPassUtil.Common.accGridViewPass');
         $GridActionViewPass->setOnClickArgs('this');
         $GridActionViewPass->setOnClickArgs(1);
 
         // Añadir la clase para usar el portapapeles
-        $ClipboardIcon = $this->_icons->getIconClipboard();
+        $ClipboardIcon = $this->icons->getIconClipboard();
         $ClipboardIcon->setClass('clip-pass-button');
 
         $GridActionCopyPass = new DataGridAction();
@@ -384,7 +386,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionCopyPass->setOnClickArgs('this');
         $GridActionCopyPass->setOnClickArgs(0);
 
-        $EditIcon = $this->_icons->getIconEdit();
+        $EditIcon = $this->icons->getIconEdit();
 
         if (!$showOptionalActions) {
             $EditIcon->setClass('actions-optional');
@@ -402,7 +404,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionEdit->setOnClickArgs(self::ACTION_ACC_SEARCH);
         $GridActionEdit->setOnClickArgs('this');
 
-        $CopyIcon = $this->_icons->getIconCopy();
+        $CopyIcon = $this->icons->getIconCopy();
 
         if (!$showOptionalActions) {
             $CopyIcon->setClass('actions-optional');
@@ -420,7 +422,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionCopy->setOnClickArgs(self::ACTION_ACC_SEARCH);
         $GridActionCopy->setOnClickArgs('this');
 
-        $DeleteIcon = $this->_icons->getIconDelete();
+        $DeleteIcon = $this->icons->getIconDelete();
 
         if (!$showOptionalActions) {
             $DeleteIcon->setClass('actions-optional');
@@ -442,7 +444,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionRequest->setId(self::ACTION_ACC_REQUEST);
         $GridActionRequest->setName(_('Solicitar Modificación'));
         $GridActionRequest->setTitle(_('Solicitar Modificación'));
-        $GridActionRequest->setIcon($this->_icons->getIconEmail());
+        $GridActionRequest->setIcon($this->icons->getIconEmail());
         $GridActionRequest->setReflectionFilter('\\SP\\Controller\\AccountsSearchData', 'isShowRequest');
         $GridActionRequest->setOnClickFunction('sysPassUtil.Common.accGridAction');
         $GridActionRequest->setOnClickArgs(self::ACTION_ACC_REQUEST);
@@ -453,16 +455,16 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridActionOptional->setId(self::ACTION_ACC_REQUEST);
         $GridActionOptional->setName(_('Más Acciones'));
         $GridActionOptional->setTitle(_('Más Acciones'));
-        $GridActionOptional->setIcon($this->_icons->getIconOptional());
+        $GridActionOptional->setIcon($this->icons->getIconOptional());
         $GridActionOptional->setReflectionFilter('\\SP\\Controller\\AccountsSearchData', 'isShowOptional');
         $GridActionOptional->setOnClickFunction('sysPassUtil.Common.showOptional');
         $GridActionOptional->setOnClickArgs('this');
 
         $GridPager = new DataGridPager();
-        $GridPager->setIconPrev($this->_icons->getIconNavPrev());
-        $GridPager->setIconNext($this->_icons->getIconNavNext());
-        $GridPager->setIconFirst($this->_icons->getIconNavFirst());
-        $GridPager->setIconLast($this->_icons->getIconNavLast());
+        $GridPager->setIconPrev($this->icons->getIconNavPrev());
+        $GridPager->setIconNext($this->icons->getIconNavNext());
+        $GridPager->setIconFirst($this->icons->getIconNavFirst());
+        $GridPager->setIconLast($this->icons->getIconNavLast());
         $GridPager->setSortKey($this->_sortKey);
         $GridPager->setSortOrder($this->_sortOrder);
         $GridPager->setLimitStart($this->_limitStart);
@@ -470,7 +472,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridPager->setOnClickFunction('sysPassUtil.Common.searchSort');
         $GridPager->setOnClickArgs($this->_sortKey);
         $GridPager->setOnClickArgs($this->_sortOrder);
-        $GridPager->setFilterOn($this->_filterOn);
+        $GridPager->setFilterOn($this->filterOn);
 
         $Grid = new DataGrid();
         $Grid->setId('gridSearch');
@@ -503,36 +505,36 @@ class AccountsSearch extends Controller implements ActionsInterface
         $GridSortCustomer->setName(_('Cliente'));
         $GridSortCustomer->setTitle(_('Ordenar por Cliente'));
         $GridSortCustomer->setSortKey(AccountSearch::SORT_CUSTOMER);
-        $GridSortCustomer->setIconUp($this->_icons->getIconUp());
-        $GridSortCustomer->setIconDown($this->_icons->getIconDown());
+        $GridSortCustomer->setIconUp($this->icons->getIconUp());
+        $GridSortCustomer->setIconDown($this->icons->getIconDown());
 
         $GridSortName = new DataGridSort();
         $GridSortName->setName(_('Nombre'));
         $GridSortName->setTitle(_('Ordenar por Nombre'));
         $GridSortName->setSortKey(AccountSearch::SORT_NAME);
-        $GridSortName->setIconUp($this->_icons->getIconUp());
-        $GridSortName->setIconDown($this->_icons->getIconDown());
+        $GridSortName->setIconUp($this->icons->getIconUp());
+        $GridSortName->setIconDown($this->icons->getIconDown());
 
         $GridSortCategory = new DataGridSort();
         $GridSortCategory->setName(_('Categoría'));
         $GridSortCategory->setTitle(_('Ordenar por Categoría'));
         $GridSortCategory->setSortKey(AccountSearch::SORT_CATEGORY);
-        $GridSortCategory->setIconUp($this->_icons->getIconUp());
-        $GridSortCategory->setIconDown($this->_icons->getIconDown());
+        $GridSortCategory->setIconUp($this->icons->getIconUp());
+        $GridSortCategory->setIconDown($this->icons->getIconDown());
 
         $GridSortLogin = new DataGridSort();
         $GridSortLogin->setName(_('Usuario'));
         $GridSortLogin->setTitle(_('Ordenar por Usuario'));
         $GridSortLogin->setSortKey(AccountSearch::SORT_LOGIN);
-        $GridSortLogin->setIconUp($this->_icons->getIconUp());
-        $GridSortLogin->setIconDown($this->_icons->getIconDown());
+        $GridSortLogin->setIconUp($this->icons->getIconUp());
+        $GridSortLogin->setIconDown($this->icons->getIconDown());
 
         $GridSortUrl = new DataGridSort();
         $GridSortUrl->setName(_('URL / IP'));
         $GridSortUrl->setTitle(_('Ordenar por URL / IP'));
         $GridSortUrl->setSortKey(AccountSearch::SORT_URL);
-        $GridSortUrl->setIconUp($this->_icons->getIconUp());
-        $GridSortUrl->setIconDown($this->_icons->getIconDown());
+        $GridSortUrl->setIconUp($this->icons->getIconUp());
+        $GridSortUrl->setIconDown($this->icons->getIconDown());
 
         $GridHeaderSort = new DataGridHeaderSort();
         $GridHeaderSort->addSortField($GridSortCustomer);

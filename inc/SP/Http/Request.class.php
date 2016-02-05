@@ -162,17 +162,7 @@ class Request
     public static function getRequestHeaders($header = '')
     {
         if (!function_exists('\apache_request_headers')) {
-            function apache_request_headers()
-            {
-                foreach ($_SERVER as $key => $value) {
-                    if (substr($key, 0, 5) == "HTTP_") {
-                        $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
-                        $headers[$key] = $value;
-                    } else {
-                        $headers[$key] = $value;
-                    }
-                }
-            }
+            $headers = self::getApacheHeaders();
         } else {
             $headers = apache_request_headers();
         }
@@ -201,5 +191,26 @@ class Request
         }
 
         return (isset($params) && count($params) > 0) ? implode('&', $params) : '';
+    }
+
+    /**
+     * Función que sustituye a apache_request_headers
+     *
+     * @return array
+     */
+    public static function getApacheHeaders()
+    {
+        $headers = array();
+
+        foreach ($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) == "HTTP_") {
+                $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
+                $headers[$key] = $value;
+            } else {
+                $headers[$key] = $value;
+            }
+        }
+
+        return $headers;
     }
 }

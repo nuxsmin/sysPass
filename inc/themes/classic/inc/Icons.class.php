@@ -44,39 +44,39 @@ class Icons extends ThemeIconsBase
      */
     public function setIcons()
     {
-        $this->_iconAdd = new ImageIcon(Init::$WEBURI . '/imgs/add.png', null, _('Añadir'));
-        $this->_iconView = new ImageIcon(Init::$WEBURI . '/imgs/view.png', null, _('Ver Detalles'));
-        $this->_iconViewPass = new ImageIcon(Init::$WEBURI . '/imgs/user-pass.png', null, _('Ver Clave'));
-        $this->_iconEdit = new ImageIcon(Init::$WEBURI . '/imgs/edit.png', null, _('Editar'));
-        $this->_iconDelete = new ImageIcon(Init::$WEBURI . '/imgs/delete.png', null, _('Eliminar'));
-        $this->_iconEditPass = new ImageIcon(Init::$WEBURI . '/imgs/key.png', null, _('Cambiar Clave'));
-        $this->_iconAppAdmin = new ImageIcon(Init::$WEBURI . '/imgs/check_blue.png', null, _('Admin Aplicación'));
-        $this->_iconAccAdmin = new ImageIcon(Init::$WEBURI . '/imgs/check_orange.png', null, _('Admin Cuentas'));
-        $this->_iconLdapUser = new ImageIcon(Init::$WEBURI . '/imgs/ldap.png', null, _('Usuario de LDAP'));
-        $this->_iconDisabled = new ImageIcon(Init::$WEBURI . '/imgs/disabled.png', null, _('Deshabilitado'));
-        $this->_iconRefresh = new ImageIcon(Init::$WEBURI . '/imgs/refresh.png', null, _('Actualizar'));
-        $this->_iconCopy = new ImageIcon(Init::$WEBURI . '/imgs/btn_copy.png', null, _('Copiar'));
-        $this->_iconClipboard = new ImageIcon(Init::$WEBURI . '/imgs/clipboard.png');
-        $this->_iconEmail = new ImageIcon(Init::$WEBURI . '/imgs/request.png', null, _('Email'));
-        $this->_iconOptional = new ImageIcon(Init::$WEBURI . '/imgs/action.png');
-        $this->_iconPublicLink = new ImageIcon(Init::$WEBURI . '/imgs/action.png');
-        $this->_iconBack = new ImageIcon(Init::$WEBURI . '/imgs/back.png', null, _('Volver'));
-        $this->_iconRestore = new ImageIcon(Init::$WEBURI . '/imgs/restore.png', null, ('Restaurar'));
-        $this->_iconSave = new ImageIcon(Init::$WEBURI . '/imgs/check.png', null, _('Guardar'));
-        $this->_iconHelp = new ImageIcon(Init::$WEBURI . '/imgs/help.png', null, _('Ayuda'));
-        $this->_iconClear = new ImageIcon(Init::$WEBURI . '/imgs/clear.png', null, _('Limpiar'));
-        $this->_iconPlay = new ImageIcon(Init::$WEBURI . '/imgs/start.png', null, _('Realizar'));
-        $this->_iconDownload = new ImageIcon(Init::$WEBURI . '/imgs/download.png', null, _('Descargar'));
-        $this->_iconWarning = new ImageIcon(Init::$WEBURI . '/imgs/warning.png', null, _('Aviso'));
+        $this->iconAdd = new ImageIcon(Init::$WEBURI . '/imgs/add.png', null, _('Añadir'));
+        $this->iconView = new ImageIcon(Init::$WEBURI . '/imgs/view.png', null, _('Ver Detalles'));
+        $this->iconViewPass = new ImageIcon(Init::$WEBURI . '/imgs/user-pass.png', null, _('Ver Clave'));
+        $this->iconEdit = new ImageIcon(Init::$WEBURI . '/imgs/edit.png', null, _('Editar'));
+        $this->iconDelete = new ImageIcon(Init::$WEBURI . '/imgs/delete.png', null, _('Eliminar'));
+        $this->iconEditPass = new ImageIcon(Init::$WEBURI . '/imgs/key.png', null, _('Cambiar Clave'));
+        $this->iconAppAdmin = new ImageIcon(Init::$WEBURI . '/imgs/check_blue.png', null, _('Admin Aplicación'));
+        $this->iconAccAdmin = new ImageIcon(Init::$WEBURI . '/imgs/check_orange.png', null, _('Admin Cuentas'));
+        $this->iconLdapUser = new ImageIcon(Init::$WEBURI . '/imgs/ldap.png', null, _('Usuario de LDAP'));
+        $this->iconDisabled = new ImageIcon(Init::$WEBURI . '/imgs/disabled.png', null, _('Deshabilitado'));
+        $this->iconRefresh = new ImageIcon(Init::$WEBURI . '/imgs/refresh.png', null, _('Actualizar'));
+        $this->iconCopy = new ImageIcon(Init::$WEBURI . '/imgs/btn_copy.png', null, _('Copiar'));
+        $this->iconClipboard = new ImageIcon(Init::$WEBURI . '/imgs/clipboard.png');
+        $this->iconEmail = new ImageIcon(Init::$WEBURI . '/imgs/request.png', null, _('Email'));
+        $this->iconOptional = new ImageIcon(Init::$WEBURI . '/imgs/action.png');
+        $this->iconPublicLink = new ImageIcon(Init::$WEBURI . '/imgs/action.png');
+        $this->iconBack = new ImageIcon(Init::$WEBURI . '/imgs/back.png', null, _('Volver'));
+        $this->iconRestore = new ImageIcon(Init::$WEBURI . '/imgs/restore.png', null, ('Restaurar'));
+        $this->iconSave = new ImageIcon(Init::$WEBURI . '/imgs/check.png', null, _('Guardar'));
+        $this->iconHelp = new ImageIcon(Init::$WEBURI . '/imgs/help.png', null, _('Ayuda'));
+        $this->iconClear = new ImageIcon(Init::$WEBURI . '/imgs/clear.png', null, _('Limpiar'));
+        $this->iconPlay = new ImageIcon(Init::$WEBURI . '/imgs/start.png', null, _('Realizar'));
+        $this->iconDownload = new ImageIcon(Init::$WEBURI . '/imgs/download.png', null, _('Descargar'));
+        $this->iconWarning = new ImageIcon(Init::$WEBURI . '/imgs/warning.png', null, _('Aviso'));
 
         // Iconos de Navegación
-        $this->_iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));
-        $this->_iconNavNext = new FontIcon('chevron_right', null, _('Página siguiente'));
-        $this->_iconNavFirst = new FontIcon('arrow_back', null, _('Primera página'));
-        $this->_iconNavLast = new FontIcon('arrow_forward', null, _('Última página'));
+        $this->iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));
+        $this->iconNavNext = new FontIcon('chevron_right', null, _('Página siguiente'));
+        $this->iconNavFirst = new FontIcon('arrow_back', null, _('Primera página'));
+        $this->iconNavLast = new FontIcon('arrow_forward', null, _('Última página'));
 
         // Iconos de Ordenación
-        $this->_iconUp = new FontIcon('arrow_drop_up');
-        $this->_iconDown = new FontIcon('arrow_drop_down');
+        $this->iconUp = new FontIcon('arrow_drop_up');
+        $this->iconDown = new FontIcon('arrow_drop_down');
     }
 }

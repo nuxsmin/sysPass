@@ -26,6 +26,7 @@
 namespace SP\Core;
 
 use SP\Account;
+use SP\Config\ConfigData;
 use SP\Mgmt;
 use SP\Mgmt\User\Profile;
 use SP\Mgmt\User\UserPreferences;
@@ -747,5 +748,53 @@ class Session
     public static function setSessionType($type)
     {
         self::setSessionKey('sessiontype', $type);
+    }
+
+    /**
+     * Devolver la configuración
+     *
+     * @return ConfigData
+     */
+    public static function getConfig()
+    {
+        return self::getSessionKey('config');
+    }
+
+    /**
+     * Establecer la configuración
+     *
+     * @param ConfigData $config
+     */
+    public static function setConfig(ConfigData $config)
+    {
+        self::setSessionKey('config', $config);
+    }
+
+    /**
+     * Establecer la hora de carga de la configuración
+     *
+     * @param $time
+     */
+    public static function setConfigTime($time)
+    {
+        self::setSessionKey('configTime', $time);
+    }
+
+    /**
+     * Devolver la hora de carga de la configuración
+     *
+     * @return int
+     */
+    public static function getConfigTime()
+    {
+        return self::getSessionKey('configTime');
+    }
+
+    /**
+     * @param $key
+     */
+    public static function unsetSessionKey($key)
+    {
+        unset($_SESSION[$key]);
     }
 }

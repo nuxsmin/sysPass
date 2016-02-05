@@ -35,11 +35,11 @@ class QueryData
     /**
      * @var array
      */
-    protected $_data = array();
+    protected $data = array();
     /**
      * @var string
      */
-    protected $_query = '';
+    protected $query = '';
 
     /**
      * @param $value
@@ -48,9 +48,9 @@ class QueryData
     public function addParam($value, $name = null)
     {
         if (!is_null($name)) {
-            $this->_data[$name] = $value;
+            $this->data[$name] = $value;
         } else {
-            $this->_data[] = $value;
+            $this->data[] = $value;
         }
     }
 
@@ -59,7 +59,7 @@ class QueryData
      */
     public function getParams()
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -67,7 +67,7 @@ class QueryData
      */
     public function getQuery()
     {
-        return $this->_query;
+        return $this->query;
     }
 
     /**
@@ -75,6 +75,6 @@ class QueryData
      */
     public function setQuery($query)
     {
-        $this->_query = $query;
+        $this->query = $query;
     }
 }

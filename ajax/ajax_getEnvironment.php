@@ -41,7 +41,7 @@ $data = array(
     'lang' => $stringsJsLang,
     'app_root' => Init::$WEBURI,
     'pk' => '',
-    'max_file_size' => Config::getValue('files_allowed_size')
+    'max_file_size' => Config::getConfig()->getFilesAllowedSize()
 );
 
 try {

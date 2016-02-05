@@ -37,29 +37,29 @@ class Connection implements ConnectionInterface
     /**
      * @var resource
      */
-    protected $_socket;
+    protected $socket;
 
     /**
      * @var string
      */
-    protected $_host = '';
+    protected $host = '';
 
     /**
      * @var int
      */
-    protected $_port = 0;
+    protected $port = 0;
     /**
      * Código de error del socket
      *
      * @var int
      */
-    protected $_errorno = 0;
+    protected $errorno = 0;
     /**
      * Mensaje de error del socket
      *
      * @var string
      */
-    protected $_errorstr = '';
+    protected $errorstr = '';
 
     /**
      * @param $host string El host a conectar
@@ -67,8 +67,8 @@ class Connection implements ConnectionInterface
      */
     public function __construct($host, $port)
     {
-        $this->_host = gethostbyname($host);
-        $this->_port = $port;
+        $this->host = gethostbyname($host);
+        $this->port = $port;
     }
 
     /**
@@ -82,21 +82,21 @@ class Connection implements ConnectionInterface
     {
         switch ($type){
             case self::TYPE_TCP:
-                $this->_socket = $this->getTCPSocket();
+                $this->socket = $this->getTCPSocket();
                 break;
             case self::TYPE_UDP:
-                $this->_socket = $this->getUDPSocket();
+                $this->socket = $this->getUDPSocket();
                 break;
             default:
-                $this->_socket = $this->getTCPSocket();
+                $this->socket = $this->getTCPSocket();
                 break;
         }
 
-        if ($this->_socket === false) {
+        if ($this->socket === false) {
             throw new SPException(SPException::SP_WARNING, $this->getSocketError());
         }
 
-        stream_set_timeout($this->_socket, self::SOCKET_TIMEOUT);
+        stream_set_timeout($this->socket, self::SOCKET_TIMEOUT);
     }
 
     /**
@@ -104,7 +104,7 @@ class Connection implements ConnectionInterface
      */
     public function closeSocket()
     {
-        fclose($this->_socket);
+        fclose($this->socket);
 //        @socket_close($this->_socket);
     }
 
@@ -117,12 +117,12 @@ class Connection implements ConnectionInterface
      */
     public function send($message)
     {
-        if (!is_resource($this->_socket)) {
+        if (!is_resource($this->socket)) {
             throw new SPException(SPException::SP_WARNING, _('Socket no inicializado'));
         }
 
-        $nBytes = @fwrite($this->_socket, $message);
-//        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->_port);
+        $nBytes = @fwrite($this->socket, $message);
+//        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->port);
 
         if ($nBytes === false) {
             throw new SPException(SPException::SP_WARNING, _('Error al enviar datos'), $this->getSocketError());
@@ -138,7 +138,7 @@ class Connection implements ConnectionInterface
      */
     public function getSocketError()
     {
-        return sprintf('%s (%d)', $this->_errorstr, $this->_errorno);
+        return sprintf('%s (%d)', $this->errorstr, $this->errorno);
 //        return socket_strerror(socket_last_error($this->_socket));
     }
 
@@ -149,7 +149,7 @@ class Connection implements ConnectionInterface
      */
     private function getUDPSocket()
     {
-        return stream_socket_client('udp://' . $this->_host . ':' . $this->_port, $this->_errorno, $this->_errorstr, self::SOCKET_TIMEOUT);
+        return stream_socket_client('udp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
 //        return @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
     }
 
@@ -160,7 +160,7 @@ class Connection implements ConnectionInterface
      */
     private function getTCPSocket()
     {
-        return stream_socket_client('tcp://' . $this->_host . ':' . $this->_port, $this->_errorno, $this->_errorstr, self::SOCKET_TIMEOUT);
+        return stream_socket_client('tcp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
 //        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     }
 }

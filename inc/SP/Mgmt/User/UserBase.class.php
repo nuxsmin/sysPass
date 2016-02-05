@@ -49,74 +49,74 @@ abstract class UserBase
     /**
      * @var int
      */
-    protected $_userId = 0;
+    protected $userId = 0;
     /**
      * @var string
      */
-    protected $_userName = '';
+    protected $userName = '';
     /**
      * @var int
      */
-    protected $_userGroupId = 0;
+    protected $userGroupId = 0;
     /**
      * @var string
      */
-    protected $_userGroupName = '';
+    protected $userGroupName = '';
     /**
      * @var string
      */
-    protected $_userLogin = '';
+    protected $userLogin = '';
     /**
      * @var string
      */
-    protected $_userPass = '';
+    protected $userPass = '';
     /**
      * @var string
      */
-    protected $_userEmail = '';
+    protected $userEmail = '';
     /**
      * @var string
      */
-    protected $_userNotes = '';
+    protected $userNotes = '';
     /**
      * @var int
      */
-    protected $_userProfileId = 0;
+    protected $userProfileId = 0;
     /**
      * @var bool
      */
-    protected $_userIsAdminApp = false;
+    protected $userIsAdminApp = false;
     /**
      * @var bool
      */
-    protected $_userIsAdminAcc = false;
+    protected $userIsAdminAcc = false;
     /**
      * @var bool
      */
-    protected $_userIsDisabled = false;
+    protected $userIsDisabled = false;
     /**
      * @var bool
      */
-    protected $_userIsLdap = false;
+    protected $userIsLdap = false;
     /**
      * @var bool
      */
-    protected $_userChangePass = false;
+    protected $userChangePass = false;
 
     /**
      * @return int
      */
     public function getUserId()
     {
-        return $this->_userId;
+        return $this->userId;
     }
 
     /**
-     * @param int $_userId
+     * @param int $userId
      */
-    public function setUserId($_userId)
+    public function setUserId($userId)
     {
-        $this->_userId = $_userId;
+        $this->userId = $userId;
     }
 
     /**
@@ -124,15 +124,15 @@ abstract class UserBase
      */
     public function getUserName()
     {
-        return $this->_userName;
+        return $this->userName;
     }
 
     /**
-     * @param string $_userName
+     * @param string $userName
      */
-    public function setUserName($_userName)
+    public function setUserName($userName)
     {
-        $this->_userName = $_userName;
+        $this->userName = $userName;
     }
 
     /**
@@ -140,15 +140,15 @@ abstract class UserBase
      */
     public function getUserGroupId()
     {
-        return $this->_userGroupId;
+        return $this->userGroupId;
     }
 
     /**
-     * @param int $_userGroupId
+     * @param int $userGroupId
      */
-    public function setUserGroupId($_userGroupId)
+    public function setUserGroupId($userGroupId)
     {
-        $this->_userGroupId = $_userGroupId;
+        $this->userGroupId = $userGroupId;
     }
 
     /**
@@ -156,15 +156,15 @@ abstract class UserBase
      */
     public function getUserGroupName()
     {
-        return $this->_userGroupName;
+        return $this->userGroupName;
     }
 
     /**
-     * @param string $_userGroupName
+     * @param string $userGroupName
      */
-    public function setUserGroupName($_userGroupName)
+    public function setUserGroupName($userGroupName)
     {
-        $this->_userGroupName = $_userGroupName;
+        $this->userGroupName = $userGroupName;
     }
 
     /**
@@ -172,15 +172,15 @@ abstract class UserBase
      */
     public function getUserLogin()
     {
-        return $this->_userLogin;
+        return $this->userLogin;
     }
 
     /**
-     * @param string $_userLogin
+     * @param string $userLogin
      */
-    public function setUserLogin($_userLogin)
+    public function setUserLogin($userLogin)
     {
-        $this->_userLogin = $_userLogin;
+        $this->userLogin = $userLogin;
     }
 
     /**
@@ -188,15 +188,15 @@ abstract class UserBase
      */
     public function getUserPass()
     {
-        return $this->_userPass;
+        return $this->userPass;
     }
 
     /**
-     * @param string $_userPass
+     * @param string $userPass
      */
-    public function setUserPass($_userPass)
+    public function setUserPass($userPass)
     {
-        $this->_userPass = $_userPass;
+        $this->userPass = $userPass;
     }
 
     /**
@@ -204,15 +204,15 @@ abstract class UserBase
      */
     public function getUserEmail()
     {
-        return $this->_userEmail;
+        return $this->userEmail;
     }
 
     /**
-     * @param string $_userEmail
+     * @param string $userEmail
      */
-    public function setUserEmail($_userEmail)
+    public function setUserEmail($userEmail)
     {
-        $this->_userEmail = $_userEmail;
+        $this->userEmail = $userEmail;
     }
 
     /**
@@ -220,15 +220,15 @@ abstract class UserBase
      */
     public function getUserNotes()
     {
-        return $this->_userNotes;
+        return $this->userNotes;
     }
 
     /**
-     * @param string $_userNotes
+     * @param string $userNotes
      */
-    public function setUserNotes($_userNotes)
+    public function setUserNotes($userNotes)
     {
-        $this->_userNotes = $_userNotes;
+        $this->userNotes = $userNotes;
     }
 
     /**
@@ -236,15 +236,15 @@ abstract class UserBase
      */
     public function getUserProfileId()
     {
-        return $this->_userProfileId;
+        return $this->userProfileId;
     }
 
     /**
-     * @param int $_userProfileId
+     * @param int $userProfileId
      */
-    public function setUserProfileId($_userProfileId)
+    public function setUserProfileId($userProfileId)
     {
-        $this->_userProfileId = $_userProfileId;
+        $this->userProfileId = $userProfileId;
     }
 
     /**
@@ -252,15 +252,15 @@ abstract class UserBase
      */
     public function isUserIsAdminApp()
     {
-        return $this->_userIsAdminApp;
+        return $this->userIsAdminApp;
     }
 
     /**
-     * @param boolean $_userIsAdminApp
+     * @param boolean $userIsAdminApp
      */
-    public function setUserIsAdminApp($_userIsAdminApp)
+    public function setUserIsAdminApp($userIsAdminApp)
     {
-        $this->_userIsAdminApp = $_userIsAdminApp;
+        $this->userIsAdminApp = $userIsAdminApp;
     }
 
     /**
@@ -268,15 +268,15 @@ abstract class UserBase
      */
     public function isUserIsAdminAcc()
     {
-        return $this->_userIsAdminAcc;
+        return $this->userIsAdminAcc;
     }
 
     /**
-     * @param boolean $_userIsAdminAcc
+     * @param boolean $userIsAdminAcc
      */
-    public function setUserIsAdminAcc($_userIsAdminAcc)
+    public function setUserIsAdminAcc($userIsAdminAcc)
     {
-        $this->_userIsAdminAcc = $_userIsAdminAcc;
+        $this->userIsAdminAcc = $userIsAdminAcc;
     }
 
     /**
@@ -284,15 +284,15 @@ abstract class UserBase
      */
     public function isUserIsDisabled()
     {
-        return $this->_userIsDisabled;
+        return $this->userIsDisabled;
     }
 
     /**
-     * @param boolean $_userIsDisabled
+     * @param boolean $userIsDisabled
      */
-    public function setUserIsDisabled($_userIsDisabled)
+    public function setUserIsDisabled($userIsDisabled)
     {
-        $this->_userIsDisabled = $_userIsDisabled;
+        $this->userIsDisabled = $userIsDisabled;
     }
 
     /**
@@ -300,15 +300,15 @@ abstract class UserBase
      */
     public function isUserIsLdap()
     {
-        return $this->_userIsLdap;
+        return $this->userIsLdap;
     }
 
     /**
-     * @param boolean $_userIsLdap
+     * @param boolean $userIsLdap
      */
-    public function setUserIsLdap($_userIsLdap)
+    public function setUserIsLdap($userIsLdap)
     {
-        $this->_userIsLdap = $_userIsLdap;
+        $this->userIsLdap = $userIsLdap;
     }
 
     /**
@@ -316,15 +316,15 @@ abstract class UserBase
      */
     public function isUserChangePass()
     {
-        return $this->_userChangePass;
+        return $this->userChangePass;
     }
 
     /**
-     * @param boolean $_userChangePass
+     * @param boolean $userChangePass
      */
-    public function setUserChangePass($_userChangePass)
+    public function setUserChangePass($userChangePass)
     {
-        $this->_userChangePass = $_userChangePass;
+        $this->userChangePass = $userChangePass;
     }
 
     /**
@@ -350,7 +350,7 @@ abstract class UserBase
      */
     public function addUser()
     {
-        $passdata = UserPass::makeUserPassHash($this->_userPass);
+        $passdata = UserPass::makeUserPassHash($this->userPass);
 
         $query = 'INSERT INTO usrData SET '
             . 'user_name = :name,'
@@ -371,16 +371,16 @@ abstract class UserBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userName, 'name');
-        $Data->addParam($this->_userLogin, 'login');
-        $Data->addParam($this->_userEmail, 'email');
-        $Data->addParam($this->_userNotes, 'notes');
-        $Data->addParam($this->_userGroupId, 'groupId');
-        $Data->addParam($this->_userProfileId, 'profileId');
-        $Data->addParam(intval($this->_userIsAdminApp), 'isAdminApp');
-        $Data->addParam(intval($this->_userIsAdminAcc), 'isAdminAcc');
-        $Data->addParam(intval($this->_userIsDisabled), 'isDisabled');
-        $Data->addParam(intval($this->_userChangePass), 'isChangePass');
+        $Data->addParam($this->userName, 'name');
+        $Data->addParam($this->userLogin, 'login');
+        $Data->addParam($this->userEmail, 'email');
+        $Data->addParam($this->userNotes, 'notes');
+        $Data->addParam($this->userGroupId, 'groupId');
+        $Data->addParam($this->userProfileId, 'profileId');
+        $Data->addParam(intval($this->userIsAdminApp), 'isAdminApp');
+        $Data->addParam(intval($this->userIsAdminAcc), 'isAdminAcc');
+        $Data->addParam(intval($this->userIsDisabled), 'isDisabled');
+        $Data->addParam(intval($this->userChangePass), 'isChangePass');
         $Data->addParam($passdata['pass'], 'pass');
         $Data->addParam($passdata['salt'], 'salt');
 
@@ -388,13 +388,13 @@ abstract class UserBase
             return false;
         }
 
-        $this->_userId = DB::getLastId();
+        $this->userId = DB::getLastId();
 
         $Log = new Log(_('Nuevo Usuario'));
-        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->_userName, $this->_userLogin));
+        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->userName, $this->userLogin));
 
-        if ($this->_userChangePass) {
-            if (!Auth::mailPassRecover(DBUtil::escape($this->_userLogin), DBUtil::escape($this->_userEmail))) {
+        if ($this->userChangePass) {
+            if (!Auth::mailPassRecover(DBUtil::escape($this->userLogin), DBUtil::escape($this->userEmail))) {
                 $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
         }
@@ -435,7 +435,7 @@ abstract class UserBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userLogin, 'login');
+        $Data->addParam($this->userLogin, 'login');
 
         $queryRes = DB::getResults($Data);
 
@@ -443,16 +443,16 @@ abstract class UserBase
             return false;
         }
 
-        $this->_userId = intval($queryRes->user_id);
-        $this->_userName = $queryRes->user_name;
-        $this->_userGroupId = intval($queryRes->user_groupId);
-        $this->_userGroupName = $queryRes->usergroup_name;
-        $this->_userEmail = $queryRes->user_email;
-        $this->_userProfileId = intval($queryRes->user_profileId);
-        $this->_userIsAdminApp = intval($queryRes->user_isAdminApp);
-        $this->_userIsAdminAcc = intval($queryRes->user_isAdminAcc);
-        $this->_userIsLdap = intval($queryRes->user_isLdap);
-        $this->_userChangePass = intval($queryRes->user_isChangePass);
+        $this->userId = intval($queryRes->user_id);
+        $this->userName = $queryRes->user_name;
+        $this->userGroupId = intval($queryRes->user_groupId);
+        $this->userGroupName = $queryRes->usergroup_name;
+        $this->userEmail = $queryRes->user_email;
+        $this->userProfileId = intval($queryRes->user_profileId);
+        $this->userIsAdminApp = intval($queryRes->user_isAdminApp);
+        $this->userIsAdminAcc = intval($queryRes->user_isAdminAcc);
+        $this->userIsLdap = intval($queryRes->user_isLdap);
+        $this->userChangePass = intval($queryRes->user_isChangePass);
 
         return true;
     }
@@ -464,8 +464,8 @@ abstract class UserBase
      */
     public function checkUserExist()
     {
-        $userLogin = strtoupper($this->_userLogin);
-        $userEmail = strtoupper($this->_userEmail);
+        $userLogin = strtoupper($this->userLogin);
+        $userEmail = strtoupper($this->userEmail);
 
         $query = 'SELECT user_login, user_email '
             . 'FROM usrData '
@@ -475,9 +475,9 @@ abstract class UserBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userLogin, 'login');
-        $Data->addParam($this->_userEmail, 'email');
-        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($this->userLogin, 'login');
+        $Data->addParam($this->userEmail, 'email');
+        $Data->addParam($this->userId, 'id');
 
         DB::setReturnArray();
 
@@ -522,17 +522,17 @@ abstract class UserBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userName, 'name');
-        $Data->addParam($this->_userLogin, 'login');
-        $Data->addParam($this->_userEmail, 'email');
-        $Data->addParam($this->_userNotes, 'notes');
-        $Data->addParam($this->_userGroupId, 'groupId');
-        $Data->addParam($this->_userProfileId, 'profileId');
-        $Data->addParam(intval($this->_userIsAdminApp), 'isAdminApp');
-        $Data->addParam(intval($this->_userIsAdminAcc), 'isAdminAcc');
-        $Data->addParam(intval($this->_userIsDisabled), 'isDisabled');
-        $Data->addParam(intval($this->_userChangePass), 'isChangePass');
-        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($this->userName, 'name');
+        $Data->addParam($this->userLogin, 'login');
+        $Data->addParam($this->userEmail, 'email');
+        $Data->addParam($this->userNotes, 'notes');
+        $Data->addParam($this->userGroupId, 'groupId');
+        $Data->addParam($this->userProfileId, 'profileId');
+        $Data->addParam(intval($this->userIsAdminApp), 'isAdminApp');
+        $Data->addParam(intval($this->userIsAdminAcc), 'isAdminAcc');
+        $Data->addParam(intval($this->userIsDisabled), 'isDisabled');
+        $Data->addParam(intval($this->userChangePass), 'isChangePass');
+        $Data->addParam($this->userId, 'id');
 
         if (DB::getQuery($Data) === false) {
             return false;
@@ -541,10 +541,10 @@ abstract class UserBase
         $this->queryLastId = DB::$lastId;
 
         $Log = new Log(_('Modificar Usuario'));
-        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->_userName, $this->_userLogin));
+        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->userName, $this->userLogin));
 
-        if ($this->_userChangePass) {
-            if (!Auth::mailPassRecover(DBUtil::escape($this->_userLogin), DBUtil::escape($this->_userEmail))) {
+        if ($this->userChangePass) {
+            if (!Auth::mailPassRecover(DBUtil::escape($this->userLogin), DBUtil::escape($this->userEmail))) {
                 $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
         }
@@ -563,8 +563,8 @@ abstract class UserBase
      */
     public function updateUserPass()
     {
-        $passdata = UserPass::makeUserPassHash($this->_userPass);
-        $userLogin = UserUtil::getUserLoginById($this->_userId);
+        $passdata = UserPass::makeUserPassHash($this->userPass);
+        $userLogin = UserUtil::getUserLoginById($this->userId);
 
         $query = 'UPDATE usrData SET '
             . 'user_pass = :pass,'
@@ -575,7 +575,7 @@ abstract class UserBase
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($this->userId, 'id');
         $Data->addParam($passdata['pass'], 'pass');
         $Data->addParam($passdata['salt'], 'salt');
 
@@ -601,13 +601,13 @@ abstract class UserBase
      */
     public function deleteUser()
     {
-        $userLogin = UserUtil::getUserLoginById($this->_userId);
+        $userLogin = UserUtil::getUserLoginById($this->userId);
 
         $query = 'DELETE FROM usrData WHERE user_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->_userId, 'id');
+        $Data->addParam($this->userId, 'id');
 
         if (DB::getQuery($Data) === false) {
             return false;

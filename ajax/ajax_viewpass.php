@@ -24,6 +24,7 @@
  */
 
 use SP\Account\Account;
+use SP\Account\AccountData;
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
 use SP\Core\Crypt;
@@ -51,10 +52,10 @@ if (!$accountId) {
     return;
 }
 
-$Account = (!$isHistory) ? new Account() : new AccountHistory();
+$AccountData = new AccountData($accountId);
+$Account = (!$isHistory) ? new Account($AccountData) : new AccountHistory($AccountData);
 
 $Account->setAccountParentId(\SP\Core\Session::getAccountParentId());
-$Account->setAccountId($accountId);
 
 $accountData = $Account->getAccountPassData();
 
