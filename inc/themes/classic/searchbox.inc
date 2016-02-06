@@ -67,7 +67,10 @@
 
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
-            sysPassUtil.Common.accSearch(1, e)
+            // Performs a 500ms delay to not fill the API very quickly
+            setTimeout(function () {
+                sysPassUtil.Common.accSearch(1, e);
+            }, 500);
         });
 
         $('#frmSearch #rpp').on('change', function () {
@@ -75,7 +78,7 @@
         });
 
         $("#rpp").spinner({
-            step: 3, max: 50, min: 6, numberFormat: "n", stop: function (event, ui) {
+            step: 1, max: 50, min: 6, numberFormat: "n", stop: function (event, ui) {
                 sysPassUtil.Common.accSearch(0);
             }
         });

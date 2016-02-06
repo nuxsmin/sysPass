@@ -192,9 +192,7 @@ sysPass.Util.Common = function () {
         if (typeof event !== 'undefined' &&
             ((event.keyCode < 48 && event.keyCode !== 13) || (event.keyCode > 105 && event.keyCode < 123))) {
             return;
-        }
-
-        if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode !== 13) {
+        } else if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode !== 13) {
             return;
         }
 

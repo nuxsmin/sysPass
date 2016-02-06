@@ -16,13 +16,16 @@
                     </p>
                     <ul>
                         <li>:user [login] &gt; <?php echo _('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
-                        <li>:group [group_name] &gt; <?php echo _('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
-                        <li>:file [file_name] &gt; <?php echo _('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
+                        <li>:group [group_name]
+                            &gt; <?php echo _('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
+                        <li>:file [file_name]
+                            &gt; <?php echo _('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
                     </ul>
                 </div>
 
                 <?php if ($showGlobalSearch && !$isAdmin): ?>
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="chkgsearch" title="<?php echo _('Búsqueda global'); ?>">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="chkgsearch"
+                           title="<?php echo _('Búsqueda global'); ?>">
                         <input type="checkbox" id="chkgsearch" class="mdl-switch__input fg-blue100" name="chkgsearch"
                             <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
                         <span class="mdl-switch__label" title="<?php echo _('Búsqueda global'); ?>"></span>
@@ -50,7 +53,7 @@
                 </select>
             </div>
             <div id="toolsRight">
-                <input type="number" name="rpp" id="rpp" min="3" step="6" pattern=""
+                <input type="number" name="rpp" id="rpp" min="6" step="1" pattern=""
                        placeholder="<?php echo _('CPP'); ?>" title="<?php echo _('Cuentas por página'); ?>"
                        value="<?php echo $limitCount; ?>"/>
             </div>
@@ -58,7 +61,7 @@
     </form>
 </div>
 <script>
-    $(function(){
+    $(function () {
         $('#frmSearch select').on('change', function (e) {
             sysPassUtil.Common.clearSearch(1);
             sysPassUtil.Common.accSearch(0, e)
@@ -69,7 +72,10 @@
         })
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
-            sysPassUtil.Common.accSearch(1, e)
+            // Performs a 500ms delay to not fill the API very quickly
+            setTimeout(function () {
+                sysPassUtil.Common.accSearch(1, e);
+            }, 500)
         });
         $('#frmSearch #rpp').on('change', function (e) {
             sysPassUtil.Common.accSearch(0, e);
