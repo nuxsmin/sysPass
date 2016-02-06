@@ -191,6 +191,9 @@ if ($User->getUserMPass()) {
 }
 
 $UserPrefs = \SP\UserPreferences::getPreferences($User->getUserId());
+SP\Language::setLanguage(true);
+SP\Themes::setTheme(true);
+SP\Session::setUserPreferences($UserPrefs);
 
 if ($UserPrefs->isUse2Fa()) {
     SP\Session::set2FApassed(false);
@@ -199,10 +202,6 @@ if ($UserPrefs->isUse2Fa()) {
 } else {
     SP\Session::set2FApassed(true);
 }
-
-SP\Language::setLanguage(true);
-SP\Themes::setTheme(true);
-SP\Session::setUserPreferences($UserPrefs);
 
 $params = array();
 

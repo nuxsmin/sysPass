@@ -22,7 +22,7 @@
         <div class="buttons">
             <button id="btnLogin" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                 <?php echo _('Acceder'); ?>
-                <i class="material-icons" title="<?php echo _('Solicitar'); ?>">play_circle_filled</i>
+                <i class="material-icons" title="<?php echo _('Acceder'); ?>">play_circle_filled</i>
             </button>
         </div>
     </form>
