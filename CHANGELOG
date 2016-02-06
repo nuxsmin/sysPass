@@ -1,5 +1,13 @@
 === ** v1.2.0.11 ===
 
+* [MOD] Modified logout behavior to prevent login for two times. Related #189
+* [MOD] Updated German translation. Thanks to @CyrosX
+* [FIX] #198, #166. Put a delay between search requests to not fill the keybinding API very quickly. Thanks to @alexanderbuhler
+* [FIX] Fixes #199. When doing 2FA login, the user's preferences weren't loaded
+* [FIX]  #166. Fixed error when searching for numbers or ip addresses.
+* [FIX] Fixes #185.Thanks to @bitking
+* [FIX] Fixes #186. Thanks to @wagnst
+* [FIX] Related #189. Login not done for the fisrt time randomly.
 * [FIX] Fixed issue when importing accounts from CSV/XML. Form fields were not fully sent.
 
 === ** v1.2.0.10 ===

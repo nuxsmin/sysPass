@@ -1,5 +1,13 @@
 === ** v1.2.0.11 ===
 
+* [MOD] Modificado el comportamiento de logout para prevenir el login por 2 veces. Related #189
+* [MOD] Actualizada traducción al Alemán. Thanks to @CyrosX
+* [FIX] #198, #166. Poner un retardo entre peticiones de búsqueda para no llenar la API del teclado muy rápidamente. Thanks to @alexanderbuhler
+* [FIX] Fixes #199. En el proceso de 2FA, la preferencias del usuario no eran cargadas.
+* [FIX] #166. Corregido error al buscar números o direcciones IP.
+* [FIX] Fixes #185.Thanks to @bitking
+* [FIX] Fixes #186. Thanks to @wagnst
+* [FIX] Related #189. No se realiza el login por primera vez de forma aleatoria.
 * [FIX] Corregido error al importar cuentas desde CSV/XML. Los campos del formulario no eran completamente enviados.
 
 === ** v1.2.0.10 ===
