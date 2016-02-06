@@ -242,15 +242,15 @@ class MainC extends Controller implements ActionsInterface
         ));
 
         // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
-        $this->view->assign('getParams');
+        $getParams = '';
 
         if (count($_GET) > 0) {
             foreach ($_GET as $param => $value) {
                 $getParams['g_' . \SP\Html::sanitize($param)] = \SP\Html::sanitize($value);
             }
-
-            $this->view->assign('getParams', $getParams);
         }
+
+        $this->view->assign('getParams', $getParams);
     }
 
     /**
