@@ -483,9 +483,7 @@ class Init
     {
         self::wrLogoutInfo();
 
-        //session_unset();
-        session_destroy();
-        session_start();
+        SessionUtil::cleanSession();
     }
 
     /**

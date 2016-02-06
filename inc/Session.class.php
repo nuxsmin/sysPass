@@ -275,15 +275,15 @@ class Session
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param \SP\Profile $profile
+     * @param Profile $profile
      */
-    public static function setUserProfile(\SP\Profile $profile)
+    public static function setUserProfile(Profile $profile)
     {
         self::setSessionKey('usrprofile', $profile);
     }
 
     /**
-     * @return \SP\AccountSearch
+     * @return AccountSearch
      */
     public static function getSearchFilters()
     {
@@ -291,9 +291,9 @@ class Session
     }
 
     /**
-     * @param \SP\AccountSearch $searchFilters
+     * @param AccountSearch $searchFilters
      */
-    public static function setSearchFilters(\SP\AccountSearch $searchFilters)
+    public static function setSearchFilters(AccountSearch $searchFilters)
     {
         self::setSessionKey('searchFilters', $searchFilters);
     }
@@ -631,9 +631,9 @@ class Session
     /**
      * Establece el objeto de preferencias de usuario en la sesión.
      *
-     * @param \SP\UserPreferences $preferences
+     * @param UserPreferences $preferences
      */
-    public static function setUserPreferences(\SP\UserPreferences $preferences)
+    public static function setUserPreferences(UserPreferences $preferences)
     {
         self::setSessionKey('usrpreferences', $preferences);
     }
@@ -676,5 +676,13 @@ class Session
     public static function setAccountColor(array $color)
     {
         self::setSessionKey('accountcolor', $color);
+    }
+
+    /**
+     * @param $key
+     */
+    public static function unsetSessionKey($key)
+    {
+        unset($_SESSION[$key]);
     }
 }
