@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-12-13 18:32+0100\n"
-"PO-Revision-Date: 2015-12-13 18:32+0100\n"
+"PO-Revision-Date: 2016-02-06 06:40+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -66,17 +66,17 @@ msgstr "Benutzername ist notwendig"
 #: ../../../../ajax/ajax_accountSave.php:84
 #: ../../../../ajax/ajax_accountSave.php:106
 msgid "Es necesaria una clave"
-msgstr ""
+msgstr "Ein Schlüssel wird benötigt"
 
 #: ../../../../ajax/ajax_accountSave.php:86
 #: ../../../../ajax/ajax_accountSave.php:97
 msgid "Es necesario una categoría"
-msgstr ""
+msgstr "Eine Kategorie wird benötigt"
 
 #: ../../../../ajax/ajax_accountSave.php:101
 #: ../../../../ajax/ajax_accountSave.php:110
 msgid "Id inválido"
-msgstr ""
+msgstr "Ungültige ID"
 
 #: ../../../../ajax/ajax_accountSave.php:113
 #: ../../../../ajax/ajax_accountSave.php:263
@@ -91,7 +91,7 @@ msgstr "Ungültige Aktion"
 #: ../../../../ajax/ajax_appMgmtSave.php:149
 #: ../../../../ajax/ajax_backup.php:68
 msgid "Las claves no coinciden"
-msgstr ""
+msgstr "Die Passwörter stimmen nicht überein"
 
 #: ../../../../ajax/ajax_accountSave.php:173
 msgid "Cuenta creada"
@@ -328,7 +328,7 @@ msgstr "Duplizierter Gruppenname"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:204
 msgid "Grupo creado"
-msgstr ""
+msgstr "Gruppe hinzugefügt"
 
 #: ../../../../ajax/ajax_appMgmtSave.php:206
 msgid "Error al crear el grupo"
@@ -508,11 +508,11 @@ msgstr "Sicherung der Applikation und der Datenbank erfolgreich durchgeführt"
 
 #: ../../../../ajax/ajax_backup.php:65
 msgid "Proceso de backup finalizado"
-msgstr ""
+msgstr "Sicherung fertig gestellt"
 
 #: ../../../../ajax/ajax_backup.php:72 ../../../../ajax/ajax_backup.php:77
 msgid "Realizar Exportación"
-msgstr ""
+msgstr "Export starten"
 
 #: ../../../../ajax/ajax_backup.php:72
 msgid "Error al realizar la exportación de cuentas"
@@ -2142,7 +2142,7 @@ msgstr "Keine Gruppe mit dem Namen gefunden"
 
 #: ../../../../inc/Log.class.php:88
 msgid "Vaciar Eventos"
-msgstr "Protokol löschen"
+msgstr ""
 
 #: ../../../../inc/Log.class.php:88
 #: ../../../../inc/themes/classic/eventlog.inc:98
@@ -2559,9 +2559,8 @@ msgid "Demasiados archivos"
 msgstr "Zu viele Dateien"
 
 #: ../../../../js/strings.js.php:45
-#, fuzzy
 msgid "Tamaño de archivo no permitido"
-msgstr "Dateityp nicht erlaubt"
+msgstr "Dateigröße nicht erlaubt"
 
 #: ../../../../js/strings.js.php:47
 msgid "Vaciar el registro de eventos?"
@@ -3328,7 +3327,7 @@ msgstr "Es existieren keine Backups zum Herunterladen"
 #: ../../../../inc/themes/material-blue/import.inc:101
 #: ../../../../inc/themes/material-blue/js-common.inc:11
 msgid "Ayuda"
-msgstr ""
+msgstr "Hilfe"
 
 #: ../../../../inc/themes/classic/backup.inc:50
 #: ../../../../inc/themes/material-blue/backup.inc:52
@@ -3592,16 +3591,18 @@ msgid ""
 "Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
 "configuración."
 msgstr ""
+"Erweiterung schreiben und Enter zum hinzufügen drücken. Speichern nicht "
+"vergessen."
 
 #: ../../../../inc/themes/classic/config.inc:216
 #: ../../../../inc/themes/material-blue/config.inc:332
 msgid "Establece el tamaño máximo para subir archivos."
-msgstr ""
+msgstr "Maximum der Dateigröße beim Hochladen."
 
 #: ../../../../inc/themes/classic/config.inc:220
 #: ../../../../inc/themes/material-blue/config.inc:336
 msgid "El máximo absuluto es de 16MB."
-msgstr ""
+msgstr "Das absolute Maximum ist 16MB."
 
 #: ../../../../inc/themes/classic/config.inc:231
 #: ../../../../inc/themes/classic/preferences.inc:56
@@ -3615,7 +3616,7 @@ msgstr "Treffer pro Seite"
 #: ../../../../inc/themes/material-blue/config.inc:222
 #: ../../../../inc/themes/material-blue/preferences.inc:58
 msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
-msgstr ""
+msgstr "Anzahl der Suchresultate pro Seite."
 
 #: ../../../../inc/themes/classic/config.inc:246
 #: ../../../../inc/themes/material-blue/config.inc:260
@@ -3630,17 +3631,19 @@ msgstr "Zeigt die Ergebnisse einer Konten-Suche im Visitenkarten-Format an."
 #: ../../../../inc/themes/classic/config.inc:262
 #: ../../../../inc/themes/material-blue/config.inc:238
 msgid "Imagen para mostrar clave"
-msgstr ""
+msgstr "Bild zur Anzeige des Passworts"
 
 #: ../../../../inc/themes/classic/config.inc:266
 #: ../../../../inc/themes/material-blue/config.inc:242
 msgid "Generar una imagen con el texto de la clave de la cuenta."
-msgstr ""
+msgstr "Bild generieren mit dem Text des Kontopassworts."
 
 #: ../../../../inc/themes/classic/config.inc:269
 #: ../../../../inc/themes/material-blue/config.inc:245
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
+"Nützlich für Umgebungen, in denen das Kopieren eines Passworts in die "
+"Zwischenablage ein Sicherheitsrisiko darstellt."
 
 #: ../../../../inc/themes/classic/config.inc:304
 #: ../../../../inc/themes/material-blue/config.inc:454
@@ -3755,6 +3758,8 @@ msgid ""
 "La clave maestra es utilizada para encriptar las claves de las cuentas de "
 "sysPass para mantenerlas seguras."
 msgstr ""
+"Das Master Passwort wird benutzt um die sysPass Kontenpasswörter zu "
+"verschlüsseln und diese zu sichern."
 
 #: ../../../../inc/themes/classic/encryption.inc:97
 #: ../../../../inc/themes/material-blue/encryption.inc:111
@@ -3762,6 +3767,8 @@ msgid ""
 "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
 "que incluya números, letras y símbolos."
 msgstr ""
+"Es ist ratsam, es von Zeit zu Zeit zu ändern und ein komplexes Password mit "
+"Zahlen, Buchstaben und Symbolen zu nutzen."
 
 #: ../../../../inc/themes/classic/encryption.inc:105
 #: ../../../../inc/themes/material-blue/encryption.inc:121
@@ -3784,11 +3791,11 @@ msgstr "Gültig bis"
 #: ../../../../inc/themes/material-blue/encryption.inc:148
 #: ../../../../inc/themes/material-blue/encryption.inc:154
 msgid "Validez (s)"
-msgstr ""
+msgstr "Lebensspanne (s)"
 
 #: ../../../../inc/themes/classic/encryption.inc:136
 msgid "Validez"
-msgstr ""
+msgstr "Lebensspanne"
 
 #: ../../../../inc/themes/classic/encryption.inc:164
 #: ../../../../inc/themes/material-blue/encryption.inc:183
@@ -3797,6 +3804,9 @@ msgid ""
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
 "la clave maestra original."
 msgstr ""
+"Das temporäre Passwort wird benutzt als Master Passwort für die Benutzer, "
+"welche dieses während der Anmeldung eingeben müssen. So gibt es keinen Grund "
+"den Benutzern das wirkliche Master Passwort zu sagen."
 
 #: ../../../../inc/themes/classic/encryption.inc:166
 #: ../../../../inc/themes/material-blue/encryption.inc:187
@@ -3869,7 +3879,7 @@ msgstr "Datei ansehen"
 #: ../../../../inc/themes/classic/footer.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:29
 msgid "Indica si la conexión utiliza HTTPS."
-msgstr ""
+msgstr "Zeigt, ob die Verbindung HTTPS nutzt"
 
 #: ../../../../inc/themes/classic/footer.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:29
@@ -3877,6 +3887,8 @@ msgid ""
 "Las claves de formularios enviados se encriptan mediante PKI, el resto de "
 "datos no."
 msgstr ""
+"Die aus dem Formular gesendeten Passwörter werden verschlüsselt; andere "
+"Daten nicht."
 
 #: ../../../../inc/themes/classic/footer.inc:6
 msgid "Seguro"
@@ -3922,7 +3934,7 @@ msgstr "Datenbankbenutzer"
 #: ../../../../inc/themes/classic/import.inc:15
 #: ../../../../inc/themes/material-blue/import.inc:130
 msgid "Indicar el usuario de conexión a la base de datos de phpPMS."
-msgstr ""
+msgstr "phpPMS Datenbankbenutzer eingeben"
 
 #: ../../../../inc/themes/classic/import.inc:25
 #: ../../../../inc/themes/classic/install.inc:71
@@ -3943,7 +3955,7 @@ msgstr "Datenbankname"
 #: ../../../../inc/themes/classic/import.inc:37
 #: ../../../../inc/themes/material-blue/import.inc:160
 msgid "Indicar el nombre de la base de datos de phpPMS."
-msgstr ""
+msgstr "phpPMS Datenbankname eingeben"
 
 #: ../../../../inc/themes/classic/import.inc:47
 #: ../../../../inc/themes/classic/install.inc:87
@@ -3956,7 +3968,7 @@ msgstr "Datenbank-Server"
 #: ../../../../inc/themes/classic/import.inc:51
 #: ../../../../inc/themes/material-blue/import.inc:178
 msgid "Indicar el servidor de la base de datos de phpPMS."
-msgstr ""
+msgstr "phpPMS Datenbankserver eingeben"
 
 #: ../../../../inc/themes/classic/import.inc:61
 #: ../../../../inc/themes/material-blue/import.inc:192
@@ -3985,7 +3997,7 @@ msgstr "Standardnutzer"
 #: ../../../../inc/themes/classic/import.inc:97
 #: ../../../../inc/themes/material-blue/import.inc:15
 msgid "Define el usuario por defecto para las cuentas importadas."
-msgstr ""
+msgstr "Definiert den Standardbenutzer für den Kontoimport."
 
 #: ../../../../inc/themes/classic/import.inc:114
 #: ../../../../inc/themes/classic/ldap.inc:144
@@ -3997,7 +4009,7 @@ msgstr "Standard-Gruppe"
 #: ../../../../inc/themes/classic/import.inc:118
 #: ../../../../inc/themes/material-blue/import.inc:37
 msgid "Define el grupo por defecto para las cuentas importadas."
-msgstr ""
+msgstr "Definiert die Standardgruppe für den Kontoimport."
 
 #: ../../../../inc/themes/classic/import.inc:135
 #: ../../../../inc/themes/material-blue/import.inc:55
@@ -4009,7 +4021,7 @@ msgstr "Passwort importieren"
 #: ../../../../inc/themes/material-blue/import.inc:67
 #: ../../../../inc/themes/material-blue/import.inc:73
 msgid "Delimitador CSV"
-msgstr ""
+msgstr "CSV Trennzeichen"
 
 #: ../../../../inc/themes/classic/import.inc:157
 #: ../../../../inc/themes/material-blue/import.inc:85
@@ -4022,19 +4034,21 @@ msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
 msgstr ""
+"Erlaubt Konten, Kategorien und Kunden aus einer XML oder CSV Datei zu "
+"importieren."
 
 #: ../../../../inc/themes/classic/import.inc:175
 #: ../../../../inc/themes/material-blue/import.inc:104
 msgid ""
 "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
-msgstr ""
+msgstr "Die unterstützen XML Dateiformate sind: sysPass, KeePass und KeePassX"
 
 #: ../../../../inc/themes/classic/import.inc:177
 #: ../../../../inc/themes/material-blue/import.inc:106
 msgid ""
 "Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
 "flecha."
-msgstr ""
+msgstr "Datei in die Importzone ziehen oder auf den Pfeil klicken."
 
 #: ../../../../inc/themes/classic/import.inc:179
 #: ../../../../inc/themes/material-blue/import.inc:108
@@ -4042,11 +4056,13 @@ msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
 "KeePass o KeePassX y la categoría igual al nombre de los grupos."
 msgstr ""
+"Bei KeePass oder KeePassX Dateien wird der Kundenname \"KeePass\" oder "
+"\"KeePassX\" und die Kategorienamen wie die Gruppennamen sein."
 
 #: ../../../../inc/themes/classic/import.inc:181
 #: ../../../../inc/themes/material-blue/import.inc:110
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
-msgstr ""
+msgstr "Die zu importierende CSV Datei benötigt folgendes Format:"
 
 #: ../../../../inc/themes/classic/import.inc:183
 #: ../../../../inc/themes/material-blue/import.inc:112
@@ -4059,6 +4075,8 @@ msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
 "automáticamente."
 msgstr ""
+"In allen Fällen, sofern der Kunden- oder Kategorienname noch nicht "
+"existieren, wird dieser automatisch erstellt."
 
 #: ../../../../inc/themes/classic/info.inc:4
 #: ../../../../inc/themes/material-blue/info.inc:4
@@ -4159,12 +4177,12 @@ msgstr "LDAP verwenden"
 #: ../../../../inc/themes/classic/ldap.inc:16
 #: ../../../../inc/themes/material-blue/ldap.inc:16
 msgid "Habilita de autentificación mediante servidor LDAP."
-msgstr ""
+msgstr "Aktiviert authentifizierung mit einem LDAP Server."
 
 #: ../../../../inc/themes/classic/ldap.inc:20
 #: ../../../../inc/themes/material-blue/ldap.inc:20
 msgid "Este método utilizará MySQL en caso de fallo."
-msgstr ""
+msgstr "Diese Methode wird MySQL als Reserve benutzen."
 
 #: ../../../../inc/themes/classic/ldap.inc:36
 #: ../../../../inc/themes/material-blue/ldap.inc:39
@@ -4192,7 +4210,7 @@ msgstr "Benutzer für Bind"
 #: ../../../../inc/themes/classic/ldap.inc:61
 #: ../../../../inc/themes/material-blue/ldap.inc:68
 msgid "Usuario para conectar con el servicio de LDAP."
-msgstr ""
+msgstr "Nutzer für die Verbindung zum LDAP Service."
 
 #: ../../../../inc/themes/classic/ldap.inc:81
 #: ../../../../inc/themes/material-blue/ldap.inc:92
@@ -4214,12 +4232,12 @@ msgstr "LDAP Basis für die LDAP Nutzer-Suche"
 #: ../../../../inc/themes/material-blue/ldap.inc:143
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
-msgstr ""
+msgstr "LDAP Gruppe, zu welcher der Benutzer gehören muss, um sich anzumelden."
 
 #: ../../../../inc/themes/classic/ldap.inc:124
 #: ../../../../inc/themes/material-blue/ldap.inc:147
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
-msgstr ""
+msgstr "Diese Gruppe muss in der LDAP Suchbasis platziert werden."
 
 #: ../../../../inc/themes/classic/ldap.inc:148
 #: ../../../../inc/themes/material-blue/ldap.inc:174
@@ -4236,7 +4254,7 @@ msgstr "Standard-Profil"
 #: ../../../../inc/themes/material-blue/ldap.inc:194
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
-msgstr ""
+msgstr "Definiert das Standardprofil für neu erstellte LDAP Benutzer."
 
 #: ../../../../inc/themes/classic/ldap.inc:186
 #: ../../../../inc/themes/material-blue/ldap.inc:210
@@ -4368,7 +4386,7 @@ msgstr "Sortiere Suchresultate nach Aufrufen"
 #: ../../../../inc/themes/material-blue/preferences.inc:78
 msgid ""
 "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
-msgstr ""
+msgstr "Sortiert Kontensuchresultate anhand der Anzahl der Kontenzugriffe."
 
 #: ../../../../inc/themes/classic/preferences.inc:90
 #: ../../../../inc/themes/material-blue/preferences.inc:91
@@ -4378,7 +4396,7 @@ msgstr "Navigationsleiste oben"
 #: ../../../../inc/themes/classic/preferences.inc:94
 #: ../../../../inc/themes/material-blue/preferences.inc:95
 msgid "Mostrar una barra de navegación superior en las búsquedas."
-msgstr ""
+msgstr "Zeigt eine Navigationsleiste oberhalb der Suchresultate."
 
 #: ../../../../inc/themes/classic/preferences.inc:107
 #: ../../../../inc/themes/material-blue/preferences.inc:108
@@ -4389,7 +4407,7 @@ msgstr "Zeige versteckte Aktionen"
 #: ../../../../inc/themes/material-blue/preferences.inc:112
 msgid ""
 "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
-msgstr ""
+msgstr "Erlaubt die versteckten Aktionen der Kontensuchseite anzuzeigen."
 
 #: ../../../../inc/themes/classic/profiles.inc:11
 #: ../../../../inc/themes/material-blue/profiles.inc:14
@@ -4538,7 +4556,7 @@ msgstr "Andere"
 #: ../../../../inc/themes/classic/profiles.inc:124
 #: ../../../../inc/themes/material-blue/profiles.inc:141
 msgid "Ver log de eventos"
-msgstr "Protokol anzeigen"
+msgstr ""
 
 #: ../../../../inc/themes/classic/profiles.inc:124
 #: ../../../../inc/themes/material-blue/profiles.inc:141
@@ -4635,17 +4653,18 @@ msgstr "Spezialparameter"
 #: ../../../../inc/themes/classic/searchbox.inc:15
 #: ../../../../inc/themes/material-blue/searchbox.inc:18
 msgid "Buscar cuentas a las que 'login' tenga acceso"
-msgstr ""
+msgstr "Suche nach Konten, für die 'login' Rechte besitzt"
 
 #: ../../../../inc/themes/classic/searchbox.inc:17
 #: ../../../../inc/themes/material-blue/searchbox.inc:19
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
-msgstr ""
+msgstr "Suche nach Konten, für die 'group_name' Rechte besitzt"
 
 #: ../../../../inc/themes/classic/searchbox.inc:19
 #: ../../../../inc/themes/material-blue/searchbox.inc:20
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
 msgstr ""
+"Suche nach Konten, welche eine Datei enthalten mit dem Dateinamen 'file_name'"
 
 #: ../../../../inc/themes/classic/searchbox.inc:24
 #: ../../../../inc/themes/material-blue/searchbox.inc:25
@@ -4683,12 +4702,12 @@ msgstr "Aktiviert Zwei-Faktor-Authentifizierung"
 msgid ""
 "Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
 "dígitos."
-msgstr "Scanne den angegebenen QR-Code und gib den sechs stelligen Code ein."
+msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:29
 #: ../../../../inc/themes/material-blue/security.inc:27
 msgid "Activar"
-msgstr "Aktivieren"
+msgstr ""
 
 #: ../../../../inc/themes/classic/security.inc:34
 #: ../../../../inc/themes/material-blue/security.inc:33
@@ -4706,6 +4725,8 @@ msgid ""
 "Una vez activada, sólo es posible acceder si se dispone del dispositivo "
 "generador de códigos asociado."
 msgstr ""
+"Einmal aktiviert, kann man sich nur anmelden, wenn man das Gerät besitzt, "
+"dass den Code generiert."
 
 #: ../../../../inc/themes/classic/sessionbar.inc:6
 #: ../../../../inc/themes/material-blue/footer.inc:7
@@ -4830,6 +4851,7 @@ msgid ""
 "Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
 "la búsqueda."
 msgstr ""
+"Aktiviert die Option einen Link für Suchresultate zu einem externen Wiki."
 
 #: ../../../../inc/themes/classic/wiki.inc:27
 #: ../../../../inc/themes/material-blue/wiki.inc:30
@@ -4840,12 +4862,12 @@ msgstr "Wiki Such-URL"
 #: ../../../../inc/themes/classic/wiki.inc:31
 #: ../../../../inc/themes/material-blue/wiki.inc:34
 msgid "URL que utiliza la wiki para realizar una búsqueda de una página."
-msgstr ""
+msgstr "URL, welche das Wiki zur Inhaltssuche nutzt."
 
 #: ../../../../inc/themes/classic/wiki.inc:35
 #: ../../../../inc/themes/material-blue/wiki.inc:38
 msgid "Como parámetro se utiliza el nombre del cliente."
-msgstr ""
+msgstr "Der Kundenname wird benutzt als Parameter."
 
 #: ../../../../inc/themes/classic/wiki.inc:39
 #: ../../../../inc/themes/classic/wiki.inc:66
@@ -4863,14 +4885,14 @@ msgstr "Wiki URL"
 #: ../../../../inc/themes/classic/wiki.inc:58
 #: ../../../../inc/themes/material-blue/wiki.inc:66
 msgid "URL que utiliza la wiki para acceder a los detalles de una página."
-msgstr ""
+msgstr "URL, welche das Wiki für den Inhaltszugriff nutzt."
 
 #: ../../../../inc/themes/classic/wiki.inc:62
 #: ../../../../inc/themes/material-blue/wiki.inc:70
 msgid ""
 "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
 "de la Wiki."
-msgstr ""
+msgstr "Der Kontoname wird benutzt als Parameter der Wiki Such Variable."
 
 #: ../../../../inc/themes/classic/wiki.inc:81
 #: ../../../../inc/themes/material-blue/wiki.inc:93
@@ -4881,7 +4903,7 @@ msgstr "Präfix eines Kontonamens"
 #: ../../../../inc/themes/material-blue/wiki.inc:97
 msgid ""
 "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
-msgstr ""
+msgstr "Prefix zur Auswahl der Konten die einen Link zum Wiki besitzen."
 
 #: ../../../../inc/themes/classic/wiki.inc:121
 #: ../../../../inc/themes/material-blue/wiki.inc:135
@@ -4899,7 +4921,7 @@ msgstr "Vergangenheit"
 
 #: ../../../../inc/themes/material-blue/account.inc:34
 msgid "> Usar texto y crear nuevo"
-msgstr ""
+msgstr "> Nutze den Text und erstelle einen neuen"
 
 #: ../../../../inc/themes/material-blue/account.inc:43
 msgid "Seleccionar o escribir para crear uno nuevo"
@@ -5037,8 +5059,9 @@ msgstr "Backup erstellen und exportieren"
 msgid "Autentificación"
 msgstr "Authentifizierung"
 
+#, fuzzy
 #~ msgid "No es posible guardar el archivo \"%s\" Tamaño máximo:"
-#~ msgstr "Unmöglich die Datei \"%s\" zu speichern. Maximal erlaubte Größe:"
+#~ msgstr "XML-Datei kann nicht verarbeitet werden"
 
 #, fuzzy
 #~ msgid "Error al actualizar datos encriptados"
