@@ -176,6 +176,8 @@ class XmlHandler implements FileStorageInterface
     protected function analyzeItems()
     {
         if (is_array($this->items)) {
+            ksort($this->items);
+
             return $this->items;
         } elseif (is_object($this->items)) {
             return $this->analyzeObject();
@@ -200,6 +202,8 @@ class XmlHandler implements FileStorageInterface
             $items[$property->getName()] = $property->getValue($this->items);
             $property->setAccessible(false);
         }
+
+        ksort($items);
 
         return $items;
     }

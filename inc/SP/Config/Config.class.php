@@ -98,12 +98,12 @@ class Config
      */
     public static function saveConfig(ConfigData $Config = null, $backup = true)
     {
-        if (is_null($Config)){
-            Factory::getConfigStorage()->setItems(self::getConfig());
-        } else {
-            Factory::getConfigStorage()->setItems($Config);
-        }
+        $ConfigData = (is_null($Config)) ? self::getConfig() : $Config;
+        $ConfigData->setConfigDate(time());
+        $ConfigData->setConfigSaver(Session::getUserLogin());
+        $ConfigData->setConfigHash();
 
+        Factory::getConfigStorage()->setItems($ConfigData);
         Factory::getConfigStorage()->save('config');
 
         if ($backup) {
@@ -131,7 +131,7 @@ class Config
 
             foreach ($Reflection->getProperties() as $property) {
                 $property->setAccessible(true);
-                $property->setValue(self::$Config, $items[$property->getName()]);
+                $property->setValue(self::$Config, @$items[$property->getName()]);
                 $property->setAccessible(false);
             }
         } catch (SPException $e) {}

@@ -2908,10 +2908,11 @@ class RSA
     /**
      * Decryption
      *
-     * @see encrypt()
-     * @access public
-     * @param string $plaintext
+     * @see      encrypt()
+     * @access   public
+     * @param $ciphertext
      * @return string
+     * @internal param string $plaintext
      */
     function decrypt($ciphertext)
     {

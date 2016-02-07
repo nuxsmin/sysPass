@@ -71,6 +71,7 @@ class Request
             $CryptPKI = new CryptPKI();
             $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
         } catch (\Exception $e) {
+            error_log($e->getMessage());
             return $encryptedData;
         }
 

@@ -24,6 +24,7 @@
  */
 
 namespace SP\Config;
+
 use JsonSerializable;
 
 /**
@@ -329,6 +330,10 @@ class ConfigData implements JsonSerializable
      * @var bool
      */
     private $accountPassToImage = false;
+    /**
+     * @var string
+     */
+    private $configSaver = '';
 
     /**
      * @return boolean
@@ -755,11 +760,11 @@ class ConfigData implements JsonSerializable
     }
 
     /**
-     * @param string $configHash
+     *
      */
-    public function setConfigHash($configHash)
+    public function setConfigHash()
     {
-        $this->configHash = $configHash;
+        $this->configHash = md5(serialize($this));
     }
 
     /**
@@ -1517,5 +1522,21 @@ class ConfigData implements JsonSerializable
     public function jsonSerialize()
     {
         return get_object_vars($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigSaver()
+    {
+        return $this->configSaver;
+    }
+
+    /**
+     * @param string $configSaver
+     */
+    public function setConfigSaver($configSaver)
+    {
+        $this->configSaver = $configSaver;
     }
 }
