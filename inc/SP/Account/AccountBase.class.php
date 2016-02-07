@@ -109,21 +109,25 @@ abstract class AccountBase
      * Devolver datos de la cuenta para comprobación de accesos.
      *
      * @param int $accountId con el id de la cuenta
-     * @return array con los datos de la cuenta
+     * @return AccountData objeto con los datos de la cuenta
      */
     public function getAccountDataForACL($accountId = null)
     {
         $accId = (!is_null($accountId)) ? $accountId : $this->accountData->getAccountId();
 
-        return array(
-            'id' => $accId,
-            'user_id' => $this->accountData->getAccountUserId(),
-            'group_id' => $this->accountData->getAccountUserGroupId(),
-            'users_id' => $this->accountData->getAccountUsersId(),
-            'groups_id' => $this->accountData->getAccountUserGroupsId(),
-            'otheruser_edit' => $this->accountData->getAccountOtherUserEdit(),
-            'othergroup_edit' => $this->accountData->getAccountOtherGroupEdit()
-        );
+        $this->accountData->setAccountId($accId);
+
+        return $this->accountData;
+
+//        return array(
+//            'id' => $accId,
+//            'user_id' => $this->accountData->getAccountUserId(),
+//            'group_id' => $this->accountData->getAccountUserGroupId(),
+//            'users_id' => $this->accountData->getAccountUsersId(),
+//            'groups_id' => $this->accountData->getAccountUserGroupsId(),
+//            'otheruser_edit' => $this->accountData->getAccountOtherUserEdit(),
+//            'othergroup_edit' => $this->accountData->getAccountOtherGroupEdit()
+//        );
     }
 
     /**

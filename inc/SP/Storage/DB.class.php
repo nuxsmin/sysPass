@@ -221,7 +221,7 @@ class DB
 //                        error_log("INT: " . $param . " -> " . $value);
                         $sth->bindValue($param, $value, PDO::PARAM_INT);
                     } else {
-//                        error_log("STR: " . $param . " -> " . $value);
+//                        error_log("STR: " . $param . " -> " . print_r($value, true));
                         $sth->bindValue($param, $value, PDO::PARAM_STR);
                     }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account SP\Controller\AccountsSearchData
+ * @var $account SP\Account\AccountsSearchData
  * @var $this    SP\Core\Template
  */
 ?>
@@ -14,7 +14,7 @@
     <!-- Data Header-->
     <?php include $data->getDataHeaderTemplate(); ?>
 
-    <?php if (\SP\Controller\AccountsSearchData::$topNavbar): ?>
+    <?php if (\SP\Account\AccountsSearchData::$topNavbar): ?>
         <!-- Data Pager -->
         <?php include $data->getDataPagerTemplate(); ?>
     <?php endif; ?>
@@ -29,7 +29,9 @@
 
     <script>
         $(function () {
-            $('#data-search-header').find('.sort-down').each(function () {
+            var header = $('#data-search-header');
+
+            header.find('.sort-down').each(function () {
                 $(this).click(function () {
                     var key = $(this).parent().data('key');
                     $(this).parent().find('a').addClass('filterOn');
@@ -37,7 +39,7 @@
                 });
             });
 
-            $('#data-search-header').find('.sort-up').each(function () {
+            header.find('.sort-up').each(function () {
                 $(this).click(function () {
                     var key = $(this).parent().data('key');
                     $(this).parent().find('a').addClass('filterOn');

@@ -24,13 +24,15 @@
  */
 
 namespace SP\Account;
+use JsonSerializable;
+use SP\Util\Json;
 
 /**
  * Class AccountData
  *
  * @package SP\Account
  */
-class AccountData
+class AccountData implements JsonSerializable
 {
     /**
      * @var int Id de la cuenta.
@@ -45,9 +47,9 @@ class AccountData
      */
     private $accountUsersId = [];
     /**
-     * @var array Id del grupo principal de la cuenta.
+     * @var int Id del grupo principal de la cuenta.
      */
-    private $accountUserGroupId = [];
+    private $accountUserGroupId = 0;
     /**
      * @var array Los Ids de los grupos secundarios de la cuenta.
      */
@@ -441,5 +443,23 @@ class AccountData
     public function setAccountNotes($accountNotes)
     {
         $this->accountNotes = $accountNotes;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     *        which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    function jsonSerialize()
+    {
+        $data = get_object_vars($this);
+
+        unset($data['accountPass']);
+        unset($data['accountIV']);
+
+        return Json::safeJson($data);
     }
 }

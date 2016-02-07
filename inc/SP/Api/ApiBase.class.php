@@ -30,10 +30,12 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Auth\Auth;
 use SP\Core\Acl;
 use SP\Core\Session;
+use SP\Core\SessionUtil;
 use SP\Core\SPException;
 use SP\Mgmt\User\User;
 use SP\Mgmt\User\UserPass;
 use SP\Mgmt\User\UserUtil;
+use SP\Util\Json;
 
 /**
  * Class ApiBase
@@ -101,12 +103,13 @@ abstract class ApiBase
                 && !$User->isUserChangePass()
             ) {
                 $this->_mPass = $User->getUserMPass(true);
+                $User->getUserInfo();
+                SessionUtil::loadUserSession($User);
             } else {
                 throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
             }
         }
 
-        Session::setUserId($this->userId);
         Session::setSessionType(Session::SESSION_API);
     }
 
@@ -141,38 +144,13 @@ abstract class ApiBase
      * @return bool
      * @throws SPException
      */
-    protected function wrapJSON($data)
+    protected function wrapJSON(&$data)
     {
-        $arrStrFrom = array("\\", '"', "'");
-        $arrStrTo = array("\\", '\"', "\'");
-
-        if (is_array($data) || is_object($data)) {
-            array_walk($data,
-                function (&$value) use ($arrStrFrom, $arrStrTo) {
-                    if (is_object($value)) {
-                        foreach ($value as &$attribute) {
-                            str_replace($arrStrFrom, $arrStrTo, $attribute);
-                        }
-
-                        return $value;
-                    } else {
-                        return str_replace($arrStrFrom, $arrStrTo, $value);
-                    }
-                }
-            );
-        } else {
-            $data = str_replace($arrStrFrom, $arrStrTo, $data);
-        }
-
-        $json = json_encode(array(
+        $json = array(
             'action' => Acl::getActionName($this->actionId, true),
-            'data' => $data,
-        ));
+            'data' => $data
+        );
 
-        if ($json === false) {
-            throw new SPException(SPException::SP_CRITICAL, sprintf('%s : %s', _('Error de codificación'), json_last_error_msg()));
-        }
-
-        return $json;
+        return Json::getJson($json);
     }
 }

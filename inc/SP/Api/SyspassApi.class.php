@@ -28,6 +28,7 @@ namespace SP\Api;
 use SP\Account\Account;
 use SP\Account\AccountData;
 use SP\Account\AccountSearch;
+use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\SPException;
@@ -60,7 +61,7 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW_PASS);
 
-        if (!isset($this->params->accountId)){
+        if (!isset($this->params->accountId)) {
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
@@ -68,6 +69,15 @@ class SyspassApi extends ApiBase
 
         $AccountData = new AccountData($accountId);
         $Account = new Account($AccountData);
+        $Account->getData();
+
+        $access = (Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())
+            && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
+
+        if (!$access){
+            throw new SPException(SPException::SP_WARNING, _('Acceso no permitido'));
+        }
+
         $Account->getAccountPassData();
         $Account->incrementDecryptCounter();
 
@@ -75,6 +85,10 @@ class SyspassApi extends ApiBase
             'accountId' => $accountId,
             'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->_mPass)
         );
+
+        if (isset($this->params->details)) {
+            $ret['details'] = $AccountData;
+        }
 
         return $this->wrapJSON($ret);
     }
@@ -89,7 +103,7 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_SEARCH);
 
-        if (!isset($this->params->searchText)){
+        if (!isset($this->params->searchText)) {
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
@@ -99,13 +113,13 @@ class SyspassApi extends ApiBase
         $Search->setTxtSearch($this->params->searchText);
         $Search->setLimitCount($count);
 
-        $ret = $Search->getAccounts();
+        $ret = array($this->params, $Search->getAccounts());
 
-        return $this->wrapJSON(array($this->params, $ret));
+        return $this->wrapJSON($ret);
     }
 
     /**
-     * Devolver la clave de una cuenta
+     * Devolver los detalles de una cuenta
      *
      * @return string
      * @throws SPException
@@ -114,13 +128,21 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW);
 
-        if (!isset($this->params->accountId)){
+        if (!isset($this->params->accountId)) {
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
         $accountId = intval($this->params->accountId);
 
         $Account = new Account(new AccountData($accountId));
+
+        $access = (Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $Account->getAccountDataForACL())
+            && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
+
+        if (!$access){
+            throw new SPException(SPException::SP_WARNING, _('Acceso no permitido'));
+        }
+
         $ret = $Account->getData();
         $Account->incrementViewCounter();
 

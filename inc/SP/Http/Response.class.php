@@ -25,6 +25,8 @@
 
 namespace SP\Http;
 
+use SP\Util\Json;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -67,32 +69,19 @@ class Response
      */
     public static function printJSON($data, $status = 1, $action = '')
     {
-        if (!is_string($data) && !is_array($data)) {
-            return false;
-        }
-
-        $arrStrFrom = array("\\", '"', "'");
-        $arrStrTo = array("\\", '\"', "\'");
-
         if (!is_array($data)) {
             $json = array(
                 'status' => $status,
-                'description' => str_replace($arrStrFrom, $arrStrTo, $data),
+                'description' => $data,
                 'action' => $action
             );
         } else {
-            array_walk($data,
-                function (&$value, &$key) use ($arrStrFrom, $arrStrTo) {
-                    return str_replace($arrStrFrom, $arrStrTo, $value);
-                }
-            );
-
             $data['status'] = $status;
             $data['action'] = $action;
             $json = $data;
         }
 
         header('Content-type: application/json');
-        exit(json_encode($json));
+        exit(Json::getJson($json));
     }
 }

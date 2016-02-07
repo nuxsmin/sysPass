@@ -23,10 +23,9 @@
  *
  */
 
-namespace SP\Controller;
+namespace SP\Account;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
-
 
 use SP\Html\Html;
 use SP\Util\Checks;

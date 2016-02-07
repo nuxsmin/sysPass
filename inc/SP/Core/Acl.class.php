@@ -26,6 +26,7 @@
 
 namespace SP\Core;
 
+use SP\Account\AccountData;
 use SP\Controller;
 use SP\Mgmt\User\Groups;
 use SP\Log\Log;
@@ -125,7 +126,8 @@ class Acl implements ActionsInterface
     /**
      * Obtener el nombre de la acción indicada
      *
-     * @param int $action El id de la acción
+     * @param int  $action El id de la acción
+     * @param bool $shortName Si se devuelve el nombre corto de la acción
      * @return string
      */
     public static function getActionName($action, $shortName = false)
@@ -174,20 +176,20 @@ class Acl implements ActionsInterface
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string $module      con la acción realizada
-     * @param array  $accountData con los datos de la cuenta a verificar
+     * @param string      $module      con la acción realizada
+     * @param AccountData $accountData con los datos de la cuenta a verificar
      * @return bool
      */
-    public static function checkAccountAccess($module, $accountData)
+    public static function checkAccountAccess($module, AccountData $accountData)
     {
         $userGroupId = Session::getUserGroupId();
         $userId = Session::getUserId();
         $userIsAdminApp = Session::getUserIsAdminApp();
         $userIsAdminAcc = Session::getUserIsAdminAcc();
-        $userToGroups = in_array($userGroupId, Groups::getUsersForGroup($accountData['group_id']));
+        $userToGroups = in_array($userGroupId, Groups::getUsersForGroup($accountData->getAccountUserGroupId()));
 
         if ($userToGroups === false) {
-            foreach ($accountData['groups_id'] as $groupId) {
+            foreach ($accountData->getAccountUserGroupsId() as $groupId) {
                 $users = Groups::getUsersForGroup($groupId);
                 if ($userGroupId === $groupId || in_array($userId, $users)) {
                     $userToGroups = true;
@@ -195,17 +197,17 @@ class Acl implements ActionsInterface
             }
         }
 
-        $okView = ($userId == $accountData['user_id']
-            || $userGroupId == $accountData['group_id']
-            || in_array($userId, $accountData['users_id'])
+        $okView = ($userId == $accountData->getAccountUserId()
+            || $userGroupId == $accountData->getAccountUserGroupId()
+            || in_array($userId, $accountData->getAccountUsersId())
             || $userToGroups
             || $userIsAdminApp
             || $userIsAdminAcc);
 
-        $okEdit = ($userId == $accountData['user_id']
-            || $userGroupId == $accountData['group_id']
-            || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-            || ($userToGroups && $accountData['othergroup_edit'])
+        $okEdit = ($userId == $accountData->getAccountUserId()
+            || $userGroupId == $accountData->getAccountUserGroupId()
+            || (in_array($userId, $accountData->getAccountUsersId()) && $accountData->getAccountOtherUserEdit())
+            || ($userToGroups && $accountData->getAccountOtherGroupEdit())
             || $userIsAdminApp
             || $userIsAdminAcc);
 

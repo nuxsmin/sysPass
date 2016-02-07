@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account SP\Controller\AccountsSearchData
+ * @var $account SP\Account\AccountsSearchData
  * @var $this    SP\Core\Template
  */
 ?>
@@ -83,7 +83,9 @@
 
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
-            sysPassUtil.Common.accSearch(1, e)
+            setTimeout(function(){
+                sysPassUtil.Common.accSearch(1, e);
+            }, 500);
         });
 
         $('#frmSearch #rpp').on('change', function (e) {
@@ -118,8 +120,6 @@
 
         $(':input[name=searchfav]').on('change', function(){
             var icon = $('.icon-searchfav');
-
-            console.info($(this).val());
 
             if ($(this).val() == 0){
                 icon.removeClass('mdl-color-text--amber-A200');

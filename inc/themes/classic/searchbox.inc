@@ -69,7 +69,9 @@
 
         $('#frmSearch input:text:visible:first').focus();
         $('#frmSearch #txtSearch').on('keyup', function (e) {
-            sysPassUtil.Common.accSearch(1, e)
+            setTimeout(function(){
+                sysPassUtil.Common.accSearch(1, e);
+            }, 500);
         });
 
         $('#frmSearch #rpp').on('change', function () {

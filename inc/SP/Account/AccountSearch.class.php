@@ -26,12 +26,15 @@
 namespace SP\Account;
 
 use SP\Config\Config;
+use SP\Core\Acl;
+use SP\Core\ActionsInterface;
 use SP\Storage\DB;
 use SP\Mgmt\User\Groups;
 use SP\Html\Html;
 use SP\Core\Session;
 use SP\Mgmt\User\UserUtil;
 use SP\Storage\QueryData;
+use SP\Util\Checks;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -50,12 +53,34 @@ class AccountSearch
     const SORT_CUSTOMER = 5;
     const SORT_DIR_ASC = 0;
     const SORT_DIR_DESC = 1;
-
     /**
      * @var int El número de registros de la última consulta
      */
     public static $queryNumRows;
-
+    /**
+     * Colores para resaltar las cuentas
+     *
+     * @var array
+     */
+    private $colors = array(
+        '2196F3',
+        '03A9F4',
+        '00BCD4',
+        '009688',
+        '4CAF50',
+        '8BC34A',
+        'CDDC39',
+        'FFC107',
+        '795548',
+        '607D8B',
+        '9E9E9E',
+        'FF5722',
+        'F44336',
+        'E91E63',
+        '9C27B0',
+        '673AB7',
+        '3F51B5',
+    );
     /**
      * @var bool
      */
@@ -540,5 +565,117 @@ class AccountSearch
         }
 
         return $queryRes->numacc;
+    }
+
+    /**
+     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
+     * a mostrar.
+     *
+     * @param &$results array Con los resultados de la búsqueda
+     * @return array
+     */
+    public function processSearchResults(&$results)
+    {
+        if (!$results){
+            return array();
+        }
+
+        // Variables de configuración
+        $maxTextLength = (Checks::resultsCardsIsEnabled()) ? 40 : 60;
+
+        $favorites = AccountFavorites::getFavorites(Session::getUserId());
+
+        $Account = new Account(new AccountData());
+        $accountsData['count'] = AccountSearch::$queryNumRows;
+
+        foreach ($results as $account) {
+            $Account->getAccountData()->setAccountId($account->account_id);
+            $Account->getAccountData()->setAccountUserId($account->account_userId);
+            $Account->getAccountData()->setAccountUsersId($Account->getUsersAccount());
+            $Account->getAccountData()->setAccountUserGroupId($account->account_userGroupId);
+            $Account->getAccountData()->setAccountUserGroupsId($Account->getGroupsAccount());
+            $Account->getAccountData()->setAccountOtherUserEdit($account->account_otherUserEdit);
+            $Account->getAccountData()->setAccountOtherGroupEdit($account->account_otherGroupEdit);
+
+            // Obtener los datos de la cuenta para aplicar las ACL
+            $accountAclData = $Account->getAccountDataForACL();
+
+            $AccountSearchData = new AccountsSearchData();
+            $AccountSearchData->setTextMaxLength($maxTextLength);
+            $AccountSearchData->setId($account->account_id);
+            $AccountSearchData->setName($account->account_name);
+            $AccountSearchData->setLogin($account->account_login);
+            $AccountSearchData->setCategoryName($account->category_name);
+            $AccountSearchData->setCustomerName($account->customer_name);
+            $AccountSearchData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? Config::getConfig()->getWikiSearchurl() . $account->customer_name : '');
+            $AccountSearchData->setColor($this->pickAccountColor($account->account_customerId));
+            $AccountSearchData->setUrl($account->account_url);
+            $AccountSearchData->setFavorite(in_array($account->account_id, $favorites));
+            $AccountSearchData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
+            $AccountSearchData->setShowView(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
+            $AccountSearchData->setShowViewPass(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
+            $AccountSearchData->setShowEdit(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_EDIT, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_EDIT));
+            $AccountSearchData->setShowCopy(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_COPY, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_COPY));
+            $AccountSearchData->setShowDelete(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_DELETE, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_DELETE));
+
+            // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
+            if ($AccountSearchData->isShow()) {
+                $secondaryGroups = Groups::getGroupsNameForAccount($account->account_id);
+                $secondaryUsers = UserAccounts::getUsersNameForAccount($account->account_id);
+
+                $secondaryAccesses = sprintf('<em>(G) %s*</em><br>', $account->usergroup_name);
+
+                if ($secondaryGroups) {
+                    foreach ($secondaryGroups as $group) {
+                        $secondaryAccesses .= sprintf('<em>(G) %s</em><br>', $group);
+                    }
+                }
+
+                if ($secondaryUsers) {
+                    foreach ($secondaryUsers as $user) {
+                        $secondaryAccesses .= sprintf('<em>(U) %s</em><br>', $user);
+                    }
+                }
+
+                $AccountSearchData->setAccesses($secondaryAccesses);
+
+                $accountNotes = '';
+
+                if ($account->account_notes) {
+                    $accountNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
+                    $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
+                }
+
+                $AccountSearchData->setNotes($accountNotes);
+            }
+
+            $accountsData[] = $AccountSearchData;
+        }
+
+        return $accountsData;
+    }
+
+    /**
+     * Seleccionar un color para la cuenta
+     *
+     * @param int $id El id del elemento a asignar
+     * @return mixed
+     */
+    private function pickAccountColor($id)
+    {
+        $accountColor = Session::getAccountColor();
+
+        if (!isset($accountColor)
+            || !is_array($accountColor)
+            || !isset($accountColor[$id])
+        ) {
+            // Se asigna el color de forma aleatoria a cada id
+            $color = array_rand($this->colors);
+
+            $accountColor[$id] = '#' . $this->colors[$color];
+            Session::setAccountColor($accountColor);
+        }
+
+        return $accountColor[$id];
     }
 }

@@ -225,7 +225,7 @@ class Init
     /**
      * Establecer el nivel de logging
      */
-    private static function setLogging()
+    public static function setLogging()
     {
         // Establecer el modo debug si una sesión de xdebug está activa
         if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {

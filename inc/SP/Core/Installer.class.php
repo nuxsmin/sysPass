@@ -463,14 +463,19 @@ class Installer
         $Profile->setAccEdit(true);
         $Profile->setAccEditPass(true);
         $Profile->setAccDelete(true);
+        $Profile->setAccFiles(true);
         $Profile->setConfigGeneral(true);
         $Profile->setConfigEncryption(true);
         $Profile->setConfigBackup(true);
+        $Profile->setConfigImport(true);
         $Profile->setMgmCategories(true);
         $Profile->setMgmCustomers(true);
         $Profile->setMgmUsers(true);
         $Profile->setMgmGroups(true);
         $Profile->setMgmProfiles(true);
+        $Profile->setMgmCustomFields(true);
+        $Profile->setMgmApiTokens(true);
+        $Profile->setMgmPublicLinks(true);
         $Profile->setEvl(true);
 
         if (!$Profile->profileAdd()) {

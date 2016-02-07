@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account SP\Controller\AccountsSearchData
+ * @var $account SP\Account\AccountsSearchData
  * @var $this    SP\Core\Template
  */
 ?>
@@ -87,7 +87,7 @@
 
                         <?php if (isset($wikiFilter)): ?>
                             <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account->getName())): ?>
-                                <?php if (\SP\Controller\AccountsSearchData::$dokuWikiEnabled): ?>
+                                <?php if (\SP\Account\AccountsSearchData::$dokuWikiEnabled): ?>
                                     <a href="<?php echo $wikiPageUrl, $account->getName(); ?>" target="_blank">
                                         <i class="material-icons"
                                            title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>

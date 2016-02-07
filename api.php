@@ -24,10 +24,13 @@
  */
 
 use SP\Api\ApiRequest;
+use SP\Core\Init;
 
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+
+Init::setLogging();
 
 header('Content-type: application/json');
 

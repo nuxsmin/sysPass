@@ -210,6 +210,10 @@ if ($User->getUserMPass()) {
 }
 
 $UserPrefs = \SP\Mgmt\User\UserPreferences::getPreferences($User->getUserId());
+Language::setLanguage(true);
+Themes::setTheme(true);
+Session::setUserPreferences($UserPrefs);
+Session::setSessionType(Session::SESSION_INTERACTIVE);
 
 if ($UserPrefs->isUse2Fa()) {
     Session::set2FApassed(false);
@@ -218,10 +222,5 @@ if ($UserPrefs->isUse2Fa()) {
 } else {
     Session::set2FApassed(true);
 }
-
-Language::setLanguage(true);
-Themes::setTheme(true);
-Session::setUserPreferences($UserPrefs);
-Session::setSessionType(Session::SESSION_INTERACTIVE);
 
 Response::printJSON('index.php?' . $urlParams, 0);
