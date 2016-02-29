@@ -33,12 +33,12 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Log\Log;
-use SP\Mgmt\CustomFields;
-use SP\Mgmt\PublicLinkUtil;
-use SP\Mgmt\User\Groups;
-use SP\Mgmt\User\Profile;
-use SP\Mgmt\User\ProfileUtil;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\PublicLinks\PublicLinkUtil;
+use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\UserUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 

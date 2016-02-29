@@ -28,8 +28,8 @@ namespace SP\Core;
 use SP\Account;
 use SP\Config\ConfigData;
 use SP\Mgmt;
-use SP\Mgmt\User\Profile;
-use SP\Mgmt\User\UserPreferences;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Users\UserPreferences;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -287,9 +287,9 @@ class Session
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param \SP\Mgmt\User\Profile $profile
+     * @param \SP\Mgmt\Profiles\Profile $profile
      */
-    public static function setUserProfile(Mgmt\User\Profile $profile)
+    public static function setUserProfile(Mgmt\Profiles\Profile $profile)
     {
         self::setSessionKey('usrprofile', $profile);
     }
@@ -643,9 +643,9 @@ class Session
     /**
      * Establece el objeto de preferencias de usuario en la sesión.
      *
-     * @param \SP\Mgmt\User\UserPreferences $preferences
+     * @param \SP\Mgmt\Users\UserPreferences $preferences
      */
-    public static function setUserPreferences(Mgmt\User\UserPreferences $preferences)
+    public static function setUserPreferences(Mgmt\Users\UserPreferences $preferences)
     {
         self::setSessionKey('userpreferences', $preferences);
     }

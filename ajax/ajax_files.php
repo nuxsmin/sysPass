@@ -32,7 +32,7 @@ use SP\Html\Html;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
-use SP\Mgmt\Files;
+use SP\Mgmt\Files\Files;
 use SP\Util\Checks;
 use SP\Util\Util;
 

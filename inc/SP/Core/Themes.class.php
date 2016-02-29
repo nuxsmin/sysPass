@@ -26,7 +26,7 @@
 namespace SP\Core;
 
 use SP\Config\Config;
-use SP\Mgmt\User\UserPreferences;
+use SP\Mgmt\Users\UserPreferences;
 use Theme\Icons;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

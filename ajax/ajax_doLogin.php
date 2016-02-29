@@ -34,13 +34,13 @@ use SP\Core\Themes;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
-use SP\Mgmt\User\Groups;
-use SP\Mgmt\User\Profile;
-use SP\Mgmt\User\User;
-use SP\Mgmt\User\UserLdap;
-use SP\Mgmt\User\UserPass;
-use SP\Mgmt\User\UserPassRecover;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserLdap;
+use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserPassRecover;
+use SP\Mgmt\Users\UserUtil;
 
 define('APP_ROOT', '..');
 
@@ -209,7 +209,7 @@ if ($User->getUserMPass()) {
     Response::printJSON(_('Error interno'));
 }
 
-$UserPrefs = \SP\Mgmt\User\UserPreferences::getPreferences($User->getUserId());
+$UserPrefs = \SP\Mgmt\Users\UserPreferences::getPreferences($User->getUserId());
 Language::setLanguage(true);
 Themes::setTheme(true);
 Session::setUserPreferences($UserPrefs);

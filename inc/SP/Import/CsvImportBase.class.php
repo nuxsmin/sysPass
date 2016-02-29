@@ -25,11 +25,11 @@
 
 namespace SP\Import;
 
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Core\Crypt;
-use SP\Mgmt\Customer;
+use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
-use SP\Mgmt\Category;
+use SP\Mgmt\Categories\Category;
 use SP\Core\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

@@ -88,11 +88,10 @@
                     <?php echo _('Seguridad'); ?>
                 </td>
                 <td class="valField">
-                    <select name="mail_security" id="sel-mailsecurity" size="1" class="sel-chosen-ns">
-
-                        <?php echo '<option>' . _('Deshabilitada') . '</option>'; ?>
+                    <select name="mail_security" id="sel-mailsecurity" size="1" class="select-box sel-chosen-ns">
+                        <option value=""><?php echo _('Deshabilitada'); ?></option>
                         <?php foreach ($mailSecurity as $security): ?>
-                            <?php echo "<option ", ($currentMailSecurity == $security) ? "SELECTED" : "", ">$security</option>"; ?>
+                            <option value="<?php echo $security; ?>" <?php echo ($currentMailSecurity == $security) ? 'selected' : ''; ?>><?php echo $security; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

@@ -26,7 +26,7 @@
 namespace SP\Api;
 
 use SP\Account\Account;
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Account\AccountSearch;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;

@@ -26,7 +26,7 @@
 namespace SP\Import;
 
 use SimpleXMLElement;
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Core\Crypt;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

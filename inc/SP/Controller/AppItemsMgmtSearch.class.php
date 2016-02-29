@@ -29,10 +29,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
-use SP\Mgmt\Category;
-use SP\Mgmt\Customer;
-use SP\Mgmt\CustomFieldDef;
-use SP\Mgmt\Files;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\CustomFields\CustomFieldDef;
+use SP\Mgmt\Files\Files;
+use SP\Mgmt\Tags\Tags;
 
 /**
  * Class ItemsMgmt para las buśquedas en los listados de elementos de gestión
@@ -168,6 +169,33 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
 
         $Grid = $this->_grids->getCategoriesGrid();
         $Grid->getData()->setData(Category::getCategoriesMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->updatePager();
+
+        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+
+        $this->view->assign('data', $Grid);
+        $this->view->assign('actionId', self::ACTION_MGM);
+    }
+
+    /**
+     * Obtener las etiquetas de una búsqueda
+     *
+     * @param string $search La cadena a buscar
+     * @param int    $limitStart
+     * @param int    $limitCount
+     */
+    public function getTags($search, $limitStart, $limitCount)
+    {
+        $this->setAction(self::ACTION_MGM_TAGS_SEARCH);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->addTemplate('datagrid-rows');
+
+        $Grid = $this->_grids->getTagsGrid();
+        $Grid->getData()->setData(Tags::getTagsMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);

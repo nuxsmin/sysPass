@@ -64,6 +64,13 @@
                     sysPassUtil.Common.accMgmtFavorites(this);
                 })
             });
+
+            $('span.tag').click(function(){
+                var tag = 'tag:' + this.innerHTML;
+
+                $('#search').val(tag).parent().addClass('is-dirty');
+                sysPassUtil.Common.accSearch(0);
+            });
         })
     </script>
 <?php endif; ?>

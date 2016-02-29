@@ -26,9 +26,9 @@
 namespace SP\Import;
 
 use SP\Account\Account;
-use SP\Account\AccountData;
-use SP\Mgmt\Customer;
-use SP\Mgmt\Category;
+use SP\DataModel\AccountData;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Categories\Category;
 use SP\Core\Session;
 use SP\Core\SPException;
 
@@ -144,7 +144,7 @@ abstract class ImportBase
     /**
      * Añadir una cuenta desde un archivo importado.
      *
-     * @param AccountData $AccountData
+     * @param \SP\DataModel\AccountData $AccountData
      * @return bool
      */
     protected function addAccount(AccountData $AccountData)

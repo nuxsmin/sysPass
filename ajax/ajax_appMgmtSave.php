@@ -24,22 +24,22 @@
  */
 
 use SP\Account\Account;
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SPException;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
 use SP\Http\Response;
-use SP\Mgmt\Category;
-use SP\Mgmt\Customer;
-use SP\Mgmt\CustomFieldDef;
-use SP\Mgmt\CustomFields;
-use SP\Mgmt\Files;
-use SP\Mgmt\PublicLink;
-use SP\Mgmt\User\Groups;
-use SP\Mgmt\User\Profile;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\CustomFields\CustomFieldDef;
+use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\Files\Files;
+use SP\Mgmt\PublicLinks\PublicLink;
+use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');
@@ -78,7 +78,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     $isLdap = Request::analyze('isLdap', 0);
     $userPassR = Request::analyzeEncrypted('passR');
 
-    $User = new \SP\Mgmt\User\User();
+    $User = new \SP\Mgmt\Users\User();
     $User->setUserId($itemId);
     $User->setUserName(Request::analyze('name'));
     $User->setUserLogin(Request::analyze('login'));
@@ -582,6 +582,40 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         }
 
         Response::printJSON(_('Enlace actualizado'), 0, $doActionOnClose);
+    }
+} elseif ($actionId === ActionsInterface::ACTION_MGM_TAGS_NEW
+    || $actionId === ActionsInterface::ACTION_MGM_TAGS_EDIT
+    || $actionId === ActionsInterface::ACTION_MGM_TAGS_DELETE
+) {
+    $TagData = new \SP\DataModel\TagData($itemId, Request::analyze('name'));
+
+    if ($actionId === ActionsInterface::ACTION_MGM_TAGS_NEW) {
+        try {
+            $Tag = new \SP\Mgmt\Tags\Tags();
+            $Tag->addTag($TagData);
+        } catch (SPException $e) {
+            Response::printJSON($e->getMessage());
+        }
+
+        Response::printJSON(_('Etiqueta creada'), 0, $doActionOnClose);
+    } elseif ($actionId === ActionsInterface::ACTION_MGM_TAGS_DELETE) {
+        try {
+            $Tag = new \SP\Mgmt\Tags\Tags();
+            $Tag->deleteTag($TagData);
+        } catch (SPException $e) {
+            Response::printJSON($e->getMessage());
+        }
+
+        Response::printJSON(_('Etiqueta eliminada'), 0, $doActionOnClose);
+    } elseif ($actionId === ActionsInterface::ACTION_MGM_TAGS_EDIT) {
+        try {
+            $Tag = new \SP\Mgmt\Tags\Tags();
+            $Tag->updateTag($TagData);
+        } catch (SPException $e) {
+            Response::printJSON($e->getMessage());
+        }
+
+        Response::printJSON(_('Etiqueta actualizada'), 0, $doActionOnClose);
     }
 } elseif ($actionId === ActionsInterface::ACTION_MGM_FILES_DELETE) {
     // Verificamos que el ID sea numérico

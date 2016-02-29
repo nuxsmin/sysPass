@@ -27,14 +27,15 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Account\GroupAccounts;
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
-use SP\Mgmt\PublicLinkUtil;
-use SP\Mgmt\User\Groups;
+use SP\Mgmt\PublicLinks\PublicLinkUtil;
+use SP\Mgmt\Groups\Groups;
 use SP\Core\Template;
-use SP\Mgmt\User\ProfileUtil;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\UserUtil;
 
 /**
  * Clase encargada de de preparar la presentación de las vistas de gestión de accesos
@@ -91,7 +92,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getGroupsGrid();
-        $Grid->getData()->setData(Groups::getGroupsMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(GroupAccounts::getGroupsMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 

@@ -34,7 +34,7 @@ use SP\Core\Language;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Themes;
-use SP\Mgmt\User\UserPreferences;
+use SP\Mgmt\Users\UserPreferences;
 
 
 /**

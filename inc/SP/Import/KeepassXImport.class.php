@@ -26,7 +26,7 @@
 namespace SP\Import;
 
 use SimpleXMLElement;
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Core\Crypt;
 use SP\Core\SPException;
 

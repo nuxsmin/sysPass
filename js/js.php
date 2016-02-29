@@ -40,11 +40,12 @@ if (!$file) {
     $Minify->addFile('jquery-ui.min.js');
     $Minify->addFile('jquery.fancybox.pack.js');
     $Minify->addFile('jquery.powertip.min.js');
-    $Minify->addFile('chosen.jquery.min.js');
     $Minify->addFile('alertify.min.js');
     $Minify->addFile('jquery.fileDownload.min.js');
     $Minify->addFile('jquery.tagsinput.min.js');
     $Minify->addFile('clipboard.min.js');
+    $Minify->addFile('selectize.min.js');
+    $Minify->addFile('selectize-plugins.min.js');
     $Minify->addFile('zxcvbn-async.min.js');
     $Minify->addFile('jsencrypt.min.js');
     $Minify->addFile('functions.min.js');

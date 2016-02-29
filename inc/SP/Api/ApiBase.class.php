@@ -32,9 +32,9 @@ use SP\Core\Acl;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\SPException;
-use SP\Mgmt\User\User;
-use SP\Mgmt\User\UserPass;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Json;
 
 /**

@@ -78,7 +78,7 @@ class Minify
      * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
      * devuelve el código HTTP/304
      *
-     * @param bool   $disableMinify Deshabilitar minimizar
+     * @param bool $disableMinify Deshabilitar minimizar
      */
     public function getMinified($disableMinify = false)
     {
@@ -122,7 +122,8 @@ class Minify
                     $data = Util::getDataFromUrl($file['name']);
                     echo '/* URL: ' . $file['name'] . ' */' . PHP_EOL;
                     echo $data;
-                } catch (SPException $e){ }
+                } catch (SPException $e) {
+                }
 
                 continue;
             }
@@ -130,22 +131,22 @@ class Minify
             if (!file_exists($filePath)) {
                 echo '/* ERROR: FILE NOT FOUND: ' . $file['name'] . ' */' . PHP_EOL;
                 error_log('File not found: ' . $filePath);
-                continue;
-            }
-
-            if ($file['min'] === true && $disableMinify === false) {
-                echo '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
-                if ($this->type === self::FILETYPE_JS) {
-                    echo $this->jsCompress(file_get_contents($filePath));
-                } elseif ($this->type === self::FILETYPE_CSS) {
-                    echo CssMin::minify(file_get_contents($filePath));
-                }
             } else {
-                echo '/* FILE: ' . $file['name'] . ' */' . PHP_EOL;
-                echo file_get_contents($filePath);
-            }
 
-            echo PHP_EOL;
+                if ($file['min'] === true && $disableMinify === false) {
+                    echo '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
+                    if ($this->type === self::FILETYPE_JS) {
+                        echo $this->jsCompress(file_get_contents($filePath));
+                    } elseif ($this->type === self::FILETYPE_CSS) {
+                        echo CssMin::minify(file_get_contents($filePath));
+                    }
+                } else {
+                    echo '/* FILE: ' . $file['name'] . ' */' . PHP_EOL;
+                    echo file_get_contents($filePath);
+                }
+
+                echo PHP_EOL;
+            }
         }
 
         ob_end_flush();
@@ -166,7 +167,7 @@ class Minify
             }
 
             $filePath = $file['base'] . DIRECTORY_SEPARATOR . $file['name'];
-            $md5Sum .= md5_file($filePath);
+            $md5Sum .= (file_exists($filePath)) ? md5_file($filePath) : '';
         }
 
         return md5($md5Sum);
@@ -213,7 +214,7 @@ class Minify
         if (strrpos($file, ',')) {
             $files = explode(',', $file);
 
-            foreach ($files as $file){
+            foreach ($files as $file) {
                 $this->files[] = array(
                     'base' => $this->base,
                     'name' => $file,
@@ -230,14 +231,6 @@ class Minify
     }
 
     /**
-     * @param int $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
      * Comprobar si es necesario reducir
      *
      * @param string $file El nombre del archivo
@@ -246,5 +239,13 @@ class Minify
     private function needsMinify($file)
     {
         return !preg_match('/\.(min|pack)\./', $file);
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

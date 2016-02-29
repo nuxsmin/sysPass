@@ -31,8 +31,8 @@ use SP\Core\Themes;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
 use SP\Http\Response;
-use SP\Mgmt\User\UserPreferences;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Users\UserPreferences;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
 

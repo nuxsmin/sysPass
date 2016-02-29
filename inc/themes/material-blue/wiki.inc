@@ -287,30 +287,10 @@
 
 <script>
     $(function () {
-        // Mostrar un aviso tras añadir una etiqueta a la lista
-        var showTagWarning = function (obj) {
-            // Fix scrolling to bottom
-            var $tagsbox = obj.next();
-            $tagsbox.animate({scrollTop: $tagsbox.height()});
-
-            if (!$tagsbox.find('span').hasClass('icon')) {
-                $tagsbox.find('div:last').prev().append('<span class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + sysPassUtil.Common.LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></span>');
-            }
-        };
-
-
-        $('#wikifilter').tagsInput({
-            'width': '350px',
-            'height': '50px',
-            'defaultText': '<?php echo _('Añadir filtro'); ?>',
-            'defaultRemoveText': '<?php echo _('Eliminar filtro'); ?>',
-            'removeWithBackspace': false,
-            onAddTag: function () {
-                showTagWarning($(this));
-            },
-            onRemoveTag: function () {
-                showTagWarning($(this));
-            }
+        $('#wikifilter').selectize({
+            create: true,
+            createFilter: new RegExp('^[a-z0-9\._-]+$', 'i'),
+            plugins: ['remove_button']
         });
     })
 </script>

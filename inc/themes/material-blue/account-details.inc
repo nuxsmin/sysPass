@@ -20,16 +20,17 @@
             <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
             <td class="valField">
                 <?php
-                foreach ($accountOtherUsersName as $userId => $userName) {
-                    if ($userId != $accountData->account_userId) {
-                        if (in_array($userId, $accountOtherUsers)) {
-                            $accUsers[] = $userName;
-                        }
+                $users = [];
+
+                foreach ($accountOtherUsers as $otherUser) {
+                    /** @var $otherUser \SP\DataModel\UserBasicData */
+                    if ($otherUser->getUserId() != $accountData->account_userId){
+                        $users[] = $otherUser->getUserName();
                     }
                 }
 
                 $usersEdit = ($accountData->account_otherUserEdit) ? '(+)' : '';
-                echo $usersEdit . ' ' . implode(" | ", $accUsers);
+                echo $usersEdit . ' ' . implode(" | ", $users);
                 ?>
             </td>
         </tr>
@@ -39,17 +40,18 @@
             <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
             <td class="valField">
                 <?php
-                foreach ($accountOtherGroupsName as $groupId => $groupName) {
-                    if ($groupId != $accountData->account_userGroupId) {
-                        if (in_array($groupId, $accountOtherGroups)) {
-                            $accGroups[] = $groupName;
-                        }
+                $groups = [];
+
+                foreach ($accountOtherGroups as $otherGroup) {
+                    /** @var $otherGroup \SP\DataModel\GroupData */
+                    if ($otherGroup->getUsergroupId() != $accountData->account_userGroupId) {
+                        $groups[] = $otherGroup->getUsergroupName();
                     }
                 }
 
                 $groupsEdit = ($accountData->account_otherGroupEdit) ? '(+)' : '';
 
-                echo $groupsEdit . ' ' . implode(" | ", $accGroups);
+                echo $groupsEdit . ' ' . implode(" | ", $groups);
                 ?>
             </td>
         </tr>

@@ -28,7 +28,8 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
+                        <input id="name" name="name" type="text" required
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
                     </div>
@@ -50,7 +51,8 @@
                     </select>
                     <br><br>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="customer_new" name="customer_new" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
+                        <input id="customer_new" name="customer_new" type="text"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo _('Seleccionar o escribir para crear uno nuevo'); ?></label>
@@ -99,7 +101,8 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="login" name="login" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
+                        <input id="login" name="login" type="text" required
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo ($gotData) ? $accountData->account_login : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
                     </div>
@@ -114,7 +117,8 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="accountpass" name="pass" type="password" required
-                               class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input" maxlength="255"
+                               class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
+                               maxlength="255"
                                autocomplete="off">
                         <label class="mdl-textfield__label" for="accountpass"><?php echo _('Clave'); ?></label>
                     </div>
@@ -138,7 +142,8 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes" name="notes"
+                        <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
+                                  name="notes"
                                   maxlength="1000"><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
@@ -148,118 +153,38 @@
                 <?php endif; ?>
 
         </tr>
-        <?php if (!$isView): ?>
-            <tr>
-                <td class="descField"><?php echo _('Permisos'); ?></td>
-                <td class="valField">
-                    <div class="account-permissions">
-                        <fieldset class="round5">
-                            <legend><?php echo _('Usuarios'); ?></legend>
-                            <select id="selUsers" name="otherusers[]" multiple="multiple">
-                                <?php
-                                $users = array_flip($otherUsers);
-
-                                foreach ($users as $otherUserName => $otherUserId) {
-                                    $userSelected = '';
-
-                                    if ($gotData && $otherUserId != $accountData->account_userId) {
-                                        if (is_array($accountOtherUsers)) {
-                                            $userSelected = (in_array($otherUserId, $accountOtherUsers)) ? "selected" : "";
-                                        }
-                                        echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
-                                    } else {
-                                        if ($userId === $otherUserId) {
-                                            continue;
-                                        }
-                                        echo "<option value='" . $otherUserId . "' $userSelected>" . $otherUserName . "</option>";
-                                    }
-                                }
-                                ?>
-                            </select>
-                            <br><br>
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ueditenabled">
-                                <input name="ueditenabled" type="checkbox" id="ueditenabled"
-                                       class="mdl-switch__input" <?php echo $chkUserEdit; ?>/>
-                                <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
-                            </label>
-
-                        </fieldset>
-                    </div>
-                    <div class="account-permissions">
-                        <fieldset class="round5">
-                            <legend><?php echo _('Grupos'); ?></legend>
-                            <select id="selGroups" name="othergroups[]" multiple="multiple">
-                                <?php
-                                $groups = array_flip($otherGroups);
-
-                                foreach ($groups as $otherGroupName => $otherGroupId) {
-                                    $uGroupSelected = '';
-
-                                    if ($gotData && $otherGroupId != $accountData->account_userGroupId) {
-                                        if (is_array($accountOtherGroups)) {
-                                            $uGroupSelected = (in_array($otherGroupId, $accountOtherGroups)) ? "selected" : "";
-                                        }
-                                        echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
-                                    } else {
-                                        if ($userGroupId === $otherGroupId) {
-                                            continue;
-                                        }
-                                        echo "<option value='" . $otherGroupId . "' $uGroupSelected>" . $otherGroupName . "</option>";
-                                    }
-                                }
-                                ?>
-                            </select>
-                            <br><br>
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="geditenabled">
-                                <input name="geditenabled" type="checkbox" id="geditenabled"
-                                       class="mdl-switch__input" <?php echo $chkGroupEdit; ?>/>
-                                <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
-                            </label
-
-                        </fieldset>
-                    </div>
-                </td>
-            </tr>
-            <?php if ($userIsAdminApp || $userIsAdminAcc): ?>
-                <tr>
-                    <td class="descField"><?php echo _('Grupo Principal'); ?></td>
-                    <td class="valField">
-                        <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup" required>
-                            <option value="0"></option>
-                            <?php foreach ($otherGroups as $id => $name): ?>
-                                <option
-                                    value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_userGroupId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-            <?php endif; ?>
-
-        <?php endif; ?>
-
+        <tr>
+            <td class="descField"><?php echo _('Etiquetas'); ?></td>
+            <td class="valField">
+                <?php if (!$isView): ?>
+                    <select id="tags" name="tags[]" multiple="multiple">
+                        <option value=""><?php echo _('Seleccionar Etiquetas'); ?></option>
+                    </select>
+                <?php else: ?>
+                    <?php foreach ($accountTags as $tag): ?>
+                        <span class="tag"><?php echo $tag; ?></span>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </td>
+        </tr>
         <?php if ($showHistory && is_array($historyData) && count($historyData) > 0): ?>
             <tr>
                 <td class="descField"><?php echo _('Historial'); ?></td>
                 <td class="valField">
-                    <select id="selHistory" name="historyId" class="select-box">
-                        <option value="0"></option>
+                    <select id="historyId" name="historyId" class="select-box">
+                        <option value=""><?php echo _('Seleccionar fecha'); ?></option>
                         <?php foreach ($historyData as $id => $name): ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo ($gotData && $accountIsHistory && $id === $accountId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <script>
-                        $('#selHistory').on('change', function (e) {
-                            var historyId = $('#selHistory').val();
-
-                            if (historyId > 0) {
-                                sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>, historyId);
+                        $('#historyId').selectize({
+                            onChange: function (value) {
+                                if (value > 0) {
+                                    sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>, <?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>, value);
+                                }
                             }
-                        });
-
-                        $('#selHistory').chosen({
-                            disable_search: true,
-                            placeholder_text_single: "<?php echo _('Seleccionar fecha'); ?>"
                         });
                     </script>
                 </td>
@@ -277,13 +202,83 @@
 
     </table>
 
+    <table class="data round extra-info">
+        <?php if (!$isView): ?>
+            <tr>
+                <td class="descField"><?php echo _('Permisos'); ?></td>
+                <td class="valField">
+                    <div class="account-permissions">
+                        <fieldset class="round5">
+                            <legend><?php echo _('Usuarios'); ?></legend>
+                            <select id="otherusers" name="otherusers[]" multiple="multiple">
+                                <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
+                                <?php if ($gotData): ?>
+                                    <?php foreach ($accountOtherUsers as $otherUser): ?>
+                                        <?php /** @var $otherUser \SP\DataModel\UserBasicData */ ?>
+                                        <option
+                                            value="<?php echo $otherUser->getUserId(); ?>"
+                                            selected><?php echo $otherUser->getUserLogin(); ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <br>
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ueditenabled">
+                                <input name="ueditenabled" type="checkbox" id="ueditenabled"
+                                       class="mdl-switch__input" <?php echo $chkUserEdit; ?>/>
+                                <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
+                            </label>
+                        </fieldset>
+                    </div>
+                    <div class="account-permissions">
+                        <fieldset class="round5">
+                            <legend><?php echo _('Grupos'); ?></legend>
+                            <select id="othergroups" name="othergroups[]" multiple="multiple">
+                                <option value=""><?php echo _('Seleccionar Grupos'); ?></option>
+                                <?php if ($gotData): ?>
+                                    <?php foreach ($accountOtherGroups as $otherGroup): ?>
+                                        <?php /** @var $otherGroup \SP\DataModel\GroupData */ ?>
+                                        <option
+                                            value="<?php echo $otherGroup->getUsergroupId(); ?>"
+                                            selected><?php echo $otherGroup->getUsergroupName(); ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <br>
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="geditenabled">
+                                <input name="geditenabled" type="checkbox" id="geditenabled"
+                                       class="mdl-switch__input" <?php echo $chkGroupEdit; ?>/>
+                                <span class="mdl-switch__label"><?php echo _('Hablitar edición'); ?></span>
+                            </label
+
+                        </fieldset>
+                    </div>
+                </td>
+            </tr>
+            <?php if ($userIsAdminApp || $userIsAdminAcc): ?>
+                <tr>
+                    <td class="descField"><?php echo _('Grupo Principal'); ?></td>
+                    <td class="valField">
+                        <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup" required>
+                            <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
+                            <?php foreach ($otherGroups as $otherGroup): ?>
+                                <option
+                                    value="<?php echo $otherGroup->getUsergroupId(); ?>" <?php echo ($gotData && $otherGroup->getUsergroupId() == $accountData->account_userGroupId) ? 'selected' : ''; ?>><?php echo $otherGroup->getUsergroupName(); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
+        <?php endif; ?>
+    </table>
+
     <?php if ($customFields): ?>
         <table class="data round extra-info secure-info">
             <?php include 'aux-customfields.inc'; ?>
         </table>
     <?php endif; ?>
 
-<?php if (!$isView): ?>
+    <?php if (!$isView): ?>
 </form>
 <?php endif; ?>
 
@@ -314,13 +309,58 @@
 <?php if (!$isView): ?>
     <script>
         $(function () {
-            $("#selGroups").chosen({
-                placeholder_text_multiple: "<?php echo _('Seleccionar grupos secundarios'); ?>"
-            });
-            $("#selUsers").chosen({
-                placeholder_text_multiple: "<?php echo _('Seleccionar usuarios'); ?>"
-            });
             $('input:text:visible:first').focus();
+
+            var accountTags = <?php echo ($gotData) ? $accountTagsJson : '{}'; ?>;
+            var availableTags = <?php echo $tagsJson; ?>;
+
+            $('#tags').selectize({
+                    persist: false,
+                    maxItems: null,
+                    valueField: 'tag_id',
+                    labelField: 'tag_name',
+                    searchField: ['tag_name'],
+                    plugins: ['remove_button'],
+                    options: availableTags,
+                    items: accountTags
+                }
+            );
+
+            var otherUsers = <?php echo $otherUsersJson; ?>;
+
+            $('#otherusers').selectize({
+                persist: false,
+                valueField: 'user_id',
+                labelField: 'user_login',
+                searchField: ['user_login'],
+                plugins: ['remove_button'],
+                options: otherUsers,
+                onInitialize: function () {
+                    var userId = <?php echo ($gotData) ? $accountData->account_userId : 0; ?>;
+
+                    if (userId > 0) {
+                        this.removeOption(userId);
+                    }
+                }
+            });
+
+            var otherGroups = <?php echo $otherGroupsJson; ?>;
+
+            $('#othergroups').selectize({
+                persist: false,
+                valueField: 'usergroup_id',
+                labelField: 'usergroup_name',
+                searchField: ['usergroup_name'],
+                plugins: ['remove_button'],
+                options: otherGroups,
+                onInitialize: function () {
+                    var userGroupId = <?php echo ($gotData) ? $accountData->account_userGroupId : 0; ?>;
+
+                    if (userGroupId > 0) {
+                        this.removeOption(userGroupId);
+                    }
+                }
+            })
         });
     </script>
 <?php endif; ?>

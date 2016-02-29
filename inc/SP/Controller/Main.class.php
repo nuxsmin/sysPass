@@ -32,7 +32,7 @@ use SP\Core\Init;
 use SP\Core\Installer;
 use SP\Core\Template;
 use SP\Html\Html;
-use SP\Mgmt\PublicLink;
+use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Http\Request;
 use SP\Core\Session;
 use SP\Core\SessionUtil;

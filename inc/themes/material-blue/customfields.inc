@@ -18,7 +18,7 @@
             <tr>
                 <td class="descField"><?php echo _('Tipo'); ?></td>
                 <td class="valField">
-                    <select name="type" id="sel-type" size="1" class="sel-chosen-ns">
+                    <select name="type" id="sel-type" size="1" class="select-box sel-chosen-ns">
                         <?php foreach ($types as $id => $type): ?>
                             <option
                                 value='<?php echo $id; ?>' <?php echo ($gotData && $id === $field->getType()) ? 'selected' : ''; ?>><?php echo $type[1]; ?></option>
@@ -29,7 +29,7 @@
             <tr>
                 <td class="descField"><?php echo _('Módulo'); ?></td>
                 <td class="valField">
-                    <select name="module" id="sel-module" size="1" class="sel-chosen-ns">
+                    <select name="module" id="sel-module" size="1" class="select-box sel-chosen-ns">
                         <?php foreach ($modules as $id => $module): ?>
                             <option
                                 value='<?php echo $id; ?>' <?php echo ($gotData && $id === $field->getModule()) ? 'selected' : ''; ?>><?php echo $module; ?></option>

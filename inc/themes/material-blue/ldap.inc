@@ -180,7 +180,7 @@
                     <td class="valField">
                         <select id="ldap_defaultgroup" name="ldap_defaultgroup"
                                 class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
-                            <option value="0"></option>
+                            <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                             <?php foreach ($groups as $id => $name): ?>
                                 <option value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultGroup) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                             <?php endforeach; ?>
@@ -200,7 +200,7 @@
                     <td class="valField">
                         <select id="ldap_defaultprofile" name="ldap_defaultprofile"
                                 class="select-box sel-chosen-profile" <?php echo $isDisabled; ?> required>
-                            <option value="0"></option>
+                            <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
                             <?php foreach ($profiles as $id => $name): ?>
                                 <option value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                             <?php endforeach; ?>

@@ -30,9 +30,9 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\User\Profile;
+use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DB;
-use SP\Mgmt\User\UserMigrate;
+use SP\Mgmt\Users\UserMigrate;
 use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

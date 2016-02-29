@@ -27,12 +27,13 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Account\GroupAccounts;
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
-use SP\Mgmt\PublicLinkUtil;
-use SP\Mgmt\User\Groups;
-use SP\Mgmt\User\ProfileUtil;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\PublicLinks\PublicLinkUtil;
+use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\UserUtil;
 
 /**
  * Class AccItemsMgmtSearch para la gestión de búsquedas de items de accesos
@@ -86,7 +87,7 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getGroupsGrid();
-        $Grid->getData()->setData(Groups::getGroupsMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(GroupAccounts::getGroupsMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);

@@ -24,7 +24,8 @@
  */
 
 use SP\Account\Account;
-use SP\Account\AccountData;
+use SP\Account\AccountTags;
+use SP\DataModel\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
@@ -33,8 +34,8 @@ use SP\Core\SessionUtil;
 use SP\Core\SPException;
 use SP\Http\Request;
 use SP\Http\Response;
-use SP\Mgmt\Customer;
-use SP\Mgmt\CustomFields;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\CustomFields\CustomFields;
 
 define('APP_ROOT', '..');
 
@@ -72,6 +73,7 @@ $accountMainGroupId = Request::analyze('mainGroupId', 0);
 $accountChangesHash = Request::analyze('hash');
 $customFieldsHash = Request::analyze('hashcf');
 $customFields = Request::analyze('customfield');
+$tags = Request::analyze('tags');
 
 // Datos del Usuario
 $currentUserId = Session::getUserId();
@@ -139,7 +141,6 @@ if ($actionId == ActionsInterface::ACTION_ACC_NEW
     }
 }
 
-
 $AccountData = new AccountData();
 $AccountData->setAccountId($accountId);
 $AccountData->setAccountName($accountName);
@@ -152,6 +153,10 @@ $AccountData->setAccountUsersId($accountOtherUsers);
 $AccountData->setAccountUserGroupsId($accountOtherGroups);
 $AccountData->setAccountOtherUserEdit($accountUserEditEnabled);
 $AccountData->setAccountOtherGroupEdit($accountGroupEditEnabled);
+
+if (is_array($tags)) {
+    $AccountData->setTags($tags);
+}
 
 $Account = new Account($AccountData);
 
@@ -212,7 +217,7 @@ switch ($actionId) {
 
         // Comprobar si han habido cambios
         if ($accountChangesHash == $Account->calcChangesHash()
-            && \SP\Mgmt\CustomFieldsUtil::checkHash($customFields, $customFieldsHash)
+            && \SP\Mgmt\CustomFields\CustomFieldsUtil::checkHash($customFields, $customFieldsHash)
         ) {
             Response::printJSON(_('Sin cambios'), 0);
         }
@@ -220,7 +225,7 @@ switch ($actionId) {
         // Actualizar cuenta
         if ($Account->updateAccount()) {
             if (is_array($customFields)) {
-                \SP\Mgmt\CustomFieldsUtil::updateCustonFields($customFields, $accountId);
+                \SP\Mgmt\CustomFields\CustomFieldsUtil::updateCustonFields($customFields, $accountId);
             }
 
             Response::printJSON(_('Cuenta actualizada'), 0);

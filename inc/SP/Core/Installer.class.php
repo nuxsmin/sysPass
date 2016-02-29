@@ -30,9 +30,9 @@ use PDO;
 use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
-use SP\Mgmt\User\Groups;
-use SP\Mgmt\User\Profile;
-use SP\Mgmt\User\User;
+use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Users\User;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

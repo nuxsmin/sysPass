@@ -30,12 +30,14 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\ActionsInterface;
 use SP\Core\Template;
 use SP\Http\Request;
-use SP\Mgmt\Category;
-use SP\Mgmt\Customer;
-use SP\Mgmt\CustomFieldDef;
-use SP\Mgmt\CustomFields;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\CustomFields\CustomFieldDef;
+use SP\Mgmt\CustomFields\CustomFields;
 use SP\Core\SessionUtil;
-use SP\Mgmt\Files;
+use SP\Mgmt\Files\Files;
+use SP\DataModel\TagData;
+use SP\Mgmt\Tags\Tags;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -132,7 +134,7 @@ class AppItemMgmt extends Controller implements ActionsInterface
         $field = (is_object($customField)) ? unserialize($customField->customfielddef_field) : null;
 
         if (is_object($field) && get_class($field) === '__PHP_Incomplete_Class') {
-            $field = Util::castToClass('SP\Mgmt\CustomFieldDef', $field);
+            $field = Util::castToClass('SP\Mgmt\CustomFields\CustomFields\CustomFieldDef', $field);
         }
 
         $this->view->assign('gotData', ($customField && $field instanceof CustomFieldDef));
@@ -140,5 +142,17 @@ class AppItemMgmt extends Controller implements ActionsInterface
         $this->view->assign('field', $field);
         $this->view->assign('types', CustomFieldDef::getFieldsTypes());
         $this->view->assign('modules', CustomFieldDef::getFieldsModules());
+    }
+
+    /**
+     * Obtener los datos para la ficha de categoría
+     */
+    public function getTag()
+    {
+        $this->_module = self::ACTION_MGM_TAGS;
+        $this->view->addTemplate('tags');
+
+        $Tag = new Tags();
+        $this->view->assign('tag', $Tag->getTag(new TagData($this->view->itemId)));
     }
 }

@@ -26,9 +26,9 @@
 
 namespace SP\Core;
 
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Controller;
-use SP\Mgmt\User\Groups;
+use SP\Mgmt\Groups\Groups;
 use SP\Log\Log;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

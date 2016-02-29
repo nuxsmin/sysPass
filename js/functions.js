@@ -186,27 +186,18 @@ sysPass.Util.Common = function () {
         }
 
         document.frmSearch.search.value = "";
-        $('#frmSearch').find('select').prop('selectedIndex', 0).trigger("chosen:updated");
+        $('#frmSearch').find('select').each(function(){
+            $(this)[0].selectize.clear();
+        });
         $('#frmSearch').find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
         $('#frmSearch').find('input[name="searchfav"]').val(0).change();
         order.key = 0;
         order.dir = 0;
     };
 
-    // Funcion para crear un desplegable con opciones
-    var mkChosen = function (options) {
-        $('#' + options.id).chosen({
-            allow_single_deselect: true,
-            placeholder_text_single: options.placeholder,
-            disable_search_threshold: 10,
-            no_results_text: options.noresults,
-            width: "200px"
-        });
-    };
-
     // Función para la búsqueda de cuentas mediante filtros
     var accSearch = function (continous, event) {
-        var lenTxtSearch = $('#txtSearch').val().length;
+        var lenTxtSearch = $('#search').val().length;
 
         if (typeof event !== 'undefined' &&
             ((event.keyCode < 48 && event.keyCode !== 13) || (event.keyCode > 105 && event.keyCode < 123))) {
@@ -1225,74 +1216,38 @@ sysPass.Util.Common = function () {
     };
 
     // Detectar los campos select y añadir funciones
-    var chosenDetect = function () {
-        var selectWidth = "250px";
-        var searchTreshold = 10;
+    var selectDetect = function () {
+        $(".sel-chosen-usergroup").selectize();
 
-        $(".sel-chosen-usergroup").chosen({
-            placeholder_text_single: LANG[21],
-            placeholder_text_multiple: LANG[21],
-            disable_search_threshold: searchTreshold,
-            no_results_text: LANG[26],
-            width: selectWidth
-        });
+        $(".sel-chosen-user").selectize();
 
-        $(".sel-chosen-user").chosen({
-            placeholder_text_single: LANG[22],
-            placeholder_text_multiple: LANG[22],
-            disable_search_threshold: searchTreshold,
-            no_results_text: LANG[26],
-            width: selectWidth
-        });
-
-        $(".sel-chosen-profile").chosen({
-            placeholder_text_single: LANG[23],
-            placeholder_text_multiple: LANG[23],
-            disable_search_threshold: searchTreshold,
-            no_results_text: LANG[26],
-            width: selectWidth
-        });
+        $(".sel-chosen-profile").selectize();
 
         $(".sel-chosen-customer").each(function () {
-            var deselect = $(this).hasClass('sel-chosen-deselect');
+            var plugins = ($(this).hasClass('sel-chosen-deselect')) ? {'clear_selection': {title: LANG[51]}} : {};
 
-            $(this).chosen({
-                allow_single_deselect: deselect,
-                placeholder_text_single: LANG[24],
-                placeholder_text_multiple: LANG[24],
-                disable_search_threshold: searchTreshold,
-                no_results_text: LANG[26],
-                width: selectWidth
+            $(this).selectize({
+                plugins: plugins
             });
         });
 
         $(".sel-chosen-category").each(function () {
-            var deselect = $(this).hasClass('sel-chosen-deselect');
+            var plugins = ($(this).hasClass('sel-chosen-deselect')) ? {'clear_selection': {title: LANG[51]}} : {};
 
-            $(this).chosen({
-                allow_single_deselect: deselect,
-                placeholder_text_single: LANG[25],
-                placeholder_text_multiple: LANG[25],
-                disable_search_threshold: searchTreshold,
-                no_results_text: LANG[26],
-                width: selectWidth
+            $(this).selectize({
+                plugins: plugins
             });
         });
 
         $(".sel-chosen-action").each(function () {
-            var deselect = $(this).hasClass('sel-chosen-deselect');
+            var plugins = ($(this).hasClass('sel-chosen-deselect')) ? {'clear_selection': {title: LANG[51]}} : {};
 
-            $(this).chosen({
-                allow_single_deselect: deselect,
-                placeholder_text_single: LANG[39],
-                placeholder_text_multiple: LANG[39],
-                disable_search_threshold: searchTreshold,
-                no_results_text: LANG[26],
-                width: selectWidth
+            $(this).selectize({
+                plugins: plugins
             });
         });
 
-        $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
+        $(".sel-chosen-ns").selectize();
     };
 
     /**
@@ -1476,7 +1431,7 @@ sysPass.Util.Common = function () {
         checkUpds: checkUpds,
         clearEventlog: clearEventlog,
         clearSearch: clearSearch,
-        chosenDetect: chosenDetect,
+        chosenDetect: selectDetect,
         configMgmt: configMgmt,
         delAccount: delAccount,
         delFile: delFile,

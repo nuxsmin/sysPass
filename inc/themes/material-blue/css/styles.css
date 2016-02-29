@@ -479,8 +479,7 @@ pre, code, samp, kbd {
 }
 
 #content .data .account-permissions {
-    float: left;
-    margin-right: 10px
+    width: 100%;
 }
 
 #content .data .account-permissions fieldset {
@@ -501,6 +500,26 @@ pre, code, samp, kbd {
     display: inline-block;
     width: 100px;
     text-align: right
+}
+
+#content .tags-box {
+    display: inline-block;
+    margin: 0 1.5em;
+}
+
+#content .tags-box span.tag {
+    cursor: pointer;
+}
+
+#content span.tag {
+    margin: 0 3px 3px 0;
+    padding: 1px 3px;
+    background: #5c6bc0;
+    color: #fff;
+    border: 0 solid rgba(0, 0, 0, 0);
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }
 
 #content .extra-info {
@@ -1510,6 +1529,9 @@ footer img {
 .account-pass-image {
     height: 32px;
     width: auto
+}
+.select-box {
+    width: 20em;
 }
 
 #boxLogin {

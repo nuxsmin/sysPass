@@ -34,8 +34,8 @@
             <tr>
                 <td class="descField"><?php echo _('Usuarios'); ?></td>
                 <td class="valField">
-                    <select id="selUsers" name="users[]" multiple="multiple" class="select-box sel-chosen-user">
-                        <option value=""></option>
+                    <select id="selUsers" name="users[]" multiple="multiple" class="sel-chosen-user" title="<?php echo _('Usuarios'); ?>">
+                        <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
                         <?php foreach ($users as $id => $name): ?>
                             <?php $selected = (in_array($id, $groupUsers)) ? 'selected' : ''; ?>
                             <option

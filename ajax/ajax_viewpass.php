@@ -24,7 +24,7 @@
  */
 
 use SP\Account\Account;
-use SP\Account\AccountData;
+use SP\DataModel\AccountData;
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
 use SP\Core\Crypt;
@@ -32,7 +32,7 @@ use SP\Core\Init;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
-use SP\Mgmt\User\UserPass;
+use SP\Mgmt\Users\UserPass;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');

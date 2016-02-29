@@ -37,5 +37,6 @@ $themeInfo = array(
         'material-custom.min.css',
         'jquery-ui.theme.min.css',
         'styles.min.css',
-        'alertify-custom.min.css')
+        'alertify-custom.min.css',
+        'selectize.bootstrap3.min.css')
 );

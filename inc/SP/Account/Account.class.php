@@ -28,8 +28,8 @@ namespace SP\Account;
 use SP\Core\Crypt;
 use SP\Storage\DB;
 use SP\Log\Email;
-use SP\Mgmt\Files;
-use SP\Mgmt\User\Groups;
+use SP\Mgmt\Files\Files;
+use SP\Mgmt\Groups\Groups;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;
@@ -67,7 +67,7 @@ class Account extends AccountBase implements AccountInterface
 
         $Log->setAction(_('Actualizar Cuenta'));
 
-        if (!Groups::updateGroupsForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUserGroupsId())) {
+        if (!GroupAccounts::updateGroupsForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUserGroupsId())) {
             $Log->addDescription(_('Error al actualizar los grupos secundarios'));
             $Log->writeLog();
             $Log->resetDescription();
@@ -77,6 +77,11 @@ class Account extends AccountBase implements AccountInterface
             $Log->addDescription(_('Error al actualizar los usuarios de la cuenta'));
             $Log->writeLog();
             $Log->resetDescription();
+        }
+
+        if (is_array($this->accountData->getTags())) {
+            $AccountTags = new AccountTags();
+            $AccountTags->addTags($this->accountData);
         }
 
         $Data = new QueryData();
@@ -306,7 +311,7 @@ class Account extends AccountBase implements AccountInterface
 
         // Obtener los usuarios y grupos secundarios
         $this->accountData->setAccountUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
-        $this->accountData->setAccountUserGroupsId(Groups::getGroupsForAccount($this->accountData->getAccountId()));
+        $this->accountData->setAccountUserGroupsId(GroupAccounts::getGroupsForAccount($this->accountData->getAccountId()));
 
         $this->accountData->setAccountName($queryRes->account_name);
         $this->accountData->setAccountCategoryId($queryRes->account_categoryId);
@@ -321,6 +326,8 @@ class Account extends AccountBase implements AccountInterface
         $this->accountData->setAccountUserGroupId($queryRes->account_userGroupId);
         $this->accountData->setAccountOtherUserEdit($queryRes->account_otherUserEdit);
         $this->accountData->setAccountOtherGroupEdit($queryRes->account_otherGroupEdit);
+        $this->accountData->setTags(AccountTags::getTags($this->accountData));
+
         $this->setAccountModHash($this->calcChangesHash());
 
         return $queryRes;
@@ -372,7 +379,7 @@ class Account extends AccountBase implements AccountInterface
         $Log = new Log(__FUNCTION__);
 
         if (is_array($this->accountData->getAccountUserGroupsId())) {
-            if (!Groups::addGroupsForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUserGroupsId())) {
+            if (!GroupAccounts::addGroupsForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUserGroupsId())) {
                 $Log->addDescription(_('Error al actualizar los grupos secundarios'));
                 $Log->writeLog();
                 $Log->resetDescription();
@@ -385,6 +392,11 @@ class Account extends AccountBase implements AccountInterface
                 $Log->writeLog();
                 $Log->resetDescription();
             }
+        }
+
+        if (is_array($this->accountData->getTags())) {
+            $AccountTags = new AccountTags();
+            $AccountTags->addTags($this->accountData);
         }
 
         $accountInfo = array('customer_name');
@@ -428,7 +440,7 @@ class Account extends AccountBase implements AccountInterface
             return false;
         }
 
-        if (!Groups::deleteGroupsForAccount($this->accountData->getAccountId())) {
+        if (!GroupAccounts::deleteGroupsForAccount($this->accountData->getAccountId())) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al eliminar grupos asociados a la cuenta'));
         }

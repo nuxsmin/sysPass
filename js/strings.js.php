@@ -73,5 +73,6 @@ $stringsJsLang = array(
     47 => _('Clave de Cuenta'),
     48 => _('Recibir notificaciones?'),
     49 => _('Marcar Favorito'),
-    50 => _('Eliminar Favorito')
+    50 => _('Eliminar Favorito'),
+    51 => _('Limpiar Selección'),
 );

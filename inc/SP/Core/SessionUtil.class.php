@@ -25,9 +25,9 @@
 
 namespace SP\Core;
 
-use SP\Mgmt\User\Profile;
-use SP\Mgmt\User\ProfileUtil;
-use SP\Mgmt\User\User;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\User;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 

@@ -47,7 +47,7 @@
                 <td class="valField">
                     <select id="selProfile" name="profileid"
                             class="select-box sel-chosen-profile" required <?php echo $isDisabled; ?>>
-                        <option value=""></option>
+                        <option value=""><?php echo _('Seleccionar Perfil'); ?></option>
                         <?php foreach ($profiles as $id => $name): ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo ($id == $user['user_profileId']) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -61,7 +61,7 @@
                 <td class="valField">
                     <select id="selGroup" name="groupid"
                             class="select-box sel-chosen-usergroup" required <?php echo $isDisabled; ?>>
-                        <option value=""></option>
+                        <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo ($id == $user['user_groupId']) ? 'selected' : ''; ?>><?php echo $name; ?></option>

@@ -28,9 +28,9 @@ namespace SP\Core;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Log\Email;
-use SP\Mgmt\Customer;
+use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
-use SP\Mgmt\Category;
+use SP\Mgmt\Categories\Category;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

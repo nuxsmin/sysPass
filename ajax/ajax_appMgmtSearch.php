@@ -97,6 +97,10 @@ switch ($actionId) {
         $Controller = new AppItemsMgmtSearch($Tpl);
         $Controller->getAccounts($search, $limitStart, $limitCount);
         break;
+    case \SP\Core\ActionsInterface::ACTION_MGM_TAGS_SEARCH:
+        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller->getTags($search, $limitStart, $limitCount);
+        break;
     default:
         Response::printJSON(_('Acción Inválida'));
         break;

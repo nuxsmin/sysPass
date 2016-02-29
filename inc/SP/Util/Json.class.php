@@ -41,7 +41,7 @@ class Json
      * @return string
      * @throws SPException
      */
-    public static function getJson(&$data)
+    public static function getJson($data)
     {
         $json = json_encode(self::safeJson($data));
 

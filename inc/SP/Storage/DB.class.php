@@ -103,7 +103,7 @@ class DB
      */
     public static function getResults(QueryData $queryData)
     {
-        if (empty($queryData->getQuery())) {
+        if ($queryData->getQuery() === '') {
             self::resetVars();
             return false;
         }
@@ -122,10 +122,15 @@ class DB
             && get_class($doQuery) === "PDOStatement"
         ) {
             return $doQuery;
-        } elseif ($db->numRows == 0) {
-            self::resetVars();
-            return false;
-        } elseif ($db->numRows == 1 && self::$retArray === false) {
+        } elseif ($db->numRows === 0) {
+            if (self::$retArray){
+                self::resetVars();
+                return [];
+            } else {
+                self::resetVars();
+                return false;
+            }
+        } elseif ($db->numRows === 1 && self::$retArray === false) {
             self::resetVars();
             return $db->lastResult[0];
         }
@@ -168,7 +173,11 @@ class DB
         if ($isSelect) {
             if (!$getRawData) {
                 $this->numFields = $queryRes->columnCount();
-                $this->lastResult = $queryRes->fetchAll(PDO::FETCH_OBJ);
+                if ($queryData->getMapClassName()) {
+                    $this->lastResult = $queryRes->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
+                } else {
+                    $this->lastResult = $queryRes->fetchAll(PDO::FETCH_OBJ);
+                }
             } else {
                 return $queryRes;
             }
@@ -255,15 +264,15 @@ class DB
      */
     private function getFullRowCount(QueryData $queryData)
     {
-        if (empty($queryData->getQuery())) {
+        if ($queryData->getQuery() === '') {
             return 0;
         }
 
         $num = 0;
         $patterns = array(
             '/(LIMIT|ORDER BY|GROUP BY).*/i',
-            '/SELECT DISTINCT\s([\w_]+),.* FROM/iU',
-            '/SELECT [\w_]+,.* FROM/iU',
+            '/SELECT DISTINCT\s([\w_]+),[\s\S]*? FROM/i',
+            '/SELECT [\w_]+,[\s\S]*? FROM/i',
         );
         $replace = array('', 'SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM', '');
 
@@ -277,14 +286,8 @@ class DB
         try {
             /** @var $db PDO */
             $db = Factory::getDBStorage()->getConnection();
-
-            if (!is_array($queryData->getParams())) {
-                $queryRes = $db->query($query);
-                $num = intval($queryRes->fetchColumn());
-            } elseif ($queryRes = $this->prepareQueryData($queryData, true)) {
-                $num = intval($queryRes->fetchColumn());
-            }
-
+            $queryRes = (is_array($queryData->getParams())) ? $this->prepareQueryData($queryData, true) : $db->query($query);
+            $num = intval($queryRes->fetchColumn());
             $queryRes->closeCursor();
 
             return $num;

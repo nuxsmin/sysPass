@@ -53,54 +53,56 @@ class AccountsSearchData
     public static $isDemoMode = false;
 
     /** @var int */
-    private $_id = 0;
+    private $id = 0;
     /** @var string */
-    private $_name;
+    private $name;
     /** @var string */
-    private $_login;
+    private $login;
     /** @var string */
-    private $_category_name;
+    private $category_name;
     /** @var string */
-    private $_customer_name;
+    private $customer_name;
     /** @var string */
-    private $_customer_link;
+    private $customer_link;
     /** @var string */
-    private $_color;
+    private $color;
     /** @var string */
-    private $_link;
+    private $link;
     /** @var string */
-    private $_url;
+    private $url;
     /** @var string */
-    private $_url_short;
+    private $url_short;
     /** @var bool */
-    private $_url_islink = false;
+    private $url_islink = false;
     /** @var string */
-    private $_notes;
+    private $notes;
     /** @var string */
-    private $_accesses;
+    private $accesses;
     /** @var  string */
-    private $_numFiles;
+    private $numFiles;
     /** @var bool */
-    private $_favorite = false;
+    private $favorite = false;
     /** @var bool */
-    private $_showView = false;
+    private $showView = false;
     /** @var bool */
-    private $_showViewPass = false;
+    private $showViewPass = false;
     /** @var bool */
-    private $_showEdit = false;
+    private $showEdit = false;
     /** @var bool */
-    private $_showCopy = false;
+    private $showCopy = false;
     /** @var bool */
-    private $_showDelete = false;
+    private $showDelete = false;
     /** @var int */
-    private $_textMaxLength = 60;
+    private $textMaxLength = 60;
+    /** @var array  */
+    private $tags =[];
 
     /**
      * @return boolean
      */
     public function isFavorite()
     {
-        return $this->_favorite;
+        return $this->favorite;
     }
 
     /**
@@ -108,7 +110,7 @@ class AccountsSearchData
      */
     public function setFavorite($favorite)
     {
-        $this->_favorite = $favorite;
+        $this->favorite = $favorite;
     }
 
     /**
@@ -125,7 +127,7 @@ class AccountsSearchData
      */
     public function isShow()
     {
-        return ($this->_showView || $this->_showEdit || $this->_showViewPass || $this->_showCopy || $this->_showDelete);
+        return ($this->showView || $this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete);
     }
 
     /**
@@ -141,7 +143,7 @@ class AccountsSearchData
      */
     public function isShowViewPass()
     {
-        return $this->_showViewPass;
+        return $this->showViewPass;
     }
 
     /**
@@ -149,7 +151,7 @@ class AccountsSearchData
      */
     public function setShowViewPass($showViewPass)
     {
-        $this->_showViewPass = $showViewPass;
+        $this->showViewPass = $showViewPass;
     }
 
     /**
@@ -158,7 +160,7 @@ class AccountsSearchData
     public function isShowOptional()
     {
         return (!AccountsSearchData::$optionalActions
-            && ($this->_showEdit || $this->_showViewPass || $this->_showCopy || $this->_showDelete));
+            && ($this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete));
     }
 
     /**
@@ -166,7 +168,7 @@ class AccountsSearchData
      */
     public function setTextMaxLength($textMaxLength)
     {
-        $this->_textMaxLength = $textMaxLength;
+        $this->textMaxLength = $textMaxLength;
     }
 
     /**
@@ -174,7 +176,7 @@ class AccountsSearchData
      */
     public function getUrlShort()
     {
-        return $this->_url_short;
+        return $this->url_short;
     }
 
     /**
@@ -182,7 +184,7 @@ class AccountsSearchData
      */
     public function isUrlIslink()
     {
-        return $this->_url_islink;
+        return $this->url_islink;
     }
 
     /**
@@ -190,7 +192,7 @@ class AccountsSearchData
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -198,7 +200,7 @@ class AccountsSearchData
      */
     public function setId($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -206,7 +208,7 @@ class AccountsSearchData
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -214,7 +216,7 @@ class AccountsSearchData
      */
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -222,7 +224,7 @@ class AccountsSearchData
      */
     public function getLogin()
     {
-        return $this->_login;
+        return $this->login;
     }
 
     /**
@@ -230,7 +232,7 @@ class AccountsSearchData
      */
     public function setLogin($login)
     {
-        $this->_login = Html::truncate($login, $this->_textMaxLength);
+        $this->login = Html::truncate($login, $this->textMaxLength);
     }
 
     /**
@@ -238,7 +240,7 @@ class AccountsSearchData
      */
     public function getCategoryName()
     {
-        return $this->_category_name;
+        return $this->category_name;
     }
 
     /**
@@ -246,7 +248,7 @@ class AccountsSearchData
      */
     public function setCategoryName($category_name)
     {
-        $this->_category_name = $category_name;
+        $this->category_name = $category_name;
     }
 
     /**
@@ -254,7 +256,7 @@ class AccountsSearchData
      */
     public function getCustomerName()
     {
-        return $this->_customer_name;
+        return $this->customer_name;
     }
 
     /**
@@ -262,7 +264,7 @@ class AccountsSearchData
      */
     public function setCustomerName($customer_name)
     {
-        $this->_customer_name = Html::truncate($customer_name, $this->_textMaxLength);
+        $this->customer_name = Html::truncate($customer_name, $this->textMaxLength);
     }
 
     /**
@@ -270,7 +272,7 @@ class AccountsSearchData
      */
     public function getCustomerLink()
     {
-        return $this->_customer_link;
+        return $this->customer_link;
     }
 
     /**
@@ -278,7 +280,7 @@ class AccountsSearchData
      */
     public function setCustomerLink($customer_link)
     {
-        $this->_customer_link = $customer_link;
+        $this->customer_link = $customer_link;
     }
 
     /**
@@ -286,7 +288,7 @@ class AccountsSearchData
      */
     public function getColor()
     {
-        return $this->_color;
+        return $this->color;
     }
 
     /**
@@ -294,7 +296,7 @@ class AccountsSearchData
      */
     public function setColor($color)
     {
-        $this->_color = $color;
+        $this->color = $color;
     }
 
     /**
@@ -302,7 +304,7 @@ class AccountsSearchData
      */
     public function getLink()
     {
-        return $this->_link;
+        return $this->link;
     }
 
     /**
@@ -310,7 +312,7 @@ class AccountsSearchData
      */
     public function setLink($link)
     {
-        $this->_link = $link;
+        $this->link = $link;
     }
 
     /**
@@ -318,7 +320,7 @@ class AccountsSearchData
      */
     public function getUrl()
     {
-        return $this->_url;
+        return $this->url;
     }
 
     /**
@@ -326,9 +328,9 @@ class AccountsSearchData
      */
     public function setUrl($url)
     {
-        $this->_url = $url;
-        $this->_url_short = Html::truncate($url, $this->_textMaxLength);
-        $this->_url_islink = preg_match("#^https?://.*#i", $url);
+        $this->url = $url;
+        $this->url_short = Html::truncate($url, $this->textMaxLength);
+        $this->url_islink = preg_match("#^https?://.*#i", $url);
     }
 
     /**
@@ -336,7 +338,7 @@ class AccountsSearchData
      */
     public function getNotes()
     {
-        return $this->_notes;
+        return $this->notes;
     }
 
     /**
@@ -344,7 +346,7 @@ class AccountsSearchData
      */
     public function setNotes($notes)
     {
-        $this->_notes = $notes;
+        $this->notes = $notes;
     }
 
     /**
@@ -352,7 +354,7 @@ class AccountsSearchData
      */
     public function getAccesses()
     {
-        return $this->_accesses;
+        return $this->accesses;
     }
 
     /**
@@ -360,7 +362,7 @@ class AccountsSearchData
      */
     public function setAccesses($accesses)
     {
-        $this->_accesses = $accesses;
+        $this->accesses = $accesses;
     }
 
     /**
@@ -368,7 +370,7 @@ class AccountsSearchData
      */
     public function getNumFiles()
     {
-        return $this->_numFiles;
+        return $this->numFiles;
     }
 
     /**
@@ -376,7 +378,7 @@ class AccountsSearchData
      */
     public function setNumFiles($numFiles)
     {
-        $this->_numFiles = $numFiles;
+        $this->numFiles = $numFiles;
     }
 
     /**
@@ -384,7 +386,7 @@ class AccountsSearchData
      */
     public function isShowView()
     {
-        return $this->_showView;
+        return $this->showView;
     }
 
     /**
@@ -392,7 +394,7 @@ class AccountsSearchData
      */
     public function setShowView($showView)
     {
-        $this->_showView = $showView;
+        $this->showView = $showView;
     }
 
     /**
@@ -400,7 +402,7 @@ class AccountsSearchData
      */
     public function isShowEdit()
     {
-        return $this->_showEdit;
+        return $this->showEdit;
     }
 
     /**
@@ -408,7 +410,7 @@ class AccountsSearchData
      */
     public function setShowEdit($showEdit)
     {
-        $this->_showEdit = $showEdit;
+        $this->showEdit = $showEdit;
     }
 
     /**
@@ -416,7 +418,7 @@ class AccountsSearchData
      */
     public function isShowCopy()
     {
-        return $this->_showCopy;
+        return $this->showCopy;
     }
 
     /**
@@ -424,7 +426,7 @@ class AccountsSearchData
      */
     public function setShowCopy($showCopy)
     {
-        $this->_showCopy = $showCopy;
+        $this->showCopy = $showCopy;
     }
 
     /**
@@ -432,7 +434,7 @@ class AccountsSearchData
      */
     public function isShowDelete()
     {
-        return $this->_showDelete;
+        return $this->showDelete;
     }
 
     /**
@@ -440,6 +442,22 @@ class AccountsSearchData
      */
     public function setShowDelete($showDelete)
     {
-        $this->_showDelete = $showDelete;
+        $this->showDelete = $showDelete;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param array $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
     }
 }

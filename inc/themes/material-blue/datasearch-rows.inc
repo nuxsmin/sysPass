@@ -71,7 +71,7 @@
                            data-sk="<?php echo $sk; ?>"
                            data-status="<?php echo ($account->isFavorite()) ? 'on' : 'off'; ?>">star</i>
 
-                        <?php if (!empty($account->getNotes())): ?>
+                        <?php if ($account->getNotes() !== ''): ?>
                             <i id="notes-<?php echo $account->getId(); ?>" class="material-icons">speaker_notes</i>
                             <div class="mdl-tooltip" for="notes-<?php echo $account->getId(); ?>">
                                 <?php echo _('Notas'), '<br>', $account->getNotes(); ?>
@@ -86,7 +86,7 @@
                         <?php endif; ?>
 
                         <?php if (isset($wikiFilter)): ?>
-                            <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account->getName())): ?>
+                            <?php if (preg_match('/^(' . $wikiFilter . ').*/i', $account->getName())): ?>
                                 <?php if (\SP\Account\AccountsSearchData::$dokuWikiEnabled): ?>
                                     <a href="<?php echo $wikiPageUrl, $account->getName(); ?>" target="_blank">
                                         <i class="material-icons"
@@ -102,6 +102,12 @@
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
+
+                        <div class="tags-box">
+                        <?php foreach ($account->getTags() as $tag): ?>
+                            <span class="tag"><?php echo $tag; ?></span>
+                        <?php endforeach; ?>
+                        </div>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>

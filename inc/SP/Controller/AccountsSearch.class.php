@@ -167,8 +167,6 @@ class AccountsSearch extends Controller implements ActionsInterface
         $Search->setCustomerId($this->view->searchCustomer);
         $Search->setSearchFavorites($this->view->searchFavorites);
 
-        $resQuery = $Search->getAccounts();
-
         $this->filterOn = ($this->_sortKey > 1
             || $this->view->searchCustomer
             || $this->view->searchCategory
@@ -185,12 +183,16 @@ class AccountsSearch extends Controller implements ActionsInterface
         AccountsSearchData::$isDemoMode = Checks::demoIsEnabled();
 
         if (AccountsSearchData::$wikiEnabled) {
-            $this->view->assign('wikiFilter', implode('|', Config::getConfig()->getWikiFilter()));
+            $wikiFilter = array_map(function ($value) {
+                return preg_quote($value);
+            }, Config::getConfig()->getWikiFilter());
+
+            $this->view->assign('wikiFilter', implode('|', $wikiFilter));
             $this->view->assign('wikiPageUrl', Config::getConfig()->getWikiPageurl());
         }
 
         $Grid = $this->getGrid();
-        $Grid->getData()->setData($Search->processSearchResults($resQuery));
+        $Grid->getData()->setData($Search->processSearchResults());
         $Grid->updatePager();
         $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
 

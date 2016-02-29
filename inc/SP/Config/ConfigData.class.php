@@ -1316,7 +1316,7 @@ class ConfigData implements JsonSerializable
      */
     public function getWikiFilter()
     {
-        return is_array($this->wikiFilter) ? $this->wikiFilter : array();
+        return is_array($this->wikiFilter) ? $this->wikiFilter : [];
     }
 
     /**

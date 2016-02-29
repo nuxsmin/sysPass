@@ -25,6 +25,7 @@
 
 namespace SP\Account;
 
+use SP\DataModel\UserBasicData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -134,13 +135,9 @@ class UserAccounts
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($Data);
+        $users = [];
 
-        if ($queryRes === false) {
-            return array();
-        }
-
-        foreach ($queryRes as $user) {
+        foreach (DB::getResults($Data) as $user) {
             $users[] = (int)$user->accuser_userId;
         }
 
@@ -151,34 +148,25 @@ class UserAccounts
      * Obtiene el listado con el nombre de los usuarios de una cuenta.
      *
      * @param int $accountId con el id de la cuenta
-     * @return false|array con los nombres de los usuarios ordenados
+     * @return UserBasicData[]
      */
-    public static function getUsersNameForAccount($accountId)
+    public static function getUsersInfoForAccount($accountId)
     {
-        $query = 'SELECT user_id,'
-            . 'user_login '
-            . 'FROM accUsers '
-            . 'JOIN usrData ON user_Id = accuser_userId '
-            . 'WHERE accuser_accountId = :id';
+        $query = 'SELECT user_id,
+            user_login,
+            user_name
+            FROM accUsers
+            JOIN usrData ON user_Id = accuser_userId
+            WHERE accuser_accountId = :id
+            ORDER BY user_login';
 
         $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\UserBasicData');
         $Data->setQuery($query);
         $Data->addParam($accountId, 'id');
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        foreach ($queryRes as $users) {
-            $usersName[$users->user_id] = $users->user_login;
-        }
-
-        asort($usersName, SORT_STRING);
-
-        return $usersName;
+        return DB::getResults($Data);
     }
 }

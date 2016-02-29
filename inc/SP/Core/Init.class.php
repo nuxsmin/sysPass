@@ -32,7 +32,7 @@ use SP\Controller;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\User\ProfileUtil;
+use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;

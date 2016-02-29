@@ -17,12 +17,12 @@
                     <input id="<?php echo $field->name; ?>"
                            name="customfield[<?php echo $field->id; ?>]"
                            type="<?php echo $field->typeName; ?>"
-                           class="<?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
+                           class="<?php echo ($field->type === \SP\Mgmt\CustomFields\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                            maxlength="500"
                            value="<?php echo \SP\Html\Html::sanitize($field->value); ?>"
                         <?php echo ($field->required) ? 'required' : ''; ?>>
                 <?php else: ?>
-                    <?php if ($field->type === \SP\Mgmt\CustomFields::TYPE_PASSWORD && !$showViewPass): ?>
+                    <?php if ($field->type === \SP\Mgmt\CustomFields\CustomFields::TYPE_PASSWORD && !$showViewPass): ?>
                         ****
                     <?php else: ?>
                         <?php echo $field->value; ?>

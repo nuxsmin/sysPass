@@ -26,7 +26,7 @@
 namespace SP\Import;
 
 use SP\Config\Config;
-use SP\Mgmt\Customer;
+use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Core\Session;
 use SP\Core\SPException;

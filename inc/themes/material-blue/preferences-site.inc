@@ -13,7 +13,7 @@
             <tr>
                 <td class="descField"><?php echo _('Idioma'); ?></td>
                 <td class="valField">
-                    <select name="userlang" id="sel-userlang" size="1" class="sel-chosen-ns">
+                    <select name="userlang" id="sel-userlang" size="1" class="select-box sel-chosen-ns">
                         <?php foreach ($langsAvailable as $langName => $langValue): ?>
                             <option
                                 value='<?php echo $langValue; ?>' <?php echo ($currentLang == $langValue) ? "SELECTED" : ""; ?>><?php echo $langName; ?></option>
@@ -25,7 +25,7 @@
                 <td class="descField"><?php echo _('Tema Visual'); ?></td>
                 <td class="valField">
                     <select name="usertheme" id="sel-usertheme" size="1"
-                            class="sel-chosen-ns">
+                            class="select-box sel-chosen-ns">
                         <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
                             <option
                                 value='<?php echo $themeDir; ?>' <?php echo ($currentTheme == $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>

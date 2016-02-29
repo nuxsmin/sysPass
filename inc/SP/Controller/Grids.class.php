@@ -853,6 +853,78 @@ class Grids implements ActionsInterface
 
         return $Grid;
     }
+
+    /**
+     * @return DataGridTab
+     */
+    public function getTagsGrid()
+    {
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_MGM_TAGS_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchTag');
+        $GridActionSearch->setTitle(_('Buscar Etiqueta'));
+        $GridActionSearch->setOnSubmitFunction('sysPassUtil.Common.appMgmtSearch');
+        $GridActionSearch->setOnSubmitArgs('this');
+
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(self::ACTION_MGM_TAGS_NEW);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setName(_('Nueva Etiqueta'));
+        $GridActionNew->setTitle(_('Nueva Etiqueta'));
+        $GridActionNew->setIcon($this->icons->getIconAdd());
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionNew->setOnClickArgs('this');
+        $GridActionNew->setOnClickArgs(self::ACTION_MGM_TAGS_NEW);
+        $GridActionNew->setOnClickArgs($this->sk);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_MGM_TAGS_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEdit->setName(_('Editar Etiqueta'));
+        $GridActionEdit->setTitle(_('Editar Etiqueta'));
+        $GridActionEdit->setIcon($this->icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.appMgmtData');
+        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setOnClickArgs(self::ACTION_MGM_TAGS_EDIT);
+        $GridActionEdit->setOnClickArgs($this->sk);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_TAGS_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Etiqueta'));
+        $GridActionDel->setTitle(_('Eliminar Etiqueta'));
+        $GridActionDel->setIcon($this->icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('sysPassUtil.Common.appMgmtDelete');
+        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setOnClickArgs(self::ACTION_MGM_TAGS_DELETE);
+        $GridActionDel->setOnClickArgs($this->sk);
+
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Nombre'));
+
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('tag_id');
+        $GridData->addDataRowSource('tag_name');
+
+        $Grid = new DataGridTab();
+        $Grid->setId('tblTags');
+        $Grid->setDataRowTemplate('datagrid-rows');
+        $Grid->setDataPagerTemplate('datagrid-nav-full');
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionEdit);
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setHeader($GridHeaders);
+        $Grid->setPager($this->getPager($GridActionSearch));
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Gestión de Etiquetas'));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+
+        return $Grid;
+    }
+
     /**
      * @param boolean $filter
      */

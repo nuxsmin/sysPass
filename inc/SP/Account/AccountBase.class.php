@@ -25,7 +25,8 @@
 
 namespace SP\Account;
 
-use SP\Mgmt\User\Groups;
+use SP\DataModel\AccountData;
+use SP\Mgmt\Groups\Groups;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -118,16 +119,6 @@ abstract class AccountBase
         $this->accountData->setAccountId($accId);
 
         return $this->accountData;
-
-//        return array(
-//            'id' => $accId,
-//            'user_id' => $this->accountData->getAccountUserId(),
-//            'group_id' => $this->accountData->getAccountUserGroupId(),
-//            'users_id' => $this->accountData->getAccountUsersId(),
-//            'groups_id' => $this->accountData->getAccountUserGroupsId(),
-//            'otheruser_edit' => $this->accountData->getAccountOtherUserEdit(),
-//            'othergroup_edit' => $this->accountData->getAccountOtherGroupEdit()
-//        );
     }
 
     /**
@@ -174,7 +165,7 @@ abstract class AccountBase
         if (!isset($cacheUserGroups[$accId])
             || time() > $cacheUserGroups['expires']
         ) {
-            $cacheUserGroups[$accId] = Groups::getGroupsForAccount($accId);
+            $cacheUserGroups[$accId] = GroupAccounts::getGroupsForAccount($accId);
             $cacheUserGroups['expires'] = time() + self::CACHE_EXPIRE_TIME;
         }
 
@@ -227,6 +218,7 @@ abstract class AccountBase
                 $this->accountData->getAccountLogin() .
                 $this->accountData->getAccountUrl() .
                 $this->accountData->getAccountNotes() .
+                implode('', array_keys($this->accountData->getTags())) .
                 (int)$this->accountData->getAccountOtherUserEdit() .
                 (int)$this->accountData->getAccountOtherGroupEdit() .
                 (int)$users .

@@ -189,6 +189,18 @@ switch ($actionId) {
         $Controller = new AccItemMgmt($Tpl);
         $Controller->getPublicLink();
         break;
+    case ActionsInterface::ACTION_MGM_TAGS_NEW:
+        $Tpl->assign('header', _('Nueva Etiqueta'));
+        $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
+        $Controller = new AppItemMgmt($Tpl);
+        $Controller->getTag();
+        break;
+    case ActionsInterface::ACTION_MGM_TAGS_EDIT:
+        $Tpl->assign('header', _('Editar Etiqueta'));
+        $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
+        $Controller = new AppItemMgmt($Tpl);
+        $Controller->getTag();
+        break;
     default :
         exit();
         break;

@@ -42,8 +42,11 @@ require 'SplClassLoader.php';
 $ClassLoader = new SplClassLoader();
 $ClassLoader->setFileExtension('.class.php');
 $ClassLoader->addExcluded('SP\\Profile');
+$ClassLoader->addExcluded('SP\\Mgmt\\User\\Profile');
 $ClassLoader->addExcluded('SP\\UserPreferences');
+$ClassLoader->addExcluded('SP\\Mgmt\\User\\UserPreferences');
 $ClassLoader->addExcluded('SP\\CustomFieldDef');
+$ClassLoader->addExcluded('SP\\Mgmt\\CustomFieldDef');
 $ClassLoader->addExcluded('SP\\PublicLink');
 $ClassLoader->register();
 

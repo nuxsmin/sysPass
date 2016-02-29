@@ -328,7 +328,7 @@ class ConfigMgmt extends Controller implements ActionsInterface
         $this->view->assign('mailPass', $this->Config->getMailPass());
         $this->view->assign('currentMailSecurity', $this->Config->getMailSecurity());
         $this->view->assign('mailFrom', $this->Config->getMailFrom());
-        $this->view->assign('mailSecurity', array('SSL', 'TLS'));
+        $this->view->assign('mailSecurity', ['SSL', 'TLS']);
 
         $this->view->assign('actionId', $this->getAction(), 'mail');
         $this->view->append('tabs', array('title' => _('Correo')));

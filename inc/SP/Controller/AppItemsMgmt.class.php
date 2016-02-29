@@ -32,11 +32,12 @@ use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Template;
 use SP\Http\Request;
-use SP\Mgmt\Category;
-use SP\Mgmt\Customer;
-use SP\Mgmt\CustomFieldDef;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Core\SessionUtil;
-use SP\Mgmt\Files;
+use SP\Mgmt\Files\Files;
+use SP\Mgmt\Tags\Tags;
 
 /**
  * Clase encargada de preparar la presentación de las vistas de gestión de cuentas
@@ -172,6 +173,25 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
 
         $Grid = $this->Grids->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->limitCount));
+        $Grid->updatePager();
+        $Grid->getPager()->setOnClickArgs($this->limitCount);
+
+        $this->view->append('tabs', $Grid);
+    }
+
+    /**
+     * Obtener los datos para la pestaña de etiquetas
+     */
+    public function getTags()
+    {
+        $this->setAction(self::ACTION_MGM_TAGS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $Grid = $this->Grids->getTagsGrid();
+        $Grid->getData()->setData(Tags::getTagsMgmtSearch($this->limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->limitCount);
 

@@ -33,7 +33,7 @@ use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');

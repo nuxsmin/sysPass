@@ -30,7 +30,8 @@ namespace SP\Core;
  *
  * @package Controller
  */
-interface ActionsInterface {
+interface ActionsInterface
+{
     const ACTION_ACC_SEARCH = 1;
     const ACTION_ACC = 10;
     const ACTION_ACC_VIEW = 100;
@@ -96,9 +97,15 @@ interface ActionsInterface {
     const ACTION_MGM_ACCOUNTS_VIEW = 671;
     const ACTION_MGM_ACCOUNTS_DELETE = 673;
     const ACTION_MGM_ACCOUNTS_SEARCH = 675;
+    const ACTION_MGM_TAGS = 68;
+    const ACTION_MGM_TAGS_NEW = 680;
+    const ACTION_MGM_TAGS_VIEW = 681;
+    const ACTION_MGM_TAGS_EDIT = 682;
+    const ACTION_MGM_TAGS_DELETE = 683;
+    const ACTION_MGM_TAGS_SEARCH = 685;
     const ACTION_USR = 70;
     const ACTION_USR_USERS = 71;
-    const ACTION_USR_USERS_VIEW= 710;
+    const ACTION_USR_USERS_VIEW = 710;
     const ACTION_USR_USERS_NEW = 711;
     const ACTION_USR_USERS_EDIT = 712;
     const ACTION_USR_USERS_DELETE = 713;

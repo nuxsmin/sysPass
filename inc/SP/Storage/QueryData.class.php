@@ -40,6 +40,10 @@ class QueryData
      * @var string
      */
     protected $query = '';
+    /**
+     * @var string
+     */
+    protected $mapClassName = '';
 
     /**
      * @param $value
@@ -76,5 +80,21 @@ class QueryData
     public function setQuery($query)
     {
         $this->query = $query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMapClassName()
+    {
+        return $this->mapClassName;
+    }
+
+    /**
+     * @param string $mapClassName
+     */
+    public function setMapClassName($mapClassName)
+    {
+        $this->mapClassName = $mapClassName;
     }
 }

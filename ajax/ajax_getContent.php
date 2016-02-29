@@ -148,6 +148,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_MGM_CUSTOMFIELDS:
     case ActionsInterface::ACTION_MGM_FILES:
     case ActionsInterface::ACTION_MGM_ACCOUNTS:
+    case ActionsInterface::ACTION_MGM_TAGS:
         $Controller = new \SP\Controller\AppItemsMgmt($Tpl);
         $Controller->useTabs();
         $Controller->getCategories();
@@ -155,6 +156,7 @@ switch ($actionId) {
         $Controller->getCustomFields();
         $Controller->getFiles();
         $Controller->getAccounts();
+        $Controller->getTags();
         break;
     case ActionsInterface::ACTION_CFG:
     case ActionsInterface::ACTION_CFG_GENERAL:

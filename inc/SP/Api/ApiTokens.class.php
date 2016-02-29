@@ -35,7 +35,7 @@ use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;
 use SP\Core\SPException;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Users\UserUtil;
 use SP\Storage\QueryData;
 
 /**

@@ -27,25 +27,28 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Account\AccountData;
-use SP\Account\AccountHistory;
+use SP\Account\GroupAccounts;
+use SP\DataModel\AccountData;
 use SP\Core\Acl;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
 use SP\Core\Template;
-use SP\Mgmt\PublicLink;
-use SP\Mgmt\CustomFields;
-use SP\Mgmt\User\Groups;
+use SP\Mgmt\Groups\GroupsUtil;
+use SP\Mgmt\PublicLinks\PublicLink;
+use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\Tags\Tags;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\SPException;
 use SP\Account\UserAccounts;
-use SP\Mgmt\User\UserPass;
+use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
+use SP\Util\Json;
 
 /**
  * Clase encargada de preparar la presentación de las vistas de una cuenta
@@ -59,7 +62,7 @@ class Account extends Controller implements ActionsInterface
      */
     protected $action;
     /**
-     * @var Account|AccountHistory instancia para el manejo de datos de una cuenta
+     * @var \SP\Account\Account|\SP\Account\AccountHistory instancia para el manejo de datos de una cuenta
      */
     private $account;
     /**
@@ -166,10 +169,10 @@ class Account extends Controller implements ActionsInterface
 
         if ($this->isGotData()) {
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
-            $this->view->assign('accountOtherUsers', $this->getAccount()->getAccountData()->getAccountUsersId());
-            $this->view->assign('accountOtherUsersName', UserAccounts::getUsersNameForAccount($this->getId()));
-            $this->view->assign('accountOtherGroups', $this->getAccount()->getAccountData()->getAccountUserGroupsId());
-            $this->view->assign('accountOtherGroupsName', \SP\Mgmt\User\Groups::getGroupsNameForAccount($this->getId()));
+            $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->getId()));
+            $this->view->assign('accountOtherGroups', GroupAccounts::getGroupsInfoForAccount($this->getId()));
+            $this->view->assign('accountTags', $this->getAccount()->getAccountData()->getTags());
+            $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
             $this->view->assign('changesHash', $this->getAccount()->getAccountModHash());
             $this->view->assign('chkUserEdit', ($this->getAccount()->getAccountData()->getAccountOtherUserEdit()) ? 'checked' : '');
             $this->view->assign('chkGroupEdit', ($this->getAccount()->getAccountData()->getAccountOtherGroupEdit()) ? 'checked' : '');
@@ -186,10 +189,11 @@ class Account extends Controller implements ActionsInterface
         $this->view->assign('accountParentId', Session::getLastAcountId());
         $this->view->assign('categories', DBUtil::getValuesForSelect('categories', 'category_id', 'category_name'));
         $this->view->assign('customers', DBUtil::getValuesForSelect('customers', 'customer_id', 'customer_name'));
-        $this->view->assign('otherUsers', DBUtil::getValuesForSelect('usrData', 'user_id', 'user_name'));
-        $this->view->assign('otherGroups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-
-
+        $this->view->assign('otherUsers', UserUtil::getUsersLogin());
+        $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
+        $this->view->assign('otherGroups', GroupsUtil::getGroupsName());
+        $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
+        $this->view->assign('tagsJson', Json::getJson(Tags::getTags()));
     }
 
     /**
@@ -217,7 +221,7 @@ class Account extends Controller implements ActionsInterface
     }
 
     /**
-     * @return Account|AccountHistory
+     * @return \SP\Account\Account|\SP\Account\AccountHistory
      */
     private function getAccount()
     {
@@ -302,7 +306,6 @@ class Account extends Controller implements ActionsInterface
             $this->view->assign('accountData', $this->getAccount()->getData());
             $this->view->assign('gotData', true);
 
-//            $this->setAccountDetails();
             $this->setGotData(true);
 
             Session::setLastAcountId($this->getId());
@@ -460,7 +463,6 @@ class Account extends Controller implements ActionsInterface
             $this->view->assign('accountData', $this->getAccount()->getData());
             $this->view->assign('gotData', true);
 
-//            $this->setAccountDetails();
             $this->setGotData(true);
 
             Session::setLastAcountId(Session::getAccountParentId());
@@ -510,7 +512,7 @@ class Account extends Controller implements ActionsInterface
     /**
      * Obtener la vista de detalles de cuenta para enlaces públicos
      *
-     * @param PublicLink $PublicLink
+     * @param \SP\Mgmt\PublicLinks\PublicLink $PublicLink
      * @return bool
      */
     public function getAccountFromLink(PublicLink $PublicLink)
@@ -544,14 +546,5 @@ class Account extends Controller implements ActionsInterface
         }
 
         $this->view->assign('accountPass', $accountPass);
-    }
-
-    /**
-     * Establecer variables que contienen la información detallada de la cuenta.
-     */
-    private function setAccountDetails()
-    {
-        $this->account->getAccountData()->setAccountUsersId(UserAccounts::getUsersForAccount($this->getId()));
-        $this->account->getAccountData()->setAccountUserGroupsId(Groups::getGroupsForAccount($this->getId()));
     }
 }

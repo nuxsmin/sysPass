@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,12 +26,13 @@
 namespace SP\Storage;
 
 use DOMDocument;
+use DOMElement;
+use DOMNode;
+use DOMNodeList;
 use ReflectionObject;
-use SP\Core\SPException;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
- *
  * @package SMD\Storage
  */
 class XmlHandler implements FileStorageInterface
@@ -48,10 +49,13 @@ class XmlHandler implements FileStorageInterface
      * @var DOMDocument
      */
     private $Dom;
+    /**
+     * @var DOMElement
+     */
+    private $root;
 
     /**
      * XmlHandler constructor.
-     *
      * @param $file
      */
     public function __construct($file)
@@ -73,37 +77,19 @@ class XmlHandler implements FileStorageInterface
      *
      * @param string $tag
      * @return bool|void
-     * @throws SPException
+     * @throws \Exception
      */
     public function load($tag = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new SPException(
-                SPException::SP_CRITICAL,
-                _('No es posible leer el archivo'),
-                $this->file
-            );
+            throw new \Exception(sprintf('No es posible leer/escribir el archivo: %s', $this->file));
         }
 
-        $this->items = [];
+        $this->items = array();
         $this->Dom->load($this->file);
 
         $nodes = $this->Dom->getElementsByTagName($tag)->item(0)->childNodes;
-
-        foreach ($nodes as $node) {
-            /** @var $node \DOMNode */
-            if (is_object($node->childNodes) && $node->childNodes->length > 1) {
-                foreach ($node->childNodes as $child) {
-                    /** @var $child \DOMNode */
-
-                    if ($child->nodeType == XML_ELEMENT_NODE) {
-                        $this->items[$node->nodeName][] = $child->nodeValue;
-                    }
-                }
-            } else {
-                $this->items[$node->nodeName] = $node->nodeValue;
-            }
-        }
+        $this->items = $this->readChildNodes($nodes);
 
         return $this;
     }
@@ -115,7 +101,39 @@ class XmlHandler implements FileStorageInterface
      */
     protected function checkSourceFile()
     {
-        return is_writable($this->file);
+        return (is_writable($this->file) && filesize($this->file) > 0);
+    }
+
+    /**
+     * Leer de forma recursiva los nodos hijos y devolver un array multidimensional
+     *
+     * @param DOMNodeList $NodeList
+     * @return array
+     */
+    protected function readChildNodes(DOMNodeList $NodeList)
+    {
+        $nodes = array();
+
+        foreach ($NodeList as $node) {
+            /** @var $node DOMNode */
+            if (is_object($node->childNodes) && $node->childNodes->length > 1) {
+                if ($node->nodeName === 'item') {
+                    $nodes[] = $this->readChildNodes($node->childNodes);
+                } else {
+                    $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
+                }
+            } elseif ($node->nodeType === XML_ELEMENT_NODE) {
+                $val = (is_numeric($node->nodeValue)) ? intval($node->nodeValue) : $node->nodeValue;
+
+                if ($node->nodeName === 'item') {
+                    $nodes[] = $val;
+                } else {
+                    $nodes[$node->nodeName] = $val;
+                }
+            }
+        }
+
+        return $nodes;
     }
 
     /**
@@ -134,72 +152,99 @@ class XmlHandler implements FileStorageInterface
      *
      * @param string $tag
      * @return bool|void
-     * @throws SPException
+     * @throws \Exception
      */
     public function save($tag = 'root')
     {
         if (is_null($this->items)) {
-            throw new SPException(SPException::SP_WARNING, _('No hay elementos para guardar'));
+            throw new \Exception('No hay elementos para guardar');
         }
 
         $this->Dom->formatOutput = true;
 
-        $root = $this->Dom->createElement($tag);
-        $this->Dom->appendChild($root);
-
-        foreach ($this->analyzeItems() as $key => $value) {
-            $keyNode = $this->Dom->createElement($key);
-
-            if (is_array($value)) {
-                foreach ($value as $arrayVal) {
-                    $arrayNode = $this->Dom->createElement('item');
-                    $arrayNode->appendChild($this->Dom->createTextNode(trim($arrayVal)));
-                    $keyNode->appendChild($arrayNode);
-                }
-            } else {
-                $keyNode->appendChild($this->Dom->createTextNode($value));
-            }
-
-            $root->appendChild($keyNode);
-        }
-
+        $this->root = $this->Dom->createElement($tag);
+        $this->Dom->appendChild($this->root);
+        $this->writeChildNodes($this->items, $this->root);
         $this->Dom->save($this->file);
 
         return $this;
     }
 
     /**
+     * Crear los nodos hijos recursivamente a partir de un array multidimensional
+     *
+     * @param mixed $items
+     * @param DOMNode $Node
+     * @param null $type
+     */
+    protected function writeChildNodes($items, DOMNode $Node, $type = null)
+    {
+        foreach ($this->analyzeItems($items) as $key => $value) {
+            if (is_int($key)) {
+                $newNode = $this->Dom->createElement('item');
+                $newNode->setAttribute('type', $type);
+            } else {
+                $newNode = $this->Dom->createElement($key);
+            }
+
+            if (is_array($value) || is_object($value)) {
+                if (is_object($value)) {
+                    $newNode->setAttribute('class', get_class($value));
+                    $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
+                } else {
+                    $this->writeChildNodes($value, $newNode, $key);
+                }
+            } else {
+                $newNode->appendChild($this->Dom->createTextNode(trim($value)));
+            }
+
+            $Node->appendChild($newNode);
+        }
+    }
+
+    /**
      * Analizar el tipo de elementos
      *
-     * @return array|mixed
+     * @param mixed $items
+     * @param bool $serialize
+     * @return array
      */
-    protected function analyzeItems()
+    protected function analyzeItems($items, $serialize = false)
     {
-        if (is_array($this->items)) {
-            ksort($this->items);
+        if (is_array($items)) {
+            ksort($items);
 
-            return $this->items;
-        } elseif (is_object($this->items)) {
-            return $this->analyzeObject();
+            return $items;
+        } elseif (is_object($items)) {
+
+            return ($serialize) ? serialize($items) : $this->analyzeObject($items);
         }
 
-        return [];
+        return array();
 
     }
 
     /**
      * Analizar un elemento del tipo objeto
      *
+     * @param $object
      * @return array
      */
-    protected function analyzeObject()
+    protected function analyzeObject($object)
     {
-        $items = [];
-        $Reflection = new ReflectionObject($this->items);
+        $items = array();
+        $Reflection = new ReflectionObject($object);
 
         foreach ($Reflection->getProperties() as $property) {
             $property->setAccessible(true);
-            $items[$property->getName()] = $property->getValue($this->items);
+            $value = $property->getValue($object);
+
+            if (is_numeric($value) || is_bool($value)){
+                $items[$property->getName()] = (int)$value;
+            } else {
+                $items[$property->getName()] = $value;
+            }
+
             $property->setAccessible(false);
         }
 

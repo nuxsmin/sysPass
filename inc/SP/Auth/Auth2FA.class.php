@@ -28,7 +28,7 @@ namespace SP\Auth;
 use Exts\Google2FA;
 use Exts\Base2n;
 use SP\Core\SPException;
-use SP\Mgmt\User\UserPass;
+use SP\Mgmt\Users\UserPass;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

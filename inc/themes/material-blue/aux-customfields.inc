@@ -18,7 +18,7 @@
                         <input id="<?php echo $field->name; ?>"
                                name="customfield[<?php echo $field->id; ?>]"
                                type="<?php echo $field->typeName; ?>"
-                               class="mdl-textfield__input mdl-color-text--indigo-400 <?php echo ($field->type === \SP\Mgmt\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
+                               class="mdl-textfield__input mdl-color-text--indigo-400 <?php echo ($field->type === \SP\Mgmt\CustomFields\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                                maxlength="500"
                                value="<?php echo \SP\Html\Html::sanitize($field->value); ?>"
                             <?php echo ($field->required) ? 'required' : ''; ?>>
@@ -26,9 +26,9 @@
                                for="<?php echo $field->name; ?>"><?php echo $field->text; ?></label>
                     </div>
                 <?php else: ?>
-                    <?php if ($field->type === \SP\Mgmt\CustomFields::TYPE_PASSWORD && !$showViewPass): ?>
+                    <?php if ($field->type === \SP\Mgmt\CustomFields\CustomFields::TYPE_PASSWORD && !$showViewPass): ?>
                         ****
-                    <?php elseif ($field->type === \SP\Mgmt\CustomFields::TYPE_COLOR): ?>
+                    <?php elseif ($field->type === \SP\Mgmt\CustomFields\CustomFields::TYPE_COLOR): ?>
                         <span class="round custom-input-color"
                               style="background-color: <?php echo $field->value; ?>;"></span>
                     <?php else: ?>

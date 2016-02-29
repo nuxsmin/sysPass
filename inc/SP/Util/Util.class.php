@@ -431,7 +431,7 @@ class Util
     {
         return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
     }
-
+    
     /**
      * Devuelve la última función llamada tras un error
      *

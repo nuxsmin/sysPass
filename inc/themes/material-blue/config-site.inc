@@ -21,7 +21,7 @@
             </div>
         </td>
         <td class="valField">
-            <select name="sitelang" id="sel-sitelang" size="1" class="sel-chosen-ns">
+            <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
                 <?php foreach ($langsAvailable as $langName => $langValue): ?>
                     <option
                         value='<?php echo $langValue; ?>' <?php echo ($currentLang == $langValue) ? "SELECTED" : ""; ?>><?php echo $langName; ?></option>
@@ -42,7 +42,7 @@
         </td>
         <td class="valField">
             <select name="sitetheme" id="sel-sitetheme" size="1"
-                    class="sel-chosen-ns" <?php echo $isDisabled; ?>>
+                    class="select-box sel-chosen-ns" <?php echo $isDisabled; ?>>
                 <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
                     <option
                         value='<?php echo $themeDir; ?>' <?php echo ($currentTheme == $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>

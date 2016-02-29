@@ -39,8 +39,8 @@ use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\CustomFields;
-use SP\Mgmt\User\UserPass;
+use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\Users\UserPass;
 use SP\Util\Checks;
 
 define('APP_ROOT', '..');

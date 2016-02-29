@@ -28,11 +28,12 @@ namespace SP\Account;
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
+use SP\DataModel\AccountData;
 use SP\Storage\DB;
-use SP\Mgmt\User\Groups;
+use SP\Mgmt\Groups\Groups;
 use SP\Html\Html;
 use SP\Core\Session;
-use SP\Mgmt\User\UserUtil;
+use SP\Mgmt\Users\UserUtil;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 
@@ -262,6 +263,122 @@ class AccountSearch
     }
 
     /**
+     * Obtiene el número de cuentas que un usuario puede ver.
+     *
+     * @return false|int con el número de registros
+     */
+    public function getAccountMax()
+    {
+        $Data = new QueryData();
+
+        if (!Session::getUserIsAdminApp() && !Session::getUserIsAdminAcc()) {
+            $query = 'SELECT COUNT(DISTINCT account_id) as numacc '
+                . 'FROM accounts '
+                . 'LEFT JOIN accGroups ON account_id = accgroup_accountId '
+                . 'WHERE account_userGroupId = :userGroupId '
+                . 'OR account_userId = :userId '
+                . 'OR accgroup_groupId = :groupId';
+
+            $Data->addParam(Session::getUserGroupId(), 'userGroupId');
+            $Data->addParam(Session::getUserGroupId(), 'groupId');
+            $Data->addParam(Session::getUserId(), 'userId');
+        } else {
+            $query = "SELECT COUNT(*) as numacc FROM accounts";
+        }
+
+        $Data->setQuery($query);
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            return false;
+        }
+
+        return $queryRes->numacc;
+    }
+
+    /**
+     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
+     * a mostrar.
+     *
+     * @return array
+     */
+    public function processSearchResults()
+    {
+        if (!$results = $this->getAccounts()) {
+            return [];
+        }
+
+        // Variables de configuración
+        $maxTextLength = (Checks::resultsCardsIsEnabled()) ? 40 : 60;
+
+        $favorites = AccountFavorites::getFavorites(Session::getUserId());
+
+        $Account = new Account(new AccountData());
+        $accountsData['count'] = self::$queryNumRows;
+
+        foreach ($results as $account) {
+            $Account->getAccountData()->setAccountId($account->account_id);
+            $Account->getAccountData()->setAccountUserId($account->account_userId);
+            $Account->getAccountData()->setAccountUsersId($Account->getUsersAccount());
+            $Account->getAccountData()->setAccountUserGroupId($account->account_userGroupId);
+            $Account->getAccountData()->setAccountUserGroupsId($Account->getGroupsAccount());
+            $Account->getAccountData()->setAccountOtherUserEdit($account->account_otherUserEdit);
+            $Account->getAccountData()->setAccountOtherGroupEdit($account->account_otherGroupEdit);
+
+            // Obtener los datos de la cuenta para aplicar las ACL
+            $accountAclData = $Account->getAccountDataForACL();
+
+            $AccountSearchData = new AccountsSearchData();
+            $AccountSearchData->setTextMaxLength($maxTextLength);
+            $AccountSearchData->setId($account->account_id);
+            $AccountSearchData->setName($account->account_name);
+            $AccountSearchData->setLogin($account->account_login);
+            $AccountSearchData->setCategoryName($account->category_name);
+            $AccountSearchData->setCustomerName($account->customer_name);
+            $AccountSearchData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? Config::getConfig()->getWikiSearchurl() . $account->customer_name : '');
+            $AccountSearchData->setColor($this->pickAccountColor($account->account_customerId));
+            $AccountSearchData->setUrl($account->account_url);
+            $AccountSearchData->setFavorite(in_array($account->account_id, $favorites));
+            $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
+            $AccountSearchData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
+            $AccountSearchData->setShowView(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
+            $AccountSearchData->setShowViewPass(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
+            $AccountSearchData->setShowEdit(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_EDIT, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_EDIT));
+            $AccountSearchData->setShowCopy(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_COPY, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_COPY));
+            $AccountSearchData->setShowDelete(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_DELETE, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_DELETE));
+
+            // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
+            if ($AccountSearchData->isShow()) {
+                $secondaryAccesses = sprintf('<em>(G) %s*</em><br>', $account->usergroup_name);
+
+                foreach (GroupAccounts::getGroupsInfoForAccount($account->account_id) as $group) {
+                    $secondaryAccesses .= sprintf('<em>(G) %s</em><br>', $group->getUsergroupName());
+                }
+
+                foreach (UserAccounts::getUsersInfoForAccount($account->account_id) as $user) {
+                    $secondaryAccesses .= sprintf('<em>(U) %s</em><br>', $user->getUserLogin());
+                }
+
+                $AccountSearchData->setAccesses($secondaryAccesses);
+
+                $accountNotes = '';
+
+                if ($account->account_notes) {
+                    $accountNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
+                    $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
+                }
+
+                $AccountSearchData->setNotes($accountNotes);
+            }
+
+            $accountsData[] = $AccountSearchData;
+        }
+
+        return $accountsData;
+    }
+
+    /**
      * Obtener las cuentas de una búsqueda.
      *
      * @return mixed Resultado de la consulta
@@ -270,10 +387,10 @@ class AccountSearch
     {
         $isAdmin = (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc());
 
-        $arrFilterCommon = array();
-        $arrFilterSelect = array();
-        $arrFilterUser = array();
-        $arrQueryWhere = array();
+        $arrFilterCommon = [];
+        $arrFilterSelect = [];
+        $arrFilterUser = [];
+        $arrQueryWhere = [];
         $queryLimit = '';
 
         $Data = new QueryData();
@@ -283,10 +400,7 @@ class AccountSearch
             $stringFilters = $this->analyzeQueryString();
 
             if ($stringFilters !== false) {
-                $i = 0;
-
                 foreach ($stringFilters as $column => $value) {
-                    $parameter = 'P_' . $column . $i;
                     $rel = '=';
 
                     if (preg_match('/name/i', $column)) {
@@ -294,40 +408,44 @@ class AccountSearch
                         $value = '%' . $value . '%';
                     }
 
-                    $arrFilterCommon[] = $column . ' ' . $rel . ' :' . $parameter;
+                    $arrFilterCommon[] = $column . ' ' . $rel . ' ?';
 
-                    $Data->addParam($value, $parameter);
-                    $i++;
+                    $Data->addParam($value);
                 }
             } else {
-                $arrFilterCommon[] = 'account_name LIKE :name';
-                $arrFilterCommon[] = 'account_login LIKE :login';
-                $arrFilterCommon[] = 'account_url LIKE :url';
-                $arrFilterCommon[] = 'account_notes LIKE :notes';
+                $txtSearch = '%' . $this->txtSearch . '%';
 
-                $Data->addParam('%' . $this->txtSearch . '%', 'name');
-                $Data->addParam('%' . $this->txtSearch . '%', 'login');
-                $Data->addParam('%' . $this->txtSearch . '%', 'url');
-                $Data->addParam('%' . $this->txtSearch . '%', 'notes');
+                $arrFilterCommon[] = 'account_name LIKE ?';
+                $Data->addParam($txtSearch);
+
+                $arrFilterCommon[] = 'account_login LIKE ?';
+                $Data->addParam($txtSearch);
+
+                $arrFilterCommon[] = 'account_url LIKE ?';
+                $Data->addParam($txtSearch);
+
+                $arrFilterCommon[] = 'account_notes LIKE ?';
+                $Data->addParam($txtSearch);
+
             }
         }
 
         if ($this->categoryId !== 0) {
-            $arrFilterSelect[] = 'category_id = :categoryId';
+            $arrFilterSelect[] = 'category_id = ?';
 
-            $Data->addParam($this->categoryId, 'categoryId');
+            $Data->addParam($this->categoryId);
         }
 
         if ($this->customerId !== 0) {
-            $arrFilterSelect[] = 'account_customerId = :customerId';
+            $arrFilterSelect[] = 'account_customerId = ?';
 
-            $Data->addParam($this->customerId, 'customerId');
+            $Data->addParam($this->customerId);
         }
 
         if ($this->searchFavorites === true) {
-            $arrFilterSelect[] = 'accFavorites.accfavorite_userId = :favUserId';
+            $arrFilterSelect[] = 'accFavorites.accfavorite_userId = ?';
 
-            $Data->addParam(Session::getUserId(), 'favUserId');
+            $Data->addParam(Session::getUserId());
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -339,30 +457,34 @@ class AccountSearch
         }
 
         if (!$isAdmin && !$this->globalSearch) {
-            $subQueryGroupsA = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduA UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgA)';
-            $subQueryGroupsB = '(SELECT user_groupId FROM usrData WHERE user_id = :userIduB UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = :userIdgB)';
+            $subQueryGroups = '(SELECT user_groupId FROM usrData WHERE user_id = ? UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = ?)';
 
-            $arrFilterUser[] = 'account_userGroupId IN ' . $subQueryGroupsA;
-            $arrFilterUser[] = 'accgroup_groupId IN ' . $subQueryGroupsB;
-            $arrFilterUser[] = 'account_userId = :userId';
-            $arrFilterUser[] = 'accuser_userId = :accuser_userId';
+            // Buscar el grupo principal de la cuenta en los grupos del usuario
+            $arrFilterUser[] = 'account_userGroupId IN ' . $subQueryGroups;
+            $Data->addParam(Session::getUserId());
+            $Data->addParam(Session::getUserId());
 
-            // Usuario/Grupo principal de la cuenta
-            $Data->addParam(Session::getUserId(), 'userId');
-            $Data->addParam(Session::getUserId(), 'accuser_userId');
-            $Data->addParam(Session::getUserId(), 'userIduA');
-            $Data->addParam(Session::getUserId(), 'userIduB');
-            $Data->addParam(Session::getUserId(), 'userIdgA');
-            $Data->addParam(Session::getUserId(), 'userIdgB');
+            // Buscar los grupos secundarios de la cuenta en los grupos del usuario
+            $arrFilterUser[] = 'accgroup_groupId IN ' . $subQueryGroups;
+            $Data->addParam(Session::getUserId());
+            $Data->addParam(Session::getUserId());
+
+            // Comprobar el usuario principal de la cuenta con el usuario actual
+            $arrFilterUser[] = 'account_userId = ?';
+            $Data->addParam(Session::getUserId());
+
+            // Comprobar los usuarios secundarios de la cuenta con el usuario actual
+            $arrFilterUser[] = 'accuser_userId = ?';
+            $Data->addParam(Session::getUserId());
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
         if ($this->limitCount > 0) {
-            $queryLimit = 'LIMIT :limitStart,:limitCount';
+            $queryLimit = 'LIMIT ?, ?';
 
-            $Data->addParam($this->limitStart, 'limitStart');
-            $Data->addParam($this->limitCount, 'limitCount');
+            $Data->addParam($this->limitStart);
+            $Data->addParam($this->limitCount);
         }
 
         if (count($arrQueryWhere) === 1) {
@@ -373,33 +495,33 @@ class AccountSearch
             $queryWhere = '';
         }
 
-        $query = 'SELECT DISTINCT ' .
-            'account_id,' .
-            'account_customerId,' .
-            'category_name,' .
-            'account_name,' .
-            'account_login,' .
-            'account_url,' .
-            'account_notes,' .
-            'account_userId,' .
-            'account_userGroupId,' .
-            'BIN(account_otherUserEdit) AS account_otherUserEdit,' .
-            'BIN(account_otherGroupEdit) AS account_otherGroupEdit,' .
-            'usergroup_name,' .
-            'customer_name,' .
-            'count(accfile_id) as num_files ' .
-            'FROM accounts ' .
-            'LEFT JOIN accFiles ON account_id = accfile_accountId ' .
-            'LEFT JOIN categories ON account_categoryId = category_id ' .
-            'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id ' .
-            'LEFT JOIN customers ON customer_id = account_customerId ' .
-            'LEFT JOIN accUsers ON accuser_accountId = account_id ' .
-            'LEFT JOIN accGroups ON accgroup_accountId = account_id ' .
-            'LEFT JOIN accFavorites ON accfavorite_accountId = account_id ' .
-            $queryWhere . ' ' .
-            'GROUP BY account_id ' .
-            $this->getOrderString() . ' ' .
-            $queryLimit;
+        $query = 'SELECT DISTINCT account_id,
+            account_customerId,
+            category_name,
+            account_name,
+            account_login,
+            account_url,
+            account_notes,
+            account_userId,
+            account_userGroupId,
+            BIN(account_otherUserEdit) AS account_otherUserEdit,
+            BIN(account_otherGroupEdit) AS account_otherGroupEdit,
+            usergroup_name,
+            customer_name,
+            count(accfile_id) as num_files
+            FROM accounts
+            LEFT JOIN accFiles ON account_id = accfile_accountId
+            LEFT JOIN categories ON account_categoryId = category_id
+            LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id
+            LEFT JOIN customers ON customer_id = account_customerId
+            LEFT JOIN accUsers ON accuser_accountId = account_id
+            LEFT JOIN accGroups ON accgroup_accountId = account_id
+            LEFT JOIN accFavorites ON accfavorite_accountId = account_id
+            LEFT JOIN accTags ON acctag_accountId = account_id
+            LEFT JOIN tags ON tag_id = acctag_tagId
+            ' . $queryWhere . '
+            GROUP BY account_id
+            ' . $this->getOrderString() . ' ' . $queryLimit;
 
         $Data->setQuery($query);
 
@@ -433,7 +555,7 @@ class AccountSearch
      */
     private function analyzeQueryString()
     {
-        preg_match('/:(user|group|file)\s(.*)/i', $this->txtSearch, $filters);
+        preg_match('/(user|group|file|tag):(.*)/i', $this->txtSearch, $filters);
 
         if (!is_array($filters) || count($filters) === 0) {
             return false;
@@ -441,21 +563,26 @@ class AccountSearch
 
         switch ($filters[1]) {
             case 'user':
-                return array(
+                return [
                     'account_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2])),
                     'accuser_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2]))
-                );
+                ];
                 break;
             case 'group':
-                return array(
+                return [
                     'account_userGroupId' => Groups::getGroupIdByName(Html::sanitize($filters[2])),
                     'accgroup_groupId' => Groups::getGroupIdByName(Html::sanitize($filters[2]))
-                );
+                ];
                 break;
             case 'file':
-                return array(
+                return [
                     'accfile_name' => Html::sanitize($filters[2])
-                );
+                ];
+                break;
+            case 'tag':
+                return [
+                    'tag_name' => Html::sanitize($filters[2])
+                ];
                 break;
             default:
                 return false;
@@ -530,129 +657,6 @@ class AccountSearch
     public function setSortKey($sortKey)
     {
         $this->sortKey = $sortKey;
-    }
-
-    /**
-     * Obtiene el número de cuentas que un usuario puede ver.
-     *
-     * @return false|int con el número de registros
-     */
-    public function getAccountMax()
-    {
-        $Data = new QueryData();
-
-        if (!Session::getUserIsAdminApp() && !Session::getUserIsAdminAcc()) {
-            $query = 'SELECT COUNT(DISTINCT account_id) as numacc '
-                . 'FROM accounts '
-                . 'LEFT JOIN accGroups ON account_id = accgroup_accountId '
-                . 'WHERE account_userGroupId = :userGroupId '
-                . 'OR account_userId = :userId '
-                . 'OR accgroup_groupId = :groupId';
-
-            $Data->addParam(Session::getUserGroupId(), 'userGroupId');
-            $Data->addParam(Session::getUserGroupId(), 'groupId');
-            $Data->addParam(Session::getUserId(), 'userId');
-        } else {
-            $query = "SELECT COUNT(*) as numacc FROM accounts";
-        }
-
-        $Data->setQuery($query);
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->numacc;
-    }
-
-    /**
-     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
-     * a mostrar.
-     *
-     * @param &$results array Con los resultados de la búsqueda
-     * @return array
-     */
-    public function processSearchResults(&$results)
-    {
-        if (!$results){
-            return array();
-        }
-
-        // Variables de configuración
-        $maxTextLength = (Checks::resultsCardsIsEnabled()) ? 40 : 60;
-
-        $favorites = AccountFavorites::getFavorites(Session::getUserId());
-
-        $Account = new Account(new AccountData());
-        $accountsData['count'] = AccountSearch::$queryNumRows;
-
-        foreach ($results as $account) {
-            $Account->getAccountData()->setAccountId($account->account_id);
-            $Account->getAccountData()->setAccountUserId($account->account_userId);
-            $Account->getAccountData()->setAccountUsersId($Account->getUsersAccount());
-            $Account->getAccountData()->setAccountUserGroupId($account->account_userGroupId);
-            $Account->getAccountData()->setAccountUserGroupsId($Account->getGroupsAccount());
-            $Account->getAccountData()->setAccountOtherUserEdit($account->account_otherUserEdit);
-            $Account->getAccountData()->setAccountOtherGroupEdit($account->account_otherGroupEdit);
-
-            // Obtener los datos de la cuenta para aplicar las ACL
-            $accountAclData = $Account->getAccountDataForACL();
-
-            $AccountSearchData = new AccountsSearchData();
-            $AccountSearchData->setTextMaxLength($maxTextLength);
-            $AccountSearchData->setId($account->account_id);
-            $AccountSearchData->setName($account->account_name);
-            $AccountSearchData->setLogin($account->account_login);
-            $AccountSearchData->setCategoryName($account->category_name);
-            $AccountSearchData->setCustomerName($account->customer_name);
-            $AccountSearchData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? Config::getConfig()->getWikiSearchurl() . $account->customer_name : '');
-            $AccountSearchData->setColor($this->pickAccountColor($account->account_customerId));
-            $AccountSearchData->setUrl($account->account_url);
-            $AccountSearchData->setFavorite(in_array($account->account_id, $favorites));
-            $AccountSearchData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
-            $AccountSearchData->setShowView(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
-            $AccountSearchData->setShowViewPass(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
-            $AccountSearchData->setShowEdit(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_EDIT, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_EDIT));
-            $AccountSearchData->setShowCopy(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_COPY, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_COPY));
-            $AccountSearchData->setShowDelete(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_DELETE, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_DELETE));
-
-            // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
-            if ($AccountSearchData->isShow()) {
-                $secondaryGroups = Groups::getGroupsNameForAccount($account->account_id);
-                $secondaryUsers = UserAccounts::getUsersNameForAccount($account->account_id);
-
-                $secondaryAccesses = sprintf('<em>(G) %s*</em><br>', $account->usergroup_name);
-
-                if ($secondaryGroups) {
-                    foreach ($secondaryGroups as $group) {
-                        $secondaryAccesses .= sprintf('<em>(G) %s</em><br>', $group);
-                    }
-                }
-
-                if ($secondaryUsers) {
-                    foreach ($secondaryUsers as $user) {
-                        $secondaryAccesses .= sprintf('<em>(U) %s</em><br>', $user);
-                    }
-                }
-
-                $AccountSearchData->setAccesses($secondaryAccesses);
-
-                $accountNotes = '';
-
-                if ($account->account_notes) {
-                    $accountNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
-                    $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
-                }
-
-                $AccountSearchData->setNotes($accountNotes);
-            }
-
-            $accountsData[] = $AccountSearchData;
-        }
-
-        return $accountsData;
     }
 
     /**

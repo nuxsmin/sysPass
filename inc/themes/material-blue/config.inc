@@ -34,30 +34,15 @@
 
 <script>
     $(function () {
-        // Mostrar un aviso tras añadir una etiqueta a la lista
-        var showTagWarning = function (obj) {
-            // Fix scrolling to bottom
-            var $tagsbox = obj.next();
-            $tagsbox.animate({scrollTop: $tagsbox.height()});
-
-            if (!$tagsbox.find('span').hasClass('icon')) {
-                $tagsbox.find('div:last').prev().append('<span class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>" title="' + sysPassUtil.Common.LANG[5] + '"><?php echo $icons->getIconWarning()->getIcon(); ?></span>');
-            }
-        };
-
-        $('#allowed_exts').tagsInput({
-            'width': '350px',
-            'defaultText': '<?php echo _('Añadir extensión'); ?>',
-            'defaultRemoveText': '<?php echo _('Eliminar extensión'); ?>',
-            'removeWithBackspace': false,
-            'tagsToUpper': true,
-            'maxChars': 4,
-            'onAddTag': function () {
-                showTagWarning($(this))
+        $('#allowed_exts').selectize({
+            create: function(input) {
+                return {
+                    value: input.toUpperCase(),
+                    text: input.toUpperCase()
+                }
             },
-            'onRemoveTag': function () {
-                showTagWarning($(this))
-            }
+            createFilter: new RegExp('^[a-z0-9]{1,4}$', 'i'),
+            plugins: ['remove_button']
         });
     })
 </script>
