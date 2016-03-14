@@ -29,10 +29,13 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
-use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Customers\CustomerSearch;
 use SP\Mgmt\CustomFields\CustomFieldDef;
-use SP\Mgmt\Files\Files;
+use SP\Mgmt\CustomFields\CustomFieldDefSearch;
+use SP\Mgmt\Files\File;
+use SP\Mgmt\Files\FileSearch;
 use SP\Mgmt\Tags\Tags;
 
 /**
@@ -87,7 +90,7 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getFilesGrid();
-        $Grid->getData()->setData(Files::getFilesMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -114,7 +117,7 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCustomFieldsGrid();
-        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -141,7 +144,7 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCustomersGrid();
-        $Grid->getData()->setData(Customer::getCustomersMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -168,7 +171,7 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCategoriesGrid();
-        $Grid->getData()->setData(Category::getCategoriesMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);

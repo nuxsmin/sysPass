@@ -32,6 +32,7 @@ use SP\Controller;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -246,11 +247,11 @@ class Init
     private static function loadExtensions()
     {
         $PhpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
-        $PhpSecLoader->setPrepend(true);
+        $PhpSecLoader->setPrepend(false);
         $PhpSecLoader->register();
 
         $PhpMailerLoader = new \SplClassLoader('phpmailer', EXTENSIONS_PATH);
-        $PhpMailerLoader->setPrepend(true);
+        $PhpMailerLoader->setPrepend(false);
         $PhpMailerLoader->register();
     }
 
@@ -621,7 +622,7 @@ class Init
             session_regenerate_id(true);
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario
-            Session::setUserProfile(ProfileUtil::getProfile(Session::getUserProfileId()));
+            Session::setUserProfile(Profile::getItem()->getById(Session::getUserProfileId())->getItemData());
             // Regenerar la clave maestra
             SessionUtil::saveSessionMPass($sessionMPass);
         }

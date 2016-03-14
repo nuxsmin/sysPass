@@ -27,14 +27,13 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Account\GroupAccounts;
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
-use SP\Mgmt\PublicLinks\PublicLinkUtil;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\GroupSearch;
+use SP\Mgmt\Profiles\ProfileSearch;
+use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Core\Template;
-use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Mgmt\Users\UserUtil;
 
 /**
@@ -92,7 +91,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getGroupsGrid();
-        $Grid->getData()->setData(GroupAccounts::getGroupsMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 
@@ -111,7 +110,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getProfilesGrid();
-        $Grid->getData()->setData(ProfileUtil::getProfilesMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 
@@ -149,7 +148,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getPublicLinksGrid();
-        $Grid->getData()->setData(PublicLinkUtil::getLinksMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->_limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->_limitCount);
 

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,55 +30,30 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\ActionsInterface;
 
 /**
- * Class CustomFieldsBase para la definición de campos personalizados
+ * Class CustomFieldTypes
  *
- * @package SP
+ * @package SP\Mgmt\CustomFields
  */
-abstract class CustomFieldsBase
+class CustomFieldTypes
 {
     /**
      * Tipos de Campos
      */
     const TYPE_TEXT = 1;
+    const TYPE_COLOR = 8;
+    const TYPE_URL = 7;
+    const TYPE_WIKI = 9;
     const TYPE_PASSWORD = 2;
     const TYPE_DATE = 3;
-    const TYPE_NUMBER = 4;
     const TYPE_EMAIL = 5;
+    const TYPE_NUMBER = 4;
     const TYPE_TELEPHONE = 6;
-    const TYPE_URL = 7;
-    const TYPE_COLOR = 8;
-    const TYPE_WIKI = 9;
-
-    /**
-     * @var string
-     */
-    protected $name = '';
-    /**
-     * @var int
-     */
-    protected $type = 0;
-    /**
-     * @var int
-     */
-    protected $module = 0;
-    /**
-     * @var int
-     */
-    protected $id = 0;
-    /**
-     * @var bool
-     */
-    protected $required = false;
-    /**
-     * @var string
-     */
-    private $help = '';
 
     /**
      * Devolver los tipos de campos soportados
      *
      * @param int  $typeId El tipo de campo
-     * @param bool $nice Devolver en formato "bonito"
+     * @param bool $nice   Devolver en formato "bonito"
      * @return array
      */
     public static function getFieldsTypes($typeId = null, $nice = false)
@@ -102,6 +77,12 @@ abstract class CustomFieldsBase
         return $types;
     }
 
+    /**
+     * Devuelve los módulos disponibles para los campos personalizados
+     *
+     * @param null $moduleId
+     * @return array|string
+     */
     public static function getFieldsModules($moduleId = null)
     {
         $modules = array(
@@ -118,69 +99,5 @@ abstract class CustomFieldsBase
         }
 
         return $modules;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    /**
-     * @param boolean $required
-     */
-    public function setRequired($required)
-    {
-        $this->required = $required;
-    }
-
-    /**
-     * @return int
-     */
-    public function getModule()
-    {
-        return $this->module;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHelp()
-    {
-        return $this->help;
-    }
-
-    /**
-     * @param string $help
-     */
-    public function setHelp($help)
-    {
-        $this->help = $help;
     }
 }

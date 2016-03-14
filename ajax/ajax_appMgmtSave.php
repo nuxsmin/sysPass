@@ -28,16 +28,24 @@ use SP\DataModel\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SPException;
+use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
+use SP\DataModel\CustomFieldData;
+use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\GroupData;
+use SP\DataModel\ProfileData;
+use SP\DataModel\PublicLinkData;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
 use SP\Http\Response;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomFieldDef;
-use SP\Mgmt\CustomFields\CustomFields;
-use SP\Mgmt\Files\Files;
+use SP\Mgmt\CustomFields\CustomField;
+use SP\Mgmt\CustomFields\CustomFieldsUtil;
+use SP\Mgmt\Files\File;
 use SP\Mgmt\PublicLinks\PublicLink;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
@@ -119,6 +127,10 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
                 break;
         }
 
+        $CustomFieldData = new CustomFieldData();
+        $CustomFieldData->setId($itemId);
+        $CustomFieldData->setModule(ActionsInterface::ACTION_USR_USERS);
+
         if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW) {
             if (!$User->getUserPass() || !$userPassR) {
                 Response::printJSON(_('La clave no puede estar en blanco'), 2);
@@ -128,10 +140,8 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
 
             if ($User->addUser()) {
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, $User->getUserId(), $value);
-                        $CustomFields->addCustomField();
-                    }
+                    $CustomFieldData->setId($User->getUserId());
+                    CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
                 }
 
                 Response::printJSON(_('Usuario creado'), 0, $doActionOnClose);
@@ -141,10 +151,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         } elseif ($actionId === ActionsInterface::ACTION_USR_USERS_EDIT) {
             if ($User->updateUser()) {
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, $User->getUserId(), $value);
-                        $CustomFields->updateCustomField();
-                    }
+                    CustomFieldsUtil::updateItemCustomFields($customFields, $CustomFieldData);
                 }
 
                 Response::printJSON(_('Usuario actualizado'), 0, $doActionOnClose);
@@ -176,7 +183,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
             Response::printJSON(_('No es posible eliminar, usuario en uso'));
         }
 
-        if ($User->deleteUser() && CustomFields::deleteCustomFieldForItem($User->getUserId(), ActionsInterface::ACTION_USR_USERS)) {
+        if ($User->deleteUser() && CustomField::getItem($CustomFieldData)->delete($User->getUserId())) {
             Response::printJSON(_('Usuario eliminado'), 0, $doActionOnClose);
         }
 
@@ -186,177 +193,148 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === ActionsInterface::ACTION_USR_GROUPS_EDIT
     || $actionId === ActionsInterface::ACTION_USR_GROUPS_DELETE
 ) {
-    // Variables POST del formulario
-    $frmGrpName = Request::analyze('name');
-    $frmGrpDesc = Request::analyze('description');
-    $frmGrpUsers = Request::analyze('users');
+    $GroupData = new GroupData();
+    $GroupData->setUsergroupId($itemId);
+    $GroupData->setUsergroupName(Request::analyze('name'));
+    $GroupData->setUsergroupDescription(Request::analyze('description'));
+    $GroupData->setUsers(Request::analyze('users', 0));
 
     if ($actionId === ActionsInterface::ACTION_USR_GROUPS_NEW
         || $actionId === ActionsInterface::ACTION_USR_GROUPS_EDIT
     ) {
-        if (!$frmGrpName) {
+        if (!$GroupData->getUsergroupName()) {
             Response::printJSON(_('Es necesario un nombre de grupo'), 2);
         }
 
-        Groups::$groupId = $itemId;
-        Groups::$groupName = $frmGrpName;
-        Groups::$groupDescription = $frmGrpDesc;
-
-        if (Groups::checkGroupExist()) {
-            Response::printJSON(_('Nombre de grupo duplicado'), 2);
-        }
+        $CustomFieldData = new CustomFieldData();
+        $CustomFieldData->setId($itemId);
+        $CustomFieldData->setModule(ActionsInterface::ACTION_USR_GROUPS);
 
         if ($actionId === ActionsInterface::ACTION_USR_GROUPS_NEW) {
-            if (Groups::addGroup($frmGrpUsers)) {
+            try {
+                Group::getItem($GroupData)->add();
+
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, Groups::$queryLastId, $value);
-                        $CustomFields->addCustomField();
-                    }
+                    $CustomFieldData->setId($itemId);  //FIXME
+                    CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
                 }
 
                 Response::printJSON(_('Grupo creado'), 0, $doActionOnClose);
-            } else {
-                Response::printJSON(_('Error al crear el grupo'));
+            } catch (SPException $e) {
+                Response::printJSON($e->getMessage());
             }
         } elseif ($actionId === ActionsInterface::ACTION_USR_GROUPS_EDIT) {
-            if (Groups::updateGroup($frmGrpUsers)) {
+            try {
+                Group::getItem($GroupData)->update();
+
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, $itemId, $value);
-                        $CustomFields->updateCustomField();
-                    }
+                    $CustomFieldData->setId($itemId);  //FIXME
+                    CustomFieldsUtil::updateItemCustomFields($customFields, $CustomFieldData);
                 }
 
                 Response::printJSON(_('Grupo actualizado'), 0, $doActionOnClose);
+            } catch (SPException $e) {
+                Response::printJSON($e->getMessage());
             }
-
-            Response::printJSON(_('Error al actualizar el grupo'));
         }
     } elseif ($actionId === ActionsInterface::ACTION_USR_GROUPS_DELETE) {
-        Groups::$groupId = $itemId;
+        try {
+            Group::getItem($GroupData)->delete($itemId);
+            CustomField::getItem($CustomFieldData)->delete($itemId);
 
-        $resGroupUse = Groups::checkGroupInUse();
-
-        if ($resGroupUse['users'] > 0 || $resGroupUse['accounts'] > 0) {
-            if ($resGroupUse['users'] > 0) {
-                $uses[] = _('Usuarios') . " (" . $resGroupUse['users'] . ")";
-            }
-
-            if ($resGroupUse['accounts'] > 0) {
-                $uses[] = _('Cuentas') . " (" . $resGroupUse['accounts'] . ")";
-            }
-
-            Response::printJSON(_('No es posible eliminar') . ';;' . _('Grupo en uso por:') . ';;' . implode(';;', $uses));
-        } else {
-            $groupName = Groups::getGroupNameById($itemId);
-
-            if (Groups::deleteGroup() && CustomFields::deleteCustomFieldForItem($itemId, ActionsInterface::ACTION_USR_GROUPS)) {
-                Response::printJSON(_('Grupo eliminado'), 0, $doActionOnClose);
-            }
-
-            Response::printJSON(_('Error al eliminar el grupo'));
+            Response::printJSON(_('Grupo eliminado'), 0, $doActionOnClose);
+        } catch (SPException $e) {
+            Response::printJSON($e->getMessage());
         }
     }
 } elseif ($actionId === ActionsInterface::ACTION_USR_PROFILES_NEW
     || $actionId === ActionsInterface::ACTION_USR_PROFILES_EDIT
     || $actionId === ActionsInterface::ACTION_USR_PROFILES_DELETE
 ) {
-    $Profile = new Profile();
-
-    // Variables POST del formulario
-    $name = Request::analyze('profile_name');
-
-    $Profile->setName($name);
-    $Profile->setId(Request::analyze('itemId', 0));
-    $Profile->setAccAdd(Request::analyze('profile_accadd', 0, false, 1));
-    $Profile->setAccView(Request::analyze('profile_accview', 0, false, 1));
-    $Profile->setAccViewPass(Request::analyze('profile_accviewpass', 0, false, 1));
-    $Profile->setAccViewHistory(Request::analyze('profile_accviewhistory', 0, false, 1));
-    $Profile->setAccEdit(Request::analyze('profile_accedit', 0, false, 1));
-    $Profile->setAccEditPass(Request::analyze('profile_acceditpass', 0, false, 1));
-    $Profile->setAccDelete(Request::analyze('profile_accdel', 0, false, 1));
-    $Profile->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
-    $Profile->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
-    $Profile->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
-    $Profile->setConfigEncryption(Request::analyze('profile_configmpw', 0, false, 1));
-    $Profile->setConfigBackup(Request::analyze('profile_configback', 0, false, 1));
-    $Profile->setConfigImport(Request::analyze('profile_configimport', 0, false, 1));
-    $Profile->setMgmCategories(Request::analyze('profile_categories', 0, false, 1));
-    $Profile->setMgmCustomers(Request::analyze('profile_customers', 0, false, 1));
-    $Profile->setMgmCustomFields(Request::analyze('profile_customfields', 0, false, 1));
-    $Profile->setMgmUsers(Request::analyze('profile_users', 0, false, 1));
-    $Profile->setMgmGroups(Request::analyze('profile_groups', 0, false, 1));
-    $Profile->setMgmProfiles(Request::analyze('profile_profiles', 0, false, 1));
-    $Profile->setMgmApiTokens(Request::analyze('profile_apitokens', 0, false, 1));
-    $Profile->setMgmPublicLinks(Request::analyze('profile_publinks', 0, false, 1));
-    $Profile->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
-
     if ($actionId === ActionsInterface::ACTION_USR_PROFILES_NEW
         || $actionId === ActionsInterface::ACTION_USR_PROFILES_EDIT
     ) {
-        if (!$Profile->getName()) {
+        $ProfileData = new ProfileData();
+        $ProfileData->setUserprofileName(Request::analyze('profile_name'));
+        $ProfileData->setUserprofileId(Request::analyze('itemId', 0));
+        $ProfileData->setAccAdd(Request::analyze('profile_accadd', 0, false, 1));
+        $ProfileData->setAccView(Request::analyze('profile_accview', 0, false, 1));
+        $ProfileData->setAccViewPass(Request::analyze('profile_accviewpass', 0, false, 1));
+        $ProfileData->setAccViewHistory(Request::analyze('profile_accviewhistory', 0, false, 1));
+        $ProfileData->setAccEdit(Request::analyze('profile_accedit', 0, false, 1));
+        $ProfileData->setAccEditPass(Request::analyze('profile_acceditpass', 0, false, 1));
+        $ProfileData->setAccDelete(Request::analyze('profile_accdel', 0, false, 1));
+        $ProfileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
+        $ProfileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
+        $ProfileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
+        $ProfileData->setConfigEncryption(Request::analyze('profile_configmpw', 0, false, 1));
+        $ProfileData->setConfigBackup(Request::analyze('profile_configback', 0, false, 1));
+        $ProfileData->setConfigImport(Request::analyze('profile_configimport', 0, false, 1));
+        $ProfileData->setMgmCategories(Request::analyze('profile_categories', 0, false, 1));
+        $ProfileData->setMgmCustomers(Request::analyze('profile_customers', 0, false, 1));
+        $ProfileData->setMgmCustomFields(Request::analyze('profile_customfields', 0, false, 1));
+        $ProfileData->setMgmUsers(Request::analyze('profile_users', 0, false, 1));
+        $ProfileData->setMgmGroups(Request::analyze('profile_groups', 0, false, 1));
+        $ProfileData->setMgmProfiles(Request::analyze('profile_profiles', 0, false, 1));
+        $ProfileData->setMgmApiTokens(Request::analyze('profile_apitokens', 0, false, 1));
+        $ProfileData->setMgmPublicLinks(Request::analyze('profile_publinks', 0, false, 1));
+        $ProfileData->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
+
+        if (!$ProfileData->getUserprofileName()) {
             Response::printJSON(_('Es necesario un nombre de perfil'), 2);
-        } elseif (Profile::checkProfileExist($Profile->getId(), $Profile->getName())) {
-            Response::printJSON(_('Nombre de perfil duplicado'), 2);
         }
 
-        if ($actionId === ActionsInterface::ACTION_USR_PROFILES_NEW) {
-            if ($Profile->profileAdd()) {
-                Response::printJSON(_('Perfil creado'), 0, $doActionOnClose);
+        try {
+            switch ($actionId) {
+                case ActionsInterface::ACTION_USR_PROFILES_NEW:
+                    Profile::getItem($ProfileData)->add();
+                    Response::printJSON(_('Perfil creado'), 0, $doActionOnClose);
+                    break;
+                case ActionsInterface::ACTION_USR_PROFILES_EDIT:
+                    Profile::getItem($ProfileData)->update();
+                    Response::printJSON(_('Perfil actualizado'), 0, $doActionOnClose);
             }
-
-            Response::printJSON(_('Error al crear el perfil'));
-        } elseif ($actionId === ActionsInterface::ACTION_USR_PROFILES_EDIT) {
-            if ($Profile->profileUpdate()) {
-                Response::printJSON(_('Perfil actualizado'), 0, $doActionOnClose);
-            }
-
-            Response::printJSON(_('Error al actualizar el perfil'));
+        } catch (SPException $e) {
+            Response::printJSON($e->getMessage(), 2);
         }
 
     } elseif ($actionId === ActionsInterface::ACTION_USR_PROFILES_DELETE) {
-        $resProfileUse = Profile::checkProfileInUse($Profile->getId());
-
-        if ($resProfileUse['users'] > 0) {
-            $uses[] = _('Usuarios') . " (" . $resProfileUse['users'] . ")";
-
-            Response::printJSON(_('No es posible eliminar') . ';;' . _('Perfil en uso por:') . ';;' . implode(';;', $uses));
-        } else {
-            if ($Profile->profileDelete()) {
-                Response::printJSON(_('Perfil eliminado'), 0, $doActionOnClose);
-            }
-
-            Response::printJSON(_('Error al eliminar el perfil'));
+        try {
+            Profile::getItem()->delete($itemId);
+            Response::printJSON(_('Perfil eliminado'), 0, $doActionOnClose);
+        } catch (SPException $e) {
+            Response::printJSON($e->getMessage());
         }
     }
 } elseif ($actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_NEW
     || $actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT
     || $actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE
 ) {
-    // Variables POST del formulario
-    $frmCustomerName = Request::analyze('name');
-    $frmCustomerDesc = Request::analyze('description');
+    $CustomerData = new CustomerData();
+    $CustomerData->setCustomerId($itemId);
+    $CustomerData->setCustomerName(Request::analyze('name'));
+    $CustomerData->setCustomerDescription(Request::analyze('description'));
+
+    $Customer = new Customer($CustomerData);
+
+    $CustomFieldData = new CustomFieldData();
+    $CustomFieldData->setId($itemId);
+    $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CUSTOMERS);
 
     if ($actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_NEW
         || $actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT
     ) {
-        if (!$frmCustomerName) {
+        if (!$CustomerData->getCustomerName()) {
             Response::printJSON(_('Es necesario un nombre de cliente'), 2);
         }
 
-        Customer::$customerName = $frmCustomerName;
-        Customer::$customerDescription = $frmCustomerDesc;
-
         if ($actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_NEW) {
             try {
-                Customer::addCustomer($itemId);
+                $Customer->add();
 
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, Customer::$customerLastId, $value);
-                        $CustomFields->addCustomField();
-                    }
+                    $CustomFieldData->setId($CustomerData->getCustomerId());
+                    CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
                 }
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage(), 2);
@@ -365,13 +343,10 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
             Response::printJSON(_('Cliente creado'), 0, $doActionOnClose);
         } else if ($actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT) {
             try {
-                Customer::updateCustomer($itemId);
+                $Customer->update();
 
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, $itemId, $value);
-                        $CustomFields->updateCustomField();
-                    }
+                    CustomFieldsUtil::updateItemCustomFields($customFields, $CustomFieldData);
                 }
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage(), 2);
@@ -381,8 +356,8 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         }
     } elseif ($actionId === ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE) {
         try {
-            Customer::deleteCustomer($itemId);
-            CustomFields::deleteCustomFieldForItem($itemId, ActionsInterface::ACTION_MGM_CUSTOMERS);
+            $Customer->delete($itemId);
+            CustomField::getItem($CustomFieldData)->delete($itemId);
         } catch (SPException $e) {
             Response::printJSON($e->getMessage());
         }
@@ -393,29 +368,31 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === ActionsInterface::ACTION_MGM_CATEGORIES_EDIT
     || $actionId === ActionsInterface::ACTION_MGM_CATEGORIES_DELETE
 ) {
-    // Variables POST del formulario
-    $frmCategoryName = Request::analyze('name');
-    $frmCategoryDesc = Request::analyze('description');
+    $CategoryData = new CategoryData();
+    $CategoryData->setCategoryId($itemId);
+    $CategoryData->setCategoryName(Request::analyze('name'));
+    $CategoryData->setCategoryDescription(Request::analyze('description'));
+
+    $Category = new Category($CategoryData);
+
+    $CustomFieldData = new CustomFieldData();
+    $CustomFieldData->setId($itemId);
+    $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CATEGORIES);
 
     if ($actionId === ActionsInterface::ACTION_MGM_CATEGORIES_NEW
         || $actionId === ActionsInterface::ACTION_MGM_CATEGORIES_EDIT
     ) {
-        if (!$frmCategoryName) {
+        if (!$CategoryData->getCategoryName()) {
             Response::printJSON(_('Es necesario un nombre de categoría'), 2);
         }
 
-        Category::$categoryName = $frmCategoryName;
-        Category::$categoryDescription = $frmCategoryDesc;
-
         if ($actionId === ActionsInterface::ACTION_MGM_CATEGORIES_NEW) {
             try {
-                Category::addCategory();
+                $Category->add();
 
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, Category::$categoryLastId, $value);
-                        $CustomFields->addCustomField();
-                    }
+                    $CustomFieldData->setId($CategoryData->getCategoryId());
+                    CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
                 }
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage(), 2);
@@ -424,13 +401,10 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
             Response::printJSON(_('Categoría creada'), 0, $doActionOnClose);
         } else if ($actionId === ActionsInterface::ACTION_MGM_CATEGORIES_EDIT) {
             try {
-                Category::updateCategory($itemId);
+                $Category->update();
 
                 if (is_array($customFields)) {
-                    foreach ($customFields as $id => $value) {
-                        $CustomFields = new CustomFields($id, $itemId, $value);
-                        $CustomFields->updateCustomField();
-                    }
+                    CustomFieldsUtil::updateItemCustomFields($customFields, $CustomFieldData);
                 }
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage(), 2);
@@ -441,8 +415,8 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
 
     } elseif ($actionId === ActionsInterface::ACTION_MGM_CATEGORIES_DELETE) {
         try {
-            Category::deleteCategory($itemId);
-            CustomFields::deleteCustomFieldForItem($itemId, ActionsInterface::ACTION_MGM_CATEGORIES);
+            $Category->delete($itemId);
+            CustomField::getItem($CustomFieldData)->delete($itemId);
         } catch (SPException $e) {
             Response::printJSON($e->getMessage());
         }
@@ -497,31 +471,30 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT
     || $actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE
 ) {
-    // Variables POST del formulario
-    $frmFieldName = Request::analyze('name');
-    $frmFieldType = Request::analyze('type', 0);
-    $frmFieldModule = Request::analyze('module', 0);
-    $frmFieldHelp = Request::analyze('help');
-    $frmFieldRequired = Request::analyze('required', false, false, true);
+    $CustomFieldDefData = new CustomFieldDefData();
+    $CustomFieldDefData->setId($itemId);
+    $CustomFieldDefData->setName(Request::analyze('name'));
+    $CustomFieldDefData->setType(Request::analyze('type', 0));
+    $CustomFieldDefData->setModule(Request::analyze('module', 0));
+    $CustomFieldDefData->setHelp(Request::analyze('help'));
+    $CustomFieldDefData->setRequired(Request::analyze('required', false, false, true));
+
+    $CustomFieldDef = new CustomFieldDef($CustomFieldDefData);
 
     if ($actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW
         || $actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT
     ) {
-        if (!$frmFieldName) {
+        if (!$CustomFieldDefData->getName()) {
             Response::printJSON(_('Nombre del campo no indicado'), 2);
-        } elseif ($frmFieldType === 0) {
+        } elseif ($CustomFieldDefData->getType() === 0) {
             Response::printJSON(_('Tipo del campo no indicado'), 2);
-        } elseif ($frmFieldModule === 0) {
+        } elseif ($CustomFieldDefData->getModule() === 0) {
             Response::printJSON(_('Módulo del campo no indicado'), 2);
         }
 
-        $CustomFieldDef = new CustomFieldDef($frmFieldName, $frmFieldType, $frmFieldModule);
-        $CustomFieldDef->setHelp($frmFieldHelp);
-        $CustomFieldDef->setRequired($frmFieldRequired);
-
         if ($actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW) {
             try {
-                $CustomFieldDef->addCustomField();
+                $CustomFieldDef->add();
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage(), 2);
             }
@@ -529,8 +502,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
             Response::printJSON(_('Campo creado'), 0, $doActionOnClose);
         } elseif ($actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT) {
             try {
-                $CustomFieldDef->setId($itemId);
-                $CustomFieldDef->updateCustomField();
+                $CustomFieldDef->update();
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage(), 2);
             }
@@ -540,7 +512,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
 
     } elseif ($actionId === ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE) {
         try {
-            CustomFieldDef::deleteCustomField($itemId);
+            $CustomFieldDef->delete($itemId);
         } catch (SPException $e) {
             Response::printJSON($e->getMessage(), 2);
         }
@@ -551,14 +523,17 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE
     || $actionId === ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH
 ) {
+    $PublicLinkData = new PublicLinkData();
+    $PublicLinkData->setItemId($itemId);
+    $PublicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
+
     if ($actionId === ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW) {
-        $frmFieldNotify = Request::analyze('notify', false, false, true);
         $doActionOnClose = "sysPassUtil.Common.doAction(" . ActionsInterface::ACTION_ACC_VIEW . ",'',$itemId);";
 
+        $PublicLinkData->setNotify(Request::analyze('notify', false, false, true));
+
         try {
-            $PublicLink = new PublicLink($itemId, PublicLink::TYPE_ACCOUNT);
-            $PublicLink->setNotify($frmFieldNotify);
-            $PublicLink->newLink();
+            PublicLink::getItem($PublicLinkData)->add();
         } catch (SPException $e) {
             Response::printJSON($e->getMessage());
         }
@@ -566,8 +541,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         Response::printJSON(_('Enlace creado'), 0, $doActionOnClose);
     } elseif ($actionId === ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE) {
         try {
-            $PublicLink = new PublicLink($itemId, PublicLink::TYPE_ACCOUNT);
-            $PublicLink->deleteLink();
+            PublicLink::getItem()->delete($itemId);
         } catch (SPException $e) {
             Response::printJSON($e->getMessage());
         }
@@ -575,8 +549,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         Response::printJSON(_('Enlace eliminado'), 0, $doActionOnClose);
     } elseif ($actionId === ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH) {
         try {
-            $PublicLink = PublicLink::getLinkById($itemId);
-            $PublicLink->refreshLink();
+            PublicLink::getItem($PublicLinkData)->update();
         } catch (SPException $e) {
             Response::printJSON($e->getMessage());
         }
@@ -621,7 +594,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     // Verificamos que el ID sea numérico
     if ($itemId === 0) {
         Response::printJSON(_('No es un ID de archivo válido'));
-    } elseif (Files::fileDelete($itemId)) {
+    } elseif (File::getItem()->delete($itemId)) {
         Response::printJSON(_('Archivo eliminado'), 0, $doActionOnClose);
     }
 
@@ -631,7 +604,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
 
     // Eliminar cuenta
     if ($Account->deleteAccount()
-        && CustomFields::deleteCustomFieldForItem($itemId, ActionsInterface::ACTION_ACC_NEW)
+        && CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC_NEW))->delete($itemId)
     ) {
         Response::printJSON(_('Cuenta eliminada'), 0, $doActionOnClose);
     }

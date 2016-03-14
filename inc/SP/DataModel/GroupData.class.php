@@ -25,6 +25,8 @@
 
 namespace SP\DataModel;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Class GroupData
  *
@@ -44,6 +46,10 @@ class GroupData
      * @var string
      */
     public $usergroup_description = '';
+    /**
+     * @var array
+     */
+    public $users = [];
 
     /**
      * @return int
@@ -51,6 +57,14 @@ class GroupData
     public function getUsergroupId()
     {
         return $this->usergroup_id;
+    }
+
+    /**
+     * @param int $usergroup_id
+     */
+    public function setUsergroupId($usergroup_id)
+    {
+        $this->usergroup_id = $usergroup_id;
     }
 
     /**
@@ -67,5 +81,37 @@ class GroupData
     public function getUsergroupDescription()
     {
         return $this->usergroup_description;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsers()
+    {
+        return (is_array($this->users)) ? $this->users : [];
+    }
+
+    /**
+     * @param array $users
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
+    }
+
+    /**
+     * @param string $usergroup_name
+     */
+    public function setUsergroupName($usergroup_name)
+    {
+        $this->usergroup_name = $usergroup_name;
+    }
+
+    /**
+     * @param string $usergroup_description
+     */
+    public function setUsergroupDescription($usergroup_description)
+    {
+        $this->usergroup_description = $usergroup_description;
     }
 }

@@ -83,7 +83,7 @@ class ImageUtil
      * @param $image string La imagen a redimensionar
      * @return bool|string
      */
-    public static function createThumbnail(&$image)
+    public static function createThumbnail($image)
     {
         if(!function_exists('imagepng')
             || !function_exists('imagecreatefromjpeg')

@@ -123,11 +123,11 @@ class Request
      * @param $sanitize  bool   limpiar una cadena de caracteres
      * @return mixed
      */
-    protected static function parse($value, $default, $sanitize)
+    protected static function parse(&$value, $default, $sanitize)
     {
         if (is_array($value)) {
             foreach ($value as &$data) {
-                self::parse($data, $default, $sanitize);
+                $data = self::parse($data, $default, $sanitize);
             }
 
             return $value;
@@ -142,6 +142,8 @@ class Request
         if (is_string($value)) {
             return ($sanitize === true) ? Html::sanitize($value) : (string)$value;
         }
+
+        return $value;
     }
 
     /**

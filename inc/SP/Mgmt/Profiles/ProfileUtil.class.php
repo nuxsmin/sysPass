@@ -26,10 +26,11 @@
 namespace SP\Mgmt\Profiles;
 
 use SP\Core\SPException;
+use SP\DataModel\ProfileData;
+use SP\Log\Email;
+use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -41,102 +42,131 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class ProfileUtil
 {
     /**
-     * Obtener los perfiles de una búsqueda
+     * Migrar los perfiles con formato anterior a v1.2
      *
-     * @param $limitCount
-     * @param int $limitStart
-     * @param string $search
-     * @return array|bool
+     * @return bool
      */
-    public static function getProfilesMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public static function migrateProfiles()
     {
-        $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles';
+        $Log = new Log(_('Migrar Perfiles'));
+
+        $query = /** @lang SQL */
+            'SELECT userprofile_id AS id,
+            userprofile_name AS name,
+            BIN(userProfile_pView) AS pView,
+            BIN(userProfile_pViewPass) AS pViewPass,
+            BIN(userProfile_pViewHistory) AS pViewHistory,
+            BIN(userProfile_pEdit) AS pEdit,
+            BIN(userProfile_pEditPass) AS pEditPass,
+            BIN(userProfile_pAdd) AS pAdd,
+            BIN(userProfile_pDelete) AS pDelete,
+            BIN(userProfile_pFiles) AS pFiles,
+            BIN(userProfile_pConfig) AS pConfig,
+            BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,
+            BIN(userProfile_pConfigBackup) AS pConfigBackup,
+            BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,
+            BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,
+            BIN(userProfile_pUsers) AS pUsers,
+            BIN(userProfile_pGroups) AS pGroups,
+            BIN(userProfile_pProfiles) AS pProfiles,
+            BIN(userProfile_pEventlog) AS pEventlog
+            FROM usrProfiles';
 
         $Data = new QueryData();
-
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
-            $query .= ' WHERE userprofile_name LIKE ?';
-
-            if (Checks::demoIsEnabled()) {
-                $query .= ' userprofile_name <> "Admin" AND userprofile_name <> "Demo"';
-            }
-
-            $Data->addParam($search);
-        } elseif (Checks::demoIsEnabled()) {
-            $query .= ' WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo"';
-        }
-
-        $query .= ' ORDER BY userprofile_name';
-        $query .= ' LIMIT ?, ?';
-
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
-
         $Data->setQuery($query);
 
         DB::setReturnArray();
-        DB::setFullRowCount();
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            return array();
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al obtener perfiles'));
+            return false;
         }
 
-        $queryRes['count'] = DB::$lastNumRows;
+        foreach ($queryRes as $oldProfile) {
+            $ProfileData = new ProfileData();
+            $ProfileData->setUserprofileId($oldProfile->id);
+            $ProfileData->setUserprofileName($oldProfile->name);
+            $ProfileData->setAccAdd($oldProfile->pAdd);
+            $ProfileData->setAccView($oldProfile->pView);
+            $ProfileData->setAccViewPass($oldProfile->pViewPass);
+            $ProfileData->setAccViewHistory($oldProfile->pViewHistory);
+            $ProfileData->setAccEdit($oldProfile->pEdit);
+            $ProfileData->setAccEditPass($oldProfile->pEditPass);
+            $ProfileData->setAccDelete($oldProfile->pDelete);
+            $ProfileData->setConfigGeneral($oldProfile->pConfig);
+            $ProfileData->setConfigEncryption($oldProfile->pConfigMasterPass);
+            $ProfileData->setConfigBackup($oldProfile->pConfigBackup);
+            $ProfileData->setMgmCategories($oldProfile->pAppMgmtCategories);
+            $ProfileData->setMgmCustomers($oldProfile->pAppMgmtCustomers);
+            $ProfileData->setMgmUsers($oldProfile->pUsers);
+            $ProfileData->setMgmGroups($oldProfile->pGroups);
+            $ProfileData->setMgmProfiles($oldProfile->pProfiles);
+            $ProfileData->setEvl($oldProfile->pEventlog);
+
+            try {
+                Profile::getItem($ProfileData)->add();
+            } catch (SPException $e) {
+                return false;
+            }
+        }
+
+        $query = /** @lang SQL */
+            'ALTER TABLE usrProfiles
+            DROP COLUMN userProfile_pAppMgmtCustomers,
+            DROP COLUMN userProfile_pAppMgmtCategories,
+            DROP COLUMN userProfile_pAppMgmtMenu,
+            DROP COLUMN userProfile_pUsersMenu,
+            DROP COLUMN userProfile_pConfigMenu,
+            DROP COLUMN userProfile_pFiles,
+            DROP COLUMN userProfile_pViewHistory,
+            DROP COLUMN userProfile_pEventlog,
+            DROP COLUMN userProfile_pEditPass,
+            DROP COLUMN userProfile_pViewPass,
+            DROP COLUMN userProfile_pDelete,
+            DROP COLUMN userProfile_pProfiles,
+            DROP COLUMN userProfile_pGroups,
+            DROP COLUMN userProfile_pUsers,
+            DROP COLUMN userProfile_pConfigBackup,
+            DROP COLUMN userProfile_pConfigMasterPass,
+            DROP COLUMN userProfile_pConfig,
+            DROP COLUMN userProfile_pAdd,
+            DROP COLUMN userProfile_pEdit,
+            DROP COLUMN userProfile_pView';
+
+        $Data->setQuery($query);
+
+        $queryRes = DB::getQuery($Data);
+
+        if ($queryRes) {
+            $Log->addDescription(_('Operación realizada correctamente'));
+        } else {
+            $Log->addDescription(_('Fallo al realizar la operación'));
+        }
+
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
 
         return $queryRes;
     }
 
     /**
-     * Obtener los datos de un perfil
+     * Obtener el nombre de los usuarios que usan un perfil.
      *
-     * @param $id int El id del perfil a obtener
-     * @return array|Profile
-     * @throws SPException
-     */
-    public static function getProfile($id)
-    {
-        $query = 'SELECT userprofile_profile FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        /**
-         * @var Profile $profile
-         */
-        $profile = unserialize($queryRes->userprofile_profile);
-
-        if (get_class($profile) === '__PHP_Incomplete_Class') {
-            return Util::castToClass('SP\Mgmt\Profiles\Profile', $profile);
-        }
-
-        return $profile;
-    }
-
-    /**
-     * Obtener los perfiles disponibles
-     *
+     * @param $id int El id del perfil
      * @return array|bool
      */
-    public static function getProfiles()
+    public static function getProfileInUsersName($id)
     {
-        if (Checks::demoIsEnabled()) {
-            $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo" ORDER BY userprofile_name';
-        } else {
-            $query = 'SELECT userprofile_id, userprofile_name FROM usrProfiles ORDER BY userprofile_name';
-        }
+        $query = /** @lang SQL */
+            'SELECT user_login FROM usrData WHERE user_profileId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($id);
 
         DB::setReturnArray();
 

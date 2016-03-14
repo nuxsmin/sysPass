@@ -30,7 +30,9 @@ use PDO;
 use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
-use SP\Mgmt\Groups\Groups;
+use SP\DataModel\GroupData;
+use SP\DataModel\ProfileData;
+use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
 use SP\Util\Util;
@@ -388,7 +390,7 @@ class Installer
      */
     private static function createDBStructure()
     {
-        $fileName = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR. 'dbstructure.sql';
+        $fileName = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'dbstructure.sql';
 
         if (!file_exists($fileName)) {
             throw new SPException(SPException::SP_CRITICAL
@@ -398,7 +400,7 @@ class Installer
 
         // Usar la base de datos de sysPass
         try {
-            self::$DB->query('USE `' . self::$dbName. '`');
+            self::$DB->query('USE `' . self::$dbName . '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al seleccionar la BBDD') . " '" . self::$dbName . "' (" . $e->getMessage() . ")"
@@ -436,13 +438,14 @@ class Installer
      */
     private static function createAdminAccount()
     {
-        // Datos del grupo
-        Groups::$groupName = "Admins";
-        Groups::$groupDescription = "Admins";
+        $GroupData = new GroupData();
+        $GroupData->setUsergroupName('Admins');
+        $GroupData->setUsergroupDescription('sysPass Admins');
 
-        if (!Groups::addGroup()) {
+        try {
+            Group::getItem($GroupData)->add();
+        } catch (SPException $e) {
             self::rollback();
-
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear el grupo "admin"')
                 , _('Informe al desarrollador'));
@@ -451,36 +454,38 @@ class Installer
         $User = new User();
 
         // Establecer el id de grupo del usuario al recién creado
-        $User->setUserGroupId(Groups::$queryLastId);
+        $User->setUserGroupId($GroupData->getUsergroupId());
 
-        $Profile = new Profile();
+        $ProfileData = new ProfileData();
 
-        $Profile->setName('Admin');
-        $Profile->setAccAdd(true);
-        $Profile->setAccView(true);
-        $Profile->setAccViewPass(true);
-        $Profile->setAccViewHistory(true);
-        $Profile->setAccEdit(true);
-        $Profile->setAccEditPass(true);
-        $Profile->setAccDelete(true);
-        $Profile->setAccFiles(true);
-        $Profile->setConfigGeneral(true);
-        $Profile->setConfigEncryption(true);
-        $Profile->setConfigBackup(true);
-        $Profile->setConfigImport(true);
-        $Profile->setMgmCategories(true);
-        $Profile->setMgmCustomers(true);
-        $Profile->setMgmUsers(true);
-        $Profile->setMgmGroups(true);
-        $Profile->setMgmProfiles(true);
-        $Profile->setMgmCustomFields(true);
-        $Profile->setMgmApiTokens(true);
-        $Profile->setMgmPublicLinks(true);
-        $Profile->setEvl(true);
 
-        if (!$Profile->profileAdd()) {
+        $ProfileData->setUserprofileName('Admin');
+        $ProfileData->setAccAdd(true);
+        $ProfileData->setAccView(true);
+        $ProfileData->setAccViewPass(true);
+        $ProfileData->setAccViewHistory(true);
+        $ProfileData->setAccEdit(true);
+        $ProfileData->setAccEditPass(true);
+        $ProfileData->setAccDelete(true);
+        $ProfileData->setAccFiles(true);
+        $ProfileData->setConfigGeneral(true);
+        $ProfileData->setConfigEncryption(true);
+        $ProfileData->setConfigBackup(true);
+        $ProfileData->setConfigImport(true);
+        $ProfileData->setMgmCategories(true);
+        $ProfileData->setMgmCustomers(true);
+        $ProfileData->setMgmUsers(true);
+        $ProfileData->setMgmGroups(true);
+        $ProfileData->setMgmProfiles(true);
+        $ProfileData->setMgmCustomFields(true);
+        $ProfileData->setMgmApiTokens(true);
+        $ProfileData->setMgmPublicLinks(true);
+        $ProfileData->setEvl(true);
+
+        try {
+            $Profile = Profile::getItem($ProfileData)->add();
+        } catch (SPException $e) {
             self::rollback();
-
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al crear el perfil "admin"')
                 , _('Informe al desarrollador'));
@@ -490,7 +495,7 @@ class Installer
         $User->setUserLogin(self::$username);
         $User->setUserPass(self::$password);
         $User->setUserName('Admin');
-        $User->setUserProfileId($Profile->getId());
+        $User->setUserProfileId($Profile->getItemData()->getUserprofileId());
         $User->setUserIsAdminApp(true);
         $User->setUserIsAdminAcc(false);
         $User->setUserIsDisabled(false);

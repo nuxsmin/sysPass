@@ -26,197 +26,190 @@
 
 namespace SP\Mgmt\Profiles;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+use SP\Core\SPException;
+use SP\DataModel\ProfileBaseData;
+use SP\DataModel\ProfileData;
+use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
+use SP\Util\Checks;
+use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los perfiles de usuarios.
  */
-class Profile extends ProfileBase
+class Profile extends ProfileBase implements ItemInterface
 {
     /**
-     * Migrar los perfiles con formato anterior a v1.2
-     *
-     * @return bool
+     * @return $this
+     * @throws SPException
      */
-    public static function migrateProfiles()
+    public function add()
     {
-        $Log = new Log(_('Migrar Perfiles'));
+        if ($this->checkDuplicatedOnAdd()){
+            throw new SPException(SPException::SP_WARNING, _('Nombre de perfil duplicado'));
+        }
 
-        $query = 'SELECT userprofile_id AS id,'
-            . 'userprofile_name AS name,'
-            . 'BIN(userProfile_pView) AS pView,'
-            . 'BIN(userProfile_pViewPass) AS pViewPass,'
-            . 'BIN(userProfile_pViewHistory) AS pViewHistory,'
-            . 'BIN(userProfile_pEdit) AS pEdit,'
-            . 'BIN(userProfile_pEditPass) AS pEditPass,'
-            . 'BIN(userProfile_pAdd) AS pAdd,'
-            . 'BIN(userProfile_pDelete) AS pDelete,'
-            . 'BIN(userProfile_pFiles) AS pFiles,'
-            . 'BIN(userProfile_pConfig) AS pConfig,'
-            . 'BIN(userProfile_pConfigMasterPass) AS pConfigMasterPass,'
-            . 'BIN(userProfile_pConfigBackup) AS pConfigBackup,'
-            . 'BIN(userProfile_pAppMgmtCategories) AS pAppMgmtCategories,'
-            . 'BIN(userProfile_pAppMgmtCustomers) AS pAppMgmtCustomers,'
-            . 'BIN(userProfile_pUsers) AS pUsers,'
-            . 'BIN(userProfile_pGroups) AS pGroups,'
-            . 'BIN(userProfile_pProfiles) AS pProfiles,'
-            . 'BIN(userProfile_pEventlog) AS pEventlog '
-            . 'FROM usrProfiles';
-
-        DB::setReturnArray();
+        $query = /** @lang SQL */
+            'INSERT INTO usrProfiles SET
+            userprofile_name = ?,
+            userprofile_profile = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam(serialize($this->itemData));
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al obtener perfiles'));
-            return false;
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear perfil'));
         }
 
-        foreach ($queryRes as $oldProfile) {
-            $profile = new Profile();
-            $profile->setId($oldProfile->id);
-            $profile->setName($oldProfile->name);
-            $profile->setAccAdd($oldProfile->pAdd);
-            $profile->setAccView($oldProfile->pView);
-            $profile->setAccViewPass($oldProfile->pViewPass);
-            $profile->setAccViewHistory($oldProfile->pViewHistory);
-            $profile->setAccEdit($oldProfile->pEdit);
-            $profile->setAccEditPass($oldProfile->pEditPass);
-            $profile->setAccDelete($oldProfile->pDelete);
-            $profile->setConfigGeneral($oldProfile->pConfig);
-            $profile->setConfigEncryption($oldProfile->pConfigMasterPass);
-            $profile->setConfigBackup($oldProfile->pConfigBackup);
-            $profile->setMgmCategories($oldProfile->pAppMgmtCategories);
-            $profile->setMgmCustomers($oldProfile->pAppMgmtCustomers);
-            $profile->setMgmUsers($oldProfile->pUsers);
-            $profile->setMgmGroups($oldProfile->pGroups);
-            $profile->setMgmProfiles($oldProfile->pProfiles);
-            $profile->setEvl($oldProfile->pEventlog);
+        $this->itemData->setUserprofileId(DB::getLastId());
 
-            if ($profile->profileUpdate() === false) {
-                return false;
-            }
-        }
-
-        $query = 'ALTER TABLE usrProfiles '
-            . 'DROP COLUMN userProfile_pAppMgmtCustomers,'
-            . 'DROP COLUMN userProfile_pAppMgmtCategories,'
-            . 'DROP COLUMN userProfile_pAppMgmtMenu,'
-            . 'DROP COLUMN userProfile_pUsersMenu,'
-            . 'DROP COLUMN userProfile_pConfigMenu,'
-            . 'DROP COLUMN userProfile_pFiles,'
-            . 'DROP COLUMN userProfile_pViewHistory,'
-            . 'DROP COLUMN userProfile_pEventlog,'
-            . 'DROP COLUMN userProfile_pEditPass,'
-            . 'DROP COLUMN userProfile_pViewPass,'
-            . 'DROP COLUMN userProfile_pDelete,'
-            . 'DROP COLUMN userProfile_pProfiles,'
-            . 'DROP COLUMN userProfile_pGroups,'
-            . 'DROP COLUMN userProfile_pUsers,'
-            . 'DROP COLUMN userProfile_pConfigBackup,'
-            . 'DROP COLUMN userProfile_pConfigMasterPass,'
-            . 'DROP COLUMN userProfile_pConfig,'
-            . 'DROP COLUMN userProfile_pAdd,'
-            . 'DROP COLUMN userProfile_pEdit,'
-            . 'DROP COLUMN userProfile_pView';
-
-        $Data->setQuery($query);
-
-        $queryRes = DB::getQuery($Data);
-
-        if ($queryRes) {
-            $Log->addDescription(_('Operación realizada correctamente'));
-        } else {
-            $Log->addDescription(_('Fallo al realizar la operación'));
-        }
-
+        $Log = new Log(_('Nuevo Perfil'));
+        $Log->addDetails(Html::strongText(_('Nombre')), $this->itemData->getUserprofileName());
         $Log->writeLog();
 
         Email::sendEmail($Log);
 
-        return $queryRes;
+        return $this;
     }
 
     /**
-     * Comprobar si un perfil existe
-     *
-     * @param $id   int El id de perfil
-     * @param $name string El nombre del perfil
-     * @return bool
+     * @param $id int
+     * @return $this
+     * @throws SPException
      */
-    public static function checkProfileExist($id, $name)
+    public function delete($id)
     {
-        $query = 'SELECT userprofile_name '
-            . 'FROM usrProfiles '
-            . 'WHERE UPPER(userprofile_name) = :name';
-
-        $Data = new QueryData();
-        $Data->addParam($name, 'name');
-
-        if ($id !== 0) {
-            $query .= ' AND userprofile_id != :id';
-
-            $Data->addParam($id, 'id');
+        if ($this->checkInUse($id)) {
+            throw new SPException(SPException::SP_WARNING, _('Perfil en uso'));
         }
 
-        $Data->setQuery($query);
+        $oldProfile = $this->getById($id)->getItemData();
 
-        return (DB::getQuery($Data) === true && DB::$lastNumRows >= 1);
-    }
-
-    /**
-     * Comprobar si un perfil está en uso.
-     *
-     * @param $id int El id del perfil
-     * @return bool|int Cadena con el número de usuarios, o bool si no está en uso
-     */
-    public static function checkProfileInUse($id)
-    {
-        $count['users'] = self::getProfileInUsersCount($id);
-        return $count;
-    }
-
-    /**
-     * Obtener el número de usuarios que usan un perfil.
-     *
-     * @param $id int El id del perfil
-     * @return false|int con el número total de cuentas
-     */
-    private static function getProfileInUsersCount($id)
-    {
-        $query = 'SELECT user_profileId FROM usrData WHERE user_profileId = :id';
+        $query = /** @lang SQL */
+            'DELETE FROM usrProfiles WHERE userprofile_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($id);
 
-        DB::getQuery($Data);
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar perfil'));
+        }
 
-        return DB::$lastNumRows;
+        $Log = new Log(_('Eliminar Perfil'));
+        $Log->addDetails(Html::strongText(_('Nombre')), $oldProfile->getUserprofileName());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
     }
 
     /**
-     * Obtener el nombre de los usuarios que usan un perfil.
-     *
-     * @param $id int El id del perfil
-     * @return false|int con el número total de cuentas
+     * @return $this
+     * @throws SPException
      */
-    public static function getProfileInUsersName($id)
+    public function update()
     {
-        $query = 'SELECT user_login FROM usrData WHERE user_profileId = :id';
+        if ($this->checkDuplicatedOnUpdate()){
+            throw new SPException(SPException::SP_WARNING, _('Nombre de perfil duplicado'));
+        }
+
+        $oldProfileName = $this->getById($this->itemData->getUserprofileId())->getItemData();
+
+        $query = /** @lang SQL */
+            'UPDATE usrProfiles SET
+          userprofile_name = ?,
+          userprofile_profile = ?
+          WHERE userprofile_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam(serialize($this->itemData));
+        $Data->addParam($this->itemData->getUserprofileId());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al modificar perfil'));
+        }
+
+        $Log = new Log(_('Modificar Perfil'));
+        $Log->addDetails(Html::strongText(_('Nombre')), $oldProfileName->getUserprofileName() . ' > ' . $this->itemData->getUserprofileName());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return $this
+     */
+    public function getById($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_id,
+            userprofile_name,
+            userprofile_profile
+            FROM usrProfiles
+            WHERE userprofile_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\ProfileBaseData');
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        /**
+         * @var ProfileBaseData $ProfileData
+         * @var ProfileData $Profile
+         */
+        $ProfileData = DB::getResults($Data);
+        $Profile = unserialize($ProfileData->getUserprofileProfile());
+
+        if (get_class($Profile) === '__PHP_Incomplete_Class') {
+            $Profile = Util::castToClass('SP\DataModel\ProfileData', $Profile);
+        }
+
+        $Profile->setUserprofileId($ProfileData->getUserprofileId());
+        $Profile->setUserprofileName($ProfileData->getUserprofileName());
+
+        $this->itemData = $Profile;
+
+        return $this;
+    }
+
+    /**
+     * @return ProfileData[]
+     */
+    public function getAll()
+    {
+        if (Checks::demoIsEnabled()) {
+            $query = /** @lang SQL */
+                'SELECT userprofile_id, userprofile_name
+                FROM usrProfiles
+                WHERE userprofile_name <> "Admin"
+                AND userprofile_name <> "Demo"
+                ORDER BY userprofile_name';
+        } else {
+            $query = /** @lang SQL */
+                'SELECT userprofile_id, userprofile_name
+                FROM usrProfiles
+                ORDER BY userprofile_name';
+        }
+
+        $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\ProfileData');
+        $Data->setQuery($query);
 
         DB::setReturnArray();
 
@@ -224,25 +217,60 @@ class Profile extends ProfileBase
     }
 
     /**
-     * Obtener el nombre de un perfil por a partir del Id.
-     *
-     * @param int $id con el Id del perfil
-     * @return false|string con el nombre del perfil
+     * @param $id int
+     * @return bool
      */
-    public static function getProfileNameById($id)
+    public function checkInUse($id)
     {
-        $query = 'SELECT userprofile_name FROM usrProfiles WHERE userprofile_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT user_profileId FROM usrData WHERE user_profileId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($id);
 
-        $queryRes = DB::getResults($Data);
+        DB::getQuery($Data);
 
-        if ($queryRes === false) {
-            return false;
-        }
+        return (DB::$lastNumRows > 0);
+    }
 
-        return $queryRes->userprofile_name;
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate()
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_name
+            FROM usrProfiles
+            WHERE UPPER(userprofile_name) = ?
+            AND userprofile_id <> ?';
+
+        $Data = new QueryData();
+        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam($this->itemData->getUserprofileId());
+        $Data->setQuery($query);
+
+        DB::getQuery($Data);
+
+        return (DB::$lastNumRows > 0);
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_name
+            FROM usrProfiles
+            WHERE UPPER(userprofile_name) = ?';
+
+        $Data = new QueryData();
+        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->setQuery($query);
+
+        DB::getQuery($Data);
+
+        return (DB::$lastNumRows > 0);
     }
 }

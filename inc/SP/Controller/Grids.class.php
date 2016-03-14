@@ -294,7 +294,7 @@ class Grids implements ActionsInterface
 
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
-        $GridData->addDataRowSource('module');
+        $GridData->addDataRowSource('moduleName');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('typeName');
 

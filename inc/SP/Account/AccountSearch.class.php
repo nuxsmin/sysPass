@@ -29,8 +29,10 @@ use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\DataModel\AccountData;
+use SP\Mgmt\Groups\GroupAccountsUtil;
+use SP\Mgmt\Groups\GroupUtil;
 use SP\Storage\DB;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\Group;
 use SP\Html\Html;
 use SP\Core\Session;
 use SP\Mgmt\Users\UserUtil;
@@ -352,7 +354,7 @@ class AccountSearch
             if ($AccountSearchData->isShow()) {
                 $secondaryAccesses = sprintf('<em>(G) %s*</em><br>', $account->usergroup_name);
 
-                foreach (GroupAccounts::getGroupsInfoForAccount($account->account_id) as $group) {
+                foreach (GroupAccountsUtil::getGroupsInfoForAccount($account->account_id) as $group) {
                     $secondaryAccesses .= sprintf('<em>(G) %s</em><br>', $group->getUsergroupName());
                 }
 
@@ -563,15 +565,17 @@ class AccountSearch
 
         switch ($filters[1]) {
             case 'user':
+                $UserData = UserUtil::getUserIdByLogin(Html::sanitize($filters[2]));
                 return [
-                    'account_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2])),
-                    'accuser_userId' => UserUtil::getUserIdByLogin(Html::sanitize($filters[2]))
+                    'account_userId' => $UserData,
+                    'accuser_userId' => $UserData
                 ];
                 break;
             case 'group':
+                $GroupData = GroupUtil::getGroupIdByName(Html::sanitize($filters[2]));
                 return [
-                    'account_userGroupId' => Groups::getGroupIdByName(Html::sanitize($filters[2])),
-                    'accgroup_groupId' => Groups::getGroupIdByName(Html::sanitize($filters[2]))
+                    'account_userGroupId' => $GroupData->getUsergroupId(),
+                    'accgroup_groupId' => $GroupData->getUsergroupId()
                 ];
                 break;
             case 'file':

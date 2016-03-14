@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Account;
 use SP\Config\ConfigData;
+use SP\DataModel\ProfileData;
 use SP\Mgmt;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\UserPreferences;
@@ -277,7 +278,7 @@ class Session
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
      *
-     * @return Profile
+     * @return ProfileData
      */
     public static function getUserProfile()
     {
@@ -287,11 +288,11 @@ class Session
     /**
      * Establece el objeto de perfil de usuario en la sesión.
      *
-     * @param \SP\Mgmt\Profiles\Profile $profile
+     * @param ProfileData $ProfileData
      */
-    public static function setUserProfile(Mgmt\Profiles\Profile $profile)
+    public static function setUserProfile(ProfileData $ProfileData)
     {
-        self::setSessionKey('usrprofile', $profile);
+        self::setSessionKey('usrprofile', $ProfileData);
     }
 
     /**

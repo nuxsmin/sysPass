@@ -27,6 +27,8 @@ namespace SP\Import;
 
 use SP\DataModel\AccountData;
 use SP\Core\Crypt;
+use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
@@ -129,8 +131,8 @@ abstract class CsvImportBase extends ImportBase
             list($accountName, $customerName, $categoryName, $url, $login, $password, $notes) = $fields;
 
             // Obtener los ids de cliente, categoría y la clave encriptada
-            $customerId = Customer::addCustomerReturnId($customerName);
-            $categoryId = Category::addCategoryReturnId($categoryName);
+            $customerId = Customer::getItem(new CustomerData(null, $customerName))->add()->getItemData()->getCustomerId();
+            $categoryId = Category::getItem(new CategoryData(null, $categoryName))->add();
             $pass = Crypt::encryptData($password);
 
             // Crear la nueva cuenta

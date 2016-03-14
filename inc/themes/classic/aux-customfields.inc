@@ -1,34 +1,40 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
 
-<?php foreach ($customFields as $index => $field): ?>
+use SP\Mgmt\CustomFields\CustomFieldTypes;
+
+/** @var $icons \Theme\Icons */
+/** @var \SP\DataModel\CustomFieldData $field */
+
+foreach ($customFields as $index => $field):
+?>
     <?php if ($index !== 'hash'): ?>
-        <tr>
-            <td class="descField">
-                <?php echo $field->text; ?>
-                <?php if ($field->help): ?>
-                    <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip"/>
-                    <div class="tooltip" for="help-<?php echo $field->name; ?>" style="display: none;">
-                        <p><?php echo $field->help; ?></p>
-                    </div>
-                <?php endif; ?>
-            </td>
-            <td class="valField">
-                <?php if (!$isView): ?>
-                    <input id="<?php echo $field->name; ?>"
-                           name="customfield[<?php echo $field->id; ?>]"
-                           type="<?php echo $field->typeName; ?>"
-                           class="<?php echo ($field->type === \SP\Mgmt\CustomFields\CustomFieldsBase::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
-                           maxlength="500"
-                           value="<?php echo \SP\Html\Html::sanitize($field->value); ?>"
-                        <?php echo ($field->required) ? 'required' : ''; ?>>
+    <tr>
+        <td class="descField">
+            <?php echo $field->getDefinition()->getName(); ?>
+            <?php if ($field->getDefinition()->getHelp()): ?>
+                <img src="<?php echo $icons->getIconHelp()->getIcon(); ?>" title="" class="inputImgMini help-tooltip"/>
+                <div class="tooltip" for="help-<?php echo $field->getDefinition()->getFormId(); ?>" style="display: none;">
+                    <p><?php echo $field->getDefinition()->getHelp(); ?></p>
+                </div>
+            <?php endif; ?>
+        </td>
+        <td class="valField">
+            <?php if (!$isView): ?>
+                <input id="<?php echo $field->getDefinition()->getName(); ?>"
+                       name="customfield[<?php echo $field->getDefinitionId(); ?>]"
+                       type="<?php echo $field->getTypeName(); ?>"
+                       class="<?php echo ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
+                       maxlength="500"
+                       value="<?php echo $field->getCleanValue(); ?>"
+                    <?php echo ($field->getDefinition()->isRequired()) ? 'required' : ''; ?>>
+            <?php else: ?>
+                <?php if ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_PASSWORD && !$showViewPass): ?>
+                    ****
                 <?php else: ?>
-                    <?php if ($field->type === \SP\Mgmt\CustomFields\CustomFields::TYPE_PASSWORD && !$showViewPass): ?>
-                        ****
-                    <?php else: ?>
-                        <?php echo $field->value; ?>
-                    <?php endif; ?>
+                    <?php echo $field->getValue(); ?>
                 <?php endif; ?>
-            </td>
-        </tr>
-    <?php endif; ?>
+            <?php endif; ?>
+        </td>
+    </tr>
+<?php endif; ?>
 <?php endforeach; ?>

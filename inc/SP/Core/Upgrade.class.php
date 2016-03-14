@@ -31,6 +31,7 @@ use SP\Config\ConfigData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Storage\DB;
 use SP\Mgmt\Users\UserMigrate;
 use SP\Storage\QueryData;
@@ -42,7 +43,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001);
+    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501);
     private static $cfgUpgrade = array(1124, 1316020501);
 
     /**
@@ -151,7 +152,11 @@ class Upgrade
                 $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
                 $queries[] = 'ALTER TABLE log ADD log_level VARCHAR(20) NOT NULL;';
                 $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(2000);';
-                $queries[] = 'CREATE TABLE `accFavorites` (`accfavorite_accountId` SMALLINT UNSIGNED NOT NULL,`accfavorite_userId` SMALLINT UNSIGNED NOT NULL,INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),CONSTRAINT `fk_accFavorites_accounts` FOREIGN KEY (`accfavorite_accountId`) REFERENCES `accounts` (`account_id`)  ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT `fk_accFavorites_users` FOREIGN KEY (`accfavorite_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION)ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+                $queries[] = 'CREATE TABLE `accFavorites` (`accfavorite_accountId` SMALLINT UNSIGNED NOT NULL,`accfavorite_userId` SMALLINT UNSIGNED NOT NULL,INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),CONSTRAINT `fk_accFavorites_accounts` FOREIGN KEY (`accfavorite_accountId`) REFERENCES `accounts` (`account_id`)  ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT `fk_accFavorites_users` FOREIGN KEY (`accfavorite_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION)ENGINE=InnoDB DEFAULT CHARSET=utf8';
+                break;
+            case 1316020501:
+                $queries[] = 'CREATE TABLE `tags` (`tag_id`   INT UNSIGNED NOT NULL AUTO_INCREMENT,`tag_name` VARCHAR(45)  NOT NULL,`tag_hash` BINARY(20) NOT NULL,PRIMARY KEY (`tag_id`),INDEX `IDX_name` (`tag_name` ASC),UNIQUE INDEX `tag_hash_UNIQUE` (`tag_hash` ASC)) ENGINE = InnoDB DEFAULT CHARSET = utf8';
+                $queries[] = 'CREATE TABLE `accTags` (`acctag_accountId` INT UNSIGNED NOT NULL,`acctag_tagId`     INT UNSIGNED NOT NULL, INDEX `IDX_id` (`acctag_accountId` ASC, `acctag_tagId` ASC)) ENGINE = InnoDB DEFAULT CHARSET = utf8';
                 break;
             default :
                 $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
@@ -193,7 +198,7 @@ class Upgrade
     {
         switch ($version) {
             case 12001:
-                return (Profile::migrateProfiles() && UserMigrate::migrateUsersGroup());
+                return (ProfileUtil::migrateProfiles() && UserMigrate::migrateUsersGroup());
                 break;
             case 12002:
                 return (UserMigrate::setMigrateUsers());
@@ -270,11 +275,16 @@ class Upgrade
             }
         }
 
-        $Config->setConfigVersion($version);
-        Config::saveConfig($Config, false);
+        try {
+            $Config->setConfigVersion($version);
+            Config::saveConfig($Config, false);
+            rename(CONFIG_FILE, CONFIG_FILE . '.old');
+        } catch (\Exception $e){
+            Log::writeNewLog(_('Actualizar Configuración'), _('Error al actualizar la configuración'), Log::ERROR);
+            return false;
+        }
 
         Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')', Log::NOTICE);
-
         return true;
     }
 

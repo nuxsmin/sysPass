@@ -328,7 +328,7 @@ class DB
      */
     public static function getQuery(QueryData $queryData, $getRawData = false)
     {
-        if (empty($queryData->getQuery())) {
+        if ($queryData->getQuery() === '') {
             return false;
         }
 

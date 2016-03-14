@@ -25,6 +25,8 @@
 
 namespace SP\DataModel;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use JsonSerializable;
 use SP\Util\Json;
 
@@ -327,7 +329,7 @@ class AccountData implements JsonSerializable
      */
     public function getAccountUserGroupsId()
     {
-        return $this->accountUserGroupsId;
+        return (is_array($this->accountUserGroupsId)) ? $this->accountUserGroupsId : [];
     }
 
     /**

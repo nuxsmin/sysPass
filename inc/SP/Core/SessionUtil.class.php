@@ -56,7 +56,7 @@ class SessionUtil
         Session::setUserIsAdminApp($User->isUserIsAdminApp());
         Session::setUserIsAdminAcc($User->isUserIsAdminAcc());
         Session::setUserIsLdap($User->isUserIsLdap());
-        Session::setUserProfile(ProfileUtil::getProfile($User->getUserProfileId()));
+        Session::setUserProfile(Profile::getItem()->getById($User->getUserProfileId())->getItemData());
     }
 
     /**

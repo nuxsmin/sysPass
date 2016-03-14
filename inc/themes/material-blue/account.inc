@@ -43,7 +43,7 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer">
-                        <option value=""></option>
+                        <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
                         <?php foreach ($customers as $id => $name): ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -67,7 +67,7 @@
             <td class="valField">
                 <?php if (!$isView): ?>
                     <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
-                        <option value=""></option>
+                        <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
                         <?php foreach ($categories as $id => $name): ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>

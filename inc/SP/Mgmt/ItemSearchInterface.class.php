@@ -23,34 +23,22 @@
  *
  */
 
-namespace SP\Mgmt\Groups;
+namespace SP\Mgmt;
 
-
-use SP\Storage\DB;
-use SP\Storage\QueryData;
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
- * Class GroupsUtil
+ * Interface ItemSearchInterface para la implementación de clases con búsqueda de elementos
  *
- * @package SP\Mgmt\Groups
+ * @package SP\Mgmt
  */
-class GroupsUtil
+interface ItemSearchInterface
 {
     /**
-     * Obtener el id y nombre de los grupos disponibles
-     *
-     * @return array
+     * @param        $limitCount
+     * @param int    $limitStart
+     * @param string $search
+     * @return mixed
      */
-    public static function getGroupsName()
-    {
-        $query = 'SELECT usergroup_id, usergroup_name FROM usrGroups ORDER BY usergroup_name';
-
-        $Data = new QueryData();
-        $Data->setMapClassName('\SP\DataModel\GroupData');
-        $Data->setQuery($query);
-
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
-    }
+    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '');
 }

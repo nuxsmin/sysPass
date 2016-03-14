@@ -25,17 +25,13 @@
 
 namespace SP\Mgmt\PublicLinks;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 use SP\Config\Config;
 use SP\Core\Crypt;
 use SP\Core\SessionUtil;
 use SP\Core\SPException;
-use SP\Html\Html;
-use SP\Log\Email;
-use SP\Log\Log;
-use SP\Storage\DB;
-use SP\Storage\QueryData;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+use SP\DataModel\PublicLinkData;
 
 /**
  * Class PublicLinks para la gestión de enlaces públicos
@@ -44,265 +40,58 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 abstract class PublicLinkBase
 {
-    /**
-     * @var int
-     */
-    protected $id = 0;
-    /**
-     * @var int
-     */
-    protected $itemId = 0;
-    /**
-     * @var int
-     */
-    protected $userId = 0;
-    /**
-     * @var string
-     */
-    protected $linkHash = '';
-    /**
-     * @var int
-     */
-    protected $typeId = 0;
-    /**
-     * @var bool
-     */
-    protected $notify = false;
-    /**
-     * @var int
-     */
-    protected $dateAdd = 0;
-    /**
-     * @var int
-     */
-    protected $dateExpire = 0;
-    /**
-     * @var string
-     */
-    protected $pass = '';
-    /**
-     * @var string
-     */
-    protected $passIV = '';
-    /**
-     * @var int
-     */
-    protected $countViews = 0;
-    /**
-     * @var int
-     */
-    protected $maxCountViews = 0;
-    /**
-     * @var array
-     */
-    private $useInfo = array();
+    /** @var PublicLinkData */
+    protected $itemData;
 
     /**
-     * @param int  $itemId El Id del elemento
-     * @param int  $typeId El Id del tipo de link
-     * @param bool $notify Si es necesario notificar
+     * Category constructor.
+     *
+     * @param PublicLinkData $itemData
      */
-    public function __construct($itemId, $typeId = 0, $notify = false)
+    public function __construct(PublicLinkData $itemData = null)
     {
-        $this->itemId = $itemId;
-        $this->typeId = $typeId;
-        $this->notify = $notify;
+        $this->itemData = (!is_null($itemData)) ? $itemData : new PublicLinkData();
     }
 
     /**
-     * @return int
+     * @param PublicLinkData $itemData
+     * @return static
      */
-    public function getMaxCountViews()
+    public static function getItem($itemData = null)
     {
-        return $this->maxCountViews;
+        return new static($itemData);
     }
 
     /**
-     * @return int
+     * @return PublicLinkData
      */
-    public function getId()
+    public function getItemData()
     {
-        return $this->id;
+        return $this->itemData;
     }
 
     /**
-     * @param int $id
+     * @param PublicLinkData $itemData
+     * @return $this
      */
-    public function setId($id)
+    public function setItemData($itemData)
     {
-        $this->id = $id;
+        $this->itemData = $itemData;
+        return $this;
     }
 
     /**
-     * @return int
-     */
-    public function getCountViews()
-    {
-        return $this->countViews;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDateExpire()
-    {
-        return $this->dateExpire;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPass()
-    {
-        return $this->pass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassIV()
-    {
-        return $this->passIV;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDateAdd()
-    {
-        return $this->dateAdd;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUseInfo()
-    {
-        return $this->useInfo;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isNotify()
-    {
-        return $this->notify;
-    }
-
-    /**
-     * @param boolean $notify
-     */
-    public function setNotify($notify)
-    {
-        $this->notify = $notify;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTypeId()
-    {
-        return $this->typeId;
-    }
-
-    /**
-     * @param int $typeId
-     */
-    public function setTypeId($typeId)
-    {
-        $this->typeId = $typeId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getItemId()
-    {
-        return $this->itemId;
-    }
-
-    /**
-     * @param int $itemId
-     */
-    public function setItemId($itemId)
-    {
-        $this->itemId = $itemId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLinkHash()
-    {
-        return $this->linkHash;
-    }
-
-    /**
-     * Eliminar un enlace
+     * Devolver la clave y el IV para el enlace
      *
      * @throws SPException
      */
-    public function deleteLink()
+    protected function createLinkPass()
     {
-        $query = 'DELETE FROM publicLinks WHERE  publicLink_id = :id LIMIT 1';
+        $pass = Crypt::generateAesKey($this->createLinkHash());
+        $cryptPass = Crypt::encryptData(SessionUtil::getSessionMPass(), $pass);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->id, 'id');
-
-        try {
-            DB::getQuery($Data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'), _('Revise el registro de eventos para más detalles'));
-        }
-
-        $Log = new Log(_('Eliminar Enlace'));
-        $Log->addDescription(_('Enlace eliminado'));
-        $Log->addDetails(Html::strongText(_('ID')), $this->itemId);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
-    }
-
-    /**
-     * Crear un enlace público
-     *
-     * @throws SPException
-     */
-    protected function createLink()
-    {
-        $query = 'INSERT INTO publicLinks ' .
-            'SET publicLink_hash = :hash, ' .
-            'publicLink_itemId = :itemid, ' .
-            'publicLink_linkData = :linkdata';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->createLinkHash(), 'hash');
-        $Data->addParam($this->itemId, 'itemid');
-        $Data->addParam(serialize($this), 'linkdata');
-
-        try {
-            DB::getQuery($Data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'), _('Revise el registro de eventos para más detalles'));
-        }
+        $this->itemData->setPass($cryptPass['data']);
+        $this->itemData->setPassIV($cryptPass['iv']);
     }
 
     /**
@@ -313,25 +102,13 @@ abstract class PublicLinkBase
      */
     protected function createLinkHash($refresh = false)
     {
-        if (empty($this->linkHash) || $refresh === true) {
-            $this->linkHash = hash('sha256', uniqid());
+        if ($this->itemData->getLinkHash() === ''
+            || $refresh === true
+        ) {
+            $this->itemData->setLinkHash(hash('sha256', uniqid()));
         }
-        return $this->linkHash;
-    }
 
-    /**
-     * Devolver la clave y el IV para el enlace
-     *
-     * @return array
-     * @throws SPException
-     */
-    protected function createLinkPass()
-    {
-        $pass = Crypt::generateAesKey($this->createLinkHash());
-        $cryptPass = Crypt::encryptData(SessionUtil::getSessionMPass(), $pass);
-
-        $this->pass = $cryptPass['data'];
-        $this->passIV = $cryptPass['iv'];
+        return $this->itemData->getLinkHash();
     }
 
     /**
@@ -341,28 +118,7 @@ abstract class PublicLinkBase
      */
     protected function calcDateExpire()
     {
-        $this->dateExpire = time() + (int)Config::getConfig()->getPublinksMaxTime();
-    }
-
-    /**
-     * Actualizar un enlace
-     *
-     * @return bool
-     */
-    protected function updateLink()
-    {
-        $query = 'UPDATE publicLinks ' .
-            'SET publicLink_linkData = :linkdata, ' .
-            'publicLink_hash = :hash ' .
-            'WHERE publicLink_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->linkHash, 'hash');
-        $Data->addParam($this->id, 'id');
-        $Data->addParam(serialize($this), 'linkdata');
-
-        return DB::getQuery($Data);
+        $this->itemData->setDateExpire(time() + (int)Config::getConfig()->getPublinksMaxTime());
     }
 
     /**
@@ -372,16 +128,6 @@ abstract class PublicLinkBase
      */
     protected function updateUseInfo($who)
     {
-        $info = array('who' => $who, 'time' => time());
-
-        $this->setUseInfo($info);
-    }
-
-    /**
-     * @param int $useInfo
-     */
-    private function setUseInfo($useInfo)
-    {
-        $this->useInfo[] = $useInfo;
+        $this->itemData->addUseInfo(['who' => $who, 'time' => time()]);
     }
 }

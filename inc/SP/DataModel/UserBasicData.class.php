@@ -25,6 +25,8 @@
 
 namespace SP\DataModel;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
 /**
  * Class UserBasicData
  *

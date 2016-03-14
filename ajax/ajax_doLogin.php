@@ -34,7 +34,7 @@ use SP\Core\Themes;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserLdap;
@@ -198,8 +198,8 @@ if ($User->getUserMPass()) {
     SessionUtil::loadUserSession($User);
 
     $Log->addDetails(_('Usuario'), $userLogin);
-    $Log->addDetails(_('Perfil'), Profile::getProfileNameById($User->getUserProfileId()));
-    $Log->addDetails(_('Grupo'), Groups::getGroupNameById($User->getUserGroupId()));
+    $Log->addDetails(_('Perfil'), Profile::getItem()->getById($User->getUserProfileId())->getItemData()->getUserprofileName());
+    $Log->addDetails(_('Grupo'), Group::getItem()->getById($User->getUserGroupId())->getItemData()->getUsergroupName());
     $Log->writeLog();
 } else {
     $Log->setLogLevel(Log::ERROR);

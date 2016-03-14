@@ -84,6 +84,28 @@ class Themes
     }
 
     /**
+     * Obtener la información del tema desde el archivo de información
+     *
+     * @return array
+     *
+     */
+    public static function getThemeInfo()
+    {
+        if (self::$themePath === '') {
+            self::setTheme();
+        }
+
+        $themeFile = Init::$SERVERROOT . self::$themePath . DIRECTORY_SEPARATOR . 'index.php';
+        $themeInfo = array();
+
+        if (file_exists($themeFile)) {
+            include $themeFile;
+        }
+
+        return $themeInfo;
+    }
+
+    /**
      * Establecer el tema visual a utilizar
      *
      * @param bool $force Forzar la detección del tema para los inicios de sesión
@@ -140,30 +162,16 @@ class Themes
     }
 
     /**
-     * Obtener la información del tema desde el archivo de información
-     *
-     * @return array
-     *
-     */
-    public static function getThemeInfo()
-    {
-        $themeFile = Init::$SERVERROOT . self::$themePath . DIRECTORY_SEPARATOR . 'index.php';
-        $themeInfo = array();
-
-        if (file_exists($themeFile)) {
-            include $themeFile;
-        }
-
-        return $themeInfo;
-    }
-
-    /**
      * Obtener los iconos del tema actual
      *
      * @return Icons
      */
     public static function getIcons()
     {
+        if (self::$themePath === '') {
+            self::setTheme();
+        }
+
         if (!self::$icons instanceof Icons) {
             $iconsClass = Init::$SERVERROOT . self::$themePath . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.class.php';
 

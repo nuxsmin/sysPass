@@ -27,12 +27,11 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Account\GroupAccounts;
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
-use SP\Mgmt\PublicLinks\PublicLinkUtil;
-use SP\Mgmt\Groups\Groups;
-use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Groups\GroupSearch;
+use SP\Mgmt\Profiles\ProfileSearch;
+use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Mgmt\Users\UserUtil;
 
 /**
@@ -87,7 +86,7 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getGroupsGrid();
-        $Grid->getData()->setData(GroupAccounts::getGroupsMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -114,7 +113,7 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getProfilesGrid();
-        $Grid->getData()->setData(ProfileUtil::getProfilesMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
@@ -168,7 +167,7 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getPublicLinksGrid();
-        $Grid->getData()->setData(PublicLinkUtil::getLinksMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);

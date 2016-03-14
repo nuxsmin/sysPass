@@ -27,7 +27,6 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Account\GroupAccounts;
 use SP\DataModel\AccountData;
 use SP\Core\Acl;
 use SP\Config\Config;
@@ -35,9 +34,12 @@ use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
 use SP\Core\Template;
-use SP\Mgmt\Groups\GroupsUtil;
+use SP\DataModel\CustomFieldData;
+use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Groups\GroupAccountsUtil;
+use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\PublicLinks\PublicLink;
-use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Tags\Tags;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
@@ -170,7 +172,7 @@ class Account extends Controller implements ActionsInterface
         if ($this->isGotData()) {
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
             $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->getId()));
-            $this->view->assign('accountOtherGroups', GroupAccounts::getGroupsInfoForAccount($this->getId()));
+            $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
             $this->view->assign('accountTags', $this->getAccount()->getAccountData()->getTags());
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
             $this->view->assign('changesHash', $this->getAccount()->getAccountModHash());
@@ -191,7 +193,7 @@ class Account extends Controller implements ActionsInterface
         $this->view->assign('customers', DBUtil::getValuesForSelect('customers', 'customer_id', 'customer_name'));
         $this->view->assign('otherUsers', UserUtil::getUsersLogin());
         $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
-        $this->view->assign('otherGroups', GroupsUtil::getGroupsName());
+        $this->view->assign('otherGroups', Group::getItem()->getAll());
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
         $this->view->assign('tagsJson', Json::getJson(Tags::getTags()));
     }
@@ -204,12 +206,7 @@ class Account extends Controller implements ActionsInterface
         // Establecer el id de la cuenta en activo y no del historial
         $id = (Session::getLastAcountId() !== 0) ? Session::getLastAcountId() : $this->getId();
 
-        // Se comprueba que hayan campos con valores para la cuenta actual
-        if ($this->isGotData() && CustomFields::checkCustomFieldExists(ActionsInterface::ACTION_ACC_NEW, $id)) {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData(ActionsInterface::ACTION_ACC_NEW, $id));
-        } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule(ActionsInterface::ACTION_ACC_NEW));
-        }
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC_NEW))->getById($id));
     }
 
     /**
@@ -537,8 +534,8 @@ class Account extends Controller implements ActionsInterface
         $this->account->getAccountPassData();
 
         // Desencriptar la clave de la cuenta
-        $pass = Crypt::generateAesKey($PublicLink->getLinkHash());
-        $masterPass = Crypt::getDecrypt($PublicLink->getPass(), $PublicLink->getPassIV(), $pass);
+        $pass = Crypt::generateAesKey($PublicLink->getItemData()->getLinkHash());
+        $masterPass = Crypt::getDecrypt($PublicLink->getItemData()->getPass(), $PublicLink->getItemData()->getPassIV(), $pass);
         $accountPass = Crypt::getDecrypt($this->account->getAccountData()->getAccountPass(), $this->account->getAccountData()->getAccountIV(), $masterPass);
 
         if (Config::getConfig()->isPublinksImageEnabled()) {

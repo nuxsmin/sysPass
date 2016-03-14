@@ -26,6 +26,7 @@
 namespace SP\Import;
 
 use SP\Config\Config;
+use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Core\Session;
@@ -278,10 +279,8 @@ class Migrate
         $num = 0;
 
         foreach ($customers as $customer) {
-            Customer::$customerName = $customer;
-
             try {
-                Customer::addCustomer();
+                Customer::getItem(new CustomerData(null, $customer))->add();
                 $num++;
             } catch (SPException $e) {
                 if ($e->getType() === SPException::SP_WARNING){
@@ -378,6 +377,7 @@ class Migrate
      */
     private static function insertAccounts($account)
     {
+        // FIXME
         if (!is_array(self::$customersByName)) {
             $customers = Customer::getCustomers(NULL, true);
             self::$customersByName = array_flip($customers);

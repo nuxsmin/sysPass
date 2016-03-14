@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\DataModel\CategoryData;
 use SP\Log\Email;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
@@ -202,7 +203,8 @@ class XmlExport
      */
     private function createCategories()
     {
-        $categories = Category::getCategories();
+        $Category = new Category();
+        $categories = $Category->getAll();
 
         if (count($categories) === 0) {
             return;
@@ -212,13 +214,14 @@ class XmlExport
             // Crear el nodo de categorías
             $nodeCategories = $this->xml->createElement('Categories');
 
-            foreach ($categories as $category) {
-                $categoryName = $this->xml->createElement('name', $this->escapeChars($category->category_name));
-                $categoryDescription = $this->xml->createElement('description', $this->escapeChars($category->category_description));
+            foreach ($categories as $CategoryData) {
+                /** @var $CategoryData CategoryData */
+                $categoryName = $this->xml->createElement('name', $this->escapeChars($CategoryData->getCategoryName()));
+                $categoryDescription = $this->xml->createElement('description', $this->escapeChars($CategoryData->getCategoryDescription()));
 
                 // Crear el nodo de categoría
                 $nodeCategory = $this->xml->createElement('Category');
-                $nodeCategory->setAttribute('id', $category->category_id);
+                $nodeCategory->setAttribute('id', $CategoryData->getCategoryId());
                 $nodeCategory->appendChild($categoryName);
                 $nodeCategory->appendChild($categoryDescription);
 
@@ -299,7 +302,7 @@ class XmlExport
      */
     private function createCustomers()
     {
-        $customers = Customer::getCustomers();
+        $customers = Customer::getItem()->getAll();
 
         if (count($customers) === 0) {
             return;
@@ -309,15 +312,17 @@ class XmlExport
             // Crear el nodo de clientes
             $nodeCustomers = $this->xml->createElement('Customers');
 
-            foreach ($customers as $customer) {
-                $customerName = $this->xml->createElement('name', $this->escapeChars($customer->customer_name));
-                $customerDescription = $this->xml->createElement('description', $this->escapeChars($customer->customer_description));
+            foreach ($customers as $CustomerData) {
+                $customerName = $this->xml->createElement('name', $this->escapeChars($CustomerData->getCustomerName()));
+                $customerDescription = $this->xml->createElement('description', $this->escapeChars($CustomerData->getCustomerDescription()));
+                $customerHash = $this->xml->createElement('hash', $this->escapeChars($CustomerData->getCustomerHash()));
 
                 // Crear el nodo de categoría
                 $nodeCustomer = $this->xml->createElement('Customer');
-                $nodeCustomer->setAttribute('id', $customer->customer_id);
+                $nodeCustomer->setAttribute('id', $CustomerData->getCustomerId());
                 $nodeCustomer->appendChild($customerName);
                 $nodeCustomer->appendChild($customerDescription);
+                $nodeCustomer->appendChild($customerHash);
 
                 // Añadir categoría al nodo de categorías
                 $nodeCustomers->appendChild($nodeCustomer);

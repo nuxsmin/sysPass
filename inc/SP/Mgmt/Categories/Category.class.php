@@ -26,375 +26,211 @@
 
 namespace SP\Mgmt\Categories;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+use SP\Core\SPException;
+use SP\DataModel\CategoryData;
 use SP\Log\Email;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
-use SP\Core\SPException;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre las categorías de sysPass.
  */
-class Category
+class Category extends CategoryBase implements ItemInterface
 {
-    public static $categoryName;
-    public static $categoryDescription;
-    public static $categoryLastId;
-
     /**
-     * Eliminar una categoría de la BBDD.
-     *
-     * @param int $id con el id de la categoría
+     * @return $this
      * @throws SPException
      */
-    public static function deleteCategory($id)
+    public function add()
     {
-        $resCategoryUse = self::checkCategoryInUse($id);
-
-        if ($resCategoryUse !== true) {
-            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar') . ';;' . _('Categoría en uso por:') . ';;' . $resCategoryUse);
+        if ($this->checkDuplicatedOnAdd()) {
+            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
         }
 
-        $curCategoryName = self::getCategoryNameById($id);
-
-        $query = 'DELETE FROM categories WHERE category_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'INSERT INTO categories SET category_name = ? ,category_description = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($this->itemData->getCategoryName());
+        $Data->addParam($this->itemData->getCategoryDescription());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
+        }
+
+        $this->itemData->setCategoryId(DB::$lastId);
+
+        $Log = new Log(_('Nueva Categoría'));
+        $Log->addDetails(Html::strongText(_('Categoría')), $this->itemData->getCategoryName());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        $query = /** @lang SQL */
+            'SELECT category_id FROM categories WHERE category_name = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getCategoryName());
+
+        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     * @throws SPException
+     */
+    public function delete($id)
+    {
+        if ($this->checkInUse($id)) {
+            // FIXME
+            throw new SPException(
+                SPException::SP_WARNING,
+                _('No es posible eliminar') . ';;' . _('Categoría en uso por')
+            );
+        }
+
+        $oldCategory = $this->getById($this->itemData->getCategoryId())->getItemData();
+
+        $query = /** @lang SQL */
+            'DELETE FROM categories WHERE category_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar la categoría'));
         }
 
         $Log = new Log(_('Eliminar Categoría'));
-        $Log->addDetails(Html::strongText(_('Categoría')), $curCategoryName . ' (' . $id . ')');
+        $Log->addDetails(Html::strongText(_('Categoría')), sprintf('%s (%d)', $oldCategory->getCategoryName(), $id));
         $Log->writeLog();
 
         Email::sendEmail($Log);
     }
 
     /**
-     * Comprobar si una categoría está en uso por cuentas.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return bool|string
+     * @param $id int
+     * @return mixed
      */
-    public static function checkCategoryInUse($id)
+    public function checkInUse($id)
     {
-        $numAccounts = self::getCategoriesInAccounts($id);
-
-        $out = '';
-
-        if ($numAccounts) {
-            $out[] = _('Cuentas') . " (" . $numAccounts . ")";
-        }
-
-        if (is_array($out)) {
-            return implode('<br>', $out);
-        }
-
-        return true;
-    }
-
-    /**
-     * Obtener el número de cuentas que usan una categoría.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return false|integer con el número total de cuentas
-     */
-    private static function getCategoriesInAccounts($id)
-    {
-        $query = 'SELECT account_id FROM accounts WHERE account_categoryId = :id';
+        $query = /** @lang SQL */
+            'SELECT account_id FROM accounts WHERE account_categoryId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($id);
 
         DB::getQuery($Data);
 
-        return DB::$lastNumRows;
+        return DB::$lastNumRows > 0;
     }
 
     /**
-     * Obtiene el nombre de la categoría a partir del Id.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return false|string con el nombre de la categoría
+     * @param $id int
+     * @return $this
      */
-    public static function getCategoryNameById($id)
+    public function getById($id)
     {
-        $query = 'SELECT category_name FROM categories WHERE category_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT category_id, category_name, category_description FROM categories WHERE category_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($id);
+        $Data->setMapClassName('SP\DataModel\CategoryData');
 
-        $queryRes = DB::getResults($Data);
+        $this->itemData = DB::getResults($Data);
 
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->category_name;
+        return $this;
     }
 
     /**
-     * Actualizar una categoría en la BBDD con el id.
-     *
-     * @param int $id con el Id de la categoría a consultar
+     * @return $this
      * @throws SPException
      */
-    public static function updateCategory($id)
+    public function update()
     {
-        if (self::checkDupCategory($id)) {
+        if ($this->checkDuplicatedOnUpdate()) {
             throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
         }
 
-        $curCategoryName = self::getCategoryNameById($id);
+        $oldCategory = $this->getById($this->itemData->getCategoryId())->getItemData();
 
-        $query = 'UPDATE categories '
-            . 'SET category_name = :name, category_description = :description '
-            . 'WHERE category_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'UPDATE categories
+              SET category_name = ?,
+              category_description = ?
+              WHERE category_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-        $Data->addParam(self::$categoryName, 'name');
-        $Data->addParam(self::$categoryDescription, 'description');
+        $Data->addParam($this->itemData->getCategoryName());
+        $Data->addParam($this->itemData->getCategoryDescription());
+        $Data->addParam($this->itemData->getCategoryId());
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar la categoría'));
         }
 
         $Log = new Log(_('Modificar Categoría'));
-        $Log->addDetails(Html::strongText(_('Categoría')), $curCategoryName . ' > ' . self::$categoryName);
+        $Log->addDetails(Html::strongText(_('Nombre')), sprintf('%s > %s', $oldCategory->getCategoryName(), $this->itemData->getCategoryName()));
+        $Log->addDetails(Html::strongText(_('Descripción')), sprintf('%s > %s', $oldCategory->getCategoryDescription(), $this->itemData->getCategoryDescription()));
         $Log->writeLog();
 
         Email::sendEmail($Log);
+
+        return $this;
     }
 
     /**
-     * Comprobar si existe una categoría duplicada.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return bool
+     * @return mixed
      */
-    public static function checkDupCategory($id = null)
+    public function checkDuplicatedOnUpdate()
     {
+        $query = /** @lang SQL */
+            'SELECT category_id FROM categories WHERE category_name = ? AND category_id <> ?';
 
         $Data = new QueryData();
-
-        if (is_null($id)) {
-            $query = 'SELECT category_id FROM categories WHERE category_name = :name';
-        } else {
-            $query = 'SELECT category_id FROM categories WHERE category_name = :name AND category_id <> :id';
-
-            $Data->addParam($id, 'id');
-        }
-
         $Data->setQuery($query);
-        $Data->addParam(self::$categoryName, 'name');
+        $Data->addParam($this->itemData->getCategoryName());
+        $Data->addParam($this->itemData->getCategoryId());
 
         return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
     }
 
     /**
-     * Obtener los datos de una categoría.
-     *
-     * @param int $id con el Id de la categoría a consultar
-     * @return array con el nombre de la columna como clave y los datos como valor
+     * @return CategoryData[]
      */
-    public static function getCategoryData($id = 0)
+    public function getAll()
     {
-        $category = array('category_id' => 0,
-            'category_name' => '',
-            'category_description' => '',
-            'action' => 1);
-
-        if ($id > 0) {
-            $categories = self::getCategories($id);
-
-            if ($categories) {
-                foreach ($categories[0] as $name => $value) {
-                    $category[$name] = $value;
-                }
-                $category['action'] = 2;
-            }
-        }
-
-        return $category;
-    }
-
-    /**
-     * Obtiene el listado de categorías.
-     *
-     * @param int  $id            con el Id de la categoría
-     * @param bool $retAssocArray para devolver un array asociativo
-     * @return array con el id de categoria como clave y en nombre como valor
-     */
-    public static function getCategories($id = null, $retAssocArray = false)
-    {
-        $query = 'SELECT category_id, category_name,category_description FROM categories ';
+        $query = /** @lang SQL */
+            'SELECT category_id, category_name, category_description FROM categories ORDER BY category_name';
 
         $Data = new QueryData();
-
-        if (!is_null($id)) {
-            $query .= "WHERE category_id = :id LIMIT 1";
-            $Data->addParam($id, 'id');
-        } else {
-            $query .= "ORDER BY category_name";
-        }
-
+        $Data->setMapClassName('SP\DataModel\CategoryData');
         $Data->setQuery($query);
 
         DB::setReturnArray();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
-
-        if ($retAssocArray) {
-            $resCategories = array();
-
-            foreach ($queryRes as $category) {
-                $resCategories[$category->category_id] = $category->category_name;
-            }
-
-            return $resCategories;
-        }
-
-        return $queryRes;
-    }
-
-    /**
-     * Crear una categoría y devolver el id si existe o de la nueva
-     *
-     * @param $name        string El nombre de la categoría
-     * @param $description string La descripción de la categoría
-     * @return int
-     */
-    public static function addCategoryReturnId($name, $description = '')
-    {
-        // Comprobamos si existe la categoría o la creamos
-        $newCategoryId = self::getCategoryIdByName($name);
-
-        if ($newCategoryId == 0) {
-            self::$categoryName = $name;
-            self::$categoryDescription = $description;
-
-            try {
-                self::addCategory();
-                $newCategoryId = self::$categoryLastId;
-            } catch (SPException $e) {
-            }
-        }
-
-        return (int)$newCategoryId;
-    }
-
-    /**
-     * Obtener el id de una categoría por el nombre.
-     *
-     * @param string $categoryName con el nombre de la categoría
-     * @return bool|int si la consulta es errónea devuelve bool. Si no hay registros o se obtiene el id, devuelve int
-     */
-    public static function getCategoryIdByName($categoryName)
-    {
-        $query = 'SELECT category_id FROM categories WHERE category_name = :name LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($categoryName, 'name');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false || DB::$lastNumRows === 0) {
-            return false;
-        }
-
-        return $queryRes->category_id;
-    }
-
-    /**
-     * Crear una nueva categoría en la BBDD.
-     *
-     * @throws SPException
-     */
-    public static function addCategory()
-    {
-        if (self::checkDupCategory()) {
-            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
-        }
-
-        $query = 'INSERT INTO categories SET category_name = :name ,category_description = :description';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam(self::$categoryName, 'name');
-        $Data->addParam(self::$categoryDescription, 'description');
-
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
-        }
-
-        self::$categoryLastId = DB::$lastId;
-
-        $Log = new Log(_('Nueva Categoría'));
-        $Log->addDetails(Html::strongText(_('Categoría')), self::$categoryName);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
-    }
-
-    /**
-     * Obtiene el listado de categorías mediante una búsqueda
-     *
-     * @param int    $limitCount
-     * @param int    $limitStart
-     * @param string $search La cadena de búsqueda
-     * @return array con el id de categoria como clave y en nombre como valor
-     */
-    public static function getCategoriesMgmtSearch($limitCount, $limitStart = 0, $search = "")
-    {
-        $query = 'SELECT category_id, category_name,category_description FROM categories';
-
-        $Data = new QueryData();
-
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
-
-            $query .= ' WHERE category_name LIKE ? '
-                . 'OR category_description LIKE ?';
-
-            $Data->addParam($search);
-            $Data->addParam($search);
-        }
-
-        $query .= ' ORDER BY category_name';
-        $query .= ' LIMIT ?,?';
-
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
-
-        $Data->setQuery($query);
-
-        DB::setReturnArray();
-        DB::setFullRowCount();
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
-
-        $queryRes['count'] = DB::$lastNumRows;
-
-        return $queryRes;
+        return DB::getResults($Data);
     }
 }

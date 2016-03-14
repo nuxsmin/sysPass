@@ -28,8 +28,9 @@ namespace SP\Core;
 
 use SP\DataModel\AccountData;
 use SP\Controller;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\Group;
 use SP\Log\Log;
+use SP\Mgmt\Groups\GroupUsers;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -126,7 +127,7 @@ class Acl implements ActionsInterface
     /**
      * Obtener el nombre de la acción indicada
      *
-     * @param int  $action El id de la acción
+     * @param int  $action    El id de la acción
      * @param bool $shortName Si se devuelve el nombre corto de la acción
      * @return string
      */
@@ -182,45 +183,56 @@ class Acl implements ActionsInterface
      */
     public static function checkAccountAccess($module, AccountData $accountData)
     {
-        $userGroupId = Session::getUserGroupId();
-        $userId = Session::getUserId();
-        $userIsAdminApp = Session::getUserIsAdminApp();
-        $userIsAdminAcc = Session::getUserIsAdminAcc();
-        $userToGroups = in_array($userGroupId, Groups::getUsersForGroup($accountData->getAccountUserGroupId()));
-
-        if ($userToGroups === false) {
-            foreach ($accountData->getAccountUserGroupsId() as $groupId) {
-                $users = Groups::getUsersForGroup($groupId);
-                if ($userGroupId === $groupId || in_array($userId, $users)) {
-                    $userToGroups = true;
-                }
-            }
+        if (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc()) {
+            return true;
         }
 
-        $okView = ($userId == $accountData->getAccountUserId()
-            || $userGroupId == $accountData->getAccountUserGroupId()
-            || in_array($userId, $accountData->getAccountUsersId())
-            || $userToGroups
-            || $userIsAdminApp
-            || $userIsAdminAcc);
-
-        $okEdit = ($userId == $accountData->getAccountUserId()
-            || $userGroupId == $accountData->getAccountUserGroupId()
-            || (in_array($userId, $accountData->getAccountUsersId()) && $accountData->getAccountOtherUserEdit())
-            || ($userToGroups && $accountData->getAccountOtherGroupEdit())
-            || $userIsAdminApp
-            || $userIsAdminAcc);
+        $userId = Session::getUserId();
+        $userGroupId = Session::getUserGroupId();
+        $userInGroups = self::getIsUserInGroups($accountData);
+        $userInUsers = in_array($userId, $accountData->getAccountUsersId());
 
         switch ($module) {
             case self::ACTION_ACC_VIEW:
             case self::ACTION_ACC_VIEW_PASS:
             case self::ACTION_ACC_VIEW_HISTORY:
             case self::ACTION_ACC_COPY:
-                return $okView;
+                return ($userId == $accountData->getAccountUserId()
+                    || $userGroupId == $accountData->getAccountUserGroupId()
+                    || $userInUsers
+                    || $userInGroups);
             case self::ACTION_ACC_EDIT:
             case self::ACTION_ACC_DELETE:
             case self::ACTION_ACC_EDIT_PASS:
-                return $okEdit;
+                return ($userId == $accountData->getAccountUserId()
+                    || $userGroupId == $accountData->getAccountUserGroupId()
+                    || ($userInUsers && $accountData->getAccountOtherUserEdit())
+                    || ($userInGroups && $accountData->getAccountOtherGroupEdit()));
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
+     * cuenta.
+     * @param AccountData $AccountData
+     * @return bool
+     */
+    private static function getIsUserInGroups(AccountData $AccountData)
+    {
+        // Comprobar si el usuario está vinculado desde un grupo
+        foreach (GroupUsers::getItem()->getById($AccountData->getAccountUserGroupId()) as $GroupUsersData) {
+            if ($GroupUsersData->getUsertogroupUserId() === Session::getUserId()) {
+                return true;
+            }
+        }
+
+        // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
+        foreach ($AccountData->getAccountUserGroupsId() as $groupId) {
+            if ($groupId === Session::getUserGroupId()) {
+                return true;
+            }
         }
 
         return false;

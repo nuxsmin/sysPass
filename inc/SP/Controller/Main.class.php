@@ -72,6 +72,7 @@ class Main extends Controller implements ActionsInterface
             $this->view->assign('isDemoMode', Checks::demoIsEnabled());
             $this->view->assign('loggedIn', Init::isLoggedIn());
             $this->view->assign('page', $page);
+            $this->view->assign('icons', Themes::getIcons());
             $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
             $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
             $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
@@ -448,19 +449,19 @@ class Main extends Controller implements ActionsInterface
     {
         $hash = Request::analyze('h');
 
-        $PublicLink = PublicLink::getLinkByHash($hash);
+        $PublicLink = PublicLink::getItem()->getByHash($hash);
 
         $this->view->assign('showLogo', true);
 
         if (!$PublicLink
-            || time() > $PublicLink->getDateExpire()
-            || $PublicLink->getCountViews() >= $PublicLink->getMaxCountViews()
+            || time() > $PublicLink->getItemData()->getDateExpire()
+            || $PublicLink->getItemData()->getCountViews() >= $PublicLink->getItemData()->getMaxCountViews()
         ){
             $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
         } else {
             $PublicLink->addLinkView();
 
-            $controller = new Account($this->view, null, $PublicLink->getItemId());
+            $controller = new Account($this->view, null, $PublicLink->getItemData()->getItemId());
             $controller->getAccountFromLink($PublicLink);
         }
 

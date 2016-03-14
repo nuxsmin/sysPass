@@ -32,10 +32,14 @@ use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\DataModel\CustomFieldData;
+use SP\DataModel\ProfileData;
 use SP\Log\Log;
-use SP\Mgmt\CustomFields\CustomFields;
-use SP\Mgmt\PublicLinks\PublicLinkUtil;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\CustomFields\CustomField;
+use SP\Mgmt\Groups\GroupUsers;
+use SP\Mgmt\PublicLinks\PublicLink;
+use SP\Mgmt\PublicLinks\PublicLinkSearch;
+use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Mgmt\Users\UserUtil;
@@ -93,12 +97,7 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     private function getCustomFieldsForItem()
     {
-        // Se comprueba que hayan campos con valores para el elemento actual
-        if ($this->view->itemId && CustomFields::checkCustomFieldExists($this->module, $this->view->itemId)) {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->module, $this->view->itemId));
-        } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->module));
-        }
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData($this->module))->getById($this->view->itemId));
     }
 
     /**
@@ -109,9 +108,9 @@ class AccItemMgmt extends Controller implements ActionsInterface
         $this->module = self::ACTION_USR_GROUPS;
         $this->view->addTemplate('groups');
 
-        $this->view->assign('group', Groups::getGroupData($this->view->itemId));
+        $this->view->assign('group', Group::getItem()->getById($this->view->itemId)->getItemData());
         $this->view->assign('users', DBUtil::getValuesForSelect('usrData', 'user_id', 'user_name'));
-        $this->view->assign('groupUsers', Groups::getUsersForGroup($this->view->itemId));
+        $this->view->assign('groupUsers', GroupUsers::getItem()->getById($this->view->itemId));
 
         $this->getCustomFieldsForItem();
     }
@@ -121,15 +120,16 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     public function getProfile()
     {
+        $this->module = self::ACTION_USR_PROFILES;
         $this->view->addTemplate('profiles');
 
-        $profile = ($this->view->itemId) ? ProfileUtil::getProfile($this->view->itemId) : new Profile();
+        $Profile = ($this->view->itemId) ? Profile::getItem()->getById($this->view->itemId)->getItemData() : new ProfileData();
 
-        $this->view->assign('profile', $profile);
+        $this->view->assign('profile', $Profile);
         $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
 
         if ($this->view->isView === true) {
-            $this->view->assign('usedBy', Profile::getProfileInUsersName($this->view->itemId));
+            $this->view->assign('usedBy', ProfileUtil::getProfileInUsersName($this->view->itemId));
         }
     }
 
@@ -138,6 +138,7 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     public function getUserPass()
     {
+        $this->module = self::ACTION_USR_USERS;
         $this->setAction(self::ACTION_USR_USERS_EDITPASS);
 
         // Comprobar si el usuario a modificar es distinto al de la sesión
@@ -158,6 +159,7 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     public function getToken()
     {
+        $this->module = self::ACTION_MGM_APITOKENS;
         $this->view->addTemplate('tokens');
 
         $token = ApiTokensUtil::getTokens($this->view->itemId, true);
@@ -178,9 +180,10 @@ class AccItemMgmt extends Controller implements ActionsInterface
      */
     public function getPublicLink()
     {
+        $this->module = self::ACTION_MGM_PUBLICLINKS;
         $this->view->addTemplate('publiclinks');
 
-        $this->view->assign('link', PublicLinkUtil::getLinks($this->view->itemId)[0]);
+        $this->view->assign('link', PublicLink::getItem()->getById($this->view->itemId)->getItemData());
     }
 
 

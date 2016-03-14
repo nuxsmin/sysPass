@@ -26,10 +26,14 @@
 namespace SP\Account;
 
 use SP\Core\Crypt;
+use SP\DataModel\GroupAccountsData;
+use SP\Mgmt\Files\FileUtil;
+use SP\Mgmt\Groups\GroupAccounts;
+use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Storage\DB;
 use SP\Log\Email;
-use SP\Mgmt\Files\Files;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Files\File;
+use SP\Mgmt\Groups\Group;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;
@@ -67,8 +71,14 @@ class Account extends AccountBase implements AccountInterface
 
         $Log->setAction(_('Actualizar Cuenta'));
 
-        if (!GroupAccounts::updateGroupsForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUserGroupsId())) {
-            $Log->addDescription(_('Error al actualizar los grupos secundarios'));
+        $GroupAccountsData = new GroupAccountsData();
+        $GroupAccountsData->setAccgroupAccountId($this->accountData->getAccountId());
+        $GroupAccountsData->setGroups($this->accountData->getAccountUserGroupsId());
+
+        try {
+            GroupAccounts::getItem($GroupAccountsData)->update();
+        } catch (SPException $e) {
+            $Log->addDescription($e->getMessage());
             $Log->writeLog();
             $Log->resetDescription();
         }
@@ -311,7 +321,7 @@ class Account extends AccountBase implements AccountInterface
 
         // Obtener los usuarios y grupos secundarios
         $this->accountData->setAccountUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
-        $this->accountData->setAccountUserGroupsId(GroupAccounts::getGroupsForAccount($this->accountData->getAccountId()));
+        $this->accountData->setAccountUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
 
         $this->accountData->setAccountName($queryRes->account_name);
         $this->accountData->setAccountCategoryId($queryRes->account_categoryId);
@@ -378,12 +388,18 @@ class Account extends AccountBase implements AccountInterface
 
         $Log = new Log(__FUNCTION__);
 
-        if (is_array($this->accountData->getAccountUserGroupsId())) {
-            if (!GroupAccounts::addGroupsForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUserGroupsId())) {
-                $Log->addDescription(_('Error al actualizar los grupos secundarios'));
-                $Log->writeLog();
-                $Log->resetDescription();
+        try {
+            if (is_array($this->accountData->getAccountUserGroupsId())) {
+                $GroupAccounsData = new GroupAccountsData();
+                $GroupAccounsData->setAccgroupAccountId($this->accountData->getAccountId());
+                $GroupAccounsData->setGroups($this->accountData->getAccountUserGroupsId());
+
+                GroupAccounts::getItem($GroupAccounsData)->add();
             }
+        } catch (SPException $e) {
+            $Log->addDescription($e->getMessage());
+            $Log->writeLog();
+            $Log->resetDescription();
         }
 
         if (is_array($this->accountData->getAccountUsersId())) {
@@ -440,19 +456,17 @@ class Account extends AccountBase implements AccountInterface
             return false;
         }
 
-        if (!GroupAccounts::deleteGroupsForAccount($this->accountData->getAccountId())) {
+        try {
+            GroupAccounts::getItem()->delete($this->accountData->getAccountId());
+            FileUtil::deleteAccountFiles($this->accountData->getAccountId());
+        } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al eliminar grupos asociados a la cuenta'));
+            $Log->addDescription($e->getMessage());
         }
 
         if (!UserAccounts::deleteUsersForAccount($this->accountData->getAccountId())) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al eliminar usuarios asociados a la cuenta'));
-        }
-
-        if (!Files::deleteAccountFiles($this->accountData->getAccountId())) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al eliminar archivos asociados a la cuenta'));
         }
 
         $Log->writeLog();

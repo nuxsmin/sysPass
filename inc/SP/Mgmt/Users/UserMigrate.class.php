@@ -25,9 +25,12 @@
 
 namespace SP\Mgmt\Users;
 
+use SP\Core\SPException;
+use SP\DataModel\GroupUsersData;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Groups\GroupUsers;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -122,7 +125,13 @@ class UserMigrate
         }
 
         foreach ($queryRes as $user) {
-            if (!Groups::addUsersForGroup($user->user_groupId, array($user->user_id))) {
+            $GroupUsers = new GroupUsersData();
+            $GroupUsers->setUsertogroupGroupId($user->user_groupId);
+            $GroupUsers->addUser($user->user_id);
+
+            try {
+                GroupUsers::getItem($GroupUsers)->update();
+            } catch(SPException $e) {
                 Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)', _('Error al migrar grupo del usuario'), $user->user_id), Log::ERROR);
             }
         }

@@ -452,4 +452,23 @@ class Util
             }
         }
     }
+
+    /**
+     * Comprobar si un valor existe en un array de objetos
+     *
+     * @param array $objectArray
+     * @param string $method
+     * @param mixed $value
+     * @return bool
+     */
+    public static function checkInObjectArray(array $objectArray, $method, $value)
+    {
+        foreach ($objectArray as $object){
+            if ($object->$method() === $value){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -134,7 +134,7 @@ class Config
                 $property->setValue(self::$Config, @$items[$property->getName()]);
                 $property->setAccessible(false);
             }
-        } catch (SPException $e) {}
+        } catch (\Exception $e) {}
 
         return self::$Config;
     }

@@ -25,230 +25,256 @@
 
 namespace SP\Mgmt\CustomFields;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+use SP\Core\SPException;
+use SP\DataModel\CustomFieldDefData;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Class CustomFieldDef para la gestión de definiciones de campos personalizados
  *
  * @package SP
  */
-class CustomFieldDef extends CustomFieldsBase
+class CustomFieldDef extends CustomFieldBase implements ItemInterface
 {
     /**
-     * @param string $name   El nombre del campo
-     * @param int    $type   El tipo de campo
-     * @param int    $module El id del módulo asociado
+     * Category constructor.
+     *
+     * @param CustomFieldDefData $itemData
      */
-    public function __construct($name, $type, $module)
+    public function __construct(CustomFieldDefData $itemData = null)
     {
-        if (!$name || !$type || !$module) {
-            throw new \InvalidArgumentException(_('Parámetros incorrectos'));
+        $this->itemData = (!is_null($itemData)) ? $itemData : new CustomFieldDefData();
+    }
+
+    /**
+     * @return mixed
+     * @throws SPException
+     */
+    public function add()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO customFieldsDef SET customfielddef_module = ?, customfielddef_field = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getModule());
+        $Data->addParam(serialize($this->itemData));
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el campo personalizado'));
         }
 
-        $this->name = $name;
-        $this->type = $type;
-        $this->module = $module;
+        return $this;
     }
 
     /**
-     * Eliminar una definición de campo personalizado.
+     * @param $id int
+     * @return mixed
+     * @throws SPException
+     */
+    public function delete($id)
+    {
+        $query = /** @lang SQL */
+            'DELETE FROM customFieldsDef WHERE customfielddef_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        if (DB::getQuery($Data) === false
+            || $this->deleteItemsDataForDefinition($id) === false
+        ) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el campo personalizado'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Eliminar los datos de los elementos de una definición
      *
-     * @param $id int El id del campo personalizado
+     * @param $id
      * @return bool
      */
-    public static function deleteCustomField($id)
+    protected function deleteItemsDataForDefinition($id)
     {
-        $query = 'DELETE FROM customFieldsDef WHERE customfielddef_id= :id LIMIT 1';
-
+        $query = /** @lang SQL */
+            'DELETE FROM customFieldsData WHERE customfielddata_defId = ?';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
+        $Data->addParam($id);
 
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes && CustomFields::deleteCustomFieldForDefinition($id);
+        return DB::getQuery($Data);
     }
 
     /**
-     * Devolver los datos de definiciones de campos personalizados
-     *
-     * @param int    $limitCount
-     * @param int    $limitStart
-     * @param string $search La cadena de búsqueda
-     * @return array|bool
+     * @return mixed
+     * @throws SPException
      */
-    public static function getCustomFieldsMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function update()
     {
-        $query = 'SELECT customfielddef_id, customfielddef_module, customfielddef_field '
-            . 'FROM customFieldsDef '
-            . 'ORDER BY customfielddef_module '
-            . 'LIMIT ?, ?';
+        $curField = $this->getById($this->itemData->getId());
+
+        $query = /** @lang SQL */
+            'UPDATE customFieldsDef SET
+            customfielddef_module = ?,
+            customfielddef_field = ?
+            WHERE customfielddef_id= ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($this->itemData->getModule());
+        $Data->addParam(serialize($this->itemData));
+        $Data->addParam($this->itemData->getId());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el campo personalizado'));
+        }
+
+        if ($curField->getModule() !== $this->itemData->getModule()) {
+            $this->updateItemsModulesForDefinition();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return $this
+     * @throws SPException
+     */
+    public function getById($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT customfielddef_id,
+              customfielddef_module,
+              customfielddef_field
+              FROM customFieldsDef
+              WHERE customfielddef_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        $CustomFieldDef = DB::getResults($Data);
+
+        if ($CustomFieldDef === false) {
+            throw new SPException(SPException::SP_WARNING, _('Campo personalizado no encontrado'));
+        }
+
+        /**
+         * @var CustomFieldDefData $CustomFieldDef
+         * @var CustomFieldDefData $fieldDef
+         */
+
+        $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
+
+        if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
+            $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
+        }
+
+        $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
+
+        $this->itemData = $fieldDef;
+
+        return $this;
+    }
+
+    /**
+     * Actualizar el módulo de los elementos con campos personalizados
+     *
+     * @return bool
+     */
+    protected function updateItemsModulesForDefinition()
+    {
+        $query = /** @lang SQL */
+            'UPDATE customFieldsData SET
+            customfielddata_moduleId = ?
+            WHERE customfielddata_defId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getModule());
+        $Data->addParam($this->itemData->getId());
+
+        return DB::getQuery($Data);
+    }
+
+    /**
+     * @return CustomFieldDefData[]|array
+     * @throws SPException
+     */
+    public function getAll()
+    {
+        $query = /** @lang SQL */
+            'SELECT customfielddef_id,
+              customfielddef_module,
+              customfielddef_field
+              FROM customFieldsDef
+              ORDER BY customfielddef_module';
+
+        $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setQuery($query);
 
         DB::setReturnArray();
-        DB::setFullRowCount();
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            return array();
+            throw new SPException(SPException::SP_WARNING, _('No se encontraron campos personalizados'));
         }
 
-        $customFields = array();
+        $fields = [];
 
-        foreach ($queryRes as $customField) {
+        foreach ($queryRes as $CustomFieldDef) {
             /**
-             * @var CustomFieldDef
+             * @var CustomFieldDefData $CustomFieldDef
+             * @var CustomFieldDefData $fieldDef
              */
-            $field = unserialize($customField->customfielddef_field);
 
-            if (get_class($field) === '__PHP_Incomplete_Class') {
-                $field = Util::castToClass('SP\Mgmt\CustomFields\CustomFieldDef', $field);
+            $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
+
+            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
+                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
             }
 
-            if (empty($search)
-                || stripos($field->getName(), $search) !== false
-                || stripos(self::getFieldsTypes($field->getType(), true), $search) !== false
-                || stripos(self::getFieldsModules($customField->customfielddef_module), $search) !== false
-            ) {
-                $attribs = new \stdClass();
-                $attribs->id = $customField->customfielddef_id;
-                $attribs->module = self::getFieldsModules($customField->customfielddef_module);
-                $attribs->name = $field->getName();
-                $attribs->typeName = self::getFieldsTypes($field->getType(), true);
-                $attribs->type = $field->getType();
+            $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
-                $customFields[] = $attribs;
-            }
+            $fields[] = $fieldDef;
         }
 
-        $customFields['count'] = DB::$lastNumRows;
-
-        return $customFields;
+        return $fields;
     }
 
     /**
-     * Añadir nuevo campo personalizado
-     *
+     * @param $id int
+     * @return mixed
+     */
+    public function checkInUse($id)
+    {
+        // TODO: Implement checkInUse() method.
+    }
+
+    /**
      * @return bool
      */
-    public function addCustomField()
+    public function checkDuplicatedOnUpdate()
     {
-        $query = 'INSERT INTO customFieldsDef SET customfielddef_module = :module, customfielddef_field = :field';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->module, 'module');
-        $Data->addParam(serialize($this), 'field');
-
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes;
+        // TODO: Implement checkDuplicatedOnUpdate() method.
     }
 
     /**
-     * Actualizar campo personalizado
-     *
      * @return bool
      */
-    public function updateCustomField()
+    public function checkDuplicatedOnAdd()
     {
-        $curField = self::getCustomFields($this->id, true);
-
-        $query = 'UPDATE customFieldsDef SET ' .
-            'customfielddef_module = :module, ' .
-            'customfielddef_field = :field ' .
-            'WHERE customfielddef_id= :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->id, 'id');
-        $Data->addParam($this->module, 'module');
-        $Data->addParam(serialize($this), 'field');
-
-        $queryRes = DB::getQuery($Data);
-
-        if ($queryRes && $curField->customfielddef_module !== $this->module) {
-            $queryRes = CustomFields::updateCustomFieldModule($this->module, $this->id);
-        }
-
-        return $queryRes;
-    }
-
-    /**
-     * Devolver los datos de definiciones de campos personalizados
-     *
-     * @param int        $customFieldId El id del campo personalizado
-     * @param bool|false $returnRawData Devolver los datos de la consulta sin formatear
-     * @return array|bool
-     */
-    public static function getCustomFields($customFieldId = null, $returnRawData = false)
-    {
-        $query = 'SELECT customfielddef_id, customfielddef_module, customfielddef_field FROM customFieldsDef';
-
-        $Data = new QueryData();
-
-        if (!is_null($customFieldId)) {
-            $query .= ' WHERE customfielddef_id = :id LIMIT 1';
-            $Data->addParam($customFieldId, 'id');
-        } else {
-            $query .= ' ORDER BY customfielddef_module';
-        }
-
-        $Data->setQuery($query);
-
-        if (!$returnRawData) {
-            DB::setReturnArray();
-        }
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
-
-        if (!$returnRawData) {
-            $customFields = array();
-
-            foreach ($queryRes as $customField) {
-                /**
-                 * @var CustomFieldDef
-                 */
-                $field = unserialize($customField->customfielddef_field);
-
-                if (get_class($field) === '__PHP_Incomplete_Class') {
-                    $field = Util::castToClass('SP\Mgmt\CustomFields\CustomFieldDef', $field);
-                }
-
-                $attribs = new \stdClass();
-                $attribs->id = $customField->customfielddef_id;
-                $attribs->module = self::getFieldsModules($customField->customfielddef_module);
-                $attribs->name = $field->getName();
-                $attribs->typeName = self::getFieldsTypes($field->getType(), true);
-                $attribs->type = $field->getType();
-
-                $customFields[] = $attribs;
-            }
-
-            return $customFields;
-        }
-
-        return $queryRes;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+        // TODO: Implement checkDuplicatedOnAdd() method.
     }
 }

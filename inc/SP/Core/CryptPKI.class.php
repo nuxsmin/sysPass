@@ -27,6 +27,7 @@ namespace SP\Core;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use phpseclib\Crypt\RSA;
 use phpseclib\Exception\FileNotFoundException;
 use SP\Log\Log;
 
@@ -74,7 +75,7 @@ class CryptPKI
      */
     public function createKeys()
     {
-        $Rsa = new \phpseclib\Crypt\RSA();
+        $Rsa = new RSA();
         $keys = $Rsa->createKey(1024);
 
         $priv = file_put_contents($this->getPrivateKeyFile(), $keys['privatekey']);
@@ -93,8 +94,8 @@ class CryptPKI
      */
     public function encryptRSA($data)
     {
-        $Rsa = new \phpseclib\Crypt\RSA();
-        $Rsa->setEncryptionMode(\phpseclib\Crypt\RSA::ENCRYPTION_PKCS1);
+        $Rsa = new RSA();
+        $Rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $Rsa->loadKey($this->getPublicKey());
 
         return $Rsa->encrypt($data);
@@ -126,8 +127,8 @@ class CryptPKI
      */
     public function decryptRSA($data)
     {
-        $Rsa = new \phpseclib\Crypt\RSA();
-        $Rsa->setEncryptionMode(\phpseclib\Crypt\RSA::ENCRYPTION_PKCS1);
+        $Rsa = new RSA();
+        $Rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $Rsa->loadKey($this->getPrivateKey());
 
         return $Rsa->decrypt($data);

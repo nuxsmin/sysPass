@@ -29,14 +29,20 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Core\ActionsInterface;
 use SP\Core\Template;
+use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
+use SP\DataModel\CustomFieldData;
+use SP\DataModel\CustomFieldDefData;
 use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomFieldDef;
-use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Core\SessionUtil;
-use SP\Mgmt\Files\Files;
+use SP\Mgmt\CustomFields\CustomFieldTypes;
+use SP\Mgmt\Files\File;
 use SP\DataModel\TagData;
+use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Tags\Tags;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -74,7 +80,7 @@ class AppItemMgmt extends Controller implements ActionsInterface
         $this->_module = self::ACTION_MGM_CUSTOMERS;
         $this->view->addTemplate('customers');
 
-        $this->view->assign('customer', Customer::getCustomerData($this->view->itemId));
+        $this->view->assign('customer', ($this->view->itemId) ? Customer::getItem()->getById($this->view->itemId)->getItemData() : new CustomerData());
         $this->getCustomFieldsForItem();
     }
 
@@ -83,12 +89,7 @@ class AppItemMgmt extends Controller implements ActionsInterface
      */
     private function getCustomFieldsForItem()
     {
-        // Se comprueba que hayan campos con valores para el elemento actual
-        if (!$this->view->isView && CustomFields::checkCustomFieldExists($this->_module, $this->view->itemId)) {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsData($this->_module, $this->view->itemId));
-        } else {
-            $this->view->assign('customFields', CustomFields::getCustomFieldsForModule($this->_module));
-        }
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData($this->_module))->getById($this->view->itemId));
     }
 
     /**
@@ -99,7 +100,7 @@ class AppItemMgmt extends Controller implements ActionsInterface
         $this->_module = self::ACTION_MGM_CATEGORIES;
         $this->view->addTemplate('categories');
 
-        $this->view->assign('category', Category::getCategoryData($this->view->itemId));
+        $this->view->assign('category', ($this->view->itemId) ? Category::getItem()->getById($this->view->itemId)->getItemData() : new CategoryData());
         $this->getCustomFieldsForItem();
     }
 
@@ -112,7 +113,7 @@ class AppItemMgmt extends Controller implements ActionsInterface
 
         $this->view->assign('accountId', Request::analyze('id', 0));
         $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-        $this->view->assign('files', Files::getAccountFileList($this->view->accountId));
+        $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
 
         if (!is_array($this->view->files) || count($this->view->files) === 0) {
             return;
@@ -130,18 +131,12 @@ class AppItemMgmt extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('customfields');
 
-        $customField = CustomFieldDef::getCustomFields($this->view->itemId, true);
-        $field = (is_object($customField)) ? unserialize($customField->customfielddef_field) : null;
+        $customField = ($this->view->itemId) ? CustomFieldDef::getItem()->getById($this->view->itemId)->getItemData() : new CustomFieldDefData();
 
-        if (is_object($field) && get_class($field) === '__PHP_Incomplete_Class') {
-            $field = Util::castToClass('SP\Mgmt\CustomFields\CustomFields\CustomFieldDef', $field);
-        }
-
-        $this->view->assign('gotData', ($customField && $field instanceof CustomFieldDef));
         $this->view->assign('customField', $customField);
-        $this->view->assign('field', $field);
-        $this->view->assign('types', CustomFieldDef::getFieldsTypes());
-        $this->view->assign('modules', CustomFieldDef::getFieldsModules());
+        $this->view->assign('field', $customField);
+        $this->view->assign('types', CustomFieldTypes::getFieldsTypes());
+        $this->view->assign('modules', CustomFieldTypes::getFieldsModules());
     }
 
     /**

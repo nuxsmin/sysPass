@@ -39,7 +39,7 @@ define('DEBUG', true);
 
 require 'SplClassLoader.php';
 
-$ClassLoader = new SplClassLoader();
+$ClassLoader = new SplClassLoader('SP');
 $ClassLoader->setFileExtension('.class.php');
 $ClassLoader->addExcluded('SP\\Profile');
 $ClassLoader->addExcluded('SP\\Mgmt\\User\\Profile');

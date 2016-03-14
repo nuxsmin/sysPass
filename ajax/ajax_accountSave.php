@@ -32,10 +32,13 @@ use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\SPException;
+use SP\DataModel\CustomerData;
+use SP\DataModel\CustomFieldData;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Mgmt\Customers\Customer;
-use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\CustomFields\CustomField;
+use SP\Mgmt\CustomFields\CustomFieldsUtil;
 
 define('APP_ROOT', '..');
 
@@ -63,8 +66,8 @@ $accountLogin = Request::analyze('login');
 $accountPassword = Request::analyzeEncrypted('pass');
 $accountPasswordR = Request::analyzeEncrypted('passR');
 $categoryId = Request::analyze('categoryId', 0);
-$accountOtherGroups = Request::analyze('othergroups');
-$accountOtherUsers = Request::analyze('otherusers');
+$accountOtherGroups = Request::analyze('othergroups', 0);
+$accountOtherUsers = Request::analyze('otherusers', 0);
 $accountNotes = Request::analyze('notes');
 $accountUrl = Request::analyze('url');
 $accountGroupEditEnabled = Request::analyze('geditenabled', 0, false, 1);
@@ -160,16 +163,17 @@ if (is_array($tags)) {
 
 $Account = new Account($AccountData);
 
+$CustomFieldData = new CustomFieldData();
+$CustomFieldData->setId($accountId);
+$CustomFieldData->setModule(ActionsInterface::ACTION_ACC_NEW);
+
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_NEW:
     case ActionsInterface::ACTION_ACC_COPY:
-        Customer::$customerName = $newCustomer;
-
         // Comprobar si se ha introducido un nuevo cliente
         if ($customerId === 0 && $newCustomer) {
             try {
-                Customer::addCustomer();
-                $customerId = Customer::$customerLastId;
+                $customerId = Customer::getItem(new CustomerData(null, $newCustomer))->add()->getItemData()->getCustomerId();
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage());
             }
@@ -184,10 +188,8 @@ switch ($actionId) {
         // Crear cuenta
         if ($Account->createAccount()) {
             if (is_array($customFields)) {
-                foreach ($customFields as $id => $value) {
-                    $CustomFields = new CustomFields($id, $AccountData->getAccountId(), $value);
-                    $CustomFields->addCustomField();
-                }
+                $CustomFieldData->setId($AccountData->getAccountId());
+                CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
             }
 
             Response::printJSON(_('Cuenta creada'), 0);
@@ -196,13 +198,10 @@ switch ($actionId) {
         Response::printJSON(_('Error al crear la cuenta'), 0);
         break;
     case ActionsInterface::ACTION_ACC_EDIT:
-        Customer::$customerName = $newCustomer;
-
         // Comprobar si se ha introducido un nuevo cliente
         if ($customerId === 0 && $newCustomer) {
             try {
-                Customer::addCustomer();
-                $customerId = Customer::$customerLastId;
+                $customerId = Customer::getItem(new CustomerData(null, $newCustomer))->add()->getItemData()->getCustomerId();
             } catch (SPException $e) {
                 Response::printJSON($e->getMessage());
             }
@@ -217,7 +216,7 @@ switch ($actionId) {
 
         // Comprobar si han habido cambios
         if ($accountChangesHash == $Account->calcChangesHash()
-            && \SP\Mgmt\CustomFields\CustomFieldsUtil::checkHash($customFields, $customFieldsHash)
+            && CustomFieldsUtil::checkHash($customFields, $customFieldsHash)
         ) {
             Response::printJSON(_('Sin cambios'), 0);
         }
@@ -225,7 +224,7 @@ switch ($actionId) {
         // Actualizar cuenta
         if ($Account->updateAccount()) {
             if (is_array($customFields)) {
-                \SP\Mgmt\CustomFields\CustomFieldsUtil::updateCustonFields($customFields, $accountId);
+                CustomFieldsUtil::updateItemCustomFields($customFields, $CustomFieldData);
             }
 
             Response::printJSON(_('Cuenta actualizada'), 0);
@@ -236,7 +235,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_ACC_DELETE:
         // Eliminar cuenta
         if ($Account->deleteAccount()
-            && CustomFields::deleteCustomFieldForItem($accountId, ActionsInterface::ACTION_ACC_NEW)
+            && CustomField::getItem($CustomFieldData)->delete($accountId)
         ) {
             Response::printJSON(_('Cuenta eliminada'), 0, "sysPassUtil.Common.doAction('" . ActionsInterface::ACTION_ACC_SEARCH . "');");
         }

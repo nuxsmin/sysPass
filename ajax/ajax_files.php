@@ -28,11 +28,13 @@ use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\DataModel\FileData;
 use SP\Html\Html;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
-use SP\Mgmt\Files\Files;
+use SP\Mgmt\Files\File;
+use SP\Mgmt\Files\FileUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -79,30 +81,33 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         Response::printJSON($Log->getDescription());
     }
 
-    if (is_array($_FILES) && $_FILES['inFile']['name']) {
-        // Comprobamos la extensión del archivo
-        $fileData['extension'] = strtoupper(pathinfo($_FILES['inFile']['name'], PATHINFO_EXTENSION));
+    $FileData = new FileData();
+    $FileData->setAccfileAccountId($accountId);
+    $FileData->setAccfileName(Html::sanitize($_FILES['inFile']['name']));
+    $FileData->setAccfileSize($_FILES['inFile']['size']);
+    $FileData->setAccfileType($_FILES['inFile']['type']);
 
-        if (!in_array($fileData['extension'], $allowedExts)) {
+    if ($FileData->getAccfileName() !== '') {
+        // Comprobamos la extensión del archivo
+        $FileData->setAccfileExtension(strtoupper(pathinfo($FileData->getAccfileName(), PATHINFO_EXTENSION)));
+
+        if (!in_array($FileData->getAccfileExtension(), $allowedExts)) {
             $Log->addDescription(_('Tipo de archivo no soportado'));
-            $Log->addDetails(_('Extensión'), $fileData['extension']);
+            $Log->addDetails(_('Extensión'), $FileData->getAccfileExtension());
             $Log->writeLog();
 
             Response::printJSON($Log->getDescription());
         }
     } else {
         $Log->addDescription(_('Archivo inválido'));
-        $Log->addDetails(_('Archivo'), $_FILES['inFile']['name']);
+        $Log->addDetails(_('Archivo'), $FileData->getAccfileName());
         $Log->writeLog();
 
         Response::printJSON($Log->getDescription());
     }
 
     // Variables con información del archivo
-    $fileData['name'] = Html::sanitize($_FILES['inFile']['name']);
     $tmpName = Html::sanitize($_FILES['inFile']['tmp_name']);
-    $fileData['size'] = $_FILES['inFile']['size'];
-    $fileData['type'] = $_FILES['inFile']['type'];
 
     if (!file_exists($tmpName)) {
         // Registramos el máximo tamaño permitido por PHP
@@ -114,25 +119,25 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         Response::printJSON($Log->getDescription());
     }
 
-    if ($fileData['size'] > ($allowedSize * 1000)) {
+    if ($FileData->getAccfileSize() > ($allowedSize * 1000)) {
         $Log->addDescription(_('Tamaño de archivo superado'));
-        $Log->addDetails(_('Tamaño'), round(($allowedSize / 1000), 1) . 'MB');
+        $Log->addDetails(_('Tamaño'), $FileData->getRoundSize() . 'KB');
         $Log->writeLog();
 
         Response::printJSON($Log->getDescription());
     }
 
     // Leemos el archivo a una variable
-    $fileData['content'] = file_get_contents($tmpName);
+    $FileData->setAccfileContent(file_get_contents($tmpName));
 
-    if ($fileData['content'] === false) {
+    if ($FileData->getAccfileContent() === false) {
         $Log->addDescription(_('Error interno al leer el archivo'));
         $Log->writeLog();
 
         Response::printJSON($Log->getDescription());
     }
 
-    if (Files::fileUpload($accountId, $fileData)) {
+    if (File::getItem($FileData)->add()) {
         Response::printJSON(_('Archivo guardado'), 0);
     } else {
         Response::printJSON(_('No se pudo guardar el archivo'));
@@ -146,48 +151,39 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         Response::printJSON(_('No es un ID de archivo válido'));
     }
 
-    $file = Files::fileDownload($fileId);
+    $FileData = File::getItem()->getById($fileId)->getItemData();
 
-    if (!$file) {
+    if (!$FileData) {
         Response::printJSON(_('El archivo no existe'));
     }
 
-    $fileSize = $file->accfile_size;
-    $fileType = $file->accfile_type;
-    $fileName = $file->accfile_name;
-    $fileExt = $file->accfile_extension;
-    $fileData = $file->accfile_content;
-
     $Log->setAction(_('Descargar Archivo'));
     $Log->addDetails(_('ID'), $fileId);
-    $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($file->accfile_accountId));
-    $Log->addDetails(_('Archivo'), $fileName);
-    $Log->addDetails(_('Tipo'), $fileType);
-    $Log->addDetails(_('Tamaño'), round($fileSize / 1024, 2) . " KB");
+    $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
+    $Log->addDetails(_('Archivo'), $FileData->getAccfileName());
+    $Log->addDetails(_('Tipo'), $FileData->getAccfileType());
+    $Log->addDetails(_('Tamaño'), $FileData->getRoundSize() . 'KB');
     $Log->writeLog();
 
     if ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD) {
-
         // Enviamos el archivo al navegador
         header('Set-Cookie: fileDownload=true; path=/');
         header('Cache-Control: max-age=60, must-revalidate');
-        header("Content-length: $fileSize");
-        header("Content-type: $fileType");
-        header("Content-Disposition: attachment; filename=\"$fileName\"");
+        header('Content-length: ' . $FileData->getAccfileSize());
+        header('Content-type: ' . $FileData->getAccfileType());
+        header('Content-Disposition: attachment; filename="' . $FileData->getAccfileName() . '"');
         header("Content-Description: PHP Generated Data");
         header("Content-transfer-encoding: binary");
 
-        exit($fileData);
+        exit($FileData->getAccfileContent());
     } else {
-        $extsOkImg = array("JPG", "GIF", "PNG");
-
-        if (in_array(strtoupper($fileExt), $extsOkImg)) {
-            $imgData = chunk_split(base64_encode($fileData));
-            exit('<img src="data:' . $fileType . ';base64, ' . $imgData . '" border="0" />');
+        if (FileUtil::isImage($FileData)) {
+            $imgData = chunk_split(base64_encode($FileData->getAccfileContent()));
+            exit('<img src="data:' . $FileData->getAccfileType() . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
-        } elseif (strtoupper($fileExt) == "TXT") {
-            exit('<div id="fancyView" class="backGrey"><pre>' . htmlentities($fileData) . '</pre></div>');
+        } elseif (strtoupper($FileData->getAccfileExtension()) == 'TXT') {
+            exit('<div id="fancyView" class="backGrey"><pre>' . htmlentities($FileData->getAccfileContent()) . '</pre></div>');
         } else {
             exit();
         }
@@ -196,7 +192,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
         Response::printJSON(_('No es un ID de archivo válido'));
-    } elseif (Files::fileDelete($fileId)) {
+    } elseif (File::getItem()->delete($fileId)) {
         Response::printJSON(_('Archivo eliminado'), 0);
     }
 

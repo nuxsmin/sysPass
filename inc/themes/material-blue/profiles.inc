@@ -1,4 +1,7 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/** @var $icons \Theme\Icons */
+/** @var $profile \SP\DataModel\ProfileData */
+?>
 
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
@@ -11,7 +14,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="profile_name" name="profile_name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $profile->getName(); ?>" maxlength="50" <?php echo $isDisabled; ?>>
+                               value="<?php echo $profile->getUserprofileName(); ?>" maxlength="50" <?php echo $isDisabled; ?>>
                         <label class="mdl-textfield__label"
                                for="profile_name"><?php echo _('Nombre del perfil'); ?></label>
                     </div>

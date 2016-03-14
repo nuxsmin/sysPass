@@ -39,7 +39,8 @@ use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\CustomFields\CustomFields;
+use SP\Mgmt\CustomFields\CustomField;
+use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Users\UserPass;
 use SP\Util\Checks;
 
@@ -374,7 +375,7 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
             Response::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
         }
 
-        if (!CustomFields::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
+        if (!CustomFieldsUtil::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
             Response::printJSON(_('Errores al actualizar datos de campos personalizados'));
         }
     }

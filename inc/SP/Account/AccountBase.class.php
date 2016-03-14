@@ -26,7 +26,8 @@
 namespace SP\Account;
 
 use SP\DataModel\AccountData;
-use SP\Mgmt\Groups\Groups;
+use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Groups\GroupAccountsUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -165,7 +166,7 @@ abstract class AccountBase
         if (!isset($cacheUserGroups[$accId])
             || time() > $cacheUserGroups['expires']
         ) {
-            $cacheUserGroups[$accId] = GroupAccounts::getGroupsForAccount($accId);
+            $cacheUserGroups[$accId] = GroupAccountsUtil::getGroupsForAccount($accId);
             $cacheUserGroups['expires'] = time() + self::CACHE_EXPIRE_TIME;
         }
 

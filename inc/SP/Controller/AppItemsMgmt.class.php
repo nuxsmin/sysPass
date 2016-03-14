@@ -33,10 +33,15 @@ use SP\Core\ActionsInterface;
 use SP\Core\Template;
 use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Customers\CustomerSearch;
 use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Core\SessionUtil;
-use SP\Mgmt\Files\Files;
+use SP\Mgmt\CustomFields\CustomFieldDefSearch;
+use SP\Mgmt\Files\File;
+use SP\Mgmt\Files\FileSearch;
+use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Tags\Tags;
 
 /**
@@ -75,7 +80,7 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getCategoriesGrid();
-        $Grid->getData()->setData(Category::getCategoriesMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->limitCount);
 
@@ -94,7 +99,7 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getCustomersGrid();
-        $Grid->getData()->setData(Customer::getCustomersMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->limitCount);
 
@@ -110,7 +115,7 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
 
         $this->view->assign('accountId', Request::analyze('id', 0));
         $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-        $this->view->assign('files', Files::getAccountFileList($this->view->accountId));
+        $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
 
         if (!is_array($this->view->files) || count($this->view->files) === 0) {
             return;
@@ -133,7 +138,7 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getCustomFieldsGrid();
-        $Grid->getData()->setData(CustomFieldDef::getCustomFieldsMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->limitCount);
 
@@ -153,7 +158,7 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getFilesGrid();
-        $Grid->getData()->setData(Files::getFilesMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->limitCount));
         $Grid->updatePager();
         $Grid->getPager()->setOnClickArgs($this->limitCount);
 

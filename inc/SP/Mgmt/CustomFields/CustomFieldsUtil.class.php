@@ -25,6 +25,15 @@
 
 namespace SP\Mgmt\CustomFields;
 
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+use SP\Core\Crypt;
+use SP\Core\SPException;
+use SP\DataModel\CustomFieldData;
+use SP\Log\Log;
+use SP\Storage\DB;
+use SP\Storage\QueryData;
+
 /**
  * Class CustomFieldsUtil utilidades para los campos personalizados
  *
@@ -33,41 +42,123 @@ namespace SP\Mgmt\CustomFields;
 class CustomFieldsUtil
 {
     /**
-     * @param array $fields
-     * @param       $accountId
-     * @return bool
-     */
-    public static function updateCustonFields(array &$fields, $accountId)
-    {
-        foreach ($fields as $id => $value) {
-            $CustomFields = new CustomFields($id, $accountId, $value);
-            $CustomFields->updateCustomField();
-        }
-
-        return true;
-    }
-
-    /**
+     * Comprobar si el hash de cambios coincide con el camculado con el valor de los campos del elemento
+     *
      * @param $fields
      * @param $srcHhash
      * @return bool
      */
     public static function checkHash(&$fields, $srcHhash)
     {
-        if (!is_array($fields)){
+        return (!is_array($fields) || $srcHhash == md5(implode('', $fields)));
+    }
+
+    /**
+     * Actualizar los datos encriptados con una nueva clave
+     *
+     * @param string $currentMasterPass La clave maestra actual
+     * @param string $newMasterPassword La nueva clave maestra
+     * @return bool
+     * @throws SPException
+     */
+    public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
+    {
+        $Log = new Log();
+        $Log->setAction(_('Campos Personalizados'));
+
+        $query = /** @lang SQL */
+            'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
+
+        $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\CustomFieldData');
+        $Data->setQuery($query);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            $Log->addDescription(_('Fin'));
+            $Log->writeLog();
+
             return true;
         }
 
-        $hash = '';
+        $Log->addDescription(_('Actualizando datos encriptados'));
+        $Log->writeLog(true);
 
-        foreach ($fields as $value) {
-            $hash .= $value;
+        $errors = array();
+        $success = array();
+
+        foreach ($queryRes as $CustomField) {
+            /** @var CustomFieldData $CustomField */
+            $fieldData = Crypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataIv(), $currentMasterPass);
+            $fieldCryptData = Crypt::encryptData($fieldData, $newMasterPassword);
+
+            $query = /** @lang SQL */
+                'UPDATE customFieldsData SET
+                customfielddata_data = :data,
+                customfielddata_iv = :iv
+                WHERE customfielddata_id = ?';
+
+            $Data = new QueryData();
+            $Data->setQuery($query);
+            $Data->addParam($fieldCryptData['data']);
+            $Data->addParam($fieldCryptData['iv']);
+            $Data->addParam($CustomField->getCustomfielddataId());
+
+            if (DB::getQuery($Data) === false) {
+                $errors[] = $CustomField->getCustomfielddataId();
+            } else {
+                $success[] = $CustomField->getCustomfielddataId();
+            }
         }
 
-        if (!empty($hash)) {
-            return ($srcHhash == md5($hash));
+        if (count($errors) > 0) {
+            $Log->addDetails(_('Registros no actualizados'), implode(',', $errors));
+            $Log->writeLog(true);
         }
 
-        return true;
+        if (count($success) > 0) {
+            $Log->addDetails(_('Registros actualizados'), implode(',', $success));
+            $Log->writeLog(true);
+        }
+
+        $Log->addDescription(_('Fin'));
+        $Log->writeLog();
+
+        return (count($errors) === 0);
+    }
+
+    /**
+     * Crear los campos personalizados de un elemento
+     *
+     * @param array           $customFields
+     * @param CustomFieldData $CustomFieldData
+     */
+    public static function addItemCustomFields(array $customFields, CustomFieldData $CustomFieldData)
+    {
+        foreach ($customFields as $id => $value) {
+            $CustomFieldData->setDefinitionId($id);
+            $CustomFieldData->setValue($value);
+
+            CustomField::getItem($CustomFieldData)->add();
+        }
+    }
+
+    /**
+     * Actualizar los campos personalizados de un elemento
+     *
+     * @param array           $customFields
+     * @param CustomFieldData $CustomFieldData
+     */
+    public static function updateItemCustomFields(array $customFields, CustomFieldData $CustomFieldData)
+    {
+        foreach ($customFields as $id => $value) {
+            $CustomFieldData->setDefinitionId($id);
+            $CustomFieldData->setValue($value);
+
+            CustomField::getItem($CustomFieldData)->update();
+        }
     }
 }
