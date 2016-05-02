@@ -34,6 +34,7 @@ use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserData;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Groups\GroupUsers;
@@ -42,6 +43,7 @@ use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -83,11 +85,10 @@ class AccItemMgmt extends Controller implements ActionsInterface
         $this->module = self::ACTION_USR_USERS;
         $this->view->addTemplate('users');
 
-        $this->view->assign('user', UserUtil::getUserData($this->view->itemId));
-        $this->view->assign('isDisabled', (($this->view->user['user_login'] === 'demo' && $this->view->isDemo) || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
+        $this->view->assign('user', ($this->view->itemId) ? User::getItem()->getById($this->view->itemId)->getItemData() : new UserData());
+        $this->view->assign('isDisabled', ((User::getItem()->getItemData()->getUserLogin() === 'demo' && $this->view->isDemo) || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
         $this->view->assign('groups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
         $this->view->assign('profiles', DBUtil::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
-        $this->view->assign('ro', ($this->view->user['checks']['user_isLdap']) ? 'READONLY' : '');
 
         $this->getCustomFieldsForItem();
     }

@@ -26,6 +26,7 @@
 namespace SP\Mgmt\Profiles;
 
 use SP\DataModel\ProfileData;
+use SP\Mgmt\ItemBase;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -34,7 +35,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP
  */
-abstract class ProfileBase
+abstract class ProfileBase extends ItemBase
 {
     /** @var ProfileData */
     protected $itemData;
@@ -44,18 +45,13 @@ abstract class ProfileBase
      *
      * @param ProfileData $itemData
      */
-    public function __construct(ProfileData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new ProfileData();
-    }
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\ProfileData');
+        }
 
-    /**
-     * @param ProfileData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
+        parent::__construct($itemData);
     }
 
     /**
@@ -63,16 +59,6 @@ abstract class ProfileBase
      */
     public function getItemData()
     {
-        return $this->itemData;
-    }
-
-    /**
-     * @param ProfileData $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

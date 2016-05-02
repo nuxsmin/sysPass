@@ -25,7 +25,7 @@
 
 namespace SP\Import;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -39,7 +39,7 @@ class CsvImport extends CsvImportBase
     /**
      * Iniciar la importación desde XML.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     public function doImport()

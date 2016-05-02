@@ -26,9 +26,9 @@
 namespace SP\Storage;
 
 use PDO;
-use SP\Core\Factory;
+use SP\Core\SingleFactory;
 use SP\Log\Log;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -208,8 +208,7 @@ class DB
         }
 
         try {
-            /** @var $db PDO */
-            $db = Factory::getDBStorage()->getConnection();
+            $db = SingleFactory::getDBStorage()->getConnection();
 
             if (is_array($queryData->getParams())) {
                 $sth = $db->prepare($queryData->getQuery());
@@ -220,7 +219,9 @@ class DB
                     // la consulta. En caso contrario marcadores de nombre
                     $param = (is_int($param)) ? $param + 1 : ':' . $param;
 
-                    if ($isCount === true && count($count) > 0 && $paramIndex >= $paramMaxIndex) {
+                    if ($isCount === true
+                        && count($count) > 0
+                        && $paramIndex >= $paramMaxIndex) {
                         continue;
                     }
 
@@ -284,8 +285,7 @@ class DB
         $queryData->setQuery($query);
 
         try {
-            /** @var $db PDO */
-            $db = Factory::getDBStorage()->getConnection();
+            $db = SingleFactory::getDBStorage()->getConnection();
             $queryRes = (is_array($queryData->getParams())) ? $this->prepareQueryData($queryData, true) : $db->query($query);
             $num = intval($queryRes->fetchColumn());
             $queryRes->closeCursor();

@@ -26,7 +26,7 @@
 namespace SP\Html;
 
 use CssMin;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Util\Util;
 

@@ -1,4 +1,7 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/** @var $icons \Theme\Icons */
+/** @var $user \SP\DataModel\UserData */
+?>
 
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></h2>
@@ -13,12 +16,12 @@
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="name" name="name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user["user_name"]; ?>" maxlength="80">
+                                   value="<?php echo $user->getUserName(); ?>" maxlength="80">
                             <label class="mdl-textfield__label"
                                    for="name"><?php echo _('Nombre de usuario completo'); ?></label>
                         </div>
                     <?php else: ?>
-                        <?php echo $user['user_name']; ?>
+                        <?php echo $user->getUserName(); ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -29,15 +32,15 @@
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="login" name="login" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user["user_login"]; ?>" maxlength="80" <?php echo $ro; ?>>
+                                   value="<?php echo $user->getUserLogin(); ?>" maxlength="80" <?php echo ($user->isUserIsLdap()) ? 'readonly' : ''; ?>>
                             <label class="mdl-textfield__label"
                                    for="login"><?php echo _('Login de inicio de sesión'); ?></label>
                         </div>
-                        <?php if ($ro): ?>
-                            <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>" title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
-                        <?php endif; ?>
                     <?php else: ?>
-                        <?php echo $user['user_login']; ?>
+                        <?php echo $user->getUserLogin(); ?>
+                    <?php endif; ?>
+                    <?php if ($user->isUserIsLdap()): ?>
+                        <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>" title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -50,7 +53,7 @@
                         <option value=""><?php echo _('Seleccionar Perfil'); ?></option>
                         <?php foreach ($profiles as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id == $user['user_profileId']) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -64,7 +67,7 @@
                         <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id == $user['user_groupId']) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -76,18 +79,18 @@
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="email" name="email" type="email" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user["user_email"]; ?>" maxlength="50">
+                                   value="<?php echo $user->getUserEmail(); ?>" maxlength="50">
                             <label class="mdl-textfield__label"
                                    for="email"><?php echo _('Dirección de correo'); ?></label>
                         </div
                     <?php else: ?>
-                        <?php echo $user['user_email']; ?>
+                        <?php echo $user->getUserEmail(); ?>
                     <?php endif; ?>
                 </td>
 
             </tr>
 
-            <?php if ($user['action'] === 1 && !$isView): ?>
+            <?php if (!$isView): ?>
                 <tr>
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">
@@ -121,12 +124,12 @@
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
-                                  maxlength="1000"><?php echo $user['user_notes']; ?></textarea>
+                                  maxlength="1000"><?php echo $user->getUserNotes(); ?></textarea>
                             <label class="mdl-textfield__label"
                                    for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                         </div>
                     <?php else: ?>
-                        <?php echo $user['user_notes']; ?>
+                        <?php echo $user->getUserNotes(); ?>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -138,14 +141,14 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp"
                                title="<?php echo _('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminapp" <?php echo $user['checks']['user_isAdminApp'] . ' ' . $isDisabled; ?>/>
+                                   name="adminapp" <?php echo ($user->isUserIsAdminApp()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo _('Admin. Aplicación'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc"
                                title="<?php echo _('Administrador de cuentas'); ?>">
                             <input type="checkbox" id="adminacc" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminacc" <?php echo $user['checks']['user_isAdminAcc'] . ' ' . $isDisabled; ?>/>
+                                   name="adminacc" <?php echo ($user->isUserIsAdminAcc()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo _('Admin. Cuentas'); ?></span>
                         </label>
                     <?php endif; ?>
@@ -153,14 +156,14 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="disabled"
                            title="<?php echo _('Deshabilitado'); ?>">
                         <input type="checkbox" id="disabled" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="disabled" <?php echo $user['checks']['user_isDisabled'] . ' ' . $isDisabled; ?>/>
+                               name="disabled" <?php echo ($user->isUserIsDisabled()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
                         <span class="mdl-switch__label"><?php echo _('Deshabilitado'); ?></span>
                     </label>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="changepass"
                            title="<?php echo _('Forzar cambio de clave'); ?>">
                         <input type="checkbox" id="changepass" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="changepass" <?php echo $user['checks']['user_isChangePass'] . ' ' . $isDisabled; ?>/>
+                               name="changepass" <?php echo ($user->isUserIsChangePass()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
                         <span class="mdl-switch__label"><?php echo _('Cambio de Clave'); ?></span>
                     </label>
                 </td>
@@ -173,22 +176,22 @@
             <?php if ($isView): ?>
                 <tr>
                     <td class="descField"><?php echo _('Entradas'); ?></td>
-                    <td class="valField"> <?php echo $user['user_count']; ?></td>
+                    <td class="valField"> <?php echo $user->getUserCount(); ?></td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo _('Último Acceso'); ?></td>
-                    <td class="valField"> <?php echo $user['user_lastLogin']; ?></td>
+                    <td class="valField"> <?php echo $user->getUserLastLogin(); ?></td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo _('Última Modificación'); ?></td>
-                    <td class="valField"> <?php echo $user['user_lastUpdate']; ?></td>
+                    <td class="valField"> <?php echo $user->getUserLastUpdate(); ?></td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo _('Fecha Clave Maestra'); ?></td>
-                    <td class="valField"> <?php echo $user['user_lastUpdateMPass']; ?></td>
+                    <td class="valField"> <?php echo $user->getUserLastUpdateMPass(); ?></td>
                 </tr>
             <?php endif; ?>
             </tbody>
@@ -196,8 +199,8 @@
         <?php if (!$isView): ?>
             <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
             <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
-            <input type="hidden" name="isLdap" value="<?php echo $user['user_isLdap']; ?>"/>
-            <input type="hidden" name="itemId" value="<?php echo $user['user_id']; ?>"/>
+            <input type="hidden" name="isLdap" value="<?php echo ($user->isUserIsLdap()) ? 1 : 0; ?>"/>
+            <input type="hidden" name="itemId" value="<?php echo $user->getUserId(); ?>"/>
             <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">

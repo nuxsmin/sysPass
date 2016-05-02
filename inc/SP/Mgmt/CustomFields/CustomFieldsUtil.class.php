@@ -28,7 +28,7 @@ namespace SP\Mgmt\CustomFields;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Crypt;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Log\Log;
 use SP\Storage\DB;
@@ -59,7 +59,7 @@ class CustomFieldsUtil
      * @param string $currentMasterPass La clave maestra actual
      * @param string $newMasterPassword La nueva clave maestra
      * @return bool
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
     {

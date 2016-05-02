@@ -30,15 +30,16 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Config\Config;
 use SP\Core\Crypt;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\PublicLinkData;
+use SP\Mgmt\ItemBase;
 
 /**
  * Class PublicLinks para la gestión de enlaces públicos
  *
  * @package SP
  */
-abstract class PublicLinkBase
+abstract class PublicLinkBase extends ItemBase
 {
     /** @var PublicLinkData */
     protected $itemData;
@@ -48,18 +49,13 @@ abstract class PublicLinkBase
      *
      * @param PublicLinkData $itemData
      */
-    public function __construct(PublicLinkData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new PublicLinkData();
-    }
-
-    /**
-     * @param PublicLinkData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\PublicLinkData');
+        }
+        
+        parent::__construct($itemData);
     }
 
     /**
@@ -67,17 +63,7 @@ abstract class PublicLinkBase
      */
     public function getItemData()
     {
-        return $this->itemData;
-    }
-
-    /**
-     * @param PublicLinkData $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 
     /**
@@ -85,7 +71,7 @@ abstract class PublicLinkBase
      *
      * @throws SPException
      */
-    protected function createLinkPass()
+    protected final function createLinkPass()
     {
         $pass = Crypt::generateAesKey($this->createLinkHash());
         $cryptPass = Crypt::encryptData(SessionUtil::getSessionMPass(), $pass);
@@ -100,7 +86,7 @@ abstract class PublicLinkBase
      * @param bool $refresh Si es necesario regenerar el hash
      * @return string
      */
-    protected function createLinkHash($refresh = false)
+    protected final function createLinkHash($refresh = false)
     {
         if ($this->itemData->getLinkHash() === ''
             || $refresh === true
@@ -116,7 +102,7 @@ abstract class PublicLinkBase
      *
      * @return int
      */
-    protected function calcDateExpire()
+    protected final function calcDateExpire()
     {
         $this->itemData->setDateExpire(time() + (int)Config::getConfig()->getPublinksMaxTime());
     }
@@ -126,7 +112,7 @@ abstract class PublicLinkBase
      *
      * @param string $who Quién lo ha visto
      */
-    protected function updateUseInfo($who)
+    protected final function updateUseInfo($who)
     {
         $this->itemData->addUseInfo(['who' => $who, 'time' => time()]);
     }

@@ -25,8 +25,9 @@
 
 namespace SP\Account;
 
+use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -107,7 +108,7 @@ class AccountUtil
      * Obtener los datos de todas las cuentas
      *
      * @return array
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function getAccountsData()
     {
@@ -158,12 +159,10 @@ class AccountUtil
     /**
      *  Obtener los datos de todas las cuentas y el cliente mediante una búsqueda
      *
-     * @param int    $limitCount
-     * @param int    $limitStart
-     * @param string $search La cadena a buscar
+     * @param ItemSearchData $SearchData
      * @return array|bool
      */
-    public static function getAccountsMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public static function getAccountsMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
 
@@ -174,8 +173,8 @@ class AccountUtil
             . 'FROM accounts '
             . 'LEFT JOIN customers ON account_customerId = customer_id';
 
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
+        if ($SearchData->getSeachString() !== '') {
+            $search = '%' . $SearchData->getSeachString() . '%';
 
             $query .= ' WHERE account_name LIKE ? '
                 . 'OR customer_name LIKE ?';
@@ -187,8 +186,8 @@ class AccountUtil
         $query .= ' ORDER BY account_name';
         $query .= ' LIMIT ?, ?';
 
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         $Data->setQuery($query);
 

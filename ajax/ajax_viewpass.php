@@ -24,6 +24,7 @@
  */
 
 use SP\Account\Account;
+use SP\Core\Session;
 use SP\DataModel\AccountData;
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
@@ -55,7 +56,7 @@ if (!$accountId) {
 $AccountData = new AccountData($accountId);
 $Account = (!$isHistory) ? new Account($AccountData) : new AccountHistory($AccountData);
 
-$Account->setAccountParentId(\SP\Core\Session::getAccountParentId());
+$Account->setAccountParentId(Session::getAccountParentId());
 
 $accountData = $Account->getAccountPassData();
 
@@ -64,9 +65,10 @@ if ($isHistory && !$Account->checkAccountMPass()) {
 }
 
 if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS)
-    || !Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())) {
+    || !Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())
+) {
     Response::printJSON(_('No tiene permisos para acceder a esta cuenta'));
-} elseif (!UserPass::checkUserUpdateMPass()) {
+} elseif (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
     Response::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 

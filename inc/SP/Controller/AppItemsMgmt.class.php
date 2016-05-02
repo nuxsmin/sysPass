@@ -31,6 +31,7 @@ use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Template;
+use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Categories\CategorySearch;
@@ -42,7 +43,8 @@ use SP\Mgmt\CustomFields\CustomFieldDefSearch;
 use SP\Mgmt\Files\File;
 use SP\Mgmt\Files\FileSearch;
 use SP\Mgmt\Files\FileUtil;
-use SP\Mgmt\Tags\Tags;
+use SP\Mgmt\Tags\Tag;
+use SP\Mgmt\Tags\TagSearch;
 
 /**
  * Clase encargada de preparar la presentación de las vistas de gestión de cuentas
@@ -52,9 +54,9 @@ use SP\Mgmt\Tags\Tags;
 class AppItemsMgmt extends GridTabController implements ActionsInterface
 {
     /**
-     * @var int
+     * @var ItemSearchData
      */
-    private $limitCount;
+    private $SearchData;
 
     /**
      * Constructor
@@ -65,7 +67,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->limitCount = Config::getConfig()->getAccountCount();
+        $ItemSearchData = new ItemSearchData();
+        $ItemSearchData->setLimitCount(Config::getConfig()->getAccountCount());
+        $this->SearchData = $ItemSearchData;
     }
 
     /**
@@ -80,9 +84,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getCategoriesGrid();
-        $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -99,9 +103,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getCustomersGrid();
-        $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -138,9 +142,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getCustomFieldsGrid();
-        $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -158,9 +162,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getFilesGrid();
-        $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -177,9 +181,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getAccountsGrid();
-        $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -196,9 +200,9 @@ class AppItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getTagsGrid();
-        $Grid->getData()->setData(Tags::getTagsMgmtSearch($this->limitCount));
+        $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }

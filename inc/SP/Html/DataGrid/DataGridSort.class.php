@@ -59,10 +59,13 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $key int
+     * @return $this
      */
     public function setSortKey($key)
     {
         $this->_sortKey = $key;
+
+        return $this;
     }
 
     /**
@@ -75,10 +78,13 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $title string
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->_title = $title;
+
+        return $this;
     }
 
     /**
@@ -91,10 +97,13 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $name string
+     * @return $this
      */
     public function setName($name)
     {
         $this->_name = $name;
+
+        return $this;
     }
 
     /**
@@ -107,10 +116,13 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $class string
+     * @return $this
      */
     public function setClass($class)
     {
         $this->_class[] = $class;
+
+        return $this;
     }
 
     /**
@@ -123,10 +135,13 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param IconInterface $icon
+     * @return $this
      */
     public function setIconUp(IconInterface $icon)
     {
         $this->_iconUp = $icon;
+
+        return $this;
     }
 
     /**
@@ -139,9 +154,12 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param IconInterface $icon
+     * @return $this
      */
     public function setIconDown(IconInterface $icon)
     {
         $this->_iconDown = $icon;
+
+        return $this;
     }
 }

@@ -11,6 +11,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Template;
+use SP\DataModel\ItemSearchData;
 use SP\Html\DataGrid\DataGridPagerBase;
 use SP\Html\DataGrid\DataGridPagerInterface;
 use SP\Util\Checks;
@@ -46,15 +47,13 @@ abstract class GridItemsSearch extends Controller
      * Actualizar los datos del paginador
      *
      * @param DataGridPagerInterface $Pager
-     * @param bool              $filterOn
-     * @param int               $limitStart
-     * @param int               $limitCount
+     * @param ItemSearchData         $SearchData
      */
-    protected function updatePager(DataGridPagerInterface $Pager, $filterOn, $limitStart, $limitCount)
+    protected function updatePager(DataGridPagerInterface $Pager, ItemSearchData $SearchData)
     {
-        $Pager->setLimitStart($limitStart);
-        $Pager->setLimitCount($limitCount);
-        $Pager->setOnClickArgs($limitCount);
-        $Pager->setFilterOn($filterOn);
+        $Pager->setLimitStart($SearchData->getLimitStart());
+        $Pager->setLimitCount($SearchData->getLimitCount());
+        $Pager->setOnClickArgs($SearchData->getLimitCount());
+        $Pager->setFilterOn($SearchData->getSeachString() !== '');
     }
 }

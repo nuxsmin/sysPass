@@ -61,21 +61,21 @@ class AccountsSearch extends Controller implements ActionsInterface
 
 
     /** @var string */
-    private $_sk = '';
+    private $sk = '';
     /** @var int */
-    private $_sortKey = 0;
+    private $sortKey = 0;
     /** @var string */
-    private $_sortOrder = 0;
+    private $sortOrder = 0;
     /** @var bool */
-    private $_searchGlobal = false;
+    private $searchGlobal = false;
     /** @var int */
-    private $_limitStart = 0;
+    private $limitStart = 0;
     /** @var int */
-    private $_limitCount = 0;
+    private $limitCount = 0;
     /** @var int */
-    private $_queryTimeStart = 0;
+    private $queryTimeStart = 0;
     /** @var bool */
-    private $_isAjax = false;
+    private $isAjax = false;
 
     /**
      * Constructor
@@ -86,9 +86,9 @@ class AccountsSearch extends Controller implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->_queryTimeStart = microtime();
-        $this->_sk = SessionUtil::getSessionKey(true);
-        $this->view->assign('sk', $this->_sk);
+        $this->queryTimeStart = microtime();
+        $this->sk = SessionUtil::getSessionKey(true);
+        $this->view->assign('sk', $this->sk);
         $this->setVars();
     }
 
@@ -112,11 +112,11 @@ class AccountsSearch extends Controller implements ActionsInterface
         // de lo contrario, se recupera la información de filtros de la sesión
         $isSearch = (!isset($this->view->actionId));
 
-        $this->_sortKey = ($isSearch) ? Request::analyze('skey', 0) : $filters->getSortKey();
-        $this->_sortOrder = ($isSearch) ? Request::analyze('sorder', 0) : $filters->getSortOrder();
-        $this->_searchGlobal = ($isSearch) ? Request::analyze('gsearch', 0) : $filters->getGlobalSearch();
-        $this->_limitStart = ($isSearch) ? Request::analyze('start', 0) : $filters->getLimitStart();
-        $this->_limitCount = ($isSearch) ? Request::analyze('rpp', 0) : $filters->getLimitCount();
+        $this->sortKey = ($isSearch) ? Request::analyze('skey', 0) : $filters->getSortKey();
+        $this->sortOrder = ($isSearch) ? Request::analyze('sorder', 0) : $filters->getSortOrder();
+        $this->searchGlobal = ($isSearch) ? Request::analyze('gsearch', 0) : $filters->getGlobalSearch();
+        $this->limitStart = ($isSearch) ? Request::analyze('start', 0) : $filters->getLimitStart();
+        $this->limitCount = ($isSearch) ? Request::analyze('rpp', 0) : $filters->getLimitCount();
 
         // Valores POST
         $this->view->assign('searchCustomer', ($isSearch) ? Request::analyze('customer', 0) : $filters->getCustomerId());
@@ -131,7 +131,7 @@ class AccountsSearch extends Controller implements ActionsInterface
      */
     public function setIsAjax($isAjax)
     {
-        $this->_isAjax = $isAjax;
+        $this->isAjax = $isAjax;
     }
 
     /**
@@ -152,22 +152,20 @@ class AccountsSearch extends Controller implements ActionsInterface
     {
         $this->view->addTemplate('datasearch-grid');
 
-        $this->view->assign('isAjax', $this->_isAjax);
+        $this->view->assign('isAjax', $this->isAjax);
 
         $Search = new AccountSearch();
+        $Search->setGlobalSearch($this->searchGlobal)
+            ->setSortKey($this->sortKey)
+            ->setSortOrder($this->sortOrder)
+            ->setLimitStart($this->limitStart)
+            ->setLimitCount($this->limitCount)
+            ->setTxtSearch($this->view->searchTxt)
+            ->setCategoryId($this->view->searchCategory)
+            ->setCustomerId($this->view->searchCustomer)
+            ->setSearchFavorites($this->view->searchFavorites);
 
-        $Search->setGlobalSearch($this->_searchGlobal);
-        $Search->setSortKey($this->_sortKey);
-        $Search->setSortOrder($this->_sortOrder);
-        $Search->setLimitStart($this->_limitStart);
-        $Search->setLimitCount($this->_limitCount);
-
-        $Search->setTxtSearch($this->view->searchTxt);
-        $Search->setCategoryId($this->view->searchCategory);
-        $Search->setCustomerId($this->view->searchCustomer);
-        $Search->setSearchFavorites($this->view->searchFavorites);
-
-        $this->filterOn = ($this->_sortKey > 1
+        $this->filterOn = ($this->sortKey > 1
             || $this->view->searchCustomer
             || $this->view->searchCategory
             || $this->view->searchTxt
@@ -194,7 +192,7 @@ class AccountsSearch extends Controller implements ActionsInterface
         $Grid = $this->getGrid();
         $Grid->getData()->setData($Search->processSearchResults());
         $Grid->updatePager();
-        $Grid->setTime(round(microtime() - $this->_queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         $this->view->assign('data', $Grid);
     }
@@ -209,42 +207,41 @@ class AccountsSearch extends Controller implements ActionsInterface
         $showOptionalActions = Session::getUserPreferences()->isOptionalActions();
 
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_ACC_VIEW);
-        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Detalles de Cuenta'));
-        $GridActionView->setTitle(_('Detalles de Cuenta'));
-        $GridActionView->setIcon($this->icons->getIconView());
-        $GridActionView->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowView');
-        $GridActionView->setOnClickFunction('sysPassUtil.Common.accGridAction');
-        $GridActionView->setOnClickArgs(self::ACTION_ACC_VIEW);
-        $GridActionView->setOnClickArgs(self::ACTION_ACC_SEARCH);
-        $GridActionView->setOnClickArgs('this');
+        $GridActionView->setId(self::ACTION_ACC_VIEW)
+            ->setType(DataGridActionType::VIEW_ITEM)
+            ->setName(_('Detalles de Cuenta'))
+            ->setTitle(_('Detalles de Cuenta'))
+            ->setIcon($this->icons->getIconView())
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowView')
+            ->setOnClickFunction('sysPassUtil.Common.accGridAction')
+            ->setOnClickArgs(self::ACTION_ACC_VIEW)
+            ->setOnClickArgs(self::ACTION_ACC_SEARCH)
+            ->setOnClickArgs('this');
 
         $GridActionViewPass = new DataGridAction();
-        $GridActionViewPass->setId(self::ACTION_ACC_VIEW_PASS);
-        $GridActionViewPass->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionViewPass->setName(_('Ver Clave'));
-        $GridActionViewPass->setTitle(_('Ver Clave'));
-        $GridActionViewPass->setIcon($this->icons->getIconViewPass());
-        $GridActionViewPass->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowViewPass');
-        $GridActionViewPass->setOnClickFunction('sysPassUtil.Common.accGridViewPass');
-        $GridActionViewPass->setOnClickArgs('this');
-        $GridActionViewPass->setOnClickArgs(1);
+        $GridActionViewPass->setId(self::ACTION_ACC_VIEW_PASS)
+            ->setType(DataGridActionType::VIEW_ITEM)
+            ->setName(_('Ver Clave'))
+            ->setTitle(_('Ver Clave'))
+            ->setIcon($this->icons->getIconViewPass())
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowViewPass')
+            ->setOnClickFunction('sysPassUtil.Common.accGridViewPass')
+            ->setOnClickArgs('this')
+            ->setOnClickArgs(1);
 
         // Añadir la clase para usar el portapapeles
-        $ClipboardIcon = $this->icons->getIconClipboard();
-        $ClipboardIcon->setClass('clip-pass-button');
+        $ClipboardIcon = $this->icons->getIconClipboard()->setClass('clip-pass-button');
 
         $GridActionCopyPass = new DataGridAction();
-        $GridActionCopyPass->setId(self::ACTION_ACC_VIEW_PASS);
-        $GridActionCopyPass->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionCopyPass->setName(_('Copiar Clave en Portapapeles'));
-        $GridActionCopyPass->setTitle(_('Copiar Clave en Portapapeles'));
-        $GridActionCopyPass->setIcon($ClipboardIcon);
-        $GridActionCopyPass->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopyPass');
-        $GridActionCopyPass->setOnClickFunction('sysPassUtil.Common.accGridViewPass');
-        $GridActionCopyPass->setOnClickArgs('this');
-        $GridActionCopyPass->setOnClickArgs(0);
+        $GridActionCopyPass->setId(self::ACTION_ACC_VIEW_PASS)
+            ->setType(DataGridActionType::VIEW_ITEM)
+            ->setName(_('Copiar Clave en Portapapeles'))
+            ->setTitle(_('Copiar Clave en Portapapeles'))
+            ->setIcon($ClipboardIcon)
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopyPass')
+            ->setOnClickFunction('sysPassUtil.Common.accGridViewPass')
+            ->setOnClickArgs('this')
+            ->setOnClickArgs(0);
 
         $EditIcon = $this->icons->getIconEdit();
 
@@ -253,16 +250,16 @@ class AccountsSearch extends Controller implements ActionsInterface
         }
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_ACC_EDIT);
-        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Cuenta'));
-        $GridActionEdit->setTitle(_('Editar Cuenta'));
-        $GridActionEdit->setIcon($EditIcon);
-        $GridActionEdit->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowEdit');
-        $GridActionEdit->setOnClickFunction('sysPassUtil.Common.accGridAction');
-        $GridActionEdit->setOnClickArgs(self::ACTION_ACC_EDIT);
-        $GridActionEdit->setOnClickArgs(self::ACTION_ACC_SEARCH);
-        $GridActionEdit->setOnClickArgs('this');
+        $GridActionEdit->setId(self::ACTION_ACC_EDIT)
+            ->setType(DataGridActionType::EDIT_ITEM)
+            ->setName(_('Editar Cuenta'))
+            ->setTitle(_('Editar Cuenta'))
+            ->setIcon($EditIcon)
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowEdit')
+            ->setOnClickFunction('sysPassUtil.Common.accGridAction')
+            ->setOnClickArgs(self::ACTION_ACC_EDIT)
+            ->setOnClickArgs(self::ACTION_ACC_SEARCH)
+            ->setOnClickArgs('this');
 
         $CopyIcon = $this->icons->getIconCopy();
 
@@ -271,16 +268,16 @@ class AccountsSearch extends Controller implements ActionsInterface
         }
 
         $GridActionCopy = new DataGridAction();
-        $GridActionCopy->setId(self::ACTION_ACC_COPY);
-        $GridActionCopy->setType(DataGridActionType::NEW_ITEM);
-        $GridActionCopy->setName(_('Copiar Cuenta'));
-        $GridActionCopy->setTitle(_('Copiar Cuenta'));
-        $GridActionCopy->setIcon($CopyIcon);
-        $GridActionCopy->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopy');
-        $GridActionCopy->setOnClickFunction('sysPassUtil.Common.accGridAction');
-        $GridActionCopy->setOnClickArgs(self::ACTION_ACC_COPY);
-        $GridActionCopy->setOnClickArgs(self::ACTION_ACC_SEARCH);
-        $GridActionCopy->setOnClickArgs('this');
+        $GridActionCopy->setId(self::ACTION_ACC_COPY)
+            ->setType(DataGridActionType::NEW_ITEM)
+            ->setName(_('Copiar Cuenta'))
+            ->setTitle(_('Copiar Cuenta'))
+            ->setIcon($CopyIcon)
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopy')
+            ->setOnClickFunction('sysPassUtil.Common.accGridAction')
+            ->setOnClickArgs(self::ACTION_ACC_COPY)
+            ->setOnClickArgs(self::ACTION_ACC_SEARCH)
+            ->setOnClickArgs('this');
 
         $DeleteIcon = $this->icons->getIconDelete();
 
@@ -289,67 +286,67 @@ class AccountsSearch extends Controller implements ActionsInterface
         }
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_ACC_DELETE);
-        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Cuenta'));
-        $GridActionDel->setTitle(_('Eliminar Cuenta'));
-        $GridActionDel->setIcon($DeleteIcon);
-        $GridActionDel->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowDelete');
-        $GridActionDel->setOnClickFunction('sysPassUtil.Common.accGridAction');
-        $GridActionDel->setOnClickArgs(self::ACTION_ACC_DELETE);
-        $GridActionDel->setOnClickArgs(self::ACTION_ACC_SEARCH);
-        $GridActionDel->setOnClickArgs('this');
+        $GridActionDel->setId(self::ACTION_ACC_DELETE)
+            ->setType(DataGridActionType::DELETE_ITEM)
+            ->setName(_('Eliminar Cuenta'))
+            ->setTitle(_('Eliminar Cuenta'))
+            ->setIcon($DeleteIcon)
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowDelete')
+            ->setOnClickFunction('sysPassUtil.Common.accGridAction')
+            ->setOnClickArgs(self::ACTION_ACC_DELETE)
+            ->setOnClickArgs(self::ACTION_ACC_SEARCH)
+            ->setOnClickArgs('this');
 
         $GridActionRequest = new DataGridAction();
-        $GridActionRequest->setId(self::ACTION_ACC_REQUEST);
-        $GridActionRequest->setName(_('Solicitar Modificación'));
-        $GridActionRequest->setTitle(_('Solicitar Modificación'));
-        $GridActionRequest->setIcon($this->icons->getIconEmail());
-        $GridActionRequest->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowRequest');
-        $GridActionRequest->setOnClickFunction('sysPassUtil.Common.accGridAction');
-        $GridActionRequest->setOnClickArgs(self::ACTION_ACC_REQUEST);
-        $GridActionRequest->setOnClickArgs(self::ACTION_ACC_SEARCH);
-        $GridActionRequest->setOnClickArgs('this');
+        $GridActionRequest->setId(self::ACTION_ACC_REQUEST)
+            ->setName(_('Solicitar Modificación'))
+            ->setTitle(_('Solicitar Modificación'))
+            ->setIcon($this->icons->getIconEmail())
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowRequest')
+            ->setOnClickFunction('sysPassUtil.Common.accGridAction')
+            ->setOnClickArgs(self::ACTION_ACC_REQUEST)
+            ->setOnClickArgs(self::ACTION_ACC_SEARCH)
+            ->setOnClickArgs('this');
 
         $GridActionOptional = new DataGridAction();
-        $GridActionOptional->setId(self::ACTION_ACC_REQUEST);
-        $GridActionOptional->setName(_('Más Acciones'));
-        $GridActionOptional->setTitle(_('Más Acciones'));
-        $GridActionOptional->setIcon($this->icons->getIconOptional());
-        $GridActionOptional->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowOptional');
-        $GridActionOptional->setOnClickFunction('sysPassUtil.Common.showOptional');
-        $GridActionOptional->setOnClickArgs('this');
+        $GridActionOptional->setId(self::ACTION_ACC_REQUEST)
+            ->setName(_('Más Acciones'))
+            ->setTitle(_('Más Acciones'))
+            ->setIcon($this->icons->getIconOptional())
+            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowOptional')
+            ->setOnClickFunction('sysPassUtil.Common.showOptional')
+            ->setOnClickArgs('this');
 
         $GridPager = new DataGridPager();
-        $GridPager->setIconPrev($this->icons->getIconNavPrev());
-        $GridPager->setIconNext($this->icons->getIconNavNext());
-        $GridPager->setIconFirst($this->icons->getIconNavFirst());
-        $GridPager->setIconLast($this->icons->getIconNavLast());
-        $GridPager->setSortKey($this->_sortKey);
-        $GridPager->setSortOrder($this->_sortOrder);
-        $GridPager->setLimitStart($this->_limitStart);
-        $GridPager->setLimitCount($this->_limitCount);
-        $GridPager->setOnClickFunction('sysPassUtil.Common.searchSort');
-        $GridPager->setOnClickArgs($this->_sortKey);
-        $GridPager->setOnClickArgs($this->_sortOrder);
-        $GridPager->setFilterOn($this->filterOn);
+        $GridPager->setIconPrev($this->icons->getIconNavPrev())
+            ->setIconNext($this->icons->getIconNavNext())
+            ->setIconFirst($this->icons->getIconNavFirst())
+            ->setIconLast($this->icons->getIconNavLast())
+            ->setSortKey($this->sortKey)
+            ->setSortOrder($this->sortOrder)
+            ->setLimitStart($this->limitStart)
+            ->setLimitCount($this->limitCount)
+            ->setOnClickFunction('sysPassUtil.Common.searchSort')
+            ->setOnClickArgs($this->sortKey)
+            ->setOnClickArgs($this->sortOrder)
+            ->setFilterOn($this->filterOn);
 
         $Grid = new DataGrid();
-        $Grid->setId('gridSearch');
-        $Grid->setDataHeaderTemplate('datasearch-header');
-        $Grid->setDataRowTemplate('datasearch-rows');
-        $Grid->setDataPagerTemplate('datagrid-nav-full');
-        $Grid->setHeader($this->getHeaderSort());
-        $Grid->setDataActions($GridActionView);
-        $Grid->setDataActions($GridActionViewPass);
-        $Grid->setDataActions($GridActionCopyPass);
-        $Grid->setDataActions($GridActionOptional);
-        $Grid->setDataActions($GridActionEdit);
-        $Grid->setDataActions($GridActionCopy);
-        $Grid->setDataActions($GridActionDel);
-        $Grid->setDataActions($GridActionRequest);
-        $Grid->setPager($GridPager);
-        $Grid->setData(new DataGridData());
+        $Grid->setId('gridSearch')
+            ->setDataHeaderTemplate('datasearch-header')
+            ->setDataRowTemplate('datasearch-rows')
+            ->setDataPagerTemplate('datagrid-nav-full')
+            ->setHeader($this->getHeaderSort())
+            ->setDataActions($GridActionView)
+            ->setDataActions($GridActionViewPass)
+            ->setDataActions($GridActionCopyPass)
+            ->setDataActions($GridActionOptional)
+            ->setDataActions($GridActionEdit)
+            ->setDataActions($GridActionCopy)
+            ->setDataActions($GridActionDel)
+            ->setDataActions($GridActionRequest)
+            ->setPager($GridPager)
+            ->setData(new DataGridData());
 
         return $Grid;
     }
@@ -362,46 +359,46 @@ class AccountsSearch extends Controller implements ActionsInterface
     private function getHeaderSort()
     {
         $GridSortCustomer = new DataGridSort();
-        $GridSortCustomer->setName(_('Cliente'));
-        $GridSortCustomer->setTitle(_('Ordenar por Cliente'));
-        $GridSortCustomer->setSortKey(AccountSearch::SORT_CUSTOMER);
-        $GridSortCustomer->setIconUp($this->icons->getIconUp());
-        $GridSortCustomer->setIconDown($this->icons->getIconDown());
+        $GridSortCustomer->setName(_('Cliente'))
+            ->setTitle(_('Ordenar por Cliente'))
+            ->setSortKey(AccountSearch::SORT_CUSTOMER)
+            ->setIconUp($this->icons->getIconUp())
+            ->setIconDown($this->icons->getIconDown());
 
         $GridSortName = new DataGridSort();
-        $GridSortName->setName(_('Nombre'));
-        $GridSortName->setTitle(_('Ordenar por Nombre'));
-        $GridSortName->setSortKey(AccountSearch::SORT_NAME);
-        $GridSortName->setIconUp($this->icons->getIconUp());
-        $GridSortName->setIconDown($this->icons->getIconDown());
+        $GridSortName->setName(_('Nombre'))
+            ->setTitle(_('Ordenar por Nombre'))
+            ->setSortKey(AccountSearch::SORT_NAME)
+            ->setIconUp($this->icons->getIconUp())
+            ->setIconDown($this->icons->getIconDown());
 
         $GridSortCategory = new DataGridSort();
-        $GridSortCategory->setName(_('Categoría'));
-        $GridSortCategory->setTitle(_('Ordenar por Categoría'));
-        $GridSortCategory->setSortKey(AccountSearch::SORT_CATEGORY);
-        $GridSortCategory->setIconUp($this->icons->getIconUp());
-        $GridSortCategory->setIconDown($this->icons->getIconDown());
+        $GridSortCategory->setName(_('Categoría'))
+            ->setTitle(_('Ordenar por Categoría'))
+            ->setSortKey(AccountSearch::SORT_CATEGORY)
+            ->setIconUp($this->icons->getIconUp())
+            ->setIconDown($this->icons->getIconDown());
 
         $GridSortLogin = new DataGridSort();
-        $GridSortLogin->setName(_('Usuario'));
-        $GridSortLogin->setTitle(_('Ordenar por Usuario'));
-        $GridSortLogin->setSortKey(AccountSearch::SORT_LOGIN);
-        $GridSortLogin->setIconUp($this->icons->getIconUp());
-        $GridSortLogin->setIconDown($this->icons->getIconDown());
+        $GridSortLogin->setName(_('Usuario'))
+            ->setTitle(_('Ordenar por Usuario'))
+            ->setSortKey(AccountSearch::SORT_LOGIN)
+            ->setIconUp($this->icons->getIconUp())
+            ->setIconDown($this->icons->getIconDown());
 
         $GridSortUrl = new DataGridSort();
-        $GridSortUrl->setName(_('URL / IP'));
-        $GridSortUrl->setTitle(_('Ordenar por URL / IP'));
-        $GridSortUrl->setSortKey(AccountSearch::SORT_URL);
-        $GridSortUrl->setIconUp($this->icons->getIconUp());
-        $GridSortUrl->setIconDown($this->icons->getIconDown());
+        $GridSortUrl->setName(_('URL / IP'))
+            ->setTitle(_('Ordenar por URL / IP'))
+            ->setSortKey(AccountSearch::SORT_URL)
+            ->setIconUp($this->icons->getIconUp())
+            ->setIconDown($this->icons->getIconDown());
 
         $GridHeaderSort = new DataGridHeaderSort();
-        $GridHeaderSort->addSortField($GridSortCustomer);
-        $GridHeaderSort->addSortField($GridSortName);
-        $GridHeaderSort->addSortField($GridSortCategory);
-        $GridHeaderSort->addSortField($GridSortLogin);
-        $GridHeaderSort->addSortField($GridSortUrl);
+        $GridHeaderSort->addSortField($GridSortCustomer)
+            ->addSortField($GridSortName)
+            ->addSortField($GridSortCategory)
+            ->addSortField($GridSortLogin)
+            ->addSortField($GridSortUrl);
 
         return $GridHeaderSort;
     }

@@ -842,7 +842,8 @@ sysPass.Util.Common = function () {
                         resMsg("error", description, undefined, action);
                         break;
                     case 2:
-                        $("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>').show();
+                        resMsg("error", description, undefined, action);
+                        //$("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>').show();
                         break;
                     case 3:
                         $.fancybox.close();

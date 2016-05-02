@@ -27,8 +27,8 @@ namespace SP\Storage;
 
 
 use SP\Config\Config;
-use SP\Core\Factory;
-use SP\Core\SPException;
+use SP\Core\SingleFactory;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class DBUtil con utilidades de la BD
@@ -46,12 +46,13 @@ class DBUtil
     public static function checkDatabaseExist()
     {
         try {
-            $db = Factory::getDBStorage()->getConnection();
+            $db = SingleFactory::getDBStorage()->getConnection();
 
-            $query = 'SELECT COUNT(*) '
-                . 'FROM information_schema.tables '
-                . 'WHERE table_schema=\'' . Config::getConfig()->getDbName() . '\' '
-                . 'AND table_name = \'usrData\'';
+            $query = /** @lang SQL */
+                'SELECT COUNT(*) 
+                FROM information_schema.tables
+                WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'
+                AND table_name = \'usrData\'';
 
             if ($db->query($query)->fetchColumn() !== 0) {
                 return true;
@@ -73,6 +74,7 @@ class DBUtil
      * @param $arrOrder   array     con el orden de las columnas
      * @return array con los valores del select con el Id como clave y el nombre como valor
      */
+    // FIXME
     public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
     {
         if (!$tblName || !$tblColId || !$tblColName) {
@@ -113,7 +115,7 @@ class DBUtil
     public static function escape($str)
     {
         try {
-            $db = Factory::getDBStorage()->getConnection();
+            $db = SingleFactory::getDBStorage()->getConnection();
 
             return $db->quote(trim($str));
         } catch (SPException $e) {
@@ -131,7 +133,7 @@ class DBUtil
         $dbinfo = array();
 
         try {
-            $db = Factory::getDBStorage()->getConnection();
+            $db = SingleFactory::getDBStorage()->getConnection();
 
             $attributes = array(
                 'SERVER_VERSION',
@@ -143,7 +145,6 @@ class DBUtil
             foreach ($attributes as $val) {
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
-
         } catch (SPException $e) {
             return $dbinfo;
         }

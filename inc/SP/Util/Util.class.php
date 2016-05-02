@@ -28,7 +28,7 @@ namespace SP\Util;
 use SP\Config\Config;
 use SP\Core\Init;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
 use SP\Log\Log;
 

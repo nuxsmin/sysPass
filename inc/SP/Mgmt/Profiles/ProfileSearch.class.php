@@ -27,6 +27,7 @@ namespace SP\Mgmt\Profiles;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -40,36 +41,35 @@ use SP\Util\Checks;
 class ProfileSearch extends ProfileBase implements ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return mixed
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $query = /** @lang SQL */
             'SELECT userprofile_id, userprofile_name FROM usrProfiles';
 
         $Data = new QueryData();
 
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
+        if ($SearchData->getSeachString() !== '') {
             $query .= ' WHERE userprofile_name LIKE ?';
 
             if (Checks::demoIsEnabled()) {
                 $query .= ' userprofile_name <> "Admin" AND userprofile_name <> "Demo"';
             }
 
+            $search = '%' . $SearchData->getSeachString() . '%';
+
             $Data->addParam($search);
         } elseif (Checks::demoIsEnabled()) {
             $query .= ' WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo"';
         }
 
-        $query .= ' ORDER BY userprofile_name';
-        $query .= ' LIMIT ?, ?';
+        $query .= /** @lang SQL */
+            ' ORDER BY userprofile_name LIMIT ?, ?';
 
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         $Data->setQuery($query);
 

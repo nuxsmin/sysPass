@@ -28,6 +28,7 @@ namespace SP\Mgmt\CustomFields;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -41,12 +42,22 @@ use SP\Util\Util;
 class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
-     * @return CustomFieldDefData[]|array
+     * Category constructor.
+     *
+     * @param CustomFieldDefData $itemData
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function __construct($itemData = null)
+    {
+        $this->setDataModel('SP\DataModel\CustomFieldDefData');
+
+        parent::__construct($itemData);
+    }
+
+    /**
+     * @param ItemSearchData $SearchData
+     * @return array|\SP\DataModel\CustomFieldDefData[]
+     */
+    public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $query = /** @lang SQL */
             'SELECT customfielddef_id,
@@ -57,10 +68,10 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
             LIMIT ?, ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         DB::setReturnArray();
         DB::setFullRowCount();
@@ -81,13 +92,13 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
             $fieldDef = unserialize($CustomField->getCustomfielddefField());
 
             if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
+                $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
             }
 
-            if (empty($search)
-                || stripos($fieldDef->getName(), $search) !== false
-                || stripos(CustomFieldTypes::getFieldsTypes($fieldDef->getType(), true), $search) !== false
-                || stripos(CustomFieldTypes::getFieldsModules($CustomField->getCustomfielddefModule()), $search) !== false
+            if ($SearchData->getSeachString() === ''
+                || stripos($fieldDef->getName(), $SearchData->getSeachString()) !== false
+                || stripos(CustomFieldTypes::getFieldsTypes($fieldDef->getType(), true), $SearchData->getSeachString()) !== false
+                || stripos(CustomFieldTypes::getFieldsModules($CustomField->getCustomfielddefModule()), $SearchData->getSeachString()) !== false
             ) {
                 $fieldDef->setId($CustomField->getCustomfielddefId());
 

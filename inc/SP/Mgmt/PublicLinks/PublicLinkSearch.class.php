@@ -26,6 +26,7 @@
 namespace SP\Mgmt\PublicLinks;
 
 use SP\Account\AccountUtil;
+use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Mgmt\ItemSearchInterface;
@@ -44,12 +45,10 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return mixed
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $query = /** @lang SQL */
             'SELECT publicLink_id, publicLink_hash, publicLink_linkData FROM publicLinks LIMIT ?, ?';
@@ -57,8 +56,8 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClassName('SP\DataModel\PublicLinkListData');
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         DB::setReturnArray();
         DB::setFullRowCount();
@@ -80,7 +79,7 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
             $PublicLinkData = unserialize($PublicLinkListData->getPublicLinkLinkData());
 
             if (get_class($PublicLinkData) === '__PHP_Incomplete_Class') {
-                $PublicLinkData = Util::castToClass('SP\Mgmt\PublicLinks\PublicLink', $PublicLinkData);
+                $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkData);
             }
 
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
@@ -91,9 +90,9 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
             $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
             $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
 
-            if (empty($search)
-                || stripos($PublicLinkListData->getAccountName(), $search) !== false
-                || stripos($PublicLinkListData->getUserLogin(), $search) !== false
+            if ($SearchData->getSeachString() === ''
+                || stripos($PublicLinkListData->getAccountName(), $SearchData->getSeachString()) !== false
+                || stripos($PublicLinkListData->getUserLogin(), $SearchData->getSeachString()) !== false
             ){
                 $publicLinks[] = $PublicLinkListData;
             }

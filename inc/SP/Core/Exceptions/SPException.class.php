@@ -23,7 +23,7 @@
  *
  */
 
-namespace SP\Core;
+namespace SP\Core\Exceptions;
 
 use Exception;
 
@@ -40,45 +40,70 @@ class SPException extends Exception
     const SP_OK = 0;
     const SP_CRITICAL = 1;
     const SP_WARNING = 2;
+    const SP_ERROR = 3;
+    const SP_INFO = 4;
     /**
      * @var int Tipo de excepción
      */
-    private $_type = 0;
+    protected $type = 0;
     /**
      * @var string Ayuda de la excepción
      */
-    private $_hint = '';
+    protected $hint = '';
 
+    /**
+     * SPException constructor.
+     *
+     * @param string         $type
+     * @param int            $message
+     * @param string         $hint
+     * @param int            $code
+     * @param Exception|null $previous
+     */
     public function __construct($type, $message, $hint = '', $code = 0, \Exception $previous = null)
     {
-        $this->_type = $type;
-        $this->_hint = $hint;
+        $this->type = $type;
+        $this->hint = $hint;
         parent::__construct($message, $code, $previous);
     }
 
+    /**
+     * @param $type
+     * @return mixed
+     */
     public static function getExceptionTypeName($type)
     {
         $typeName = array(
             self::SP_OK => 'ok',
             self::SP_CRITICAL => 'critical',
-            self::SP_WARNING => 'warning'
+            self::SP_WARNING => 'warning',
+            self::SP_ERROR => 'error'
         );
 
         return $typeName[$type];
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return __CLASS__ . ": [{$this->code}]: {$this->message} ({$this->_hint})\n";
+        return __CLASS__ . ": [{$this->code}]: {$this->message} ({$this->hint})\n";
     }
 
+    /**
+     * @return string
+     */
     public function getHint()
     {
-        return $this->_hint;
+        return $this->hint;
     }
 
+    /**
+     * @return int|string
+     */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 }

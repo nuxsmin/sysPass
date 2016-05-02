@@ -25,7 +25,7 @@
 
 namespace SP\Util;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class Connection para crear conexiones TCP o UDP
@@ -76,7 +76,7 @@ class Connection implements ConnectionInterface
      *
      * @param $type int EL tipo de socket TCP/UDP
      * @return mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getSocket($type)
     {
@@ -113,7 +113,7 @@ class Connection implements ConnectionInterface
      *
      * @param $message string El mensaje a enviar
      * @return int|bool
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function send($message)
     {

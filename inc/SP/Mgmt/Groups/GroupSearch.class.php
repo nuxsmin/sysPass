@@ -27,6 +27,7 @@ namespace SP\Mgmt\Groups;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -39,34 +40,34 @@ use SP\Storage\QueryData;
 class GroupSearch extends GroupBase implements ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return mixed
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $query = /** @lang SQL */
-            'SELECT usergroup_id
+            'SELECT usergroup_id,
             usergroup_name,
             usergroup_description
             FROM usrGroups';
 
         $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
 
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
-            $query .= ' WHERE usergroup_name LIKE ? OR usergroup_description LIKE ?';
+        if ($SearchData->getSeachString() !== '') {
+            $query .= /** @lang SQL */
+                ' WHERE usergroup_name LIKE ? OR usergroup_description LIKE ?';
+            $search = '%' . $SearchData->getSeachString() . '%';
 
             $Data->addParam($search);
             $Data->addParam($search);
         }
 
-        $query .= ' ORDER BY usergroup_name';
-        $query .= ' LIMIT ?, ?';
+        $query .= /** @lang SQL */
+            ' ORDER BY usergroup_name LIMIT ?, ?';
 
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         $Data->setQuery($query);
 

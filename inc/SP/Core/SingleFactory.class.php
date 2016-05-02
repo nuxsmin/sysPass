@@ -25,6 +25,7 @@
 
 namespace SP\Core;
 
+use SP\Mgmt\ItemBase;
 use SP\Storage\MySQLHandler;
 use SP\Storage\DBStorageInterface;
 use SP\Storage\FileStorageInterface;
@@ -35,28 +36,32 @@ use SP\Storage\XmlHandler;
  *
  * @package SP\Core
  */
-class Factory
+class SingleFactory
 {
     /**
      * @var FileStorageInterface
      */
-    private static $configFactory;
+    private static $ConfigFactory;
     /**
      * @var DBStorageInterface
      */
     private static $DBFactory;
+    /**
+     * @var ItemBase[]
+     */
+    private static $ItemFactory = [];
 
     /**
      * Devuelve el almacenamiento para la configuración
      *
      * @return FileStorageInterface
      */
-    public static function getConfigStorage(){
-        if (!self::$configFactory instanceof FileStorageInterface) {
-            self::$configFactory = new XmlHandler(XML_CONFIG_FILE);
+    public static final function getConfigStorage(){
+        if (!self::$ConfigFactory instanceof FileStorageInterface) {
+            self::$ConfigFactory = new XmlHandler(XML_CONFIG_FILE);
         }
 
-        return self::$configFactory;
+        return self::$ConfigFactory;
     }
 
     /**
@@ -64,12 +69,33 @@ class Factory
      *
      * @return DBStorageInterface
      */
-    public static function getDBStorage()
+    public static final function getDBStorage()
     {
         if (!self::$DBFactory instanceof DBStorageInterface) {
             self::$DBFactory = new MySQLHandler();
         }
 
         return self::$DBFactory;
+    }
+
+    /**
+     * Devuelve la instancia de la clase del elemento solicitado
+     *
+     * @param  string $caller La clase del objeto
+     * @param object $itemData Los datos del elemento
+     * @return object
+     * @throws Exceptions\InvalidClassException
+     */
+    public static final function getItem($caller, $itemData = null)
+    {
+//        error_log(count(self::$ItemFactory) . '-' . (memory_get_usage() / 1000));
+
+        if (isset(self::$ItemFactory[$caller])) {
+            return (null !== $itemData) ? self::$ItemFactory[$caller]->setItemData($itemData) : self::$ItemFactory[$caller];
+        }
+
+        self::$ItemFactory[$caller] = new $caller($itemData);
+
+        return self::$ItemFactory[$caller];
     }
 }

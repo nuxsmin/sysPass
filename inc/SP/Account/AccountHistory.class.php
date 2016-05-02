@@ -29,7 +29,7 @@ use SP\Config\ConfigDB;
 use SP\Core\Crypt;
 use SP\Storage\DB;
 use SP\Log\Log;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;

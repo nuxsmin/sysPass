@@ -25,6 +25,7 @@
 
 namespace SP\Core;
 
+use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Mgmt\Users\User;
@@ -41,22 +42,21 @@ class SessionUtil
     /**
      * Establece las variables de sesión del usuario.
      *
-     * @param User $User
-     * @throws SPException
+     * @param UserData $UserData
      */
-    public static function loadUserSession(User $User)
+    public static function loadUserSession(UserData $UserData)
     {
-        Session::setUserId($User->getUserId());
-        Session::setUserName($User->getUserName());
-        Session::setUserLogin($User->getUserLogin());
-        Session::setUserProfileId($User->getUserProfileId());
-        Session::setUserGroupId($User->getUserGroupId());
-        Session::setUserGroupName($User->getUserGroupName());
-        Session::setUserEMail($User->getUserEmail());
-        Session::setUserIsAdminApp($User->isUserIsAdminApp());
-        Session::setUserIsAdminAcc($User->isUserIsAdminAcc());
-        Session::setUserIsLdap($User->isUserIsLdap());
-        Session::setUserProfile(Profile::getItem()->getById($User->getUserProfileId())->getItemData());
+        Session::setUserId($UserData->getUserId());
+        Session::setUserName($UserData->getUserName());
+        Session::setUserLogin($UserData->getUserLogin());
+        Session::setUserProfileId($UserData->getUserProfileId());
+        Session::setUserGroupId($UserData->getUserGroupId());
+        Session::setUserGroupName($UserData->getUsergroupName()); // FIXME
+        Session::setUserEMail($UserData->getUserEmail());
+        Session::setUserIsAdminApp($UserData->isUserIsAdminApp());
+        Session::setUserIsAdminAcc($UserData->isUserIsAdminAcc());
+        Session::setUserIsLdap($UserData->isUserIsLdap());
+        Session::setUserProfile(Profile::getItem()->getById($UserData->getUserProfileId())->getItemData());
     }
 
     /**
@@ -70,6 +70,9 @@ class SessionUtil
 
     /**
      * Guardar la clave maestra encriptada en la sesión
+     *
+     * @param $masterPass
+     * @return bool
      */
     public static function saveSessionMPass($masterPass)
     {

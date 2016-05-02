@@ -30,10 +30,12 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Groups\GroupSearch;
 use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Core\Template;
+use SP\Mgmt\Users\UserSearch;
 use SP\Mgmt\Users\UserUtil;
 
 /**
@@ -46,7 +48,7 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
     /**
      * @var int
      */
-    private $_limitCount;
+    private $SearchData;
 
     /**
      * Constructor
@@ -57,7 +59,9 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->_limitCount = Config::getConfig()->getAccountCount();
+        $ItemSearchData = new ItemSearchData();
+        $ItemSearchData->setLimitCount(Config::getConfig()->getAccountCount());
+        $this->SearchData = $ItemSearchData;
     }
 
     /**
@@ -72,9 +76,9 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getUsersGrid();
-        $Grid->getData()->setData(UserUtil::getUsersMgmSearch($this->_limitCount));
+        $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->_limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -91,9 +95,9 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getGroupsGrid();
-        $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->_limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -110,9 +114,9 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getProfilesGrid();
-        $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->_limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -129,9 +133,9 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getTokensGrid();
-        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->_limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -148,9 +152,9 @@ class AccItemsMgmt extends GridTabController implements ActionsInterface
         }
 
         $Grid = $this->Grids->getPublicLinksGrid();
-        $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->_limitCount));
+        $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->_limitCount);
+        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }

@@ -214,7 +214,7 @@
                                 <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
                                 <?php if ($gotData): ?>
                                     <?php foreach ($accountOtherUsers as $otherUser): ?>
-                                        <?php /** @var $otherUser \SP\DataModel\UserBasicData */ ?>
+                                        <?php /** @var $otherUser \SP\DataModel\UserData */ ?>
                                         <option
                                             value="<?php echo $otherUser->getUserId(); ?>"
                                             selected><?php echo $otherUser->getUserLogin(); ?></option>

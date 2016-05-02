@@ -48,18 +48,6 @@ class TagData
     public $tag_hash = '';
 
     /**
-     * TagData constructor.
-     *
-     * @param int    $tag_id
-     * @param string $tag_name
-     */
-    public function __construct($tag_id = 0, $tag_name = '')
-    {
-        $this->tag_id = $tag_id;
-        $this->tag_name = $tag_name;
-    }
-
-    /**
      * @return int
      */
     public function getTagId()
@@ -89,6 +77,7 @@ class TagData
     public function setTagName($tag_name)
     {
         $this->tag_name = $tag_name;
+        $this->createTagHash();
     }
 
     /**
@@ -105,5 +94,15 @@ class TagData
     public function setTagHash($tag_hash)
     {
         $this->tag_hash = $tag_hash;
+    }
+
+    /**
+     * Formatear el nombre de la etiqueta y devolver un hash
+     *
+     * @return string
+     */
+    protected function createTagHash()
+    {
+        $this->tag_hash = sha1(strtolower(preg_replace('#[.\s_,-;\'":()|/"]+#', '', $this->tag_name)));
     }
 }

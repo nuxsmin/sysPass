@@ -27,6 +27,7 @@ namespace SP\Mgmt\Customers;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -39,33 +40,34 @@ use SP\Storage\QueryData;
 class CustomerSearch extends CustomerBase implements ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return mixed
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = 'SELECT customer_id, customer_name, customer_description '
-            . 'FROM customers';
+        $query = /** @lang SQL */
+            'SELECT customer_id,
+            customer_name,
+            customer_description
+            FROM customers';
 
         $Data = new QueryData();
 
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
+        if ($SearchData->getSeachString() !== '') {
+            $search = '%' . $SearchData->getSeachString() . '%';
 
-            $query .= ' WHERE customer_name LIKE ? '
-                . 'OR customer_description LIKE ?';
+            $query .= /** @lang SQL */
+                ' WHERE customer_name LIKE ? OR customer_description LIKE ?';
 
             $Data->addParam($search);
             $Data->addParam($search);
         }
 
-        $query .= ' ORDER BY customer_name';
-        $query .= ' LIMIT ?,?';
+        $query .= /** @lang SQL */
+            ' ORDER BY customer_name LIMIT ?,?';
 
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         $Data->setQuery($query);
 

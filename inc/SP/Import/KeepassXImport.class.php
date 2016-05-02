@@ -28,7 +28,7 @@ namespace SP\Import;
 use SimpleXMLElement;
 use SP\DataModel\AccountData;
 use SP\Core\Crypt;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -49,7 +49,7 @@ class KeepassXImport extends XmlImportBase
     /**
      * Iniciar la importación desde KeePassX.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     public function doImport()

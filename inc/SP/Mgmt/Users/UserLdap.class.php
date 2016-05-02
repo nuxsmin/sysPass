@@ -26,8 +26,11 @@
 namespace SP\Mgmt\Users;
 
 use SP\Config\Config;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -38,118 +41,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP
  */
-class UserLdap
+class UserLdap extends UserBase implements ItemInterface
 {
-    /**
-     * Crear un nuevo usuario en la BBDD con los datos de LDAP.
-     * Esta función crea los usuarios de LDAP en la BBDD para almacenar infomación del mismo
-     * y utilizarlo en caso de fallo de LDAP
-     *
-     * @param User $User
-     * @return bool
-     */
-    public static function newUserLDAP(User $User)
-    {
-        $passdata = UserPass::makeUserPassHash($User->getUserPass());
-        $groupId = Config::getConfig()->getLdapDefaultGroup();
-        $profileId = Config::getConfig()->getLdapDefaultProfile();
-
-        $query = 'INSERT INTO usrData SET '
-            . 'user_name = :name,'
-            . 'user_groupId = :groupId,'
-            . 'user_login = :login,'
-            . 'user_pass = :pass,'
-            . 'user_hashSalt = :hashSalt,'
-            . 'user_email = :email,'
-            . 'user_notes = :notes,'
-            . 'user_profileId = :profileId,'
-            . 'user_isLdap = 1,'
-            . 'user_isDisabled = :isDisabled';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($User->getUserName(), 'name');
-        $Data->addParam($User->getUserLogin(), 'login');
-        $Data->addParam($User->getUserEmail(), 'email');
-        $Data->addParam(_('Usuario de LDAP'), 'notes');
-        $Data->addParam($groupId, 'groupId');
-        $Data->addParam($profileId, 'profileId');
-        $Data->addParam(($groupId === 0 || $profileId === 0) ? 1 : 0, 'isDisabled');
-        $Data->addParam($passdata['pass'], 'pass');
-        $Data->addParam($passdata['salt'], 'hashSalt');
-
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
-
-        $Log = new Log();
-
-        if (!$groupId || !$profileId) {
-            $Log->setAction(_('Activación Cuenta'));
-            $Log->addDescription(_('Su cuenta está pendiente de activación.'));
-            $Log->addDescription(_('En breve recibirá un email de confirmación.'));
-
-            Email::sendEmail($Log, $User->getUserEmail(), false);
-        }
-
-        $Log->resetDescription();
-        $Log->setAction(_('Nuevo usuario de LDAP'));
-        $Log->addDescription(sprintf("%s (%s)", $User->getUserName(), $User->getUserLogin()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
-
-        return true;
-    }
-
-    /**
-     * Actualiza los datos de los usuarios de LDAP en la BBDD.
-     *
-     * @return bool
-     */
-    public static function updateLDAPUserInDB(User $User)
-    {
-        $passdata = UserPass::makeUserPassHash($User->getUserPass());
-
-        $query = 'UPDATE usrData SET '
-            . 'user_pass = :pass,'
-            . 'user_hashSalt = :hashSalt,'
-            . 'user_name = :name,'
-            . 'user_email = :email,'
-            . 'user_lastUpdate = NOW(),'
-            . 'user_isLdap = 1 '
-            . 'WHERE user_login = :login LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($User->getUserLogin(), 'login');
-        $Data->addParam($User->getUserName(), 'name');
-        $Data->addParam($User->getUserEmail(), 'email');
-        $Data->addParam($passdata['pass'], 'pass');
-        $Data->addParam($passdata['salt'], 'hashSalt');
-
-        return DB::getQuery($Data);
-    }
-
-    /**
-     * Comprobar si un usuario autentifica mediante LDAP
-     *
-     * @param string $userLogin con el login del usuario
-     * @return bool
-     */
-    public static function checkUserIsLDAP($userLogin)
-    {
-        $query = 'SELECT BIN(user_isLdap) AS user_isLdap FROM usrData WHERE user_login = :login LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($userLogin, 'login');
-
-        $queryRes = DB::getResults($Data);
-
-        return ($queryRes !== false && intval($queryRes->user_isLdap) === 1);
-    }
-
     /**
      * Comprobar si los datos del usuario de LDAP están en la BBDD.
      *
@@ -158,12 +51,167 @@ class UserLdap
      */
     public static function checkLDAPUserInDB($userLogin)
     {
-        $query = 'SELECT user_login FROM usrData WHERE user_login = :login LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT user_login FROM usrData WHERE user_login = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($userLogin, 'login');
+        $Data->addParam($userLogin);
 
         return (DB::getQuery($Data) === true && DB::$lastNumRows === 1);
+    }
+
+    /**
+     * @return mixed
+     * @throws SPException
+     */
+    public function add()
+    {
+        if ($this->checkDuplicatedOnAdd()) {
+            throw new SPException(SPException::SP_INFO, _('Login/email de usuario duplicados'));
+        }
+
+        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
+        $groupId = Config::getConfig()->getLdapDefaultGroup();
+        $profileId = Config::getConfig()->getLdapDefaultProfile();
+        $this->itemData->setUserIsDisabled(($groupId === 0 || $profileId === 0) ? 1 : 0);
+
+        $query = /** @lang SQL */
+            'INSERT INTO usrData SET
+            user_name = ?,
+            user_login = ?,
+            user_email = ?,
+            user_notes = ?,
+            user_groupId = ?,
+            user_profileId = ?,
+            user_mPass = \'\',
+            user_mIV = \'\',
+            user_isAdminApp = ?,
+            user_isAdminAcc = ?,
+            user_isDisabled = ?,
+            user_isChangePass = ?,
+            user_isLdap = 1,
+            user_pass = ?,
+            user_hashSalt = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserName());
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam(_('Usuario de LDAP'));
+        $Data->addParam($groupId);
+        $Data->addParam($profileId);
+        $Data->addParam(intval($this->itemData->isUserIsAdminApp()));
+        $Data->addParam(intval($this->itemData->isUserIsAdminAcc()));
+        $Data->addParam(intval($this->itemData->isUserIsDisabled()));
+        $Data->addParam(intval($this->itemData->isUserIsChangePass()));
+        $Data->addParam($passdata['pass'], 'pass');
+        $Data->addParam($passdata['salt'], 'salt');
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al guardar los datos de LDAP'));
+        }
+
+        $this->itemData->setUserId(DB::getLastId());
+
+        if (!$groupId || !$profileId) {
+            $LogEmail = new Log(_('Activación Cuenta'));
+            $LogEmail->addDescription(_('Su cuenta está pendiente de activación.'));
+            $LogEmail->addDescription(_('En breve recibirá un email de confirmación.'));
+
+            Email::sendEmail($LogEmail, $this->itemData->getUserEmail(), false);
+        }
+
+        $Log = new Log(_('Nuevo usuario de LDAP'));
+        $Log->addDescription(sprintf("%s (%s)", $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function delete($id)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    /**
+     * @return $this
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function update()
+    {
+        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
+
+        $query = 'UPDATE usrData SET 
+            user_pass = ?,
+            user_hashSalt = ?,
+            user_name = ?,
+            user_email = ?,
+            user_lastUpdate = NOW(),
+            user_isLdap = 1 
+            WHERE user_login = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($passdata['pass']);
+        $Data->addParam($passdata['salt']);
+        $Data->addParam($this->itemData->getUserName());
+        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getUserLogin());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar la clave del usuario en la BBDD'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function checkInUse($id)
+    {
+        // TODO: Implement checkInUse() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate()
+    {
+        // TODO: Implement checkDuplicatedOnUpdate() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        // TODO: Implement checkDuplicatedOnAdd() method.
     }
 }

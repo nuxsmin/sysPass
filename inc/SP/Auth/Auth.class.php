@@ -27,6 +27,10 @@
 namespace SP\Auth;
 
 use SP\Config\Config;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
+use SP\DataModel\UserPassData;
+use SP\DataModel\UserPassRecoverData;
 use SP\Storage\DB;
 use SP\Log\Email;
 use SP\Html\Html;
@@ -164,55 +168,68 @@ class Auth
     public static function authUserMySQL($userLogin, $userPass)
     {
         if (UserMigrate::checkUserIsMigrate($userLogin)) {
-            if (!UserMigrate::migrateUser($userLogin, $userPass)) {
+            try {
+                UserMigrate::migrateUser($userLogin, $userPass);
+            } catch (SPException $e) {
+                $Log = new Log(__FUNCTION__);
+                $Log->addDescription($e->getMessage());
+                $Log->addDetails(_('Login'), $userLogin);
+                $Log->writeLog();
+
                 return false;
             }
         }
 
-        $query = 'SELECT user_login, user_pass, user_hashSalt '
-            . 'FROM usrData '
-            . 'WHERE user_login = :login AND user_isMigrate = 0 LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT user_pass, user_hashSalt
+            FROM usrData
+            WHERE user_login = ? 
+            AND user_isMigrate = 0 LIMIT 1';
 
         $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\UserPassData');
         $Data->setQuery($query);
-        $Data->addParam($userLogin, 'login');
+        $Data->addParam($userLogin);
 
-        $queryRes = DB::getResults($Data, __FUNCTION__);
+        /** @var UserPassData $queryRes */
+        $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false
-            && $queryRes->user_pass == crypt($userPass, $queryRes->user_hashSalt));
+            && $queryRes->getUserPass() == crypt($userPass, $queryRes->getUserHashSalt()));
     }
 
     /**
      * Proceso para la recuperación de clave.
      *
-     * @param string $login con el login del usuario
-     * @param string $email con el email del usuario
+     * @param UserData $UserData
      * @return bool
      */
-    public static function mailPassRecover($login, $email)
+    public static function mailPassRecover(UserData $UserData)
     {
-        if (UserUtil::checkUserMail($login, $email)
-            && !UserUtil::checkUserIsDisabled($login)
-            && !UserLdap::checkUserIsLDAP($login)
-            && !UserPassRecover::checkPassRecoverLimit($login)
+        if (!$UserData->isUserIsDisabled()
+            && !$UserData->isUserIsLdap()
+            && !UserPassRecover::checkPassRecoverLimit($UserData)
         ) {
             $hash = Util::generate_random_bytes();
 
-            $log = new Log(_('Cambio de Clave'));
+            $Log = new Log(_('Cambio de Clave'));
 
-            $log->addDescription(Html::strongText(_('Se ha solicitado el cambio de su clave de usuario.')));
-            $log->addDescription();
-            $log->addDescription(_('Para completar el proceso es necesario que acceda a la siguiente URL:'));
-            $log->addDescription();
-            $log->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
-            $log->addDescription('');
-            $log->addDescription(_('Si no ha solicitado esta acción, ignore este mensaje.'));
+            $Log->addDescriptionHtml(_('Se ha solicitado el cambio de su clave de usuario.'));
+            $Log->addDescriptionLine();
+            $Log->addDescription(_('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+            $Log->addDescriptionLine();
+            $Log->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
+            $Log->addDescriptionLine();
+            $Log->addDescription(_('Si no ha solicitado esta acción, ignore este mensaje.'));
 
-            return (Email::sendEmail($log, $email, false) && UserPassRecover::addPassRecover($login, $hash));
-        } else {
-            return false;
+            $UserPassRecoverData = new UserPassRecoverData();
+            $UserPassRecoverData->setUserpassrUserId($UserData->getUserId());
+            $UserPassRecoverData->setUserpassrHash($hash);
+
+            return (Email::sendEmail($Log, $UserData->getUserEmail(), false) && UserPassRecover::getItem($UserPassRecoverData)->add());
         }
+
+        return false;
     }
 
     /**
@@ -224,15 +241,17 @@ class Auth
      */
     public static function checkAuthToken($actionId, $token)
     {
-        $query = 'SELECT authtoken_id FROM authTokens ' .
-            'WHERE authtoken_actionId = :actionId ' .
-            'AND authtoken_token = :token ' .
-            'LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT authtoken_id
+            FROM authTokens
+            WHERE authtoken_actionId = ?
+            AND authtoken_token = ?
+            LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($actionId, 'actionId');
-        $Data->addParam($token, 'token');
+        $Data->addParam($actionId);
+        $Data->addParam($token);
 
         DB::getQuery($Data);
 

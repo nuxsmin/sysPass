@@ -28,7 +28,7 @@ namespace SP\Storage;
 use \PDO;
 use SP\Config\Config;
 use SP\Core\Init;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -42,43 +42,99 @@ class MySQLHandler implements DBStorageInterface
     /**
      * @var PDO
      */
-    private $_db;
+    private $db;
+    /**
+     * @var string
+     */
+    private $dbHost = '';
+    /**
+     * @var int
+     */
+    private $dbPort = 0;
+    /**
+     * @var string
+     */
+    private $dbName = '';
+    /**
+     * @var string
+     */
+    private $dbUser = '';
+    /**
+     * @var string
+     */
+    private $dbPass = '';
 
+    /**
+     * MySQLHandler constructor.
+     *
+     * @param string $dbHost
+     * @param int    $dbPort
+     * @param string $dbName
+     * @param string $dbUser
+     * @param string $dbPass
+     */
+    public function __construct($dbHost = null, $dbPort = null, $dbName = null, $dbUser = null, $dbPass = null)
+    {
+        if ($dbHost
+            && $dbPass
+            && $dbName
+            && $dbUser
+            && $dbPass
+            && $dbPort
+        ) {
+            $this->dbHost = $dbHost;
+            $this->dbPort = $dbPort;
+            $this->dbName = $dbName;
+            $this->dbUser = $dbUser;
+            $this->dbPass = $dbPass;
+        } else {
+            $this->setConnectionData();
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function setConnectionData()
+    {
+        $Config = Config::getConfig();
+
+        $this->dbHost = $Config->getDbHost();
+        $this->dbUser = $Config->getDbUser();
+        $this->dbPass = $Config->getDbPass();
+        $this->dbName = $Config->getDbName();
+        $this->dbPort = $Config->getDbPort();
+    }
 
     /**
      * Realizar la conexión con la BBDD.
      * Esta función utiliza PDO para conectar con la base de datos.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return PDO
      */
 
     public function getConnection()
     {
-        if (!$this->_db) {
-            $Config = Config::getConfig();
+        if (!$this->db) {
+            $isInstalled = Config::getConfig()->isInstalled();
 
-            $isInstalled = $Config->isInstalled();
-            $dbhost = $Config->getDbHost();
-            $dbuser = $Config->getDbUser();
-            $dbpass = $Config->getDbPass();
-            $dbname = $Config->getDbName();
-            $dbport = $Config->getDbPort();
-
-            if (empty($dbhost) || empty($dbuser) || empty($dbpass) || empty($dbname)) {
+            if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
                 Init::$DB_STATUS = 0;
 
                 if ($isInstalled) {
                     Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
                 } else {
-                    throw new SPException(SPException::SP_CRITICAL, _('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
+                    throw new SPException(SPException::SP_CRITICAL,
+                        _('No es posible conectar con la BD'),
+                        _('Compruebe los datos de conexión'));
                 }
             }
 
             try {
-                $dsn = 'mysql:host=' . $dbhost . ';port=' . $dbport . ';dbname=' . $dbname . ';charset=utf8';
+                $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
 //                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
-                $this->_db = new PDO($dsn, $dbuser, $dbpass);
+                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
             } catch (\Exception $e) {
                 Init::$DB_STATUS = 0;
 
@@ -87,16 +143,18 @@ class MySQLHandler implements DBStorageInterface
                         Config::getConfig()->setInstalled(false);
                         Config::saveConfig();
                     }
-                    Init::initError(_('No es posible conectar con la BD'), 'Error ' . $e->getCode() . ': ' . $e->getMessage());
+                    Init::initError(
+                        _('No es posible conectar con la BD'),
+                        'Error ' . $e->getCode() . ': ' . $e->getMessage());
                 } else {
                     throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
                 }
             }
         }
 
-        $this->_db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $this->_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        return $this->_db;
+        return $this->db;
     }
 }

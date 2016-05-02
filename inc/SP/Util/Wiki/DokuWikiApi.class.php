@@ -27,7 +27,7 @@ namespace SP\Util\Wiki;
 
 use SP\Config\Config;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Log\LogLevel;
 
@@ -51,7 +51,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * @param string $url  La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct($url = null, $user = null, $pass = null)
     {
@@ -87,7 +87,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @return DokuWikiApi
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkConnection($url = null, $user = null, $pass = null)
     {

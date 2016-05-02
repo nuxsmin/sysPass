@@ -25,7 +25,7 @@
 
 namespace SP\Mgmt\Files;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;

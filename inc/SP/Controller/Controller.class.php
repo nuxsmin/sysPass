@@ -30,7 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\Acl;
 use SP\Core\Init;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
 use SP\Core\Themes;
 use Theme\Icons;

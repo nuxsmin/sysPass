@@ -31,12 +31,13 @@ use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Installer;
 use SP\Core\Template;
+use SP\DataModel\InstallData;
 use SP\Html\Html;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Http\Request;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Themes;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -274,60 +275,54 @@ class Main extends Controller implements ActionsInterface
         $this->view->addTemplate('footer');
         $this->view->addTemplate('body-end');
 
-        $this->view->assign('modulesErrors', Checks::checkModules());
-        $this->view->assign('versionErrors', Checks::checkPhpVersion());
-        $this->view->assign('securityErrors', array());
-        $this->view->assign('resInstall', array());
+        $InstallData = new InstallData();
+        $InstallData->setAdminLogin(Request::analyze('adminlogin', 'admin'));
+        $InstallData->setAdminPass(Request::analyzeEncrypted('adminpass'));
+        $InstallData->setMasterPassword(Request::analyzeEncrypted('masterpassword'));
+        $InstallData->setDbAdminUser(Request::analyze('dbuser', 'root'));
+        $InstallData->setDbAdminPass(Request::analyzeEncrypted('dbpass'));
+        $InstallData->setDbName(Request::analyze('dbname', 'syspass'));
+        $InstallData->setDbHost(Request::analyze('dbhost', 'localhost'));
+        $InstallData->setHostingMode(Request::analyze('hostingmode', false));
+
         $this->view->assign('isCompleted', false);
-        $this->view->assign('adminlogin', Request::analyze('adminlogin', 'admin'));
-        $this->view->assign('adminpass', Request::analyzeEncrypted('adminpass'));
-        $this->view->assign('masterpassword', Request::analyzeEncrypted('masterpassword'));
-        $this->view->assign('dbuser', Request::analyze('dbuser', 'root'));
-        $this->view->assign('dbpass', Request::analyzeEncrypted('dbpass'));
-        $this->view->assign('dbname', Request::analyze('dbname', 'syspass'));
-        $this->view->assign('dbhost', Request::analyze('dbhost', 'localhost'));
-        $this->view->assign('hostingmode', Request::analyze('hostingmode', false));
+
+        $this->view->assign('InstallData', $InstallData);
+
+        $errors = array_merge(Checks::checkPhpVersion(), Checks::checkModules());
 
         if (@file_exists(__FILE__ . "\0Nullbyte")) {
-            $this->view->append('securityErrors', array(
-                    'type' => SPException::SP_WARNING,
-                    'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
-                    'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura'))
-            );
+            $errors[] = [
+                'type' => SPException::SP_WARNING,
+                'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
+                'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura')];
         }
 
         if (!Checks::secureRNGIsAvailable()) {
-            $this->view->append('securityErrors', array(
-                    'type' => SPException::SP_WARNING,
-                    'description' => _('No se encuentra el generador de números aleatorios.'),
-                    'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave'))
-            );
+            $errors[] = [
+                'type' => SPException::SP_WARNING,
+                'description' => _('No se encuentra el generador de números aleatorios.'),
+                'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')];
         }
 
         if (Request::analyze('install', false)) {
-            Installer::setUsername($this->view->adminlogin);
-            Installer::setPassword($this->view->adminpass);
-            Installer::setMasterPassword($this->view->masterpassword);
-            Installer::setDbUser($this->view->dbuser);
-            Installer::setDbPass($this->view->dbpass);
-            Installer::setDbName($this->view->dbname);
-            Installer::setDbHost($this->view->dbhost);
-            Installer::setIsHostingMode($this->view->hostingmode);
+            $Installer = new Installer($InstallData);
+            $resInstall = $Installer->install();
 
-            $this->view->assign('resInstall', Installer::install());
-
-            if (count($this->view->resInstall) == 0) {
-                $this->view->append('errors', array(
+            if ($resInstall === true) {
+                $this->view->append('errors', [
                     'type' => SPException::SP_OK,
                     'description' => _('Instalación finalizada'),
                     'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder')
-                ));
+                ]);
                 $this->view->assign('isCompleted', true);
                 return true;
             }
+
+            array_push($errors, $resInstall);
         }
 
-        $this->view->assign('errors', array_merge($this->view->modulesErrors, $this->view->securityErrors, $this->view->resInstall));
+        $this->view->assign('errors', $errors);
     }
 
     /**
@@ -456,7 +451,7 @@ class Main extends Controller implements ActionsInterface
         if (!$PublicLink
             || time() > $PublicLink->getItemData()->getDateExpire()
             || $PublicLink->getItemData()->getCountViews() >= $PublicLink->getItemData()->getMaxCountViews()
-        ){
+        ) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
         } else {
             $PublicLink->addLinkView();

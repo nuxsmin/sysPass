@@ -25,105 +25,395 @@
 
 namespace SP\Mgmt\Users;
 
-use SP\Config\ConfigDB;
-use SP\Core\Crypt;
-use SP\Core\SessionUtil;
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+use SP\Auth\Auth;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
+use SP\Html\Html;
+use SP\Log\Email;
+use SP\Log\Log;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Class User
  *
  * @package SP
  */
-class User extends UserBase
+class User extends UserBase implements ItemInterface
 {
     /**
-     * Actualizar la clave maestra del usuario en la BBDD.
-     *
-     * @param string $masterPwd con la clave maestra
-     * @return bool
+     * @return $this
+     * @throws SPException
      */
-    public function updateUserMPass($masterPwd)
+    public function add()
     {
-        $configHashMPass = ConfigDB::getValue('masterPwd');
-
-        if ($configHashMPass === false) {
-            return false;
+        if ($this->checkDuplicatedOnAdd()) {
+            throw new SPException(SPException::SP_INFO, _('Login/email de usuario duplicados'));
         }
 
-        if (is_null($configHashMPass)) {
-            $configHashMPass = Crypt::mkHashPassword($masterPwd);
-            ConfigDB::setValue('masterPwd', $configHashMPass);
+        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
+
+        $query = /** @lang SQL */
+            'INSERT INTO usrData SET
+            user_name = ?,
+            user_login = ?,
+            user_email = ?,
+            user_notes = ?,
+            user_groupId = ?,
+            user_profileId = ?,
+            user_mPass = \'\',
+            user_mIV = \'\',
+            user_isAdminApp = ?,
+            user_isAdminAcc = ?,
+            user_isDisabled = ?,
+            user_isChangePass = ?,
+            user_isLdap = 0,
+            user_pass = ?,
+            user_hashSalt = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserName());
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getUserNotes());
+        $Data->addParam($this->itemData->getUserGroupId());
+        $Data->addParam($this->itemData->getUserProfileId());
+        $Data->addParam(intval($this->itemData->isUserIsAdminApp()));
+        $Data->addParam(intval($this->itemData->isUserIsAdminAcc()));
+        $Data->addParam(intval($this->itemData->isUserIsDisabled()));
+        $Data->addParam(intval($this->itemData->isUserIsChangePass()));
+        $Data->addParam($passdata['pass']);
+        $Data->addParam($passdata['salt']);
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al crear el usuario'));
         }
 
-        if (Crypt::checkHashPass($masterPwd, $configHashMPass, true)) {
-            $cryptMPass = Crypt::mkCustomMPassEncrypt(self::getCypherPass(), $masterPwd);
+        $this->itemData->setUserId(DB::getLastId());
 
-            if (!$cryptMPass) {
-                return false;
+        $Log = new Log(_('Nuevo Usuario'));
+        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+
+        if ($this->itemData->isUserIsChangePass()) {
+            if (!Auth::mailPassRecover($this->itemData)) {
+                $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
-        } else {
-            return false;
         }
 
-        $query = 'UPDATE usrData SET '
-            . 'user_mPass = :mPass,'
-            . 'user_mIV = :mIV,'
-            . 'user_lastUpdateMPass = UNIX_TIMESTAMP() '
-            . 'WHERE user_id = :id LIMIT 1';
+        $Log->writeLog();
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($cryptMPass[0], 'mPass');
-        $Data->addParam($cryptMPass[1], 'mIV');
-        $Data->addParam($this->userId, 'id');
+        Email::sendEmail($Log);
 
-        return DB::getQuery($Data);
+        return $this;
     }
 
     /**
-     * Obtener una clave de cifrado basada en la clave del usuario y un salt.
-     *
-     * @return string con la clave de cifrado
+     * @param $id int
+     * @return $this
      */
-    private function getCypherPass()
+    public function delete($id)
     {
-        return Crypt::generateAesKey($this->userPass . $this->userLogin);
-    }
+        $oldUserData = $this->getById($id);
 
-    /**
-     * Desencriptar la clave maestra del usuario para la sesión.
-     *
-     * @param bool $showPass opcional, para devolver la clave desencriptada
-     * @return false|string Devuelve bool se hay error o string si se devuelve la clave
-     */
-    public function getUserMPass($showPass = false)
-    {
-        $query = 'SELECT user_mPass, user_mIV FROM usrData WHERE user_id = :id LIMIT 1';
+        $query = 'DELETE FROM usrData WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->userId, 'id');
+        $Data->addParam($id);
+
+        if (DB::getQuery($Data) === false) {
+            new SPException(SPException::SP_ERROR, _('Error al eliminar el usuario'));
+        }
+
+        $this->itemData->setUserId(DB::$lastId);
+
+        $Log = new Log(_('Eliminar Usuario'));
+        $Log->addDetails(Html::strongText(_('Login')), $oldUserData->getItemData()->getUserLogin());
+        $Log->addDetails(Html::strongText(_('Nombre')), $oldUserData->getItemData()->getUserName());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return $this
+     * @throws SPException
+     */
+    public function getById($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id,
+            user_name,
+            user_groupId,
+            usergroup_name,
+            user_login,
+            user_email,
+            user_notes,
+            user_count,
+            user_profileId,
+            user_count,
+            user_lastLogin,
+            user_lastUpdate,
+            user_lastUpdateMPass,
+            BIN(user_isAdminApp) AS user_isAdminApp,
+            BIN(user_isAdminAcc) AS user_isAdminAcc,
+            BIN(user_isLdap) AS user_isLdap,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isMigrate) AS user_isMigrate
+            FROM usrData
+            JOIN usrGroups ON usergroup_id = user_groupId
+            WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->addParam($id);
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener los datos del usuario'));
         }
 
-        if ($queryRes->user_mPass && $queryRes->user_mIV) {
-            $clearMasterPass = Crypt::getDecrypt($queryRes->user_mPass, $queryRes->user_mIV, $this->getCypherPass());
+        $this->itemData = $queryRes;
 
-            if (!$clearMasterPass) {
-                return false;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws SPException
+     */
+    public function update()
+    {
+        if ($this->checkDuplicatedOnUpdate()) {
+            throw new SPException(SPException::SP_INFO, _('Login/email de usuario duplicados'));
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE usrData SET
+            user_name = ?,
+            user_login = ?,
+            user_email = ?,
+            user_notes = ?,
+            user_groupId = ?,
+            user_profileId = ?,
+            user_isAdminApp = ?,
+            user_isAdminAcc = ?,
+            user_isDisabled = ?,
+            user_isChangePass = ?,
+            user_lastUpdate = NOW()
+            WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserName());
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getUserNotes());
+        $Data->addParam($this->itemData->getUserGroupId());
+        $Data->addParam($this->itemData->getUserProfileId());
+        $Data->addParam(intval($this->itemData->isUserIsAdminApp()));
+        $Data->addParam(intval($this->itemData->isUserIsAdminAcc()));
+        $Data->addParam(intval($this->itemData->isUserIsDisabled()));
+        $Data->addParam(intval($this->itemData->isUserIsChangePass()));
+        $Data->addParam($this->itemData->getUserId());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar el usuario'));
+        }
+
+        $this->itemData->setUserId(DB::getLastId());
+
+        $Log = new Log(_('Modificar Usuario'));
+        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+
+        if ($this->itemData->isUserIsChangePass()) {
+            if (!Auth::mailPassRecover($this->itemData)) {
+                $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
-
-            return ($showPass === true) ? $clearMasterPass : SessionUtil::saveSessionMPass($clearMasterPass);
         }
 
-        return false;
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE (UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?))
+            AND user_id <> ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getUserId());
+
+        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
+    }
+
+    /**
+     * @return UserData[]
+     * @throws SPException
+     */
+    public function getAll()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id,
+            user_name,
+            user_groupId,
+            user_login,
+            user_email,
+            user_notes,
+            user_count,
+            user_profileId,
+            BIN(user_isAdminApp) AS user_isAdminApp,
+            BIN(user_isAdminAcc) AS user_isAdminAcc,
+            BIN(user_isLdap) AS user_isLdap,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isChangePass) AS user_isChangePass
+            FROM usrData';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+
+        DB::setReturnArray();
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener los usuarios'));
+        }
+
+        return $queryRes;
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function checkInUse($id)
+    {
+        // TODO: Implement checkInUse() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+
+        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
+    }
+
+    /**
+     * @return $this
+     * @throws SPException
+     */
+    public function updatePass()
+    {
+        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
+        $UserData = $this->getById($this->itemData->getUserId());
+
+        $query = /** @lang SQL */
+            'UPDATE usrData SET
+            user_pass = ?,
+            user_hashSalt = ?,
+            user_isChangePass = 0,
+            user_lastUpdate = NOW()
+            WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($passdata['pass']);
+        $Data->addParam($passdata['salt']);
+        $Data->addParam($this->itemData->getUserId());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al modificar la clave'));
+        }
+
+        $Log = new Log(_('Modificar Clave Usuario'));
+        $Log->addDetails(Html::strongText(_('Login')), $UserData->getItemData()->getUserLogin());
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
+    }
+
+    /**
+     * @param $login string
+     * @return $this
+     * @throws SPException
+     */
+    public function getByLogin($login)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id,
+            user_name,
+            user_groupId,
+            usergroup_name,
+            user_login,
+            user_email,
+            user_notes,
+            user_count,
+            user_profileId,
+            user_count,
+            user_lastLogin,
+            user_lastUpdate,
+            user_lastUpdateMPass,
+            BIN(user_isAdminApp) AS user_isAdminApp,
+            BIN(user_isAdminAcc) AS user_isAdminAcc,
+            BIN(user_isLdap) AS user_isLdap,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isMigrate) AS user_isMigrate
+            FROM usrData
+            JOIN usrGroups ON usergroup_id = user_groupId
+            WHERE user_login = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->addParam($login);
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener los datos del usuario'));
+        }
+
+        $this->itemData = $queryRes;
+
+        return $this;
     }
 }

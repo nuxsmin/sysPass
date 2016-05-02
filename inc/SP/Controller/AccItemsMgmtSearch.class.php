@@ -29,9 +29,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Groups\GroupSearch;
 use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
+use SP\Mgmt\Users\UserSearch;
 use SP\Mgmt\Users\UserUtil;
 
 /**
@@ -44,11 +46,9 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los usuarios de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getUsers($search, $limitStart, $limitCount)
+    public function getUsers(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_USR_USERS_SEARCH);
 
@@ -59,10 +59,10 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getUsersGrid();
-        $Grid->getData()->setData(UserUtil::getUsersMgmSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
@@ -71,11 +71,9 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los grupos de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getGroups($search, $limitStart, $limitCount)
+    public function getGroups(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_USR_GROUPS_SEARCH);
 
@@ -86,10 +84,10 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getGroupsGrid();
-        $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
@@ -98,11 +96,9 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los perfiles de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getProfiles($search, $limitStart, $limitCount)
+    public function getProfiles(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_USR_PROFILES_SEARCH);
 
@@ -113,10 +109,10 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getProfilesGrid();
-        $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
@@ -125,11 +121,9 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los tokens API de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getTokens($search, $limitStart, $limitCount)
+    public function getTokens(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_APITOKENS_SEARCH);
 
@@ -140,10 +134,10 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getTokensGrid();
-        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
@@ -152,11 +146,9 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los enlaces públicos de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getPublicLinks($search, $limitStart, $limitCount)
+    public function getPublicLinks(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_PUBLICLINKS_SEARCH);
 
@@ -167,10 +159,10 @@ class AccItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getPublicLinksGrid();
-        $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);

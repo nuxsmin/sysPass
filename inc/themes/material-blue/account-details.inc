@@ -23,7 +23,7 @@
                 $users = [];
 
                 foreach ($accountOtherUsers as $otherUser) {
-                    /** @var $otherUser \SP\DataModel\UserBasicData */
+                    /** @var $otherUser \SP\DataModel\UserData */
                     if ($otherUser->getUserId() != $accountData->account_userId){
                         $users[] = $otherUser->getUserName();
                     }

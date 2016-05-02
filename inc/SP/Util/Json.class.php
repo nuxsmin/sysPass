@@ -24,7 +24,7 @@
  */
 
 namespace SP\Util;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 
 /**
@@ -39,7 +39,7 @@ class Json
      *
      * @param $data
      * @return string
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function getJson($data)
     {

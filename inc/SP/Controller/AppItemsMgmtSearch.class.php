@@ -29,6 +29,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
@@ -36,7 +37,8 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
 use SP\Mgmt\Files\File;
 use SP\Mgmt\Files\FileSearch;
-use SP\Mgmt\Tags\Tags;
+use SP\Mgmt\Tags\Tag;
+use SP\Mgmt\Tags\TagSearch;
 
 /**
  * Class ItemsMgmt para las buśquedas en los listados de elementos de gestión
@@ -48,11 +50,9 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener las cuentas de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getAccounts($search, $limitStart, $limitCount)
+    public function getAccounts(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_ACCOUNTS_SEARCH);
 
@@ -63,10 +63,10 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getAccountsGrid();
-        $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
@@ -75,11 +75,9 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los archivos de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param        $limitStart
-     * @param        $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getFiles($search, $limitStart, $limitCount)
+    public function getFiles(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_FILES_SEARCH);
 
@@ -90,10 +88,10 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getFilesGrid();
-        $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
@@ -102,11 +100,9 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los campos personalizados de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getCustomFields($search, $limitStart, $limitCount)
+    public function getCustomFields(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_CUSTOMFIELDS_SEARCH);
 
@@ -117,10 +113,10 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCustomFieldsGrid();
-        $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
@@ -129,11 +125,9 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener los clientes de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getCustomers($search, $limitStart, $limitCount)
+    public function getCustomers(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_CUSTOMERS_SEARCH);
 
@@ -144,10 +138,10 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCustomersGrid();
-        $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
@@ -156,11 +150,9 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener las categorías de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getCategories($search, $limitStart, $limitCount)
+    public function getCategories(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_CATEGORIES_SEARCH);
 
@@ -171,10 +163,10 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getCategoriesGrid();
-        $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
@@ -183,11 +175,9 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
     /**
      * Obtener las etiquetas de una búsqueda
      *
-     * @param string $search La cadena a buscar
-     * @param int    $limitStart
-     * @param int    $limitCount
+     * @param ItemSearchData $SearchData
      */
-    public function getTags($search, $limitStart, $limitCount)
+    public function getTags(ItemSearchData $SearchData)
     {
         $this->setAction(self::ACTION_MGM_TAGS_SEARCH);
 
@@ -198,10 +188,10 @@ class AppItemsMgmtSearch extends GridItemsSearch implements ActionsInterface
         $this->view->addTemplate('datagrid-rows');
 
         $Grid = $this->_grids->getTagsGrid();
-        $Grid->getData()->setData(Tags::getTagsMgmtSearch($limitCount, $limitStart, $search));
+        $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($SearchData));
         $Grid->updatePager();
 
-        $this->updatePager($Grid->getPager(), !empty($search), $limitStart, $limitCount);
+        $this->updatePager($Grid->getPager(), $SearchData);
 
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);

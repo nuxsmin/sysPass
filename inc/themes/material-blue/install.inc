@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var $InstallData \SP\DataModel\InstallData
+ */
+?>
 <div id="actions" class="installer" align="center">
     <div id="logo">
         <div id="pageDesc">
@@ -9,7 +14,7 @@
         <ul class="errors round">
             <?php foreach ($errors as $err): ?>
                 <?php if (is_array($err)): ?>
-                    <li class="err_<?php echo \SP\Core\SPException::getExceptionTypeName($err['type']); ?>">
+                    <li class="err_<?php echo \SP\Core\Exceptions\SPException::getExceptionTypeName($err['type']); ?>">
                         <strong><?php echo $err['description']; ?></strong>
                         <?php echo (isset($err['hint'])) ? '<p class="hint">' . $err['hint'] . '</p>' : ''; ?>
                     </li>
@@ -28,7 +33,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="adminlogin" name="adminlogin" type="text" required
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="<?php echo $adminlogin; ?>" maxlength="80" autocomplete="off" autofocus>
+                           value="<?php echo $InstallData->getAdminLogin(); ?>" maxlength="80" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="adminlogin"><?php echo _('Usuario administrador de sysPass'); ?></label>
                 </div>
@@ -76,7 +81,7 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dbuser" name="dbuser" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="<?php echo $dbuser; ?>" autocomplete="off" autofocus>
+                           value="<?php echo $InstallData->getDbAdminUser(); ?>" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="dbuser"><?php echo _('Usuario acceso BBDD'); ?></label>
                 </div>
@@ -96,7 +101,7 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dbname" name="dbname" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="<?php echo $dbname; ?>" autocomplete="off" autofocus pattern="[0-9a-zA-Z$_-]+">
+                           value="<?php echo $InstallData->getDbName(); ?>" autocomplete="off" autofocus pattern="[0-9a-zA-Z$_-]+">
                     <label class="mdl-textfield__label"
                            for="dbuser"><?php echo _('Nombre BBDD para sysPass'); ?></label>
                 </div>
@@ -108,7 +113,7 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dbhost" name="dbhost" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="<?php echo $dbhost; ?>" autocomplete="off" autofocus pattern="[0-9a-zA-Z$_-]+">
+                           value="<?php echo $InstallData->getDbHost(); ?>" autocomplete="off" autofocus pattern="[0-9a-zA-Z._-]+|([0-9]{1,3}.)+">
                     <label class="mdl-textfield__label"
                            for="dbhost"><?php echo _('Servidor BBDD para sysPass'); ?></label>
                 </div>
@@ -120,7 +125,7 @@
 
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="hostingmode">
                     <input type="checkbox" id="hostingmode" class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="hostingmode" <?php echo ($hostingmode) ? 'checked' : ''; ?>/>
+                           name="hostingmode" <?php echo ($InstallData->isHostingMode()) ? 'checked' : ''; ?>/>
                     <span class="mdl-switch__label"><?php echo _('Modo Hosting'); ?>
                         &nbsp;
                         <div id="help-hostingmode" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>

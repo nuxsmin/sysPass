@@ -25,7 +25,7 @@
 
 namespace SP\Import;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));

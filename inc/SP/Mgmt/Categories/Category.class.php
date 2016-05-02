@@ -28,7 +28,7 @@ namespace SP\Mgmt\Categories;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Log\Email;
 use SP\Mgmt\ItemInterface;
@@ -94,7 +94,7 @@ class Category extends CategoryBase implements ItemInterface
     /**
      * @param $id int
      * @return mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
@@ -156,7 +156,7 @@ class Category extends CategoryBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
-        $Data->setMapClassName('SP\DataModel\CategoryData');
+        $Data->setMapClassName($this->getDataModel());
 
         $this->itemData = DB::getResults($Data);
 
@@ -165,7 +165,7 @@ class Category extends CategoryBase implements ItemInterface
 
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
@@ -214,7 +214,7 @@ class Category extends CategoryBase implements ItemInterface
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryId());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
     }
 
     /**
@@ -226,7 +226,7 @@ class Category extends CategoryBase implements ItemInterface
             'SELECT category_id, category_name, category_description FROM categories ORDER BY category_name';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CategoryData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
         DB::setReturnArray();

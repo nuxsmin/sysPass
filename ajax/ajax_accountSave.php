@@ -31,7 +31,7 @@ use SP\Core\Crypt;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
 use SP\Http\Request;

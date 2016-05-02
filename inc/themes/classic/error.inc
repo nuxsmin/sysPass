@@ -10,7 +10,7 @@
         <ul class="errors round">
             <?php foreach ($errors as $err): ?>
                 <?php if (is_array($err)): ?>
-                    <li class="err_<?php echo \SP\Core\SPException::getExceptionTypeName($err["type"]); ?>">
+                    <li class="err_<?php echo \SP\Core\Exceptions\SPException::getExceptionTypeName($err["type"]); ?>">
                         <strong><?php echo $err['description']; ?></strong>
                         <?php echo ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : ''; ?>
                     </li>

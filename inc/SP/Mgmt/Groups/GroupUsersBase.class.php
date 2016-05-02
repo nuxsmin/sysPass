@@ -26,13 +26,14 @@
 namespace SP\Mgmt\Groups;
 
 use SP\DataModel\GroupUsersData;
+use SP\Mgmt\ItemBase;
 
 /**
  * Class GroupUserBase
  *
  * @package SP\Mgmt\Groups
  */
-abstract class GroupUsersBase
+abstract class GroupUsersBase extends ItemBase
 {
     /** @var GroupUsersData */
     protected $itemData;
@@ -42,18 +43,13 @@ abstract class GroupUsersBase
      *
      * @param GroupUsersData $itemData
      */
-    public function __construct(GroupUsersData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new GroupUsersData();
-    }
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\GroupUsersData');
+        }
 
-    /**
-     * @param GroupUsersData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
+        parent::__construct($itemData);
     }
 
     /**
@@ -61,16 +57,6 @@ abstract class GroupUsersBase
      */
     public function getItemData()
     {
-        return $this->itemData;
-    }
-
-    /**
-     * @param $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

@@ -27,7 +27,7 @@ namespace SP\Mgmt\Groups;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
@@ -66,7 +66,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface
         }
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al asignar los usuarios al grupo'));
+            throw new SPException(SPException::SP_ERROR, _('Error al asignar los usuarios al grupo'));
         }
 
         return $this;
@@ -87,7 +87,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar los usuarios del grupo'));
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar los usuarios del grupo'));
         }
 
         return $this;
@@ -114,7 +114,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface
             'SELECT usertogroup_groupId, usertogroup_userId FROM usrToGroups WHERE usertogroup_groupId = ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\GroupUsersData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 

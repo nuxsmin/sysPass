@@ -72,6 +72,7 @@ class DataGridHeaderSort extends DataGridHeaderBase
 
     /**
      * @param DataGridSortInterface $field
+     * @return $this
      */
     public function addSortField($field)
     {
@@ -80,5 +81,7 @@ class DataGridHeaderSort extends DataGridHeaderBase
         }
 
         $this->_sortFields->attach($field);
+
+        return $this;
     }
 }

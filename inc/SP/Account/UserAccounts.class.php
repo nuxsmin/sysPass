@@ -25,7 +25,7 @@
 
 namespace SP\Account;
 
-use SP\DataModel\UserBasicData;
+use SP\DataModel\UserData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -148,7 +148,7 @@ class UserAccounts
      * Obtiene el listado con el nombre de los usuarios de una cuenta.
      *
      * @param int $accountId con el id de la cuenta
-     * @return UserBasicData[]
+     * @return UserData[]
      */
     public static function getUsersInfoForAccount($accountId)
     {
@@ -161,7 +161,7 @@ class UserAccounts
             ORDER BY user_login';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\UserBasicData');
+        $Data->setMapClassName('SP\DataModel\UserData');
         $Data->setQuery($query);
         $Data->addParam($accountId, 'id');
 

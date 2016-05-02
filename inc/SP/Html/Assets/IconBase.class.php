@@ -64,18 +64,24 @@ abstract class IconBase implements IconInterface
 
     /**
      * @param $title
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->_title = $title;
+
+        return $this;
     }
 
     /**
      * @param $class
+     * @return $this
      */
     public function setClass($class)
     {
         $this->_class[] = $class;
+
+        return $this;
     }
 
     /**
@@ -96,9 +102,11 @@ abstract class IconBase implements IconInterface
 
     /**
      * @param $icon
+     * @return $this
      */
     public function setIcon($icon)
     {
         $this->_icon = $icon;
+        return $this;
     }
 }

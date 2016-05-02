@@ -85,7 +85,7 @@ if ($frmType === 'ldap') {
         );
 
         Response::printJSON($data, 0);
-    } catch (\SP\Core\SPException $e) {
+    } catch (\SP\Core\Exceptions\SPException $e) {
         Response::printJSON(_('Error de conexión a DokuWiki') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 }

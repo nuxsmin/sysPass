@@ -30,7 +30,7 @@ use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\DBUtil;
 use SP\Storage\QueryData;
@@ -112,7 +112,7 @@ class Migrate
      * @param string $dbpass  clave de conexión
      * @param string $dbname  nombre de la base de datos
      * @param string $dbport  puerto de conexión
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkDatabaseAdmin($dbhost, $dbadmin, $dbpass, $dbname, $dbport)
     {
@@ -145,7 +145,7 @@ class Migrate
     /**
      * Comprobar la versión de phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkSourceVersion()
     {
@@ -163,7 +163,7 @@ class Migrate
     /**
      * Obtener la configuración desde desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function getSourceConfig()
     {
@@ -205,7 +205,7 @@ class Migrate
      * Limpiar los datos de sysPass.
      * Limpiar las tablas de la base de sysPass para la importación.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function cleanCurrentDB()
     {
@@ -268,7 +268,7 @@ class Migrate
     /**
      * Migrar los clientes desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateCustomers()
@@ -301,7 +301,7 @@ class Migrate
     /**
      * Obtener los clientes desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array con los clientes
      */
     private static function getCustomers()
@@ -324,7 +324,7 @@ class Migrate
     /**
      * Migrar las cuentas desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateAccounts()
@@ -372,7 +372,7 @@ class Migrate
      * Insertar una cuenta en sysPass.
      *
      * @param array $account con los datos de la cuenta
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     private static function insertAccounts($account)
@@ -443,7 +443,7 @@ class Migrate
     /**
      * Migrar las grupos secundarios de las cuentas desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateAccountsGroups()
@@ -476,7 +476,7 @@ class Migrate
      * Insertar los grupos secundarios de una cuenta en sysPass.
      *
      * @param array $accountGroup con los datos de los grupos secundarios
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     private static function insertAccountsGroups($accountGroup)
@@ -502,7 +502,7 @@ class Migrate
     /**
      * Migrar el historail de las cuentas desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateAccountsHistory()
@@ -553,7 +553,7 @@ class Migrate
      * Insertar el historial de una cuenta en sysPass.
      *
      * @param array $accountHistory con los datos del historial de la cuenta
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     private static function insertAccountsHistory($accountHistory)
@@ -624,7 +624,7 @@ class Migrate
     /**
      * Migrar los archivos de de las cuentas desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateAcountsFiles()
@@ -663,7 +663,7 @@ class Migrate
      * Insertar los archivos de una cuenta en sysPass.
      *
      * @param array $accountFile con los datos del archivo
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     private static function insertAccountsFiles($accountFile)
@@ -697,7 +697,7 @@ class Migrate
     /**
      * Migrar las categorías de las cuentas desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateAccountsCategories()
@@ -730,7 +730,7 @@ class Migrate
      * Insertar las categorías en sysPass.
      *
      * @param array $accountCategory con los datos de la categoría
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     private static function insertAccountsCategories($accountCategory)
@@ -754,7 +754,7 @@ class Migrate
     /**
      * Migrar los usuarios desde desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateUsers()
@@ -806,7 +806,7 @@ class Migrate
      * Insertar los usuarios en sysPass.
      *
      * @param array $users con los datos del usuario
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      *
      * El usuario importado está deshabilitado
@@ -865,7 +865,7 @@ class Migrate
     /**
      * Migrar los grupos de usuarios desde desde phpPMS.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return array resultado
      */
     private static function migrateUsersGroups()
@@ -898,7 +898,7 @@ class Migrate
      * Insertar los grupos de usuarios en sysPass.
      *
      * @param array $usersGroups con los datos del grupo
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     private static function insertUsersGroups($usersGroups)

@@ -30,15 +30,16 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\DataModel\CustomFieldBaseData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
+use SP\Mgmt\ItemBase;
 
 /**
  * Class CustomFieldsBase para la definición de campos personalizados
  *
  * @package SP
  */
-abstract class CustomFieldBase
+abstract class CustomFieldBase extends ItemBase
 {
-    /** @var CustomFieldBaseData */
+    /** @var CustomFieldBaseData|CustomFieldDefData|CustomFieldData */
     protected $itemData;
 
     /**
@@ -46,35 +47,21 @@ abstract class CustomFieldBase
      *
      * @param CustomFieldBaseData $itemData
      */
-    public function __construct(CustomFieldBaseData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new CustomFieldBaseData();
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\CustomFieldBaseData');
+        }
+
+        parent::__construct($itemData);
     }
 
     /**
-     * @param CustomFieldBaseData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
-    }
-
-    /**
+     * Devolver los datos del elemento
      * @return CustomFieldBaseData|CustomFieldDefData|CustomFieldData
      */
     public function getItemData()
     {
-        return $this->itemData;
-    }
-
-    /**
-     * @param $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

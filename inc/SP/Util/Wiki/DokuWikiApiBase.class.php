@@ -29,7 +29,7 @@ use DOMDocument;
 use DOMException;
 use SP\Config\Config;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Http\XMLRPCResponseParse;
 use SP\Log\Log;
 use SP\Log\LogLevel;
@@ -121,7 +121,7 @@ abstract class DokuWikiApiBase
      * Añadir un parámetro
      *
      * @param $value
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addParam($value)
     {
@@ -181,7 +181,7 @@ abstract class DokuWikiApiBase
     /**
      * Escribir el error en el registro de eventos
      *
-     * @param SPException $e
+     * @param \SP\Core\Exceptions\SPException $e
      */
     protected function logException(SPException $e)
     {

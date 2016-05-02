@@ -26,7 +26,7 @@
 namespace SP\Log;
 
 use SP\Config\Config;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Util\Connection;
 
 /**

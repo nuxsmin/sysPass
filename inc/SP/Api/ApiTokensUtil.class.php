@@ -27,7 +27,8 @@ namespace SP\Api;
 
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -89,13 +90,10 @@ class ApiTokensUtil
 
     /**
      * Obtener los tokens de la API de una búsqueda
-     *
-     * @param $limitCount
-     * @param int $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return array|object con la lista de tokens
      */
-    public static function getTokensMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public static function getTokensMgmtSearch(ItemSearchData $SearchData)
     {
         $query = 'SELECT authtoken_id,' .
             'authtoken_userId,' .
@@ -107,8 +105,8 @@ class ApiTokensUtil
 
         $Data = new QueryData();
 
-        if (!empty($search)) {
-            $search = '%' . $search . '%';
+        if ($SearchData->getSeachString() !== '') {
+            $search = '%' . $SearchData->getSeachString() . '%';
             $query .= ' WHERE user_login LIKE ?';
 
             $Data->addParam($search);
@@ -117,8 +115,8 @@ class ApiTokensUtil
         $query .= ' ORDER BY user_login';
         $query .= ' LIMIT ?, ?';
 
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         $Data->setQuery($query);
 
@@ -164,7 +162,7 @@ class ApiTokensUtil
      *
      * @param $token string El token de autorización
      * @return bool|mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function getUserIdForToken($token)
     {

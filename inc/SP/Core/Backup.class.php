@@ -26,6 +26,7 @@
 namespace SP\Core;
 
 use SP\Config\Config;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
 use SP\Storage\DB;
 use SP\Log\Log;
@@ -60,7 +61,7 @@ class Backup
 
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
         $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
-        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
+        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . 'db-' . $backupUniqueHash . '.sql';
 
         try {
             self::checkBackupDir($backupDstDir);

@@ -28,6 +28,7 @@ namespace SP\Core;
 use SP\Account;
 use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserPreferencesData;
 use SP\Mgmt;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\UserPreferences;
@@ -634,7 +635,7 @@ class Session
     /**
      * Obtiene el objeto de preferencias de usuario de la sesión.
      *
-     * @return UserPreferences
+     * @return UserPreferencesData
      */
     public static function getUserPreferences()
     {
@@ -644,9 +645,9 @@ class Session
     /**
      * Establece el objeto de preferencias de usuario en la sesión.
      *
-     * @param \SP\Mgmt\Users\UserPreferences $preferences
+     * @param UserPreferencesData|UserPreferences $preferences
      */
-    public static function setUserPreferences(Mgmt\Users\UserPreferences $preferences)
+    public static function setUserPreferences(UserPreferencesData $preferences)
     {
         self::setSessionKey('userpreferences', $preferences);
     }

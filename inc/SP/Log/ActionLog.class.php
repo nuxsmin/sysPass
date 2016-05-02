@@ -24,6 +24,7 @@
  */
 
 namespace SP\Log;
+use SP\Html\Html;
 
 /**
  * Clase abstracta ActionLog para la gestión de mensajes de eventos
@@ -95,6 +96,24 @@ abstract class ActionLog extends LogLevel
     public function addDescription($description = '')
     {
         $this->description[] = $this->formatString($description);
+    }
+
+    /**
+     * Establece la descripción de la acción realizada en formato HTML
+     *
+     * @param string $description
+     */
+    public function addDescriptionHtml($description = '')
+    {
+        $this->addDescription(Html::strongText($description));
+    }
+
+    /**
+     * Añadir una línea en blanco a la descripción
+     */
+    public function addDescriptionLine()
+    {
+        $this->description[] = '';
     }
 
     /**
@@ -193,6 +212,17 @@ abstract class ActionLog extends LogLevel
     public function addDetails($key, $value)
     {
         $this->details[] = sprintf('%s: %s', $this->formatString($key), $this->formatString($value));
+    }
+
+    /**
+     * Añadir detalle en formato HTML. Se resalta el texto clave.
+     *
+     * @param $key string
+     * @param $value string
+     */
+    public function addDetailsHtml($key, $value)
+    {
+        $this->addDetails(Html::strongText($key), $value);
     }
 
     /**

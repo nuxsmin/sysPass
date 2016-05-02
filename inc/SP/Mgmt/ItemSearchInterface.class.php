@@ -25,6 +25,8 @@
 
 namespace SP\Mgmt;
 
+use SP\DataModel\ItemSearchData;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -35,10 +37,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 interface ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return mixed
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '');
+    public function getMgmtSearch(ItemSearchData $SearchData);
 }

@@ -27,7 +27,7 @@ use SP\Account\Account;
 use SP\DataModel\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
@@ -35,6 +35,8 @@ use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\PublicLinkData;
+use SP\DataModel\TagData;
+use SP\DataModel\UserData;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
 use SP\Http\Response;
@@ -47,6 +49,8 @@ use SP\Mgmt\Files\File;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Tags\Tag;
+use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 
@@ -86,45 +90,36 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     $isLdap = Request::analyze('isLdap', 0);
     $userPassR = Request::analyzeEncrypted('passR');
 
-    $User = new \SP\Mgmt\Users\User();
-    $User->setUserId($itemId);
-    $User->setUserName(Request::analyze('name'));
-    $User->setUserLogin(Request::analyze('login'));
-    $User->setUserEmail(Request::analyze('email'));
-    $User->setUserNotes(Request::analyze('notes'));
-    $User->setUserGroupId(Request::analyze('groupid', 0));
-    $User->setUserProfileId(Request::analyze('profileid', 0));
-    $User->setUserIsAdminApp(Request::analyze('adminapp', 0, false, 1));
-    $User->setUserIsAdminAcc(Request::analyze('adminacc', 0, false, 1));
-    $User->setUserIsDisabled(Request::analyze('disabled', 0, false, 1));
-    $User->setUserChangePass(Request::analyze('changepass', 0, false, 1));
-    $User->setUserPass(Request::analyzeEncrypted('pass'));
+    $UserData = new UserData();
+    $UserData->setUserId($itemId);
+    $UserData->setUserName(Request::analyze('name'));
+    $UserData->setUserLogin(Request::analyze('login'));
+    $UserData->setUserEmail(Request::analyze('email'));
+    $UserData->setUserNotes(Request::analyze('notes'));
+    $UserData->setUserGroupId(Request::analyze('groupid', 0));
+    $UserData->setUserProfileId(Request::analyze('profileid', 0));
+    $UserData->setUserIsAdminApp(Request::analyze('adminapp', false, false, true));
+    $UserData->setUserIsAdminAcc(Request::analyze('adminacc', false, false, true));
+    $UserData->setUserIsDisabled(Request::analyze('disabled', false, false, true));
+    $UserData->setUserIsChangePass(Request::analyze('changepass', false, false, true));
+    $UserData->setUserPass(Request::analyzeEncrypted('pass'));
 
     // Nuevo usuario o editar
     if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         || $actionId === ActionsInterface::ACTION_USR_USERS_EDIT
     ) {
-        if (!$User->getUserName() && !$isLdap) {
+        if (!$UserData->getUserName() && !$isLdap) {
             Response::printJSON(_('Es necesario un nombre de usuario'), 2);
-        } elseif (!$User->getUserLogin() && !$isLdap) {
+        } elseif (!$UserData->getUserLogin() && !$isLdap) {
             Response::printJSON(_('Es necesario un login'), 2);
-        } elseif (!$User->getUserProfileId()) {
+        } elseif (!$UserData->getUserProfileId()) {
             Response::printJSON(_('Es necesario un perfil'), 2);
-        } elseif (!$User->getUserGroupId()) {
+        } elseif (!$UserData->getUserGroupId()) {
             Response::printJSON(_('Es necesario un grupo'), 2);
-        } elseif (!$User->getUserEmail() && !$isLdap) {
+        } elseif (!$UserData->getUserEmail() && !$isLdap) {
             Response::printJSON(_('Es necesario un email'), 2);
-        } elseif (Checks::demoIsEnabled() && !Session::getUserIsAdminApp() && $User->getUserLogin() == 'demo') {
+        } elseif (Checks::demoIsEnabled() && !Session::getUserIsAdminApp() && $UserData->getUserLogin() == 'demo') {
             Response::printJSON(_('Ey, esto es una DEMO!!'));
-        }
-
-        switch ($User->checkUserExist()) {
-            case UserUtil::USER_LOGIN_EXIST:
-                Response::printJSON(_('Login de usuario duplicado'), 2);
-                break;
-            case UserUtil::USER_MAIL_EXIST:
-                Response::printJSON(_('Email de usuario duplicado'), 2);
-                break;
         }
 
         $CustomFieldData = new CustomFieldData();
@@ -132,62 +127,71 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         $CustomFieldData->setModule(ActionsInterface::ACTION_USR_USERS);
 
         if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW) {
-            if (!$User->getUserPass() || !$userPassR) {
+            if (!$UserData->getUserPass() || !$userPassR) {
                 Response::printJSON(_('La clave no puede estar en blanco'), 2);
-            } elseif ($User->getUserPass() != $userPassR) {
+            } elseif ($UserData->getUserPass() != $userPassR) {
                 Response::printJSON(_('Las claves no coinciden'), 2);
             }
 
-            if ($User->addUser()) {
+            try {
+                User::getItem($UserData)->add();
+
                 if (is_array($customFields)) {
-                    $CustomFieldData->setId($User->getUserId());
+                    $CustomFieldData->setId($UserData->getUserId());
                     CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
                 }
-
-                Response::printJSON(_('Usuario creado'), 0, $doActionOnClose);
+            } catch (SPException $e){
+                Response::printJSON($e->getMessage(), 2);
             }
 
-            Response::printJSON(_('Error al crear el usuario'));
+            Response::printJSON(_('Usuario creado'), 0, $doActionOnClose);
         } elseif ($actionId === ActionsInterface::ACTION_USR_USERS_EDIT) {
-            if ($User->updateUser()) {
-                if (is_array($customFields)) {
-                    CustomFieldsUtil::updateItemCustomFields($customFields, $CustomFieldData);
-                }
+            try {
+                User::getItem($UserData)->update();
 
-                Response::printJSON(_('Usuario actualizado'), 0, $doActionOnClose);
+                if (is_array($customFields)) {
+                    $CustomFieldData->setId($UserData->getUserId());
+                    CustomFieldsUtil::addItemCustomFields($customFields, $CustomFieldData);
+                }
+            } catch (SPException $e){
+                Response::printJSON($e->getMessage(), 2);
             }
 
-            Response::printJSON(_('Error al actualizar el usuario'));
+            Response::printJSON(_('Usuario actualizado'), 0, $doActionOnClose);
         }
     } elseif ($actionId === ActionsInterface::ACTION_USR_USERS_EDITPASS) {
-
-
         if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($itemId) == 'demo') {
             Response::printJSON(_('Ey, esto es una DEMO!!'));
-        } elseif (!$User->getUserPass() || !$userPassR) {
+        } elseif (!$UserData->getUserPass() || !$userPassR) {
             Response::printJSON(_('La clave no puede estar en blanco'), 2);
-        } elseif ($User->getUserPass() != $userPassR) {
+        } elseif ($UserData->getUserPass() != $userPassR) {
             Response::printJSON(_('Las claves no coinciden'), 2);
         }
 
-        if ($User->updateUserPass()) {
-            Response::printJSON(_('Clave actualizada'), 0);
+        try {
+            User::getItem($UserData)->updatePass();
+        } catch (SPException $e){
+            Response::printJSON($e->getMessage(), 2);
         }
 
-        Response::printJSON(_('Error al modificar la clave'));
-        // Eliminar usuario
+        Response::printJSON(_('Clave actualizada'), 0);
+
+    // Eliminar usuario
     } elseif ($actionId === ActionsInterface::ACTION_USR_USERS_DELETE) {
         if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($itemId) == 'demo') {
             Response::printJSON(_('Ey, esto es una DEMO!!'));
-        } elseif ($User->getUserId() == Session::getUserId()) {
+        } elseif ($UserData->getUserId() == Session::getUserId()) {
             Response::printJSON(_('No es posible eliminar, usuario en uso'));
         }
 
-        if ($User->deleteUser() && CustomField::getItem($CustomFieldData)->delete($User->getUserId())) {
-            Response::printJSON(_('Usuario eliminado'), 0, $doActionOnClose);
+        try {
+            User::getItem()->delete($itemId);
+            CustomField::getItem($CustomFieldData)->delete($itemId);
+        } catch (SPException $e){
+            Response::printJSON($e->getMessage());
         }
 
-        Response::printJSON(_('Error al eliminar el usuario'));
+        Response::printJSON(_('Usuario eliminado'), 0, $doActionOnClose);
     }
 } elseif ($actionId === ActionsInterface::ACTION_USR_GROUPS_NEW
     || $actionId === ActionsInterface::ACTION_USR_GROUPS_EDIT
@@ -560,21 +564,21 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     || $actionId === ActionsInterface::ACTION_MGM_TAGS_EDIT
     || $actionId === ActionsInterface::ACTION_MGM_TAGS_DELETE
 ) {
-    $TagData = new \SP\DataModel\TagData($itemId, Request::analyze('name'));
+    $TagData = new TagData();
+    $TagData->setTagId($itemId);
+    $TagData->setTagName(Request::analyze('name'));
 
     if ($actionId === ActionsInterface::ACTION_MGM_TAGS_NEW) {
         try {
-            $Tag = new \SP\Mgmt\Tags\Tags();
-            $Tag->addTag($TagData);
+            Tag::getItem($TagData)->add();
         } catch (SPException $e) {
-            Response::printJSON($e->getMessage());
+            Response::printJSON($e->getMessage(), 2);
         }
 
         Response::printJSON(_('Etiqueta creada'), 0, $doActionOnClose);
     } elseif ($actionId === ActionsInterface::ACTION_MGM_TAGS_DELETE) {
         try {
-            $Tag = new \SP\Mgmt\Tags\Tags();
-            $Tag->deleteTag($TagData);
+            Tag::getItem()->delete($itemId);
         } catch (SPException $e) {
             Response::printJSON($e->getMessage());
         }
@@ -582,10 +586,9 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         Response::printJSON(_('Etiqueta eliminada'), 0, $doActionOnClose);
     } elseif ($actionId === ActionsInterface::ACTION_MGM_TAGS_EDIT) {
         try {
-            $Tag = new \SP\Mgmt\Tags\Tags();
-            $Tag->updateTag($TagData);
+            Tag::getItem($TagData)->update();
         } catch (SPException $e) {
-            Response::printJSON($e->getMessage());
+            Response::printJSON($e->getMessage(), 2);
         }
 
         Response::printJSON(_('Etiqueta actualizada'), 0, $doActionOnClose);

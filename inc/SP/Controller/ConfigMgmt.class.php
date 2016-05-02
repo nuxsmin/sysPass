@@ -181,9 +181,9 @@ class ConfigMgmt extends Controller implements ActionsInterface
                 'filename' => $this->view->siteName . '-' . $backupHash . '.tar.gz')
         );
         $this->view->assign('backupDbFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '_db-' . $backupHash . '.sql',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '_db-' . $backupHash . '.sql',
-                'filename' => $this->view->siteName . '_db-' . $backupHash . '.sql')
+            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . 'db-' . $backupHash . '.sql',
+                'relative' => $this->view->backupPath . '/' . $this->view->siteName . 'db-' . $backupHash . '.sql',
+                'filename' => $this->view->siteName . 'db-' . $backupHash . '.sql')
         );
         $this->view->assign('lastBackupTime', (file_exists($this->view->backupFile['absolute'])) ? _('Último backup') . ": " . date("r", filemtime($this->view->backupFile['absolute'])) : _('No se encontraron backups'));
 

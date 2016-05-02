@@ -27,7 +27,7 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefData;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
@@ -46,14 +46,16 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      *
      * @param CustomFieldDefData $itemData
      */
-    public function __construct(CustomFieldDefData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new CustomFieldDefData();
+        $this->setDataModel('SP\DataModel\CustomFieldDefData');
+        
+        parent::__construct($itemData);
     }
 
     /**
      * @return mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
@@ -66,7 +68,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el campo personalizado'));
+            throw new SPException(SPException::SP_ERROR, _('Error al crear el campo personalizado'));
         }
 
         return $this;
@@ -89,7 +91,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         if (DB::getQuery($Data) === false
             || $this->deleteItemsDataForDefinition($id) === false
         ) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el campo personalizado'));
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar el campo personalizado'));
         }
 
         return $this;
@@ -114,11 +116,11 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
     /**
      * @return mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
-        $curField = $this->getById($this->itemData->getId());
+        $curField = $this->getById($this->itemData->getId())->getItemData();
 
         $query = /** @lang SQL */
             'UPDATE customFieldsDef SET
@@ -133,7 +135,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el campo personalizado'));
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar el campo personalizado'));
         }
 
         if ($curField->getModule() !== $this->itemData->getModule()) {
@@ -146,7 +148,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     /**
      * @param $id int
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getById($id)
     {
@@ -158,14 +160,14 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
               WHERE customfielddef_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
         $CustomFieldDef = DB::getResults($Data);
 
         if ($CustomFieldDef === false) {
-            throw new SPException(SPException::SP_WARNING, _('Campo personalizado no encontrado'));
+            throw new SPException(SPException::SP_INFO, _('Campo personalizado no encontrado'));
         }
 
         /**
@@ -176,7 +178,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
 
         if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-            $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
+            $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
         }
 
         $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
@@ -208,7 +210,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
     /**
      * @return CustomFieldDefData[]|array
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAll()
     {
@@ -220,7 +222,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
               ORDER BY customfielddef_module';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
         DB::setReturnArray();
@@ -228,7 +230,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_WARNING, _('No se encontraron campos personalizados'));
+            throw new SPException(SPException::SP_INFO, _('No se encontraron campos personalizados'));
         }
 
         $fields = [];
@@ -242,7 +244,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
             $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
 
             if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
+                $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
             }
 
             $fieldDef->setId($CustomFieldDef->getCustomfielddefId());

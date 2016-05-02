@@ -136,7 +136,7 @@ class Themes
      */
     private function getUserTheme()
     {
-        return (Session::getUserId() > 0) ? UserPreferences::getPreferences(Session::getUserId())->getTheme() : '';
+        return (Session::getUserId() > 0) ? UserPreferences::getItem()->getById(Session::getUserId())->getItemData()->getTheme() : '';
     }
 
     /**

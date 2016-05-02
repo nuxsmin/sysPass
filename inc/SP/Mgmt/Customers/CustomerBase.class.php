@@ -28,13 +28,14 @@ namespace SP\Mgmt\Customers;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\DataModel\CustomerData;
+use SP\Mgmt\ItemBase;
 
 /**
  * Class CustomerBase
  *
  * @package SP\Mgmt\Customers
  */
-abstract class CustomerBase
+abstract class CustomerBase extends ItemBase
 {
     /** @var CustomerData */
     protected $itemData;
@@ -42,37 +43,23 @@ abstract class CustomerBase
     /**
      * Category constructor.
      *
-     * @param CustomerData $itemData
+     * @param $itemData
      */
-    public function __construct(CustomerData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new CustomerData();
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\CustomerData');
+        }
+
+        parent::__construct($itemData);
     }
 
     /**
-     * @param CustomerData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
-    }
-
-    /**
+     * Devolver los datos del elemento
      * @return CustomerData
      */
     public function getItemData()
     {
-        return ($this->itemData instanceof CustomerData) ? $this->itemData : new CustomerData();
-    }
-
-    /**
-     * @param $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

@@ -30,6 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Core\Template;
 use SP\Http\Response;
 use SP\Log\Log;
 use SP\Util\Checks;
@@ -51,9 +52,9 @@ class Eventlog extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP\Core\Template con instancia de plantilla
+     * @param $template Template con instancia de plantilla
      */
-    public function __construct(\SP\Core\Template $template = null)
+    public function __construct(Template $template = null)
     {
         parent::__construct($template);
 
@@ -70,7 +71,6 @@ class Eventlog extends Controller implements ActionsInterface
         if (!$this->checkAccess()) {
             return;
         }
-
 
         $this->view->addTemplate('eventlog');
 
@@ -97,7 +97,10 @@ class Eventlog extends Controller implements ActionsInterface
      */
     public function checkClear()
     {
-        if ($this->view->clear && $this->view->sk && SessionUtil::checkSessionKey($this->view->sk)) {
+        if ($this->view->clear
+            && $this->view->sk
+            && SessionUtil::checkSessionKey($this->view->sk)
+        ) {
             if (Log::clearEvents()) {
                 Response::printJSON(_('Registro de eventos vaciado'), 0, "sysPassUtil.Common.doAction(" . ActionsInterface::ACTION_EVL . "); sysPassUtil.Common.scrollUp();");
             } else {

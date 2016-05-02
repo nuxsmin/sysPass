@@ -32,7 +32,7 @@ use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Categories\Category;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -109,7 +109,7 @@ abstract class ImportBase
     /**
      * Iniciar la importación desde XML.
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      * @return bool
      */
     public abstract function doImport();

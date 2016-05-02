@@ -34,7 +34,7 @@ use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DBUtil;
 use SP\Storage\QueryData;
 
@@ -45,7 +45,7 @@ class Customer extends CustomerBase implements ItemInterface
 {
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
@@ -115,7 +115,7 @@ class Customer extends CustomerBase implements ItemInterface
     /**
      * @param $id int
      * @return mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
@@ -177,7 +177,7 @@ class Customer extends CustomerBase implements ItemInterface
             'SELECT customer_id, customer_name, customer_description FROM customers WHERE customer_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomerData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -188,7 +188,7 @@ class Customer extends CustomerBase implements ItemInterface
 
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
@@ -251,7 +251,7 @@ class Customer extends CustomerBase implements ItemInterface
             'SELECT customer_id, customer_name, customer_description FROM customers ORDER BY customer_name';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomerData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
         DB::setReturnArray();

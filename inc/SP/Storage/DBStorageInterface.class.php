@@ -33,7 +33,12 @@ namespace SP\Storage;
 interface DBStorageInterface
 {
     /**
-     * @return PDO
+     * @return \PDO
      */
     public function getConnection();
+
+    /**
+     * @return mixed
+     */
+    public function setConnectionData();
 }

@@ -25,7 +25,7 @@
 
 namespace SP\Import;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -140,7 +140,7 @@ class FileImport
     /**
      * Leer los datos de un archivo subido a un array
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function readFileToArray()
     {
@@ -158,7 +158,7 @@ class FileImport
     /**
      * Leer los datos de un archivo subido a una cadena
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function readFileToString()
     {

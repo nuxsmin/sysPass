@@ -23,16 +23,18 @@
  *
  */
 
+define('APP_ROOT', '..');
+
 use SP\Config\Config;
 use SP\Controller\AccItemsMgmtSearch;
 use SP\Controller\AppItemsMgmtSearch;
+use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Http\Response;
-
-define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
@@ -49,57 +51,59 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 }
 
 $actionId = Request::analyze('actionId', 0);
-$search = Request::analyze('search');
-$limitStart = Request::analyze('start', 0);
-$limitCount = Request::analyze('count', Config::getConfig()->getAccountCount());
+
+$ItemSearchData = new ItemSearchData();
+$ItemSearchData->setSeachString(Request::analyze('search'));
+$ItemSearchData->setLimitStart(Request::analyze('start', 0));
+$ItemSearchData->setLimitCount(Request::analyze('count', Config::getConfig()->getAccountCount()));
 
 $Tpl = new Template();
 $Tpl->assign('index', Request::analyze('activeTab', 0));
 
 switch ($actionId) {
-    case \SP\Core\ActionsInterface::ACTION_USR_USERS_SEARCH:
+    case ActionsInterface::ACTION_USR_USERS_SEARCH:
         $Controller = new AccItemsMgmtSearch($Tpl);
-        $Controller->getUsers($search, $limitStart, $limitCount);
+        $Controller->getUsers($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_USR_GROUPS_SEARCH:
+    case ActionsInterface::ACTION_USR_GROUPS_SEARCH:
         $Controller = new AccItemsMgmtSearch($Tpl);
-        $Controller->getGroups($search, $limitStart, $limitCount);
+        $Controller->getGroups($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_USR_PROFILES_SEARCH:
+    case ActionsInterface::ACTION_USR_PROFILES_SEARCH:
         $Controller = new AccItemsMgmtSearch($Tpl);
-        $Controller->getProfiles($search, $limitStart, $limitCount);
+        $Controller->getProfiles($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_APITOKENS_SEARCH:
+    case ActionsInterface::ACTION_MGM_APITOKENS_SEARCH:
         $Controller = new AccItemsMgmtSearch($Tpl);
-        $Controller->getTokens($search, $limitStart, $limitCount);
+        $Controller->getTokens($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_SEARCH:
+    case ActionsInterface::ACTION_MGM_PUBLICLINKS_SEARCH:
         $Controller = new AccItemsMgmtSearch($Tpl);
-        $Controller->getPublicLinks($search, $limitStart, $limitCount);
+        $Controller->getPublicLinks($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
+    case ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
         $Controller = new AppItemsMgmtSearch($Tpl);
-        $Controller->getCategories($search, $limitStart, $limitCount);
+        $Controller->getCategories($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
+    case ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
         $Controller = new AppItemsMgmtSearch($Tpl);
-        $Controller->getCustomers($search, $limitStart, $limitCount);
+        $Controller->getCustomers($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
+    case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
         $Controller = new AppItemsMgmtSearch($Tpl);
-        $Controller->getCustomFields($search, $limitStart, $limitCount);
+        $Controller->getCustomFields($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_FILES_SEARCH:
+    case ActionsInterface::ACTION_MGM_FILES_SEARCH:
         $Controller = new AppItemsMgmtSearch($Tpl);
-        $Controller->getFiles($search, $limitStart, $limitCount);
+        $Controller->getFiles($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
+    case ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
         $Controller = new AppItemsMgmtSearch($Tpl);
-        $Controller->getAccounts($search, $limitStart, $limitCount);
+        $Controller->getAccounts($ItemSearchData);
         break;
-    case \SP\Core\ActionsInterface::ACTION_MGM_TAGS_SEARCH:
+    case ActionsInterface::ACTION_MGM_TAGS_SEARCH:
         $Controller = new AppItemsMgmtSearch($Tpl);
-        $Controller->getTags($search, $limitStart, $limitCount);
+        $Controller->getTags($ItemSearchData);
         break;
     default:
         Response::printJSON(_('Acción Inválida'));

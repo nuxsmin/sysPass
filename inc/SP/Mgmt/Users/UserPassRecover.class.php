@@ -25,6 +25,10 @@
 
 namespace SP\Mgmt\Users;
 
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
+use SP\DataModel\UserPassRecoverData;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -35,7 +39,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP
  */
-class UserPassRecover
+class UserPassRecover extends UserPassRecoverBase implements ItemInterface
 {
     /**
      * Tiempo máximo para recuperar la clave
@@ -51,91 +55,158 @@ class UserPassRecover
     /**
      * Comprobar el hash de recuperación de clave.
      *
-     * @param string $hash con el hash de recuperación
-     * @return int con el Id del usuario
+     * @param $hash
+     * @return $this
+     * @throws SPException
      */
-    public static function checkHashPassRecover($hash)
+    public function getHashUserId($hash)
     {
-        $query = 'SELECT userpassr_userId FROM usrPassRecover '
-            . 'WHERE userpassr_hash = :hash '
-            . 'AND userpassr_used = 0 '
-            . 'AND userpassr_date >= :date '
-            . 'ORDER BY userpassr_date DESC LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT userpassr_userId
+            FROM usrPassRecover
+            WHERE userpassr_hash = ?
+            AND userpassr_used = 0
+            AND userpassr_date >= ?
+            ORDER BY userpassr_date DESC LIMIT 1';
 
         $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
-        $Data->addParam($hash, 'hash');
-        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME, 'date');
+        $Data->addParam($hash);
+        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
 
+        /** @var UserPassRecoverData $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error en comprobación de hash'));
+        } elseif (DB::$lastNumRows === 0){
+            throw new SPException(SPException::SP_INFO, _('Hash inválido o expirado'));
         }
 
-        return $queryRes->userpassr_userId;
-    }
+        $this->itemData = $queryRes;
 
-    /**
-     * Marcar como usado el hash de recuperación de clave.
-     *
-     * @param string $hash con el hash de recuperación
-     * @return bool
-     */
-    public static function updateHashPassRecover($hash)
-    {
-        $query = 'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = :hash';
+        $this->update();
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($hash, 'hash');
-
-        return DB::getQuery($Data);
+        return $this;
     }
 
     /**
      * Comprobar el límite de recuperaciones de clave.
      *
-     * @param string $login con el login del usuario
+     * @param UserData $UserData con el login del usuario
      * @return bool
      */
-    public static function checkPassRecoverLimit($login)
+    public static function checkPassRecoverLimit(UserData $UserData)
     {
-        $query = 'SELECT userpassr_userId ' .
-            'FROM usrPassRecover ' .
-            'WHERE userpassr_userId = :id ' .
-            'AND userpassr_used = 0 ' .
-            'AND userpassr_date >= :date';
+        $query = /** @lang SQL */
+            'SELECT userpassr_userId 
+            FROM usrPassRecover
+            WHERE userpassr_userId = ?
+            AND userpassr_used = 0
+            AND userpassr_date >= ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(UserUtil::getUserIdByLogin($login), 'id');
-        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME, 'date');
+        $Data->addParam($UserData->getUserId());
+        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
 
         return (DB::getQuery($Data) === false || DB::$lastNumRows >= self::MAX_PASS_RECOVER_LIMIT);
     }
 
     /**
-     * Insertar un registro de recuperación de clave.
-     *
-     * @param string $login con el login del usuario
-     * @param string $hash  con el hash para el cambio
-     * @return bool
+     * @return $this
+     * @throws SPException
      */
-    public static function addPassRecover($login, $hash)
+    public function add()
     {
-        $query = 'INSERT INTO usrPassRecover SET '
-            . 'userpassr_userId = :id,'
-            . 'userpassr_hash = :hash,'
-            . 'userpassr_date = UNIX_TIMESTAMP(),'
-            . 'userpassr_used = 0';
+        $query = /** @lang SQL */
+            'INSERT INTO usrPassRecover SET 
+            userpassr_userId = ?,
+            userpassr_hash = ?,
+            userpassr_date = UNIX_TIMESTAMP(),
+            userpassr_used = 0';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(UserUtil::getUserIdByLogin($login), 'id');
-        $Data->addParam($hash, 'hash');
+        $Data->addParam($this->itemData->getUserpassrUserId());
+        $Data->addParam($this->itemData->getUserpassrHash());
 
-        return DB::getQuery($Data);
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al generar el hash de recuperación'));
+        }
+
+        return $this;
     }
 
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function delete($id)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    /**
+     * @return $this
+     * @throws SPException
+     */
+    public function update()
+    {
+        $query = /** @lang SQL */
+            'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserpassrHash());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error interno'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        // TODO: Implement getById() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAll()
+    {
+        // TODO: Implement getAll() method.
+    }
+
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function checkInUse($id)
+    {
+        // TODO: Implement checkInUse() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate()
+    {
+        // TODO: Implement checkDuplicatedOnUpdate() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        // TODO: Implement checkDuplicatedOnAdd() method.
+    }
 }

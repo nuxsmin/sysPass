@@ -28,13 +28,14 @@ namespace SP\Mgmt\Categories;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\DataModel\CategoryData;
+use SP\Mgmt\ItemBase;
 
 /**
  * Class CategoryBase
  *
  * @package SP\Mgmt\Categories
  */
-abstract class CategoryBase
+abstract class CategoryBase extends ItemBase
 {
     /** @var CategoryData */
     protected $itemData;
@@ -42,37 +43,23 @@ abstract class CategoryBase
     /**
      * Category constructor.
      *
-     * @param CategoryData $itemData
+     * @param $itemData
      */
-    public function __construct(CategoryData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new CategoryData();
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\CategoryData');
+        }
+
+        parent::__construct($itemData);
     }
 
     /**
-     * @param CategoryData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
-    }
-
-    /**
+     * Devolver los datos del elemento
      * @return CategoryData
      */
     public function getItemData()
     {
-        return ($this->itemData instanceof CategoryData) ? $this->itemData : new CategoryData();
-    }
-
-    /**
-     * @param $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

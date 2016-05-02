@@ -27,7 +27,7 @@ namespace SP\Auth;
 
 use Exts\Google2FA;
 use Exts\Base2n;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Mgmt\Users\UserPass;
 use SP\Util\Util;
 
@@ -81,9 +81,8 @@ class Auth2FA
     {
         $userIV = UserPass::getUserIVById($this->userId);
         $base32 = new Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
-        $key = substr($base32->encode($userIV), 0, 16);
 
-        return $key;
+        return substr($base32->encode($userIV), 0, 16);
     }
 
     /**

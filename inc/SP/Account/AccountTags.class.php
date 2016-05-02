@@ -25,7 +25,7 @@
 
 namespace SP\Account;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -73,7 +73,7 @@ class AccountTags
      *
      * @param AccountData $accountData
      * @return bool
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function addTags(AccountData $accountData)
     {

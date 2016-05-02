@@ -23,51 +23,14 @@
  *
  */
 
-namespace SP\DataModel;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+namespace SP\Core\Exceptions;
 
 /**
- * Class UserBasicData
+ * Class InvalidClassException
  *
- * @package SP\DataModel
+ * @package SP\Core\Exceptions
  */
-class UserBasicData
+class InvalidClassException extends  \Exception
 {
-    /**
-     * @var int
-     */
-    public $user_id = 0;
-    /**
-     * @var string
-     */
-    public $user_login = '';
-    /**
-     * @var string
-     */
-    public $user_name = '';
 
-    /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->user_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserLogin()
-    {
-        return $this->user_login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserName()
-    {
-        return $this->user_name;
-    }
 }

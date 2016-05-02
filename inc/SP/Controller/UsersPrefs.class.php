@@ -33,12 +33,14 @@ use SP\Core\ActionsInterface;
 use SP\Core\Language;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Core\Template;
 use SP\Core\Themes;
+use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
 
 
 /**
- * Class PreferencesC encargada de mostrar las preferencias de los usuarios
+ * Class UsersPrefs encargada de mostrar las preferencias de los usuarios
  *
  * @package SP\Controller
  */
@@ -49,7 +51,7 @@ class UsersPrefs extends Controller implements ActionsInterface
      */
     private $tabIndex = 0;
     /**
-     * @var UserPreferences
+     * @var UserPreferencesData
      */
     private $userPrefs;
     /**
@@ -61,16 +63,16 @@ class UsersPrefs extends Controller implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template \SP\Core\Template con instancia de plantilla
+     * @param $template Template con instancia de plantilla
      */
-    public function __construct(\SP\Core\Template $template = null)
+    public function __construct(Template $template = null)
     {
         parent::__construct($template);
 
         $this->view->assign('tabs', array());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->userId = Session::getUserId();
-        $this->userPrefs = UserPreferences::getPreferences($this->userId);
+        $this->userPrefs = UserPreferences::getItem()->getById($this->userId)->getItemData();
     }
 
     /**

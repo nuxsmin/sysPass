@@ -116,10 +116,13 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param ActionsInterface $action
+     * @return $this
      */
     public function setOnCloseAction(ActionsInterface $action)
     {
         $this->_onCloseAction = $action;
+
+        return $this;
     }
 
     /**
@@ -132,10 +135,13 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param $id string
+     * @return $this
      */
     public function setId($id)
     {
         $this->_id = $id;
+
+        return $this;
     }
 
     /**
@@ -148,10 +154,13 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridHeaderInterface $header
+     * @return $this
      */
     public function setHeader(DataGridHeaderInterface $header)
     {
         $this->_header = $header;
+
+        return $this;
     }
 
     /**
@@ -164,14 +173,18 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridDataInterface $data
+     * @return $this
      */
     public function setData(DataGridDataInterface $data)
     {
         $this->_data = $data;
+
+        return $this;
     }
 
     /**
      * @param DataGridActionInterface $action
+     * @return $this
      */
     public function setDataActions(DataGridActionInterface $action)
     {
@@ -180,6 +193,8 @@ abstract class DataGridBase implements DataGridInterface
         }
 
         $this->_actions->attach($action);
+
+        return $this;
     }
 
     /**
@@ -202,10 +217,13 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
+     * @return $this
      */
     public function setDataHeaderTemplate($template)
     {
         $this->_headerTemplate = $this->checkTemplate($template);
+
+        return $this;
     }
 
     /**
@@ -239,10 +257,13 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para las acciones
      *
      * @param string $template El nombre de la plantilla a utilizar
+     * @return $this
      */
     public function setDataActionsTemplate($template)
     {
         $this->_actionsTemplate = $this->checkTemplate($template);
+
+        return $this;
     }
 
     /**
@@ -259,10 +280,13 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
+     * @return $this
      */
     public function setDataPagerTemplate($template)
     {
         $this->_pagerTemplate = $this->checkTemplate($template);
+
+        return $this;
     }
 
     /**
@@ -283,6 +307,8 @@ abstract class DataGridBase implements DataGridInterface
     public function setDataRowTemplate($template)
     {
         $this->_rowsTemplate = $this->checkTemplate($template);
+
+        return $this;
     }
 
     /**
@@ -307,10 +333,13 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer el paginador
      *
      * @param DataGridPagerInterface $pager
+     * @return $this
      */
     public function setPager(DataGridPagerInterface $pager)
     {
         $this->_pager = $pager;
+
+        return $this;
     }
 
     /**
@@ -333,9 +362,12 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param int $time
+     * @return $this
      */
     public function setTime($time)
     {
         $this->_time = $time;
+
+        return $this;
     }
 }

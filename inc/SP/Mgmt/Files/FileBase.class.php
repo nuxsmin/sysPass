@@ -26,13 +26,14 @@
 namespace SP\Mgmt\Files;
 
 use SP\DataModel\FileData;
+use SP\Mgmt\ItemBase;
 
 /**
  * Class FileBase
  *
  * @package SP\Mgmt\Files
  */
-abstract class FileBase
+abstract class FileBase extends ItemBase
 {
     /** @var FileData */
     protected $itemData;
@@ -42,35 +43,21 @@ abstract class FileBase
      *
      * @param FileData $itemData
      */
-    public function __construct(FileData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new FileData();
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\FileData');
+        }
+
+        parent::__construct($itemData);
     }
 
     /**
-     * @param FileData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
-    }
-
-    /**
+     * Devolver los datos del elemento
      * @return FileData
      */
     public function getItemData()
     {
-        return $this->itemData;
-    }
-
-    /**
-     * @param $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

@@ -26,7 +26,7 @@
 namespace SP\Util;
 
 use SP\Config\Config;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class Checks utilidades de comprobación
@@ -73,14 +73,14 @@ class Checks
     /**
      * Comprobar la versión de PHP.
      *
-     * @return bool
+     * @return array
      */
     public static function checkPhpVersion()
     {
-        $error = array();
+        $error = [];
         $needsVersion = '5.3.0';
 
-        if (version_compare(PHP_VERSION, $needsVersion, '>=')) {
+        if (version_compare(PHP_VERSION, $needsVersion, '>=') < 0) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Versión de PHP requerida >= ') . $needsVersion,
@@ -114,7 +114,8 @@ class Checks
             'session',
             'gd'
         );
-        $error = array();
+
+        $error = [];
 
         foreach ($modsNeed as $module) {
             if (!extension_loaded($module)) {

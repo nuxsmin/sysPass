@@ -33,7 +33,7 @@ use SP\Core\CryptMasterPass;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
 use SP\Http\Request;
 use SP\Http\Response;
@@ -344,7 +344,7 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
     $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
     $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
-    if (!UserPass::checkUserUpdateMPass()) {
+    if (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
         Response::printJSON(_('Clave maestra actualizada') . ';;' . _('Reinicie la sesión para cambiarla'));
     } elseif ($newMasterPass == '' && $currentMasterPass == '') {
         Response::printJSON(_('Clave maestra no indicada'));

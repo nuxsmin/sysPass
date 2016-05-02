@@ -27,7 +27,7 @@ namespace SP\Mgmt\Groups;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
@@ -54,7 +54,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     /**
      * @param $id int
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
@@ -66,7 +66,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar grupos asociados a la cuenta'));
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar grupos asociados a la cuenta'));
         }
 
         return $this;
@@ -74,7 +74,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
 
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
@@ -98,7 +98,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         }
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar los grupos secundarios'));
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar los grupos secundarios'));
         }
 
         return $this;
@@ -114,7 +114,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
             'SELECT accgroup_groupId, accgroup_accountId FROM accGroups WHERE accgroup_groupId = ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\GroupAccountsData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -177,7 +177,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
             'SELECT accgroup_groupId, accgroup_accountId FROM accGroups WHERE accgroup_accountId = ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\GroupAccountsData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 

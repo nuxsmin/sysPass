@@ -103,26 +103,35 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param int $sortOrder
+     * @return $this
      */
     public function setSortOrder($sortOrder)
     {
         $this->_sortOrder = $sortOrder;
+
+        return $this;
     }
 
     /**
      * @param string $sk
+     * @return $this
      */
     public function setSk($sk)
     {
         $this->_sk = $sk;
+
+        return $this;
     }
 
     /**
      * @param DataGridActionSearch $sourceAction
+     * @return $this
      */
     public function setSourceAction($sourceAction)
     {
         $this->_sourceAction = $sourceAction;
+
+        return $this;
     }
 
     /**
@@ -135,10 +144,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconPrev
+     * @return $this
      */
     public function setIconPrev(IconInterface $iconPrev)
     {
         $this->_iconPrev = $iconPrev;
+
+        return $this;
     }
 
     /**
@@ -151,10 +163,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconNext
+     * @return $this
      */
     public function setIconNext(IconInterface $iconNext)
     {
         $this->_iconNext = $iconNext;
+
+        return $this;
     }
 
     /**
@@ -167,10 +182,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconFirst
+     * @return $this
      */
     public function setIconFirst(IconInterface $iconFirst)
     {
         $this->_iconFirst = $iconFirst;
+
+        return $this;
     }
 
     /**
@@ -183,10 +201,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconLast
+     * @return $this
      */
     public function setIconLast(IconInterface $iconLast)
     {
         $this->_iconLast = $iconLast;
+
+        return $this;
     }
 
     /**
@@ -203,10 +224,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el campo de la búsqueda
      *
      * @param int $sortKey
+     * @return $this
      */
     public function setSortKey($sortKey)
     {
         $this->_sortKey = $sortKey;
+
+        return $this;
     }
 
     /**
@@ -223,10 +247,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el registro de inicio de la página
      *
      * @param int $limitStart
+     * @return $this
      */
     public function setLimitStart($limitStart)
     {
         $this->_limitStart = $limitStart;
+
+        return $this;
     }
 
     /**
@@ -243,10 +270,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el número de registros en una página
      *
      * @param int $limitCount
+     * @return $this
      */
     public function setLimitCount($limitCount)
     {
         $this->_limitCount = $limitCount;
+
+        return $this;
     }
 
     /**
@@ -283,10 +313,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el número total de registros obtenidos
      *
      * @param int $totalRows
+     * @return $this
      */
     public function setTotalRows($totalRows)
     {
         $this->_totalRows = $totalRows;
+
+        return $this;
     }
 
     /**
@@ -303,20 +336,26 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer si está activado el filtro
      *
      * @param bool $filterOn
+     * @return $this
      */
     public function setFilterOn($filterOn)
     {
         $this->_filterOn = $filterOn;
+
+        return $this;
     }
 
     /**
      * Establecer la función javascript para paginar
      *
      * @param string $function
+     * @return $this
      */
     public function setOnClickFunction($function)
     {
         $this->_onClickFunction = $function;
+
+        return $this;
     }
 
     /**
@@ -347,10 +386,13 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer los argumentos de la función OnClick
      *
      * @param mixed $args
+     * @return $this
      */
     public function setOnClickArgs($args)
     {
         $this->_onClickArgs[] = $args;
+
+        return $this;
     }
 
     /**

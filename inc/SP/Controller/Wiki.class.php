@@ -31,7 +31,7 @@ use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
 use SP\Util\Checks;
 use SP\Util\Wiki\DokuWikiApi;

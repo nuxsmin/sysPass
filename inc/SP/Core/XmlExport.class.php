@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Log\Email;
 use SP\Mgmt\Customers\Customer;

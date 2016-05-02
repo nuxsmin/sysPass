@@ -25,6 +25,7 @@
 
 namespace SP\Mgmt\Files;
 
+use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -37,12 +38,10 @@ use SP\Storage\QueryData;
 class FileSearch extends FileBase implements ItemSearchInterface
 {
     /**
-     * @param        $limitCount
-     * @param int    $limitStart
-     * @param string $search
+     * @param ItemSearchData $SearchData
      * @return mixed
      */
-    public function getMgmtSearch($limitCount, $limitStart = 0, $search = '')
+    public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $query = /** @lang SQL */
             'SELECT accfile_id,
@@ -59,14 +58,14 @@ class FileSearch extends FileBase implements ItemSearchInterface
         $Data = new QueryData();
         $Data->setMapClassName('SP\DataModel\FileExtData');
 
-        if (!empty($search)) {
+        if ($SearchData->getSeachString() !== '') {
             $query .= /** @lang SQL */
                 ' WHERE accfile_name LIKE ?
                 OR accfile_type LIKE ?
                 OR account_name LIKE ?
                 OR customer_name LIKE ?';
 
-            $search = '%' . $search . '%';
+            $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
             $Data->addParam($search);
             $Data->addParam($search);
@@ -76,8 +75,8 @@ class FileSearch extends FileBase implements ItemSearchInterface
         $query .= /** @lang SQL */
             ' ORDER BY accfile_name LIMIT ?,?';
 
-        $Data->addParam($limitStart);
-        $Data->addParam($limitCount);
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
 
         $Data->setQuery($query);
 

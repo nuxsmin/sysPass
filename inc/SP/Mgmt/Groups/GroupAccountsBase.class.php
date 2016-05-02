@@ -26,6 +26,7 @@
 namespace SP\Mgmt\Groups;
 
 use SP\DataModel\GroupAccountsData;
+use SP\Mgmt\ItemBase;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -34,7 +35,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Mgmt\Groups
  */
-abstract class GroupAccountsBase
+abstract class GroupAccountsBase extends ItemBase
 {
     /** @var GroupAccountsData */
     protected $itemData;
@@ -44,18 +45,13 @@ abstract class GroupAccountsBase
      *
      * @param GroupAccountsData $itemData
      */
-    public function __construct(GroupAccountsData $itemData = null)
+    public function __construct($itemData = null)
     {
-        $this->itemData = (!is_null($itemData)) ? $itemData : new GroupAccountsData();
-    }
+        if (!$this->dataModel) {
+            $this->setDataModel('SP\DataModel\GroupAccountsData');
+        }
 
-    /**
-     * @param GroupAccountsData $itemData
-     * @return static
-     */
-    public static function getItem($itemData = null)
-    {
-        return new static($itemData);
+        parent::__construct($itemData);
     }
 
     /**
@@ -63,16 +59,6 @@ abstract class GroupAccountsBase
      */
     public function getItemData()
     {
-        return $this->itemData;
-    }
-
-    /**
-     * @param $itemData
-     * @return $this
-     */
-    public function setItemData($itemData)
-    {
-        $this->itemData = $itemData;
-        return $this;
+        return parent::getItemData();
     }
 }

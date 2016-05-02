@@ -37,7 +37,7 @@ use SP\Mgmt\Groups\Group;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 
@@ -272,7 +272,7 @@ class Account extends AccountBase implements AccountInterface
      * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
      *
      * @return object
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getData()
     {

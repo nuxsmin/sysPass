@@ -34,7 +34,7 @@ use SP\Log\Email;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Mgmt\Users\UserUtil;
 use SP\Storage\QueryData;
 
@@ -201,7 +201,7 @@ class ApiTokens
     /**
      * Actualizar un token
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateToken()
     {

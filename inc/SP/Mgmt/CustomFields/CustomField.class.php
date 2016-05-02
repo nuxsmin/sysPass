@@ -32,8 +32,6 @@ use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
-use SP\Log\Log;
-use SP\Core\SPException;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
@@ -47,10 +45,14 @@ class CustomField extends CustomFieldBase implements ItemInterface
     /**
      * @param CustomFieldData $itemData
      * @param int             $customFieldDefId
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function __construct(CustomFieldData $itemData, $customFieldDefId = null)
+    public function __construct($itemData, $customFieldDefId = null)
     {
+        $this->setDataModel('SP\DataModel\CustomFieldData');
+
+        parent::__construct($itemData);
+
         if (!is_null($customFieldDefId)) {
             $field = CustomFieldDef::getItem()->getById($customFieldDefId)->getItemData();
 
@@ -209,7 +211,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             ORDER BY customfielddef_id';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($id);

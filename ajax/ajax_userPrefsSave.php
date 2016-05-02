@@ -23,11 +23,14 @@
  *
  */
 
+use SP\Auth\Auth2FA;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Language;
 use SP\Core\Session;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Themes;
+use SP\DataModel\UserPreferencesData;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
 use SP\Http\Response;
@@ -61,38 +64,30 @@ $activeTab = Request::analyze('activeTab', 0);
 $doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
 if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
-    $userLang = Request::analyze('userlang');
-    $userTheme = Request::analyze('usertheme', 'material-blue');
-    $resultsPerPage = Request::analyze('resultsperpage', 12);
-    $accountLink = Request::analyze('account_link', false, false, true);
-    $sortViews = Request::analyze('sort_views', false, false, true);
-    $topNavbar = Request::analyze('top_navbar', false, false, true);
-    $optionalActions = Request::analyze('optional_actions', false, false, true);
+    $UserPreferencesData = new UserPreferencesData();
+    $UserPreferencesData->setUserId($itemId);
+    $UserPreferencesData->setLang(Request::analyze('userlang'));
+    $UserPreferencesData->setTheme(Request::analyze('usertheme', 'material-blue'));
+    $UserPreferencesData->setResultsPerPage(Request::analyze('resultsperpage', 12));
+    $UserPreferencesData->setAccountLink(Request::analyze('account_link', false, false, true));
+    $UserPreferencesData->setSortViews(Request::analyze('sort_views', false, false, true));
+    $UserPreferencesData->setTopNavbar(Request::analyze('top_navbar', false, false, true));
+    $UserPreferencesData->setOptionalActions(Request::analyze('optional_actions', false, false, true));
 
-    // No se instancia la clase ya que es necesario guardar los atributos ya guardados
-    $UserPrefs = UserPreferences::getPreferences($itemId);
-    $UserPrefs->setId($itemId);
-    $UserPrefs->setLang($userLang);
-    $UserPrefs->setTheme($userTheme);
-    $UserPrefs->setResultsPerPage($resultsPerPage);
-    $UserPrefs->setAccountLink($accountLink);
-    $UserPrefs->setSortViews($sortViews);
-    $UserPrefs->setTopNavbar($topNavbar);
-    $UserPrefs->setOptionalActions($optionalActions);
+    try {
+        UserPreferences::getItem($UserPreferencesData)->update();
+        // Forzar la detección del lenguaje tras actualizar
+        Language::setLanguage(true);
+        Themes::setTheme(true);
 
-    if (!$UserPrefs->updatePreferences()) {
-        Response::printJSON(_('Error al actualizar preferencias'));
+        // Actualizar las preferencias en la sesión y recargar la página
+        Session::setUserPreferences($UserPreferencesData);
+        Util::reload();
+
+        Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+    } catch (SPException $e){
+        Response::printJSON($e->getMessage());
     }
-
-    // Forzar la detección del lenguaje tras actualizar
-    Language::setLanguage(true);
-    Themes::setTheme(true);
-
-    // Actualizar las preferencias en la sesión y recargar la página
-    Session::setUserPreferences($UserPrefs);
-    Util::reload();
-
-    Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
     if (Checks::demoIsEnabled() && Session::getUserLogin() === 'demo') {
         Response::printJSON(_('Ey, esto es una DEMO!!'));
@@ -103,22 +98,20 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $pin = Request::analyze('security_pin', 0);
 
     $userLogin = UserUtil::getUserLoginById($itemId);
-    $twoFa = new \SP\Auth\Auth2FA($itemId, $userLogin);
+    $twoFa = new Auth2FA($itemId, $userLogin);
 
     if (!$twoFa->verifyKey($pin)) {
         Response::printJSON(_('Código incorrecto'));
     }
 
-    // No se instancia la clase ya que es necesario guardar los atributos ya guardados
-    $UserPrefs = UserPreferences::getPreferences($itemId);
-    $UserPrefs->setId($itemId);
-    $UserPrefs->setUse2Fa(Util::boolval($twoFaEnabled));
-
-    if (!$UserPrefs->updatePreferences()) {
-        Response::printJSON(_('Error al actualizar preferencias'));
+    try {
+        $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
+        $UserPreferencesData->setUse2Fa(Util::boolval($twoFaEnabled));
+        UserPreferences::getItem($UserPreferencesData)->update();
+        Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+    } catch (SPException $e){
+        Response::printJSON($e->getMessage());
     }
-
-    Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
 } else {
     Response::printJSON(_('Acción Inválida'));
 }

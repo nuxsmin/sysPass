@@ -149,7 +149,7 @@ class File extends FileBase implements ItemInterface
             WHERE accfile_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\FileData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -184,7 +184,7 @@ class File extends FileBase implements ItemInterface
             WHERE accfile_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\FileData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 

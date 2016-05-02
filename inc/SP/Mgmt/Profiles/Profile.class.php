@@ -28,7 +28,7 @@ namespace SP\Mgmt\Profiles;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileBaseData;
 use SP\DataModel\ProfileData;
 use SP\Html\Html;
@@ -48,12 +48,12 @@ class Profile extends ProfileBase implements ItemInterface
 {
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()){
-            throw new SPException(SPException::SP_WARNING, _('Nombre de perfil duplicado'));
+            throw new SPException(SPException::SP_INFO, _('Nombre de perfil duplicado'));
         }
 
         $query = /** @lang SQL */
@@ -67,7 +67,7 @@ class Profile extends ProfileBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear perfil'));
+            throw new SPException(SPException::SP_ERROR, _('Error al crear perfil'));
         }
 
         $this->itemData->setUserprofileId(DB::getLastId());
@@ -84,12 +84,12 @@ class Profile extends ProfileBase implements ItemInterface
     /**
      * @param $id int
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, _('Perfil en uso'));
+            throw new SPException(SPException::SP_INFO, _('Perfil en uso'));
         }
 
         $oldProfile = $this->getById($id)->getItemData();
@@ -102,7 +102,7 @@ class Profile extends ProfileBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar perfil'));
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar perfil'));
         }
 
         $Log = new Log(_('Eliminar Perfil'));
@@ -121,7 +121,7 @@ class Profile extends ProfileBase implements ItemInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()){
-            throw new SPException(SPException::SP_WARNING, _('Nombre de perfil duplicado'));
+            throw new SPException(SPException::SP_INFO, _('Nombre de perfil duplicado'));
         }
 
         $oldProfileName = $this->getById($this->itemData->getUserprofileId())->getItemData();
@@ -139,7 +139,7 @@ class Profile extends ProfileBase implements ItemInterface
         $Data->addParam($this->itemData->getUserprofileId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al modificar perfil'));
+            throw new SPException(SPException::SP_ERROR, _('Error al modificar perfil'));
         }
 
         $Log = new Log(_('Modificar Perfil'));
@@ -165,7 +165,7 @@ class Profile extends ProfileBase implements ItemInterface
             WHERE userprofile_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\ProfileBaseData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -177,7 +177,7 @@ class Profile extends ProfileBase implements ItemInterface
         $Profile = unserialize($ProfileData->getUserprofileProfile());
 
         if (get_class($Profile) === '__PHP_Incomplete_Class') {
-            $Profile = Util::castToClass('SP\DataModel\ProfileData', $Profile);
+            $Profile = Util::castToClass($this->getDataModel(), $Profile);
         }
 
         $Profile->setUserprofileId($ProfileData->getUserprofileId());
@@ -208,7 +208,7 @@ class Profile extends ProfileBase implements ItemInterface
         }
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\ProfileData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
         DB::setReturnArray();

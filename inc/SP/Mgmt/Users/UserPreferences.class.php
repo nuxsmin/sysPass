@@ -25,259 +25,125 @@
 
 namespace SP\Mgmt\Users;
 
-use SP\Core\SPException;
+defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
+use SP\DataModel\UserPreferencesData;
+use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
-
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
  * Class UsersPreferences para la gestion de las preferencias de usuarios
  *
  * @package SP
  */
-class UserPreferences
+class UserPreferences extends UserPreferencesBase implements ItemInterface
 {
     /**
-     * @var int
+     * @return mixed
      */
-    private $_id = 0;
-    /**
-     * Usar autentificación en 2 pasos
-     *
-     * @var bool
-     */
-    private $_use2Fa = false;
-    /**
-     * Lenguaje del usuario
-     *
-     * @var string
-     */
-    private $_lang = '';
-    /**
-     * Tema del usuario
-     *
-     * @var string
-     */
-    private $_theme = '';
-    /**
-     * @var int
-     */
-    private $_resultsPerPage = 0;
-    /**
-     * @var bool
-     */
-    private $_accountLink = null;
-    /**
-     * @var bool
-     */
-    private $_sortViews = false;
-    /**
-     * @var bool
-     */
-    private $_topNavbar = false;
-    /**
-     * @var bool
-     */
-    private $_optionalActions = false;
+    public function add()
+    {
+        // TODO: Implement add() method.
+    }
 
     /**
-     * Obtener las preferencas de un usuario
-     *
-     * @param $id int El id del usuario
-     * @return bool|UserPreferences
-     * @throws SPException
+     * @param $id int
+     * @return mixed
      */
-    public static function getPreferences($id)
+    public function delete($id)
     {
-        $query = 'SELECT user_preferences FROM usrData WHERE user_id = :id LIMIT 1';
+        // TODO: Implement delete() method.
+    }
+
+    /**
+     * @return $this
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function update()
+    {
+        $query = /** @lang SQL */
+            'UPDATE usrData 
+            SET user_preferences = ?
+            WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false || is_null($queryRes->user_preferences)) {
-            return new UserPreferences();
-        }
-
-        $preferences = unserialize($queryRes->user_preferences);
-
-        if (get_class($preferences) === '__PHP_Incomplete_Class') {
-            return Util::castToClass('SP\Mgmt\Users\UserPreferences', $preferences);
-        }
-
-        return $preferences;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isOptionalActions()
-    {
-        return $this->_optionalActions;
-    }
-
-    /**
-     * @param boolean $optionalActions
-     */
-    public function setOptionalActions($optionalActions)
-    {
-        $this->_optionalActions = $optionalActions;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isTopNavbar()
-    {
-        return $this->_topNavbar;
-    }
-
-    /**
-     * @param boolean $topNavbar
-     */
-    public function setTopNavbar($topNavbar)
-    {
-        $this->_topNavbar = $topNavbar;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isSortViews()
-    {
-        return $this->_sortViews;
-    }
-
-    /**
-     * @param boolean $sortViews
-     */
-    public function setSortViews($sortViews)
-    {
-        $this->_sortViews = $sortViews;
-    }
-
-    /**
-     * @return int
-     */
-    public function getResultsPerPage()
-    {
-        return $this->_resultsPerPage;
-    }
-
-    /**
-     * @param int $resultsPerPage
-     */
-    public function setResultsPerPage($resultsPerPage)
-    {
-        $this->_resultsPerPage = $resultsPerPage;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isAccountLink()
-    {
-        return $this->_accountLink;
-    }
-
-    /**
-     * @param boolean $accountLink
-     */
-    public function setAccountLink($accountLink)
-    {
-        $this->_accountLink = $accountLink;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTheme()
-    {
-        return $this->_theme;
-    }
-
-    /**
-     * @param string $theme
-     */
-    public function setTheme($theme)
-    {
-        $this->_theme = $theme;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLang()
-    {
-        return $this->_lang;
-    }
-
-    /**
-     * @param string $lang
-     */
-    public function setLang($lang)
-    {
-        $this->_lang = $lang;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isUse2Fa()
-    {
-        return $this->_use2Fa;
-    }
-
-    /**
-     * @param boolean $use2Fa
-     */
-    public function setUse2Fa($use2Fa)
-    {
-        $this->_use2Fa = $use2Fa;
-    }
-
-    /**
-     * Modificar las preferencias de un usuario
-     *
-     * @return bool
-     */
-    public function updatePreferences()
-    {
-        $query = 'UPDATE usrData SET '
-            . 'user_preferences = :preferences '
-            . 'WHERE user_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->getId(), 'id');
-        $Data->addParam(serialize($this), 'preferences');
+        $Data->addParam(serialize($this->itemData));
+        $Data->addParam($this->itemData->getUserId());
 
         if (DB::getQuery($Data) === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar preferencias'));
         }
 
-        return true;
+        return $this;
     }
 
     /**
-     * @return int
+     * @param $id int
+     * @return $this
      */
-    public function getId()
+    public function getById($id)
     {
-        return $this->_id;
+        $query = /** @lang SQL */
+            'SELECT user_id, user_preferences FROM usrData WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\UserData');
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        /** @var UserData $queryRes */
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false || is_null($queryRes->getUserPreferences())) {
+            return $this;
+        }
+
+        $UserPreferencesData = unserialize($queryRes->getUserPreferences());
+
+        if (get_class($UserPreferencesData) === '__PHP_Incomplete_Class') {
+            $UserPreferencesData = Util::castToClass($this->getDataModel(), $UserPreferencesData);
+        }
+
+        $this->itemData = $UserPreferencesData;
+
+        return $this;
     }
 
     /**
-     * @param int $id
+     * @return mixed
      */
-    public function setId($id)
+    public function getAll()
     {
-        $this->_id = $id;
+        // TODO: Implement getAll() method.
     }
 
+    /**
+     * @param $id int
+     * @return mixed
+     */
+    public function checkInUse($id)
+    {
+        // TODO: Implement checkInUse() method.
+    }
 
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate()
+    {
+        // TODO: Implement checkDuplicatedOnUpdate() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        // TODO: Implement checkDuplicatedOnAdd() method.
+    }
 }

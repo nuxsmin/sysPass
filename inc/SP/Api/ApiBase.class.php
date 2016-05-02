@@ -31,7 +31,8 @@ use SP\Auth\Auth;
 use SP\Core\Acl;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
@@ -71,11 +72,15 @@ abstract class ApiBase
     /**
      * @var array
      */
-    protected $actionsMap = array();
+    protected $actionsMap = [];
+    /**
+     * @var string
+     */
+    protected $mPass = '';
 
     /**
      * @param $params
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct($params)
     {
@@ -89,22 +94,22 @@ abstract class ApiBase
         $this->params = $params;
 
         if (isset($params->userPass)) {
-            $userLogin = UserUtil::getUserLoginById($this->userId);
 
-            $User = new User();
-            $User->setUserId($this->userId);
-            $User->setUserLogin($userLogin);
-            $User->setUserPass($params->userPass);
+            $UserData = new UserData();
+            $UserData->setUserId($this->userId);
+            $UserData->setUserPass($params->userPass);
 
-            if (Auth::authUserMySQL($userLogin, $params->userPass)
-                && !UserUtil::checkUserIsDisabled($userLogin)
-                && UserPass::checkUserMPass($User)
-                && UserPass::checkUserUpdateMPass($userLogin)
-                && !$User->isUserChangePass()
+            User::getItem($UserData)->getById($this->userId);
+
+            $UserPass = UserPass::getItem($UserData);
+            
+            if (!$UserData->isUserIsDisabled()
+                && Auth::authUserMySQL($UserData->getUserLogin(), $UserData->getUserPass())
+                && $UserPass->loadUserMPass()
+                && UserPass::checkUserUpdateMPass($UserData->getUserId())
             ) {
-                $this->_mPass = $User->getUserMPass(true);
-                $User->getUserInfo();
-                SessionUtil::loadUserSession($User);
+                $this->mPass = $UserPass->getClearUserMPass();
+                SessionUtil::loadUserSession($UserData);
             } else {
                 throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
             }

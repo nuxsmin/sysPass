@@ -31,6 +31,7 @@ use SP\Core\ActionsInterface;
 use SP\DataModel\AccountData;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Groups\GroupUtil;
+use SP\Mgmt\Users\User;
 use SP\Storage\DB;
 use SP\Mgmt\Groups\Group;
 use SP\Html\Html;
@@ -146,10 +147,13 @@ class AccountSearch
 
     /**
      * @param boolean $searchFavorites
+     * @return $this
      */
     public function setSearchFavorites($searchFavorites)
     {
         $this->searchFavorites = (bool)$searchFavorites;
+
+        return $this;
     }
 
     /**
@@ -162,10 +166,13 @@ class AccountSearch
 
     /**
      * @param int $globalSearch
+     * @return $this
      */
     public function setGlobalSearch($globalSearch)
     {
         $this->globalSearch = $globalSearch;
+
+        return $this;
     }
 
     /**
@@ -178,10 +185,13 @@ class AccountSearch
 
     /**
      * @param string $txtSearch
+     * @return $this
      */
     public function setTxtSearch($txtSearch)
     {
         $this->txtSearch = (string)$txtSearch;
+
+        return $this;
     }
 
     /**
@@ -194,10 +204,13 @@ class AccountSearch
 
     /**
      * @param int $customerId
+     * @return $this
      */
     public function setCustomerId($customerId)
     {
         $this->customerId = $customerId;
+
+        return $this;
     }
 
     /**
@@ -210,10 +223,13 @@ class AccountSearch
 
     /**
      * @param int $categoryId
+     * @return $this
      */
     public function setCategoryId($categoryId)
     {
         $this->categoryId = $categoryId;
+
+        return $this;
     }
 
     /**
@@ -226,10 +242,13 @@ class AccountSearch
 
     /**
      * @param int $sortOrder
+     * @return $this
      */
     public function setSortOrder($sortOrder)
     {
         $this->sortOrder = $sortOrder;
+
+        return $this;
     }
 
     /**
@@ -242,10 +261,13 @@ class AccountSearch
 
     /**
      * @param int $limitStart
+     * @return $this
      */
     public function setLimitStart($limitStart)
     {
         $this->limitStart = $limitStart;
+
+        return $this;
     }
 
     /**
@@ -258,10 +280,13 @@ class AccountSearch
 
     /**
      * @param int $limitCount
+     * @return $this
      */
     public function setLimitCount($limitCount)
     {
         $this->limitCount = $limitCount;
+
+        return $this;
     }
 
     /**
@@ -565,14 +590,14 @@ class AccountSearch
 
         switch ($filters[1]) {
             case 'user':
-                $UserData = UserUtil::getUserIdByLogin(Html::sanitize($filters[2]));
+                $UserData = User::getItem()->getByLogin($filters[2])->getItemData();
                 return [
-                    'account_userId' => $UserData,
-                    'accuser_userId' => $UserData
+                    'account_userId' => $UserData->getUserId(),
+                    'accuser_userId' => $UserData->getUserId()
                 ];
                 break;
             case 'group':
-                $GroupData = GroupUtil::getGroupIdByName(Html::sanitize($filters[2]));
+                $GroupData = GroupUtil::getGroupIdByName($filters[2]);
                 return [
                     'account_userGroupId' => $GroupData->getUsergroupId(),
                     'accgroup_groupId' => $GroupData->getUsergroupId()
@@ -580,12 +605,12 @@ class AccountSearch
                 break;
             case 'file':
                 return [
-                    'accfile_name' => Html::sanitize($filters[2])
+                    'accfile_name' => $filters[2]
                 ];
                 break;
             case 'tag':
                 return [
-                    'tag_name' => Html::sanitize($filters[2])
+                    'tag_name' => $filters[2]
                 ];
                 break;
             default:
@@ -641,10 +666,13 @@ class AccountSearch
 
     /**
      * @param boolean $sortViews
+     * @return $this
      */
     public function setSortViews($sortViews)
     {
         $this->sortViews = $sortViews;
+
+        return $this;
     }
 
     /**
@@ -657,10 +685,13 @@ class AccountSearch
 
     /**
      * @param int $sortKey
+     * @return $this
      */
     public function setSortKey($sortKey)
     {
         $this->sortKey = $sortKey;
+
+        return $this;
     }
 
     /**

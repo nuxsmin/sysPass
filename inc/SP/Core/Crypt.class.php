@@ -28,6 +28,7 @@ namespace SP\Core;
 use SP\Account\AccountHistory;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -251,6 +252,10 @@ class Crypt
      */
     public static function getDecrypt($cryptData, $cryptIV, $password = null)
     {
+        if (empty($cryptData) || empty($cryptIV)){
+            return false;
+        }
+
         if (is_null($password)) {
             $password = SessionUtil::getSessionMPass();
 //            self::getSessionMasterPass();

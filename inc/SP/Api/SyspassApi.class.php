@@ -31,7 +31,7 @@ use SP\Account\AccountSearch;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -55,7 +55,7 @@ class SyspassApi extends ApiBase
      * Devolver la clave de una cuenta
      *
      * @return string
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountPassword()
     {
@@ -83,7 +83,7 @@ class SyspassApi extends ApiBase
 
         $ret = array(
             'accountId' => $accountId,
-            'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->_mPass)
+            'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->mPass)
         );
 
         if (isset($this->params->details)) {
@@ -97,7 +97,7 @@ class SyspassApi extends ApiBase
      * Devolver los resultados de una búsqueda
      *
      * @return string
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountSearch()
     {
@@ -122,7 +122,7 @@ class SyspassApi extends ApiBase
      * Devolver los detalles de una cuenta
      *
      * @return string
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountData()
     {

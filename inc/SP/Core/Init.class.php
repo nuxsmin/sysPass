@@ -29,6 +29,7 @@ use SP\Auth\Auth;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller;
+use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -253,6 +254,11 @@ class Init
         $PhpMailerLoader = new \SplClassLoader('phpmailer', EXTENSIONS_PATH);
         $PhpMailerLoader->setPrepend(false);
         $PhpMailerLoader->register();
+
+        $ExtsLoader = new \SplClassLoader('Exts', BASE_DIR);
+        $ExtsLoader->setFileExtension('.class.php');
+        $ExtsLoader->setPrepend(false);
+        $ExtsLoader->register();
     }
 
     /**
@@ -362,7 +368,8 @@ class Init
         $configVersion = ($oldConfigCheck) ? (int)$CONFIG['version'] : Config::getConfig()->getConfigVersion();
 
 
-        if ($configVersion < $appVersion
+        if (Config::getConfig()->isInstalled()
+            && $configVersion < $appVersion
             && Upgrade::needConfigUpgrade($appVersion)
             && Upgrade::upgradeConfig($appVersion)
         ) {
@@ -388,6 +395,10 @@ class Init
      */
     private static function checkConfig()
     {
+        if (self::checkInitSourceInclude()) {
+            return;
+        }
+
         if (!is_dir(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
             clearstatcache();
             self::initError(_('El directorio "/config" no existe'));

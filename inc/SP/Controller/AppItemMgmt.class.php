@@ -43,7 +43,7 @@ use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Mgmt\Files\File;
 use SP\DataModel\TagData;
 use SP\Mgmt\Files\FileUtil;
-use SP\Mgmt\Tags\Tags;
+use SP\Mgmt\Tags\Tag;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -147,7 +147,6 @@ class AppItemMgmt extends Controller implements ActionsInterface
         $this->_module = self::ACTION_MGM_TAGS;
         $this->view->addTemplate('tags');
 
-        $Tag = new Tags();
-        $this->view->assign('tag', $Tag->getTag(new TagData($this->view->itemId)));
+        $this->view->assign('tag', ($this->view->itemId) ? Tag::getItem()->getById($this->view->itemId)->getItemData() : new TagData());
     }
 }

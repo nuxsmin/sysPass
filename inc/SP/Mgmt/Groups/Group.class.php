@@ -26,7 +26,7 @@
 
 namespace SP\Mgmt\Groups;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
 use SP\DataModel\GroupUsersData;
 use SP\Html\Html;
@@ -45,12 +45,12 @@ class Group extends GroupBase implements ItemInterface
 {
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, _('Nombre de grupo duplicado'));
+            throw new SPException(SPException::SP_INFO, _('Nombre de grupo duplicado'));
         }
 
         $query = /** @lang SQL */
@@ -62,7 +62,7 @@ class Group extends GroupBase implements ItemInterface
         $Data->addParam($this->itemData->getUsergroupDescription());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el grupo'));
+            throw new SPException(SPException::SP_ERROR, _('Error al crear el grupo'));
         }
 
         $this->itemData->setUsergroupId(DB::$lastId);
@@ -104,7 +104,7 @@ class Group extends GroupBase implements ItemInterface
     /**
      * @param $id int
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
@@ -182,7 +182,7 @@ class Group extends GroupBase implements ItemInterface
             'SELECT usergroup_id, usergroup_name, usergroup_description FROM usrGroups WHERE usergroup_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\GroupData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -193,12 +193,12 @@ class Group extends GroupBase implements ItemInterface
 
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_WARNING, _('Nombre de grupo duplicado'));
+            throw new SPException(SPException::SP_INFO, _('Nombre de grupo duplicado'));
         }
 
         $GroupData = $this->getById($this->itemData->getUsergroupId())->getItemData();
@@ -213,7 +213,7 @@ class Group extends GroupBase implements ItemInterface
         $Data->addParam($this->itemData->getUsergroupId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el grupo'));
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar el grupo'));
         }
 
         $Log = new Log(_('Actualizar Grupo'));
@@ -265,7 +265,7 @@ class Group extends GroupBase implements ItemInterface
             ORDER BY usergroup_name';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\GroupData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
         DB::setReturnArray();

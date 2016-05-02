@@ -40,10 +40,10 @@ use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\CustomFields\CustomField;
-use SP\Mgmt\Tags\Tags;
+use SP\Mgmt\Tags\Tag;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Account\UserAccounts;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
@@ -142,6 +142,7 @@ class Account extends Controller implements ActionsInterface
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
+     * @param null $action
      * @return bool
      */
     protected function checkAccess($action = null)
@@ -151,7 +152,7 @@ class Account extends Controller implements ActionsInterface
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!UserPass::checkUserUpdateMPass()) {
+        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0 && !Acl::checkAccountAccess($this->action, $this->account->getAccountDataForACL())) {
@@ -195,7 +196,7 @@ class Account extends Controller implements ActionsInterface
         $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
         $this->view->assign('otherGroups', Group::getItem()->getAll());
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
-        $this->view->assign('tagsJson', Json::getJson(Tags::getTags()));
+        $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getAll()));
     }
 
     /**

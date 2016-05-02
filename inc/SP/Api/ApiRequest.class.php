@@ -27,7 +27,7 @@ namespace SP\Api;
 
 use ReflectionClass;
 use SP\Http\Request;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -78,7 +78,7 @@ class ApiRequest extends Request
     /**
      * Analizar y establecer el método HTTP a utilizar
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function analyzeRequestMethod()
     {
@@ -100,7 +100,7 @@ class ApiRequest extends Request
     /**
      * Obtener los datos de la petición
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function getData()
     {
@@ -116,7 +116,7 @@ class ApiRequest extends Request
     /**
      * Comprobar los datos básicos de la petición
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function checkBasicData()
     {
@@ -130,7 +130,7 @@ class ApiRequest extends Request
     /**
      * Comprobar si la API tiene implementada dicha acción
      *
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function checkAction()
     {

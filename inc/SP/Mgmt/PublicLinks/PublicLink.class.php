@@ -34,7 +34,7 @@ use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Mgmt\Users\UserUtil;
@@ -98,7 +98,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getItemId());
 
         if (DB::getQuery($Data)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar enlace'));
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar enlace'));
         }
 
         return $this;
@@ -111,7 +111,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, _('Enlace ya creado'));
+            throw new SPException(SPException::SP_INFO, _('Enlace ya creado'));
         }
 
         $this->itemData->setDateAdd(time());
@@ -134,7 +134,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear enlace'));
+            throw new SPException(SPException::SP_ERROR, _('Error al crear enlace'));
         }
 
         $Log = new Log(_('Nuevo Enlace'));
@@ -181,7 +181,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar enlace'));
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar enlace'));
         }
 
         $Log = new Log(_('Eliminar Enlace'));
@@ -219,7 +219,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getItemId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al renovar enlace'));
+            throw new SPException(SPException::SP_ERROR, _('Error al renovar enlace'));
         }
 
         $Log = new Log(_('Actualizar Enlace'));
@@ -256,7 +256,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
         }
 
         /**
@@ -266,7 +266,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $PublicLink = unserialize($queryRes->getPublicLinkLinkData());
 
         if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
-            $PublicLink = Util::castToClass('SP\DataModel\PublicLinkData', $PublicLink);
+            $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
         }
 
         $PublicLink->setItemId($queryRes->getPublicLinkItemId());
@@ -307,7 +307,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             $PublicLinkData = unserialize($PublicLinkListData->getPublicLinkLinkData());
 
             if (get_class($PublicLinkData) === '__PHP_Incomplete_Class') {
-                $PublicLinkData = Util::castToClass('SP\DataModel\PublicLinkData', $PublicLinkData);
+                $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkData);
             }
 
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
@@ -344,7 +344,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     /**
      * @param $hash int
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getByHash($hash)
     {
@@ -363,7 +363,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
         }
 
         /**
@@ -373,7 +373,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $PublicLink = unserialize($queryRes->getPublicLinkLinkData());
 
         if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
-            $PublicLink = Util::castToClass('SP\DataModel\PublicLinkData', $PublicLink);
+            $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
         }
 
         $PublicLink->setItemId($queryRes->getPublicLinkItemId());

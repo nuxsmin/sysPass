@@ -27,6 +27,7 @@ use SP\Core\Init;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+define('BASE_DIR', __DIR__);
 define('XML_CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
 define('CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
 define('MODEL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'SP');

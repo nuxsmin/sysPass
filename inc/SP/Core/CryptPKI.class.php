@@ -29,6 +29,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use phpseclib\Crypt\RSA;
 use phpseclib\Exception\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 
 /**

@@ -28,6 +28,7 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;

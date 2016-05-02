@@ -25,7 +25,7 @@
 
 namespace SP\Mgmt\Profiles;
 
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\Log\Email;
 use SP\Log\Log;

@@ -26,9 +26,9 @@
 namespace SP\Config;
 
 use ReflectionObject;
-use SP\Core\Factory;
+use SP\Core\SingleFactory;
 use SP\Core\Session;
-use SP\Core\SPException;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -103,8 +103,8 @@ class Config
         $ConfigData->setConfigSaver(Session::getUserLogin());
         $ConfigData->setConfigHash();
 
-        Factory::getConfigStorage()->setItems($ConfigData);
-        Factory::getConfigStorage()->save('config');
+        SingleFactory::getConfigStorage()->setItems($ConfigData);
+        SingleFactory::getConfigStorage()->save('config');
 
         if ($backup) {
             self::backupToDB();
@@ -126,7 +126,7 @@ class Config
         self::$Config = new ConfigData();
 
         try {
-            $items = Factory::getConfigStorage()->load('config')->getItems();
+            $items = SingleFactory::getConfigStorage()->load('config')->getItems();
             $Reflection = new ReflectionObject(self::$Config);
 
             foreach ($Reflection->getProperties() as $property) {

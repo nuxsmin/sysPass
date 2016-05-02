@@ -118,10 +118,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @param string $class
      * @param string $method
+     * @return $this
      */
     public function setReflectionFilter($class, $method)
     {
         $this->_reflectionFilter = new \ReflectionMethod($class, $method);
+
+        return $this;
     }
 
     /**
@@ -134,10 +137,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $name string
+     * @return $this
      */
     public function setName($name)
     {
         $this->_name = $name;
+
+        return $this;
     }
 
     /**
@@ -150,10 +156,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param int $id
+     * @return $this
      */
     public function setId($id)
     {
         $this->_id = $id;
+
+        return $this;
     }
 
     /**
@@ -166,26 +175,35 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $title string
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->_title = $title;
+
+        return $this;
     }
 
     /**
      * @param $function string
+     * @return $this
      */
     public function setOnClickFunction($function)
     {
         $this->_onClickFunction = $function;
+
+        return $this;
     }
 
     /**
      * @param $args string
+     * @return $this
      */
     public function setOnClickArgs($args)
     {
         $this->_onClickArgs[] = $args;
+
+        return $this;
     }
 
     /**
@@ -212,18 +230,24 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $icon IconInterface
+     * @return $this
      */
     public function setIcon($icon)
     {
         $this->_icon = $icon;
+
+        return $this;
     }
 
     /**
      * @param $skip bool
+     * @return $this
      */
     public function setSkip($skip)
     {
         $this->_isSkip = $skip;
+
+        return $this;
     }
 
     /**
@@ -236,10 +260,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param bool $helper
+     * @return $this
      */
     public function setIsHelper($helper)
     {
         $this->_isHelper = $helper;
+
+        return $this;
     }
 
     /**
@@ -260,10 +287,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $rowSource string
+     * @return $this
      */
     public function setFilterRowSource($rowSource)
     {
         $this->_filterRowSource = $rowSource;
+
+        return $this;
     }
 
     /**
@@ -276,9 +306,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param int $type El tipo de acción definido en DataGridActionType
+     * @return $this
      */
     public function setType($type)
     {
         $this->_type = $type;
+
+        return $this;
     }
 }
