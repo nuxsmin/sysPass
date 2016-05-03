@@ -76,7 +76,7 @@ class LdapADS extends Ldap
      */
     public static function searchADUserInGroup($userLogin)
     {
-        if (Ldap::$_isADS === false) {
+        if (Ldap::$_ADS === false) {
             return false;
         }
 

@@ -36,7 +36,7 @@ class Ldap
     // Variabla que contiene los datos de una búsqueda
     public static $ldapSearchData;
     // Variable para determinar si conecta con Active Directory
-    protected static $_isADS = false;
+    protected static $_ADS = false;
 
     // Variables de conexión con LDAP
     protected static $_ldapConn;
@@ -253,9 +253,9 @@ class Ldap
      */
     public static function checkLDAPParams()
     {
-        self::$_isADS = Config::getValue('ldap_ads', false);
+        self::$_ADS = Config::getValue('ldap_ads', false);
         self::$_searchBase = Config::getValue('ldap_base');
-        self::$_ldapServer = (!self::$_isADS) ? Config::getValue('ldap_server') : LdapADS::getADServer(Config::getValue('ldap_server'));
+        self::$_ldapServer = (!self::$_ADS) ? Config::getValue('ldap_server') : LdapADS::getADServer(Config::getValue('ldap_server'));
         self::$_bindDN = Config::getValue('ldap_binduser');
         self::$_bindPass = Config::getValue('ldap_bindpass');
         self::$_ldapGroup = Config::getValue('ldap_group', '*');
@@ -280,7 +280,7 @@ class Ldap
     {
         $log = new Log(__FUNCTION__);
 
-        if (self::$_isADS === true) {
+        if (self::$_ADS === true) {
             $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
         } else {
             $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
@@ -429,6 +429,14 @@ class Ldap
     {
         $chars = array('/(,)(?!uid|cn|ou|dc)/i', '/(?<!uid|cn|ou|dc)(=)/i', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
         return preg_replace($chars, '\\\$1', $dn);
+    }
+
+    /**
+     * @return boolean
+     */
+    public static function isADS()
+    {
+        return self::$_ADS;
     }
 
 }

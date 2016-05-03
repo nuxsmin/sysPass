@@ -96,7 +96,7 @@ class Auth
                 }
                 // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
             } else {
-                $ldapGroupAccess = (Ldap::searchUserInGroup($userDN) || LdapADS::searchADUserInGroup($userLogin));
+                $ldapGroupAccess = (Ldap::isADS()) ? LdapADS::searchADUserInGroup($userLogin) : Ldap::searchUserInGroup($userDN);
             }
         } else {
             $ldapGroupAccess = true;
@@ -237,15 +237,6 @@ class Auth
     }
 
     /**
-     * Devuelve el typo de autentificación del servidor web
-     * @return string
-     */
-    public static function getServerAuthType()
-    {
-        return strtoupper($_SERVER['AUTH_TYPE']);
-    }
-
-    /**
      * Devolver el nombre del usuario autentificado por el servidor web
      *
      * @return string
@@ -259,5 +250,15 @@ class Auth
         }
 
         return '';
+    }
+
+    /**
+     * Devuelve el typo de autentificación del servidor web
+     *
+     * @return string
+     */
+    public static function getServerAuthType()
+    {
+        return strtoupper($_SERVER['AUTH_TYPE']);
     }
 }
