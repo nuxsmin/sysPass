@@ -252,15 +252,14 @@ class Installer
             self::setDbuser(substr('sp_' . self::$_username, 0, 16));
 
             // Comprobar si el usuario sumistrado existe
-            $query = "SELECT COUNT(*) FROM mysql.user WHERE user='" . self::$_username . "' AND host='" . self::$_dbhost . "'";
+            $query = "SELECT COUNT(*) FROM mysql.user WHERE user='sp_" . self::$_username . "' AND host='" . self::getAdminHost() . "'";
 
             try {
-                // Si no existe el usuario, se intenta crear
-                if (intval(self::$_dbc->query($query)->fetchColumn()) === 0) {
-                    // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                    if (self::$_dbuser != Config::getValue('dbuser')) {
-                        self::createDBUser();
-                    }
+                // Si no existe el usuario o es distinto del anterior, se intenta crear
+                if (intval(self::$_dbc->query($query)->fetchColumn()) === 0
+                    || self::$_dbuser != Config::getValue('dbuser')
+                ) {
+                    self::createDBUser();
                 }
             } catch (\PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
@@ -298,6 +297,14 @@ class Installer
     }
 
     /**
+     * @return string
+     */
+    private static function getAdminHost()
+    {
+        return (preg_match('/(localhost|127\.0\.0\.1)/i', self::$_dbhost)) ? self::$_dbhost : $_SERVER['SERVER_ADDR'];
+    }
+
+    /**
      * Crear el usuario para conectar con la base de datos.
      * Esta función crea el usuario para conectar con la base de datos.
      * Si se marca en modo hosting, no se crea el usuario.
@@ -310,7 +317,7 @@ class Installer
             return;
         }
 
-        $query = "CREATE USER '" . self::$_dbuser . "'@'localhost' IDENTIFIED BY '" . self::$_dbpass . "'";
+        $query = "CREATE USER `" . self::$_dbuser . "`@`" . self::getAdminHost() . "` IDENTIFIED BY '" . self::$_dbpass . "'";
 
         try {
             self::$_dbc->query($query);
@@ -345,7 +352,7 @@ class Installer
         }
 
         if (!self::$_isHostingMode) {
-            $query = "GRANT ALL PRIVILEGES ON `" . self::$_dbname . "`.* TO '" . self::$_dbuser . "'@'" . self::$_dbhost . "' IDENTIFIED BY '" . self::$_dbpass . "';";
+            $query = "GRANT ALL PRIVILEGES ON `" . self::$_dbname . "`.* TO `" . self::$_dbuser . "`@`" . self::getAdminHost() . "` IDENTIFIED BY '" . self::$_dbpass . "'";
 
             try {
                 self::$_dbc->query($query);
@@ -390,7 +397,7 @@ class Installer
 
         // Usar la base de datos de sysPass
         try {
-            self::$_dbc->query('USE ' . self::$_dbname);
+            self::$_dbc->query('USE `' . self::$_dbname . '`');
         } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
                 , _('Error al seleccionar la BBDD') . " '" . self::$_dbname . "' (" . $e->getMessage() . ")"
@@ -408,7 +415,7 @@ class Installer
                         self::$_dbc->query($buffer);
                     } catch (\PDOException $e) {
                         // drop database on error
-                        self::$_dbc->query("DROP DATABASE " . self::$_dbname . ";");
+                        self::$_dbc->query("DROP DATABASE `" . self::$_dbname . "`");
 
                         throw new SPException(SPException::SP_CRITICAL
                             , _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')'
@@ -510,9 +517,9 @@ class Installer
     private static function rollback()
     {
         try {
-            self::$_dbc->query("DROP DATABASE IF EXISTS " . self::$_dbname . ";");
-            self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'" . self::$_dbhost . "';");
-            self::$_dbc->query("DROP USER '" . self::$_dbuser . "'@'%';");
+            self::$_dbc->query("DROP DATABASE IF EXISTS `" . self::$_dbname . "`");
+            self::$_dbc->query("DROP USER `" . self::$_dbuser . "`@`" . self::getAdminHost() . "`");
+            self::$_dbc->query("DROP USER `" . self::$_dbuser . "`@`%`");
         } catch (\PDOException $e) {
             Config::deleteParam('dbuser');
             Config::deleteParam('dbpass');

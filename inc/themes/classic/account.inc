@@ -99,7 +99,7 @@
             <tr>
                 <td class="descField"><?php echo _('Notas'); ?></td>
                 <td class="valField">
-            <textarea name="notice" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>"
+            <textarea name="notes" cols="30" rows="5" placeholder="<?php echo _('Notas sobre la cuenta'); ?>"
                       maxlength="1000" <?php echo (!$showform) ? 'READONLY' : ''; ?> ><?php echo ($gotData) ? $accountData->account_notes : ''; ?></textarea>
                 </td>
             </tr>
