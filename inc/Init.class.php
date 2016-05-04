@@ -37,30 +37,29 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Init
 {
     /**
+     * Nombre de la sesión
+     */
+    const SESSION_NAME = 'SYSPASS';
+    /**
      * @var array Associative array for autoloading. classname => filename
      */
     public static $CLASSPATH = array();
-
     /**
      * @var string The installation path on the server (e.g. /srv/www/syspass)
      */
     public static $SERVERROOT = '';
-
     /**
      * @var string The current request path relative to the sysPass root (e.g. files/index.php)
      */
     public static $WEBROOT = '';
-
     /**
      * @var string The sysPass root path for http requests (e.g. syspass/)
      */
     public static $WEBURI = '';
-
     /**
      * @var bool True if sysPass has been updated. Only for notices.
      */
     public static $UPDATED = false;
-
     /**
      * @var string
      */
@@ -294,6 +293,8 @@ class Init
         // Evita que javascript acceda a las cookies de sesion de PHP
         ini_set('session.cookie_httponly', '1');
 
+        session_name(self::SESSION_NAME);
+
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
 
@@ -308,7 +309,7 @@ class Init
     /**
      * Devuelve un eror utilizando la plantilla de rror.
      *
-     * @param string $str  con la descripción del error
+     * @param string $str con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      */
     public static function initError($str, $hint = '')
@@ -360,8 +361,7 @@ class Init
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        $protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
-        self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
+        self::$WEBURI .= Request::getProtocol() . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
     }
 
     /**
@@ -423,7 +423,7 @@ class Init
         // Redirigir al instalador si no está instalada
         if (!Config::getValue('installed', false)) {
             if (self::$_SUBURI != '/index.php') {
-                $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
+                $url = Request::getProtocol() . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
                 header("Location: $url");
                 exit();
             } elseif (self::$_SUBURI == '/index.php') {
@@ -587,8 +587,8 @@ class Init
 
         // Timeout de sesión
         if (Session::getLastActivity() && (time() - Session::getLastActivity() > $sessionLifeTime)) {
-            if (isset($_COOKIE[session_name()])) {
-                setcookie(session_name(), '', time() - 42000, '/');
+            if (isset($_COOKIE[self::SESSION_NAME])) {
+                setcookie(self::SESSION_NAME, '', time() - 42000, '/');
             }
 
             self::logout();

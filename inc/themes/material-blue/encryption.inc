@@ -145,6 +145,14 @@
             </tr>
             <tr>
                 <td class="descField">
+                    <?php echo _('Intentos'); ?>
+                </td>
+                <td class="valField">
+                    <?php echo $tempMasterAttempts; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
                     <?php echo _('Validez (s)'); ?>
                 </td>
                 <td class="valField">

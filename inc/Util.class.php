@@ -309,7 +309,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $version = array(1, 2, 0, '11');
+        $version = array(1, 2, 0, '12');
 
         if (!$retBuild) {
             array_pop($version);
@@ -478,7 +478,8 @@ class Util
     public static function httpsEnabled() {
         return
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || $_SERVER['SERVER_PORT'] == 443;
+            || $_SERVER['SERVER_PORT'] == 443
+            || Request::getRequestHeaders('X-Forwarded-Proto') === 'https';
     }
 
     /**

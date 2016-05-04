@@ -34,6 +34,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class CryptMasterPass
 {
+    const MAX_ATTEMPTS = 100;
+
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *
@@ -80,7 +82,10 @@ class CryptMasterPass
         $attempts = ConfigDB::getValue('tempmaster_attempts');
 
         // Comprobar si el tiempo de validez se ha superado
-        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5) {
+        if ($passTime !== false
+            && time() - $passTime > $passMaxTime
+            || $attempts >= self::MAX_ATTEMPTS
+        ) {
             ConfigDB::setCacheConfigValue('tempmaster_pass', '');
             ConfigDB::setCacheConfigValue('tempmaster_passiv', '');
             ConfigDB::setCacheConfigValue('tempmaster_passhash', '');

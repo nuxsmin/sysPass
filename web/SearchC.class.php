@@ -107,7 +107,7 @@ class SearchC extends Controller implements ActionsInterface
         $this->view->assign('searchKey', ($isSearch) ? \SP\Request::analyze('skey', 0) : $filters->getSortKey());
         $this->view->assign('searchOrder', ($isSearch) ? \SP\Request::analyze('sorder', 0) : $filters->getSortOrder());
         $this->view->assign('searchCustomer', ($isSearch) ? \SP\Request::analyze('customer', 0) : $filters->getCustomerId());
-        $this->view->assign('searchCategory', ($isSearch) ? \SP\Request::analyze('category', 0) : $filters->getCategoryId());
+        $this->view->assign('searchCategory', ($isSearch) ? \SP\Request::analyze('category', 0 ) : $filters->getCategoryId());
         $this->view->assign('searchTxt', ($isSearch) ? \SP\Request::analyze('search') : $filters->getTxtSearch());
         $this->view->assign('searchGlobal', \SP\Request::analyze('gsearch', $filters->getGlobalSearch()));
         $this->view->assign('limitStart', ($isSearch) ? \SP\Request::analyze('start', 0) : $filters->getLimitStart());
@@ -178,7 +178,7 @@ class SearchC extends Controller implements ActionsInterface
         $limitLast = ((\SP\AccountSearch::$queryNumRows % $this->view->limitCount) == 0) ? \SP\AccountSearch::$queryNumRows - $this->view->limitCount : floor(\SP\AccountSearch::$queryNumRows / $this->view->limitCount) * $this->view->limitCount;
 
         $this->view->assign('pagerOnnClick', array(
-            'first' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ', 0, ' . $this->view->searchOrder . ')',
+            'first' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ', 0,' . $this->view->searchOrder . ')',
             'last' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . $limitLast . ',' . $this->view->searchOrder . ')',
             'prev' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart - $this->view->limitCount) . ',' . $this->view->searchOrder . ')',
             'next' => 'sysPassUtil.Common.searchSort(' . $this->view->searchKey . ',' . ($this->view->limitStart + $this->view->limitCount) . ',' . $this->view->searchOrder . ')',

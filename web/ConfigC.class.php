@@ -27,6 +27,7 @@ namespace SP\Controller;
 
 use SP\Config;
 use SP\ConfigDB;
+use SP\CryptMasterPass;
 use SP\Language;
 use SP\Session;
 use SP\SessionUtil;
@@ -128,6 +129,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('tempMasterPassTime', ConfigDB::getValue("tempmaster_passtime"));
         $this->view->assign('tempMasterMaxTime', ConfigDB::getValue("tempmaster_maxtime"));
         $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
+        $this->view->assign('tempMasterAttempts', ConfigDB::getValue('tempmaster_attempts', 0) . '/' . CryptMasterPass::MAX_ATTEMPTS);
 
         $this->view->append('tabs', array('title' => _('Encriptación')));
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');

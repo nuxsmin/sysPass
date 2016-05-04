@@ -147,7 +147,7 @@ if (!$User->getUserInfo()) {
 }
 
 // Comprobamos que la clave maestra del usuario es correcta y está actualizada
-if (!$masterPass
+if (empty($masterPass)
     && (!UserPass::checkUserMPass($User) || !UserPass::checkUserUpdateMPass($userLogin))
 ) {
     SP\Response::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);

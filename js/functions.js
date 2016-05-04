@@ -33,7 +33,7 @@ sysPass.createNS = function (namespace) {
     return parent;
 };
 
-// Namespace principasl de sysPass
+// Namespace principal de sysPass
 sysPass.createNS('sysPass.Util');
 sysPass.Util.Common = function () {
     "use strict";
@@ -135,6 +135,7 @@ sysPass.Util.Common = function () {
             success: function (response) {
                 $('#content').html(response);
                 setContentSize();
+                scrollUp();
             },
             error: function () {
                 $('#content').html(resMsg("nofancyerror"));
@@ -167,9 +168,10 @@ sysPass.Util.Common = function () {
             return;
         }
 
+        var $frmSearch = $('#frmSearch');
         document.frmSearch.search.value = "";
-        $('#frmSearch').find('select').prop('selectedIndex', 0).trigger("chosen:updated");
-        $('#frmSearch').find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
+        $frmSearch.find('select').prop('selectedIndex', 0).trigger("chosen:updated");
+        $frmSearch.find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
         order.key = 0;
         order.dir = 0;
     };
@@ -209,9 +211,10 @@ sysPass.Util.Common = function () {
             return false;
         }
 
-        $('#frmSearch').find('input[name="skey"]').val(skey);
-        $('#frmSearch').find('input[name="sorder"]').val(dir);
-        $('#frmSearch').find('input[name="start"]').val(start);
+        var frmSearch = $('#frmSearch');
+        frmSearch.find('input[name="skey"]').val(skey);
+        frmSearch.find('input[name="sorder"]').val(dir);
+        frmSearch.find('input[name="start"]').val(start);
 
         doSearch();
     };
@@ -226,15 +229,11 @@ sysPass.Util.Common = function () {
             url: APP_ROOT + '/ajax/ajax_search.php',
             data: frmData,
             success: function (response) {
-                $('#resBuscar').html(response);
-                $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
+                $('#resBuscar').html(response).css("max-height", $('html').height() - windowAdjustSize);
+                scrollUp();
             },
             error: function () {
                 $('#resBuscar').html(resMsg("nofancyerror"));
-            },
-            complete: function () {
-                sysPassUtil.hideLoading();
-                scrollUp();
             }
         });
     };
@@ -242,11 +241,12 @@ sysPass.Util.Common = function () {
     // Mostrar el orden de campo y orden de búsqueda utilizados
     var showSearchOrder = function () {
         if (order.key) {
-            $('#search-sort-' + order.key).addClass('filterOn');
+            var searchSort = $('#search-sort-' + order.key);
+            searchSort.addClass('filterOn');
             if (order.dir === 0) {
-                $('#search-sort-' + order.key).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
+                searchSort.append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
             } else {
-                $('#search-sort-' + order.key).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
+                searchSort.append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
             }
         }
     };
@@ -267,10 +267,6 @@ sysPass.Util.Common = function () {
             },
             error: function () {
                 $('#content').html(resMsg("nofancyerror"));
-            },
-            complete: function () {
-                sysPassUtil.hideLoading();
-                scrollUp();
             }
         });
     };
@@ -1254,6 +1250,7 @@ sysPass.Util.Common = function () {
         sendAjax: sendAjax,
         sendRequest: sendRequest,
         setContentSize: setContentSize,
+        scrollUp: scrollUp,
         showOptional: showOptional,
         showSearchOrder: showSearchOrder,
         usrUpdPass: usrUpdPass,
