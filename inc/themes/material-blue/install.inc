@@ -87,7 +87,7 @@
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dbpass" name="dbpass" type="password" required
+                    <input id="dbpass" name="dbpass" type="password"
                            class="mdl-textfield__input fg-blue100 passwordfield__input-show"
                            value="" autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"

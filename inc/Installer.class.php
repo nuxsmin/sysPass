@@ -146,11 +146,6 @@ class Installer
                 'type' => SPException::SP_CRITICAL,
                 'description' => _('Indicar el usuario de la BBDD'),
                 'hint' => _('Usuario con permisos de administrador de la Base de Datos'));
-        } elseif (!self::$_dbpass) {
-            $error[] = array(
-                'type' => SPException::SP_CRITICAL,
-                'description' => _('Indicar la clave de la BBDD'),
-                'hint' => _('Clave del usuario administrador de la Base de Datos'));
         } elseif (!self::$_dbname) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
