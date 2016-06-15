@@ -1,3 +1,14 @@
+=== ** v1.2.0.12 ===
+
+* [ADD] Added temp master password counter (max 100 attempts)
+* [FIX] Fixed issue when paging accounts when sort key was set.
+* [FIX] Closes #204. Fixed LDAP group search when ADS is set. Thanks to @vplanas
+* [ADD] Add styles.css minimized version file
+* [FIX] Closes #196. Fixed textarea element name. Thanks to @joeg1484 and @st3reo
+* [FIX] Improved installer when database is located in another host.
+* [FIX] Enforce 32 bytes IV length.
+* [FIX] Minor bugfixes
+
 === ** v1.2.0.11 ===
 
 * [MOD] Modified logout behavior to prevent login for two times. Related #189
