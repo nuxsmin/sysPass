@@ -247,11 +247,11 @@ class Installer
             self::setDbuser(substr('sp_' . self::$_username, 0, 16));
 
             // Comprobar si el usuario sumistrado existe
-            $query = "SELECT COUNT(*) FROM mysql.user WHERE user='sp_" . self::$_username . "' AND host='" . self::getAdminHost() . "'";
+            $query = 'SELECT COUNT(*) FROM mysql.user WHERE user=\'sp_' . self::$_username . '\' AND host=\'' . self::getAdminHost() . '\'';
 
             try {
                 // Si no existe el usuario o es distinto del anterior, se intenta crear
-                if (intval(self::$_dbc->query($query)->fetchColumn()) === 0
+                if ((int)self::$_dbc->query($query)->fetchColumn() === 0
                     || self::$_dbuser != Config::getValue('dbuser')
                 ) {
                     self::createDBUser();
@@ -296,7 +296,7 @@ class Installer
      */
     private static function getAdminHost()
     {
-        return (preg_match('/(localhost|127\.0\.0\.1)/i', self::$_dbhost)) ? self::$_dbhost : $_SERVER['SERVER_ADDR'];
+        return preg_match('/(localhost|127\.0\.0\.1)/i', self::$_dbhost) ? self::$_dbhost : $_SERVER['SERVER_ADDR'];
     }
 
     /**
@@ -312,13 +312,19 @@ class Installer
             return;
         }
 
-        $query = "CREATE USER `" . self::$_dbuser . "`@`" . self::getAdminHost() . "` IDENTIFIED BY '" . self::$_dbpass . "'";
+        if (self::$_dbpass === '') {
+            $query = 'CREATE USER `' . self::$_dbuser . '`@`' . self::getAdminHost() . '`';
+        } else {
+            $query = 'CREATE USER `' . self::$_dbuser . '`@`' . self::getAdminHost() . '`' .
+                ' IDENTIFIED WITH mysql_native_password' .
+                ' BY \'' . self::$_dbpass . '\'';
+        }
 
         try {
             self::$_dbc->query($query);
         } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
-                , _('El usuario de MySQL ya existe') . " (" . self::$_dbuser . ")"
+                , _('El usuario de MySQL ya existe') . ' (' . self::$_dbuser . ')'
                 , _('Indique un nuevo usuario o elimine el existente'));
         }
     }
@@ -336,24 +342,24 @@ class Installer
                 , _('Indique una nueva Base de Datos o elimine la existente'));
         }
 
-        $query = "CREATE DATABASE IF NOT EXISTS `" . self::$_dbname . "`";
+        $query = 'CREATE DATABASE IF NOT EXISTS `' . self::$_dbname . '`';
 
         try {
             self::$_dbc->query($query);
         } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
-                , _('Error al crear la BBDD') . " (" . $e->getMessage() . ")"
+                , _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')'
                 , _('Verifique los permisos del usuario de la Base de Datos'));
         }
 
         if (!self::$_isHostingMode) {
-            $query = "GRANT ALL PRIVILEGES ON `" . self::$_dbname . "`.* TO `" . self::$_dbuser . "`@`" . self::getAdminHost() . "` IDENTIFIED BY '" . self::$_dbpass . "'";
+            $query = 'GRANT ALL PRIVILEGES ON `' . self::$_dbname . '`.* TO `' . self::$_dbuser . '`@`' . self::getAdminHost() . '`';
 
             try {
                 self::$_dbc->query($query);
             } catch (\PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL
-                    , _('Error al establecer permisos de la BBDD') . " (" . $e->getMessage() . ")"
+                    , _('Error al establecer permisos de la BBDD') . ' (' . $e->getMessage() . ')'
                     , _('Verifique los permisos del usuario de la Base de Datos'));
             }
         }
@@ -366,12 +372,12 @@ class Installer
      */
     private static function checkDatabaseExist()
     {
-        $query = "SELECT COUNT(*) "
-            . "FROM information_schema.tables "
-            . "WHERE table_schema = '" . self::$_dbname . "' "
-            . "AND table_name = 'usrData' LIMIT 1";
+        $query = 'SELECT COUNT(*) '
+            . 'FROM information_schema.tables '
+            . 'WHERE table_schema = \'' . self::$_dbname . '\' '
+            . 'AND table_name = \'usrData\' LIMIT 1';
 
-        return (intval(self::$_dbc->query($query)->fetchColumn()) > 0);
+        return ((int)self::$_dbc->query($query)->fetchColumn() > 0);
     }
 
     /**
@@ -395,7 +401,7 @@ class Installer
             self::$_dbc->query('USE `' . self::$_dbname . '`');
         } catch (\PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL
-                , _('Error al seleccionar la BBDD') . " '" . self::$_dbname . "' (" . $e->getMessage() . ")"
+                , _('Error al seleccionar la BBDD') . ' \'' . self::$_dbname . '\' (' . $e->getMessage() . ')'
                 , _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
         }
 
@@ -410,7 +416,7 @@ class Installer
                         self::$_dbc->query($buffer);
                     } catch (\PDOException $e) {
                         // drop database on error
-                        self::$_dbc->query("DROP DATABASE `" . self::$_dbname . "`");
+                        self::$_dbc->query('DROP DATABASE `' . self::$_dbname . '`');
 
                         throw new SPException(SPException::SP_CRITICAL
                             , _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')'
@@ -430,8 +436,8 @@ class Installer
     private static function createAdminAccount()
     {
         // Datos del grupo
-        Groups::$groupName = "Admins";
-        Groups::$groupDescription = "Admins";
+        Groups::$groupName = 'Admins';
+        Groups::$groupDescription = 'Admins';
 
         if (!Groups::addGroup()) {
             self::rollback();
@@ -512,9 +518,9 @@ class Installer
     private static function rollback()
     {
         try {
-            self::$_dbc->query("DROP DATABASE IF EXISTS `" . self::$_dbname . "`");
-            self::$_dbc->query("DROP USER `" . self::$_dbuser . "`@`" . self::getAdminHost() . "`");
-            self::$_dbc->query("DROP USER `" . self::$_dbuser . "`@`%`");
+            self::$_dbc->query('DROP DATABASE IF EXISTS `' . self::$_dbname . '`');
+            self::$_dbc->query('DROP USER `' . self::$_dbuser . '`@`' . self::getAdminHost() . '`');
+            self::$_dbc->query('DROP USER `' . self::$_dbuser . '`@`%`');
         } catch (\PDOException $e) {
             Config::deleteParam('dbuser');
             Config::deleteParam('dbpass');

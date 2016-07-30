@@ -2,3 +2,15 @@
 config/config.php
 config/key.pem
 config/pubkey.pem
+/res/*
+/tools/*
+/patches/*
+/backup/*
+*.css
+!*.min.css
+!*styles*.css
+*.js
+!*.min.js
+!*js/functions.js
+js/jquery-1.11.2.min.map
+msg.po
