@@ -12,8 +12,8 @@
 
         $(document).ready(function () {
             // Stick the #nav to the top of the window
-            var nav = $('#actionsBar');
-            var logo = $('#actionsBar #actionsBar-logo img');
+            var nav = $("#actionsBar");
+            var logo = $("#actionsBar #actionsBar-logo img");
             var isFixed = false;
             var navCssProps = {
                 position: 'fixed',

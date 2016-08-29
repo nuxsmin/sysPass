@@ -34,8 +34,8 @@ sysPass.createNS = function (namespace) {
 };
 
 // Namespace principal de sysPass
-sysPass.createNS('sysPass.Util');
-sysPass.Util.Common = function () {
+sysPass.createNS("sysPass.Util");
+sysPass.Util.Common = function ($) {
     "use strict";
 
     var APP_ROOT, LANG, PK, MAX_FILE_SIZE;
@@ -62,39 +62,44 @@ sysPass.Util.Common = function () {
         }
     };
 
+    var elements = {
+        content: $("#content"),
+        frmSearch: $("#frmSearch")
+    };
+
     // Inicializar la encriptación RSA
     var encrypt = new JSEncrypt();
 
     $(document).ready(function () {
         initializeClipboard();
-        PK !== '' && bindPassEncrypt();
+        PK !== "" && bindPassEncrypt();
     });
 
     //$.ajaxSetup({
     //    error: function(jqXHR, exception) {
     //        if (jqXHR.status === 0) {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //        } else if (jqXHR.status == 404) {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //        } else if (jqXHR.status == 500) {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //        } else if (exception === 'parsererror') {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //        } else if (exception === 'timeout') {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //        } else if (exception === 'abort') {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //        } else {
-    //            $('#content').fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
     //            //alert('Uncaught Error.n' + jqXHR.responseText);
     //        }
     //    }
     //});
 
     var getEnvironment = function () {
-        var path = window.location.pathname.split('/');
+        var path = window.location.pathname.split("/");
         var rootPath = function () {
-            var fullPath = '';
+            var fullPath = "";
 
             for (var i = 1; i <= path.length - 2; i++) {
                 fullPath += "/" + path[i];
@@ -105,8 +110,8 @@ sysPass.Util.Common = function () {
         var url = window.location.protocol + "//" + window.location.host + rootPath();
 
         $.ajax({
-            type: 'GET',
-            url: url + '/ajax/ajax_getEnvironment.php',
+            type: "GET",
+            url: url + "/ajax/ajax_getEnvironment.php",
             dataType: "json",
             async: false,
             data: {isAjax: 1},
@@ -125,27 +130,29 @@ sysPass.Util.Common = function () {
 
     // Función para cargar el contenido de la acción del menú seleccionada
     var doAction = function (actionId, lastAction, itemId) {
-        var data = {'actionId': actionId, 'lastAction': lastAction, 'itemId': itemId, isAjax: 1};
+        var data = {"actionId": actionId, "lastAction": lastAction, "itemId": itemId, isAjax: 1};
 
         $.ajax({
-            type: 'POST',
-            dataType: 'html',
-            url: APP_ROOT + '/ajax/ajax_getContent.php',
+            type: "POST",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_getContent.php",
             data: data,
             success: function (response) {
-                $('#content').html(response);
+                elements.content.html(response);
                 setContentSize();
                 scrollUp();
             },
             error: function () {
-                $('#content').html(resMsg("nofancyerror"));
+                elements.content.html(resMsg("nofancyerror"));
             }
         });
     };
 
     // Función para establecer la altura del contenedor ajax
     var setContentSize = function () {
-        if ($("#container").hasClass('content-no-auto-resize')) {
+        var container = $("#container");
+
+        if (container.hasClass("content-no-auto-resize")) {
             return;
         }
 
@@ -153,32 +160,31 @@ sysPass.Util.Common = function () {
         var totalHeight = $("#content").height() + 200;
         //var totalWidth = $("#wrap").width();
 
-        $("#container").css("height", totalHeight);
+        container.css("height", totalHeight);
     };
 
     // Función para retornar el scroll a la posición inicial
     var scrollUp = function () {
-        $('html, body').animate({scrollTop: 0}, 'slow');
+        $("html, body").animate({scrollTop: 0}, "slow");
     };
 
     // Función para limpiar un formulario
     var clearSearch = function (clearStart) {
         if (clearStart === 1) {
-            $('#frmSearch').find('input[name="start"]').val(0);
+            elements.frmSearch.find("input[name=\"start\"]").val(0);
             return;
         }
 
-        var $frmSearch = $('#frmSearch');
         document.frmSearch.search.value = "";
-        $frmSearch.find('select').prop('selectedIndex', 0).trigger("chosen:updated");
-        $frmSearch.find('input[name="start"], input[name="skey"], input[name="sorder"]').val(0);
+        elements.frmSearch.find("select").prop("selectedIndex", 0).trigger("chosen:updated");
+        elements.frmSearch.find("input[name=\"start\"], input[name=\"skey\"], input[name=\"sorder\"]").val(0);
         order.key = 0;
         order.dir = 0;
     };
 
     // Funcion para crear un desplegable con opciones
     var mkChosen = function (options) {
-        $('#' + options.id).chosen({
+        $("#" + options.id).chosen({
             allow_single_deselect: true,
             placeholder_text_single: options.placeholder,
             disable_search_threshold: 10,
@@ -189,32 +195,21 @@ sysPass.Util.Common = function () {
 
     // Función para la búsqueda de cuentas mediante filtros
     var accSearch = function (continous, event) {
-        var lenTxtSearch = $('#txtSearch').val().length;
-
-        if (typeof event !== 'undefined' &&
-            ((event.keyCode < 48 && event.keyCode !== 13) || (event.keyCode > 105 && event.keyCode < 123))) {
-            return;
-        } else if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode !== 13) {
-            return;
-        }
-
-        window.lastlen = lenTxtSearch;
-
-        $('#frmSearch').find('input[name="start"]').val(0);
+        elements.frmSearch.find("input[name=\"start\"]").val(0);
 
         doSearch();
     };
 
     // Función para la búsqueda de cuentas mediante ordenación
     var searchSort = function (skey, start, dir) {
-        if (typeof skey === 'undefined' || typeof start === 'undefined') {
+        if (typeof skey === "undefined" || typeof start === "undefined") {
             return false;
         }
 
-        var frmSearch = $('#frmSearch');
-        frmSearch.find('input[name="skey"]').val(skey);
-        frmSearch.find('input[name="sorder"]').val(dir);
-        frmSearch.find('input[name="start"]').val(start);
+        var frmSearch = elements.frmSearch;
+        frmSearch.find("input[name=\"skey\"]").val(skey);
+        frmSearch.find("input[name=\"sorder\"]").val(dir);
+        frmSearch.find("input[name=\"start\"]").val(start);
 
         doSearch();
     };
@@ -224,16 +219,16 @@ sysPass.Util.Common = function () {
         var frmData = $("#frmSearch").serialize();
 
         $.ajax({
-            type: 'POST',
-            dataType: 'html',
-            url: APP_ROOT + '/ajax/ajax_search.php',
+            type: "POST",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_search.php",
             data: frmData,
             success: function (response) {
-                $('#resBuscar').html(response).css("max-height", $('html').height() - windowAdjustSize);
+                $("#resBuscar").html(response).css("max-height", $("html").height() - windowAdjustSize);
                 scrollUp();
             },
             error: function () {
-                $('#resBuscar').html(resMsg("nofancyerror"));
+                $("#resBuscar").html(resMsg("nofancyerror"));
             }
         });
     };
@@ -241,32 +236,32 @@ sysPass.Util.Common = function () {
     // Mostrar el orden de campo y orden de búsqueda utilizados
     var showSearchOrder = function () {
         if (order.key) {
-            var searchSort = $('#search-sort-' + order.key);
-            searchSort.addClass('filterOn');
+            var searchSort = $("#search-sort-" + order.key);
+            searchSort.addClass("filterOn");
             if (order.dir === 0) {
-                searchSort.append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
+                searchSort.append("<img src=\"imgs/arrow_down.png\" style=\"width:17px;height:12px;\" />");
             } else {
-                searchSort.append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
+                searchSort.append("<img src=\"imgs/arrow_up.png\" style=\"width:17px;height:12px;\" />");
             }
         }
     };
 
     // Función para navegar por el log de eventos
     var navLog = function (start, current) {
-        if (typeof start === 'undefined') {
+        if (typeof start === "undefined") {
             return false;
         }
 
         $.ajax({
-            type: 'POST',
-            dataType: 'html',
-            url: APP_ROOT + '/ajax/ajax_eventlog.php',
-            data: {'start': start, 'current': current},
+            type: "POST",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_eventlog.php",
+            data: {"start": start, "current": current},
             success: function (response) {
-                $('#content').html(response);
+                elements.content.html(response);
             },
             error: function () {
-                $('#content').html(resMsg("nofancyerror"));
+                elements.content.html(resMsg("nofancyerror"));
             }
         });
     };
@@ -274,11 +269,11 @@ sysPass.Util.Common = function () {
     // Función para ver la clave de una cuenta
     var viewPass = function (id, show, history) {
         $.ajax({
-            type: 'POST',
-            url: APP_ROOT + '/ajax/ajax_viewpass.php',
+            type: "POST",
+            url: APP_ROOT + "/ajax/ajax_viewpass.php",
             dataType: "json",
             async: false,
-            data: {'accountid': id, 'full': show, 'isHistory': history, 'isAjax': 1},
+            data: {"accountid": id, "full": show, "isHistory": history, "isAjax": 1},
             success: function (json) {
 
                 if (json.status === 10) {
@@ -288,42 +283,42 @@ sysPass.Util.Common = function () {
 
                 if (show === false || show === 0) {
                     // Copiamos la clave en el objeto que tiene acceso al portapapeles
-                    $('#clip-pass-text').html(json.accpass);
+                    $("#clip-pass-text").html(json.accpass);
                     return;
                 }
 
-                $('<div></div>').dialog({
+                $("<div></div>").dialog({
                     modal: true,
                     title: LANG[47],
-                    width: 'auto',
+                    width: "auto",
                     open: function () {
                         var thisDialog = $(this);
                         var content;
-                        var pass = '';
+                        var pass = "";
                         var clipboardUserButton =
-                            '<button class="dialog-clip-user-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" data-clipboard-target=".dialog-user-text">' +
-                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                            '<span class="ui-button-text">' + LANG[33] + '</span>' +
-                            '</button>';
+                            "<button class=\"dialog-clip-user-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary\" data-clipboard-target=\".dialog-user-text\">" +
+                            "<span class=\"ui-button-icon-primary ui-icon ui-icon-clipboard\"></span>" +
+                            "<span class=\"ui-button-text\">" + LANG[33] + "</span>" +
+                            "</button>";
                         var clipboardPassButton =
-                            '<button class="dialog-clip-pass-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" data-clipboard-target=".dialog-pass-text">' +
-                            '<span class="ui-button-icon-primary ui-icon ui-icon-clipboard"></span>' +
-                            '<span class="ui-button-text">' + LANG[34] + '</span>' +
-                            '</button>';
+                            "<button class=\"dialog-clip-pass-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary\" data-clipboard-target=\".dialog-pass-text\">" +
+                            "<span class=\"ui-button-icon-primary ui-icon ui-icon-clipboard\"></span>" +
+                            "<span class=\"ui-button-text\">" + LANG[34] + "</span>" +
+                            "</button>";
                         var useImage = json.useimage;
-                        var user = '<p class="dialog-user-text">' + json.acclogin + '</p>';
+                        var user = "<p class=\"dialog-user-text\">" + json.acclogin + "</p>";
 
                         if (json.status === 0) {
                             if (useImage === 0) {
-                                pass = '<p class="dialog-pass-text">' + json.accpass + '</p>';
+                                pass = "<p class=\"dialog-pass-text\">" + json.accpass + "</p>";
                             } else {
-                                pass = '<img class="dialog-pass-text" src="data:image/png;base64,' + json.accpass + '" />';
-                                clipboardPassButton = '';
+                                pass = "<img class=\"dialog-pass-text\" src=\"data:image/png;base64," + json.accpass + "\" />";
+                                clipboardPassButton = "";
                             }
 
-                            content = user + pass + '<div class="dialog-buttons">' + clipboardUserButton + clipboardPassButton + '</div>';
+                            content = user + pass + "<div class=\"dialog-buttons\">" + clipboardUserButton + clipboardPassButton + "</div>";
                         } else {
-                            content = '<span class="altTxtRed">' + json.description + '</span>';
+                            content = "<span class=\"altTxtRed\">" + json.description + "</span>";
 
                             thisDialog.dialog("option", "buttons",
                                 [{
@@ -339,13 +334,13 @@ sysPass.Util.Common = function () {
                         thisDialog.html(content);
 
                         // Recentrar después de insertar el contenido
-                        thisDialog.dialog('option', 'position', 'center');
+                        thisDialog.dialog("option", "position", "center");
 
                         // Cerrar Dialog a los 30s
-                        $(this).parent().on('mouseleave', function () {
+                        $(this).parent().on("mouseleave", function () {
                             clearTimeout(timeout);
                             timeout = setTimeout(function () {
-                                thisDialog.dialog('close');
+                                thisDialog.dialog("close");
                             }, 30000);
                         });
                     },
@@ -362,9 +357,9 @@ sysPass.Util.Common = function () {
     // Función para obtener las variables de la URL y parsearlas a un array.
     var getUrlVars = function () {
         var vars = [], hash;
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
         for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
+            hash = hashes[i].split("=");
             vars.push(hash[0]);
             vars[hash[0]] = hash[1];
         }
@@ -373,14 +368,14 @@ sysPass.Util.Common = function () {
 
     // Función para autentificar usuarios
     var doLogin = function () {
-        var data = $('#frmLogin').serialize();
+        var data = $("#frmLogin").serialize();
 
-        $("#btnLogin").prop('disabled', true);
+        $("#btnLogin").prop("disabled", true);
 
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: APP_ROOT + '/ajax/ajax_doLogin.php',
+            url: APP_ROOT + "/ajax/ajax_doLogin.php",
             data: data,
             success: function (json) {
                 var status = json.status;
@@ -390,25 +385,25 @@ sysPass.Util.Common = function () {
                     location.href = description;
                 } else if (status === 3 || status === 4) {
                     resMsg("error", description);
-                    $('#user').val('').focus();
-                    $('#pass').val('');
-                    $("#mpass").prop('disabled', false);
-                    $('#smpass').val('').show();
+                    $("#user").val("").focus();
+                    $("#pass").val("");
+                    $("#mpass").prop("disabled", false);
+                    $("#smpass").val("").show();
                 } else if (status === 5) {
-                    resMsg("warn", description, '', "location.href = 'index.php';");
+                    resMsg("warn", description, "", "location.href = 'index.php';");
                 } else {
-                    $('#user').val('').focus();
-                    $('#pass').val('');
+                    $("#user").val("").focus();
+                    $("#pass").val("");
                     resMsg("error", description);
                 }
             },
             complete: function () {
-                $('#btnLogin').prop('disabled', false);
+                $("#btnLogin").prop("disabled", false);
                 sysPassUtil.hideLoading();
             },
             statusCode: {
                 404: function () {
-                    var txt = LANG[1] + '<p>' + LANG[13] + '</p>';
+                    var txt = LANG[1] + "<p>" + LANG[13] + "</p>";
                     resMsg("error", txt);
                 }
             }
@@ -421,11 +416,7 @@ sysPass.Util.Common = function () {
     var doLogout = function () {
         var url = window.location.search;
 
-        if (url.length > 0) {
-            location.href = 'index.php' + url + '&logout=1';
-        } else {
-            location.href = 'index.php?logout=1';
-        }
+        location.href = url.length > 0 ? "index.php" + url + "&logout=1" : "index.php?logout=1";
     };
 
     // Función para comprobar si se ha salido de la sesión
@@ -433,7 +424,7 @@ sysPass.Util.Common = function () {
         var session = getUrlVars()["session"];
 
         if (session === 0) {
-            resMsg("warn", LANG[2], '', "location.search = ''");
+            resMsg("warn", LANG[2], "", "location.search = ''");
         }
     };
 
@@ -444,13 +435,13 @@ sysPass.Util.Common = function () {
     // Función para añadir/editar una cuenta
     var saveAccount = function (frm) {
         var data = $("#" + frm).serialize();
-        var id = $('input[name="accountid"]').val();
-        var action = $('input[name="next"]').val();
+        var id = $("input[name=\"accountid\"]").val();
+        var action = $("input[name=\"next\"]").val();
 
         $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: APP_ROOT + '/ajax/ajax_accountSave.php',
+            type: "POST",
+            dataType: "json",
+            url: APP_ROOT + "/ajax/ajax_accountSave.php",
             data: data,
             success: function (json) {
                 var status = json.status;
@@ -471,7 +462,7 @@ sysPass.Util.Common = function () {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
                 resMsg("error", txt);
             }
         });
@@ -480,8 +471,8 @@ sysPass.Util.Common = function () {
     // Función para eliminar una cuenta
     var delAccount = function (id, action, sk) {
         var data = {accountid: id, actionId: action, sk: sk};
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[3] + '</p></div>';
-        var url = '/ajax/ajax_accountSave.php';
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[3] + "</p></div>";
+        var url = "/ajax/ajax_accountSave.php";
 
         alertify
             .okBtn(LANG[43])
@@ -497,8 +488,8 @@ sysPass.Util.Common = function () {
 
     // Función para enviar una solicitud de modificación de cuenta
     var sendRequest = function () {
-        var url = '/ajax/ajax_sendRequest.php';
-        var data = $('#frmRequestModify').serialize();
+        var url = "/ajax/ajax_sendRequest.php";
+        var data = $("#frmRequestModify").serialize();
 
         sendAjax(data, url);
     };
@@ -509,16 +500,16 @@ sysPass.Util.Common = function () {
 
         switch (action) {
             case "config":
-                url = '/ajax/ajax_configSave.php';
+                url = "/ajax/ajax_configSave.php";
                 break;
             case "export":
-                url = '/ajax/ajax_backup.php';
+                url = "/ajax/ajax_backup.php";
                 break;
             case "import":
-                url = '/ajax/ajax_migrate.php';
+                url = "/ajax/ajax_migrate.php";
                 break;
             case "preferences":
-                url = '/ajax/ajax_userPrefsSave.php';
+                url = "/ajax/ajax_userPrefsSave.php";
                 break;
             default:
                 return;
@@ -531,9 +522,9 @@ sysPass.Util.Common = function () {
 
     // Función para descargar/ver archivos de una cuenta
     var downFile = function (id, sk, action) {
-        var data = {'fileId': id, 'sk': sk, 'action': action};
+        var data = {"fileId": id, "sk": sk, "action": action};
 
-        if (action === 'view') {
+        if (action === "view") {
             $.ajax({
                 type: "POST",
                 cache: false,
@@ -552,14 +543,14 @@ sysPass.Util.Common = function () {
 
                 }
             });
-        } else if (action === 'download') {
-            $.fileDownload(APP_ROOT + '/ajax/ajax_files.php', {'httpMethod': 'POST', 'data': data});
+        } else if (action === "download") {
+            $.fileDownload(APP_ROOT + "/ajax/ajax_files.php", {"httpMethod": "POST", "data": data});
         }
     };
 
     // Función para obtener la lista de archivos de una cuenta
     var getFiles = function (id, isDel, sk) {
-        var data = {'id': id, 'del': isDel, 'sk': sk};
+        var data = {"id": id, "del": isDel, "sk": sk};
 
         $.ajax({
             type: "GET",
@@ -567,22 +558,22 @@ sysPass.Util.Common = function () {
             url: APP_ROOT + "/ajax/ajax_getFiles.php",
             data: data,
             success: function (response) {
-                $('#downFiles').html(response);
+                $("#downFiles").html(response);
             }
         });
     };
 
     // Función para eliminar archivos de una cuenta
     var delFile = function (id, sk, accid) {
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[15] + '</p></div>';
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[15] + "</p></div>";
 
         alertify
             .okBtn(LANG[43])
             .cancelBtn(LANG[44])
             .confirm(atext, function (e) {
-                var data = {'fileId': id, 'action': 'delete', 'sk': sk};
+                var data = {"fileId": id, "action": "delete", "sk": sk};
 
-                $.post(APP_ROOT + '/ajax/ajax_files.php', data,
+                $.post(APP_ROOT + "/ajax/ajax_files.php", data,
                     function (data) {
                         resMsg("ok", data);
                         $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accid + "&del=1&isAjax=1&sk=" + sk);
@@ -598,8 +589,8 @@ sysPass.Util.Common = function () {
     // Función para habilitar la subida de archivos en una zona o formulario
     var fileUpload = function (opts) {
         var options = {
-            targetId: '',
-            url: ''
+            targetId: "",
+            url: ""
         };
 
         var requestDoneAction, requestData = {}, beforeSendAction;
@@ -632,16 +623,16 @@ sysPass.Util.Common = function () {
 
             // Objeto FormData para crear datos de un formulario
             var fd = new FormData();
-            fd.append('inFile', file);
-            fd.append('isAjax', 1);
+            fd.append("inFile", file);
+            fd.append("isAjax", 1);
 
             Object.keys(requestData).forEach(function (key) {
                 fd.append(key, requestData[key]);
             });
 
             $.ajax({
-                type: 'POST',
-                dataType: 'json',
+                type: "POST",
+                dataType: "json",
                 cache: false,
                 processData: false,
                 contentType: false,
@@ -664,7 +655,7 @@ sysPass.Util.Common = function () {
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                    var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
                     resMsg("error", txt);
                 }
             });
@@ -675,7 +666,7 @@ sysPass.Util.Common = function () {
         };
 
         var checkFileExtension = function (name) {
-            var file_exts_ok = dropzone.getAttribute('data-files-ext').toLowerCase().split(',');
+            var file_exts_ok = dropzone.getAttribute("data-files-ext").toLowerCase().split(",");
 
             for (var i = 0; i <= file_exts_ok.length; i++) {
                 if (name.indexOf(file_exts_ok[i]) !== -1) {
@@ -689,16 +680,16 @@ sysPass.Util.Common = function () {
         // Comprobar los archivos y subirlos
         var handleFiles = function (filesArray) {
             if (filesArray.length > 5) {
-                resMsg("error", LANG[17] + ' (Max: 5)');
+                resMsg("error", LANG[17] + " (Max: 5)");
                 return;
             }
 
             for (var i = 0; i < filesArray.length; i++) {
                 var file = filesArray[i];
                 if (checkFileSize(file.size)) {
-                    resMsg("error", LANG[18] + '<br>' + file.name + ' (Max: ' + MAX_FILE_SIZE + ')');
+                    resMsg("error", LANG[18] + "<br>" + file.name + " (Max: " + MAX_FILE_SIZE + ")");
                 } else if (!checkFileExtension(file.name)) {
-                    resMsg("error", LANG[19] + '<br>' + file.name);
+                    resMsg("error", LANG[19] + "<br>" + file.name);
                 } else {
                     sendFile(filesArray[i]);
                 }
@@ -735,7 +726,7 @@ sysPass.Util.Common = function () {
             var form = document.getElementById("fileUploadForm");
             var formTags = form.getElementsByTagName("input");
 
-            form.style.display = (display === false) ? 'none' : '';
+            form.style.display = (display === false) ? "none" : "";
 
             if (formTags[0].type === "file") {
                 formTags[0].addEventListener("change", function () {
@@ -763,8 +754,8 @@ sysPass.Util.Common = function () {
     // Función para realizar una petición ajax
     var sendAjax = function (data, url) {
         $.ajax({
-            type: 'POST',
-            dataType: 'json',
+            type: "POST",
+            dataType: "json",
             url: APP_ROOT + url,
             data: data,
             success: function (json) {
@@ -779,11 +770,11 @@ sysPass.Util.Common = function () {
                         break;
                     case 1:
                         $.fancybox.close();
-                        $(":input[type=password]").val('');
+                        $(":input[type=password]").val("");
                         resMsg("error", description, undefined, action);
                         break;
                     case 2:
-                        $("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>').show();
+                        $("#resFancyAccion").html("<span class=\"altTxtError\">" + description + "</span>").show();
                         break;
                     case 3:
                         $.fancybox.close();
@@ -797,7 +788,7 @@ sysPass.Util.Common = function () {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
                 resMsg("error", txt);
             }
         });
@@ -806,12 +797,12 @@ sysPass.Util.Common = function () {
     // Función para mostrar el formulario para cambio de clave de usuario
     var usrUpdPass = function (object, actionId, sk) {
         var userId = $(object).attr("data-itemid");
-        var data = {'userId': userId, 'actionId': actionId, 'sk': sk, 'isAjax': 1};
+        var data = {"userId": userId, "actionId": actionId, "sk": sk, "isAjax": 1};
 
         $.ajax({
             type: "GET",
             cache: false,
-            url: APP_ROOT + '/ajax/ajax_usrpass.php',
+            url: APP_ROOT + "/ajax/ajax_usrpass.php",
             data: data,
             success: function (data) {
                 if (data.length === 0) {
@@ -825,22 +816,22 @@ sysPass.Util.Common = function () {
 
     // Función para mostrar los datos de un registro
     var appMgmtData = function (obj, actionId, sk) {
-        var itemId = $(obj).attr('data-itemid');
-        var activeTab = $(obj).attr('data-activetab');
+        var itemId = $(obj).attr("data-itemid");
+        var activeTab = $(obj).attr("data-activetab");
 
-        var data = {'itemId': itemId, 'actionId': actionId, 'sk': sk, 'activeTab': activeTab, 'isAjax': 1};
-        var url = APP_ROOT + '/ajax/ajax_appMgmtData.php';
+        var data = {"itemId": itemId, "actionId": actionId, "sk": sk, "activeTab": activeTab, "isAjax": 1};
+        var url = APP_ROOT + "/ajax/ajax_appMgmtData.php";
 
         $.ajax({
-            type: 'POST',
-            dataType: 'html',
+            type: "POST",
+            dataType: "html",
             url: url,
             data: data,
             success: function (response) {
                 $.fancybox(response, {padding: [0, 10, 10, 10]});
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
+                var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
                 resMsg("error", txt);
             }
         });
@@ -848,18 +839,18 @@ sysPass.Util.Common = function () {
 
     // Función para borrar un registro
     var appMgmtDelete = function (obj, actionId, sk) {
-        var itemId = $(obj).attr('data-itemid');
-        var activeTab = $(obj).attr('data-activetab');
-        var nextActionId = $(obj).attr('data-nextactionid');
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
+        var itemId = $(obj).attr("data-itemid");
+        var activeTab = $(obj).attr("data-activetab");
+        var nextActionId = $(obj).attr("data-nextactionid");
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[12] + "</p></div>";
 
-        var url = '/ajax/ajax_appMgmtSave.php';
+        var url = "/ajax/ajax_appMgmtSave.php";
         var data = {
-            'itemId': itemId,
-            'actionId': actionId,
-            'sk': sk,
-            'activeTab': activeTab,
-            'onCloseAction': nextActionId
+            "itemId": itemId,
+            "actionId": actionId,
+            "sk": sk,
+            "activeTab": activeTab,
+            "onCloseAction": nextActionId
         };
 
         alertify
@@ -876,7 +867,7 @@ sysPass.Util.Common = function () {
 
     // Función para editar los datos de un registro
     var appMgmtSave = function (frmId) {
-        var url = '/ajax/ajax_appMgmtSave.php';
+        var url = "/ajax/ajax_appMgmtSave.php";
         var data = $("#" + frmId).serialize();
 
         sendAjax(data, url);
@@ -885,33 +876,33 @@ sysPass.Util.Common = function () {
     // Función para verificar si existen actualizaciones
     var checkUpds = function () {
         $.ajax({
-            type: 'GET',
-            dataType: 'html',
-            url: APP_ROOT + '/ajax/ajax_checkUpds.php',
+            type: "GET",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_checkUpds.php",
             timeout: 10000,
             success: function (response) {
-                $('#updates').html(response);
+                $("#updates").html(response);
 
                 if (typeof  componentHandler !== "undefined") {
                     componentHandler.upgradeDom();
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#updates').html('!');
+                $("#updates").html("!");
             }
         });
     };
 
     // Función para limpiar el log de eventos
     var clearEventlog = function (sk) {
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[20] + '</p></div>';
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[20] + "</p></div>";
 
         alertify
             .okBtn(LANG[43])
             .cancelBtn(LANG[44])
             .confirm(atext, function (e) {
-                var data = {'clear': 1, 'sk': sk, 'isAjax': 1};
-                var url = '/ajax/ajax_eventlog.php';
+                var data = {"clear": 1, "sk": sk, "isAjax": 1};
+                var url = "/ajax/ajax_eventlog.php";
 
                 sendAjax(data, url);
             }, function (e) {
@@ -926,7 +917,7 @@ sysPass.Util.Common = function () {
         $(me).hide();
         //$(me).parent().css('width','15em');
         //var actions =  $(me).closest('.account-actions').children('.actions-optional');
-        var actions = $(me).parent().children('.actions-optional');
+        var actions = $(me).parent().children(".actions-optional");
         actions.show(250);
     };
 
@@ -945,31 +936,31 @@ sysPass.Util.Common = function () {
     };
 
     var outputResult = function (level, dstId) {
-        var complexity, selector = '.passLevel-' + dstId;
+        var complexity, selector = ".passLevel-" + dstId;
 
         complexity = $(selector);
         complexity.removeClass("weak good strong strongest");
 
         if (passwordData.passLength === 0) {
-            complexity.attr('title', '').empty();
+            complexity.attr("title", "").empty();
         } else if (passwordData.passLength < passwordData.minPasswordLength) {
-            complexity.attr('title', LANG[11]).addClass("weak");
+            complexity.attr("title", LANG[11]).addClass("weak");
         } else if (level === 0) {
-            complexity.attr('title', LANG[9]).addClass("weak");
+            complexity.attr("title", LANG[9]).addClass("weak");
         } else if (level === 1 || level === 2) {
-            complexity.attr('title', LANG[8]).addClass("good");
+            complexity.attr("title", LANG[8]).addClass("good");
         } else if (level === 3) {
-            complexity.attr('title', LANG[7]).addClass("strong");
+            complexity.attr("title", LANG[7]).addClass("strong");
         } else if (level === 4) {
-            complexity.attr('title', LANG[10]).addClass("strongest");
+            complexity.attr("title", LANG[10]).addClass("strongest");
         }
     };
 
     // Función para mostrar mensaje con alertify
     var resMsg = function (type, txt, url, action) {
-        if (typeof url !== 'undefined') {
+        if (typeof url !== "undefined") {
             $.ajax({
-                url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
+                url: url, type: "get", dataType: "html", async: false, success: function (data) {
                     txt = data;
                 }
             });
@@ -990,7 +981,7 @@ sysPass.Util.Common = function () {
                 alertify.log(txt);
                 break;
             case "nofancyerror":
-                html = '<p class="error round">Oops...<br>' + LANG[1] + '<br>' + txt + '</p>';
+                html = "<p class=\"error round\">Oops...<br>" + LANG[1] + "<br>" + txt + "</p>";
                 return html;
             default:
                 alertify.error(txt);
@@ -1004,26 +995,26 @@ sysPass.Util.Common = function () {
 
     // Función para comprobar la conexión con LDAP
     var checkLdapConn = function (formId) {
-        var form = '#frmLdap';
+        var form = "#frmLdap";
 
-        var ldapServer = $(form).find('[name=ldap_server]').val();
-        var ldapBase = $(form).find('[name=ldap_base]').val();
-        var ldapGroup = $(form).find('[name=ldap_group]').val();
-        var ldapBindUser = $(form).find('[name=ldap_binduser]').val();
-        var ldapBindPass = $(form).find('[name=ldap_bindpass]').val();
-        var sk = $(form).find('[name=sk]').val();
+        var ldapServer = $(form).find("[name=ldap_server]").val();
+        var ldapBase = $(form).find("[name=ldap_base]").val();
+        var ldapGroup = $(form).find("[name=ldap_group]").val();
+        var ldapBindUser = $(form).find("[name=ldap_binduser]").val();
+        var ldapBindPass = $(form).find("[name=ldap_bindpass]").val();
+        var sk = $(form).find("[name=sk]").val();
 
         var data = {
-            'ldap_server': ldapServer,
-            'ldap_base': ldapBase,
-            'ldap_group': ldapGroup,
-            'ldap_binduser': ldapBindUser,
-            'ldap_bindpass': ldapBindPass,
-            'isAjax': 1,
-            'sk': sk
+            "ldap_server": ldapServer,
+            "ldap_base": ldapBase,
+            "ldap_group": ldapGroup,
+            "ldap_binduser": ldapBindUser,
+            "ldap_bindpass": ldapBindPass,
+            "isAjax": 1,
+            "sk": sk
         };
 
-        sendAjax(data, '/ajax/ajax_checkLdap.php');
+        sendAjax(data, "/ajax/ajax_checkLdap.php");
     };
 
     // Función para volver al login
@@ -1075,7 +1066,7 @@ sysPass.Util.Common = function () {
         });
 
         $(".sel-chosen-customer").each(function () {
-            var deselect = $(this).hasClass('sel-chosen-deselect');
+            var deselect = $(this).hasClass("sel-chosen-deselect");
 
             $(this).chosen({
                 allow_single_deselect: deselect,
@@ -1088,7 +1079,7 @@ sysPass.Util.Common = function () {
         });
 
         $(".sel-chosen-category").each(function () {
-            var deselect = $(this).hasClass('sel-chosen-deselect');
+            var deselect = $(this).hasClass("sel-chosen-deselect");
 
             $(this).chosen({
                 allow_single_deselect: deselect,
@@ -1101,7 +1092,7 @@ sysPass.Util.Common = function () {
         });
 
         $(".sel-chosen-action").each(function () {
-            var deselect = $(this).hasClass('sel-chosen-deselect');
+            var deselect = $(this).hasClass("sel-chosen-deselect");
 
             $(this).chosen({
                 allow_single_deselect: deselect,
@@ -1122,14 +1113,14 @@ sysPass.Util.Common = function () {
      * @param container El contenedor donde buscar
      */
     var checkboxDetect = function (container) {
-        $(container).find('.checkbox').button({
+        $(container).find(".checkbox").button({
             icons: {primary: "ui-icon-transferthick-e-w"}
         }).click(
             function () {
-                if ($(this).prop('checked') === true) {
-                    $(this).button('option', 'label', LANG[40]);
+                if ($(this).prop("checked") === true) {
+                    $(this).button("option", "label", LANG[40]);
                 } else {
-                    $(this).button('option', 'label', LANG[41]);
+                    $(this).button("option", "label", LANG[41]);
                 }
             }
         );
@@ -1143,11 +1134,11 @@ sysPass.Util.Common = function () {
     var encryptFormValue = function (inputId) {
         var input = $(inputId);
         var curValue = input.val();
-        var nextName = inputId + '-encrypted';
-        var nextInput = input.next(':input[name="' + nextName + '"]');
+        var nextName = inputId + "-encrypted";
+        var nextInput = input.next(":input[name=\"" + nextName + "\"]");
 
-        if ((curValue !== '' && nextInput.attr('name') !== nextName)
-            || (curValue !== '' && nextInput.attr('name') === nextName && parseInt(input.next().val()) !== curValue.length)
+        if ((curValue !== '' && nextInput.attr("name") !== nextName)
+            || (curValue !== '' && nextInput.attr("name") === nextName && parseInt(input.next().val()) !== curValue.length)
         ) {
             var passEncrypted = encrypt.encrypt(curValue);
             input.val(passEncrypted);
@@ -1155,24 +1146,24 @@ sysPass.Util.Common = function () {
             if (nextInput.length > 0) {
                 nextInput.val(passEncrypted.length);
             } else {
-                input.after('<input type="hidden" name="' + nextName + '" value="' + passEncrypted.length + '" />');
+                input.after("<input type=\"hidden\" name=\"" + nextName + "\" value=\"" + passEncrypted.length + "\" />");
             }
         }
     };
 
     var initializeClipboard = function () {
-        var clipboard = new Clipboard('.clip-pass-button', {
+        var clipboard = new Clipboard(".clip-pass-button", {
             text: function (trigger) {
-                sysPassUtil.Common.viewPass(trigger.getAttribute('data-account-id'), false);
-                return $('#clip-pass-text').html();
+                sysPassUtil.Common.viewPass(trigger.getAttribute("data-account-id"), false);
+                return $("#clip-pass-text").html();
             }
         });
 
-        clipboard.on('success', function (e) {
+        clipboard.on("success", function (e) {
             sysPassUtil.Common.resMsg("ok", LANG[45]);
         });
 
-        clipboard.on('error', function (e) {
+        clipboard.on("error", function (e) {
             sysPassUtil.Common.resMsg("error", LANG[46]);
         });
 
@@ -1183,11 +1174,11 @@ sysPass.Util.Common = function () {
         var clipboardUser = new Clipboard(".dialog-clip-user-button");
 
         clipboardPass.on('success', function (e) {
-            $('.dialog-pass-text').addClass('dialog-clip-pass-copy round');
+            $(".dialog-pass-text").addClass("dialog-clip-pass-copy round");
             e.clearSelection();
         });
 
-        clipboardUser.on('success', function (e) {
+        clipboardUser.on("success", function (e) {
             e.clearSelection();
         });
     };
@@ -1197,23 +1188,21 @@ sysPass.Util.Common = function () {
      * sean encriptados antes de ser enviados por el formulario
      */
     var bindPassEncrypt = function () {
-        $('body').delegate(':input[type=password]', 'blur', function (e) {
-            if ($(this).hasClass('passwordfield__no-pki')) {
+        $("body").delegate(":input[type=password]", "blur", function (e) {
+            if ($(this).hasClass("passwordfield__no-pki")) {
                 return;
             }
 
-            var id = $(this).attr('id');
-            encryptFormValue('#' + id);
-        });
-
-        $('body').delegate(':input[type=password]', 'keypress', function (e) {
+            var id = $(this).attr("id");
+            encryptFormValue("#" + id);
+        }).delegate(":input[type=password]", "keypress", function (e) {
             if (e.keyCode === 13) {
                 e.preventDefault();
 
-                var form = $(this).closest('form');
-                var id = $(this).attr('id');
+                var form = $(this).closest("form");
+                var id = $(this).attr("id");
 
-                encryptFormValue('#' + id);
+                encryptFormValue("#" + id);
                 form.submit();
             }
         });
@@ -1261,4 +1250,4 @@ sysPass.Util.Common = function () {
         LANG: LANG,
         PK: PK
     };
-}
+}(jQuery);

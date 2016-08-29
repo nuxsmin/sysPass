@@ -1,5 +1,5 @@
 <div id="searchbox" class="round shadow">
-    <form method="post" name="frmSearch" id="frmSearch" OnSubmit="return sysPassUtil.Common.accSearch(0);">
+    <form method="post" name="frmSearch" id="frmSearch">
         <div id="tblTools">
             <div id="toolsLeft">
                 <i id="btnClear" class="material-icons" title="<?php echo _('Limpiar'); ?>">clear_all</i>
@@ -62,32 +62,41 @@
 </div>
 <script>
     $(function () {
-        $('#frmSearch select').on('change', function (e) {
+        var frmSearch = $("#frmSearch");
+
+        frmSearch.on("submit", function (e) {
+            sysPassUtil.Common.accSearch(0);
+        });
+
+        frmSearch.find("select").on('change', function (e) {
             sysPassUtil.Common.clearSearch(1);
             sysPassUtil.Common.accSearch(0, e)
         });
-        $('#frmSearch #btnClear').click(function (e) {
+
+        frmSearch.find("#btnClear").click(function (e) {
             sysPassUtil.Common.clearSearch();
             sysPassUtil.Common.accSearch(0, e);
-        })
-        $('#frmSearch input:text:visible:first').focus();
-        $('#frmSearch #txtSearch').on('keyup', function (e) {
-            // Performs a 500ms delay to not fill the API very quickly
-            setTimeout(function () {
-                sysPassUtil.Common.accSearch(1, e);
-            }, 500)
         });
-        $('#frmSearch #rpp').on('change', function (e) {
+
+        frmSearch.find("input:text:visible:first").focus();
+
+        frmSearch.find("#txtSearch").on("keyup", function (e) {
+            if (e.keyCode === 13){
+                sysPassUtil.Common.accSearch(1, e);
+            }
+        });
+
+        frmSearch.find("#rpp").on('change', function (e) {
             sysPassUtil.Common.accSearch(0, e);
-        })
+        });
 
         <?php if ( $showGlobalSearch ): ?>
-        $('#chkgsearch').click(
+        $("#chkgsearch").click(
             function () {
-                if ($(this).prop('checked') == true) {
-                    $('input[name="gsearch"]').val(1);
+                if ($(this).prop("checked") == true) {
+                    $("input[name=\"gsearch\"]").val(1);
                 } else {
-                    $('input[name="gsearch"]').val(0);
+                    $("input[name=\"gsearch\"]").val(0);
                 }
 
                 sysPassUtil.Common.accSearch(0);

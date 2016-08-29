@@ -1,29 +1,29 @@
-sysPass.Util.Theme = function () {
+sysPass.Util.Theme = function ($) {
     "use strict";
 
-    var Common = new sysPass.Util.Common(),
-        passwordData = Common.passwordData,
-        APP_ROOT = Common.APP_ROOT,
-        LANG = Common.LANG,
-        PK = Common.PK;
+    var Common = sysPass.Util.Common;
+    var passwordData = Common.passwordData;
+    var APP_ROOT = Common.APP_ROOT;
+    var LANG = Common.LANG;
+    var PK = Common.PK;
 
     // Mostrar el spinner de carga
     var showLoading = function () {
-        $('#wrap-loading').show();
-        $('#loading').addClass('is-active');
+        $("#wrap-loading").show();
+        $("#loading").addClass("is-active");
     };
 
     // Ocultar el spinner de carga
     var hideLoading = function () {
-        $('#wrap-loading').hide();
-        $('#loading').removeClass('is-active');
+        $("#wrap-loading").hide();
+        $("#loading").removeClass("is-active");
     };
 
     var activeTooltip = function () {
         // Activar tooltips
-        $('.active-tooltip').tooltip({
+        $(".active-tooltip").tooltip({
             content: function () {
-                return $(this).attr('title');
+                return $(this).attr("title");
             },
             tooltipClass: "tooltip"
         });
@@ -33,7 +33,7 @@ sysPass.Util.Theme = function () {
     // By Uzbekjon from  http://jquery-howto.blogspot.com.es
     var password = function (length, special, fancy, targetId) {
         var iteration = 0,
-            genPassword = '',
+            genPassword = "",
             randomNumber;
 
         while (iteration < passwordData.complexity.numlength) {
@@ -69,14 +69,14 @@ sysPass.Util.Theme = function () {
             $("#viewPass").attr("title", genPassword);
             //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
         } else {
-            alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + genPassword + '</p>');
+            alertify.alert("<div id=\"alert\"><p id=\"alert-text\">" + LANG[6] + "</p><p id=\"alert-pass\"> " + genPassword + "</p>");
         }
 
         var level = zxcvbn(genPassword);
         passwordData.passLength = genPassword.length;
 
         if (targetId) {
-            var dstParent = $('#' + targetId).parent();
+            var dstParent = $("#" + targetId).parent();
 
             Common.outputResult(level.score, targetId);
 
@@ -84,70 +84,70 @@ sysPass.Util.Theme = function () {
             var mdl = new MaterialTextfield();
 
             // Poner la clave en los input y actualizar MDL
-            dstParent.find('input:password').val(genPassword);
+            dstParent.find("input:password").val(genPassword);
             dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
             // Poner la clave en el input de repetición y encriptarla
-            $('#' + targetId + 'R').val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-            sysPassUtil.Common.encryptFormValue('#' + targetId + 'R');
+            $("#" + targetId + "R").val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+            sysPassUtil.Common.encryptFormValue("#" + targetId + "R");
 
             // Mostar el indicador de complejidad
-            dstParent.find('#passLevel').show(500);
+            dstParent.find("#passLevel").show(500);
         } else {
             Common.outputResult(level.score);
-            $('input:password, input.password').val(genPassword);
-            $('#passLevel').show(500);
+            $("input:password, input.password").val(genPassword);
+            $("#passLevel").show(500);
         }
     };
 
 
     // Diálogo de configuración de complejidad de clave
     var complexityDialog = function () {
-        $('<div></div>').dialog({
+        $("<div></div>").dialog({
             modal: true,
             title: LANG[29],
-            width: '400px',
+            width: "400px",
             open: function () {
                 var thisDialog = $(this);
 
                 var content =
-                    '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">' +
-                    '<input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers"/>' +
-                    '<span class="mdl-checkbox__label">' + LANG[35] + '</span>' +
-                    '</label>' +
-                    '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">' +
-                    '<input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>' +
-                    '<span class="mdl-checkbox__label">' + LANG[36] + '</span>' +
-                    '</label>' +
-                    '<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">' +
-                    '<input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>' +
-                    '<span class="mdl-checkbox__label">' + LANG[37] + '</span>' +
-                    '</label>' +
-                    '<div class="mdl-textfield mdl-js-textfield textfield-passlength">' +
-                    '<input class="mdl-textfield__input" type="number" pattern="[0-9]*" id="passlength" />' +
-                    '<label class="mdl-textfield__label" for="passlength">' + LANG[38] + '</label>' +
-                    '</div>' +
-                    '<button id="btn-complexity" class="mdl-button mdl-js-button mdl-button--raised">Ok</button>';
+                        "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-numbers\">" +
+                        "<input type=\"checkbox\" id=\"checkbox-numbers\" class=\"mdl-checkbox__input\" name=\"checkbox-numbers\"/>" +
+                        "<span class=\"mdl-checkbox__label\">" + LANG[35] + "</span>" +
+                        "</label>" +
+                        "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-uppercase\">" +
+                        "<input type=\"checkbox\" id=\"checkbox-uppercase\" class=\"mdl-checkbox__input\" name=\"checkbox-uppercase\"/>" +
+                        "<span class=\"mdl-checkbox__label\">" + LANG[36] + "</span>" +
+                        "</label>" +
+                        "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-symbols\">" +
+                        "<input type=\"checkbox\" id=\"checkbox-symbols\" class=\"mdl-checkbox__input\" name=\"checkbox-symbols\"/>" +
+                        "<span class=\"mdl-checkbox__label\">" + LANG[37] + "</span>" +
+                        "</label>" +
+                        "<div class=\"mdl-textfield mdl-js-textfield textfield-passlength\">" +
+                        "<input class=\"mdl-textfield__input\" type=\"number\" pattern=\"[0-9]*\" id=\"passlength\" />" +
+                        "<label class=\"mdl-textfield__label\" for=\"passlength\">" + LANG[38] + "</label>" +
+                        "</div>" +
+                        "<button id=\"btn-complexity\" class=\"mdl-button mdl-js-button mdl-button--raised\">Ok</button>";
 
                 thisDialog.html(content);
 
                 // Recentrar después de insertar el contenido
-                thisDialog.dialog('option', 'position', 'center');
+                thisDialog.dialog("option", "position", "center");
 
 
                 // Actualizar componentes de MDL
                 thisDialog.ready(function () {
-                    $('#checkbox-numbers').prop('checked', passwordData.complexity.numbers);
-                    $('#checkbox-uppercase').prop('checked', passwordData.complexity.uppercase);
-                    $('#checkbox-symbols').prop('checked', passwordData.complexity.symbols);
-                    $('#passlength').val(passwordData.complexity.numlength);
+                    $("#checkbox-numbers").prop("checked", passwordData.complexity.numbers);
+                    $("#checkbox-uppercase").prop("checked", passwordData.complexity.uppercase);
+                    $("#checkbox-symbols").prop("checked", passwordData.complexity.symbols);
+                    $("#passlength").val(passwordData.complexity.numlength);
 
-                    $('#btn-complexity').click(function () {
-                        passwordData.complexity.numbers = $(' #checkbox-numbers').is(':checked');
-                        passwordData.complexity.uppercase = $('#checkbox-uppercase').is(':checked');
-                        passwordData.complexity.symbols = $('#checkbox-symbols').is(':checked');
-                        passwordData.complexity.numlength = parseInt($('#passlength').val());
+                    $("#btn-complexity").click(function () {
+                        passwordData.complexity.numbers = $(" #checkbox-numbers").is(":checked");
+                        passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
+                        passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
+                        passwordData.complexity.numlength = parseInt($("#passlength").val());
 
-                        thisDialog.dialog('close');
+                        thisDialog.dialog("close");
                     });
 
                     // Actualizar objetos de MDL
@@ -166,75 +166,67 @@ sysPass.Util.Theme = function () {
      */
     var passwordDetect = function () {
         // Crear los iconos de acciones sobre claves
-        $('.passwordfield__input').each(function () {
+        $(".passwordfield__input").each(function () {
             var thisParent = $(this).parent();
-            var targetId = $(this).attr('id');
+            var targetId = $(this).attr("id");
 
-            if (thisParent.next().hasClass('password-actions')) {
+            if (thisParent.next().hasClass("password-actions")) {
                 return;
             }
 
-            var btnMenu = '<button id="menu-speed-' + targetId + '" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="' + LANG[27] + '"><i class="material-icons">more_vert</i></button>';
+            var btnMenu = "<button id=\"menu-speed-" + targetId + "\" class=\"mdl-button mdl-js-button mdl-button--icon\" type=\"button\" title=\"" + LANG[27] + "\"><i class=\"material-icons\">more_vert</i></button>";
 
-            btnMenu += '<ul class="mdl-menu mdl-js-menu" for="menu-speed-' + targetId + '">';
-            btnMenu += '<li class="mdl-menu__item passGen" data-targetid="' + targetId + '"><i class="material-icons">settings</i>' + LANG[28] + '</li>';
-            btnMenu += '<li class="mdl-menu__item passComplexity" data-targetid="' + targetId + '"><i class="material-icons">vpn_key</i>' + LANG[29] + '</li>';
-            btnMenu += '<li class="mdl-menu__item reset" data-targetid="' + targetId + '"><i class="material-icons">refresh</i>' + LANG[30] + '</li>';
+            btnMenu += "<ul class=\"mdl-menu mdl-js-menu\" for=\"menu-speed-" + targetId + '">';
+            btnMenu += "<li class=\"mdl-menu__item passGen\" data-targetid=\"" + targetId + "\"><i class=\"material-icons\">settings</i>" + LANG[28] + "</li>";
+            btnMenu += "<li class=\"mdl-menu__item passComplexity\" data-targetid=\"" + targetId + "\"><i class=\"material-icons\">vpn_key</i>" + LANG[29] + "</li>";
+            btnMenu += "<li class=\"mdl-menu__item reset\" data-targetid=\"" + targetId + "\"><i class=\"material-icons\">refresh</i>" + LANG[30] + "</li>";
 
-            thisParent.after('<div class="password-actions" />');
+            thisParent.after("<div class=\"password-actions\" />");
 
-            thisParent.next('.password-actions')
-                .prepend('<span class="passLevel passLevel-' + targetId + ' fullround" title="' + LANG[31] + '"></span>')
-                .prepend('<i class="showpass material-icons" title="' + LANG[32] + '" data-targetid="' + targetId + '">remove_red_eye</i>')
+            thisParent.next(".password-actions")
+                .prepend("<span class=\"passLevel passLevel-" + targetId + " fullround\" title=\"" + LANG[31] + "\"></span>")
+                .prepend("<i class=\"showpass material-icons\" title=\"" + LANG[32] + "\" data-targetid=\"" + targetId + "\">remove_red_eye</i>")
                 .prepend(btnMenu);
 
-            $(this).on('keyup', function () {
+            $(this).on("keyup", function () {
                 Common.checkPassLevel($(this).val(), targetId);
             });
         });
 
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)
-        $('.passwordfield__input-show').each(function () {
+        $(".passwordfield__input-show").each(function () {
             var thisParent = $(this).parent();
-            var targetId = $(this).attr('id');
+            var targetId = $(this).attr("id");
 
             thisParent
-                .after('<i class="showpass material-icons" title="' + LANG[32] + '" data-targetid="' + targetId + '">remove_red_eye</i>');
+                .after("<i class=\"showpass material-icons\" title=\"" + LANG[32] + "\" data-targetid=\"" + targetId + "\">remove_red_eye</i>");
         });
 
         // Crear evento para generar clave aleatoria
-        $('.passGen').each(function () {
-            $(this).on('click', function () {
-                var targetId = $(this).data('targetid');
-                password(11, true, true, targetId);
-                $('#' + targetId).focus();
-            });
+        $(".passGen").on("click", function () {
+            var targetId = $(this).data("targetid");
+            password(11, true, true, targetId);
+            $("#" + targetId).focus();
         });
 
-        $('.passComplexity').each(function () {
-            $(this).on('click', function () {
-                complexityDialog();
-            });
+        $(".passComplexity").on("click", function () {
+            complexityDialog();
         });
 
         // Crear evento para mostrar clave generada/introducida
-        $('.showpass').each(function () {
-            $(this).on('mouseover', function () {
-                var targetId = $(this).data('targetid');
-                $(this).attr('title', $('#' + targetId).val());
-            });
+        $(".showpass").on("mouseover", function () {
+            var targetId = $(this).data("targetid");
+            $(this).attr("title", $("#" + targetId).val());
         });
 
         // Reset de los campos de clave
-        $('.reset').each(function () {
-            $(this).on('click', function () {
-                var targetId = $(this).data('targetid');
-                $('#' + targetId).val('');
-                $('#' + targetId + 'R').val('');
+        $(".reset").on("click", function () {
+            var targetId = $(this).data("targetid");
+            $("#" + targetId).val("");
+            $("#" + targetId + "R").val("");
 
-                // Actualizar objetos de MDL
-                componentHandler.upgradeDom();
-            });
+            // Actualizar objetos de MDL
+            componentHandler.upgradeDom();
         });
     };
 
@@ -243,10 +235,10 @@ sysPass.Util.Theme = function () {
         hideLoading: hideLoading,
         activeTooltip: activeTooltip,
         passwordDetect: passwordDetect,
-        password : password,
+        password: password,
         init: function () {
             jQuery.extend(jQuery.fancybox.defaults, {
-                type: 'ajax',
+                type: "ajax",
                 autoWidth: true,
                 autoHeight: true,
                 autoResize: true,
@@ -254,10 +246,10 @@ sysPass.Util.Theme = function () {
                 fitToView: false,
                 minHeight: 50,
                 padding: 0,
-                helpers: {overlay: {css: {'background': 'rgba(0, 0, 0, 0.1)'}}},
+                helpers: {overlay: {css: {"background": "rgba(0, 0, 0, 0.1)"}}},
                 keys: {close: [27]},
                 afterShow: function () {
-                    $('#fancyContainer').find('input:visible:first').focus();
+                    $("#fancyContainer").find("input:visible:first").focus();
                 }
             });
 
@@ -284,10 +276,10 @@ sysPass.Util.Theme = function () {
                 activeTooltip();
             });
         },
-        Common : Common
+        Common: Common
     };
-};
+}(jQuery);
 
 // Inicializar funciones del Tema
-var sysPassUtil = new sysPass.Util.Theme();
+var sysPassUtil = sysPass.Util.Theme;
 sysPassUtil.init();
