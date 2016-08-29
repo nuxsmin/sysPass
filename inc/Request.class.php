@@ -77,11 +77,11 @@ class Request
      * Obtener los valores de variables $_GET y $_POST
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $param con el parámetro a consultar
-     * @param mixed $default valor por defecto a devolver
-     * @param bool $check comprobar si el parámetro está presente
-     * @param mixed $force valor devuelto si el parámeto está definido
-     * @param bool $sanitize escapar/eliminar carácteres especiales
+     * @param string $param    con el parámetro a consultar
+     * @param mixed  $default  valor por defecto a devolver
+     * @param bool   $check    comprobar si el parámetro está presente
+     * @param mixed  $force    valor devuelto si el parámeto está definido
+     * @param bool   $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
@@ -158,25 +158,20 @@ class Request
     public static function getRequestHeaders($header = '')
     {
         if (!function_exists('\apache_request_headers')) {
-            function apache_request_headers()
-            {
-                foreach ($_SERVER as $key => $value) {
-                    if (substr($key, 0, 5) == "HTTP_") {
-                        $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
-                        $headers[$key] = $value;
-                    } else {
-                        $headers[$key] = $value;
-                    }
+            foreach ($_SERVER as $key => $value) {
+                if (substr($key, 0, 5) === 'HTTP_') {
+                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                    $headers[$key] = $value;
+                } else {
+                    $headers[$key] = $value;
                 }
             }
         } else {
             $headers = apache_request_headers();
         }
 
-        if (!empty($header) && array_key_exists($header, $headers)) {
-            return $headers[$header];
-        } elseif (!empty($header)) {
-            return false;
+        if ($header !== '') {
+            return array_key_exists($header, $headers) ? $headers[$header] : false;
         }
 
         return $headers;
@@ -189,6 +184,6 @@ class Request
      */
     public static function getProtocol()
     {
-        return (Util::httpsEnabled()) ? 'https://' : 'http://';
+        return Util::httpsEnabled() ? 'https://' : 'http://';
     }
 }

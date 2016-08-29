@@ -42,12 +42,12 @@ class LdapADS extends Ldap
      */
     public static function getADServer($server)
     {
-        if (preg_match('/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/', $server)){
+        if (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $server)){
             return $server;
         }
 
         $serverDomain = '';
-        $serverFQDN = explode('.', $server);
+        $serverFQDN = explode('.', preg_replace('#ldaps?://#i', '', $server));
 
         for ($i = 1; $i <= count($serverFQDN) - 1; $i++){
             $serverDomain .= $serverFQDN[$i] . '.';
@@ -57,14 +57,16 @@ class LdapADS extends Ldap
         $records = dns_get_record($dnsServerQuery, DNS_NS);
 
         if (count($records) === 0) {
-            return parent::$_ldapServer;
+            return $server;
         }
+
+        $ads = array();
 
         foreach ($records as $record) {
             $ads[] = $record['target'];
         };
 
-        return $ads[rand(0, count($ads) - 1)];
+        return (count($ads) > 0) ? $ads[mt_rand(0, count($ads) - 1)] : $server;
     }
 
     /**
