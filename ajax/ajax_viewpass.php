@@ -79,7 +79,7 @@ $useImage = intval(\SP\Util::accountPassToImageIsEnabled());
 $data = array(
     'title' => _('Clave de Cuenta'),
     'acclogin' => $accountData->login,
-    'accpass' => (!$useImage) ? trim($accountClearPass) : \SP\ImageUtil::convertText($accountClearPass),
+    'accpass' => (!$useImage) ? htmlentities(trim($accountClearPass)) : \SP\ImageUtil::convertText($accountClearPass),
     'useimage' => $useImage
 );
 
