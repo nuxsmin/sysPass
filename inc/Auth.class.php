@@ -111,7 +111,16 @@ class Auth
             return 702;
         }
 
-        self::$userName = (isset($attribs['name'])) ? $attribs['name'] : $userLogin;
+        if (!isset($attribs['name'])) {
+            if (isset($attribs['givenname']) && isset($attribs['sn'])){
+                self::$userName =  $attribs['givenname'] . ' ' . $attribs['sn'];
+            } else {
+                self::$userName = $userLogin;
+            }
+        } else {
+            self::$userName = $attribs['name'];
+        }
+
         self::$userEmail = (isset($attribs['mail'])) ? $attribs['mail'] : '';
 
         return true;

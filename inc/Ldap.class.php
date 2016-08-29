@@ -52,6 +52,8 @@ class Ldap
         'memberOf' => 'group',
         'displayname' => 'name',
         'fullname' => 'name',
+        'givenname' => 'givenname',
+        'sn' => 'sn',
         'mail' => 'mail',
         'lockoutTime' => 'expire');
 
@@ -286,7 +288,7 @@ class Ldap
             $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
         }
 
-        $filterAttr = array("dn", "displayname", "samaccountname", "mail", "memberof", "lockouttime", "fullname", "groupmembership", "mail");
+        $filterAttr = array("dn", "displayname", "samaccountname", "mail", "memberof", "lockouttime", "fullname", "groupmembership", "mail", "sn", "givenname");
 
         $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
 
@@ -412,7 +414,7 @@ class Ldap
      */
     private static function getGroupName()
     {
-        if (isset(self::$_ldapGroup) && preg_match('/^cn=([\w\s-]+),.*/i', self::$_ldapGroup, $groupName)) {
+        if (isset(self::$_ldapGroup) && preg_match('/^(cn=[\w\s-]+)(,.*)?$/i', self::$_ldapGroup, $groupName)) {
             return $groupName[1];
         }
 
