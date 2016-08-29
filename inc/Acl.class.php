@@ -40,7 +40,7 @@ class Acl implements Controller\ActionsInterface
      * en la variable de sesión.
      *
      * @param string $action con el nombre de la acción
-     * @param int    $userId opcional, con el Id del usuario
+     * @param int $userId opcional, con el Id del usuario
      * @return bool
      */
     public static function checkUserAccess($action, $userId = 0)
@@ -156,7 +156,7 @@ class Acl implements Controller\ActionsInterface
             return 'action';
         }
 
-        if ($shortName){
+        if ($shortName) {
             return $actionName[$action][0];
         }
 
@@ -166,8 +166,8 @@ class Acl implements Controller\ActionsInterface
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string $module      con la acción realizada
-     * @param array  $accountData con los datos de la cuenta a verificar
+     * @param string $module con la acción realizada
+     * @param array $accountData con los datos de la cuenta a verificar
      * @return bool
      */
     public static function checkAccountAccess($module, $accountData)
@@ -176,7 +176,7 @@ class Acl implements Controller\ActionsInterface
         $userId = Session::getUserId();
         $userIsAdminApp = Session::getUserIsAdminApp();
         $userIsAdminAcc = Session::getUserIsAdminAcc();
-        $userToGroups = in_array($userGroupId,Groups::getUsersForGroup($accountData['group_id']));
+        $userToGroups = in_array($userId, Groups::getUsersForGroup($accountData['group_id']));
 
         if ($userToGroups === false) {
             foreach ($accountData['groups_id'] as $groupId) {
@@ -198,7 +198,7 @@ class Acl implements Controller\ActionsInterface
         $okEdit = ($userId == $accountData['user_id']
             || $userGroupId == $accountData['group_id']
             || (in_array($userId, $accountData['users_id']) && $accountData['otheruser_edit'])
-            || ($userToGroups  && $accountData['othergroup_edit'])
+            || ($userToGroups && $accountData['othergroup_edit'])
             || $userIsAdminApp
             || $userIsAdminAcc);
 
