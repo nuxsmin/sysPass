@@ -141,6 +141,10 @@ class Ldap
         @ldap_set_option(self::$_ldapConn, LDAP_OPT_NETWORK_TIMEOUT, 10); // Set timeout
         @ldap_set_option(self::$_ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3); // Set LDAP version
 
+        if (self::$_ADS) {
+            @ldap_set_option(self::$_ldapConn, LDAP_OPT_REFERRALS, 0);
+        }
+
         return true;
     }
 
