@@ -97,7 +97,7 @@ class LdapADS extends Ldap
         }
 
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
-        $filterAttr = array("sAMAccountName");
+        $filterAttr = array('sAMAccountName');
 
         $searchRes = @ldap_search(Ldap::$_ldapConn, Ldap::$_searchBase, $filter, $filterAttr);
 

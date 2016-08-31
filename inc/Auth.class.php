@@ -96,7 +96,7 @@ class Auth
                 }
                 // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
             } else {
-                $ldapGroupAccess = (Ldap::isADS()) ? LdapADS::searchADUserInGroup($userLogin) : Ldap::searchUserInGroup($userDN);
+                $ldapGroupAccess = Ldap::isADS() ? LdapADS::searchADUserInGroup($userLogin) : Ldap::searchUserInGroup($userDN);
             }
         } else {
             $ldapGroupAccess = true;
