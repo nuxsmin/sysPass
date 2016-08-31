@@ -994,27 +994,10 @@ sysPass.Util.Common = function ($) {
     };
 
     // Función para comprobar la conexión con LDAP
-    var checkLdapConn = function (formId) {
-        var form = "#frmLdap";
+    var checkLdapConn = function () {
+        var form = $("#frmLdap");
 
-        var ldapServer = $(form).find("[name=ldap_server]").val();
-        var ldapBase = $(form).find("[name=ldap_base]").val();
-        var ldapGroup = $(form).find("[name=ldap_group]").val();
-        var ldapBindUser = $(form).find("[name=ldap_binduser]").val();
-        var ldapBindPass = $(form).find("[name=ldap_bindpass]").val();
-        var sk = $(form).find("[name=sk]").val();
-
-        var data = {
-            "ldap_server": ldapServer,
-            "ldap_base": ldapBase,
-            "ldap_group": ldapGroup,
-            "ldap_binduser": ldapBindUser,
-            "ldap_bindpass": ldapBindPass,
-            "isAjax": 1,
-            "sk": sk
-        };
-
-        sendAjax(data, "/ajax/ajax_checkLdap.php");
+        sendAjax(form.serialize(), "/ajax/ajax_checkLdap.php");
     };
 
     // Función para volver al login

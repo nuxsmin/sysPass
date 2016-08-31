@@ -33,8 +33,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Auth
 {
-    static $userName;
-    static $userEmail;
+    public static $userName;
+    public static $userEmail;
 
     /**
      * Autentificación de usuarios con LDAP.

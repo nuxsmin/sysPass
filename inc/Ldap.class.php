@@ -160,8 +160,8 @@ class Ldap
     {
         $log = new Log(__FUNCTION__);
 
-        $dn = ($userDN) ? $userDN : self::$_bindDN;
-        $pass = ($userPass) ? $userPass : self::$_bindPass;
+        $dn = $userDN ?: self::$_bindDN;
+        $pass = $userPass ?: self::$_bindPass;
 
         if (!@ldap_bind(self::$_ldapConn, $dn, $pass)) {
             $log->addDescription(_('Error al conectar (BIND)'));
@@ -186,8 +186,8 @@ class Ldap
         $log = new Log(__FUNCTION__);
 
         $groupDN = (!empty(self::$_ldapGroup)) ? self::searchGroupDN() : '*';
-        $filter = '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
-        $filterAttr = array("dn");
+        $filter = '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        $filterAttr = array('dn');
 
         $searchRes = @ldap_search(self::$_ldapConn, self::$_searchBase, $filter, $filterAttr);
 
@@ -296,7 +296,7 @@ class Ldap
      *
      * @param string $userLogin con el login del usuario
      * @throws \Exception
-     * @return none
+     * @return void
      */
     public static function getUserDN($userLogin)
     {
@@ -435,7 +435,20 @@ class Ldap
      */
     private static function escapeLdapDN($dn)
     {
-        $chars = array('/(,)(?!uid|cn|ou|dc)/i', '/(?<!uid|cn|ou|dc)(=)/i', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/');
+        $chars = array(
+            '/(,)(?!uid|cn|ou|dc)/i',
+            '/(?<!uid|cn|ou|dc)(=)/i',
+            '/(")/',
+            '/(;)/',
+            '/(>)/',
+            '/(<)/',
+            '/(\+)/',
+            '/(#)/',
+            '/\G(\s)/',
+            '/(\s)(?=\s*$)/',
+            '/(\/)/'
+        );
+
         return preg_replace($chars, '\\\$1', $dn);
     }
 
