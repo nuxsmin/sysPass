@@ -62,7 +62,7 @@ class Language
             self::$userLang = $Language->getUserLang();
             self::$globalLang = $Language->getGlobalLang();
 
-            $lang = (self::$userLang) ? self::$userLang : self::$globalLang;
+            $lang = self::$userLang ?: self::$globalLang;
 
             Session::setLocale($lang);
         }
@@ -92,11 +92,11 @@ class Language
         // Establecer a en_US si no existe la traducción o no es español
         if (!$configLang
             && !$this->checkLangFile($browserLang)
-            && !preg_match('/^es_.*/i', $browserLang)
+            && stripos($browserLang, 'es_') === false
         ) {
             $lang = 'en_US';
         } else {
-            $lang = ($configLang) ? $configLang : $browserLang;
+            $lang = $configLang ?: $browserLang;
         }
 
         return $lang;
@@ -109,7 +109,7 @@ class Language
      */
     private function getBrowserLang()
     {
-        return str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
     }
 
     /**
@@ -132,12 +132,12 @@ class Language
     {
         $lang .= '.utf8';
 
-        putenv("LANG=" . $lang);
+        putenv('LANG=' . $lang);
         setlocale(LC_MESSAGES, $lang);
         setlocale(LC_ALL, $lang);
-        bindtextdomain("messages", LOCALES_PATH);
-        textdomain("messages");
-        bind_textdomain_codeset("messages", 'UTF-8');
+        bindtextdomain('messages', LOCALES_PATH);
+        textdomain('messages');
+        bind_textdomain_codeset('messages', 'UTF-8');
     }
 
     /**
@@ -154,7 +154,8 @@ class Language
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
             'Français' => 'fr_FR',
-            'русский' => 'ru_RU'
+            'русский' => 'ru_RU',
+            'Nederlands' => 'nl_NL'
         );
     }
 }
