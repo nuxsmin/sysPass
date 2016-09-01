@@ -55,15 +55,18 @@
                             </li>
                         <?php else: ?>
                             <li class="cell-data" style="width: <?php echo $tab['props']['cellWidth'] ?>%;">
-                                <?php echo ($item->$rowSrc) ? $item->$rowSrc : '&nbsp;'; // Fix height ?>
+                                <?php echo $item->$rowSrc ?: '&nbsp;'; // Fix height ?>
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
 
                     <li class="cell-actions round">
                         <?php foreach ($tab['props']['actions'] as $actionName => $action): ?>
-                            <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php
+                                if (isset($action['skip'])
+                                    || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))
+                                ): continue; endif;
+
                                 $i++;
 
                                 switch($actionName){
@@ -77,10 +80,12 @@
                                         $actionClass = 'fg-blue80';
                                     }
                             ?>
-                            <i class="material-icons <?php echo $actionClass; ?>" title="<?php echo $action['title']; ?>"
-                               data-itemid="<?php echo $itemId; ?>" data-activetab="<?php echo $index; ?>"
+                            <i class="material-icons btn-action <?php echo $actionClass; ?>"
+                               title="<?php echo $action['title']; ?>"
+                               data-itemid="<?php echo $itemId; ?>"
+                               data-activetab="<?php echo $index; ?>"
                                data-nextactionid="<?php echo $actionId; ?>"
-                               Onclick="<?php echo $action['onclick'];; ?>;"><?php echo $action['icon']; ?></i>
+                               data-onclick="<?php echo $action['onclick']; ?>"><?php echo $action['icon']; ?></i>
                         <?php endforeach; ?>
                     </li>
                 </ul>
@@ -94,3 +99,11 @@
         </div>
     </div>
 <?php endforeach; ?>
+
+<script>
+    $(function () {
+        $(".btn-action").on("click", function () {
+            eval($(this).data('onclick'));
+        })
+    })
+</script>

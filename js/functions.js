@@ -206,7 +206,7 @@ sysPass.Util.Common = function ($) {
             return false;
         }
 
-        var frmSearch = elements.frmSearch;
+        var frmSearch = $("#frmSearch");
         frmSearch.find("input[name=\"skey\"]").val(skey);
         frmSearch.find("input[name=\"sorder\"]").val(dir);
         frmSearch.find("input[name=\"start\"]").val(start);
@@ -284,7 +284,7 @@ sysPass.Util.Common = function ($) {
                 if (show === false || show === 0) {
                     // Copiamos la clave en el objeto que tiene acceso al portapapeles
                     $("#clip-pass-text").html(json.accpass);
-                    return;
+                    return true;
                 }
 
                 $("<div></div>").dialog({
@@ -914,10 +914,10 @@ sysPass.Util.Common = function ($) {
 
     // Función para mostrar los botones de acción en los resultados de búsqueda
     var showOptional = function (me) {
-        $(me).hide();
+        me.hide();
         //$(me).parent().css('width','15em');
         //var actions =  $(me).closest('.account-actions').children('.actions-optional');
-        var actions = $(me).parent().children(".actions-optional");
+        var actions = me.parent().children(".actions-optional");
         actions.show(250);
     };
 

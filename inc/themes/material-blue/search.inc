@@ -141,51 +141,62 @@
                         <div class="account-actions round">
 
                             <?php if ($account['showView']): ?>
-                                <i class="material-icons fg-blue80" title="<?php echo _('Detalles de Cuenta'); ?>"
-                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">visibility</i>
+                                <i class="material-icons fg-blue80 btn-action"
+                                   title="<?php echo _('Detalles de Cuenta'); ?>"
+                                   data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                                   data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                                   data-account-id="<?php echo $account['id']; ?>">visibility</i>
                             <?php endif ?>
 
                             <?php if ($account['showViewPass']): ?>
-                                <i id="viewpass" class="material-icons fg-blue80" title="<?php echo _('Ver Clave'); ?>"
-                                   onClick="sysPassUtil.Common.viewPass(<?php echo $account['id']; ?>, 1)">lock_open</i>
+                                <i id="viewpass" class="material-icons fg-blue80 btn-action-pass"
+                                   title="<?php echo _('Ver Clave'); ?>"
+                                   data-account-id="<?php echo $account['id']; ?>">lock_open</i>
                                 <?php if (!\SP\Util::accountPassToImageIsEnabled()): ?>
-                                    <i class="material-icons fg-blue80 clip-pass-button <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                    <i class="material-icons fg-blue80 clip-pass-button <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
                                        data-account-id="<?php echo $account['id']; ?>"
                                        title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
                                 <?php endif ?>
                             <?php endif ?>
 
                             <?php if (!$optionalActions && ($account['showEdit'] || $account['showCopy'] || $account['showDel'] || $account['showViewPass'])): ?>
-                                <i class="material-icons"
-                                   title="<?php echo _('Más Acciones'); ?>"
-                                   OnClick="sysPassUtil.Common.showOptional(this)">settings</i>
+                                <i class="material-icons btn-action-optional"
+                                   title="<?php echo _('Más Acciones'); ?>">settings</i>
                             <?php endif ?>
 
                             <?php if ($account['showEdit']): ?>
-                                <i class="material-icons fg-orange80 <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                <i class="material-icons fg-orange80 btn-action <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
                                    title="<?php echo _('Modificar Cuenta'); ?>"
-                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">mode_edit</i>
+                                   data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>"
+                                   data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                                   data-account-id="<?php echo $account['id']; ?>">mode_edit</i>
                             <?php endif; ?>
 
                             <?php if ($account['showCopy']): ?>
-                                <i class="material-icons fg-blue80 <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                <i class="material-icons fg-blue80 btn-action <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
                                    title="<?php echo _('Copiar Cuenta'); ?>"
-                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">content_copy</i>
+                                   data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>"
+                                   data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                                   data-account-id="<?php echo $account['id']; ?>">content_copy</i>
                             <?php endif; ?>
 
                             <?php if ($account['showDel']): ?>
-                                <i class="material-icons fg-red80 <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                <i class="material-icons fg-red80 btn-action <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
                                    title="<?php echo _('Eliminar Cuenta'); ?>"
-                                   OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">delete</i>
+                                   data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>"
+                                   data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                                   data-account-id="<?php echo $account['id']; ?>">delete</i>
                             <?php endif; ?>
 
                         </div>
                     <?php elseif ($requestEnabled || $isDemoMode): ?>
                         <div class="account-spacer"></div>
                         <div class="account-actions round">
-                            <i class="material-icons fg-blue80"
+                            <i class="material-icons fg-blue80 btn-action"
                                title="<?php echo _('Solicitar Modificación'); ?>"
-                               OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)">email</i>
+                               data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_REQUEST; ?>"
+                               data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                               data-account-id="<?php echo $account['id']; ?>">email</i>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -225,22 +236,36 @@
     <script>
         $(function () {
             // Actualizar el token de seguridad
-            $("#frmSearch :input[name='sk']").val('<?php echo $sk; ?>');
+            $("#frmSearch").find(":input[name='sk']").val('<?php echo $sk; ?>');
 
-            $('#data-search-header').find('.sort-down').each(function () {
-                $(this).click(function () {
-                    var key = $(this).parent().data('key');
-                    $(this).parent().find('a').addClass('filterOn');
-                    sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 0);
-                });
+            var searchHeader = $('#data-search-header');
+
+            searchHeader.find('.sort-down').click(function () {
+                var key = $(this).parent().data('key');
+                $(this).parent().find('a').addClass('filterOn');
+                sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 0);
             });
 
-            $('#data-search-header').find('.sort-up').each(function () {
-                $(this).click(function () {
-                    var key = $(this).parent().data('key');
-                    $(this).parent().find('a').addClass('filterOn');
-                    sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 1);
-                });
+            searchHeader.find('.sort-up').click(function () {
+                var key = $(this).parent().data('key');
+                $(this).parent().find('a').addClass('filterOn');
+                sysPassUtil.Common.searchSort(key, <?php echo $limitStart; ?>, 1);
+            });
+
+            $('.btn-action').on("click", function (e) {
+                var btn = $(this);
+
+                sysPassUtil.Common.doAction(btn.data('action-id'), btn.data('next-id'), btn.data('account-id'));
+            });
+
+            $('.btn-action-pass').on("click", function (e) {
+                var btn = $(this);
+
+                sysPassUtil.Common.viewPass(btn.data('account-id'), 1);
+            });
+
+            $('.btn-action-optional').on("click", function (e) {
+                sysPassUtil.Common.showOptional($(this));
             });
         })
     </script>

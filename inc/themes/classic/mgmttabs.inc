@@ -51,7 +51,7 @@
                             </li>
                         <?php else: ?>
                             <li class="cell-data" style="width: <?php echo $tab['props']['cellWidth'] ?>%;">
-                                <?php echo ($item->$rowSrc) ? $item->$rowSrc : '&nbsp;'; // Fix height ?>
+                                <?php echo $item->$rowSrc ?: '&nbsp;'; // Fix height ?>
                             </li>
                         <?php endif; ?>
                     <?php endforeach; ?>
@@ -61,15 +61,11 @@
                             <?php if (isset($action['skip']) || ($action['id'] == \SP\Controller\ActionsInterface::ACTION_USR_USERS_EDITPASS && isset($action_check['user_isLdap']))): continue; endif; ?>
                             <?php $i++; ?>
                             <img src="<?php echo $action['img']; ?>" title="<?php echo $action['title']; ?>"
-                                 class="inputImg <?php echo ($i >= $maxNumActions) ? 'actions-optional' : ''; ?>"
+                                 class="inputImg btn-action"
                                  data-itemid="<?php echo $itemId; ?>" data-activetab="<?php echo $index; ?>"
                                  data-nextactionid="<?php echo $actionId; ?>"
-                                 Onclick="<?php echo $action['onclick'];; ?>;"/>
+                                 data-onclick="<?php echo $action['onclick']; ?>"/>
                         <?php endforeach; ?>
-                        <?php if ($numActions > $maxNumActions): ?>
-                            <img src="imgs/action.png" title="<?php echo _('Más Acciones'); ?>"
-                                 OnClick="sysPassUtil.Common.showOptional(this)"/>
-                        <?php endif; ?>
                     </li>
                 </ul>
             <?php endforeach; ?>
@@ -82,3 +78,11 @@
         </div>
     </div>
 <?php endforeach; ?>
+
+<script>
+    $(function () {
+        $(".btn-action").on("click", function () {
+            eval($(this).data('onclick'));
+        })
+    })
+</script>
