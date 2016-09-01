@@ -75,7 +75,10 @@
                         <div class="field-name"><?php echo _('Nombre'); ?></div>
                         <?php if ($account['show'] && $accountLink): ?>
                             <a title="<?php echo _('Detalles de Cuenta'); ?>"
-                               OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"><?php echo $account['name']; ?></a>
+                               class="btn-action"
+                               data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                               data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                               data-account-id="<?php echo $account['id']; ?>"><?php echo $account['name']; ?></a>
                         <?php else: ?>
                             <div class="field-text"><?php echo $account['name']; ?></div>
                         <?php endif; ?>
@@ -128,7 +131,7 @@
 
                             <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
                                 <?php foreach ($wikiFilter as $filter): ?>
-                                    <?php if (preg_match("/^" . preg_quote($filter) . ".*/i", $account['name'])): ?>
+                                    <?php if (preg_match('/^' . preg_quote($filter) . '.*/i', $account['name'])): ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
                                             <i id="viewpass" class="material-icons"
                                                title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>

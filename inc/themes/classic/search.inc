@@ -73,7 +73,10 @@
                         <div class="field-name"><?php echo _('Nombre'); ?></div>
                         <?php if ($account['show'] && $accountLink): ?>
                             <a title="<?php echo _('Detalles de Cuenta'); ?>"
-                               OnClick="doAction(<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>,<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>,<?php echo $account['id']; ?>)"><?php echo $account['name']; ?></a>
+                               class="btn-action"
+                               data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                               data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                               data-account-id="<?php echo $account['id']; ?>"><?php echo $account['name']; ?></a>
                         <?php else: ?>
                             <div class="field-text"><?php echo $account['name']; ?></div>
                         <?php endif; ?>
@@ -122,7 +125,7 @@
 
                             <?php if (isset($wikiFilter) && is_array($wikiFilter)): ?>
                                 <?php foreach ($wikiFilter as $filter): ?>
-                                    <?php if (preg_match("/^" . preg_quote($filter) . ".*/i", $account['name'])): ?>
+                                    <?php if (preg_match('/^' . preg_quote($filter) . '.*/i', $account['name'])): ?>
                                         <a href="<?php echo $wikiPageUrl, $account['name']; ?>" target="_blank">
                                             <img src="imgs/wiki.png" title="<?php echo _('Enlace a Wiki'); ?>"/>
                                         </a>
@@ -149,7 +152,7 @@
                                     <img src="imgs/clipboard.png"
                                          title="<?php echo _('Copiar Clave en Portapapeles'); ?>"
                                          data-account-id="<?php echo $account['id']; ?>"
-                                         class="clip-pass-button <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"/>
+                                         class="clip-pass-button <?php echo $optionalActions ? '' : 'actions-optional'; ?>"/>
                                 <?php endif; ?>
                             <?php endif ?>
 
@@ -160,7 +163,7 @@
 
                             <?php if ($account['showEdit']): ?>
                                 <img src="imgs/edit.png" title="<?php echo _('Modificar Cuenta'); ?>"
-                                     class="btn-action <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                     class="btn-action <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
                                      data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_EDIT; ?>"
                                      data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
                                      data-account-id="<?php echo $account['id']; ?>"/>
@@ -168,7 +171,7 @@
 
                             <?php if ($account['showCopy']): ?>
                                 <img src="imgs/btn_copy.png" title="<?php echo _('Copiar Cuenta'); ?>"
-                                     class="btn-action <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                     class="btn-action <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
                                      data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_COPY; ?>"
                                      data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
                                      data-account-id="<?php echo $account['id']; ?>"/>
@@ -176,7 +179,7 @@
 
                             <?php if ($account['showDel']): ?>
                                 <img src="imgs/delete.png" title="<?php echo _('Eliminar Cuenta'); ?>"
-                                     class="btn-action <?php echo ($optionalActions) ? '' : 'actions-optional'; ?>"
+                                     class="btn-action <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
                                      data-action-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_DELETE; ?>"
                                      data-next-id="<?php echo \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH; ?>"
                                      data-account-id="<?php echo $account['id']; ?>"/>

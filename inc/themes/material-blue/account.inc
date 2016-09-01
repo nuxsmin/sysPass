@@ -17,7 +17,7 @@
                     <?php if ($showform): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="name" name="name" type="text" required class="mdl-textfield__input fg-blue100"
-                            maxlength="50" value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
+                            maxlength="50" value="<?php echo $gotData ? $accountData->account_name : ''; ?>">
                             <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
                         </div>
                     <?php else: ?>

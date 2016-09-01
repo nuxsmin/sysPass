@@ -13,7 +13,7 @@
                     <?php if ($showform): ?>
                         <input name="name" type="text" placeholder="<?php echo _('Nombre de cuenta'); ?>" required
                                maxlength="50"
-                               value="<?php echo ($gotData) ? $accountData->account_name : ''; ?>">
+                               value="<?php echo $gotData ? $accountData->account_name : ''; ?>">
                     <?php else: ?>
                         <?php echo $accountData->account_name; ?>
                     <?php endif; ?>
