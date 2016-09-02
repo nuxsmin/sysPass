@@ -298,7 +298,7 @@ abstract class AccountBase
             $cacheUsers = array($accId => array(), 'expires' => 0);
         }
 
-        if (!isset($cacheUsers[$accId])
+        if (!array_key_exists($accId, $cacheUsers)
             || time() > $cacheUsers['expires']
         ) {
             $cacheUsers[$accId] = UserAccounts::getUsersForAccount($accId);

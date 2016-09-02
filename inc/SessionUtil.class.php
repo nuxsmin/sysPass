@@ -153,5 +153,6 @@ class SessionUtil
         Session::unsetSessionKey('userpreferences');
         Session::unsetSessionKey('tempmasterpass');
         Session::unsetSessionKey('accountcolor');
+        Session::unsetSessionKey('cache');
     }
 }
