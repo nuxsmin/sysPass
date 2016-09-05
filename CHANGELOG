@@ -1,3 +1,27 @@
+=== ** v1.2.0.13 ===
+
+* [FIX] Fixed issue when pressing copy-to-clipboard icon.
+* [FIX] Fixes #215. Password is not shown when it contains special chars. Thanks @goatmaster for the feedback.
+* [FIX] Fixes user-in-group checking for accounts ACL. Related #263
+* [FIX] Fixes retrieving username from LDAP.
+* [FIX] Fixes LDAP group name lookup. Related #257, #258, #264,
+* [FIX] Closes #237. Fixed missing field for main group change in account view. Thanks to @Sintbert for the feedback.
+* [FIX] Closes #221. Fixed missing apache_request_headers function. Thanks to @alexanderbuhler for the feedback.
+* [FIX] Closes #243. Fixed LDAP URL issue when using ADS auth. Thanks to @guannais for the feedback.
+* [FIX] Closes #222. Fixed default DB column values when mysql is set in strict mode. Thanks to @tdk1069 for the feedback.
+* [FIX] Related #245. MySQL sysPass user account creation  error.
+* [FIX] Fixed issue when caching objects in session cache.
+* [FIX] Fixed LDAP check when ADS is set. Thanks to @eth0h4ckr for the feedback.
+* [FIX] Closes #264. Fixed LDAP group listing issue when there are more than one group with the same name. The first one is picked. Thanks to @eth0h4ckr for the feedback.
+* [FIX] Closes #264. Fixed LDAP ADS listing issue when base search is set to the domain top level. Thanks to @eth0h4ckr for the feedback.
+* [FIX] Closes #267. Fixed view account link issue.
+* [ADD] Dutch translation. Big thanks to @MikeyHoef. #254
+* [MOD] Improved actions handler and try o fix edit icon issue. Related #253
+* [MOD] Updated Material Design Lite to 1.2
+* [MOD] Updated clipboard.js to 1.5.12
+* [MOD] Javascript improvements.
+* [MOD] Modified search behavior. Now the enter key needs to be pressed to perform searches. This prevents to fulfill the key buffer and server overhead.
+
 === ** v1.2.0.12 ===
 
 * [ADD] Added temp master password counter (max 100 attempts)

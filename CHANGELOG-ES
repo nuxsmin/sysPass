@@ -1,3 +1,38 @@
+=== ** v1.2.0.13 ===
+
+* [FIX] Corregido error cuando se pulsaba el icono de copiar a portapapeles.
+* [FIX] Fixes #215. La clave no es mostrada cuando contiene carácteres especiales. Gracias a @goatmaster por el feedback.
+* [FIX] Corregida comprobación de ACL de usuario en grupo. Related #263
+* [FIX] Corregida obtención de nombre de usuario desde LDAP.
+* [FIX] Corregida búsqueda de grupo en LDAP. Related #257, #258, #264,
+* [FIX] Closes #237. Corregida visibilidad de cambio de grupo principal en vista de cuenta. Gracias a @Sintbert por el feedback.
+* [FIX] Closes #221. Corregida la llamada a la función apache_request_headers. Gracias a @alexanderbuhler por el feedback.
+* [FIX] Closes #243. Corregido error en URL de servidor de LDAP. Gracias a @guannais por el feedback.
+* [FIX] Closes #222. Corregido error en valores por defecto de columnas cuando MySQL está en modo estricto. Gracias a @tdk1069 por el feedback.
+* [FIX] Related #245. Corregido error en creación de usuario inicial de sysPass.
+* [FIX] Corregido error en caché de objetos en sesión de usuario.
+* [FIX] Corregida comprobación de LDAP con ADS. Gracias a @eth0h4ckr por el feedback.
+* [FIX] Closes #264. Corregido listado de grupos de ADS cuando existe más de un grupo con el mismo nombre. Se selecciona el primer grupo. Gracias a @eth0h4ckr por el feedback.
+* [FIX] Closes #264. Corregido listado de objetos de LDAP cuendo la bse está establecida en la raíz del directorio. Gracias a @eth0h4ckr por el feedback.
+* [FIX] Closes #253. Mejorado manejador de acciones Javascript para iconos.
+* [ADD] Traducción a Holandés. Muchas gracias a @MikeyHoef. #254
+* [MOD] Closes #267. Corregido error en enlace a cuenta.
+* [MOD] Actualizado a Material Design Lite 1.2
+* [MOD] Actualizado a clipboard.js 1.5.12
+* [MOD] Mejoras en código Javascript.
+* [MOD] Modificado comportamiento de búsquedas. Es necesario pulsar "intro" para realizar búsquedas. Esto previene el llenado del buffer de teclado y sobrecarga del servidor.
+
+=== ** v1.2.0.12 ===
+
+* [ADD] Añadido contador de clave maestra temporal (máximo 100 intentos)
+* [FIX] Corregido error en paginador cuando el orden es stablecido.
+* [FIX] Closes #204. Corregido error en búqueda de grupo de LDAP pasa ADS. Gracias a @vplanas
+* [ADD] Añadida versión minificada del archivo styles.css
+* [FIX] Closes #196. Corregido nombre del elemento textarea. Gracias a @joeg1484 y @st3reo
+* [FIX] Mejorado instalador cuando la base de datos está en otro servidor.
+* [FIX] Asegurar longitud de IV a 32 bytes.
+* [FIX] Correciones menores
+
 === ** v1.2.0.11 ===
 
 * [MOD] Modificado el comportamiento de logout para prevenir el login por 2 veces. Related #189
