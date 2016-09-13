@@ -14,3 +14,8 @@ config/pubkey.pem
 !*js/functions.js
 js/jquery-1.11.2.min.map
 msg.po
+
+# Eclipse specific files
+.buildpath
+.project
+.settings
