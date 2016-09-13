@@ -13,6 +13,7 @@ $CONFIG = array (
   'dbuser' => 'sp_admin',
   'debug' => 0,
   'demo_enabled' => 0,
+  'fail2ban_enabled' => 0,
   'files_enabled' => 1,
   'globalsearch' => 1,
   'installed' => 0,

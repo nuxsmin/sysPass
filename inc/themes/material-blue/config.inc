@@ -82,6 +82,24 @@
             </tr>
             <tr>
                 <td class="descField">
+                    <?php echo _('Activar Fail2Ban'); ?>
+                    <div id="help-fail2ban" class="icon material-icons fg-blue80">help_outline</div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-fail2ban">
+                        <p>
+                            <?php echo _('Activar Fail2Ban - Description'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fail2ban_enabled">
+                        <input type="checkbox" id="fail2ban_enabled" class="mdl-switch__input fg-blue100" name="fail2ban_enabled"
+                            <?php echo $chkFail2ban, ' ', $isDisabled; ?>/>
+                        <span class="mdl-switch__label"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
                     <?php echo _('Habilitar log de eventos'); ?>
                     <div id="help-eventlog" class="icon material-icons fg-blue80">help_outline</div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">

@@ -24,6 +24,7 @@
  */
 
 use SP\Auth;
+use SP\Config;
 use SP\CryptMasterPass;
 use SP\Request;
 use SP\SessionUtil;
@@ -48,6 +49,14 @@ $masterPass = SP\Request::analyzeEncrypted('mpass');
 
 if (!$userLogin || !$userPass) {
     SP\Response::printJSON(_('Usuario/Clave no introducidos'));
+}
+
+openlog('sysPASS', LOG_ODELAY | LOG_PID, LOG_AUTH);
+
+function logFailedLoginAttempt($username) {
+	if (Config::getValue('fail2ban_enabled', false)) {
+		syslog(LOG_WARNING, sprintf('Authentication from [%s] failed for user [%s]', $_SERVER['REMOTE_ADDR'], $username));
+	}
 }
 
 $User = new SP\User();
@@ -90,6 +99,8 @@ if ($resLdap === true) {
     $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
     $Log->writeLog();
 
+    logFailedLoginAttempt($userLogin);
+
     SP\Response::printJSON(_('Usuario/Clave incorrectos'));
 } else if ($resLdap === 701) {
     $Log->addDescription('(LDAP)');
@@ -115,6 +126,8 @@ if ($resLdap === true) {
         $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
         $Log->writeLog();
 
+        logFailedLoginAttempt($userLogin);
+
         SP\Response::printJSON(_('Usuario/Clave incorrectos'));
     }
 }
@@ -125,6 +138,8 @@ if (!Auth::checkServerAuthUser($userLogin)){
     $Log->addDescription(sprintf('%s: %s', _('Usuario'), $userLogin));
     $Log->addDescription(sprintf('%s: %s (%s)', _('Autentificación'), Auth::getServerAuthType(), Auth::getServerAuthUser()));
     $Log->writeLog();
+
+    logFailedLoginAttempt($userLogin);
 
     SP\Response::printJSON(_('Usuario/Clave incorrectos'));
 }

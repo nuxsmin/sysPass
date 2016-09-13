@@ -79,6 +79,7 @@ class ConfigC extends Controller implements ActionsInterface
         $this->view->assign('themesAvailable', Themes::getThemesAvailable());
         $this->view->assign('currentTheme', \SP\Config::getValue('sitetheme'));
         $this->view->assign('chkHttps', (\SP\Config::getValue('https_enabled')) ? 'checked="checked"' : '');
+        $this->view->assign('chkFail2ban', (\SP\Config::getValue('fail2ban_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkLog', (\SP\Config::getValue('log_enabled')) ? 'checked="checked"' : '');
         $this->view->assign('chkDebug', (\SP\Config::getValue('debug')) ? 'checked="checked"' : '');
         $this->view->assign('chkMaintenance', (\SP\Config::getValue('maintenance')) ? 'checked="checked"' : '');

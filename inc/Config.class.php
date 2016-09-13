@@ -195,6 +195,7 @@ class Config implements ConfigInterface
         self::setCacheConfigValue('proxy_port', '');
         self::setCacheConfigValue('proxy_user', '');
         self::setCacheConfigValue('proxy_pass', '');
+        self::setCacheConfigValue('fail2ban_enabled', false);
 
         self::writeConfig();
     }
