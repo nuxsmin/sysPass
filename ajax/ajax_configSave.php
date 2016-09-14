@@ -63,6 +63,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $siteTheme = SP\Request::analyze('sitetheme', 'material-blue');
         $sessionTimeout = SP\Request::analyze('session_timeout', 300);
         $httpsEnabled = SP\Request::analyze('https_enabled', false, false, true);
+        $fail2banEnabled = SP\Request::analyze('fail2ban_enabled', false, false, true);
         $logEnabled = SP\Request::analyze('log_enabled', false, false, true);
         $debugEnabled = SP\Request::analyze('debug', false, false, true);
         $maintenanceEnabled = SP\Request::analyze('maintenance', false, false, true);
@@ -73,6 +74,7 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         SP\Config::setCacheConfigValue('sitetheme', $siteTheme);
         SP\Config::setCacheConfigValue('session_timeout', $sessionTimeout);
         SP\Config::setCacheConfigValue('https_enabled', $httpsEnabled);
+        SP\Config::setCacheConfigValue('fail2ban_enabled', $fail2banEnabled);
         SP\Config::setCacheConfigValue('log_enabled', $logEnabled);
         SP\Config::setCacheConfigValue('debug', $debugEnabled);
         SP\Config::setCacheConfigValue('maintenance', $maintenanceEnabled);
