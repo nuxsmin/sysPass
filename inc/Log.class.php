@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Log extends ActionLog
 {
-    static $numRows;
+    public static $numRows;
 
     /**
      * Obtener los eventos guardados.
@@ -141,6 +141,7 @@ class Log extends ActionLog
     public function writeLog($resetDescription = false){
         if (defined('IS_INSTALLER') && IS_INSTALLER === 1) {
             error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription());
+            return false;
         }
 
         if (!Util::logIsEnabled()) {

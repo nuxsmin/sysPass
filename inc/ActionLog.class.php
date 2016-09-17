@@ -68,13 +68,13 @@ abstract class ActionLog
      * @param $action      string La acción realizada
      * @param $description string La descripción de la acción realizada
      */
-    function __construct($action = null, $description = null)
+    public function __construct($action = null, $description = null)
     {
-        if (!is_null($action)) {
+        if (null !== $action) {
             $this->setAction($action);
         }
 
-        if (!is_null($description)) {
+        if (null !== $description) {
             $this->addDescription($description);
         }
     }

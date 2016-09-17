@@ -366,16 +366,16 @@ class DB
      * @param $query     string  La consulta que genera el error
      * @param $errorMsg  string  El mensaje de error
      * @param $errorCode int     El código de error
+     * @param $querySource
      */
     private static function logDBException($query, $errorMsg, $errorCode, $querySource)
     {
         $Log = new Log($querySource);
         $Log->addDescription($errorMsg . '(' . $errorCode . ')');
-        $Log->addDescription("SQL: " . self::escape($query));
+        $Log->addDescription('SQL: ' . self::escape($query));
         $Log->writeLog();
 
-        error_log($query);
-        error_log($errorMsg);
+        error_log($Log->getDescription());
     }
 
     /**
