@@ -159,10 +159,15 @@ class Request
     {
         if (!function_exists('\apache_request_headers')) {
             foreach ($_SERVER as $key => $value) {
-                if (substr($key, 0, 5) === 'HTTP_') {
-                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
-                    $headers[$key] = $value;
-                } else {
+                if (strpos($key, 'HTTP_') !== false) {
+                    $parts = explode('_', substr($key, 5));
+
+                    foreach ($parts as &$string) {
+                        $string = ucwords(strtolower($string));
+                    }
+
+                    $key = implode('-', $parts);
+
                     $headers[$key] = $value;
                 }
             }

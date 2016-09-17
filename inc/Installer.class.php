@@ -316,8 +316,7 @@ class Installer
             $query = 'CREATE USER `' . self::$_dbuser . '`@`' . self::getAdminHost() . '`';
         } else {
             $query = 'CREATE USER `' . self::$_dbuser . '`@`' . self::getAdminHost() . '`' .
-                ' IDENTIFIED WITH mysql_native_password' .
-                ' BY \'' . self::$_dbpass . '\'';
+                ' IDENTIFIED BY \'' . self::$_dbpass . '\'';
         }
 
         try {

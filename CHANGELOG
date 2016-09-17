@@ -1,3 +1,8 @@
+=== ** v1.2.0.14 ===
+
+* [FIX] Fixed issue when installing sysPass. Solves #272
+* [FIX] Fixed issue when retrieving HTTP headers on non-Apache environments.
+
 === ** v1.2.0.13 ===
 
 * [FIX] Fixed issue when pressing copy-to-clipboard icon.

@@ -1,3 +1,8 @@
+=== ** v1.2.0.14 ===
+
+* [FIX] Corregido error en la instalación de sysPass. Solves #272
+* [FIX] Corregido error al obtener las cabeceras HTTP en entornos no-Apache.
+
 === ** v1.2.0.13 ===
 
 * [FIX] Corregido error cuando se pulsaba el icono de copiar a portapapeles.
