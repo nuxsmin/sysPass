@@ -1,3 +1,12 @@
+=== ** v1.2.0.15 ===
+
+* [FIX] Fixed LDAP mail retrieving when multiple mail addresses are set. Thanks to @ArminXG. Closes #278
+* [MOD] Add LDAP mail mapping. Related #278
+* [FIX] Fixed user migration process.
+* [FIX] Fixed resetting search filters.
+* [FIX] Fixed basic auth check. Thanks to @davidpsc . Closes #275
+* [FIX] Fixed LDAP user search filter when ADS is not set. Solves #277
+
 === ** v1.2.0.14 ===
 
 * [FIX] Fixed issue when installing sysPass. Solves #272
