@@ -71,11 +71,15 @@ class UserMigrate
             . 'user_lastUpdate = NOW(),'
             . 'user_isMigrate = 0 '
             . 'WHERE user_login = :login '
-            . 'AND user_isMigrate = 1 LIMIT 1';
+            . 'AND user_isMigrate = 1 '
+            . 'AND (user_pass = SHA1(CONCAT(user_hashSalt,:passOld)) '
+            . 'OR user_pass = MD5(:passOldMd5)) LIMIT 1';
 
         $data['pass'] = $passdata['pass'];
         $data['salt'] = $passdata['salt'];
         $data['login'] = $userLogin;
+        $data['passOld'] = $userPass;
+        $data['passOldMd5'] = $userPass;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;

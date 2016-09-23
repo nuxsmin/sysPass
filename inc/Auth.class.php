@@ -137,7 +137,7 @@ class Auth
         $ldapGroup = strtolower(Config::getValue('ldap_group'));
         $groupName = array();
 
-        preg_match('/^cn=([\w\s-]+),.*/i', $group, $groupName);
+        preg_match('/^cn=([\w\s-.]+),.*/i', $group, $groupName);
 
         if (strtolower($groupName[1]) == $ldapGroup || strtolower($group) == $ldapGroup) {
             return true;

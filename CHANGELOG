@@ -1,3 +1,9 @@
+=== ** v1.2.0.16 ===
+
+* [MOD] Add dot to LDAP group name chack regex. Thanks to @davidpsc. Closes #280
+* [FIX] Fixed user migration from 1.1
+* [MOD] Update version
+
 === ** v1.2.0.15 ===
 
 * [FIX] Fixed LDAP mail retrieving when multiple mail addresses are set. Thanks to @ArminXG. Closes #278
