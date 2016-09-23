@@ -261,7 +261,7 @@ sysPass.Util.Theme = function ($) {
                     hideLoading();
 
                     // Actualizar componentes de MDL cargados con AJAX
-                    componentHandler.upgradeDom();
+                    componentHandler.upgradeAllRegistered();
 
                     // Activar tooltips
                     activeTooltip();

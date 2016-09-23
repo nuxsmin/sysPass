@@ -63,8 +63,12 @@ sysPass.Util.Common = function ($) {
     };
 
     var elements = {
-        content: $("#content"),
-        frmSearch: $("#frmSearch")
+        content: function () {
+            return $("#content");
+        },
+        frmSearch: function () {
+            return $("#frmSearch");
+        }
     };
 
     // Inicializar la encriptación RSA
@@ -138,12 +142,12 @@ sysPass.Util.Common = function ($) {
             url: APP_ROOT + "/ajax/ajax_getContent.php",
             data: data,
             success: function (response) {
-                elements.content.html(response);
+                elements.content().html(response);
                 setContentSize();
                 scrollUp();
             },
             error: function () {
-                elements.content.html(resMsg("nofancyerror"));
+                elements.content().html(resMsg("nofancyerror"));
             }
         });
     };
@@ -157,7 +161,7 @@ sysPass.Util.Common = function ($) {
         }
 
         // Calculate total height for full body resize
-        var totalHeight = $("#content").height() + 200;
+        var totalHeight = elements.content().height() + 200;
         //var totalWidth = $("#wrap").width();
 
         container.css("height", totalHeight);
@@ -170,14 +174,16 @@ sysPass.Util.Common = function ($) {
 
     // Función para limpiar un formulario
     var clearSearch = function (clearStart) {
+        var $frmSearch = elements.frmSearch();
+
         if (clearStart === 1) {
-            elements.frmSearch.find("input[name=\"start\"]").val(0);
+            $frmSearch.find("input[name=\"start\"]").val(0);
             return;
         }
 
         document.frmSearch.search.value = "";
-        elements.frmSearch.find("select").prop("selectedIndex", 0).trigger("chosen:updated");
-        elements.frmSearch.find("input[name=\"start\"], input[name=\"skey\"], input[name=\"sorder\"]").val(0);
+        $frmSearch.find("select").prop("selectedIndex", -1).trigger("chosen:updated");
+        $frmSearch.find("input[name=\"start\"], input[name=\"skey\"], input[name=\"sorder\"]").val(0);
         order.key = 0;
         order.dir = 0;
     };
@@ -195,7 +201,7 @@ sysPass.Util.Common = function ($) {
 
     // Función para la búsqueda de cuentas mediante filtros
     var accSearch = function (continous, event) {
-        elements.frmSearch.find("input[name=\"start\"]").val(0);
+        elements.frmSearch().find("input[name=\"start\"]").val(0);
 
         doSearch();
     };
@@ -258,10 +264,10 @@ sysPass.Util.Common = function ($) {
             url: APP_ROOT + "/ajax/ajax_eventlog.php",
             data: {"start": start, "current": current},
             success: function (response) {
-                elements.content.html(response);
+                elements.content().html(response);
             },
             error: function () {
-                elements.content.html(resMsg("nofancyerror"));
+                elements.content().html(resMsg("nofancyerror"));
             }
         });
     };

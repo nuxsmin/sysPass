@@ -55,6 +55,7 @@ class Ldap
         'givenname' => 'givenname',
         'sn' => 'sn',
         'mail' => 'mail',
+        'mailPrimaryAddress' => 'mail',
         'lockoutTime' => 'expire');
 
     /**
@@ -374,7 +375,7 @@ class Ldap
                         if (array_key_exists($entryAttr, $attribs)) {
                             if ($attrValue['count'] > 1) {
                                 // Almacenamos un array de valores
-                                $res[$attribs[$entryAttr]] = $attrValue;
+                                $res[$attribs[$entryAttr]] = implode(',', $attrValue);
                             } else {
                                 // Almacenamos  1 solo valor
                                 $res[$attribs[$entryAttr]] = $attrValue[0];

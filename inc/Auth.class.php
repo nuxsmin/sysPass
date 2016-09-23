@@ -40,7 +40,7 @@ class Auth
      * Autentificación de usuarios con LDAP.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass  con la clave del usuario
+     * @param string $userPass con la clave del usuario
      * @return int|bool Número de error o boolean
      */
     public static function authUserLDAP($userLogin, $userPass)
@@ -112,8 +112,8 @@ class Auth
         }
 
         if (!isset($attribs['name'])) {
-            if (isset($attribs['givenname']) && isset($attribs['sn'])){
-                self::$userName =  $attribs['givenname'] . ' ' . $attribs['sn'];
+            if (isset($attribs['givenname']) && isset($attribs['sn'])) {
+                self::$userName = $attribs['givenname'] . ' ' . $attribs['sn'];
             } else {
                 self::$userName = $userLogin;
             }
@@ -153,7 +153,7 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass  con la clave del usuario
+     * @param string $userPass con la clave del usuario
      * @return bool
      */
     public static function authUserMySQL($userLogin, $userPass)
@@ -238,7 +238,9 @@ class Auth
      */
     public static function checkServerAuthUser($login)
     {
-        if (isset($_SERVER['PHP_AUTH_USER']) || isset($_SERVER['REMOTE_USER'])) {
+        if ((isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] != '')
+            || (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] != '')
+        ) {
             return self::getServerAuthUser() == $login;
         }
 

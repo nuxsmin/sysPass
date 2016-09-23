@@ -1,3 +1,12 @@
+=== ** v1.2.0.15 ===
+
+* [FIX] Corregido fallo al obtener dirección de correo desde LDAP cuando hay múltiples direcciones. Gracias a @ArminXG. Closes #278
+* [MOD] Añadido mapeo de correo en LDAP. Related #278
+* [FIX] Corregido proceso de migración de usuarios.
+* [FIX] Corregido reset de filtros de búsqueda.
+* [FIX] Corregida comprobación de basic auth. Gracias a @davidpsc . Closes #275
+* [FIX] Corregido filtro de búsqueda en LDAP para directorios no ADS. Solves #277
+
 === ** v1.2.0.14 ===
 
 * [FIX] Corregido error en la instalación de sysPass. Solves #272
