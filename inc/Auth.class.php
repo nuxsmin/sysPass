@@ -40,7 +40,7 @@ class Auth
      * Autentificación de usuarios con LDAP.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return int|bool Número de error o boolean
      */
     public static function authUserLDAP($userLogin, $userPass)
@@ -153,27 +153,38 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return bool
      */
     public static function authUserMySQL($userLogin, $userPass)
     {
-        if (UserMigrate::checkUserIsMigrate($userLogin)) {
-            if (!UserMigrate::migrateUser($userLogin, $userPass)) {
-                return false;
-            }
-        }
-
-        $query = 'SELECT user_login, user_pass, user_hashSalt '
+        $query = /** @lang SQL */
+            'SELECT user_login, '
+            . 'user_pass, '
+            . 'user_hashSalt, '
+            . 'BIN(user_isMigrate) AS user_isMigrate '
             . 'FROM usrData '
-            . 'WHERE user_login = :login AND user_isMigrate = 0 LIMIT 1';
+            . 'WHERE user_login = :login LIMIT 1';
 
         $data['login'] = $userLogin;
 
         $queryRes = DB::getResults($query, __FUNCTION__, $data);
 
-        return ($queryRes !== false
-            && $queryRes->user_pass == crypt($userPass, $queryRes->user_hashSalt));
+        if ($queryRes === false) {
+            return false;
+        }
+
+        $curHash = crypt($userPass, $queryRes->user_hashSalt);
+
+        if (($queryRes->user_isMigrate == 1
+            && UserMigrate::migrateUser($userLogin, $userPass, $curHash))
+            || $queryRes->user_pass === $curHash
+        ){
+            return true;
+//            return self::authUserMySQL($userLogin, $userPass);
+        }
+
+        return false;
     }
 
     /**

@@ -1,7 +1,9 @@
 === ** v1.2.0.16 ===
 
-* [MOD] Añadido punto a la expresión regular en la comprobación del nombre de grupo en LDAP. Gracias a @davidpsc. Closes #280
 * [FIX] Corregida migración de usuario desde 1.1
+* [MOD] Añadido punto a la expresión regular en la comprobación del nombre de grupo en LDAP. Gracias a @davidpsc. Closes #280
+* [MOD] Mejorada la migración de usuarios
+* [MOD] Todas las cadenas de entrada son recortadas sin espacios
 * [MOD] Actualizada versión
 
 === ** v1.2.0.15 ===

@@ -1,7 +1,9 @@
 === ** v1.2.0.16 ===
 
-* [MOD] Add dot to LDAP group name chack regex. Thanks to @davidpsc. Closes #280
 * [FIX] Fixed user migration from 1.1
+* [MOD] Add dot to LDAP group name chack regex. Thanks to @davidpsc. Closes #280
+* [MOD] Improved user migration handling.
+* [MOD] All input strings are trimmed
 * [MOD] Update version
 
 === ** v1.2.0.15 ===

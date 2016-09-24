@@ -57,11 +57,12 @@ class UserMigrate
      *
      * @param string $userLogin con el login del usuario
      * @param string $userPass  con la clave del usuario
-     * @return bool
+     * @param string $hash      con el hash de la clave actual
+     * @return bool Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
      */
-    public static function migrateUser($userLogin, $userPass)
+    public static function migrateUser($userLogin, $userPass, $hash = '')
     {
         $passdata = UserPass::makeUserPassHash($userPass);
 
@@ -73,17 +74,20 @@ class UserMigrate
             . 'WHERE user_login = :login '
             . 'AND user_isMigrate = 1 '
             . 'AND (user_pass = SHA1(CONCAT(user_hashSalt,:passOld)) '
-            . 'OR user_pass = MD5(:passOldMd5)) LIMIT 1';
+            . 'OR user_pass = MD5(:passOldMd5) OR user_pass = :passCur) LIMIT 1';
 
         $data['pass'] = $passdata['pass'];
         $data['salt'] = $passdata['salt'];
         $data['login'] = $userLogin;
         $data['passOld'] = $userPass;
         $data['passOldMd5'] = $userPass;
+        $data['passCur'] = $hash;
 
         if (DB::getQuery($query, __FUNCTION__, $data) === false) {
             return false;
         }
+
+        $rows = DB::$lastNumRows;
 
         $log = new Log(__FUNCTION__);
         $log->addDescription(_('Usuario actualizado'));
@@ -92,7 +96,7 @@ class UserMigrate
 
         Email::sendEmail($log);
 
-        return true;
+        return $rows === 1;
     }
 
     /**
@@ -110,7 +114,7 @@ class UserMigrate
 
         foreach ($queryRes as $user) {
             if (!Groups::addUsersForGroup(array($user->user_groupId), $user->user_id)) {
-                Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)'), _('Error al migrar grupo del usuario'), $user->user_id);
+                Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)', _('Error al migrar grupo del usuario'), $user->user_id));
             }
         }
 

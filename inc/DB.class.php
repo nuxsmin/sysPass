@@ -35,19 +35,19 @@ class DB
     /**
      * @var string
      */
-    static $txtError = '';
+    public static $txtError = '';
     /**
      * @var int
      */
-    static $numError = 0;
+    public static $numError = 0;
     /**
      * @var int
      */
-    static $lastNumRows = 0;
+    public static $lastNumRows = 0;
     /**
      * @var int
      */
-    static $lastId = null;
+    public static $lastId = null;
     /**
      * @var bool Resultado como array
      */
@@ -169,7 +169,7 @@ class DB
      * @param  $query       string    con la consulta a realizar
      * @param  $querySource string    con el nombre de la función que realiza la consulta
      * @param  $data        array     con los datos de la consulta
-     * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
+     * @return bool|array|object devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
     public static function getResults($query, $querySource, &$data = null)
     {
@@ -246,9 +246,11 @@ class DB
                 return $queryRes;
             }
 
-//            $queryRes->closeCursor();
-
             $this->_numRows = count($this->_lastResult);
+        } else {
+            $this->_numRows = $queryRes->rowCount();
+
+            return (int)$queryRes->errorCode() === 0;
         }
     }
 
@@ -287,7 +289,7 @@ class DB
                         continue;
                     }
 
-                    if ($param == 'blobcontent') {
+                    if ($param === 'blobcontent') {
                         $sth->bindValue($param, $value, \PDO::PARAM_LOB);
                     } elseif (is_int($value)) {
 //                        error_log("INT: " . $param . " -> " . $value);
@@ -309,7 +311,7 @@ class DB
 
             return $sth;
         } catch (\Exception $e) {
-            error_log("Exception: " . $e->getMessage());
+            error_log('Exception: ' . $e->getMessage());
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
     }
@@ -344,10 +346,10 @@ class DB
 
             if (!is_array($this->_stData)) {
                 $queryRes = $db->query($query);
-                $num = intval($queryRes->fetchColumn());
+                $num = (int)$queryRes->fetchColumn();
             } else {
                 if ($queryRes = $this->prepareQueryData($query, true)) {
-                    $num = intval($queryRes->fetchColumn());
+                    $num = (int)$queryRes->fetchColumn();
                 }
             }
 
@@ -355,7 +357,7 @@ class DB
 
             return $num;
         } catch (SPException $e) {
-            error_log("Exception: " . $e->getMessage());
+            error_log('Exception: ' . $e->getMessage());
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
     }

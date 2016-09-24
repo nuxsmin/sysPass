@@ -235,7 +235,7 @@ class Upgrade
                 return (Profile::migrateProfiles() && UserMigrate::migrateUsersGroup());
                 break;
             case 12002:
-                return (UserMigrate::setMigrateUsers());
+                return UserMigrate::setMigrateUsers();
                 break;
             default:
                 break;
