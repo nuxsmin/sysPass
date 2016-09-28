@@ -8,14 +8,14 @@
                         <input id="user" name="user" type="text" class="mdl-textfield__input fg-blue100" maxlength="80"
                                title="> demo <">
                         <label class="mdl-textfield__label"
-                               for="user"><?php echo _('Usuario'); ?></label>
+                               for="user"><?php printf('%s (demo)', _('Usuario')); ?></label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="pass" name="pass" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="80"
                                title="> syspass <">
                         <label class="mdl-textfield__label"
-                               for="pass"><?php echo _('Clave'); ?></label>
+                               for="pass"><?php printf('%s (syspass)', _('Clave')); ?></label>
                     </div>
 
                     <span id="smpass" style="display: none">
@@ -23,7 +23,7 @@
                         <input id="mpass" name="mpass" type="password" class="mdl-textfield__input fg-blue100"
                                maxlength="80" title="> 12345678900 <">
                         <label class="mdl-textfield__label"
-                               for="mpass"><?php echo _('Clave Maestra'); ?></label>
+                               for="mpass"><?php printf('%s (12345678900)', _('Clave Maestra')); ?></label>
                     </div>
                 </span>
                 <?php else: ?>

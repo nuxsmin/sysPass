@@ -125,7 +125,7 @@
                         <label class="mdl-textfield__label" for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                     </div>
                 <?php else: ?>
-                    <?php echo $accountData->account_notes; ?>
+                    <?php echo nl2br($accountData->account_notes); ?>
                 <?php endif; ?>
 
             </tr>
