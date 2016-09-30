@@ -274,7 +274,8 @@ sysPass.Util.Common = function ($) {
 
     // Función para ver la clave de una cuenta
     var viewPass = function (id, show, history) {
-        $.ajax({
+        // Devolvemos el objeto AJAX para utilizar la respuesta JSON si es necesaria
+        return $.ajax({
             type: "POST",
             url: APP_ROOT + "/ajax/ajax_viewpass.php",
             dataType: "json",
@@ -288,8 +289,7 @@ sysPass.Util.Common = function ($) {
                 }
 
                 if (show === false || show === 0) {
-                    // Copiamos la clave en el objeto que tiene acceso al portapapeles
-                    $("#clip-pass-text").html(json.accpass);
+                    // Devolvemos OK
                     return true;
                 }
 
@@ -1143,8 +1143,9 @@ sysPass.Util.Common = function ($) {
     var initializeClipboard = function () {
         var clipboard = new Clipboard(".clip-pass-button", {
             text: function (trigger) {
-                sysPassUtil.Common.viewPass(trigger.getAttribute("data-account-id"), false);
-                return $("#clip-pass-text").html();
+                var pass = viewPass(trigger.getAttribute("data-account-id"), false);
+
+                return pass.responseJSON.accpass;
             }
         });
 

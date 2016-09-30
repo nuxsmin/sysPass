@@ -233,8 +233,6 @@
                 <?php endif; ?>
             </div>
         </div>
-
-        <div id="clip-pass-text" style="visibility: hidden"></div>
     <?php endif; ?>
     <script>
         $(function () {

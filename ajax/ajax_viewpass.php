@@ -39,6 +39,7 @@ if (!SP\Init::isLoggedIn()) {
 
 $accountId = SP\Request::analyze('accountid', false);
 $isHistory = SP\Request::analyze('isHistory', false);
+$full = SP\Request::analyze('show', 0, false, 1);
 
 if (!$accountId) {
     return;
@@ -79,7 +80,7 @@ $useImage = intval(\SP\Util::accountPassToImageIsEnabled());
 $data = array(
     'title' => _('Clave de Cuenta'),
     'acclogin' => $accountData->login,
-    'accpass' => (!$useImage) ? htmlentities(trim($accountClearPass)) : \SP\ImageUtil::convertText($accountClearPass),
+    'accpass' => (!$useImage) ? (($full === 1) ? htmlentities(trim($accountClearPass)) : trim($accountClearPass)) : \SP\ImageUtil::convertText($accountClearPass),
     'useimage' => $useImage
 );
 
