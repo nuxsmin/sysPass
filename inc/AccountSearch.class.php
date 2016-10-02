@@ -88,7 +88,7 @@ class AccountSearch
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
         $userResultsPerPage = Session::getUserPreferences()->getResultsPerPage();
 

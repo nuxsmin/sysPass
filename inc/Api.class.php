@@ -89,6 +89,7 @@ class Api
             }
         }
 
+        Session::setUserPreferences(UserPreferences::getPreferences($this->_userId));
         Session::setUserId($this->_userId);
     }
 
