@@ -1,3 +1,13 @@
+=== ** v1.2.0.18 ===
+
+* [FIX] Fixed API request error when user's preferences are not set. Thanks to @jtorresc for the feedback. Closes #290
+* [FIX] Fixed DB host check regexp during installation on material-blue theme. Thanks to @TheMengzor for the patch
+* [FIX] Fixed Javascript load error in classic theme
+* [FIX] Solves #287. Fixed issue when parsing account's password from ajax response.
+* [MOD] Modified some css styles.
+* [MOD] Added newline tag for notes on account view. Closes #286. Thanks to @andresju for the feedback.
+* [MOD] Added some tips about login info in demo mode.
+
 === ** v1.2.0.17 ===
 
 * [FIX] Fix zxcvbn Javscript lib name

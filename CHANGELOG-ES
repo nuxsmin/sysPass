@@ -1,3 +1,18 @@
+=== ** v1.2.0.18 ===
+
+* [FIX] Corregido error en peticiones a la API cuando las preferencias del usuario no están definidas. Gracias a @jtorresc por el aviso. Closes #290
+* [FIX] Corregida expresión regular para comprobar nombre de servidor de BD en la instalación. Gracias a @TheMengzor por el parche
+* [FIX] Corregido error de carga de Javascript en tema cĺasico
+* [FIX] Solves #287. Corregida incidencia al parsear los caracteres de la clave en peticiones Ajax.
+* [MOD] Modificados algunos estilos css.
+* [MOD] Añadida etiqueta de salto de línea para las notas en la vista de detalles de cuenta. Closes #286. Gracias a @andresju por el aviso.
+* [MOD] Añadidos algunas pistas sobre el login en modo demo.
+
+=== ** v1.2.0.17 ===
+
+* [FIX] Corregido nombre de la librería Javscript zxcvbn
+* [MOD] Actualizada versión
+
 === ** v1.2.0.16 ===
 
 * [FIX] Corregida migración de usuario desde 1.1
