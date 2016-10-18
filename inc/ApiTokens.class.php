@@ -148,6 +148,32 @@ class ApiTokens
     }
 
     /**
+     * Obtener el usuario a partir del token
+     *
+     * @param $token string El token de autorización
+     * @return bool|mixed
+     * @throws SPException
+     */
+    public static function getUserSecretForToken($token)
+    {
+        $query = 'SELECT authtoken_secret FROM authTokens WHERE authtoken_token = :token LIMIT 1';
+
+        $data['token'] = $token;
+
+        try {
+            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+        }
+
+        if (DB::$lastNumRows === 0) {
+            return false;
+        }
+
+        return $queryRes->authtoken_secret;
+    }
+
+    /**
      * @param boolean $refreshToken
      */
     public function setRefreshToken($refreshToken)
