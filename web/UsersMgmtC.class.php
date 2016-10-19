@@ -451,6 +451,7 @@ class UsersMgmtC extends Controller implements ActionsInterface
         $this->view->assign('users', \SP\DB::getValuesForSelect('usrData', 'user_id', 'user_name'));
         $this->view->assign('actions', \SP\ApiTokens::getTokenActions());
         $this->view->assign('token', $token);
+        $this->view->assign('secret', $secret);
         $this->view->assign('gotData', is_object($token));
 
         if ($this->view->isView === true) {

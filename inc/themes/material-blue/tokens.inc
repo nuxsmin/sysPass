@@ -46,6 +46,10 @@
                     <td class="descField"><?php echo _('Token'); ?></td>
                     <td class="valField"><?php echo ($gotData) ? $token->authtoken_token : ''; ?></td>
                 </tr>
+				<tr>
+                    <td class="descField"><?php echo _('Secret'); ?></td>
+                    <td class="valField"><?php echo ($gotData) ? $token->authtoken_secret : ''; ?></td>
+                </tr>
             <?php endif; ?>
             </tbody>
         </table>

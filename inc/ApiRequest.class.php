@@ -41,6 +41,8 @@ class ApiRequest extends Request
     const ITEM = 'i';
     const SEARCH = 's';
     const SEARCH_COUNT = 'sc';
+    const REQUEST_SIGNATURE = 'rs';
+    const REQUEST_TIMESTAMP = 'rt';
 
     /**
      * @var \stdClass
@@ -49,13 +51,17 @@ class ApiRequest extends Request
 
     public function __construct(){
         $authToken = self::analyze(self::AUTH_TOKEN);
+        $reqSignature = self::analyze(self::REQUEST_SIGNATURE);
+        $reqTimestamp = self::analyze(self::REQUEST_TIMESTAMP);
         $actionId = self::analyze(self::ACTION_ID, 0);
 
-        if (!$authToken || !$actionId){
+        if (!$authToken || !$actionId || !$reqSignature){
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
         $this->addVar('authToken', $authToken);
+        $this->addVar('reqSignature', $reqSignature);
+        $this->addVar('reqTimestamp', $reqTimestamp);
         $this->addVar('actionId', $actionId);
         $this->addVar('userPass', null);
     }
@@ -78,7 +84,7 @@ class ApiRequest extends Request
      */
     public function getApi()
     {
-        return new Api($this->_vars->actionId, $this->_vars->authToken, $this->_vars->userPass);
+        return new Api($this->_vars->actionId, $this->_vars->authToken, $this->_vars->reqSignature, $this->_vars->reqTimestamp, $this->_vars->userPass);
     }
 
     /**

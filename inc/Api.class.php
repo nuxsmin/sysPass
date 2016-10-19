@@ -52,6 +52,18 @@ class Api
      * @var string
      */
     private $_mPass = '';
+    /**
+     * @var string
+     */
+    private $_signature = '';
+    /**
+     * @var string
+     */
+    private $_userSecret = '';
+    /**
+     * @var int
+     */
+    private $_requestTime = 0;
 
     /**
      * @param      $actionId  int El id de la acción
@@ -59,15 +71,28 @@ class Api
      * @param null $userPass  string La clave del usuario
      * @throws SPException
      */
-    public function __construct($actionId, $authToken, $userPass = null)
+    public function __construct($actionId, $authToken, $signature, $timestamp, $userPass = null)
     {
         if (!Auth::checkAuthToken($actionId, $authToken)) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 
         $this->_userId = ApiTokens::getUserIdForToken($authToken);
+        $this->_userSecret = ApiTokens::getUserSecretForToken($authToken);
         $this->_actionId = $actionId;
         $this->_auth = true;
+		$this->_signature = $signature;
+        $this->_requestTime = (int)$timestamp;
+		
+		if( abs(time() - $this->_requestTime) > 300)
+		{
+			throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+		}
+		
+		if(!$this->validateRequestSignature())
+		{
+			throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+		}
 
         if (!is_null($userPass)) {
             $userLogin = UserUtil::getUserLoginById($this->_userId);
@@ -114,6 +139,51 @@ class Api
 
         return $this->wrapJSON($ret);
     }
+	
+	/**
+	 * Compare the received signature to a server generated signature
+	 *
+	 * @return bool
+	 * 
+	 */
+	private function validateRequestSignature()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		
+		$request = $method;
+		
+		$parameters = [];
+		
+		$parameters[\SP\ApiRequest::ACTION_ID] = $this->_actionId;
+		$parameters[\SP\ApiRequest::REQUEST_TIMESTAMP] = $this->_requestTime;
+		$parameters[\SP\ApiRequest::AUTH_TOKEN] = \SP\Request::analyze(\SP\ApiRequest::AUTH_TOKEN);;
+		
+		if(\SP\Request::analyze(\SP\ApiRequest::SEARCH, false))
+		{
+			$parameters[\SP\ApiRequest::SEARCH] = \SP\Request::analyze(\SP\ApiRequest::SEARCH);
+		}
+		
+		if(\SP\Request::analyze(\SP\ApiRequest::SEARCH_COUNT, false))
+		{
+			$parameters[\SP\ApiRequest::SEARCH_COUNT] = \SP\Request::analyze(\SP\ApiRequest::SEARCH_COUNT, 0);
+		}
+		
+		if(\SP\Request::analyze(\SP\ApiRequest::ITEM, false))
+		{
+			$parameters[\SP\ApiRequest::ITEM] = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
+		}
+		
+		ksort($parameters);
+		
+		foreach($parameters as $k => $v)
+		{
+			$request .= ("&" . $k . "=" . $v);
+		}
+		
+		$computedSignature = hash_hmac("sha256", $request, $this->_userSecret);
+		
+		return ($computedSignature === $this->_signature);
+	}
 
     /**
      * Comprobar el acceso a la acción

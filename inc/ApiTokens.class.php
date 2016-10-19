@@ -53,6 +53,10 @@ class ApiTokens
      */
     private $_token = '';
     /**
+     * @var string
+     */
+    private $_secret = '';
+    /**
      * @var bool
      */
     private $_refreshToken = false;
@@ -70,6 +74,7 @@ class ApiTokens
             'authtoken_userId,' .
             'authtoken_actionId, ' .
             'authtoken_token, ' .
+            'authtoken_secret, ' .
             'user_login ' .
             'FROM authTokens ' .
             'LEFT JOIN usrData ON user_id = authtoken_userId ';
@@ -148,6 +153,32 @@ class ApiTokens
     }
 
     /**
+     * Obtener el usuario a partir del token
+     *
+     * @param $token string El token de autorización
+     * @return bool|mixed
+     * @throws SPException
+     */
+    public static function getUserSecretForToken($token)
+    {
+        $query = 'SELECT authtoken_secret FROM authTokens WHERE authtoken_token = :token LIMIT 1';
+
+        $data['token'] = $token;
+
+        try {
+            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+        }
+
+        if (DB::$lastNumRows === 0) {
+            return false;
+        }
+
+        return $queryRes->authtoken_secret;
+    }
+
+    /**
      * @param boolean $refreshToken
      */
     public function setRefreshToken($refreshToken)
@@ -173,12 +204,14 @@ class ApiTokens
             'authtoken_actionId = :actionid,' .
             'authtoken_createdBy = :createdby,' .
             'authtoken_token = :token,' .
+            'authtoken_secret = :secret,' .
             'authtoken_startDate = UNIX_TIMESTAMP()';
 
         $data['userid'] = $this->_userId;
         $data['actionid'] = $this->_actionId;
         $data['createdby'] = Session::getUserId();
         $data['token'] = ($this->getUserToken()) ? $this->_token : sha1(uniqid() . time());
+        $data['secret'] = ($this->getUserSecret()) ? $this->_secret : hash("sha256", (uniqid() . time()));
 
         try {
             DB::getQuery($query, __FUNCTION__, $data);
@@ -231,11 +264,13 @@ class ApiTokens
     {
         $query = 'UPDATE authTokens SET ' .
             'authtoken_token = :token,' .
+            'authtoken_secret = :secret,' .
             'authtoken_startDate = UNIX_TIMESTAMP() ' .
             'WHERE authtoken_userId = :userid';
 
         $data['userid'] = $this->_userId;
         $data['token'] = sha1(uniqid() . time());
+        $data['secret'] = hash("sha256", (uniqid() . time()));
 
         try {
             DB::getQuery($query, __FUNCTION__, $data);
@@ -267,6 +302,33 @@ class ApiTokens
         }
 
         $this->_token = $queryRes->authtoken_token;
+
+        return true;
+    }
+
+    /**
+     * Obtener el token de la API de un usuario
+     *
+     * @return bool
+     * @throws SPException
+     */
+    private function getUserSecret()
+    {
+        $query = 'SELECT authtoken_secret FROM authTokens WHERE authtoken_userId = :userid LIMIT 1';
+
+        $data['userid'] = $this->_userId;
+
+        try {
+            $queryRes = DB::getResults($query, __FUNCTION__, $data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+        }
+
+        if (DB::$lastNumRows === 0) {
+            return false;
+        }
+
+        $this->_secret = $queryRes->authtoken_secret;
 
         return true;
     }
