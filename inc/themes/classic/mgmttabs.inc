@@ -34,7 +34,8 @@
             <?php $numActions = count($tab['props']["actions"]); ?>
             <?php foreach ($tab['query'] as $item): ?>
                 <?php $i = 0; ?>
-                <?php $itemId = $item->$tab['props']['tblRowSrcId']; ?>
+                <?php $srcIdName = $tab['props']['tblRowSrcId']; ?>
+                <?php $itemId = $item->$srcIdName; ?>
                 <?php $action_check = array(); ?>
                 <ul>
                     <?php foreach ($tab['props']['tblRowSrc'] as $type => $rowSrc): ?>
