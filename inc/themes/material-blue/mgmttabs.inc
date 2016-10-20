@@ -37,8 +37,7 @@
         <div class="data-rows">
             <?php foreach ($tab['query'] as $item): ?>
                 <?php $i = 0; ?>
-                <?php $srcIdName = $tab['props']['tblRowSrcId']; ?>
-                <?php $itemId = $item->$srcIdName; ?>
+                <?php $itemId = $item->{$tab['props']['tblRowSrcId']}; ?>
                 <?php $action_check = array(); ?>
                 <ul>
                     <?php foreach ($tab['props']['tblRowSrc'] as $type => $rowSrc): ?>
