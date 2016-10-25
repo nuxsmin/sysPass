@@ -1,6 +1,6 @@
 <div id="header">
     <div id="session" class="midround shadow">
-		    <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
+            <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
         <?php if ($showPassIcon): ?>
             <img src="imgs/key.png" class="iconMini"
                 title="<?php echo _('Cambiar clave de usuario'); ?>"
