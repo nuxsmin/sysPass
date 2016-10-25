@@ -39,7 +39,7 @@ if (!SP\Init::isLoggedIn()) {
 
 $accountId = SP\Request::analyze('accountid', false);
 $isHistory = SP\Request::analyze('isHistory', false);
-$full = SP\Request::analyze('show', 0, false, 1);
+$full = SP\Request::analyze('full', 0, false, 1);
 
 if (!$accountId) {
     return;
