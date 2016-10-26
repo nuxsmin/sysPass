@@ -37,11 +37,11 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 if (Checks::demoIsEnabled()) {
-    Response::printJSON(_('Ey, esto es una DEMO!!'));
+    Response::printJson(_('Ey, esto es una DEMO!!'));
 }
 
 $sk = Request::analyze('sk', false);
@@ -51,7 +51,7 @@ $importPwd = Request::analyzeEncrypted('importPwd');
 $csvDelimiter = Request::analyze('csvDelimiter');
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 Import::setDefUser($defaultUser);
@@ -66,9 +66,9 @@ if (isset($res['error']) && is_array($res['error'])) {
 
     $out = implode('\n\n', $res['error']);
 
-    Response::printJSON($out);
+    Response::printJson($out);
 } else if (is_array($res['ok'])) {
     $out = implode('\n\n', $res['ok']);
 
-    Response::printJSON($out, 0);
+    Response::printJson($out, 0);
 }

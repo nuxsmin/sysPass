@@ -130,4 +130,25 @@ interface DataGridActionInterface
      * @return int El tipo de acción
      */
     public function getType();
+
+    /**
+     * @return array
+     */
+    public function getData();
+
+    /**
+     * Establecer atributos de datos
+     *
+     * @param array $data Los datos de los atributos
+     * @return $this
+     */
+    public function setData(array $data);
+
+    /**
+     * Añadir nuevo atributo de datos
+     *
+     * @param string $name El nombe del atributo
+     * @param mixed $data Los datos del atributo
+     */
+    public function addData($name, $data);
 }

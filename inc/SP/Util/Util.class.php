@@ -200,7 +200,7 @@ class Util
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
-        if (!is_null($data)) {
+        if (null !== $data) {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $data['type']);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data['data']);
@@ -325,7 +325,7 @@ class Util
      */
     public static function logout()
     {
-        exit('<script>sysPassUtil.Common.doLogout();</script>');
+        exit('<script>sysPassApp.doLogout();</script>');
     }
 
     /**

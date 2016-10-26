@@ -478,4 +478,12 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     {
         return ($this->_limitStart - $this->_limitCount);
     }
+
+    /**
+     * @return DataGridActionSearch
+     */
+    public function getSourceAction()
+    {
+        return $this->_sourceAction;
+    }
 }

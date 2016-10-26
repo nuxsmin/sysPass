@@ -24,14 +24,15 @@
  */
 
 use SP\Config\Config;
-use SP\Controller\Account;
-use SP\Controller\AccountsSearch;
+use SP\Controller\AccountController;
+use SP\Controller\AccountSearchController;
 use SP\Core\ActionsInterface;
+use SP\Core\DiFactory;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\Template;
-use SP\Core\Themes;
 use SP\Http\Request;
+use SP\Http\Response;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -48,12 +49,11 @@ if (!Init::isLoggedIn()) {
 Util::checkReload();
 
 if (!Request::analyze('actionId', 0, true)) {
-    die('<div class="error">' . _('Parámetros incorrectos') . '</DIV>');
+    Response::printHtmlError(_('Parámetros incorrectos'));
 }
 
-$actionId = Request::analyze('actionId');
+$actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);
-$lastAction = Request::analyze('lastAction', ActionsInterface::ACTION_ACC_SEARCH);
 
 $Tpl = new Template();
 $Tpl->assign('actionId', $actionId);
@@ -65,65 +65,46 @@ $Tpl->assign('userId', Session::getUserId());
 $Tpl->assign('userGroupId', Session::getUserGroupId());
 $Tpl->assign('userIsAdminApp', Session::getUserIsAdminApp());
 $Tpl->assign('userIsAdminAcc', Session::getUserIsAdminAcc());
-$Tpl->assign('themeUri', Themes::$themeUri);
-
-// Control de ruta de acciones
-if ($actionId != ActionsInterface::ACTION_ACC_SEARCH) {
-    $actionsPath = &$_SESSION['actionsPath'];
-    $actionsPath[] = $actionId;
-    $actions = count($actionsPath);
-
-    // Se eliminan las acciones ya realizadas
-    if ($actions > 2 && $actionsPath[$actions - 3] == $actionId) {
-        unset($actionsPath[$actions - 3]);
-        unset($actionsPath[$actions - 2]);
-        $actionsPath = array_values($actionsPath);
-        $actions = count($actionsPath);
-    }
-
-    $Tpl->assign('lastAction', $actionsPath[$actions - 2]);
-}
+$Tpl->assign('themeUri', DiFactory::getTheme()->getThemeUri());
 
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_SEARCH:
         $_SESSION['actionsPath'] = array(ActionsInterface::ACTION_ACC_SEARCH);
 
-        $Tpl->assign('lastAction', $lastAction);
-
-        $Controller = new AccountsSearch($Tpl);
+        $Controller = new AccountSearchController($Tpl);
         $Controller->getSearchBox();
         $Controller->getSearch();
         break;
     case ActionsInterface::ACTION_ACC_NEW:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getNewAccount();
         break;
     case ActionsInterface::ACTION_ACC_COPY:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getCopyAccount();
         break;
     case ActionsInterface::ACTION_ACC_EDIT:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getEditAccount();
         break;
     case ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getEditPassAccount();
         break;
     case ActionsInterface::ACTION_ACC_VIEW:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getViewAccount();
         break;
     case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getViewHistoryAccount();
         break;
     case ActionsInterface::ACTION_ACC_DELETE:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getDeleteAccount();
         break;
     case ActionsInterface::ACTION_ACC_REQUEST:
-        $Controller = new Account($Tpl, null, $itemId);
+        $Controller = new AccountController($Tpl, null, $itemId);
         $Controller->getRequestAccountAccess();
         break;
     case ActionsInterface::ACTION_USR:
@@ -132,7 +113,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_USR_PROFILES:
     case ActionsInterface::ACTION_MGM_APITOKENS:
     case ActionsInterface::ACTION_MGM_PUBLICLINKS:
-        $Controller = new \SP\Controller\AccItemsMgmt($Tpl);
+        $Controller = new \SP\Controller\AccItemsController($Tpl);
         $Controller->useTabs();
         $Controller->getUsersList();
         $Controller->getGroupsList();
@@ -149,7 +130,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_MGM_FILES:
     case ActionsInterface::ACTION_MGM_ACCOUNTS:
     case ActionsInterface::ACTION_MGM_TAGS:
-        $Controller = new \SP\Controller\AppItemsMgmt($Tpl);
+        $Controller = new \SP\Controller\AppItemsController($Tpl);
         $Controller->useTabs();
         $Controller->getCategories();
         $Controller->getCustomers();
@@ -168,10 +149,9 @@ switch ($actionId) {
     case ActionsInterface::ACTION_CFG_BACKUP:
     case ActionsInterface::ACTION_CFG_EXPORT:
     case ActionsInterface::ACTION_CFG_IMPORT:
-        $Tpl->assign('onCloseAction', $actionId);
-        $Tpl->addTemplate('tabs-start');
+        $Tpl->addTemplate('tabs-start', 'common');
 
-        $Controller = new \SP\Controller\ConfigMgmt($Tpl);
+        $Controller = new \SP\Controller\ConfigController($Tpl);
         $Controller->getGeneralTab();
         $Controller->getWikiTab();
         $Controller->getLdapTab();
@@ -181,22 +161,22 @@ switch ($actionId) {
         $Controller->getImportTab();
         $Controller->getInfoTab();
 
-        $Tpl->addTemplate('tabs-end');
+        $Tpl->addTemplate('tabs-end', 'common');
         break;
     case ActionsInterface::ACTION_EVL:
-        $Controller = new \SP\Controller\Eventlog($Tpl);
+        $Controller = new \SP\Controller\EventlogController($Tpl);
         $Controller->getEventlog();
         break;
     case ActionsInterface::ACTION_USR_PREFERENCES:
     case ActionsInterface::ACTION_USR_PREFERENCES_GENERAL:
     case ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
-        $Tpl->addTemplate('tabs-start');
+        $Tpl->addTemplate('tabs-start', 'common');
 
-        $Controller = new \SP\Controller\UsersPrefs($Tpl);
+        $Controller = new \SP\Controller\UserPreferencesController($Tpl);
         $Controller->getPreferencesTab();
         $Controller->getSecurityTab();
 
-        $Tpl->addTemplate('tabs-end');
+        $Tpl->addTemplate('tabs-end', 'common');
         break;
 }
 
@@ -205,5 +185,5 @@ if (Session::getUserIsAdminApp() && Config::getConfig()->isDebug()) {
     $Controller->getDebug();
 }
 
-$Tpl->addTemplate('js-common');
+$Tpl->addTemplate('js-common', 'common');
 $Controller->view();

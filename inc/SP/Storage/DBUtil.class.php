@@ -27,7 +27,7 @@ namespace SP\Storage;
 
 
 use SP\Config\Config;
-use SP\Core\SingleFactory;
+use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
 
 /**
@@ -46,7 +46,7 @@ class DBUtil
     public static function checkDatabaseExist()
     {
         try {
-            $db = SingleFactory::getDBStorage()->getConnection();
+            $db = DiFactory::getDBStorage()->getConnection();
 
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
@@ -115,7 +115,7 @@ class DBUtil
     public static function escape($str)
     {
         try {
-            $db = SingleFactory::getDBStorage()->getConnection();
+            $db = DiFactory::getDBStorage()->getConnection();
 
             return $db->quote(trim($str));
         } catch (SPException $e) {
@@ -133,7 +133,7 @@ class DBUtil
         $dbinfo = array();
 
         try {
-            $db = SingleFactory::getDBStorage()->getConnection();
+            $db = DiFactory::getDBStorage()->getConnection();
 
             $attributes = array(
                 'SERVER_VERSION',

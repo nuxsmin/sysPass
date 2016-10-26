@@ -81,7 +81,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var int
      */
-    private $proxyPort = 0;
+    private $proxyPort = 8080;
     /**
      * @var string
      */

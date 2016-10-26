@@ -43,20 +43,20 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 $frmAccountId = Request::analyze('accountid', 0);
 $frmDescription = Request::analyze('description');
 
 if (!$frmDescription) {
-    Response::printJSON(_('Es necesaria una descripción'));
+    Response::printJson(_('Es necesaria una descripción'));
 }
 
 $accountRequestData = AccountUtil::getAccountRequestData($frmAccountId);
@@ -83,7 +83,7 @@ if (strlen($mailto) > 1
 ) {
     $Log->writeLog();
 
-    Response::printJSON(_('Solicitud enviada'), 0, "doAction('" . ActionsInterface::ACTION_ACC_SEARCH . "');");
+    Response::printJson(_('Solicitud enviada'), 0, "doAction('" . ActionsInterface::ACTION_ACC_SEARCH . "');");
 }
 
-Response::printJSON(_('Error al enviar la solicitud'));
+Response::printJson(_('Error al enviar la solicitud'));

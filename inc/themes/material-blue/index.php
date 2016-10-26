@@ -30,7 +30,7 @@ $themeInfo = array(
     'targetversion' => '1.2.0',
     'js' => array(
         'material.min.js',
-        'functions.min.js'),
+        'app-theme.min.js'),
     'css' => array(
         'fonts.min.css',
         'material.min.css',

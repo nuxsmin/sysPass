@@ -129,7 +129,7 @@ class AccountData implements JsonSerializable
      */
     public function __construct($accountId = 0)
     {
-        $this->accountId = $accountId;
+        $this->accountId = (int)$accountId;
     }
 
     /**
@@ -145,7 +145,7 @@ class AccountData implements JsonSerializable
      */
     public function setDateAdd($dateAdd)
     {
-        $this->dateAdd = $dateAdd;
+        $this->dateAdd = (int)$dateAdd;
     }
 
     /**
@@ -161,7 +161,7 @@ class AccountData implements JsonSerializable
      */
     public function setDateEdit($dateEdit)
     {
-        $this->dateEdit = $dateEdit;
+        $this->dateEdit = (int)$dateEdit;
     }
 
     /**
@@ -177,7 +177,7 @@ class AccountData implements JsonSerializable
      */
     public function setIsModify($isModify)
     {
-        $this->isModify = $isModify;
+        $this->isModify = (int)$isModify;
     }
 
     /**
@@ -193,7 +193,7 @@ class AccountData implements JsonSerializable
      */
     public function setIsDeleted($isDeleted)
     {
-        $this->isDeleted = $isDeleted;
+        $this->isDeleted = (int)$isDeleted;
     }
 
     /**
@@ -209,7 +209,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountUserEditId($accountUserEditId)
     {
-        $this->accountUserEditId = $accountUserEditId;
+        $this->accountUserEditId = (int)$accountUserEditId;
     }
 
     /**
@@ -273,7 +273,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountUserId($accountUserId)
     {
-        $this->accountUserId = $accountUserId;
+        $this->accountUserId = (int)$accountUserId;
     }
 
     /**
@@ -289,7 +289,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountUserGroupId($accountUserGroupId)
     {
-        $this->accountUserGroupId = $accountUserGroupId;
+        $this->accountUserGroupId = (int)$accountUserGroupId;
     }
 
     /**
@@ -297,7 +297,7 @@ class AccountData implements JsonSerializable
      */
     public function getAccountOtherUserEdit()
     {
-        return intval($this->accountOtherUserEdit);
+        return $this->accountOtherUserEdit;
     }
 
     /**
@@ -305,7 +305,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountOtherUserEdit($accountOtherUserEdit)
     {
-        $this->accountOtherUserEdit = $accountOtherUserEdit;
+        $this->accountOtherUserEdit = (int)$accountOtherUserEdit;
     }
 
     /**
@@ -313,7 +313,7 @@ class AccountData implements JsonSerializable
      */
     public function getAccountOtherGroupEdit()
     {
-        return intval($this->accountOtherGroupEdit);
+        return $this->accountOtherGroupEdit;
     }
 
     /**
@@ -321,7 +321,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountOtherGroupEdit($accountOtherGroupEdit)
     {
-        $this->accountOtherGroupEdit = $accountOtherGroupEdit;
+        $this->accountOtherGroupEdit = (int)$accountOtherGroupEdit;
     }
 
     /**
@@ -329,7 +329,7 @@ class AccountData implements JsonSerializable
      */
     public function getAccountUserGroupsId()
     {
-        return (is_array($this->accountUserGroupsId)) ? $this->accountUserGroupsId : [];
+        return is_array($this->accountUserGroupsId) ? $this->accountUserGroupsId : [];
     }
 
     /**
@@ -385,7 +385,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountCategoryId($accountCategoryId)
     {
-        $this->accountCategoryId = $accountCategoryId;
+        $this->accountCategoryId = (int)$accountCategoryId;
     }
 
     /**
@@ -401,7 +401,7 @@ class AccountData implements JsonSerializable
      */
     public function setAccountCustomerId($accountCustomerId)
     {
-        $this->accountCustomerId = $accountCustomerId;
+        $this->accountCustomerId = (int)$accountCustomerId;
     }
 
     /**
@@ -460,12 +460,11 @@ class AccountData implements JsonSerializable
      *        which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $data = get_object_vars($this);
 
-        unset($data['accountPass']);
-        unset($data['accountIV']);
+        unset($data['accountPass'], $data['accountIV']);
 
         return Json::safeJson($data);
     }

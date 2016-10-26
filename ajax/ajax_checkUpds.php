@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Controller\Main;
+use SP\Controller\MainController;
 use SP\Http\Request;
 
 define('APP_ROOT', '..');
@@ -32,6 +32,6 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('GET');
 
-$Controller = new Main(null, null, false);
+$Controller = new MainController(null, null, false);
 $Controller->getCheckUpdates();
 $Controller->view();

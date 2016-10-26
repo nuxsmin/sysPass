@@ -24,35 +24,45 @@
  */
 
 use SP\Html\Minify;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$file = \SP\Http\Request::analyze('f');
-$base = \SP\Http\Request::analyze('b');
+$file = Request::analyze('f');
+$base = Request::analyze('b');
+$group = Request::analyze('g', 0);
 
 if (!$file) {
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);
     $Minify->setBase(__DIR__);
-    $Minify->addFile('jquery-1.11.2.min.js');
-    $Minify->addFile('jquery-ui.min.js');
-    $Minify->addFile('jquery.fancybox.pack.js');
-    $Minify->addFile('jquery.powertip.min.js');
-    $Minify->addFile('alertify.min.js');
-    $Minify->addFile('jquery.fileDownload.min.js');
-    $Minify->addFile('jquery.tagsinput.min.js');
-    $Minify->addFile('clipboard.min.js');
-    $Minify->addFile('selectize.min.js');
-    $Minify->addFile('selectize-plugins.min.js');
-    $Minify->addFile('zxcvbn-async.min.js');
-    $Minify->addFile('jsencrypt.min.js');
-    $Minify->addFile('functions.min.js');
-    $Minify->getMinified();
-} elseif ($file && $base) {
-    $base = \SP\Http\Request::analyze('b');
 
+    if ($group === 0) {
+        $Minify->addFile('jquery-1.11.2.min.js')
+            ->addFile('jquery-ui.min.js')
+            ->addFile('jquery.fancybox.pack.js')
+            ->addFile('alertify.min.js')
+            ->addFile('jquery.fileDownload.min.js')
+            ->addFile('jquery.tagsinput.min.js')
+            ->addFile('clipboard.min.js')
+            ->addFile('selectize.min.js')
+            ->addFile('selectize-plugins.min.js')
+            ->addFile('zxcvbn-async.min.js')
+            ->addFile('jsencrypt.min.js')
+            ->addFile('spark-md5.min.js');
+    } elseif ($group === 1) {
+        // FIXME: utilizar versiones .min
+        $Minify->addFile('app.js')
+            ->addFile('app-triggers.js')
+            ->addFile('app-actions.js')
+            ->addFile('app-requests.js')
+            ->addFile('app-main.js');
+    }
+
+    $Minify->getMinified(true);
+} elseif ($file && $base) {
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);
     $Minify->setBase(\SP\Core\Init::$SERVERROOT . urldecode($base));

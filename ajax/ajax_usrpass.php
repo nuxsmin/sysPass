@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Controller\AccItemMgmt;
+use SP\Controller\AccItemController;
 use SP\Core\Init;
 use SP\Core\Template;
 use SP\Http\Request;
@@ -47,7 +47,6 @@ if (!$userId) {
 
 $Tpl = new Template();
 $Tpl->assign('userId', $userId);
-$Controller = new AccItemMgmt($Tpl);
+$Controller = new AccItemController($Tpl);
 $Controller->getUserPass();
-$Tpl->addTemplate('js-common');
 $Controller->view();

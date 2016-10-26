@@ -37,17 +37,17 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 if (Checks::demoIsEnabled()) {
-    Response::printJSON(_('Ey, esto es una DEMO!!'));
+    Response::printJson(_('Ey, esto es una DEMO!!'));
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 $frmDBUser = Request::analyze('dbuser');
@@ -57,15 +57,15 @@ $frmDBHost = Request::analyze('dbhost');
 $frmMigrateEnabled = Request::analyze('chkmigrate', 0, false, 1);
 
 if (!$frmMigrateEnabled) {
-    Response::printJSON(_('Confirmar la importación de cuentas'));
+    Response::printJson(_('Confirmar la importación de cuentas'));
 } elseif (!$frmDBUser) {
-    Response::printJSON(_('Es necesario un usuario de conexión'));
+    Response::printJson(_('Es necesario un usuario de conexión'));
 } elseif (!$frmDBPass) {
-    Response::printJSON(_('Es necesaria una clave de conexión'));
+    Response::printJson(_('Es necesaria una clave de conexión'));
 } elseif (!$frmDBName) {
-    Response::printJSON(_('Es necesario el nombre de la BBDD'));
+    Response::printJson(_('Es necesario el nombre de la BBDD'));
 } elseif (!$frmDBHost) {
-    Response::printJSON(_('Es necesario un nombre de host'));
+    Response::printJson(_('Es necesario un nombre de host'));
 }
 
 $options['dbhost'] = $frmDBHost;
@@ -83,9 +83,9 @@ if (is_array($res['error'])) {
     }
 
     $out = implode('<br>', $errors);
-    Response::printJSON($out);
+    Response::printJson($out);
 } elseif (is_array($res['ok'])) {
     $out = implode('<br>', $res['ok']);
 
-    Response::printJSON($out, 0);
+    Response::printJson($out, 0);
 }

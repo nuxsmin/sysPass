@@ -48,9 +48,13 @@ class DataGridActionSearch extends DataGridActionBase
 
     /**
      * DataGridActionSearch constructor.
+     *
+     * @param int $id EL id de la acción
      */
-    public function __construct()
+    public function __construct($id = null)
     {
+        parent::__construct($id);
+
         $this->setSkip(true);
     }
 
@@ -65,7 +69,7 @@ class DataGridActionSearch extends DataGridActionBase
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;
         }
 
-        return 'return ' . $this->_onSubmitFunction . '(' . implode(',', $args) . ');';
+        return count($args) > 0 ? 'return ' . $this->_onSubmitFunction . '(' . implode(',', $args) . ');' : $this->_onSubmitFunction;
     }
 
     /**

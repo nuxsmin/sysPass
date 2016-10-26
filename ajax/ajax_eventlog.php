@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Controller\Eventlog;
+use SP\Controller\EventlogController;
 use SP\Core\Init;
 use SP\Core\Template;
 use SP\Http\Request;
@@ -47,7 +47,7 @@ $Tpl->assign('limitStart', $start);
 $Tpl->assign('clear', $clear);
 $Tpl->assign('sk', $sk);
 $Tpl->assign('queryTimeStart', microtime());
-$Controller = new Eventlog($Tpl);
+$Controller = new EventlogController($Tpl);
 $Controller->checkClear();
 $Controller->getEventlog();
 echo $Tpl->render();

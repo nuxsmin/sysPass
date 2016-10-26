@@ -72,7 +72,7 @@ abstract class AccountBase
      */
     public function __construct(AccountData $accountData = null)
     {
-        $this->accountData = (!is_null($accountData)) ? $accountData : new AccountData();
+        $this->accountData = (null !== $accountData) ? $accountData : new AccountData();
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AccountBase
      */
     public function getAccountDataForACL($accountId = null)
     {
-        $accId = (!is_null($accountId)) ? $accountId : $this->accountData->getAccountId();
+        $accId = (null !== $accountId) ? $accountId : $this->accountData->getAccountId();
 
         $this->accountData->setAccountId($accId);
 

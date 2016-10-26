@@ -463,18 +463,18 @@ pre, code, samp, kbd {
     text-align: right
 }
 
-#content .data #dropzone {
+#content .data .dropzone {
     width: 30em;
     padding: 1em;
     border: 2px dashed #009688;
     text-align: center
 }
 
-#content .data #dropzone img {
+#content .data .dropzone img {
     vertical-align: middle
 }
 
-#content .data #fileUpload {
+#content .data .file-upload {
     display: none
 }
 
@@ -1207,9 +1207,9 @@ footer img {
 }
 
 .round {
-    border-radius: 10px !important;
-    -moz-border-radius: 10px !important;
-    -webkit-border-radius: 10px !important
+    border-radius: 5px !important;
+    -moz-border-radius: 5px !important;
+    -webkit-border-radius: 5px !important
 }
 
 .round5 {
@@ -1267,9 +1267,9 @@ footer img {
 }
 
 .shadow {
-    box-shadow: 3px 3px 6px -3px #d9d9d9;
-    -webkit-box-shadow: 3px 3px 6px -3px #a9a9a9;
-    -moz-box-shadow: 3px 3px 6px -3px #a9a9a9
+    box-shadow: 1px 1px 2px #d9d9d9;
+    /*-webkit-box-shadow: 2px 2px 3px -3px #a9a9a9;*/
+    /*-moz-box-shadow: 2px 2px 3px -3px #a9a9a9*/
 }
 
 .noRes {

@@ -35,14 +35,14 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Http\Response;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Users\UserPass;
 use SP\Util\Checks;
+use SP\Util\Json;
 
 define('APP_ROOT', '..');
 
@@ -50,21 +50,25 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
+$Json = new JsonResponse();
+
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    $Json->setStatus(10);
+    $Json->setDescription(_('La sesión no se ha iniciado o ha caducado'));
+    Json::returnJson($Json);
 }
 
 $sk = Request::analyze('sk', false);
 
+
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    $Json->setDescription(_('CONSULTA INVÁLIDA'));
+    Json::returnJson($Json);
 }
 
 // Variables POST del formulario
 $actionId = Request::analyze('actionId', 0);
 $activeTab = Request::analyze('activeTab', 0);
-
-$doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
 if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
     || $actionId === ActionsInterface::ACTION_CFG_WIKI
@@ -105,7 +109,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $Config->setSyslogEnabled($syslogEnabled);
 
         if ($remoteSyslogEnabled && (!$syslogServer || !$syslogPort)) {
-            Response::printJSON(_('Faltan parámetros de syslog remoto'));
+            $Json->setDescription(_('Faltan parámetros de syslog remoto'));
+            Json::returnJson($Json);
         } elseif ($remoteSyslogEnabled) {
             $Config->setSyslogRemoteEnabled($remoteSyslogEnabled);
             $Config->setSyslogServer($syslogServer);
@@ -135,14 +140,16 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $filesAllowedExts = Request::analyze('files_allowed_exts');
 
         if ($filesEnabled && $filesAllowedSize >= 16384) {
-            Response::printJSON(_('El tamaño máximo por archivo es de 16MB'));
+            $Json->setDescription(_('El tamaño máximo por archivo es de 16MB'));
+            Json::returnJson($Json);
         }
 
         if (!empty($filesAllowedExts)) {
             $exts = explode(',', $filesAllowedExts);
-            array_walk($exts, function (&$value) {
+            array_walk($exts, function (&$value) use ($Json) {
                 if (preg_match('/[^a-z0-9_-]+/i', $value)) {
-                    Response::printJSON(_('Extensión no permitida'));
+                    $Json->setDescription(sprintf('%s: %s', _('Extensión no permitida'), $value));
+                    Json::returnJson($Json);
                 }
             });
             $Config->setFilesAllowedExts($exts);
@@ -174,7 +181,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         // Valores para Proxy
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            Response::printJSON(_('Faltan parámetros de Proxy'));
+            $Json->setDescription(_('Faltan parámetros de Proxy'));
+            Json::returnJson($Json);
         } elseif ($proxyEnabled) {
             $Config->setProxyEnabled(true);
             $Config->setProxyServer($proxyServer);
@@ -199,7 +207,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            Response::printJSON(_('Faltan parámetros de Wiki'));
+            $Json->setDescription(_('Faltan parámetros de Wiki'));
+            Json::returnJson($Json);
         } elseif ($wikiEnabled) {
             $Config->setWikiEnabled(true);
             $Config->setWikiSearchurl($wikiSearchUrl);
@@ -223,7 +232,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         // Valores para la conexión a la API de DokuWiki
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
-            Response::printJSON(_('Faltan parámetros de DokuWiki'));
+            $Json->setDescription(_('Faltan parámetros de DokuWiki'));
+            Json::returnJson($Json);
         } elseif ($dokuWikiEnabled) {
             $Config->setDokuwikiEnabled(true);
             $Config->setDokuwikiUrl($dokuWikiUrl);
@@ -254,7 +264,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         // Valores para la configuración de LDAP
         if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
-            Response::printJSON(_('Faltan parámetros de LDAP'));
+            $Json->setDescription(_('Faltan parámetros de LDAP'));
+            Json::returnJson($Json);
         } elseif ($ldapEnabled) {
             $Config->setLdapEnabled(true);
             $Config->setLdapAds($ldapADSEnabled);
@@ -288,7 +299,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         // Valores para la configuración del Correo
         if ($mailEnabled && (!$mailServer || !$mailFrom)) {
-            Response::printJSON(_('Faltan parámetros de Correo'));
+            $Json->setDescription(_('Faltan parámetros de Correo'));
+            Json::returnJson($Json);
         } elseif ($mailEnabled) {
             $Config->setMailEnabled(true);
             $Config->setMailRequestsEnabled($mailRequests);
@@ -324,7 +336,8 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         Email::sendEmail($Log);
 
-        Response::printJSON($e->getMessage());
+        $Json->setDescription($e->getMessage());
+        Json::returnJson($Json);
     }
 
     $Log->writeLog();
@@ -336,7 +349,9 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         \SP\Util\Util::reload();
     }
 
-    Response::printJSON(_('Configuración actualizada'), 0, $doActionOnClose);
+    $Json->setStatus(0);
+    $Json->setDescription(_('Configuración actualizada'));
+    Json::returnJson($Json);
 } elseif ($actionId === ActionsInterface::ACTION_CFG_ENCRYPTION) {
     $currentMasterPass = Request::analyzeEncrypted('curMasterPwd');
     $newMasterPass = Request::analyzeEncrypted('newMasterPwd');
@@ -345,19 +360,26 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
     $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
     if (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
-        Response::printJSON(_('Clave maestra actualizada') . ';;' . _('Reinicie la sesión para cambiarla'));
+        $Json->setDescription(_('Clave maestra actualizada'));
+        $Json->addMessage(_('Reinicie la sesión para cambiarla'));
+        Json::returnJson($Json);
     } elseif ($newMasterPass == '' && $currentMasterPass == '') {
-        Response::printJSON(_('Clave maestra no indicada'));
+        $Json->setDescription(_('Clave maestra no indicada'));
+        Json::returnJson($Json);
     } elseif ($confirmPassChange == 0) {
-        Response::printJSON(_('Se ha de confirmar el cambio de clave'));
+        $Json->setDescription(_('Se ha de confirmar el cambio de clave'));
+        Json::returnJson($Json);
     }
 
     if ($newMasterPass == $currentMasterPass) {
-        Response::printJSON(_('Las claves son idénticas'));
+        $Json->setDescription(_('Las claves son idénticas'));
+        Json::returnJson($Json);
     } elseif ($newMasterPass != $newMasterPassR) {
-        Response::printJSON(_('Las claves maestras no coinciden'));
+        $Json->setDescription(_('Las claves maestras no coinciden'));
+        Json::returnJson($Json);
     } elseif (!Crypt::checkHashPass($currentMasterPass, ConfigDB::getValue('masterPwd'), true)) {
-        Response::printJSON(_('La clave maestra actual no coincide'));
+        $Json->setDescription(_('La clave maestra actual no coincide'));
+        Json::returnJson($Json);
     }
 
     $hashMPass = Crypt::mkHashPassword($newMasterPass);
@@ -366,22 +388,26 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $Account = new Account();
 
         if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
-            Response::printJSON(_('Errores al actualizar las claves de las cuentas'));
+            $Json->setDescription(_('Errores al actualizar las claves de las cuentas'));
+            Json::returnJson($Json);
         }
 
         $AccountHistory = new AccountHistory();
 
         if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
-            Response::printJSON(_('Errores al actualizar las claves de las cuentas del histórico'));
+            $Json->setDescription(_('Errores al actualizar las claves de las cuentas del histórico'));
+            Json::returnJson($Json);
         }
 
         if (!CustomFieldsUtil::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
-            Response::printJSON(_('Errores al actualizar datos de campos personalizados'));
+            $Json->setDescription(_('Errores al actualizar datos de campos personalizados'));
+            Json::returnJson($Json);
         }
     }
 
     if (Checks::demoIsEnabled()) {
-        Response::printJSON(_('Ey, esto es una DEMO!!'));
+        $Json->setDescription(_('Ey, esto es una DEMO!!'));
+        Json::returnJson($Json);
     }
 
 //    ConfigDB::readConfig();
@@ -394,19 +420,18 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
         $Log->addDescription(_('Clave maestra actualizada'));
         $Log->writeLog();
 
+        $Json->setStatus(0);
         Email::sendEmail($Log);
-
-        Response::printJSON(_('Clave maestra actualizada'), 0);
     } else {
         $Log->setLogLevel(Log::ERROR);
         $Log->addDescription(_('Error al guardar el hash de la clave maestra'));
         $Log->writeLog();
 
         Email::sendEmail($Log);
-
-        Response::printJSON(_('Error al guardar el hash de la clave maestra'));
     }
 
+    $Json->setDescription($Log->getDescription());
+    Json::returnJson($Json);
 } elseif ($actionId === ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS) {
     $tempMasterMaxTime = Request::analyze('tmpass_maxtime', 3600);
     $tempMasterPass = CryptMasterPass::setTempMasterPass($tempMasterMaxTime);
@@ -420,16 +445,18 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
         Email::sendEmail($Log);
 
-        Response::printJSON(_('Clave Temporal Generada'), 0, $doActionOnClose);
+        $Json->setStatus(0);
     } else {
         $Log->setLogLevel(Log::ERROR);
         $Log->addDescription(_('Error al generar clave temporal'));
         $Log->writeLog();
 
         Email::sendEmail($Log);
-
-        Response::printJSON(_('Error al generar clave temporal'));
     }
+
+    $Json->setDescription($Log->getDescription());
+    Json::returnJson($Json);
 } else {
-    Response::printJSON(_('Acción Inválida'));
+    $Json->setDescription(_('Acción Inválida'));
+    Json::returnJson($Json);
 }

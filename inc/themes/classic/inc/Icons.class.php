@@ -28,7 +28,7 @@ namespace Theme;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Init;
-use SP\Core\ThemeIconsBase;
+use SP\Core\UI\ThemeIconsBase;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\ImageIcon;
 

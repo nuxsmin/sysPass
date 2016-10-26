@@ -38,7 +38,7 @@ Request::checkReferer('POST');
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 $userId = Request::analyze('itemId', 0);
@@ -54,8 +54,8 @@ if ($userId
 
     $urlParams = Request::importUrlParamsToGet();
 
-    Response::printJSON(_('Código correcto'), 0, 'sysPassUtil.Common.redirect(\'index.php\')');
+    Response::printJson(_('Código correcto'), 0, 'sysPassUtil.Common.redirect(\'index.php\')');
 } else {
     Session::set2FApassed(false);
-    Response::printJSON(_('Código incorrecto'));
+    Response::printJson(_('Código incorrecto'));
 }

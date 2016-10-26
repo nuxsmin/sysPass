@@ -24,7 +24,9 @@
  */
 
 namespace SP\Util;
+
 use SP\Core\Exceptions\SPException;
+use SP\Http\JsonResponse;
 
 
 /**
@@ -34,6 +36,18 @@ use SP\Core\Exceptions\SPException;
  */
 class Json
 {
+    /**
+     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     *
+     * @param JsonResponse $json
+     * @return bool
+     */
+    public static function returnJson(JsonResponse $json)
+    {
+        header('Content-type: application/json');
+        exit(self::getJson($json));
+    }
+
     /**
      * Devuelve una cadena en formato JSON
      *

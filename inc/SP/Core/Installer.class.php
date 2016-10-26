@@ -40,7 +40,6 @@ use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
-use SP\Storage\MySQLHandler;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -208,22 +207,23 @@ class Installer
             $this->InstallData->setDbUser(substr('sp_' . $this->InstallData->getAdminLogin(), 0, 16));
 
             // Comprobar si el usuario sumistrado existe
-            $query = /** @lang SQL */
-                "SELECT COUNT(*) FROM mysql.user 
-                WHERE user='" . $this->InstallData->getDbUser() . "' 
-                AND host='" . $this->InstallData->getDbAuthHost() . "'";
+            $query = sprintf(/** @lang SQL */
+                'SELECT COUNT(*) FROM mysql.user 
+                WHERE user=\'%s\' AND host=\'%s\'',
+                $this->InstallData->getDbUser(),
+                $this->InstallData->getDbAuthHost());
 
             try {
                 // Si no existe el usuario, se intenta crear
-                if (intval($this->DB->query($query)->fetchColumn()) === 0) {
+                if ((int)$this->DB->query($query)->fetchColumn() === 0
                     // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                    if ($this->InstallData->getDbUser() != Config::getConfig()->getDbUser()) {
-                        $this->createDBUser();
-                    }
+                    && $this->InstallData->getDbUser() != Config::getConfig()->getDbUser()
+                ) {
+                    $this->createDBUser();
                 }
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    _('No es posible comprobar el usuario de sysPass') . ' (' . $this->InstallData->getAdminLogin() . ')',
+                    sprintf(_('No es posible comprobar el usuario de sysPass') . ' (%s)', $this->InstallData->getAdminLogin()),
                     _('Compruebe los permisos del usuario de conexión a la BD'));
             }
         }
@@ -253,15 +253,17 @@ class Installer
             return;
         }
 
-        $query = /** @lang SQL */
-            "CREATE USER '" . $this->InstallData->getDbUser() . "'@'" . $this->InstallData->getDbAuthHost() . "' 
-            IDENTIFIED BY '" . $this->InstallData->getDbPass() . "'";
+        $query = sprintf(/** @lang SQL */
+            'CREATE USER \'%s\'@\'%s\' IDENTIFIED BY \'%s\'',
+            $this->InstallData->getDbUser(),
+            $this->InstallData->getDbAuthHost(),
+            $this->InstallData->getDbPass());
 
         try {
             $this->DB->query($query);
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
-                _('El usuario de MySQL ya existe') . " (" . $this->InstallData->getDbUser() . ")",
+                sprintf(_('El usuario de MySQL ya existe') . ' (%s)', $this->InstallData->getDbUser()),
                 _('Indique un nuevo usuario o elimine el existente'));
         }
     }
@@ -279,28 +281,30 @@ class Installer
                 _('Indique una nueva Base de Datos o elimine la existente'));
         }
 
-        $query = "CREATE SCHEMA `" . $this->InstallData->getDbName() . "` 
-            DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci";
+        $query = sprintf(/** @lang SQL */
+            'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci', $this->InstallData->getDbName());
 
         try {
             $this->DB->query($query);
         } catch (PDOException $e) {
-            throw new SPException(SPException::SP_CRITICAL
-                , _('Error al crear la BBDD') . " (" . $e->getMessage() . ")"
-                , _('Verifique los permisos del usuario de la Base de Datos'));
+            throw new SPException(SPException::SP_CRITICAL,
+                sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
+                _('Verifique los permisos del usuario de la Base de Datos'));
         }
 
         if (!$this->InstallData->isHostingMode()) {
-            $query = /** @lang SQL */
-                "GRANT ALL PRIVILEGES ON `" . $this->InstallData->getDbName() . "`.* 
-                TO '" . $this->InstallData->getDbUser() . "'@'" . $this->InstallData->getDbAuthHost() . "'
-                IDENTIFIED BY '" . $this->InstallData->getDbPass() . "';";
+            $query = sprintf(/** @lang SQL */
+                'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\';',
+                $this->InstallData->getDbName(),
+                $this->InstallData->getDbUser(),
+                $this->InstallData->getDbAuthHost(),
+                $this->InstallData->getDbPass());
 
             try {
                 $this->DB->query($query);
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    _('Error al establecer permisos de la BBDD') . " (" . $e->getMessage() . ")",
+                    sprintf(_('Error al establecer permisos de la BBDD') . ' (%s)', $e->getMessage()),
                     _('Verifique los permisos del usuario de la Base de Datos'));
             }
         }
@@ -313,12 +317,12 @@ class Installer
      */
     private function checkDatabaseExist()
     {
-        $query = /** @lang SQL */
-            "SELECT COUNT(*) 
+        $query = sprintf(/** @lang SQL */
+            'SELECT COUNT(*) 
             FROM information_schema.schemata
-            WHERE schema_name = '" . $this->InstallData->getDbName() . "' LIMIT 1";
+            WHERE schema_name = \'%s\' LIMIT 1', $this->InstallData->getDbName());
 
-        return (intval($this->DB->query($query)->fetchColumn()) > 0);
+        return ((int)$this->DB->query($query)->fetchColumn() > 0);
     }
 
     /**
@@ -329,7 +333,7 @@ class Installer
      */
     private function createDBStructure()
     {
-        $fileName = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'dbstructure.sql';
+        $fileName = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'dbstructure.sql';
 
         if (!file_exists($fileName)) {
             throw new SPException(SPException::SP_CRITICAL,
@@ -342,7 +346,7 @@ class Installer
             $this->DB->query('USE `' . $this->InstallData->getDbName() . '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
-                _('Error al seleccionar la BBDD') . " '" . $this->InstallData->getDbName() . "' (" . $e->getMessage() . ")",
+                sprintf(_('Error al seleccionar la BBDD') . ' \'%s\' (%s)', $this->InstallData->getDbName(), $e->getMessage()),
                 _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
         }
 
@@ -358,10 +362,10 @@ class Installer
                         $this->DB->query($query);
                     } catch (PDOException $e) {
                         // drop database on error
-                        $this->DB->query("DROP DATABASE IF EXISTS " . $this->InstallData->getDbName() . ";");
+                        $this->DB->query('DROP DATABASE IF EXISTS ' . $this->InstallData->getDbName() . ';');
 
                         throw new SPException(SPException::SP_CRITICAL,
-                            _('Error al crear la BBDD') . ' (' . $e->getMessage() . ')',
+                            sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
                             _('Error al crear la estructura de la Base de Datos.'));
                     }
                 }
@@ -464,9 +468,9 @@ class Installer
     private function rollback()
     {
         try {
-            $this->DB->query("DROP DATABASE IF EXISTS " . $this->InstallData->getDbName() . ";");
-            $this->DB->query("DROP USER '" . $this->InstallData->getDbUser() . "'@'" . $this->InstallData->getDbAuthHost() . "';");
-            $this->DB->query("DROP USER '" . $this->InstallData->getDbUser() . "'@'%';");
+            $this->DB->query('DROP DATABASE IF EXISTS ' . $this->InstallData->getDbName() . ';');
+            $this->DB->query('DROP USER \'' . $this->InstallData->getDbUser() . '\'@\'' . $this->InstallData->getDbAuthHost() . '\';');
+            $this->DB->query('DROP USER \'' . $this->InstallData->getDbUser() . '\'@\'%\';');
         } catch (PDOException $e) {
             return false;
         }

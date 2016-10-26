@@ -26,7 +26,7 @@
 namespace SP\Mgmt;
 
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\SingleFactory;
+use SP\Core\DiFactory;
 
 /**
  * Class ItemBase
@@ -67,7 +67,7 @@ abstract class ItemBase
      */
     public final static function getItem($itemData = null)
     {
-        return SingleFactory::getItem(get_called_class(), $itemData);
+        return DiFactory::getItem(get_called_class(), $itemData);
     }
 
     /**

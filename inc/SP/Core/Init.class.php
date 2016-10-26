@@ -34,7 +34,6 @@ use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
-use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -72,18 +71,18 @@ class Init
      * @var bool True if sysPass has been updated. Only for notices.
      */
     public static $UPDATED = false;
-
-    /**
-     * @var string
-     */
-    private static $SUBURI = '';
     /**
      * Estado de la BD
      * 0 - Fail
      * 1 - OK
+     *
      * @var int
      */
-    public static $DB_STATUS = 1;
+    public static $DB_STATUS = 0;
+    /**
+     * @var string
+     */
+    private static $SUBURI = '';
 
     /**
      * Inicializar la aplicación.
@@ -123,7 +122,7 @@ class Init
         Language::setLanguage();
 
         // Establecer el tema de sysPass
-        Themes::setTheme();
+        DiFactory::getTheme();
 
         // Comprobar si es necesario cambiar a HTTPS
         self::checkHttps();
@@ -186,7 +185,7 @@ class Init
 
             // Restablecer el idioma y el tema visual
             Language::setLanguage();
-            Themes::setTheme();
+//            DiFactory::getTheme()->initTheme();
         }
 
         if (self::isLoggedIn() || Request::analyze('isAjax', false, true)) {
@@ -290,7 +289,7 @@ class Init
     {
         $Tpl = new Template();
         $Tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
-        $Controller = new Controller\Main($Tpl);
+        $Controller = new Controller\MainController($Tpl);
         $Controller->getError(true);
         $Controller->view();
         exit;
@@ -418,18 +417,6 @@ class Init
     }
 
     /**
-     * Comprobar y forzar (si es necesario) la conexión HTTPS
-     */
-    private static function checkHttps()
-    {
-        if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
-            $port = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
-            header('Location: ' . $fullUrl);
-        }
-    }
-
-    /**
      * Comprobar el archivo que realiza el include necesita inicialización.
      *
      * @returns bool
@@ -440,6 +427,18 @@ class Init
         $skipInit = array('js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php');
 
         return (in_array($srcScript, $skipInit));
+    }
+
+    /**
+     * Comprobar y forzar (si es necesario) la conexión HTTPS
+     */
+    private static function checkHttps()
+    {
+        if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
+            $port = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+            header('Location: ' . $fullUrl);
+        }
     }
 
     /**
@@ -456,7 +455,7 @@ class Init
                 exit();
             } else {
                 // Comprobar si sysPass está instalada o en modo mantenimiento
-                $Controller = new Controller\Main();
+                $Controller = new Controller\MainController();
                 $Controller->getInstaller();
                 $Controller->view();
                 exit();
@@ -538,7 +537,7 @@ class Init
      */
     private static function goLogin()
     {
-        $Controller = new Controller\Main(null, 'login');
+        $Controller = new Controller\MainController(null, 'login');
         $Controller->getLogin();
         $Controller->view();
         exit;
@@ -559,34 +558,35 @@ class Init
 
         if ($databaseVersion < $appVersion
             && Request::analyze('nodbupgrade', 0) === 0
+            && Upgrade::needDBUpgrade($databaseVersion)
         ) {
-            if (Upgrade::needDBUpgrade($databaseVersion)) {
-                if (!self::checkMaintenanceMode(true)) {
-                    if (empty(Config::getConfig()->getUpgradeKey())) {
-                        Config::getConfig()->setUpgradeKey(sha1(uniqid(mt_rand(), true)));
-                        Config::getConfig()->setMaintenance(true);
-                        Config::saveConfig();
-                    }
+            if (!self::checkMaintenanceMode(true)) {
+                $upgradeKey = Config::getConfig()->getUpgradeKey();
 
-                    self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
+                if (empty($upgradeKey)) {
+                    Config::getConfig()->setUpgradeKey(sha1(uniqid(mt_rand(), true)));
+                    Config::getConfig()->setMaintenance(true);
+                    Config::saveConfig();
                 }
 
-                $action = Request::analyze('a');
-                $hash = Request::analyze('h');
+                self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
+            }
 
-                if ($action === 'upgrade' && $hash === Config::getConfig()->getUpgradeKey()) {
-                    if ($update = Upgrade::doUpgrade($databaseVersion)) {
-                        ConfigDB::setValue('version', $appVersion);
-                        Config::getConfig()->setMaintenance(false);
-                        Config::getConfig()->setUpgradeKey('');
-                        Config::saveConfig();
-                    }
-                } else {
-                    $controller = new Controller\Main();
-                    $controller->getUpgrade();
-                    $controller->view();
-                    exit();
+            $action = Request::analyze('a');
+            $hash = Request::analyze('h');
+
+            if ($action === 'upgrade' && $hash === Config::getConfig()->getUpgradeKey()) {
+                if ($update = Upgrade::doUpgrade($databaseVersion)) {
+                    ConfigDB::setValue('version', $appVersion);
+                    Config::getConfig()->setMaintenance(false);
+                    Config::getConfig()->setUpgradeKey('');
+                    Config::saveConfig();
                 }
+            } else {
+                $controller = new Controller\MainController();
+                $controller->getUpgrade();
+                $controller->view();
+                exit();
             }
         }
 
@@ -667,7 +667,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new Controller\Main();
+        $Controller = new Controller\MainController();
 
         switch ($action) {
             case 'passreset':
@@ -744,7 +744,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new Controller\Main(null, 'main');
+        $Controller = new Controller\MainController(null, 'main');
 
         switch ($action) {
             case 'accView':

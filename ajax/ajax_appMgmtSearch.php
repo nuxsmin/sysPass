@@ -26,8 +26,8 @@
 define('APP_ROOT', '..');
 
 use SP\Config\Config;
-use SP\Controller\AccItemsMgmtSearch;
-use SP\Controller\AppItemsMgmtSearch;
+use SP\Controller\AccItemsSearchController;
+use SP\Controller\AppItemsSearchController;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
@@ -41,13 +41,13 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 $actionId = Request::analyze('actionId', 0);
@@ -62,51 +62,51 @@ $Tpl->assign('index', Request::analyze('activeTab', 0));
 
 switch ($actionId) {
     case ActionsInterface::ACTION_USR_USERS_SEARCH:
-        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller = new AccItemsSearchController($Tpl);
         $Controller->getUsers($ItemSearchData);
         break;
     case ActionsInterface::ACTION_USR_GROUPS_SEARCH:
-        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller = new AccItemsSearchController($Tpl);
         $Controller->getGroups($ItemSearchData);
         break;
     case ActionsInterface::ACTION_USR_PROFILES_SEARCH:
-        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller = new AccItemsSearchController($Tpl);
         $Controller->getProfiles($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_APITOKENS_SEARCH:
-        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller = new AccItemsSearchController($Tpl);
         $Controller->getTokens($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_PUBLICLINKS_SEARCH:
-        $Controller = new AccItemsMgmtSearch($Tpl);
+        $Controller = new AccItemsSearchController($Tpl);
         $Controller->getPublicLinks($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
-        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller = new AppItemsSearchController($Tpl);
         $Controller->getCategories($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
-        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller = new AppItemsSearchController($Tpl);
         $Controller->getCustomers($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
-        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller = new AppItemsSearchController($Tpl);
         $Controller->getCustomFields($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_FILES_SEARCH:
-        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller = new AppItemsSearchController($Tpl);
         $Controller->getFiles($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
-        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller = new AppItemsSearchController($Tpl);
         $Controller->getAccounts($ItemSearchData);
         break;
     case ActionsInterface::ACTION_MGM_TAGS_SEARCH:
-        $Controller = new AppItemsMgmtSearch($Tpl);
+        $Controller = new AppItemsSearchController($Tpl);
         $Controller->getTags($ItemSearchData);
         break;
     default:
-        Response::printJSON(_('Acción Inválida'));
+        Response::printJson(_('Acción Inválida'));
         break;
 }
 
@@ -115,4 +115,4 @@ $data = array(
     'html' => $Controller->render()
 );
 
-Response::printJSON($data, 0);
+Response::printJson($data, 0);

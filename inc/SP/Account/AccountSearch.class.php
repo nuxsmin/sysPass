@@ -66,7 +66,7 @@ class AccountSearch
      *
      * @var array
      */
-    private $colors = array(
+    private $colors = [
         '2196F3',
         '03A9F4',
         '00BCD4',
@@ -84,7 +84,7 @@ class AccountSearch
         '9C27B0',
         '673AB7',
         '3F51B5',
-    );
+    ];
     /**
      * @var bool
      */
@@ -129,7 +129,7 @@ class AccountSearch
     /**
      * Constructor
      */
-    function __construct()
+    public function __construct()
     {
         $userResultsPerPage = (Session::getSessionType() === Session::SESSION_INTERACTIVE) ? Session::getUserPreferences()->getResultsPerPage() : 0;
 
@@ -310,7 +310,7 @@ class AccountSearch
             $Data->addParam(Session::getUserGroupId(), 'groupId');
             $Data->addParam(Session::getUserId(), 'userId');
         } else {
-            $query = "SELECT COUNT(*) as numacc FROM accounts";
+            $query = 'SELECT COUNT(*) as numacc FROM accounts';
         }
 
         $Data->setQuery($query);
@@ -337,24 +337,27 @@ class AccountSearch
         }
 
         // Variables de configuración
-        $maxTextLength = (Checks::resultsCardsIsEnabled()) ? 40 : 60;
+        $maxTextLength = Checks::resultsCardsIsEnabled() ? 40 : 60;
 
         $favorites = AccountFavorites::getFavorites(Session::getUserId());
 
-        $Account = new Account(new AccountData());
         $accountsData['count'] = self::$queryNumRows;
 
         foreach ($results as $account) {
-            $Account->getAccountData()->setAccountId($account->account_id);
-            $Account->getAccountData()->setAccountUserId($account->account_userId);
-            $Account->getAccountData()->setAccountUsersId($Account->getUsersAccount());
-            $Account->getAccountData()->setAccountUserGroupId($account->account_userGroupId);
-            $Account->getAccountData()->setAccountUserGroupsId($Account->getGroupsAccount());
-            $Account->getAccountData()->setAccountOtherUserEdit($account->account_otherUserEdit);
-            $Account->getAccountData()->setAccountOtherGroupEdit($account->account_otherGroupEdit);
+            // Establecer los datos de la cuenta
+            $Account = new Account();
+            $AccountData = $Account->getAccountData();
+            $AccountData->setAccountId($account->account_id);
+            $AccountData->setAccountUserId($account->account_userId);
+            $AccountData->setAccountUsersId($Account->getUsersAccount());
+            $AccountData->setAccountUserGroupId($account->account_userGroupId);
+            $AccountData->setAccountUserGroupsId($Account->getGroupsAccount());
+            $AccountData->setAccountOtherUserEdit($account->account_otherUserEdit);
+            $AccountData->setAccountOtherGroupEdit($account->account_otherGroupEdit);
 
-            // Obtener los datos de la cuenta para aplicar las ACL
-            $accountAclData = $Account->getAccountDataForACL();
+            // Obtener la ACL de la cuenta
+            $AccountAcl = new AccountAcl();
+            $AccountAcl->getAcl($Account, Acl::ACTION_ACC_SEARCH);
 
             $AccountSearchData = new AccountsSearchData();
             $AccountSearchData->setTextMaxLength($maxTextLength);
@@ -363,17 +366,17 @@ class AccountSearch
             $AccountSearchData->setLogin($account->account_login);
             $AccountSearchData->setCategoryName($account->category_name);
             $AccountSearchData->setCustomerName($account->customer_name);
-            $AccountSearchData->setCustomerLink((AccountsSearchData::$wikiEnabled) ? Config::getConfig()->getWikiSearchurl() . $account->customer_name : '');
+            $AccountSearchData->setCustomerLink(AccountsSearchData::$wikiEnabled ? Config::getConfig()->getWikiSearchurl() . $account->customer_name : '');
             $AccountSearchData->setColor($this->pickAccountColor($account->account_customerId));
             $AccountSearchData->setUrl($account->account_url);
             $AccountSearchData->setFavorite(in_array($account->account_id, $favorites));
             $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
-            $AccountSearchData->setNumFiles((Checks::fileIsEnabled()) ? $account->num_files : 0);
-            $AccountSearchData->setShowView(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
-            $AccountSearchData->setShowViewPass(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW_PASS, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
-            $AccountSearchData->setShowEdit(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_EDIT, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_EDIT));
-            $AccountSearchData->setShowCopy(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_COPY, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_COPY));
-            $AccountSearchData->setShowDelete(Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_DELETE, $accountAclData) && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_DELETE));
+            $AccountSearchData->setNumFiles(Checks::fileIsEnabled() ? $account->num_files : 0);
+            $AccountSearchData->setShowView($AccountAcl->isShowView());
+            $AccountSearchData->setShowViewPass($AccountAcl->isShowViewPass());
+            $AccountSearchData->setShowEdit($AccountAcl->isShowEdit());
+            $AccountSearchData->setShowCopy($AccountAcl->isShowCopy());
+            $AccountSearchData->setShowDelete($AccountAcl->isShowDelete());
 
             // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
             if ($AccountSearchData->isShow()) {

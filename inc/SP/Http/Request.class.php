@@ -43,8 +43,8 @@ class Request
      */
     public static function checkReferer($method)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== strtoupper($method)
-            || !isset($_SERVER['HTTP_REFERER'])
+        if (!isset($_SERVER['HTTP_REFERER'])
+            || $_SERVER['REQUEST_METHOD'] !== strtoupper($method)
             || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
         ) {
             Init::initError(_('No es posible acceder directamente a este archivo'));
@@ -153,7 +153,7 @@ class Request
      */
     public static function checkReload()
     {
-        return (self::getRequestHeaders('Cache-Control') == 'max-age=0');
+        return (self::getRequestHeaders('Cache-Control') === 'max-age=0');
     }
 
     /**
@@ -180,34 +180,17 @@ class Request
     }
 
     /**
-     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
-     */
-    public static function importUrlParamsToGet()
-    {
-        foreach ($_POST as $param => $value) {
-            Html::sanitize($param);
-            Html::sanitize($value);
-
-            if (!strncmp($param, 'g_', 2)) {
-                $params[] = substr($param, 2) . '=' . $value;
-            }
-        }
-
-        return (isset($params) && count($params) > 0) ? implode('&', $params) : '';
-    }
-
-    /**
      * Función que sustituye a apache_request_headers
      *
      * @return array
      */
     public static function getApacheHeaders()
     {
-        $headers = array();
+        $headers = [];
 
         foreach ($_SERVER as $key => $value) {
-            if (substr($key, 0, 5) == "HTTP_") {
-                $key = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
+            if (strpos($key, 'HTTP_') === 0) {
+                $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
                 $headers[$key] = $value;
             } else {
                 $headers[$key] = $value;
@@ -215,5 +198,24 @@ class Request
         }
 
         return $headers;
+    }
+
+    /**
+     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
+     */
+    public static function importUrlParamsToGet()
+    {
+        $params = [];
+
+        foreach ($_POST as $param => $value) {
+            Html::sanitize($param);
+            Html::sanitize($value);
+
+            if (strpos($param, 'g_') !== false) {
+                $params[] = substr($param, 2) . '=' . $value;
+            }
+        }
+
+        return count($params) > 0 ? '?' . implode('&', $params) : '';
     }
 }

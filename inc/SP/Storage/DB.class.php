@@ -26,7 +26,7 @@
 namespace SP\Storage;
 
 use PDO;
-use SP\Core\SingleFactory;
+use SP\Core\DiFactory;
 use SP\Log\Log;
 use SP\Core\Exceptions\SPException;
 use SP\Util\Util;
@@ -208,7 +208,7 @@ class DB
         }
 
         try {
-            $db = SingleFactory::getDBStorage()->getConnection();
+            $db = DiFactory::getDBStorage()->getConnection();
 
             if (is_array($queryData->getParams())) {
                 $sth = $db->prepare($queryData->getQuery());
@@ -285,7 +285,7 @@ class DB
         $queryData->setQuery($query);
 
         try {
-            $db = SingleFactory::getDBStorage()->getConnection();
+            $db = DiFactory::getDBStorage()->getConnection();
             $queryRes = (is_array($queryData->getParams())) ? $this->prepareQueryData($queryData, true) : $db->query($query);
             $num = intval($queryRes->fetchColumn());
             $queryRes->closeCursor();
@@ -315,8 +315,8 @@ class DB
         $Log->addDetails('SQL', DBUtil::escape($query));
         $Log->writeLog();
 
-        error_log($query);
-        error_log($errorMsg);
+        error_log($Log->getDescription());
+        error_log($Log->getDetails());
     }
 
     /**

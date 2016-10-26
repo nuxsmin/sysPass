@@ -23,8 +23,8 @@
  *
  */
 
-use SP\Controller\AccItemMgmt;
-use SP\Controller\AppItemMgmt;
+use SP\Controller\AccItemController;
+use SP\Controller\AppItemController;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Template;
@@ -60,145 +60,145 @@ switch ($actionId) {
         $Tpl->assign('header', _('Ver Usuario'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
         $Tpl->assign('isView', true);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getUser();
         break;
     case ActionsInterface::ACTION_USR_USERS_EDIT:
         $Tpl->assign('header', _('Editar Usuario'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getUser();
         break;
     case ActionsInterface::ACTION_USR_USERS_NEW:
         $Tpl->assign('header', _('Nuevo Usuario'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getUser();
         break;
     case ActionsInterface::ACTION_USR_GROUPS_VIEW:
         $Tpl->assign('header', _('Ver Grupo'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
         $Tpl->assign('isView', true);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getGroup();
         break;
     case ActionsInterface::ACTION_USR_GROUPS_EDIT:
         $Tpl->assign('header', _('Editar Grupo'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getGroup();
         break;
     case ActionsInterface::ACTION_USR_GROUPS_NEW:
         $Tpl->assign('header', _('Nuevo Grupo'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getGroup();
         break;
     case ActionsInterface::ACTION_USR_PROFILES_VIEW:
         $Tpl->assign('header', _('Ver Perfil'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
         $Tpl->assign('isView', true);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getProfile();
         break;
     case ActionsInterface::ACTION_USR_PROFILES_EDIT:
         $Tpl->assign('header', _('Editar Perfil'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getProfile();
         break;
     case ActionsInterface::ACTION_USR_PROFILES_NEW:
         $Tpl->assign('header', _('Nuevo Perfil'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getProfile();
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMERS_VIEW:
         $Tpl->assign('header', _('Ver Cliente'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
         $Tpl->assign('isView', true);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCustomer();
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
         $Tpl->assign('header', _('Editar Cliente'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCustomer();
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
         $Tpl->assign('header', _('Nuevo Cliente'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCustomer();
         break;
     case ActionsInterface::ACTION_MGM_CATEGORIES_VIEW:
         $Tpl->assign('header', _('Ver Categoría'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
         $Tpl->assign('isView', true);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCategory();
         break;
     case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
         $Tpl->assign('header', _('Editar Categoría'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCategory();
         break;
     case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
         $Tpl->assign('header', _('Nueva Categoría'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCategory();
         break;
     case ActionsInterface::ACTION_MGM_APITOKENS_VIEW:
         $Tpl->assign('header', _('Ver Autorización'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
         $Tpl->assign('isView', true);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getToken();
         break;
     case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
         $Tpl->assign('header', _('Nueva Autorización'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getToken();
         break;
     case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
         $Tpl->assign('header', _('Editar Autorización'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getToken();
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
         $Tpl->assign('header', _('Nuevo Campo'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCustomField();
         break;
     case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
         $Tpl->assign('header', _('Editar Campo'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getCustomField();
         break;
     case ActionsInterface::ACTION_MGM_PUBLICLINKS_VIEW:
         $Tpl->assign('header', _('Ver Enlace Público'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM_PUBLICLINKS);
         $Tpl->assign('isView', true);
-        $Controller = new AccItemMgmt($Tpl);
+        $Controller = new AccItemController($Tpl);
         $Controller->getPublicLink();
         break;
     case ActionsInterface::ACTION_MGM_TAGS_NEW:
         $Tpl->assign('header', _('Nueva Etiqueta'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getTag();
         break;
     case ActionsInterface::ACTION_MGM_TAGS_EDIT:
         $Tpl->assign('header', _('Editar Etiqueta'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_MGM);
-        $Controller = new AppItemMgmt($Tpl);
+        $Controller = new AppItemController($Tpl);
         $Controller->getTag();
         break;
     default :

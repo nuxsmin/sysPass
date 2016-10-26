@@ -2,12 +2,14 @@
     <div id="session" class="midround shadow">
         <?php if ($showPassIcon): ?>
             <?php echo $userName, ' (', $userGroup, ') ', $adminApp; ?>
-            <img src="<?php echo $icons->getIconEditPass()->getIcon(); ?>" class="iconMini"
+            <img id="btnUserPass" src="<?php echo $icons->getIconEditPass()->getIcon(); ?>" class="iconMini"
                 title="<?php echo _('Cambiar clave de usuario'); ?>"
-                data-itemid="<?php echo $userId; ?>"
-                Onclick="sysPassUtil.Common.usrUpdPass(this,<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>, '<?php echo $sk; ?>')" />
-            <img src="imgs/preferences.png" class="iconMini" title="<?php echo _('Preferencias'); ?>"
-                 data-itemid="<?php echo $userId; ?>"
+                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
+                 data-item-id="<?php echo $userId; ?>"
+                 data-sk="<?php echo $sk; ?>"> />
+            <img id="btnPrefs" src="imgs/preferences.png" class="iconMini" title="<?php echo _('Preferencias'); ?>"
+                 data-item-id="<?php echo $userId; ?>"
+                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>"
                  OnClick="sysPassUtil.Common.doAction(<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>)" />
         <?php else: ?>
             <?php echo $userName, ' (', $userGroupName, ') ', $adminApp; ?>

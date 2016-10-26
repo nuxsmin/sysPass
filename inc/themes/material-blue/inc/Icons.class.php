@@ -27,7 +27,7 @@ namespace Theme;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\ThemeIconsBase;
+use SP\Core\UI\ThemeIconsBase;
 use SP\Html\Assets\FontIcon;
 
 /**
@@ -42,6 +42,7 @@ class Icons extends ThemeIconsBase
      */
     public function setIcons()
     {
+        // Iconos de Acciones
         $this->iconAdd = new FontIcon('add', 'mdl-color-text--indigo-A200', _('Añadir'));
         $this->iconView = new FontIcon('visibility', 'mdl-color-text--indigo-A200', _('Ver Detalles'));
         $this->iconViewPass = new FontIcon('lock_open', 'mdl-color-text--indigo-A200', _('Ver Clave'));
@@ -59,13 +60,14 @@ class Icons extends ThemeIconsBase
         $this->iconOptional = new FontIcon('settings');
         $this->iconPublicLink = new FontIcon('link', 'mdl-color-text--teal-500');
         $this->iconBack = new FontIcon('arrow_back', 'mdl-color-text--indigo-A200', _('Volver'));
-        $this->iconRestore = new FontIcon('restore', 'mdl-color-text--teal-500', ('Restaurar'));
+        $this->iconRestore = new FontIcon('restore', 'mdl-color-text--teal-500', _('Restaurar'));
         $this->iconSave = new FontIcon('save', 'mdl-color-text--teal-500', _('Guardar'));
         $this->iconHelp = new FontIcon('help_outline', 'mdl-color-text--indigo-A100', _('Ayuda'));
         $this->iconClear = new FontIcon('clear_all', 'mdl-color--indigo-A200', _('Limpiar'));
         $this->iconPlay = new FontIcon('play_circle_filled', 'mdl-color-text--teal-500', _('Realizar'));
         $this->iconDownload = new FontIcon('file_download', 'mdl-color-text--indigo-A200', _('Descargar'));
         $this->iconWarning = new FontIcon('warning', 'mdl-color-text--amber-A100', _('Aviso'));
+        $this->iconCheck = new FontIcon('cached', 'mdl-color-text--indigo-A200', _('Comprobar'));
 
         // Iconos de Navegación
         $this->iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));

@@ -31,9 +31,10 @@ use SP\Core\Language;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Themes;
+use SP\Core\DiFactory;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPassRecoverData;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
@@ -45,6 +46,7 @@ use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Mgmt\Users\UserPreferences;
 use SP\Mgmt\Users\UserUtil;
+use SP\Util\Json;
 
 define('APP_ROOT', '..');
 
@@ -56,12 +58,15 @@ if (!Request::analyze('login', false)) {
     return;
 }
 
+$Json = new JsonResponse();
+
 $userLogin = Request::analyze('user');
 $userPass = Request::analyzeEncrypted('pass');
 $masterPass = Request::analyzeEncrypted('mpass');
 
 if (!$userLogin || !$userPass) {
-    Response::printJSON(_('Usuario/Clave no introducidos'));
+    $Json->setDescription(_('Usuario/Clave no introducidos'));
+    Json::returnJson($Json);
 }
 
 $UserData = new UserData();
@@ -93,29 +98,33 @@ if ($resLdap === true) {
         $Log->addDescription($e->getMessage());
         $Log->writeLog();
 
-        Response::printJSON(_('Error interno'));
+        $Json->setDescription(_('Error interno'));
+        Json::returnJson($Json);
     }
-} else if ($resLdap == 49) {
+} else if ($resLdap === 49) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('Login incorrecto'));
     $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
     $Log->writeLog();
 
-    Response::printJSON(_('Usuario/Clave incorrectos'));
+    $Json->setDescription(_('Usuario/Clave incorrectos'));
+    Json::returnJson($Json);
 } else if ($resLdap === 701) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('Cuenta expirada'));
     $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
     $Log->writeLog();
 
-    Response::printJSON(_('Cuenta expirada'));
+    $Json->setDescription(_('Cuenta expirada'));
+    Json::returnJson($Json);
 } else if ($resLdap === 702) {
     $Log->addDescription('(LDAP)');
     $Log->addDescription(_('El usuario no tiene grupos asociados'));
     $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
     $Log->writeLog();
 
-    Response::printJSON(_('El usuario no tiene grupos asociados'));
+    $Json->setDescription(_('El usuario no tiene grupos asociados'));
+    Json::returnJson($Json);
 } else { // Autentificamos por MySQL (ha fallado LDAP)
     $Log->resetDescription();
     $Log->addDescription('(MySQL)');
@@ -126,7 +135,8 @@ if ($resLdap === true) {
         $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
         $Log->writeLog();
 
-        Response::printJSON(_('Usuario/Clave incorrectos'));
+        $Json->setDescription(_('Usuario/Clave incorrectos'));
+        Json::returnJson($Json);
     }
 }
 
@@ -137,7 +147,8 @@ if (!Auth::checkServerAuthUser($UserData->getUserLogin())) {
     $Log->addDetails(_('Autentificación'), sprintf('%s (%s)', Auth::getServerAuthType(), Auth::getServerAuthUser()));
     $Log->writeLog();
 
-    Response::printJSON(_('Usuario/Clave incorrectos'));
+    $Json->setDescription(_('Usuario/Clave incorrectos'));
+    Json::returnJson($Json);
 }
 
 // Obtenemos los datos del usuario
@@ -149,7 +160,8 @@ try {
     $Log->addDescription(_('Error al obtener los datos del usuario de la BBDD'));
     $Log->writeLog();
 
-    Response::printJSON(_('Error interno'));
+    $Json->setDescription(_('Error interno'));
+    Json::returnJson($Json);
 }
 
 // Comprobar si el usuario está deshabilitado
@@ -158,7 +170,8 @@ if ($User->getItemData()->isUserIsDisabled()) {
     $Log->addDetails(_('Usuario'), $User->getItemData()->getUserLogin());
     $Log->writeLog();
 
-    Response::printJSON(_('Usuario deshabilitado'));
+    $Json->setDescription(_('Usuario deshabilitado'));
+    Json::returnJson($Json);
 }
 
 $UserPass = UserPass::getItem($User->getItemData());
@@ -167,7 +180,9 @@ $UserPass = UserPass::getItem($User->getItemData());
 if (!$masterPass
     && (!$UserPass->loadUserMPass() || !UserPass::checkUserUpdateMPass($User->getItemData()->getUserId()))
 ) {
-    Response::printJSON(_('La clave maestra no ha sido guardada o es incorrecta'), 3);
+    $Json->setStatus(2);
+    $Json->setDescription(_('La clave maestra no ha sido guardada o es incorrecta'));
+    Json::returnJson($Json);
 } elseif ($masterPass) {
     if (CryptMasterPass::checkTempMasterPass($masterPass)) {
         $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
@@ -177,7 +192,9 @@ if (!$masterPass
         $Log->addDescription(_('Clave maestra incorrecta'));
         $Log->writeLog();
 
-        Response::printJSON(_('Clave maestra incorrecta'), 4);
+        $Json->setStatus(2);
+        $Json->setDescription($Log->getDescription());
+        Json::returnJson($Json);
     }
 }
 
@@ -190,8 +207,9 @@ if ($User->getItemData()->isUserIsChangePass()) {
     $UserPassRecoverData->setUserpassrHash($hash);
 
     if (UserPassRecover::getItem($UserPassRecoverData)->add()) {
-        $url = Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1';
-        Response::printJSON($url, 0);
+        $data = ['url' => Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1'];
+        $Json->setData($data);
+        Json::returnJson($Json);
     }
 }
 
@@ -212,22 +230,26 @@ if ($UserPass->getClearUserMPass()) {
     $Log->addDescription(_('Error al obtener la clave maestra del usuario'));
     $Log->writeLog();
 
-    Response::printJSON(_('Error interno'));
+    $Json->setDescription(_('Error interno'));
+    Json::returnJson($Json);
 }
 
 $UserPreferencesData = UserPreferences::getItem()->getById($User->getItemData()->getUserId())->getItemData();
 Language::setLanguage(true);
-Themes::setTheme(true);
+DiFactory::getTheme()->initTheme(true);
 Session::setUserPreferences($UserPreferencesData);
 Session::setSessionType(Session::SESSION_INTERACTIVE);
 
 if ($UserPreferencesData->isUse2Fa()) {
     Session::set2FApassed(false);
-    $url = Init::$WEBURI . '/index.php?a=2fa&i=' . $User->getItemData()->getUserId() . '&t=' . time() . '&f=1';
-    Response::printJSON($url, 0);
+    $data = ['url' => Init::$WEBURI . '/index.php?a=2fa&i=' . $User->getItemData()->getUserId() . '&t=' . time() . '&f=1'];
+    $Json->setData($data);
+    Json::returnJson($Json);
 } else {
     Session::set2FApassed(true);
 }
 
-$urlParams = Request::importUrlParamsToGet();
-Response::printJSON('index.php?' . $urlParams, 0);
+$data = ['url' => 'index.php' . Request::importUrlParamsToGet()];
+$Json->setStatus(0);
+$Json->setData($data);
+Json::returnJson($Json);

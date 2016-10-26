@@ -34,12 +34,12 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $actionId = Request::analyze('actionId', 0);
 
-$Controller = new \SP\Controller\Wiki();
+$Controller = new \SP\Controller\WikiController();
 
 switch ($actionId) {
     case \SP\Core\ActionsInterface::ACTION_WIKI_VIEW:

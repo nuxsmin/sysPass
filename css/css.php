@@ -23,34 +23,36 @@
  *
  */
 
+use SP\Core\Init;
 use SP\Html\Minify;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$file = \SP\Http\Request::analyze('f');
-$base = \SP\Http\Request::analyze('b');
+$file = Request::analyze('f');
+$base = Request::analyze('b');
 
 if (!$file) {
     $Minify = new Minify();
-    $Minify->setType(Minify::FILETYPE_CSS);
-    $Minify->setBase(__DIR__);
-    $Minify->addFile('reset.min.css');
-    $Minify->addFile('jquery-ui.min.css');
-    $Minify->addFile('jquery-ui.structure.min.css');
-    $Minify->addFile('alertify.min.css');
-    $Minify->addFile('jquery.tagsinput.min.css');
-    $Minify->addFile('jquery.fancybox.min.css');
-    $Minify->addFile('fonts.min.css');
-    $Minify->addFile('material-icons.min.css');
-    $Minify->getMinified();
+    $Minify->setType(Minify::FILETYPE_CSS)
+        ->setBase(__DIR__)
+        ->addFile('reset.min.css')
+        ->addFile('jquery-ui.min.css')
+        ->addFile('jquery-ui.structure.min.css')
+        ->addFile('alertify.min.css')
+        ->addFile('jquery.tagsinput.min.css')
+        ->addFile('jquery.fancybox.min.css')
+        ->addFile('fonts.min.css')
+        ->addFile('material-icons.min.css')
+        ->getMinified();
 } elseif ($file && $base) {
-    $base = \SP\Http\Request::analyze('b');
+    $base = Request::analyze('b');
 
     $Minify = new Minify();
-    $Minify->setType(Minify::FILETYPE_CSS);
-    $Minify->setBase(\SP\Core\Init::$SERVERROOT . urldecode($base));
-    $Minify->addFile(urldecode($file));
-    $Minify->getMinified();
+    $Minify->setType(Minify::FILETYPE_CSS)
+        ->setBase(Init::$SERVERROOT . urldecode($base))
+        ->addFile(urldecode($file))
+        ->getMinified();
 }

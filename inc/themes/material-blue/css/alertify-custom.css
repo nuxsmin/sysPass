@@ -1,0 +1,23 @@
+.alertify-logs > *.error {
+    background: #F44336 !important;
+    background: rgba(244, 67, 54, .9) !important;
+}
+
+.alertify-logs > *.success {
+    background: #009688;
+    background: rgba(0, 150, 136, .9) !important;
+}
+
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).ok,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).ok {
+    color: #FFFFFF;
+    background-color: #009688;
+    background-color: rgba(0, 150, 136, .9) !important;
+}
+
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).cancel,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).cancel {
+    color: #FFFFFF;
+    background: #F44336 !important;
+    background: rgba(244, 67, 54, .9) !important;
+}

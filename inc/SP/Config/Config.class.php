@@ -26,7 +26,7 @@
 namespace SP\Config;
 
 use ReflectionObject;
-use SP\Core\SingleFactory;
+use SP\Core\DiFactory;
 use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
 
@@ -103,8 +103,8 @@ class Config
         $ConfigData->setConfigSaver(Session::getUserLogin());
         $ConfigData->setConfigHash();
 
-        SingleFactory::getConfigStorage()->setItems($ConfigData);
-        SingleFactory::getConfigStorage()->save('config');
+        DiFactory::getConfigStorage()->setItems($ConfigData);
+        DiFactory::getConfigStorage()->save('config');
 
         if ($backup) {
             self::backupToDB();
@@ -126,7 +126,7 @@ class Config
         self::$Config = new ConfigData();
 
         try {
-            $items = SingleFactory::getConfigStorage()->load('config')->getItems();
+            $items = DiFactory::getConfigStorage()->load('config')->getItems();
             $Reflection = new ReflectionObject(self::$Config);
 
             foreach ($Reflection->getProperties() as $property) {

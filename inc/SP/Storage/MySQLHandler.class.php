@@ -120,8 +120,6 @@ class MySQLHandler implements DBStorageInterface
             $isInstalled = Config::getConfig()->isInstalled();
 
             if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
-                Init::$DB_STATUS = 0;
-
                 if ($isInstalled) {
                     Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
                 } else {
@@ -135,8 +133,9 @@ class MySQLHandler implements DBStorageInterface
                 $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
 //                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
                 $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
+
+                Init::$DB_STATUS = 1;
             } catch (\Exception $e) {
-                Init::$DB_STATUS = 0;
 
                 if ($isInstalled) {
                     if ($e->getCode() === 1049) {

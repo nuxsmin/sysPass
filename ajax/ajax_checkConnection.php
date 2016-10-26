@@ -36,13 +36,13 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 $frmType = Request::analyze('type');
 
@@ -54,15 +54,15 @@ if ($frmType === 'ldap') {
     $frmLdapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
     if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
-        Response::printJSON(_('Los parámetros de LDAP no están configurados'));
+        Response::printJson(_('Los parámetros de LDAP no están configurados'));
     }
 
     $resCheckLdap = Ldap::checkLDAPConn($frmLdapServer, $frmLdapBindUser, $frmLdapBindPass, $frmLdapBase, $frmLdapGroup);
 
     if ($resCheckLdap === false) {
-        Response::printJSON(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
+        Response::printJson(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
     } else {
-        Response::printJSON(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
+        Response::printJson(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
     }
 } elseif ($frmType === 'dokuwiki') {
     $frmDokuWikiUrl = Request::analyze('dokuwiki_url');
@@ -70,7 +70,7 @@ if ($frmType === 'ldap') {
     $frmDokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
 
     if (!$frmDokuWikiUrl) {
-        Response::printJSON(_('Los parámetros de DokuWiki no están configurados'));
+        Response::printJson(_('Los parámetros de DokuWiki no están configurados'));
     }
 
     try {
@@ -84,8 +84,8 @@ if ($frmType === 'ldap') {
             'data' => sprintf('%s: %s', _('Versión'), $version),
         );
 
-        Response::printJSON($data, 0);
+        Response::printJson($data, 0);
     } catch (\SP\Core\Exceptions\SPException $e) {
-        Response::printJSON(_('Error de conexión a DokuWiki') . ';;' . _('Revise el registro de eventos para más detalles'));
+        Response::printJson(_('Error de conexión a DokuWiki') . ';;' . _('Revise el registro de eventos para más detalles'));
     }
 }

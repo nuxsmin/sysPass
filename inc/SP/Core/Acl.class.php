@@ -62,61 +62,65 @@ class Acl implements ActionsInterface
         $curUserProfile = Session::getUserProfile();
         $curUserId = Session::getUserId();
 
+        if ($curUserIsAdminApp) {
+            return true;
+        }
+
         switch ($action) {
             case self::ACTION_ACC_VIEW:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccView() || $curUserProfile->isAccEdit());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccView() || $curUserProfile->isAccEdit());
             case self::ACTION_ACC_VIEW_PASS:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccViewPass());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccViewPass());
             case self::ACTION_ACC_VIEW_HISTORY:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccViewHistory());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccViewHistory());
             case self::ACTION_ACC_EDIT:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccEdit());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccEdit());
             case self::ACTION_ACC_EDIT_PASS:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccEditPass());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccEditPass());
             case self::ACTION_ACC_NEW:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccAdd());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccAdd());
             case self::ACTION_ACC_COPY:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || ($curUserProfile->isAccAdd() && $curUserProfile->isAccView()));
+                return ($curUserIsAdminAcc || ($curUserProfile->isAccAdd() && $curUserProfile->isAccView()));
             case self::ACTION_ACC_DELETE:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccDelete());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccDelete());
             case self::ACTION_ACC_FILES:
-                return ($curUserIsAdminApp || $curUserIsAdminAcc || $curUserProfile->isAccFiles());
+                return ($curUserIsAdminAcc || $curUserProfile->isAccFiles());
             case self::ACTION_MGM:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
+                return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
             case self::ACTION_CFG:
-                return ($curUserIsAdminApp || $curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
+                return ($curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
             case self::ACTION_CFG_GENERAL:
-                return ($curUserIsAdminApp || $curUserProfile->isConfigGeneral());
+                return ($curUserProfile->isConfigGeneral());
             case self::ACTION_CFG_IMPORT:
-                return ($curUserIsAdminApp || $curUserProfile->isConfigImport());
+                return ($curUserProfile->isConfigImport());
             case self::ACTION_MGM_CATEGORIES:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmCategories());
+                return ($curUserProfile->isMgmCategories());
             case self::ACTION_MGM_CUSTOMERS:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmCustomers());
+                return ($curUserProfile->isMgmCustomers());
             case self::ACTION_MGM_CUSTOMFIELDS:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmCustomFields());
+                return ($curUserProfile->isMgmCustomFields());
             case self::ACTION_MGM_PUBLICLINKS:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmPublicLinks());
+                return ($curUserProfile->isMgmPublicLinks());
             case self::ACTION_MGM_PUBLICLINKS_NEW:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
+                return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
             case self::ACTION_CFG_ENCRYPTION:
-                return ($curUserIsAdminApp || $curUserProfile->isConfigEncryption());
+                return ($curUserProfile->isConfigEncryption());
             case self::ACTION_CFG_BACKUP:
-                return ($curUserIsAdminApp || $curUserProfile->isConfigBackup());
+                return ($curUserProfile->isConfigBackup());
             case self::ACTION_USR:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
+                return ($curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
             case self::ACTION_USR_USERS:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmUsers());
+                return ($curUserProfile->isMgmUsers());
             case self::ACTION_USR_USERS_EDITPASS:
-                return ($userId == $curUserId || $curUserIsAdminApp || $curUserProfile->isMgmUsers());
+                return ($userId == $curUserId || $curUserProfile->isMgmUsers());
             case self::ACTION_USR_GROUPS:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmGroups());
+                return ($curUserProfile->isMgmGroups());
             case self::ACTION_USR_PROFILES:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmProfiles());
+                return ($curUserProfile->isMgmProfiles());
             case self::ACTION_MGM_APITOKENS:
-                return ($curUserIsAdminApp || $curUserProfile->isMgmApiTokens());
+                return ($curUserProfile->isMgmApiTokens());
             case self::ACTION_EVL:
-                return ($curUserIsAdminApp || $curUserProfile->isEvl());
+                return ($curUserProfile->isEvl());
         }
 
         Log::writeNewLog(__FUNCTION__, sprintf('%s \'%s\'', _('Denegado acceso a'), self::getActionName($action)), Log::NOTICE);
@@ -197,15 +201,15 @@ class Acl implements ActionsInterface
             case self::ACTION_ACC_VIEW_PASS:
             case self::ACTION_ACC_VIEW_HISTORY:
             case self::ACTION_ACC_COPY:
-                return ($userId == $accountData->getAccountUserId()
-                    || $userGroupId == $accountData->getAccountUserGroupId()
+                return ($userId === $accountData->getAccountUserId()
+                    || $userGroupId === $accountData->getAccountUserGroupId()
                     || $userInUsers
                     || $userInGroups);
             case self::ACTION_ACC_EDIT:
             case self::ACTION_ACC_DELETE:
             case self::ACTION_ACC_EDIT_PASS:
-                return ($userId == $accountData->getAccountUserId()
-                    || $userGroupId == $accountData->getAccountUserGroupId()
+                return ($userId === $accountData->getAccountUserId()
+                    || $userGroupId === $accountData->getAccountUserGroupId()
                     || ($userInUsers && $accountData->getAccountOtherUserEdit())
                     || ($userInGroups && $accountData->getAccountOtherGroupEdit()));
             default:

@@ -25,6 +25,7 @@
 
 namespace SP\Core;
 
+use SP\Config\Config;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
@@ -105,11 +106,12 @@ class SessionUtil
      */
     public static function getSessionKey($new = false)
     {
-        $hash = sha1(time());
-
         // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
-        if (is_null(Session::getSecurityKey()) || $new === true) {
+        if ($new === true || null === Session::getSecurityKey()) {
+            $hash = sha1(time() . Config::getConfig()->getPasswordSalt());
+
             Session::setSecurityKey($hash);
+
             return $hash;
         }
 
@@ -124,7 +126,7 @@ class SessionUtil
      */
     public static function checkSessionKey($key)
     {
-        return (!is_null(Session::getSecurityKey()) && Session::getSecurityKey() == $key);
+        return (null !== Session::getSecurityKey() && Session::getSecurityKey() === $key);
     }
 
     /**

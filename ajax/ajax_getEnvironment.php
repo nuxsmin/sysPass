@@ -29,6 +29,7 @@ use SP\Core\Init;
 use SP\Core\Session;
 use SP\Http\Request;
 use SP\Http\Response;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
@@ -37,16 +38,19 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.j
 
 Request::checkReferer('GET');
 
+$Config = Config::getConfig();
+
 $data = array(
     'lang' => $stringsJsLang,
     'app_root' => Init::$WEBURI,
     'pk' => '',
-    'max_file_size' => Config::getConfig()->getFilesAllowedSize()
+    'max_file_size' => $Config->getFilesAllowedSize(),
+    'check_updates' => $Config->isCheckUpdates() && (Session::getUserIsAdminApp() || Checks::demoIsEnabled())
 );
 
 try {
     $CryptPKI = new CryptPKI();
-    $data['pk'] = (Session::getPublicKey()) ? Session::getPublicKey() : $CryptPKI->getPublicKey();
+    $data['pk'] = Session::getPublicKey() ?: $CryptPKI->getPublicKey();
 } catch (Exception $e) {}
 
-Response::printJSON($data, 0);
+Response::printJson($data, 0);

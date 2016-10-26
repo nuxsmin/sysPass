@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class CategoryData
+class CategoryData extends DataModelBase
 {
     /**
      * @var int
@@ -109,5 +109,21 @@ class CategoryData
     public function setCategoryDescription($category_description)
     {
         $this->category_description = $category_description;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->category_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->category_name;
     }
 }

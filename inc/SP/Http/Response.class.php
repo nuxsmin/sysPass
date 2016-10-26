@@ -41,22 +41,25 @@ class Response
      * @param int    $status      devuelve el estado
      * @return bool
      */
-    public static function printXML($description, $status = 1)
+    public static function printXml($description, $status = 1)
     {
         if (!is_string($description)) {
             return false;
         }
 
-        $arrStrFrom = array("&", "<", ">", "\"", "\'");
-        $arrStrTo = array("&amp;", "&lt;", "&gt;", "&quot;", "&apos;");
+        $arrStrFrom = ['&', '<', '>', '"', "\'"];
+        $arrStrTo = ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'];
 
         $cleanDescription = str_replace($arrStrFrom, $arrStrTo, $description);
 
-        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        $xml .= "<root>\n<status>" . $status . "</status>\n <description>" . $cleanDescription . "</description>\n</root>";
+        $xml[] = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+        $xml[] = '<root>';
+        $xml[] = '<status>' . $status . '</status>';
+        $xml[] = '<description>' . $cleanDescription . '</description>';
+        $xml[] = '</root>';
 
-        header("Content-Type: application/xml");
-        exit($xml);
+        header('Content-Type: application/xml');
+        exit(implode(PHP_EOL, $xml));
     }
 
     /**
@@ -67,14 +70,14 @@ class Response
      * @param string       $action con la accion a realizar
      * @return bool
      */
-    public static function printJSON($data, $status = 1, $action = '')
+    public static function printJson($data, $status = 1, $action = '')
     {
         if (!is_array($data)) {
-            $json = array(
+            $json = [
                 'status' => $status,
                 'description' => $data,
                 'action' => $action
-            );
+            ];
         } else {
             $data['status'] = $status;
             $data['action'] = $action;
@@ -83,5 +86,17 @@ class Response
 
         header('Content-type: application/json');
         exit(Json::getJson($json));
+    }
+
+    /**
+     * Devuelve una respuesta de error en formato HTML.
+     *
+     * @param $data
+     */
+    public static function printHtmlError($data)
+    {
+        $error = '<div class="error">' . htmlentities($data) . '</div>';
+
+        exit($error);
     }
 }

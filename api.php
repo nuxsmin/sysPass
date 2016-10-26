@@ -38,7 +38,7 @@ try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
 } catch (Exception $e) {
-    \SP\Http\Response::printJSON(
+    \SP\Http\Response::printJson(
         array(
             'message' => $e->getMessage(),
             'help' => ApiRequest::getHelp()

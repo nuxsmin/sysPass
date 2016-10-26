@@ -29,7 +29,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use InvalidArgumentException;
 use SP\Core\ActionsInterface;
-use SP\Core\Themes;
+use SP\Core\DiFactory;
+use SP\Core\Theme;
 use SplObjectStorage;
 
 /**
@@ -74,7 +75,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @var DataGridActionInterface[]
      */
-    private $_actions = null;
+    private $_actions;
     /**
      * La acción a realizar al cerrar la matriz
      *
@@ -82,25 +83,25 @@ abstract class DataGridBase implements DataGridInterface
      */
     private $_onCloseAction = 0;
     /**
-     * La pantilla a utilizar para presentar la cabecera
+     * La plantilla a utilizar para presentar la cabecera
      *
      * @var string
      */
     private $_headerTemplate;
     /**
-     * La pantilla a utilizar para presentar las acciones
+     * La plantilla a utilizar para presentar las acciones
      *
      * @var string
      */
     private $_actionsTemplate;
     /**
-     * La pantilla a utilizar para presentar el paginador
+     * La plantilla a utilizar para presentar el paginador
      *
      * @var string
      */
     private $_pagerTemplate;
     /**
-     * La pantilla a utilizar para presentar los datos
+     * La plantilla a utilizar para presentar los datos
      *
      * @var string
      */
@@ -188,7 +189,7 @@ abstract class DataGridBase implements DataGridInterface
      */
     public function setDataActions(DataGridActionInterface $action)
     {
-        if (is_null($this->_actions)) {
+        if (null === $this->_actions) {
             $this->_actions = new SplObjectStorage();
         }
 
@@ -198,7 +199,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @return DataGridAction[]
+     * @return DataGridActionInterface[]
      */
     public function getDataActions()
     {
@@ -217,11 +218,12 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
+     * @param string $base Directorio base para la plantilla
      * @return $this
      */
-    public function setDataHeaderTemplate($template)
+    public function setDataHeaderTemplate($template, $base = null)
     {
-        $this->_headerTemplate = $this->checkTemplate($template);
+        $this->_headerTemplate = $this->checkTemplate($template, $base);
 
         return $this;
     }
@@ -229,12 +231,15 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Comprobar si existe una plantilla y devolver la ruta completa
      *
-     * @param $template
+     * @param      $template
+     * @param null $base
      * @return string
+     * @throws \InvalidArgumentException
      */
-    protected function checkTemplate($template)
+    protected function checkTemplate($template, $base = null)
     {
-        $file = VIEW_PATH . DIRECTORY_SEPARATOR . Themes::$theme . DIRECTORY_SEPARATOR . $template . '.inc';
+        $template = null === $base ? $template . '.inc' : $base . DIRECTORY_SEPARATOR . $template . '.inc';
+        $file = DiFactory::getTheme()->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $template, $file));
@@ -258,6 +263,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @param string $template El nombre de la plantilla a utilizar
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setDataActionsTemplate($template)
     {
@@ -280,11 +286,12 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
+     * @param string $base Directorio base para la plantilla
      * @return $this
      */
-    public function setDataPagerTemplate($template)
+    public function setDataPagerTemplate($template, $base = null)
     {
-        $this->_pagerTemplate = $this->checkTemplate($template);
+        $this->_pagerTemplate = $this->checkTemplate($template, $base);
 
         return $this;
     }
@@ -301,12 +308,12 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param string $template El nombre de la plantilla a utilizar
+     * @param string $base Directorio base para la plantilla
      * @return mixed
-     * @throws InvalidArgumentException
      */
-    public function setDataRowTemplate($template)
+    public function setDataRowTemplate($template, $base = null)
     {
-        $this->_rowsTemplate = $this->checkTemplate($template);
+        $this->_rowsTemplate = $this->checkTemplate($template, $base);
 
         return $this;
     }

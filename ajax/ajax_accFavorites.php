@@ -39,7 +39,7 @@ Request::checkReferer('POST');
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 $actionId = Request::analyze('actionId', 0);
@@ -47,19 +47,19 @@ $accountId = Request::analyze('accountId', 0);
 $userId = Session::getUserId();
 
 if (!$accountId || !$actionId){
-    Response::printJSON(_('Acción Inválida'));
+    Response::printJson(_('Acción Inválida'));
 }
 
 if ($actionId === ActionsInterface::ACTION_ACC_FAVORITES_ADD) {
     if (AccountFavorites::addFavorite($accountId, $userId)) {
-        Response::printJSON(_('Favorito añadido'), 0);
+        Response::printJson(_('Favorito añadido'), 0);
     }
 
-    Response::printJSON(_('Error al añadir favorito'));
+    Response::printJson(_('Error al añadir favorito'));
 } elseif ($actionId === ActionsInterface::ACTION_ACC_FAVORITES_DELETE) {
     if (AccountFavorites::deleteFavorite($accountId, $userId)) {
-        Response::printJSON(_('Favorito eliminado'), 0);
+        Response::printJson(_('Favorito eliminado'), 0);
     }
 
-    Response::printJSON(_('Error al eliminar favorito'));
+    Response::printJson(_('Error al eliminar favorito'));
 }

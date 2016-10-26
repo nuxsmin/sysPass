@@ -46,7 +46,7 @@ Request::checkReferer('POST');
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    Response::printJson(_('CONSULTA INVÁLIDA'));
 }
 
 $userLogin = Request::analyze('login');
@@ -67,7 +67,7 @@ if ($userLogin && $userEmail) {
         $Log->addDescription(_('Solicitud enviada'));
         $Log->writeLog();
 
-        Response::printJSON($Log->getDescription() . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
+        Response::printJson($Log->getDescription() . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
     }
 
     $Log->addDescription(_('Solicitud no enviada'));
@@ -76,7 +76,7 @@ if ($userLogin && $userEmail) {
 
     Email::sendEmail($Log);
 
-    Response::printJSON($Log->getDescription());
+    Response::printJson($Log->getDescription());
 } elseif ($userPass && $userPassR && $userPass === $userPassR) {
     $Log = new Log(_('Modificar Clave Usuario'));
 
@@ -87,14 +87,14 @@ if ($userLogin && $userEmail) {
         $Log->addDescription($e->getMessage());
         $Log->writeLog();
 
-        Response::printJSON($e->getMessage());
+        Response::printJson($e->getMessage());
     }
 
     $Log->addDescription(_('Clave actualizada'));
     $Log->addDetailsHtml(_('Login'), UserPass::getItem()->getItemData()->getUserLogin());
     $Log->writeLog();
 
-    Response::printJSON($Log->getDescription(), 0, 'goLogin();');
+    Response::printJson($Log->getDescription(), 0, 'goLogin();');
 } else {
-    Response::printJSON(_('La clave es incorrecta o no coincide'));
+    Response::printJson(_('La clave es incorrecta o no coincide'));
 }

@@ -209,4 +209,29 @@ interface DataGridPagerInterface
      * @param int $sortOrder
      */
     public function setSortOrder($sortOrder);
+
+    /**
+     * @return int
+     */
+    public function getLast();
+
+    /**
+     * @return int
+     */
+    public function getNext();
+
+    /**
+     * @return int
+     */
+    public function getPrev();
+
+    /**
+     * @return int
+     */
+    public function getFirst();
+
+    /**
+     * @return DataGridActionSearch
+     */
+    public function getSourceAction();
 }

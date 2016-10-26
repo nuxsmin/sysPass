@@ -28,6 +28,8 @@ namespace SP\Core;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use InvalidArgumentException;
+use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\UI\ThemeInterface;
 use SP\Log\Log;
 
 /**
@@ -42,13 +44,21 @@ use SP\Log\Log;
 class Template
 {
     /**
+     * @var ThemeInterface
+     */
+    protected $Theme;
+    /**
      * @var array Variable con los archivos de plantilla a cargar
      */
-    private $file = array();
+    private $file = [];
     /**
      * @var array Variable con las variables a incluir en la plantilla
      */
-    private $vars = array();
+    private $vars = [];
+    /**
+     * @var string Directorio base para los archivos de plantillas
+     */
+    private $base;
 
     /**
      * @param null  $file Archivo de plantilla a añadir
@@ -56,25 +66,28 @@ class Template
      */
     public function __construct($file = null, array $vars = array())
     {
-        if (!is_null($file)) {
+        if (null !== $file) {
             $this->addTemplate($file);
         }
 
         if (!empty($vars)) {
             $this->setVars($vars);
         }
+
+        $this->Theme = DiFactory::getTheme();
     }
 
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
      * @param string $file Con el nombre del archivo de plantilla
+     * @param string $base Directorio base para la plantilla
      * @return bool
      */
-    public function addTemplate($file)
+    public function addTemplate($file, $base = null)
     {
         try {
-            $template = $this->checkTemplate($file);
+            $template = $this->checkTemplate($file, $base);
             $this->setTemplate($template);
         } catch (InvalidArgumentException $e) {
             return false;
@@ -84,37 +97,33 @@ class Template
     }
 
     /**
-     * Añadir una nueva plantilla dentro de una plantilla
-     *
-     * @param string $file Con el nombre del archivo de plantilla
-     * @return bool
-     */
-    public function includeTemplate($file)
-    {
-        try {
-            $template = $this->checkTemplate($file);
-            return $template;
-        } catch (InvalidArgumentException $e) {
-            return false;
-        }
-    }
-
-    /**
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
-     * @param string $file Con el nombre del archivo
+     * @param string $template Con el nombre del archivo
      * @return string La ruta al archivo de la plantilla
+     * @param string $base     Directorio base para la plantilla
+     * @throws \InvalidArgumentException
      */
-    private function checkTemplate($file)
+    private function checkTemplate($template, $base = null)
     {
-        $template = VIEW_PATH . DIRECTORY_SEPARATOR . Themes::$theme . DIRECTORY_SEPARATOR . $file . '.inc';
+        if (null !== $base) {
+            $template = $base . DIRECTORY_SEPARATOR . $template . '.inc';
+        } elseif (null !== $this->base) {
+            $template = $this->base . DIRECTORY_SEPARATOR . $template . '.inc';
+        } else {
+            $template .= '.inc';
+        }
 
-        if (!is_readable($template)) {
+        error_log('Plantilla: ' . $template);
+
+        $file = $this->Theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
+
+        if (!is_readable($file)) {
             Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
-        return $template;
+        return $file;
     }
 
     /**
@@ -136,6 +145,22 @@ class Template
     {
         foreach ($vars as $name => $value) {
             $this->$name = $value;
+        }
+    }
+
+    /**
+     * Añadir una nueva plantilla dentro de una plantilla
+     *
+     * @param string $file Con el nombre del archivo de plantilla
+     * @param string $base     Directorio base para la plantilla
+     * @return bool
+     */
+    public function includeTemplate($file, $base = null)
+    {
+        try {
+            return $this->checkTemplate($file, $base);
+        } catch (InvalidArgumentException $e) {
+            return false;
         }
     }
 
@@ -191,7 +216,7 @@ class Template
      */
     public function __unset($name)
     {
-        if (!isset($this->vars[$name])) {
+        if (!array_key_exists($name, $this->vars)) {
             throw new InvalidArgumentException(sprintf(_('No es posible destruir la variable "%s"'), $name));
         }
 
@@ -204,9 +229,14 @@ class Template
      * La salida se almacena en buffer y se devuelve el contenido
      *
      * @return string Con el contenido del buffer de salida
+     * @throws FileNotFoundException
      */
     public function render()
     {
+        if (count($this->file) === 0) {
+            throw new FileNotFoundException(_('La plantilla no contiene archivos'));
+        }
+
         extract($this->vars);
 
         ob_start();
@@ -228,7 +258,7 @@ class Template
      */
     public function assign($name, $value = '', $scope = null)
     {
-        if (!is_null($scope)) {
+        if (null !== $scope) {
             $name = $scope . '_' . $name;
         }
 
@@ -245,11 +275,11 @@ class Template
      */
     public function append($name, $value, $scope = null, $index = null)
     {
-        if (!is_null($scope)) {
+        if (null !== $scope) {
             $name = $scope . '_' . $name;
         }
 
-        if (!is_null($index)) {
+        if (null !== $index) {
             $this->vars[$name][$index] = $value;
         } else {
             $this->vars[$name][] = $value;
@@ -270,5 +300,21 @@ class Template
     public function resetVariables()
     {
         $this->vars = array();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBase()
+    {
+        return $this->base;
+    }
+
+    /**
+     * @param string $base
+     */
+    public function setBase($base)
+    {
+        $this->base = $base;
     }
 }

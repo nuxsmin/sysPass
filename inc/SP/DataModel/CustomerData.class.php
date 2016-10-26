@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class CustomerData
+class CustomerData extends DataModelBase
 {
     /**
      * @var int
@@ -119,5 +119,21 @@ class CustomerData
     public function getCustomerHash()
     {
         return $this->customer_hash;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->customer_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->customer_name;
     }
 }

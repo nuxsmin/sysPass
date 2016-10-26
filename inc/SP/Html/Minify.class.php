@@ -66,12 +66,14 @@ class Minify
 
     /**
      * @param string $base
+     * @return $this
      */
     public function setBase($base)
     {
         $this->base = $base;
-    }
 
+        return $this;
+    }
 
     /**
      * Devolver al navegador archivos CSS y JS comprimidos
@@ -82,6 +84,10 @@ class Minify
      */
     public function getMinified($disableMinify = false)
     {
+        if (count($this->files) === 0) {
+            return;
+        }
+
         $offset = 3600 * 24 * 30;
         $nextCheck = time() + $offset;
         $expire = 'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', $nextCheck);
@@ -96,15 +102,15 @@ class Minify
         header($expire);
 
         // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag == $etagMatch && !($cacheControl == 'no-cache' || $pragma == 'no-cache')) {
-            header($_SERVER["SERVER_PROTOCOL"] . " 304 Not Modified");
+        if ($etag === $etagMatch && !($cacheControl === 'no-cache' || $pragma === 'no-cache')) {
+            header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
             exit;
         }
 
         if ($this->type === self::FILETYPE_JS) {
-            header("Content-type: application/x-javascript; charset: UTF-8");
+            header('Content-type: application/x-javascript; charset: UTF-8');
         } elseif ($this->type === self::FILETYPE_CSS) {
-            header("Content-type: text/css; charset: UTF-8");
+            header('Content-type: text/css; charset: UTF-8');
         }
 
         flush();
@@ -117,20 +123,14 @@ class Minify
             $filePath = $file['base'] . DIRECTORY_SEPARATOR . $file['name'];
 
             // Obtener el recurso desde una URL
-            if (preg_match('#^https?://.*#', $file['name'])) {
+            if ($file['type'] === 'url') {
                 try {
                     $data = Util::getDataFromUrl($file['name']);
                     echo '/* URL: ' . $file['name'] . ' */' . PHP_EOL;
                     echo $data;
                 } catch (SPException $e) {
+                    error_log($e->getMessage());
                 }
-
-                continue;
-            }
-
-            if (!file_exists($filePath)) {
-                echo '/* ERROR: FILE NOT FOUND: ' . $file['name'] . ' */' . PHP_EOL;
-                error_log('File not found: ' . $filePath);
             } else {
 
                 if ($file['min'] === true && $disableMinify === false) {
@@ -144,9 +144,9 @@ class Minify
                     echo '/* FILE: ' . $file['name'] . ' */' . PHP_EOL;
                     echo file_get_contents($filePath);
                 }
-
-                echo PHP_EOL;
             }
+
+            echo PHP_EOL;
         }
 
         ob_end_flush();
@@ -162,12 +162,7 @@ class Minify
         $md5Sum = '';
 
         foreach ($this->files as $file) {
-            if (preg_match('#^https?://.*#', $file['name'])) {
-                continue;
-            }
-
-            $filePath = $file['base'] . DIRECTORY_SEPARATOR . $file['name'];
-            $md5Sum .= (file_exists($filePath)) ? md5_file($filePath) : '';
+            $md5Sum .= $file['md5'];
         }
 
         return md5($md5Sum);
@@ -206,28 +201,37 @@ class Minify
     }
 
     /**
+     * Añadir un archivo
+     *
      * @param string $file
      * @param bool   $minify Si es necesario reducir
+     * @return $this
      */
     public function addFile($file, $minify = true)
     {
         if (strrpos($file, ',')) {
             $files = explode(',', $file);
 
-            foreach ($files as $file) {
-                $this->files[] = array(
-                    'base' => $this->base,
-                    'name' => $file,
-                    'min' => $this->needsMinify($file)
-                );
+            foreach ($files as $filename) {
+                $this->addFile($filename, $minify);
             }
         } else {
-            $this->files[] = array(
-                'base' => $this->base,
-                'name' => $file,
-                'min' => ($minify === true && $this->needsMinify($file))
-            );
+            $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
+
+            if (file_exists($filePath)) {
+                $this->files[] = array(
+                    'type' => 'file',
+                    'base' => $this->base,
+                    'name' => $file,
+                    'min' => $minify === true && $this->needsMinify($file),
+                    'md5' => md5_file($filePath)
+                );
+            } else {
+                error_log('File not found: ' . $filePath);
+            }
         }
+
+        return $this;
     }
 
     /**
@@ -242,10 +246,34 @@ class Minify
     }
 
     /**
+     * Añadir un recurso desde URL
+     *
+     * @param $url
+     * @return $this
+     */
+    public function addUrl($url)
+    {
+        $this->files[] = array(
+            'type' => 'url',
+            'base' => $this->base,
+            'name' => $url,
+            'min' => false,
+            'md5' => ''
+        );
+
+        return $this;
+    }
+
+    /**
+     * Establecer el tipo de recurso a procesar
+     *
      * @param int $type
+     * @return $this
      */
     public function setType($type)
     {
-        $this->type = $type;
+        $this->type = (int)$type;
+
+        return $this;
     }
 }

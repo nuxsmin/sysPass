@@ -29,14 +29,15 @@ use SP\Core\Init;
 use SP\Core\Language;
 use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Themes;
+use SP\Core\DiFactory;
 use SP\DataModel\UserPreferencesData;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
-use SP\Http\Response;
 use SP\Mgmt\Users\UserPreferences;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
+use SP\Util\Json;
 use SP\Util\Util;
 
 define('APP_ROOT', '..');
@@ -45,23 +46,24 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
+$Json = new JsonResponse();
+
 if (!Init::isLoggedIn()) {
-    Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+    $Json->setStatus(10);
+    $Json->setDescription(_('La sesión no se ha iniciado o ha caducado'));
+    Json::returnJson($Json);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJSON(_('CONSULTA INVÁLIDA'));
+    $Json->setDescription(_('CONSULTA INVÁLIDA'));
+    Json::returnJson($Json);
 }
 
 // Variables POST del formulario
 $actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);
-$activeTab = Request::analyze('activeTab', 0);
-
-// Acción al cerrar la vista
-$doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
 
 if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $UserPreferencesData = new UserPreferencesData();
@@ -78,19 +80,23 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
         UserPreferences::getItem($UserPreferencesData)->update();
         // Forzar la detección del lenguaje tras actualizar
         Language::setLanguage(true);
-        Themes::setTheme(true);
+        DiFactory::getTheme()->initTheme(true);
 
         // Actualizar las preferencias en la sesión y recargar la página
         Session::setUserPreferences($UserPreferencesData);
         Util::reload();
 
-        Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
-    } catch (SPException $e){
-        Response::printJSON($e->getMessage());
+        $Json->setStatus(0);
+        $Json->setDescription(_('Preferencias actualizadas'));
+    } catch (SPException $e) {
+        $Json->setDescription($e->getMessage());
     }
+
+    Json::returnJson($Json);
 } else if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
     if (Checks::demoIsEnabled() && Session::getUserLogin() === 'demo') {
-        Response::printJSON(_('Ey, esto es una DEMO!!'));
+        $Json->setDescription(_('Ey, esto es una DEMO!!'));
+        Json::returnJson($Json);
     }
 
     // Variables POST del formulario
@@ -101,17 +107,23 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $twoFa = new Auth2FA($itemId, $userLogin);
 
     if (!$twoFa->verifyKey($pin)) {
-        Response::printJSON(_('Código incorrecto'));
+        $Json->setDescription(_('Código incorrecto'));
+        Json::returnJson($Json);
     }
 
     try {
-        $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
+        $UserPreferencesData = UserPreferences::getItem()->getById($itemId)->getItemData();
         $UserPreferencesData->setUse2Fa(Util::boolval($twoFaEnabled));
         UserPreferences::getItem($UserPreferencesData)->update();
-        Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
-    } catch (SPException $e){
-        Response::printJSON($e->getMessage());
+
+        $Json->setStatus(0);
+        $Json->setDescription(_('Preferencias actualizadas'));
+    } catch (SPException $e) {
+        $Json->setDescription($e->getMessage());
     }
+
+    Json::returnJson($Json);
 } else {
-    Response::printJSON(_('Acción Inválida'));
+    $Json->setDescription(_('Acción Inválida'));
+    Json::returnJson($Json);
 }
