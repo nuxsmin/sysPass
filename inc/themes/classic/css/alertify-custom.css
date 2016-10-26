@@ -1,0 +1,13 @@
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).ok,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).ok {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c
+}
+
+.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).cancel,
+.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button).cancel {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a
+}
