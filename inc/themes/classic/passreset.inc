@@ -1,14 +1,13 @@
+<?php
+use SP\Html\Html;
+use SP\Util\Util;
+?>
 <div id="actions" align="center">
-
     <div id="logo">
-        <img src="<?php use SP\Html\Html;
-        use SP\Util\Util;
-
-        echo $logo; ?>" alt="sysPass logo"/>
+        <img src="<?php echo $logo; ?>" alt="sysPass logo"/>
     </div>
 
-    <form id="frmPassReset" action="" method="post"
-          onsubmit="sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_passReset.php'); return false;">
+    <form id="frmPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset">
         <fieldset id="resetdata">
             <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
             <?php if (!$passReset): ?>
@@ -54,17 +53,3 @@
         </div>
     </form>
 </div>
-<script>
-    window.onload = function () {
-        sysPassUtil.passwordDetect();
-
-        $('#btnBack').click(function () {
-            window.history.back();
-        });
-
-        $('#frmPassReset').submit(function () {
-            sysPassUtil.Common.sendAjax($(this).serialize(), '/ajax/ajax_passReset.php');
-            return false;
-        });
-    };
-</script>

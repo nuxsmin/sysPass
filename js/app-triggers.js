@@ -148,7 +148,7 @@ sysPass.Triggers = function (Common) {
         var currentHash = SparkMD5.hash($obj.serialize(), false);
 
         if (lastHash === currentHash) {
-            Common.resMsg("ok", Common.config().LANG[55]);
+            Common.msg.ok(Common.config().LANG[55]);
             return false;
         }
 

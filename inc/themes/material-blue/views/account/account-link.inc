@@ -46,8 +46,8 @@
             <tr>
                 <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
-                    <?php if(Checks::accountPassToImageIsEnabled()): ?>
-                        <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPass; ?>" />
+                    <?php if (Checks::accountPassToImageIsEnabled()): ?>
+                        <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPass; ?>"/>
                     <?php else: ?>
                         <span id="account-pass"><?php echo $accountPass; ?></span>
                     <?php endif; ?>
@@ -55,21 +55,17 @@
         </table>
 
         <div class="account-actions">
-            <?php if(!Checks::accountPassToImageIsEnabled()): ?>
-                <button id="btnClipPass" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200" data-clipboard-target="#account-pass">
+            <?php if (!Checks::accountPassToImageIsEnabled()): ?>
+                <button id="btnClipPass"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
+                        data-clipboard-target="#account-pass"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-history="<?php echo $accountIsHistory; ?>"
+                        data-onclick="account/copypass">
                     <i class="material-icons">content_paste</i>
                 </button>
-
-                <script type="application/javascript">
-                    window.onload = function () {
-                        // Inicializar el objeto para copiar al portapapeles
-                        var clipboardPass = new Clipboard("#btnClipPass");
-
-                        clipboardPass.on('success', function (e) {
-                            sysPassUtil.Common.resMsg("ok", sysPassUtil.Common.LANG[45]);
-                        });
-                    };
-                </script>
             <?php endif; ?>
         </div>
     </div>

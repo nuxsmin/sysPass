@@ -2,7 +2,7 @@
 
     <div id="logo"></div>
 
-    <form id="frmPass2fa" action="" method="post">
+    <form id="frmPass2fa" action="" method="post" class="form-action" data-onsubmit="main/twofa">
         <fieldset id="resetdata">
             <legend><?php echo _('Autentificación en 2 pasos'); ?></legend>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -27,12 +27,3 @@
         </div>
     </form>
 </div>
-
-<script>
-    window.onload = function () {
-        $('#frmPass2fa').on('submit', function () {
-            sysPassUtil.Common.sendAjax($(this).serialize(),'/ajax/ajax_2fa.php');
-            return false;
-        })
-    };
-</script>

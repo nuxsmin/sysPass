@@ -25,7 +25,6 @@
 
 namespace SP\Log;
 
-use SP\Config\Config;
 use SP\Core\Init;
 use SP\Storage\DB;
 use SP\Core\Session;
@@ -49,9 +48,10 @@ class Log extends ActionLog
      * Obtener los eventos guardados.
      *
      * @param int $start con el número de registro desde el que empezar
-     * @return false|array con el resultado de la consulta
+     * @param int $count Número de registros por consulta
+     * @return array|false con el resultado de la consulta
      */
-    public static function getEvents($start)
+    public static function getEvents($start, $count)
     {
         $query = 'SELECT ' .
             'log_id,' .
@@ -63,11 +63,12 @@ class Log extends ActionLog
             'log_description ' .
             'FROM log ' .
             'ORDER BY log_id DESC ' .
-            'LIMIT :start, 50';
+            'LIMIT :start, :count';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($start, 'start');
+        $Data->addParam($count, 'count');
 
         // Obtenemos el número total de registros
         DB::setFullRowCount();

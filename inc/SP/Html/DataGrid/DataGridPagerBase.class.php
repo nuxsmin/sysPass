@@ -124,17 +124,6 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @param DataGridActionSearch $sourceAction
-     * @return $this
-     */
-    public function setSourceAction($sourceAction)
-    {
-        $this->_sourceAction = $sourceAction;
-
-        return $this;
-    }
-
-    /**
      * @return IconInterface
      */
     public function getIconPrev()
@@ -365,7 +354,9 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getOnClick()
     {
-        return $this->_onClickFunction . '(' . implode(',', $this->parseArgs()) . ')';
+        $args = $this->parseArgs();
+
+        return count($args) > 0 ? $this->_onClickFunction . '(' . implode(',', $args) . ')' : $this->_onClickFunction;
     }
 
     /**
@@ -485,5 +476,16 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     public function getSourceAction()
     {
         return $this->_sourceAction;
+    }
+
+    /**
+     * @param DataGridActionSearch $sourceAction
+     * @return $this
+     */
+    public function setSourceAction($sourceAction)
+    {
+        $this->_sourceAction = $sourceAction;
+
+        return $this;
     }
 }

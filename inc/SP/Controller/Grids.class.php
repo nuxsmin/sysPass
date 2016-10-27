@@ -710,7 +710,7 @@ class Grids implements ActionsInterface
         $GridActionRefresh->setName(_('Renovar Enlace'));
         $GridActionRefresh->setTitle(_('Renovar Enlace'));
         $GridActionRefresh->setIcon($this->icons->getIconRefresh());
-        $GridActionRefresh->setOnClickFunction('appMgmt/linksMgmtRefresh');
+        $GridActionRefresh->setOnClickFunction('link/refresh');
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_PUBLICLINKS_DELETE);

@@ -142,10 +142,10 @@ sysPass.Requests = function (Common) {
                     log.error(txt);
 
                     if (opts.type === "html") {
-                        $("#content").html(Common.resMsg("nofancyerror"));
+                        $("#content").html(Common.msg.html.error(errorThrown));
                     }
 
-                    Common.resMsg("error", txt);
+                    Common.msg.error(txt);
                 } else {
                     callbackError();
                 }

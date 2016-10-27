@@ -44,7 +44,7 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 $userId = Request::analyze('itemId', 0);
 $pin = Request::analyze('security_pin', 0);
 
-$TwoFa = new Auth2FA($userId, $userLogin);
+$TwoFa = new Auth2FA($userId);
 
 if ($userId
     && $pin
@@ -54,7 +54,7 @@ if ($userId
 
     $urlParams = Request::importUrlParamsToGet();
 
-    Response::printJson(_('Código correcto'), 0, 'sysPassUtil.Common.redirect(\'index.php\')');
+    Response::printJson(_('Código correcto'), 0);
 } else {
     Session::set2FApassed(false);
     Response::printJson(_('Código incorrecto'));

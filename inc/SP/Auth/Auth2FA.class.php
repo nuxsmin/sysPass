@@ -64,6 +64,7 @@ class Auth2FA
     /**
      * @param int    $userId    El Id de usuario
      * @param string $userLogin El login de usuario
+     * @throws \InvalidArgumentException
      */
     public function __construct($userId, $userLogin = null)
     {
@@ -76,6 +77,7 @@ class Auth2FA
      * Generar una clave de inicialización codificada en Base32
      *
      * @return string
+     * @throws \InvalidArgumentException
      */
     private function genUserInitializationKey()
     {

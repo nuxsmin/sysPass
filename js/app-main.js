@@ -83,6 +83,12 @@ sysPass.Main = function () {
         }
     };
 
+    // Configurar Alertify
+    var $alertify = alertify
+        .logPosition("bottom right")
+        .closeLogOnClick(true)
+        .delay(10000);
+
     /**
      * Retrollamadas de los elementos
      */
@@ -102,43 +108,49 @@ sysPass.Main = function () {
         }
     };
 
-    /**
-     * Respuesta en formato json para mostrar mensaje
-     *
-     * @param json
-     * @param callback
-     */
-    var jsonResponseMessage = function (json, callback) {
-        var status = json.status;
-        var description = json.description;
-        // var action = json.action;
+    // Mostrar mensaje de aviso
+    var msg = {
+        ok: function (msg) {
+            $alertify.success(msg);
+        },
+        error: function (msg) {
+            $alertify.error(msg);
+        },
+        warn: function (msg) {
+            $alertify.warn(msg);
+        },
+        out: function (data) {
+            if (typeof data === "object") {
+                var status = data.status;
+                var description = data.description;
 
-        if (typeof json.messages !== "undefined" && json.messages.length > 0) {
-            description = description + "<br>" + json.messages.join("<br>");
-        }
+                if (typeof data.messages !== "undefined" && data.messages.length > 0) {
+                    description = description + "<br>" + data.messages.join("<br>");
+                }
 
-        //$.fancybox.close();
-        var $alertify = alertify
-            .logPosition("bottom right")
-            .closeLogOnClick(true)
-            .delay(10000);
-
-        switch (status) {
-            case 0:
-                $alertify.success(description, callback);
-                break;
-            case 1:
-            case 2:
-                $alertify.error(description, callback);
-                break;
-            case 3:
-                $alertify.warn(description, callback);
-                break;
-            case 10:
-                appActions.main.logout();
-                break;
-            default:
-                return;
+                switch (status) {
+                    case 0:
+                        msg.ok(description);
+                        break;
+                    case 1:
+                    case 2:
+                        msg.error(description);
+                        break;
+                    case 3:
+                        msg.warn(description);
+                        break;
+                    case 10:
+                        appActions.main.logout();
+                        break;
+                    default:
+                        return;
+                }
+            }
+        },
+        html: {
+            error: function (msg) {
+                return "<p class=\"error round\">Oops...<br>" + config.LANG[1] + "<br>" + msg + "</p>";
+            }
         }
     };
 
@@ -165,7 +177,7 @@ sysPass.Main = function () {
             }
 
             if (config.CHECK_UPDATES === true) {
-                checkUpds();
+                appActions.main.getUpdates();
             }
 
             initializeClipboard();
@@ -244,23 +256,6 @@ sysPass.Main = function () {
         $("html, body").animate({scrollTop: 0}, "slow");
     };
 
-    // Función para navegar por el log de eventos
-    var navLog = function (start, current) {
-        if (typeof start === "undefined") {
-            return false;
-        }
-
-        var opts = appRequests.getRequestOpts();
-        opts.url = "/ajax/ajax_eventlog.php";
-        opts.type = "html";
-        opts.data = {"start": start, "current": current};
-
-        appRequests.getActionCall(opts, function (response) {
-            $("#content").html(response);
-            scrollUp();
-        });
-    };
-
 
     // Función para obtener las variables de la URL y parsearlas a un array.
     var getUrlVars = function () {
@@ -285,17 +280,6 @@ sysPass.Main = function () {
 
     var redirect = function (url) {
         window.location.replace(url);
-    };
-
-    // Función para enviar una solicitud de modificación de cuenta
-    var sendRequest = function () {
-        var opts = appRequests.getRequestOpts();
-        opts.url = "/ajax/ajax_sendRequest.php";
-        opts.data = $("#frmRequestModify").serialize();
-
-        appRequests.getActionCall(opts, function (json) {
-            jsonResponseMessage(json);
-        });
     };
 
     // Función para habilitar la subida de archivos en una zona o formulario
@@ -460,113 +444,6 @@ sysPass.Main = function () {
         return options;
     };
 
-
-    // Función para realizar una petición ajax
-    // FIXME: eliminar
-    var sendAjax = function (data, url) {
-        var opts = appRequests.getRequestOpts();
-        opts.url = url;
-        opts.data = data;
-
-        appRequests.getActionCall(opts, function (json) {
-            jsonResponseMessage(json);
-        });
-    };
-
-    // Función para crear un enlace público
-    var linksMgmtSave = function (itemId, actionId, sk) {
-        var data = {"itemId": itemId, "actionId": actionId, "sk": sk, "isAjax": 1};
-
-        alertify
-            .okBtn(config.LANG[40])
-            .cancelBtn(config.LANG[41])
-            .confirm(config.LANG[48], function (e) {
-                $.extend(data, {notify: 1});
-
-                var opts = appRequests.getRequestOpts();
-                opts.url = "/ajax/ajax_appMgmtSave.php";
-                opts.data = data;
-
-                appRequests.getActionCall(opts, function (json) {
-                    jsonResponseMessage(json);
-                });
-            }, function (e) {
-                e.preventDefault();
-
-                var opts = appRequests.getRequestOpts();
-                opts.url = "/ajax/ajax_appMgmtSave.php";
-                opts.data = data;
-
-                appRequests.getActionCall(opts, function (json) {
-                    jsonResponseMessage(json);
-                });
-            });
-    };
-
-    // Función para renovar un enlace
-    var linksMgmtRefresh = function (obj, actionId, sk) {
-        var itemId = $(obj).attr("data-itemid");
-        var activeTab = $(obj).attr("data-activetab");
-        var nextActionId = $(obj).attr("data-nextactionid");
-
-        var data = {
-            "itemId": itemId,
-            "actionId": actionId,
-            "sk": sk,
-            "activeTab": activeTab,
-            "onCloseAction": nextActionId
-        };
-
-        var opts = appRequests.getRequestOpts();
-        opts.url = "/ajax/ajax_appMgmtSave.php";
-        opts.data = data;
-
-        appRequests.getActionCall(opts, function (json) {
-            jsonResponseMessage(json);
-        });
-    };
-
-    // Función para verificar si existen actualizaciones
-    var checkUpds = function () {
-        var opts = appRequests.getRequestOpts();
-        opts.type = "html";
-        opts.method = "get";
-        opts.timeout = 10000;
-        opts.url = "/ajax/ajax_checkUpds.php";
-
-        appRequests.getActionCall(opts, function (response) {
-            $("#updates").html(response);
-
-            if (typeof  componentHandler !== "undefined") {
-                componentHandler.upgradeDom();
-            }
-        }, function () {
-            $("#updates").html("!");
-        });
-    };
-
-    // Función para limpiar el log de eventos
-    var clearEventlog = function (sk) {
-        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + config.LANG[20] + "</p></div>";
-
-        alertify
-            .okBtn(config.LANG[43])
-            .cancelBtn(config.LANG[44])
-            .confirm(atext, function (e) {
-                var opts = appRequests.getRequestOpts();
-                opts.url = "/ajax/ajax_eventlog.php";
-                opts.data = {"clear": 1, "sk": sk, "isAjax": 1};
-
-                appRequests.getActionCall(opts, function (json) {
-                    jsonResponseMessage(json);
-                });
-            }, function (e) {
-                e.preventDefault();
-
-                alertify.error(config.LANG[44]);
-            });
-    };
-
     // Función para obtener el tiempo actual en milisegundos
     var getTime = function () {
         var t = new Date();
@@ -601,54 +478,6 @@ sysPass.Main = function () {
             complexity.attr("title", config.LANG[7]).addClass("strong");
         } else if (score === 4) {
             complexity.attr("title", config.LANG[10]).addClass("strongest");
-        }
-    };
-
-    // Función para mostrar mensaje con alertify
-    var resMsg = function (type, txt, url, action) {
-        if (typeof url !== "undefined") {
-            var opts = appRequests.getRequestOpts();
-            opts.type = "get";
-            opts.method = "html";
-            opts.url = url;
-            opts.async = false;
-
-            appRequests.getActionCall(opts, function (response) {
-                txt = response;
-            });
-        }
-
-        var html;
-        txt = txt.replace(/(\\n|;;)/g, "<br>");
-
-        switch (type) {
-            case "ok":
-                alertify
-                    .closeLogOnClick(true)
-                    .delay(15000)
-                    .success(txt);
-                break;
-            case "error":
-                alertify
-                    .closeLogOnClick(true)
-                    .delay(15000)
-                    .error(txt);
-                break;
-            case "warn":
-                alertify
-                    .delay(30000)
-                    .log(txt);
-                break;
-            case "nofancyerror":
-                html = "<p class=\"error round\">Oops...<br>" + config.LANG[1] + "<br>" + txt + "</p>";
-                return html;
-            default:
-                alertify.error(txt);
-                break;
-        }
-
-        if (typeof action !== "undefined") {
-            eval(action);
         }
     };
 
@@ -764,18 +593,6 @@ sysPass.Main = function () {
         });
     };
 
-    // Función para mostrar los datos de un registro
-    var viewWiki = function (pageName, actionId, sk) {
-        var opts = appRequests.getRequestOpts();
-        opts.type = "html";
-        opts.url = "/ajax/ajax_wiki.php";
-        opts.data = {"pageName": pageName, "actionId": actionId, "sk": sk, "isAjax": 1};
-
-        appRequests.getActionCall(opts, function (response) {
-            $.fancybox(response, {padding: [0, 10, 10, 10]});
-        });
-    };
-
     /**
      * Evaluar una acción javascript y ejecutar la función
      *
@@ -818,33 +635,24 @@ sysPass.Main = function () {
     // Objeto con métodos y propiedades públicas
     var getPublic = function () {
         return {
-            sk: sk,
             actions: function () {
                 return appActions;
             },
             triggers: function () {
                 return appTriggers;
             },
-            jsonResponseMessage: jsonResponseMessage,
-            checkboxDetect: checkboxDetect,
-            checkPassLevel: checkPassLevel,
-            checkUpds: checkUpds,
-            clearEventlog: clearEventlog,
-            encryptFormValue: encryptFormValue,
-            fileUpload: fileUpload,
-            linksMgmtSave: linksMgmtSave,
-            linksMgmtRefresh: linksMgmtRefresh,
-            navLog: navLog,
-            outputResult: outputResult,
+            sk: sk,
+            msg: msg,
             passToClip: passToClip,
             passwordData: passwordData,
+            outputResult: outputResult,
+            checkboxDetect: checkboxDetect,
+            checkPassLevel: checkPassLevel,
+            encryptFormValue: encryptFormValue,
+            fileUpload: fileUpload,
             redirect: redirect,
-            resMsg: resMsg,
             scrollUp: scrollUp,
-            sendAjax: sendAjax,
-            sendRequest: sendRequest,
-            setContentSize: setContentSize,
-            viewWiki: viewWiki
+            setContentSize: setContentSize
         };
     };
 

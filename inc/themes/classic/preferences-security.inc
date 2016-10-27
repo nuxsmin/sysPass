@@ -4,14 +4,14 @@
         <?php echo _('Autenticación'); ?>
     </div>
 
-    <form method="post" name="frmSecurity" id="frmSecurity" data-url="/ajax/ajax_userPrefsSave.php">
+    <form method="post" name="frmSecurity" id="frmSecurity" class="form-action" data-onsubmit="user/saveSecurity">
 
         <table id="tblSite" class="data tblConfig round">
 
             <tr>
                 <td class="descField">
                     <?php echo _('Autenticación en 2 pasos'); ?>
-                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip" />
+                    <img src="imgs/help.png" title="" class="inputImgMini help-tooltip"/>
                     <div class="tooltip" for="help-security_2fa" style="display: none">
                         <p>
                             <?php echo _('Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator.'); ?>
@@ -59,15 +59,3 @@
         </button>
     </div>
 </div> <!-- End Tab - Security -->
-<script type="text/javascript">
-    $(function () {
-        $('#frmSecurity').on('submit', function () {
-            var url = $(this).data('url');
-            var data = $(this).serialize();
-
-            sysPassUtil.Common.sendAjax(data, url);
-
-            return false;
-        });
-    })
-</script>

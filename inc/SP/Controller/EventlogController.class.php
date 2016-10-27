@@ -31,6 +31,9 @@ use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\Html\DataGrid\DataGridActionSearch;
+use SP\Html\DataGrid\DataGridActionType;
+use SP\Html\DataGrid\DataGridPager;
 use SP\Http\Response;
 use SP\Log\Log;
 use SP\Util\Checks;
@@ -47,7 +50,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
     /**
      * Número de máximo de registros por página
      */
-    const MAX_ROWS = 50;
+    const MAX_ROWS = 30;
 
     /**
      * Constructor
@@ -74,22 +77,22 @@ class EventlogController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('eventlog');
 
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_EVL);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchEvent');
+        $GridActionSearch->setTitle(_('Buscar Evento'));
+        $GridActionSearch->setOnSubmitFunction('eventlog/search');
+
         $this->view->assign('rowClass', 'row_even');
         $this->view->assign('isDemoMode', Checks::demoIsEnabled() || !Session::getUserIsAdminApp());
-        $this->view->assign('limitStart', (isset($this->view->limitStart)) ? (int)$this->view->limitStart : 0);
-        $this->view->assign('events', Log::getEvents($this->view->limitStart));
-        $this->view->assign('totalRows', Log::$numRows);
-        $this->view->assign('firstPage', ceil(($this->view->limitStart + 1) / self::MAX_ROWS));
-        $this->view->assign('lastPage', ceil(Log::$numRows / self::MAX_ROWS));
+        $this->view->assign('limitStart', isset($this->view->limitStart) ? (int)$this->view->limitStart : 0);
+        $this->view->assign('events', Log::getEvents($this->view->limitStart, self::MAX_ROWS));
 
-        $limitLast = (Log::$numRows % self::MAX_ROWS == 0) ? Log::$numRows - self::MAX_ROWS : floor(Log::$numRows / self::MAX_ROWS) * self::MAX_ROWS;
+        $Pager = $this->getPager($GridActionSearch);
+        $Pager->setTotalRows(Log::$numRows);
 
-        $this->view->assign('pagerOnClick', array(
-            'first' => 'sysPassUtil.Common.navLog(0,' . $this->view->limitStart . ')',
-            'last' => 'sysPassUtil.Common.navLog(' . $limitLast . ',' . $this->view->limitStart . ')',
-            'prev' => 'sysPassUtil.Common.navLog(' . ($this->view->limitStart - self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
-            'next' => 'sysPassUtil.Common.navLog(' . ($this->view->limitStart + self::MAX_ROWS) . ',' . $this->view->limitStart . ')',
-        ));
+        $this->view->assign('Pager', $Pager);
     }
 
     /**
@@ -107,5 +110,26 @@ class EventlogController extends ControllerBase implements ActionsInterface
                 Response::printJson(_('Error al vaciar el registro de eventos'));
             }
         }
+    }
+
+    /**
+     * Devolver el paginador por defecto
+     *
+     * @param DataGridActionSearch $sourceAction
+     * @return DataGridPager
+     */
+    protected function getPager(DataGridActionSearch $sourceAction)
+    {
+        $GridPager = new DataGridPager();
+        $GridPager->setSourceAction($sourceAction);
+        $GridPager->setOnClickFunction('eventlog/nav');
+        $GridPager->setLimitStart($this->view->limitStart);
+        $GridPager->setLimitCount(self::MAX_ROWS);
+        $GridPager->setIconPrev($this->icons->getIconNavPrev());
+        $GridPager->setIconNext($this->icons->getIconNavNext());
+        $GridPager->setIconFirst($this->icons->getIconNavFirst());
+        $GridPager->setIconLast($this->icons->getIconNavLast());
+
+        return $GridPager;
     }
 }

@@ -103,10 +103,10 @@
                                         <i class="material-icons"
                                            title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
                                     </a>
-                                    <i class="material-icons fg-green100" title="<?php echo _('Ver en Wiki'); ?>"
+                                    <i class="btn-action material-icons fg-green100" title="<?php echo _('Ver en Wiki'); ?>"
                                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
                                        data-item-id="<?php echo $Account->getName() ?>"
-                                       data-onclick="wiki/view">library_books</i>
+                                       data-onclick="wiki/show">library_books</i>
                                 <?php else: ?>
                                     <a href="<?php echo $wikiPageUrl, $Account->getName(); ?>" target="_blank">
                                         <i class="material-icons"

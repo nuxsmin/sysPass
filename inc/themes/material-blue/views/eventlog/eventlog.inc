@@ -1,4 +1,7 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/** @var $icons \Theme\Icons */
+/** @var \SP\Html\DataGrid\DataGridPagerBase $Pager */
+?>
 
 <div id="title" class="midroundup titleNormal">
     <?php echo _('Registro de Eventos'); ?>
@@ -37,7 +40,7 @@
         </thead>
         <tbody id="resSearch">
         <?php foreach ($events as $log): ?>
-            <?php $rowClass = ($rowClass == "row_even") ? "row_odd" : "row_even"; ?>
+            <?php $rowClass = ($rowClass === "row_even") ? "row_odd" : "row_even"; ?>
             <?php $description = ($isDemoMode === false) ? utf8_decode($log->log_description) : preg_replace("/\d+\.\d+\.\d+\.\d+/", "*.*.*.*", utf8_decode($log->log_description)); ?>
 
             <tr class="<?php echo $rowClass; ?>">
@@ -57,7 +60,7 @@
                     <?php echo strtoupper($log->log_login); ?>
                 </td>
                 <td class="cell">
-                    <?php echo ($isDemoMode) ? preg_replace('#\d+#', '*', $log->log_ipAddress) : $log->log_ipAddress; ?>
+                    <?php echo $isDemoMode ? preg_replace('#\d+#', '*', $log->log_ipAddress) : $log->log_ipAddress; ?>
                 </td>
                 <td class="cell-description">
                     <?php
@@ -85,27 +88,53 @@
 </div>
 <div id="pageNav" class="round shadow">
     <div id="pageNavLeft">
-        <?php echo $totalRows; ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
+        <?php echo $Pager->getTotalRows(); ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
     </div>
     <div id="pageNavRight">
-        <?php if ($limitStart > 1): ?>
-            <img src="imgs/arrow_first.png" onClick="<?php echo $pagerOnClick['first']; ?>"
-                 title="<?php echo _('Primera página'); ?>"/>
-            <img src="imgs/arrow_left.png" onClick="<?php echo $pagerOnClick['prev']; ?>"
-                 title="<?php echo _('Página anterior'); ?>"/>
+        <?php if ($Pager->getLimitStart() > 1): ?>
+            <i class="btn-action-pager material-icons <?php echo $Pager->getIconFirst()->getClass(); ?>"
+               title="<?php echo $Pager->getIconFirst()->getTitle(); ?>"
+               data-action-id="<?php echo $Pager->getSourceAction()->getId(); ?>"
+               data-action-form="<?php echo $Pager->getSourceAction()->getName(); ?>"
+               data-start="<?php echo $Pager->getFirst(); ?>"
+               data-count="<?php echo $Pager->getLimitCount(); ?>"
+               data-onclick="<?php echo $Pager->getOnClick(); ?>"><?php echo $Pager->getIconFirst()->getIcon(); ?></i>
+            <i class="btn-action-pager material-icons <?php echo $Pager->getIconPrev()->getClass(); ?>"
+               title="<?php echo $Pager->getIconPrev()->getTitle(); ?>"
+               data-action-id="<?php echo $Pager->getSourceAction()->getId(); ?>"
+               data-action-form="<?php echo $Pager->getSourceAction()->getName(); ?>"
+               data-start="<?php echo $Pager->getPrev(); ?>"
+               data-count="<?php echo $Pager->getLimitCount(); ?>"
+               data-onclick="<?php echo $Pager->getOnClick(); ?>"><?php echo $Pager->getIconPrev()->getIcon(); ?></i>
         <?php endif; ?>
-        &nbsp;<?php echo $firstPage, '/', $lastPage; ?>&nbsp;
-        <?php if ($limitStart < $totalRows && $firstPage != $lastPage): ?>
-            <img src="imgs/arrow_right.png" onClick="<?php echo $pagerOnClick['next']; ?>"
-                 title="<?php echo _('Página siguiente'); ?>"/>
-            <img src="imgs/arrow_last.png" onClick="<?php echo $pagerOnClick['last']; ?>"
-                 title="<?php echo _('Última página'); ?>"/>
+        &nbsp;
+        <?php echo $Pager->getFirstPage(), '/', $Pager->getLastPage(); ?>
+        &nbsp;
+        <?php if ($Pager->getLimitStart() < $Pager->getTotalRows() && $Pager->getFirstPage() != $Pager->getLastPage()): ?>
+            <i class="btn-action-pager material-icons <?php echo $Pager->getIconNext()->getClass(); ?>"
+               title="<?php echo $Pager->getIconNext()->getTitle(); ?>"
+               data-action-id="<?php echo $Pager->getSourceAction()->getId(); ?>"
+               data-action-form="<?php echo $Pager->getSourceAction()->getName(); ?>"
+               data-start="<?php echo $Pager->getNext(); ?>"
+               data-count="<?php echo $Pager->getLimitCount(); ?>"
+               data-onclick="<?php echo $Pager->getOnClick(); ?>"><?php echo $Pager->getIconNext()->getIcon(); ?></i>
+            <i class="btn-action-pager material-icons <?php echo $Pager->getIconLast()->getClass(); ?>"
+               title="<?php echo $Pager->getIconLast()->getTitle(); ?>"
+               data-action-id="<?php echo $Pager->getSourceAction()->getId(); ?>"
+               data-action-form="<?php echo $Pager->getSourceAction()->getName(); ?>"
+               data-start="<?php echo $Pager->getLast(); ?>"
+               data-count="<?php echo $Pager->getLimitCount(); ?>"
+               data-onclick="<?php echo $Pager->getOnClick(); ?>"><?php echo $Pager->getIconLast()->getIcon(); ?></i>
         <?php endif; ?>
     </div>
 </div>
+
 <div class="action fullWidth">
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
-            title="<?php echo _('Vaciar registro de eventos'); ?>" OnClick="sysPassUtil.Common.clearEventlog('<?php echo $sk; ?>');">
+    <button
+        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
+        title="<?php echo _('Vaciar registro de eventos'); ?>"
+        data-onclick="eventlog/clear"
+        data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_EVL; ?>">
         <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
     </button>
 </div>
