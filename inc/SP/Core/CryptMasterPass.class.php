@@ -46,7 +46,7 @@ class CryptMasterPass
     public static function setTempMasterPass($maxTime = 14400)
     {
         // Encriptar la clave maestra con hash aleatorio generado
-        $randomKey = Crypt::generateAesKey(Util::generate_random_bytes());
+        $randomKey = Crypt::generateAesKey(Util::generateRandomBytes());
         $pass = Crypt::mkCustomMPassEncrypt($randomKey, SessionUtil::getSessionMPass());
 
         if (!is_array($pass)) {

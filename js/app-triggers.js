@@ -339,6 +339,9 @@ sysPass.Triggers = function (Common) {
             if ($form.length > 0) {
                 $form.attr("data-hash", SparkMD5.hash($form.serialize(), false));
             }
+        },
+        install: function() {
+            Common.appTheme().passwordDetect($("#frmInstall"));
         }
     };
 

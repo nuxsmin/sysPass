@@ -35,6 +35,8 @@ define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPAR
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
 define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Exts');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
+define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
+
 
 define('DEBUG', true);
 

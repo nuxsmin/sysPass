@@ -83,7 +83,7 @@ class Installer
             $Config = Config::getConfig();
 
             // Generate a random salt that is used to salt the local user passwords
-            $Config->setPasswordSalt(Util::generate_random_bytes(30));
+            $Config->setPasswordSalt(Util::generateRandomBytes(30));
             $Config->setConfigVersion(implode(Util::getVersion(true)));
 
             if (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
@@ -95,6 +95,8 @@ class Installer
 
             if (!preg_match('/(localhost|127.0.0.1)/', $this->InstallData->getDbHost())) {
                 $this->InstallData->setDbAuthHost($_SERVER['SERVER_ADDR']);
+            } else {
+                $this->InstallData->setDbAuthHost('localhost');
             }
 
             // Save DB connection info
@@ -203,8 +205,10 @@ class Installer
     {
         // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
         if (!$this->InstallData->isHostingMode()) {
-            $this->InstallData->setDbPass(md5(time() . $this->InstallData->getDbPass()));
+            $this->InstallData->setDbPass(Util::randomPassword());
             $this->InstallData->setDbUser(substr('sp_' . $this->InstallData->getAdminLogin(), 0, 16));
+
+            error_log($this->InstallData->getDbPass());
 
             // Comprobar si el usuario sumistrado existe
             $query = sprintf(/** @lang SQL */
@@ -333,7 +337,7 @@ class Installer
      */
     private function createDBStructure()
     {
-        $fileName = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . 'dbstructure.sql';
+        $fileName = SQL_PATH  . DIRECTORY_SEPARATOR . 'dbstructure.sql';
 
         if (!file_exists($fileName)) {
             throw new SPException(SPException::SP_CRITICAL,

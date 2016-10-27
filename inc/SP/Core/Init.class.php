@@ -29,6 +29,7 @@ use SP\Auth\Auth;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller;
+use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Log\Email;
@@ -289,7 +290,7 @@ class Init
     {
         $Tpl = new Template();
         $Tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
-        $Controller = new Controller\MainController($Tpl);
+        $Controller = new MainController($Tpl);
         $Controller->getError(true);
         $Controller->view();
         exit;
@@ -455,7 +456,7 @@ class Init
                 exit();
             } else {
                 // Comprobar si sysPass está instalada o en modo mantenimiento
-                $Controller = new Controller\MainController();
+                $Controller = new MainController();
                 $Controller->getInstaller();
                 $Controller->view();
                 exit();
@@ -537,7 +538,7 @@ class Init
      */
     private static function goLogin()
     {
-        $Controller = new Controller\MainController(null, 'login');
+        $Controller = new MainController(null, 'login');
         $Controller->getLogin();
         $Controller->view();
         exit;
@@ -583,7 +584,7 @@ class Init
                     Config::saveConfig();
                 }
             } else {
-                $controller = new Controller\MainController();
+                $controller = new MainController();
                 $controller->getUpgrade();
                 $controller->view();
                 exit();
@@ -667,7 +668,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new Controller\MainController();
+        $Controller = new MainController();
 
         switch ($action) {
             case 'passreset':
@@ -744,7 +745,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new Controller\MainController(null, 'main');
+        $Controller = new MainController(null, 'main');
 
         switch ($action) {
             case 'accView':

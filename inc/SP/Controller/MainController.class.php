@@ -27,6 +27,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Installer;
@@ -67,6 +68,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->addTemplate('header');
             $this->view->addTemplate('body-start');
 
+            $this->view->assign('isInstalled', Config::getConfig()->isInstalled());
             $this->view->assign('sk', SessionUtil::getSessionKey(true));
             $this->view->assign('appInfo', Util::getAppInfo());
             $this->view->assign('appVersion', Util::getVersionString());
@@ -279,7 +281,6 @@ class MainController extends ControllerBase implements ActionsInterface
         $InstallData->setHostingMode(Request::analyze('hostingmode', false));
 
         $this->view->assign('isCompleted', false);
-
         $this->view->assign('InstallData', $InstallData);
 
         $errors = array_merge(Checks::checkPhpVersion(), Checks::checkModules());

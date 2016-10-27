@@ -40,12 +40,45 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Util
 {
     /**
+     * Generar una clave aleatoria
+     *
+     * @param int $length Longitud de la clave
+     * @param bool $useNumbers Usar números
+     * @param bool $useSpecial Usar carácteres especiales
+     * @return string
+     */
+    public static function randomPassword($length = 16, $useNumbers = true, $useSpecial = true)
+    {
+        $special = "@#$%&/()=?¿!_-:.;,{}[]*^";
+        $numbers = "0123456789";
+        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ";
+
+        if ($useSpecial === true) {
+            $alphabet .= $special;
+        }
+
+        if ($useNumbers === true) {
+            $alphabet .= $numbers;
+        }
+
+        $pass = [];
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+
+        for ($i = 0; $i < $length; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+
+        return implode($pass); //turn the array into a string
+    }
+
+    /**
      * Generar una cadena aleatoria usuando criptografía.
      *
      * @param int $length opcional, con la longitud de la cadena
      * @return string
      */
-    public static function generate_random_bytes($length = 30)
+    public static function generateRandomBytes($length = 30)
     {
         // Try to use openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
@@ -65,8 +98,9 @@ class Util
         // Fallback to mt_rand()
         $characters = '0123456789';
         $characters .= 'abcdefghijklmnopqrstuvwxyz';
+        $characters .= strtoupper('abcdefghijklmnopqrstuvwxyz');
         $charactersLength = strlen($characters) - 1;
-        $pseudo_byte = "";
+        $pseudo_byte = '';
 
         // Select some random characters
         for ($i = 0; $i < $length; $i++) {
@@ -167,7 +201,7 @@ class Util
      * Obtener datos desde una URL usando CURL
      *
      * @param           $url string La URL
-     * @param array     $data
+     * @param array $data
      * @param bool|null $useCookie
      * @return bool|string
      * @throws SPException
@@ -347,8 +381,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in     The variable to check
-     * @param bool  $strict If set to false, consider everything that is not false to
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -431,7 +465,7 @@ class Util
     {
         return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
     }
-    
+
     /**
      * Devuelve la última función llamada tras un error
      *
@@ -463,8 +497,8 @@ class Util
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)
     {
-        foreach ($objectArray as $object){
-            if ($object->$method() === $value){
+        foreach ($objectArray as $object) {
+            if ($object->$method() === $value) {
                 return true;
             }
         }

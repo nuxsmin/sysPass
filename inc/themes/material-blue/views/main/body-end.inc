@@ -2,16 +2,19 @@
     <script type="text/javascript" src="<?php echo $jsLink; ?>"></script>
 <?php endforeach; ?>
 
-<?php if ($loggedIn): ?>
-    <script type="text/javascript">
-        $(document).on("DOMContentLoaded", function (e) {
-            "use strict";
+<script type="text/javascript">
+    $(document).on("DOMContentLoaded", function (e) {
+        "use strict";
 
-            console.info("DOMContentLoaded");
+        console.info("DOMContentLoaded");
+        <?php if ($loggedIn): ?>
             sysPassApp.triggers().views.main();
-        });
-    </script>
-<?php endif; ?>
+        <?php elseif ($isInstalled === false): ?>
+            sysPassApp.triggers().views.install();
+        <?php endif; ?>
+    });
+</script>
+
 </body> <!-- Close BODY...almost done..go..go..go -->
 </html> <!-- Close HTML...ufff too much work!! :)) -->
 <!-- Insert coin . . . -->

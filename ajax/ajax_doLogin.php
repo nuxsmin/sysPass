@@ -200,7 +200,7 @@ if (!$masterPass
 
 // Comprobar si se ha forzado un cambio de clave
 if ($User->getItemData()->isUserIsChangePass()) {
-    $hash = \SP\Util\Util::generate_random_bytes();
+    $hash = \SP\Util\Util::generateRandomBytes();
 
     $UserPassRecoverData = new UserPassRecoverData();
     $UserPassRecoverData->setUserpassrUserId($User->getItemData()->getUserId());

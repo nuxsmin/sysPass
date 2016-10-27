@@ -210,7 +210,7 @@ class Auth
             && !$UserData->isUserIsLdap()
             && !UserPassRecover::checkPassRecoverLimit($UserData)
         ) {
-            $hash = Util::generate_random_bytes();
+            $hash = Util::generateRandomBytes();
 
             $Log = new Log(_('Cambio de Clave'));
 

@@ -24,7 +24,7 @@
     <?php endif; ?>
 
     <?php if ($isCompleted === false): ?>
-        <form id="frmInstall" action="../../../../../index.php" method="post">
+        <form id="frmInstall" action="index.php" method="post" class="form-action" data-onsubmit="main/install">
             <input type="hidden" name="install" value="true"/>
 
             <fieldset id="adminaccount">
@@ -46,8 +46,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="adminpass" name="adminpass" type="password" required
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                           value="" maxlength="255" autocomplete="off"
-                           onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'adminaccount')">
+                           value="" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="adminlogin"><?php echo _('Clave'); ?></label>
                 </div>
@@ -58,8 +57,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="masterpassword" name="masterpassword" type="password" required
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                           value="" maxlength="255" autocomplete="off"
-                           onKeyUp="sysPassUtil.Common.checkPassLevel(this.value,'masterpwd')">
+                           value="" maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="masterpassword"><?php echo _('Clave Maestra'); ?></label>
                 </div>
@@ -147,12 +145,3 @@
         </form>
     <?php endif; ?>
 </div>
-<script>
-    window.onload = function () {
-        sysPassApp.passwordDetect();
-
-        $('#btnInstall').click(function () {
-            $('#frmInstall').submit();
-        });
-    };
-</script>
