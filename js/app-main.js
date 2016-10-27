@@ -337,11 +337,11 @@ sysPass.Main = function () {
                         options.requestDoneAction();
                     }
 
-                    resMsg("ok", description);
+                    msg.ok(description);
                 } else if (status === 10) {
                     appActions.main.logout();
                 } else {
-                    resMsg("error", description);
+                    msg.error(description);
                 }
             });
 
@@ -366,16 +366,16 @@ sysPass.Main = function () {
         // Comprobar los archivos y subirlos
         var handleFiles = function (filesArray) {
             if (filesArray.length > 5) {
-                resMsg("error", config.LANG[17] + " (Max: 5)");
+                msg.error(config.LANG[17] + " (Max: 5)");
                 return;
             }
 
             for (var i = 0; i < filesArray.length; i++) {
                 var file = filesArray[i];
                 if (checkFileSize(file.size)) {
-                    resMsg("error", config.LANG[18] + "<br>" + file.name + " (Max: " + config.MAX_FILE_SIZE + ")");
+                    msg.error(config.LANG[18] + "<br>" + file.name + " (Max: " + config.MAX_FILE_SIZE + ")");
                 } else if (!checkFileExtension(file.name)) {
-                    resMsg("error", config.LANG[19] + "<br>" + file.name);
+                    msg.error(config.LANG[19] + "<br>" + file.name);
                 } else {
                     sendFile(filesArray[i]);
                 }
@@ -539,11 +539,11 @@ sysPass.Main = function () {
         });
 
         clipboard.on("success", function (e) {
-            resMsg("ok", config.LANG[45]);
+            msg.ok(config.LANG[45]);
         });
 
         clipboard.on("error", function (e) {
-            resMsg("error", config.LANG[46]);
+            msg.error(config.LANG[46]);
         });
 
         // Portapapeles para claves visualizadas
