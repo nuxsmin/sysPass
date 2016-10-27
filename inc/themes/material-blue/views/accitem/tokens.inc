@@ -1,7 +1,10 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmTokens" id="frmTokens" class="form-action" data-onsubmit="appMgmt/save">
+    <form method="post" name="frmTokens" id="frmTokens" class="form-action"
+          data-onsubmit="appMgmt/save"
+          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_APITOKENS; ?>">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -45,16 +48,15 @@
             <?php else: ?>
                 <tr>
                     <td class="descField"><?php echo _('Token'); ?></td>
-                    <td class="valField"><?php echo ($gotData) ? $token->authtoken_token : ''; ?></td>
+                    <td class="valField"><?php echo $gotData ? $token->authtoken_token : ''; ?></td>
                 </tr>
             <?php endif; ?>
             </tbody>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
-        <input type="hidden" name="itemId" value="<?php echo ($gotData) ? $token->authtoken_id : ''; ?>"/>
+        <input type="hidden" name="itemId" value="<?php echo $gotData ? $token->authtoken_id : ''; ?>"/>
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>

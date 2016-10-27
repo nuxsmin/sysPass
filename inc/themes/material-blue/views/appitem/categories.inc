@@ -1,11 +1,14 @@
 <?php
 /** @var  \SP\DataModel\CategoryData $category */
-/** @var  \SP\Core\ThemeIconsBase $icons */
+/** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></h2>
 
-    <form method="post" name="frmCategories" id="frmCategories" class="form-action" data-onsubmit="appMgmt/save">
+    <form method="post" name="frmCategories" id="frmCategories" class="form-action"
+          data-onsubmit="appMgmt/save"
+          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES; ?>">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -38,7 +41,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
         <input type="hidden" name="itemId" value="<?php echo $category->getCategoryId(); ?>"/>
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">

@@ -8,7 +8,10 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action" data-onsubmit="appMgmt/save">
+    <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
+          data-onsubmit="appMgmt/save"
+          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS; ?>">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -62,7 +65,7 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="required">
                         <input type="checkbox" id="required" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="required"
-                            <?php echo ($field->isRequired()) ? 'checked' : ''; ?>/>
+                            <?php echo $field->isRequired() ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"></span>
                     </label>
                 </td>
@@ -70,10 +73,9 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
         <input type="hidden" name="itemId" value="<?php echo $field->getId(); ?>"/>
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>

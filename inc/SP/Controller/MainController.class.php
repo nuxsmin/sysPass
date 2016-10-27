@@ -266,23 +266,6 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getInstaller()
     {
-        $this->view->addTemplate('install');
-        $this->view->addTemplate('footer');
-        $this->view->addTemplate('body-end');
-
-        $InstallData = new InstallData();
-        $InstallData->setAdminLogin(Request::analyze('adminlogin', 'admin'));
-        $InstallData->setAdminPass(Request::analyzeEncrypted('adminpass'));
-        $InstallData->setMasterPassword(Request::analyzeEncrypted('masterpassword'));
-        $InstallData->setDbAdminUser(Request::analyze('dbuser', 'root'));
-        $InstallData->setDbAdminPass(Request::analyzeEncrypted('dbpass'));
-        $InstallData->setDbName(Request::analyze('dbname', 'syspass'));
-        $InstallData->setDbHost(Request::analyze('dbhost', 'localhost'));
-        $InstallData->setHostingMode(Request::analyze('hostingmode', false));
-
-        $this->view->assign('isCompleted', false);
-        $this->view->assign('InstallData', $InstallData);
-
         $errors = array_merge(Checks::checkPhpVersion(), Checks::checkModules());
 
         if (@file_exists(__FILE__ . "\0Nullbyte")) {
@@ -299,24 +282,11 @@ class MainController extends ControllerBase implements ActionsInterface
                 'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')];
         }
 
-        if (Request::analyze('install', false)) {
-            $Installer = new Installer($InstallData);
-            $resInstall = $Installer->install();
-
-            if ($resInstall === true) {
-                $this->view->append('errors', [
-                    'type' => SPException::SP_OK,
-                    'description' => _('Instalación finalizada'),
-                    'hint' => _('Pulse <a href="index.php" title="Acceder">aquí</a> para acceder')
-                ]);
-                $this->view->assign('isCompleted', true);
-                return true;
-            }
-
-            array_push($errors, $resInstall);
-        }
-
         $this->view->assign('errors', $errors);
+
+        $this->view->addTemplate('install');
+        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-end');
     }
 
     /**

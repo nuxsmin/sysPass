@@ -73,7 +73,7 @@ class Config
     {
         $Config = Session::getConfig();
 
-        return (gettype($Config) === 'object') ? $Config : self::arrayMapper();
+        return is_object($Config) ? $Config : self::arrayMapper();
     }
 
     /**
@@ -124,6 +124,10 @@ class Config
         }
 
         self::$Config = new ConfigData();
+
+        if (!file_exists(XML_CONFIG_FILE)){
+            return self::$Config;
+        }
 
         try {
             $items = DiFactory::getConfigStorage()->load('config')->getItems();

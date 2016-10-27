@@ -42,16 +42,16 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int $length Longitud de la clave
+     * @param int  $length     Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @return string
      */
     public static function randomPassword($length = 16, $useNumbers = true, $useSpecial = true)
     {
-        $special = "@#$%&/()=?¿!_-:.;,{}[]*^";
-        $numbers = "0123456789";
-        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ";
+        $special = '@#$%&/()=?¿!_-:.;,{}[]*^';
+        $numbers = '0123456789';
+        $alphabet = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ';
 
         if ($useSpecial === true) {
             $alphabet .= $special;
@@ -65,7 +65,7 @@ class Util
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
 
         for ($i = 0; $i < $length; $i++) {
-            $n = rand(0, $alphaLength);
+            $n = mt_rand(0, $alphaLength);
             $pass[] = $alphabet[$n];
         }
 
@@ -82,17 +82,14 @@ class Util
     {
         // Try to use openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
-            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length, $strong));
-            if ($strong == true) {
-                return substr($pseudo_byte, 0, $length); // Truncate it to match the length
-            }
+            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length));
+            return substr($pseudo_byte, 0, $length); // Truncate it to match the length
         }
 
         // Try to use /dev/urandom
         $fp = @file_get_contents('/dev/urandom', false, null, 0, $length);
         if ($fp !== false) {
-            $string = substr(bin2hex($fp), 0, $length);
-            return $string;
+            return substr(bin2hex($fp), 0, $length);
         }
 
         // Fallback to mt_rand()
@@ -201,7 +198,7 @@ class Util
      * Obtener datos desde una URL usando CURL
      *
      * @param           $url string La URL
-     * @param array $data
+     * @param array     $data
      * @param bool|null $useCookie
      * @return bool|string
      * @throws SPException
@@ -359,7 +356,7 @@ class Util
      */
     public static function logout()
     {
-        exit('<script>sysPassApp.doLogout();</script>');
+        exit('<script>sysPassApp.actions().main.logout();</script>');
     }
 
     /**
@@ -367,12 +364,12 @@ class Util
      */
     public static function getMaxUpload()
     {
-        $max_upload = (int)(ini_get('upload_max_filesize'));
-        $max_post = (int)(ini_get('post_max_size'));
-        $memory_limit = (int)(ini_get('memory_limit'));
+        $max_upload = (int)ini_get('upload_max_filesize');
+        $max_post = (int)ini_get('post_max_size');
+        $memory_limit = (int)ini_get('memory_limit');
         $upload_mb = min($max_upload, $max_post, $memory_limit);
 
-        Log::writeNewLog(__FUNCTION__, "Max. PHP upload: " . $upload_mb . "MB");
+        Log::writeNewLog(__FUNCTION__, 'Max. PHP upload: ' . $upload_mb . 'MB');
     }
 
     /**
@@ -381,8 +378,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in The variable to check
-     * @param bool $strict If set to false, consider everything that is not false to
+     * @param mixed $in     The variable to check
+     * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -422,7 +419,7 @@ class Util
     {
         if (Session::getReload() === true) {
             Session::setReload(false);
-            exit("<script>location.reload();</script>");
+            exit('<script>location.reload();</script>');
         }
     }
 
@@ -447,7 +444,7 @@ class Util
      */
     public static function getServerUrl()
     {
-        $urlScheme = (Checks::httpsEnabled()) ? 'https://' : 'http://';
+        $urlScheme = Checks::httpsEnabled() ? 'https://' : 'http://';
         $urlPort = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
 
         return $urlScheme . $_SERVER['SERVER_NAME'] . $urlPort;
@@ -490,9 +487,9 @@ class Util
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array $objectArray
+     * @param array  $objectArray
      * @param string $method
-     * @param mixed $value
+     * @param mixed  $value
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)

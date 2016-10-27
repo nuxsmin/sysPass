@@ -35,6 +35,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\DiFactory;
 use SP\Core\Template;
 use SP\Core\UI\ThemeIconsBase;
+use SP\Http\JsonResponse;
 
 /**
  * Clase base para los controladores
@@ -74,6 +75,10 @@ abstract class ControllerBase
      * @var string
      */
     protected $controllerName;
+    /**
+     * @var JsonResponse
+     */
+    protected $Json;
 
     /**
      * Constructor
@@ -85,7 +90,7 @@ abstract class ControllerBase
         global $timeStart;
 
         $class = get_called_class();
-        $this->controllerName = substr($class, strrpos($class, '\\') + 1,  -strlen('Controller'));
+        $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
 
         $this->view = null === $template ? $this->getTemplate() : $template;
         $this->view->setBase(strtolower($this->controllerName));
@@ -157,6 +162,22 @@ abstract class ControllerBase
         $this->view->assign('time', Init::microtime_float() - $this->view->timeStart);
         $this->view->assign('memInit', $memInit / 1000);
         $this->view->assign('memEnd', memory_get_usage() / 1000);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function getJson()
+    {
+        return $this->Json;
+    }
+
+    /**
+     * @param JsonResponse $Json
+     */
+    public function setJson(JsonResponse $Json)
+    {
+        $this->Json = $Json;
     }
 
     /**

@@ -104,6 +104,11 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     $UserData->setUserIsChangePass(Request::analyze('changepass', false, false, true));
     $UserData->setUserPass(Request::analyzeEncrypted('pass'));
 
+
+    $CustomFieldData = new CustomFieldData();
+    $CustomFieldData->setId($itemId);
+    $CustomFieldData->setModule(ActionsInterface::ACTION_USR_USERS);
+
     // Nuevo usuario o editar
     if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         || $actionId === ActionsInterface::ACTION_USR_USERS_EDIT
@@ -121,10 +126,6 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         } elseif (Checks::demoIsEnabled() && !Session::getUserIsAdminApp() && $UserData->getUserLogin() == 'demo') {
             Response::printJson(_('Ey, esto es una DEMO!!'));
         }
-
-        $CustomFieldData = new CustomFieldData();
-        $CustomFieldData->setId($itemId);
-        $CustomFieldData->setModule(ActionsInterface::ACTION_USR_USERS);
 
         if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW) {
             if (!$UserData->getUserPass() || !$userPassR) {
@@ -203,16 +204,16 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
     $GroupData->setUsergroupDescription(Request::analyze('description'));
     $GroupData->setUsers(Request::analyze('users', 0));
 
+    $CustomFieldData = new CustomFieldData();
+    $CustomFieldData->setId($itemId);
+    $CustomFieldData->setModule(ActionsInterface::ACTION_USR_GROUPS);
+
     if ($actionId === ActionsInterface::ACTION_USR_GROUPS_NEW
         || $actionId === ActionsInterface::ACTION_USR_GROUPS_EDIT
     ) {
         if (!$GroupData->getUsergroupName()) {
             Response::printJson(_('Es necesario un nombre de grupo'), 2);
         }
-
-        $CustomFieldData = new CustomFieldData();
-        $CustomFieldData->setId($itemId);
-        $CustomFieldData->setModule(ActionsInterface::ACTION_USR_GROUPS);
 
         if ($actionId === ActionsInterface::ACTION_USR_GROUPS_NEW) {
             try {

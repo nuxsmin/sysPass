@@ -7,7 +7,10 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></H2>
 
-    <form method="post" name="frmGroups" id="frmGroups" class="form-action" data-onsubmit="appMgmt/save">
+    <form method="post" name="frmGroups" id="frmGroups" class="form-action"
+          data-onsubmit="appMgmt/save"
+          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_GROUPS; ?>">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -43,7 +46,7 @@
                             title="<?php echo _('Usuarios'); ?>">
                         <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
                         <?php foreach ($users as $id => $name): ?>
-                            <?php $selected = (\SP\Util\Util::checkInObjectArray($groupUsers, 'getUsertogroupUserId', $id)) ? 'selected' : ''; ?>
+                            <?php $selected = \SP\Util\Util::checkInObjectArray($groupUsers, 'getUsertogroupUserId', $id) ? 'selected' : ''; ?>
                             <option
                                 value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
@@ -58,11 +61,9 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
-        <input type="hidden" name="onCloseAction" value="<?php echo $onCloseAction ?>"/>
         <input type="hidden" name="itemId" value="<?php echo $group->getUsergroupId(); ?>"/>
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div id="resCheck"><span id="resFancyAccion"></span></div>

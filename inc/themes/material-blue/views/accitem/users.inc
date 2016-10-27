@@ -6,7 +6,10 @@
 <div id="fancyContainer" align="center">
     <h2 class="midround"><?php echo $header; ?></h2>
 
-    <form method="post" name="frmUsers" id="frmUsers" class="form-action" data-onsubmit="appMgmt/save">
+    <form method="post" name="frmUsers" id="frmUsers" class="form-action"
+          data-onsubmit="appMgmt/save"
+          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS; ?>">
         <table class="fancydata">
             <tbody>
             <tr>
@@ -14,7 +17,8 @@
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="name" name="name" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
+                            <input id="name" name="name" type="text" required
+                                   class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $user->getUserName(); ?>" maxlength="80">
                             <label class="mdl-textfield__label"
                                    for="name"><?php echo _('Nombre de usuario completo'); ?></label>
@@ -30,8 +34,10 @@
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="login" name="login" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user->getUserLogin(); ?>" maxlength="80" <?php echo ($user->isUserIsLdap()) ? 'readonly' : ''; ?>>
+                            <input id="login" name="login" type="text" required
+                                   class="mdl-textfield__input mdl-color-text--indigo-400"
+                                   value="<?php echo $user->getUserLogin(); ?>"
+                                   maxlength="80" <?php echo $user->isUserIsLdap() ? 'readonly' : ''; ?>>
                             <label class="mdl-textfield__label"
                                    for="login"><?php echo _('Login de inicio de sesión'); ?></label>
                         </div>
@@ -39,7 +45,8 @@
                         <?php echo $user->getUserLogin(); ?>
                     <?php endif; ?>
                     <?php if ($user->isUserIsLdap()): ?>
-                        <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>" title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
+                        <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>"
+                           title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
                     <?php endif; ?>
                 </td>
             </tr>
@@ -77,7 +84,8 @@
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="email" name="email" type="email" required class="mdl-textfield__input mdl-color-text--indigo-400"
+                            <input id="email" name="email" type="email" required
+                                   class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $user->getUserEmail(); ?>" maxlength="50">
                             <label class="mdl-textfield__label"
                                    for="email"><?php echo _('Dirección de correo'); ?></label>
@@ -96,7 +104,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="userpass" name="pass" type="password" required
                                    class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                                   maxlength="50" OnKeyUp="sysPassUtil.Common.checkPassLevel(this.value)">
+                                   maxlength="50">
                             <label class="mdl-textfield__label"
                                    for="userpass"><?php echo _('Clave'); ?></label>
                         </div>
@@ -140,14 +148,14 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp"
                                title="<?php echo _('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminapp" <?php echo ($user->isUserIsAdminApp()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
+                                   name="adminapp" <?php echo $user->isUserIsAdminApp() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo _('Admin. Aplicación'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc"
                                title="<?php echo _('Administrador de cuentas'); ?>">
                             <input type="checkbox" id="adminacc" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminacc" <?php echo ($user->isUserIsAdminAcc()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
+                                   name="adminacc" <?php echo $user->isUserIsAdminAcc() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo _('Admin. Cuentas'); ?></span>
                         </label>
                     <?php endif; ?>
@@ -155,14 +163,14 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="disabled"
                            title="<?php echo _('Deshabilitado'); ?>">
                         <input type="checkbox" id="disabled" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="disabled" <?php echo ($user->isUserIsDisabled()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
+                               name="disabled" <?php echo $user->isUserIsDisabled() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
                         <span class="mdl-switch__label"><?php echo _('Deshabilitado'); ?></span>
                     </label>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="changepass"
                            title="<?php echo _('Forzar cambio de clave'); ?>">
                         <input type="checkbox" id="changepass" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="changepass" <?php echo ($user->isUserIsChangePass()) ? 'checked' : ' ';?> <?php echo $isDisabled; ?>/>
+                               name="changepass" <?php echo $user->isUserIsChangePass() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
                         <span class="mdl-switch__label"><?php echo _('Cambio de Clave'); ?></span>
                     </label>
                 </td>
@@ -196,7 +204,6 @@
             </tbody>
         </table>
         <?php if (!$isView): ?>
-            <input type="hidden" name="activeTab" value="<?php echo $activeTab ?>"/>
             <input type="hidden" name="isLdap" value="<?php echo $user->isUserIsLdap() ? 1 : 0; ?>"/>
             <input type="hidden" name="itemId" value="<?php echo $user->getUserId(); ?>"/>
             <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>

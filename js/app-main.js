@@ -106,33 +106,33 @@ sysPass.Main = function () {
      * Respuesta en formato json para mostrar mensaje
      *
      * @param json
+     * @param callback
      */
-    var jsonResponseMessage = function (json) {
+    var jsonResponseMessage = function (json, callback) {
         var status = json.status;
         var description = json.description;
-        var action = json.action;
+        // var action = json.action;
 
         if (typeof json.messages !== "undefined" && json.messages.length > 0) {
             description = description + "<br>" + json.messages.join("<br>");
         }
 
+        //$.fancybox.close();
+        var $alertify = alertify
+            .logPosition("bottom right")
+            .closeLogOnClick(true)
+            .delay(10000);
+
         switch (status) {
             case 0:
-                $.fancybox.close();
-                resMsg("ok", description, undefined, action);
+                $alertify.success(description, callback);
                 break;
             case 1:
-                $.fancybox.close();
-                $(":input[type='password']").val("");
-                resMsg("error", description, undefined, action);
-                break;
             case 2:
-                resMsg("error", description, undefined, action);
-                //$("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>').show();
+                $alertify.error(description, callback);
                 break;
             case 3:
-                $.fancybox.close();
-                resMsg("warn", description, undefined, action);
+                $alertify.warn(description, callback);
                 break;
             case 10:
                 appActions.main.logout();
@@ -284,7 +284,7 @@ sysPass.Main = function () {
     };
 
     var redirect = function (url) {
-        location.href = url;
+        window.location.replace(url);
     };
 
     // Función para enviar una solicitud de modificación de cuenta

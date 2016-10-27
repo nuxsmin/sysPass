@@ -58,6 +58,8 @@ sysPass.Actions = function (Common) {
      * @param $obj
      */
     var updateItems = function ($obj) {
+        log.info("updateItems");
+
         var $dst = $("#" + $obj.data("item-dst"))[0].selectize;
 
         $dst.clearOptions();
@@ -132,12 +134,15 @@ sysPass.Actions = function (Common) {
     var main = {
         logout: function () {
             var search = window.location.search;
+            var url = "";
 
             if (search.length > 0) {
-                window.location.replace("index.php" + search + "&logout=1");
+                url = "index.php" + search + "&logout=1";
             } else {
-                window.location.replace("index.php?logout=1");
+                url = "index.php?logout=1";
             }
+
+            Common.redirect(url);
         },
         login: function ($obj) {
             log.info("main:login");
@@ -149,7 +154,7 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 switch (json.status) {
                     case 0:
-                        window.location.replace(json.data.url);
+                        Common.redirect(json.data.url);
                         break;
                     case 2:
                         Common.resMsg("error", json.description);
@@ -165,6 +170,23 @@ sysPass.Actions = function (Common) {
 
                         $obj.find("input[type='text'],input[type='password']").val("");
                         $obj.find("input:first").focus();
+                }
+            });
+        },
+        install: function ($obj) {
+            log.info("main:install");
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = "/ajax/ajax_install.php";
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.jsonResponseMessage(json);
+
+                if (json.status == 0) {
+                    setTimeout(function () {
+                        Common.redirect("index.php");
+                    }, 2000);
                 }
             });
         }
@@ -679,6 +701,7 @@ sysPass.Actions = function (Common) {
             opts.data = {
                 itemId: $obj.data("item-id"),
                 actionId: $obj.data("action-id"),
+                activeTab: $obj.data("activetab"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -687,7 +710,7 @@ sysPass.Actions = function (Common) {
                 $.fancybox(response, {
                     padding: [0, 10, 10, 10],
                     afterClose: function () {
-                        if ($obj.data("action-dst")) {
+                        if ($obj.data("item-dst")) {
                             updateItems($obj);
                         }
                     },
@@ -738,8 +761,12 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.jsonResponseMessage(json);
 
-                if ($obj.data("nextaction-id")) {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                if (json.status === 0) {
+                    if ($obj.data("nextaction-id") && $obj.data("activetab")) {
+                        doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                    }
+
+                    $.fancybox.close();
                 }
             });
         },
@@ -785,28 +812,6 @@ sysPass.Actions = function (Common) {
             });
 
             return false;
-        },
-        userpass: function ($obj) {
-            log.info("appMgmt:userpass");
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.type = "html";
-            opts.method = "get";
-            opts.url = "/ajax/ajax_usrpass.php";
-            opts.data = {
-                actionId: $obj.data("action-id"),
-                userId: $obj.data("item-id"),
-                sk: $obj.data("sk"),
-                isAjax: 1
-            };
-
-            Common.appRequests().getActionCall(opts, function (response) {
-                if (response.length === 0) {
-                    main.logout();
-                } else {
-                    $.fancybox(response, {padding: 0});
-                }
-            });
         }
     };
 

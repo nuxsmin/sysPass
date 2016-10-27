@@ -161,11 +161,41 @@ sysPass.Triggers = function (Common) {
         }
     };
 
+    var bodyHooks = function () {
+        log.info("bodyHooks");
+
+        $("body").on("click", ".btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
+            btnAction($(this));
+        }).on("click", ".btn-back", function () {
+            var appRequests = Common.appRequests();
+
+            if (appRequests.history.length() > 0) {
+                log.info("back");
+
+                var lastHistory = appRequests.history.del();
+
+                appRequests.getActionCall(lastHistory, lastHistory.callback);
+            }
+        }).on("submit", ".form-action", function (e) {
+            e.preventDefault();
+
+            formAction($(this));
+        }).on("click", ".btn-help", function () {
+            var $this = $(this);
+
+            $("#" + $this.data("help")).dialog("open");
+        });
+    };
+
     /**
      * Triggers que se ejecutan en determinadas vistas
      */
     var views = {
         main: function () {
+            log.info("views:main");
+
+            bodyHooks();
+
             $(".btn-menu").click(function () {
                 var $this = $(this);
 
@@ -176,33 +206,14 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $(this).data("action-id")});
             });
 
-            $("body").on("click", ".btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
-                btnAction($(this));
-            }).on("click", ".btn-back", function () {
-                var appRequests = Common.appRequests();
-
-                if (appRequests.history.length() > 0) {
-                    log.info("back");
-
-                    var lastHistory = appRequests.history.del();
-
-                    appRequests.getActionCall(lastHistory, lastHistory.callback);
-                }
-            }).on("submit", ".form-action", function (e) {
-                e.preventDefault();
-
-                formAction($(this));
-            }).on("click", ".btn-help", function () {
-                var $this = $(this);
-
-                $("#" + $this.data("help")).dialog("open");
-            });
 
             setFixedMenu();
 
             Common.appActions().doAction({actionId: 1});
         },
         search: function () {
+            log.info("views:search");
+
             var $frmSearch = $("#frmSearch");
 
             $frmSearch.on("submit", function (e) {
@@ -236,17 +247,17 @@ sysPass.Triggers = function (Common) {
             }
         },
         login: function () {
-            $("#frmLogin").on("submit", function (e) {
-                e.preventDefault();
+            log.info("views:login");
 
-                formAction($(this));
-            });
+            bodyHooks();
 
             $("#boxLogout").fadeOut(1500, function () {
                 location.href = Common.config().APP_ROOT + "/index.php";
             });
         },
         footer: function () {
+            log.info("views:footer");
+
             $("#btnLogout").click(function (e) {
                 Common.appActions().main.logout();
             });
@@ -256,10 +267,12 @@ sysPass.Triggers = function (Common) {
             });
 
             $("#btnUserPass").click(function (e) {
-                Common.appActions().appMgmt.userpass($(this));
+                Common.appActions().user.password($(this));
             });
         },
         common: function (container) {
+            log.info("views:common");
+
             var $container = $(container);
 
             selectDetect($container);
@@ -275,6 +288,8 @@ sysPass.Triggers = function (Common) {
             }
         },
         datatabs: function (active) {
+            log.info("views:datatabs");
+
             $("#tabs").tabs({
                 active: active
             });
@@ -288,6 +303,8 @@ sysPass.Triggers = function (Common) {
             });
         },
         config: function () {
+            log.info("views:config");
+
             var $dropFiles = $("#drop-import-files");
 
             if ($dropFiles.length > 0) {
@@ -317,6 +334,8 @@ sysPass.Triggers = function (Common) {
             }
         },
         account: function () {
+            log.info("views:account");
+
             var $listFiles = $("#list-account-files");
 
             if ($listFiles.length > 0) {
@@ -340,8 +359,14 @@ sysPass.Triggers = function (Common) {
                 $form.attr("data-hash", SparkMD5.hash($form.serialize(), false));
             }
         },
-        install: function() {
-            Common.appTheme().passwordDetect($("#frmInstall"));
+        install: function () {
+            log.info("views:install");
+
+            bodyHooks();
+
+            var $form = $("#frmInstall");
+
+            Common.appTheme().passwordDetect($form);
         }
     };
 

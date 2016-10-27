@@ -14,14 +14,14 @@
         <ul>
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <li class="cell-data" style="width: <?php echo $data->getHeader()->getWidth(); ?>%;">
-                    <?php echo (!is_null($dataItem->$rowSrc)) ? $dataItem->$rowSrc : '&nbsp;'; // Fix height ?>
+                    <?php echo (null !== $dataItem->{$rowSrc}) ? $dataItem->{$rowSrc} : '&nbsp;'; // Fix height ?>
                 </li>
             <?php endforeach; ?>
 
             <?php if (count($data->getData()->getDataRowSourcesWithIcon()) > 0): ?>
                 <li class="cell-nodata" style="width: <?php echo $data->getHeader()->getWidth(); ?>%;">
                     <?php foreach ($data->getData()->getDataRowSourcesWithIcon() as $rowSrcIcon): ?>
-                        <?php if ($dataItem->$rowSrcIcon[0] == 1): ?>
+                        <?php if ($dataItem->{$rowSrcIcon[0]} == 1): ?>
                             <i class="material-icons <?php echo $rowSrcIcon[1]->getClass(); ?>" title="<?php echo $rowSrcIcon[1]->getTitle(); ?>">
                                 <?php echo $rowSrcIcon[1]->getIcon(); ?>
                             </i>

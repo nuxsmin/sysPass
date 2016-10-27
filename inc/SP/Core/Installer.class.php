@@ -44,8 +44,6 @@ use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-define('IS_INSTALLER', 1);
-
 /**
  * Esta clase es la encargada de instalar sysPass.
  */
@@ -73,51 +71,45 @@ class Installer
     /**
      * Iniciar instalación.
      *
-     * @return array resultado del proceso
+     * @return bool
+     * @throws SPException
      */
     public function install()
     {
-        try {
-            $this->checkData();
+        $this->checkData();
 
-            $Config = Config::getConfig();
+        $Config = Config::getConfig();
 
-            // Generate a random salt that is used to salt the local user passwords
-            $Config->setPasswordSalt(Util::generateRandomBytes(30));
-            $Config->setConfigVersion(implode(Util::getVersion(true)));
+        // Generate a random salt that is used to salt the local user passwords
+        $Config->setPasswordSalt(Util::generateRandomBytes(30));
+        $Config->setConfigVersion(implode(Util::getVersion(true)));
 
-            if (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
-                $this->InstallData->setDbHost($match[1]);
-                $this->InstallData->setDbPort($match[2]);
-            } else {
-                $this->InstallData->setDbPort(3306);
-            }
-
-            if (!preg_match('/(localhost|127.0.0.1)/', $this->InstallData->getDbHost())) {
-                $this->InstallData->setDbAuthHost($_SERVER['SERVER_ADDR']);
-            } else {
-                $this->InstallData->setDbAuthHost('localhost');
-            }
-
-            // Save DB connection info
-            $Config->setDbHost($this->InstallData->getDbHost());
-            $Config->setDbName($this->InstallData->getDbName());
-
-
-            $this->connectDatabase();
-            $this->setupMySQLDatabase();
-            $this->createAdminAccount();
-
-            ConfigDB::setValue('version', implode(Util::getVersion(true)));
-
-            $Config->setInstalled(true);
-            Config::saveConfig($Config);
-        } catch (SPException $e) {
-            return [
-                'type' => $e->getType(),
-                'description' => $e->getMessage(),
-                'hint' => $e->getHint()];
+        if (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
+            $this->InstallData->setDbHost($match[1]);
+            $this->InstallData->setDbPort($match[2]);
+        } else {
+            $this->InstallData->setDbPort(3306);
         }
+
+        if (!preg_match('/(localhost|127.0.0.1)/', $this->InstallData->getDbHost())) {
+            $this->InstallData->setDbAuthHost($_SERVER['SERVER_ADDR']);
+        } else {
+            $this->InstallData->setDbAuthHost('localhost');
+        }
+
+        // Save DB connection info
+        $Config->setDbHost($this->InstallData->getDbHost());
+        $Config->setDbName($this->InstallData->getDbName());
+
+
+        $this->connectDatabase();
+        $this->setupMySQLDatabase();
+        $this->createAdminAccount();
+
+        ConfigDB::setValue('version', implode(Util::getVersion(true)));
+
+        $Config->setInstalled(true);
+        Config::saveConfig($Config);
 
         return true;
     }
@@ -125,7 +117,7 @@ class Installer
     /**
      * @throws InvalidArgumentException
      */
-    private function checkData()
+    public function checkData()
     {
         if (!$this->InstallData->getAdminLogin()) {
             throw new InvalidArgumentException(
@@ -337,7 +329,7 @@ class Installer
      */
     private function createDBStructure()
     {
-        $fileName = SQL_PATH  . DIRECTORY_SEPARATOR . 'dbstructure.sql';
+        $fileName = SQL_PATH . DIRECTORY_SEPARATOR . 'dbstructure.sql';
 
         if (!file_exists($fileName)) {
             throw new SPException(SPException::SP_CRITICAL,

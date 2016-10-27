@@ -129,7 +129,9 @@ class Init
         self::checkHttps();
 
         // Comprobar si es necesario inicialización
-        if (self::checkInitSourceInclude()) {
+        if (self::checkInitSourceInclude() ||
+            (defined('IS_INSTALLER') && Request::analyze('isAjax', false, true))
+        ) {
             return;
         }
 
@@ -424,7 +426,7 @@ class Init
      */
     private static function checkInitSourceInclude()
     {
-        $srcScript = pathinfo($_SERVER["SCRIPT_NAME"], PATHINFO_BASENAME);
+        $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
         $skipInit = array('js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php');
 
         return (in_array($srcScript, $skipInit));
@@ -445,13 +447,15 @@ class Init
     /**
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private static function checkInstalled()
     {
         // Redirigir al instalador si no está instalada
         if (!Config::getConfig()->isInstalled()) {
-            if (self::$SUBURI != '/index.php') {
-                $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER["SERVER_PORT"] . self::$WEBROOT . '/index.php';
+            if (self::$SUBURI !== '/index.php') {
+                $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
                 header("Location: $url");
                 exit();
             } else {
