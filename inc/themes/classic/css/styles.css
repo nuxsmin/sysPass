@@ -248,7 +248,7 @@ a:focus {
 #container.main {
     width: 100%;
     height: auto;
-    min-height: 650px;
+    /*min-height: 650px;*/
     /*background: url("../imgs/logo_full.png") no-repeat left top transparent;*/
     background: url("../imgs/logo_full.svg") no-repeat left top #f2f2f2;
     background-size: 350px;
@@ -365,7 +365,7 @@ a:focus {
 
 #content #resBuscar {
     min-width: 875px;
-    min-height: 450px;
+    /*min-height: 450px;*/
     margin-bottom: 50px;
 }
 

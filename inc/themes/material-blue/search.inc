@@ -156,7 +156,7 @@
                                    title="<?php echo _('Ver Clave'); ?>"
                                    data-account-id="<?php echo $account['id']; ?>">lock_open</i>
                                 <?php if (!\SP\Util::accountPassToImageIsEnabled()): ?>
-                                    <i class="material-icons fg-blue80 clip-pass-button <?php echo $optionalActions ? '' : 'actions-optional'; ?>"
+                                    <i class="material-icons fg-blue80 clip-pass-button"
                                        data-account-id="<?php echo $account['id']; ?>"
                                        title="<?php echo _('Copiar Clave en Portapapeles'); ?>">content_paste</i>
                                 <?php endif ?>

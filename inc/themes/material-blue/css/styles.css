@@ -215,7 +215,7 @@ a:hover, a:active, a:focus {
     top: 0;
     width: 100%;
     height: auto;
-    min-height: 650px;
+    /*min-height: 650px;*/
     background: url("../imgs/logo_full.svg") no-repeat left top transparent;
     background-size: auto 150px;
 }
@@ -274,7 +274,7 @@ a:hover, a:active, a:focus {
 
 #container #content {
     width: 95%;
-    min-height: 500px;
+    /*min-height: 500px;*/
     margin: 10em auto 5em auto;
 }
 
@@ -306,7 +306,7 @@ a:hover, a:active, a:focus {
 }
 
 #content #resBuscar {
-    min-height: 450px;
+    /*min-height: 450px;*/
     margin-bottom: 50px;
 }
 

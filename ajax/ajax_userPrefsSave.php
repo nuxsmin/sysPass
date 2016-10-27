@@ -60,6 +60,10 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL
     $topNavbar = SP\Request::analyze('top_navbar', false, false, true);
     $optionalActions = SP\Request::analyze('optional_actions', false, false, true);
 
+    if (!array_key_exists($userTheme , \SP\Themes::getThemesAvailable())) {
+        SP\Response::printJSON(_('Error al actualizar preferencias'));
+    }
+
     // No se instancia la clase ya que es necesario guardar los atributos ya guardados
     $UserPrefs = \SP\UserPreferences::getPreferences($itemId);
     $UserPrefs->setId($itemId);
