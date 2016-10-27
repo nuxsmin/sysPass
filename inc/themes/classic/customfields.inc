@@ -18,7 +18,7 @@
                     <select name="type" id="sel-type" size="1" class="sel-chosen-ns">
                         <?php foreach ($types as $id => $type): ?>
                             <option
-                                value='<?php echo $id; ?>' <?php echo ($gotData && $id === $field->getType()) ? 'selected' : ''; ?>><?php echo strtoupper($type); ?></option>
+                                value='<?php echo $id; ?>' <?php echo ($gotData && $id === $field->getType()) ? 'selected' : ''; ?>><?php echo $type[1]; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -29,7 +29,7 @@
                     <select name="module" id="sel-module" size="1" class="sel-chosen-ns">
                         <?php foreach ($modules as $id => $module): ?>
                             <option
-                                value='<?php echo $id; ?>' <?php echo ($gotData && $id === $field->getModule()) ? 'selected' : ''; ?>><?php echo strtoupper($module); ?></option>
+                                value='<?php echo $id; ?>' <?php echo ($gotData && $id === $field->getModule()) ? 'selected' : ''; ?>><?php echo $module; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
