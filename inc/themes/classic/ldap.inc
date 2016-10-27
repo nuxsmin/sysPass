@@ -80,6 +80,11 @@
                     <td class="descField">
                         <?php echo _('Clave de conexión'); ?>
                         <img src="imgs/help.png" title="<?php echo _('Ayuda'); ?>" class="inputImgMini help-tooltip"/>
+                        <div class="tooltip" for="help-ldap_bindpass" style="display:none;">
+                            <p>
+                                <?php echo _('Clave del usuario de conexión a LDAP.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <input type="password" id="ldap_bindpass" name="ldap_bindpass" value="<?php echo $ldapBindPass; ?>"
