@@ -285,7 +285,7 @@ class Init
     /**
      * Devuelve un eror utilizando la plantilla de rror.
      *
-     * @param string $str  con la descripción del error
+     * @param string $str con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      */
     public static function initError($str, $hint = '')
@@ -575,23 +575,25 @@ class Init
                 }
 
                 self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
-            }
-
-            $action = Request::analyze('a');
-            $hash = Request::analyze('h');
-
-            if ($action === 'upgrade' && $hash === Config::getConfig()->getUpgradeKey()) {
-                if ($update = Upgrade::doUpgrade($databaseVersion)) {
-                    ConfigDB::setValue('version', $appVersion);
-                    Config::getConfig()->setMaintenance(false);
-                    Config::getConfig()->setUpgradeKey('');
-                    Config::saveConfig();
-                }
             } else {
-                $controller = new MainController();
-                $controller->getUpgrade();
-                $controller->view();
-                exit();
+                $action = Request::analyze('a');
+                $hash = Request::analyze('h');
+
+                if ($action === 'upgrade' && $hash === Config::getConfig()->getUpgradeKey()) {
+                    if (Upgrade::doUpgrade($databaseVersion)) {
+                        ConfigDB::setValue('version', $appVersion);
+                        Config::getConfig()->setMaintenance(false);
+                        Config::getConfig()->setUpgradeKey('');
+                        Config::saveConfig();
+
+                        $update = true;
+                    }
+                } else {
+                    $controller = new MainController();
+                    $controller->getUpgrade();
+                    $controller->view();
+                    exit();
+                }
             }
         }
 

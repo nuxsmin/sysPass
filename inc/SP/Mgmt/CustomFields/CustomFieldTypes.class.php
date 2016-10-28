@@ -86,7 +86,7 @@ class CustomFieldTypes
     public static function getFieldsModules($moduleId = null)
     {
         $modules = array(
-            ActionsInterface::ACTION_ACC_NEW => _('Cuentas'),
+            ActionsInterface::ACTION_ACC => _('Cuentas'),
             ActionsInterface::ACTION_MGM_CATEGORIES => _('Categorías'),
             ActionsInterface::ACTION_MGM_CUSTOMERS => _('Clientes'),
             ActionsInterface::ACTION_USR_USERS => _('Usuarios'),

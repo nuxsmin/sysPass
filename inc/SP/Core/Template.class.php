@@ -114,7 +114,7 @@ class Template
             $template .= '.inc';
         }
 
-        error_log('Plantilla: ' . $template);
+//        error_log('Plantilla: ' . $template);
 
         $file = $this->Theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 

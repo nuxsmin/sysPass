@@ -29,6 +29,7 @@ use ReflectionObject;
 use SP\Core\DiFactory;
 use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
+use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 

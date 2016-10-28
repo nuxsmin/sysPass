@@ -262,7 +262,7 @@ class Crypt
         }
 
         $mcryptRes = self::getMcryptResource();
-        mcrypt_generic_init($mcryptRes, $password, $cryptIV);
+        @mcrypt_generic_init($mcryptRes, $password, $cryptIV);
         $strDecrypted = trim(mdecrypt_generic($mcryptRes, $cryptData));
 
         mcrypt_generic_deinit($mcryptRes);

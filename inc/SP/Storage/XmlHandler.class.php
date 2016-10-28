@@ -40,7 +40,7 @@ class XmlHandler implements FileStorageInterface
     /**
      * @var mixed
      */
-    protected $items = null;
+    protected $items;
     /**
      * @var string
      */
@@ -61,7 +61,6 @@ class XmlHandler implements FileStorageInterface
     public function __construct($file)
     {
         $this->file = $file;
-        $this->setDOM();
     }
 
     /**
@@ -76,7 +75,7 @@ class XmlHandler implements FileStorageInterface
      * Cargar un archivo XML
      *
      * @param string $tag
-     * @return bool|void
+     * @return FileStorageInterface
      * @throws \Exception
      */
     public function load($tag = 'root')
@@ -85,7 +84,8 @@ class XmlHandler implements FileStorageInterface
             throw new \Exception(sprintf(_('No es posible leer/escribir el archivo: %s'), $this->file));
         }
 
-        $this->items = array();
+        $this->setDOM();
+        $this->items = [];
         $this->Dom->load($this->file);
 
         $nodes = $this->Dom->getElementsByTagName($tag)->item(0)->childNodes;
@@ -151,7 +151,7 @@ class XmlHandler implements FileStorageInterface
      * Guardar el archivo XML
      *
      * @param string $tag
-     * @return bool|void
+     * @return FileStorageInterface
      * @throws \Exception
      */
     public function save($tag = 'root')
@@ -160,12 +160,15 @@ class XmlHandler implements FileStorageInterface
             throw new \Exception(_('No hay elementos para guardar'));
         }
 
+        $this->setDOM();
         $this->Dom->formatOutput = true;
 
         $this->root = $this->Dom->createElement($tag);
         $this->Dom->appendChild($this->root);
         $this->writeChildNodes($this->items, $this->root);
-        $this->Dom->save($this->file);
+//        $this->Dom->save($this->file);
+
+        file_put_contents($this->file, $this->Dom->saveXML(), LOCK_EX);
 
         return $this;
     }

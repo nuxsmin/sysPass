@@ -5,7 +5,7 @@
         </div>
     </div>
 
-    <form id="upgrade" action="../../../../../index.php" method="get">
+    <form id="upgrade" action="index.php" method="get">
         <fieldset>
             <legend><?php echo _('Actualización de BBDD'); ?></legend>
 
