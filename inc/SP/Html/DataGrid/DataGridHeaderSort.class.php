@@ -37,10 +37,10 @@ use SplObjectStorage;
 class DataGridHeaderSort extends DataGridHeaderBase
 {
     /** @var DataGridActionInterface[] */
-    private $_actions = null;
+    private $_actions;
 
     /** @var DataGridSortInterface[] */
-    private $_sortFields = null;
+    private $_sortFields;
 
     /**
      * @return DataGridSortInterface[]
@@ -63,7 +63,7 @@ class DataGridHeaderSort extends DataGridHeaderBase
      */
     public function addAction($action)
     {
-        if (is_null($this->_actions)) {
+        if (null === $this->_actions) {
             $this->_actions = new SplObjectStorage();
         }
 
@@ -76,7 +76,7 @@ class DataGridHeaderSort extends DataGridHeaderBase
      */
     public function addSortField($field)
     {
-        if (is_null($this->_sortFields)) {
+        if (null === $this->_sortFields) {
             $this->_sortFields = new SplObjectStorage();
         }
 

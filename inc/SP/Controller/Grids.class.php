@@ -75,6 +75,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getCategoriesGrid()
     {
@@ -159,6 +160,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getCustomersGrid()
     {
@@ -222,6 +224,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getCustomFieldsGrid()
     {
@@ -287,6 +290,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getFilesGrid()
     {
@@ -344,6 +348,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getAccountsGrid()
     {
@@ -388,6 +393,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getUsersGrid()
     {
@@ -479,6 +485,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getGroupsGrid()
     {
@@ -542,6 +549,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getProfilesGrid()
     {
@@ -615,6 +623,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getTokensGrid()
     {
@@ -687,6 +696,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getPublicLinksGrid()
     {
@@ -756,6 +766,7 @@ class Grids implements ActionsInterface
 
     /**
      * @return DataGridTab
+     * @throws \InvalidArgumentException
      */
     public function getTagsGrid()
     {

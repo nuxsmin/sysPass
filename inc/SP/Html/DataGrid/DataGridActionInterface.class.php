@@ -148,7 +148,7 @@ interface DataGridActionInterface
      * Añadir nuevo atributo de datos
      *
      * @param string $name El nombe del atributo
-     * @param mixed $data Los datos del atributo
+     * @param mixed  $data Los datos del atributo
      */
     public function addData($name, $data);
 }

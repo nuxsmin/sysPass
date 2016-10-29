@@ -103,7 +103,8 @@
                                         <i class="material-icons"
                                            title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
                                     </a>
-                                    <i class="btn-action material-icons fg-green100" title="<?php echo _('Ver en Wiki'); ?>"
+                                    <i class="btn-action material-icons fg-green100"
+                                       title="<?php echo _('Ver en Wiki'); ?>"
                                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
                                        data-item-id="<?php echo $Account->getName() ?>"
                                        data-onclick="wiki/show">library_books</i>
@@ -123,9 +124,7 @@
                         </div>
                     <?php endif; ?>
                 </div>
-            <?php endif; ?>
-
-            <?php if (!$Account->isShow()): ?>
+            <?php else: ?>
                 <div class="account-spacer"></div>
             <?php endif; ?>
 
@@ -137,10 +136,33 @@
                            data-item-id="<?php echo $Account->getId(); ?>"
                             <?php foreach ($action->getData() as $name => $actionData): ?>
                                 <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
-                            <?php endforeach; ?>
-                        ><?php echo $action->getIcon()->getIcon(); ?></i>
+                            <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
                     <?php endif; ?>
                 <?php endforeach; ?>
+
+                <?php if (count($data->getDataActionsMenu()) > 0): ?>
+                    <button id="actions-menu-lower-right-<?php echo $Account->getId(); ?>"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+                    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                        for="actions-menu-lower-right-<?php echo $Account->getId(); ?>">
+
+                        <?php foreach ($data->getDataActionsMenu() as $actionMenu): ?>
+                            <?php if ($actionMenu->getReflectionFilter()->invoke($Account)): ?>
+                                <li class="btn-action mdl-menu__item"
+                                    data-item-id="<?php echo $Account->getId(); ?>"
+                                    <?php foreach ($actionMenu->getData() as $name => $actionData): ?>
+                                        <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
+                                    <?php endforeach; ?>>
+                                    <i class="material-icons <?php echo $actionMenu->getIcon()->getClass(); ?>"
+                                       title="<?php echo $actionMenu->getTitle(); ?>"><?php echo $actionMenu->getIcon()->getIcon(); ?></i>
+                                    <?php echo $actionMenu->getName(); ?>
+                                </li>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
             </div>
 
         </div>

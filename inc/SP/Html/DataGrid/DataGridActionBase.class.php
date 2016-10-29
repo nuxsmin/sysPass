@@ -41,73 +41,73 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var \ReflectionMethod
      */
-    private $_reflectionFilter;
+    protected $_reflectionFilter;
     /**
      * El nombre de la acción
      *
      * @var string
      */
-    private $_name = '';
+    protected $_name = '';
     /**
      * El título de la acción
      *
      * @var string
      */
-    private $_title = '';
+    protected $_title = '';
     /**
      * El id de la acción
      *
      * @var int
      */
-    private $_id = 0;
+    protected $_id = 0;
     /**
      * La función javascript del evento OnClick
      *
      * @var string
      */
-    private $_onClickFunction = '';
+    protected $_onClickFunction = '';
     /**
      * Los argumentos de la función OnClick
      *
      * @var array
      */
-    private $_onClickArgs = array();
+    protected $_onClickArgs = array();
     /**
      * El icono de la acción
      *
      * @var IconInterface
      */
-    private $_icon = null;
+    protected $_icon = null;
     /**
      * Si se debe de omitir para los elementos del listado
      *
      * @var bool
      */
-    private $_isSkip = false;
+    protected $_isSkip = false;
     /**
      * La columna de origen de datos que condiciona esta acción
      *
      * @var string
      */
-    private $_filterRowSource = '';
+    protected $_filterRowSource = '';
     /**
      * Si es una acción de ayuda
      *
      * @var bool
      */
-    private $_isHelper;
+    protected $_isHelper;
     /**
      * El tipo de acción
      *
      * @var int
      */
-    private $_type = 0;
+    protected $_type = 0;
     /**
      * Atributos de datos adicionales
      *
      * @var array
      */
-    private $_data = [];
+    protected $_data = [];
 
     /**
      * DataGridActionBase constructor.

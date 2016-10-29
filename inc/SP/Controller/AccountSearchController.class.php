@@ -202,147 +202,135 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
+     * @throws \InvalidArgumentException
      */
     private function getGrid()
     {
-        $showOptionalActions = Session::getUserPreferences()->isOptionalActions();
-
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_ACC_VIEW)
-            ->setType(DataGridActionType::VIEW_ITEM)
-            ->setName(_('Detalles de Cuenta'))
-            ->setTitle(_('Detalles de Cuenta'))
-            ->setIcon($this->icons->getIconView())
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowView')
-            ->addData('action-id', self::ACTION_ACC_VIEW)
-            ->addData('action-sk', $this->sk)
-            ->addData('onclick', 'account/show');
+        $GridActionView->setId(self::ACTION_ACC_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(_('Detalles de Cuenta'));
+        $GridActionView->setTitle(_('Detalles de Cuenta'));
+        $GridActionView->setIcon($this->icons->getIconView());
+        $GridActionView->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowView');
+        $GridActionView->addData('action-id', self::ACTION_ACC_VIEW);
+        $GridActionView->addData('action-sk', $this->sk);
+        $GridActionView->addData('onclick', 'account/show');
 
         $GridActionViewPass = new DataGridAction();
-        $GridActionViewPass->setId(self::ACTION_ACC_VIEW_PASS)
-            ->setType(DataGridActionType::VIEW_ITEM)
-            ->setName(_('Ver Clave'))
-            ->setTitle(_('Ver Clave'))
-            ->setIcon($this->icons->getIconViewPass())
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowViewPass')
-            ->addData('action-id', self::ACTION_ACC_VIEW_PASS)
-            ->addData('action-sk', $this->sk)
-            ->addData('onclick', 'account/showpass');
+        $GridActionViewPass->setId(self::ACTION_ACC_VIEW_PASS);
+        $GridActionViewPass->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionViewPass->setName(_('Ver Clave'));
+        $GridActionViewPass->setTitle(_('Ver Clave'));
+        $GridActionViewPass->setIcon($this->icons->getIconViewPass());
+        $GridActionViewPass->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowViewPass');
+        $GridActionViewPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
+        $GridActionViewPass->addData('action-sk', $this->sk);
+        $GridActionViewPass->addData('onclick', 'account/showpass');
 
         // Añadir la clase para usar el portapapeles
         $ClipboardIcon = $this->icons->getIconClipboard()->setClass('clip-pass-button');
 
         $GridActionCopyPass = new DataGridAction();
-        $GridActionCopyPass->setId(self::ACTION_ACC_VIEW_PASS)
-            ->setType(DataGridActionType::VIEW_ITEM)
-            ->setName(_('Copiar Clave en Portapapeles'))
-            ->setTitle(_('Copiar Clave en Portapapeles'))
-            ->setIcon($ClipboardIcon)
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopyPass')
-            ->addData('action-id', self::ACTION_ACC_VIEW_PASS)
-            ->addData('action-sk', $this->sk)
-            ->addData('useclipboard', '1');
+        $GridActionCopyPass->setId(self::ACTION_ACC_VIEW_PASS);
+        $GridActionCopyPass->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionCopyPass->setName(_('Copiar Clave en Portapapeles'));
+        $GridActionCopyPass->setTitle(_('Copiar Clave en Portapapeles'));
+        $GridActionCopyPass->setIcon($ClipboardIcon);
+        $GridActionCopyPass->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopyPass');
+        $GridActionCopyPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
+        $GridActionCopyPass->addData('action-sk', $this->sk);
+        $GridActionCopyPass->addData('useclipboard', '1');
 
         $EditIcon = $this->icons->getIconEdit();
 
-        if (!$showOptionalActions) {
-            $EditIcon->setClass('actions-optional');
-        }
-
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_ACC_EDIT)
-            ->setType(DataGridActionType::EDIT_ITEM)
-            ->setName(_('Editar Cuenta'))
-            ->setTitle(_('Editar Cuenta'))
-            ->setIcon($EditIcon)
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowEdit')
-            ->addData('action-id', self::ACTION_ACC_EDIT)
-            ->addData('action-sk', $this->sk)
-            ->addData('onclick', 'account/edit');
+        $GridActionEdit->setId(self::ACTION_ACC_EDIT);
+        $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionEdit->setName(_('Editar Cuenta'));
+        $GridActionEdit->setTitle(_('Editar Cuenta'));
+        $GridActionEdit->setIcon($EditIcon);
+        $GridActionEdit->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowEdit');
+        $GridActionEdit->addData('action-id', self::ACTION_ACC_EDIT);
+        $GridActionEdit->addData('action-sk', $this->sk);
+        $GridActionEdit->addData('onclick', 'account/edit');
 
         $CopyIcon = $this->icons->getIconCopy();
 
-        if (!$showOptionalActions) {
-            $CopyIcon->setClass('actions-optional');
-        }
-
         $GridActionCopy = new DataGridAction();
-        $GridActionCopy->setId(self::ACTION_ACC_COPY)
-            ->setType(DataGridActionType::NEW_ITEM)
-            ->setName(_('Copiar Cuenta'))
-            ->setTitle(_('Copiar Cuenta'))
-            ->setIcon($CopyIcon)
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopy')
-            ->addData('action-id', self::ACTION_ACC_COPY)
-            ->addData('action-sk', $this->sk)
-            ->addData('onclick', 'account/copy');
+        $GridActionCopy->setId(self::ACTION_ACC_COPY);
+        $GridActionCopy->setType(DataGridActionType::NEW_ITEM);
+        $GridActionCopy->setName(_('Copiar Cuenta'));
+        $GridActionCopy->setTitle(_('Copiar Cuenta'));
+        $GridActionCopy->setIcon($CopyIcon);
+        $GridActionCopy->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowCopy');
+        $GridActionCopy->addData('action-id', self::ACTION_ACC_COPY);
+        $GridActionCopy->addData('action-sk', $this->sk);
+        $GridActionCopy->addData('onclick', 'account/copy');
 
         $DeleteIcon = $this->icons->getIconDelete();
 
-        if (!$showOptionalActions) {
-            $DeleteIcon->setClass('actions-optional');
-        }
-
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_ACC_DELETE)
-            ->setType(DataGridActionType::DELETE_ITEM)
-            ->setName(_('Eliminar Cuenta'))
-            ->setTitle(_('Eliminar Cuenta'))
-            ->setIcon($DeleteIcon)
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowDelete')
-            ->addData('action-id', self::ACTION_ACC_DELETE)
-            ->addData('action-sk', $this->sk)
-            ->addData('onclick', 'account/delete');
+        $GridActionDel->setId(self::ACTION_ACC_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(_('Eliminar Cuenta'));
+        $GridActionDel->setTitle(_('Eliminar Cuenta'));
+        $GridActionDel->setIcon($DeleteIcon);
+        $GridActionDel->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowDelete');
+        $GridActionDel->addData('action-id', self::ACTION_ACC_DELETE);
+        $GridActionDel->addData('action-sk', $this->sk);
+        $GridActionDel->addData('onclick', 'account/delete');
 
         $GridActionRequest = new DataGridAction();
-        $GridActionRequest->setId(self::ACTION_ACC_REQUEST)
-            ->setName(_('Solicitar Modificación'))
-            ->setTitle(_('Solicitar Modificación'))
-            ->setIcon($this->icons->getIconEmail())
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowRequest')
-            ->addData('action-id', self::ACTION_ACC_REQUEST)
-            ->addData('action-sk', $this->sk)
-            ->addData('onclick', 'account/request');
+        $GridActionRequest->setId(self::ACTION_ACC_REQUEST);
+        $GridActionRequest->setName(_('Solicitar Modificación'));
+        $GridActionRequest->setTitle(_('Solicitar Modificación'));
+        $GridActionRequest->setIcon($this->icons->getIconEmail());
+        $GridActionRequest->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowRequest');
+        $GridActionRequest->addData('action-id', self::ACTION_ACC_REQUEST);
+        $GridActionRequest->addData('action-sk', $this->sk);
+        $GridActionRequest->addData('onclick', 'account/request');
 
         $GridActionOptional = new DataGridAction();
-        $GridActionOptional->setId(0)
-            ->setName(_('Más Acciones'))
-            ->setTitle(_('Más Acciones'))
-            ->setIcon($this->icons->getIconOptional())
-            ->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowOptional')
-            ->addData('onclick', 'account/menu');
+        $GridActionOptional->setId(0);
+        $GridActionOptional->setName(_('Más Acciones'));
+        $GridActionOptional->setTitle(_('Más Acciones'));
+        $GridActionOptional->setIcon($this->icons->getIconOptional());
+        $GridActionOptional->setReflectionFilter('\\SP\\Account\\AccountsSearchData', 'isShowOptional');
+        $GridActionOptional->addData('onclick', 'account/menu');
 
         $GridPager = new DataGridPager();
-        $GridPager->setIconPrev($this->icons->getIconNavPrev())
-            ->setIconNext($this->icons->getIconNavNext())
-            ->setIconFirst($this->icons->getIconNavFirst())
-            ->setIconLast($this->icons->getIconNavLast())
-            ->setSortKey($this->sortKey)
-            ->setSortOrder($this->sortOrder)
-            ->setLimitStart($this->limitStart)
-            ->setLimitCount($this->limitCount)
-            ->setOnClickFunction('account/sort')
-            ->setOnClickArgs($this->sortKey)
-            ->setOnClickArgs($this->sortOrder)
-            ->setFilterOn($this->filterOn)
-            ->setSourceAction(new DataGridActionSearch(self::ACTION_ACC_SEARCH));
+        $GridPager->setIconPrev($this->icons->getIconNavPrev());
+        $GridPager->setIconNext($this->icons->getIconNavNext());
+        $GridPager->setIconFirst($this->icons->getIconNavFirst());
+        $GridPager->setIconLast($this->icons->getIconNavLast());
+        $GridPager->setSortKey($this->sortKey);
+        $GridPager->setSortOrder($this->sortOrder);
+        $GridPager->setLimitStart($this->limitStart);
+        $GridPager->setLimitCount($this->limitCount);
+        $GridPager->setOnClickFunction('account/sort');
+        $GridPager->setOnClickArgs($this->sortKey);
+        $GridPager->setOnClickArgs($this->sortOrder);
+        $GridPager->setFilterOn($this->filterOn);
+        $GridPager->setSourceAction(new DataGridActionSearch(self::ACTION_ACC_SEARCH));
+
+        $showOptionalActions = Session::getUserPreferences()->isOptionalActions();
 
         $Grid = new DataGrid();
-        $Grid->setId('gridSearch')
-            ->setDataHeaderTemplate('header', $this->view->getBase())
-            ->setDataRowTemplate('rows', $this->view->getBase())
-            ->setDataPagerTemplate('datagrid-nav-full', 'grid')
-            ->setHeader($this->getHeaderSort())
-            ->setDataActions($GridActionView)
-            ->setDataActions($GridActionViewPass)
-            ->setDataActions($GridActionCopyPass)
-            ->setDataActions($GridActionOptional)
-            ->setDataActions($GridActionEdit)
-            ->setDataActions($GridActionCopy)
-            ->setDataActions($GridActionDel)
-            ->setDataActions($GridActionRequest)
-            ->setPager($GridPager)
-            ->setData(new DataGridData());
+        $Grid->setId('gridSearch');
+        $Grid->setDataHeaderTemplate('header', $this->view->getBase());
+        $Grid->setDataRowTemplate('rows', $this->view->getBase());
+        $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $Grid->setHeader($this->getHeaderSort());
+        $Grid->setDataActions($GridActionView);
+        $Grid->setDataActions($GridActionViewPass);
+        $Grid->setDataActions($GridActionCopyPass);
+        $Grid->setDataActions($GridActionEdit, !$showOptionalActions);
+        $Grid->setDataActions($GridActionCopy, !$showOptionalActions);
+        $Grid->setDataActions($GridActionDel, !$showOptionalActions);
+        $Grid->setDataActions($GridActionRequest);
+        $Grid->setPager($GridPager);
+        $Grid->setData(new DataGridData());
 
         return $Grid;
     }

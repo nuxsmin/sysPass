@@ -68,8 +68,10 @@ interface DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
+     * @param bool                    $ismenu Añadir al menu de acciones
+     * @return $this
      */
-    public function setDataActions(DataGridActionInterface $action);
+    public function setDataActions(DataGridActionInterface $action, $ismenu = false);
 
     /**
      * @return DataGridActionInterface
@@ -169,4 +171,11 @@ interface DataGridInterface
      * @param int $time
      */
     public function setTime($time);
+
+    /**
+     * Devolver las acciones que se muestran en un menu
+     *
+     * @return DataGridActionInterface[]
+     */
+    public function getDataActionsMenu();
 }

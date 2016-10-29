@@ -51,61 +51,67 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @var string
      */
-    private $_id = '';
+    protected $_id = '';
     /**
      * La cabecera de la matriz
      *
      * @var DataGridHeaderInterface
      */
-    private $_header;
+    protected $_header;
     /**
      * Los datos de la matriz
      *
      * @var DataGridData
      */
-    private $_data;
+    protected $_data;
     /**
      * El paginador
      *
      * @var DataGridPagerBase
      */
-    private $_pager;
+    protected $_pager;
     /**
      * Las acciones asociadas a los elementos de la matriz
      *
      * @var DataGridActionInterface[]
      */
-    private $_actions;
+    protected $_actions;
+    /**
+     * Las acciones asociadas a los elementos de la matriz que se muestran en un menú
+     *
+     * @var DataGridActionInterface[]
+     */
+    protected $_actionsMenu;
     /**
      * La acción a realizar al cerrar la matriz
      *
      * @var int
      */
-    private $_onCloseAction = 0;
+    protected $_onCloseAction = 0;
     /**
      * La plantilla a utilizar para presentar la cabecera
      *
      * @var string
      */
-    private $_headerTemplate;
+    protected $_headerTemplate;
     /**
      * La plantilla a utilizar para presentar las acciones
      *
      * @var string
      */
-    private $_actionsTemplate;
+    protected $_actionsTemplate;
     /**
      * La plantilla a utilizar para presentar el paginador
      *
      * @var string
      */
-    private $_pagerTemplate;
+    protected $_pagerTemplate;
     /**
      * La plantilla a utilizar para presentar los datos
      *
      * @var string
      */
-    private $_rowsTemplate;
+    protected $_rowsTemplate;
 
     /**
      * @return int
@@ -185,15 +191,24 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
+     * @param bool                    $isMenu Añadir al menu de acciones
      * @return $this
      */
-    public function setDataActions(DataGridActionInterface $action)
+    public function setDataActions(DataGridActionInterface $action, $isMenu = false)
     {
-        if (null === $this->_actions) {
-            $this->_actions = new SplObjectStorage();
-        }
+        if ($isMenu === false) {
+            if (null === $this->_actions) {
+                $this->_actions = new SplObjectStorage();
+            }
 
-        $this->_actions->attach($action);
+            $this->_actions->attach($action);
+        } else {
+            if (null === $this->_actionsMenu) {
+                $this->_actionsMenu = new SplObjectStorage();
+            }
+
+            $this->_actionsMenu->attach($action);
+        }
 
         return $this;
     }
@@ -218,8 +233,9 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setDataHeaderTemplate($template, $base = null)
     {
@@ -286,8 +302,9 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setDataPagerTemplate($template, $base = null)
     {
@@ -308,8 +325,9 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
      * @return mixed
+     * @throws \InvalidArgumentException
      */
     public function setDataRowTemplate($template, $base = null)
     {
@@ -376,5 +394,15 @@ abstract class DataGridBase implements DataGridInterface
         $this->_time = $time;
 
         return $this;
+    }
+
+    /**
+     * Devolver las acciones que se muestran en un menu
+     *
+     * @return DataGridActionInterface[]
+     */
+    public function getDataActionsMenu()
+    {
+        return $this->_actionsMenu;
     }
 }
