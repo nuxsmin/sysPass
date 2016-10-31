@@ -81,8 +81,8 @@ class DBUtil
             return false;
         }
 
-        $strFilter = (is_array($arrFilter)) ? " WHERE " . implode(" OR ", $arrFilter) : "";
-        $strOrder = (is_array($arrOrder)) ? " ORDER BY " . implode(",", $arrOrder) : 'ORDER BY ' . $tblColName . ' ASC';
+        $strFilter = is_array($arrFilter) ? ' WHERE ' . implode(' OR ', $arrFilter) : '';
+        $strOrder = is_array($arrOrder) ? ' ORDER BY ' . implode(',', $arrOrder) : 'ORDER BY ' . $tblColName . ' ASC';
 
         $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter $strOrder";
 

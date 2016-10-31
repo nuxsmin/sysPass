@@ -7,7 +7,7 @@
                     <legend><?php echo _('Usuarios'); ?></legend>
                     <select id="otherusers" name="otherusers[]" multiple="multiple">
                         <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
-                        <?php if ($gotData): ?>
+                        <?php if ($gotData === true): ?>
                             <?php foreach ($accountOtherUsers as $otherUser): ?>
                                 <?php /** @var $otherUser \SP\DataModel\UserData */ ?>
                                 <option
@@ -29,7 +29,7 @@
                     <legend><?php echo _('Grupos'); ?></legend>
                     <select id="othergroups" name="othergroups[]" multiple="multiple">
                         <option value=""><?php echo _('Seleccionar Grupos'); ?></option>
-                        <?php if ($gotData): ?>
+                        <?php if ($gotData === true): ?>
                             <?php foreach ($accountOtherGroups as $otherGroup): ?>
                                 <?php /** @var $otherGroup \SP\DataModel\GroupData */ ?>
                                 <option
@@ -55,9 +55,9 @@
             <td class="valField">
                 <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup" required>
                     <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
-                    <?php foreach ($otherGroups as $otherGroup): ?>
+                    <?php foreach ($otherGroups as $group): ?>
                         <option
-                            value="<?php echo $otherGroup->getUsergroupId(); ?>" <?php echo ($gotData && $otherGroup->getUsergroupId() == $accountData->account_userGroupId) ? 'selected' : ''; ?>><?php echo $otherGroup->getUsergroupName(); ?></option>
+                            value="<?php echo $group->id; ?>" <?php echo ($gotData && $group->id == $accountData->account_userGroupId) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                     <?php endforeach; ?>
                 </select>
             </td>

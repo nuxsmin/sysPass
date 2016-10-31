@@ -36,6 +36,8 @@ sysPass.Requests = function (Common) {
 
     /**
      * Manejo del historial de consultas AJAX
+     *
+     * @type {{get: history.get, add: history.add, del: history.del, reset: history.reset, length: history.length}}
      */
     var history = {
         get: function () {
@@ -94,7 +96,8 @@ sysPass.Requests = function (Common) {
             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             timeout: 5000,
             addHistory: false,
-            hash: ""
+            hash: "",
+            useLoading: true
         };
 
         return Object.create(opts);
@@ -122,6 +125,11 @@ sysPass.Requests = function (Common) {
             processData: opts.processData,
             contentType: opts.contentType,
             timeout: opts.timeout,
+            beforeSend: function () {
+                if (opts.useLoading === true) {
+                    Common.appTheme().loading.show();
+                }
+            },
             success: function (response) {
                 if (typeof callbackOk !== "function") {
                     return true;
@@ -149,6 +157,13 @@ sysPass.Requests = function (Common) {
                 } else {
                     callbackError();
                 }
+            },
+            complete: function () {
+                if (opts.useLoading === true) {
+                    Common.appTheme().loading.hide();
+                }
+
+                Common.appTheme().ajax.complete();
             }
         });
 

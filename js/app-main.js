@@ -119,6 +119,9 @@ sysPass.Main = function () {
         warn: function (msg) {
             $alertify.warn(msg);
         },
+        info: function (msg) {
+            $alertify.info(msg);
+        },
         out: function (data) {
             if (typeof data === "object") {
                 var status = data.status;
@@ -207,6 +210,7 @@ sysPass.Main = function () {
         opts.url = base + "/ajax/ajax_getEnvironment.php";
         opts.method = "get";
         opts.async = false;
+        opts.useLoading = false;
         opts.data = {isAjax: 1};
 
         appRequests.getActionCall(opts, function (json) {
@@ -452,32 +456,35 @@ sysPass.Main = function () {
 
     // Funciones para analizar al fortaleza de una clave
     // From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
-    var checkPassLevel = function (password, dst) {
-        passwordData.passLength = password.length;
+    var checkPassLevel = function ($target) {
+        log.info("checkPassLevel");
 
-        outputResult(zxcvbn(password), dst);
+        passwordData.passLength = $target.val().length;
+
+        outputResult(zxcvbn($target.val()), $target);
     };
 
-    var outputResult = function (level, dstId) {
-        var complexity, selector = ".passLevel-" + dstId;
+    var outputResult = function (level, $target) {
+        log.info("outputResult");
+
+        var $passLevel = $(".passLevel-" + $target.attr("id"));
         var score = level.score;
 
-        complexity = $(selector);
-        complexity.show();
-        complexity.removeClass("weak good strong strongest");
+        $passLevel.show();
+        $passLevel.removeClass("weak good strong strongest");
 
         if (passwordData.passLength === 0) {
-            complexity.attr("title", "").empty();
+            $passLevel.attr("title", "").empty();
         } else if (passwordData.passLength < passwordData.minPasswordLength) {
-            complexity.attr("title", config.LANG[11]).addClass("weak");
+            $passLevel.attr("title", config.LANG[11]).addClass("weak");
         } else if (score === 0) {
-            complexity.attr("title", config.LANG[9] + " - " + level.feedback.warning).addClass("weak");
+            $passLevel.attr("title", config.LANG[9] + " - " + level.feedback.warning).addClass("weak");
         } else if (score === 1 || score === 2) {
-            complexity.attr("title", config.LANG[8] + " - " + level.feedback.warning).addClass("good");
+            $passLevel.attr("title", config.LANG[8] + " - " + level.feedback.warning).addClass("good");
         } else if (score === 3) {
-            complexity.attr("title", config.LANG[7]).addClass("strong");
+            $passLevel.attr("title", config.LANG[7]).addClass("strong");
         } else if (score === 4) {
-            complexity.attr("title", config.LANG[10]).addClass("strongest");
+            $passLevel.attr("title", config.LANG[10]).addClass("strongest");
         }
     };
 
@@ -505,24 +512,25 @@ sysPass.Main = function () {
     /**
      * Encriptar el valor de un campo del formulario
      *
-     * @param inputId El id del campo
+     * @param $input El id del campo
      */
-    var encryptFormValue = function (inputId) {
-        var input = $(inputId);
-        var curValue = input.val();
-        var nextName = inputId + "-encrypted";
-        var nextInput = input.next(":input[name=\"" + nextName + "\"]");
+    var encryptFormValue = function ($input) {
+        log.info("encryptFormValue");
+
+        var curValue = $input.val();
+        var nextName = $input + "-encrypted";
+        var nextInput = $input.next(":input[name=\"" + nextName + "\"]");
 
         if ((curValue !== "" && nextInput.attr("name") !== nextName)
-            || (curValue !== "" && nextInput.attr("name") === nextName && parseInt(input.next().val()) !== curValue.length)
+            || (curValue !== "" && nextInput.attr("name") === nextName && parseInt($input.next().val()) !== curValue.length)
         ) {
             var passEncrypted = config.crypt.encrypt(curValue);
-            input.val(passEncrypted);
+            $input.val(passEncrypted);
 
             if (nextInput.length > 0) {
                 nextInput.val(passEncrypted.length);
             } else {
-                input.after("<input type=\"hidden\" name=\"" + nextName + "\" value=\"" + passEncrypted.length + "\" />");
+                $input.after("<input type=\"hidden\" name=\"" + nextName + "\" value=\"" + passEncrypted.length + "\" />");
             }
         }
     };
@@ -569,26 +577,23 @@ sysPass.Main = function () {
     var bindPassEncrypt = function () {
         log.info("bindPassEncrypt");
 
-        var $body = $("body");
+        $("body").on("blur", ":input[type=password]", function (e) {
+            var $this = $(this);
 
-        $body.on("blur", ":input[type=password]", function (e) {
-            if ($(this).hasClass("passwordfield__no-pki")) {
+            if ($this.hasClass("passwordfield__no-pki")) {
                 return;
             }
 
-            var id = $(this).attr("id");
-            encryptFormValue("#" + id);
-        });
-
-        $body.on("keypress", ":input[type=password]", function (e) {
+            encryptFormValue($this);
+        }).on("keypress", ":input[type=password]", function (e) {
             if (e.keyCode === 13) {
                 e.preventDefault();
 
-                var form = $(this).closest("form");
-                var id = $(this).attr("id");
+                var $this = $(this);
+                var $form = $this.closest("form");
 
-                encryptFormValue("#" + id);
-                form.submit();
+                encryptFormValue($this);
+                $form.submit();
             }
         });
     };

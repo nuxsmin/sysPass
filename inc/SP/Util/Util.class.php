@@ -31,6 +31,7 @@ use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
 use SP\Log\Log;
+use SP\Log\LogUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -115,7 +116,7 @@ class Util
      * @param string $d con el valor por defecto
      * @return string con el valor de la variable
      */
-    public static function init_var($s, $d = "")
+    public static function init_var($s, $d = '')
     {
         $r = $d;
         if (isset($_REQUEST[$s]) && !empty($_REQUEST[$s])) {
@@ -206,7 +207,9 @@ class Util
     public static function getDataFromUrl($url, array $data = null, $useCookie = false)
     {
         if (!Checks::curlIsAvailable()) {
-            return false;
+            $Log = LogUtil::extensionNotLoaded('CURL', __FUNCTION__);
+
+            throw new SPException(SPException::SP_WARNING, $Log->getDescription());
         }
 
         $ch = curl_init($url);
@@ -227,7 +230,7 @@ class Util
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, "sysPass-App");
+        curl_setopt($ch, CURLOPT_USERAGENT, 'sysPass-App');
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
@@ -253,9 +256,9 @@ class Util
         $data = curl_exec($ch);
 
         if ($data === false) {
-            Log::writeNewLog(__FUNCTION__, curl_error($ch));
+            $Log = Log::writeNewLog(__FUNCTION__, curl_error($ch));
 
-            throw new SPException(SPException::SP_WARNING, curl_error($ch));
+            throw new SPException(SPException::SP_WARNING, $Log->getDescription());
         }
 
         return $data;
@@ -290,7 +293,7 @@ class Util
             'apphelp' => 'https://github.com/nuxsmin/sysPass/issues',
             'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG');
 
-        if (!is_null($index) && isset($appinfo[$index])) {
+        if (null !== $index && isset($appinfo[$index])) {
             return $appinfo[$index];
         }
 
@@ -306,10 +309,10 @@ class Util
     public static function getVersion($retBuild = false)
     {
         $build = '16020501';
-        $version = array(1, 3);
+        $version = [1, 3];
 
         if ($retBuild) {
-            array_push($version, $build);
+            $version[] = $build;
         }
 
         return $version;
@@ -334,7 +337,7 @@ class Util
         }
 
         $noticesData = json_decode($data);
-        $notices = array();
+        $notices = [];
 
         // $noticesData[0]->title
         // $noticesData[0]->body
@@ -445,7 +448,7 @@ class Util
     public static function getServerUrl()
     {
         $urlScheme = Checks::httpsEnabled() ? 'https://' : 'http://';
-        $urlPort = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+        $urlPort = ($_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
 
         return $urlScheme . $_SERVER['SERVER_NAME'] . $urlPort;
     }
@@ -470,16 +473,15 @@ class Util
      */
     public static function traceLastCall($function = null)
     {
-        $backtrace = debug_backtrace(false);
-        $nTraces = count($backtrace);
+        $backtrace = debug_backtrace(0);
 
-        if ($nTraces === 1) {
+        if (count($backtrace) === 1) {
             return $backtrace[1]['function'];
         }
 
-        for ($i = 0; $i < $nTraces; $i++) {
-            if ($backtrace[$i]['function'] === $function) {
-                return $backtrace[$i + 1]['function'];
+        foreach ($backtrace as $index => $fn) {
+            if ($fn['function'] === $function) {
+                return $backtrace[$index + 1]['function'];
             }
         }
     }

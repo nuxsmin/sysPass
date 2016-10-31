@@ -43,6 +43,8 @@ use SP\Html\DataGrid\DataGridHeaderSort;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridSort;
 use SP\Http\Request;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 
@@ -142,12 +144,14 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('searchbox');
 
-        $this->view->assign('customers', DBUtil::getValuesForSelect('customers', 'customer_id', 'customer_name'));
-        $this->view->assign('categories', DBUtil::getValuesForSelect('categories', 'category_id', 'category_name'));
+        $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
+        $this->view->assign('categories', Category::getItem()->getItemsForSelect());
     }
 
     /**
      * Obtener los resultados de una búsqueda
+     *
+     * @throws \InvalidArgumentException
      */
     public function getSearch()
     {

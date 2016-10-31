@@ -79,16 +79,18 @@ class AccItemController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para la ficha de usuario
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getUser()
     {
         $this->module = self::ACTION_USR_USERS;
         $this->view->addTemplate('users');
 
-        $this->view->assign('user', ($this->view->itemId) ? User::getItem()->getById($this->view->itemId)->getItemData() : new UserData());
+        $this->view->assign('user', $this->view->itemId ? User::getItem()->getById($this->view->itemId)->getItemData() : new UserData());
         $this->view->assign('isDisabled', ((User::getItem()->getItemData()->getUserLogin() === 'demo' && $this->view->isDemo) || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
-        $this->view->assign('groups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->view->assign('profiles', DBUtil::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
+        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
+        $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
 
         $this->getCustomFieldsForItem();
     }
@@ -110,7 +112,7 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('groups');
 
         $this->view->assign('group', Group::getItem()->getById($this->view->itemId)->getItemData());
-        $this->view->assign('users', DBUtil::getValuesForSelect('usrData', 'user_id', 'user_name'));
+        $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('groupUsers', GroupUsers::getItem()->getById($this->view->itemId));
 
         $this->getCustomFieldsForItem();
@@ -124,13 +126,27 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_USR_PROFILES;
         $this->view->addTemplate('profiles');
 
-        $Profile = ($this->view->itemId) ? Profile::getItem()->getById($this->view->itemId)->getItemData() : new ProfileData();
+        $Profile = $this->view->itemId ? Profile::getItem()->getById($this->view->itemId)->getItemData() : new ProfileData();
 
         $this->view->assign('profile', $Profile);
         $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
 
         if ($this->view->isView === true) {
-            $this->view->assign('usedBy', ProfileUtil::getProfileInUsersName($this->view->itemId));
+            $users = ProfileUtil::getProfileInUsersName($this->view->itemId);
+
+            if (count($users) > 0) {
+                $usedBy = [];
+
+                foreach ($users as $user) {
+                    $usedBy[] = $user->user_login;
+                }
+
+                $usedBy = implode(' | ', $usedBy);
+            } else {
+                $usedBy = _('No usado');
+            }
+
+            $this->view->assign('usedBy', $usedBy);
         }
     }
 
@@ -150,9 +166,6 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('userspass');
 
         $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
-
-        // Obtener de nuevo el token de seguridad por si se habñia regenerado antes
-        $this->view->assign('sk', SessionUtil::getSessionKey());
     }
 
     /**
@@ -165,19 +178,21 @@ class AccItemController extends ControllerBase implements ActionsInterface
 
         $token = ApiTokensUtil::getTokens($this->view->itemId, true);
 
-        $this->view->assign('users', DBUtil::getValuesForSelect('usrData', 'user_id', 'user_name'));
+        $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
         $this->view->assign('token', $token);
         $this->view->assign('gotData', is_object($token));
 
         if ($this->view->isView === true) {
             $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
-            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg, null);
+            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
         }
     }
 
     /**
      * Obtener los datos para la ficha de enlace público
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getPublicLink()
     {
@@ -186,6 +201,4 @@ class AccItemController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('link', PublicLink::getItem()->getById($this->view->itemId)->getItemData());
     }
-
-
 }

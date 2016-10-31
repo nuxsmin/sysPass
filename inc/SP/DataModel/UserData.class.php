@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class UserData extends UserPassData
+class UserData extends UserPassData implements DataModelInterface
 {
     /**
      * @var string
@@ -373,5 +373,21 @@ class UserData extends UserPassData
     public function setUsergroupName($usergroup_name)
     {
         $this->usergroup_name = $usergroup_name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->user_name;
     }
 }

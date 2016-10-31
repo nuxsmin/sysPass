@@ -1,5 +1,5 @@
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo _('Cambio de Clave'); ?></h2>
+    <h2><?php echo _('Cambio de Clave'); ?></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action" data-onsubmit="user/password">
         <table class="fancydata">

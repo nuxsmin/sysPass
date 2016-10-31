@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,14 +22,36 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Mgmt;
+use SP\DataModel\DataModelInterface;
+
 
 /**
- * Class DataModelBase
+ * Class ItemTrait
  *
- * @package SP\DataModel
+ * @package SP\Mgmt
  */
-abstract class DataModelBase
+trait ItemTrait
 {
+    /**
+     * Devolver los elementos para un campo select
+     *
+     * @return array
+     */
+    public function getItemsForSelect()
+    {
+        $items = [];
 
+        /** @var DataModelInterface $item */
+        /** @var ItemInterface $this */
+        foreach ($this->getAll() as $item) {
+            $obj = new \stdClass();
+            $obj->id = $item->getId();
+            $obj->name = $item->getName();
+
+            $items[] = $obj;
+        }
+
+        return $items;
+    }
 }

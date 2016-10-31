@@ -192,9 +192,9 @@
                         <select id="ldap_defaultgroup" name="ldap_defaultgroup"
                                 class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
                             <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
-                            <?php foreach ($groups as $id => $name): ?>
+                            <?php foreach ($groups as $group): ?>
                                 <option
-                                    value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultGroup) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                    value="<?php echo $group->id; ?>" <?php echo ($group->id === $ldapDefaultGroup) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -214,9 +214,9 @@
                         <select id="ldap_defaultprofile" name="ldap_defaultprofile"
                                 class="select-box sel-chosen-profile" <?php echo $isDisabled; ?> required>
                             <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
-                            <?php foreach ($profiles as $id => $name): ?>
+                            <?php foreach ($profiles as $profile): ?>
                                 <option
-                                    value="<?php echo $id; ?>" <?php echo ($id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                    value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>

@@ -3,7 +3,7 @@
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></h2>
+    <h2><?php echo $header; ?></h2>
 
     <form method="post" name="frmCategories" id="frmCategories" class="form-action"
           data-onsubmit="appMgmt/save"

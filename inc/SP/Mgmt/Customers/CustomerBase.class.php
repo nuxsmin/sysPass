@@ -44,6 +44,7 @@ abstract class CustomerBase extends ItemBase
      * Category constructor.
      *
      * @param $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {

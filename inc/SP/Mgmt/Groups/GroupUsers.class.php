@@ -30,6 +30,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -38,8 +40,10 @@ use SP\Storage\QueryData;
  *
  * @package SP\Mgmt\Groups
  */
-class GroupUsers extends GroupUsersBase implements ItemInterface
+class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws SPException

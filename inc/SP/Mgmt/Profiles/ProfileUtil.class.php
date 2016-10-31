@@ -157,7 +157,7 @@ class ProfileUtil
      * Obtener el nombre de los usuarios que usan un perfil.
      *
      * @param $id int El id del perfil
-     * @return array|bool
+     * @return array
      */
     public static function getProfileInUsersName($id)
     {

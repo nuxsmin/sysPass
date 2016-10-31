@@ -27,6 +27,7 @@ namespace SP\Mgmt;
 
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\DiFactory;
+use SP\DataModel\DataModelInterface;
 
 /**
  * Class ItemBase
@@ -38,11 +39,11 @@ abstract class ItemBase
     /**
      * @var string
      */
-    protected $dataModel = '';
+    protected $dataModel;
     /**
-     * @var null
+     * @var mixed|DataModelInterface
      */
-    protected $itemData = null;
+    protected $itemData;
 
     /**
      * Constructor.
@@ -75,6 +76,7 @@ abstract class ItemBase
      *
      * @param null $itemData
      * @return static
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static final function getNewItem($itemData = null)
     {
@@ -83,10 +85,12 @@ abstract class ItemBase
 
     /**
      * Devolver los datos del elemento
+     *
+     * @return mixed|DataModelInterface
      */
     public function getItemData()
     {
-        return (is_object($this->itemData)) ? $this->itemData : new $this->dataModel();
+        return is_object($this->itemData) ? $this->itemData : new $this->dataModel();
     }
 
     /**
@@ -96,7 +100,7 @@ abstract class ItemBase
      */
     public final function setItemData($itemData)
     {
-        if (!isset($this->dataModel) || !$itemData instanceof $this->dataModel) {
+        if (null !== $this->dataModel && !$itemData instanceof $this->dataModel) {
             throw new InvalidClassException();
         }
 

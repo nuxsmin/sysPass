@@ -1,5 +1,5 @@
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></H2>
+    <h2><?php echo $header; ?></H2>
 
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -12,9 +12,9 @@
                 <td class="valField">
                     <select id="selUsers" name="users" class="select-box" required>
                         <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
-                        <?php foreach ($users as $id => $name): ?>
-                            <?php $selected = ($gotData && $id == $token->authtoken_userId) ? 'selected' : ''; ?>
-                            <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
+                        <?php foreach ($users as $user): ?>
+                            <?php $selected = ($gotData && $user->id == $token->authtoken_userId) ? 'selected' : ''; ?>
+                            <option value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

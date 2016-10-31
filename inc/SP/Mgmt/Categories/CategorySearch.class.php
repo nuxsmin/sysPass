@@ -72,6 +72,7 @@ class CategorySearch extends CategoryBase implements ItemSearchInterface
         DB::setReturnArray();
         DB::setFullRowCount();
 
+        /** @var array $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {

@@ -38,6 +38,8 @@ use SP\Core\Crypt;
 use SP\Core\Init;
 use SP\Core\Template;
 use SP\DataModel\CustomFieldData;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\PublicLinks\PublicLink;
@@ -113,6 +115,8 @@ class AccountController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para mostrar el interface para nueva cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getNewAccount()
     {
@@ -162,6 +166,8 @@ class AccountController extends ControllerBase implements ActionsInterface
 
     /**
      * Establecer variables comunes del formulario para todos los interfaces
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function setCommonData()
     {
@@ -177,7 +183,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('chkUserEdit', $this->getAccount()->getAccountData()->getAccountOtherUserEdit() ? 'checked' : '');
             $this->view->assign('chkGroupEdit', $this->getAccount()->getAccountData()->getAccountOtherGroupEdit() ? 'checked' : '');
             $this->view->assign('historyData', AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
-            $this->view->assign('isModified', ($this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit <> '0000-00-00 00:00:00'));
+            $this->view->assign('isModified', $this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit !== '0000-00-00 00:00:00');
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
 
@@ -187,13 +193,13 @@ class AccountController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('actionId', $this->getAction());
         $this->view->assign('accountParentId', Session::getLastAcountId());
-        $this->view->assign('categories', DBUtil::getValuesForSelect('categories', 'category_id', 'category_name'));
-        $this->view->assign('customers', DBUtil::getValuesForSelect('customers', 'customer_id', 'customer_name'));
+        $this->view->assign('categories', Category::getItem()->getItemsForSelect());
+        $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
         $this->view->assign('otherUsers', UserUtil::getUsersLogin());
         $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
-        $this->view->assign('otherGroups', Group::getItem()->getAll());
+        $this->view->assign('otherGroups', Group::getItem()->getItemsForSelect());
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
-        $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getAll()));
+        $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getItemsForSelect()));
 
         $AccountAcl = new AccountAcl();
         $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
@@ -229,48 +235,9 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Establecer variables para los interfaces que muestran datos
-     */
-    private function setShowData()
-    {
-        $AccountAcl = new AccountAcl();
-        $AccountAcl->setModified($this->view->isModified);
-        $AccountAcl->getAcl($this->Account, $this->action);
-
-        $this->view->assign('AccountAcl', $AccountAcl);
-
-/*        $aclData = $this->isGotData() ? $this->Account->getAccountDataForACL() : null;
-
-        $this->view->assign('showHistory', ($this->action === Acl::ACTION_ACC_VIEW || $this->action === Acl::ACTION_ACC_VIEW_HISTORY)
-            && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_HISTORY)
-            && ($this->view->isModified || $this->action === Acl::ACTION_ACC_VIEW_HISTORY));
-        $this->view->assign('showDetails', $this->action === Acl::ACTION_ACC_VIEW || $this->action === Acl::ACTION_ACC_VIEW_HISTORY || $this->action === Acl::ACTION_ACC_DELETE);
-        $this->view->assign('showPass', $this->action === Acl::ACTION_ACC_NEW || $this->action === Acl::ACTION_ACC_COPY);
-        $this->view->assign('showFiles', ($this->action === Acl::ACTION_ACC_EDIT || $this->action === Acl::ACTION_ACC_VIEW || $this->action === Acl::ACTION_ACC_VIEW_HISTORY)
-            && (Checks::fileIsEnabled() && Acl::checkUserAccess(Acl::ACTION_ACC_FILES)));
-        $this->view->assign('showViewPass', ($this->action === Acl::ACTION_ACC_VIEW || $this->action === Acl::ACTION_ACC_VIEW_HISTORY)
-            && (Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $aclData)
-                && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS)));
-        $this->view->assign('showSave', $this->action === Acl::ACTION_ACC_EDIT || $this->action === Acl::ACTION_ACC_NEW || $this->action === Acl::ACTION_ACC_COPY);
-        $this->view->assign('showEdit', $this->action === Acl::ACTION_ACC_VIEW
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $aclData)
-            && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)
-            && !$this->Account->getAccountIsHistory());
-        $this->view->assign('showEditPass', $this->action === Acl::ACTION_ACC_EDIT || $this->action === Acl::ACTION_ACC_VIEW
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS, $aclData)
-            && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT_PASS)
-            && !$this->Account->getAccountIsHistory());
-        $this->view->assign('showDelete', $this->action === Acl::ACTION_ACC_DELETE || $this->action === Acl::ACTION_ACC_EDIT
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_DELETE, $aclData)
-            && Acl::checkUserAccess(Acl::ACTION_ACC_DELETE));
-        $this->view->assign('showRestore', $this->action === Acl::ACTION_ACC_VIEW_HISTORY
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->Account->getAccountDataForACL($this->Account->getAccountParentId()))
-            && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT));
-        $this->view->assign('showLink', Checks::publicLinksIsEnabled() && Acl::checkUserAccess(Acl::ACTION_MGM_PUBLICLINKS));*/
-    }
-
-    /**
      * Obtener los datos para mostrar el interface para copiar cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getCopyAccount()
     {

@@ -12,17 +12,24 @@
         <div class="account-label round shadow">
             <div class="field-customer label-field">
                 <div class="field-name"><?php echo _('Cliente'); ?></div>
-                <div class="field-text round5 no-link"
-                     style="background-color: <?php echo $Account->getColor(); ?>;">
-                    <?php if (!empty($Account->getCustomerLink())): ?>
-                        <a href="<?php echo $Account->getCustomerLink(); ?>" target="blank"
-                           title="<?php echo _('Buscar en Wiki'); ?>&nbsp;<?php echo $Account->getCustomerName(); ?>">
-                            <?php echo $Account->getCustomerName(); ?>
-                        </a>
-                    <?php else: ?>
-                        <?php echo $Account->getCustomerName(); ?>
-                    <?php endif; ?>
-                </div>
+                <?php if (!empty($Account->getCustomerLink())): ?>
+                    <a href="<?php echo $Account->getCustomerLink(); ?>" target="blank"
+                       title="<?php echo _('Buscar en Wiki'); ?>&nbsp;<?php echo $Account->getCustomerName(); ?>">
+                    <span class="mdl-chip mdl-chip--contact">
+                        <span style="background-color: <?php echo $Account->getColor(); ?>;"
+                              class="mdl-chip__contact mdl-color-text--white">
+                            <?php echo $Account->getCustomerName()[0]; ?></span>
+                        <span class="mdl-chip__text"><?php echo $Account->getCustomerName(); ?></span>
+                    </span>
+                    </a>
+                <?php else: ?>
+                    <span class="mdl-chip mdl-chip--contact">
+                        <span style="background-color: <?php echo $Account->getColor(); ?>;"
+                              class="mdl-chip__contact mdl-color-text--white">
+                            <?php echo $Account->getCustomerName()[0]; ?></span>
+                        <span class="mdl-chip__text"><?php echo $Account->getCustomerName(); ?></span>
+                    </span>
+                <?php endif; ?>
             </div>
 
             <div class="field-account label-field">
@@ -33,7 +40,9 @@
                        data-item-id="<?php echo $Account->getId(); ?>"
                        data-onclick="account/view"><?php echo $Account->getName(); ?></a>
                 <?php else: ?>
-                    <div class="field-text"><?php echo $Account->getName(); ?></div>
+                    <div class="field-text">
+                        <?php echo $Account->getName(); ?>
+                    </div>
                 <?php endif; ?>
             </div>
 

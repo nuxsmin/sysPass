@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Mgmt\Tags
  */
-class TagData
+class TagData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
@@ -104,5 +104,21 @@ class TagData
     protected function createTagHash()
     {
         $this->tag_hash = sha1(strtolower(preg_replace('#[.\s_,-;\'":()|/"]+#', '', $this->tag_name)));
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->tag_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->tag_name;
     }
 }

@@ -1,5 +1,5 @@
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></H2>
+    <h2><?php echo $header; ?></H2>
     <table class="fancydata">
         <tbody>
         <tr>

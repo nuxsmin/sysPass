@@ -33,6 +33,8 @@ use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -41,8 +43,10 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los grupos de usuarios.
  */
-class Group extends GroupBase implements ItemInterface
+class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws \SP\Core\Exceptions\SPException

@@ -5,7 +5,7 @@
 ?>
 
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></H2>
+    <h2><?php echo $header; ?></H2>
 
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -45,10 +45,10 @@
                     <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
                             title="<?php echo _('Usuarios'); ?>">
                         <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
-                        <?php foreach ($users as $id => $name): ?>
-                            <?php $selected = \SP\Util\Util::checkInObjectArray($groupUsers, 'getUsertogroupUserId', $id) ? 'selected' : ''; ?>
+                        <?php foreach ($users as $user): ?>
+                            <?php $selected = \SP\Util\Util::checkInObjectArray($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
+                                value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

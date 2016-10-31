@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class ProfileBaseData
+class ProfileBaseData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
@@ -93,5 +93,21 @@ class ProfileBaseData
     public function setUserprofileProfile($userprofile_profile)
     {
         $this->userprofile_profile = $userprofile_profile;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->userprofile_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->userprofile_name;
     }
 }

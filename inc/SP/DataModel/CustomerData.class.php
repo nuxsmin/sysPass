@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class CustomerData extends DataModelBase
+class CustomerData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int

@@ -119,7 +119,7 @@ class DB
 
         if (self::$returnRawData
             && is_object($doQuery)
-            && get_class($doQuery) === "PDOStatement"
+            && get_class($doQuery) === 'PDOStatement'
         ) {
             return $doQuery;
         } elseif ($db->numRows === 0) {
@@ -217,7 +217,7 @@ class DB
                 foreach ($queryData->getParams() as $param => $value) {
                     // Si la clave es un número utilizamos marcadores de posición "?" en
                     // la consulta. En caso contrario marcadores de nombre
-                    $param = (is_int($param)) ? $param + 1 : ':' . $param;
+                    $param = is_int($param) ? $param + 1 : ':' . $param;
 
                     if ($isCount === true
                         && count($count) > 0
@@ -249,7 +249,7 @@ class DB
         } catch (\Exception $e) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            error_log("Exception: " . $e->getMessage());
+            error_log('Exception: ' . $e->getMessage());
             error_log(ob_get_clean());
 
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
@@ -269,7 +269,6 @@ class DB
             return 0;
         }
 
-        $num = 0;
         $patterns = array(
             '/(LIMIT|ORDER BY|GROUP BY).*/i',
             '/SELECT DISTINCT\s([\w_]+),[\s\S]*? FROM/i',
@@ -286,13 +285,13 @@ class DB
 
         try {
             $db = DiFactory::getDBStorage()->getConnection();
-            $queryRes = (is_array($queryData->getParams())) ? $this->prepareQueryData($queryData, true) : $db->query($query);
-            $num = intval($queryRes->fetchColumn());
+            $queryRes = is_array($queryData->getParams()) ? $this->prepareQueryData($queryData, true) : $db->query($query);
+            $num = (int)$queryRes->fetchColumn();
             $queryRes->closeCursor();
 
             return $num;
         } catch (SPException $e) {
-            error_log("Exception: " . $e->getMessage());
+            error_log('Exception: ' . $e->getMessage());
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
     }

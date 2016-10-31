@@ -61,7 +61,7 @@ class UserPreferencesData
     /**
      * @var bool
      */
-    public $accountLink = null;
+    public $accountLink;
     /**
      * @var bool
      */

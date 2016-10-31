@@ -26,6 +26,7 @@
 namespace SP\Util;
 
 use SP\Core\Init;
+use SP\Log\LogUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -44,7 +45,9 @@ class ImageUtil
      */
     public static function convertText($text)
     {
-        if(!function_exists('imagepng')){
+        if (!Checks::gdIsAvailable()) {
+            LogUtil::extensionNotLoaded('GD');
+
             return false;
         }
 
@@ -85,10 +88,9 @@ class ImageUtil
      */
     public static function createThumbnail($image)
     {
-        if(!function_exists('imagepng')
-            || !function_exists('imagecreatefromjpeg')
-            || !function_exists('imagecreatefrompng')
-        ){
+        if (!Checks::gdIsAvailable()) {
+            LogUtil::extensionNotLoaded('GD', __FUNCTION__);
+
             return false;
         }
 
@@ -99,13 +101,13 @@ class ImageUtil
 
         // Calcular el tamaño de la miniatura
         $new_width = 48;
-        $new_height = floor( $height * ( $new_width / $width ) );
+        $new_height = floor($height * ($new_width / $width));
 
         // Crear nueva imagen
-        $imTmp = imagecreatetruecolor($new_width, $new_height );
+        $imTmp = imagecreatetruecolor($new_width, $new_height);
 
         // Redimensionar la imagen
-        imagecopyresized( $imTmp, $im, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+        imagecopyresized($imTmp, $im, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
         // Devolver la imagen
         ob_start();

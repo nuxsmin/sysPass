@@ -36,6 +36,9 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
 use SP\Core\Template;
+use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Users\User;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -227,8 +230,8 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('import');
 
-        $this->view->assign('groups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->view->assign('users', DBUtil::getValuesForSelect('usrData', 'user_id', 'user_name'));
+        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
+        $this->view->assign('users', User::getItem()->getItemsForSelect());
 
         $this->view->append('tabs', ['title' => _('Importar Cuentas')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'import');
@@ -312,8 +315,8 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('ldapBindPass', $this->Config->getLdapBindPass());
         $this->view->assign('ldapBase', $this->Config->getLdapBase());
         $this->view->assign('ldapGroup', $this->Config->getLdapGroup());
-        $this->view->assign('groups', DBUtil::getValuesForSelect('usrGroups', 'usergroup_id', 'usergroup_name'));
-        $this->view->assign('profiles', DBUtil::getValuesForSelect('usrProfiles', 'userprofile_id', 'userprofile_name'));
+        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
+        $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
         $this->view->assign('ldapDefaultGroup', $this->Config->getLdapDefaultGroup());
         $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
 

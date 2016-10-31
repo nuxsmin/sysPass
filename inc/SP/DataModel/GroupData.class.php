@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class GroupData
+class GroupData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
@@ -113,5 +113,21 @@ class GroupData
     public function setUsergroupDescription($usergroup_description)
     {
         $this->usergroup_description = $usergroup_description;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->usergroup_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->usergroup_name;
     }
 }

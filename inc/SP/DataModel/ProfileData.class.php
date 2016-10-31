@@ -124,22 +124,6 @@ class ProfileData extends ProfileBaseData
     protected $mgmCustomFields = false;
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return boolean
      */
     public function isAccView()
@@ -500,11 +484,11 @@ class ProfileData extends ProfileBaseData
      * @return void
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
      */
-    function __wakeup()
+    public function __wakeup()
     {
         // Para realizar la conversión de nombre de propiedades que empiezan por _
         foreach (get_object_vars($this) as $name => $value) {
-            if (substr($name, 0, 1) === '_') {
+            if ($name[0] === '_') {
                 $newName = substr($name, 1);
                 $this->$newName = $value;
             }

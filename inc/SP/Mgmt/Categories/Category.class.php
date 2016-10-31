@@ -32,6 +32,8 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Log\Email;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
@@ -41,8 +43,10 @@ use SP\Storage\QueryData;
 /**
  * Esta clase es la encargada de realizar las operaciones sobre las categorías de sysPass.
  */
-class Category extends CategoryBase implements ItemInterface
+class Category extends CategoryBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws SPException

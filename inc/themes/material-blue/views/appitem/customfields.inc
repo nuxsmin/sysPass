@@ -6,7 +6,7 @@
 ?>
 
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></H2>
+    <h2><?php echo $header; ?></H2>
 
     <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
           data-onsubmit="appMgmt/save"

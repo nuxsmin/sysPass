@@ -29,6 +29,8 @@ namespace SP\Mgmt\Files;
 use SP\Account\AccountUtil;
 use SP\DataModel\FileData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\QueryData;
 use SP\Util\ImageUtil;
 use SP\Log\Email;
@@ -40,8 +42,10 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Esta clase es la encargada de realizar operaciones con archivos de las cuentas de sysPass
  */
-class File extends FileBase implements ItemInterface
+class File extends FileBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return mixed
      */
@@ -67,7 +71,13 @@ class File extends FileBase implements ItemInterface
         $Data->addParam($this->itemData->getAccfileExtension());
 
         if (FileUtil::isImage($this->itemData)) {
-            $Data->addParam(ImageUtil::createThumbnail($this->itemData->getAccfileContent()));
+            $thumbnail = ImageUtil::createThumbnail($this->itemData->getAccfileContent());
+
+            if ($thumbnail !== false) {
+                $Data->addParam($thumbnail);
+            } else {
+                $Data->addParam('no_thumb');
+            }
         } else {
             $Data->addParam('no_thumb');
         }

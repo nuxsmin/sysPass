@@ -42,9 +42,9 @@
                 <?php if (!$isView): ?>
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer">
                         <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
-                        <?php foreach ($customers as $id => $name): ?>
+                        <?php foreach ($customers as $customer): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <i class="material-icons btn-action" title="<?php echo _('Nuevo Cliente'); ?>"
@@ -64,9 +64,9 @@
                 <?php if (!$isView): ?>
                     <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
                         <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
-                        <?php foreach ($categories as $id => $name): ?>
+                        <?php foreach ($categories as $category): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($gotData && $id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (\SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
@@ -243,9 +243,9 @@
         $('#selTags').selectize({
                 persist: false,
                 maxItems: null,
-                valueField: 'tag_id',
-                labelField: 'tag_name',
-                searchField: ['tag_name'],
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
                 plugins: ['remove_button'],
                 options: availableTags,
                 items: accountTags
@@ -274,9 +274,9 @@
 
         $('#othergroups').selectize({
             persist: false,
-            valueField: 'usergroup_id',
-            labelField: 'usergroup_name',
-            searchField: ['usergroup_name'],
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
             plugins: ['remove_button'],
             options: otherGroups,
             onInitialize: function () {

@@ -31,6 +31,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\DataModel\CustomerData;
 use SP\Log\Email;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
@@ -41,8 +43,10 @@ use SP\Storage\QueryData;
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los clientes de sysPass
  */
-class Customer extends CustomerBase implements ItemInterface
+class Customer extends CustomerBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws \SP\Core\Exceptions\SPException

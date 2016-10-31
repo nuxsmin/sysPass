@@ -35,7 +35,7 @@ use SP\Util\Json;
  *
  * @package SP\Account
  */
-class AccountData implements JsonSerializable
+class AccountData extends DataModelBase implements JsonSerializable, DataModelInterface
 {
     /**
      * @var int Id de la cuenta.
@@ -483,5 +483,21 @@ class AccountData implements JsonSerializable
     public function setTags(array $tags)
     {
         $this->tags = $tags;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->accountName;
     }
 }

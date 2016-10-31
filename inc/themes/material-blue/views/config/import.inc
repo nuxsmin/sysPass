@@ -22,9 +22,9 @@
                     <select id="import_defaultuser" name="import_defaultuser"
                             class="select-box sel-chosen-user" required>
                         <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
-                        <?php foreach ($users as $id => $name): ?>
-                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>>
-                                <?php echo $name; ?>
+                        <?php foreach ($users as $user): ?>
+                            <option value="<?php echo $user->id; ?>" <?php echo ($user->id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>>
+                                <?php echo $user->name; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -44,9 +44,9 @@
                     <select id="import_defaultgroup" name="import_defaultgroup"
                             class="select-box sel-chosen-usergroup" required>
                         <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
-                        <?php foreach ($groups as $id => $name): ?>
-                            <option value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>>
-                                <?php echo $name; ?>
+                        <?php foreach ($groups as $group): ?>
+                            <option value="<?php echo $group->id; ?>" <?php echo ($group->id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>>
+                                <?php echo $group->name; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

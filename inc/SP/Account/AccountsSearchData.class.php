@@ -330,7 +330,7 @@ class AccountsSearchData
     {
         $this->url = $url;
         $this->url_short = Html::truncate($url, $this->textMaxLength);
-        $this->url_islink = preg_match("#^https?://.*#i", $url);
+        $this->url_islink = preg_match('#^https?://#i', $url);
     }
 
     /**

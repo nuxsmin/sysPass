@@ -1062,17 +1062,17 @@ pre, code, samp, kbd {
 }
 
 #fancyContainer {
-    padding: 0 15px 15px 15px
+    padding: 0;
 }
 
 #fancyContainer > h2 {
-    width: 90%;
+    width: 100%;
     font-size: 18px;
     color: white;
     background-color: #607d8b;
-    margin: 0 0 20px 0;
+    margin: 0 0 1em 0;
     padding: .5em 0;
-    line-height: 1em
+    line-height: 1em;
 }
 
 #fancyContainer select {
@@ -1219,15 +1219,15 @@ footer img {
 }
 
 .midround {
-    border-radius: 0 0 15px 15px !important;
-    -moz-border-radius: 0 0 15px 15px !important;
-    -webkit-border-radius: 0 0 15px 15px !important
+    border-radius: 0 0 10px 10px !important;
+    -moz-border-radius: 0 0 10px 10px !important;
+    -webkit-border-radius: 0 0 10px 10px !important
 }
 
 .midroundup {
-    border-radius: 15px 15px 0 0 !important;
-    -moz-border-radius: 15px 15px 0 0 !important;
-    -webkit-border-radius: 15px 15px 0 0 !important
+    border-radius: 10px 10px 0 0 !important;
+    -moz-border-radius: 10px 10px 0 0 !important;
+    -webkit-border-radius: 10px 10px 0 0 !important
 }
 
 .fullround {
@@ -1530,6 +1530,7 @@ footer img {
     height: 32px;
     width: auto
 }
+
 .select-box {
     width: 20em;
 }

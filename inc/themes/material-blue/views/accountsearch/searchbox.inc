@@ -46,17 +46,17 @@
 
                 <select id="customer" name="customer" class="select-box select-box-deselect">
                     <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
-                    <?php foreach ($customers as $id => $name): ?>
+                    <?php foreach ($customers as $customer): ?>
                         <option
-                            value="<?php echo $id; ?>" <?php echo ($id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            value="<?php echo $customer->id; ?>" <?php echo ($customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
                     <?php endforeach; ?>
                 </select>
 
                 <select id="category" name="category" class="select-box select-box-deselect">
                     <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
-                    <?php foreach ($categories as $id => $name): ?>
+                    <?php foreach ($categories as $category): ?>
                         <option
-                            value="<?php echo $id; ?>" <?php echo ($id === $searchCategory) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                            value="<?php echo $category->id; ?>" <?php echo ($category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                     <?php endforeach; ?>
                 </select>
 

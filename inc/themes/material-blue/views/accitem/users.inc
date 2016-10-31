@@ -4,7 +4,7 @@
 ?>
 
 <div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo $header; ?></h2>
+    <h2><?php echo $header; ?></h2>
 
     <form method="post" name="frmUsers" id="frmUsers" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -57,9 +57,9 @@
                     <select id="selProfile" name="profileid"
                             class="select-box" required <?php echo $isDisabled; ?>>
                         <option value=""><?php echo _('Seleccionar Perfil'); ?></option>
-                        <?php foreach ($profiles as $id => $name): ?>
+                        <?php foreach ($profiles as $profile): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $profile->id; ?>" <?php echo ($profile->id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -71,9 +71,9 @@
                     <select id="selGroup" name="groupid"
                             class="select-box" required <?php echo $isDisabled; ?>>
                         <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
-                        <?php foreach ($groups as $id => $name): ?>
+                        <?php foreach ($groups as $group): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $group->id; ?>" <?php echo ($group->id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -97,7 +97,7 @@
 
             </tr>
 
-            <?php if (!$isView): ?>
+            <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_USR_USERS_NEW): ?>
                 <tr>
                     <td class="descField"><?php echo _('Clave'); ?></td>
                     <td class="valField">

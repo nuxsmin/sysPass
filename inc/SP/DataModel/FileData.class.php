@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class FileData
+class FileData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
@@ -201,5 +201,21 @@ class FileData
     public function setAccfileId($accfile_id)
     {
         $this->accfile_id = $accfile_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->accfile_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->accfile_name;
     }
 }

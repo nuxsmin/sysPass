@@ -34,6 +34,8 @@ use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -42,8 +44,10 @@ use SP\Storage\QueryData;
  *
  * @package SP
  */
-class User extends UserBase implements ItemInterface
+class User extends UserBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws SPException

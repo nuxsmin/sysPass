@@ -26,21 +26,44 @@ sysPass.Theme = function (Common) {
 
     var log = Common.log;
 
-    // Mostrar el spinner de carga
-    var showLoading = function () {
-        $("#wrap-loading").show();
-        $("#loading").addClass("is-active");
+    /**
+     * Funciones a realizar en peticiones AJAX
+     *
+     * @type {{complete: ajax.complete}}
+     */
+    var ajax = {
+        complete: function () {
+            // Actualizar componentes de MDL cargados con AJAX
+            componentHandler.upgradeDom();
+
+            // Activar tooltips
+            //activeTooltip();
+        }
     };
 
-    // Ocultar el spinner de carga
-    var hideLoading = function () {
-        $("#wrap-loading").hide();
-        $("#loading").removeClass("is-active");
+    /**
+     * Mostrar/Ocultar el spinner de carga
+     *
+     * @type {{show: loading.show, hide: loading.hide}}
+     */
+    var loading = {
+        show: function () {
+            $("#wrap-loading").show();
+            $("#loading").addClass("is-active");
+        },
+        hide: function () {
+            $("#wrap-loading").hide();
+            $("#loading").removeClass("is-active");
+        }
     };
 
-    var activeTooltip = function () {
+    var activeTooltip = function ($container) {
+        if (typeof $container === "undefined") {
+            $container = $("body");
+        }
+
         // Activar tooltips
-        $(".active-tooltip").tooltip({
+        $container.find(".active-tooltip").tooltip({
             content: function () {
                 return $(this).attr("title");
             },
@@ -50,7 +73,7 @@ sysPass.Theme = function (Common) {
 
     // Función para generar claves aleatorias.
     // By Uzbekjon from  http://jquery-howto.blogspot.com.es
-    var password = function (length, special, fancy, targetId) {
+    var password = function ($target) {
         var iteration = 0,
             genPassword = "",
             randomNumber;
@@ -84,35 +107,31 @@ sysPass.Theme = function (Common) {
             genPassword += String.fromCharCode(randomNumber);
         }
 
-        if (fancy === true) {
-            $("#viewPass").attr("title", genPassword);
-            //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
-        } else {
-            alertify.alert("<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[6] + "</p><p id=\"alert-pass\"> " + genPassword + "</p>");
-        }
+        $("#viewPass").attr("title", genPassword);
 
         var level = zxcvbn(genPassword);
         Common.passwordData.passLength = genPassword.length;
 
-        if (targetId) {
-            var dstParent = $("#" + targetId).parent();
+        if ($target) {
+            var $dstParent = $target.parent();
+            var $targetR = $("#" + $target.attr("id") + "R");
 
-            Common.outputResult(level.score, targetId);
+            Common.outputResult(level, $target);
 
             // Actualizar los componentes de MDL
             var mdl = new MaterialTextfield();
 
             // Poner la clave en los input y actualizar MDL
-            dstParent.find("input:password").val(genPassword);
-            dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+            $dstParent.find("input:password").val(genPassword);
+            $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
             // Poner la clave en el input de repetición y encriptarla
-            $("#" + targetId + "R").val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-            Common.encryptFormValue("#" + targetId + "R");
+            $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+            Common.encryptFormValue($targetR);
 
             // Mostar el indicador de complejidad
-            dstParent.find("#passLevel").show(500);
+            $dstParent.find("#passLevel").show(500);
         } else {
-            Common.outputResult(level.score);
+            Common.outputResult(level);
             $("input:password, input.password").val(genPassword);
             $("#passLevel").show(500);
         }
@@ -194,33 +213,33 @@ sysPass.Theme = function (Common) {
 
             var $thisParent = $this.parent();
             var targetId = $this.attr("id");
+            var $targetIdR = $("#" + targetId + "R");
 
 
             var btnMenu = "<button id=\"menu-speed-" + targetId + "\" class=\"mdl-button mdl-js-button mdl-button--icon\" type=\"button\" title=\"" + Common.config().LANG[27] + "\"><i class=\"material-icons\">more_vert</i></button>";
 
             btnMenu += "<ul class=\"mdl-menu mdl-js-menu\" for=\"menu-speed-" + targetId + "\">";
-            btnMenu += "<li class=\"mdl-menu__item passGen\" data-targetid=\"" + targetId + "\"><i class=\"material-icons\">settings</i>" + Common.config().LANG[28] + "</li>";
-            btnMenu += "<li class=\"mdl-menu__item passComplexity\" data-targetid=\"" + targetId + "\"><i class=\"material-icons\">vpn_key</i>" + Common.config().LANG[29] + "</li>";
-            btnMenu += "<li class=\"mdl-menu__item reset\" data-targetid=\"" + targetId + "\"><i class=\"material-icons\">refresh</i>" + Common.config().LANG[30] + "</li>";
+            btnMenu += "<li class=\"mdl-menu__item passGen\"><i class=\"material-icons\">settings</i>" + Common.config().LANG[28] + "</li>";
+            btnMenu += "<li class=\"mdl-menu__item passComplexity\"><i class=\"material-icons\">vpn_key</i>" + Common.config().LANG[29] + "</li>";
+            btnMenu += "<li class=\"mdl-menu__item reset\"><i class=\"material-icons\">refresh</i>" + Common.config().LANG[30] + "</li>";
 
             $thisParent.after("<div class=\"password-actions\" />");
 
             $thisParent.next(".password-actions")
                 .prepend("<span class=\"passLevel passLevel-" + targetId + " fullround\" title=\"" + Common.config().LANG[31] + "\"></span>")
-                .prepend("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\" data-targetid=\"" + targetId + "\">remove_red_eye</i>")
+                .prepend("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\">remove_red_eye</i>")
                 .prepend(btnMenu);
 
             $this.on("keyup", function () {
-                Common.checkPassLevel($this.val(), targetId);
+                Common.checkPassLevel($this);
             });
 
             var $passwordActions = $this.parent().next();
 
             // Crear evento para generar clave aleatoria
             $passwordActions.find(".passGen").on("click", function () {
-                var targetId = $(this).data("targetid");
-                password(11, true, true, targetId);
-                $("#" + targetId).focus();
+                password($this);
+                $this.focus();
             });
 
             $passwordActions.find(".passComplexity").on("click", function () {
@@ -229,15 +248,13 @@ sysPass.Theme = function (Common) {
 
             // Crear evento para mostrar clave generada/introducida
             $passwordActions.find(".showpass").on("mouseover", function () {
-                var targetId = $(this).data("targetid");
-                $(this).attr("title", $("#" + targetId).val());
+                $(this).attr("title", $this.val());
             });
 
             // Reset de los campos de clave
             $passwordActions.find(".reset").on("click", function () {
-                var targetId = $(this).data("targetid");
-                $("#" + targetId).val("");
-                $("#" + targetId + "R").val("");
+                $this.val("");
+                $targetIdR.val("");
 
                 // Actualizar objetos de MDL
                 componentHandler.upgradeDom();
@@ -256,8 +273,6 @@ sysPass.Theme = function (Common) {
             thisParent
                 .after("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\" data-targetid=\"" + targetId + "\">remove_red_eye</i>");
         });
-
-
     };
 
     /**
@@ -321,6 +336,7 @@ sysPass.Theme = function (Common) {
         },
         common: function ($container) {
             passwordDetect($container);
+            activeTooltip($container);
 
             $container.find(".download").button({
                 icons: {primary: "ui-icon-arrowthickstop-1-s"}
@@ -348,32 +364,17 @@ sysPass.Theme = function (Common) {
             }
         });
 
-        jQuery.ajaxSetup({
-            beforeSend: function () {
-                showLoading();
-            },
-            complete: function () {
-                hideLoading();
-
-                // Actualizar componentes de MDL cargados con AJAX
-                componentHandler.upgradeDom();
-
-                // Activar tooltips
-                activeTooltip();
-            }
-        });
-
         activeTooltip();
     }
 
     init();
 
     return {
-        showLoading: showLoading,
-        hideLoading: hideLoading,
         activeTooltip: activeTooltip,
         passwordDetect: passwordDetect,
         password: password,
-        viewsTriggers: viewsTriggers
+        viewsTriggers: viewsTriggers,
+        loading: loading,
+        ajax: ajax
     };
 };

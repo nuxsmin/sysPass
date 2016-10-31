@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,14 +22,26 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Log;
 
 /**
- * Class DataModelBase
+ * Class LogUtil
  *
- * @package SP\DataModel
+ * @package SP\Log
  */
-abstract class DataModelBase
+class LogUtil
 {
+    /**
+     * Registrar que una extensión no ha sido cargada
+     *
+     * @param string $extension La extensión no cargada
+     * @param string $source    El origen del error
+     * @return Log
+     */
+    public static function extensionNotLoaded($extension, $source = __FUNCTION__)
+    {
+        $msg = sprintf(_('Extensión \'%s\' no cargada'), $extension);
 
+        return Log::writeNewLog($source, $msg, Log::ERROR);
+    }
 }

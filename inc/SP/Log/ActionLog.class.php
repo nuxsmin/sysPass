@@ -52,7 +52,7 @@ abstract class ActionLog extends LogLevel
      *
      * @var array
      */
-    protected $description = null;
+    protected $description;
     /**
      * Formato de nueva línea en HTML
      *
@@ -66,7 +66,7 @@ abstract class ActionLog extends LogLevel
     /**
      * @var array
      */
-    protected $details = null;
+    protected $details;
 
     /**
      * Contructor
@@ -75,13 +75,13 @@ abstract class ActionLog extends LogLevel
      * @param string $description La descripción de la acción realizada
      * @param string $level       El nivel del mensaje
      */
-    function __construct($action = null, $description = null, $level = Log::INFO)
+    public function __construct($action = null, $description = null, $level = Log::INFO)
     {
-        if (!is_null($action)) {
+        if (null !== $action) {
             $this->setAction($action);
         }
 
-        if (!is_null($description)) {
+        if (null !== $description) {
             $this->addDescription($description);
         }
 
@@ -150,7 +150,7 @@ abstract class ActionLog extends LogLevel
      */
     public function getDetails()
     {
-        if (is_null($this->details)) {
+        if (null === $this->details) {
             return '';
         }
 
@@ -190,7 +190,7 @@ abstract class ActionLog extends LogLevel
      */
     public function getDescription()
     {
-        if (is_null($this->description)) {
+        if (null === $this->description) {
             return '';
         }
 

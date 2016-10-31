@@ -30,6 +30,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\TagData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemSelectInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -38,8 +40,10 @@ use SP\Storage\QueryData;
  *
  * @package SP\Mgmt\Tags
  */
-class Tag extends TagBase implements ItemInterface
+class Tag extends TagBase implements ItemInterface, ItemSelectInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws \SP\Core\Exceptions\SPException

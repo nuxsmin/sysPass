@@ -32,7 +32,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\DataModel
  */
-class GroupAccountsData
+class GroupAccountsData extends DataModelBase 
 {
     /**
      * @var int

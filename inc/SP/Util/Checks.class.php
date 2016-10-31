@@ -46,18 +46,16 @@ class Checks
         // Check openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
             openssl_random_pseudo_bytes(1, $strong);
-            if ($strong == true) {
+
+            if ($strong === true) {
                 return true;
             }
         }
 
         // Check /dev/urandom
         $fp = @file_get_contents('/dev/urandom', false, null, 0, 1);
-        if ($fp !== false) {
-            return true;
-        }
 
-        return false;
+        return $fp !== false;
     }
 
     /**
@@ -67,7 +65,7 @@ class Checks
      */
     public static function checkIsWindows()
     {
-        return (substr(PHP_OS, 0, 3) === "WIN");
+        return 0 === strpos(PHP_OS, 'WIN');
     }
 
     /**
@@ -98,7 +96,7 @@ class Checks
      */
     public static function checkModules()
     {
-        $modsNeed = array(
+        $modsNeed = [
             'ldap',
             'mcrypt',
             'curl',
@@ -113,17 +111,17 @@ class Checks
             'pcre',
             'session',
             'gd'
-        );
+        ];
 
         $error = [];
 
         foreach ($modsNeed as $module) {
             if (!extension_loaded($module)) {
-                $error[] = array(
+                $error[] = [
                     'type' => SPException::SP_WARNING,
                     'description' => sprintf('%s (%s)', _('Módulo no disponible'), $module),
                     'hint' => _('Sin este módulo la aplicación puede no funcionar correctamente.')
-                );
+                ];
             }
         }
 
@@ -147,7 +145,17 @@ class Checks
      */
     public static function curlIsAvailable()
     {
-        return (function_exists('curl_init'));
+        return extension_loaded('curl');
+    }
+
+    /**
+     * Comprobar si el módulo GD está instalado.
+     *
+     * @return bool
+     */
+    public static function gdIsAvailable()
+    {
+        return extension_loaded('gd');
     }
 
     /**
@@ -300,6 +308,6 @@ class Checks
     {
         return
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || $_SERVER['SERVER_PORT'] == 443;
+            || $_SERVER['SERVER_PORT'] === 443;
     }
 }
