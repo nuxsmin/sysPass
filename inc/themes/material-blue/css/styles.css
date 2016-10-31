@@ -129,34 +129,6 @@ i {
     font-weight: bold
 }
 
-.altTxtError {
-    color: #c00;
-    font-weight: bold
-}
-
-.altTxtOk {
-    color: green;
-    font-weight: bold
-}
-
-.altTxtWarn {
-    color: orange;
-    font-weight: bold
-}
-
-.altTxtGreen {
-    color: green
-}
-
-.altTxtRed {
-    color: darkred
-}
-
-.altTxtBlue {
-    color: #339;
-    font-weight: bold
-}
-
 a, a:visited {
     text-decoration: none;
     color: rgba(83, 109, 254, 1)
@@ -702,41 +674,31 @@ pre, code, samp, kbd {
     width: 60%
 }
 
+#content #searchbox form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+}
+
 #content #searchbox div.chosen-container {
-    margin: 0 5px
+    margin: 0 .2em;
 }
 
 #content #searchbox select {
-    min-width: 180px
-}
-
-#content #searchbox #toolsLeft {
-    display: inline-block;
-    text-align: left;
-    width: 90%
-}
-
-#content #searchbox #toolsRight {
-    display: inline-block;
-    text-align: right;
-    width: 8%
-}
-
-#content #searchbox #toolsRight input {
-    margin-left: 15px;
-    text-align: center
+    min-width: 15em;
 }
 
 #content #searchbox .custom-combobox {
     margin-left: 25px
 }
 
-#content #searchbox #btnClear {
+#content .btn-clear {
     opacity: .35;
     filter: alpha(opacity=35)
 }
 
-#content #searchbox #btnClear:hover {
+#content .btn-clear:hover {
     opacity: 1;
     filter: alpha(opacity=100)
 }
