@@ -184,6 +184,10 @@ sysPass.Triggers = function (Common) {
             var $this = $(this);
 
             $("#" + $this.data("help")).dialog("open");
+        }).on("reset", ".form-action", function (e) {
+            log.info("reset");
+
+            $(this).find("input[name='start'], input[name='skey'], input[name='sorder']").val(0);
         });
     };
 
@@ -206,7 +210,6 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $(this).data("action-id")});
             });
 
-
             setFixedMenu();
 
             Common.appActions().doAction({actionId: 1});
@@ -216,18 +219,20 @@ sysPass.Triggers = function (Common) {
 
             var $frmSearch = $("#frmSearch");
 
-            $frmSearch.on("submit", function (e) {
-                e.preventDefault();
-
-                Common.appActions().account.search();
-            });
-
             $frmSearch.find("select, #rpp").on("change", function () {
-                Common.appActions().account.search();
+                $frmSearch.submit();
             });
 
-            $frmSearch.find("#btnClear").click(function () {
-                Common.appActions().account.search(true);
+            $frmSearch.find("button.btn-clear").on("click", function () {
+                $frmSearch[0].reset();
+
+                $frmSearch.find("select").each(function () {
+                    $(this)[0].selectize.clear();
+                });
+
+                $frmSearch.find("input[name=\"searchfav\"]").val(0).change();
+
+                $frmSearch.submit();
             });
 
             $frmSearch.find("input:text:visible:first").focus();
@@ -238,7 +243,7 @@ sysPass.Triggers = function (Common) {
 
                     $frmSearch.find("input[name='gsearch']").val(val);
 
-                    Common.appActions().account.search();
+                    $frmSearch.submit();
                 }
             );
 
@@ -297,7 +302,7 @@ sysPass.Triggers = function (Common) {
             $(".datagrid-action-search>form").each(function () {
                 var $this = $(this);
 
-                $this.find("i.btn-clear").on("click", function () {
+                $this.find("button.btn-clear").on("click", function () {
                     $this.trigger("reset").submit();
                 });
             });

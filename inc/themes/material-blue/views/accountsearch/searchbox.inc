@@ -3,15 +3,13 @@
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $account SP\Account\AccountsSearchData
  * @var $this    SP\Core\Template
+ * @var $icons   \SP\Core\UI\ThemeIconsBase
  */
 ?>
 <div id="searchbox" class="round shadow">
-    <form method="post" name="frmSearch" id="frmSearch">
+    <form method="post" name="frmSearch" id="frmSearch" class="form-action" data-onsubmit="account/search">
         <div id="tblTools">
             <div id="toolsLeft">
-                <i id="btnClear" class="material-icons"
-                   title="<?php echo _('Limpiar'); ?>"><?php echo $icons->getIconClear()->getIcon(); ?></i>
-
                 <div class="mdl-textfield mdl-js-textfield">
                     <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="search"
                            name="search" value="<?php echo $searchTxt; ?>"/>
@@ -19,6 +17,13 @@
                 </div>
 
                 <div id="help-account_search" class="icon material-icons mdl-color-text--indigo-A200">help_outline</div>
+
+                <button type="reset"
+                        class="btn-clear mdl-button mdl-js-button mdl-button--mini-fab mdl-js-ripple-effect"
+                        title="<?php echo $icons->getIconClear()->getTitle(); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
+                </button>
+
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_search">
                     <p>
                         <?php echo _('Parámetros especiales:'); ?>

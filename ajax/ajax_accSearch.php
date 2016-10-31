@@ -37,7 +37,7 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Util::logout();
+    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $sk = \SP\Http\Request::analyze('sk', false);

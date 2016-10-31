@@ -54,7 +54,6 @@ abstract class GridItemsSearchController extends ControllerBase
     {
         $Pager->setLimitStart($SearchData->getLimitStart());
         $Pager->setLimitCount($SearchData->getLimitCount());
-        $Pager->setOnClickArgs($SearchData->getLimitCount());
         $Pager->setFilterOn($SearchData->getSeachString() !== '');
     }
 }

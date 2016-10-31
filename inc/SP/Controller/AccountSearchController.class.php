@@ -313,8 +313,6 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridPager->setLimitStart($this->limitStart);
         $GridPager->setLimitCount($this->limitCount);
         $GridPager->setOnClickFunction('account/sort');
-        $GridPager->setOnClickArgs($this->sortKey);
-        $GridPager->setOnClickArgs($this->sortOrder);
         $GridPager->setFilterOn($this->filterOn);
         $GridPager->setSourceAction(new DataGridActionSearch(self::ACTION_ACC_SEARCH));
 

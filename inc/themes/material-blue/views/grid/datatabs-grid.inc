@@ -37,9 +37,10 @@
                                 <form method="post" id="<?php echo $action->getName(); ?>"
                                       name="<?php echo $action->getName(); ?>"
                                       class="form-action"
+                                      data-target="#data-rows-<?php echo $data->getId(); ?>"
+                                      data-activetab="<?php echo $index; ?>"
                                       data-onsubmit="<?php echo $action->getOnSubmit(); ?>">
-                                    <i class="btn-clear material-icons"
-                                       title="<?php echo _('Limpiar'); ?>">clear_all</i>
+
                                     <div class="mdl-textfield mdl-js-textfield">
                                         <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text"
                                                id="txtSearch"
@@ -47,9 +48,16 @@
                                         <label class="mdl-textfield__label"
                                                for="txtSearch"><?php echo $action->getTitle(); ?></label>
                                     </div>
+
+                                    <button type="reset"
+                                            class="btn-clear mdl-button mdl-js-button mdl-button--mini-fab mdl-js-ripple-effect"
+                                            title="<?php echo $icons->getIconClear()->getTitle(); ?>">
+                                        <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
+                                    </button>
+
                                     <input type="hidden" name="sk" value="">
-                                    <input type="hidden" name="target" value="data-rows-<?php echo $data->getId(); ?>">
-                                    <input type="hidden" name="activeTab" value="<?php echo $index; ?>">
+                                    <input type="hidden" name="start" value="0">
+                                    <input type="hidden" name="count" value="<?php echo $data->getPager()->getLimitCount(); ?>">
                                     <input type="hidden" name="actionId" value="<?php echo $action->getId(); ?>">
                                     <input type="hidden" name="isAjax" value="1">
                                 </form>

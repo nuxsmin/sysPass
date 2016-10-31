@@ -90,7 +90,6 @@ sysPass.Actions = function (Common) {
 
         Common.appRequests().getActionCall(opts, function (response) {
             $("#content").html(response);
-            Common.setContentSize();
         });
     };
 
@@ -796,35 +795,25 @@ sysPass.Actions = function (Common) {
                 $obj.html(response);
             });
         },
-        search: function (clear) {
+        search: function () {
             log.info("account:search");
 
             var $frmSearch = $("#frmSearch");
+            $frmSearch.find("input[name='sk']").val(Common.sk.get());
 
-            if (clear === true) {
-                // document.frmSearch.search.value = "";
-
-                $frmSearch.find("select").each(function () {
-                    $(this)[0].selectize.clear();
-                });
-
-                $frmSearch.find("input[name=\"search\"]").val("");
-                $frmSearch.find("input[name=\"start\"], input[name=\"skey\"], input[name=\"sorder\"]").val(0);
-                $frmSearch.find("input[name=\"searchfav\"]").val(0).change();
-                order.key = 0;
-                order.dir = 0;
-            }
+            order.key = $frmSearch.find("input[name='skey']").val();
+            order.dir = $frmSearch.find("input[name='sorder']").val();
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.account.search;
             opts.data = $frmSearch.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
-                if (typeof json.sk !== "undefined") {
-                    Common.sk.set(json.sk);
-
-                    $frmSearch.find("input[name=\"sk\"]").val(json.sk);
+                if (json.status === 10){
+                    Common.msg.out(json);
                 }
+
+                Common.sk.set(json.sk);
 
                 $("#res-content").html(json.html);
             });
@@ -918,50 +907,34 @@ sysPass.Actions = function (Common) {
                 }
             });
         },
-        search: function (form) {
+        search: function ($obj) {
             log.info("appMgmt:search");
 
-            var $form = $(form);
-            var targetId = $form.find("[name=target]").val();
+            var $target = $($obj.data("target"));
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.search;
-            opts.data = $form.serialize();
+            opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
-                var $target = $("#" + targetId);
-
                 if (json.status === 0) {
                     $target.html(json.html);
-                    $form.find("[name='sk']").val(json.sk);
+                    $obj.find("[name='sk']").val(json.sk);
                 } else {
                     $target.html(Common.msg.html.error(json.description));
                 }
             });
-
-            return false;
         },
         nav: function ($obj) {
             log.info("appMgmt:nav");
 
             var $form = $("#" + $obj.data("action-form"));
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.search;
-            opts.data = $form.serialize() + "&start=" + $obj.data("start") + "&count=" + $obj.data("count");
+            $form.find("[name='start']").val($obj.data("start"));
+            $form.find("[name='count']").val($obj.data("count"));
+            $form.find("[name='sk']").val(Common.sk.get());
 
-            Common.getActionCall(opts, function (json) {
-                var $target = $("#" + $form.find("[name=target]").val());
-
-                if (json.status === 0) {
-                    $target.html(json.html);
-                    $form.find("[name='sk']").val(json.sk);
-                } else {
-                    $target.html(Common.msg.html.error(json.description));
-                }
-            });
-
-            return false;
+            appMgmt.search($form);
         }
     };
 

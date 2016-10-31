@@ -46,7 +46,7 @@ use SP\Mgmt\Users\UserUtil;
 class AccItemsController extends GridTabControllerBase implements ActionsInterface
 {
     /**
-     * @var int
+     * @var ItemSearchData
      */
     private $SearchData;
 
@@ -78,7 +78,6 @@ class AccItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getUsersGrid();
         $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -97,7 +96,6 @@ class AccItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getGroupsGrid();
         $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -116,7 +114,6 @@ class AccItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getProfilesGrid();
         $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -135,7 +132,6 @@ class AccItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getTokensGrid();
         $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -154,7 +150,6 @@ class AccItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }

@@ -86,7 +86,6 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getCategoriesGrid();
         $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -105,7 +104,6 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getCustomersGrid();
         $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -142,7 +140,6 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getCustomFieldsGrid();
         $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -162,7 +159,6 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getFilesGrid();
         $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -181,7 +177,6 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
@@ -200,7 +195,6 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
         $Grid = $this->Grids->getTagsGrid();
         $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->SearchData));
         $Grid->updatePager();
-        $Grid->getPager()->setOnClickArgs($this->SearchData);
 
         $this->view->append('tabs', $Grid);
     }
