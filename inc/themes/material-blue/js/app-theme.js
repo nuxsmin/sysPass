@@ -284,23 +284,23 @@ sysPass.Theme = function (Common) {
             var $resContent = $("#res-content");
 
             $frmSearch.find(".icon-searchfav").on("click", function () {
-                var $this = $(this);
+                var $icon = $(this).find("i");
                 var $searchfav = $frmSearch.find("input[name='searchfav']");
 
 
                 if ($searchfav.val() == 0) {
-                    $this.addClass("mdl-color-text--amber-A200");
-                    $this.attr("title", Common.config().LANG[53]);
+                    $icon.addClass("mdl-color-text--amber-A200");
+                    $icon.attr("title", Common.config().LANG[53]);
 
                     $searchfav.val(1);
                 } else {
-                    $this.removeClass("mdl-color-text--amber-A200");
-                    $this.attr("title", Common.config().LANG[52]);
+                    $icon.removeClass("mdl-color-text--amber-A200");
+                    $icon.attr("title", Common.config().LANG[52]);
 
                     $searchfav.val(0);
                 }
 
-                Common.appActions().account.search();
+                $frmSearch.submit();
             });
 
             var checkFavorite = function ($obj) {
@@ -345,9 +345,63 @@ sysPass.Theme = function (Common) {
     };
 
     /**
+     * Función para crear el menu estático al hacer scroll
+     */
+    var setFixedMenu = function () {
+        // Stick the #nav to the top of the window
+        var $actionBar = $("#actions-bar");
+
+        if ($actionBar.length > 0) {
+            var $actionBarLogo = $actionBar.find("#actions-bar-logo");
+            var isFixed = false;
+
+            var scroll = {
+                on: function () {
+                    $actionBar.css({
+                        backgroundColor: "rgba(255, 255, 255, .75)",
+                        borderBottom: "1px solid #ccc"
+                    });
+                    $actionBarLogo.show();
+                    isFixed = true;
+                },
+                off: function () {
+                    $actionBar.css({
+                        backgroundColor: "transparent",
+                        borderBottom: "none"
+                    });
+                    $actionBarLogo.hide();
+                    isFixed = false;
+                }
+            };
+
+
+            $(window).on("scroll", function () {
+                var scrollTop = $(this).scrollTop();
+                var shouldBeFixed = scrollTop > $actionBar.height();
+
+                if (shouldBeFixed && !isFixed) {
+                    scroll.on();
+                } else if (!shouldBeFixed && isFixed) {
+                    scroll.off();
+                }
+            }).on("resize", function () {
+                // Detectar si al cargar la barra de iconos no está en la posición 0
+                if ($actionBar.offset().top > 0) {
+                    scroll.on();
+                }
+            });
+
+            // Detectar si al cargar la barra de iconos no está en la posición 0
+            if ($actionBar.offset().top > 0) {
+                scroll.on();
+            }
+        }
+    };
+
+    /**
      * Inicialización
      */
-    function init() {
+    var init = function () {
         jQuery.extend(jQuery.fancybox.defaults, {
             type: "ajax",
             autoWidth: true,
@@ -357,15 +411,16 @@ sysPass.Theme = function (Common) {
             fitToView: false,
             minHeight: 50,
             padding: 0,
-            helpers: {overlay: {css: {"background": "rgba(0, 0, 0, 0.1)"}}},
+            helpers: {overlay: {css: {"background": "rgba(0, 0, 0, 0.3)"}}},
             keys: {close: [27]},
             afterShow: function () {
-                $("#fancyContainer").find("input:visible:first").focus();
+                $("#fancyContainer").find("input[type='text']:visible:first").focus();
             }
         });
 
         activeTooltip();
-    }
+        setFixedMenu();
+    };
 
     init();
 

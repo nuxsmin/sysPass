@@ -28,7 +28,7 @@
             <tr>
                 <td class="descField"><?php echo _('Cuentas'); ?></td>
                 <td class="valField checkbox">
-                    <div id="btnProfilesAcc" class="btn-checks round5">
+                    <div id="btnProfilesAcc" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accadd">
                             <input type="checkbox" id="profile_accadd"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
@@ -98,7 +98,7 @@
             <tr>
                 <td class="descField"><?php echo _('Configuración'); ?></td>
                 <td class="valField checkbox">
-                    <div id="btnProfilesConfig" class="btn-checks round5">
+                    <div id="btnProfilesConfig" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_config">
                             <input type="checkbox" id="profile_config"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
@@ -133,7 +133,7 @@
             <tr>
                 <td class="descField"><?php echo _('Gestión'); ?></td>
                 <td class="valField checkbox">
-                    <div id="btnProfilesUsers" class="btn-checks round5">
+                    <div id="btnProfilesUsers" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_users">
                             <input type="checkbox" id="profile_users"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
@@ -196,7 +196,7 @@
             <tr>
                 <td class="descField"><?php echo _('Otros'); ?></td>
                 <td class="valField checkbox">
-                    <div id="btnProfilesOthers" class="btn-checks round5">
+                    <div id="btnProfilesOthers" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_eventlog">
                             <input type="checkbox" id="profile_eventlog"
                                    class="mdl-switch__input mdl-color-text--indigo-400"

@@ -53,7 +53,7 @@ sysPass.Actions = function (Common) {
             export: "/ajax/ajax_export.php",
             import: "/ajax/ajax_import.php"
         },
-        file: "/ajax/ajax_files.php",
+        file: "/ajax/ajax_filesMgmt.php",
         link: "/ajax/ajax_appMgmtSave.php",
         account: {
             save: "/ajax/ajax_accSave.php",
@@ -809,7 +809,7 @@ sysPass.Actions = function (Common) {
             opts.data = $frmSearch.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
-                if (json.status === 10){
+                if (json.status === 10) {
                     Common.msg.out(json);
                 }
 
@@ -1020,7 +1020,8 @@ sysPass.Actions = function (Common) {
         main: main,
         user: user,
         link: link,
-        eventlog: eventlog
+        eventlog: eventlog,
+        ajaxUrl: ajaxUrl
     };
 }
 ;

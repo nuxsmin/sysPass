@@ -1,6 +1,6 @@
-<div id="actionsBar">
-    <div id="actionsBar-logo"><img src="<?php echo $logoNoText; ?>" alt="logo"/></div>
-    <div id="actionsBar-icons">
+<div id="actions-bar">
+    <div id="actions-bar-logo"><img src="<?php echo $logoNoText; ?>" alt="logo"/></div>
+    <div id="actions-bar-icons">
         <?php foreach ($actions as $action): ?>
             <?php if (($action['id'] == \SP\Core\ActionsInterface::ACTION_EVL && !SP\Util\Checks::logIsEnabled())
                 || ($action['checkaccess'] && !\SP\Core\Acl::checkUserAccess($action['id']))

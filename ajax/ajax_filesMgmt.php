@@ -65,7 +65,7 @@ $fileId = Request::analyze('fileId', 0);
 $Log = new Log();
 
 if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
-    if (!is_array($_FILES['inFile']) || !$accountId === 0) {
+    if ($accountId === 0 || !is_array($_FILES['inFile'])) {
         Response::printJson(_('CONSULTA INVÁLIDA'));
     }
 
@@ -183,7 +183,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
             exit('<img src="data:' . $FileData->getAccfileType() . ';base64, ' . $imgData . '" border="0" />');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
-        } elseif (strtoupper($FileData->getAccfileExtension()) == 'TXT') {
+        } elseif (strtoupper($FileData->getAccfileExtension()) === 'TXT') {
             exit('<div id="fancyView" class="backGrey"><pre>' . htmlentities($FileData->getAccfileContent()) . '</pre></div>');
         } else {
             exit();

@@ -115,7 +115,7 @@ class AppItemsController extends GridTabControllerBase implements ActionsInterfa
     {
         $this->setAction(self::ACTION_ACC_FILES);
 
-        $this->view->addTemplate('files', 'appitem');
+        $this->view->addTemplate('files-list', 'appitem');
 
         $this->view->assign('accountId', Request::analyze('id', 0));
         $this->view->assign('deleteEnabled', Request::analyze('del', 0));

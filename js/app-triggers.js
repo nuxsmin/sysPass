@@ -78,49 +78,6 @@ sysPass.Triggers = function (Common) {
     };
 
     /**
-     * Función para crear el menu estático al hacer scroll
-     */
-    var setFixedMenu = function () {
-        // Stick the #nav to the top of the window
-        var nav = $("#actionsBar");
-        var logo = $("#actionsBar #actionsBar-logo img");
-        var isFixed = false;
-        var navCssProps = {
-            position: "fixed",
-            top: 0,
-            left: nav.offset().left,
-            width: nav.width(),
-            padding: "1em 0",
-            backgroundColor: "rgba(255, 255, 255, .75)",
-            borderBottom: "1px solid #ccc"
-        };
-
-        $(window).scroll(function () {
-            var scrollTop = $(this).scrollTop();
-            var shouldBeFixed = scrollTop > nav.height();
-            if (shouldBeFixed && !isFixed) {
-                nav.css(navCssProps);
-                logo.show().css({opacity: 0.75});
-                isFixed = true;
-            } else if (!shouldBeFixed && isFixed) {
-                nav.css({
-                    backgroundColor: "transparent",
-                    border: "0"
-                });
-                logo.hide();
-                isFixed = false;
-            }
-        });
-
-        // Detectar si al cargar la barra de iconos no está en la posición 0
-        if (nav.offset().top > 0) {
-            nav.css(navCssProps);
-            logo.show().css({opacity: 0.75});
-            isFixed = true;
-        }
-    };
-
-    /**
      * Ejecutar acción para botones
      * @param $obj
      */
@@ -210,8 +167,6 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $(this).data("action-id")});
             });
 
-            setFixedMenu();
-
             Common.appActions().doAction({actionId: 1});
         },
         search: function () {
@@ -230,7 +185,7 @@ sysPass.Triggers = function (Common) {
                     $(this)[0].selectize.clear();
                 });
 
-                $frmSearch.find("input[name=\"searchfav\"]").val(0).change();
+                $frmSearch.find("input[name=\"searchfav\"]").val(0);
 
                 $frmSearch.submit();
             });
@@ -315,7 +270,7 @@ sysPass.Triggers = function (Common) {
             if ($dropFiles.length > 0) {
                 var upload = Common.fileUpload($dropFiles);
 
-                upload.url = "/ajax/ajax_import.php";
+                upload.url = Common.appActions().ajaxUrl.config.import;
                 upload.beforeSendAction = function () {
                     upload.requestData({
                         sk: Common.sk.get(),
@@ -352,7 +307,7 @@ sysPass.Triggers = function (Common) {
             if ($dropFiles.length > 0) {
                 var upload = Common.fileUpload($dropFiles);
 
-                upload.url = "/ajax/ajax_files.php";
+                upload.url = Common.appActions().ajaxUrl.account.getFiles;
                 upload.requestDoneAction = function () {
                     Common.appActions().account.getfiles($listFiles);
                 };

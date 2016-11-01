@@ -85,7 +85,7 @@ sysPass.Main = function () {
 
     // Configurar Alertify
     var $alertify = alertify
-        .logPosition("bottom right")
+        .logPosition("top right")
         .closeLogOnClick(true)
         .delay(10000);
 

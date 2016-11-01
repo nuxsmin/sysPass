@@ -158,41 +158,48 @@ class Util
 
         $updateInfo = json_decode($data);
 
-        // $updateInfo[0]->tag_name
-        // $updateInfo[0]->name
-        // $updateInfo[0]->body
-        // $updateInfo[0]->tarball_url
-        // $updateInfo[0]->zipball_url
-        // $updateInfo[0]->published_at
-        // $updateInfo[0]->html_url
+        if (!isset($updateInfo->message)) {
+            // $updateInfo[0]->tag_name
+            // $updateInfo[0]->name
+            // $updateInfo[0]->body
+            // $updateInfo[0]->tarball_url
+            // $updateInfo[0]->zipball_url
+            // $updateInfo[0]->published_at
+            // $updateInfo[0]->html_url
 
-        $version = $updateInfo->tag_name;
-        $url = $updateInfo->html_url;
-        $title = $updateInfo->name;
-        $description = $updateInfo->body;
-        $date = $updateInfo->published_at;
+            $version = $updateInfo->tag_name;
+            $url = $updateInfo->html_url;
+            $title = $updateInfo->name;
+            $description = $updateInfo->body;
+            $date = $updateInfo->published_at;
 
 //        preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
-        preg_match('/v?(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
+            preg_match('/v?(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
 
-        if (is_array($realVer) && Init::isLoggedIn()) {
-            $appVersion = implode('', self::getVersion(true));
+            if (is_array($realVer) && Init::isLoggedIn()) {
+                $appVersion = implode('', self::getVersion(true));
 //            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
-            $pubVersion = $realVer[1] . $realVer[2] . $realVer[3];
+                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3];
 
-            if ($pubVersion > $appVersion) {
-                return array(
-                    'version' => $version,
-                    'url' => $url,
-                    'title' => $title,
-                    'description' => $description,
-                    'date' => $date);
+                if ($pubVersion > $appVersion) {
+                    return [
+                        'version' => $version,
+                        'url' => $url,
+                        'title' => $title,
+                        'description' => $description,
+                        'date' => $date];
+                } else {
+                    return true;
+                }
             } else {
-                return true;
+                return false;
             }
         } else {
-            return false;
+            // FIXME
+            error_log($updateInfo->message);
         }
+
+        return false;
     }
 
     /**
@@ -337,21 +344,29 @@ class Util
         }
 
         $noticesData = json_decode($data);
-        $notices = [];
 
-        // $noticesData[0]->title
-        // $noticesData[0]->body
-        // $noticesData[0]->created_at
 
-        foreach ($noticesData as $notice) {
-            $notices[] = array(
-                $notice->title,
+        if (!isset($noticesData->message)) {
+            $notices = [];
+
+            // $noticesData[0]->title
+            // $noticesData[0]->body
+            // $noticesData[0]->created_at
+
+            foreach ($noticesData as $notice) {
+                $notices[] = [
+                    $notice->title,
 //              $notice->body,
-                $notice->created_at
-            );
+                    $notice->created_at
+                ];
+            }
+
+            return $notices;
+        } else {
+            error_log($noticesData->message);
         }
 
-        return $notices;
+        return false;
     }
 
     /**
