@@ -123,7 +123,7 @@ sysPass.Actions = function (Common) {
      * @param response
      */
     var showFloatingBox = function ($obj, response) {
-        return $.fancybox(response, {
+        $.fancybox(response, {
             padding: [0, 0, 0, 0],
             afterClose: function () {
                 if ($obj.data("item-dst")) {
@@ -837,8 +837,13 @@ sysPass.Actions = function (Common) {
      * @type {{show: appMgmt.show, delete: appMgmt.delete, save: appMgmt.save, search: appMgmt.search, nav: appMgmt.nav}}
      */
     var appMgmt = {
+        refreshTab: true,
         show: function ($obj) {
             log.info("appMgmt:show");
+
+            if ($obj.data("item-dst")) {
+                appMgmt.refreshTab = false;
+            }
 
             var opts = Common.appRequests().getRequestOpts();
             opts.type = "html";
@@ -899,9 +904,11 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    if ($obj.data("nextaction-id") && $obj.data("activetab") >= 0) {
+                    if (appMgmt.refreshTab === true) {
                         doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                     }
+
+                    appMgmt.refreshTab = true;
 
                     $.fancybox.close();
                 }
