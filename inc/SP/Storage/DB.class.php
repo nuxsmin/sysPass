@@ -194,20 +194,24 @@ class DB
      */
     private function prepareQueryData(QueryData $queryData, $isCount = false)
     {
-        if ($isCount === true) {
-            // No incluimos en el array de parámetros de posición los valores
-            // utilizados para LIMIT
-            preg_match_all('/(\?|:)/', $queryData->getQuery(), $count);
+//        if ($isCount === true) {
+        // No incluimos en el array de parámetros de posición los valores
+        // utilizados para LIMIT
+//            preg_match_all('/(\?|:)/', $queryData->getQuery(), $count);
 
-            // Indice a partir del cual no se incluyen valores
-            $paramMaxIndex = (count($count[1]) > 0) ? count($count[1]) : 0;
-        }
+        // Indice a partir del cual no se incluyen valores
+//            $paramMaxIndex = (count($count[1]) > 0) ? count($count[1]) : 0;
+//        }
+
+        $query = $isCount === false ? $queryData->getQuery() : $queryData->getQueryCount();
+
+        $paramMaxIndex = count($queryData->getParams()) - 3;
 
         try {
             $db = DiFactory::getDBStorage()->getConnection();
 
             if (is_array($queryData->getParams())) {
-                $stmt = $db->prepare($queryData->getQuery());
+                $stmt = $db->prepare($query);
                 $paramIndex = 0;
 
                 foreach ($queryData->getParams() as $param => $value) {
@@ -216,7 +220,7 @@ class DB
                     $param = is_int($param) ? $param + 1 : ':' . $param;
 
                     if ($isCount === true
-                        && count($count) > 0
+                        && $queryData->getLimit() !== ''
                         && $paramIndex >= $paramMaxIndex
                     ) {
                         continue;
@@ -237,7 +241,7 @@ class DB
 
                 $stmt->execute();
             } else {
-                $stmt = $db->query($queryData->getQuery());
+                $stmt = $db->query($query);
             }
 
             if ($queryData->isUseKeyPair() === true) {
@@ -272,30 +276,17 @@ class DB
      */
     private function getFullRowCount(QueryData $queryData)
     {
-        if ($queryData->getQuery() === '') {
+        if ($queryData->getQueryCount() === '') {
             return 0;
         }
 
-        $patterns = [
-            '/(LIMIT|ORDER BY|GROUP BY).*/i',
-            '/\(SELECT .*\)/',
-            '/SELECT DISTINCT\s([\w_]+),[\s\S]*? FROM/i',
-            '/SELECT [\w_]+,[\s\S]*? FROM/i',
-        ];
-        $replace = ['', '','SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM', ''];
-
-//        preg_match('/SELECT DISTINCT\s([\w_]*),.*\sFROM\s([\w_]*)\s(LEFT|RIGHT|WHERE).*/iU', $queryData->getQuery(), $match);
-
-        $query = preg_replace($patterns, $replace, $queryData->getQuery());
-
-        // Establecer la nueva consulta
-        $queryData->setQuery($query);
-
         try {
-            $db = DiFactory::getDBStorage()->getConnection();
-            $queryRes = is_array($queryData->getParams()) ? $this->prepareQueryData($queryData, true) : $db->query($query);
+            $queryRes = $this->prepareQueryData($queryData, true);
             $num = (int)$queryRes->fetchColumn();
             $queryRes->closeCursor();
+
+            error_log($queryData->getQueryCount());
+            error_log($num);
 
             return $num;
         } catch (SPException $e) {
@@ -329,7 +320,7 @@ class DB
     /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param QueryData       $queryData   Los datos para realizar la consulta
+     * @param QueryData $queryData Los datos para realizar la consulta
      * @param                 $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */

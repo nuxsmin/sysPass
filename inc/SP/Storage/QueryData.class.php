@@ -37,7 +37,7 @@ class QueryData
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
     /**
      * @var string
      */
@@ -54,6 +54,30 @@ class QueryData
      * @var bool
      */
     protected $useKeyPair = false;
+    /**
+     * @var string
+     */
+    protected $select = '';
+    /**
+     * @var string
+     */
+    protected $from = '';
+    /**
+     * @var string
+     */
+    protected $where = '';
+    /**
+     * @var string
+     */
+    protected $order = '';
+    /**
+     * @var string
+     */
+    protected $limit = '';
+    /**
+     * @var string
+     */
+    protected $queryCount = '';
 
     /**
      * @param $value
@@ -81,6 +105,10 @@ class QueryData
      */
     public function getQuery()
     {
+        if ($this->query === '') {
+            return $this->select . ' ' . $this->from . ' ' . $this->where . ' ' . $this->order . ' ' . $this->limit;
+        }
+
         return $this->query;
     }
 
@@ -138,5 +166,113 @@ class QueryData
     public function setUseKeyPair($useKeyPair)
     {
         $this->useKeyPair = (bool)$useKeyPair;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setParams($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelect()
+    {
+        return $this->select;
+    }
+
+    /**
+     * @param string $select
+     */
+    public function setSelect($select)
+    {
+        $this->select = 'SELECT ' . $select;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFrom()
+    {
+        return $this->from;
+    }
+
+    /**
+     * @param string $from
+     */
+    public function setFrom($from)
+    {
+        if ($from !== '') {
+            $this->from = 'FROM ' . $from;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getWhere()
+    {
+        return $this->where;
+    }
+
+    /**
+     * @param string $where
+     */
+    public function setWhere($where)
+    {
+        if ($where !== '') {
+            $this->where = 'WHERE ' . $where;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param string $order
+     */
+    public function setOrder($order)
+    {
+        if ($order !== '') {
+            $this->order = 'ORDER BY ' . $order;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @param string $limit
+     */
+    public function setLimit($limit)
+    {
+        if ($limit !== '') {
+            $this->limit = 'LIMIT ' . $limit;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueryCount()
+    {
+        if ($this->queryCount === '') {
+            return 'SELECT COUNT(*) ' . $this->from . ' ' . $this->where;
+        }
+
+        return $this->queryCount;
     }
 }

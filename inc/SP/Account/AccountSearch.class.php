@@ -31,6 +31,7 @@ use SP\Core\ActionsInterface;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountSearchData;
+use SP\Log\Log;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\Users\User;
@@ -347,6 +348,7 @@ class AccountSearch
         $arrFilterCommon = [];
         $arrFilterSelect = [];
         $arrFilterUser = [];
+        $arrayQueryJoin = [];
         $arrQueryWhere = [];
         $queryLimit = '';
 
@@ -356,18 +358,13 @@ class AccountSearch
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
 
-            if ($stringFilters !== false) {
-                foreach ($stringFilters as $column => $value) {
-                    $rel = '=';
+            if (count($stringFilters) > 0) {
+                foreach ($stringFilters as $filter) {
+                    $arrFilterCommon[] = $filter['query'];
 
-                    if (preg_match('/name/i', $column)) {
-                        $rel = 'LIKE';
-                        $value = '%' . $value . '%';
+                    foreach ($filter['values'] as $value) {
+                        $Data->addParam($value);
                     }
-
-                    $arrFilterCommon[] = $column . ' ' . $rel . ' ?';
-
-                    $Data->addParam($value);
                 }
             } else {
                 $txtSearch = '%' . $this->txtSearch . '%';
@@ -388,7 +385,7 @@ class AccountSearch
         }
 
         if ($this->categoryId !== 0) {
-            $arrFilterSelect[] = 'category_id = ?';
+            $arrFilterSelect[] = 'account_categoryId = ?';
             $Data->addParam($this->categoryId);
         }
 
@@ -398,8 +395,11 @@ class AccountSearch
         }
 
         if ($this->searchFavorites === true) {
-            $arrFilterSelect[] = 'accFavorites.accfavorite_userId = ?';
+            $arrayQueryJoin[] = 'INNER JOIN accFavorites ON (accfavorite_accountId = account_id AND accfavorite_userId = ?)';
             $Data->addParam(Session::getUserId());
+
+//            $arrFilterSelect[] = 'accfavorite_userId = ?';
+//            $Data->addParam(Session::getUserId());
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -411,48 +411,64 @@ class AccountSearch
         }
 
         if (!$isAdmin && !$this->globalSearch) {
-            $subQueryGroups = '(SELECT user_groupId FROM usrData WHERE user_id = ? UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = ?)';
+            /*            $subQueryGroups = '(SELECT user_groupId FROM usrData WHERE user_id = ? UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = ?)';
 
-            // Buscar el grupo principal de la cuenta en los grupos del usuario
-            $arrFilterUser[] = 'account_userGroupId IN ' . $subQueryGroups;
-            $Data->addParam(Session::getUserId());
-            $Data->addParam(Session::getUserId());
+                        // Buscar el grupo principal de la cuenta en los grupos del usuario
+                        $arrFilterUser[] = 'account_userGroupId IN ' . $subQueryGroups;
+                        $Data->addParam(Session::getUserId());
+                        $Data->addParam(Session::getUserId());
 
-            // Buscar los grupos secundarios de la cuenta en los grupos del usuario
-            $arrFilterUser[] = 'accgroup_groupId IN ' . $subQueryGroups;
-            $Data->addParam(Session::getUserId());
-            $Data->addParam(Session::getUserId());
+                        // Buscar los grupos secundarios de la cuenta en los grupos del usuario
+                        $arrFilterUser[] = 'accgroup_groupId IN ' . $subQueryGroups;
+                        $Data->addParam(Session::getUserId());
+                        $Data->addParam(Session::getUserId());
 
-            // Comprobar el usuario principal de la cuenta con el usuario actual
+                        // Comprobar el usuario principal de la cuenta con el usuario actual
+                        $arrFilterUser[] = 'account_userId = ?';
+                        $Data->addParam(Session::getUserId());
+
+                        // Comprobar los usuarios secundarios de la cuenta con el usuario actual
+                        $arrFilterUser[] = 'accuser_userId = ?';
+                        $Data->addParam(Session::getUserId());
+
+                        $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';*/
+
             $arrFilterUser[] = 'account_userId = ?';
             $Data->addParam(Session::getUserId());
-
-            // Comprobar los usuarios secundarios de la cuenta con el usuario actual
-            $arrFilterUser[] = 'accuser_userId = ?';
+            $arrFilterUser[] = 'account_userGroupId = ?';
+            $Data->addParam(Session::getUserGroupId());
+            $arrFilterUser[] = 'account_id IN (SELECT accuser_accountId FROM accUsers WHERE accuser_userId = ?)';
             $Data->addParam(Session::getUserId());
+            $arrFilterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = ?)';
+            $Data->addParam(Session::getUserGroupId());
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
         if ($this->limitCount > 0) {
-            $queryLimit = 'LIMIT ?, ?';
+            $queryLimit = '?, ?';
 
             $Data->addParam($this->limitStart);
             $Data->addParam($this->limitCount);
         }
 
         if (count($arrQueryWhere) === 1) {
-            $queryWhere = ' WHERE ' . implode($arrQueryWhere);
+            $queryWhere = implode($arrQueryWhere);
         } elseif (count($arrQueryWhere) > 1) {
-            $queryWhere = ' WHERE ' . implode(' AND ', $arrQueryWhere);
+            $queryWhere = implode(' AND ', $arrQueryWhere);
         } else {
             $queryWhere = '';
         }
 
-        $query = /** @lang SQL */
-            'SELECT * FROM account_search_v ' . $queryWhere . ' GROUP BY account_id ' . $this->getOrderString() . ' ' . $queryLimit;
+        $queryJoin = implode('', $arrayQueryJoin);
 
-        $Data->setQuery($query);
+        $Data->setSelect('*');
+        $Data->setFrom('account_search_v ' . $queryJoin);
+        $Data->setWhere($queryWhere);
+        $Data->setOrder($this->getOrderString());
+        $Data->setLimit($queryLimit);
+
+//        $Data->setQuery($query);
         $Data->setMapClassName('SP\DataModel\AccountSearchData');
 
         // Obtener el número total de cuentas visibles por el usuario
@@ -460,6 +476,8 @@ class AccountSearch
 
         // Obtener los resultados siempre en array de objetos
         DB::setReturnArray();
+
+        Log::writeNewLog(__FUNCTION__, $Data->getQuery(), Log::DEBUG);
 
         // Consulta de la búsqueda de cuentas
         $queryRes = DB::getResults($Data);
@@ -488,37 +506,48 @@ class AccountSearch
         preg_match('/(user|group|file|tag):(.*)/i', $this->txtSearch, $filters);
 
         if (!is_array($filters) || count($filters) === 0) {
-            return false;
+            return [];
         }
+
+        $filtersData = [];
 
         switch ($filters[1]) {
             case 'user':
                 $UserData = User::getItem()->getByLogin($filters[2])->getItemData();
-                return [
-                    'account_userId' => $UserData->getUserId(),
-                    'accuser_userId' => $UserData->getUserId()
+                $filtersData[] = [
+                    'type' => 'user',
+                    'query' => '(account_userId = ? OR accuser_userId ?)',
+                    'values' => [$UserData->getUserId(), $UserData->getUserId()]
                 ];
                 break;
             case 'group':
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
-                return [
-                    'account_userGroupId' => $GroupData->getUsergroupId(),
-                    'accgroup_groupId' => $GroupData->getUsergroupId()
+                $filtersData[] = [
+                    'type' => 'group',
+                    'query' => '(account_userGroupId = ? OR accgroup_groupId ?)',
+                    'values' => [$GroupData->getUsergroupId(), $GroupData->getUsergroupId()]
                 ];
                 break;
             case 'file':
-                return [
-                    'accfile_name' => $filters[2]
+                $filtersData[] = [
+                    'type' => 'group',
+                    'query' => 'accfile_name LIKE ?',
+                    'values' => [$filters[2]]
                 ];
                 break;
             case 'tag':
-                return [
-                    'tag_name' => $filters[2]
-                ];
+                $filtersData[] =
+                    [
+                        'type' => 'tag',
+                        'query' => 'account_id IN (SELECT acctag_accountId FROM accTags, tags WHERE tag_id = acctag_tagId AND tag_name = ?)',
+                        'values' => [$filters[2]]
+                    ];
                 break;
             default:
-                return false;
+                return $filtersData;
         }
+
+        return $filtersData;
     }
 
     /**
@@ -556,7 +585,7 @@ class AccountSearch
         }
 
         $orderDir = ($this->sortOrder === self::SORT_DIR_ASC) ? 'ASC' : 'DESC';
-        return sprintf('ORDER BY %s %s', implode(',', $orderKey), $orderDir);
+        return sprintf('%s %s', implode(',', $orderKey), $orderDir);
     }
 
     /**

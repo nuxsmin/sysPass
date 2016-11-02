@@ -3,6 +3,8 @@
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $AccountSearchItem SP\Account\AccountsSearchItem
  * @var $this    SP\Core\Template
+ * @var $action  \SP\Html\DataGrid\DataGridActionBase
+ * @var $actionMenu  \SP\Html\DataGrid\DataGridActionBase
  */
 ?>
 <div id="data-search">
