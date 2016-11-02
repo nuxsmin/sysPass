@@ -255,7 +255,7 @@ class Auth
 
         DB::getQuery($Data);
 
-        return (DB::$lastNumRows === 1);
+        return ($Data->getQueryNumRows() === 1);
     }
 
     /**

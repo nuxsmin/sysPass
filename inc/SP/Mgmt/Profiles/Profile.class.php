@@ -56,7 +56,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
      */
     public function add()
     {
-        if ($this->checkDuplicatedOnAdd()){
+        if ($this->checkDuplicatedOnAdd()) {
             throw new SPException(SPException::SP_INFO, _('Nombre de perfil duplicado'));
         }
 
@@ -86,6 +86,25 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_name
+            FROM usrProfiles
+            WHERE UPPER(userprofile_name) = ?';
+
+        $Data = new QueryData();
+        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->setQuery($query);
+
+        DB::getQuery($Data);
+
+        return ($Data->getQueryNumRows() > 0);
+    }
+
+    /**
      * @param $id int
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
@@ -96,7 +115,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_INFO, _('Perfil en uso'));
         }
 
-        $oldProfile = $this->getById($id)->getItemData();
+        $oldProfile = $this->getById($id);
 
         $query = /** @lang SQL */
             'DELETE FROM usrProfiles WHERE userprofile_id = ? LIMIT 1';
@@ -119,16 +138,69 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
+     * @param $id int
+     * @return bool
+     */
+    public function checkInUse($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_profileId FROM usrData WHERE user_profileId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        DB::getQuery($Data);
+
+        return ($Data->getQueryNumRows() > 0);
+    }
+
+    /**
+     * @param $id int
+     * @return ProfileData
+     */
+    public function getById($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_id,
+            userprofile_name,
+            userprofile_profile
+            FROM usrProfiles
+            WHERE userprofile_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        /**
+         * @var ProfileBaseData $ProfileData
+         * @var ProfileData     $Profile
+         */
+        $ProfileData = DB::getResults($Data);
+        $Profile = unserialize($ProfileData->getUserprofileProfile());
+
+        if (get_class($Profile) === '__PHP_Incomplete_Class') {
+            $Profile = Util::castToClass($this->getDataModel(), $Profile);
+        }
+
+        $Profile->setUserprofileId($ProfileData->getUserprofileId());
+        $Profile->setUserprofileName($ProfileData->getUserprofileName());
+
+        return $Profile;
+    }
+
+    /**
      * @return $this
      * @throws SPException
      */
     public function update()
     {
-        if ($this->checkDuplicatedOnUpdate()){
+        if ($this->checkDuplicatedOnUpdate()) {
             throw new SPException(SPException::SP_INFO, _('Nombre de perfil duplicado'));
         }
 
-        $oldProfileName = $this->getById($this->itemData->getUserprofileId())->getItemData();
+        $oldProfileName = $this->getById($this->itemData->getUserprofileId());
 
         $query = /** @lang SQL */
             'UPDATE usrProfiles SET
@@ -156,40 +228,24 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int
-     * @return $this
+     * @return bool
      */
-    public function getById($id)
+    public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT userprofile_id,
-            userprofile_name,
-            userprofile_profile
+            'SELECT userprofile_name
             FROM usrProfiles
-            WHERE userprofile_id = ? LIMIT 1';
+            WHERE UPPER(userprofile_name) = ?
+            AND userprofile_id <> ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName($this->getDataModel());
+        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam($this->itemData->getUserprofileId());
         $Data->setQuery($query);
-        $Data->addParam($id);
 
-        /**
-         * @var ProfileBaseData $ProfileData
-         * @var ProfileData $Profile
-         */
-        $ProfileData = DB::getResults($Data);
-        $Profile = unserialize($ProfileData->getUserprofileProfile());
+        DB::getQuery($Data);
 
-        if (get_class($Profile) === '__PHP_Incomplete_Class') {
-            $Profile = Util::castToClass($this->getDataModel(), $Profile);
-        }
-
-        $Profile->setUserprofileId($ProfileData->getUserprofileId());
-        $Profile->setUserprofileName($ProfileData->getUserprofileName());
-
-        $this->itemData = $Profile;
-
-        return $this;
+        return ($Data->getQueryNumRows() > 0);
     }
 
     /**
@@ -218,63 +274,5 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         DB::setReturnArray();
 
         return DB::getResults($Data);
-    }
-
-    /**
-     * @param $id int
-     * @return bool
-     */
-    public function checkInUse($id)
-    {
-        $query = /** @lang SQL */
-            'SELECT user_profileId FROM usrData WHERE user_profileId = ?';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        DB::getQuery($Data);
-
-        return (DB::$lastNumRows > 0);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate()
-    {
-        $query = /** @lang SQL */
-            'SELECT userprofile_name
-            FROM usrProfiles
-            WHERE UPPER(userprofile_name) = ?
-            AND userprofile_id <> ?';
-
-        $Data = new QueryData();
-        $Data->addParam($this->itemData->getUserprofileName());
-        $Data->addParam($this->itemData->getUserprofileId());
-        $Data->setQuery($query);
-
-        DB::getQuery($Data);
-
-        return (DB::$lastNumRows > 0);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDuplicatedOnAdd()
-    {
-        $query = /** @lang SQL */
-            'SELECT userprofile_name
-            FROM usrProfiles
-            WHERE UPPER(userprofile_name) = ?';
-
-        $Data = new QueryData();
-        $Data->addParam($this->itemData->getUserprofileName());
-        $Data->setQuery($query);
-
-        DB::getQuery($Data);
-
-        return (DB::$lastNumRows > 0);
     }
 }

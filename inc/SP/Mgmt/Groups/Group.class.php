@@ -102,7 +102,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUsergroupName());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
     }
 
     /**
@@ -116,7 +116,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_WARNING, _('Grupo en uso'));
         }
 
-        $GroupData = $this->getById($id)->getItemData();
+        $GroupData = $this->getById($id);
 
         $query = /** @lang SQL */
             'DELETE FROM usrGroups WHERE usergroup_id = ? LIMIT 1';
@@ -173,12 +173,12 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
         DB::getQuery($Data);
 
-        return (DB::$lastNumRows > 1);
+        return ($Data->getQueryNumRows() > 1);
     }
 
     /**
      * @param $id int
-     * @return $this
+     * @return GroupData
      */
     public function getById($id)
     {
@@ -190,9 +190,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        $this->itemData = DB::getResults($Data);
-
-        return $this;
+        return DB::getResults($Data);
     }
 
     /**
@@ -205,7 +203,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_INFO, _('Nombre de grupo duplicado'));
         }
 
-        $GroupData = $this->getById($this->itemData->getUsergroupId())->getItemData();
+        $GroupData = $this->getById($this->itemData->getUsergroupId());
 
         $query = /** @lang SQL */
             'UPDATE usrGroups SET usergroup_name = ?, usergroup_description = ? WHERE usergroup_id = ? LIMIT 1';
@@ -253,7 +251,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUsergroupName());
         $Data->addParam($this->itemData->getUsergroupId());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
     }
 
     /**

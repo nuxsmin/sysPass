@@ -443,7 +443,7 @@ class Grids implements ActionsInterface
         $GridActionEditPass->setName(_('Cambiar Clave de Usuario'));
         $GridActionEditPass->setTitle(_('Cambiar Clave de Usuario'));
         $GridActionEditPass->setIcon($this->icons->getIconEditPass());
-        $GridActionEditPass->setOnClickFunction('user/password');
+        $GridActionEditPass->setOnClickFunction('appMgmt/show');
         $GridActionEditPass->setFilterRowSource('user_isLdap');
 
         $GridHeaders = new DataGridHeader();

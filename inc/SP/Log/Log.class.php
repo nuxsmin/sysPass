@@ -82,7 +82,7 @@ class Log extends ActionLog
             return false;
         }
 
-        self::$numRows = DB::$lastNumRows;
+        self::$numRows = $Data->getQueryNumRows();
 
         return $queryRes;
     }

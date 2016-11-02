@@ -177,7 +177,7 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.user.password;
             opts.data = {
                 actionId: $obj.data("action-id"),
-                userId: $obj.data("item-id"),
+                itemId: $obj.data("item-id"),
                 sk: $obj.data("sk"),
                 isAjax: 1
             };

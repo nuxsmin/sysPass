@@ -49,11 +49,7 @@ class DB
     /**
      * @var int
      */
-    public static $lastNumRows = 0;
-    /**
-     * @var int
-     */
-    public static $lastId = null;
+    public static $lastId;
     /**
      * @var bool Resultado como array
      */
@@ -77,7 +73,7 @@ class DB
     /**
      * @var array Resultados de la consulta
      */
-    private $lastResult = null;
+    private $lastResult;
 
     /**
      * @return int
@@ -111,7 +107,8 @@ class DB
         try {
             $db = new DB();
             $doQuery = $db->doQuery($queryData, self::$returnRawData);
-            self::$lastNumRows = (self::$fullRowCount === false) ? $db->numRows : $db->getFullRowCount($queryData);
+            $numRows = (self::$fullRowCount === false) ? $db->numRows : $db->getFullRowCount($queryData);
+            $queryData->setQueryNumRows($numRows);
         } catch (SPException $e) {
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             return false;
@@ -194,18 +191,12 @@ class DB
      */
     private function prepareQueryData(QueryData $queryData, $isCount = false)
     {
-//        if ($isCount === true) {
-        // No incluimos en el array de parámetros de posición los valores
-        // utilizados para LIMIT
-//            preg_match_all('/(\?|:)/', $queryData->getQuery(), $count);
-
-        // Indice a partir del cual no se incluyen valores
-//            $paramMaxIndex = (count($count[1]) > 0) ? count($count[1]) : 0;
-//        }
-
-        $query = $isCount === false ? $queryData->getQuery() : $queryData->getQueryCount();
-
-        $paramMaxIndex = count($queryData->getParams()) - 3;
+        if ($isCount === true) {
+            $query = $queryData->getQueryCount();
+            $paramMaxIndex = count($queryData->getParams()) - 3;
+        } else {
+            $query = $queryData->getQuery();
+        }
 
         try {
             $db = DiFactory::getDBStorage()->getConnection();
@@ -221,7 +212,7 @@ class DB
 
                     if ($isCount === true
                         && $queryData->getLimit() !== ''
-                        && $paramIndex >= $paramMaxIndex
+                        && $paramIndex > $paramMaxIndex
                     ) {
                         continue;
                     }
@@ -285,9 +276,6 @@ class DB
             $num = (int)$queryRes->fetchColumn();
             $queryRes->closeCursor();
 
-            error_log($queryData->getQueryCount());
-            error_log($num);
-
             return $num;
         } catch (SPException $e) {
             error_log('Exception: ' . $e->getMessage());
@@ -320,7 +308,7 @@ class DB
     /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param QueryData $queryData Los datos para realizar la consulta
+     * @param QueryData       $queryData   Los datos para realizar la consulta
      * @param                 $getRawData  bool   Si se deben de obtener los datos como PDOStatement
      * @return bool
      */
@@ -333,7 +321,7 @@ class DB
         try {
             $db = new DB();
             $db->doQuery($queryData, $getRawData);
-            DB::$lastNumRows = $db->numRows;
+            $queryData->setQueryNumRows($db->numRows);
         } catch (SPException $e) {
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             self::$txtError = $e->getMessage();

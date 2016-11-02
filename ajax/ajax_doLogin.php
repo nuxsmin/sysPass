@@ -222,8 +222,8 @@ if ($UserPass->getClearUserMPass()) {
     SessionUtil::loadUserSession($User->getItemData());
 
     $Log->addDetails(_('Usuario'), $User->getItemData()->getUserLogin());
-    $Log->addDetails(_('Perfil'), Profile::getItem()->getById($User->getItemData()->getUserProfileId())->getItemData()->getUserprofileName());
-    $Log->addDetails(_('Grupo'), Group::getItem()->getById($User->getItemData()->getUserGroupId())->getItemData()->getUsergroupName());
+    $Log->addDetails(_('Perfil'), Profile::getItem()->getById($User->getItemData()->getUserProfileId())->getUserprofileName());
+    $Log->addDetails(_('Grupo'), Group::getItem()->getById($User->getItemData()->getUserGroupId())->getUsergroupName());
     $Log->writeLog();
 } else {
     $Log->setLogLevel(Log::ERROR);
@@ -234,7 +234,7 @@ if ($UserPass->getClearUserMPass()) {
     Json::returnJson($Json);
 }
 
-$UserPreferencesData = UserPreferences::getItem()->getById($User->getItemData()->getUserId())->getItemData();
+$UserPreferencesData = UserPreferences::getItem()->getById($User->getItemData()->getUserId());
 Language::setLanguage(true);
 DiFactory::getTheme()->initTheme(true);
 Session::setUserPreferences($UserPreferencesData);

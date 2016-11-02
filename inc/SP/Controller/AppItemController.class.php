@@ -80,7 +80,7 @@ class AppItemController extends ControllerBase implements ActionsInterface
         $this->_module = self::ACTION_MGM_CUSTOMERS;
         $this->view->addTemplate('customers');
 
-        $this->view->assign('customer', ($this->view->itemId) ? Customer::getItem()->getById($this->view->itemId)->getItemData() : new CustomerData());
+        $this->view->assign('customer', ($this->view->itemId) ? Customer::getItem()->getById($this->view->itemId) : new CustomerData());
         $this->getCustomFieldsForItem();
     }
 
@@ -100,7 +100,7 @@ class AppItemController extends ControllerBase implements ActionsInterface
         $this->_module = self::ACTION_MGM_CATEGORIES;
         $this->view->addTemplate('categories');
 
-        $this->view->assign('category', ($this->view->itemId) ? Category::getItem()->getById($this->view->itemId)->getItemData() : new CategoryData());
+        $this->view->assign('category', ($this->view->itemId) ? Category::getItem()->getById($this->view->itemId) : new CategoryData());
         $this->getCustomFieldsForItem();
     }
 
@@ -131,7 +131,7 @@ class AppItemController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('customfields');
 
-        $customField = ($this->view->itemId) ? CustomFieldDef::getItem()->getById($this->view->itemId)->getItemData() : new CustomFieldDefData();
+        $customField = ($this->view->itemId) ? CustomFieldDef::getItem()->getById($this->view->itemId) : new CustomFieldDefData();
 
         $this->view->assign('customField', $customField);
         $this->view->assign('field', $customField);
@@ -147,6 +147,6 @@ class AppItemController extends ControllerBase implements ActionsInterface
         $this->_module = self::ACTION_MGM_TAGS;
         $this->view->addTemplate('tags');
 
-        $this->view->assign('tag', ($this->view->itemId) ? Tag::getItem()->getById($this->view->itemId)->getItemData() : new TagData());
+        $this->view->assign('tag', ($this->view->itemId) ? Tag::getItem()->getById($this->view->itemId) : new TagData());
     }
 }

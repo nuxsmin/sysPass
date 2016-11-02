@@ -90,7 +90,7 @@ class FileUtil
 
         DB::getQuery($Data);
 
-        return DB::$lastNumRows;
+        return $Data->getQueryNumRows();
     }
 
     /**

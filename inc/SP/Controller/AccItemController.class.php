@@ -87,7 +87,7 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_USR_USERS;
         $this->view->addTemplate('users');
 
-        $this->view->assign('user', $this->view->itemId ? User::getItem()->getById($this->view->itemId)->getItemData() : new UserData());
+        $this->view->assign('user', $this->view->itemId ? User::getItem()->getById($this->view->itemId) : new UserData());
         $this->view->assign('isDisabled', ((User::getItem()->getItemData()->getUserLogin() === 'demo' && $this->view->isDemo) || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
@@ -111,7 +111,7 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_USR_GROUPS;
         $this->view->addTemplate('groups');
 
-        $this->view->assign('group', Group::getItem()->getById($this->view->itemId)->getItemData());
+        $this->view->assign('group', Group::getItem()->getById($this->view->itemId));
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('groupUsers', GroupUsers::getItem()->getById($this->view->itemId));
 
@@ -126,7 +126,7 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_USR_PROFILES;
         $this->view->addTemplate('profiles');
 
-        $Profile = $this->view->itemId ? Profile::getItem()->getById($this->view->itemId)->getItemData() : new ProfileData();
+        $Profile = $this->view->itemId ? Profile::getItem()->getById($this->view->itemId) : new ProfileData();
 
         $this->view->assign('profile', $Profile);
         $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
@@ -159,13 +159,12 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->setAction(self::ACTION_USR_USERS_EDITPASS);
 
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if ($this->view->userId != Session::getUserId() && !$this->checkAccess()) {
+        if ($this->view->itemId !== Session::getUserId() && !$this->checkAccess()) {
             return;
         }
 
+        $this->view->assign('user', User::getItem()->getById($this->view->itemId));
         $this->view->addTemplate('userspass');
-
-        $this->view->assign('actionId', self::ACTION_USR_USERS_EDITPASS);
     }
 
     /**
@@ -199,6 +198,6 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_MGM_PUBLICLINKS;
         $this->view->addTemplate('publiclinks');
 
-        $this->view->assign('link', PublicLink::getItem()->getById($this->view->itemId)->getItemData());
+        $this->view->assign('link', PublicLink::getItem()->getById($this->view->itemId));
     }
 }

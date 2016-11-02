@@ -78,6 +78,10 @@ class QueryData
      * @var string
      */
     protected $queryCount = '';
+    /**
+     * @var int
+     */
+    protected $queryNumRows = 0;
 
     /**
      * @param $value
@@ -270,9 +274,25 @@ class QueryData
     public function getQueryCount()
     {
         if ($this->queryCount === '') {
-            return 'SELECT COUNT(*) ' . $this->from . ' ' . $this->where;
+            return 'SELECT COUNT(*) ' . $this->getFrom() . ' ' . $this->getWhere();
         }
 
         return $this->queryCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQueryNumRows()
+    {
+        return $this->queryNumRows;
+    }
+
+    /**
+     * @param int $queryNumRows
+     */
+    public function setQueryNumRows($queryNumRows)
+    {
+        $this->queryNumRows = $queryNumRows;
     }
 }

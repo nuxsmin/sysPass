@@ -353,6 +353,7 @@ class AccountSearch
         $queryLimit = '';
 
         $Data = new QueryData();
+        $Data->setMapClassName('SP\DataModel\AccountSearchData');
 
         if ($this->txtSearch) {
             // Analizar la cadena de búsqueda por etiquetas especiales
@@ -380,7 +381,6 @@ class AccountSearch
 
                 $arrFilterCommon[] = 'account_notes LIKE ?';
                 $Data->addParam($txtSearch);
-
             }
         }
 
@@ -397,9 +397,6 @@ class AccountSearch
         if ($this->searchFavorites === true) {
             $arrayQueryJoin[] = 'INNER JOIN accFavorites ON (accfavorite_accountId = account_id AND accfavorite_userId = ?)';
             $Data->addParam(Session::getUserId());
-
-//            $arrFilterSelect[] = 'accfavorite_userId = ?';
-//            $Data->addParam(Session::getUserId());
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -411,36 +408,15 @@ class AccountSearch
         }
 
         if (!$isAdmin && !$this->globalSearch) {
-            /*            $subQueryGroups = '(SELECT user_groupId FROM usrData WHERE user_id = ? UNION ALL SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = ?)';
-
-                        // Buscar el grupo principal de la cuenta en los grupos del usuario
-                        $arrFilterUser[] = 'account_userGroupId IN ' . $subQueryGroups;
-                        $Data->addParam(Session::getUserId());
-                        $Data->addParam(Session::getUserId());
-
-                        // Buscar los grupos secundarios de la cuenta en los grupos del usuario
-                        $arrFilterUser[] = 'accgroup_groupId IN ' . $subQueryGroups;
-                        $Data->addParam(Session::getUserId());
-                        $Data->addParam(Session::getUserId());
-
-                        // Comprobar el usuario principal de la cuenta con el usuario actual
-                        $arrFilterUser[] = 'account_userId = ?';
-                        $Data->addParam(Session::getUserId());
-
-                        // Comprobar los usuarios secundarios de la cuenta con el usuario actual
-                        $arrFilterUser[] = 'accuser_userId = ?';
-                        $Data->addParam(Session::getUserId());
-
-                        $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';*/
-
             $arrFilterUser[] = 'account_userId = ?';
             $Data->addParam(Session::getUserId());
             $arrFilterUser[] = 'account_userGroupId = ?';
             $Data->addParam(Session::getUserGroupId());
-            $arrFilterUser[] = 'account_id IN (SELECT accuser_accountId FROM accUsers WHERE accuser_userId = ?)';
+            $arrFilterUser[] = 'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
             $Data->addParam(Session::getUserId());
-            $arrFilterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_userId = ?)';
             $Data->addParam(Session::getUserGroupId());
+            $arrFilterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
+            $Data->addParam(Session::getUserId());
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
@@ -452,12 +428,12 @@ class AccountSearch
             $Data->addParam($this->limitCount);
         }
 
+        $queryWhere = '';
+
         if (count($arrQueryWhere) === 1) {
             $queryWhere = implode($arrQueryWhere);
         } elseif (count($arrQueryWhere) > 1) {
             $queryWhere = implode(' AND ', $arrQueryWhere);
-        } else {
-            $queryWhere = '';
         }
 
         $queryJoin = implode('', $arrayQueryJoin);
@@ -468,16 +444,14 @@ class AccountSearch
         $Data->setOrder($this->getOrderString());
         $Data->setLimit($queryLimit);
 
-//        $Data->setQuery($query);
-        $Data->setMapClassName('SP\DataModel\AccountSearchData');
-
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();
 
         // Obtener los resultados siempre en array de objetos
         DB::setReturnArray();
 
-        Log::writeNewLog(__FUNCTION__, $Data->getQuery(), Log::DEBUG);
+//        Log::writeNewLog(__FUNCTION__, $Data->getQuery(), Log::DEBUG);
+//        Log::writeNewLog(__FUNCTION__, print_r($Data->getParams(), true), Log::DEBUG);
 
         // Consulta de la búsqueda de cuentas
         $queryRes = DB::getResults($Data);
@@ -487,7 +461,7 @@ class AccountSearch
         }
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
-        self::$queryNumRows = DB::$lastNumRows;
+        self::$queryNumRows = $Data->getQueryNumRows();
 
         // Establecer el filtro de búsqueda en la sesión como un objeto
         Session::setSearchFilters($this);

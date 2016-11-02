@@ -142,9 +142,21 @@ sysPass.Triggers = function (Common) {
 
             $("#" + $this.data("help")).dialog("open");
         }).on("reset", ".form-action", function (e) {
+            e.preventDefault();
+
             log.info("reset");
 
-            $(this).find("input[name='start'], input[name='skey'], input[name='sorder']").val(0);
+            var $this = $(this);
+
+            $this.find("input:text, input:password, input:file, textarea").val("").parent("div").removeClass("is-dirty");
+            $this.find("input:radio, input:checkbox").removeAttr("checked").removeAttr("selected");
+            $this.find("input[name='start'], input[name='skey'], input[name='sorder']").val(0);
+
+            $this.find("select").each(function () {
+                $(this)[0].selectize.clear();
+            });
+
+            $this.submit();
         });
     };
 
@@ -178,16 +190,12 @@ sysPass.Triggers = function (Common) {
                 $frmSearch.submit();
             });
 
-            $frmSearch.find("button.btn-clear").on("click", function () {
-                $frmSearch[0].reset();
-
-                $frmSearch.find("select").each(function () {
-                    $(this)[0].selectize.clear();
-                });
+            $frmSearch.find("button.btn-clear").on("click", function (e) {
+                e.preventDefault();
 
                 $frmSearch.find("input[name=\"searchfav\"]").val(0);
 
-                $frmSearch.submit();
+                $frmSearch[0].reset();
             });
 
             $frmSearch.find("input:text:visible:first").focus();
@@ -225,10 +233,6 @@ sysPass.Triggers = function (Common) {
             $("#btnPrefs").click(function (e) {
                 Common.appActions().doAction({actionId: $(this).data("action-id")});
             });
-
-            $("#btnUserPass").click(function (e) {
-                Common.appActions().user.password($(this));
-            });
         },
         common: function (container) {
             log.info("views:common");
@@ -257,8 +261,10 @@ sysPass.Triggers = function (Common) {
             $(".datagrid-action-search>form").each(function () {
                 var $this = $(this);
 
-                $this.find("button.btn-clear").on("click", function () {
-                    $this.trigger("reset").submit();
+                $this.find("button.btn-clear").on("click", function (e) {
+                    e.preventDefault();
+
+                    $this.trigger("reset");
                 });
             });
         },

@@ -640,7 +640,7 @@ class Init
             session_regenerate_id(true);
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario
-            Session::setUserProfile(Profile::getItem()->getById(Session::getUserProfileId())->getItemData());
+            Session::setUserProfile(Profile::getItem()->getById(Session::getUserProfileId()));
             // Regenerar la clave maestra
             SessionUtil::saveSessionMPass($sessionMPass);
         }

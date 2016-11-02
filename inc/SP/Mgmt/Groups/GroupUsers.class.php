@@ -152,7 +152,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
 
         DB::getResults($Data);
 
-        return (DB::$lastNumRows > 1);
+        return ($Data->getQueryNumRows() > 1);
     }
 
     /**

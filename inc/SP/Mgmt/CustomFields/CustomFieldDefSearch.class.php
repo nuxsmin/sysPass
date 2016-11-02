@@ -106,7 +106,7 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
             }
         }
 
-        $customFields['count'] = DB::$lastNumRows;
+        $customFields['count'] = $Data->getQueryNumRows();
 
         return $customFields;
     }

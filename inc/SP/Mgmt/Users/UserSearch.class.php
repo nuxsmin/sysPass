@@ -93,7 +93,7 @@ class UserSearch extends UserBase implements ItemSearchInterface
             return array();
         }
 
-        $queryRes['count'] = DB::$lastNumRows;
+        $queryRes['count'] = $Data->getQueryNumRows();
 
         return $queryRes;
     }

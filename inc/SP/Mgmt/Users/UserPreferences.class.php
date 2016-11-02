@@ -84,7 +84,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return $this
+     * @return UserPreferencesData
      */
     public function getById($id)
     {
@@ -99,8 +99,8 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         /** @var UserData $queryRes */
         $queryRes = DB::getResults($Data);
 
-        if ($queryRes === false || is_null($queryRes->getUserPreferences())) {
-            return $this;
+        if ($queryRes === false || null === $queryRes->getUserPreferences()) {
+            return $this->getItemData();
         }
 
         $UserPreferencesData = unserialize($queryRes->getUserPreferences());
@@ -109,9 +109,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
             $UserPreferencesData = Util::castToClass($this->getDataModel(), $UserPreferencesData);
         }
 
-        $this->itemData = $UserPreferencesData;
-
-        return $this;
+        return $UserPreferencesData;
     }
 
     /**

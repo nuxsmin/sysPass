@@ -178,7 +178,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @param $id int
-     * @return $this
+     * @return FileData
      */
     public function getById($id)
     {
@@ -198,10 +198,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-
-        $this->itemData = DB::getResults($Data);
-
-        return $this;
+        return DB::getResults($Data);
     }
 
     /**

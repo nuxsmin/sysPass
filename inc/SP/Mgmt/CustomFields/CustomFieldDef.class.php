@@ -120,7 +120,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      */
     public function update()
     {
-        $curField = $this->getById($this->itemData->getId())->getItemData();
+        $curField = $this->getById($this->itemData->getId());
 
         $query = /** @lang SQL */
             'UPDATE customFieldsDef SET
@@ -147,7 +147,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return $this
+     * @return CustomFieldDefData
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getById($id)
@@ -185,7 +185,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
         $this->itemData = $fieldDef;
 
-        return $this;
+        return $fieldDef;
     }
 
     /**

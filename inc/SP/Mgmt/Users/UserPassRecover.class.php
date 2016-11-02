@@ -53,6 +53,29 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     const USER_MAIL_EXIST = 2;
 
     /**
+     * Comprobar el límite de recuperaciones de clave.
+     *
+     * @param UserData $UserData con el login del usuario
+     * @return bool
+     */
+    public static function checkPassRecoverLimit(UserData $UserData)
+    {
+        $query = /** @lang SQL */
+            'SELECT userpassr_userId 
+            FROM usrPassRecover
+            WHERE userpassr_userId = ?
+            AND userpassr_used = 0
+            AND userpassr_date >= ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($UserData->getUserId());
+        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
+
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= self::MAX_PASS_RECOVER_LIMIT);
+    }
+
+    /**
      * Comprobar el hash de recuperación de clave.
      *
      * @param $hash
@@ -80,7 +103,7 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, _('Error en comprobación de hash'));
-        } elseif (DB::$lastNumRows === 0){
+        } elseif ($Data->getQueryNumRows() === 0) {
             throw new SPException(SPException::SP_INFO, _('Hash inválido o expirado'));
         }
 
@@ -92,26 +115,23 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     }
 
     /**
-     * Comprobar el límite de recuperaciones de clave.
-     *
-     * @param UserData $UserData con el login del usuario
-     * @return bool
+     * @return $this
+     * @throws SPException
      */
-    public static function checkPassRecoverLimit(UserData $UserData)
+    public function update()
     {
         $query = /** @lang SQL */
-            'SELECT userpassr_userId 
-            FROM usrPassRecover
-            WHERE userpassr_userId = ?
-            AND userpassr_used = 0
-            AND userpassr_date >= ?';
+            'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($UserData->getUserId());
-        $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
+        $Data->addParam($this->itemData->getUserpassrHash());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= self::MAX_PASS_RECOVER_LIMIT);
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error interno'));
+        }
+
+        return $this;
     }
 
     /**
@@ -146,26 +166,6 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     public function delete($id)
     {
         // TODO: Implement delete() method.
-    }
-
-    /**
-     * @return $this
-     * @throws SPException
-     */
-    public function update()
-    {
-        $query = /** @lang SQL */
-            'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserpassrHash());
-
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error interno'));
-        }
-
-        return $this;
     }
 
     /**

@@ -69,7 +69,7 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
         }
 
         $publicLinks = [];
-        $publicLinks['count'] = DB::$lastNumRows;
+        $publicLinks['count'] = $Data->getQueryNumRows();
 
         foreach ($queryRes as $PublicLinkListData) {
             /**

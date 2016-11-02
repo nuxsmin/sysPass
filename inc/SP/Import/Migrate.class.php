@@ -262,7 +262,7 @@ class Migrate
 
         DB::getQuery($Data);
 
-        return (DB::$lastNumRows === 0);
+        return ($Data->getQueryNumRows() === 0);
     }
 
     /**

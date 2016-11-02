@@ -140,7 +140,7 @@ class ApiTokens
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
 
-        if (DB::$lastNumRows === 1) {
+        if ($Data->getQueryNumRows() === 1) {
             throw new SPException(SPException::SP_WARNING, _('La autorización ya existe'));
         }
     }
@@ -189,7 +189,7 @@ class ApiTokens
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
 
-        if (DB::$lastNumRows === 0) {
+        if ($Data->getQueryNumRows() === 0) {
             return false;
         }
 

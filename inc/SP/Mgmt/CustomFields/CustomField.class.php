@@ -54,7 +54,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         parent::__construct($itemData);
 
         if (!is_null($customFieldDefId)) {
-            $field = CustomFieldDef::getItem()->getById($customFieldDefId)->getItemData();
+            $field = CustomFieldDef::getItem()->getById($customFieldDefId);
 
             $itemData->setDefinitionId($customFieldDefId);
             $itemData->setModule($field->getModule());
@@ -121,7 +121,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
         DB::getQuery($Data);
 
-        return (DB::$lastNumRows >= 1);
+        return ($Data->getQueryNumRows() >= 1);
     }
 
     /**

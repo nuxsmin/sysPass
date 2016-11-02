@@ -151,7 +151,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         Response::printJson(_('No es un ID de archivo válido'));
     }
 
-    $FileData = File::getItem()->getById($fileId)->getItemData();
+    $FileData = File::getItem()->getById($fileId);
 
     if (!$FileData) {
         Response::printJson(_('El archivo no existe'));

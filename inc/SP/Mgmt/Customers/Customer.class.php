@@ -96,7 +96,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($this->mkCustomerHash());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
     }
 
     /**
@@ -131,7 +131,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
             );
         }
 
-        $oldCustomer = $this->getById($id)->getItemData();
+        $oldCustomer = $this->getById($id);
 
         $query = /** @lang SQL */
             'DELETE FROM customers WHERE customer_id = ? LIMIT 1';
@@ -168,12 +168,12 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         DB::getQuery($Data);
 
-        return DB::$lastNumRows > 0;
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
      * @param $id int
-     * @return $this
+     * @return CustomerData
      */
     public function getById($id)
     {
@@ -185,9 +185,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        $this->itemData = DB::getResults($Data);
-
-        return $this;
+        return DB::getResults($Data);
     }
 
     /**
@@ -200,7 +198,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
             throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
         }
 
-        $oldCustomer = $this->getById($this->itemData->getCustomerId())->getItemData();
+        $oldCustomer = $this->getById($this->itemData->getCustomerId());
 
         $query = /** @lang SQL */
             'UPDATE customers
@@ -243,7 +241,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->mkCustomerHash());
         $Data->addParam($this->itemData->getCustomerId());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
     }
 
     /**

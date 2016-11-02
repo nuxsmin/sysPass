@@ -58,7 +58,7 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($userLogin);
 
-        return (DB::getQuery($Data) === true && DB::$lastNumRows === 1);
+        return (DB::getQuery($Data) === true && $Data->getQueryNumRows() === 1);
     }
 
     /**

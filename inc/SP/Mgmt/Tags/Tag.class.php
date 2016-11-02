@@ -80,7 +80,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getTagHash());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0 );
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0 );
     }
 
     /**
@@ -142,12 +142,12 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagHash());
         $Data->addParam($this->itemData->getTagId());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 
     /**
      * @param $id int
-     * @return $this
+     * @return TagData
      * @throws SPException
      */
     public function getById($id)
@@ -166,9 +166,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_ERROR, _('Error al obtener etiqueta'));
         }
 
-        $this->itemData = $queryRes;
-
-        return $this;
+        return $queryRes;
     }
 
     /**

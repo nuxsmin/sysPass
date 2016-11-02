@@ -69,6 +69,12 @@ switch ($actionId) {
         $Controller = new AccItemController($Tpl);
         $Controller->getUser();
         break;
+    case ActionsInterface::ACTION_USR_USERS_EDITPASS:
+        $Tpl->assign('header', _('Cambio de Clave'));
+        $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);
+        $Controller = new AccItemController($Tpl);
+        $Controller->getUserPass();
+        break;
     case ActionsInterface::ACTION_USR_USERS_NEW:
         $Tpl->assign('header', _('Nuevo Usuario'));
         $Tpl->assign('onCloseAction', ActionsInterface::ACTION_USR);

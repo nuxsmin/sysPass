@@ -73,7 +73,7 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
         $this->view->assign('tabs', array());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->userId = Session::getUserId();
-        $this->userPrefs = UserPreferences::getItem()->getById($this->userId)->getItemData();
+        $this->userPrefs = UserPreferences::getItem()->getById($this->userId);
     }
 
     /**

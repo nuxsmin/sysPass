@@ -5,7 +5,8 @@
             <div id="session">
                 <i id="btnLogout" class="material-icons" title="<?php echo _('Salir'); ?>">exit_to_app</i>
                 <?php if ($showPassIcon): ?>
-                    <i id="btnUserPass" class="material-icons" title="<?php echo _('Cambiar clave de usuario'); ?>"
+                    <i id="btnUserPass" class="btn-action material-icons" title="<?php echo _('Cambiar clave de usuario'); ?>"
+                       data-onclick="appMgmt/show"
                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
                        data-item-id="<?php echo $userId; ?>"
                        data-sk="<?php echo $sk; ?>">security</i>

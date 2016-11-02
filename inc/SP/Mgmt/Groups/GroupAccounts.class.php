@@ -148,7 +148,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
 
         DB::getResults($Data);
 
-        return (DB::$lastNumRows > 1);
+        return ($Data->getQueryNumRows() > 1);
     }
 
     /**

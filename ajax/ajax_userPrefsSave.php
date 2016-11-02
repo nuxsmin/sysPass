@@ -112,7 +112,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     }
 
     try {
-        $UserPreferencesData = UserPreferences::getItem()->getById($itemId)->getItemData();
+        $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
         $UserPreferencesData->setUse2Fa(Util::boolval($twoFaEnabled));
         UserPreferences::getItem($UserPreferencesData)->update();
 

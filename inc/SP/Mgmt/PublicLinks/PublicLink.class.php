@@ -163,7 +163,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         DB::getResults($Data);
 
-        return (DB::$lastNumRows === 1);
+        return ($Data->getQueryNumRows() === 1);
     }
 
     /**

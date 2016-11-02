@@ -92,7 +92,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCategoryName());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows >= 1);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
     }
 
     /**
@@ -110,7 +110,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
             );
         }
 
-        $oldCategory = $this->getById($this->itemData->getCategoryId())->getItemData();
+        $oldCategory = $this->getById($this->itemData->getCategoryId());
 
         $query = /** @lang SQL */
             'DELETE FROM categories WHERE category_id = ? LIMIT 1';
@@ -145,12 +145,12 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
 
         DB::getQuery($Data);
 
-        return DB::$lastNumRows > 0;
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
      * @param $id int
-     * @return $this
+     * @return CategoryData
      */
     public function getById($id)
     {
@@ -162,9 +162,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($id);
         $Data->setMapClassName($this->getDataModel());
 
-        $this->itemData = DB::getResults($Data);
-
-        return $this;
+        return DB::getResults($Data);
     }
 
     /**
@@ -177,7 +175,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
             throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
         }
 
-        $oldCategory = $this->getById($this->itemData->getCategoryId())->getItemData();
+        $oldCategory = $this->getById($this->itemData->getCategoryId());
 
         $query = /** @lang SQL */
             'UPDATE categories
@@ -218,7 +216,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryId());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 
     /**

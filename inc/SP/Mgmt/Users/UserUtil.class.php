@@ -59,7 +59,7 @@ class UserUtil
         $Data->addParam($UserData->getUserLogin());
         $Data->addParam($UserData->getUserEmail());
 
-        return (DB::getQuery($Data) === true && DB::$lastNumRows === 1);
+        return (DB::getQuery($Data) === true && $Data->getQueryNumRows() === 1);
     }
 
     /**

@@ -133,7 +133,7 @@ class ApiTokensUtil
             $token->authtoken_actionId = Acl::getActionName($token->authtoken_actionId);
         }
 
-        $queryRes['count'] = DB::$lastNumRows;
+        $queryRes['count'] = $Data->getQueryNumRows();
 
         return $queryRes;
     }
@@ -178,7 +178,7 @@ class ApiTokensUtil
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
 
-        if (DB::$lastNumRows === 0) {
+        if ($Data->getQueryNumRows() === 0) {
             return false;
         }
 

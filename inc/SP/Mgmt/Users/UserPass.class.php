@@ -125,7 +125,7 @@ class UserPass extends UserBase
     public function updateUserPass($userId, $userPass)
     {
         $passdata = self::makeUserPassHash($userPass);
-        $this->setItemData(User::getItem()->getById($userId)->getItemData());
+        $this->setItemData(User::getItem()->getById($userId));
 
         $query = /** @lang SQL */
             'UPDATE usrData SET

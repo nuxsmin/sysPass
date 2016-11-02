@@ -136,8 +136,8 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $this->itemData->setUserId(DB::$lastId);
 
         $Log = new Log(_('Eliminar Usuario'));
-        $Log->addDetails(Html::strongText(_('Login')), $oldUserData->getItemData()->getUserLogin());
-        $Log->addDetails(Html::strongText(_('Nombre')), $oldUserData->getItemData()->getUserName());
+        $Log->addDetails(Html::strongText(_('Login')), $oldUserData->getUserLogin());
+        $Log->addDetails(Html::strongText(_('Nombre')), $oldUserData->getUserName());
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -147,7 +147,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @param $id int
-     * @return $this
+     * @return UserData
      * @throws SPException
      */
     public function getById($id)
@@ -187,9 +187,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_ERROR, _('Error al obtener los datos del usuario'));
         }
 
-        $this->itemData = $queryRes;
-
-        return $this;
+        return $queryRes;
     }
 
     /**
@@ -270,7 +268,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserId());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 
     /**
@@ -334,7 +332,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserLogin());
         $Data->addParam($this->itemData->getUserEmail());
 
-        return (DB::getQuery($Data) === false || DB::$lastNumRows > 0);
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 
     /**
@@ -365,7 +363,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         }
 
         $Log = new Log(_('Modificar Clave Usuario'));
-        $Log->addDetails(Html::strongText(_('Login')), $UserData->getItemData()->getUserLogin());
+        $Log->addDetails(Html::strongText(_('Login')), $UserData->getUserLogin());
         $Log->writeLog();
 
         Email::sendEmail($Log);
