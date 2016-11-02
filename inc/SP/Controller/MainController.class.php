@@ -30,10 +30,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
-use SP\Core\Installer;
 use SP\Core\DiFactory;
 use SP\Core\Template;
-use SP\DataModel\InstallData;
 use SP\Html\Html;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Http\Request;
@@ -54,39 +52,49 @@ class MainController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param      $template   Template con instancia de plantilla
-     * @param null $page       El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param        $template   Template con instancia de plantilla
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
      */
-    public function __construct(Template $template = null, $page = null, $initialize = true)
+    public function __construct(Template $template = null, $page = '', $initialize = true)
     {
         parent::__construct($template);
 
         if ($initialize) {
-            $this->view->assign('startTime', microtime());
-
-            $this->view->addTemplate('header');
-            $this->view->addTemplate('body-start');
-
-            $this->view->assign('isInstalled', Config::getConfig()->isInstalled());
-            $this->view->assign('sk', SessionUtil::getSessionKey(true));
-            $this->view->assign('appInfo', Util::getAppInfo());
-            $this->view->assign('appVersion', Util::getVersionString());
-            $this->view->assign('isDemoMode', Checks::demoIsEnabled());
-            $this->view->assign('loggedIn', Init::isLoggedIn());
-            $this->view->assign('page', $page);
-            $this->view->assign('icons', DiFactory::getTheme()->getIcons());
-            $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
-            $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
-            $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
-            $this->view->assign('httpsEnabled', Checks::httpsEnabled());
-
-            // Cargar la clave pública en la sesión
-            SessionUtil::loadPublicKey();
-
-            $this->getResourcesLinks();
-            $this->setResponseHeaders();
+            $this->initialize($page);
         }
+    }
+
+    /**
+     * Inicializar las variables para la vista principal de la aplicación
+     *
+     * @param string $page Nombre de la vista
+     */
+    protected function initialize($page = '')
+    {
+        $this->view->assign('startTime', microtime());
+
+        $this->view->addTemplate('header');
+        $this->view->addTemplate('body-start');
+
+        $this->view->assign('isInstalled', Config::getConfig()->isInstalled());
+        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('appInfo', Util::getAppInfo());
+        $this->view->assign('appVersion', Util::getVersionString());
+        $this->view->assign('isDemoMode', Checks::demoIsEnabled());
+        $this->view->assign('loggedIn', Init::isLoggedIn());
+        $this->view->assign('page', $page);
+        $this->view->assign('icons', DiFactory::getTheme()->getIcons());
+        $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
+        $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
+        $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
+        $this->view->assign('httpsEnabled', Checks::httpsEnabled());
+
+        // Cargar la clave pública en la sesión
+        SessionUtil::loadPublicKey();
+
+        $this->getResourcesLinks();
+        $this->setResponseHeaders();
     }
 
     /**
@@ -314,7 +322,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->assign('hash', Request::analyze('h'));
             $this->view->assign('time', Request::analyze('t'));
 
-            $this->view->assign('passReset', ($this->view->action === 'passreset' && $this->view->hash && $this->view->time));
+            $this->view->assign('passReset', $this->view->action === 'passreset' && $this->view->hash && $this->view->time);
         } else {
             $this->view->assign('showLogo', true);
 

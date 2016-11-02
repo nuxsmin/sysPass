@@ -285,13 +285,13 @@ class Init
     /**
      * Devuelve un eror utilizando la plantilla de rror.
      *
-     * @param string $str con la descripción del error
+     * @param string $str  con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      */
     public static function initError($str, $hint = '')
     {
         $Tpl = new Template();
-        $Tpl->append('errors', array('type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint));
+        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint]);
         $Controller = new MainController($Tpl);
         $Controller->getError(true);
         $Controller->view();
@@ -306,20 +306,20 @@ class Init
     private static function setPaths()
     {
         // Calcular los directorios raíz
-        $dir = (defined(__DIR__)) ? __DIR__ : dirname(__FILE__);
+        $dir = defined(__DIR__) ? __DIR__ : dirname(__FILE__);
         $dir = substr($dir, 0, strpos($dir, str_replace('\\', '/', __NAMESPACE__)) - 1);
 
         self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
 
-        self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen(self::$SERVERROOT)));
+        self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(self::$SERVERROOT)));
 
         $scriptName = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
-        if (substr($scriptName, -1) == '/') {
+        if (substr($scriptName, -1) === '/') {
             $scriptName .= 'index.php';
             // Asegurar que suburi sigue las mismas reglas que scriptName
-            if (substr(self::$SUBURI, -9) != 'index.php') {
-                if (substr(self::$SUBURI, -1) != '/') {
+            if (substr(self::$SUBURI, -9) !== 'index.php') {
+                if (substr(self::$SUBURI, -1) !== '/') {
                     self::$SUBURI .= '/';
                 }
                 self::$SUBURI .= 'index.php';
@@ -334,11 +334,11 @@ class Init
 
         self::$WEBROOT = substr($scriptName, 0, $pos);
 
-        if (self::$WEBROOT != '' && self::$WEBROOT[0] !== '/') {
+        if (self::$WEBROOT !== '' && self::$WEBROOT[0] !== '/') {
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        $protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
         self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
     }
 
@@ -367,7 +367,7 @@ class Init
             include_once CONFIG_FILE;
         }
 
-        $configVersion = ($oldConfigCheck) ? (int)$CONFIG['version'] : Config::getConfig()->getConfigVersion();
+        $configVersion = $oldConfigCheck ? (int)$CONFIG['version'] : Config::getConfig()->getConfigVersion();
 
 
         if (Config::getConfig()->isInstalled()
@@ -413,7 +413,7 @@ class Init
 
         $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
 
-        if (!Checks::checkIsWindows() && $configPerms != "750") {
+        if (!Checks::checkIsWindows() && $configPerms !== "750") {
             clearstatcache();
             self::initError(_('Los permisos del directorio "/config" son incorrectos'), _('Actual:') . ' ' . $configPerms . ' - ' . _('Necesario: 750'));
         }
@@ -429,7 +429,7 @@ class Init
         $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
         $skipInit = array('js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php');
 
-        return (in_array($srcScript, $skipInit));
+        return in_array($srcScript, $skipInit);
     }
 
     /**
@@ -438,7 +438,7 @@ class Init
     private static function checkHttps()
     {
         if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
-            $port = ($_SERVER['SERVER_PORT'] != 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $port = ($_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
             $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
             header('Location: ' . $fullUrl);
         }
@@ -526,8 +526,8 @@ class Init
      */
     private static function wrLogoutInfo()
     {
-        $inactiveTime = round(((time() - Session::getLastActivity()) / 60), 2);
-        $totalTime = round(((time() - Session::getStartActivity()) / 60), 2);
+        $inactiveTime = round((time() - Session::getLastActivity()) / 60, 2);
+        $totalTime = round((time() - Session::getStartActivity()) / 60, 2);
         $ulogin = Session::getUserLogin();
 
         $Log = new Log(_('Finalizar sesión'));
@@ -553,7 +553,7 @@ class Init
      */
     private static function checkDbVersion()
     {
-        if (self::$SUBURI != '/index.php' || Request::analyze('logout', 0) === 1) {
+        if (self::$SUBURI !== '/index.php' || Request::analyze('logout', 0) === 1) {
             return;
         }
 
@@ -655,7 +655,7 @@ class Init
      */
     private static function getSessionLifeTime()
     {
-        if (is_null(Session::getSessionTimeout())) {
+        if (null === Session::getSessionTimeout()) {
             Session::setSessionTimeout(Config::getConfig()->getSessionTimeout());
         }
 
@@ -679,19 +679,18 @@ class Init
         switch ($action) {
             case 'passreset':
                 $Controller->getPassReset();
-                $Controller->view();
                 break;
             case '2fa':
                 $Controller->get2FA();
-                $Controller->view();
                 break;
             case 'link':
                 $Controller->getPublicLink();
-                $Controller->view();
                 break;
             default:
                 return false;
         }
+
+        $Controller->view();
 
         exit();
     }
@@ -703,13 +702,7 @@ class Init
      */
     public static function isLoggedIn()
     {
-        if (Session::getUserLogin()
-            && Session::get2FApassed()
-        ) {
-            return true;
-        }
-
-        return false;
+        return (Session::getUserLogin() && Session::get2FApassed());
     }
 
     /**
@@ -728,7 +721,7 @@ class Init
     public static function loadClass($class)
     {
         // Eliminar \\ para las clases con namespace definido
-        $class = (strripos($class, '\\')) ? substr($class, strripos($class, '\\') + 1) : $class;
+        $class = strrpos($class, '\\') ? substr($class, strrpos($class, '\\') + 1) : $class;
 
         // Buscar la clase en los directorios de include
         foreach (explode(':', get_include_path()) as $includePath) {
@@ -756,8 +749,8 @@ class Init
         switch ($action) {
             case 'accView':
                 $itemId = Request::analyze('i');
-                $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
-                $Controller->getMain($onLoad);
+//                $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
+                $Controller->getMain();
                 $Controller->view();
                 break;
             default:
@@ -774,7 +767,7 @@ class Init
      */
     public static function microtime_float()
     {
-        list($usec, $sec) = explode(" ", microtime());
+        list($usec, $sec) = explode(' ', microtime());
         return ((float)$usec + (float)$sec);
     }
 }

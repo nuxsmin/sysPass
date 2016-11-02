@@ -37,6 +37,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
 use SP\Core\Template;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
@@ -68,13 +69,13 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     private $Account;
     /**
-     * @var bool indica si se han obtenido datos de la cuenta
-     */
-    private $gotData = false;
-    /**
      * @var int con el id de la cuenta
      */
     private $id;
+    /**
+     * @var AccountExtData
+     */
+    private $AccountData;
 
     /**
      * Constructor
@@ -110,7 +111,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     private function isGotData()
     {
-        return $this->gotData;
+        return $this->AccountData !== null;
     }
 
     /**
@@ -179,15 +180,14 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
             $this->view->assign('accountTags', $this->getAccount()->getAccountData()->getTags());
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
-            $this->view->assign('changesHash', $this->getAccount()->getAccountModHash());
             $this->view->assign('chkUserEdit', $this->getAccount()->getAccountData()->getAccountOtherUserEdit() ? 'checked' : '');
             $this->view->assign('chkGroupEdit', $this->getAccount()->getAccountData()->getAccountOtherGroupEdit() ? 'checked' : '');
             $this->view->assign('historyData', AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
-            $this->view->assign('isModified', $this->view->accountData->account_dateEdit && $this->view->accountData->account_dateEdit !== '0000-00-00 00:00:00');
+            $this->view->assign('isModified', $this->AccountData->getAccountDateEdit() && $this->AccountData->getAccountDateEdit() !== '0000-00-00 00:00:00');
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
 
-            $publicLinkUrl = (Checks::publicLinksIsEnabled() && isset($this->view->accountData->publicLink_hash)) ? Init::$WEBURI . '/?h=' . $this->view->accountData->publicLink_hash . '&a=link' : '';
+            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $this->AccountData->getPublicLinkHash() ? Init::$WEBURI . '/?h=' . $this->AccountData->getPublicLinkHash() . '&a=link' : '');
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
         }
 
@@ -271,16 +271,13 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function setAccountData()
     {
         try {
-            $this->setAccount(new Account(new AccountData($this->getId())));
+            $this->setAccount(new Account(new AccountExtData($this->getId())));
             $this->Account->setAccountParentId($this->getId());
+            $this->AccountData = $this->getAccount()->getData();
 
             $this->view->assign('accountId', $this->getId());
-            $this->view->assign('accountData', $this->getAccount()->getData());
-            $this->view->assign('gotData', true);
-
-            $this->setGotData(true);
-
-            Session::setLastAcountId($this->getId());
+            $this->view->assign('accountData', $this->AccountData);
+            $this->view->assign('gotData', $this->isGotData());
         } catch (SPException $e) {
             return false;
         }
@@ -293,14 +290,6 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function setAccount($account)
     {
         $this->Account = $account;
-    }
-
-    /**
-     * @param boolean $gotData
-     */
-    private function setGotData($gotData)
-    {
-        $this->gotData = $gotData;
     }
 
     /**
@@ -424,16 +413,13 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function setAccountDataHistory()
     {
         try {
-            $this->setAccount(new AccountHistory(new AccountData($this->getId())));
+            $this->setAccount(new AccountHistory(new AccountExtData($this->getId())));
             $this->Account->setAccountParentId(Session::getAccountParentId());
+            $this->AccountData = $this->getAccount()->getData();
 
             $this->view->assign('accountId', $this->getId());
-            $this->view->assign('accountData', $this->getAccount()->getData());
-            $this->view->assign('gotData', true);
-
-            $this->setGotData(true);
-
-            Session::setLastAcountId(Session::getAccountParentId());
+            $this->view->assign('accountData', $this->AccountData);
+            $this->view->assign('gotData', $this->isGotData());
         } catch (SPException $e) {
             return false;
         }

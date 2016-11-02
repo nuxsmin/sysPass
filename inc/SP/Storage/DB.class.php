@@ -123,7 +123,7 @@ class DB
         ) {
             return $doQuery;
         } elseif ($db->numRows === 0) {
-            if (self::$retArray){
+            if (self::$retArray) {
                 self::resetVars();
                 return [];
             } else {
@@ -173,11 +173,7 @@ class DB
         if ($isSelect) {
             if (!$getRawData) {
                 $this->numFields = $queryRes->columnCount();
-                if ($queryData->getMapClassName()) {
-                    $this->lastResult = $queryRes->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
-                } else {
-                    $this->lastResult = $queryRes->fetchAll(PDO::FETCH_OBJ);
-                }
+                $this->lastResult = $queryRes->fetchAll();
             } else {
                 return $queryRes;
             }
@@ -211,7 +207,7 @@ class DB
             $db = DiFactory::getDBStorage()->getConnection();
 
             if (is_array($queryData->getParams())) {
-                $sth = $db->prepare($queryData->getQuery());
+                $stmt = $db->prepare($queryData->getQuery());
                 $paramIndex = 0;
 
                 foreach ($queryData->getParams() as $param => $value) {
@@ -221,31 +217,42 @@ class DB
 
                     if ($isCount === true
                         && count($count) > 0
-                        && $paramIndex >= $paramMaxIndex) {
+                        && $paramIndex >= $paramMaxIndex
+                    ) {
                         continue;
                     }
 
                     if ($param === 'blobcontent') {
-                        $sth->bindValue($param, $value, PDO::PARAM_LOB);
+                        $stmt->bindValue($param, $value, PDO::PARAM_LOB);
                     } elseif (is_int($value)) {
 //                        error_log("INT: " . $param . " -> " . $value);
-                        $sth->bindValue($param, $value, PDO::PARAM_INT);
+                        $stmt->bindValue($param, $value, PDO::PARAM_INT);
                     } else {
 //                        error_log("STR: " . $param . " -> " . print_r($value, true));
-                        $sth->bindValue($param, $value, PDO::PARAM_STR);
+                        $stmt->bindValue($param, $value, PDO::PARAM_STR);
                     }
 
                     $paramIndex++;
                 }
 
-                $sth->execute();
+                $stmt->execute();
             } else {
-                $sth = $db->query($queryData->getQuery());
+                $stmt = $db->query($queryData->getQuery());
+            }
+
+            if ($queryData->isUseKeyPair() === true) {
+                $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
+            } elseif (null !== $queryData->getMapClass()) {
+                $stmt->setFetchMode(PDO::FETCH_INTO, $queryData->getMapClass());
+            } elseif ($queryData->getMapClassName()) {
+                $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
+            } else {
+                $stmt->setFetchMode(PDO::FETCH_OBJ);
             }
 
             DB::$lastId = $db->lastInsertId();
 
-            return $sth;
+            return $stmt;
         } catch (\Exception $e) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -269,12 +276,13 @@ class DB
             return 0;
         }
 
-        $patterns = array(
+        $patterns = [
             '/(LIMIT|ORDER BY|GROUP BY).*/i',
+            '/\(SELECT .*\)/',
             '/SELECT DISTINCT\s([\w_]+),[\s\S]*? FROM/i',
             '/SELECT [\w_]+,[\s\S]*? FROM/i',
-        );
-        $replace = array('', 'SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM', '');
+        ];
+        $replace = ['', '','SELECT COUNT(DISTINCT \1) FROM', 'SELECT COUNT(*) FROM', ''];
 
 //        preg_match('/SELECT DISTINCT\s([\w_]*),.*\sFROM\s([\w_]*)\s(LEFT|RIGHT|WHERE).*/iU', $queryData->getQuery(), $match);
 

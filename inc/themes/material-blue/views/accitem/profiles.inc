@@ -92,6 +92,13 @@
                             <span class="mdl-switch__label"
                                   title="<?php echo _('Publicar enlace a cuenta'); ?>"><?php echo _('Publicar Enlace'); ?></span>
                         </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accprivate">
+                            <input type="checkbox" id="profile_accprivate"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_accprivate" <?php echo $profile->isAccPrivate() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo _('Crear cuenta privada'); ?>"><?php echo _('Privada'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>

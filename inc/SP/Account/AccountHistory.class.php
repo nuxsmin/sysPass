@@ -49,11 +49,13 @@ class AccountHistory extends AccountBase implements AccountInterface
     /**
      * Obtiene el listado del histórico de una cuenta.
      *
-     * @return false|array Con los registros con id como clave y fecha - usuario como valor
+     * @param $accountId
+     * @return array|false Con los registros con id como clave y fecha - usuario como valor
      */
     public static function getAccountList($accountId)
     {
-        $query = 'SELECT acchistory_id,'
+        $query = /** @lang SQL */
+            'SELECT acchistory_id,'
             . 'acchistory_dateEdit,'
             . 'u1.user_login as user_edit,'
             . 'u2.user_login as user_add,'
@@ -226,7 +228,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     protected function getAccountsPassData()
     {
-        $query = 'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
+        $query = /** @lang SQL */
+            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -244,7 +247,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function checkAccountMPass($id = null)
     {
-        $query = 'SELECT acchistory_mPassHash ' .
+        $query = /** @lang SQL */
+            'SELECT acchistory_mPassHash ' .
             'FROM accHistory ' .
             'WHERE acchistory_id = :id ' .
             'AND acchistory_mPassHash = :mPassHash';
@@ -265,7 +269,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function getAccountPassData()
     {
-        $query = 'SELECT acchistory_name AS name,'
+        $query = /** @lang SQL */
+            'SELECT acchistory_name AS name,'
             . 'acchistory_userId AS userId,'
             . 'acchistory_userGroupId AS groupId,'
             . 'acchistory_login AS login,'
@@ -276,7 +281,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId(), 'id');
 
         $queryRes = DB::getResults($Data);
 
@@ -284,10 +289,10 @@ class AccountHistory extends AccountBase implements AccountInterface
             return false;
         }
 
-        $this->setAccountUserId($queryRes->userId);
-        $this->setAccountUserGroupId($queryRes->groupId);
-        $this->setAccountPass($queryRes->pass);
-        $this->setAccountIV($queryRes->iv);
+        $this->accountData->setAccountUserId($queryRes->userId);
+        $this->accountData->setAccountUserGroupId($queryRes->groupId);
+        $this->accountData->setAccountPass($queryRes->pass);
+        $this->accountData->setAccountIV($queryRes->iv);
 
         return $queryRes;
     }
@@ -301,7 +306,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function updateAccountPass($id, $newHash)
     {
-        $query = 'UPDATE accHistory SET '
+        $query = /** @lang SQL */
+            'UPDATE accHistory SET '
             . 'acchistory_pass = :accountPass,'
             . 'acchistory_IV = :accountIV,'
             . 'acchistory_mPassHash = :newHash '
@@ -327,7 +333,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function getData()
     {
-        $query = 'SELECT acchistory_accountId as account_id,'
+        $query = /** @lang SQL */
+            'SELECT acchistory_accountId as account_id,'
             . 'acchistory_customerId as account_customerId,'
             . 'acchistory_categoryId as account_categoryId,'
             . 'acchistory_name as account_name,'
@@ -363,6 +370,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->setMapClassName('SP\DataModel\AccountExtData');
         $Data->addParam($this->accountData->getAccountId(), 'id');
 
         $queryRes = DB::getResults($Data);
@@ -371,10 +379,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
         }
 
-        $this->accountData->setAccountUserId($queryRes->account_userId);
-        $this->accountData->setAccountUserGroupId($queryRes->account_userGroupId);
-        $this->accountData->setAccountOtherUserEdit($queryRes->account_otherUserEdit);
-        $this->accountData->setAccountOtherGroupEdit($queryRes->account_otherGroupEdit);
+        $this->accountData = $queryRes;
 
         return $queryRes;
     }
@@ -386,7 +391,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function createAccount()
     {
-        $query = 'INSERT INTO accHistory SET '
+        $query = /** @lang SQL */
+            'INSERT INTO accHistory SET '
             . 'acchistory_accountId = :account_id,'
             . 'acchistory_customerId = :accountCustomerId,'
             . 'acchistory_categoryId = :accountCategoryId,'
@@ -441,7 +447,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function deleteAccount()
     {
-        $query = 'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -463,7 +470,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public static function addHistory($id, $isDelete = false)
     {
-        $query = 'INSERT INTO accHistory '
+        $query = /** @lang SQL */
+            'INSERT INTO accHistory '
             . '(acchistory_accountId,'
             . 'acchistory_categoryId,'
             . 'acchistory_customerId,'
@@ -527,7 +535,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public static function getAccountIdFromId($historyId)
     {
-        $query = 'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -550,7 +559,8 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public static function updateAccountsMPassHash($newHash)
     {
-        $query = 'UPDATE accHistory SET '
+        $query = /** @lang SQL */
+            'UPDATE accHistory SET '
             . 'acchistory_mPassHash = :newHash '
             . 'WHERE acchistory_mPassHash = :oldHash';
 

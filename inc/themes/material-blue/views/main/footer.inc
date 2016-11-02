@@ -1,7 +1,7 @@
 </div> <!-- Close container -->
 <footer>
     <div id="footer-left" class="footer-parts">
-        <?php if ($loggedIn): ?>
+        <?php if ($loggedIn === true): ?>
             <div id="session">
                 <i id="btnLogout" class="material-icons" title="<?php echo _('Salir'); ?>">exit_to_app</i>
                 <?php if ($showPassIcon): ?>

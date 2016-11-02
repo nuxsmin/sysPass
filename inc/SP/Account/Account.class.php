@@ -26,6 +26,7 @@
 namespace SP\Account;
 
 use SP\Core\Crypt;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupAccounts;
@@ -73,7 +74,7 @@ class Account extends AccountBase implements AccountInterface
 
         $GroupAccountsData = new GroupAccountsData();
         $GroupAccountsData->setAccgroupAccountId($this->accountData->getAccountId());
-        $GroupAccountsData->setGroups($this->accountData->getAccountUserGroupsId());
+        $GroupAccountsData->setGroups($this->accountData->getUserGroupsId());
 
         try {
             GroupAccounts::getItem($GroupAccountsData)->update();
@@ -83,7 +84,7 @@ class Account extends AccountBase implements AccountInterface
             $Log->resetDescription();
         }
 
-        if (!UserAccounts::updateUsersForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUsersId())) {
+        if (!UserAccounts::updateUsersForAccount($this->accountData->getAccountId(), $this->accountData->getUsersId())) {
             $Log->addDescription(_('Error al actualizar los usuarios de la cuenta'));
             $Log->writeLog();
             $Log->resetDescription();
@@ -97,7 +98,8 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
 
         if ($this->accountData->getAccountUserGroupId()) {
-            $query = 'UPDATE accounts SET '
+            $query = /** @lang SQL */
+                'UPDATE accounts SET '
                 . 'account_customerId = :accountCustomerId,'
                 . 'account_categoryId = :accountCategoryId,'
                 . 'account_name = :accountName,'
@@ -113,7 +115,8 @@ class Account extends AccountBase implements AccountInterface
 
             $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
         } else {
-            $query = 'UPDATE accounts SET '
+            $query = /** @lang SQL */
+                'UPDATE accounts SET '
                 . 'account_customerId = :accountCustomerId,'
                 . 'account_categoryId = :accountCategoryId,'
                 . 'account_name = :accountName,'
@@ -144,7 +147,7 @@ class Account extends AccountBase implements AccountInterface
             return false;
         }
 
-        $accountInfo = array('customer_name');
+        $accountInfo = ['customer_name'];
         $this->getAccountInfoById($accountInfo);
 
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
@@ -184,7 +187,8 @@ class Account extends AccountBase implements AccountInterface
             }
         }
 
-        $query = 'SELECT ' . implode(',', $params) . ' '
+        $query = /** @lang SQL */
+            'SELECT ' . implode(',', $params) . ' '
             . 'FROM accounts '
             . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
             . 'LEFT JOIN usrData u1 ON account_userId = u1.user_id '
@@ -227,7 +231,8 @@ class Account extends AccountBase implements AccountInterface
             return false;
         }
 
-        $query = 'UPDATE accounts dst, '
+        $query = /** @lang SQL */
+            'UPDATE accounts dst, '
             . '(SELECT * FROM accHistory WHERE acchistory_id = :id) src SET '
             . 'dst.account_customerId = src.acchistory_customerId,'
             . 'dst.account_categoryId = src.acchistory_categoryId,'
@@ -276,7 +281,8 @@ class Account extends AccountBase implements AccountInterface
      */
     public function getData()
     {
-        $query = 'SELECT account_id,'
+        $query = /** @lang SQL */
+            'SELECT account_id,'
             . 'account_name,'
             . 'account_categoryId,'
             . 'account_userId,'
@@ -311,36 +317,22 @@ class Account extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->setMapClass($this->accountData);
         $Data->addParam($this->accountData->getAccountId(), 'id');
 
+        /** @var AccountExtData $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
         }
 
-        // Obtener los usuarios y grupos secundarios
-        $this->accountData->setAccountUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
-        $this->accountData->setAccountUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
+        // Obtener los usuarios y grupos secundarios  y las etiquetas
+        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($queryRes->getAccountId()));
+        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($queryRes->getAccountId()));
+        $this->accountData->setTags(AccountTags::getTags($queryRes));
 
-        $this->accountData->setAccountName($queryRes->account_name);
-        $this->accountData->setAccountCategoryId($queryRes->account_categoryId);
-        $this->accountData->setAccountCustomerId($queryRes->account_customerId);
-        $this->accountData->setAccountUserGroupId($queryRes->account_userGroupId);
-        $this->accountData->setAccountUserEditId($queryRes->account_userEditId);
-        $this->accountData->setAccountLogin($queryRes->account_login);
-        $this->accountData->setAccountUrl($queryRes->account_url);
-        $this->accountData->setAccountUrl($queryRes->account_url);
-        $this->accountData->setAccountNotes($queryRes->account_notes);
-        $this->accountData->setAccountUserId($queryRes->account_userId);
-        $this->accountData->setAccountUserGroupId($queryRes->account_userGroupId);
-        $this->accountData->setAccountOtherUserEdit($queryRes->account_otherUserEdit);
-        $this->accountData->setAccountOtherGroupEdit($queryRes->account_otherGroupEdit);
-        $this->accountData->setTags(AccountTags::getTags($this->accountData));
-
-        $this->setAccountModHash($this->calcChangesHash());
-
-        return $queryRes;
+        return $this->accountData;
     }
 
     /**
@@ -350,7 +342,8 @@ class Account extends AccountBase implements AccountInterface
      */
     public function createAccount()
     {
-        $query = 'INSERT INTO accounts SET '
+        $query = /** @lang SQL */
+            'INSERT INTO accounts SET '
             . 'account_customerId = :accountCustomerId,'
             . 'account_categoryId = :accountCategoryId,'
             . 'account_name = :accountName,'
@@ -402,12 +395,12 @@ class Account extends AccountBase implements AccountInterface
             $Log->resetDescription();
         }
 
-        if (is_array($this->accountData->getAccountUsersId())) {
-            if (!UserAccounts::addUsersForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUsersId())) {
-                $Log->addDescription(_('Error al actualizar los usuarios de la cuenta'));
-                $Log->writeLog();
-                $Log->resetDescription();
-            }
+        if (is_array($this->accountData->getAccountUsersId())
+            && !UserAccounts::addUsersForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUsersId())
+        ) {
+            $Log->addDescription(_('Error al actualizar los usuarios de la cuenta'));
+            $Log->writeLog();
+            $Log->resetDescription();
         }
 
         if (is_array($this->accountData->getTags())) {
@@ -415,12 +408,12 @@ class Account extends AccountBase implements AccountInterface
             $AccountTags->addTags($this->accountData);
         }
 
-        $accountInfo = array('customer_name');
+        $accountInfo = ['customer_name'];
         $this->getAccountInfoById($accountInfo);
 
         $Log->setAction(_('Nueva Cuenta'));
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
-        $Log->addDetails(Html::strongText(_('Cuenta')), $this->accountData->getAccountName() . " (" . $this->accountData->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $this->accountData->getAccountId()));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -444,9 +437,10 @@ class Account extends AccountBase implements AccountInterface
 
         $Log = new Log(_('Eliminar Cuenta'));
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
-        $Log->addDetails(Html::strongText(_('Cuenta')), $this->cacheParams['account_name'] . " (" . $this->accountData->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $this->accountData->getAccountId()));
 
-        $query = 'DELETE FROM accounts WHERE account_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'DELETE FROM accounts WHERE account_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -483,7 +477,8 @@ class Account extends AccountBase implements AccountInterface
      */
     public function incrementViewCounter()
     {
-        $query = 'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -499,7 +494,8 @@ class Account extends AccountBase implements AccountInterface
      */
     public function incrementDecryptCounter()
     {
-        $query = 'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -555,12 +551,12 @@ class Account extends AccountBase implements AccountInterface
             }
 
             if (strlen($account->account_pass) === 0) {
-                $Log->addDescription(_('Clave de cuenta vacía') . ' (' . $account->account_id . ') ' . $account->account_name);
+                $Log->addDescription(sprintf('%s: (%s) %s', _('Clave de cuenta vacía'), $account->account_id, $account->account_name));
                 continue;
             }
 
             if (strlen($account->account_IV) < 32) {
-                $Log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->account_id . ') ' . $account->account_name);
+                $Log->addDescription(sprintf('%s: (%s) %s', _('IV de encriptación incorrecto'), $account->account_id, $account->account_name));
             }
 
             $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV);
@@ -569,13 +565,13 @@ class Account extends AccountBase implements AccountInterface
 
             if ($this->accountData->getAccountPass() === false) {
                 $errorCount++;
-                $Log->addDescription(_('No es posible desencriptar la clave de la cuenta') . ' (' . $account->account_id . ') ' . $account->account_name);
+                $Log->addDescription(sprintf('%s: (%s) %s', _('No es posible desencriptar la clave de la cuenta'), $account->account_id, $account->account_name));
                 continue;
             }
 
             if (!$this->updateAccountPass(true)) {
                 $errorCount++;
-                $Log->addDescription(_('Fallo al actualizar la clave de la cuenta') . ' (' . $this->getAccountId() . ') ' . $account->acchistory_name);
+                $Log->addDescription(sprintf('%s: (%s) %s', _('Fallo al actualizar la clave de la cuenta'), $account->account_id, $account->acchistory_name));
                 continue;
             }
 
@@ -609,7 +605,8 @@ class Account extends AccountBase implements AccountInterface
      */
     protected function getAccountsPassData()
     {
-        $query = 'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
+        $query = /** @lang SQL */
+            'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
 
         DB::setReturnArray();
 
@@ -631,16 +628,18 @@ class Account extends AccountBase implements AccountInterface
         $Log = new Log(__FUNCTION__);
 
         // No actualizar el histórico si es por cambio de clave maestra o restauración
-        if (!$isMassive && !$isRestore) {
+        if (!$isMassive
+            && !$isRestore
+            && !AccountHistory::addHistory($this->accountData->getAccountId(), false)
+        ) {
             // Guardamos una copia de la cuenta en el histórico
-            if (!AccountHistory::addHistory($this->accountData->getAccountId(), false)) {
-                $Log->addDescription(_('Error al actualizar el historial'));
-                $Log->writeLog();
-                return false;
-            }
+            $Log->addDescription(_('Error al actualizar el historial'));
+            $Log->writeLog();
+            return false;
         }
 
-        $query = 'UPDATE accounts SET '
+        $query = /** @lang SQL */
+            'UPDATE accounts SET '
             . 'account_pass = :accountPass,'
             . 'account_IV = :accountIV,'
             . 'account_userEditId = :accountUserEditId,'
@@ -684,7 +683,8 @@ class Account extends AccountBase implements AccountInterface
      */
     public function getAccountPassData()
     {
-        $query = 'SELECT account_name AS name,'
+        $query = /** @lang SQL */
+            'SELECT account_name AS name,'
             . 'account_userId AS userId,'
             . 'account_userGroupId AS groupId,'
             . 'account_login AS login,'
@@ -704,11 +704,6 @@ class Account extends AccountBase implements AccountInterface
         if ($queryRes === false) {
             return false;
         }
-
-        $this->accountData->setAccountUserId($queryRes->userId);
-        $this->accountData->setAccountUserGroupId($queryRes->groupId);
-        $this->accountData->setAccountPass($queryRes->pass);
-        $this->accountData->setAccountIV($queryRes->iv);
 
         return $queryRes;
     }

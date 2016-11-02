@@ -1,4 +1,7 @@
-<?php /** @var \SP\Account\AccountAcl $AccountAcl */ ?>
+<?php
+/** @var \SP\Account\AccountAcl $AccountAcl */
+/** @var \SP\DataModel\AccountExtData $accountData */
+?>
 
 <div id="title" class="midroundup titleNormal">
     <?php echo $title['name']; ?>
@@ -28,11 +31,11 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $gotData ? $accountData->account_name : ''; ?>">
+                               maxlength="50" value="<?php echo $gotData ? $accountData->getAccountName() : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
                     </div>
                 <?php else: ?>
-                    <?php echo $accountData->account_name; ?>
+                    <?php echo $accountData->getAccountName(); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -44,7 +47,7 @@
                         <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
                         <?php foreach ($customers as $customer): ?>
                             <option
-                                value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->account_customerId) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                                value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->getAccountCustomerId()) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <i class="material-icons btn-action" title="<?php echo _('Nuevo Cliente'); ?>"
@@ -54,7 +57,7 @@
                        data-item-dst="selCustomer"
                        data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                 <?php else: ?>
-                    <?php echo $accountData->customer_name; ?>
+                    <?php echo $accountData->getCustomerName(); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -66,7 +69,7 @@
                         <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
                         <?php foreach ($categories as $category): ?>
                             <option
-                                value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->account_categoryId) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                                value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getAccountCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (\SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
@@ -78,7 +81,7 @@
                            data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                     <?php endif; ?>
                 <?php else: ?>
-                    <?php echo $accountData->category_name; ?>
+                    <?php echo $accountData->getCategoryName(); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -88,11 +91,11 @@
                 <?php if (!$isView): ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="255" value="<?php echo $gotData ? $accountData->account_url : ''; ?>">
+                               maxlength="255" value="<?php echo $gotData ? $accountData->getAccountUrl() : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('URL o IP de acceso'); ?></label>
                     </div>
                 <?php else: ?>
-                    <?php echo $accountData->account_url; ?>
+                    <?php echo $accountData->getAccountUrl(); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -103,11 +106,11 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $gotData ? $accountData->account_login : ''; ?>">
+                               maxlength="50" value="<?php echo $gotData ? $accountData->getAccountLogin() : ''; ?>">
                         <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
                     </div>
                 <?php else: ?>
-                    <?php echo $accountData->account_login; ?>
+                    <?php echo $accountData->getAccountLogin(); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -144,12 +147,12 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes"
-                                  maxlength="1000"><?php echo $gotData ? $accountData->account_notes : ''; ?></textarea>
+                                  maxlength="1000"><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                     </div>
                 <?php else: ?>
-                    <?php echo $accountData->account_notes; ?>
+                    <?php echo $accountData->getAccountNotes(); ?>
                 <?php endif; ?>
 
         </tr>
@@ -184,11 +187,11 @@
             </tr>
         <?php endif; ?>
 
-        <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT && $accountData->user_editName): ?>
+        <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT && $accountData->getUserEditName()): ?>
             <tr>
                 <td class="descField"><?php echo _('Última Modificación'); ?></td>
-                <?php if ($accountData->user_editName): ?>
-                    <td class="valField"><?php echo $accountData->account_dateEdit, ' ', _('por'), ' ', $accountData->user_editName; ?></td>
+                <?php if ($accountData->getUserEditName()): ?>
+                    <td class="valField"><?php echo $accountData->getAccountDateEdit(), ' ', _('por'), ' ', $accountData->getUserEditName(); ?></td>
                 <?php endif; ?>
             </tr>
         <?php endif; ?>
@@ -262,7 +265,7 @@
             plugins: ['remove_button'],
             options: otherUsers,
             onInitialize: function () {
-                var userId = <?php echo $gotData ? $accountData->account_userId : 0; ?>;
+                var userId = <?php echo $gotData ? $accountData->getAccountUserId() : 0; ?>;
 
                 if (userId > 0) {
                     this.removeOption(userId);
@@ -280,7 +283,7 @@
             plugins: ['remove_button'],
             options: otherGroups,
             onInitialize: function () {
-                var userGroupId = <?php echo $gotData ? $accountData->account_userGroupId : 0; ?>;
+                var userGroupId = <?php echo $gotData ? $accountData->getAccountUserGroupId() : 0; ?>;
 
                 if (userGroupId > 0) {
                     this.removeOption(userGroupId);

@@ -25,6 +25,8 @@
 
 namespace SP\Storage;
 
+use SP\DataModel\DataModelBase;
+
 /**
  * Class QueryData
  *
@@ -44,6 +46,14 @@ class QueryData
      * @var string
      */
     protected $mapClassName = '';
+    /**
+     * @var DataModelBase
+     */
+    protected $mapClass;
+    /**
+     * @var bool
+     */
+    protected $useKeyPair = false;
 
     /**
      * @param $value
@@ -51,7 +61,7 @@ class QueryData
      */
     public function addParam($value, $name = null)
     {
-        if (!is_null($name)) {
+        if (null !== $name) {
             $this->data[$name] = $value;
         } else {
             $this->data[] = $value;
@@ -96,5 +106,37 @@ class QueryData
     public function setMapClassName($mapClassName)
     {
         $this->mapClassName = $mapClassName;
+    }
+
+    /**
+     * @return DataModelBase
+     */
+    public function getMapClass()
+    {
+        return $this->mapClass;
+    }
+
+    /**
+     * @param DataModelBase $mapClass
+     */
+    public function setMapClass(DataModelBase $mapClass)
+    {
+        $this->mapClass = $mapClass;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUseKeyPair()
+    {
+        return $this->useKeyPair;
+    }
+
+    /**
+     * @param boolean $useKeyPair
+     */
+    public function setUseKeyPair($useKeyPair)
+    {
+        $this->useKeyPair = (bool)$useKeyPair;
     }
 }

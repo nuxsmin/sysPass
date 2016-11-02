@@ -66,7 +66,7 @@ class UserAccounts
         $queryExcluded = '';
 
         // Excluimos los usuarios actuales
-        if (is_array($usersId)) {
+        if ($usersId !== null && count($usersId) > 0) {
             array_map('intval', $usersId);
             $queryExcluded = 'AND accuser_userId NOT IN (' . implode(',', $usersId) . ')';
         }

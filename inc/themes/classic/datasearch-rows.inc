@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account SP\Account\AccountsSearchData
+ * @var $account SP\Account\AccountsSearchItem
  * @var $this    SP\Core\Template
  */
 ?>
@@ -50,9 +50,9 @@
                     <div class="field-name"><?php echo _('URL / IP'); ?></div>
                     <?php if ($account->isUrlIslink()): ?>
                         <a href="<?php echo $account->getUrl(); ?>" target="_blank"
-                           title="<?php echo _('Abrir enlace a'), ': ', $account->getUrl(); ?>"><?php echo $account->getUrlShort(); ?></a>
+                           title="<?php echo _('Abrir enlace a'), ': ', $account->getUrl(); ?>"><?php echo $account->getShortUrl(); ?></a>
                     <?php else: ?>
-                        <div class="field-text"><?php echo $account->getUrlShort(); ?></div>
+                        <div class="field-text"><?php echo $account->getShortUrl(); ?></div>
                     <?php endif; ?>
                 </div>
 
@@ -80,7 +80,7 @@
 
                         <?php if (isset($wikiFilter)): ?>
                             <?php if (preg_match('/^(' . preg_quote($wikiFilter) . ').*/i', $account->getName())): ?>
-                                <?php if (\SP\Account\AccountsSearchData::$dokuWikiEnabled): ?>
+                                <?php if (\SP\Account\AccountsSearchItem::$dokuWikiEnabled): ?>
                                     <a href="<?php echo $wikiPageUrl, $account->getName(); ?>" target="_blank">
                                         <img src="imgs/wiki.png" title="<?php echo _('Enlace a Wiki'); ?>"/>
                                     </a>

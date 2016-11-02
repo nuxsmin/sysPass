@@ -1,22 +1,23 @@
 <?php
-    /** @var \SP\Account\AccountAcl $AccountAcl */
+/** @var \SP\Account\AccountAcl $AccountAcl */
+/** @var \SP\DataModel\AccountExtData $accountData */
 ?>
 <table class="data round extra-info">
     <tr>
         <td class="descField"><?php echo _('Visitas'); ?></td>
-        <td class="valField"><?php echo $accountData->account_countView . '(' . $accountData->account_countDecrypt . ')'; ?></td>
+        <td class="valField"><?php echo $accountData->getAccountCountView() . '(' . $accountData->getAccountCountDecrypt() . ')'; ?></td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Fecha Alta'); ?></td>
-        <td class="valField"><?php echo $accountData->account_dateAdd ?></td>
+        <td class="valField"><?php echo $accountData->getAccountDateAdd() ?></td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Creador'); ?></td>
-        <td class="valField"><?php echo $accountData->user_name ?: $accountData->user_login; ?></td>
+        <td class="valField"><?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?></td>
     </tr>
     <tr>
         <td class="descField"><?php echo _('Grupo Principal'); ?></td>
-        <td class="valField"><?php echo $accountData->usergroup_name; ?></td>
+        <td class="valField"><?php echo $accountData->getUsergroupName(); ?></td>
     </tr>
     <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
         <tr>
@@ -27,12 +28,12 @@
 
                 foreach ($accountOtherUsers as $otherUser) {
                     /** @var $otherUser \SP\DataModel\UserData */
-                    if ($otherUser->getUserId() !== $accountData->account_userId){
+                    if ($otherUser->getUserId() !== $accountData->getAccountUserId()) {
                         $users[] = $otherUser->getUserName();
                     }
                 }
 
-                $usersEdit = ($accountData->account_otherUserEdit) ? '(+)' : '';
+                $usersEdit = $accountData->getAccountOtherUserEdit() ? '(+)' : '';
                 echo $usersEdit . ' ' . implode(' | ', $users);
                 ?>
             </td>
@@ -47,14 +48,14 @@
 
                 foreach ($accountOtherGroups as $otherGroup) {
                     /** @var $otherGroup \SP\DataModel\GroupData */
-                    if ($otherGroup->getUsergroupId() !== $accountData->account_userGroupId) {
+                    if ($otherGroup->getUsergroupId() !== $accountData->getAccountUserGroupId()) {
                         $groups[] = $otherGroup->getUsergroupName();
                     }
                 }
 
-                $groupsEdit = $accountData->account_otherGroupEdit ? '(+)' : '';
+                $groupsEdit = $accountData->getAccountOtherGroupEdit() ? '(+)' : '';
 
-                echo $groupsEdit . ' ' . implode(" | ", $groups);
+                echo $groupsEdit . ' ' . implode(' | ', $groups);
                 ?>
             </td>
         </tr>
@@ -62,14 +63,14 @@
     <?php if ($AccountAcl->isModified()): ?>
         <tr>
             <td class="descField"><?php echo _('Fecha Edición'); ?></td>
-            <td class="valField"><?php echo $accountData->account_dateEdit; ?></td>
+            <td class="valField"><?php echo $accountData->getAccountDateEdit(); ?></td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Editor'); ?></td>
-            <td class="valField"><?php echo $accountData->user_editName ?: $accountData->user_editLogin; ?></td>
+            <td class="valField"><?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?></td>
         </tr>
     <?php endif; ?>
-    <?php if ($AccountAcl->isShowLink() && $accountData->publicLink_hash): ?>
+    <?php if ($AccountAcl->isShowLink() && $accountData->getPublicLinkHash()): ?>
         <tr>
             <td class="descField"><?php echo _('Enlace Público'); ?></td>
             <td class="valField">

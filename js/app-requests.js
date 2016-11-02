@@ -94,7 +94,7 @@ sysPass.Requests = function (Common) {
             cache: false,
             processData: true,
             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-            timeout: 5000,
+            timeout: 0,
             addHistory: false,
             hash: "",
             useLoading: true

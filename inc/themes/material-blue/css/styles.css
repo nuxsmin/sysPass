@@ -217,6 +217,7 @@ pre, code, samp, kbd {
 
 /* Action bar */
 #container #actions-bar {
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     position: fixed;
@@ -555,9 +556,6 @@ pre, code, samp, kbd {
 }
 
 #content .data-header ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
     list-style: none;
     width: 100%;
     margin: 0 0 10px 0;
@@ -565,12 +563,12 @@ pre, code, samp, kbd {
 }
 
 #content .data-header li {
-    display: inline-flex;
-    min-width: 10em;
-    padding: .5em;
+    display: inline-block;
+    padding: .2em .5em;
     font-weight: bold;
     letter-spacing: .2em;
-    color: #fff
+    color: #fff;
+    text-align: center;
 }
 
 #content .data-header li a {
@@ -585,14 +583,19 @@ pre, code, samp, kbd {
 }
 
 #content .data-header-minimal {
-    border-bottom: 1px solid #dfdfdf
+    border-bottom: 1px solid #dfdfdf;
 }
 
 #content .data-header-minimal ul {
-    margin: 0
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 0;
 }
 
 #content .data-header-minimal li {
+    display: inline-flex;
+    min-width: 10em;
     font-weight: normal;
     letter-spacing: normal
 }
@@ -613,22 +616,22 @@ pre, code, samp, kbd {
 #content .data-rows li {
     float: left;
     display: block;
-    padding: 1.5em .5em;
+    padding: 1em;
     color: #696969;
     text-align: center;
     background-color: #fcfcfc;
-    height: 1em
+    min-height: 2em;
 }
 
 #content .data-rows li.cell-nodata {
     padding: 1em 0;
-    height: 2em;
-    text-align: left
+    min-height: 2em;
+    text-align: left;
 }
 
 #content .data-rows li.cell-actions {
     float: right;
-    height: 2em;
+    min-height: 2em;
     padding: 1em 0;
     text-align: center;
     background-color: #fcfcfc;
@@ -1148,8 +1151,7 @@ footer img {
 .header-grey {
     background-color: #607d8b;
     color: #fff;
-    height: 30px;
-    text-align: center
+    height: 2em;
 }
 
 .no-background {

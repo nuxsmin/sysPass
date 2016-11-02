@@ -57,7 +57,7 @@
                     <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                     <?php foreach ($otherGroups as $group): ?>
                         <option
-                            value="<?php echo $group->id; ?>" <?php echo ($gotData && $group->id == $accountData->account_userGroupId) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                            value="<?php echo $group->id; ?>" <?php echo ($gotData && $group->id == $accountData->getAccountUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                     <?php endforeach; ?>
                 </select>
             </td>

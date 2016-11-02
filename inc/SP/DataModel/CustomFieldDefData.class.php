@@ -172,7 +172,7 @@ class CustomFieldDefData extends CustomFieldBaseData
      * @return void
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
      */
-    function __wakeup()
+    public function __wakeup()
     {
         parent::__wakeup();
 

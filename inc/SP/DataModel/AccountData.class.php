@@ -40,87 +40,75 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     /**
      * @var int Id de la cuenta.
      */
-    private $accountId = 0;
+    public $account_id = 0;
     /**
      * @var int Id del usuario principal de la cuenta.
      */
-    private $accountUserId = 0;
-    /**
-     * @var array Los Ids de los usuarios secundarios de la cuenta.
-     */
-    private $accountUsersId = [];
+    public $account_userId = 0;
     /**
      * @var int Id del grupo principal de la cuenta.
      */
-    private $accountUserGroupId = 0;
-    /**
-     * @var array Los Ids de los grupos secundarios de la cuenta.
-     */
-    private $accountUserGroupsId = [];
+    public $account_userGroupId = 0;
     /**
      * @var int Id del usuario que editó la cuenta.
      */
-    private $accountUserEditId = 0;
+    public $account_userEditId = 0;
     /**
      * @var string El nombre de la cuenta.
      */
-    private $accountName = '';
+    public $account_name = '';
     /**
      * @var int Id del cliente de la cuenta.
      */
-    private $accountCustomerId = 0;
+    public $account_customerId = 0;
     /**
      * @var int Id de la categoría de la cuenta.
      */
-    private $accountCategoryId = 0;
+    public $account_categoryId = 0;
     /**
      * @var string El nombre de usuario de la cuenta.
      */
-    private $accountLogin = '';
+    public $account_login = '';
     /**
      * @var string La URL de la cuenta.
      */
-    private $accountUrl = '';
+    public $account_url = '';
     /**
      * @var string La clave de la cuenta.
      */
-    private $accountPass = '';
+    public $account_pass = '';
     /**
      * @var string El vector de inicialización de la cuenta.
      */
-    private $accountIV = '';
+    public $account_IV = '';
     /**
      * @var string Las nosta de la cuenta.
      */
-    private $accountNotes = '';
+    public $account_notes = '';
     /**
      * @var bool Si se permite la edición por los usuarios secundarios.
      */
-    private $accountOtherUserEdit = false;
+    public $account_otherUserEdit = false;
     /**
      * @var bool Si se permita la edición por los grupos secundarios.
      */
-    private $accountOtherGroupEdit = false;
+    public $account_otherGroupEdit = false;
     /**
      * @var int
      */
-    private $dateAdd = 0;
+    public $account_dateAdd = 0;
     /**
      * @var int
      */
-    private $dateEdit = 0;
+    public $account_dateEdit = 0;
     /**
-     * @var bool
+     * @var int
      */
-    private $isModify = false;
+    public $account_countView = 0;
     /**
-     * @var bool
+     * @var int
      */
-    private $isDeleted = false;
-    /**
-     * @var array
-     */
-    private $tags = [];
+    public $account_countDecrypt = 0;
 
     /**
      * AccountData constructor.
@@ -129,71 +117,39 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function __construct($accountId = 0)
     {
-        $this->accountId = (int)$accountId;
+        $this->account_id = (int)$accountId;
     }
 
     /**
      * @return int
      */
-    public function getDateAdd()
+    public function getAccountDateAdd()
     {
-        return $this->dateAdd;
+        return $this->account_dateAdd;
     }
 
     /**
-     * @param int $dateAdd
+     * @param int $account_dateAdd
      */
-    public function setDateAdd($dateAdd)
+    public function setAccountDateAdd($account_dateAdd)
     {
-        $this->dateAdd = (int)$dateAdd;
+        $this->account_dateAdd = (int)$account_dateAdd;
     }
 
     /**
      * @return int
      */
-    public function getDateEdit()
+    public function getAccountDateEdit()
     {
-        return $this->dateEdit;
+        return $this->account_dateEdit;
     }
 
     /**
-     * @param int $dateEdit
+     * @param int $account_dateEdit
      */
-    public function setDateEdit($dateEdit)
+    public function setAccountDateEdit($account_dateEdit)
     {
-        $this->dateEdit = (int)$dateEdit;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isIsModify()
-    {
-        return $this->isModify;
-    }
-
-    /**
-     * @param boolean $isModify
-     */
-    public function setIsModify($isModify)
-    {
-        $this->isModify = (int)$isModify;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isIsDeleted()
-    {
-        return $this->isDeleted;
-    }
-
-    /**
-     * @param boolean $isDeleted
-     */
-    public function setIsDeleted($isDeleted)
-    {
-        $this->isDeleted = (int)$isDeleted;
+        $this->account_dateEdit = (int)$account_dateEdit;
     }
 
     /**
@@ -201,15 +157,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUserEditId()
     {
-        return $this->accountUserEditId;
+        return $this->account_userEditId;
     }
 
     /**
-     * @param int $accountUserEditId
+     * @param int $account_userEditId
      */
-    public function setAccountUserEditId($accountUserEditId)
+    public function setAccountUserEditId($account_userEditId)
     {
-        $this->accountUserEditId = (int)$accountUserEditId;
+        $this->account_userEditId = (int)$account_userEditId;
     }
 
     /**
@@ -217,15 +173,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountPass()
     {
-        return $this->accountPass;
+        return $this->account_pass;
     }
 
     /**
-     * @param string $accountPass
+     * @param string $account_pass
      */
-    public function setAccountPass($accountPass)
+    public function setAccountPass($account_pass)
     {
-        $this->accountPass = $accountPass;
+        $this->account_pass = $account_pass;
     }
 
     /**
@@ -233,15 +189,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountIV()
     {
-        return $this->accountIV;
+        return $this->account_IV;
     }
 
     /**
-     * @param string $accountIV
+     * @param string $account_IV
      */
-    public function setAccountIV($accountIV)
+    public function setAccountIV($account_IV)
     {
-        $this->accountIV = $accountIV;
+        $this->account_IV = $account_IV;
     }
 
     /**
@@ -249,15 +205,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountId()
     {
-        return $this->accountId;
+        return $this->account_id;
     }
 
     /**
-     * @param int $accountId
+     * @param int $account_id
      */
-    public function setAccountId($accountId)
+    public function setAccountId($account_id)
     {
-        $this->accountId = (int)$accountId;
+        $this->account_id = (int)$account_id;
     }
 
     /**
@@ -265,15 +221,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUserId()
     {
-        return $this->accountUserId;
+        return $this->account_userId;
     }
 
     /**
-     * @param int $accountUserId
+     * @param int $account_userId
      */
-    public function setAccountUserId($accountUserId)
+    public function setAccountUserId($account_userId)
     {
-        $this->accountUserId = (int)$accountUserId;
+        $this->account_userId = (int)$account_userId;
     }
 
     /**
@@ -281,15 +237,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUserGroupId()
     {
-        return $this->accountUserGroupId;
+        return $this->account_userGroupId;
     }
 
     /**
-     * @param int $accountUserGroupId
+     * @param int $account_userGroupId
      */
-    public function setAccountUserGroupId($accountUserGroupId)
+    public function setAccountUserGroupId($account_userGroupId)
     {
-        $this->accountUserGroupId = (int)$accountUserGroupId;
+        $this->account_userGroupId = (int)$account_userGroupId;
     }
 
     /**
@@ -297,15 +253,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountOtherUserEdit()
     {
-        return $this->accountOtherUserEdit;
+        return $this->account_otherUserEdit;
     }
 
     /**
-     * @param bool $accountOtherUserEdit
+     * @param bool $account_otherUserEdit
      */
-    public function setAccountOtherUserEdit($accountOtherUserEdit)
+    public function setAccountOtherUserEdit($account_otherUserEdit)
     {
-        $this->accountOtherUserEdit = (int)$accountOtherUserEdit;
+        $this->account_otherUserEdit = (int)$account_otherUserEdit;
     }
 
     /**
@@ -313,47 +269,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountOtherGroupEdit()
     {
-        return $this->accountOtherGroupEdit;
+        return $this->account_otherGroupEdit;
     }
 
     /**
-     * @param bool $accountOtherGroupEdit
+     * @param bool $account_otherGroupEdit
      */
-    public function setAccountOtherGroupEdit($accountOtherGroupEdit)
+    public function setAccountOtherGroupEdit($account_otherGroupEdit)
     {
-        $this->accountOtherGroupEdit = (int)$accountOtherGroupEdit;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccountUserGroupsId()
-    {
-        return is_array($this->accountUserGroupsId) ? $this->accountUserGroupsId : [];
-    }
-
-    /**
-     * @param array $accountUserGroupsId
-     */
-    public function setAccountUserGroupsId($accountUserGroupsId)
-    {
-        $this->accountUserGroupsId = $accountUserGroupsId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccountUsersId()
-    {
-        return $this->accountUsersId;
-    }
-
-    /**
-     * @param array $accountUsersId
-     */
-    public function setAccountUsersId($accountUsersId)
-    {
-        $this->accountUsersId = $accountUsersId;
+        $this->account_otherGroupEdit = (int)$account_otherGroupEdit;
     }
 
     /**
@@ -361,15 +285,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountName()
     {
-        return $this->accountName;
+        return $this->account_name;
     }
 
     /**
-     * @param string $accountName
+     * @param string $account_name
      */
-    public function setAccountName($accountName)
+    public function setAccountName($account_name)
     {
-        $this->accountName = $accountName;
+        $this->account_name = $account_name;
     }
 
     /**
@@ -377,15 +301,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountCategoryId()
     {
-        return $this->accountCategoryId;
+        return $this->account_categoryId;
     }
 
     /**
-     * @param int $accountCategoryId
+     * @param int $account_categoryId
      */
-    public function setAccountCategoryId($accountCategoryId)
+    public function setAccountCategoryId($account_categoryId)
     {
-        $this->accountCategoryId = (int)$accountCategoryId;
+        $this->account_categoryId = (int)$account_categoryId;
     }
 
     /**
@@ -393,15 +317,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountCustomerId()
     {
-        return $this->accountCustomerId;
+        return $this->account_customerId;
     }
 
     /**
-     * @param int $accountCustomerId
+     * @param int $account_customerId
      */
-    public function setAccountCustomerId($accountCustomerId)
+    public function setAccountCustomerId($account_customerId)
     {
-        $this->accountCustomerId = (int)$accountCustomerId;
+        $this->account_customerId = (int)$account_customerId;
     }
 
     /**
@@ -409,15 +333,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountLogin()
     {
-        return $this->accountLogin;
+        return $this->account_login;
     }
 
     /**
-     * @param string $accountLogin
+     * @param string $account_login
      */
-    public function setAccountLogin($accountLogin)
+    public function setAccountLogin($account_login)
     {
-        $this->accountLogin = $accountLogin;
+        $this->account_login = $account_login;
     }
 
     /**
@@ -425,15 +349,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUrl()
     {
-        return $this->accountUrl;
+        return $this->account_url;
     }
 
     /**
-     * @param string $accountUrl
+     * @param string $account_url
      */
-    public function setAccountUrl($accountUrl)
+    public function setAccountUrl($account_url)
     {
-        $this->accountUrl = $accountUrl;
+        $this->account_url = $account_url;
     }
 
     /**
@@ -441,15 +365,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountNotes()
     {
-        return $this->accountNotes;
+        return $this->account_notes;
     }
 
     /**
-     * @param string $accountNotes
+     * @param string $account_notes
      */
-    public function setAccountNotes($accountNotes)
+    public function setAccountNotes($account_notes)
     {
-        $this->accountNotes = $accountNotes;
+        $this->account_notes = $account_notes;
     }
 
     /**
@@ -470,27 +394,11 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     }
 
     /**
-     * @return array
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param array $tags
-     */
-    public function setTags(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
-    /**
      * @return int
      */
     public function getId()
     {
-        return $this->accountId;
+        return $this->account_id;
     }
 
     /**
@@ -498,6 +406,38 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getName()
     {
-        return $this->accountName;
+        return $this->account_name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountCountView()
+    {
+        return $this->account_countView;
+    }
+
+    /**
+     * @param int $account_countView
+     */
+    public function setAccountCountView($account_countView)
+    {
+        $this->account_countView = (int)$account_countView;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountCountDecrypt()
+    {
+        return $this->account_countDecrypt;
+    }
+
+    /**
+     * @param int $account_countDecrypt
+     */
+    public function setAccountCountDecrypt($account_countDecrypt)
+    {
+        $this->account_countDecrypt = (int)$account_countDecrypt;
     }
 }

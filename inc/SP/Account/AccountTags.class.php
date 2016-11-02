@@ -27,6 +27,7 @@ namespace SP\Account;
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountExtData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -47,7 +48,8 @@ class AccountTags
      */
     public static function getTags(AccountData $accountData)
     {
-        $query = 'SELECT tag_id, tag_name
+        $query = /** @lang SQL */
+            'SELECT tag_id, tag_name
                 FROM accTags
                 JOIN tags ON tag_id = acctag_tagId
                 WHERE acctag_accountId = :id
@@ -55,27 +57,22 @@ class AccountTags
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->setUseKeyPair(true);
         $Data->addParam($accountData->getAccountId(), 'id');
 
         DB::setReturnArray();
 
-        $tags = [];
-
-        foreach (DB::getResults($Data) as $tag) {
-            $tags[$tag->tag_id] = $tag->tag_name;
-        }
-
-        return $tags;
+        return DB::getResults($Data);
     }
 
     /**
      * Actualizar las etiquetas de una cuenta
      *
-     * @param AccountData $accountData
+     * @param AccountExtData $accountData
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public function addTags(AccountData $accountData)
+    public function addTags(AccountExtData $accountData)
     {
         if (!$this->deleteTags($accountData)) {
             throw new SPException(SPException::SP_WARNING, _('Error al eliminar las etiquetas de la cuenta'));
@@ -96,7 +93,8 @@ class AccountTags
             $values[] = '(?, ?)';
         }
 
-        $query = 'INSERT INTO accTags (acctag_accountId, acctag_tagId) VALUES ' . implode(',', $values);
+        $query = /** @lang SQL */
+            'INSERT INTO accTags (acctag_accountId, acctag_tagId) VALUES ' . implode(',', $values);
 
         $Data->setQuery($query);
 
@@ -111,7 +109,8 @@ class AccountTags
      */
     public function deleteTags(AccountData $accountData)
     {
-        $query = 'DELETE FROM accTags WHERE acctag_accountId = :id';
+        $query = /** @lang SQL */
+            'DELETE FROM accTags WHERE acctag_accountId = :id';
 
         $Data = new QueryData();
         $Data->setQuery($query);

@@ -27,7 +27,11 @@ namespace SP\Account;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Config\Config;
+use SP\Core\Session;
+use SP\DataModel\AccountSearchData;
 use SP\Html\Html;
+use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Util\Checks;
 
 /**
@@ -35,7 +39,7 @@ use SP\Util\Checks;
  *
  * @package SP\Controller
  */
-class AccountsSearchData
+class AccountsSearchItem
 {
     /** @var bool */
     public static $accountLink = false;
@@ -52,57 +56,51 @@ class AccountsSearchData
     /** @var bool */
     public static $isDemoMode = false;
 
-    /** @var int */
-    private $id = 0;
+    /**
+     * @var AccountSearchData
+     */
+    protected $AccountSearchData;
     /** @var string */
-    private $name;
+    protected $color;
     /** @var string */
-    private $login;
-    /** @var string */
-    private $category_name;
-    /** @var string */
-    private $customer_name;
-    /** @var string */
-    private $customer_link;
-    /** @var string */
-    private $color;
-    /** @var string */
-    private $link;
-    /** @var string */
-    private $url;
-    /** @var string */
-    private $url_short;
+    protected $link;
     /** @var bool */
-    private $url_islink = false;
-    /** @var string */
-    private $notes;
-    /** @var string */
-    private $accesses;
+    protected $url_islink = false;
     /** @var  string */
-    private $numFiles;
+    protected $numFiles;
     /** @var bool */
-    private $favorite = false;
+    protected $favorite = false;
     /** @var bool */
-    private $showView = false;
+    protected $showView = false;
     /** @var bool */
-    private $showViewPass = false;
+    protected $showViewPass = false;
     /** @var bool */
-    private $showEdit = false;
+    protected $showEdit = false;
     /** @var bool */
-    private $showCopy = false;
+    protected $showCopy = false;
     /** @var bool */
-    private $showDelete = false;
+    protected $showDelete = false;
     /** @var int */
-    private $textMaxLength = 60;
-    /** @var array  */
-    private $tags =[];
+    protected $textMaxLength = 60;
+
+    /**
+     * AccountsSearchItem constructor.
+     *
+     * @param AccountSearchData $AccountSearchData
+     */
+    public function __construct(AccountSearchData $AccountSearchData)
+    {
+        $this->AccountSearchData = $AccountSearchData;
+    }
 
     /**
      * @return boolean
      */
     public function isFavorite()
     {
-        return $this->favorite;
+        $favorites = AccountFavorites::getFavorites(Session::getUserId());
+
+        return in_array($this->AccountSearchData->getAccountId(), $favorites);
     }
 
     /**
@@ -119,7 +117,7 @@ class AccountsSearchData
     public function isShowRequest()
     {
         return (!$this->isShow()
-            && (AccountsSearchData::$requestEnabled || AccountsSearchData::$isDemoMode));
+            && (AccountsSearchItem::$requestEnabled || AccountsSearchItem::$isDemoMode));
     }
 
     /**
@@ -159,7 +157,7 @@ class AccountsSearchData
      */
     public function isShowOptional()
     {
-        return (!AccountsSearchData::$optionalActions
+        return (!AccountsSearchItem::$optionalActions
             && ($this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete));
     }
 
@@ -174,9 +172,9 @@ class AccountsSearchData
     /**
      * @return string
      */
-    public function getUrlShort()
+    public function getShortUrl()
     {
-        return $this->url_short;
+        return Html::truncate($this->AccountSearchData->getAccountUrl(), $this->textMaxLength);
     }
 
     /**
@@ -184,87 +182,23 @@ class AccountsSearchData
      */
     public function isUrlIslink()
     {
-        return $this->url_islink;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+        return preg_match('#^https?://#i', $this->AccountSearchData->getAccountUrl());
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getShortLogin()
     {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        return Html::truncate($this->AccountSearchData->getAccountLogin(), $this->textMaxLength);
     }
 
     /**
      * @return string
      */
-    public function getLogin()
+    public function getShortCustomerName()
     {
-        return $this->login;
-    }
-
-    /**
-     * @param string $login
-     */
-    public function setLogin($login)
-    {
-        $this->login = Html::truncate($login, $this->textMaxLength);
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        return $this->category_name;
-    }
-
-    /**
-     * @param string $category_name
-     */
-    public function setCategoryName($category_name)
-    {
-        $this->category_name = $category_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerName()
-    {
-        return $this->customer_name;
-    }
-
-    /**
-     * @param string $customer_name
-     */
-    public function setCustomerName($customer_name)
-    {
-        $this->customer_name = Html::truncate($customer_name, $this->textMaxLength);
+        return Html::truncate($this->AccountSearchData->getCustomerName(), $this->textMaxLength);
     }
 
     /**
@@ -272,15 +206,7 @@ class AccountsSearchData
      */
     public function getCustomerLink()
     {
-        return $this->customer_link;
-    }
-
-    /**
-     * @param string $customer_link
-     */
-    public function setCustomerLink($customer_link)
-    {
-        $this->customer_link = $customer_link;
+        return self::$wikiEnabled ? Config::getConfig()->getWikiSearchurl() . $this->AccountSearchData->getCustomerName() : '';
     }
 
     /**
@@ -318,51 +244,19 @@ class AccountsSearchData
     /**
      * @return string
      */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-        $this->url_short = Html::truncate($url, $this->textMaxLength);
-        $this->url_islink = preg_match('#^https?://#i', $url);
-    }
-
-    /**
-     * @return string
-     */
-    public function getNotes()
-    {
-        return $this->notes;
-    }
-
-    /**
-     * @param string $notes
-     */
-    public function setNotes($notes)
-    {
-        $this->notes = $notes;
-    }
-
-    /**
-     * @return string
-     */
     public function getAccesses()
     {
-        return $this->accesses;
-    }
+        $accesses = sprintf('<em>(G) %s*</em><br>', $this->AccountSearchData->getUsergroupName());
 
-    /**
-     * @param string $accesses
-     */
-    public function setAccesses($accesses)
-    {
-        $this->accesses = $accesses;
+        foreach (GroupAccountsUtil::getGroupsInfoForAccount($this->AccountSearchData->getAccountId()) as $group) {
+            $accesses .= sprintf('<em>(G) %s</em><br>', $group->getUsergroupName());
+        }
+
+        foreach (UserAccounts::getUsersInfoForAccount($this->AccountSearchData->getAccountId()) as $user) {
+            $accesses .= sprintf('<em>(U) %s</em><br>', $user->getUserLogin());
+        }
+
+        return $accesses;
     }
 
     /**
@@ -370,7 +264,7 @@ class AccountsSearchData
      */
     public function getNumFiles()
     {
-        return $this->numFiles;
+        return Checks::fileIsEnabled() ? $this->AccountSearchData->getNumFiles() : 0;
     }
 
     /**
@@ -446,18 +340,33 @@ class AccountsSearchData
     }
 
     /**
-     * @return array
+     * @return AccountSearchData
      */
-    public function getTags()
+    public function getAccountSearchData()
     {
-        return $this->tags;
+        return $this->AccountSearchData;
     }
 
     /**
-     * @param array $tags
+     * @param AccountSearchData $AccountSearchData
      */
-    public function setTags($tags)
+    public function setAccountSearchData($AccountSearchData)
     {
-        $this->tags = $tags;
+        $this->AccountSearchData = $AccountSearchData;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortNotes()
+    {
+        $accountNotes = '';
+
+        if ($this->AccountSearchData->getAccountNotes()) {
+            $accountNotes = (strlen($this->AccountSearchData->getAccountNotes()) > 300) ? substr($this->AccountSearchData->getAccountNotes(), 0, 300) . '...' : $this->AccountSearchData->getAccountNotes();
+            $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
+        }
+
+        return $accountNotes;
     }
 }

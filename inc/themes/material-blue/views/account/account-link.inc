@@ -11,7 +11,7 @@
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
                 <td class="valField">
-                    <?php echo $accountData->account_name; ?>
+                    <?php echo $accountData->getAccountName(); ?>
                 </td>
             </tr>
             <tr>
@@ -29,19 +29,19 @@
             <tr>
                 <td class="descField"><?php echo _('URL / IP'); ?></td>
                 <td class="valField">
-                    <?php echo $accountData->account_url; ?>
+                    <?php echo $accountData->getAccountUrl(); ?>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Usuario'); ?></td>
                 <td class="valField">
-                    <?php echo $accountData->account_login; ?>
+                    <?php echo $accountData->getAccountLogin(); ?>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Notas'); ?></td>
                 <td class="valField">
-                    <?php echo $accountData->account_notes; ?>
+                    <?php echo $accountData->getAccountNotes(); ?>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Clave'); ?></td>

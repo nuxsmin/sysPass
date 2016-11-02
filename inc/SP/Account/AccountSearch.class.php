@@ -29,6 +29,8 @@ use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\AccountSearchData;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\Users\User;
@@ -66,7 +68,7 @@ class AccountSearch
      *
      * @var array
      */
-    private $colors = [
+    private static $colors = [
         '2196F3',
         '03A9F4',
         '00BCD4',
@@ -85,6 +87,7 @@ class AccountSearch
         '673AB7',
         '3F51B5',
     ];
+
     /**
      * @var bool
      */
@@ -290,41 +293,6 @@ class AccountSearch
     }
 
     /**
-     * Obtiene el número de cuentas que un usuario puede ver.
-     *
-     * @return false|int con el número de registros
-     */
-    public function getAccountMax()
-    {
-        $Data = new QueryData();
-
-        if (!Session::getUserIsAdminApp() && !Session::getUserIsAdminAcc()) {
-            $query = 'SELECT COUNT(DISTINCT account_id) as numacc '
-                . 'FROM accounts '
-                . 'LEFT JOIN accGroups ON account_id = accgroup_accountId '
-                . 'WHERE account_userGroupId = :userGroupId '
-                . 'OR account_userId = :userId '
-                . 'OR accgroup_groupId = :groupId';
-
-            $Data->addParam(Session::getUserGroupId(), 'userGroupId');
-            $Data->addParam(Session::getUserGroupId(), 'groupId');
-            $Data->addParam(Session::getUserId(), 'userId');
-        } else {
-            $query = 'SELECT COUNT(*) as numacc FROM accounts';
-        }
-
-        $Data->setQuery($query);
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes->numacc;
-    }
-
-    /**
      * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
      * a mostrar.
      *
@@ -339,70 +307,29 @@ class AccountSearch
         // Variables de configuración
         $maxTextLength = Checks::resultsCardsIsEnabled() ? 40 : 60;
 
-        $favorites = AccountFavorites::getFavorites(Session::getUserId());
-
         $accountsData['count'] = self::$queryNumRows;
 
-        foreach ($results as $account) {
+        foreach ($results as $AccountSearchData) {
             // Establecer los datos de la cuenta
-            $Account = new Account();
-            $AccountData = $Account->getAccountData();
-            $AccountData->setAccountId($account->account_id);
-            $AccountData->setAccountUserId($account->account_userId);
-            $AccountData->setAccountUsersId($Account->getUsersAccount());
-            $AccountData->setAccountUserGroupId($account->account_userGroupId);
-            $AccountData->setAccountUserGroupsId($Account->getGroupsAccount());
-            $AccountData->setAccountOtherUserEdit($account->account_otherUserEdit);
-            $AccountData->setAccountOtherGroupEdit($account->account_otherGroupEdit);
+            $Account = new Account($AccountSearchData);
+            $AccountSearchData->setUsersId($Account->getUsersAccount());
+            $AccountSearchData->setUserGroupsId($Account->getGroupsAccount());
+            $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
 
             // Obtener la ACL de la cuenta
             $AccountAcl = new AccountAcl();
             $AccountAcl->getAcl($Account, Acl::ACTION_ACC_SEARCH);
 
-            $AccountSearchData = new AccountsSearchData();
-            $AccountSearchData->setTextMaxLength($maxTextLength);
-            $AccountSearchData->setId($account->account_id);
-            $AccountSearchData->setName($account->account_name);
-            $AccountSearchData->setLogin($account->account_login);
-            $AccountSearchData->setCategoryName($account->category_name);
-            $AccountSearchData->setCustomerName($account->customer_name);
-            $AccountSearchData->setCustomerLink(AccountsSearchData::$wikiEnabled ? Config::getConfig()->getWikiSearchurl() . $account->customer_name : '');
-            $AccountSearchData->setColor($this->pickAccountColor($account->account_customerId));
-            $AccountSearchData->setUrl($account->account_url);
-            $AccountSearchData->setFavorite(in_array($account->account_id, $favorites));
-            $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
-            $AccountSearchData->setNumFiles(Checks::fileIsEnabled() ? $account->num_files : 0);
-            $AccountSearchData->setShowView($AccountAcl->isShowView());
-            $AccountSearchData->setShowViewPass($AccountAcl->isShowViewPass());
-            $AccountSearchData->setShowEdit($AccountAcl->isShowEdit());
-            $AccountSearchData->setShowCopy($AccountAcl->isShowCopy());
-            $AccountSearchData->setShowDelete($AccountAcl->isShowDelete());
+            $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
+            $AccountSearchItems->setTextMaxLength($maxTextLength);
+            $AccountSearchItems->setColor($this->pickAccountColor($AccountSearchData->getAccountCustomerId()));
+            $AccountSearchItems->setShowView($AccountAcl->isShowView());
+            $AccountSearchItems->setShowViewPass($AccountAcl->isShowViewPass());
+            $AccountSearchItems->setShowEdit($AccountAcl->isShowEdit());
+            $AccountSearchItems->setShowCopy($AccountAcl->isShowCopy());
+            $AccountSearchItems->setShowDelete($AccountAcl->isShowDelete());
 
-            // Obtenemos datos si el usuario tiene acceso a los datos de la cuenta
-            if ($AccountSearchData->isShow()) {
-                $secondaryAccesses = sprintf('<em>(G) %s*</em><br>', $account->usergroup_name);
-
-                foreach (GroupAccountsUtil::getGroupsInfoForAccount($account->account_id) as $group) {
-                    $secondaryAccesses .= sprintf('<em>(G) %s</em><br>', $group->getUsergroupName());
-                }
-
-                foreach (UserAccounts::getUsersInfoForAccount($account->account_id) as $user) {
-                    $secondaryAccesses .= sprintf('<em>(U) %s</em><br>', $user->getUserLogin());
-                }
-
-                $AccountSearchData->setAccesses($secondaryAccesses);
-
-                $accountNotes = '';
-
-                if ($account->account_notes) {
-                    $accountNotes = (strlen($account->account_notes) > 300) ? substr($account->account_notes, 0, 300) . "..." : $account->account_notes;
-                    $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
-                }
-
-                $AccountSearchData->setNotes($accountNotes);
-            }
-
-            $accountsData[] = $AccountSearchData;
+            $accountsData[] = $AccountSearchItems;
         }
 
         return $accountsData;
@@ -411,7 +338,7 @@ class AccountSearch
     /**
      * Obtener las cuentas de una búsqueda.
      *
-     * @return mixed Resultado de la consulta
+     * @return AccountSearchData[] Resultado de la consulta
      */
     public function getAccounts()
     {
@@ -462,19 +389,16 @@ class AccountSearch
 
         if ($this->categoryId !== 0) {
             $arrFilterSelect[] = 'category_id = ?';
-
             $Data->addParam($this->categoryId);
         }
 
         if ($this->customerId !== 0) {
             $arrFilterSelect[] = 'account_customerId = ?';
-
             $Data->addParam($this->customerId);
         }
 
         if ($this->searchFavorites === true) {
             $arrFilterSelect[] = 'accFavorites.accfavorite_userId = ?';
-
             $Data->addParam(Session::getUserId());
         }
 
@@ -525,35 +449,11 @@ class AccountSearch
             $queryWhere = '';
         }
 
-        $query = 'SELECT DISTINCT account_id,
-            account_customerId,
-            category_name,
-            account_name,
-            account_login,
-            account_url,
-            account_notes,
-            account_userId,
-            account_userGroupId,
-            BIN(account_otherUserEdit) AS account_otherUserEdit,
-            BIN(account_otherGroupEdit) AS account_otherGroupEdit,
-            usergroup_name,
-            customer_name,
-            count(accfile_id) as num_files
-            FROM accounts
-            LEFT JOIN accFiles ON account_id = accfile_accountId
-            LEFT JOIN categories ON account_categoryId = category_id
-            LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id
-            LEFT JOIN customers ON customer_id = account_customerId
-            LEFT JOIN accUsers ON accuser_accountId = account_id
-            LEFT JOIN accGroups ON accgroup_accountId = account_id
-            LEFT JOIN accFavorites ON accfavorite_accountId = account_id
-            LEFT JOIN accTags ON acctag_accountId = account_id
-            LEFT JOIN tags ON tag_id = acctag_tagId
-            ' . $queryWhere . '
-            GROUP BY account_id
-            ' . $this->getOrderString() . ' ' . $queryLimit;
+        $query = /** @lang SQL */
+            'SELECT * FROM account_search_v ' . $queryWhere . ' GROUP BY account_id ' . $this->getOrderString() . ' ' . $queryLimit;
 
         $Data->setQuery($query);
+        $Data->setMapClassName('SP\DataModel\AccountSearchData');
 
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();
@@ -712,9 +612,9 @@ class AccountSearch
             || !isset($accountColor[$id])
         ) {
             // Se asigna el color de forma aleatoria a cada id
-            $color = array_rand($this->colors);
+            $color = array_rand(self::$colors);
 
-            $accountColor[$id] = '#' . $this->colors[$color];
+            $accountColor[$id] = '#' . self::$colors[$color];
             Session::setAccountColor($accountColor);
         }
 

@@ -9,7 +9,7 @@
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
-            <td class="valField"><?php echo $accountData->account_name; ?></td>
+            <td class="valField"><?php echo $accountData->getAccountName(); ?></td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Cliente'); ?></td>
@@ -18,12 +18,12 @@
         <?php if ($lastAction === \SP\Core\ActionsInterface::ACTION_ACC_SEARCH): ?>
             <tr>
                 <td class="descField"><?php echo _('URL / IP'); ?></td>
-                <td class="valField"><A href="<?php echo $accountData->account_url; ?>"
-                                        target="_blank"><?php echo $accountData->account_url; ?></td>
+                <td class="valField"><A href="<?php echo $accountData->getAccountUrl(); ?>"
+                                        target="_blank"><?php echo $accountData->getAccountUrl(); ?></td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Usuario'); ?></td>
-                <td class="valField"><?php echo $accountData->account_login; ?></td>
+                <td class="valField"><?php echo $accountData->getAccountLogin(); ?></td>
             </tr>
         <?php endif; ?>
         <tr>

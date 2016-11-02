@@ -13,9 +13,7 @@
         <?php if($dataIndex === 'count'): continue; endif; ?>
         <ul>
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
-                <li class="cell-data" style="width: <?php echo $data->getHeader()->getWidth(); ?>%;">
-                    <?php echo (null !== $dataItem->{$rowSrc}) ? $dataItem->{$rowSrc} : '&nbsp;'; // Fix height ?>
-                </li>
+                <li class="cell-data" style="width: <?php echo $data->getHeader()->getWidth(); ?>%;"><?php echo ($dataItem->{$rowSrc} !== '') ? $dataItem->{$rowSrc} : '&nbsp;'; // Fix height ?></li>
             <?php endforeach; ?>
 
             <?php if (count($data->getData()->getDataRowSourcesWithIcon()) > 0): ?>

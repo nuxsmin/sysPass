@@ -70,7 +70,7 @@ class CustomFieldTypes
             self::TYPE_COLOR => array('color', _('Color'))
         );
 
-        if (!is_null($typeId)) {
+        if (null !== $typeId) {
             return ($nice === false) ? $types[$typeId][0] : $types[$typeId][1];
         }
 
@@ -94,10 +94,6 @@ class CustomFieldTypes
 
         );
 
-        if (!is_null($moduleId)) {
-            return $modules[$moduleId];
-        }
-
-        return $modules;
+        return (null !== $moduleId) ? $modules[$moduleId] : $modules;
     }
 }

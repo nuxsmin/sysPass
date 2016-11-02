@@ -24,14 +24,13 @@
  */
 
 use SP\Account\Account;
-use SP\Account\AccountTags;
-use SP\DataModel\AccountData;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
 use SP\Http\Request;
@@ -73,7 +72,6 @@ $accountUrl = Request::analyze('url');
 $accountGroupEditEnabled = Request::analyze('geditenabled', 0, false, 1);
 $accountUserEditEnabled = Request::analyze('ueditenabled', 0, false, 1);
 $accountMainGroupId = Request::analyze('mainGroupId', 0);
-$accountChangesHash = Request::analyze('hash');
 $customFieldsHash = Request::analyze('hashcf');
 $customFields = Request::analyze('customfield');
 $tags = Request::analyze('tags');
@@ -115,12 +113,12 @@ if ($actionId === ActionsInterface::ACTION_ACC_NEW
     if (!$accountId) {
         Response::printJson(_('Id inválido'));
     }
-} elseif ($actionId == ActionsInterface::ACTION_ACC_EDIT_PASS) {
+} elseif ($actionId === ActionsInterface::ACTION_ACC_EDIT_PASS) {
     // Comprobaciones para modficación de clave
     if (!$accountPassword || !$accountPasswordR) {
         Response::printJson(_('Es necesaria una clave'));
     }
-} elseif ($actionId == ActionsInterface::ACTION_ACC_EDIT_RESTORE) {
+} elseif ($actionId === ActionsInterface::ACTION_ACC_EDIT_RESTORE) {
     if (!$accountId) {
         Response::printJson(_('Id inválido'));
     }
@@ -128,11 +126,11 @@ if ($actionId === ActionsInterface::ACTION_ACC_NEW
     Response::printJson(_('Acción Inválida'));
 }
 
-if ($actionId == ActionsInterface::ACTION_ACC_NEW
-    || $actionId == ActionsInterface::ACTION_ACC_COPY
+if ($actionId === ActionsInterface::ACTION_ACC_NEW
+    || $actionId === ActionsInterface::ACTION_ACC_COPY
     || $actionId === ActionsInterface::ACTION_ACC_EDIT_PASS
 ) {
-    if ($accountPassword != $accountPasswordR) {
+    if ($accountPassword !== $accountPasswordR) {
         Response::printJson(_('Las claves no coinciden'));
     }
 
@@ -144,18 +142,25 @@ if ($actionId == ActionsInterface::ACTION_ACC_NEW
     }
 }
 
-$AccountData = new AccountData();
+$AccountData = new AccountExtData();
 $AccountData->setAccountId($accountId);
 $AccountData->setAccountName($accountName);
+$AccountData->setAccountCustomerId($customerId);
 $AccountData->setAccountCategoryId($categoryId);
 $AccountData->setAccountLogin($accountLogin);
 $AccountData->setAccountUrl($accountUrl);
 $AccountData->setAccountNotes($accountNotes);
 $AccountData->setAccountUserEditId($currentUserId);
-$AccountData->setAccountUsersId($accountOtherUsers);
-$AccountData->setAccountUserGroupsId($accountOtherGroups);
 $AccountData->setAccountOtherUserEdit($accountUserEditEnabled);
 $AccountData->setAccountOtherGroupEdit($accountGroupEditEnabled);
+
+if (is_array($accountOtherUsers)) {
+    $AccountData->setUsersId($accountOtherUsers);
+}
+
+if (is_array($accountOtherGroups)) {
+    $AccountData->setUserGroupsId($accountOtherGroups);
+}
 
 if (is_array($tags)) {
     $AccountData->setTags($tags);
@@ -165,21 +170,11 @@ $Account = new Account($AccountData);
 
 $CustomFieldData = new CustomFieldData();
 $CustomFieldData->setId($accountId);
-$CustomFieldData->setModule(ActionsInterface::ACTION_ACC_NEW);
+$CustomFieldData->setModule(ActionsInterface::ACTION_ACC);
 
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_NEW:
     case ActionsInterface::ACTION_ACC_COPY:
-        // Comprobar si se ha introducido un nuevo cliente
-        if ($customerId === 0 && $newCustomer) {
-            try {
-                $customerId = Customer::getItem(new CustomerData(null, $newCustomer))->add()->getItemData()->getCustomerId();
-            } catch (SPException $e) {
-                Response::printJson($e->getMessage());
-            }
-        }
-
-        $AccountData->setAccountCustomerId($customerId);
         $AccountData->setAccountPass($accountEncPass['data']);
         $AccountData->setAccountIV($accountEncPass['iv']);
         $AccountData->setAccountUserId($currentUserId);
@@ -198,27 +193,9 @@ switch ($actionId) {
         Response::printJson(_('Error al crear la cuenta'), 0);
         break;
     case ActionsInterface::ACTION_ACC_EDIT:
-        // Comprobar si se ha introducido un nuevo cliente
-        if ($customerId === 0 && $newCustomer) {
-            try {
-                $customerId = Customer::getItem(new CustomerData(null, $newCustomer))->add()->getItemData()->getCustomerId();
-            } catch (SPException $e) {
-                Response::printJson($e->getMessage());
-            }
-        }
-
-        $AccountData->setAccountCustomerId($customerId);
-
         // Cambiar el grupo principal si el usuario es Admin
         if (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc()) {
             $AccountData->setAccountUserGroupId($accountMainGroupId);
-        }
-
-        // Comprobar si han habido cambios
-        if ($accountChangesHash == $Account->calcChangesHash()
-            && CustomFieldsUtil::checkHash($customFields, $customFieldsHash)
-        ) {
-            Response::printJson(_('Sin cambios'), 0);
         }
 
         // Actualizar cuenta
@@ -237,7 +214,7 @@ switch ($actionId) {
         if ($Account->deleteAccount()
             && CustomField::getItem($CustomFieldData)->delete($accountId)
         ) {
-            Response::printJson(_('Cuenta eliminada'), 0, "sysPassUtil.Common.doAction('" . ActionsInterface::ACTION_ACC_SEARCH . "');");
+            Response::printJson(_('Cuenta eliminada'), 0);
         }
 
         Response::printJson(_('Error al eliminar la cuenta'));

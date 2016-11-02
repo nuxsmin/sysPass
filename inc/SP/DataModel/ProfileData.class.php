@@ -69,6 +69,10 @@ class ProfileData extends ProfileBaseData
     /**
      * @var bool
      */
+    protected $accPrivate = false;
+    /**
+     * @var bool
+     */
     protected $accPublicLinks = false;
     /**
      * @var bool
@@ -493,5 +497,21 @@ class ProfileData extends ProfileBaseData
                 $this->$newName = $value;
             }
         }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAccPrivate()
+    {
+        return $this->accPrivate;
+    }
+
+    /**
+     * @param boolean $accPrivate
+     */
+    public function setAccPrivate($accPrivate)
+    {
+        $this->accPrivate = $accPrivate;
     }
 }

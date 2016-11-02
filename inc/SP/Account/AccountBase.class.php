@@ -26,7 +26,8 @@
 namespace SP\Account;
 
 use SP\DataModel\AccountData;
-use SP\Mgmt\Groups\Group;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\AccountHistoryData;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -41,7 +42,7 @@ abstract class AccountBase
      */
     const CACHE_EXPIRE_TIME = 300;
     /**
-     * @var AccountData
+     * @var AccountData|AccountExtData|AccountHistoryData
      */
     protected $accountData;
     /**
@@ -49,21 +50,9 @@ abstract class AccountBase
      */
     private $accountParentId;
     /**
-     * @var string Hash con los datos de la cuenta para verificación de cambios.
-     */
-    private $accountModHash;
-    /**
-     * @var int Indica si la cuenta es un registro del hitórico.
+     * @var int Indica si la cuenta es un registro del histórico.
      */
     private $accountIsHistory = 0;
-    /**
-     * @var array Los Ids de los grupos con acceso a la cuenta
-     */
-    private $cacheUserGroupsId;
-    /**
-     * @var array Los Ids de los usuarios con acceso a la cuenta
-     */
-    private $cacheUsersId;
 
     /**
      * Constructor
@@ -173,81 +162,8 @@ abstract class AccountBase
         return $cacheUserGroups[$accId];
     }
 
-
     /**
-     * Calcular el hash de los datos de una cuenta.
-     * Esta función se utiliza para verificar si los datos de un formulario han sido cambiados
-     * con respecto a los guardados
-     *
-     * @return string con el hash
-     */
-    public function calcChangesHash()
-    {
-        $groups = 0;
-        $users = 0;
-
-        if (is_array($this->accountData->getAccountUserGroupsId())) {
-            $groups = implode($this->accountData->getAccountUserGroupsId());
-        } elseif (is_array($this->cacheUserGroupsId)) {
-            foreach ($this->cacheUserGroupsId as $group) {
-                if (is_array($group)) {
-                    // Ordenar el array para que el hash sea igual
-                    sort($group, SORT_NUMERIC);
-                    $groups = implode($group);
-                }
-            }
-        }
-
-        if (is_array($this->accountData->getAccountUsersId())) {
-            $users = implode($this->accountData->getAccountUsersId());
-        } elseif (is_array($this->cacheUsersId)) {
-            foreach ($this->cacheUsersId as $user) {
-                if (is_array($user)) {
-                    // Ordenar el array para que el hash sea igual
-                    sort($user, SORT_NUMERIC);
-                    $users = implode($user);
-                }
-            }
-        }
-
-        if ($this->getAccountModHash()) {
-            $hashItems = $this->getAccountModHash() . (int)$users . (int)$groups;
-        } else {
-            $hashItems = $this->accountData->getAccountName() .
-                $this->accountData->getAccountCategoryId() .
-                $this->accountData->getAccountCustomerId() .
-                $this->accountData->getAccountLogin() .
-                $this->accountData->getAccountUrl() .
-                $this->accountData->getAccountNotes() .
-                implode('', array_keys($this->accountData->getTags())) .
-                (int)$this->accountData->getAccountOtherUserEdit() .
-                (int)$this->accountData->getAccountOtherGroupEdit() .
-                (int)$users .
-                (int)$groups;
-        }
-
-        return md5($hashItems);
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getAccountModHash()
-    {
-        return $this->accountModHash;
-    }
-
-    /**
-     * @param string $accountModHash
-     */
-    public function setAccountModHash($accountModHash)
-    {
-        $this->accountModHash = $accountModHash;
-    }
-
-    /**
-     * @return AccountData
+     * @return AccountData|AccountExtData
      */
     public function getAccountData()
     {
