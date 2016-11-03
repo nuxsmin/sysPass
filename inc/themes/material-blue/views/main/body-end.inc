@@ -9,7 +9,7 @@
         console.info("DOMContentLoaded");
         <?php if ($loggedIn): ?>
             sysPassApp.triggers().views.main();
-        <?php elseif ($isInstalled === 0): ?>
+        <?php elseif ($isInstalled === false): ?>
             sysPassApp.triggers().views.install();
         <?php endif; ?>
     });

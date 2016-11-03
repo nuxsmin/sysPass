@@ -29,6 +29,7 @@ namespace SP\Core;
 use PDO;
 use PDOException;
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
@@ -57,6 +58,10 @@ class Installer
      * @var InstallData
      */
     private $InstallData;
+    /**
+     * @var ConfigData
+     */
+    private $Config;
 
     /**
      * Installer constructor.
@@ -78,11 +83,11 @@ class Installer
     {
         $this->checkData();
 
-        $Config = Config::getConfig();
+        $this->Config = Config::getConfig();
 
         // Generate a random salt that is used to salt the local user passwords
-        $Config->setPasswordSalt(Util::generateRandomBytes(30));
-        $Config->setConfigVersion(implode(Util::getVersion(true)));
+        $this->Config ->setPasswordSalt(Util::generateRandomBytes(30));
+        $this->Config ->setConfigVersion(implode(Util::getVersion(true)));
 
         if (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
             $this->InstallData->setDbHost($match[1]);
@@ -98,8 +103,8 @@ class Installer
         }
 
         // Save DB connection info
-        $Config->setDbHost($this->InstallData->getDbHost());
-        $Config->setDbName($this->InstallData->getDbName());
+        $this->Config ->setDbHost($this->InstallData->getDbHost());
+        $this->Config ->setDbName($this->InstallData->getDbName());
 
 
         $this->connectDatabase();
@@ -108,8 +113,8 @@ class Installer
 
         ConfigDB::setValue('version', implode(Util::getVersion(true)));
 
-        $Config->setInstalled(true);
-        Config::saveConfig($Config);
+        $this->Config ->setInstalled(true);
+        Config::saveConfig($this->Config);
 
         return true;
     }
@@ -200,8 +205,6 @@ class Installer
             $this->InstallData->setDbPass(Util::randomPassword());
             $this->InstallData->setDbUser(substr('sp_' . $this->InstallData->getAdminLogin(), 0, 16));
 
-            error_log($this->InstallData->getDbPass());
-
             // Comprobar si el usuario sumistrado existe
             $query = sprintf(/** @lang SQL */
                 'SELECT COUNT(*) FROM mysql.user 
@@ -213,7 +216,7 @@ class Installer
                 // Si no existe el usuario, se intenta crear
                 if ((int)$this->DB->query($query)->fetchColumn() === 0
                     // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                    && $this->InstallData->getDbUser() != Config::getConfig()->getDbUser()
+                    && $this->InstallData->getDbUser() != $this->Config->getDbUser()
                 ) {
                     $this->createDBUser();
                 }
@@ -225,8 +228,8 @@ class Installer
         }
 
         // Guardar el nuevo usuario/clave de conexión a la BD
-        Config::getConfig()->setDbUser($this->InstallData->getDbUser());
-        Config::getConfig()->setDbPass($this->InstallData->getDbPass());
+        $this->Config->setDbUser($this->InstallData->getDbUser());
+        $this->Config->setDbPass($this->InstallData->getDbPass());
 
         try {
             $this->createMySQLDatabase();
@@ -250,7 +253,7 @@ class Installer
         }
 
         $query = sprintf(/** @lang SQL */
-            'CREATE USER \'%s\'@\'%s\' IDENTIFIED BY \'%s\'',
+            'CREATE USER `%s`@`%s` IDENTIFIED BY `%s`',
             $this->InstallData->getDbUser(),
             $this->InstallData->getDbAuthHost(),
             $this->InstallData->getDbPass());
@@ -271,26 +274,32 @@ class Installer
      */
     private function createMySQLDatabase()
     {
-        if ($this->checkDatabaseExist()) {
+        $checkDatabase = $this->checkDatabaseExist();
+
+        if ($checkDatabase && !$this->InstallData->isHostingMode()) {
             throw new SPException(SPException::SP_CRITICAL,
                 _('La BBDD ya existe'),
                 _('Indique una nueva Base de Datos o elimine la existente'));
-        }
-
-        $query = sprintf(/** @lang SQL */
-            'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci', $this->InstallData->getDbName());
-
-        try {
-            $this->DB->query($query);
-        } catch (PDOException $e) {
+        } elseif (!$checkDatabase && $this->InstallData->isHostingMode()) {
             throw new SPException(SPException::SP_CRITICAL,
-                sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
-                _('Verifique los permisos del usuario de la Base de Datos'));
+                _('La BBDD no existe'),
+                _('Es necesario crearla y asignar los permisos necesarios'));
         }
 
         if (!$this->InstallData->isHostingMode()) {
             $query = sprintf(/** @lang SQL */
-                'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\';',
+                'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci', $this->InstallData->getDbName());
+
+            try {
+                $this->DB->query($query);
+            } catch (PDOException $e) {
+                throw new SPException(SPException::SP_CRITICAL,
+                    sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
+                    _('Verifique los permisos del usuario de la Base de Datos'));
+            }
+
+            $query = sprintf(/** @lang SQL */
+                'GRANT ALL PRIVILEGES ON `%s`.* TO `%s`@`%s` IDENTIFIED BY `%s`;',
                 $this->InstallData->getDbName(),
                 $this->InstallData->getDbUser(),
                 $this->InstallData->getDbAuthHost(),
@@ -358,7 +367,7 @@ class Installer
                         $this->DB->query($query);
                     } catch (PDOException $e) {
                         // drop database on error
-                        $this->DB->query('DROP DATABASE IF EXISTS ' . $this->InstallData->getDbName() . ';');
+                        $this->DB->query('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`;');
 
                         throw new SPException(SPException::SP_CRITICAL,
                             sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
@@ -464,9 +473,9 @@ class Installer
     private function rollback()
     {
         try {
-            $this->DB->query('DROP DATABASE IF EXISTS ' . $this->InstallData->getDbName() . ';');
-            $this->DB->query('DROP USER \'' . $this->InstallData->getDbUser() . '\'@\'' . $this->InstallData->getDbAuthHost() . '\';');
-            $this->DB->query('DROP USER \'' . $this->InstallData->getDbUser() . '\'@\'%\';');
+            $this->DB->query('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`;');
+            $this->DB->query('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`;');
+            $this->DB->query('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`;');
         } catch (PDOException $e) {
             return false;
         }
