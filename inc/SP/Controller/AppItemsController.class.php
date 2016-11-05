@@ -33,17 +33,11 @@ use SP\Core\ActionsInterface;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
-use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Categories\CategorySearch;
-use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
-use SP\Mgmt\CustomFields\CustomFieldDef;
-use SP\Core\SessionUtil;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
-use SP\Mgmt\Files\File;
 use SP\Mgmt\Files\FileSearch;
 use SP\Mgmt\Files\FileUtil;
-use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Tags\TagSearch;
 
 /**

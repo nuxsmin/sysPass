@@ -54,7 +54,7 @@ class DBUtil
                 WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'
                 AND table_name = \'usrData\'';
 
-            if ($db->query($query)->fetchColumn() !== 0) {
+            if ((int)$db->query($query)->fetchColumn() !== 0) {
                 return true;
             }
         } catch (\Exception $e) {

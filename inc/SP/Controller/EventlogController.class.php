@@ -37,8 +37,6 @@ use SP\Html\DataGrid\DataGridPager;
 use SP\Http\Response;
 use SP\Log\Log;
 use SP\Util\Checks;
-use SP\Util\Util;
-
 
 /**
  * Clase encargada de preparar la presentación del registro de eventos

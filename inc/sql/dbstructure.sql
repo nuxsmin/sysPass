@@ -1,329 +1,393 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE = @@TIME_ZONE */;
-/*!40103 SET TIME_ZONE = '+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
-/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE TABLE `accFiles` (
-  `accfile_id`        INT(11)              NOT NULL AUTO_INCREMENT,
-  `accfile_accountId` SMALLINT(5) UNSIGNED NOT NULL,
-  `accfile_name`      VARCHAR(100)         NOT NULL,
-  `accfile_type`      VARCHAR(100)         NOT NULL,
-  `accfile_size`      INT(11)              NOT NULL,
-  `accfile_content`   MEDIUMBLOB           NOT NULL,
-  `accfile_extension` VARCHAR(10)          NOT NULL,
-  `accFile_thumb`     MEDIUMBLOB,
-  PRIMARY KEY (`accfile_id`),
-  KEY `IDX_accountId` (`accfile_accountId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `accGroups` (
-  `accgroup_id`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `accgroup_accountId` INT(10) UNSIGNED NOT NULL,
-  `accgroup_groupId`   INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`accgroup_id`),
-  KEY `IDX_accountId` (`accgroup_accountId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `accHistory` (
-  `acchistory_id`             INT(11)              NOT NULL AUTO_INCREMENT,
-  `acchistory_accountId`      SMALLINT(5) UNSIGNED NOT NULL,
-  `acchistory_userGroupId`    TINYINT(3) UNSIGNED  NOT NULL,
-  `acchistory_userId`         TINYINT(3) UNSIGNED  NOT NULL,
-  `acchistory_userEditId`     TINYINT(3) UNSIGNED  NOT NULL,
-  `acchistory_customerId`     TINYINT(3) UNSIGNED  NOT NULL,
-  `acchistory_name`           VARCHAR(255)         NOT NULL,
-  `acchistory_categoryId`     TINYINT(3) UNSIGNED  NOT NULL,
-  `acchistory_login`          VARCHAR(50)          NOT NULL,
-  `acchistory_url`            VARCHAR(255)                  DEFAULT NULL,
-  `acchistory_pass`           VARBINARY(255)       NOT NULL,
-  `acchistory_IV`             VARBINARY(32)        NOT NULL,
-  `acchistory_notes`          TEXT                 NOT NULL,
-  `acchistory_countView`      INT(10) UNSIGNED     NOT NULL DEFAULT '0',
-  `acchistory_countDecrypt`   INT(10) UNSIGNED     NOT NULL DEFAULT '0',
-  `acchistory_dateAdd`        DATETIME             NOT NULL,
-  `acchistory_dateEdit`       DATETIME             NOT NULL,
-  `acchistory_isModify`       BIT(1)                        DEFAULT NULL,
-  `acchistory_isDeleted`      BIT(1)                        DEFAULT NULL,
-  `acchistory_mPassHash`      VARBINARY(255)       NOT NULL,
-  `accHistory_otherUserEdit`  BIT(1)                        DEFAULT b'0',
-  `accHistory_otherGroupEdit` BIT(1)                        DEFAULT b'0',
-  PRIMARY KEY (`acchistory_id`),
-  KEY `IDX_accountId` (`acchistory_accountId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `accUsers` (
-  `accuser_id`        INT(11)          NOT NULL AUTO_INCREMENT,
-  `accuser_accountId` INT(10) UNSIGNED NOT NULL,
-  `accuser_userId`    INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`accuser_id`),
-  KEY `idx_account` (`accuser_accountId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `accViewLinks` (
-  `accviewlinks_id`         INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `accviewlinks_accountId`  INT(10) UNSIGNED          DEFAULT NULL,
-  `accviewlinks_expireTime` INT(10) UNSIGNED          DEFAULT NULL,
-  `accviewlinks_expired`    BIT(1)                    DEFAULT b'0',
-  `accviewlinks_userId`     INT(10) UNSIGNED          DEFAULT NULL,
-  `accviewlinks_hash`       VARBINARY(100)            DEFAULT '',
-  `accviewlinks_actionId`   SMALLINT(5) UNSIGNED      DEFAULT NULL,
-  PRIMARY KEY (`accviewlinks_id`),
-  UNIQUE KEY `unique_accviewlinks_id` (`accviewlinks_id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
-
-CREATE TABLE `accounts` (
-  `account_id`             SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `account_userGroupId`    TINYINT(3) UNSIGNED  NOT NULL,
-  `account_userId`         TINYINT(3) UNSIGNED  NOT NULL,
-  `account_userEditId`     TINYINT(3) UNSIGNED  NOT NULL,
-  `account_customerId`     INT(10) UNSIGNED     NOT NULL,
-  `account_name`           VARCHAR(50)          NOT NULL,
-  `account_categoryId`     TINYINT(3) UNSIGNED  NOT NULL,
-  `account_login`          VARCHAR(50)                   DEFAULT NULL,
-  `account_url`            VARCHAR(255)                  DEFAULT NULL,
-  `account_pass`           VARBINARY(255)       NOT NULL,
-  `account_IV`             VARBINARY(32)        NOT NULL,
-  `account_notes`          TEXT,
-  `account_countView`      INT(10) UNSIGNED     NOT NULL DEFAULT '0',
-  `account_countDecrypt`   INT(10) UNSIGNED     NOT NULL DEFAULT '0',
-  `account_dateAdd`        DATETIME             NOT NULL,
-  `account_dateEdit`       DATETIME             NOT NULL,
-  `account_otherGroupEdit` BIT(1)                        DEFAULT b'0',
-  `account_otherUserEdit`  BIT(1)                        DEFAULT b'0',
-  PRIMARY KEY (`account_id`),
-  KEY `IDX_categoryId` (`account_categoryId`),
-  KEY `IDX_userId` (`account_userGroupId`, `account_userId`),
-  KEY `IDX_customerId` (`account_customerId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `authTokens` (
-  `authtoken_id`        INT(11)              NOT NULL AUTO_INCREMENT,
-  `authtoken_userId`    INT(11)              NOT NULL,
-  `authtoken_token`     VARBINARY(100)       NOT NULL,
-  `authtoken_actionId`  SMALLINT(5) UNSIGNED NOT NULL,
-  `authtoken_createdBy` SMALLINT(5) UNSIGNED NOT NULL,
-  `authtoken_startDate` INT(10) UNSIGNED     NOT NULL,
-  PRIMARY KEY (`authtoken_id`),
-  UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),
-  KEY `IDX_checkToken` (`authtoken_userId`, `authtoken_actionId`, `authtoken_token`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `categories` (
-  `category_id`          SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category_name`        VARCHAR(50)          NOT NULL,
-  `category_description` VARCHAR(255)                  DEFAULT NULL,
-  PRIMARY KEY (`category_id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `config` (
-  `config_parameter` VARCHAR(50)   NOT NULL,
-  `config_value`     VARCHAR(2000) NOT NULL,
-  UNIQUE KEY `vacParameter` (`config_parameter`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
+DROP TABLE IF EXISTS `customers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customers` (
-  `customer_id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `customer_name`        VARCHAR(100)     NOT NULL,
-  `customer_hash`        VARBINARY(40)    NOT NULL,
-  `customer_description` VARCHAR(255)              DEFAULT NULL,
+  `customer_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `customer_name` varchar(100) NOT NULL,
+  `customer_hash` varbinary(40) NOT NULL,
+  `customer_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
-  KEY `IDX_name` (`customer_name`, `customer_hash`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  KEY `IDX_name` (`customer_name`,`customer_hash`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `customFieldsDef` (
-  `customfielddef_id`     INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
-  `customfielddef_module` SMALLINT(5) UNSIGNED NOT NULL,
-  `customfielddef_field`  BLOB                 NOT NULL,
-  PRIMARY KEY (`customfielddef_id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+DROP TABLE IF EXISTS `categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `categories` (
+  `category_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(50) NOT NULL,
+  `category_description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `customFieldsData` (
-  `customfielddata_id`       INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
-  `customfielddata_moduleId` SMALLINT(5) UNSIGNED NOT NULL,
-  `customfielddata_itemId`   INT(10) UNSIGNED     NOT NULL,
-  `customfielddata_defId`    INT(10) UNSIGNED     NOT NULL,
-  `customfielddata_data`     LONGBLOB,
-  `customfielddata_iv`       VARBINARY(128)                DEFAULT NULL,
-  PRIMARY KEY (`customfielddata_id`),
-  KEY `IDX_DEFID` (`customfielddata_defId`),
-  KEY `IDX_DELETE` (`customfielddata_itemId`, `customfielddata_moduleId`),
-  KEY `IDX_UPDATE` (`customfielddata_moduleId`, `customfielddata_itemId`, `customfielddata_defId`),
-  KEY `IDX_ITEM` (`customfielddata_itemId`),
-  KEY `IDX_MODULE` (`customfielddata_moduleId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+DROP TABLE IF EXISTS `usrGroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usrGroups` (
+  `usergroup_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `usergroup_name` varchar(50) NOT NULL,
+  `usergroup_description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`usergroup_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `log` (
-  `log_id`          INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
-  `log_date`        INT(10) UNSIGNED    NOT NULL,
-  `log_login`       VARCHAR(25)         NOT NULL,
-  `log_userId`      TINYINT(3) UNSIGNED NOT NULL,
-  `log_ipAddress`   VARCHAR(45)         NOT NULL,
-  `log_action`      VARCHAR(50)         NOT NULL,
-  `log_description` TEXT                NOT NULL,
-  `log_level`       VARCHAR(20)         NOT NULL,
-  PRIMARY KEY (`log_id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+DROP TABLE IF EXISTS `usrProfiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usrProfiles` (
+  `userprofile_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `userprofile_name` varchar(45) NOT NULL,
+  `userProfile_profile` blob NOT NULL,
+  PRIMARY KEY (`userprofile_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `usrData`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrData` (
-  `user_id`              SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_name`            VARCHAR(80)          NOT NULL,
-  `user_groupId`         TINYINT(3) UNSIGNED  NOT NULL,
-  `user_secGroupId`      TINYINT(3) UNSIGNED           DEFAULT NULL,
-  `user_login`           VARCHAR(50)          NOT NULL,
-  `user_pass`            VARBINARY(255)       NOT NULL,
-  `user_mPass`           VARBINARY(255)                DEFAULT NULL,
-  `user_mIV`             VARBINARY(32)        NOT NULL,
-  `user_email`           VARCHAR(80)                   DEFAULT NULL,
-  `user_notes`           TEXT,
-  `user_count`           INT(10) UNSIGNED     NOT NULL DEFAULT '0',
-  `user_profileId`       TINYINT(4)           NOT NULL,
-  `user_lastLogin`       DATETIME                      DEFAULT NULL,
-  `user_lastUpdate`      DATETIME                      DEFAULT NULL,
-  `user_lastUpdateMPass` INT(11) UNSIGNED     NOT NULL DEFAULT '0',
-  `user_isAdminApp`      BIT(1)               NOT NULL DEFAULT b'0',
-  `user_isAdminAcc`      BIT(1)               NOT NULL DEFAULT b'0',
-  `user_isLdap`          BIT(1)               NOT NULL DEFAULT b'0',
-  `user_isDisabled`      BIT(1)               NOT NULL DEFAULT b'0',
-  `user_hashSalt`        VARBINARY(128)       NOT NULL,
-  `user_isMigrate`       BIT(1)                        DEFAULT b'0',
-  `user_isChangePass`    BIT(1)                        DEFAULT b'0',
-  `user_preferences`     BLOB,
+  `user_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(80) NOT NULL,
+  `user_groupId` smallint(3) unsigned NOT NULL,
+  `user_secGroupId` smallint(3) unsigned DEFAULT NULL,
+  `user_login` varchar(50) NOT NULL,
+  `user_pass` varbinary(255) NOT NULL,
+  `user_mPass` varbinary(255) DEFAULT NULL,
+  `user_mIV` varbinary(32) NOT NULL,
+  `user_email` varchar(80) DEFAULT NULL,
+  `user_notes` text,
+  `user_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_profileId` smallint(5) unsigned NOT NULL,
+  `user_lastLogin` datetime DEFAULT NULL,
+  `user_lastUpdate` datetime DEFAULT NULL,
+  `user_lastUpdateMPass` int(11) unsigned NOT NULL DEFAULT '0',
+  `user_isAdminApp` bit(1) DEFAULT b'0',
+  `user_isAdminAcc` bit(1) DEFAULT b'0',
+  `user_isLdap` bit(1) DEFAULT b'0',
+  `user_isDisabled` bit(1) DEFAULT b'0',
+  `user_hashSalt` varbinary(128) NOT NULL,
+  `user_isMigrate` bit(1) DEFAULT b'0',
+  `user_isChangePass` bit(1) DEFAULT b'0',
+  `user_preferences` blob,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `IDX_login` (`user_login`),
-  KEY `IDX_pass` (`user_pass`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  KEY `IDX_pass` (`user_pass`),
+  KEY `fk_usrData_groups_id_idx` (`user_groupId`),
+  KEY `fk_usrData_profiles_id_idx` (`user_profileId`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `usrGroups` (
-  `usergroup_id`          SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `usergroup_name`        VARCHAR(50)          NOT NULL,
-  `usergroup_description` VARCHAR(255)                  DEFAULT NULL,
-  PRIMARY KEY (`usergroup_id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+DROP TABLE IF EXISTS `accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accounts` (
+  `account_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `account_userGroupId` smallint(5) unsigned NOT NULL,
+  `account_userId` smallint(5) unsigned NOT NULL,
+  `account_userEditId` smallint(5) unsigned NOT NULL,
+  `account_customerId` int(10) unsigned NOT NULL,
+  `account_name` varchar(50) NOT NULL,
+  `account_categoryId` smallint(5) unsigned NOT NULL,
+  `account_login` varchar(50) DEFAULT NULL,
+  `account_url` varchar(255) DEFAULT NULL,
+  `account_pass` varbinary(255) NOT NULL,
+  `account_IV` varbinary(32) NOT NULL,
+  `account_notes` text,
+  `account_countView` int(10) unsigned NOT NULL DEFAULT '0',
+  `account_countDecrypt` int(10) unsigned NOT NULL DEFAULT '0',
+  `account_dateAdd` datetime NOT NULL,
+  `account_dateEdit` datetime DEFAULT NULL,
+  `account_otherGroupEdit` bit(1) DEFAULT b'0',
+  `account_otherUserEdit` bit(1) DEFAULT b'0',
+  PRIMARY KEY (`account_id`),
+  KEY `IDX_categoryId` (`account_categoryId`),
+  KEY `IDX_userId` (`account_userGroupId`,`account_userId`),
+  KEY `IDX_customerId` (`account_customerId`),
+  KEY `fk_accounts_user_id` (`account_userId`),
+  KEY `fk_accounts_user_edit_id` (`account_userEditId`),
+  CONSTRAINT `fk_accounts_user_id` FOREIGN KEY (`account_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `usrPassRecover` (
-  `userpassr_id`     INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
-  `userpassr_userId` SMALLINT(5) UNSIGNED NOT NULL,
-  `userpassr_hash`   VARBINARY(40)        NOT NULL,
-  `userpassr_date`   INT(10) UNSIGNED     NOT NULL,
-  `userpassr_used`   BIT(1)               NOT NULL,
-  PRIMARY KEY (`userpassr_id`),
-  KEY `IDX_userId` (`userpassr_userId`, `userpassr_date`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `usrProfiles` (
-  `userprofile_id`      SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `userprofile_name`    VARCHAR(45)          NOT NULL,
-  `userProfile_profile` BLOB                 NOT NULL,
-  PRIMARY KEY (`userprofile_id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `usrToGroups` (
-  `usertogroup_id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `usertogroup_userId`  INT(10) UNSIGNED NOT NULL,
-  `usertogroup_groupId` INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`usertogroup_id`),
-  KEY `IDX_usertogroup_userId` (`usertogroup_userId`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE `publicLinks` (
-  `publicLink_id`       INT            NOT NULL AUTO_INCREMENT,
-  `publicLink_itemId`   INT,
-  `publicLink_hash`     VARBINARY(100) NOT NULL,
-  `publicLink_linkData` LONGBLOB,
-  PRIMARY KEY (`publicLink_id`),
-  KEY `IDX_itemId` (`publicLink_itemId`),
-  UNIQUE KEY `IDX_hash` (`publicLink_hash`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
+DROP TABLE IF EXISTS `accFavorites`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accFavorites` (
-  `accfavorite_accountId` SMALLINT UNSIGNED NOT NULL,
-  `accfavorite_userId`    SMALLINT UNSIGNED NOT NULL,
-  INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),
-  INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),
-  INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),
-  CONSTRAINT `fk_accFavorites_accounts`
-  FOREIGN KEY (`accfavorite_accountId`)
-  REFERENCES `accounts` (`account_id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_accFavorites_users`
-  FOREIGN KEY (`accfavorite_userId`)
-  REFERENCES `usrData` (`user_id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  `accfavorite_accountId` smallint(5) unsigned NOT NULL,
+  `accfavorite_userId` smallint(5) unsigned NOT NULL,
+  KEY `fk_accFavorites_accounts_idx` (`accfavorite_accountId`),
+  KEY `fk_accFavorites_users_idx` (`accfavorite_userId`),
+  KEY `search_idx` (`accfavorite_accountId`,`accfavorite_userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE `tags` (
-  `tag_id`   INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tag_name` VARCHAR(45)  NOT NULL,
-  `tag_hash` BINARY(20) NOT NULL,
-  PRIMARY KEY (`tag_id`),
-  INDEX `IDX_name` (`tag_name` ASC),
-  UNIQUE INDEX `tag_hash_UNIQUE` (`tag_hash` ASC)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-;
+DROP TABLE IF EXISTS `accFiles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accFiles` (
+  `accfile_id` int(11) NOT NULL AUTO_INCREMENT,
+  `accfile_accountId` smallint(5) unsigned NOT NULL,
+  `accfile_name` varchar(100) NOT NULL,
+  `accfile_type` varchar(100) NOT NULL,
+  `accfile_size` int(11) NOT NULL,
+  `accfile_content` mediumblob NOT NULL,
+  `accfile_extension` varchar(10) NOT NULL,
+  `accFile_thumb` mediumblob,
+  PRIMARY KEY (`accfile_id`),
+  KEY `IDX_accountId` (`accfile_accountId`),
+  CONSTRAINT `fk_accFiles_accounts_id` FOREIGN KEY (`accfile_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `accGroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accGroups` (
+  `accgroup_accountId` smallint(5) unsigned NOT NULL,
+  `accgroup_groupId` smallint(5) unsigned NOT NULL,
+  KEY `IDX_accountId` (`accgroup_accountId`),
+  KEY `fk_accGroups_groups_id_idx` (`accgroup_groupId`),
+  CONSTRAINT `fk_accGroups_accounts_id` FOREIGN KEY (`accgroup_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_accGroups_groups_id` FOREIGN KEY (`accgroup_groupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `accHistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accHistory` (
+  `acchistory_id` int(11) NOT NULL AUTO_INCREMENT,
+  `acchistory_accountId` smallint(5) unsigned NOT NULL,
+  `acchistory_userGroupId` smallint(5) unsigned zerofill NOT NULL,
+  `acchistory_userId` smallint(5) unsigned NOT NULL,
+  `acchistory_userEditId` smallint(5) unsigned NOT NULL,
+  `acchistory_customerId` int(10) unsigned NOT NULL,
+  `acchistory_name` varchar(255) NOT NULL,
+  `acchistory_categoryId` smallint(5) unsigned NOT NULL,
+  `acchistory_login` varchar(50) NOT NULL,
+  `acchistory_url` varchar(255) DEFAULT NULL,
+  `acchistory_pass` varbinary(255) NOT NULL,
+  `acchistory_IV` varbinary(32) NOT NULL,
+  `acchistory_notes` text NOT NULL,
+  `acchistory_countView` int(10) unsigned NOT NULL DEFAULT '0',
+  `acchistory_countDecrypt` int(10) unsigned NOT NULL DEFAULT '0',
+  `acchistory_dateAdd` datetime NOT NULL,
+  `acchistory_dateEdit` datetime DEFAULT NULL,
+  `acchistory_isModify` bit(1) DEFAULT NULL,
+  `acchistory_isDeleted` bit(1) DEFAULT NULL,
+  `acchistory_mPassHash` varbinary(255) NOT NULL,
+  `accHistory_otherUserEdit` bit(1) DEFAULT b'0',
+  `accHistory_otherGroupEdit` bit(1) DEFAULT b'0',
+  PRIMARY KEY (`acchistory_id`),
+  KEY `IDX_accountId` (`acchistory_accountId`),
+  KEY `fk_accHistory_users_edit_id_idx` (`acchistory_userEditId`),
+  KEY `fk_accHistory_users_id` (`acchistory_userId`),
+  KEY `fk_accHistory_categories_id` (`acchistory_categoryId`),
+  KEY `fk_accHistory_customers_id` (`acchistory_customerId`),
+  CONSTRAINT `fk_accHistory_users_id` FOREIGN KEY (`acchistory_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `accTags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accTags` (
-  `acctag_accountId` INT UNSIGNED NOT NULL,
-  `acctag_tagId`     INT UNSIGNED NOT NULL,
-  INDEX `IDX_id` (`acctag_accountId` ASC, `acctag_tagId` ASC)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  `acctag_accountId` smallint(10) unsigned NOT NULL,
+  `acctag_tagId` int(10) unsigned NOT NULL,
+  KEY `IDX_id` (`acctag_accountId`),
+  KEY `fk_accTags_tags_id_idx` (`acctag_tagId`),
+  CONSTRAINT `fk_accTags_accounts_id` FOREIGN KEY (`acctag_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_accTags_tags_id` FOREIGN KEY (`acctag_tagId`) REFERENCES `tags` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-/*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
-/*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
+DROP TABLE IF EXISTS `accUsers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accUsers` (
+  `accuser_accountId` smallint(5) unsigned NOT NULL,
+  `accuser_userId` smallint(5) unsigned NOT NULL,
+  KEY `idx_account` (`accuser_accountId`),
+  KEY `fk_accUsers_users_id_idx` (`accuser_userId`),
+  CONSTRAINT `fk_accUsers_accounts_id` FOREIGN KEY (`accuser_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_accUsers_users_id` FOREIGN KEY (`accuser_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `accViewLinks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `accViewLinks` (
+  `accviewlinks_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `accviewlinks_accountId` smallint(5) unsigned DEFAULT NULL,
+  `accviewlinks_expireTime` int(10) unsigned DEFAULT NULL,
+  `accviewlinks_expired` bit(1) DEFAULT b'0',
+  `accviewlinks_userId` smallint(5) unsigned DEFAULT NULL,
+  `accviewlinks_hash` varbinary(100) DEFAULT '',
+  `accviewlinks_actionId` smallint(5) unsigned DEFAULT NULL,
+  PRIMARY KEY (`accviewlinks_id`),
+  UNIQUE KEY `unique_accviewlinks_id` (`accviewlinks_id`),
+  KEY `fk_accViewLinks_account_idx` (`accviewlinks_accountId`),
+  KEY `fk_accViewLinks_user_id_idx` (`accviewlinks_userId`),
+  CONSTRAINT `fk_accViewLinks_account_id` FOREIGN KEY (`accviewlinks_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_accViewLinks_user_id` FOREIGN KEY (`accviewlinks_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `authTokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `authTokens` (
+  `authtoken_id` int(11) NOT NULL AUTO_INCREMENT,
+  `authtoken_userId` smallint(5) unsigned NOT NULL,
+  `authtoken_token` varbinary(100) NOT NULL,
+  `authtoken_actionId` smallint(5) unsigned NOT NULL,
+  `authtoken_createdBy` smallint(5) unsigned NOT NULL,
+  `authtoken_startDate` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`authtoken_id`),
+  UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),
+  KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`),
+  KEY `fk_authTokens_users_id_idx` (`authtoken_userId`,`authtoken_createdBy`),
+  KEY `fk_authTokens_users_createdby_id` (`authtoken_createdBy`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `config` (
+  `config_parameter` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `config_value` varchar(2000) DEFAULT NULL,
+  UNIQUE KEY `vacParameter` (`config_parameter`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `customFieldsData`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `customFieldsData` (
+  `customfielddata_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `customfielddata_moduleId` smallint(5) unsigned NOT NULL,
+  `customfielddata_itemId` int(10) unsigned NOT NULL,
+  `customfielddata_defId` int(10) unsigned NOT NULL,
+  `customfielddata_data` longblob,
+  `customfielddata_iv` varbinary(128) DEFAULT NULL,
+  PRIMARY KEY (`customfielddata_id`),
+  KEY `IDX_DEFID` (`customfielddata_defId`),
+  KEY `IDX_DELETE` (`customfielddata_itemId`,`customfielddata_moduleId`),
+  KEY `IDX_UPDATE` (`customfielddata_moduleId`,`customfielddata_itemId`,`customfielddata_defId`),
+  KEY `IDX_ITEM` (`customfielddata_itemId`),
+  KEY `IDX_MODULE` (`customfielddata_moduleId`),
+  CONSTRAINT `fk_customFieldsData_def_id` FOREIGN KEY (`customfielddata_defId`) REFERENCES `customFieldsDef` (`customfielddef_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `customFieldsDef`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `customFieldsDef` (
+  `customfielddef_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `customfielddef_module` smallint(5) unsigned NOT NULL,
+  `customfielddef_field` blob NOT NULL,
+  PRIMARY KEY (`customfielddef_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `log_date` int(10) unsigned NOT NULL,
+  `log_login` varchar(25) NOT NULL,
+  `log_userId` smallint(5) unsigned NOT NULL,
+  `log_ipAddress` varchar(45) NOT NULL,
+  `log_action` varchar(50) NOT NULL,
+  `log_description` text,
+  `log_level` varchar(20) NOT NULL,
+  PRIMARY KEY (`log_id`),
+  KEY `fk_log_users_id_idx` (`log_userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `publicLinks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `publicLinks` (
+  `publicLink_id` int(11) NOT NULL AUTO_INCREMENT,
+  `publicLink_itemId` int(11) DEFAULT NULL,
+  `publicLink_hash` varbinary(100) NOT NULL,
+  `publicLink_linkData` longblob,
+  PRIMARY KEY (`publicLink_id`),
+  UNIQUE KEY `IDX_hash` (`publicLink_hash`),
+  UNIQUE KEY `unique_publicLink_hash` (`publicLink_hash`),
+  UNIQUE KEY `unique_publicLink_accountId` (`publicLink_itemId`),
+  KEY `IDX_itemId` (`publicLink_itemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tags` (
+  `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tag_name` varchar(45) NOT NULL,
+  `tag_hash` binary(40) NOT NULL,
+  PRIMARY KEY (`tag_id`),
+  UNIQUE KEY `tag_hash_UNIQUE` (`tag_hash`),
+  KEY `IDX_name` (`tag_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `usrPassRecover`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usrPassRecover` (
+  `userpassr_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userpassr_userId` smallint(5) unsigned NOT NULL,
+  `userpassr_hash` varbinary(40) NOT NULL,
+  `userpassr_date` int(10) unsigned NOT NULL,
+  `userpassr_used` bit(1) DEFAULT b'0',
+  PRIMARY KEY (`userpassr_id`),
+  KEY `IDX_userId` (`userpassr_userId`,`userpassr_date`),
+  CONSTRAINT `fk_usrPassRecover_users` FOREIGN KEY (`userpassr_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `usrToGroups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usrToGroups` (
+  `usertogroup_userId` smallint(5) unsigned NOT NULL,
+  `usertogroup_groupId` smallint(5) unsigned NOT NULL,
+  KEY `IDX_usertogroup_userId` (`usertogroup_userId`),
+  KEY `fk_usrToGroups_groups_id_idx` (`usertogroup_groupId`),
+  CONSTRAINT `fk_usrToGroups_groups_id` FOREIGN KEY (`usertogroup_groupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_usrToGroups_users_id` FOREIGN KEY (`usertogroup_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `account_search_v`;
+DROP VIEW IF EXISTS `account_search_v`;
+CREATE ALGORITHM=UNDEFINED DEFINER=CURRENT_USER SQL SECURITY DEFINER VIEW `account_search_v` AS select distinct `accounts`.`account_id` AS `account_id`,`accounts`.`account_customerId` AS `account_customerId`,`accounts`.`account_categoryId` AS `account_categoryId`,`accounts`.`account_name` AS `account_name`,`accounts`.`account_login` AS `account_login`,`accounts`.`account_url` AS `account_url`,`accounts`.`account_notes` AS `account_notes`,`accounts`.`account_userId` AS `account_userId`,`accounts`.`account_userGroupId` AS `account_userGroupId`,conv(`accounts`.`account_otherUserEdit`,10,2) AS `account_otherUserEdit`,conv(`accounts`.`account_otherGroupEdit`,10,2) AS `account_otherGroupEdit`,`ug`.`usergroup_name` AS `usergroup_name`,`categories`.`category_name` AS `category_name`,`customers`.`customer_name` AS `customer_name`,(select count(0) from `accFiles` where (`accFiles`.`accfile_accountId` = `accounts`.`account_id`)) AS `num_files` from (((`accounts` left join `categories` on((`accounts`.`account_categoryId` = `categories`.`category_id`))) left join `usrGroups` `ug` on((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`))) left join `customers` on((`customers`.`customer_id` = `accounts`.`account_customerId`)));
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

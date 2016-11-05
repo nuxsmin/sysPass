@@ -36,7 +36,6 @@ use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Core\Template;
 use SP\Mgmt\Users\UserSearch;
-use SP\Mgmt\Users\UserUtil;
 
 /**
  * Clase encargada de de preparar la presentación de las vistas de gestión de accesos

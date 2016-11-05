@@ -41,4 +41,9 @@ interface DBStorageInterface
      * @return mixed
      */
     public function setConnectionData();
+
+    /**
+     * @return int
+     */
+    public function getDbStatus();
 }

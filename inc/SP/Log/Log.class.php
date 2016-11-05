@@ -25,6 +25,7 @@
 
 namespace SP\Log;
 
+use SP\Core\DiFactory;
 use SP\Core\Init;
 use SP\Storage\DB;
 use SP\Core\Session;
@@ -135,7 +136,7 @@ class Log extends ActionLog
     public function writeLog($resetDescription = false)
     {
         if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
-            || Init::$DB_STATUS === 0
+            || DiFactory::getDBStorage()->getDbStatus() === 1
         ) {
             error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription() . ' -- Details: ' . $this->getDetails());
             return false;

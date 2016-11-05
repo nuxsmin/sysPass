@@ -35,10 +35,8 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
 use SP\Core\Template;
-use SP\Core\Theme;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
-
 
 /**
  * Class UsersPrefs encargada de mostrar las preferencias de los usuarios

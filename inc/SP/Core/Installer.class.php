@@ -86,8 +86,8 @@ class Installer
         $this->Config = Config::getConfig();
 
         // Generate a random salt that is used to salt the local user passwords
-        $this->Config ->setPasswordSalt(Util::generateRandomBytes(30));
-        $this->Config ->setConfigVersion(implode(Util::getVersion(true)));
+        $this->Config->setPasswordSalt(Util::generateRandomBytes(30));
+        $this->Config->setConfigVersion(implode(Util::getVersion(true)));
 
         if (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
             $this->InstallData->setDbHost($match[1]);
@@ -103,9 +103,8 @@ class Installer
         }
 
         // Save DB connection info
-        $this->Config ->setDbHost($this->InstallData->getDbHost());
-        $this->Config ->setDbName($this->InstallData->getDbName());
-
+        $this->Config->setDbHost($this->InstallData->getDbHost());
+        $this->Config->setDbName($this->InstallData->getDbName());
 
         $this->connectDatabase();
         $this->setupMySQLDatabase();
@@ -113,7 +112,7 @@ class Installer
 
         ConfigDB::setValue('version', implode(Util::getVersion(true)));
 
-        $this->Config ->setInstalled(true);
+        $this->Config->setInstalled(true);
         Config::saveConfig($this->Config);
 
         return true;
@@ -207,8 +206,7 @@ class Installer
 
             // Comprobar si el usuario sumistrado existe
             $query = sprintf(/** @lang SQL */
-                'SELECT COUNT(*) FROM mysql.user 
-                WHERE user=\'%s\' AND host=\'%s\'',
+                'SELECT COUNT(*) FROM mysql.user WHERE user=\'%s\' AND host=\'%s\'',
                 $this->InstallData->getDbUser(),
                 $this->InstallData->getDbAuthHost());
 
@@ -225,11 +223,15 @@ class Installer
                     sprintf(_('No es posible comprobar el usuario de sysPass') . ' (%s)', $this->InstallData->getAdminLogin()),
                     _('Compruebe los permisos del usuario de conexión a la BD'));
             }
-        }
 
-        // Guardar el nuevo usuario/clave de conexión a la BD
-        $this->Config->setDbUser($this->InstallData->getDbUser());
-        $this->Config->setDbPass($this->InstallData->getDbPass());
+            // Guardar el nuevo usuario/clave de conexión a la BD
+            $this->Config->setDbUser($this->InstallData->getDbUser());
+            $this->Config->setDbPass($this->InstallData->getDbPass());
+        } else {
+            // Guardar el usuario/clave de conexión a la BD
+            $this->Config->setDbUser($this->InstallData->getDbAdminUser());
+            $this->Config->setDbPass($this->InstallData->getDbAdminPass());
+        }
 
         try {
             $this->createMySQLDatabase();

@@ -63,6 +63,10 @@ class MySQLHandler implements DBStorageInterface
      * @var string
      */
     private $dbPass = '';
+    /**
+     * @var int
+     */
+    private $dbStatus = 1;
 
     /**
      * MySQLHandler constructor.
@@ -121,6 +125,8 @@ class MySQLHandler implements DBStorageInterface
 
             if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
                 if ($isInstalled) {
+                    $this->dbStatus = 0;
+
                     Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
                 } else {
                     throw new SPException(SPException::SP_CRITICAL,
@@ -133,10 +139,8 @@ class MySQLHandler implements DBStorageInterface
                 $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
 //                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
                 $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
-
-                Init::$DB_STATUS = 1;
+                $this->dbStatus = 0;
             } catch (\Exception $e) {
-
                 if ($isInstalled) {
                     if ($e->getCode() === 1049) {
                         Config::getConfig()->setInstalled(false);
@@ -151,9 +155,21 @@ class MySQLHandler implements DBStorageInterface
             }
         }
 
-        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this->db;
+    }
+
+    /**
+     * Devuelve el estado de conexión a la BBDD
+     * OK -> 0
+     * KO -> 1
+     *
+     * @return int
+     */
+    public function getDbStatus()
+    {
+        return $this->dbStatus;
     }
 }

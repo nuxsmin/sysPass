@@ -45,7 +45,6 @@ use SP\Html\DataGrid\DataGridSort;
 use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
-use SP\Storage\DBUtil;
 use SP\Util\Checks;
 
 /**

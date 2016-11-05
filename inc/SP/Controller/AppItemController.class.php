@@ -40,12 +40,10 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Core\SessionUtil;
 use SP\Mgmt\CustomFields\CustomFieldTypes;
-use SP\Mgmt\Files\File;
 use SP\DataModel\TagData;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Tags\Tag;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 /**
  * Clase encargada de preparar la presentación de las vistas de gestión de cuentas
@@ -80,7 +78,7 @@ class AppItemController extends ControllerBase implements ActionsInterface
         $this->_module = self::ACTION_MGM_CUSTOMERS;
         $this->view->addTemplate('customers');
 
-        $this->view->assign('customer', ($this->view->itemId) ? Customer::getItem()->getById($this->view->itemId) : new CustomerData());
+        $this->view->assign('customer', $this->view->itemId ? Customer::getItem()->getById($this->view->itemId) : new CustomerData());
         $this->getCustomFieldsForItem();
     }
 
@@ -100,7 +98,7 @@ class AppItemController extends ControllerBase implements ActionsInterface
         $this->_module = self::ACTION_MGM_CATEGORIES;
         $this->view->addTemplate('categories');
 
-        $this->view->assign('category', ($this->view->itemId) ? Category::getItem()->getById($this->view->itemId) : new CategoryData());
+        $this->view->assign('category', $this->view->itemId ? Category::getItem()->getById($this->view->itemId) : new CategoryData());
         $this->getCustomFieldsForItem();
     }
 
@@ -131,7 +129,7 @@ class AppItemController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('customfields');
 
-        $customField = ($this->view->itemId) ? CustomFieldDef::getItem()->getById($this->view->itemId) : new CustomFieldDefData();
+        $customField = $this->view->itemId ? CustomFieldDef::getItem()->getById($this->view->itemId) : new CustomFieldDefData();
 
         $this->view->assign('customField', $customField);
         $this->view->assign('field', $customField);
@@ -147,6 +145,6 @@ class AppItemController extends ControllerBase implements ActionsInterface
         $this->_module = self::ACTION_MGM_TAGS;
         $this->view->addTemplate('tags');
 
-        $this->view->assign('tag', ($this->view->itemId) ? Tag::getItem()->getById($this->view->itemId) : new TagData());
+        $this->view->assign('tag', $this->view->itemId ? Tag::getItem()->getById($this->view->itemId) : new TagData());
     }
 }

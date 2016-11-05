@@ -31,13 +31,9 @@ use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
 use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Categories\CategorySearch;
-use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
-use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
-use SP\Mgmt\Files\File;
 use SP\Mgmt\Files\FileSearch;
-use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Tags\TagSearch;
 
 /**

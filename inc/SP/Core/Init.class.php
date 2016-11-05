@@ -73,14 +73,6 @@ class Init
      */
     public static $UPDATED = false;
     /**
-     * Estado de la BD
-     * 0 - Fail
-     * 1 - OK
-     *
-     * @var int
-     */
-    public static $DB_STATUS = 0;
-    /**
      * @var string
      */
     private static $SUBURI = '';
@@ -283,7 +275,7 @@ class Init
     }
 
     /**
-     * Devuelve un eror utilizando la plantilla de rror.
+     * Devuelve un eror utilizando la plantilla de error.
      *
      * @param string $str  con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
@@ -292,7 +284,7 @@ class Init
     {
         $Tpl = new Template();
         $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint]);
-        $Controller = new MainController($Tpl);
+        $Controller = new MainController($Tpl, 'error', true);
         $Controller->getError(true);
         $Controller->view();
         exit;

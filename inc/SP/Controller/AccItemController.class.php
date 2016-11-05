@@ -33,19 +33,17 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\CustomFieldData;
+use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Groups\GroupUsers;
 use SP\Mgmt\PublicLinks\PublicLink;
-use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Mgmt\Users\User;
-use SP\Mgmt\Users\UserUtil;
-use SP\Storage\DBUtil;
 use SP\Util\Checks;
 
 /**
@@ -111,7 +109,7 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_USR_GROUPS;
         $this->view->addTemplate('groups');
 
-        $this->view->assign('group', Group::getItem()->getById($this->view->itemId));
+        $this->view->assign('group', $this->view->itemId ? Group::getItem()->getById($this->view->itemId) : new GroupData());
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('groupUsers', GroupUsers::getItem()->getById($this->view->itemId));
 

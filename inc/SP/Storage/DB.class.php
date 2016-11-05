@@ -26,6 +26,7 @@
 namespace SP\Storage;
 
 use PDO;
+use SP\Config\Config;
 use SP\Core\DiFactory;
 use SP\Log\Log;
 use SP\Core\Exceptions\SPException;
@@ -248,6 +249,13 @@ class DB
             DB::$lastId = $db->lastInsertId();
 
             return $stmt;
+        } catch (SPException $e) {
+            ob_start();
+            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            error_log(sprintf('Exception: %s - %s', $e->getMessage(), $e->getHint()));
+            error_log(ob_get_clean());
+
+            throw $e;
         } catch (\Exception $e) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
