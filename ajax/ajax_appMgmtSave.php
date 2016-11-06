@@ -271,6 +271,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         $ProfileData->setAccDelete(Request::analyze('profile_accdel', 0, false, 1));
         $ProfileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
         $ProfileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
+        $ProfileData->setAccPrivate(Request::analyze('profile_accprivate', 0, false, 1));
         $ProfileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
         $ProfileData->setConfigEncryption(Request::analyze('profile_configmpw', 0, false, 1));
         $ProfileData->setConfigBackup(Request::analyze('profile_configback', 0, false, 1));
@@ -302,7 +303,6 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         } catch (SPException $e) {
             Response::printJson($e->getMessage(), 2);
         }
-
     } elseif ($actionId === ActionsInterface::ACTION_USR_PROFILES_DELETE) {
         try {
             Profile::getItem()->delete($itemId);

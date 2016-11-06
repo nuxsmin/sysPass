@@ -100,7 +100,7 @@ abstract class AccountBase
      * Devolver datos de la cuenta para comprobación de accesos.
      *
      * @param int $accountId con el id de la cuenta
-     * @return AccountData objeto con los datos de la cuenta
+     * @return AccountExtData objeto con los datos de la cuenta
      */
     public function getAccountDataForACL($accountId = null)
     {
@@ -124,7 +124,7 @@ abstract class AccountBase
         $cacheUsers = &$_SESSION['cache']['usersId'];
 
         if (!is_array($cacheUsers)) {
-            $cacheUsers = array($accId => array(), 'expires' => 0);
+            $cacheUsers = [$accId => [], 'expires' => 0];
         }
 
         if (!isset($cacheUsers[$accId])
@@ -149,7 +149,7 @@ abstract class AccountBase
         $cacheUserGroups = &$_SESSION['cache']['userGroupsId'];
 
         if (!is_array($cacheUserGroups)) {
-            $cacheUserGroups = array($accId => array(), 'expires' => 0);
+            $cacheUserGroups = [$accId => [], 'expires' => 0];
         }
 
         if (!isset($cacheUserGroups[$accId])

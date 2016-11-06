@@ -313,7 +313,7 @@ sysPass.Triggers = function (Common) {
             if ($dropFiles.length > 0) {
                 var upload = Common.fileUpload($dropFiles);
 
-                upload.url = Common.appActions().ajaxUrl.account.getFiles;
+                upload.url = Common.appActions().ajaxUrl.file;
                 upload.requestDoneAction = function () {
                     Common.appActions().account.getfiles($listFiles);
                 };

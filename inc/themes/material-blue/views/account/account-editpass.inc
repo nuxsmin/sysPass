@@ -46,7 +46,7 @@
         </tr>
     </table>
     <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
-    <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
+    <input type="hidden" name="accountId" value="<?php echo $accountId; ?>"/>
     <input type="hidden" name="sk" value="">
     <input type="hidden" name="isAjax" value="1">
 

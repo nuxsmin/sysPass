@@ -24,18 +24,16 @@
  */
 
 use SP\Account\Account;
+use SP\Forms\AccountForm;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt;
+use SP\Core\Exceptions\ValidationException;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
 use SP\Http\Request;
 use SP\Http\Response;
-use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 
@@ -57,89 +55,29 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 
 // Variables POST del formulario
 $actionId = Request::analyze('actionId', 0);
-$accountId = Request::analyze('accountid', 0);
+$accountId = Request::analyze('accountId', 0);
 $customerId = Request::analyze('customerId', 0);
-$newCustomer = Request::analyze('customer_new');
+$categoryId = Request::analyze('categoryId', 0);
+$accountMainGroupId = Request::analyze('mainGroupId', 0);
 $accountName = Request::analyze('name');
 $accountLogin = Request::analyze('login');
 $accountPassword = Request::analyzeEncrypted('pass');
-$accountPasswordR = Request::analyzeEncrypted('passR');
-$categoryId = Request::analyze('categoryId', 0);
-$accountOtherGroups = Request::analyze('othergroups', 0);
-$accountOtherUsers = Request::analyze('otherusers', 0);
 $accountNotes = Request::analyze('notes');
 $accountUrl = Request::analyze('url');
-$accountGroupEditEnabled = Request::analyze('geditenabled', 0, false, 1);
-$accountUserEditEnabled = Request::analyze('ueditenabled', 0, false, 1);
-$accountMainGroupId = Request::analyze('mainGroupId', 0);
-$customFieldsHash = Request::analyze('hashcf');
-$customFields = Request::analyze('customfield');
-$tags = Request::analyze('tags');
 
-// Datos del Usuario
-$currentUserId = Session::getUserId();
+// Checks
+$accountGroupEditEnabled = Request::analyze('groupEditEnabled', 0, false, 1);
+$accountUserEditEnabled = Request::analyze('userEditEnabled', 0, false, 1);
+$accountPrivateEnabled = Request::analyze('privateEnabled', 0, false, 1);
+
+// Arrays
+$accountOtherGroups = Request::analyze('otherGroups', 0);
+$accountOtherUsers = Request::analyze('otherUsers', 0);
+$accountTags = Request::analyze('tags');
+$customFields = Request::analyze('customfield');
 
 if ($accountMainGroupId === 0) {
     $accountMainGroupId = Session::getUserGroupId();
-}
-
-if ($actionId === ActionsInterface::ACTION_ACC_NEW
-    || $actionId === ActionsInterface::ACTION_ACC_COPY
-) {
-    // Comprobaciones para nueva cuenta
-    if (!$accountName) {
-        Response::printJson(_('Es necesario un nombre de cuenta'));
-    } elseif (!$customerId && !$newCustomer) {
-        Response::printJson(_('Es necesario un nombre de cliente'));
-    } elseif (!$accountLogin) {
-        Response::printJson(_('Es necesario un usuario'));
-    } elseif (!$accountPassword || !$accountPasswordR) {
-        Response::printJson(_('Es necesaria una clave'));
-    } elseif (!$categoryId) {
-        Response::printJson(_('Es necesario una categoría'));
-    }
-} elseif ($actionId === ActionsInterface::ACTION_ACC_EDIT) {
-    // Comprobaciones para modificación de cuenta
-    if (!$customerId && !$newCustomer) {
-        Response::printJson(_('Es necesario un nombre de cliente'));
-    } elseif (!$accountName) {
-        Response::printJson(_('Es necesario un nombre de cuenta'));
-    } elseif (!$accountLogin) {
-        Response::printJson(_('Es necesario un usuario'));
-    } elseif (!$categoryId) {
-        Response::printJson(_('Es necesario una categoría'));
-    }
-} elseif ($actionId === ActionsInterface::ACTION_ACC_DELETE) {
-    if (!$accountId) {
-        Response::printJson(_('Id inválido'));
-    }
-} elseif ($actionId === ActionsInterface::ACTION_ACC_EDIT_PASS) {
-    // Comprobaciones para modficación de clave
-    if (!$accountPassword || !$accountPasswordR) {
-        Response::printJson(_('Es necesaria una clave'));
-    }
-} elseif ($actionId === ActionsInterface::ACTION_ACC_EDIT_RESTORE) {
-    if (!$accountId) {
-        Response::printJson(_('Id inválido'));
-    }
-} else {
-    Response::printJson(_('Acción Inválida'));
-}
-
-if ($actionId === ActionsInterface::ACTION_ACC_NEW
-    || $actionId === ActionsInterface::ACTION_ACC_COPY
-    || $actionId === ActionsInterface::ACTION_ACC_EDIT_PASS
-) {
-    if ($accountPassword !== $accountPasswordR) {
-        Response::printJson(_('Las claves no coinciden'));
-    }
-
-    try {
-        // Encriptar clave de cuenta
-        $accountEncPass = Crypt::encryptData($accountPassword);
-    } catch (SPException $e) {
-        Response::printJson($e->getMessage());
-    }
 }
 
 $AccountData = new AccountExtData();
@@ -150,9 +88,11 @@ $AccountData->setAccountCategoryId($categoryId);
 $AccountData->setAccountLogin($accountLogin);
 $AccountData->setAccountUrl($accountUrl);
 $AccountData->setAccountNotes($accountNotes);
-$AccountData->setAccountUserEditId($currentUserId);
+$AccountData->setAccountUserEditId(Session::getUserId());
 $AccountData->setAccountOtherUserEdit($accountUserEditEnabled);
 $AccountData->setAccountOtherGroupEdit($accountGroupEditEnabled);
+$AccountData->setAccountPass($accountPassword);
+$AccountData->setAccountIsPrivate($accountPrivateEnabled);
 
 if (is_array($accountOtherUsers)) {
     $AccountData->setUsersId($accountOtherUsers);
@@ -162,22 +102,27 @@ if (is_array($accountOtherGroups)) {
     $AccountData->setUserGroupsId($accountOtherGroups);
 }
 
-if (is_array($tags)) {
-    $AccountData->setTags($tags);
+if (is_array($accountTags)) {
+    $AccountData->setTags($accountTags);
 }
 
-$Account = new Account($AccountData);
+try {
+    $AccountForm = new AccountForm($AccountData);
+    $AccountForm->validate($actionId);
+} catch (ValidationException $e) {
+    Response::printJson($e->getMessage());
+}
 
 $CustomFieldData = new CustomFieldData();
 $CustomFieldData->setId($accountId);
 $CustomFieldData->setModule(ActionsInterface::ACTION_ACC);
 
+$Account = new Account($AccountData);
+
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_NEW:
     case ActionsInterface::ACTION_ACC_COPY:
-        $AccountData->setAccountPass($accountEncPass['data']);
-        $AccountData->setAccountIV($accountEncPass['iv']);
-        $AccountData->setAccountUserId($currentUserId);
+        $AccountData->setAccountUserId(Session::getUserId());
         $AccountData->setAccountUserGroupId($accountMainGroupId);
 
         // Crear cuenta
@@ -220,9 +165,6 @@ switch ($actionId) {
         Response::printJson(_('Error al eliminar la cuenta'));
         break;
     case ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $AccountData->setAccountPass($accountEncPass['data']);
-        $AccountData->setAccountIV($accountEncPass['iv']);
-
         // Actualizar clave de cuenta
         if ($Account->updateAccountPass()) {
             Response::printJson(_('Clave actualizada'), 0);
@@ -232,7 +174,6 @@ switch ($actionId) {
         break;
     case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
         $AccountData->setAccountId(\SP\Account\AccountHistory::getAccountIdFromId($accountId));
-        $AccountData->setAccountUserEditId($currentUserId);
 
         if ($Account->restoreFromHistory($accountId)) {
             Response::printJson(_('Cuenta restaurada'), 0);

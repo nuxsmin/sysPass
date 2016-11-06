@@ -28,6 +28,7 @@ namespace SP\Core;
 
 use SP\DataModel\AccountData;
 use SP\Controller;
+use SP\DataModel\AccountExtData;
 use SP\Mgmt\Groups\Group;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
@@ -90,37 +91,37 @@ class Acl implements ActionsInterface
             case self::ACTION_CFG:
                 return ($curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
             case self::ACTION_CFG_GENERAL:
-                return ($curUserProfile->isConfigGeneral());
+                return $curUserProfile->isConfigGeneral();
             case self::ACTION_CFG_IMPORT:
-                return ($curUserProfile->isConfigImport());
+                return $curUserProfile->isConfigImport();
             case self::ACTION_MGM_CATEGORIES:
-                return ($curUserProfile->isMgmCategories());
+                return $curUserProfile->isMgmCategories();
             case self::ACTION_MGM_CUSTOMERS:
-                return ($curUserProfile->isMgmCustomers());
+                return $curUserProfile->isMgmCustomers();
             case self::ACTION_MGM_CUSTOMFIELDS:
-                return ($curUserProfile->isMgmCustomFields());
+                return $curUserProfile->isMgmCustomFields();
             case self::ACTION_MGM_PUBLICLINKS:
-                return ($curUserProfile->isMgmPublicLinks());
+                return $curUserProfile->isMgmPublicLinks();
             case self::ACTION_MGM_PUBLICLINKS_NEW:
                 return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
             case self::ACTION_CFG_ENCRYPTION:
-                return ($curUserProfile->isConfigEncryption());
+                return $curUserProfile->isConfigEncryption();
             case self::ACTION_CFG_BACKUP:
-                return ($curUserProfile->isConfigBackup());
+                return $curUserProfile->isConfigBackup();
             case self::ACTION_USR:
                 return ($curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
             case self::ACTION_USR_USERS:
-                return ($curUserProfile->isMgmUsers());
+                return $curUserProfile->isMgmUsers();
             case self::ACTION_USR_USERS_EDITPASS:
-                return ($userId == $curUserId || $curUserProfile->isMgmUsers());
+                return ($userId === $curUserId || $curUserProfile->isMgmUsers());
             case self::ACTION_USR_GROUPS:
-                return ($curUserProfile->isMgmGroups());
+                return $curUserProfile->isMgmGroups();
             case self::ACTION_USR_PROFILES:
-                return ($curUserProfile->isMgmProfiles());
+                return $curUserProfile->isMgmProfiles();
             case self::ACTION_MGM_APITOKENS:
-                return ($curUserProfile->isMgmApiTokens());
+                return $curUserProfile->isMgmApiTokens();
             case self::ACTION_EVL:
-                return ($curUserProfile->isEvl());
+                return $curUserProfile->isEvl();
         }
 
         Log::writeNewLog(__FUNCTION__, sprintf('%s \'%s\'', _('Denegado acceso a'), self::getActionName($action)), Log::NOTICE);
@@ -181,13 +182,15 @@ class Acl implements ActionsInterface
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string      $module      con la acción realizada
-     * @param AccountData $accountData con los datos de la cuenta a verificar
+     * @param string         $module      con la acción realizada
+     * @param AccountExtData $accountData con los datos de la cuenta a verificar
      * @return bool
      */
-    public static function checkAccountAccess($module, AccountData $accountData)
+    public static function checkAccountAccess($module, AccountExtData $accountData)
     {
-        if (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc()) {
+        if (Session::getUserIsAdminApp()
+            || Session::getUserIsAdminAcc()
+        ) {
             return true;
         }
 
@@ -220,10 +223,11 @@ class Acl implements ActionsInterface
     /**
      * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
      * cuenta.
-     * @param AccountData $AccountData
+     *
+     * @param AccountExtData $AccountData $AccountData
      * @return bool
      */
-    private static function getIsUserInGroups(AccountData $AccountData)
+    private static function getIsUserInGroups(AccountExtData $AccountData)
     {
         // Comprobar si el usuario está vinculado desde un grupo
         foreach (GroupUsers::getItem()->getById($AccountData->getAccountUserGroupId()) as $GroupUsersData) {
@@ -233,7 +237,7 @@ class Acl implements ActionsInterface
         }
 
         // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
-        foreach ($AccountData->getAccountUserGroupsId() as $groupId) {
+        foreach ($AccountData->getUserGroupsId() as $groupId) {
             if ($groupId === Session::getUserGroupId()) {
                 return true;
             }

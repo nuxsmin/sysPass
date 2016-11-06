@@ -13,105 +13,90 @@
     <?php endif; ?>
 </div>
 
-<?php if (!$isView): ?>
 <form method="post" name="frmaccount" id="frmAccount" class="form-action" data-onsubmit="account/save" data-hash="">
     <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
     <?php if ($gotData): ?>
-        <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
+        <input type="hidden" name="accountId" value="<?php echo $accountId; ?>"/>
     <?php endif; ?>
     <input type="hidden" name="sk" value="">
     <input type="hidden" name="isAjax" value="1">
 
-    <?php endif; ?>
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
             <td class="valField">
-                <?php if (!$isView): ?>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required
-                               class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $gotData ? $accountData->getAccountName() : ''; ?>">
-                        <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
-                    </div>
-                <?php else: ?>
-                    <?php echo $accountData->getAccountName(); ?>
-                <?php endif; ?>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="name" name="name" type="text" required
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           maxlength="50"
+                           value="<?php echo $gotData ? $accountData->getAccountName() : ''; ?>" <?php echo $readonly; ?>>
+                    <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
+                </div>
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Cliente'); ?></td>
             <td class="valField">
-                <?php if (!$isView): ?>
-                    <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer">
-                        <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
-                        <?php foreach ($customers as $customer): ?>
-                            <option
-                                value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->getAccountCustomerId()) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer"
+                        required <?php echo $disabled; ?>>
+                    <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
+                    <?php foreach ($customers as $customer): ?>
+                        <option
+                            value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->getAccountCustomerId()) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (!$isView && \SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS)): ?>
                     <i class="material-icons btn-action" title="<?php echo _('Nuevo Cliente'); ?>"
                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW; ?>"
                        data-item-id="0"
                        data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CUSTOMERS; ?>"
                        data-item-dst="selCustomer"
                        data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
-                <?php else: ?>
-                    <?php echo $accountData->getCustomerName(); ?>
                 <?php endif; ?>
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Categoría'); ?></td>
             <td class="valField">
-                <?php if (!$isView): ?>
-                    <select id="selCategory" name="categoryId" class="select-box sel-chosen-category" required>
-                        <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
-                        <?php foreach ($categories as $category): ?>
-                            <option
-                                value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getAccountCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <?php if (\SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
-                        <i class="material-icons btn-action" title="<?php echo _('Nueva Categoría'); ?>"
-                           data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_NEW; ?>"
-                           data-item-id="0"
-                           data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CATEGORIES; ?>"
-                           data-item-dst="selCategory"
-                           data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <?php echo $accountData->getCategoryName(); ?>
+                <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
+                        required <?php echo $disabled; ?>>
+                    <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
+                    <?php foreach ($categories as $category): ?>
+                        <option
+                            value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getAccountCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (!$isView && \SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
+                    <i class="material-icons btn-action" title="<?php echo _('Nueva Categoría'); ?>"
+                       data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_NEW; ?>"
+                       data-item-id="0"
+                       data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CATEGORIES; ?>"
+                       data-item-dst="selCategory"
+                       data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                 <?php endif; ?>
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('URL / IP'); ?></td>
             <td class="valField">
-                <?php if (!$isView): ?>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="255" value="<?php echo $gotData ? $accountData->getAccountUrl() : ''; ?>">
-                        <label class="mdl-textfield__label" for="name"><?php echo _('URL o IP de acceso'); ?></label>
-                    </div>
-                <?php else: ?>
-                    <?php echo $accountData->getAccountUrl(); ?>
-                <?php endif; ?>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
+                           maxlength="255"
+                           value="<?php echo $gotData ? $accountData->getAccountUrl() : ''; ?>" <?php echo $readonly; ?>>
+                    <label class="mdl-textfield__label" for="name"><?php echo _('URL o IP de acceso'); ?></label>
+                </div>
             </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Usuario'); ?></td>
             <td class="valField">
-                <?php if (!$isView): ?>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="login" name="login" type="text" required
-                               class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $gotData ? $accountData->getAccountLogin() : ''; ?>">
-                        <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
-                    </div>
-                <?php else: ?>
-                    <?php echo $accountData->getAccountLogin(); ?>
-                <?php endif; ?>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="login" name="login" type="text" required
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           maxlength="50"
+                           value="<?php echo $gotData ? $accountData->getAccountLogin() : ''; ?>" <?php echo $readonly; ?>>
+                    <label class="mdl-textfield__label" for="name"><?php echo _('Usuario de acceso'); ?></label>
+                </div>
             </td>
         </tr>
         <?php if ($AccountAcl->isShowPass()): ?>
@@ -143,18 +128,12 @@
         <tr>
             <td class="descField"><?php echo _('Notas'); ?></td>
             <td class="valField">
-                <?php if (!$isView): ?>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
-                                  name="notes"
-                                  maxlength="1000"><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
-                        <label class="mdl-textfield__label"
-                               for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
-                    </div>
-                <?php else: ?>
-                    <?php echo $accountData->getAccountNotes(); ?>
-                <?php endif; ?>
-
+                                  name="notes" maxlength="1000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
+                    <label class="mdl-textfield__label"
+                           for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
+                </div>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Etiquetas'); ?></td>
@@ -164,7 +143,7 @@
                         <option value=""><?php echo _('Seleccionar Etiquetas'); ?></option>
                     </select>
                 <?php else: ?>
-                    <?php foreach ($accountTags as $tag): ?>
+                    <?php foreach ($accountData->getTags() as $tag): ?>
                         <span class="tag"><?php echo $tag; ?></span>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -190,9 +169,7 @@
         <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT && $accountData->getUserEditName()): ?>
             <tr>
                 <td class="descField"><?php echo _('Última Modificación'); ?></td>
-                <?php if ($accountData->getUserEditName()): ?>
-                    <td class="valField"><?php echo $accountData->getAccountDateEdit(), ' ', _('por'), ' ', $accountData->getUserEditName(); ?></td>
-                <?php endif; ?>
+                <td class="valField"><?php echo $accountData->getAccountDateEdit(), ' ', _('por'), ' ', $accountData->getUserEditName(); ?></td>
             </tr>
         <?php endif; ?>
 
@@ -208,9 +185,7 @@
         </table>
     <?php endif; ?>
 
-    <?php if (!$isView): ?>
 </form>
-<?php endif; ?>
 
 <!--Files box -->
 <?php if ($gotData && $AccountAcl->isShowFiles()): ?>
@@ -227,7 +202,7 @@
           onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
         <input type="hidden" name="actionId"
                value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
-        <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
+        <input type="hidden" name="accountId" value="<?php echo $accountId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
@@ -257,7 +232,7 @@
 
         var otherUsers = <?php echo $otherUsersJson; ?>;
 
-        $('#otherusers').selectize({
+        $('#otherUsers').selectize({
             persist: false,
             valueField: 'user_id',
             labelField: 'user_login',
@@ -275,7 +250,7 @@
 
         var otherGroups = <?php echo $otherGroupsJson; ?>;
 
-        $('#othergroups').selectize({
+        $('#otherGroups').selectize({
             persist: false,
             valueField: 'id',
             labelField: 'name',

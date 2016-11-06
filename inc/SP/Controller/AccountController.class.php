@@ -30,7 +30,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
-use SP\DataModel\AccountData;
 use SP\Core\Acl;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
@@ -52,7 +51,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Account\UserAccounts;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
-use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
@@ -178,10 +176,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
             $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->getId()));
             $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
-            $this->view->assign('accountTags', $this->getAccount()->getAccountData()->getTags());
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
-            $this->view->assign('chkUserEdit', $this->getAccount()->getAccountData()->getAccountOtherUserEdit() ? 'checked' : '');
-            $this->view->assign('chkGroupEdit', $this->getAccount()->getAccountData()->getAccountOtherGroupEdit() ? 'checked' : '');
             $this->view->assign('historyData', AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
             $this->view->assign('isModified', $this->AccountData->getAccountDateEdit() && $this->AccountData->getAccountDateEdit() !== '0000-00-00 00:00:00');
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
@@ -200,6 +195,10 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('otherGroups', Group::getItem()->getItemsForSelect());
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
         $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getItemsForSelect()));
+        $this->view->assign('allowPrivate', Session::getUserProfile()->isAccPrivate());
+
+        $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
+        $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
 
         $AccountAcl = new AccountAcl();
         $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
@@ -231,7 +230,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     private function getAccount()
     {
-        return $this->Account ?: new Account();
+        return $this->Account ?: new Account(new AccountExtData());
     }
 
     /**

@@ -26,7 +26,9 @@
 namespace SP\Account;
 
 use SP\Core\Crypt;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\AccountHistoryData;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupAccounts;
@@ -58,6 +60,7 @@ class Account extends AccountBase implements AccountInterface
      * Actualiza los datos de una cuenta en la BBDD.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateAccount()
     {
@@ -110,7 +113,8 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_userGroupId = :accountUserGroupId,'
                 . 'account_dateEdit = NOW(),'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
-                . 'account_otherGroupEdit = :accountOtherGroupEdit '
+                . 'account_otherGroupEdit = :accountOtherGroupEdit, '
+                . 'account_isPrivate = :accountIsPrivate '
                 . 'WHERE account_id = :accountId';
 
             $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
@@ -126,7 +130,8 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_userEditId = :accountUserEditId,'
                 . 'account_dateEdit = NOW(),'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
-                . 'account_otherGroupEdit = :accountOtherGroupEdit '
+                . 'account_otherGroupEdit = :accountOtherGroupEdit, '
+                . 'account_isPrivate = :accountIsPrivate '
                 . 'WHERE account_id = :accountId';
 
         }
@@ -141,6 +146,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
 
         if (DB::getQuery($Data) === false) {
@@ -151,7 +157,7 @@ class Account extends AccountBase implements AccountInterface
         $this->getAccountInfoById($accountInfo);
 
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
-        $Log->addDetails(Html::strongText(_('Cuenta')), $this->accountData->getAccountName() . " (" . $this->accountData->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $this->accountData->getAccountId()));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -264,7 +270,7 @@ class Account extends AccountBase implements AccountInterface
 
         $Log->setAction(_('Restaurar Cuenta'));
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
-        $Log->addDetails(Html::strongText(_('Cuenta')), $this->cacheParams['account_name'] . " (" . $this->getAccountId() . ")");
+        $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->cacheParams['account_name'], $this->accountData->getAccountId()));
 
         $Log->writeLog();
         Email::sendEmail($Log);
@@ -276,44 +282,13 @@ class Account extends AccountBase implements AccountInterface
      * Obtener los datos de una cuenta.
      * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
      *
-     * @return object
+     * @return AccountExtData
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getData()
     {
         $query = /** @lang SQL */
-            'SELECT account_id,'
-            . 'account_name,'
-            . 'account_categoryId,'
-            . 'account_userId,'
-            . 'account_customerId,'
-            . 'account_userGroupId,'
-            . 'account_userEditId,'
-            . 'account_login,'
-            . 'account_url,'
-            . 'account_notes,'
-            . 'account_countView,'
-            . 'account_countDecrypt,'
-            . 'account_dateAdd,'
-            . 'account_dateEdit,'
-            . 'BIN(account_otherUserEdit) AS account_otherUserEdit,'
-            . 'BIN(account_otherGroupEdit) AS account_otherGroupEdit,'
-            . 'category_name,'
-            . 'customer_name,'
-            . 'usergroup_name,'
-            . 'u1.user_name,'
-            . 'u1.user_login,'
-            . 'u2.user_name as user_editName,'
-            . 'u2.user_login as user_editLogin,'
-            . 'publicLink_hash '
-            . 'FROM accounts '
-            . 'LEFT JOIN categories ON account_categoryId = category_id '
-            . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
-            . 'LEFT JOIN usrData u1 ON account_userId = u1.user_id '
-            . 'LEFT JOIN usrData u2 ON account_userEditId = u2.user_id '
-            . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'LEFT JOIN publicLinks ON account_id = publicLink_itemId '
-            . 'WHERE account_id = :id LIMIT 1';
+            'SELECT * FROM account_data_v WHERE account_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -339,9 +314,12 @@ class Account extends AccountBase implements AccountInterface
      * Crea una nueva cuenta en la BBDD
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function createAccount()
     {
+        $this->setPasswordEncrypted();
+
         $query = /** @lang SQL */
             'INSERT INTO accounts SET '
             . 'account_customerId = :accountCustomerId,'
@@ -356,7 +334,8 @@ class Account extends AccountBase implements AccountInterface
             . 'account_userId = :accountUserId,'
             . 'account_userGroupId = :accountUserGroupId,'
             . 'account_otherUserEdit = :accountOtherUserEdit,'
-            . 'account_otherGroupEdit = :accountOtherGroupEdit';
+            . 'account_otherGroupEdit = :accountOtherGroupEdit,'
+            . 'account_isPrivate = :accountIsPrivate';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -372,6 +351,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
 
         if (DB::getQuery($Data) === false) {
             return false;
@@ -419,6 +399,19 @@ class Account extends AccountBase implements AccountInterface
         Email::sendEmail($Log);
 
         return true;
+    }
+
+    /**
+     * Devolver los datos de la clave encriptados
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function setPasswordEncrypted()
+    {
+        $pass = Crypt::encryptData($this->accountData->getAccountPass());
+
+        $this->accountData->setAccountPass($pass['data']);
+        $this->accountData->setAccountIV($pass['iv']);
     }
 
     /**
@@ -511,6 +504,7 @@ class Account extends AccountBase implements AccountInterface
      * @param string $newMasterPass     con la nueva clave maestra
      * @param string $newHash           con el nuevo hash de la clave maestra
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
     {
@@ -622,6 +616,7 @@ class Account extends AccountBase implements AccountInterface
      * @param bool $isMassive para no actualizar el histórico ni enviar mensajes
      * @param bool $isRestore indica si es una restauración
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateAccountPass($isMassive = false, $isRestore = false)
     {
@@ -637,6 +632,8 @@ class Account extends AccountBase implements AccountInterface
             $Log->writeLog();
             return false;
         }
+
+        $this->setPasswordEncrypted();
 
         $query = /** @lang SQL */
             'UPDATE accounts SET '
@@ -666,7 +663,7 @@ class Account extends AccountBase implements AccountInterface
 
             $Log->setAction(_('Modificar Clave'));
             $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
-            $Log->addDetails(Html::strongText(_('Cuenta')), $this->cacheParams['account_name'] . " (" . $this->accountData->getAccountId() . ")");
+            $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->cacheParams['account_name'], $this->accountData->getAccountId()));
             $Log->writeLog();
 
             Email::sendEmail($Log);

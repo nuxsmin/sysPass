@@ -25,6 +25,10 @@
 
 namespace SP\Account;
 
+use SP\DataModel\AccountData;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\AccountHistoryData;
+
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
@@ -33,7 +37,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 interface AccountInterface
 {
     /**
-     * @return mixed
+     * @return AccountExtData|AccountData|AccountHistoryData
      */
     public function getData();
 

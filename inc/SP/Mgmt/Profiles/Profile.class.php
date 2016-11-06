@@ -29,6 +29,7 @@ namespace SP\Mgmt\Profiles;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
 use SP\DataModel\ProfileBaseData;
 use SP\DataModel\ProfileData;
 use SP\Html\Html;
@@ -224,6 +225,8 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
 
         Email::sendEmail($Log);
 
+        $this->updateSessionProfile();
+
         return $this;
     }
 
@@ -274,5 +277,15 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         DB::setReturnArray();
 
         return DB::getResults($Data);
+    }
+
+    /**
+     * Actualizar el perfil de la sesión
+     */
+    protected function updateSessionProfile()
+    {
+        if (Session::getUserProfile()->getUserprofileId() === $this->itemData->getUserprofileId()){
+            Session::setUserProfile($this->itemData);
+        }
     }
 }

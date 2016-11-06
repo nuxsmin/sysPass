@@ -313,8 +313,12 @@ class AccountSearch
         foreach ($results as $AccountSearchData) {
             // Establecer los datos de la cuenta
             $Account = new Account($AccountSearchData);
-            $AccountSearchData->setUsersId($Account->getUsersAccount());
-            $AccountSearchData->setUserGroupsId($Account->getGroupsAccount());
+
+            if (!$AccountSearchData->getAccountIsPrivate()) {
+                $AccountSearchData->setUsersId($Account->getUsersAccount());
+                $AccountSearchData->setUserGroupsId($Account->getGroupsAccount());
+            }
+
             $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
 
             // Obtener la ACL de la cuenta
@@ -420,6 +424,9 @@ class AccountSearch
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
+
+        $arrQueryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
+        $Data->addParam(Session::getUserId());
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';

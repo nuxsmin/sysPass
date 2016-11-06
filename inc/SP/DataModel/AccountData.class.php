@@ -109,6 +109,10 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      * @var int
      */
     public $account_countDecrypt = 0;
+    /**
+     * @var int
+     */
+    public $account_isPrivate = 0;
 
     /**
      * AccountData constructor.
@@ -133,7 +137,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function setAccountDateAdd($account_dateAdd)
     {
-        $this->account_dateAdd = (int)$account_dateAdd;
+        $this->account_dateAdd = $account_dateAdd;
     }
 
     /**
@@ -149,7 +153,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function setAccountDateEdit($account_dateEdit)
     {
-        $this->account_dateEdit = (int)$account_dateEdit;
+        $this->account_dateEdit = $account_dateEdit;
     }
 
     /**
@@ -157,7 +161,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUserEditId()
     {
-        return $this->account_userEditId;
+        return (int)$this->account_userEditId;
     }
 
     /**
@@ -205,7 +209,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountId()
     {
-        return $this->account_id;
+        return (int)$this->account_id;
     }
 
     /**
@@ -221,7 +225,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUserId()
     {
-        return $this->account_userId;
+        return (int)$this->account_userId;
     }
 
     /**
@@ -237,7 +241,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountUserGroupId()
     {
-        return $this->account_userGroupId;
+        return (int)$this->account_userGroupId;
     }
 
     /**
@@ -253,7 +257,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountOtherUserEdit()
     {
-        return $this->account_otherUserEdit;
+        return (int)$this->account_otherUserEdit;
     }
 
     /**
@@ -269,7 +273,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountOtherGroupEdit()
     {
-        return $this->account_otherGroupEdit;
+        return (int)$this->account_otherGroupEdit;
     }
 
     /**
@@ -301,7 +305,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountCategoryId()
     {
-        return $this->account_categoryId;
+        return (int)$this->account_categoryId;
     }
 
     /**
@@ -317,7 +321,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountCustomerId()
     {
-        return $this->account_customerId;
+        return (int)$this->account_customerId;
     }
 
     /**
@@ -398,7 +402,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getId()
     {
-        return $this->account_id;
+        return (int)$this->account_id;
     }
 
     /**
@@ -414,7 +418,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountCountView()
     {
-        return $this->account_countView;
+        return (int)$this->account_countView;
     }
 
     /**
@@ -430,7 +434,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function getAccountCountDecrypt()
     {
-        return $this->account_countDecrypt;
+        return (int)$this->account_countDecrypt;
     }
 
     /**
@@ -439,5 +443,21 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     public function setAccountCountDecrypt($account_countDecrypt)
     {
         $this->account_countDecrypt = (int)$account_countDecrypt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountIsPrivate()
+    {
+        return (int)$this->account_isPrivate;
+    }
+
+    /**
+     * @param int $account_isPrivate
+     */
+    public function setAccountIsPrivate($account_isPrivate)
+    {
+        $this->account_isPrivate = (int)$account_isPrivate;
     }
 }
