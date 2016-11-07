@@ -739,13 +739,13 @@ class Grids implements ActionsInterface
         $GridHeaders->addHeader(_('Visitas'));
 
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('publicLink_id');
-        $GridData->addDataRowSource('publicLink_account');
-        $GridData->addDataRowSource('publicLink_dateAdd');
-        $GridData->addDataRowSource('publicLink_dateExpire');
-        $GridData->addDataRowSource('publicLink_user');
-        $GridData->addDataRowSource('publicLink_notify');
-        $GridData->addDataRowSource('publicLink_views');
+        $GridData->setDataRowSourceId('publicLink_itemId');
+        $GridData->addDataRowSource('accountName');
+        $GridData->addDataRowSource('dateAdd');
+        $GridData->addDataRowSource('dateExpire');
+        $GridData->addDataRowSource('userLogin');
+        $GridData->addDataRowSource('notify');
+        $GridData->addDataRowSource('countViews');
 
         $Grid = new DataGridTab();
         $Grid->setId('tblLinks');

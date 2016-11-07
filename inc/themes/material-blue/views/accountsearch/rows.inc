@@ -86,13 +86,12 @@
             <div class="label-right">
                 <?php if ($AccountSearchItem->isShow()): ?>
                 <div class="account-info">
-
                     <?php if ($AccountSearchItem->isPasswordExpired()): ?>
                         <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"
                            title="<?php echo _('Clave Caducada'); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
                     <?php endif; ?>
 
-                    <?php if (!$AccountSearchData->getAccountIsPrivate()): ?>
+                    <?php if ($AccountSearchData->getAccountIsPrivate() === 0): ?>
                         <i id="accesses-<?php echo $AccountSearchData->getAccountId(); ?>"
                            class="material-icons">face</i>
 

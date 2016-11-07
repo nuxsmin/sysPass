@@ -245,8 +245,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             'SELECT publicLink_id,
             publicLink_hash,
             publicLink_linkData
-            FROM publicLink
-            WHERE publicLink_id = ? LIMIT 1';
+            FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName('SP\DataModel\PublicLinkBaseData');
@@ -352,8 +351,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             'SELECT publicLink_id,
             publicLink_hash,
             publicLink_linkData
-            FROM publicLink
-            WHERE publicLink_hash = ? LIMIT 1';
+            FROM publicLinks WHERE publicLink_hash = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName('SP\DataModel\PublicLinkBaseData');

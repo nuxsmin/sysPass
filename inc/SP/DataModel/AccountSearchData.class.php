@@ -41,7 +41,7 @@ class AccountSearchData extends AccountExtData
      */
     public function getNumFiles()
     {
-        return $this->num_files;
+        return (int)$this->num_files;
     }
 
     /**

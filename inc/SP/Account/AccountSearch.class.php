@@ -484,7 +484,7 @@ class AccountSearch
      */
     private function analyzeQueryString()
     {
-        preg_match('/(user|group|file|tag|expired):(.*)/i', $this->txtSearch, $filters);
+        preg_match('/(user|group|file|tag|expired|private|owner|maingroup):(.*)/i', $this->txtSearch, $filters);
 
         if (!is_array($filters) || count($filters) === 0) {
             return [];
@@ -497,23 +497,39 @@ class AccountSearch
                 $UserData = User::getItem()->getByLogin($filters[2])->getItemData();
                 $filtersData[] = [
                     'type' => 'user',
-                    'query' => 'account_userId = ? OR accuser_userId ?',
-                    'values' => [$UserData->getUserId(), $UserData->getUserId()]
+                    'query' => 'account_userId = ? OR account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)',
+                    'values' => [$UserData->getUserId(), $UserData->getUserId(), $UserData->getUserGroupId()]
+                ];
+                break;
+            case 'owner':
+                $UserData = User::getItem()->getByLogin($filters[2])->getItemData();
+                $filtersData[] = [
+                    'type' => 'user',
+                    'query' => 'account_userId = ?',
+                    'values' => [$UserData->getUserId()]
                 ];
                 break;
             case 'group':
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
                 $filtersData[] = [
                     'type' => 'group',
-                    'query' => 'account_userGroupId = ? OR accgroup_groupId ?',
+                    'query' => 'account_userGroupId = ? OR account_id IN (SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)',
                     'values' => [$GroupData->getUsergroupId(), $GroupData->getUsergroupId()]
+                ];
+                break;
+            case 'maingroup':
+                $GroupData = GroupUtil::getGroupIdByName($filters[2]);
+                $filtersData[] = [
+                    'type' => 'group',
+                    'query' => 'account_userGroupId = ?',
+                    'values' => [$GroupData->getUsergroupId()]
                 ];
                 break;
             case 'file':
                 $filtersData[] = [
-                    'type' => 'group',
-                    'query' => 'accfile_name LIKE ?',
-                    'values' => [$filters[2]]
+                    'type' => 'file',
+                    'query' => 'account_id IN (SELECT accfile_accountId FROM accFiles WHERE accfile_name LIKE ?)',
+                    'values' => ['%' . $filters[2] . '%']
                 ];
                 break;
             case 'tag':
@@ -530,6 +546,14 @@ class AccountSearch
                         'type' => 'expired',
                         'query' => 'account_passDateChange > 0 AND UNIX_TIMESTAMP() > account_passDateChange',
                         'values' => []
+                    ];
+                break;
+            case 'private':
+                $filtersData[] =
+                    [
+                        'type' => 'private',
+                        'query' => 'account_isPrivate = 1 AND account_userId = ?',
+                        'values' => [Session::getUserId()]
                     ];
                 break;
             default:
