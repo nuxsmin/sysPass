@@ -25,6 +25,7 @@
 namespace SP\Account;
 
 use SP\Core\Acl;
+use SP\Core\Session;
 use SP\Log\Log;
 use SP\Util\Checks;
 
@@ -99,6 +100,10 @@ class AccountAcl
      * @var bool
      */
     protected $showCopy = false;
+    /**
+     * @var bool
+     */
+    protected $showPermission = false;
 
     /**
      * @return boolean
@@ -195,7 +200,7 @@ class AccountAcl
      * @param int         $action
      * @return $this
      */
-    public function getAcl (AccountBase $Account, $action)
+    public function getAcl(AccountBase $Account, $action)
     {
         $this->Account = $Account;
         $this->action = $action;
@@ -289,6 +294,9 @@ class AccountAcl
                 || $this->action === Acl::ACTION_ACC_EDIT)
             && Acl::checkAccountAccess(Acl::ACTION_ACC_COPY, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_COPY);
+
+        // Cambiar los permisos de la cuenta
+        $this->showPermission = Session::getUserIsAdminAcc() || Session::getUserIsAdminApp() || Session::getUserProfile()->isAccPermission();
     }
 
     /**
@@ -321,5 +329,21 @@ class AccountAcl
     public function isShowCopy()
     {
         return $this->showCopy;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShowPermission()
+    {
+        return $this->showPermission;
+    }
+
+    /**
+     * @param boolean $showPermission
+     */
+    public function setShowPermission($showPermission)
+    {
+        $this->showPermission = $showPermission;
     }
 }

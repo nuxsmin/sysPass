@@ -224,7 +224,6 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         $customFields = [];
-        $customFieldsHash = '';
 
         foreach ($queryRes as $CustomFieldData) {
             /**
@@ -243,10 +242,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             $CustomFieldData->setValue($this->unencryptData($CustomFieldData));
 
             $customFields[] = $CustomFieldData;
-            $customFieldsHash .= $CustomFieldData->getValue();
         }
-
-        $customFields['hash'] = md5($customFieldsHash);
 
         return $customFields;
     }

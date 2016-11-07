@@ -194,7 +194,7 @@
         <?php include $this->includeTemplate('account-permissions'); ?>
     <?php endif; ?>
 
-    <?php if ($customFields): ?>
+    <?php if (count($customFields) > 0): ?>
         <table class="data round extra-info secure-info">
             <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
         </table>

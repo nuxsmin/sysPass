@@ -99,6 +99,13 @@
                             <span class="mdl-switch__label"
                                   title="<?php echo _('Crear cuenta privada'); ?>"><?php echo _('Privada'); ?></span>
                         </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accpermissions">
+                            <input type="checkbox" id="profile_accpermissions"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_accpermissions" <?php echo $profile->isAccPermission() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo _('Asignar permisos'); ?>"><?php echo _('Permisos'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>

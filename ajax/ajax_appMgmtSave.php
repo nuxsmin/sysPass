@@ -272,6 +272,7 @@ if ($actionId === ActionsInterface::ACTION_USR_USERS_NEW
         $ProfileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
         $ProfileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
         $ProfileData->setAccPrivate(Request::analyze('profile_accprivate', 0, false, 1));
+        $ProfileData->setAccPermission(Request::analyze('profile_accpermissions', 0, false, 1));
         $ProfileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
         $ProfileData->setConfigEncryption(Request::analyze('profile_configmpw', 0, false, 1));
         $ProfileData->setConfigBackup(Request::analyze('profile_configback', 0, false, 1));

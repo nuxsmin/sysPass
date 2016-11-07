@@ -73,6 +73,10 @@ class ProfileData extends ProfileBaseData
     /**
      * @var bool
      */
+    protected $accPermission = false;
+    /**
+     * @var bool
+     */
     protected $accPublicLinks = false;
     /**
      * @var bool
@@ -513,5 +517,21 @@ class ProfileData extends ProfileBaseData
     public function setAccPrivate($accPrivate)
     {
         $this->accPrivate = $accPrivate;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAccPermission()
+    {
+        return $this->accPermission;
+    }
+
+    /**
+     * @param boolean $accPermission
+     */
+    public function setAccPermission($accPermission)
+    {
+        $this->accPermission = $accPermission;
     }
 }
