@@ -9,26 +9,54 @@
     <table class="data round">
         <tr>
             <td class="descField"><?php echo _('Nombre'); ?></td>
-            <td class="valField"><?php echo $accountData->getAccountName(); ?></td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="name" name="name" type="text"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $accountData->getAccountName(); ?>" readonly>
+                    <label class="mdl-textfield__label" for="name"><?php echo _('Nombre de cuenta'); ?></label>
+                </div>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Cliente'); ?></td>
-            <td class="valField"><?php echo $accountData->customer_name; ?></td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="customer" name="customer" type="text"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $accountData->getCustomerName(); ?>" readonly>
+                    <label class="mdl-textfield__label" for="customer"><?php echo _('Cliente'); ?></label>
+                </div>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('URL / IP'); ?></td>
-            <td class="valField"><A href="<?php echo $accountData->getAccountUrl(); ?>"
-                                    target="_blank"><?php echo $accountData->getAccountUrl(); ?></td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="url" name="url" type="text"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $accountData->getAccountUrl(); ?>" readonly>
+                    <label class="mdl-textfield__label" for="url"><?php echo _('URL / IP'); ?></label>
+                </div>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Usuario'); ?></td>
-            <td class="valField"><?php echo $accountData->getAccountLogin(); ?></td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="user" name="user" type="text"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $accountData->getAccountLogin(); ?>" readonly>
+                    <label class="mdl-textfield__label" for="user"><?php echo _('Usuario'); ?></label>
+                </div>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo _('Clave'); ?></td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="accountpass" name="pass" type="password" required class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
+                    <input id="accountpass" name="pass" type="password" required
+                           class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label" for="accountpass"><?php echo _('Clave'); ?></label>
                 </div>
@@ -38,10 +66,25 @@
             <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="accountpassR" name="passR" type="password" required class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="accountpassR" name="passR" type="password" required
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255" autocomplete="off">
                     <label class="mdl-textfield__label" for="accountpassR"><?php echo _('Clave'); ?></label>
                 </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo _('Fecha Caducidad Clave'); ?></td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="accountpassdatechange" name="accountpassdatechange" type="date"
+                           class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
+                           value="<?php echo $accountPassDateChange; ?>">
+                    <label class="mdl-textfield__label"
+                           for="accountpassdatechange"><?php echo _('Fecha'); ?></label>
+                </div>
+                <i class="material-icons btn-action"
+                   title="<?php echo _('Seleccionar Fecha'); ?>">date_range</i>
             </td>
         </tr>
     </table>

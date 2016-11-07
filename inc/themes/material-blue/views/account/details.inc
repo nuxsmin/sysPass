@@ -78,4 +78,12 @@
             </td>
         </tr>
     <?php endif; ?>
+    <tr>
+        <td class="descField"><?php echo _('Fecha de Clave'); ?></td>
+        <td class="valField"><?php echo $accountPassDate; ?></td>
+    </tr>
+    <tr>
+        <td class="descField"><?php echo _('Fecha Caducidad Clave'); ?></td>
+        <td class="valField"><?php echo $accountPassDateChange; ?></td>
+    </tr>
 </table>

@@ -276,6 +276,58 @@ sysPass.Theme = function (Common) {
     };
 
     /**
+     * Inicializar el selector de fecha
+     * @param $container
+     */
+    var setupDatePicker = function ($container) {
+        log.info("setupDatePicker");
+
+        var datePickerOpts = {
+            format: "YYYY-MM-DD",
+            lang: "en",
+            weekStart: 0,
+            time: false,
+            cancelText: Common.config().LANG[44],
+            okText: Common.config().LANG[43],
+            clearText: Common.config().LANG[30],
+            nowText: Common.config().LANG[56],
+            minDate: new Date(),
+            triggerEvent: "dateIconClick"
+        };
+
+        // Actualizar el input oculto con la fecha en formato UNIX
+        var updateUnixInput = function ($obj, date) {
+            var unixtime;
+
+            if (typeof date !== "undefined") {
+                unixtime = date;
+            } else {
+                unixtime = moment($obj.val()).format("X");
+            }
+
+            $obj.parent().find("input[name='passworddatechange_unix']").val(unixtime);
+        };
+
+        $container.find(".password-datefield__input").each(function () {
+            var $this = $(this);
+
+            $this.bootstrapMaterialDatePicker(datePickerOpts);
+
+            $this.parent().append("<input type='hidden' name='passworddatechange_unix' value='" + moment($this.val()).format("X") + "' />");
+
+            // Evento de click para el icono de calendario
+            $this.parent().next("i").on("click", function () {
+                $this.trigger("dateIconClick");
+            });
+
+            // Actualizar el campo oculto cuando cambie la fecha
+            $this.on("change", function () {
+                updateUnixInput($this);
+            });
+        });
+    };
+
+    /**
      * Triggers que se ejecutan en determinadas vistas
      */
     var viewsTriggers = {
@@ -337,6 +389,7 @@ sysPass.Theme = function (Common) {
         common: function ($container) {
             passwordDetect($container);
             activeTooltip($container);
+            setupDatePicker($container);
 
             $container.find(".download").button({
                 icons: {primary: "ui-icon-arrowthickstop-1-s"}

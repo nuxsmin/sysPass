@@ -78,5 +78,6 @@ $stringsJsLang = array(
     52 => _('Mostrar Favoritos'),
     53 => _('Mostrar Todos'),
     54 => _('Ayuda'),
-    55 => _('Sin cambios')
+    55 => _('Sin cambios'),
+    56 => _('Ahora')
 );

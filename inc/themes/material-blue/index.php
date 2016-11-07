@@ -23,20 +23,23 @@
  *
  */
 
-$themeInfo = array(
+$themeInfo = [
     'name' => 'Material Blue',
     'creator' => 'nuxsmin',
     'version' => '1.0',
     'targetversion' => '1.2.0',
-    'js' => array(
+    'js' => [
+        'moment.min.js',
+        'bootstrap-material-datetimepicker.min.js',
         'material.min.js',
-        'app-theme.min.js'),
-    'css' => array(
+        'app-theme.min.js'],
+    'css' => [
         'fonts.min.css',
         'material.min.css',
         'material-custom.min.css',
+        'bootstrap-material-datetimepicker.min.css',
         'jquery-ui.theme.min.css',
         'styles.min.css',
         'alertify-custom.min.css',
-        'selectize.bootstrap3.min.css')
-);
+        'selectize.bootstrap3.min.css']
+];

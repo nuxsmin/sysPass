@@ -85,73 +85,79 @@
             </div>
             <div class="label-right">
                 <?php if ($AccountSearchItem->isShow()): ?>
-                    <div class="account-info">
-                        <?php if (!$AccountSearchData->getAccountIsPrivate()): ?>
-                            <i id="accesses-<?php echo $AccountSearchData->getAccountId(); ?>"
-                               class="material-icons">face</i>
+                <div class="account-info">
 
-                            <div class="mdl-tooltip" for="accesses-<?php echo $AccountSearchData->getAccountId(); ?>">
-                                <?php echo _('Permisos'), '<br>', $AccountSearchItem->getAccesses(); ?>
-                            </div>
-                        <?php else: ?>
-                            <i class="material-icons" title="<?php echo _('Privada'); ?>">lock</i>
-                        <?php endif; ?>
+                    <?php if ($AccountSearchItem->isPasswordExpired()): ?>
+                        <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"
+                           title="<?php echo _('Clave Caducada'); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
+                    <?php endif; ?>
 
-                        <?php if ($AccountSearchItem->isFavorite()): ?>
-                            <i class="material-icons icon-favorite mdl-color-text--amber-A100"
-                               title="<?php echo _('Eliminar Favorito'); ?>"
-                               data-action-id-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
-                               data-action-id-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
-                               data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
-                               data-status="<?php echo 'on'; ?>">star</i>
-                        <?php else: ?>
-                            <i class="material-icons icon-favorite"
-                               title="<?php echo _('Marcar Favorito'); ?>"
-                               data-action-id-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
-                               data-action-id-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
-                               data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
-                               data-status="<?php echo 'off'; ?>">star_border</i>
-                        <?php endif; ?>
+                    <?php if (!$AccountSearchData->getAccountIsPrivate()): ?>
+                        <i id="accesses-<?php echo $AccountSearchData->getAccountId(); ?>"
+                           class="material-icons">face</i>
 
-                        <?php if ($AccountSearchData->getAccountNotes() !== ''): ?>
-                            <i id="notes-<?php echo $AccountSearchData->getAccountId(); ?>" class="material-icons">speaker_notes</i>
-                            <div class="mdl-tooltip" for="notes-<?php echo $AccountSearchData->getAccountId(); ?>">
-                                <?php echo _('Notas'), '<br>', $AccountSearchItem->getShortNotes(); ?>
-                            </div>
-                        <?php endif; ?>
+                        <div class="mdl-tooltip" for="accesses-<?php echo $AccountSearchData->getAccountId(); ?>">
+                            <?php echo _('Permisos'), '<br>', $AccountSearchItem->getAccesses(); ?>
+                        </div>
+                    <?php else: ?>
+                        <i class="material-icons" title="<?php echo _('Cuenta Privada'); ?>">lock</i>
+                    <?php endif; ?>
 
-                        <?php if ($AccountSearchItem->getNumFiles() > 0): ?>
-                            <i id="attachments-<?php echo $AccountSearchData->getAccountId(); ?>"
-                               class="material-icons">attach_file</i>
-                            <div class="mdl-tooltip"
-                                 for="attachments-<?php echo $AccountSearchData->getAccountId(); ?>">
-                                <?php echo _('Archivos adjuntos'), ': ', $AccountSearchItem->getNumFiles(); ?>
-                            </div>
-                        <?php endif; ?>
+                    <?php if ($AccountSearchItem->isFavorite()): ?>
+                        <i class="material-icons icon-favorite mdl-color-text--amber-A100"
+                           title="<?php echo _('Eliminar Favorito'); ?>"
+                           data-action-id-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
+                           data-action-id-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
+                           data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
+                           data-status="<?php echo 'on'; ?>">star</i>
+                    <?php else: ?>
+                        <i class="material-icons icon-favorite"
+                           title="<?php echo _('Marcar Favorito'); ?>"
+                           data-action-id-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
+                           data-action-id-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
+                           data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
+                           data-status="<?php echo 'off'; ?>">star_border</i>
+                    <?php endif; ?>
 
-                        <?php if (isset($wikiFilter)): ?>
-                            <?php if (preg_match('/^(' . $wikiFilter . ').*/i', $AccountSearchData->getAccountName())): ?>
-                                <?php if (\SP\Account\AccountsSearchItem::$dokuWikiEnabled): ?>
-                                    <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"
-                                       target="_blank">
-                                        <i class="material-icons"
-                                           title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
-                                    </a>
-                                    <i class="btn-action material-icons fg-green100"
-                                       title="<?php echo _('Ver en Wiki'); ?>"
-                                       data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
-                                       data-item-id="<?php echo $AccountSearchData->getAccountName(); ?>"
-                                       data-onclick="wiki/show">library_books</i>
-                                <?php else: ?>
-                                    <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"
-                                       target="_blank">
-                                        <i class="material-icons"
-                                           title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
-                                    </a>
-                                <?php endif; ?>
+                    <?php if ($AccountSearchData->getAccountNotes() !== ''): ?>
+                        <i id="notes-<?php echo $AccountSearchData->getAccountId(); ?>" class="material-icons">speaker_notes</i>
+                        <div class="mdl-tooltip" for="notes-<?php echo $AccountSearchData->getAccountId(); ?>">
+                            <?php echo _('Notas'), '<br>', $AccountSearchItem->getShortNotes(); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($AccountSearchItem->getNumFiles() > 0): ?>
+                        <i id="attachments-<?php echo $AccountSearchData->getAccountId(); ?>"
+                           class="material-icons">attach_file</i>
+                        <div class="mdl-tooltip"
+                             for="attachments-<?php echo $AccountSearchData->getAccountId(); ?>">
+                            <?php echo _('Archivos adjuntos'), ': ', $AccountSearchItem->getNumFiles(); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($wikiFilter)): ?>
+                        <?php if (preg_match('/^(' . $wikiFilter . ').*/i', $AccountSearchData->getAccountName())): ?>
+                            <?php if (\SP\Account\AccountsSearchItem::$dokuWikiEnabled): ?>
+                                <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"
+                                   target="_blank">
+                                    <i class="material-icons"
+                                       title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                </a>
+                                <i class="btn-action material-icons fg-green100"
+                                   title="<?php echo _('Ver en Wiki'); ?>"
+                                   data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
+                                   data-item-id="<?php echo $AccountSearchData->getAccountName(); ?>"
+                                   data-onclick="wiki/show">library_books</i>
+                            <?php else: ?>
+                                <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"
+                                   target="_blank">
+                                    <i class="material-icons"
+                                       title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                </a>
                             <?php endif; ?>
                         <?php endif; ?>
-                    </div>
+                    <?php endif; ?>
+                </div>
                 <?php endif; ?>
 
                 <?php if ($AccountSearchItem->isShow() || $AccountSearchItem->isShowRequest()): ?>

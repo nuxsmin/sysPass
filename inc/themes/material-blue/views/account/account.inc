@@ -124,13 +124,28 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="descField"><?php echo _('Fecha Caducidad Clave'); ?></td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="accountpassdatechange" name="accountpassdatechange" type="date"
+                               class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
+                               value="<?php echo $gotData ? $accountData->getAccountPassDateChange() : ''; ?>">
+                        <label class="mdl-textfield__label"
+                               for="accountpassdatechange"><?php echo _('Fecha'); ?></label>
+                    </div>
+                    <i class="material-icons btn-action"
+                       title="<?php echo _('Seleccionar Fecha'); ?>">date_range</i>
+                </td>
+            </tr>
         <?php endif; ?>
         <tr>
             <td class="descField"><?php echo _('Notas'); ?></td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
-                                  name="notes" maxlength="1000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
+                                  name="notes"
+                                  maxlength="1000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
                     <label class="mdl-textfield__label"
                            for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                 </div>
@@ -266,7 +281,6 @@
             }
         });
         <?php endif; ?>
-
 
         sysPassApp.sk.set("<?php echo $sk; ?>");
         sysPassApp.triggers().views.account();

@@ -112,6 +112,9 @@ CREATE TABLE `accounts` (
   `account_dateEdit` datetime DEFAULT NULL,
   `account_otherGroupEdit` bit(1) DEFAULT b'0',
   `account_otherUserEdit` bit(1) DEFAULT b'0',
+  `account_isPrivate` bit(1) DEFAULT b'0',
+  `account_passDate` int(11) unsigned DEFAULT NULL,
+  `account_passDateChange` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`account_id`),
   KEY `IDX_categoryId` (`account_categoryId`),
   KEY `IDX_userId` (`account_userGroupId`,`account_userId`),
@@ -119,7 +122,7 @@ CREATE TABLE `accounts` (
   KEY `fk_accounts_user_id` (`account_userId`),
   KEY `fk_accounts_user_edit_id` (`account_userEditId`),
   CONSTRAINT `fk_accounts_user_id` FOREIGN KEY (`account_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accFavorites`;
@@ -191,6 +194,8 @@ CREATE TABLE `accHistory` (
   `acchistory_mPassHash` varbinary(255) NOT NULL,
   `accHistory_otherUserEdit` bit(1) DEFAULT b'0',
   `accHistory_otherGroupEdit` bit(1) DEFAULT b'0',
+  `accHistory_passDate` int(10) unsigned DEFAULT NULL,
+  `accHistory_passDateChange` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`),
   KEY `fk_accHistory_users_edit_id_idx` (`acchistory_userEditId`),
@@ -198,7 +203,7 @@ CREATE TABLE `accHistory` (
   KEY `fk_accHistory_categories_id` (`acchistory_categoryId`),
   KEY `fk_accHistory_customers_id` (`acchistory_customerId`),
   CONSTRAINT `fk_accHistory_users_id` FOREIGN KEY (`acchistory_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accTags`;

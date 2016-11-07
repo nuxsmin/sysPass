@@ -133,7 +133,6 @@ class AccountController extends ControllerBase implements ActionsInterface
                 'icon' => $this->icons->getIconAdd()->getIcon()
             ]
         );
-        $this->view->assign('nextaction', Acl::ACTION_ACC_NEW);
 
         Session::setLastAcountId(0);
         $this->setCommonData();
@@ -184,6 +183,9 @@ class AccountController extends ControllerBase implements ActionsInterface
 
             $publicLinkUrl = (Checks::publicLinksIsEnabled() && $this->AccountData->getPublicLinkHash() ? Init::$WEBURI . '/?h=' . $this->AccountData->getPublicLinkHash() . '&a=link' : '');
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
+
+            $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
+            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
         }
 
         $this->view->assign('actionId', $this->getAction());
@@ -257,7 +259,6 @@ class AccountController extends ControllerBase implements ActionsInterface
                 'icon' => $this->icons->getIconCopy()->getIcon()
             ]
         );
-        $this->view->assign('nextaction', self::ACTION_ACC_COPY);
 
         $this->setCommonData();
     }
@@ -313,7 +314,6 @@ class AccountController extends ControllerBase implements ActionsInterface
                 'icon' => $this->icons->getIconEdit()->getIcon()
             ]
         );
-        $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
 
         $this->setCommonData();
     }
@@ -448,7 +448,8 @@ class AccountController extends ControllerBase implements ActionsInterface
                 'icon' => $this->icons->getIconEditPass()->getIcon()
             ]
         );
-        $this->view->assign('nextaction', self::ACTION_ACC_VIEW);
+
+        $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
     }
 
     /**

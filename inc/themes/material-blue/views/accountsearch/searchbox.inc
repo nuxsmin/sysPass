@@ -28,6 +28,7 @@
                     <li>file:file_name
                         &gt; <?php echo _('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
                     <li>tag:tag_name &gt; <?php echo _('Buscar cuentas con la etiqueta \'tag_name\''); ?></li>
+                    <li>expired: &gt; <?php echo _('Buscar cuentas con la clave caducada'); ?></li>
                 </ul>
             </div>
         </div>

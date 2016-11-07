@@ -64,6 +64,7 @@ $accountLogin = Request::analyze('login');
 $accountPassword = Request::analyzeEncrypted('pass');
 $accountNotes = Request::analyze('notes');
 $accountUrl = Request::analyze('url');
+$accountPassDateChange = Request::analyze('passworddatechange_unix', 0);
 
 // Checks
 $accountGroupEditEnabled = Request::analyze('groupEditEnabled', 0, false, 1);
@@ -93,6 +94,7 @@ $AccountData->setAccountOtherUserEdit($accountUserEditEnabled);
 $AccountData->setAccountOtherGroupEdit($accountGroupEditEnabled);
 $AccountData->setAccountPass($accountPassword);
 $AccountData->setAccountIsPrivate($accountPrivateEnabled);
+$AccountData->setAccountPassDateChange($accountPassDateChange);
 
 if (is_array($accountOtherUsers)) {
     $AccountData->setUsersId($accountOtherUsers);

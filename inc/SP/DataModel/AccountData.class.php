@@ -113,6 +113,15 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      * @var int
      */
     public $account_isPrivate = 0;
+    /**
+     * @var int
+     */
+    public $account_passDate = 0;
+    /**
+     * @var int
+     */
+    public $account_passDateChange = 0;
+
 
     /**
      * AccountData constructor.
@@ -459,5 +468,37 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     public function setAccountIsPrivate($account_isPrivate)
     {
         $this->account_isPrivate = (int)$account_isPrivate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountPassDate()
+    {
+        return (int)$this->account_passDate;
+    }
+
+    /**
+     * @param int $account_passDate
+     */
+    public function setAccountPassDate($account_passDate)
+    {
+        $this->account_passDate = (int)$account_passDate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountPassDateChange()
+    {
+        return (int)$this->account_passDateChange;
+    }
+
+    /**
+     * @param int $account_passDateChange
+     */
+    public function setAccountPassDateChange($account_passDateChange)
+    {
+        $this->account_passDateChange = (int)$account_passDateChange;
     }
 }

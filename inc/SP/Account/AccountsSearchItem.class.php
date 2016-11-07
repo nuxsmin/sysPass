@@ -369,4 +369,14 @@ class AccountsSearchItem
 
         return $accountNotes;
     }
+
+    /**
+     * Develve si la clave ha caducado
+     *
+     * @return bool
+     */
+    public function isPasswordExpired()
+    {
+        return $this->AccountSearchData->getAccountPassDateChange() > 0 && time() > $this->AccountSearchData->getAccountPassDateChange();
+    }
 }

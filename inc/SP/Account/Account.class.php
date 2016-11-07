@@ -253,6 +253,8 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_otherGroupEdit = src.acchistory_otherGroupEdit + 0,'
             . 'dst.account_pass = src.acchistory_pass,'
             . 'dst.account_IV = src.acchistory_IV '
+            . 'dst.account_passDate = src.acchistory_passDate,'
+            . 'dst.account_passDateChange = src.acchistory_passDateChange '
             . 'WHERE dst.account_id = :accountId';
 
         $Data = new QueryData();
@@ -335,7 +337,9 @@ class Account extends AccountBase implements AccountInterface
             . 'account_userGroupId = :accountUserGroupId,'
             . 'account_otherUserEdit = :accountOtherUserEdit,'
             . 'account_otherGroupEdit = :accountOtherGroupEdit,'
-            . 'account_isPrivate = :accountIsPrivate';
+            . 'account_isPrivate = :accountIsPrivate,'
+            . 'account_passDate = UNIX_TIMESTAMP(),'
+            . 'account_passDateChange = :accountPassDateChange';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -352,6 +356,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
 
         if (DB::getQuery($Data) === false) {
             return false;
@@ -640,7 +645,9 @@ class Account extends AccountBase implements AccountInterface
             . 'account_pass = :accountPass,'
             . 'account_IV = :accountIV,'
             . 'account_userEditId = :accountUserEditId,'
-            . 'account_dateEdit = NOW() '
+            . 'account_dateEdit = NOW(), '
+            . 'account_passDate = UNIX_TIMESTAMP(), '
+            . 'account_passDateChange = :accountPassDateChange '
             . 'WHERE account_id = :accountId';
 
         $Data = new QueryData();
@@ -649,6 +656,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
+        $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
 
 
         if (DB::getQuery($Data) === false) {

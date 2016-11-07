@@ -484,7 +484,7 @@ class AccountSearch
      */
     private function analyzeQueryString()
     {
-        preg_match('/(user|group|file|tag):(.*)/i', $this->txtSearch, $filters);
+        preg_match('/(user|group|file|tag|expired):(.*)/i', $this->txtSearch, $filters);
 
         if (!is_array($filters) || count($filters) === 0) {
             return [];
@@ -497,7 +497,7 @@ class AccountSearch
                 $UserData = User::getItem()->getByLogin($filters[2])->getItemData();
                 $filtersData[] = [
                     'type' => 'user',
-                    'query' => '(account_userId = ? OR accuser_userId ?)',
+                    'query' => 'account_userId = ? OR accuser_userId ?',
                     'values' => [$UserData->getUserId(), $UserData->getUserId()]
                 ];
                 break;
@@ -505,7 +505,7 @@ class AccountSearch
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
                 $filtersData[] = [
                     'type' => 'group',
-                    'query' => '(account_userGroupId = ? OR accgroup_groupId ?)',
+                    'query' => 'account_userGroupId = ? OR accgroup_groupId ?',
                     'values' => [$GroupData->getUsergroupId(), $GroupData->getUsergroupId()]
                 ];
                 break;
@@ -522,6 +522,14 @@ class AccountSearch
                         'type' => 'tag',
                         'query' => 'account_id IN (SELECT acctag_accountId FROM accTags, tags WHERE tag_id = acctag_tagId AND tag_name = ?)',
                         'values' => [$filters[2]]
+                    ];
+                break;
+            case 'expired':
+                $filtersData[] =
+                    [
+                        'type' => 'expired',
+                        'query' => 'account_passDateChange > 0 AND UNIX_TIMESTAMP() > account_passDateChange',
+                        'values' => []
                     ];
                 break;
             default:
