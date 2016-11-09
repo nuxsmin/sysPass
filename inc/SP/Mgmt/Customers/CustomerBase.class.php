@@ -57,6 +57,7 @@ abstract class CustomerBase extends ItemBase
 
     /**
      * Devolver los datos del elemento
+     *
      * @return CustomerData
      */
     public function getItemData()

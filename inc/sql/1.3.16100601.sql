@@ -23,12 +23,6 @@ ALTER TABLE `accUsers`
   ADD INDEX `fk_accUsers_users_id_idx` (`accuser_userId` ASC),
   DROP PRIMARY KEY;
 
-ALTER TABLE `accViewLinks`
-  CHANGE COLUMN `accviewlinks_accountId` `accviewlinks_accountId` SMALLINT(5) UNSIGNED NULL DEFAULT NULL,
-  CHANGE COLUMN `accviewlinks_userId` `accviewlinks_userId` SMALLINT(5) UNSIGNED NULL DEFAULT NULL,
-  ADD INDEX `fk_accViewLinks_account_idx` (`accviewlinks_accountId` ASC),
-  ADD INDEX `fk_accViewLinks_user_id_idx` (`accviewlinks_userId` ASC);
-
 ALTER TABLE `accounts`
   CHANGE COLUMN `account_id` `account_id` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `account_userId` `account_userId` SMALLINT(5) UNSIGNED NOT NULL,
@@ -144,18 +138,6 @@ FOREIGN KEY (`accuser_userId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
-
-ALTER TABLE `accViewLinks`
-  ADD CONSTRAINT `fk_accViewLinks_account_id`
-FOREIGN KEY (`accviewlinks_accountId`)
-REFERENCES `accounts` (`account_id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_accViewLinks_user_id`
-FOREIGN KEY (`accviewlinks_userId`)
-REFERENCES `usrData` (`user_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
 
 ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_categories_id`

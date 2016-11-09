@@ -411,6 +411,7 @@ class MainController extends ControllerBase implements ActionsInterface
      * Obtener la vista para mostrar un enlace publicado
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getPublicLink()
     {
@@ -421,14 +422,14 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('showLogo', true);
 
         if (!$PublicLink
-            || time() > $PublicLink->getItemData()->getDateExpire()
-            || $PublicLink->getItemData()->getCountViews() >= $PublicLink->getItemData()->getMaxCountViews()
+            || time() > $PublicLink->getDateExpire()
+            || $PublicLink->getCountViews() >= $PublicLink->getMaxCountViews()
         ) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
         } else {
-            $PublicLink->addLinkView();
+            PublicLink::getItem($PublicLink)->addLinkView();
 
-            $controller = new AccountController($this->view, null, $PublicLink->getItemData()->getItemId());
+            $controller = new AccountController($this->view, null, $PublicLink->getItemId());
             $controller->getAccountFromLink($PublicLink);
         }
 

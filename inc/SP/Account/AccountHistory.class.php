@@ -520,7 +520,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->setQuery($query);
         $Data->addParam($id, 'account_id');
         $Data->addParam(($isDelete === false) ? 1 : 0, 'isModify');
-        $Data->addParam(($isDelete === true) ? 1 : 1, 'isDelete');
+        $Data->addParam(($isDelete === true) ? 1 : 0, 'isDelete');
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
 
         return DB::getQuery($Data);

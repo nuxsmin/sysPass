@@ -28,7 +28,7 @@ namespace SP\Import;
 use SP\Account\Account;
 use SP\DataModel\AccountData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\CategoryData;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Categories\Category;
 use SP\Core\Session;
@@ -247,7 +247,7 @@ abstract class ImportBase
     protected function addCustomer()
     {
         // FIXME: CustomerData en propiedad de la clase
-        return Customer::getItem(new CustomerData(null, $this->getCustomerName(), $this->getCustomerDescription()))->add()->getItemData()->getCustomerId();
+        return Customer::getItem(new CategoryData(null, $this->getCustomerName(), $this->getCustomerDescription()))->add()->getItemData()->getCustomerId();
     }
 
     /**

@@ -27,6 +27,7 @@
 namespace SP\Mgmt\Files;
 
 use SP\Account\AccountUtil;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
@@ -108,6 +109,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     /**
      * @param $id int
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
@@ -129,18 +131,13 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Log->addDetails(_('Tamaño'), $this->itemData->getRoundSize() . 'KB');
 
         if (DB::getQuery($Data) === false) {
-            $Log->addDescription(_('Error al eliminar el archivo'));
-            $Log->writeLog();
-
-            Email::sendEmail($Log);
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
         $Log->addDescription(_('Archivo eliminado'));
         $Log->writeLog();
 
         Email::sendEmail($Log);
-
-        return true;
     }
 
     /**

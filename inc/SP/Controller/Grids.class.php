@@ -592,9 +592,6 @@ class Grids implements ActionsInterface
         $GridActionDel->setTitle(_('Eliminar Perfil'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->setOnClickArgs('this');
-        $GridActionDel->setOnClickArgs(self::ACTION_USR_PROFILES_DELETE);
-        $GridActionDel->setOnClickArgs($this->sk);
 
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Nombre'));
@@ -739,7 +736,7 @@ class Grids implements ActionsInterface
         $GridHeaders->addHeader(_('Visitas'));
 
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('publicLink_itemId');
+        $GridData->setDataRowSourceId('publicLink_id');
         $GridData->addDataRowSource('accountName');
         $GridData->addDataRowSource('dateAdd');
         $GridData->addDataRowSource('dateExpire');

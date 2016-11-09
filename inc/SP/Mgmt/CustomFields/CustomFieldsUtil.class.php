@@ -136,7 +136,7 @@ class CustomFieldsUtil
      * @param array           $customFields
      * @param CustomFieldData $CustomFieldData
      */
-    public static function addItemCustomFields(array $customFields, CustomFieldData $CustomFieldData)
+    public static function addItemCustomFields(array &$customFields, CustomFieldData $CustomFieldData)
     {
         foreach ($customFields as $id => $value) {
             $CustomFieldData->setDefinitionId($id);

@@ -25,6 +25,7 @@
 
 namespace SP\Account;
 
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -70,8 +71,8 @@ class AccountFavorites
      * Añadir una cuenta a la lista de favoritos
      *
      * @param $accountId int El Id de la cuenta
-     * @param $userId int El Id del usuario
-     * @return bool
+     * @param $userId    int El Id del usuario
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function addFavorite($accountId, $userId)
     {
@@ -82,15 +83,17 @@ class AccountFavorites
         $Data->addParam($accountId, 'accountId');
         $Data->addParam($userId, 'userId');
 
-        return DB::getQuery($Data);
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al añadir favorito'));
+        }
     }
 
     /**
      * Eliminar una cuenta de la lista de favoritos
      *
      * @param $accountId int El Id de la cuenta
-     * @param $userId int El Id del usuario
-     * @return bool
+     * @param $userId    int El Id del usuario
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function deleteFavorite($accountId, $userId)
     {
@@ -101,6 +104,8 @@ class AccountFavorites
         $Data->addParam($accountId, 'accountId');
         $Data->addParam($userId, 'userId');
 
-        return DB::getQuery($Data);
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar favorito'));
+        }
     }
 }

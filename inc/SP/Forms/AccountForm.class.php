@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,7 +26,9 @@ namespace SP\Forms;
 
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
+use SP\Core\Session;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountExtData;
 use SP\Http\Request;
 
 /**
@@ -34,7 +36,7 @@ use SP\Http\Request;
  *
  * @package SP\Account
  */
-class AccountForm
+class AccountForm extends FormBase implements FormInterface
 {
     /**
      * @var AccountData
@@ -42,61 +44,112 @@ class AccountForm
     protected $AccountData;
 
     /**
-     * AccountForm constructor.
-     *
-     * @param $AccountData
-     */
-    public function __construct($AccountData)
-    {
-        $this->AccountData = $AccountData;
-    }
-
-    /**
      * Validar el formulario
      *
      * @param $action
+     * @return bool
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action)
     {
         switch ($action) {
             case ActionsInterface::ACTION_ACC_EDIT_PASS:
-                if (!$this->AccountData->getAccountPass()) {
-                    throw new ValidationException(_('Es necesaria una clave'));
-                } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()){
-                    throw new ValidationException(_('Las claves no coinciden'));
-                }
+                $this->checkPass();
                 break;
             case ActionsInterface::ACTION_ACC_EDIT:
-                if (!$this->AccountData->getAccountName()) {
-                    throw new ValidationException(_('Es necesario un nombre de cuenta'));
-                } elseif (!$this->AccountData->getAccountCustomerId()) {
-                    throw new ValidationException(_('Es necesario un nombre de cliente'));
-                } elseif (!$this->AccountData->getAccountLogin()) {
-                    throw new ValidationException(_('Es necesario un usuario'));
-                } elseif (!$this->AccountData->getAccountCategoryId()) {
-                    throw new ValidationException(_('Es necesario una categoría'));
-                }
+                $this->checkCommon();
                 break;
             case ActionsInterface::ACTION_ACC_NEW:
-                if (!$this->AccountData->getAccountName()) {
-                    throw new ValidationException(_('Es necesario un nombre de cuenta'));
-                } elseif (!$this->AccountData->getAccountCustomerId()) {
-                    throw new ValidationException(_('Es necesario un nombre de cliente'));
-                } elseif (!$this->AccountData->getAccountLogin()) {
-                    throw new ValidationException(_('Es necesario un usuario'));
-                } elseif (!$this->AccountData->getAccountPass()) {
-                    throw new ValidationException(_('Es necesaria una clave'));
-                } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()){
-                    throw new ValidationException(_('Las claves no coinciden'));
-                }elseif (!$this->AccountData->getAccountCategoryId()) {
-                    throw new ValidationException(_('Es necesario una categoría'));
-                }
+                $this->checkCommon();
+                $this->checkPass();
                 break;
-            default:
-                if (!$this->AccountData->getAccountId()) {
-                    throw new ValidationException(_('Id inválido'));
-                }
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkPass()
+    {
+        if (!$this->AccountData->getAccountPass()) {
+            throw new ValidationException(_('Es necesaria una clave'));
+        } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
+            throw new ValidationException(_('Las claves no coinciden'));
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->AccountData->getAccountName()) {
+            throw new ValidationException(_('Es necesario un nombre de cuenta'));
+        } elseif (!$this->AccountData->getAccountCustomerId()) {
+            throw new ValidationException(_('Es necesario un nombre de cliente'));
+        } elseif (!$this->AccountData->getAccountLogin()) {
+            throw new ValidationException(_('Es necesario un usuario'));
+        } elseif (!$this->AccountData->getAccountCategoryId()) {
+            throw new ValidationException(_('Es necesario una categoría'));
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemData()
+    {
+        return $this->AccountData;
+    }
+
+    /**
+     * Analizar los datos de la petición HTTP
+     *
+     * @return void
+     */
+    protected function analyzeRequestData()
+    {
+        $this->AccountData = new AccountExtData();
+        $this->AccountData->setAccountId($this->itemId);
+        $this->AccountData->setAccountName(Request::analyze('name'));
+        $this->AccountData->setAccountCustomerId(Request::analyze('customerId', 0));
+        $this->AccountData->setAccountCategoryId(Request::analyze('categoryId', 0));
+        $this->AccountData->setAccountLogin(Request::analyze('login'));
+        $this->AccountData->setAccountUrl(Request::analyze('url'));
+        $this->AccountData->setAccountNotes(Request::analyze('notes'));
+        $this->AccountData->setAccountUserEditId(Session::getUserId());
+        $this->AccountData->setAccountOtherUserEdit(Request::analyze('userEditEnabled', 0, false, 1));
+        $this->AccountData->setAccountOtherGroupEdit(Request::analyze('groupEditEnabled', 0, false, 1));
+        $this->AccountData->setAccountPass(Request::analyzeEncrypted('pass'));
+        $this->AccountData->setAccountIsPrivate(Request::analyze('privateEnabled', 0, false, 1));
+        $this->AccountData->setAccountPassDateChange(Request::analyze('passworddatechange_unix', 0));
+
+        // Arrays
+        $accountOtherGroups = Request::analyze('otherGroups', 0);
+        $accountOtherUsers = Request::analyze('otherUsers', 0);
+        $accountTags = Request::analyze('tags');
+
+        if (is_array($accountOtherUsers)) {
+            $this->AccountData->setUsersId($accountOtherUsers);
+        }
+
+        if (is_array($accountOtherGroups)) {
+            $this->AccountData->setUserGroupsId($accountOtherGroups);
+        }
+
+        if (is_array($accountTags)) {
+            $this->AccountData->setTags($accountTags);
+        }
+
+        $accountMainGroupId = Request::analyze('mainGroupId', 0);
+
+        // Cambiar el grupo principal si el usuario es Admin
+        if ($accountMainGroupId !== 0
+            && (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc())
+        ) {
+            $this->AccountData->setAccountUserGroupId($accountMainGroupId);
         }
     }
 }

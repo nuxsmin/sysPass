@@ -103,14 +103,10 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            // FIXME
-            throw new SPException(
-                SPException::SP_WARNING,
-                _('No es posible eliminar') . ';;' . _('Categoría en uso por')
-            );
+            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar'));
         }
 
-        $oldCategory = $this->getById($this->itemData->getCategoryId());
+        $oldCategory = $this->getById($id);
 
         $query = /** @lang SQL */
             'DELETE FROM categories WHERE category_id = ? LIMIT 1';

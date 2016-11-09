@@ -97,6 +97,11 @@
 #content #data-search .account-info {
     padding: .5em 0 .5em 0;
     text-align: left;
+    opacity: 0.3;
+}
+
+#content #data-search .account-info:hover {
+    opacity: 1;
 }
 
 #content #data-search .account-actions {
@@ -125,6 +130,11 @@
 
 #content #data-search .tags-box span.tag {
     cursor: pointer;
+    opacity: 0.3;
+}
+
+#content #data-search .tags-box span.tag:hover {
+    opacity: 1;
 }
 
 @media screen and (max-width: 1000px) {

@@ -59,6 +59,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
      * Incrementar el contador de visitas de un enlace
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function addLinkView()
     {
@@ -80,7 +81,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     }
 
     /**
-     * @return $this
+     * @return bool
      * @throws SPException
      */
     public function update()
@@ -97,11 +98,11 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getLinkHash());
         $Data->addParam($this->itemData->getItemId());
 
-        if (DB::getQuery($Data)) {
+        if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al actualizar enlace'));
         }
 
-        return $this;
+        return true;
     }
 
     /**
@@ -236,7 +237,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return $this
+     * @return PublicLinkListData
      * @throws SPException
      */
     public function getById($id)
@@ -268,11 +269,17 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
         }
 
-        $PublicLink->setItemId($queryRes->getPublicLinkItemId());
+        $PublicLinkListData = new PublicLinkListData();
+        $PublicLinkListData->setPublicLinkItemId($queryRes->getPublicLinkItemId());
+        $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLink->getItemId()));
+        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLink->getUserId()));
+        $PublicLinkListData->setNotify($PublicLink->isNotify() ? _('ON') : _('OFF'));
+        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLink->getDateAdd()));
+        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLink->getDateExpire()));
+        $PublicLinkListData->setCountViews($PublicLink->getCountViews() . '/' . $PublicLink->getMaxCountViews());
+        $PublicLinkListData->setUseInfo($PublicLink->getUseInfo());
 
-        $this->itemData = $PublicLink;
-
-        return $this;
+        return $PublicLinkListData;
     }
 
     /**
@@ -311,9 +318,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
             $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-            $PublicLinkListData->setNotify(($PublicLinkData->isNotify()) ? _('ON') : _('OFF'));
-            $PublicLinkListData->setDateAdd(date("Y-m-d H:i", $PublicLinkData->getDateAdd()));
-            $PublicLinkListData->setDateExpire(date("Y-m-d H:i", $PublicLinkData->getDateExpire()));
+            $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? _('ON') : _('OFF'));
+            $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
+            $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
             $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
             $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
 
@@ -342,7 +349,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
     /**
      * @param $hash int
-     * @return $this
+     * @return PublicLinkData
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getByHash($hash)
@@ -376,8 +383,6 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         $PublicLink->setItemId($queryRes->getPublicLinkItemId());
 
-        $this->itemData = $PublicLink;
-
-        return $this;
+        return $PublicLink;
     }
 }

@@ -232,26 +232,6 @@ CREATE TABLE `accUsers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-DROP TABLE IF EXISTS `accViewLinks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `accViewLinks` (
-  `accviewlinks_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `accviewlinks_accountId` smallint(5) unsigned DEFAULT NULL,
-  `accviewlinks_expireTime` int(10) unsigned DEFAULT NULL,
-  `accviewlinks_expired` bit(1) DEFAULT b'0',
-  `accviewlinks_userId` smallint(5) unsigned DEFAULT NULL,
-  `accviewlinks_hash` varbinary(100) DEFAULT '',
-  `accviewlinks_actionId` smallint(5) unsigned DEFAULT NULL,
-  PRIMARY KEY (`accviewlinks_id`),
-  UNIQUE KEY `unique_accviewlinks_id` (`accviewlinks_id`),
-  KEY `fk_accViewLinks_account_idx` (`accviewlinks_accountId`),
-  KEY `fk_accViewLinks_user_id_idx` (`accviewlinks_userId`),
-  CONSTRAINT `fk_accViewLinks_account_id` FOREIGN KEY (`accviewlinks_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_accViewLinks_user_id` FOREIGN KEY (`accviewlinks_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 DROP TABLE IF EXISTS `authTokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

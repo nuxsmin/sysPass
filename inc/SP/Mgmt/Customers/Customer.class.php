@@ -124,11 +124,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            // FIXME
-            throw new SPException(
-                SPException::SP_WARNING,
-                _('No es posible eliminar') . ';;' . _('Cliente en uso por')
-            );
+            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar'));
         }
 
         $oldCustomer = $this->getById($id);
@@ -138,7 +134,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getCustomerId());
+        $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el cliente'));

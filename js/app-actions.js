@@ -56,9 +56,9 @@ sysPass.Actions = function (Common) {
         file: "/ajax/ajax_filesMgmt.php",
         link: "/ajax/ajax_appMgmtSave.php",
         account: {
-            save: "/ajax/ajax_accSave.php",
+            save: "/ajax/ajax_appMgmtSave.php",
             showPass: "/ajax/ajax_accViewPass.php",
-            saveFavorite: "/ajax/ajax_accFavorites.php",
+            saveFavorite: "/ajax/ajax_appMgmtSave.php",
             request: "/ajax/ajax_sendRequest.php",
             getFiles: "/ajax/ajax_accGetFiles.php",
             search: "/ajax/ajax_accSearch.php"
@@ -596,13 +596,15 @@ sysPass.Actions = function (Common) {
                     var opts = Common.appRequests().getRequestOpts();
                     opts.url = ajaxUrl.account.save;
                     opts.data = {
-                        accountid: $obj.data("item-id"),
+                        itemId: $obj.data("item-id"),
                         actionId: $obj.data("action-id"),
                         sk: Common.sk.get()
                     };
 
                     Common.appRequests().getActionCall(opts, function (json) {
                         Common.msg.out(json);
+
+                        account.search();
                     });
                 }, function (e) {
                     e.preventDefault();
@@ -722,7 +724,7 @@ sysPass.Actions = function (Common) {
 
             var data = {
                 actionId: isOn ? $obj.data("action-id-off") : $obj.data("action-id-on"),
-                accountId: $obj.data("item-id"),
+                itemId: $obj.data("item-id"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };

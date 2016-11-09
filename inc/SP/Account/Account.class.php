@@ -64,16 +64,15 @@ class Account extends AccountBase implements AccountInterface
      */
     public function updateAccount()
     {
-        $Log = new Log(__FUNCTION__);
+        $Log = new Log(_('Actualizar Cuenta'));
 
         // Guardamos una copia de la cuenta en el histórico
         if (!AccountHistory::addHistory($this->accountData->getAccountId(), false)) {
             $Log->addDescription(_('Error al actualizar el historial'));
             $Log->writeLog();
-            return false;
-        }
 
-        $Log->setAction(_('Actualizar Cuenta'));
+            throw new SPException(SPException::SP_ERROR, _('Error al modificar la cuenta'));
+        }
 
         $GroupAccountsData = new GroupAccountsData();
         $GroupAccountsData->setAccgroupAccountId($this->accountData->getAccountId());
@@ -150,7 +149,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
 
         if (DB::getQuery($Data) === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al modificar la cuenta'));
         }
 
         $accountInfo = ['customer_name'];
@@ -224,17 +223,19 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param $id int El Id del registro en el histórico
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function restoreFromHistory($id)
     {
-        $Log = new Log(__FUNCTION__);
+        $Log = new Log(_('Restaurar Cuenta'));
 
         // Guardamos una copia de la cuenta en el histórico
         if (!AccountHistory::addHistory($this->accountData->getAccountId(), false)) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al actualizar el historial'));
             $Log->writeLog();
-            return false;
+
+            throw new SPException(SPException::SP_ERROR, _('Error al restaurar cuenta'));
         }
 
         $query = /** @lang SQL */
@@ -264,13 +265,12 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
 
         if (DB::getQuery($Data) === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al restaurar cuenta'));
         }
 
         $accountInfo = array('customer_name', 'account_name');
         $this->getAccountInfoById($accountInfo);
 
-        $Log->setAction(_('Restaurar Cuenta'));
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
         $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->cacheParams['account_name'], $this->accountData->getAccountId()));
 
@@ -352,19 +352,19 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
-        $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getAccountUserGroupId() ?: Session::getUserGroupId(), 'accountUserGroupId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
 
         if (DB::getQuery($Data) === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al crear la cuenta'));
         }
 
         $this->accountData->setAccountId(DB::$lastId);
 
-        $Log = new Log(__FUNCTION__);
+        $Log = new Log(_('Nueva Cuenta'));
 
         try {
             if (is_array($this->accountData->getAccountUserGroupsId())) {
@@ -396,7 +396,6 @@ class Account extends AccountBase implements AccountInterface
         $accountInfo = ['customer_name'];
         $this->getAccountInfoById($accountInfo);
 
-        $Log->setAction(_('Nueva Cuenta'));
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
         $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $this->accountData->getAccountId()));
         $Log->writeLog();
@@ -423,17 +422,23 @@ class Account extends AccountBase implements AccountInterface
      * Elimina los datos de una cuenta en la BBDD.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function deleteAccount()
     {
-        // FIXME
+        $Log = new Log(_('Eliminar Cuenta'));
+
         // Guardamos una copia de la cuenta en el histórico
-        AccountHistory::addHistory($this->accountData->getAccountId(), true) || die (_('ERROR: Error en la operación.'));
+        if (!AccountHistory::addHistory($this->accountData->getAccountId(), true)) {
+            $Log->addDescription(_('Error al actualizar el historial'));
+            $Log->writeLog();
+
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar la cuenta'));
+        }
 
         $accountInfo = array('account_name,customer_name');
         $this->getAccountInfoById($accountInfo);
 
-        $Log = new Log(_('Eliminar Cuenta'));
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
         $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $this->accountData->getAccountId()));
 
@@ -445,7 +450,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountId(), 'id');
 
         if (DB::getQuery($Data) === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al eliminar la cuenta'));
         }
 
         try {
@@ -625,7 +630,7 @@ class Account extends AccountBase implements AccountInterface
      */
     public function updateAccountPass($isMassive = false, $isRestore = false)
     {
-        $Log = new Log(__FUNCTION__);
+        $Log = new Log(_('Modificar Clave'));
 
         // No actualizar el histórico si es por cambio de clave maestra o restauración
         if (!$isMassive
@@ -635,7 +640,8 @@ class Account extends AccountBase implements AccountInterface
             // Guardamos una copia de la cuenta en el histórico
             $Log->addDescription(_('Error al actualizar el historial'));
             $Log->writeLog();
-            return false;
+
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar la clave'));
         }
 
         $this->setPasswordEncrypted();
@@ -660,7 +666,7 @@ class Account extends AccountBase implements AccountInterface
 
 
         if (DB::getQuery($Data) === false) {
-            return false;
+            throw new SPException(SPException::SP_ERROR, _('Error al actualizar la clave'));
         }
 
         // No escribir en el log ni enviar correos si la actualización es
@@ -669,7 +675,6 @@ class Account extends AccountBase implements AccountInterface
             $accountInfo = array('customer_name', 'account_name');
             $this->getAccountInfoById($accountInfo);
 
-            $Log->setAction(_('Modificar Clave'));
             $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
             $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->cacheParams['account_name'], $this->accountData->getAccountId()));
             $Log->writeLog();

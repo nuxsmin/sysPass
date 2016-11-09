@@ -26,7 +26,7 @@
 namespace SP\Import;
 
 use SP\Config\Config;
-use SP\DataModel\CustomerData;
+use SP\DataModel\CategoryData;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Core\Session;
@@ -280,7 +280,7 @@ class Migrate
 
         foreach ($customers as $customer) {
             try {
-                Customer::getItem(new CustomerData(null, $customer))->add();
+                Customer::getItem(new CategoryData(null, $customer))->add();
                 $num++;
             } catch (SPException $e) {
                 if ($e->getType() === SPException::SP_WARNING){

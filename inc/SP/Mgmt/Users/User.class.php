@@ -86,10 +86,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam(intval($this->itemData->isUserIsAdminApp()));
-        $Data->addParam(intval($this->itemData->isUserIsAdminAcc()));
-        $Data->addParam(intval($this->itemData->isUserIsDisabled()));
-        $Data->addParam(intval($this->itemData->isUserIsChangePass()));
+        $Data->addParam($this->itemData->isUserIsAdminApp());
+        $Data->addParam($this->itemData->isUserIsAdminAcc());
+        $Data->addParam($this->itemData->isUserIsDisabled());
+        $Data->addParam($this->itemData->isUserIsChangePass());
         $Data->addParam($passdata['pass']);
         $Data->addParam($passdata['salt']);
 

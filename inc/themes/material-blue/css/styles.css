@@ -1150,7 +1150,7 @@ footer img {
 .header-grey {
     background-color: #607d8b;
     color: #fff;
-    height: 2em;
+    min-height: 2em;
 }
 
 .no-background {

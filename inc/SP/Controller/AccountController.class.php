@@ -38,11 +38,11 @@ use SP\Core\Init;
 use SP\Core\Template;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
+use SP\DataModel\PublicLinkData;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupAccountsUtil;
-use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Tags\Tag;
 use SP\Core\Session;
@@ -466,10 +466,10 @@ class AccountController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la vista de detalles de cuenta para enlaces públicos
      *
-     * @param \SP\Mgmt\PublicLinks\PublicLink $PublicLink
+     * @param PublicLinkData $PublicLinkData
      * @return bool
      */
-    public function getAccountFromLink(PublicLink $PublicLink)
+    public function getAccountFromLink(PublicLinkData $PublicLinkData)
     {
         $this->setAction(self::ACTION_ACC_VIEW);
 
@@ -491,8 +491,8 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->Account->getAccountPassData();
 
         // Desencriptar la clave de la cuenta
-        $pass = Crypt::generateAesKey($PublicLink->getItemData()->getLinkHash());
-        $masterPass = Crypt::getDecrypt($PublicLink->getItemData()->getPass(), $PublicLink->getItemData()->getPassIV(), $pass);
+        $pass = Crypt::generateAesKey($PublicLinkData->getLinkHash());
+        $masterPass = Crypt::getDecrypt($PublicLinkData->getPass(), $PublicLinkData->getPassIV(), $pass);
         $accountPass = Crypt::getDecrypt($this->Account->getAccountData()->getAccountPass(), $this->Account->getAccountData()->getAccountIV(), $masterPass);
 
         if (Config::getConfig()->isPublinksImageEnabled()) {
