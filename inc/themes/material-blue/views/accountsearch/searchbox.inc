@@ -64,7 +64,7 @@
             <div class="filter-buttons">
                 <button type="button"
                         class="icon-searchfav mdl-button mdl-js-button mdl-js-ripple-effect">
-                    <i class="material-icons <?php echo ($searchFavorites === true) ? 'fg-orange80' : ''; ?>"
+                    <i class="material-icons <?php echo ($searchFavorites === true) ? 'mdl-color-text--amber-A200' : ''; ?>"
                        title="<?php echo ($searchFavorites === true) ? _('Mostrar Todos') : _('Mostrar Favoritos'); ?>">star</i>
                 </button>
 

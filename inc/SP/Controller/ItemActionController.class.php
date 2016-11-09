@@ -609,21 +609,16 @@ class ItemActionController
      */
     private function favoriteAction()
     {
-        $accountId = Request::analyze('accountId', 0);
         $userId = Session::getUserId();
-
-        if ($accountId === 0) {
-            $this->invalidAction();
-        }
 
         switch ($this->actionId) {
             case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
-                AccountFavorites::addFavorite($accountId, $userId);
+                AccountFavorites::addFavorite($this->itemId, $userId);
 
                 $this->jsonResponse->setDescription(_('Favorito añadido'));
                 break;
             case ActionsInterface::ACTION_ACC_FAVORITES_DELETE:
-                AccountFavorites::deleteFavorite($accountId, $userId);
+                AccountFavorites::deleteFavorite($this->itemId, $userId);
 
                 $this->jsonResponse->setDescription(_('Favorito eliminado'));
                 break;

@@ -16,7 +16,7 @@
 <form method="post" name="frmaccount" id="frmAccount" class="form-action" data-onsubmit="account/save" data-hash="">
     <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
     <?php if ($gotData): ?>
-        <input type="hidden" name="accountId" value="<?php echo $accountId; ?>"/>
+        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
     <?php endif; ?>
     <input type="hidden" name="sk" value="">
     <input type="hidden" name="isAjax" value="1">
@@ -217,7 +217,7 @@
           onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
         <input type="hidden" name="actionId"
                value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
-        <input type="hidden" name="accountId" value="<?php echo $accountId; ?>"/>
+        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>

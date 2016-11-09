@@ -609,7 +609,8 @@ pre, code, samp, kbd {
     list-style: none;
     width: 100%;
     margin: 0 0 10px 0;
-    padding: 0
+    padding: 0;
+    background-color: #fcfcfc;
 }
 
 #content .data-rows li {
@@ -618,7 +619,6 @@ pre, code, samp, kbd {
     padding: 1em;
     color: #696969;
     text-align: center;
-    background-color: #fcfcfc;
     min-height: 2em;
 }
 
@@ -634,7 +634,7 @@ pre, code, samp, kbd {
     padding: 1em 0;
     text-align: center;
     background-color: #fcfcfc;
-    width: 15em
+    width: 15em;
 }
 
 #content .data-rows li.cell-actions:hover {
