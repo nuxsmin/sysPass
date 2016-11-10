@@ -219,9 +219,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($id);
 
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($Data);
+        $queryRes = DB::getResultsArray($Data);
 
         $customFields = [];
 
@@ -293,12 +291,10 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
 
-        DB::setReturnArray();
+        $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array('hash' => '');
+        if (count($queryRes) === 0) {
+            return ['hash' => ''];
         }
 
         foreach ($queryRes as $CustomFieldDef) {

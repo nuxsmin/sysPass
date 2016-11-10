@@ -140,12 +140,9 @@ class UserUtil
             'SELECT user_id, user_login, user_name FROM usrData ORDER BY user_login';
 
         $Data = new QueryData();
-//        $Data->setMapClassName('\SP\DataModel\UserData');
         $Data->setQuery($query);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
 }

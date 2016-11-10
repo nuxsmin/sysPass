@@ -60,9 +60,7 @@ class AccountTags
         $Data->setUseKeyPair(true);
         $Data->addParam($accountData->getAccountId(), 'id');
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

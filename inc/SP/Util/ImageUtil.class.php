@@ -51,7 +51,11 @@ class ImageUtil
             return false;
         }
 
-        $im = imagecreatetruecolor(strlen($text) * 20, 30);
+        $im = @imagecreatetruecolor(strlen($text) * 20, 30);
+
+        if ($im === false) {
+            return false;
+        }
 
         // Colores de la imagen
         $bgColor = imagecolorallocate($im, 245, 245, 245);

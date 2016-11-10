@@ -44,6 +44,7 @@ use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\CustomFields\CustomField;
+use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
@@ -181,7 +182,9 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
 
-            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $this->AccountData->getPublicLinkHash() ? Init::$WEBURI . '/?h=' . $this->AccountData->getPublicLinkHash() . '&a=link' : '');
+            $PublicLinkData = PublicLink::getItem()->getHashForItem($this->getId());
+
+            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : '');
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
 
             $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
@@ -488,14 +491,16 @@ class AccountController extends ControllerBase implements ActionsInterface
         );
         $this->Account->incrementViewCounter();
         $this->Account->incrementDecryptCounter();
-        $this->Account->getAccountPassData();
+        $AccountPassData = $this->Account->getAccountPassData();
 
         // Desencriptar la clave de la cuenta
         $pass = Crypt::generateAesKey($PublicLinkData->getLinkHash());
         $masterPass = Crypt::getDecrypt($PublicLinkData->getPass(), $PublicLinkData->getPassIV(), $pass);
-        $accountPass = Crypt::getDecrypt($this->Account->getAccountData()->getAccountPass(), $this->Account->getAccountData()->getAccountIV(), $masterPass);
+        $accountPass = Crypt::getDecrypt($AccountPassData->pass, $AccountPassData->iv, $masterPass);
 
-        if (Config::getConfig()->isPublinksImageEnabled()) {
+        $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled());
+
+        if ($this->view->useImage) {
             $accountPass = ImageUtil::convertText($accountPass);
         }
 

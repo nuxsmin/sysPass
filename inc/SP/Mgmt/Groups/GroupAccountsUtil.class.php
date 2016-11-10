@@ -59,9 +59,7 @@ class GroupAccountsUtil
         $Data->setQuery($query);
         $Data->addParam($accountId);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

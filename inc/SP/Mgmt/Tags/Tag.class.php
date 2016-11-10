@@ -181,9 +181,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->setMapClassName($this->getDataModel());
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

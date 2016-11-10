@@ -61,28 +61,22 @@ class ApiTokensUtil
         $Data = new QueryData();
 
         if (!is_null($tokenId)) {
-            $query .= "WHERE authtoken_id = :id LIMIT 1";
+            $query .= 'WHERE authtoken_id = :id LIMIT 1';
             $Data->addParam($tokenId, 'id');
         } else {
-            $query .= "ORDER BY user_login";
+            $query .= 'ORDER BY user_login';
         }
 
         $Data->setQuery($query);
 
         if (!$returnRawData) {
-            DB::setReturnArray();
-        }
+            $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
-
-        if (!$returnRawData) {
             foreach ($queryRes as &$token) {
                 $token->authtoken_actionId = Acl::getActionName($token->authtoken_actionId);
             }
+        } else {
+            $queryRes = DB::getResults($Data);
         }
 
         return $queryRes;
@@ -120,14 +114,9 @@ class ApiTokensUtil
 
         $Data->setQuery($query);
 
-        DB::setReturnArray();
         DB::setFullRowCount();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
+        $queryRes = DB::getResultsArray($Data);
 
         foreach ($queryRes as &$token) {
             $token->authtoken_actionId = Acl::getActionName($token->authtoken_actionId);

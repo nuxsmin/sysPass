@@ -63,15 +63,7 @@ class FileUtil
         $Data->setQuery($query);
         $Data->addParam($accountId);
 
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes;
+        return DB::getResultsArray($Data);
     }
 
     /**

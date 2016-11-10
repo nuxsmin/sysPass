@@ -31,7 +31,6 @@ use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -64,9 +63,7 @@ class Crypt
      */
     public static function makeHashSalt()
     {
-        $salt = '$2y$07$' . bin2hex(self::getIV()) . '$';
-
-        return $salt;
+        return '$2y$07$' . bin2hex(self::getIV()) . '$';
     }
 
     /**
@@ -123,7 +120,7 @@ class Crypt
 
         // Comprobar si el hash está en formato anterior a 12002
         if ($isMPass && strlen($checkedHash) === 128) {
-            $check = (hash("sha256", substr($checkedHash, 0, 64) . $pwd) == substr($checkedHash, 64, 64));
+            $check = (hash('sha256', substr($checkedHash, 0, 64) . $pwd) === substr($checkedHash, 64, 64));
 
             if ($check) {
                 $newHash = self::mkHashPassword($pwd);
@@ -137,7 +134,7 @@ class Crypt
         }
 
         // Si los hashes son idénticos, la clave es válida
-        return $testHash == $validHash;
+        return $testHash === $validHash;
     }
 
     /**
@@ -151,9 +148,8 @@ class Crypt
     {
         $cryptIV = self::getIV();
         $cryptValue = self::encrypt($masterPwd, $customPwd, $cryptIV);
-        $dataCrypt = array($cryptValue, $cryptIV);
 
-        return $dataCrypt;
+        return [$cryptValue, $cryptIV];
     }
 
     /**
@@ -234,7 +230,7 @@ class Crypt
      */
     public static function mkEncrypt($data, $masterPwd = null)
     {
-        $masterPwd = (is_null($masterPwd)) ? SessionUtil::getSessionMPass() : $masterPwd;
+        $masterPwd = null === $masterPwd ? SessionUtil::getSessionMPass() : $masterPwd;
 
         self::$strInitialVector = self::getIV();
         $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
@@ -256,7 +252,7 @@ class Crypt
             return false;
         }
 
-        if (is_null($password)) {
+        if (null === $password) {
             $password = SessionUtil::getSessionMPass();
 //            self::getSessionMasterPass();
         }
@@ -280,14 +276,13 @@ class Crypt
      */
     public static function generateAesKey($string, $salt = null)
     {
-        if (is_null($salt)) {
+        if (null === $salt) {
             $salt = Config::getConfig()->getPasswordSalt();
         }
 
         $salt = '$2y$07$' . $salt . '$';
-        $key = substr(crypt($string, $salt), 7, 32);
 
-        return $key;
+        return substr(crypt($string, $salt), 7, 32);
     }
 
     public static function checkPassword($pwd, $salt)

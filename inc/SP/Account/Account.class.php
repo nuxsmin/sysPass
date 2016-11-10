@@ -612,12 +612,10 @@ class Account extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
 
-        DB::setReturnArray();
-
         $Data = new QueryData();
         $Data->setQuery($query);
 
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

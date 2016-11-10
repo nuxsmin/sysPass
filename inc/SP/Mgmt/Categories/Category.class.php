@@ -227,8 +227,6 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 }

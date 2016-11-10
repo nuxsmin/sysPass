@@ -59,14 +59,9 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
 
-        DB::setReturnArray();
         DB::setFullRowCount();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
+        $queryRes = DB::getResultsArray($Data);
 
         $publicLinks = [];
         $publicLinks['count'] = $Data->getQueryNumRows();
@@ -85,8 +80,8 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
             $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
             $PublicLinkListData->setNotify(($PublicLinkData->isNotify()) ? _('ON') : _('OFF'));
-            $PublicLinkListData->setDateAdd(date("Y-m-d H:i", $PublicLinkData->getDateAdd()));
-            $PublicLinkListData->setDateExpire(date("Y-m-d H:i", $PublicLinkData->getDateExpire()));
+            $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
+            $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
             $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
             $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
 

@@ -297,11 +297,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
-        DB::setReturnArray();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
+        try {
+            $queryRes = DB::getResultsArray($Data);
+        } catch (SPException $e) {
             throw new SPException(SPException::SP_ERROR, _('Error al obtener los usuarios'));
         }
 

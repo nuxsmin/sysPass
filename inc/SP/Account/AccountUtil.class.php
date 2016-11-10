@@ -126,11 +126,9 @@ class AccountUtil
         $Data = new QueryData();
         $Data->setQuery($query);
 
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
+        try {
+            $queryRes = DB::getResultsArray($Data);
+        }catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de las cuentas'));
         }
 
@@ -191,14 +189,9 @@ class AccountUtil
 
         $Data->setQuery($query);
 
-        DB::setReturnArray();
         DB::setFullRowCount();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
+        $queryRes = DB::getResultsArray($Data);
 
         $queryRes['count'] = $Data->getQueryNumRows();
 

@@ -196,6 +196,8 @@ class AccItemController extends ControllerBase implements ActionsInterface
         $this->module = self::ACTION_MGM_PUBLICLINKS;
         $this->view->addTemplate('publiclinks');
 
-        $this->view->assign('link', PublicLink::getItem()->getById($this->view->itemId));
+        $PublicLink = PublicLink::getItem();
+
+        $this->view->assign('link', $PublicLink->getItemForList($PublicLink->getById($this->view->itemId)));
     }
 }

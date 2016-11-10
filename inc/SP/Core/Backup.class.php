@@ -137,12 +137,10 @@ class Backup
                 $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
                 fwrite($handle, $sqlOut);
 
-                DB::setReturnRawData();
-
                 $Data->setQuery('SELECT * FROM ' . $tableName);
 
                 // Consulta para obtener los registros de la tabla
-                $queryRes = DB::getResults($Data);
+                $queryRes = DB::getResultsRaw($Data);
 
                 $numColumns = $queryRes->columnCount();
 
@@ -165,9 +163,8 @@ class Backup
                     }
                     fwrite($handle, ');' . PHP_EOL);
                 }
-                fwrite($handle, PHP_EOL . PHP_EOL);
 
-                DB::setReturnRawData(false);
+                fwrite($handle, PHP_EOL . PHP_EOL);
             }
 
             $sqlOut = '--' . PHP_EOL;

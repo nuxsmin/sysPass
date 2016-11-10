@@ -70,15 +70,9 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->setQuery($query);
         $Data->addParam($accountId, 'id');
 
-        DB::setReturnArray();
+        $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        $arrHistory = array();
+        $arrHistory = [];
 
         foreach ($queryRes as $history) {
             // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
@@ -234,9 +228,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data = new QueryData();
         $Data->setQuery($query);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

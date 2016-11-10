@@ -55,7 +55,7 @@ class SPException extends Exception
      * SPException constructor.
      *
      * @param string         $type
-     * @param int            $message
+     * @param string         $message
      * @param string         $hint
      * @param int            $code
      * @param Exception|null $previous

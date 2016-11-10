@@ -46,7 +46,7 @@
             <tr>
                 <td class="descField"><?php echo _('Clave'); ?></td>
                 <td class="valField">
-                    <?php if (Checks::accountPassToImageIsEnabled()): ?>
+                    <?php if ($useImage): ?>
                         <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPass; ?>"/>
                     <?php else: ?>
                         <span id="account-pass"><?php echo $accountPass; ?></span>
@@ -54,15 +54,15 @@
             </tr>
         </table>
 
-        <div class="account-actions">
-            <?php if (!Checks::accountPassToImageIsEnabled()): ?>
+        <div class="action">
+            <?php if (!$useImage): ?>
                 <button id="btnClipPass"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                         data-clipboard-target="#account-pass"
                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
                         data-item-id="<?php echo $accountId; ?>"
                         data-sk="<?php echo $sk; ?>"
-                        data-history="<?php echo $accountIsHistory; ?>"
+                        data-history="0"
                         data-onclick="account/copypass">
                     <i class="material-icons">content_paste</i>
                 </button>

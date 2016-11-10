@@ -274,9 +274,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

@@ -478,23 +478,24 @@ class ItemActionController
     protected function publicLinkAction()
     {
         $PublicLinkData = new PublicLinkData();
-        $PublicLinkData->setItemId($this->itemId);
+        $PublicLinkData->setPublicLinkItemId($this->itemId);
         $PublicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
         $PublicLinkData->setNotify(Request::analyze('notify', false, false, true));
 
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW:
+                $PublicLinkData->setItemId($this->itemId);
                 PublicLink::getItem($PublicLinkData)->add();
 
                 $this->jsonResponse->setDescription(_('Enlace creado'));
                 break;
             case ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH:
-                PublicLink::getItem($PublicLinkData)->update();
+                PublicLink::getItem(PublicLink::getItem()->getById($this->itemId))->refresh();
 
                 $this->jsonResponse->setDescription(_('Enlace actualizado'));
                 break;
             case ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE:
-                PublicLink::getItem()->delete($PublicLinkData->getId());
+                PublicLink::getItem()->delete($this->itemId);
 
                 $this->jsonResponse->setDescription(_('Enlace eliminado'));
                 break;

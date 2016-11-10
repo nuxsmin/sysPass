@@ -52,9 +52,9 @@ abstract class PublicLinkBase extends ItemBase
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\PublicLinkData');
+            $this->setDataModel('SP\DataModel\PublicLinkBaseData');
         }
-        
+
         parent::__construct($itemData);
     }
 
@@ -88,10 +88,13 @@ abstract class PublicLinkBase extends ItemBase
      */
     protected final function createLinkHash($refresh = false)
     {
-        if ($this->itemData->getLinkHash() === ''
-            || $refresh === true
+        if ($refresh === true
+            || $this->itemData->getLinkHash() === ''
         ) {
-            $this->itemData->setLinkHash(hash('sha256', uniqid()));
+            $hash = hash('sha256', uniqid('sysPassPublicLink', true));
+
+            $this->itemData->setPublicLinkHash($hash);
+            $this->itemData->setLinkHash($hash);
         }
 
         return $this->itemData->getLinkHash();

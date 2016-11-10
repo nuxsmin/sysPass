@@ -637,10 +637,6 @@ pre, code, samp, kbd {
     width: 15em;
 }
 
-#content .data-rows li.cell-actions:hover {
-    background-color: #fffef0 !important
-}
-
 #content .data-rows li.cell-nodata img, #content .data-rows li.cell-actions img, #content #data-search .account-info img, #content #data-search .account-actions img {
     width: 24px;
     height: 24px;

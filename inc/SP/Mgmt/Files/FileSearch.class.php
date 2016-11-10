@@ -80,14 +80,9 @@ class FileSearch extends FileBase implements ItemSearchInterface
 
         $Data->setQuery($query);
 
-        DB::setReturnArray();
         DB::setFullRowCount();
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
+        $queryRes = DB::getResultsArray($Data);
 
         $queryRes['count'] = $Data->getQueryNumRows();
 

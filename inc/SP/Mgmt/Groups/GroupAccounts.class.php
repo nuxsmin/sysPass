@@ -118,11 +118,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        DB::setReturnArray();
-
-        $this->itemData = DB::getResults($Data);
-
-        return $this;
+        return DB::getResultsArray($Data);
     }
 
     /**
@@ -181,8 +177,6 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 }

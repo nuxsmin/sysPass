@@ -65,48 +65,6 @@ class DBUtil
     }
 
     /**
-     * Obtener los datos para generar un select.
-     *
-     * @param $tblName    string    con el nombre de la tabla a cunsultar
-     * @param $tblColId   string    con el nombre de la columna del tipo Id a mostrar
-     * @param $tblColName string    con el nombre de la columna del tipo Name a mostrar
-     * @param $arrFilter  array     con las columnas a filtrar
-     * @param $arrOrder   array     con el orden de las columnas
-     * @return array con los valores del select con el Id como clave y el nombre como valor
-     */
-    // FIXME
-    public static function getValuesForSelect($tblName, $tblColId, $tblColName, $arrFilter = NULL, $arrOrder = NULL)
-    {
-        if (!$tblName || !$tblColId || !$tblColName) {
-            return false;
-        }
-
-        $strFilter = is_array($arrFilter) ? ' WHERE ' . implode(' OR ', $arrFilter) : '';
-        $strOrder = is_array($arrOrder) ? ' ORDER BY ' . implode(',', $arrOrder) : 'ORDER BY ' . $tblColName . ' ASC';
-
-        $query = "SELECT $tblColId, $tblColName FROM $tblName $strFilter $strOrder";
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
-
-        $arrValues = array();
-
-        foreach ($queryRes as $row) {
-            $arrValues[$row->$tblColId] = $row->$tblColName;
-        }
-
-        return $arrValues;
-    }
-
-    /**
      * Escapar una cadena de texto con funciones de mysqli.
      *
      * @param $str string con la cadena a escapar

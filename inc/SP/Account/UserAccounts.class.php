@@ -133,11 +133,9 @@ class UserAccounts
         $Data->setQuery($query);
         $Data->addParam($accountId, 'id');
 
-        DB::setReturnArray();
-
         $users = [];
 
-        foreach (DB::getResults($Data) as $user) {
+        foreach (DB::getResultsArray($Data) as $user) {
             $users[] = (int)$user->accuser_userId;
         }
 
@@ -165,8 +163,6 @@ class UserAccounts
         $Data->setQuery($query);
         $Data->addParam($accountId, 'id');
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 }

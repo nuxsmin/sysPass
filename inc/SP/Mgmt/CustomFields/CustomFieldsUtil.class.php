@@ -73,11 +73,9 @@ class CustomFieldsUtil
         $Data->setMapClassName('SP\DataModel\CustomFieldData');
         $Data->setQuery($query);
 
-        DB::setReturnArray();
+        $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
+        if (count($queryRes) === 0) {
             $Log->addDescription(_('Fin'));
             $Log->writeLog();
 

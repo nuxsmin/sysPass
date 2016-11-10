@@ -50,15 +50,9 @@ class AccountFavorites
         $Data->setQuery($query);
         $Data->addParam($userId, 'userId');
 
-        DB::setReturnArray();
+        $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false){
-            return array();
-        }
-
-        $favorites = array();
+        $favorites = [];
 
         foreach($queryRes as $favorite){
             $favorites[] = $favorite->accfavorite_accountId;

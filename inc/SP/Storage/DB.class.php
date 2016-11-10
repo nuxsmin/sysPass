@@ -26,7 +26,7 @@
 namespace SP\Storage;
 
 use PDO;
-use SP\Config\Config;
+use PDOStatement;
 use SP\Core\DiFactory;
 use SP\Log\Log;
 use SP\Core\Exceptions\SPException;
@@ -40,25 +40,9 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class DB
 {
     /**
-     * @var string
-     */
-    public static $txtError = '';
-    /**
-     * @var int
-     */
-    public static $numError = 0;
-    /**
      * @var int
      */
     public static $lastId;
-    /**
-     * @var bool Resultado como array
-     */
-    private static $retArray = false;
-    /**
-     * @var bool Resultado como un objeto PDO
-     */
-    private static $returnRawData = false;
     /**
      * @var bool Contar el número de filas totales
      */
@@ -85,18 +69,27 @@ class DB
     }
 
     /**
-     * Establecer si se devuelve un array de objetos siempre
+     * Devolver los resultados en array
+     *
+     * @param QueryData $queryData
+     * @return array
      */
-    public static function setReturnArray()
+    public static function getResultsArray(QueryData $queryData)
     {
-        self::$retArray = true;
+        $results = self::getResults($queryData);
+
+        if ($results === false) {
+            return [];
+        }
+
+        return is_object($results) ? [$results] : $results;
     }
 
     /**
      * Obtener los resultados de una consulta.
      *
      * @param  $queryData  QueryData Los datos de la consulta
-     * @return bool|array devuelve bool si hay un error. Devuelve array con el array de registros devueltos
+     * @return mixed devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
     public static function getResults(QueryData $queryData)
     {
@@ -107,33 +100,22 @@ class DB
 
         try {
             $db = new DB();
-            $doQuery = $db->doQuery($queryData, self::$returnRawData);
-            $numRows = (self::$fullRowCount === false) ? $db->numRows : $db->getFullRowCount($queryData);
-            $queryData->setQueryNumRows($numRows);
+            $db->doQuery($queryData);
+
+            if (self::$fullRowCount === true) {
+                $db->getFullRowCount($queryData);
+            }
         } catch (SPException $e) {
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
             return false;
         }
 
-        if (self::$returnRawData
-            && is_object($doQuery)
-            && get_class($doQuery) === 'PDOStatement'
-        ) {
-            return $doQuery;
-        } elseif ($db->numRows === 0) {
-            if (self::$retArray) {
-                self::resetVars();
-                return [];
-            } else {
-                self::resetVars();
-                return false;
-            }
-        } elseif ($db->numRows === 1 && self::$retArray === false) {
-            self::resetVars();
+        self::resetVars();
+
+        if ($db->numRows === 1) {
             return $db->lastResult[0];
         }
 
-        self::resetVars();
         return $db->lastResult;
     }
 
@@ -142,9 +124,7 @@ class DB
      */
     private static function resetVars()
     {
-        self::$returnRawData = false;
         self::$fullRowCount = false;
-        self::$retArray = false;
     }
 
     /**
@@ -152,15 +132,15 @@ class DB
      *
      * @param $queryData   QueryData Los datos de la consulta
      * @param $getRawData  bool    realizar la consulta para obtener registro a registro
-     * @return false|int devuelve bool si hay un error. Devuelve int con el número de registros
+     * @return bool
      * @throws SPException
      */
     public function doQuery(QueryData $queryData, $getRawData = false)
     {
         $isSelect = preg_match("/^(select|show)\s/i", $queryData->getQuery());
 
-        // Limpiar valores de caché y errores
-        $this->lastResult = array();
+        // Limpiar valores de caché
+        $this->lastResult = [];
 
         try {
             $queryRes = $this->prepareQueryData($queryData);
@@ -169,17 +149,18 @@ class DB
         }
 
         if ($isSelect) {
-            if (!$getRawData) {
-                $this->numFields = $queryRes->columnCount();
-                $this->lastResult = $queryRes->fetchAll();
-            } else {
+            if ($getRawData) {
                 return $queryRes;
             }
 
-//            $queryRes->closeCursor();
-
+            $this->numFields = $queryRes->columnCount();
+            $this->lastResult = $queryRes->fetchAll();
             $this->numRows = count($this->lastResult);
+
+            $queryData->setQueryNumRows($this->numRows);
         }
+
+        return $queryRes;
     }
 
     /**
@@ -283,11 +264,11 @@ class DB
             $queryRes = $this->prepareQueryData($queryData, true);
             $num = (int)$queryRes->fetchColumn();
             $queryRes->closeCursor();
-
-            return $num;
+            $queryData->setQueryNumRows($num);
         } catch (SPException $e) {
             error_log('Exception: ' . $e->getMessage());
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
+
+            throw $e;
         }
     }
 
@@ -314,13 +295,32 @@ class DB
     }
 
     /**
+     * Devolver los resultados como objeto PDOStatement
+     *
+     * @param QueryData $queryData
+     * @return PDOStatement|false
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function getResultsRaw(QueryData $queryData)
+    {
+        try {
+            $db = new DB();
+            return $db->doQuery($queryData, true);
+        } catch (SPException $e) {
+            self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
+
+            throw $e;
+        }
+    }
+
+    /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param QueryData       $queryData   Los datos para realizar la consulta
-     * @param                 $getRawData  bool   Si se deben de obtener los datos como PDOStatement
+     * @param QueryData $queryData Los datos para realizar la consulta
      * @return bool
+     * @throws SPException
      */
-    public static function getQuery(QueryData $queryData, $getRawData = false)
+    public static function getQuery(QueryData $queryData)
     {
         if ($queryData->getQuery() === '') {
             return false;
@@ -328,27 +328,14 @@ class DB
 
         try {
             $db = new DB();
-            $db->doQuery($queryData, $getRawData);
-            $queryData->setQueryNumRows($db->numRows);
+            $db->doQuery($queryData);;
         } catch (SPException $e) {
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
-            self::$txtError = $e->getMessage();
-            self::$numError = $e->getCode();
 
             return false;
         }
 
         return true;
-    }
-
-    /**
-     * Establecer si se devuelven los datos obtenidos como PDOStatement
-     *
-     * @param bool $on
-     */
-    public static function setReturnRawData($on = true)
-    {
-        self::$returnRawData = (bool)$on;
     }
 
     /**

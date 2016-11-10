@@ -96,7 +96,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getLinkHash());
-        $Data->addParam($this->itemData->getItemId());
+        $Data->addParam($this->itemData->getPublicLinkId());
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al actualizar enlace'));
@@ -130,8 +130,8 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getLinkHash());
-        $Data->addParam($this->itemData->getItemId());
+        $Data->addParam($this->itemData->getPublicLinkHash());
+        $Data->addParam($this->itemData->getPublicLinkItemId());
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
@@ -187,7 +187,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         $Log = new Log(_('Eliminar Enlace'));
         $Log->addDescription(_('Enlace eliminado'));
-        $Log->addDetails(Html::strongText(_('ID')), $this->itemData->getItemId());
+        $Log->addDetails(Html::strongText(_('ID')), $this->itemData->getPublicLinkId());
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -216,8 +216,8 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam(serialize($this->itemData));
-        $Data->addParam($this->itemData->getLinkHash());
-        $Data->addParam($this->itemData->getItemId());
+        $Data->addParam($this->itemData->getPublicLinkHash());
+        $Data->addParam($this->itemData->getPublicLinkId());
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al renovar enlace'));
@@ -237,7 +237,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return PublicLinkListData
+     * @return PublicLinkData
      * @throws SPException
      */
     public function getById($id)
@@ -249,7 +249,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\PublicLinkBaseData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -269,17 +269,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
         }
 
-        $PublicLinkListData = new PublicLinkListData();
-        $PublicLinkListData->setPublicLinkItemId($queryRes->getPublicLinkItemId());
-        $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLink->getItemId()));
-        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLink->getUserId()));
-        $PublicLinkListData->setNotify($PublicLink->isNotify() ? _('ON') : _('OFF'));
-        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLink->getDateAdd()));
-        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLink->getDateExpire()));
-        $PublicLinkListData->setCountViews($PublicLink->getCountViews() . '/' . $PublicLink->getMaxCountViews());
-        $PublicLinkListData->setUseInfo($PublicLink->getUseInfo());
+        $PublicLink->setPublicLinkId($id);
 
-        return $PublicLinkListData;
+        return $PublicLink;
     }
 
     /**
@@ -291,20 +283,12 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             'SELECT publicLink_id, publicLink_hash, publicLink_linkData FROM publicLinks';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\PublicLinkListData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
-
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return array();
-        }
 
         $publicLinks = [];
 
-        foreach ($queryRes as $PublicLinkListData) {
+        foreach (DB::getResultsArray($Data) as $PublicLinkListData) {
             /**
              * @var PublicLinkData     $PublicLinkData
              * @var PublicLinkListData $PublicLinkListData
@@ -316,18 +300,34 @@ class PublicLink extends PublicLinkBase implements ItemInterface
                 $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkData);
             }
 
-            $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-            $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-            $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? _('ON') : _('OFF'));
-            $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
-            $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
-            $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
-            $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
+            $PublicLinkData->setPublicLinkId($PublicLinkListData->getPublicLinkId());
 
-            $publicLinks[] = $PublicLinkListData;
+            $publicLinks[] = $this->getItemForList($PublicLinkData);
         }
 
         return $publicLinks;
+    }
+
+    /**
+     * Devuelve los datos de un enlace para mostrarlo
+     *
+     * @param PublicLinkData $PublicLinkData
+     * @return PublicLinkListData
+     */
+    public function getItemForList(PublicLinkData $PublicLinkData)
+    {
+        $PublicLinkListData = new PublicLinkListData();
+        $PublicLinkListData->setPublicLinkId($PublicLinkData->getPublicLinkId());
+        $PublicLinkListData->setPublicLinkHash($PublicLinkData->getLinkHash());
+        $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
+        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
+        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? _('ON') : _('OFF'));
+        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
+        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
+        $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
+        $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
+
+        return $PublicLinkListData;
     }
 
     /**
@@ -361,7 +361,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             FROM publicLinks WHERE publicLink_hash = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\PublicLinkBaseData');
+        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($hash);
 
@@ -381,8 +381,37 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
         }
 
-        $PublicLink->setItemId($queryRes->getPublicLinkItemId());
+        $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
 
         return $PublicLink;
+    }
+
+    /**
+     * Devolver el hash asociado a un elemento
+     *
+     * @param int $itemId
+     * @return PublicLinkData
+     * @throws SPException
+     */
+    public function getHashForItem($itemId)
+    {
+        $query = /** @lang SQL */
+            'SELECT publicLink_hash FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->addParam($itemId);
+
+        $queryRes = DB::getResults($Data);
+
+        error_log(print_r($queryRes, true));
+        error_log(print_r($itemId, true));
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+        }
+
+        return $queryRes;
     }
 }

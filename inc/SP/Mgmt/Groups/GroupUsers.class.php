@@ -122,9 +122,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 
     /**

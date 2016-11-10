@@ -74,14 +74,7 @@ class Log extends ActionLog
         // Obtenemos el número total de registros
         DB::setFullRowCount();
 
-        // Devolver un array siempre
-        DB::setReturnArray();
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
+        $queryRes = DB::getResultsArray($Data);
 
         self::$numRows = $Data->getQueryNumRows();
 

@@ -225,11 +225,9 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
-        DB::setReturnArray();
+        $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
+        if (count($queryRes) === 0) {
             throw new SPException(SPException::SP_INFO, _('No se encontraron campos personalizados'));
         }
 

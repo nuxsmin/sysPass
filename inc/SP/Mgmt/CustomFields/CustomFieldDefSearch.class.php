@@ -73,16 +73,11 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
 
-        DB::setReturnArray();
         DB::setFullRowCount();
 
-        $queryRes = DB::getResults($Data);
+        $queryRes = DB::getResultsArray($Data);
 
-        if ($queryRes === false) {
-            return array();
-        }
-
-        $customFields = array();
+        $customFields = [];
 
         foreach ($queryRes as $CustomField) {
             /**

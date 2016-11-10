@@ -454,18 +454,11 @@ class AccountSearch
         // Obtener el número total de cuentas visibles por el usuario
         DB::setFullRowCount();
 
-        // Obtener los resultados siempre en array de objetos
-        DB::setReturnArray();
-
 //        Log::writeNewLog(__FUNCTION__, $Data->getQuery(), Log::DEBUG);
 //        Log::writeNewLog(__FUNCTION__, print_r($Data->getParams(), true), Log::DEBUG);
 
         // Consulta de la búsqueda de cuentas
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
+        $queryRes = DB::getResultsArray($Data);
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
         self::$queryNumRows = $Data->getQueryNumRows();

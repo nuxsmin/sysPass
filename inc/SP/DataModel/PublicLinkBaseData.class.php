@@ -37,6 +37,10 @@ class PublicLinkBaseData extends DataModelBase
     /**
      * @var int
      */
+    public $publicLink_id = 0;
+    /**
+     * @var int
+     */
     public $publicLink_itemId = 0;
     /**
      * @var string
@@ -50,17 +54,17 @@ class PublicLinkBaseData extends DataModelBase
     /**
      * @return int
      */
-    public function getPublicLinkItemId()
+    public function getPublicLinkId()
     {
-        return $this->publicLink_itemId;
+        return (int)$this->publicLink_id;
     }
 
     /**
-     * @param int $publicLink_itemId
+     * @param int $publicLink_id
      */
-    public function setPublicLinkItemId($publicLink_itemId)
+    public function setPublicLinkId($publicLink_id)
     {
-        $this->publicLink_itemId = $publicLink_itemId;
+        $this->publicLink_id = (int)$publicLink_id;
     }
 
     /**
@@ -93,5 +97,21 @@ class PublicLinkBaseData extends DataModelBase
     public function setPublicLinkLinkData($publicLink_linkData)
     {
         $this->publicLink_linkData = $publicLink_linkData;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkItemId()
+    {
+        return (int)$this->publicLink_itemId;
+    }
+
+    /**
+     * @param int $publicLink_itemId
+     */
+    public function setPublicLinkItemId($publicLink_itemId)
+    {
+        $this->publicLink_itemId = (int)$publicLink_itemId;
     }
 }

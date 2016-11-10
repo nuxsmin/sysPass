@@ -75,11 +75,9 @@ class ProfileUtil
         $Data = new QueryData();
         $Data->setQuery($query);
 
-        DB::setReturnArray();
+        $queryRes = DB::getResultsArray($Data);
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
+        if (count($queryRes) === 0) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al obtener perfiles'));
             return false;
@@ -168,8 +166,6 @@ class ProfileUtil
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        DB::setReturnArray();
-
-        return DB::getResults($Data);
+        return DB::getResultsArray($Data);
     }
 }
