@@ -45,7 +45,7 @@ $data = array(
     'app_root' => Init::$WEBURI,
     'pk' => '',
     'max_file_size' => $Config->getFilesAllowedSize(),
-    'check_updates' => $Config->isCheckUpdates() && (Session::getUserIsAdminApp() || Checks::demoIsEnabled())
+    'check_updates' => ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserIsAdminApp() || Checks::demoIsEnabled())
 );
 
 try {

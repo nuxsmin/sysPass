@@ -230,9 +230,6 @@
         <?php if (!$isView): ?>
         $('input:text:visible:first').focus();
 
-        var accountTags = <?php echo $gotData ? $accountTagsJson : '{}'; ?>;
-        var availableTags = <?php echo $tagsJson; ?>;
-
         $('#selTags').selectize({
                 persist: false,
                 maxItems: null,
@@ -240,46 +237,10 @@
                 labelField: 'name',
                 searchField: ['name'],
                 plugins: ['remove_button'],
-                options: availableTags,
-                items: accountTags
+                options: <?php echo $tagsJson; ?>,
+                items: <?php echo $gotData ? $accountTagsJson : '{}'; ?>
             }
         );
-
-        var otherUsers = <?php echo $otherUsersJson; ?>;
-
-        $('#otherUsers').selectize({
-            persist: false,
-            valueField: 'user_id',
-            labelField: 'user_login',
-            searchField: ['user_login'],
-            plugins: ['remove_button'],
-            options: otherUsers,
-            onInitialize: function () {
-                var userId = <?php echo $gotData ? $accountData->getAccountUserId() : 0; ?>;
-
-                if (userId > 0) {
-                    this.removeOption(userId);
-                }
-            }
-        });
-
-        var otherGroups = <?php echo $otherGroupsJson; ?>;
-
-        $('#otherGroups').selectize({
-            persist: false,
-            valueField: 'id',
-            labelField: 'name',
-            searchField: ['name'],
-            plugins: ['remove_button'],
-            options: otherGroups,
-            onInitialize: function () {
-                var userGroupId = <?php echo $gotData ? $accountData->getAccountUserGroupId() : 0; ?>;
-
-                if (userGroupId > 0) {
-                    this.removeOption(userGroupId);
-                }
-            }
-        });
         <?php endif; ?>
 
         sysPassApp.sk.set("<?php echo $sk; ?>");

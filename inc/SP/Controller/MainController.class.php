@@ -53,8 +53,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -373,38 +373,45 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getCheckUpdates()
     {
-        $updates = Util::checkUpdates();
-
         $this->view->addTemplate('update');
 
-        if (is_array($updates)) {
-            $description = nl2br($updates['description']);
-            $version = $updates['version'];
+        $this->view->assign('hasUpdates', false);
+        $this->view->assign('hasNotices', false);
 
-            $this->view->assign('hasUpdates', true);
-            $this->view->assign('title', $updates['title']);
-            $this->view->assign('url', $updates['url']);
-            $this->view->assign('description', sprintf('%s - %s <br><br>%s', _('Descargar nueva versión'), $version, $description));
-        } else {
-            $this->view->assign('hasUpdates', false);
-            $this->view->assign('status', $updates);
+        if (Config::getConfig()->isCheckUpdates()) {
+            $updates = Util::checkUpdates();
+
+            if (is_array($updates)) {
+                $description = nl2br($updates['description']);
+                $version = $updates['version'];
+
+                $this->view->assign('hasUpdates', true);
+                $this->view->assign('title', $updates['title']);
+                $this->view->assign('url', $updates['url']);
+                $this->view->assign('description', sprintf('%s - %s <br><br>%s', _('Descargar nueva versión'), $version, $description));
+            } else {
+                $this->view->assign('status', $updates);
+            }
         }
 
-        $notices = Util::checkNotices();
-        $numNotices = count($notices);
-        $noticesTitle = '';
+        if (Config::getConfig()->isChecknotices()) {
+            $notices = Util::checkNotices();
+            $numNotices = count($notices);
+            $noticesTitle = '';
 
-        if ($notices !== false && $numNotices > 0) {
-            $noticesTitle = sprintf('%s <br><br>', _('Avisos de sysPass'));
+            if ($notices !== false && $numNotices > 0) {
+                $noticesTitle = sprintf('%s<br><br>', _('Avisos de sysPass'));
 
-            foreach ($notices as $notice) {
-                $noticesTitle .= sprintf('%s <br>', $notice[0]);
+                foreach ($notices as $notice) {
+                    $noticesTitle .= sprintf('%s<br>', $notice[0]);
+                }
+
+                $this->view->assign('hasNotices', true);
             }
 
+            $this->view->assign('numNotices', $numNotices);
+            $this->view->assign('noticesTitle', $noticesTitle);
         }
-
-        $this->view->assign('numNotices', $numNotices);
-        $this->view->assign('noticesTitle', $noticesTitle);
     }
 
     /**

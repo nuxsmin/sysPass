@@ -83,4 +83,41 @@
         </tr>
     <?php endif; ?>
 </table>
+<?php if (!$isView): ?>
+    <script>
+        $(function () {
+            $('#otherUsers').selectize({
+                persist: false,
+                valueField: 'user_id',
+                labelField: 'user_login',
+                searchField: ['user_login'],
+                plugins: ['remove_button'],
+                options: <?php echo $otherUsersJson; ?>,
+                onInitialize: function () {
+                    var userId = <?php echo $gotData ? $accountData->getAccountUserId() : 0; ?>;
+
+                    if (userId > 0) {
+                        this.removeOption(userId);
+                    }
+                }
+            });
+
+            $('#otherGroups').selectize({
+                persist: false,
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                plugins: ['remove_button'],
+                options: <?php echo $otherGroupsJson; ?>,
+                onInitialize: function () {
+                    var userGroupId = <?php echo $gotData ? $accountData->getAccountUserGroupId() : 0; ?>;
+
+                    if (userGroupId > 0) {
+                        this.removeOption(userGroupId);
+                    }
+                }
+            });
+        });
+    </script>
+<?php endif; ?>
 

@@ -112,7 +112,7 @@ class DB
 
         self::resetVars();
 
-        if ($db->numRows === 1) {
+        if ($db->numRows === 1 && !$queryData->isUseKeyPair()) {
             return $db->lastResult[0];
         }
 
