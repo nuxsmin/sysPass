@@ -58,6 +58,7 @@ class ConfigDB implements ConfigInterface
         $query = 'SELECT config_parameter, config_value FROM config';
 
         $Data = new QueryData();
+        $Data->setUseKeyPair(true);
         $Data->setQuery($query);
 
         $queryRes = DB::getResults($Data);
@@ -66,9 +67,13 @@ class ConfigDB implements ConfigInterface
             return false;
         }
 
-        foreach ($queryRes as $config) {
-            self::$cache[$config->config_parameter] = $config->config_value;
-        }
+        self::$cache = $queryRes;
+
+        return $queryRes;
+
+//        foreach ($queryRes as $config) {
+//            self::$cache[$config->config_parameter] = $config->config_value;
+//        }
     }
 
     /**
@@ -118,10 +123,11 @@ class ConfigDB implements ConfigInterface
      */
     public static function setValue($param, $value, $email = true)
     {
-        $query = "INSERT INTO config "
-            . "SET config_parameter = :param,"
-            . "config_value = :value "
-            . "ON DUPLICATE KEY UPDATE config_value = :valuedup";
+        $query = /** @lang SQL */
+            'INSERT INTO config '
+            . 'SET config_parameter = :param,'
+            . 'config_value = :value '
+            . 'ON DUPLICATE KEY UPDATE config_value = :valuedup';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -165,7 +171,7 @@ class ConfigDB implements ConfigInterface
      */
     public static function getCacheConfigValue($param = null)
     {
-        if (!is_null($param) && isset(self::$cache[$param])) {
+        if (null !== $param && isset(self::$cache[$param])) {
             return self::$cache[$param];
         }
 
@@ -193,7 +199,7 @@ class ConfigDB implements ConfigInterface
             return false;
         }
 
-        return ($queryRes->config_value) ? $queryRes->config_value : $default;
+        return is_object($queryRes) ? $queryRes->config_value : $default;
     }
 
     /**

@@ -28,6 +28,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
@@ -50,8 +51,18 @@ use SP\Util\Util;
  */
 class ConfigController extends ControllerBase implements ActionsInterface
 {
+    /**
+     * @var int
+     */
     private $tabIndex = 0;
+    /**
+     * @var ConfigData
+     */
     private $Config;
+    /**
+     * @var array
+     */
+    private $configDB;
 
     /**
      * Constructor
@@ -63,6 +74,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         parent::__construct($template);
 
         $this->Config = Config::getConfig();
+        $this->configDB = ConfigDB::readConfig();
 
         $this->view->assign('tabs', []);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
@@ -161,9 +173,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('encryption');
 
-        $this->view->assign('lastUpdateMPass', ConfigDB::getValue('lastupdatempass'));
-        $this->view->assign('tempMasterPassTime', ConfigDB::getValue('tempmaster_passtime'));
-        $this->view->assign('tempMasterMaxTime', ConfigDB::getValue('tempmaster_maxtime'));
+        $this->view->assign('lastUpdateMPass', isset($this->configDB['lastupdatempass']) ? $this->configDB['lastupdatempass'] : 0);
+        $this->view->assign('tempMasterPassTime', isset($this->configDB['tempmaster_passtime']) ? $this->configDB['tempmaster_passtime'] : 0);
+        $this->view->assign('tempMasterMaxTime', isset($this->configDB['tempmaster_maxtime']) ? $this->configDB['tempmaster_maxtime'] : 0);
         $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
 
         $this->view->append('tabs', ['title' => _('Encriptación')]);
@@ -254,7 +266,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('dbInfo', DBUtil::getDBinfo());
         $this->view->assign('dbName', $this->Config->getDbName() . '@' . $this->Config->getDbHost());
-        $this->view->assign('configBackupDate', date('r', ConfigDB::getValue('config_backupdate')));
+        $this->view->assign('configBackupDate', date('r', $this->configDB['config_backupdate']));
 
         $this->view->append('tabs', ['title' => _('Información')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');
