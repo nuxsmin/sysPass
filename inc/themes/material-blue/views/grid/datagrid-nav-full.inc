@@ -4,14 +4,14 @@
  * @var $this  SP\Core\Template
  */
 ?>
-<div id="pageNav" class="round shadow">
-    <div id="pageNavLeft">
+<div class="pager round5 shadow">
+    <div class="pager-left">
         <?php echo $data->getData()->getDataCount(); ?> @ <?php echo $data->getTime(); ?>s
         <?php if ($data->getPager()->getFilterOn()): ?>
             <span class="filterOn round"><?php echo _('Filtro ON'); ?></span>
         <?php endif; ?>
     </div>
-    <div id="pageNavRight">
+    <div class="pager-right">
         <?php if ($data->getPager()->getLimitStart() > 1): ?>
             <i class="btn-action-pager material-icons <?php echo $data->getPager()->getIconFirst()->getClass(); ?>"
                title="<?php echo $data->getPager()->getIconFirst()->getTitle(); ?>"

@@ -26,6 +26,7 @@
 namespace SP\Core;
 
 use SP\Account;
+use SP\Account\AccountSearch;
 use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserPreferencesData;
@@ -297,17 +298,17 @@ class Session
     }
 
     /**
-     * @return \SP\Account\AccountSearch
+     * @return AccountSearch
      */
     public static function getSearchFilters()
     {
-        return self::getSessionKey('searchFilters', null);
+        return self::getSessionKey('searchFilters', new AccountSearch());
     }
 
     /**
-     * @param \SP\Account\AccountSearch $searchFilters
+     * @param AccountSearch $searchFilters
      */
-    public static function setSearchFilters(Account\AccountSearch $searchFilters)
+    public static function setSearchFilters(AccountSearch $searchFilters)
     {
         self::setSessionKey('searchFilters', $searchFilters);
     }

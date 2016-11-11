@@ -367,6 +367,9 @@ sysPass.Theme = function (Common) {
                 }
             };
 
+            var $tagsSelect = $frmSearch.find("#tags")[0];
+            var $showFilter = $frmSearch.find("i.show-filter");
+
             $resContent.on("click", "#data-search-header .sort-down,#data-search-header .sort-up", function () {
                 var $this = $(this);
                 $this.parent().find("a").addClass("filterOn");
@@ -379,12 +382,31 @@ sysPass.Theme = function (Common) {
                     checkFavorite($this);
                 });
             }).on("click", "#search-rows span.tag", function () {
-                var tag = "tag:" + this.innerHTML;
+                if ($showFilter.data("state") == 0) {
+                    $showFilter.trigger("click");
+                }
 
-                $("#search").val(tag).parent().addClass("is-dirty");
-
-                Common.appActions().account.search();
+                $tagsSelect.selectize.addItem($(this).data("tag-id"));
             });
+
+            $showFilter.on("click", function () {
+                var $this = $(this);
+                var $tags = $frmSearch.find(".search-filters-tags");
+
+                if ($this.data("state") == 0) {
+                    $tags.show("slow");
+                    $this.data("state", "1");
+                    $this.html($this.data("icon-up"));
+                } else {
+                    $tags.hide("slow");
+                    $this.data("state", "0");
+                    $this.html($this.data("icon-down"));
+                }
+            });
+
+            if ($tagsSelect.selectedOptions.length > 0) {
+                $showFilter.trigger("click");
+            }
         },
         common: function ($container) {
             passwordDetect($container);

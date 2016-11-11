@@ -86,11 +86,11 @@
         </tbody>
     </table>
 </div>
-<div id="pageNav" class="round shadow">
-    <div id="pageNavLeft">
+<div class="pager round5 shadow">
+    <div class="pager-left">
         <?php echo $Pager->getTotalRows(); ?> @ <?php echo round(microtime() - $queryTimeStart, 5); ?>s
     </div>
-    <div id="pageNavRight">
+    <div class="pager-right">
         <?php if ($Pager->getLimitStart() > 1): ?>
             <i class="btn-action-pager material-icons <?php echo $Pager->getIconFirst()->getClass(); ?>"
                title="<?php echo $Pager->getIconFirst()->getTitle(); ?>"

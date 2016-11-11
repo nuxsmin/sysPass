@@ -106,6 +106,10 @@ class AccountSearch
      */
     private $categoryId = 0;
     /**
+     * @var array
+     */
+    private $tagsId = [];
+    /**
      * @var int
      */
     private $sortOrder = 0;
@@ -398,6 +402,18 @@ class AccountSearch
             $Data->addParam($this->customerId);
         }
 
+        $numTags = count($this->tagsId);
+
+        if ($numTags > 0) {
+            $tags = str_repeat('?,', $numTags - 1) . '?';
+
+            $arrFilterSelect[] = 'account_id IN (SELECT acctag_accountId FROM accTags WHERE acctag_tagId IN (' . $tags . '))';
+
+            for ($i = 0; $i <= $numTags - 1; $i++) {
+                $Data->addParam($this->tagsId[$i]);
+            }
+        }
+
         if ($this->searchFavorites === true) {
             $arrayQueryJoin[] = 'INNER JOIN accFavorites ON (accfavorite_accountId = account_id AND accfavorite_userId = ?)';
             $Data->addParam(Session::getUserId());
@@ -477,7 +493,7 @@ class AccountSearch
      */
     private function analyzeQueryString()
     {
-        preg_match('/(user|group|file|tag|expired|private|owner|maingroup):(.*)/i', $this->txtSearch, $filters);
+        preg_match('/(user|group|file|expired|private|owner|maingroup):(.*)/i', $this->txtSearch, $filters);
 
         if (!is_array($filters) || count($filters) === 0) {
             return [];
@@ -524,14 +540,6 @@ class AccountSearch
                     'query' => 'account_id IN (SELECT accfile_accountId FROM accFiles WHERE accfile_name LIKE ?)',
                     'values' => ['%' . $filters[2] . '%']
                 ];
-                break;
-            case 'tag':
-                $filtersData[] =
-                    [
-                        'type' => 'tag',
-                        'query' => 'account_id IN (SELECT acctag_accountId FROM accTags, tags WHERE tag_id = acctag_tagId AND tag_name = ?)',
-                        'values' => [$filters[2]]
-                    ];
                 break;
             case 'expired':
                 $filtersData[] =
@@ -654,5 +662,26 @@ class AccountSearch
         }
 
         return $accountColor[$id];
+    }
+
+    /**
+     * @return array
+     */
+    public function getTagsId()
+    {
+        return $this->tagsId;
+    }
+
+    /**
+     * @param array $tagsId
+     * @return $this
+     */
+    public function setTagsId($tagsId)
+    {
+        if (is_array($tagsId)) {
+            $this->tagsId = $tagsId;
+        }
+
+        return $this;
     }
 }

@@ -77,8 +77,8 @@
                 </div>
                 <div class="label-row-down">
                     <div class="tags-box">
-                        <?php foreach ($AccountSearchData->getTags() as $tag): ?>
-                            <span class="tag"><?php echo $tag; ?></span>
+                        <?php foreach ($AccountSearchData->getTags() as $tagId => $tagName): ?>
+                            <span class="tag" data-tag-id="<?php echo $tagId; ?>"><?php echo $tagName; ?></span>
                         <?php endforeach; ?>
                     </div>
                 </div>

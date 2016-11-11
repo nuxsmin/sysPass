@@ -153,7 +153,7 @@ sysPass.Triggers = function (Common) {
             $this.find("input[name='start'], input[name='skey'], input[name='sorder']").val(0);
 
             $this.find("select").each(function () {
-                $(this)[0].selectize.clear();
+                $(this)[0].selectize.clear(true);
             });
 
             $this.submit();

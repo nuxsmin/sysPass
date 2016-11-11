@@ -45,6 +45,7 @@ use SP\Html\DataGrid\DataGridSort;
 use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Tags\Tag;
 use SP\Util\Checks;
 
 /**
@@ -102,11 +103,6 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $this->view->assign('isAdmin', Session::getUserIsAdminApp() || Session::getUserIsAdminAcc());
         $this->view->assign('showGlobalSearch', Config::getConfig()->isGlobalSearch());
 
-        // Comprobar si está creado el objeto de búsqueda en la sesión
-        if (!is_object(Session::getSearchFilters())) {
-            Session::setSearchFilters(new AccountSearch());
-        }
-
         // Obtener el filtro de búsqueda desde la sesión
         $filters = Session::getSearchFilters();
 
@@ -123,6 +119,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         // Valores POST
         $this->view->assign('searchCustomer', $isSearch ? Request::analyze('customer', 0) : $filters->getCustomerId());
         $this->view->assign('searchCategory', $isSearch ? Request::analyze('category', 0) : $filters->getCategoryId());
+        $this->view->assign('searchTags', $isSearch ? Request::analyze('tags') : $filters->getTagsId());
         $this->view->assign('searchTxt', $isSearch ? Request::analyze('search') : $filters->getTxtSearch());
         $this->view->assign('searchGlobal', Request::analyze('gsearch', $filters->getGlobalSearch()));
         $this->view->assign('searchFavorites', Request::analyze('searchfav', $filters->isSearchFavorites()));
@@ -145,6 +142,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
+        $this->view->assign('tags', Tag::getItem()->getItemsForSelect());
     }
 
     /**
@@ -167,11 +165,13 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
             ->setTxtSearch($this->view->searchTxt)
             ->setCategoryId($this->view->searchCategory)
             ->setCustomerId($this->view->searchCustomer)
+            ->setTagsId($this->view->searchTags)
             ->setSearchFavorites($this->view->searchFavorites);
 
         $this->filterOn = ($this->sortKey > 1
             || $this->view->searchCustomer
             || $this->view->searchCategory
+            || $this->view->searchTags
             || $this->view->searchTxt
             || $this->view->searchFavorites
             || $Search->isSortViews());
