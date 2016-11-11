@@ -60,7 +60,7 @@ class UserMigrate
 
         $queryRes = DB::getResults($Data);
 
-        return ($queryRes !== false && $queryRes->user_isMigrate == 1);
+        return ($queryRes !== false && $Data->getQueryNumRows() === 1 && $queryRes->user_isMigrate == 1);
     }
 
     /**

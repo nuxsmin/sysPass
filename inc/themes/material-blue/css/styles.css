@@ -693,6 +693,10 @@ pre, code, samp, kbd {
     display: inline-block;
 }
 
+#content #searchbox .search-filters .filter-slider {
+    width: 10em;
+}
+
 #content #searchbox .search-filters-tags {
     display: none;
     flex-grow: 1;

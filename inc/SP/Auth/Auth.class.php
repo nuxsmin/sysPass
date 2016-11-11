@@ -195,6 +195,7 @@ class Auth
         $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false
+            && $Data->getQueryNumRows() === 1
             && $queryRes->getUserPass() == crypt($userPass, $queryRes->getUserHashSalt()));
     }
 

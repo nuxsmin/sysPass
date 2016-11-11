@@ -261,7 +261,6 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
                 'SELECT userprofile_id, userprofile_name
                 FROM usrProfiles
                 WHERE userprofile_name <> "Admin"
-                AND userprofile_name <> "Demo"
                 ORDER BY userprofile_name';
         } else {
             $query = /** @lang SQL */

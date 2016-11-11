@@ -50,7 +50,7 @@
                                     </div>
 
                                     <button type="reset"
-                                            class="btn-clear mdl-button mdl-js-button mdl-button--mini-fab mdl-js-ripple-effect"
+                                            class="btn-clear mdl-button mdl-js-button mdl-button--icon"
                                             title="<?php echo $icons->getIconClear()->getTitle(); ?>">
                                         <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
                                     </button>

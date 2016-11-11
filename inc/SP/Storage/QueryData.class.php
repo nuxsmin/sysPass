@@ -285,7 +285,7 @@ class QueryData
      */
     public function getQueryNumRows()
     {
-        return $this->queryNumRows;
+        return (int)$this->queryNumRows;
     }
 
     /**
@@ -293,6 +293,6 @@ class QueryData
      */
     public function setQueryNumRows($queryNumRows)
     {
-        $this->queryNumRows = $queryNumRows;
+        $this->queryNumRows = (int)$queryNumRows;
     }
 }

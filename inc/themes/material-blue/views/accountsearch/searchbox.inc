@@ -63,17 +63,17 @@
 
             <div class="filter-buttons">
                 <button type="button"
-                        class="icon-searchfav mdl-button mdl-js-button mdl-js-ripple-effect" tabindex="5">
+                        class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
                     <i class="material-icons <?php echo ($searchFavorites === true) ? 'mdl-color-text--amber-A200' : ''; ?>"
                        title="<?php echo ($searchFavorites === true) ? _('Mostrar Todos') : _('Mostrar Favoritos'); ?>">star</i>
                 </button>
                 <button type="reset"
-                        class="btn-clear mdl-button mdl-js-button mdl-js-ripple-effect"
+                        class="btn-clear mdl-button mdl-js-button mdl-button--icon"
                         title="<?php echo $icons->getIconClear()->getTitle(); ?>" tabindex="6">
                     <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
                 </button>
             </div>
-            <div class="filter-buttons">
+            <div class="filter-buttons filter-slider">
                 <span id="txt-slider"></span>
                 <input id="rpp" name="rpp" class="mdl-slider mdl-js-slider" type="range"
                        title="<?php echo _('Cuentas por página'); ?>"
