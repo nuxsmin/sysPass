@@ -119,7 +119,7 @@ class AccountForm extends FormBase implements FormInterface
         $this->AccountData->setAccountLogin(Request::analyze('login'));
         $this->AccountData->setAccountUrl(Request::analyze('url'));
         $this->AccountData->setAccountNotes(Request::analyze('notes'));
-        $this->AccountData->setAccountUserEditId(Session::getUserId());
+        $this->AccountData->setAccountUserEditId(Session::getUserData()->getUserId());
         $this->AccountData->setAccountOtherUserEdit(Request::analyze('userEditEnabled', 0, false, 1));
         $this->AccountData->setAccountOtherGroupEdit(Request::analyze('groupEditEnabled', 0, false, 1));
         $this->AccountData->setAccountPass(Request::analyzeEncrypted('pass'));
@@ -147,7 +147,7 @@ class AccountForm extends FormBase implements FormInterface
 
         // Cambiar el grupo principal si el usuario es Admin
         if ($accountMainGroupId !== 0
-            && (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc())
+            && (Session::getUserData()->isUserIsAdminApp() || Session::getUserData()->isUserIsAdminAcc())
         ) {
             $this->AccountData->setAccountUserGroupId($accountMainGroupId);
         }

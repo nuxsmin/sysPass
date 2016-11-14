@@ -31,6 +31,7 @@ use SP\Config\ConfigDB;
 use SP\Controller;
 use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -154,11 +155,11 @@ class Init
         @ini_set('gc_maxlifetime', self::getSessionLifeTime());
 
         if (!Config::getConfig()->isInstalled()) {
-            Session::setUserId('');
+            Session::setUserData();
         }
 
         // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-        if (self::isLoggedIn() && !Auth::checkServerAuthUser(Session::getUserLogin())) {
+        if (self::isLoggedIn() && !Auth::checkServerAuthUser(Session::getUserData()->getUserLogin())) {
             self::logout();
         }
 
@@ -520,10 +521,9 @@ class Init
     {
         $inactiveTime = round((time() - Session::getLastActivity()) / 60, 2);
         $totalTime = round((time() - Session::getStartActivity()) / 60, 2);
-        $ulogin = Session::getUserLogin();
 
         $Log = new Log(_('Finalizar sesión'));
-        $Log->addDetails(_('Usuario'), $ulogin);
+        $Log->addDetails(_('Usuario'), Session::getUserData()->getUserLogin());
         $Log->addDetails(_('Tiempo inactivo'), $inactiveTime . ' min.');
         $Log->addDetails(_('Tiempo total'), $totalTime . ' min.');
         $Log->writeLog();
@@ -627,12 +627,12 @@ class Init
         if (Session::getSidStartTime() === 0) {
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
-        } else if (Session::getUserId() && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
+        } else if (Session::getUserData()->getUserId() && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
             $sessionMPass = SessionUtil::getSessionMPass();
             session_regenerate_id(true);
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario
-            Session::setUserProfile(Profile::getItem()->getById(Session::getUserProfileId()));
+            Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
             // Regenerar la clave maestra
             SessionUtil::saveSessionMPass($sessionMPass);
         }
@@ -694,7 +694,7 @@ class Init
      */
     public static function isLoggedIn()
     {
-        return (Session::getUserLogin() && Session::get2FApassed());
+        return (Session::getUserData()->getUserLogin() && Session::get2FApassed());
     }
 
     /**

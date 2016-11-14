@@ -29,7 +29,6 @@ use SP\DataModel\DataModelInterface;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 
-
 /**
  * Class ItemsController
  *
@@ -43,16 +42,14 @@ class ItemsController
      * @param $itemType int El tipo de elemento a devolver
      * @return array
      */
-    public function getGetItems($itemType)
+    public function getItems($itemType)
     {
 
         switch ($itemType) {
             case ItemsTypeInterface::ITEM_CATEGORIES:
                 return $this->getCategories();
-                break;
             case ItemsTypeInterface::ITEM_CUSTOMERS:
                 return $this->getCustomers();
-                break;
             default:
                 return [];
         }

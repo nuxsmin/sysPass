@@ -13,6 +13,19 @@
     <?php endif; ?>
 </div>
 
+
+<?php if ($gotData && $accountIsHistory): ?>
+    <form method="post" name="frmAccountRestore" id="frmAccountRestore" class="form-action"
+          data-onsubmit="account/restore" data-hash="">
+        <input type="hidden" name="actionId"
+               value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
+        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
+        <input type="hidden" name="accountHistoryId" value="<?php echo $accountHistoryId; ?>"/>
+        <input type="hidden" name="sk" value="">
+        <input type="hidden" name="isAjax" value="1">
+    </form>
+<?php endif; ?>
+
 <form method="post" name="frmaccount" id="frmAccount" class="form-action" data-onsubmit="account/save" data-hash="">
     <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
     <?php if ($gotData): ?>
@@ -124,16 +137,19 @@
                     </div>
                 </td>
             </tr>
+        <?php endif; ?>
+        <?php if (!$isView): ?>
             <tr>
                 <td class="descField"><?php echo _('Fecha Caducidad Clave'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="accountpassdatechange" name="accountpassdatechange" type="date"
                                class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
-                               value="<?php echo $gotData ? $accountData->getAccountPassDateChange() : ''; ?>">
+                               value="<?php echo $accountPassDateChange; ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="accountpassdatechange"><?php echo _('Fecha'); ?></label>
                     </div>
+
                     <i class="material-icons btn-action"
                        title="<?php echo _('Seleccionar Fecha'); ?>">date_range</i>
                 </td>
@@ -172,9 +188,9 @@
                             data-action-id="<?php echo SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>"
                             data-onchange="account/showHistory">
                         <option value=""><?php echo _('Seleccionar fecha'); ?></option>
-                        <?php foreach ($historyData as $historyId => $historyDate): ?>
+                        <?php foreach ($historyData as $historyId => $historyData): ?>
                             <option
-                                value="<?php echo $historyId; ?>" <?php echo ($gotData && $accountIsHistory && $historyId === $accountId) ? 'selected' : ''; ?>><?php echo $historyDate; ?></option>
+                                value="<?php echo $historyId; ?>" <?php echo ($gotData && $accountIsHistory && $historyId === $accountHistoryId) ? 'selected' : ''; ?>><?php echo $historyData; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -210,17 +226,6 @@
 <!--More info about account details -->
 <?php if ($gotData && $AccountAcl->isShowDetails()): ?>
     <?php include $this->includeTemplate('details'); ?>
-<?php endif; ?>
-
-<?php if ($gotData && $accountIsHistory): ?>
-    <form method="post" name="frmAccount" id="frmAccount"
-          onsubmit="sysPassUtil.Common.saveAccount('frmAccount'); return false;">
-        <input type="hidden" name="actionId"
-               value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
-        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
-        <input type="hidden" name="sk" value="">
-        <input type="hidden" name="isAjax" value="1">
-    </form>
 <?php endif; ?>
 
 <?php include $this->includeTemplate('actions'); ?>

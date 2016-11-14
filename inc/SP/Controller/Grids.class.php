@@ -69,7 +69,7 @@ class Grids implements ActionsInterface
      */
     public function __construct()
     {
-        $this->sk = SessionUtil::getSessionKey(true);
+        $this->sk = SessionUtil::getSessionKey();
         $this->icons = DiFactory::getTheme()->getIcons();
     }
 

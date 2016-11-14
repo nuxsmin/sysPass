@@ -66,8 +66,8 @@ $recipients = array(
     UserUtil::getUserEmail($accountRequestData->account_userEditId)
 );
 
-$requestUsername = Session::getUserName();
-$requestLogin = Session::getUserLogin();
+$requestUsername = Session::getUserData()->getUserName();
+$requestLogin = Session::getUserData()->getUserLogin();
 
 $Log = new Log(_('Solicitud de Modificación de Cuenta'));
 $Log->addDetails(Html::strongText(_('Solicitante')), sprintf('%s (%s)', $requestUsername, $requestLogin));

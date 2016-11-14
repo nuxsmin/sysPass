@@ -57,5 +57,25 @@ $ClassLoader->register();
 $memInit = memory_get_usage();
 $timeStart = Init::microtime_float();
 
+/**
+ * Función para enviar mensajes al log de errores
+ *
+ * @param      $data
+ * @param bool $printLastCaller
+ */
+function debugLog($data, $printLastCaller = false)
+{
+    error_log(print_r($data, true));
+
+    if ($printLastCaller === true) {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $n = count($backtrace);
+
+        for ($i = 1; $i <= $n - 1; $i++){
+            error_log(sprintf('Caller %d: %s\%s', $i, $backtrace[$i]['class'], $backtrace[$i]['function']));
+        }
+    }
+}
+
 // Inicializar sysPass
 Init::start();

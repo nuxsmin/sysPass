@@ -58,10 +58,10 @@ class Acl implements ActionsInterface
             return false;
         }
 
-        $curUserIsAdminApp = Session::getUserIsAdminApp();
-        $curUserIsAdminAcc = Session::getUserIsAdminAcc();
+        $curUserIsAdminApp = Session::getUserData()->isUserIsAdminApp();
+        $curUserIsAdminAcc = Session::getUserData()->isUserIsAdminAcc();
         $curUserProfile = Session::getUserProfile();
-        $curUserId = Session::getUserId();
+        $curUserId = Session::getUserData()->getUserId();
 
         if ($curUserIsAdminApp) {
             return true;
@@ -188,14 +188,14 @@ class Acl implements ActionsInterface
      */
     public static function checkAccountAccess($module, AccountExtData $accountData)
     {
-        if (Session::getUserIsAdminApp()
-            || Session::getUserIsAdminAcc()
+        if (Session::getUserData()->isUserIsAdminApp()
+            || Session::getUserData()->isUserIsAdminAcc()
         ) {
             return true;
         }
 
-        $userId = Session::getUserId();
-        $userGroupId = Session::getUserGroupId();
+        $userId = Session::getUserData()->getUserId();
+        $userGroupId = Session::getUserData()->getUserGroupId();
         $userInGroups = self::getIsUserInGroups($accountData);
         $userInUsers = in_array($userId, $accountData->getAccountUsersId());
 
@@ -231,14 +231,14 @@ class Acl implements ActionsInterface
     {
         // Comprobar si el usuario está vinculado desde un grupo
         foreach (GroupUsers::getItem()->getById($AccountData->getAccountUserGroupId()) as $GroupUsersData) {
-            if ($GroupUsersData->getUsertogroupUserId() === Session::getUserId()) {
+            if ($GroupUsersData->getUsertogroupUserId() === Session::getUserData()->getUserId()) {
                 return true;
             }
         }
 
         // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
         foreach ($AccountData->getUserGroupsId() as $groupId) {
-            if ($groupId === Session::getUserGroupId()) {
+            if ($groupId === Session::getUserData()->getUserGroupId()) {
                 return true;
             }
         }

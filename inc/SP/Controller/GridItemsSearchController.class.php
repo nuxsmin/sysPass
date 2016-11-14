@@ -26,7 +26,7 @@ abstract class GridItemsSearchController extends ControllerBase
     /**
      * @var Grids
      */
-    protected $_grids;
+    protected $grids;
 
     /**
      * Constructor
@@ -37,11 +37,8 @@ abstract class GridItemsSearchController extends ControllerBase
     {
         parent::__construct($template);
 
-        $this->view->assign('isDemo', Checks::demoIsEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
-
-        $this->_grids = new Grids();
-        $this->_grids->setQueryTimeStart(microtime());
+        $this->grids = new Grids();
+        $this->grids->setQueryTimeStart(microtime());
     }
 
     /**

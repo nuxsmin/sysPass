@@ -35,7 +35,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
-use SP\Mgmt\Users\UserUtil;
 use SP\Util\Json;
 
 /**

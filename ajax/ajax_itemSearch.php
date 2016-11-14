@@ -23,26 +23,20 @@
  *
  */
 
-use SP\Controller\ItemActionController;
-use SP\Http\Request;
-use SP\Core\SessionUtil;
-use SP\Http\Response;
-
 define('APP_ROOT', '..');
+
+use SP\Controller\ItemSearchController;
+use SP\Core\Init;
+use SP\Http\Request;
+use SP\Http\Response;
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('POST');
 
-if (!\SP\Core\Init::isLoggedIn()) {
+if (!Init::isLoggedIn()) {
     Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = Request::analyze('sk', false);
-
-if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
-}
-
-$ItemAction = new ItemActionController();
-$ItemAction->doAction();
+$ItemSearch = new ItemSearchController();
+$ItemSearch->doAction();

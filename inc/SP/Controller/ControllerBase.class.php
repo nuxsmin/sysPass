@@ -87,8 +87,6 @@ abstract class ControllerBase
      */
     public function __construct(Template $template = null)
     {
-        global $timeStart;
-
         $class = get_called_class();
         $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
 
@@ -97,8 +95,7 @@ abstract class ControllerBase
 
         $this->icons = DiFactory::getTheme()->getIcons();
 
-        $this->view->assign('timeStart', $timeStart);
-        $this->view->assign('icons', $this->icons);
+        $this->setViewVars();
     }
 
     /**
@@ -204,7 +201,7 @@ abstract class ControllerBase
             $checkAction = $action;
         }
 
-        return Session::getUserIsAdminApp() || Acl::checkUserAccess($checkAction);
+        return Session::getUserData()->isUserIsAdminApp() || Acl::checkUserAccess($checkAction);
     }
 
     /**
@@ -217,11 +214,11 @@ abstract class ControllerBase
     protected function showError($type, $reset = true, $fancy = false)
     {
         $errorsTypes = array(
-            self::ERR_UNAVAILABLE => array('txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')),
-            self::ERR_ACCOUNT_NO_PERMISSION => array('txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')),
-            self::ERR_PAGE_NO_PERMISSION => array('txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')),
-            self::ERR_OPERATION_NO_PERMISSION => array('txt' => _('No tiene permisos para realizar esta operación'), 'hint' => _('Consulte con el administrador')),
-            self::ERR_UPDATE_MPASS => array('txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla'))
+            self::ERR_UNAVAILABLE => ['txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')],
+            self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')],
+            self::ERR_PAGE_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')],
+            self::ERR_OPERATION_NO_PERMISSION => ['txt' => _('No tiene permisos para realizar esta operación'), 'hint' => _('Consulte con el administrador')],
+            self::ERR_UPDATE_MPASS => ['txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla')]
         );
 
         if ($reset) {
@@ -235,10 +232,19 @@ abstract class ControllerBase
         }
 
         $this->view->append('errors',
-            array(
+            [
                 'type' => SPException::SP_WARNING,
                 'description' => $errorsTypes[$type]['txt'],
-                'hint' => $errorsTypes[$type]['hint'])
+                'hint' => $errorsTypes[$type]['hint']]
         );
+    }
+
+    private function setViewVars()
+    {
+        global $timeStart;
+
+        $this->view->assign('timeStart', $timeStart);
+        $this->view->assign('icons', $this->icons);
+        $this->view->assign('SessionUserData', Session::getUserData());
     }
 }

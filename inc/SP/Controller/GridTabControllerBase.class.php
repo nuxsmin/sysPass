@@ -70,7 +70,7 @@ abstract class GridTabControllerBase extends ControllerBase
 
         $this->view->addTemplate('datatabs-grid', 'grid');
 
-        $this->view->assign('tabs', array());
+        $this->view->assign('tabs', []);
         $this->view->assign('activeTab', 0);
         $this->view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
     }

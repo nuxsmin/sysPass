@@ -180,10 +180,10 @@ class XmlExport
             $metaGenerator = $this->xml->createElement('Generator', 'sysPass');
             $metaVersion = $this->xml->createElement('Version', implode('.', Util::getVersion()));
             $metaTime = $this->xml->createElement('Time', time());
-            $metaUser = $this->xml->createElement('User', Session::getUserLogin());
-            $metaUser->setAttribute('id', Session::getUserId());
-            $metaGroup = $this->xml->createElement('Group', Session::getUserGroupName());
-            $metaGroup->setAttribute('id', Session::getUserGroupId());
+            $metaUser = $this->xml->createElement('User', Session::getUserData()->getUserLogin());
+            $metaUser->setAttribute('id', Session::getUserData()->getUserId());
+            $metaGroup = $this->xml->createElement('Group', Session::getUserData()->getUsergroupName());
+            $metaGroup->setAttribute('id', Session::getUserData()->getUserGroupId());
 
             $nodeMeta->appendChild($metaGenerator);
             $nodeMeta->appendChild($metaVersion);

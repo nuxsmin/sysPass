@@ -104,9 +104,11 @@ abstract class AccountBase
      */
     public function getAccountDataForACL($accountId = null)
     {
-        $accId = (null !== $accountId) ? $accountId : $this->accountData->getAccountId();
-
-        $this->accountData->setAccountId($accId);
+        if (null !== $accountId) {
+            $this->accountData->setAccountId($accountId);
+        } else {
+            $this->accountData->getAccountId();
+        }
 
         return $this->accountData;
     }

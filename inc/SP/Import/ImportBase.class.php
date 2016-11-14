@@ -28,11 +28,9 @@ namespace SP\Import;
 use SP\Account\Account;
 use SP\DataModel\AccountData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CategoryData;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Categories\Category;
 use SP\Core\Session;
-use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -121,7 +119,7 @@ abstract class ImportBase
      */
     protected function parseFileHeader()
     {
-        $handle = @fopen($this->file->getTmpFile(), "r");
+        $handle = @fopen($this->file->getTmpFile(), 'r');
         $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
 
         if ($handle) {
@@ -151,12 +149,12 @@ abstract class ImportBase
      */
     protected function addAccount(AccountData $AccountData)
     {
-        if (is_null($this->getUserId()) || $this->getUserId() === 0) {
-            $this->setUserId(Session::getUserId());
+        if (null === $this->getUserId() || $this->getUserId() === 0) {
+            $this->setUserId(Session::getUserData()->getUserId());
         }
 
-        if (is_null($this->getUserGroupId()) || $this->getUserGroupId() === 0) {
-            $this->setUserGroupId(Session::getUserGroupId());
+        if (null === $this->getUserGroupId() || $this->getUserGroupId() === 0) {
+            $this->setUserGroupId(Session::getUserData()->getUserGroupId());
         }
 
         $Account = new Account($AccountData);

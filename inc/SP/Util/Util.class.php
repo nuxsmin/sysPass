@@ -278,7 +278,7 @@ class Util
      */
     public static function getUserCookieFile()
     {
-        return '/tmp/' . md5('syspass-' . Session::getUserLogin());
+        return '/tmp/' . md5('syspass-' . Session::getUserData()->getUserLogin());
     }
 
     /**

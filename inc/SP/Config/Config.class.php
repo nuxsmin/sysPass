@@ -99,9 +99,9 @@ class Config
      */
     public static function saveConfig(ConfigData $Config = null, $backup = true)
     {
-        $ConfigData = (is_null($Config)) ? self::getConfig() : $Config;
+        $ConfigData = null === $Config ? self::getConfig() : $Config;
         $ConfigData->setConfigDate(time());
-        $ConfigData->setConfigSaver(Session::getUserLogin());
+        $ConfigData->setConfigSaver(Session::getUserData()->getUserLogin());
         $ConfigData->setConfigHash();
 
         DiFactory::getConfigStorage()->setItems($ConfigData);

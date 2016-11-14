@@ -78,8 +78,8 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('tabs', []);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !Session::getUserIsAdminApp());
-        $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !Session::getUserIsAdminApp()) ? 'DISABLED' : '');
+        $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp());
+        $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp()) ? 'DISABLED' : '');
     }
 
     /**

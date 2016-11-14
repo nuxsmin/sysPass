@@ -30,8 +30,11 @@ sysPass.Main = function () {
         LANG: [], // Array de lenguaje
         PK: "", // Clave pública
         MAX_FILE_SIZE: 1024, // Máximo tamaño de archivo
-        crypt: new JSEncrypt(), // Inicializar la encriptación RSA
-        CHECK_UPDATES: false // Comprobar actualizaciones
+        CRYPT: new JSEncrypt(), // Inicializar la encriptación RSA
+        CHECK_UPDATES: false, // Comprobar actualizaciones
+        TIMEZONE: "",
+        LOCALE: "",
+        DEBUG: ""
     };
 
     // Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
@@ -70,10 +73,14 @@ sysPass.Main = function () {
     // Logging
     var log = {
         log: function (msg) {
-            console.log(msg);
+            if (config.DEBUG === true ) {
+                console.log(msg);
+            }
         },
         info: function (msg) {
-            console.info(msg);
+            if (config.DEBUG === true ) {
+                console.info(msg);
+            }
         },
         error: function (msg) {
             console.error(msg);
@@ -218,7 +225,10 @@ sysPass.Main = function () {
             config.LANG = json.lang;
             config.PK = json.pk;
             config.CHECK_UPDATES = json.check_updates;
-            config.crypt.setPublicKey(json.pk);
+            config.CRYPT.setPublicKey(json.pk);
+            config.TIMEZONE = json.timezone;
+            config.LOCALE = json.locale;
+            config.DEBUG = json.debug;
 
             if (typeof callback === "function") {
                 callback();
@@ -524,7 +534,7 @@ sysPass.Main = function () {
         if ((curValue !== "" && nextInput.attr("name") !== nextName)
             || (curValue !== "" && nextInput.attr("name") === nextName && parseInt($input.next().val()) !== curValue.length)
         ) {
-            var passEncrypted = config.crypt.encrypt(curValue);
+            var passEncrypted = config.CRYPT.encrypt(curValue);
             $input.val(passEncrypted);
 
             if (nextInput.length > 0) {
@@ -648,6 +658,7 @@ sysPass.Main = function () {
             },
             sk: sk,
             msg: msg,
+            log: log,
             passToClip: passToClip,
             passwordData: passwordData,
             outputResult: outputResult,

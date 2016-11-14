@@ -116,7 +116,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         }
 
         $this->itemData->setDateAdd(time());
-        $this->itemData->setUserId(Session::getUserId());
+        $this->itemData->setUserId(Session::getUserData()->getUserId());
         $this->itemData->setMaxCountViews(Config::getConfig()->getPublinksMaxViews());
         $this->calcDateExpire();
         $this->createLinkHash();
@@ -404,9 +404,6 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($itemId);
 
         $queryRes = DB::getResults($Data);
-
-        error_log(print_r($queryRes, true));
-        error_log(print_r($itemId, true));
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));

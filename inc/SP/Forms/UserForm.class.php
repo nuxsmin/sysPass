@@ -89,7 +89,7 @@ class UserForm extends FormBase implements FormInterface
             throw new ValidationException(_('Es necesario un grupo'));
         } elseif (!$isLdap && !$this->UserData->getUserEmail()) {
             throw new ValidationException(_('Es necesario un email'));
-        } elseif (Checks::demoIsEnabled() && !Session::getUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
+        } elseif (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
             throw new ValidationException(_('Ey, esto es una DEMO!!'));
         }
     }
@@ -117,7 +117,7 @@ class UserForm extends FormBase implements FormInterface
     {
         if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
             throw new ValidationException(_('Ey, esto es una DEMO!!'));
-        } elseif ($this->UserData->getUserId() === Session::getUserId()) {
+        } elseif ($this->UserData->getUserId() === Session::getUserData()->getUserId()) {
             throw new ValidationException(_('No es posible eliminar, usuario en uso'));
         }
     }

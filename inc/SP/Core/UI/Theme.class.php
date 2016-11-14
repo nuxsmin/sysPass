@@ -102,7 +102,9 @@ class Theme implements ThemeInterface
      */
     protected function getUserTheme()
     {
-        return (Session::getUserId() > 0) ? UserPreferences::getItem()->getById(Session::getUserId())->getTheme() : '';
+        $userId = Session::getUserData()->getUserId();
+
+        return ($userId > 0) ? UserPreferences::getItem()->getById($userId)->getTheme() : '';
     }
 
     /**

@@ -42,10 +42,13 @@ $Config = Config::getConfig();
 
 $data = array(
     'lang' => $stringsJsLang,
+    'locale' => $Config->getSiteLang(),
     'app_root' => Init::$WEBURI,
     'pk' => '',
     'max_file_size' => $Config->getFilesAllowedSize(),
-    'check_updates' => ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserIsAdminApp() || Checks::demoIsEnabled())
+    'check_updates' => ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserData()->isUserIsAdminApp() || Checks::demoIsEnabled()),
+    'timezone' => date_default_timezone_get(),
+    'debug' => DEBUG || $Config->isDebug()
 );
 
 try {

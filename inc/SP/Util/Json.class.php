@@ -41,6 +41,7 @@ class Json
      *
      * @param JsonResponse $json
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function returnJson(JsonResponse $json)
     {

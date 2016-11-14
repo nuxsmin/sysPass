@@ -278,7 +278,7 @@ class AccountAcl
 
         // Mostrar acción de restaurar
         $this->showRestore = $this->action === Acl::ACTION_ACC_VIEW_HISTORY
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $this->Account->getAccountDataForACL($this->Account->getAccountParentId()))
+            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $aclData)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT);
 
         // Mostrar acción de enlace público
@@ -296,7 +296,7 @@ class AccountAcl
             && Acl::checkUserAccess(Acl::ACTION_ACC_COPY);
 
         // Cambiar los permisos de la cuenta
-        $this->showPermission = Session::getUserIsAdminAcc() || Session::getUserIsAdminApp() || Session::getUserProfile()->isAccPermission();
+        $this->showPermission = Session::getUserData()->isUserIsAdminAcc() || Session::getUserData()->isUserIsAdminApp() || Session::getUserProfile()->isAccPermission();
     }
 
     /**

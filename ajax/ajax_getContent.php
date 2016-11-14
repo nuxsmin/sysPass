@@ -26,6 +26,10 @@
 use SP\Config\Config;
 use SP\Controller\AccountController;
 use SP\Controller\AccountSearchController;
+use SP\Controller\ConfigController;
+use SP\Controller\EventlogController;
+use SP\Controller\ItemListController;
+use SP\Controller\UserPreferencesController;
 use SP\Core\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Init;
@@ -59,18 +63,15 @@ $Tpl = new Template();
 $Tpl->assign('actionId', $actionId);
 $Tpl->assign('id', $itemId);
 $Tpl->assign('activeTabId', $itemId);
-$Tpl->assign('lastAccountId', Session::getLastAcountId());
 $Tpl->assign('queryTimeStart', microtime());
-$Tpl->assign('userId', Session::getUserId());
-$Tpl->assign('userGroupId', Session::getUserGroupId());
-$Tpl->assign('userIsAdminApp', Session::getUserIsAdminApp());
-$Tpl->assign('userIsAdminAcc', Session::getUserIsAdminAcc());
+$Tpl->assign('userId', Session::getUserData()->getUserId());
+$Tpl->assign('userGroupId', Session::getUserData()->getUserGroupId());
+$Tpl->assign('userIsAdminApp', Session::getUserData()->isUserIsAdminApp());
+$Tpl->assign('userIsAdminAcc', Session::getUserData()->isUserIsAdminAcc());
 $Tpl->assign('themeUri', DiFactory::getTheme()->getThemeUri());
 
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_SEARCH:
-        $_SESSION['actionsPath'] = array(ActionsInterface::ACTION_ACC_SEARCH);
-
         $Controller = new AccountSearchController($Tpl);
         $Controller->getSearchBox();
         $Controller->getSearch();
@@ -113,15 +114,13 @@ switch ($actionId) {
     case ActionsInterface::ACTION_USR_PROFILES:
     case ActionsInterface::ACTION_MGM_APITOKENS:
     case ActionsInterface::ACTION_MGM_PUBLICLINKS:
-        $Controller = new \SP\Controller\AccItemsController($Tpl);
+        $Controller = new ItemListController($Tpl);
         $Controller->useTabs();
         $Controller->getUsersList();
         $Controller->getGroupsList();
         $Controller->getProfilesList();
         $Controller->getAPITokensList();
-        if (Checks::publicLinksIsEnabled()) {
-            $Controller->getPublicLinksList();
-        }
+        $Controller->getPublicLinksList();
         break;
     case ActionsInterface::ACTION_MGM:
     case ActionsInterface::ACTION_MGM_CATEGORIES:
@@ -130,7 +129,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_MGM_FILES:
     case ActionsInterface::ACTION_MGM_ACCOUNTS:
     case ActionsInterface::ACTION_MGM_TAGS:
-        $Controller = new \SP\Controller\AppItemsController($Tpl);
+        $Controller = new ItemListController($Tpl);
         $Controller->useTabs();
         $Controller->getCategories();
         $Controller->getCustomers();
@@ -151,7 +150,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_CFG_IMPORT:
         $Tpl->addTemplate('tabs-start', 'common');
 
-        $Controller = new \SP\Controller\ConfigController($Tpl);
+        $Controller = new ConfigController($Tpl);
         $Controller->getGeneralTab();
         $Controller->getWikiTab();
         $Controller->getLdapTab();
@@ -164,7 +163,7 @@ switch ($actionId) {
         $Tpl->addTemplate('tabs-end', 'common');
         break;
     case ActionsInterface::ACTION_EVL:
-        $Controller = new \SP\Controller\EventlogController($Tpl);
+        $Controller = new EventlogController($Tpl);
         $Controller->getEventlog();
         break;
     case ActionsInterface::ACTION_USR_PREFERENCES:
@@ -172,7 +171,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
         $Tpl->addTemplate('tabs-start', 'common');
 
-        $Controller = new \SP\Controller\UserPreferencesController($Tpl);
+        $Controller = new UserPreferencesController($Tpl);
         $Controller->getPreferencesTab();
         $Controller->getSecurityTab();
 
@@ -181,7 +180,7 @@ switch ($actionId) {
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración
-if (Session::getUserIsAdminApp() && Config::getConfig()->isDebug()) {
+if (Session::getUserData()->isUserIsAdminApp() && Config::getConfig()->isDebug()) {
     $Controller->getDebug();
 }
 

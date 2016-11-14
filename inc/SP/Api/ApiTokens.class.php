@@ -98,7 +98,7 @@ class ApiTokens
         $Data->setQuery($query);
         $Data->addParam($this->userId, 'userid');
         $Data->addParam($this->actionId, 'actionid');
-        $Data->addParam(Session::getUserId(), 'createdby');
+        $Data->addParam(Session::getUserData()->getUserId(), 'createdby');
         $Data->addParam(($this->getUserToken()) ? $this->token : $this->generateToken(), 'token');
 
         try {
@@ -224,7 +224,7 @@ class ApiTokens
         $Data->addParam($this->tokenId, 'id');
         $Data->addParam($this->userId, 'userid');
         $Data->addParam($this->actionId, 'actionid');
-        $Data->addParam(Session::getUserId(), 'createdby');
+        $Data->addParam(Session::getUserData()->getUserId(), 'createdby');
         $Data->addParam(($this->getUserToken()) ? $this->token : $this->generateToken(), 'token');
 
         try {

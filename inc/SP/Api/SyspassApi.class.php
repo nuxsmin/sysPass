@@ -65,9 +65,7 @@ class SyspassApi extends ApiBase
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
-        $accountId = intval($this->params->accountId);
-
-        $AccountData = new AccountData($accountId);
+        $AccountData = new AccountData($this->params->accountId);
         $Account = new Account($AccountData);
         $Account->getData();
 
@@ -81,10 +79,10 @@ class SyspassApi extends ApiBase
         $Account->getAccountPassData();
         $Account->incrementDecryptCounter();
 
-        $ret = array(
-            'accountId' => $accountId,
+        $ret = [
+            'accountId' => $AccountData->getAccountId(),
             'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->mPass)
-        );
+        ];
 
         if (isset($this->params->details)) {
             $ret['details'] = $AccountData;
@@ -107,7 +105,7 @@ class SyspassApi extends ApiBase
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
-        $count = (isset($this->params->searchCount)) ? intval($this->params->searchCount) : 0;
+        $count = (isset($this->params->searchCount)) ? (int)$this->params->searchCount : 0;
 
         $Search = new AccountSearch();
         $Search->setTxtSearch($this->params->searchText);
@@ -132,9 +130,7 @@ class SyspassApi extends ApiBase
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
 
-        $accountId = intval($this->params->accountId);
-
-        $Account = new Account(new AccountData($accountId));
+        $Account = new Account(new AccountData($this->params->accountId));
 
         $access = (Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $Account->getAccountDataForACL())
             && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));

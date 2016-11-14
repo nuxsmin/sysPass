@@ -64,7 +64,7 @@ use SP\Util\Json;
 class AccountController extends ControllerBase implements ActionsInterface
 {
     /**
-     * @var \SP\Account\Account|AccountHistory instancia para el manejo de datos de una cuenta
+     * @var Account|AccountHistory instancia para el manejo de datos de una cuenta
      */
     private $Account;
     /**
@@ -152,7 +152,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
+        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0 && !Acl::checkAccountAccess($this->getAction(), $this->Account->getAccountDataForACL())) {
@@ -177,7 +177,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->getId()));
             $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
-            $this->view->assign('historyData', AccountHistory::getAccountList($this->getAccount()->getAccountParentId()));
+            $this->view->assign('historyData', AccountHistory::getAccountList($this->AccountData->getAccountId()));
             $this->view->assign('isModified', $this->AccountData->getAccountDateEdit() && $this->AccountData->getAccountDateEdit() !== '0000-00-00 00:00:00');
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
@@ -189,6 +189,8 @@ class AccountController extends ControllerBase implements ActionsInterface
 
             $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
             $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
+        } else {
+            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', time() + 2592000));
         }
 
         $this->view->assign('actionId', $this->getAction());
@@ -274,9 +276,9 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function setAccountData()
     {
         try {
-            $this->setAccount(new Account(new AccountExtData($this->getId())));
-            $this->Account->setAccountParentId($this->getId());
-            $this->AccountData = $this->getAccount()->getData();
+            $Account = new Account(new AccountExtData($this->getId()));
+            $this->Account = $Account;
+            $this->AccountData = $Account->getData();
 
             $this->view->assign('accountId', $this->getId());
             $this->view->assign('accountData', $this->AccountData);
@@ -288,7 +290,7 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * @param \SP\Account\Account|AccountHistory $account
+     * @param Account|AccountHistory $account
      */
     private function setAccount($account)
     {
@@ -372,7 +374,6 @@ class AccountController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('isView', true);
 
-        Session::setAccountParentId($this->getId());
         $this->Account->incrementViewCounter();
 
         $this->setCommonData();
@@ -415,13 +416,16 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function setAccountDataHistory()
     {
         try {
-            $this->setAccount(new AccountHistory(new AccountExtData($this->getId())));
-            $this->Account->setAccountParentId(Session::getAccountParentId());
-            $this->AccountData = $this->getAccount()->getData();
+            $Account = new AccountHistory(new AccountExtData());
+            $Account->setId($this->getId());
+            $this->Account = $Account;
+            $this->AccountData = $Account->getData();
 
-            $this->view->assign('accountId', $this->getId());
+            $this->view->assign('accountId', $this->AccountData->getAccountId());
             $this->view->assign('accountData', $this->AccountData);
             $this->view->assign('gotData', $this->isGotData());
+
+            $this->view->assign('accountHistoryId', $this->getId());
         } catch (SPException $e) {
             return false;
         }

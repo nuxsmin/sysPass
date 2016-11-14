@@ -64,9 +64,9 @@ class Email
         $log->setNewLineHtml(true);
 
         if ($isEvent === true) {
-            $performer = (Session::getUserLogin()) ? Session::getUserLogin() : _('N/D');
-            $body[] = Html::strongText(_('Acción') . ": ") . utf8_decode($log->getAction());
-            $body[] = Html::strongText(_('Realizado por') . ": ") . $performer . ' (' . $_SERVER['REMOTE_ADDR'] . ')';
+            $performer = Session::getUserData()->getUserLogin() ?: _('N/D');
+            $body[] = sprintf('%s: %s', Html::strongText(_('Acción')), utf8_decode($log->getAction()));
+            $body[] = sprintf('%s: %s (%s)', Html::strongText(_('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }

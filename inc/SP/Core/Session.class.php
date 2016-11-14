@@ -25,13 +25,11 @@
 
 namespace SP\Core;
 
-use SP\Account;
 use SP\Account\AccountSearch;
 use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
-use SP\Mgmt;
-use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\UserPreferences;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -46,16 +44,6 @@ class Session
      */
     const SESSION_INTERACTIVE = 1;
     const SESSION_API = 2;
-
-    /**
-     * Obtiene el id de usuario de la sesión.
-     *
-     * @return int
-     */
-    public static function getUserId()
-    {
-        return self::getSessionKey('uid', 0);
-    }
 
     /**
      * Devolver una variable de sesión
@@ -77,13 +65,23 @@ class Session
     }
 
     /**
-     * Establece el id de usuario en la sesión.
+     * Establece los datos del usuario en la sesión.
      *
-     * @param $userId
+     * @param UserData $UserData
      */
-    public static function setUserId($userId)
+    public static function setUserData($UserData = null)
     {
-        self::setSessionKey('uid', $userId);
+        self::setSessionKey('userData', $UserData);
+    }
+
+    /**
+     * Devuelve los datos del usuario en la sesión.
+     *
+     * @return UserData
+     */
+    public static function getUserData()
+    {
+        return self::getSessionKey('userData', new UserData());
     }
 
     /**
@@ -95,186 +93,6 @@ class Session
     public static function setSessionKey($key, $value)
     {
         $_SESSION[$key] = $value;
-    }
-
-    /**
-     * Obtiene si el usuario es administrador de la aplicación de la sesión.
-     *
-     * @return bool
-     */
-    public static function getUserIsAdminApp()
-    {
-        return self::getSessionKey('uisadminapp', false);
-    }
-
-    /**
-     * Establece si el usuario es administrador de la aplicación en la sesión.
-     *
-     * @param $bool
-     */
-    public static function setUserIsAdminApp($bool)
-    {
-        self::setSessionKey('uisadminapp', $bool);
-    }
-
-    /**
-     * Obtiene si el usuario es administrador de cuentas de la sesión.
-     *
-     * @return bool
-     */
-    public static function getUserIsAdminAcc()
-    {
-        return self::getSessionKey('uisadminacc', false);
-    }
-
-    /**
-     * Obtiene si el usuario es administrador de cuentas en la sesión.
-     *
-     * @param $bool
-     */
-    public static function setUserIsAdminAcc($bool)
-    {
-        self::setSessionKey('uisadminacc', $bool);
-    }
-
-    /**
-     * Obtiene el id de perfil de usuario de la sesión.
-     *
-     * @return int
-     */
-    public static function getUserProfileId()
-    {
-        return self::getSessionKey('uprofile', 0);
-    }
-
-    /**
-     * Establece el id de perfil de usuario en la sesión.
-     *
-     * @param int $profileId
-     */
-    public static function setUserProfileId($profileId)
-    {
-        self::setSessionKey('uprofile', $profileId);
-    }
-
-    /**
-     * Obtiene el login de usuario de la sesión.
-     *
-     * @return mixed
-     */
-    public static function getUserLogin()
-    {
-        return self::getSessionKey('ulogin', false);
-    }
-
-    /**
-     * Establece el login de usuario en la sesión.
-     *
-     * @param $userLogin
-     */
-    public static function setUserLogin($userLogin)
-    {
-        self::setSessionKey('ulogin', $userLogin);
-    }
-
-    /**
-     * Obtiene el nombre de usuario de la sesión.
-     *
-     * @return string
-     */
-    public static function getUserName()
-    {
-        return self::getSessionKey('uname');
-    }
-
-    /**
-     * Establece el nombre de usuario en la sesión.
-     *
-     * @param $userName
-     */
-    public static function setUserName($userName)
-    {
-        self::setSessionKey('uname', $userName);
-    }
-
-    /**
-     * Obtiene el id de grupo de usuario de la sesión.
-     *
-     * @return int
-     */
-    public static function getUserGroupId()
-    {
-        return self::getSessionKey('ugroup', 0);
-    }
-
-    /**
-     * Obtiene el id de grupo de usuario de la sesión.
-     *
-     * @param $groupId
-     */
-    public static function setUserGroupId($groupId)
-    {
-        self::setSessionKey('ugroup', $groupId);
-    }
-
-    /**
-     * Obtiene el nombre del grupo de usuario de la sesión.
-     *
-     * @return string
-     */
-    public static function getUserGroupName()
-    {
-        return self::getSessionKey('ugroupn');
-    }
-
-    /**
-     * Establece el nombre del grupo de usuario en la sesión.
-     *
-     * @param string $groupName
-     */
-    public static function setUserGroupName($groupName)
-    {
-        self::setSessionKey('ugroupn', $groupName);
-    }
-
-    /**
-     * Obtiene el email de usuario de la sesión.
-     *
-     * @return string
-     */
-    public static function getUserEMail()
-    {
-        return self::getSessionKey('uemail');
-    }
-
-    /**
-     * Establece el nombre del grupo de usuario en la sesión.
-     *
-     * @param $userEmail
-     */
-    public static function setUserEMail($userEmail)
-    {
-        self::setSessionKey('uemail', $userEmail);
-    }
-
-    /**
-     * Obtiene si es un usuario de LDAP de la sesión.
-     *
-     * @return bool
-     */
-    public static function getUserIsLdap()
-    {
-        return self::getSessionKey('uisldap', false);
-    }
-
-    /**
-     * Establece si es un usuario de LDAP en la sesión.
-     *
-     * @param $bool
-     */
-    public static function setUserIsLdap($bool)
-    {
-        self::setSessionKey('uisldap', $bool);
     }
 
     /**
@@ -311,26 +129,6 @@ class Session
     public static function setSearchFilters(AccountSearch $searchFilters)
     {
         self::setSessionKey('searchFilters', $searchFilters);
-    }
-
-    /**
-     * Establece la cuenta primaria para el histórico
-     *
-     * @param $id int El id de la cuenta
-     */
-    public static function setAccountParentId($id)
-    {
-        self::setSessionKey('accParentId', $id);
-    }
-
-    /**
-     * Devuelve la cuenta primaria para el histórico
-     *
-     * @return int
-     */
-    public static function getAccountParentId()
-    {
-        return self::getSessionKey('accParentId', null);
     }
 
     /**

@@ -66,14 +66,14 @@ class UserSearch extends UserBase implements ItemSearchInterface
             $query .= /** @lang SQL */
                 ' WHERE user_name LIKE ? OR user_login LIKE ?';
 
-            $query .= (!Session::getUserIsAdminApp()) ? ' AND user_isAdminApp = 0' : '';
+            $query .= (!Session::getUserData()->isUserIsAdminApp()) ? ' AND user_isAdminApp = 0' : '';
 
             $search = '%' . $SearchData->getSeachString() . '%';
 
             $Data->addParam($search);
             $Data->addParam($search);
         } else {
-            $query .= (!Session::getUserIsAdminApp()) ? ' WHERE user_isAdminApp = 0' : '';
+            $query .= (!Session::getUserData()->isUserIsAdminApp()) ? ' WHERE user_isAdminApp = 0' : '';
         }
 
         $query .= ' ORDER BY user_name';

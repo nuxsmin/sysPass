@@ -22,35 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Controller\ItemsController;
-use SP\Core\Init;
-use SP\Core\SessionUtil;
-use SP\Http\Request;
-use SP\Http\Response;
-use SP\Util\Util;
+namespace SP\Controller;
 
-define('APP_ROOT', '..');
-
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
-
-Request::checkReferer('GET');
-
-if (!Init::isLoggedIn()) {
-    Util::logout();
+/**
+ * Interface ItemControllerInterface
+ *
+ * @package SP\Controller
+ */
+interface ItemControllerInterface
+{
+    /**
+     * Realizar la acción solicitada en la la petición HTTP
+     */
+    public function doAction();
 }
-
-$itemType = Request::analyze('itemType', false);
-$sk = Request::analyze('sk', false);
-
-if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
-}
-
-$Controller = new ItemsController();
-
-$data = [
-    'sk' => SessionUtil::getSessionKey(),
-    'items' => $Controller->getItems($itemType)
-];
-
-Response::printJson($data, 0);

@@ -43,7 +43,14 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class AccountHistory extends AccountBase implements AccountInterface
 {
+    protected $id;
+    /**
+     * @var bool
+     */
     private $isDelete = false;
+    /**
+     * @var bool
+     */
     private $isModify = false;
 
     /**
@@ -84,373 +91,6 @@ class AccountHistory extends AccountBase implements AccountInterface
         }
 
         return $arrHistory;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isIsDelete()
-    {
-        return $this->isDelete;
-    }
-
-    /**
-     * @param boolean $isDelete
-     */
-    public function setIsDelete($isDelete)
-    {
-        $this->isDelete = $isDelete;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isIsModify()
-    {
-        return $this->isModify;
-    }
-
-    /**
-     * @param boolean $isModify
-     */
-    public function setIsModify($isModify)
-    {
-        $this->isModify = $isModify;
-    }
-
-    /**
-     * Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra.
-     *
-     * @param string $currentMasterPass con la clave maestra actual
-     * @param string $newMasterPass     con la nueva clave maestra
-     * @param string $newHash           con el nuevo hash de la clave maestra
-     * @return bool
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
-    {
-        $idOk = array();
-        $errorCount = 0;
-        $demoEnabled = Checks::demoIsEnabled();
-
-        $Log = new Log(_('Actualizar Clave Maestra (H)'));
-        $Log->addDescription(_('Inicio'));
-        $Log->writeLog();
-
-        $Log->resetDescription();
-
-        if (!Crypt::checkCryptModule()) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error en el módulo de encriptación'));
-            $Log->writeLog();
-            return false;
-        }
-
-        $accountsPass = $this->getAccountsPassData();
-
-        if (!$accountsPass) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al obtener las claves de las cuentas'));
-            $Log->writeLog();
-            return false;
-        }
-
-        foreach ($accountsPass as $account) {
-            $this->setAccountId($account->acchistory_id);
-
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $idOk[] = $account->acchistory_id;
-                continue;
-            }
-
-            if (!$this->checkAccountMPass()) {
-                $errorCount++;
-                $Log->addDescription(_('La clave maestra del registro no coincide') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
-                continue;
-            }
-
-            if (strlen($account->acchistory_pass) === 0){
-                $Log->addDescription(_('Clave de cuenta vacía') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
-                continue;
-            }
-
-            if (strlen($account->acchistory_IV) < 32) {
-                $Log->addDescription(_('IV de encriptación incorrecto') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
-            }
-
-            $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
-            $this->setAccountPass(Crypt::mkEncrypt($decryptedPass, $newMasterPass));
-            $this->setAccountIV(Crypt::$strInitialVector);
-
-            if ($this->getAccountPass() === false) {
-                $errorCount++;
-                $Log->addDescription(_('No es posible desencriptar la clave de la cuenta') . ' (' . $account->acchistory_id . ') ' . $account->acchistory_name);
-                continue;
-            }
-
-            if (!$this->updateAccountPass($account->acchistory_id, $newHash)) {
-                $errorCount++;
-                $Log->addDescription(_('Fallo al actualizar la clave del histórico') . ' (' . $account->acchistory_id . ') ' .  $account->acchistory_name);
-                continue;
-            }
-
-            $idOk[] = $account->acchistory_id;
-        }
-
-        // Vaciar el array de mensaje de log
-        if (count($Log->getDescription()) > 0) {
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        if ($idOk) {
-            $Log->addDetails(_('Registros actualizados'),implode(',', $idOk));
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        $Log->addDescription(_('Fin'));
-        $Log->writeLog();
-
-        return true;
-    }
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas del histórico.
-     *
-     * @return false|array con los datos de la clave
-     */
-    protected function getAccountsPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
-    }
-
-    /**
-     * Comprueba el hash de la clave maestra del registro de histórico de una cuenta.
-     *
-     * @param int $id opcional, con el Id del registro a comprobar
-     * @return bool
-     */
-    public function checkAccountMPass($id = null)
-    {
-        $query = /** @lang SQL */
-            'SELECT acchistory_mPassHash ' .
-            'FROM accHistory ' .
-            'WHERE acchistory_id = :id ' .
-            'AND acchistory_mPassHash = :mPassHash';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam((is_null($id)) ? $this->getAccountId() : $id, 'id');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'mPassHash');
-
-        return (DB::getResults($Data) !== false);
-    }
-
-    /**
-     * Obtener los datos de una cuenta para mostrar la clave
-     * Esta funcion realiza la consulta a la BBDD y devuelve los datos.
-     *
-     * @return object|false
-     */
-    public function getAccountPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT acchistory_name AS name,'
-            . 'acchistory_userId AS userId,'
-            . 'acchistory_userGroupId AS groupId,'
-            . 'acchistory_login AS login,'
-            . 'acchistory_pass AS pass,'
-            . 'acchistory_IV AS iv '
-            . 'FROM accHistory '
-            . 'WHERE acchistory_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        $this->accountData->setAccountUserId($queryRes->userId);
-        $this->accountData->setAccountUserGroupId($queryRes->groupId);
-        $this->accountData->setAccountPass($queryRes->pass);
-        $this->accountData->setAccountIV($queryRes->iv);
-
-        return $queryRes;
-    }
-
-    /**
-     * Actualiza la clave del histórico de una cuenta en la BBDD.
-     *
-     * @param int    $id      con el id del registro a actualizar
-     * @param string $newHash con el hash de la clave maestra
-     * @return bool
-     */
-    public function updateAccountPass($id, $newHash)
-    {
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET '
-            . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
-            . 'acchistory_mPassHash = :newHash '
-            . 'WHERE acchistory_id = :id';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id, 'id');
-        $Data->addParam($this->getAccountPass(), 'accountPass');
-        $Data->addParam($this->getAccountIV(), 'accountIV');
-        $Data->addParam($newHash, 'newHash');
-
-        return DB::getQuery($Data);
-    }
-
-    /**
-     * Obtener los datos del histórico de una cuenta.
-     * Esta funcion realiza la consulta a la BBDD y guarda los datos del histórico
-     * en las variables de la clase.
-     *
-     * @return object
-     * @throws SPException
-     */
-    public function getData()
-    {
-        $query = /** @lang SQL */
-            'SELECT acchistory_accountId as account_id,'
-            . 'acchistory_customerId as account_customerId,'
-            . 'acchistory_categoryId as account_categoryId,'
-            . 'acchistory_name as account_name,'
-            . 'acchistory_login as account_login,'
-            . 'acchistory_url as account_url,'
-            . 'acchistory_pass as account_pass,'
-            . 'acchistory_IV as account_IV,'
-            . 'acchistory_notes as account_notes,'
-            . 'acchistory_countView as account_countView,'
-            . 'acchistory_countDecrypt as account_countDecrypt,'
-            . 'acchistory_dateAdd as account_dateAdd,'
-            . 'acchistory_dateEdit as account_dateEdit,'
-            . 'acchistory_userId as account_userId,'
-            . 'acchistory_userGroupId as account_userGroupId,'
-            . 'acchistory_userEditId as account_userEditId,'
-            . 'acchistory_isModify,'
-            . 'acchistory_isDeleted,'
-            . 'acchistory_otherUserEdit + 0 AS account_otherUserEdit,'
-            . 'acchistory_otherGroupEdit + 0 AS account_otherGroupEdit,'
-            . 'u1.user_name,'
-            . 'u1.user_login,'
-            . 'usergroup_name,'
-            . 'u2.user_name as user_editName,'
-            . 'u2.user_login as user_editLogin,'
-            . 'category_name, customer_name '
-            . 'FROM accHistory '
-            . 'LEFT JOIN categories ON acchistory_categoryId = category_id '
-            . 'LEFT JOIN usrGroups ON acchistory_userGroupId = usergroup_id '
-            . 'LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id '
-            . 'LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id '
-            . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
-            . 'WHERE acchistory_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setMapClassName('SP\DataModel\AccountExtData');
-        $Data->addParam($this->accountData->getAccountId(), 'id');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
-        }
-
-        $this->accountData = $queryRes;
-
-        return $queryRes;
-    }
-
-    /**
-     * Crear una cuenta en el historial
-     *
-     * @return bool
-     */
-    public function createAccount()
-    {
-        $query = /** @lang SQL */
-            'INSERT INTO accHistory SET '
-            . 'acchistory_accountId = :account_id,'
-            . 'acchistory_customerId = :accountCustomerId,'
-            . 'acchistory_categoryId = :accountCategoryId,'
-            . 'acchistory_name = :accountName,'
-            . 'acchistory_login = :accountLogin,'
-            . 'acchistory_url = :accountUrl,'
-            . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
-            . 'acchistory_notes = :accountNotes,'
-            . 'acchistory_dateAdd = :accountDateAdd,'
-            . 'acchistory_dateEdit = :accountDateEdit,'
-            . 'acchistory_countView = :accountCountView,'
-            . 'acchistory_countDecrypt  = :accountCountDecrypt,'
-            . 'acchistory_userId = :accountUserId,'
-            . 'acchistory_userGroupId = :accountUserGroupId,'
-            . 'acchistory_otherUserEdit = :accountOtherUserEdit,'
-            . 'acchistory_otherGroupEdit = :accountOtherGroupEdit,'
-            . 'acchistory_isModify = :isModify,'
-            . 'acchistory_isDeleted = :isDelete,'
-            . 'acchistory_mPassHash = :masterPwd';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'account_id');
-        $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
-        $Data->addParam($this->accountData->getAccountCategoryId(), 'accountCategoryId');
-        $Data->addParam($this->accountData->getAccountName(), 'accountName');
-        $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
-        $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
-        $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
-        $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
-        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
-        $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
-        $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
-        $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
-        $Data->addParam($this->isIsModify(), 'isModify');
-        $Data->addParam($this->isIsDelete(), 'isDelete');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
-
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Eliminar una cuenta del historial
-     *
-     * @return bool
-     */
-    public function deleteAccount()
-    {
-        $query = /** @lang SQL */
-            'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
-
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -562,5 +202,398 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'oldHash');
 
         return DB::getQuery($Data);
+    }
+
+    /**
+     * Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra.
+     *
+     * @param string $currentMasterPass con la clave maestra actual
+     * @param string $newMasterPass     con la nueva clave maestra
+     * @param string $newHash           con el nuevo hash de la clave maestra
+     * @return bool
+     */
+    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
+    {
+        $idOk = array();
+        $errorCount = 0;
+        $demoEnabled = Checks::demoIsEnabled();
+
+        $Log = new Log(_('Actualizar Clave Maestra (H)'));
+        $Log->addDescription(_('Inicio'));
+        $Log->writeLog();
+
+        $Log->resetDescription();
+
+        if (!Crypt::checkCryptModule()) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error en el módulo de encriptación'));
+            $Log->writeLog();
+            return false;
+        }
+
+        $accountsPass = $this->getAccountsPassData();
+
+        if (!$accountsPass) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al obtener las claves de las cuentas'));
+            $Log->writeLog();
+            return false;
+        }
+
+        $AccountDataBase = new \stdClass();
+        $AccountDataBase->id = 0;
+        $AccountDataBase->pass = '';
+        $AccountDataBase->iv = '';
+        $AccountDataBase->hash = $newHash;
+
+        foreach ($accountsPass as $account) {
+            $AccountData = clone $AccountDataBase;
+            $AccountData->id = $account->acchistory_id;
+
+            // No realizar cambios si está en modo demo
+            if ($demoEnabled) {
+                $idOk[] = $account->acchistory_id;
+                continue;
+            }
+
+            if (!$this->checkAccountMPass()) {
+                $errorCount++;
+                $Log->addDescription(_('La clave maestra del registro no coincide'));
+                $Log->addDetails('ID', $account->acchistory_id);
+                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                continue;
+            }
+
+            if ($account->acchistory_pass === '') {
+                $Log->addDescription(_('Clave de cuenta vacía'));
+                $Log->addDetails('ID', $account->acchistory_id);
+                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                continue;
+            }
+
+            if (strlen($account->acchistory_IV) < 32) {
+                $Log->addDescription(_('IV de encriptación incorrecto'));;
+                $Log->addDetails('ID', $account->acchistory_id);
+                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+            }
+
+            $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
+            $AccountData->pass = Crypt::mkEncrypt($decryptedPass, $newMasterPass);
+            $AccountData->iv = Crypt::$strInitialVector;
+
+            if ($AccountData->pass === false) {
+                $errorCount++;
+                $Log->addDescription(_('No es posible desencriptar la clave de la cuenta'));
+                $Log->addDetails('ID', $account->acchistory_id);
+                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                continue;
+            }
+
+            if (!$this->updateAccountPass($AccountData)) {
+                $errorCount++;
+                $Log->addDescription(_('Fallo al actualizar la clave del histórico'));
+                $Log->addDetails('ID', $account->acchistory_id);
+                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                continue;
+            }
+
+            $idOk[] = $account->acchistory_id;
+        }
+
+        // Vaciar el array de mensaje de log
+        if (count($Log->getDescription()) > 0) {
+            $Log->writeLog();
+            $Log->resetDescription();
+        }
+
+        if ($idOk) {
+            $Log->addDetails(_('Registros actualizados'), implode(',', $idOk));
+            $Log->writeLog();
+            $Log->resetDescription();
+        }
+
+        $Log->addDescription(_('Fin'));
+        $Log->writeLog();
+
+        return true;
+    }
+
+    /**
+     * Obtener los datos relativos a la clave de todas las cuentas del histórico.
+     *
+     * @return false|array con los datos de la clave
+     */
+    protected function getAccountsPassData()
+    {
+        $query = /** @lang SQL */
+            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Comprueba el hash de la clave maestra del registro de histórico de una cuenta.
+     *
+     * @param int $id opcional, con el Id del registro a comprobar
+     * @return bool
+     */
+    public function checkAccountMPass($id = null)
+    {
+        $query = /** @lang SQL */
+            'SELECT acchistory_mPassHash ' .
+            'FROM accHistory ' .
+            'WHERE acchistory_id = :id ' .
+            'AND acchistory_mPassHash = :mPassHash';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(null === $id ? $this->accountData->getAccountId() : $id, 'id');
+        $Data->addParam(ConfigDB::getValue('masterPwd'), 'mPassHash');
+
+        return (DB::getResults($Data) !== false);
+    }
+
+    /**
+     * Actualiza la clave del histórico de una cuenta en la BBDD.
+     *
+     * @param object $AccountData Objeto con los datos de la cuenta
+     * @return bool
+     */
+    public function updateAccountPass($AccountData)
+    {
+        $query = /** @lang SQL */
+            'UPDATE accHistory SET '
+            . 'acchistory_pass = :accountPass,'
+            . 'acchistory_IV = :accountIV,'
+            . 'acchistory_mPassHash = :newHash '
+            . 'WHERE acchistory_id = :id';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($AccountData->id, 'id');
+        $Data->addParam($AccountData->pass, 'accountPass');
+        $Data->addParam($AccountData->iv, 'accountIV');
+        $Data->addParam($AccountData->hash, 'newHash');
+
+        return DB::getQuery($Data);
+    }
+
+    /**
+     * Obtener los datos de una cuenta para mostrar la clave
+     * Esta funcion realiza la consulta a la BBDD y devuelve los datos.
+     *
+     * @return object|false
+     */
+    public function getAccountPassData()
+    {
+        debugLog($this->getId());
+
+        $query = /** @lang SQL */
+            'SELECT acchistory_name AS account_name,'
+            . 'acchistory_userId AS account_userId,'
+            . 'acchistory_userGroupId AS account_userGroupId,'
+            . 'acchistory_login AS account_login,'
+            . 'acchistory_pass AS account_pass,'
+            . 'acchistory_IV AS account_IV,'
+            . 'customer_name '
+            . 'FROM accHistory '
+            . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
+            . 'WHERE acchistory_id = :id LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setMapClass($this->accountData);
+        $Data->addParam($this->getId(), 'id');
+
+        return DB::getResults($Data);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Obtener los datos del histórico de una cuenta.
+     * Esta funcion realiza la consulta a la BBDD y guarda los datos del histórico
+     * en las variables de la clase.
+     *
+     * @return object
+     * @throws SPException
+     */
+    public function getData()
+    {
+        $query = /** @lang SQL */
+            'SELECT acchistory_accountId as account_id,'
+            . 'acchistory_customerId as account_customerId,'
+            . 'acchistory_categoryId as account_categoryId,'
+            . 'acchistory_name as account_name,'
+            . 'acchistory_login as account_login,'
+            . 'acchistory_url as account_url,'
+            . 'acchistory_pass as account_pass,'
+            . 'acchistory_IV as account_IV,'
+            . 'acchistory_notes as account_notes,'
+            . 'acchistory_countView as account_countView,'
+            . 'acchistory_countDecrypt as account_countDecrypt,'
+            . 'acchistory_dateAdd as account_dateAdd,'
+            . 'acchistory_dateEdit as account_dateEdit,'
+            . 'acchistory_userId as account_userId,'
+            . 'acchistory_userGroupId as account_userGroupId,'
+            . 'acchistory_userEditId as account_userEditId,'
+            . 'acchistory_isModify,'
+            . 'acchistory_isDeleted,'
+            . 'acchistory_otherUserEdit + 0 AS account_otherUserEdit,'
+            . 'acchistory_otherGroupEdit + 0 AS account_otherGroupEdit,'
+            . 'u1.user_name,'
+            . 'u1.user_login,'
+            . 'usergroup_name,'
+            . 'u2.user_name as user_editName,'
+            . 'u2.user_login as user_editLogin,'
+            . 'category_name, customer_name '
+            . 'FROM accHistory '
+            . 'LEFT JOIN categories ON acchistory_categoryId = category_id '
+            . 'LEFT JOIN usrGroups ON acchistory_userGroupId = usergroup_id '
+            . 'LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id '
+            . 'LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id '
+            . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
+            . 'WHERE acchistory_id = :id LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setMapClass($this->accountData);
+        $Data->addParam($this->getId(), 'id');
+
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
+        }
+
+        $this->accountData = $queryRes;
+
+        return $queryRes;
+    }
+
+    /**
+     * Crear una cuenta en el historial
+     *
+     * @return bool
+     */
+    public function createAccount()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO accHistory SET '
+            . 'acchistory_accountId = :account_id,'
+            . 'acchistory_customerId = :accountCustomerId,'
+            . 'acchistory_categoryId = :accountCategoryId,'
+            . 'acchistory_name = :accountName,'
+            . 'acchistory_login = :accountLogin,'
+            . 'acchistory_url = :accountUrl,'
+            . 'acchistory_pass = :accountPass,'
+            . 'acchistory_IV = :accountIV,'
+            . 'acchistory_notes = :accountNotes,'
+            . 'acchistory_dateAdd = :accountDateAdd,'
+            . 'acchistory_dateEdit = :accountDateEdit,'
+            . 'acchistory_countView = :accountCountView,'
+            . 'acchistory_countDecrypt  = :accountCountDecrypt,'
+            . 'acchistory_userId = :accountUserId,'
+            . 'acchistory_userGroupId = :accountUserGroupId,'
+            . 'acchistory_otherUserEdit = :accountOtherUserEdit,'
+            . 'acchistory_otherGroupEdit = :accountOtherGroupEdit,'
+            . 'acchistory_isModify = :isModify,'
+            . 'acchistory_isDeleted = :isDelete,'
+            . 'acchistory_mPassHash = :masterPwd';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->accountData->getAccountId(), 'account_id');
+        $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
+        $Data->addParam($this->accountData->getAccountCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->accountData->getAccountName(), 'accountName');
+        $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
+        $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
+        $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
+        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
+        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
+        $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->isIsModify(), 'isModify');
+        $Data->addParam($this->isIsDelete(), 'isDelete');
+        $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
+
+        if (DB::getQuery($Data) === false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsModify()
+    {
+        return $this->isModify;
+    }
+
+    /**
+     * @param boolean $isModify
+     */
+    public function setIsModify($isModify)
+    {
+        $this->isModify = $isModify;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsDelete()
+    {
+        return $this->isDelete;
+    }
+
+    /**
+     * @param boolean $isDelete
+     */
+    public function setIsDelete($isDelete)
+    {
+        $this->isDelete = $isDelete;
+    }
+
+    /**
+     * Eliminar una cuenta del historial
+     *
+     * @return bool
+     */
+    public function deleteAccount()
+    {
+        $query = /** @lang SQL */
+            'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->getId(), 'id');
+
+        if (DB::getQuery($Data) === false) {
+            return false;
+        }
+
+        return true;
     }
 }

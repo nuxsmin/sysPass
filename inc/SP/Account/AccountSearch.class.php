@@ -351,7 +351,7 @@ class AccountSearch
      */
     public function getAccounts()
     {
-        $isAdmin = (Session::getUserIsAdminApp() || Session::getUserIsAdminAcc());
+        $isAdmin = (Session::getUserData()->isUserIsAdminApp() || Session::getUserData()->isUserIsAdminAcc());
 
         $arrFilterCommon = [];
         $arrFilterSelect = [];
@@ -416,7 +416,7 @@ class AccountSearch
 
         if ($this->searchFavorites === true) {
             $arrayQueryJoin[] = 'INNER JOIN accFavorites ON (accfavorite_accountId = account_id AND accfavorite_userId = ?)';
-            $Data->addParam(Session::getUserId());
+            $Data->addParam(Session::getUserData()->getUserId());
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -429,20 +429,20 @@ class AccountSearch
 
         if (!$isAdmin && !$this->globalSearch) {
             $arrFilterUser[] = 'account_userId = ?';
-            $Data->addParam(Session::getUserId());
+            $Data->addParam(Session::getUserData()->getUserId());
             $arrFilterUser[] = 'account_userGroupId = ?';
-            $Data->addParam(Session::getUserGroupId());
+            $Data->addParam(Session::getUserData()->getUserGroupId());
             $arrFilterUser[] = 'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
-            $Data->addParam(Session::getUserId());
-            $Data->addParam(Session::getUserGroupId());
+            $Data->addParam(Session::getUserData()->getUserId());
+            $Data->addParam(Session::getUserData()->getUserGroupId());
             $arrFilterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
-            $Data->addParam(Session::getUserId());
+            $Data->addParam(Session::getUserData()->getUserId());
 
             $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
         }
 
         $arrQueryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
-        $Data->addParam(Session::getUserId());
+        $Data->addParam(Session::getUserData()->getUserId());
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';
@@ -554,7 +554,7 @@ class AccountSearch
                     [
                         'type' => 'private',
                         'query' => 'account_isPrivate = 1 AND account_userId = ?',
-                        'values' => [Session::getUserId()]
+                        'values' => [Session::getUserData()->getUserId()]
                     ];
                 break;
             default:

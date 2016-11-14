@@ -94,7 +94,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
 
     Json::returnJson($Json);
 } else if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
-    if (Checks::demoIsEnabled() && Session::getUserLogin() === 'demo') {
+    if (Checks::demoIsEnabled() && Session::getUserData()->getUserLogin() === 'demo') {
         $Json->setDescription(_('Ey, esto es una DEMO!!'));
         Json::returnJson($Json);
     }

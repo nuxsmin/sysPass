@@ -131,7 +131,7 @@ class Log extends ActionLog
         if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
             || DiFactory::getDBStorage()->getDbStatus() === 1
         ) {
-            error_log('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription() . ' -- Details: ' . $this->getDetails());
+            debugLog('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription() . ' -- Details: ' . $this->getDetails());
             return false;
         }
 
@@ -156,8 +156,8 @@ class Log extends ActionLog
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Session::getUserLogin(), 'login');
-        $Data->addParam(Session::getUserId(), 'userId');
+        $Data->addParam(Session::getUserData()->getUserLogin(), 'login');
+        $Data->addParam(Session::getUserData()->getUserId(), 'userId');
         $Data->addParam($_SERVER['REMOTE_ADDR'], 'ipAddress');
         $Data->addParam($this->getAction(), 'action');
         $Data->addParam($this->getLogLevel(), 'level');
@@ -181,7 +181,7 @@ class Log extends ActionLog
         $msg .= $this->getAction() . '|';
         $msg .= $description . '|';
         $msg .= '0|';
-        $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserLogin());
+        $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserData()->getUserLogin());
 
         $Syslog = new Syslog();
         $Syslog->setIsRemote(Checks::remoteSyslogIsEnabled());

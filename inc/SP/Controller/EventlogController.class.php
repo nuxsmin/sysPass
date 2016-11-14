@@ -83,7 +83,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $GridActionSearch->setOnSubmitFunction('eventlog/search');
 
         $this->view->assign('rowClass', 'row_even');
-        $this->view->assign('isDemoMode', Checks::demoIsEnabled() || !Session::getUserIsAdminApp());
+        $this->view->assign('isDemoMode', Checks::demoIsEnabled() || !Session::getUserData()->isUserIsAdminApp());
         $this->view->assign('limitStart', isset($this->view->limitStart) ? (int)$this->view->limitStart : 0);
         $this->view->assign('events', Log::getEvents($this->view->limitStart, self::MAX_ROWS));
 

@@ -111,6 +111,7 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_userEditId = :accountUserEditId,'
                 . 'account_userGroupId = :accountUserGroupId,'
                 . 'account_dateEdit = NOW(),'
+                . 'account_passDateChange = :accountPassDateChange,'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
                 . 'account_isPrivate = :accountIsPrivate '
@@ -128,6 +129,7 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_notes = :accountNotes,'
                 . 'account_userEditId = :accountUserEditId,'
                 . 'account_dateEdit = NOW(),'
+                . 'account_passDateChange = :accountPassDateChange,'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
                 . 'account_isPrivate = :accountIsPrivate '
@@ -143,6 +145,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
+        $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
@@ -253,22 +256,21 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_otherUserEdit = src.acchistory_otherUserEdit + 0,'
             . 'dst.account_otherGroupEdit = src.acchistory_otherGroupEdit + 0,'
             . 'dst.account_pass = src.acchistory_pass,'
-            . 'dst.account_IV = src.acchistory_IV '
+            . 'dst.account_IV = src.acchistory_IV,'
             . 'dst.account_passDate = src.acchistory_passDate,'
             . 'dst.account_passDateChange = src.acchistory_passDateChange '
-            . 'WHERE dst.account_id = :accountId';
+            . 'WHERE dst.account_id = src.acchistory_accountId';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id, 'id');
-        $Data->addParam($this->accountData->getAccountId(), 'accountId');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al restaurar cuenta'));
         }
 
-        $accountInfo = array('customer_name', 'account_name');
+        $accountInfo = ['customer_name', 'account_name'];
         $this->getAccountInfoById($accountInfo);
 
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
@@ -352,7 +354,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
-        $Data->addParam($this->accountData->getAccountUserGroupId() ?: Session::getUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getAccountUserGroupId() ?: Session::getUserData()->getUserGroupId(), 'accountUserGroupId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
@@ -519,7 +521,7 @@ class Account extends AccountBase implements AccountInterface
     public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
     {
         $accountsOk = array();
-        $userId = Session::getUserId();
+        $userId = Session::getUserData()->getUserId();
         $demoEnabled = Checks::demoIsEnabled();
         $errorCount = 0;
 
@@ -670,7 +672,7 @@ class Account extends AccountBase implements AccountInterface
         // No escribir en el log ni enviar correos si la actualización es
         // por cambio de clave maestra o restauración
         if (!$isMassive && !$isRestore) {
-            $accountInfo = array('customer_name', 'account_name');
+            $accountInfo = ['customer_name', 'account_name'];
             $this->getAccountInfoById($accountInfo);
 
             $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
@@ -692,12 +694,12 @@ class Account extends AccountBase implements AccountInterface
     public function getAccountPassData()
     {
         $query = /** @lang SQL */
-            'SELECT account_name AS name,'
-            . 'account_userId AS userId,'
-            . 'account_userGroupId AS groupId,'
-            . 'account_login AS login,'
-            . 'account_pass AS pass,'
-            . 'account_IV AS iv,'
+            'SELECT account_name,'
+            . 'account_userId,'
+            . 'account_userGroupId,'
+            . 'account_login,'
+            . 'account_pass,'
+            . 'account_IV,'
             . 'customer_name '
             . 'FROM accounts '
             . 'LEFT JOIN customers ON account_customerId = customer_id '
@@ -705,14 +707,9 @@ class Account extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->setMapClass($this->accountData);
         $Data->addParam($this->accountData->getAccountId(), 'id');
 
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        return $queryRes;
+        return DB::getResults($Data);
     }
 }

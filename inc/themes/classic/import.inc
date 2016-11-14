@@ -1,5 +1,7 @@
 <!-- Start Tab - Import -->
-<div id="tabs-<?php echo $import_tabIndex; ?>">
+<div id="tabs-<?php use SP\Core\Session;
+
+echo $import_tabIndex; ?>">
     <div id="title" class="midroundup titleNormal">
         <?php echo _('Importar CSV/XML'); ?>
     </div>
@@ -22,7 +24,7 @@
                         <option value="0"></option>
                         <?php foreach ($users as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($id === Session::getUserData()->getUserId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -43,7 +45,7 @@
                         <option value=""></option>
                         <?php foreach ($groups as $id => $name): ?>
                             <option
-                                value="<?php echo $id; ?>" <?php echo ($id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
+                                value="<?php echo $id; ?>" <?php echo ($id === $SessionUserData->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

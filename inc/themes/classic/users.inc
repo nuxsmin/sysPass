@@ -98,7 +98,7 @@
                 <td class="descField"><?php echo _('Opciones'); ?></td>
                 <td class="valField checkbox">
                     <div id="btnUserOptions" class="btn-checks round5">
-                        <?php if (\SP\Core\Session::getUserIsAdminApp() || $isDemo): ?>
+                        <?php if ($SessionUserData->isUserIsAdminApp() || $isDemo): ?>
                             <label for="usradminapp"
                                    title="<?php echo _('Administrador de la aplicación'); ?>"><?php echo _('Admin. Aplicación'); ?></label>
                             <input type="checkbox" id="usradminapp"

@@ -6,7 +6,8 @@
     $(document).on("DOMContentLoaded", function (e) {
         "use strict";
 
-        console.info("DOMContentLoaded");
+        sysPassApp.log.info("DOMContentLoaded");
+
         <?php if ($loggedIn): ?>
             sysPassApp.triggers().views.main();
         <?php elseif ($isInstalled === false): ?>

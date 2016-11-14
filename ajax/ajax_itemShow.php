@@ -23,22 +23,20 @@
  *
  */
 
-$themeInfo = [
-    'name' => 'Material Blue',
-    'creator' => 'nuxsmin',
-    'version' => '1.0',
-    'targetversion' => '1.2.0',
-    'js' => [
-        'bootstrap-material-datetimepicker.min.js',
-        'material.min.js',
-        'app-theme.min.js'],
-    'css' => [
-        'fonts.min.css',
-        'material.min.css',
-        'material-custom.min.css',
-        'bootstrap-material-datetimepicker.min.css',
-        'jquery-ui.theme.min.css',
-        'styles.min.css',
-        'alertify-custom.min.css',
-        'selectize.bootstrap3.min.css']
-];
+use SP\Controller\ItemShowController;
+use SP\Core\Init;
+use SP\Http\Request;
+use SP\Util\Util;
+
+define('APP_ROOT', '..');
+
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+
+Request::checkReferer('POST');
+
+if (!Init::isLoggedIn()) {
+    Util::logout();
+}
+
+$ItemShow = new ItemShowController();
+$ItemShow->doAction();

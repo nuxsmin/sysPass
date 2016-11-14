@@ -25,11 +25,11 @@
 
 use SP\Account\Account;
 use SP\Core\Session;
-use SP\DataModel\AccountData;
 use SP\Account\AccountHistory;
 use SP\Core\Acl;
 use SP\Core\Crypt;
 use SP\Core\Init;
+use SP\DataModel\AccountExtData;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
@@ -46,19 +46,25 @@ if (!Init::isLoggedIn()) {
     Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$accountId = Request::analyze('accountid', false);
+$accountId = Request::analyze('itemId', false);
 $isHistory = Request::analyze('isHistory', false);
+$isFull = Request::analyze('isFull', false);
 
 if (!$accountId) {
     return;
 }
 
-$AccountData = new AccountData($accountId);
-$Account = (!$isHistory) ? new Account($AccountData) : new AccountHistory($AccountData);
+$AccountData = new AccountExtData();
 
-$Account->setAccountParentId(Session::getAccountParentId());
+if (!$isHistory) {
+    $AccountData->setAccountId($accountId);
+    $Account = new Account($AccountData);
+} else {
+    $Account = new AccountHistory($AccountData);
+    $Account->setId($accountId);
+}
 
-$accountData = $Account->getAccountPassData();
+$Account->getAccountPassData();
 
 if ($isHistory && !$Account->checkAccountMPass()) {
     Response::printJson(_('La clave maestra no coincide'));
@@ -68,30 +74,34 @@ if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS)
     || !Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())
 ) {
     Response::printJson(_('No tiene permisos para acceder a esta cuenta'));
-} elseif (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
+} elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
     Response::printJson(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
 }
 
-$accountClearPass = Crypt::getDecrypt($accountData->pass, $accountData->iv);
+$accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
 
 if (!$isHistory) {
     $Account->incrementDecryptCounter();
 
     $log = new Log(_('Ver Clave'));
     $log->addDetails(_('ID'), $accountId);
-    $log->addDetails(_('Cuenta'), $accountData->customer_name . ' / ' . $accountData->name);
+    $log->addDetails(_('Cuenta'), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
     $log->writeLog();
 }
 
-//$accountPass = htmlspecialchars(trim($accountClearPass));
+$useImage = (int)Checks::accountPassToImageIsEnabled();
 
-$useImage = intval(Checks::accountPassToImageIsEnabled());
+if (!$useImage) {
+    $pass = $isFull ? htmlentities(trim($accountClearPass)) : trim($accountClearPass);
+} else {
+    $pass = \SP\Util\ImageUtil::convertText($accountClearPass);
+}
 
-$data = array(
+$data = [
     'title' => _('Clave de Cuenta'),
-    'acclogin' => $accountData->login,
-    'accpass' => (!$useImage) ? trim($accountClearPass) : \SP\Util\ImageUtil::convertText($accountClearPass),
+    'acclogin' => $AccountData->getAccountLogin(),
+    'accpass' => $pass,
     'useimage' => $useImage
-);
+];
 
 Response::printJson($data, 0);

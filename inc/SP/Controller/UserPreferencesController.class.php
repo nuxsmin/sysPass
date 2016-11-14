@@ -70,7 +70,7 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
 
         $this->view->assign('tabs', array());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->userId = Session::getUserId();
+        $this->userId = Session::getUserData()->getUserId();
         $this->userPrefs = UserPreferences::getItem()->getById($this->userId);
     }
 
@@ -84,7 +84,7 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
         $this->view->addTemplate('preferences-security');
 
 
-        $twoFa = new Auth2FA($this->userId, Session::getUserLogin());
+        $twoFa = new Auth2FA($this->userId, Session::getUserData()->getUserLogin());
 
         if (!$this->userPrefs->isUse2Fa()) {
             $this->view->assign('qrCode', $twoFa->getUserQRCode());

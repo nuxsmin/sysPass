@@ -1,4 +1,5 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php /** @var $icons \Theme\Icons */
+use SP\Core\Session; ?>
 
 <!-- Start Tab - Import -->
 <div id="tabs-<?php echo $import_tabIndex; ?>">
@@ -23,7 +24,7 @@
                             class="select-box sel-chosen-user" required>
                         <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
                         <?php foreach ($users as $user): ?>
-                            <option value="<?php echo $user->id; ?>" <?php echo ($user->id === \SP\Core\Session::getUserId()) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $user->id; ?>" <?php echo ($user->id === Session::getUserData()->getUserId()) ? 'selected' : ''; ?>>
                                 <?php echo $user->name; ?>
                             </option>
                         <?php endforeach; ?>
@@ -45,7 +46,7 @@
                             class="select-box sel-chosen-usergroup" required>
                         <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                         <?php foreach ($groups as $group): ?>
-                            <option value="<?php echo $group->id; ?>" <?php echo ($group->id === \SP\Core\Session::getUserGroupId()) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $group->id; ?>" <?php echo ($group->id === $SessionUserData->getUserGroupId()) ? 'selected' : ''; ?>>
                                 <?php echo $group->name; ?>
                             </option>
                         <?php endforeach; ?>

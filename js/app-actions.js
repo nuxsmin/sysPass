@@ -54,9 +54,9 @@ sysPass.Actions = function (Common) {
             import: "/ajax/ajax_import.php"
         },
         file: "/ajax/ajax_filesMgmt.php",
-        link: "/ajax/ajax_appMgmtSave.php",
+        link: "/ajax/ajax_itemSave.php",
         account: {
-            save: "/ajax/ajax_appMgmtSave.php",
+            save: "/ajax/ajax_itemSave.php",
             showPass: "/ajax/ajax_accViewPass.php",
             saveFavorite: "/ajax/ajax_appMgmtSave.php",
             request: "/ajax/ajax_sendRequest.php",
@@ -64,9 +64,9 @@ sysPass.Actions = function (Common) {
             search: "/ajax/ajax_accSearch.php"
         },
         appMgmt: {
-            show: "/ajax/ajax_appMgmtData.php",
-            save: "/ajax/ajax_appMgmtSave.php",
-            search: "/ajax/ajax_appMgmtSearch.php"
+            show: "/ajax/ajax_itemShow.php",
+            save: "/ajax/ajax_itemSave.php",
+            search: "/ajax/ajax_itemSearch.php"
         },
         eventlog: "/ajax/ajax_eventlog.php",
         wiki: {
@@ -89,7 +89,7 @@ sysPass.Actions = function (Common) {
         opts.data = data;
 
         Common.appRequests().getActionCall(opts, function (response) {
-            $("#content").html(response);
+            $("#content").empty().html(response).find("input:first").focus();
         });
     };
 
@@ -325,7 +325,7 @@ sysPass.Actions = function (Common) {
                 ldap_base: $form.find("[name='ldap_base']").val(),
                 ldap_group: $form.find("[name='ldap_group']").val(),
                 ldap_binduser: $form.find("[name='ldap_binduser']").val(),
-                ldap_bindpass: Common.config().PK !== "" ? Common.config().crypt.encrypt(ldapBindPass) : ldapBindPass,
+                ldap_bindpass: Common.config().PK !== "" ? Common.config().CRYPT.encrypt(ldapBindPass) : ldapBindPass,
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -574,10 +574,10 @@ sysPass.Actions = function (Common) {
 
             doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
         },
-        showHistory: function (obj) {
+        showHistory: function ($obj) {
             log.info("account:showHistory");
 
-            doAction({actionId: obj["action-id"], itemId: obj["item-id"]});
+            doAction({actionId: $obj.data("action-id"), itemId: $obj.val()});
         },
         edit: function ($obj) {
             log.info("account:edit");
@@ -619,14 +619,15 @@ sysPass.Actions = function (Common) {
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.account.showPass;
             opts.data = {
-                accountid: $obj.data("item-id"),
+                itemId: $obj.data("item-id"),
                 isHistory: $obj.data("history"),
+                isFull: $obj.data("full"),
                 isAjax: 1
             };
 
             Common.appRequests().getActionCall(opts, function (json) {
                 if (json.status === 10) {
-                    doLogout();
+                    main.logout();
                     return;
                 }
 
@@ -705,7 +706,7 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.account.showPass;
             opts.async = false;
             opts.data = {
-                accountid: $obj.data("item-id"),
+                itemId: $obj.data("item-id"),
                 isHistory: $obj.data("history"),
                 isAjax: 1
             };
@@ -782,7 +783,7 @@ sysPass.Actions = function (Common) {
         restore: function ($obj) {
             log.info("account:restore");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
+            account.save($obj);
         },
         getfiles: function ($obj) {
             log.info("account:getfiles");
@@ -817,7 +818,8 @@ sysPass.Actions = function (Common) {
 
                 Common.sk.set(json.sk);
 
-                $("#res-content").html(json.html);
+                $("#res-content").empty().html(json.html);
+                $frmSearch.find("input:first").focus();
             });
         },
         save: function ($obj) {
@@ -848,7 +850,6 @@ sysPass.Actions = function (Common) {
             }
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.type = "html";
             opts.url = ajaxUrl.appMgmt.show;
             opts.data = {
                 itemId: $obj.data("item-id"),
@@ -858,8 +859,12 @@ sysPass.Actions = function (Common) {
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (response) {
-                showFloatingBox($obj, response);
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status !== 0) {
+                    Common.msg.out(json);
+                } else {
+                    showFloatingBox($obj, json.data.html);
+                }
             });
         },
         delete: function ($obj) {
@@ -920,18 +925,18 @@ sysPass.Actions = function (Common) {
             log.info("appMgmt:search");
 
             var $target = $($obj.data("target"));
-
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.search;
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 if (json.status === 0) {
-                    $target.html(json.html);
-                    $obj.find("[name='sk']").val(json.sk);
+                    $target.html(json.data.html);
                 } else {
                     $target.html(Common.msg.html.error(json.description));
                 }
+
+                Common.sk.set(json.csrf);
             });
         },
         nav: function ($obj) {

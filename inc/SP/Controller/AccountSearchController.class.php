@@ -100,7 +100,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      */
     private function setVars()
     {
-        $this->view->assign('isAdmin', Session::getUserIsAdminApp() || Session::getUserIsAdminAcc());
+        $this->view->assign('isAdmin', Session::getUserData()->isUserIsAdminApp() || Session::getUserData()->isUserIsAdminAcc());
         $this->view->assign('showGlobalSearch', Config::getConfig()->isGlobalSearch());
 
         // Obtener el filtro de búsqueda desde la sesión
@@ -228,6 +228,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionViewPass->setIcon($this->icons->getIconViewPass());
         $GridActionViewPass->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowViewPass');
         $GridActionViewPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
+        $GridActionViewPass->addData('action-full', 1);
         $GridActionViewPass->addData('action-sk', $this->sk);
         $GridActionViewPass->addData('onclick', 'account/showpass');
 
@@ -242,6 +243,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopyPass->setIcon($ClipboardIcon);
         $GridActionCopyPass->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowCopyPass');
         $GridActionCopyPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
+        $GridActionCopyPass->addData('action-full', 0);
         $GridActionCopyPass->addData('action-sk', $this->sk);
         $GridActionCopyPass->addData('useclipboard', '1');
 

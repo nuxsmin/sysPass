@@ -284,8 +284,7 @@ sysPass.Theme = function (Common) {
 
         var datePickerOpts = {
             format: "YYYY-MM-DD",
-            lang: "en",
-            weekStart: 0,
+            lang: Common.config().LOCALE.substr(0, 2),
             time: false,
             cancelText: Common.config().LANG[44],
             okText: Common.config().LANG[43],
@@ -295,6 +294,13 @@ sysPass.Theme = function (Common) {
             triggerEvent: "dateIconClick"
         };
 
+        var getUnixtime = function (val) {
+            log.info(moment.tz("UTC"));
+            log.info(Common.config().TIMEZONE);
+
+            return moment(val).tz(Common.config().TIMEZONE).format("X");
+        };
+
         // Actualizar el input oculto con la fecha en formato UNIX
         var updateUnixInput = function ($obj, date) {
             var unixtime;
@@ -302,7 +308,7 @@ sysPass.Theme = function (Common) {
             if (typeof date !== "undefined") {
                 unixtime = date;
             } else {
-                unixtime = moment($obj.val()).format("X");
+                unixtime = getUnixtime($obj.val());
             }
 
             $obj.parent().find("input[name='passworddatechange_unix']").val(unixtime);
@@ -313,7 +319,7 @@ sysPass.Theme = function (Common) {
 
             $this.bootstrapMaterialDatePicker(datePickerOpts);
 
-            $this.parent().append("<input type='hidden' name='passworddatechange_unix' value='" + moment($this.val()).format("X") + "' />");
+            $this.parent().append("<input type='hidden' name='passworddatechange_unix' value='" + getUnixtime($this.val()) + "' />");
 
             // Evento de click para el icono de calendario
             $this.parent().next("i").on("click", function () {

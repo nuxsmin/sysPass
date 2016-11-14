@@ -1,5 +1,5 @@
 <?php
-/** @var $icons \Theme\Icons */
+/** @var $icons \SP\Core\UI\ThemeIconsBase */
 /** @var $user \SP\DataModel\UserData */
 ?>
 
@@ -144,7 +144,7 @@
             <tr>
                 <td class="descField"><?php echo _('Opciones'); ?></td>
                 <td class="valField checkbox">
-                    <?php if (\SP\Core\Session::getUserIsAdminApp() || $isDemo): ?>
+                    <?php if ($SessionUserData->isUserIsAdminApp() || $isDemo): ?>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp"
                                title="<?php echo _('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"

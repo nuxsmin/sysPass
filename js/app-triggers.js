@@ -41,16 +41,13 @@ sysPass.Triggers = function (Common) {
 
             if ($this.data("onchange")) {
                 var onchange = $this.data("onchange").split("/");
-                var actionId = $this.data("action-id");
 
                 options.onChange = function (value) {
-                    var data = {"action-id": actionId, "item-id": value};
-
                     if (value > 0) {
                         if (onchange.length === 2) {
-                            sysPassApp.actions()[onchange[0]][onchange[1]](data);
+                            sysPassApp.actions()[onchange[0]][onchange[1]]($this);
                         } else {
-                            sysPassApp.actions()[onchange[0]](data);
+                            sysPassApp.actions()[onchange[0]]($this);
                         }
                     }
                 };

@@ -51,7 +51,9 @@ if (!$file) {
             ->addFile('selectize-plugins.min.js')
             ->addFile('zxcvbn-async.min.js')
             ->addFile('jsencrypt.min.js')
-            ->addFile('spark-md5.min.js');
+            ->addFile('spark-md5.min.js')
+            ->addFile('moment.min.js')
+            ->addFile('moment-timezone.min.js');
     } elseif ($group === 1) {
         // FIXME: utilizar versiones .min
         $Minify->addFile('app.js')

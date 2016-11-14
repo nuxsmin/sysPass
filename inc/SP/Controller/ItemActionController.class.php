@@ -26,10 +26,9 @@ namespace SP\Controller;
 
 use SP\Account\Account;
 use SP\Account\AccountFavorites;
-use SP\Account\AccountTags;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
-use SP\DataModel\AccountData;
+use SP\Core\SessionUtil;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\PublicLinkData;
 use SP\Forms\AccountForm;
@@ -53,7 +52,6 @@ use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
-use SP\Mgmt\Tags\TagSearch;
 use SP\Mgmt\Users\User;
 use SP\Util\Json;
 
@@ -73,6 +71,10 @@ class ItemActionController
      */
     protected $itemId;
     /**
+     * @var string
+     */
+    protected $sk;
+    /**
      * @var JsonResponse
      */
     protected $jsonResponse;
@@ -89,6 +91,7 @@ class ItemActionController
         $this->jsonResponse = new JsonResponse();
 
         $this->analyzeRequest();
+        $this->preActionChecks();
     }
 
     /**
@@ -96,20 +99,35 @@ class ItemActionController
      */
     protected function analyzeRequest()
     {
+        $this->sk = Request::analyze('sk', false);
         $this->itemId = Request::analyze('itemId', 0);
         $this->actionId = Request::analyze('actionId', 0);
     }
 
     /**
+     * Comprobaciones antes de realizar una acción
+     */
+    protected function preActionChecks()
+    {
+        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->itemId || !$this->actionId) {
+            $this->invalidAction();
+        }
+    }
+
+    protected function invalidAction()
+    {
+        $this->jsonResponse->setDescription(_('Acción Inválida'));
+        Json::returnJson($this->jsonResponse);
+    }
+
+    /**
      * Ejecutar la acción solicitada
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function doAction()
     {
         try {
-            if (!$this->itemId || !$this->actionId) {
-                $this->invalidAction();
-            }
-
             switch ($this->actionId) {
                 case ActionsInterface::ACTION_USR_USERS_NEW:
                 case ActionsInterface::ACTION_USR_USERS_EDIT:
@@ -568,7 +586,7 @@ class ItemActionController
         switch ($this->actionId) {
             case ActionsInterface::ACTION_ACC_NEW:
             case ActionsInterface::ACTION_ACC_COPY:
-                $Form->getItemData()->setAccountUserId(Session::getUserId());
+                $Form->getItemData()->setAccountUserId(Session::getUserData()->getUserId());
 
                 $Account->createAccount();
                 $this->saveCustomFieldData();
@@ -587,7 +605,7 @@ class ItemActionController
                 $this->jsonResponse->setDescription(_('Clave actualizada'));
                 break;
             case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
-                $Account->restoreFromHistory($this->itemId);
+                $Account->restoreFromHistory(Request::analyze('accountHistoryId', 0));
 
                 $this->jsonResponse->setDescription(_('Cuenta restaurada'));
                 break;
@@ -610,7 +628,7 @@ class ItemActionController
      */
     private function favoriteAction()
     {
-        $userId = Session::getUserId();
+        $userId = Session::getUserData()->getUserId();
 
         switch ($this->actionId) {
             case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
@@ -626,10 +644,5 @@ class ItemActionController
         }
 
         $this->jsonResponse->setStatus(0);
-    }
-
-    protected function invalidAction()
-    {
-        $this->jsonResponse->setDescription(_('Acción Inválida'));
     }
 }

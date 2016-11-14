@@ -47,16 +47,7 @@ class SessionUtil
      */
     public static function loadUserSession(UserData $UserData)
     {
-        Session::setUserId($UserData->getUserId());
-        Session::setUserName($UserData->getUserName());
-        Session::setUserLogin($UserData->getUserLogin());
-        Session::setUserProfileId($UserData->getUserProfileId());
-        Session::setUserGroupId($UserData->getUserGroupId());
-        Session::setUserGroupName($UserData->getUsergroupName()); // FIXME
-        Session::setUserEMail($UserData->getUserEmail());
-        Session::setUserIsAdminApp($UserData->isUserIsAdminApp());
-        Session::setUserIsAdminAcc($UserData->isUserIsAdminAcc());
-        Session::setUserIsLdap($UserData->isUserIsLdap());
+        Session::setUserData($UserData);
         Session::setUserProfile(Profile::getItem()->getById($UserData->getUserProfileId()));
     }
 

@@ -98,7 +98,7 @@ class AccountsSearchItem
      */
     public function isFavorite()
     {
-        $favorites = AccountFavorites::getFavorites(Session::getUserId());
+        $favorites = AccountFavorites::getFavorites(Session::getUserData()->getUserId());
 
         return in_array($this->AccountSearchData->getAccountId(), $favorites);
     }

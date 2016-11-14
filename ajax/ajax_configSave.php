@@ -359,7 +359,7 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
     $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
     $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
-    if (!UserPass::checkUserUpdateMPass(Session::getUserId())) {
+    if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
         $Json->setDescription(_('Clave maestra actualizada'));
         $Json->addMessage(_('Reinicie la sesión para cambiarla'));
         Json::returnJson($Json);

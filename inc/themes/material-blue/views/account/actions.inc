@@ -33,7 +33,8 @@ use SP\Util\Checks;
         <button id="btnViewPass" type="button"
                 class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconViewPass()->getClassButton(); ?>"
                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
-                data-item-id="<?php echo $accountId; ?>"
+                data-item-id="<?php echo $accountIsHistory !== 1 ? $accountId : $accountHistoryId; ?>"
+                data-full="1"
                 data-sk="<?php echo $sk; ?>"
                 data-onclick="account/showpass"
                 data-history="<?php echo $accountIsHistory; ?>"
@@ -44,7 +45,8 @@ use SP\Util\Checks;
             <button id="btnClipPass"
                     class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClipboard()->getClassButton(); ?> clip-pass-button"
                     data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
-                    data-item-id="<?php echo $accountId; ?>"
+                    data-item-id="<?php echo $accountIsHistory !== 1 ? $accountId : $accountHistoryId; ?>"
+                    data-full="0"
                     data-sk="<?php echo $sk; ?>"
                     data-history="<?php echo $accountIsHistory; ?>"
                     data-onclick="account/copypass"
@@ -70,7 +72,7 @@ use SP\Util\Checks;
         <button id="btnBack" type="button"
                 class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
-                data-item-id="<?php echo $accountParentId; ?>"
+                data-item-id="<?php echo $accountId; ?>"
                 data-sk="<?php echo $sk; ?>"
                 data-onclick="account/show"
                 title="<?php echo _('Ver Actual'); ?>">
@@ -107,18 +109,12 @@ use SP\Util\Checks;
     <?php endif; ?>
 
     <?php if ($AccountAcl->isShowRestore()): ?>
-        <button id="btnRestore" name="btnRestore" type="submit" form="frmAccount"
-                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconRestore()->getClassButton(); ?>"
-                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>"
-                data-item-id="<?php echo $accountId; ?>"
-                data-sk="<?php echo $sk; ?>"
-                data-onclick="account/restore"
+        <button id="btnRestore" name="btnRestore" type="submit" form="frmAccountRestore"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconRestore()->getClassButton(); ?>"
                 title="<?php echo _('Restaurar cuenta desde este punto'); ?>">
             <i class="material-icons"><?php echo $icons->getIconRestore()->getIcon(); ?></i>
         </button>
-    <?php endif; ?>
-
-    <?php if ($AccountAcl->isShowSave()): ?>
+    <?php elseif ($AccountAcl->isShowSave()): ?>
         <button id="btnSave" name="btnSave" type="submit" form="frmAccount"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
                 title="<?php echo _('Guardar'); ?>">
