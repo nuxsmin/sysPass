@@ -24,7 +24,7 @@
  *
  */
 
-namespace SP\Auth;
+namespace SP\Auth\Ldap;
 
 use SP\Config\Config;
 use SP\Log\Log;

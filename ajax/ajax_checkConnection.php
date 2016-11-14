@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Auth\Ldap;
+use SP\Auth\Ldap\Ldap;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Http\Request;

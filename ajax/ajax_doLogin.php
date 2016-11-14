@@ -24,7 +24,7 @@
  */
 
 use SP\Auth\Auth;
-use SP\Auth\Ldap;
+use SP\Auth\Ldap\Ldap;
 use SP\Core\CryptMasterPass;
 use SP\Core\Init;
 use SP\Core\Language;
@@ -36,7 +36,6 @@ use SP\DataModel\UserData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Http\Response;
 use SP\Log\Log;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;

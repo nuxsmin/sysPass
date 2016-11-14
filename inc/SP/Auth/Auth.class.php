@@ -26,6 +26,8 @@
 
 namespace SP\Auth;
 
+use SP\Auth\Ldap\Ldap;
+use SP\Auth\Ldap\LdapADS;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
