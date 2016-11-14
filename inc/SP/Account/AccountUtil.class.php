@@ -163,31 +163,21 @@ class AccountUtil
     public static function getAccountsMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-
-
-        $query = 'SELECT account_id,'
-            . 'account_name,'
-            . 'customer_name '
-            . 'FROM accounts '
-            . 'LEFT JOIN customers ON account_customerId = customer_id';
+        $Data->setSelect('account_id, account_name, customer_name');
+        $Data->setFrom('accounts LEFT JOIN customers ON account_customerId = customer_id');
+        $Data->setOrder('account_name');
 
         if ($SearchData->getSeachString() !== '') {
+            $Data->setWhere('account_name LIKE ? OR customer_name LIKE ?');
+
             $search = '%' . $SearchData->getSeachString() . '%';
-
-            $query .= ' WHERE account_name LIKE ? '
-                . 'OR customer_name LIKE ?';
-
             $Data->addParam($search);
             $Data->addParam($search);
         }
 
-        $query .= ' ORDER BY account_name';
-        $query .= ' LIMIT ?, ?';
-
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 

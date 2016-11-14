@@ -47,27 +47,22 @@ class CategorySearch extends CategoryBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT category_id, category_name, category_description FROM categories';
-
         $Data = new QueryData();
+        $Data->setSelect('category_id, category_name, category_description');
+        $Data->setFrom('categories');
+        $Data->setOrder('category_name');
 
         if ($SearchData->getSeachString() !== '') {
-            $query .= /** @lang SQL */
-                ' WHERE category_name LIKE ? OR category_description LIKE ?';
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $Data->setWhere('category_name LIKE ? OR category_description LIKE ?');
 
+            $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
             $Data->addParam($search);
         }
 
-        $query .= /** @lang SQL */
-            ' ORDER BY category_name LIMIT ?,?';
-
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 

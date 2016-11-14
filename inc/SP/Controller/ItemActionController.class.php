@@ -109,7 +109,7 @@ class ItemActionController
      */
     protected function preActionChecks()
     {
-        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->itemId || !$this->actionId) {
+        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->actionId) {
             $this->invalidAction();
         }
     }

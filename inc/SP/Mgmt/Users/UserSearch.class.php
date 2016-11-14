@@ -44,8 +44,8 @@ class UserSearch extends UserBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT user_id,
+        $Data = new QueryData();
+        $Data->setSelect('user_id,
             user_name, 
             user_login,
             userprofile_name,
@@ -54,35 +54,27 @@ class UserSearch extends UserBase implements ItemSearchInterface
             BIN(user_isAdminAcc) AS user_isAdminAcc,
             BIN(user_isLdap) AS user_isLdap,
             BIN(user_isDisabled) AS user_isDisabled,
-            BIN(user_isChangePass) AS user_isChangePass
-            FROM usrData
-            LEFT JOIN usrProfiles ON user_profileId = userprofile_id
-            LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id';
-
-        $Data = new QueryData();
+            BIN(user_isChangePass) AS user_isChangePass');
+        $Data->setFrom('usrData LEFT JOIN usrProfiles ON user_profileId = userprofile_id LEFT JOIN usrGroups ON usrData.user_groupId = usergroup_id');
+        $Data->setOrder('user_name');
 
         if ($SearchData->getSeachString() !== '') {
-
-            $query .= /** @lang SQL */
-                ' WHERE user_name LIKE ? OR user_login LIKE ?';
-
-            $query .= (!Session::getUserData()->isUserIsAdminApp()) ? ' AND user_isAdminApp = 0' : '';
+            if (Session::getUserData()->isUserIsAdminApp()) {
+                $Data->setWhere('user_name LIKE ? OR user_login LIKE ?');
+            } else {
+                $Data->setWhere('user_name LIKE ? OR user_login LIKE ? AND user_isAdminApp = 0');
+            }
 
             $search = '%' . $SearchData->getSeachString() . '%';
-
             $Data->addParam($search);
             $Data->addParam($search);
-        } else {
-            $query .= (!Session::getUserData()->isUserIsAdminApp()) ? ' WHERE user_isAdminApp = 0' : '';
+        } elseif (!Session::getUserData()->isUserIsAdminApp()) {
+            $Data->setWhere('user_isAdminApp = 0');
         }
 
-        $query .= ' ORDER BY user_name';
-        $query .= ' LIMIT ?, ?';
-
+        $Data->setLimit('?, ?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 

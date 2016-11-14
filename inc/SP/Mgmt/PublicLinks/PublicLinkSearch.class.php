@@ -50,12 +50,11 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT publicLink_id, publicLink_hash, publicLink_linkData FROM publicLinks LIMIT ?, ?';
-
         $Data = new QueryData();
-        $Data->setQuery($query);
         $Data->setMapClassName('SP\DataModel\PublicLinkListData');
+        $Data->setSelect('publicLink_id, publicLink_hash, publicLink_linkData');
+        $Data->setFrom('publicLinks');
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
 

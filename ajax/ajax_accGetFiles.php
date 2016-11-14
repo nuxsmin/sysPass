@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Controller\AppItemsController;
+use SP\Controller\ItemListController;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
@@ -51,6 +51,6 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printHtmlError(_('CONSULTA INVÁLIDA'));
 }
 
-$Controller = new AppItemsController();
+$Controller = new ItemListController();
 $Controller->getAccountFiles();
 $Controller->view();

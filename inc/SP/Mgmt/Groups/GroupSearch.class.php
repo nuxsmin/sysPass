@@ -45,31 +45,23 @@ class GroupSearch extends GroupBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT usergroup_id,
-            usergroup_name,
-            usergroup_description
-            FROM usrGroups';
-
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
+        $Data->setSelect('usergroup_id, usergroup_name, usergroup_description');
+        $Data->setFrom('usrGroups');
+        $Data->setOrder('usergroup_name');
 
         if ($SearchData->getSeachString() !== '') {
-            $query .= /** @lang SQL */
-                ' WHERE usergroup_name LIKE ? OR usergroup_description LIKE ?';
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $Data->setWhere('usergroup_name LIKE ? OR usergroup_description LIKE ?');
 
+            $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
             $Data->addParam($search);
         }
 
-        $query .= /** @lang SQL */
-            ' ORDER BY usergroup_name LIMIT ?, ?';
-
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 

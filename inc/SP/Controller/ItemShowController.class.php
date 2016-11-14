@@ -279,7 +279,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('users');
 
         $this->view->assign('user', $this->itemId ? User::getItem()->getById($this->itemId) : new UserData());
-        $this->view->assign('isDisabled', ((User::getItem()->getItemData()->getUserLogin() === 'demo' && $this->view->isDemo) || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
 

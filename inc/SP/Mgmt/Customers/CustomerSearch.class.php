@@ -45,31 +45,22 @@ class CustomerSearch extends CustomerBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT customer_id,
-            customer_name,
-            customer_description
-            FROM customers';
-
         $Data = new QueryData();
+        $Data->setSelect('customer_id, customer_name, customer_description');
+        $Data->setFrom('customers');
+        $Data->setOrder('customer_name');
 
         if ($SearchData->getSeachString() !== '') {
+            $Data->setWhere('customer_name LIKE ? OR customer_description LIKE ?');
+
             $search = '%' . $SearchData->getSeachString() . '%';
-
-            $query .= /** @lang SQL */
-                ' WHERE customer_name LIKE ? OR customer_description LIKE ?';
-
             $Data->addParam($search);
             $Data->addParam($search);
         }
 
-        $query .= /** @lang SQL */
-            ' ORDER BY customer_name LIMIT ?,?';
-
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 

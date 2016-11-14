@@ -612,7 +612,7 @@ pre, code, samp, kbd {
     float: right;
     min-height: 2em;
     padding: 1em 0;
-    text-align: center;
+    text-align: left;
     background-color: #fcfcfc;
     width: 15em;
 }

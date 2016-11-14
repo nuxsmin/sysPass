@@ -46,32 +46,27 @@ class ProfileSearch extends ProfileBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT userprofile_id, userprofile_name FROM usrProfiles';
-
         $Data = new QueryData();
+        $Data->setSelect('userprofile_id, userprofile_name');
+        $Data->setFrom('usrProfiles');
+        $Data->setOrder('userprofile_name');
 
         if ($SearchData->getSeachString() !== '') {
-            $query .= ' WHERE userprofile_name LIKE ?';
-
             if (Checks::demoIsEnabled()) {
-                $query .= ' userprofile_name <> "Admin" AND userprofile_name <> "Demo"';
+                $Data->setWhere('userprofile_name LIKE ? AND userprofile_name <> "Admin" AND userprofile_name <> "Demo"');
+            } else {
+                $Data->setWhere('userprofile_name LIKE ?');
             }
 
             $search = '%' . $SearchData->getSeachString() . '%';
-
             $Data->addParam($search);
         } elseif (Checks::demoIsEnabled()) {
-            $query .= ' WHERE userprofile_name <> "Admin" AND userprofile_name <> "Demo"';
+            $Data->setWhere('userprofile_name <> "Admin" AND userprofile_name <> "Demo"');
         }
 
-        $query .= /** @lang SQL */
-            ' ORDER BY userprofile_name LIMIT ?, ?';
-
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 

@@ -59,17 +59,13 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT customfielddef_id,
-            customfielddef_module,
-            customfielddef_field
-            FROM customFieldsDef
-            ORDER BY customfielddef_module
-            LIMIT ?, ?';
-
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
-        $Data->setQuery($query);
+        $Data->setSelect('customfielddef_id, customfielddef_module, customfielddef_field');
+        $Data->setFrom('customFieldsDef');
+        $Data->setOrder('customfielddef_module');
+
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
 

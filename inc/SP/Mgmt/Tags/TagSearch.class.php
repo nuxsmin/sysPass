@@ -45,23 +45,21 @@ class TagSearch extends TagBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT tag_id, tag_name FROM tags';
-
         $Data = new QueryData();
+        $Data->setSelect('tag_id, tag_name');
+        $Data->setFrom('tags');
+        $Data->setOrder('tag_name');
 
         if ($SearchData->getSeachString() !== '') {
-            $query .= ' WHERE tag_name LIKE ? ';
-            $Data->addParam('%' . $SearchData->getSeachString() . '%');
+            $Data->setWhere('tag_name LIKE ?');
+
+            $search = '%' . $SearchData->getSeachString() . '%';
+            $Data->addParam($search);
         }
 
-        $query .= /** @lang SQL */
-            ' ORDER BY tag_name LIMIT ?,?';
-
+        $Data->setLimit('?,?');
         $Data->addParam($SearchData->getLimitStart());
         $Data->addParam($SearchData->getLimitCount());
-
-        $Data->setQuery($query);
 
         DB::setFullRowCount();
 
