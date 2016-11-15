@@ -27,7 +27,7 @@
 namespace SP\Auth;
 
 use SP\Auth\Ldap\Ldap;
-use SP\Auth\Ldap\LdapADS;
+use SP\Auth\Ldap\LdapMads;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
@@ -116,7 +116,7 @@ class Auth
                 }
                 // Comprobamos que el usuario está en el grupo indicado buscando en los atributos del grupo
             } else {
-                $ldapGroupAccess = (Ldap::searchUserInGroup($userDN) || LdapADS::searchADUserInGroup($userLogin));
+                $ldapGroupAccess = (Ldap::searchUserInGroup($userDN) || LdapMads::searchADUserInGroup($userLogin));
             }
         } else {
             $ldapGroupAccess = true;

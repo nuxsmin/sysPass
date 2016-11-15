@@ -278,7 +278,7 @@ class Ldap
     {
         self::$isADS = Config::getConfig()->isLdapAds();
         self::$searchBase = Config::getConfig()->getLdapBase();
-        self::$ldapServer = (!self::$isADS) ? Config::getConfig()->getLdapServer() : LdapADS::getADServer(Config::getConfig()->getLdapServer());
+        self::$ldapServer = (!self::$isADS) ? Config::getConfig()->getLdapServer() : LdapMads::getADServer(Config::getConfig()->getLdapServer());
         self::$bindDN = Config::getConfig()->getLdapBindUser();
         self::$bindPass = Config::getConfig()->getLdapBindPass();
         self::$ldapGroup = Config::getConfig()->getLdapGroup();
