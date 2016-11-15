@@ -24,6 +24,7 @@
  */
 
 use SP\Auth\Ldap\Ldap;
+use SP\Auth\Ldap\LdapStd;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
@@ -57,12 +58,19 @@ if ($frmType === 'ldap') {
         Response::printJson(_('Los parámetros de LDAP no están configurados'));
     }
 
-    $resCheckLdap = Ldap::checkLDAPConn($frmLdapServer, $frmLdapBindUser, $frmLdapBindPass, $frmLdapBase, $frmLdapGroup);
+    $Ldap = new  LdapStd();
+    $Ldap->setServer($frmLdapServer);
+    $Ldap->setSearchBase($frmLdapBase);
+    $Ldap->setGroup($frmLdapGroup);
+    $Ldap->setBindDn($frmLdapBindUser);
+    $Ldap->setBindPass($frmLdapBindPass);
+
+    $resCheckLdap = $Ldap->checkConnection();
 
     if ($resCheckLdap === false) {
         Response::printJson(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
     } else {
-        Response::printJson(_('Conexión a LDAP correcta') . ';;' . _('Objetos encontrados') . ': ' . $resCheckLdap, 0);
+        Response::printJson(_('Conexión a LDAP correcta') . ';;' . sprintf(_('Objetos encontrados: %d'), $resCheckLdap), 0);
     }
 } elseif ($frmType === 'dokuwiki') {
     $frmDokuWikiUrl = Request::analyze('dokuwiki_url');

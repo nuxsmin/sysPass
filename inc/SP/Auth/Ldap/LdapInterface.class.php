@@ -22,8 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Auth\Ldap;
-use SP\Auth\Ldap\LdapUserData;
+namespace SP\Auth\Ldap;
 
 /**
  * Interface LdapInterface
@@ -33,27 +32,12 @@ use SP\Auth\Ldap\LdapUserData;
 interface LdapInterface
 {
     /**
-     * Realizar la autentificación con el servidor de LDAP.
-     *
-     * @param string $bindDn   con el DN del usuario
-     * @param string $bindPass con la clave del usuario
-     * @return void
-     */
-    public function bind($bindDn = '', $bindPass = '');
-
-    /**
      * Comprobar la conexión al servidor de LDAP.
      *
      * @return bool
      */
     public function checkConnection();
 
-    /**
-     * Realizar la conexión al servidor de LDAP.
-     *
-     * @return resource|false
-     */
-    public function connect();
 
     /**
      * Comprobar si los parámetros necesarios de LDAP están establecidos.
@@ -61,13 +45,6 @@ interface LdapInterface
      * @return bool
      */
     public function checkParams();
-
-    /**
-     * Desconectar del servidor de LDAP
-     *
-     * @return mixed
-     */
-    public function unbind();
 
     /**
      * Obtener los atributos del usuario.

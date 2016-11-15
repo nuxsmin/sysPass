@@ -24,7 +24,6 @@
 
 namespace SP\Auth\Ldap;
 
-use Auth\Ldap\LdapBase;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
@@ -43,7 +42,9 @@ class LdapStd extends LdapBase
      */
     protected function getGroupDnFilter()
     {
-        return '(&(|(memberOf=' . $this->group . ')(groupMembership=' . $this->group . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        $groupDN = (!empty($this->group)) ? $this->searchGroupDN() : '*';
+
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -74,41 +75,50 @@ class LdapStd extends LdapBase
      */
     protected function searchUserInGroup()
     {
-        {
-            $Log = new Log(__FUNCTION__);
+        $Log = new Log(__FUNCTION__);
 
-            // Comprobar el filtro de grupo y obtener el nombre
-            if (!$this->group || $this->group === '*'){
-                return true;
-            }
+        $groupDN = $this->getGroupName() ?: $this->group;
+        $userDN = $this->escapeLdapDN($this->LdapUserData->getDn());
 
-            $groupDN = $this->getGroupName() ?: $this->group;
-            $userDN = $this->escapeLdapDN($this->UserData->getDn());
-
-            $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
-
-            $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['member', 'uniqueMember']);
-
-            if (!$searchRes) {
-                $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(_('Error al buscar el grupo de usuarios'));
-                $Log->addDetails(_('Grupo'), $groupDN);
-                $Log->addDetails(_('Usuario'), $userDN);
-                $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
-                $Log->addDetails('LDAP FILTER', $filter);
-                $Log->writeLog();
-
-                throw new SPException(SPException::SP_ERROR, $Log->getDescription());
-            }
-
-            if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0) {
-                return false;
-            }
-
+        // Comprobar si está establecido el filtro de grupo o el grupo coincide con
+        // los grupos del usuario
+        if (!$this->group
+            || $this->group === '*'
+            || in_array($groupDN, $this->LdapUserData->getGroups())
+        ) {
             $Log->addDescription(_('Usuario verificado en grupo'));
             $Log->writeLog();
 
             return true;
         }
+
+        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+
+        $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['member', 'uniqueMember']);
+
+        if (!$searchRes) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al buscar el grupo de usuarios'));
+            $Log->addDetails(_('Grupo'), $groupDN);
+            $Log->addDetails(_('Usuario'), $this->LdapUserData->getDn());
+            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
+            $Log->addDetails('LDAP FILTER', $filter);
+            $Log->writeLog();
+
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+        }
+
+        if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0) {
+            $Log->addDescription(_('Usuario no pertenece al grupo'));
+            $Log->addDetails(_('Usuario'), $this->LdapUserData->getDn());
+            $Log->addDetails(_('Grupo'), $groupDN);
+
+            return false;
+        }
+
+        $Log->addDescription(_('Usuario verificado en grupo'));
+        $Log->writeLog();
+
+        return true;
     }
 }

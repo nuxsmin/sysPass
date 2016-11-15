@@ -22,11 +22,12 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Auth\Ldap;
+namespace SP\Auth\Ldap;
 
-use SP\Auth\Ldap\LdapUserData;
+use SP\Auth\AuthInterface;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserData;
 use SP\Log\Log;
 
 /**
@@ -34,7 +35,7 @@ use SP\Log\Log;
  *
  * @package Auth\Ldap
  */
-abstract class LdapBase implements LdapInterface
+abstract class LdapBase implements LdapInterface, AuthInterface
 {
     /**
      * Atributos de búsqueda
@@ -75,14 +76,14 @@ abstract class LdapBase implements LdapInterface
     /**
      * @var LdapUserData
      */
-    protected $UserData;
+    protected $LdapUserData;
 
     /**
      * LdapBase constructor.
      */
     public function __construct()
     {
-        $this->UserData = new LdapUserData();
+        $this->LdapUserData = new LdapUserData();
     }
 
     /**
@@ -92,8 +93,11 @@ abstract class LdapBase implements LdapInterface
      */
     public function checkConnection()
     {
+        $Log = new Log(__FUNCTION__);
+
         if (!$this->searchBase || !$this->server || !$this->bindDn || !$this->bindPass) {
-            Log::writeNewLog(__FUNCTION__, _('Los parámetros de LDAP no están configurados'));
+            $Log->addDescription(_('Los parámetros de LDAP no están configurados'));
+            $Log->writeLog();
 
             return false;
         }
@@ -101,10 +105,15 @@ abstract class LdapBase implements LdapInterface
         try {
             $this->connect();
             $this->bind();
-            return $this->searchBase();
+            $numResults = $this->searchBase();
         } catch (SPException $e) {
             return false;
         }
+
+        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), $numResults));
+        $Log->writeLog();
+
+        return $numResults;
     }
 
     /**
@@ -113,7 +122,7 @@ abstract class LdapBase implements LdapInterface
      * @throws SPException
      * @return bool
      */
-    public function connect()
+    protected function connect()
     {
         $Log = new Log(__FUNCTION__);
 
@@ -143,12 +152,12 @@ abstract class LdapBase implements LdapInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn   con el DN del usuario
+     * @param string $bindDn con el DN del usuario
      * @param string $bindPass con la clave del usuario
      * @throws SPException
      * @return bool
      */
-    public function bind($bindDn = '', $bindPass = '')
+    protected function bind($bindDn = '', $bindPass = '')
     {
         $Log = new Log(__FUNCTION__);
 
@@ -178,13 +187,6 @@ abstract class LdapBase implements LdapInterface
     {
         $Log = new Log(__FUNCTION__);
 
-//        $groupDN = (!empty($this->group)) ? $this->searchGroupDN() : '*';
-//        if (self::$_ADS === true) {
-//            $filter = '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
-//        } else {
-//            $filter = '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
-//        }
-
         $filter = $this->getGroupDnFilter();
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['dn']);
@@ -208,45 +210,6 @@ abstract class LdapBase implements LdapInterface
      * @return mixed
      */
     protected abstract function getGroupDnFilter();
-
-    /**
-     * Comprobar si los parámetros necesario de LDAP están establecidos.
-     *
-     * @return bool
-     */
-    public function checkParams()
-    {
-//        self::$isADS = Config::getConfig()->isLdapAds();
-        $this->searchBase = Config::getConfig()->getLdapBase();
-//        $this->server = (!self::$isADS) ? Config::getConfig()->getLdapServer() : LdapADS::getADServer(Config::getConfig()->getLdapServer());
-        $this->server = $this->pickServer();
-        $this->bindDn = Config::getConfig()->getLdapBindUser();
-        $this->bindPass = Config::getConfig()->getLdapBindPass();
-        $this->group = Config::getConfig()->getLdapGroup();
-
-        if (!$this->searchBase || !$this->server || !$this->bindDn || !$this->bindPass) {
-            Log::writeNewLog(__FUNCTION__, _('Los parámetros de LDAP no están configurados'));
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Obtener el servidor de LDAP a utilizar
-     *
-     * @return mixed
-     */
-    protected abstract function pickServer();
-
-    /**
-     * Realizar la desconexión del servidor de LDAP.
-     */
-    public function unbind()
-    {
-        @ldap_unbind($this->ldapHandler);
-    }
 
     /**
      * Obtener el recurso de conexión a LDAP.
@@ -339,6 +302,76 @@ abstract class LdapBase implements LdapInterface
     }
 
     /**
+     * @return string
+     */
+    public function getUserLogin()
+    {
+        return $this->userLogin;
+    }
+
+    /**
+     * @param string $userLogin
+     */
+    public function setUserLogin($userLogin)
+    {
+        $this->userLogin = $userLogin;
+    }
+
+    /**
+     * Autentificar al usuario
+     *
+     * @param UserData $UserData Datos del usuario
+     * @return bool
+     */
+    public function authenticate(UserData $UserData)
+    {
+        if (!$this->checkParams()) {
+            return false;
+        }
+        try {
+            $this->userLogin = $UserData->getUserLogin();
+
+            $this->connect();
+            $this->bind();
+            $this->getAttributes();
+            $this->bind($UserData->getUserLogin(), $UserData->getUserPass());
+        } catch (SPException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Comprobar si los parámetros necesario de LDAP están establecidos.
+     *
+     * @return bool
+     */
+    public function checkParams()
+    {
+        $this->searchBase = Config::getConfig()->getLdapBase();
+        $this->server = $this->pickServer();
+        $this->bindDn = Config::getConfig()->getLdapBindUser();
+        $this->bindPass = Config::getConfig()->getLdapBindPass();
+        $this->group = Config::getConfig()->getLdapGroup();
+
+        if (!$this->searchBase || !$this->server || !$this->bindDn || !$this->bindPass) {
+            Log::writeNewLog(__FUNCTION__, _('Los parámetros de LDAP no están configurados'));
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Obtener el servidor de LDAP a utilizar
+     *
+     * @return mixed
+     */
+    protected abstract function pickServer();
+
+    /**
      * Obtener los atributos del usuario.
      *
      * @return LdapUserData con los atributos disponibles y sus valores
@@ -357,6 +390,8 @@ abstract class LdapBase implements LdapInterface
             'lockoutTime' => 'expire'];
 
         $res = [];
+
+        debugLog($searchResults);
 
         foreach ($searchResults as $result) {
             if (is_array($result)) {
@@ -378,14 +413,14 @@ abstract class LdapBase implements LdapInterface
             }
         }
 
-        $this->UserData->setDn($searchResults[0]['dn']);
-        $this->UserData->setName($res['name']);
-        $this->UserData->setEmail($res['mail']);
-        $this->UserData->setExpire($res['expire']);
-        $this->UserData->setGroups($res['group']);
-        $this->UserData->setInGroup($this->searchUserInGroup());
+        $this->LdapUserData->setDn($searchResults[0]['dn']);
+        $this->LdapUserData->setName($res['name']);
+        $this->LdapUserData->setEmail($res['mail']);
+        $this->LdapUserData->setExpire($res['expire']);
+        $this->LdapUserData->setGroups($res['group']);
+        $this->LdapUserData->setInGroup($this->searchUserInGroup());
 
-        return $this->UserData;
+        return $this->LdapUserData;
     }
 
     /**
@@ -397,12 +432,6 @@ abstract class LdapBase implements LdapInterface
     protected function getUserAttributes()
     {
         $Log = new Log(__FUNCTION__);
-
-//        if (self::$isADS === true) {
-//            $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
-//        } else {
-//            $filter = '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
-//        }
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $this->getUserDnFilter(), self::SEARCH_ATTRIBUTES);
 
@@ -450,22 +479,6 @@ abstract class LdapBase implements LdapInterface
     protected abstract function getUserDnFilter();
 
     /**
-     * @return string
-     */
-    public function getUserLogin()
-    {
-        return $this->userLogin;
-    }
-
-    /**
-     * @param string $userLogin
-     */
-    public function setUserLogin($userLogin)
-    {
-        $this->userLogin = $userLogin;
-    }
-
-    /**
      * Buscar al usuario en un grupo.
      *
      * @throws SPException
@@ -474,19 +487,19 @@ abstract class LdapBase implements LdapInterface
     protected abstract function searchUserInGroup();
 
     /**
-     * Obtener el nombre del grupo a partir del CN
-     *
-     * @return bool
+     * @return LdapUserData
      */
-    protected function getGroupName()
+    public function getLdapUserData()
     {
-        if (null !== $this->group
-            && preg_match('/^cn=([\w\s\d-]+)(,.*)?/i', $this->group, $groupName)
-        ) {
-            return $groupName[1];
-        }
+        return $this->LdapUserData;
+    }
 
-        return false;
+    /**
+     * Realizar la desconexión del servidor de LDAP.
+     */
+    protected function unbind()
+    {
+        @ldap_unbind($this->ldapHandler);
     }
 
     /**
@@ -549,5 +562,21 @@ abstract class LdapBase implements LdapInterface
 
             throw new SPException(SPException::SP_ERROR, _('Error al buscar RDN de grupo'));
         }
+    }
+
+    /**
+     * Obtener el nombre del grupo a partir del CN
+     *
+     * @return bool
+     */
+    protected function getGroupName()
+    {
+        if (null !== $this->group
+            && preg_match('/^cn=([\w\s\d-]+)(,.*)?/i', $this->group, $groupName)
+        ) {
+            return $groupName[1];
+        }
+
+        return false;
     }
 }

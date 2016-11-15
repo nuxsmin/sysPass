@@ -60,7 +60,7 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         parent::__construct($template);
 
-        if ($initialize) {
+        if ($initialize === true) {
             $this->initialize($page);
         }
     }

@@ -288,11 +288,12 @@ sysPass.Actions = function (Common) {
             log.info("main:getUpdates");
 
             var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.main.getUpdates;
             opts.type = "html";
             opts.method = "get";
             opts.timeout = 10000;
             opts.useLoading = false;
-            opts.url = ajaxUrl.main.getUpdates;
+            opts.data = {isAjax: 1};
 
             Common.appRequests().getActionCall(opts, function (response) {
                 $("#updates").html(response);

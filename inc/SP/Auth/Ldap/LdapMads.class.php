@@ -43,7 +43,10 @@ class LdapMads extends LdapBase
      */
     protected function getGroupDnFilter()
     {
-        return '(&(|(memberOf=' . $this->group . ')(groupMembership=' . $this->group . ')(memberof:1.2.840.113556.1.4.1941:=' . $this->group . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        $groupDN = (!empty($this->group)) ? $this->searchGroupDN() : '*';
+
+
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -100,11 +103,19 @@ class LdapMads extends LdapBase
     {
         $Log = new Log(__FUNCTION__);
 
-        if (!$this->group || $this->group === '*'){
+        $groupDN = $this->getGroupName() ?: $this->group;
+
+        // Comprobar si está establecido el filtro de grupo o el grupo coincide con
+        // los grupos del usuario
+        if (!$this->group
+            || $this->group === '*'
+            || in_array($groupDN, $this->LdapUserData->getGroups())
+        ) {
+            $Log->addDescription(_('Usuario verificado en grupo'));
+            $Log->writeLog();
+
             return true;
         }
-
-        $groupDN = $this->getGroupName() ?: $this->group;
 
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
 
@@ -136,9 +147,14 @@ class LdapMads extends LdapBase
             if ($this->userLogin === $entry['samaccountname'][0]) {
                 $Log->addDescription(_('Usuario verificado en grupo'));
                 $Log->writeLog();
+
                 return true;
             }
         }
+
+        $Log->addDescription(_('Usuario no pertenece al grupo'));
+        $Log->addDetails(_('Usuario'), $this->LdapUserData->getDn());
+        $Log->addDetails(_('Grupo'), $groupDN);
 
         return false;
     }

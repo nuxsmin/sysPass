@@ -72,15 +72,15 @@ $UserData = new UserData();
 $UserData->setUserLogin($userLogin);
 $UserData->setUserPass($userPass);
 
-if ($resLdap = Auth::authUserLDAP($userLogin, $userPass)) {
-    $UserData->setUserName(Auth::$userName);
-    $UserData->setUserEmail(Auth::$userEmail);
-}
+$resLdap = Auth::authUserLDAP($UserData);
 
 $Log = new Log(_('Inicio sesión'));
 
 // Autentificamos por LDAP
-if ($resLdap === true) {
+if ($resLdap !== false) {
+    $UserData->setUserName($resLdap->getName());
+    $UserData->setUserEmail($resLdap->getEmail());
+
     $Log->addDescription('(LDAP)');
     $Log->addDetails(_('Servidor Login'), Ldap::getLdapServer());
 
@@ -100,30 +100,36 @@ if ($resLdap === true) {
         $Json->setDescription(_('Error interno'));
         Json::returnJson($Json);
     }
-} else if ($resLdap === 49) {
+} elseif ($resLdap === false && Auth::$status !== 0) {
     $Log->addDescription('(LDAP)');
-    $Log->addDescription(_('Login incorrecto'));
     $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
-    $Log->writeLog();
 
-    $Json->setDescription(_('Usuario/Clave incorrectos'));
-    Json::returnJson($Json);
-} else if ($resLdap === 701) {
-    $Log->addDescription('(LDAP)');
-    $Log->addDescription(_('Cuenta expirada'));
-    $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
-    $Log->writeLog();
+    if (Auth::$status === 49) {
+        $Log->addDescription(_('Login incorrecto'));
+        $Log->writeLog();
 
-    $Json->setDescription(_('Cuenta expirada'));
-    Json::returnJson($Json);
-} else if ($resLdap === 702) {
-    $Log->addDescription('(LDAP)');
-    $Log->addDescription(_('El usuario no tiene grupos asociados'));
-    $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
-    $Log->writeLog();
+        $Json->setDescription(_('Usuario/Clave incorrectos'));
+        Json::returnJson($Json);
+    } elseif (Auth::$status === 701) {
+        $Log->addDescription(_('Cuenta expirada'));
+        $Log->writeLog();
 
-    $Json->setDescription(_('El usuario no tiene grupos asociados'));
-    Json::returnJson($Json);
+        $Json->setDescription($Log->getDescription());
+        Json::returnJson($Json);
+    } else if (Auth::$status === 702) {
+        $Log->addDescription(_('El usuario no tiene grupos asociados'));
+        $Log->writeLog();
+
+        $Json->setDescription($Log->getDescription());
+
+        Json::returnJson($Json);
+    } else {
+        $Log->addDescription(_('Error interno'));
+        $Log->writeLog();
+
+        $Json->setDescription($Log->getDescription());
+        Json::returnJson($Json);
+    }
 } else { // Autentificamos por MySQL (ha fallado LDAP)
     $Log->resetDescription();
     $Log->addDescription('(MySQL)');
