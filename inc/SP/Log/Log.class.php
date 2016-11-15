@@ -132,6 +132,7 @@ class Log extends ActionLog
             || DiFactory::getDBStorage()->getDbStatus() === 1
         ) {
             debugLog('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription() . ' -- Details: ' . $this->getDetails());
+
             return false;
         }
 

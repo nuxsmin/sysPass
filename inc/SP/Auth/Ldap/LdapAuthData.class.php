@@ -29,7 +29,7 @@ namespace SP\Auth\Ldap;
  *
  * @package SP\Auth\Ldap
  */
-class LdapUserData
+class LdapAuthData
 {
     /**
      * @var string
@@ -55,6 +55,14 @@ class LdapUserData
      * @var bool
      */
     protected $inGroup = false;
+    /**
+     * @var string
+     */
+    protected $server;
+    /**
+     * @var int
+     */
+    protected $ldapStatus;
 
     /**
      * @return string
@@ -113,11 +121,11 @@ class LdapUserData
     }
 
     /**
-     * @param array $groups
+     * @param array|string $groups
      */
     public function setGroups($groups)
     {
-        $this->groups = $groups;
+        $this->groups = is_string($groups) ? [$groups] : $groups;
     }
 
     /**
@@ -150,5 +158,37 @@ class LdapUserData
     public function setInGroup($inGroup)
     {
         $this->inGroup = $inGroup;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServer()
+    {
+        return $this->server;
+    }
+
+    /**
+     * @param string $server
+     */
+    public function setServer($server)
+    {
+        $this->server = $server;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLdapStatus()
+    {
+        return $this->ldapStatus;
+    }
+
+    /**
+     * @param int $ldapStatus
+     */
+    public function setLdapStatus($ldapStatus)
+    {
+        $this->ldapStatus = $ldapStatus;
     }
 }

@@ -463,7 +463,7 @@ class ConfigData implements JsonSerializable
      */
     public function setLdapDefaultGroup($ldapDefaultGroup)
     {
-        $this->ldapDefaultGroup = intval($ldapDefaultGroup);
+        $this->ldapDefaultGroup = (int)$ldapDefaultGroup;
 
         return $this;
     }
@@ -482,7 +482,7 @@ class ConfigData implements JsonSerializable
      */
     public function setLdapDefaultProfile($ldapDefaultProfile)
     {
-        $this->ldapDefaultProfile = intval($ldapDefaultProfile);
+        $this->ldapDefaultProfile = (int)$ldapDefaultProfile;
 
         return $this;
     }
@@ -539,7 +539,7 @@ class ConfigData implements JsonSerializable
      */
     public function setProxyPort($proxyPort)
     {
-        $this->proxyPort = intval($proxyPort);
+        $this->proxyPort = (int)$proxyPort;
 
         return $this;
     }
@@ -597,7 +597,7 @@ class ConfigData implements JsonSerializable
      */
     public function setPublinksMaxViews($publinksMaxViews)
     {
-        $this->publinksMaxViews = intval($publinksMaxViews);
+        $this->publinksMaxViews = (int)$publinksMaxViews;
 
         return $this;
     }
@@ -616,7 +616,7 @@ class ConfigData implements JsonSerializable
      */
     public function setPublinksMaxTime($publinksMaxTime)
     {
-        $this->publinksMaxTime = intval($publinksMaxTime);
+        $this->publinksMaxTime = (int)$publinksMaxTime;
 
         return $this;
     }
@@ -692,7 +692,7 @@ class ConfigData implements JsonSerializable
      */
     public function setSyslogPort($syslogPort)
     {
-        $this->syslogPort = intval($syslogPort);
+        $this->syslogPort = (int)$syslogPort;
 
         return $this;
     }
@@ -787,7 +787,7 @@ class ConfigData implements JsonSerializable
      */
     public function setAccountCount($accountCount)
     {
-        $this->accountCount = intval($accountCount);
+        $this->accountCount = (int)$accountCount;
 
         return $this;
     }
@@ -995,7 +995,7 @@ class ConfigData implements JsonSerializable
      */
     public function setFilesAllowedSize($filesAllowedSize)
     {
-        $this->filesAllowedSize = intval($filesAllowedSize);
+        $this->filesAllowedSize = (int)$filesAllowedSize;
 
         return $this;
     }
@@ -1261,7 +1261,7 @@ class ConfigData implements JsonSerializable
      */
     public function setMailPort($mailPort)
     {
-        $this->mailPort = intval($mailPort);
+        $this->mailPort = (int)$mailPort;
 
         return $this;
     }
@@ -1413,7 +1413,7 @@ class ConfigData implements JsonSerializable
      */
     public function setSessionTimeout($sessionTimeout)
     {
-        $this->sessionTimeout = intval($sessionTimeout);
+        $this->sessionTimeout = (int)$sessionTimeout;
 
         return $this;
     }
@@ -1470,7 +1470,7 @@ class ConfigData implements JsonSerializable
      */
     public function setConfigVersion($configVersion)
     {
-        $this->configVersion = intval($configVersion);
+        $this->configVersion = (int)$configVersion;
 
         return $this;
     }
@@ -1557,7 +1557,7 @@ class ConfigData implements JsonSerializable
      */
     public function setConfigDate($configDate)
     {
-        $this->configDate = intval($configDate);
+        $this->configDate = (int)$configDate;
 
         return $this;
     }

@@ -73,12 +73,12 @@ sysPass.Main = function () {
     // Logging
     var log = {
         log: function (msg) {
-            if (config.DEBUG === true ) {
+            if (config.DEBUG === true) {
                 console.log(msg);
             }
         },
         info: function (msg) {
-            if (config.DEBUG === true ) {
+            if (config.DEBUG === true) {
                 console.info(msg);
             }
         },
@@ -528,20 +528,12 @@ sysPass.Main = function () {
         log.info("encryptFormValue");
 
         var curValue = $input.val();
-        var nextName = $input + "-encrypted";
-        var nextInput = $input.next(":input[name=\"" + nextName + "\"]");
 
-        if ((curValue !== "" && nextInput.attr("name") !== nextName)
-            || (curValue !== "" && nextInput.attr("name") === nextName && parseInt($input.next().val()) !== curValue.length)
-        ) {
+        if (curValue !== "" && parseInt($input.attr("data-length")) !== curValue.length) {
             var passEncrypted = config.CRYPT.encrypt(curValue);
-            $input.val(passEncrypted);
 
-            if (nextInput.length > 0) {
-                nextInput.val(passEncrypted.length);
-            } else {
-                $input.after("<input type=\"hidden\" name=\"" + nextName + "\" value=\"" + passEncrypted.length + "\" />");
-            }
+            $input.val(passEncrypted);
+            $input.attr("data-length", passEncrypted.length);
         }
     };
 
@@ -600,9 +592,9 @@ sysPass.Main = function () {
                 e.preventDefault();
 
                 var $this = $(this);
-                var $form = $this.closest("form");
-
                 encryptFormValue($this);
+
+                var $form = $this.closest("form");
                 $form.submit();
             }
         });

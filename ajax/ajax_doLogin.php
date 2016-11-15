@@ -24,7 +24,6 @@
  */
 
 use SP\Auth\Auth;
-use SP\Auth\Ldap\Ldap;
 use SP\Core\CryptMasterPass;
 use SP\Core\Init;
 use SP\Core\Language;
@@ -81,8 +80,8 @@ if ($resLdap !== false) {
     $UserData->setUserName($resLdap->getName());
     $UserData->setUserEmail($resLdap->getEmail());
 
-    $Log->addDescription('(LDAP)');
-    $Log->addDetails(_('Servidor Login'), Ldap::getLdapServer());
+    $Log->addDetails(_('Tipo'), 'LDAP');
+    $Log->addDetails(_('Servidor LDAP'), $resLdap->getServer());
 
     try {
         // Verificamos si el usuario existe en la BBDD
@@ -101,7 +100,7 @@ if ($resLdap !== false) {
         Json::returnJson($Json);
     }
 } elseif ($resLdap === false && Auth::$status !== 0) {
-    $Log->addDescription('(LDAP)');
+    $Log->addDetails(_('Tipo'), 'LDAP');
     $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
 
     if (Auth::$status === 49) {
@@ -132,7 +131,7 @@ if ($resLdap !== false) {
     }
 } else { // Autentificamos por MySQL (ha fallado LDAP)
     $Log->resetDescription();
-    $Log->addDescription('(MySQL)');
+    $Log->addDetails(_('Tipo'), 'MySQL');
 
     // Autentificamos con la BBDD
     if (!Auth::authUserMySQL($UserData->getUserLogin(), $UserData->getUserPass())) {

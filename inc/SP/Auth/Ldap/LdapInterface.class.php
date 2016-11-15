@@ -49,7 +49,7 @@ interface LdapInterface
     /**
      * Obtener los atributos del usuario.
      *
-     * @return LdapUserData
+     * @return LdapAuthData
      */
     public function getAttributes();
 }

@@ -26,7 +26,9 @@
 
 namespace SP\Auth;
 
+use SP\Auth\Ldap\LdapMads;
 use SP\Auth\Ldap\LdapStd;
+use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPassData;
@@ -56,11 +58,15 @@ class Auth
      * Autentificación de usuarios con LDAP.
      *
      * @param UserData $UserData Datos del usuario
-     * @return bool|int|Ldap\LdapUserData
+     * @return bool|int|Ldap\LdapAuthData
      */
     public static function authUserLDAP(UserData $UserData)
     {
-        $Ldap = new LdapStd();
+        if (Config::getConfig()->isLdapAds()) {
+            $Ldap = new LdapMads();
+        } else {
+            $Ldap = new LdapStd();
+        }
 
         if (!Checks::ldapIsAvailable()
             || !Checks::ldapIsEnabled()
@@ -69,20 +75,21 @@ class Auth
             return false;
         }
 
-        $LdapUserData = $Ldap->getLdapUserData();
+        $LdapAuthData = $Ldap->getLdapUserData();
+        $LdapAuthData->setServer($Ldap->getServer());
 
         // Comprobamos si la cuenta está bloqueada o expirada
-        if ($LdapUserData->getExpire() > 0) {
+        if ($LdapAuthData->getExpire() > 0) {
             self::$status = 701;
 
             return false;
-        } elseif ($LdapUserData->isInGroup()) {
+        } elseif ($LdapAuthData->isInGroup()) {
             self::$status = 702;
 
             return false;
         }
 
-        return $LdapUserData;
+        return $LdapAuthData;
     }
 
     /**
@@ -92,7 +99,7 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @param string $userLogin con el login del usuario
-     * @param string $userPass con la clave del usuario
+     * @param string $userPass  con la clave del usuario
      * @return bool
      */
     public static function authUserMySQL($userLogin, $userPass)
@@ -197,10 +204,9 @@ class Auth
      */
     public static function checkServerAuthUser($login)
     {
-        if (isset($_SERVER['PHP_AUTH_USER']) || isset($_SERVER['REMOTE_USER'])) {
-            return self::getServerAuthUser() == $login;
-        }
-        return true;
+        $authUser = self::getServerAuthUser();
+
+        return $authUser === null ?: $authUser === $login;
     }
 
     /**
@@ -210,12 +216,13 @@ class Auth
      */
     public static function getServerAuthUser()
     {
-        if (isset($_SERVER['PHP_AUTH_USER'])) {
+        if (isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) {
             return $_SERVER['PHP_AUTH_USER'];
-        } elseif (isset($_SERVER['REMOTE_USER'])) {
+        } elseif (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
             return $_SERVER['REMOTE_USER'];
         }
-        return '';
+
+        return null;
     }
 
     /**

@@ -117,6 +117,8 @@ class LdapStd extends LdapBase
         }
 
         $Log->addDescription(_('Usuario verificado en grupo'));
+        $Log->addDescription($groupDN);
+        $Log->addDescription($filter);
         $Log->writeLog();
 
         return true;

@@ -74,7 +74,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected $userLogin;
     /**
-     * @var LdapUserData
+     * @var LdapAuthData
      */
     protected $LdapUserData;
 
@@ -83,7 +83,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     public function __construct()
     {
-        $this->LdapUserData = new LdapUserData();
+        $this->LdapUserData = new LdapAuthData();
     }
 
     /**
@@ -110,6 +110,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             return false;
         }
 
+        $Log->addDescription(_('Conexión a LDAP correcta'));
         $Log->addDescription(sprintf(_('Objetos encontrados: %s'), $numResults));
         $Log->writeLog();
 
@@ -136,11 +137,11 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         // Conexión al servidor LDAP
         if (!is_resource($this->ldapHandler)) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(sprintf('%s \'%s\'', _('No es posible conectar con el servidor de LDAP'), $this->server));
+            $Log->addDescription(sprintf('%s: %s', _('No es posible conectar con el servidor de LDAP'), $this->server));
             $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
             $Log->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, _('No es posible conectar con el servidor de LDAP'));
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
         @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, 10); // Set timeout
@@ -152,7 +153,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn con el DN del usuario
+     * @param string $bindDn   con el DN del usuario
      * @param string $bindPass con la clave del usuario
      * @throws SPException
      * @return bool
@@ -171,7 +172,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $Log->addDetails('LDAP DN', $dn);
             $Log->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, _('Error al conectar (BIND)'));
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
         return true;
@@ -198,7 +199,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $Log->addDetails('LDAP FILTER', $filter);
             $Log->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, _('Error al buscar objetos en DN base'));
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
         return @ldap_count_entries($this->ldapHandler, $searchRes);
@@ -328,13 +329,14 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         if (!$this->checkParams()) {
             return false;
         }
+
         try {
             $this->userLogin = $UserData->getUserLogin();
 
             $this->connect();
             $this->bind();
             $this->getAttributes();
-            $this->bind($UserData->getUserLogin(), $UserData->getUserPass());
+            $this->bind($this->LdapUserData->getDn(), $UserData->getUserPass());
         } catch (SPException $e) {
             return false;
         }
@@ -374,7 +376,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Obtener los atributos del usuario.
      *
-     * @return LdapUserData con los atributos disponibles y sus valores
+     * @return LdapAuthData con los atributos disponibles y sus valores
      * @throws SPException
      */
     public function getAttributes()
@@ -382,31 +384,33 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $searchResults = $this->getUserAttributes();
 
         $validAttributes = [
-            'groupMembership' => 'group',
-            'memberOf' => 'group',
+            'groupmembership' => 'group',
+            'memberof' => 'group',
             'displayname' => 'name',
             'fullname' => 'name',
             'mail' => 'mail',
-            'lockoutTime' => 'expire'];
+            'lockouttime' => 'expire'];
 
-        $res = [];
-
-        debugLog($searchResults);
+        $res = [
+            'name' => '',
+            'mail' => '',
+            'group' => [],
+            'expire' => 0
+        ];
 
         foreach ($searchResults as $result) {
             if (is_array($result)) {
                 foreach ($result as $attribute => $values) {
-                    if (is_array($values) && array_key_exists($attribute, $validAttributes)) {
+                    $normalizedAttribute = strtolower($attribute);
+
+                    if (is_array($values) && array_key_exists($normalizedAttribute, $validAttributes)) {
                         $count = (int)$values['count'];
 
                         if ($count > 1) {
-                            // Almacenamos un array de valores
-                            for ($i = 0; $i <= $count - 1; $i++) {
-                                $res[$validAttributes[$attribute]][] = $values[$i];
-                            }
+                            $res[$validAttributes[$normalizedAttribute]] = $values;
                         } else {
                             // Almacenamos  1 solo valor
-                            $res[$validAttributes[$attribute]] = $values[0];
+                            $res[$validAttributes[$normalizedAttribute]] = $values[0];
                         }
                     }
                 }
@@ -487,7 +491,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     protected abstract function searchUserInGroup();
 
     /**
-     * @return LdapUserData
+     * @return LdapAuthData
      */
     public function getLdapUserData()
     {
@@ -547,6 +551,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
                 $Log->addDescription(_('Error al buscar RDN de grupo'));
                 $Log->addDetails(_('Grupo'), $filter);
                 $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
+                $Log->addDetails('LDAP FILTER', $filter);
                 $Log->writeLog();
 
                 throw new SPException(SPException::SP_ERROR, _('Error al buscar RDN de grupo'));

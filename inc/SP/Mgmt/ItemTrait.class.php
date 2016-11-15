@@ -46,7 +46,7 @@ trait ItemTrait
         /** @var ItemInterface $this */
         foreach ($this->getAll() as $item) {
             $obj = new \stdClass();
-            $obj->id = $item->getId();
+            $obj->id = (int)$item->getId();
             $obj->name = $item->getName();
 
             $items[] = $obj;

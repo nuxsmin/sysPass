@@ -194,7 +194,7 @@
                             <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                             <?php foreach ($groups as $group): ?>
                                 <option
-                                    value="<?php echo $group->id; ?>" <?php echo ($group->id === $ldapDefaultGroup) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                    value="<?php echo $group->id; ?>" <?php echo $group->id === $ldapDefaultGroup ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>

@@ -23,12 +23,13 @@
  *
  */
 
-use SP\Auth\Ldap\Ldap;
 use SP\Auth\Ldap\LdapStd;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Http\Response;
+use SP\Util\Json;
+use SP\Util\Wiki\DokuWikiApi;
 
 define('APP_ROOT', '..');
 
@@ -36,15 +37,21 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
+$Json = new JsonResponse();
+
 if (!Init::isLoggedIn()) {
-    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
+    $Json->setDescription(_('La sesión no se ha iniciado o ha caducado'));
+    $Json->setStatus(10);
+    Json::returnJson($Json);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
+    $Json->setDescription(_('CONSULTA INVÁLIDA'));
+    Json::returnJson($Json);
 }
+
 $frmType = Request::analyze('type');
 
 if ($frmType === 'ldap') {
@@ -55,7 +62,8 @@ if ($frmType === 'ldap') {
     $frmLdapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
     if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
-        Response::printJson(_('Los parámetros de LDAP no están configurados'));
+        $Json->setDescription(_('Los parámetros de LDAP no están configurados'));
+        Json::returnJson($Json);
     }
 
     $Ldap = new  LdapStd();
@@ -68,32 +76,38 @@ if ($frmType === 'ldap') {
     $resCheckLdap = $Ldap->checkConnection();
 
     if ($resCheckLdap === false) {
-        Response::printJson(_('Error de conexión a LDAP') . ';;' . _('Revise el registro de eventos para más detalles'));
+        $Json->setDescription(_('Error de conexión a LDAP'));
+        $Json->addMessage(_('Revise el registro de eventos para más detalles'));
     } else {
-        Response::printJson(_('Conexión a LDAP correcta') . ';;' . sprintf(_('Objetos encontrados: %d'), $resCheckLdap), 0);
+        $Json->setDescription(_('Conexión a LDAP correcta'));
+        $Json->addMessage(sprintf(_('Objetos encontrados: %d'), $resCheckLdap));
+        $Json->setStatus(0);
     }
+
+    Json::returnJson($Json);
 } elseif ($frmType === 'dokuwiki') {
     $frmDokuWikiUrl = Request::analyze('dokuwiki_url');
     $frmDokuWikiUser = Request::analyze('dokuwiki_user');
     $frmDokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
 
     if (!$frmDokuWikiUrl) {
-        Response::printJson(_('Los parámetros de DokuWiki no están configurados'));
+        $Json->setDescription(_('Los parámetros de DokuWiki no están configurados'));
+        Json::returnJson($Json);
     }
 
     try {
-        $DokuWikiApi = \SP\Util\Wiki\DokuWikiApi::checkConnection($frmDokuWikiUrl, $frmDokuWikiUser, $frmDokuWikiPass);
+        $DokuWikiApi = DokuWikiApi::checkConnection($frmDokuWikiUrl, $frmDokuWikiUser, $frmDokuWikiPass);
 
         $dokuWikiVersion = $DokuWikiApi->getVersion();
-        $version = (is_array($dokuWikiVersion)) ? $dokuWikiVersion[0] : _('Error');
+        $version = is_array($dokuWikiVersion) ? $dokuWikiVersion[0] : _('Error');
 
-        $data = array(
-            'description' => _('Conexión correcta'),
-            'data' => sprintf('%s: %s', _('Versión'), $version),
-        );
-
-        Response::printJson($data, 0);
+        $Json->setDescription(_('Conexión correcta'));
+        $Json->addMessage(sprintf('%s: %s', _('Versión'), $version));
+        $Json->setStatus(0);
     } catch (\SP\Core\Exceptions\SPException $e) {
-        Response::printJson(_('Error de conexión a DokuWiki') . ';;' . _('Revise el registro de eventos para más detalles'));
+        $Json->setDescription(_('Error de conexión a DokuWiki'));
+        $Json->addMessage(_('Revise el registro de eventos para más detalles'));
     }
+
+    Json::returnJson($Json);
 }
