@@ -81,7 +81,7 @@ class LdapStd extends LdapBase
         // los grupos del usuario
         if (!$this->group
             || $this->group === '*'
-            || in_array($this->LdapUserData->getGroupDn(), $this->LdapUserData->getGroups())
+            || in_array($this->LdapAuthData->getGroupDn(), $this->LdapAuthData->getGroups())
         ) {
             $Log->addDescription(_('Usuario verificado en grupo'));
             $Log->writeLog();
@@ -89,7 +89,7 @@ class LdapStd extends LdapBase
             return true;
         }
 
-        $userDN = $this->LdapUserData->getDn();
+        $userDN = $this->LdapAuthData->getDn();
         $groupName = $this->getGroupName() ?: $this->group;
 
         $filter = '(&(cn=' . $groupName . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';

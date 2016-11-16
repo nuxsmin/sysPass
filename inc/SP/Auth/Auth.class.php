@@ -26,19 +26,17 @@
 
 namespace SP\Auth;
 
+use SP\Auth\Database\Database;
 use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
-use SP\DataModel\UserPassData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Storage\DB;
 use SP\Log\Email;
 use SP\Html\Html;
 use SP\Core\Init;
 use SP\Log\Log;
-use SP\Mgmt\Users\UserMigrate;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
@@ -62,29 +60,31 @@ class Auth
      */
     public static function authUserLDAP(UserData $UserData)
     {
-        if (Config::getConfig()->isLdapAds()) {
-            $Ldap = new LdapMsAds();
-        } else {
-            $Ldap = new LdapStd();
-        }
-
         if (!Checks::ldapIsAvailable()
             || !Checks::ldapIsEnabled()
-            || !$Ldap->authenticate($UserData)
         ) {
             return false;
         }
 
-        $LdapAuthData = $Ldap->getLdapUserData();
-        $LdapAuthData->setServer($Ldap->getServer());
+        $Ldap = (Config::getConfig()->isLdapAds()) ? new LdapMsAds() : new LdapStd();
+
+        if (!$Ldap->authenticate($UserData)) {
+            return false;
+        }
+
+        $LdapAuthData = $Ldap->getLdapAuthData();
 
         // Comprobamos si la cuenta está bloqueada o expirada
         if ($LdapAuthData->getExpire() > 0) {
             self::$status = 701;
 
+            $LdapAuthData->setStatus(701);
+
             return false;
         } elseif (!$LdapAuthData->isInGroup()) {
             self::$status = 702;
+
+            $LdapAuthData->setStatus(702);
 
             return false;
         }
@@ -103,36 +103,9 @@ class Auth
      */
     public static function authUserMySQL(UserData $UserData)
     {
-        if (UserMigrate::checkUserIsMigrate($UserData->getUserLogin())) {
-            try {
-                UserMigrate::migrateUser($UserData->getUserLogin(), $UserData->getUserPass());
-            } catch (SPException $e) {
-                $Log = new Log(__FUNCTION__);
-                $Log->addDescription($e->getMessage());
-                $Log->addDetails(_('Login'), $UserData->getUserLogin());
-                $Log->writeLog();
+        $AuthDatabase = new Database();
 
-                return false;
-            }
-        }
-
-        $query = /** @lang SQL */
-            'SELECT user_pass, user_hashSalt
-            FROM usrData
-            WHERE user_login = ? 
-            AND user_isMigrate = 0 LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\UserPassData');
-        $Data->setQuery($query);
-        $Data->addParam($UserData->getUserLogin());
-
-        /** @var UserPassData $queryRes */
-        $queryRes = DB::getResults($Data);
-
-        return ($queryRes !== false
-            && $Data->getQueryNumRows() === 1
-            && $queryRes->getUserPass() === crypt($UserData->getUserPass(), $queryRes->getUserHashSalt()));
+        return $AuthDatabase->authenticate($UserData);
     }
 
     /**

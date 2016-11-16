@@ -24,12 +24,14 @@
 
 namespace SP\Auth\Ldap;
 
+use SP\Auth\AuthData;
+
 /**
  * Class LdapUserData
  *
  * @package SP\Auth\Ldap
  */
-class LdapAuthData
+class LdapAuthData extends AuthData
 {
     /**
      * @var string
@@ -39,14 +41,6 @@ class LdapAuthData
      * @var string
      */
     protected $groupDn;
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var string
-     */
-    protected $email;
     /**
      * @var array
      */
@@ -59,14 +53,6 @@ class LdapAuthData
      * @var bool
      */
     protected $inGroup = false;
-    /**
-     * @var string
-     */
-    protected $server;
-    /**
-     * @var int
-     */
-    protected $ldapStatus;
 
     /**
      * @return string
@@ -82,38 +68,6 @@ class LdapAuthData
     public function setDn($dn)
     {
         $this->dn = $dn;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
     }
 
     /**
@@ -162,38 +116,6 @@ class LdapAuthData
     public function setInGroup($inGroup)
     {
         $this->inGroup = $inGroup;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServer()
-    {
-        return $this->server;
-    }
-
-    /**
-     * @param string $server
-     */
-    public function setServer($server)
-    {
-        $this->server = $server;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLdapStatus()
-    {
-        return $this->ldapStatus;
-    }
-
-    /**
-     * @param int $ldapStatus
-     */
-    public function setLdapStatus($ldapStatus)
-    {
-        $this->ldapStatus = $ldapStatus;
     }
 
     /**

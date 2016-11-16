@@ -110,7 +110,7 @@ class LdapMsAds extends LdapBase
         // los grupos del usuario
         if (!$this->group
             || $this->group === '*'
-            || in_array($this->LdapUserData->getGroupDn(), $this->LdapUserData->getGroups())
+            || in_array($this->LdapAuthData->getGroupDn(), $this->LdapAuthData->getGroups())
         ) {
             $Log->addDescription(_('Usuario verificado en grupo'));
             $Log->writeLog();
@@ -118,7 +118,7 @@ class LdapMsAds extends LdapBase
             return true;
         }
 
-        $groupDN = $this->LdapUserData->getGroupDn();
+        $groupDN = $this->LdapAuthData->getGroupDn();
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['sAMAccountName']);
@@ -160,7 +160,7 @@ class LdapMsAds extends LdapBase
         }
 
         $Log->addDescription(_('Usuario no pertenece al grupo'));
-        $Log->addDetails(_('Usuario'), $this->LdapUserData->getDn());
+        $Log->addDetails(_('Usuario'), $this->LdapAuthData->getDn());
         $Log->addDetails(_('Grupo'), $groupDN);
 
         return false;
