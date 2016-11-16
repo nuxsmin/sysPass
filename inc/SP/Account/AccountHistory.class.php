@@ -389,8 +389,6 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function getAccountPassData()
     {
-        debugLog($this->getId());
-
         $query = /** @lang SQL */
             'SELECT acchistory_name AS account_name,'
             . 'acchistory_userId AS account_userId,'

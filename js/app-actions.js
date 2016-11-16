@@ -317,46 +317,25 @@ sysPass.Actions = function (Common) {
             log.info("checks:ldap");
 
             var $form = $($obj.data("src"));
-
-            var ldapBindPass = $form.find("[name='ldap_bindpass']").val();
-
-            var data = {
-                type: "ldap",
-                ldap_server: $form.find("[name='ldap_server']").val(),
-                ldap_base: $form.find("[name='ldap_base']").val(),
-                ldap_group: $form.find("[name='ldap_group']").val(),
-                ldap_binduser: $form.find("[name='ldap_binduser']").val(),
-                ldap_bindpass: Common.config().PK !== "" ? Common.config().CRYPT.encrypt(ldapBindPass) : ldapBindPass,
-                sk: Common.sk.get(),
-                isAjax: 1
-            };
+            $form.find("[name='sk']").val(Common.sk.get());
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.checks;
-            opts.data = data;
+            opts.data = $form.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
             });
-
         },
         wiki: function ($obj) {
             log.info("checks:wiki");
 
             var $form = $($obj.data("src"));
-
-            var data = {
-                type: "dokuwiki",
-                dokuwiki_url: $form.find("[name='dokuwiki_url']").val(),
-                dokuwiki_user: $form.find("[name='dokuwiki_user']").val(),
-                dokuwiki_pass: $form.find("[name='dokuwiki_pass']").val(),
-                isAjax: 1,
-                sk: Common.sk.get()
-            };
+            $form.find("[name='sk']").val(Common.sk.get());
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.checks;
-            opts.data = data;
+            opts.data = $form.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);

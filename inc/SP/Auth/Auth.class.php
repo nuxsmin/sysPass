@@ -26,7 +26,7 @@
 
 namespace SP\Auth;
 
-use SP\Auth\Ldap\LdapMads;
+use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
@@ -63,7 +63,7 @@ class Auth
     public static function authUserLDAP(UserData $UserData)
     {
         if (Config::getConfig()->isLdapAds()) {
-            $Ldap = new LdapMads();
+            $Ldap = new LdapMsAds();
         } else {
             $Ldap = new LdapStd();
         }
@@ -83,7 +83,7 @@ class Auth
             self::$status = 701;
 
             return false;
-        } elseif ($LdapAuthData->isInGroup()) {
+        } elseif (!$LdapAuthData->isInGroup()) {
             self::$status = 702;
 
             return false;
@@ -98,19 +98,18 @@ class Auth
      * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado desde phpPMS,
      * se ejecuta el proceso para actualizar la clave.
      *
-     * @param string $userLogin con el login del usuario
-     * @param string $userPass  con la clave del usuario
+     * @param UserData $UserData
      * @return bool
      */
-    public static function authUserMySQL($userLogin, $userPass)
+    public static function authUserMySQL(UserData $UserData)
     {
-        if (UserMigrate::checkUserIsMigrate($userLogin)) {
+        if (UserMigrate::checkUserIsMigrate($UserData->getUserLogin())) {
             try {
-                UserMigrate::migrateUser($userLogin, $userPass);
+                UserMigrate::migrateUser($UserData->getUserLogin(), $UserData->getUserPass());
             } catch (SPException $e) {
                 $Log = new Log(__FUNCTION__);
                 $Log->addDescription($e->getMessage());
-                $Log->addDetails(_('Login'), $userLogin);
+                $Log->addDetails(_('Login'), $UserData->getUserLogin());
                 $Log->writeLog();
 
                 return false;
@@ -126,14 +125,14 @@ class Auth
         $Data = new QueryData();
         $Data->setMapClassName('SP\DataModel\UserPassData');
         $Data->setQuery($query);
-        $Data->addParam($userLogin);
+        $Data->addParam($UserData->getUserLogin());
 
         /** @var UserPassData $queryRes */
         $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false
             && $Data->getQueryNumRows() === 1
-            && $queryRes->getUserPass() === crypt($userPass, $queryRes->getUserHashSalt()));
+            && $queryRes->getUserPass() === crypt($UserData->getUserPass(), $queryRes->getUserHashSalt()));
     }
 
     /**

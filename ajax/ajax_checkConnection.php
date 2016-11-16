@@ -23,6 +23,7 @@
  *
  */
 
+use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
@@ -55,23 +56,28 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 $frmType = Request::analyze('type');
 
 if ($frmType === 'ldap') {
-    $frmLdapServer = Request::analyze('ldap_server');
-    $frmLdapBase = Request::analyze('ldap_base');
-    $frmLdapGroup = Request::analyze('ldap_group');
-    $frmLdapBindUser = Request::analyze('ldap_binduser');
-    $frmLdapBindPass = Request::analyzeEncrypted('ldap_bindpass');
+    $ldapServer = Request::analyze('ldap_server');
+    $ldapBase = Request::analyze('ldap_base');
+    $ldapGroup = Request::analyze('ldap_group');
+    $ldapBindUser = Request::analyze('ldap_binduser');
+    $ldapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
-    if (!$frmLdapServer || !$frmLdapBase || !$frmLdapBindUser || !$frmLdapBindPass) {
+    if (!$ldapServer || !$ldapBase || !$ldapBindUser || !$ldapBindPass) {
         $Json->setDescription(_('Los parámetros de LDAP no están configurados'));
         Json::returnJson($Json);
     }
 
-    $Ldap = new  LdapStd();
-    $Ldap->setServer($frmLdapServer);
-    $Ldap->setSearchBase($frmLdapBase);
-    $Ldap->setGroup($frmLdapGroup);
-    $Ldap->setBindDn($frmLdapBindUser);
-    $Ldap->setBindPass($frmLdapBindPass);
+    if (Request::analyze('ldap_enabled', false, false, true)) {
+        $Ldap = new  LdapMsAds();
+    } else {
+        $Ldap = new  LdapStd();
+    }
+
+    $Ldap->setServer($ldapServer);
+    $Ldap->setSearchBase($ldapBase);
+    $Ldap->setGroup($ldapGroup);
+    $Ldap->setBindDn($ldapBindUser);
+    $Ldap->setBindPass($ldapBindPass);
 
     $resCheckLdap = $Ldap->checkConnection();
 

@@ -38,6 +38,10 @@ class LdapAuthData
     /**
      * @var string
      */
+    protected $groupDn;
+    /**
+     * @var string
+     */
     protected $name;
     /**
      * @var string
@@ -190,5 +194,21 @@ class LdapAuthData
     public function setLdapStatus($ldapStatus)
     {
         $this->ldapStatus = $ldapStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupDn()
+    {
+        return $this->groupDn;
+    }
+
+    /**
+     * @param string $groupDn
+     */
+    public function setGroupDn($groupDn)
+    {
+        $this->groupDn = $groupDn;
     }
 }

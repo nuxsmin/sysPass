@@ -254,6 +254,7 @@
             <input type="hidden" name="ldap_enabled" value="0"/>
         <?php endif; ?>
 
+        <input type="hidden" name="type" value="ldap"/>
         <input type="hidden" name="activeTab" value="<?php echo $ldap_tabIndex; ?>"/>
         <input type="hidden" name="actionId" value="<?php echo $ldap_actionId; ?>"/>
         <input type="hidden" name="sk" value="">

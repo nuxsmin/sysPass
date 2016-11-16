@@ -144,8 +144,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
-        @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, 10); // Set timeout
-        @ldap_set_option($this->ldapHandler, LDAP_OPT_PROTOCOL_VERSION, 3); // Set LDAP version
+        @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, 10);
+        @ldap_set_option($this->ldapHandler, LDAP_OPT_PROTOCOL_VERSION, 3);
 
         return true;
     }
@@ -315,7 +315,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     public function setUserLogin($userLogin)
     {
-        $this->userLogin = $userLogin;
+        $this->userLogin = strtolower($userLogin);
     }
 
     /**
@@ -331,7 +331,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         }
 
         try {
-            $this->userLogin = $UserData->getUserLogin();
+            $this->setUserLogin($UserData->getUserLogin());
 
             $this->connect();
             $this->bind();
@@ -407,6 +407,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
                         $count = (int)$values['count'];
 
                         if ($count > 1) {
+                            unset($values['count']);
+
                             $res[$validAttributes[$normalizedAttribute]] = $values;
                         } else {
                             // Almacenamos  1 solo valor
@@ -422,6 +424,14 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $this->LdapUserData->setEmail($res['mail']);
         $this->LdapUserData->setExpire($res['expire']);
         $this->LdapUserData->setGroups($res['group']);
+
+        if ($this->group !== null
+            && $this->group !== ''
+            && $this->group !== '*'
+        ) {
+            $this->LdapUserData->setGroupDn($this->searchGroupDN());
+        }
+
         $this->LdapUserData->setInGroup($this->searchUserInGroup());
 
         return $this->LdapUserData;
@@ -514,7 +524,19 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function escapeLdapDN($dn)
     {
-        $chars = ['/(,)(?!uid|cn|ou|dc)/i', '/(?<!uid|cn|ou|dc)(=)/i', '/(")/', '/(;)/', '/(>)/', '/(<)/', '/(\+)/', '/(#)/', '/\G(\s)/', '/(\s)(?=\s*$)/', '/(\/)/'];
+        $chars = [
+            '/(,)(?!uid|cn|ou|dc)/i',
+            '/(?<!uid|cn|ou|dc)(=)/i',
+            '/(")/',
+            '/(;)/',
+            '/(>)/',
+            '/(<)/',
+            '/(\+)/',
+            '/(#)/',
+            '/\G(\s)/',
+            '/(\s)(?=\s*$)/',
+            '/(\/)/'
+        ];
         return preg_replace($chars, '\\\$1', $dn);
     }
 
@@ -527,8 +549,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     protected function searchGroupDN()
     {
         $Log = new Log(__FUNCTION__);
-        $filter = $this->getGroupName() ?: $this->group;
-        $filter = '(cn=' . $filter . ')';
+        $group = $this->getGroupName() ?: $this->group;
+        $filter = '(cn=' . $group . ')';
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['dn', 'cn']);
 

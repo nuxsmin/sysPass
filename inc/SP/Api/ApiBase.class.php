@@ -103,7 +103,7 @@ abstract class ApiBase
             $UserPass = UserPass::getItem($UserData);
             
             if (!$UserData->isUserIsDisabled()
-                && Auth::authUserMySQL($UserData->getUserLogin(), $UserData->getUserPass())
+                && Auth::authUserMySQL($UserData)
                 && $UserPass->loadUserMPass()
                 && UserPass::checkUserUpdateMPass($UserData->getUserId())
             ) {

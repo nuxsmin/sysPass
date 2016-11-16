@@ -24,7 +24,7 @@
 
 namespace SP\Auth\Ldap;
 
-use Auth\Ldap\LdapBase;
+use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 
@@ -33,7 +33,7 @@ use SP\Log\Log;
  *
  * @package SP\Auth\Ldap
  */
-class LdapMads extends LdapBase
+class LdapMsAds extends LdapBase
 {
 
     /**
@@ -45,7 +45,6 @@ class LdapMads extends LdapBase
     {
         $groupDN = (!empty($this->group)) ? $this->searchGroupDN() : '*';
 
-
         return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
@@ -56,12 +55,14 @@ class LdapMads extends LdapBase
      */
     protected function pickServer()
     {
-        if (preg_match('/[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}/', $this->server)) {
-            return $this->server;
+        $server = Config::getConfig()->getLdapServer();
+
+        if (preg_match('/[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}/', $server)) {
+            return $server;
         }
 
         $serverDomain = '';
-        $serverFQDN = explode('.', $this->server);
+        $serverFQDN = explode('.', $server);
 
         for ($i = 1; $i <= count($serverFQDN) - 1; $i++) {
             $serverDomain .= $serverFQDN[$i] . '.';
@@ -71,7 +72,7 @@ class LdapMads extends LdapBase
         $records = dns_get_record($dnsServerQuery, DNS_NS);
 
         if (count($records) === 0) {
-            return $this->server;
+            return $server;
         }
 
         $ads = [];
@@ -80,7 +81,9 @@ class LdapMads extends LdapBase
             $ads[] = $record['target'];
         };
 
-        return count($ads) > 0 ? $ads[mt_rand(0, count($ads) - 1)] : $this->server;
+        $nAds = count($ads);
+
+        return $nAds > 0 ? $ads[mt_rand(0, $nAds)] : $server;
     }
 
     /**
@@ -103,13 +106,11 @@ class LdapMads extends LdapBase
     {
         $Log = new Log(__FUNCTION__);
 
-        $groupDN = $this->getGroupName() ?: $this->group;
-
         // Comprobar si está establecido el filtro de grupo o el grupo coincide con
         // los grupos del usuario
         if (!$this->group
             || $this->group === '*'
-            || in_array($groupDN, $this->LdapUserData->getGroups())
+            || in_array($this->LdapUserData->getGroupDn(), $this->LdapUserData->getGroups())
         ) {
             $Log->addDescription(_('Usuario verificado en grupo'));
             $Log->writeLog();
@@ -117,6 +118,7 @@ class LdapMads extends LdapBase
             return true;
         }
 
+        $groupDN = $this->LdapUserData->getGroupDn();
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['sAMAccountName']);
@@ -143,12 +145,17 @@ class LdapMads extends LdapBase
             throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
-        foreach (ldap_get_entries($this->ldapHandler, $searchRes) as $entry) {
-            if ($this->userLogin === $entry['samaccountname'][0]) {
-                $Log->addDescription(_('Usuario verificado en grupo'));
-                $Log->writeLog();
+        $entries = ldap_get_entries($this->ldapHandler, $searchRes);
 
-                return true;
+        foreach ($entries as $entry) {
+            if (is_array($entry)) {
+                if ($this->userLogin === strtolower($entry['samaccountname'][0])) {
+                    $Log->addDescription(_('Usuario verificado en grupo'));
+                    $Log->addDetails(_('Grupo'), $groupDN);
+                    $Log->writeLog();
+
+                    return true;
+                }
             }
         }
 
@@ -157,5 +164,17 @@ class LdapMads extends LdapBase
         $Log->addDetails(_('Grupo'), $groupDN);
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function connect()
+    {
+        parent::connect();
+
+        @ldap_set_option($this->ldapHandler, LDAP_OPT_REFERRALS, 0);
+
+        return true;
     }
 }

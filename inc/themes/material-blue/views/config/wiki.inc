@@ -261,6 +261,7 @@
             <input type="hidden" name="wiki_enabled" value="1"/>
         <?php endif; ?>
 
+        <input type="hidden" name="type" value="dokuwiki"/>
         <input type="hidden" name="activeTab" value="<?php echo $wiki_tabIndex; ?>"/>
         <input type="hidden" name="actionId" value="<?php echo $wiki_actionId; ?>"/>
         <input type="hidden" name="sk" value="">

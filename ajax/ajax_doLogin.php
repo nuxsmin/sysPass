@@ -134,7 +134,7 @@ if ($resLdap !== false) {
     $Log->addDetails(_('Tipo'), 'MySQL');
 
     // Autentificamos con la BBDD
-    if (!Auth::authUserMySQL($UserData->getUserLogin(), $UserData->getUserPass())) {
+    if (!Auth::authUserMySQL($UserData)) {
         $Log->addDescription(_('Login incorrecto'));
         $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
         $Log->writeLog();

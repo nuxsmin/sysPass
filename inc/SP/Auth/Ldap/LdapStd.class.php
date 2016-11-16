@@ -77,14 +77,11 @@ class LdapStd extends LdapBase
     {
         $Log = new Log(__FUNCTION__);
 
-        $groupDN = $this->getGroupName() ?: $this->group;
-        $userDN = $this->escapeLdapDN($this->LdapUserData->getDn());
-
         // Comprobar si está establecido el filtro de grupo o el grupo coincide con
         // los grupos del usuario
         if (!$this->group
             || $this->group === '*'
-            || in_array($groupDN, $this->LdapUserData->getGroups())
+            || in_array($this->LdapUserData->getGroupDn(), $this->LdapUserData->getGroups())
         ) {
             $Log->addDescription(_('Usuario verificado en grupo'));
             $Log->writeLog();
@@ -92,15 +89,18 @@ class LdapStd extends LdapBase
             return true;
         }
 
-        $filter = '(&(cn=' . $groupDN . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+        $userDN = $this->LdapUserData->getDn();
+        $groupName = $this->getGroupName() ?: $this->group;
+
+        $filter = '(&(cn=' . $groupName . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['member', 'uniqueMember']);
 
         if (!$searchRes) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al buscar el grupo de usuarios'));
-            $Log->addDetails(_('Grupo'), $groupDN);
-            $Log->addDetails(_('Usuario'), $this->LdapUserData->getDn());
+            $Log->addDetails(_('Grupo'), $groupName);
+            $Log->addDetails(_('Usuario'), $userDN);
             $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
             $Log->addDetails('LDAP FILTER', $filter);
             $Log->writeLog();
@@ -110,15 +110,14 @@ class LdapStd extends LdapBase
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0) {
             $Log->addDescription(_('Usuario no pertenece al grupo'));
-            $Log->addDetails(_('Usuario'), $this->LdapUserData->getDn());
-            $Log->addDetails(_('Grupo'), $groupDN);
+            $Log->addDetails(_('Usuario'), $userDN);
+            $Log->addDetails(_('Grupo'), $groupName);
 
             return false;
         }
 
         $Log->addDescription(_('Usuario verificado en grupo'));
-        $Log->addDescription($groupDN);
-        $Log->addDescription($filter);
+        $Log->addDescription($groupName);
         $Log->writeLog();
 
         return true;
