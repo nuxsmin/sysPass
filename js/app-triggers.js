@@ -95,6 +95,8 @@ sysPass.Triggers = function (Common) {
      * @param $obj
      */
     var formAction = function ($obj) {
+        log.info("formAction");
+
         var onsubmit = $obj.data("onsubmit").split("/");
         var actions = Common.appActions();
 
@@ -219,6 +221,16 @@ sysPass.Triggers = function (Common) {
             $("#boxLogout").fadeOut(1500, function () {
                 location.href = Common.config().APP_ROOT + "/index.php";
             });
+        },
+        twofa: function () {
+            log.info("views:twofa");
+
+            bodyHooks();
+        },
+        passreset: function () {
+            log.info("views:passreset");
+
+            bodyHooks();
         },
         footer: function () {
             log.info("views:footer");

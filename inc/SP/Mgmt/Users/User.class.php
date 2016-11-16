@@ -372,7 +372,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @param $login string
-     * @return $this
+     * @return UserData
      * @throws SPException
      */
     public function getByLogin($login)
@@ -413,8 +413,6 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_ERROR, _('Error al obtener los datos del usuario'));
         }
 
-        $this->itemData = $queryRes;
-
-        return $this;
+        return $queryRes;
     }
 }

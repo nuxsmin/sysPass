@@ -59,7 +59,7 @@ if ($userLogin && $userEmail) {
     $Log = new Log(_('Recuperación de Clave'));
     $Log->addDetailsHtml(_('Solicitado para'), sprintf('%s (%s)', $userLogin, $userEmail));
 
-    $UserData = User::getItem()->getByLogin($userLogin)->getItemData();
+    $UserData = User::getItem()->getByLogin($userLogin);
 
     if ($UserData->getUserEmail() === $userEmail
         && Auth::mailPassRecover($UserData)

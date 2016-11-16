@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Controller\LoginController;
-use SP\Http\Request;
+namespace SP\Core\Exceptions;
 
-define('APP_ROOT', '..');
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+/**
+ * Class AuthException
+ *
+ * @package SP\Core\Exceptions
+ */
+class AuthException extends SPException
+{
 
-Request::checkReferer('POST');
-
-if (!Request::analyze('login', false)) {
-    return;
 }
-
-$Controller = new LoginController();
-$Controller->doLogin();

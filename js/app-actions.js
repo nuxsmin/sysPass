@@ -166,6 +166,8 @@ sysPass.Actions = function (Common) {
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
+
+                doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
             });
         },
         password: function ($obj) {
@@ -263,7 +265,7 @@ sysPass.Actions = function (Common) {
                 if (json.status == 0) {
                     setTimeout(function () {
                         Common.redirect("index.php");
-                    }, 2000);
+                    }, 1000);
                 }
             });
         },
@@ -280,7 +282,7 @@ sysPass.Actions = function (Common) {
                 if (json.status == 0) {
                     setTimeout(function () {
                         Common.redirect("index.php");
-                    }, 2000);
+                    }, 1000);
                 }
             });
         },

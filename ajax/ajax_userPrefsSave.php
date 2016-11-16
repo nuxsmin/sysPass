@@ -66,7 +66,8 @@ $actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);
 
 if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
-    $UserPreferencesData = new UserPreferencesData();
+    $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
+
     $UserPreferencesData->setUserId($itemId);
     $UserPreferencesData->setLang(Request::analyze('userlang'));
     $UserPreferencesData->setTheme(Request::analyze('usertheme', 'material-blue'));
@@ -113,8 +114,12 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
 
     try {
         $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
+        $UserPreferencesData->setUserId($itemId);
         $UserPreferencesData->setUse2Fa(Util::boolval($twoFaEnabled));
         UserPreferences::getItem($UserPreferencesData)->update();
+
+        // Actualizar las preferencias en la sesión
+        Session::setUserPreferences($UserPreferencesData);
 
         $Json->setStatus(0);
         $Json->setDescription(_('Preferencias actualizadas'));

@@ -44,40 +44,6 @@ class Config
     private static $Config;
 
     /**
-     * Realizar un backup de la configuración en la BD
-     */
-    private static function backupToDB()
-    {
-        $config = json_encode(self::getConfig());
-        ConfigDB::setValue('config_backup', $config);
-        ConfigDB::setValue('config_backupdate', time());
-    }
-
-    /**
-     * Restaurar la configuración desde la BD
-     *
-     * @return array
-     */
-    private static function restoreBackupFromDB()
-    {
-        $configBackup = ConfigDB::getValue('config_backup');
-
-        return json_decode($configBackup);
-    }
-
-    /**
-     * Obtener la configuración o devolver una nueva
-     *
-     * @return ConfigData
-     */
-    public static function getConfig()
-    {
-        $Config = Session::getConfig();
-
-        return is_object($Config) ? $Config : self::arrayMapper();
-    }
-
-    /**
      * Cargar la configuración desde el archivo
      */
     public static function loadConfig()
@@ -91,6 +57,39 @@ class Config
             Session::setConfig(self::arrayMapper());
             Session::setConfigTime(time());
         }
+    }
+
+    /**
+     * Mapear el array de elementos de configuración con las propieades de la
+     * clase ConfigData
+     *
+     * @return ConfigData
+     */
+    private static function arrayMapper()
+    {
+        if (is_object(self::$Config)) {
+            return self::$Config;
+        }
+
+        self::$Config = new ConfigData();
+
+        if (!file_exists(XML_CONFIG_FILE)) {
+            return self::$Config;
+        }
+
+        try {
+            $items = DiFactory::getConfigStorage()->load('config')->getItems();
+            $Reflection = new ReflectionObject(self::$Config);
+
+            foreach ($Reflection->getProperties() as $property) {
+                $property->setAccessible(true);
+                $property->setValue(self::$Config, @$items[$property->getName()]);
+                $property->setAccessible(false);
+            }
+        } catch (\Exception $e) {
+        }
+
+        return self::$Config;
     }
 
     /**
@@ -113,34 +112,36 @@ class Config
     }
 
     /**
-     * Mapear el array de elementos de configuración con las propieades de la
-     * clase ConfigData
+     * Obtener la configuración o devolver una nueva
      *
      * @return ConfigData
      */
-    private static function arrayMapper()
+    public static function getConfig()
     {
-        if (is_object(self::$Config)){
-            return self::$Config;
-        }
+        $Config = Session::getConfig();
 
-        self::$Config = new ConfigData();
+        return is_object($Config) ? $Config : self::arrayMapper();
+    }
 
-        if (!file_exists(XML_CONFIG_FILE)){
-            return self::$Config;
-        }
+    /**
+     * Realizar un backup de la configuración en la BD
+     */
+    private static function backupToDB()
+    {
+        $config = json_encode(self::getConfig());
+        ConfigDB::setValue('config_backup', $config, true, true);
+        ConfigDB::setValue('config_backupdate', time());
+    }
 
-        try {
-            $items = DiFactory::getConfigStorage()->load('config')->getItems();
-            $Reflection = new ReflectionObject(self::$Config);
+    /**
+     * Restaurar la configuración desde la BD
+     *
+     * @return array
+     */
+    private static function restoreBackupFromDB()
+    {
+        $configBackup = ConfigDB::getValue('config_backup');
 
-            foreach ($Reflection->getProperties() as $property) {
-                $property->setAccessible(true);
-                $property->setValue(self::$Config, @$items[$property->getName()]);
-                $property->setAccessible(false);
-            }
-        } catch (\Exception $e) {}
-
-        return self::$Config;
+        return json_decode($configBackup);
     }
 }

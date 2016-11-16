@@ -102,12 +102,20 @@ sysPass.Main = function () {
     var setupCallbacks = function () {
         log.info("setupCallbacks");
 
-        if ($("#boxLogin").length > 0) {
-            appTriggers.views.login();
-        }
+        var page = $("#container").data("page");
 
-        if ($("#searchbox").length > 0) {
-            appTriggers.views.search();
+        switch (page) {
+            case "login":
+                appTriggers.views.login();
+                break;
+            case "main":
+                break;
+            case "2fa":
+                appTriggers.views.twofa();
+                break;
+            case "passreset":
+                appTriggers.views.passreset();
+                break;
         }
 
         if ($("footer").length > 0) {
@@ -240,11 +248,11 @@ sysPass.Main = function () {
     var sk = {
         get: function () {
             log.info("sk:get");
-            return $("#content").attr("data-sk");
+            return $("#container").attr("data-sk");
         },
         set: function (sk) {
             log.info("sk:set");
-            $("#content").attr("data-sk", sk);
+            $("#container").attr("data-sk", sk);
         }
     };
 

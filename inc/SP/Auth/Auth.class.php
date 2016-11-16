@@ -52,11 +52,16 @@ class Auth
     public static $status = 0;
     public static $description;
 
+    public static function doAuth()
+    {
+
+    }
+
     /**
      * Autentificación de usuarios con LDAP.
      *
      * @param UserData $UserData Datos del usuario
-     * @return bool|int|Ldap\LdapAuthData
+     * @return bool|Ldap\LdapAuthData
      */
     public static function authUserLDAP(UserData $UserData)
     {
@@ -66,7 +71,7 @@ class Auth
             return false;
         }
 
-        $Ldap = (Config::getConfig()->isLdapAds()) ? new LdapMsAds() : new LdapStd();
+        $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
         if (!$Ldap->authenticate($UserData)) {
             return false;

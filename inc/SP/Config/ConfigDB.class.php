@@ -70,10 +70,6 @@ class ConfigDB implements ConfigInterface
         self::$cache = $queryRes;
 
         return $queryRes;
-
-//        foreach ($queryRes as $config) {
-//            self::$cache[$config->config_parameter] = $config->config_value;
-//        }
     }
 
     /**
@@ -119,9 +115,10 @@ class ConfigDB implements ConfigInterface
      * @param string $param con el parámetro a guardar
      * @param string $value con el valor a guardar
      * @param bool   $email enviar email?
+     * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
      */
-    public static function setValue($param, $value, $email = true)
+    public static function setValue($param, $value, $email = true, $hideValue = false)
     {
         $query = /** @lang SQL */
             'INSERT INTO config '
@@ -142,7 +139,11 @@ class ConfigDB implements ConfigInterface
         $log = new Log(_('Configuración'));
         $log->addDescription(_('Modificar configuración'));
         $log->addDetails(_('Parámetro'), $param);
-        $log->addDetails(_('Valor'), $value);
+
+        if ($hideValue === false) {
+            $log->addDetails(_('Valor'), $value);
+        }
+
         $log->writeLog();
 
         if ($email === true) {

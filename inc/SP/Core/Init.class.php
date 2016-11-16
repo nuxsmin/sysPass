@@ -666,7 +666,7 @@ class Init
         }
 
         $action = Request::analyze('a');
-        $Controller = new MainController();
+        $Controller = new MainController(null, $action);
 
         switch ($action) {
             case 'passreset':

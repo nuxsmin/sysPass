@@ -179,7 +179,7 @@ class UserPass extends UserBase
 
         if ($userMPass === false
             || $configHashMPass === false
-            || is_null($configHashMPass)
+            || null === $configHashMPass
         ) {
             return false;
         }
@@ -204,7 +204,6 @@ class UserPass extends UserBase
             'SELECT user_mPass, user_mIV FROM usrData WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserId());
 
@@ -215,7 +214,7 @@ class UserPass extends UserBase
             return false;
         }
 
-        return Crypt::getDecrypt($queryRes->getUserMPass(), $queryRes->getUserMIV(), $this->getCypherPass());
+        return Crypt::getDecrypt($queryRes->user_mPass, $queryRes->user_mIV, $this->getCypherPass());
 //      return ($showPass === true) ? $clearMasterPass : SessionUtil::saveSessionMPass($clearMasterPass);
     }
 

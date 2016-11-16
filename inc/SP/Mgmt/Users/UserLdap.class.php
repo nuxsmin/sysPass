@@ -102,12 +102,12 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam(_('Usuario de LDAP'));
         $Data->addParam($groupId);
         $Data->addParam($profileId);
-        $Data->addParam(intval($this->itemData->isUserIsAdminApp()));
-        $Data->addParam(intval($this->itemData->isUserIsAdminAcc()));
-        $Data->addParam(intval($this->itemData->isUserIsDisabled()));
-        $Data->addParam(intval($this->itemData->isUserIsChangePass()));
-        $Data->addParam($passdata['pass'], 'pass');
-        $Data->addParam($passdata['salt'], 'salt');
+        $Data->addParam((int)$this->itemData->isUserIsAdminApp());
+        $Data->addParam((int)$this->itemData->isUserIsAdminAcc());
+        $Data->addParam((int)$this->itemData->isUserIsDisabled());
+        $Data->addParam((int)$this->itemData->isUserIsChangePass());
+        $Data->addParam($passdata['pass']);
+        $Data->addParam($passdata['salt']);
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al guardar los datos de LDAP'));

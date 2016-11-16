@@ -13,6 +13,8 @@
         <?php elseif ($isInstalled === false): ?>
             sysPassApp.triggers().views.install();
         <?php endif; ?>
+
+        sysPassApp.sk.set("<?php echo $sk; ?>");
     });
 </script>
 

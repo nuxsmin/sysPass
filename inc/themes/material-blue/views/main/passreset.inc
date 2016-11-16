@@ -44,7 +44,7 @@
                 <input type="hidden" name="hash" value="<?php echo $hash; ?>">
             <?php endif; ?>
             <input type="hidden" name="isAjax" value="1">
-            <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+            <input type="hidden" name="sk" value="">
         </fieldset>
 
         <div class="buttons">
@@ -72,6 +72,8 @@
 </div>
 
 <script>
+    sysPassApp.sk.set("<?php echo $sk; ?>");
+
     $('#btnBack').click(function () {
         window.history.back();
     });

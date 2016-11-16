@@ -8,6 +8,7 @@
 
     <form method="post" name="frmSecurity" id="frmSecurity" class="form-action"
           data-onsubmit="user/saveSecurity"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY; ?>"
           data-activetab="<?php echo $security_tabIndex; ?>">
         <table id="tblSite" class="data tblConfig round">
             <tr>

@@ -41,16 +41,18 @@ interface ConfigInterface
      * @param string $default El valor por defecto
      * @return string el valor o $default
      */
-    static function getValue($param, $default = null);
+    public static function getValue($param, $default = null);
 
     /**
      * Guardar un parámetro de configuración
      *
      * @param string $param El parámetro a guardar
      * @param string $value El valor a guardar
+     * @param bool   $email enviar email?
+     * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
      */
-    static function setValue($param, $value);
+    public static function setValue($param, $value, $email = true, $hideValue = false);
 
     /**
      * Elimina un parámetro de la configuración.
@@ -58,7 +60,7 @@ interface ConfigInterface
      * @param string $param clave
      * @return bool
      */
-    static function deleteParam($param);
+    public static function deleteParam($param);
 
     /**
      * Actualizar el array de parámetros de configuración
@@ -66,19 +68,19 @@ interface ConfigInterface
      * @param $param   string El parámetro a actualizar
      * @param $value   mixed El valor a actualizar
      */
-    static function setCacheConfigValue($param, $value);
+    public static function setCacheConfigValue($param, $value);
 
     /**
      * Obtener un parámetro del array de parámetros de configuración
      *
      * @param $param   string El parámetro a devolver
      */
-    static function getCacheConfigValue($param);
+    public static function getCacheConfigValue($param);
 
     /**
      * Obtener un array con la configuración almacenada.
      *
      * @return bool
      */
-    static function readConfig();
+    public static function readConfig();
 }

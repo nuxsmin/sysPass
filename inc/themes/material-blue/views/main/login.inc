@@ -75,9 +75,9 @@
 
         <!-- Close boxData -->
         <?php if ($mailEnabled): ?>
-        <div id="boxActions">
-            <a href="../../../../../index.php?a=passreset"><?php echo _('¿Olvidó su clave?'); ?></a>
-        </div>
+            <div id="boxActions">
+                <a href="index.php?a=passreset"><?php echo _('¿Olvidó su clave?'); ?></a>
+            </div>
         <?php endif; ?>
     <?php else: ?>
         <div id="boxLogout" class="round5"><?php echo _('Sesión finalizada'); ?></div>
@@ -98,7 +98,7 @@
     <div id="whatsNew" class="round5 shadow">
         <ul>
             <?php foreach ($newFeatures as $feature): ?>
-                <?php echo '<li>', $feature, '</li>'; ?>
+                <li><?php echo $feature; ?></li>
             <?php endforeach; ?>
         </ul>
     </div>
