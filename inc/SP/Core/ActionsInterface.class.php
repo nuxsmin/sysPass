@@ -126,6 +126,7 @@ interface ActionsInterface
     const ACTION_USR_PREFERENCES = 740;
     const ACTION_USR_PREFERENCES_GENERAL = 741;
     const ACTION_USR_PREFERENCES_SECURITY = 742;
+    const ACTION_USR_SYNC_LDAP = 751;
     const ACTION_CFG = 80;
     const ACTION_CFG_GENERAL = 81;
     const ACTION_CFG_ENCRYPTION = 82;

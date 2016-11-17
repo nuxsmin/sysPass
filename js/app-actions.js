@@ -414,6 +414,21 @@ sysPass.Actions = function (Common) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
+        },
+        ldapSync: function ($obj) {
+            log.info("config:ldapSync");
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.config.save;
+            opts.data = {
+                actionId: $obj.data("action-id"),
+                sk: Common.sk.get(),
+                isAjax: 1
+            };
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+            });
         }
     };
 

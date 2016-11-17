@@ -27,7 +27,6 @@ namespace SP\Mgmt\Users;
 
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
@@ -212,6 +211,16 @@ class UserLdap extends UserBase implements ItemInterface
      */
     public function checkDuplicatedOnAdd()
     {
-        // TODO: Implement checkDuplicatedOnAdd() method.
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 }
