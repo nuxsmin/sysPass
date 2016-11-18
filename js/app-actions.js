@@ -414,21 +414,6 @@ sysPass.Actions = function (Common) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
-        },
-        ldapSync: function ($obj) {
-            log.info("config:ldapSync");
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.config.save;
-            opts.data = {
-                actionId: $obj.data("action-id"),
-                sk: Common.sk.get(),
-                isAjax: 1
-            };
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-            });
         }
     };
 
@@ -946,6 +931,32 @@ sysPass.Actions = function (Common) {
             $form.find("[name='sk']").val(Common.sk.get());
 
             appMgmt.search($form);
+        },
+        ldapSync: function ($obj) {
+            log.info("appMgmt:ldapSync");
+
+            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[57] + "</p></div>";
+
+            alertify
+                .okBtn(Common.config().LANG[43])
+                .cancelBtn(Common.config().LANG[44])
+                .confirm(atext, function (e) {
+                    var opts = Common.appRequests().getRequestOpts();
+                    opts.url = ajaxUrl.appMgmt.save;
+                    opts.data = {
+                        actionId: $obj.data("action-id"),
+                        sk: Common.sk.get(),
+                        isAjax: 1
+                    };
+
+                    Common.appRequests().getActionCall(opts, function (json) {
+                        Common.msg.out(json);
+                    });
+                }, function (e) {
+                    e.preventDefault();
+
+                    alertify.error(Common.config().LANG[44]);
+                });
         }
     };
 

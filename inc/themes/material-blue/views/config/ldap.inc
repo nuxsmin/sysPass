@@ -263,9 +263,9 @@
 
     <div class="action">
         <button type="button" class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                data-onclick="config/ldapSync"
+                data-onclick="appMgmt/ldapSync"
                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_SYNC_LDAP; ?>"
-                title="<?php echo _('Sincronizar usuarios de LDAP'); ?>">
+                title="<?php echo _('Importar usuarios de LDAP'); ?>">
             <i class="material-icons">get_app</i>
         </button>
         <button type="button" class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"

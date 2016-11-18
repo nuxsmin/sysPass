@@ -53,6 +53,7 @@ use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserLdapSync;
 use SP\Util\Json;
 
 /**
@@ -190,6 +191,9 @@ class ItemActionController
                 case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
                 case ActionsInterface::ACTION_ACC_FAVORITES_DELETE:
                     $this->favoriteAction();
+                    break;
+                case ActionsInterface::ACTION_USR_SYNC_LDAP:
+                    $this->ldapImportAction();
                     break;
                 default:
                     $this->invalidAction();
@@ -644,5 +648,22 @@ class ItemActionController
         }
 
         $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * Importar usuarios de LDAP
+     */
+    private function ldapImportAction()
+    {
+        if (UserLdapSync::run()) {
+            $this->jsonResponse->setStatus(0);
+            $this->jsonResponse->setDescription(_('Importación de usuarios de LDAP realizada'));
+            $this->jsonResponse->addMessage(sprintf(_('Usuarios importados %d/%d'), UserLdapSync::$syncedObjects, UserLdapSync::$totalObjects));
+            $this->jsonResponse->addMessage(sprintf(_('Errores: %d'), UserLdapSync::$errorObjects));
+        } else {
+            $this->jsonResponse->setDescription(_('Error al importar usuarios de LDAP'));
+        }
+
+        $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
     }
 }

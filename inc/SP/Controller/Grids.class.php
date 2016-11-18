@@ -32,6 +32,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
 use SP\Core\UI\ThemeIconsBase;
+use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
@@ -446,6 +447,17 @@ class Grids implements ActionsInterface
         $GridActionEditPass->setOnClickFunction('appMgmt/show');
         $GridActionEditPass->setFilterRowSource('user_isLdap');
 
+        $SyncLdapIcon = new FontIcon('get_app');
+
+        $GridActionLdapSync = new DataGridAction();
+        $GridActionLdapSync->setId(self::ACTION_USR_SYNC_LDAP);
+        $GridActionLdapSync->setType(DataGridActionType::NEW_ITEM);
+        $GridActionLdapSync->setName(_('Importar usuarios de LDAP'));
+        $GridActionLdapSync->setTitle(_('Importar usuarios de LDAP'));
+        $GridActionLdapSync->setIcon($SyncLdapIcon);
+        $GridActionLdapSync->setSkip(true);
+        $GridActionLdapSync->setOnClickFunction('appMgmt/ldapSync');
+
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(_('Nombre'));
         $GridHeaders->addHeader(_('Login'));
@@ -470,6 +482,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setDataActions($GridActionSearch);
         $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionLdapSync);
         $Grid->setDataActions($GridActionView);
         $Grid->setDataActions($GridActionEdit);
         $Grid->setDataActions($GridActionEditPass);

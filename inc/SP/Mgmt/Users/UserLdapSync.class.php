@@ -12,6 +12,19 @@ use SP\Util\Util;
 class UserLdapSync
 {
     /**
+     * @var int
+     */
+    public static $totalObjects = 0;
+    /**
+     * @var int
+     */
+    public static $syncedObjects = 0;
+    /**
+     * @var int
+     */
+    public static $errorObjects = 0;
+
+    /**
      * Sincronizar usuarios de LDAP
      *
      * @return bool
@@ -23,11 +36,11 @@ class UserLdapSync
         $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
         $ldapObjects = $Ldap->findObjects();
-        $numObjects = count($ldapObjects);
+        self::$totalObjects = count($ldapObjects);
 
-        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), $numObjects));
+        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), self::$totalObjects));
 
-        if ($numObjects > 0) {
+        if (self::$totalObjects > 0) {
             $UserData = new UserData();
 
             foreach ($ldapObjects as $result) {
@@ -48,7 +61,7 @@ class UserLdapSync
                                 $User->setUserLogin(strtolower($value));
                                 break;
                             case 'mail':
-                                $User->setUserEmail($value);
+                                $User->setUserEmail(strtolower($value));
                                 break;
                         }
                     }
@@ -58,7 +71,10 @@ class UserLdapSync
                     try {
                         $Log->addDescription(sprintf(_('Creando usuario \'%s (%s)\''), $User->getUserName(), $User->getUserLogin()));
                         UserLdap::getItem($User)->add();
+
+                        self::$syncedObjects++;
                     } catch (SPException $e) {
+                        self::$errorObjects++;
                         $Log->addDescription($e->getMessage());
                     }
                 }

@@ -457,16 +457,6 @@ if ($actionId === ActionsInterface::ACTION_CFG_GENERAL
 
     $Json->setDescription($Log->getDescription());
     Json::returnJson($Json);
-} elseif ($actionId === ActionsInterface::ACTION_USR_SYNC_LDAP) {
-    if (UserLdapSync::run()) {
-        $Json->setStatus(0);
-        $Json->setDescription(_('Sincronización de usuarios de LDAP realizada'));
-    } else {
-        $Json->setDescription(_('Error al sincronizar usuarios de LDAP'));
-    }
-
-    $Json->addMessage(_('Revise el registro de eventos para más detalles'));
-    Json::returnJson($Json);
 } else {
     $Json->setDescription(_('Acción Inválida'));
     Json::returnJson($Json);
