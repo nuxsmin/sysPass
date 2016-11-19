@@ -34,7 +34,6 @@ use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
-use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\CustomerSearch;
@@ -53,28 +52,14 @@ use SP\Util\Json;
  *
  * @package SP\Controller
  */
-class ItemSearchController extends GridItemsSearchController implements ActionsInterface
+class ItemSearchController extends GridItemsSearchController implements ActionsInterface, ItemControllerInterface
 {
-    /**
-     * @var int
-     */
-    protected $actionId;
-    /**
-     * @var int
-     */
-    protected $activeTab;
-    /**
-     * @var JsonResponse
-     */
-    protected $jsonResponse;
+    use RequestControllerTrait;
+
     /**
      * @var ItemSearchData
      */
     protected $ItemSearchData;
-    /**
-     * @var string
-     */
-    protected $sk;
 
     /**
      * Constructor
@@ -85,41 +70,10 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
     {
         parent::__construct($template);
 
-        $this->jsonResponse = new JsonResponse();
         $this->ItemSearchData = new ItemSearchData();
 
-        $this->analyzeRequest();
-        $this->preActionChecks();
-    }
-
-    /**
-     * Analizar la petición HTTP y establecer las propiedades del elemento
-     */
-    protected function analyzeRequest()
-    {
-        $this->sk = Request::analyze('sk');
-        $this->actionId = Request::analyze('actionId', 0);
-        $this->activeTab = Request::analyze('activeTab', 0);
-
-        $this->ItemSearchData->setSeachString(Request::analyze('search'));
-        $this->ItemSearchData->setLimitStart(Request::analyze('start', 0));
-        $this->ItemSearchData->setLimitCount(Request::analyze('count', Config::getConfig()->getAccountCount()));
-    }
-
-    /**
-     * Comprobaciones antes de realizar una acción
-     */
-    protected function preActionChecks()
-    {
-        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->actionId) {
-            $this->invalidAction();
-        }
-    }
-
-    protected function invalidAction()
-    {
-        $this->jsonResponse->setDescription(_('Acción Inválida'));
-        Json::returnJson($this->jsonResponse);
+        $this->init();
+        $this->setItemSearchData();
     }
 
     /**
@@ -476,5 +430,15 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('actionId', self::ACTION_MGM);
 
         $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * Establecer las propiedades de búsqueda
+     */
+    protected function setItemSearchData()
+    {
+        $this->ItemSearchData->setSeachString(Request::analyze('search'));
+        $this->ItemSearchData->setLimitStart(Request::analyze('start', 0));
+        $this->ItemSearchData->setLimitCount(Request::analyze('count', Config::getConfig()->getAccountCount()));
     }
 }

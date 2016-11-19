@@ -36,7 +36,7 @@ class UserLdapSync
         $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
         $ldapObjects = $Ldap->findObjects();
-        self::$totalObjects = count($ldapObjects);
+        self::$totalObjects = (int)$ldapObjects['count'];
 
         $Log->addDescription(sprintf(_('Objetos encontrados: %s'), self::$totalObjects));
 
@@ -58,6 +58,7 @@ class UserLdapSync
                                 break;
                             case 'login':
                             case 'samaccountname':
+                            case 'uid':
                                 $User->setUserLogin(strtolower($value));
                                 break;
                             case 'mail':

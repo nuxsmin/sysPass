@@ -40,7 +40,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Atributos de búsqueda
      */
-    const SEARCH_ATTRIBUTES = ['dn', 'displayname', 'samaccountname', 'mail', 'memberof', 'lockouttime', 'fullname', 'groupmembership'];
+    const SEARCH_ATTRIBUTES = ['dn', 'displayname', 'samaccountname', 'mail', 'memberof', 'lockouttime', 'fullname', 'groupmembership', 'uid'];
     /**
      * @var resource
      */

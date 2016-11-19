@@ -61,24 +61,10 @@ use SP\Util\Json;
  *
  * @package SP\Controller
  */
-class ItemActionController
+class ItemActionController implements ItemControllerInterface
 {
-    /**
-     * @var int
-     */
-    protected $actionId;
-    /**
-     * @var int
-     */
-    protected $itemId;
-    /**
-     * @var string
-     */
-    protected $sk;
-    /**
-     * @var JsonResponse
-     */
-    protected $jsonResponse;
+    use RequestControllerTrait;
+
     /**
      * @var CustomFieldData
      */
@@ -89,36 +75,7 @@ class ItemActionController
      */
     public function __construct()
     {
-        $this->jsonResponse = new JsonResponse();
-
-        $this->analyzeRequest();
-        $this->preActionChecks();
-    }
-
-    /**
-     * Analizar la petición HTTP y establecer las propiedades del elemento
-     */
-    protected function analyzeRequest()
-    {
-        $this->sk = Request::analyze('sk', false);
-        $this->itemId = Request::analyze('itemId', 0);
-        $this->actionId = Request::analyze('actionId', 0);
-    }
-
-    /**
-     * Comprobaciones antes de realizar una acción
-     */
-    protected function preActionChecks()
-    {
-        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->actionId) {
-            $this->invalidAction();
-        }
-    }
-
-    protected function invalidAction()
-    {
-        $this->jsonResponse->setDescription(_('Acción Inválida'));
-        Json::returnJson($this->jsonResponse);
+        $this->init();
     }
 
     /**

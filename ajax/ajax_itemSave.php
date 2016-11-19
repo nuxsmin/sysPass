@@ -25,18 +25,12 @@
 
 use SP\Controller\ItemActionController;
 use SP\Http\Request;
-use SP\Core\SessionUtil;
-use SP\Http\Response;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('POST');
-
-if (!\SP\Core\Init::isLoggedIn()) {
-    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
-}
 
 $ItemAction = new ItemActionController();
 $ItemAction->doAction();

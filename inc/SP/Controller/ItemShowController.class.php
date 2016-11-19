@@ -29,6 +29,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
+use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -50,6 +51,7 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupUsers;
+use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
@@ -58,38 +60,21 @@ use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
 use SP\Util\Checks;
 use SP\Util\Json;
+use SP\Util\Util;
 
 /**
  * Class AccItemMgmt
  *
  * @package SP\Controller
  */
-class ItemShowController extends ControllerBase implements ActionsInterface
+class ItemShowController extends ControllerBase implements ActionsInterface, ItemControllerInterface
 {
+    use RequestControllerTrait;
+
     /**
      * Máximo numero de acciones antes de agrupar
      */
     const MAX_NUM_ACTIONS = 3;
-    /**
-     * @var int
-     */
-    protected $actionId;
-    /**
-     * @var int
-     */
-    protected $itemId;
-    /**
-     * @var int
-     */
-    protected $activeTab;
-    /**
-     * @var JsonResponse
-     */
-    protected $jsonResponse;
-    /**
-     * @var string
-     */
-    protected $sk;
     /**
      * @var int
      */
@@ -104,10 +89,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface
     {
         parent::__construct($template);
 
-        $this->jsonResponse = new JsonResponse();
-
-        $this->analyzeRequest();
-        $this->preActionChecks();
+        $this->init();
 
         $this->view->assign('isDemo', Checks::demoIsEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
@@ -118,30 +100,15 @@ class ItemShowController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Analizar la petición HTTP y establecer las propiedades del elemento
+     * Comprobar si la sesión está activa
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function analyzeRequest()
+    protected function checkSession()
     {
-        $this->sk = Request::analyze('sk', false);
-        $this->itemId = Request::analyze('itemId', 0);
-        $this->actionId = Request::analyze('actionId', 0);
-        $this->activeTab = Request::analyze('activeTab', 0);
-    }
-
-    /**
-     * Comprobaciones antes de realizar una acción
-     */
-    protected function preActionChecks()
-    {
-        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->actionId) {
-            $this->invalidAction();
+        if (!Init::isLoggedIn()) {
+            Util::logout();
         }
-    }
-
-    protected function invalidAction()
-    {
-        $this->jsonResponse->setDescription(_('Acción Inválida'));
-        Json::returnJson($this->jsonResponse);
     }
 
     /**
