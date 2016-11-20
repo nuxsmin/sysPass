@@ -28,6 +28,7 @@ namespace SP\Import;
 use SimpleXMLElement;
 use SP\DataModel\AccountData;
 use SP\Core\Crypt;
+use SP\DataModel\CategoryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -47,11 +48,12 @@ class KeepassImport extends XmlImportBase
 
     /**
      * Iniciar la importación desde KeePass
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function doImport()
     {
-        $this->setCustomerName('KeePass');
-        $this->customerId = $this->addCustomer();
+        $this->customerId = $this->addCustomer('KeePass');
 
         $this->processCategories($this->xml->Root->Group);
     }
@@ -60,6 +62,7 @@ class KeepassImport extends XmlImportBase
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
      * @param SimpleXMLElement $xml El objeto XML del archivo de KeePass
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processCategories(SimpleXMLElement $xml)
     {
@@ -69,8 +72,7 @@ class KeepassImport extends XmlImportBase
                     // Analizar grupo
                     if ($node->Group->Entry) {
                         // Crear la categoría
-                        $this->setCategoryName($group->Name);
-                        $this->categoryId = $this->addCategory();
+                        $this->categoryId = $this->addCategory($group->Name, 'KeePass');
 
                         // Crear cuentas
                         $this->processAccounts($group->Entry);
@@ -85,8 +87,7 @@ class KeepassImport extends XmlImportBase
 
             if ($node->Entry) {
                 // Crear la categoría
-                $this->setCategoryName($node->Name);
-                $this->categoryId = $this->addCategory();
+                $this->categoryId = $this->addCategory($node->Name, 'KeePass');
 
                 // Crear cuentas
                 $this->processAccounts($node->Entry);
@@ -98,6 +99,7 @@ class KeepassImport extends XmlImportBase
      * Obtener los datos de las entradas de KeePass.
      *
      * @param SimpleXMLElement $entries El objeto XML con las entradas
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processAccounts(SimpleXMLElement $entries)
     {
@@ -105,7 +107,7 @@ class KeepassImport extends XmlImportBase
             $AccountData = new AccountData();
 
             foreach ($entry->String as $account) {
-                $value = (isset($account->Value)) ? (string)$account->Value : '';
+                $value = isset($account->Value) ? (string)$account->Value : '';
                 switch ($account->Key) {
                     case 'Notes':
                         $AccountData->setAccountNotes($value);

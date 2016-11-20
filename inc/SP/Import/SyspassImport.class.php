@@ -41,13 +41,13 @@ class SyspassImport extends XmlImportBase
      *
      * @var array
      */
-    private $categories = array();
+    private $categories = [];
     /**
      * Mapeo de clientes.
      *
      * @var array
      */
-    private $customers = array();
+    private $customers = [];
 
     /**
      * Iniciar la importación desde sysPass.
@@ -57,7 +57,7 @@ class SyspassImport extends XmlImportBase
     public function doImport()
     {
         try {
-            if ($this->detectEncrypted() && !is_null($this->getImportPass())) {
+            if ($this->detectEncrypted() && null !== $this->getImportPass()) {
                 $this->processEncrypted();
             }
             $this->processCategories();
@@ -86,7 +86,7 @@ class SyspassImport extends XmlImportBase
     protected function processEncrypted()
     {
         foreach ($this->xmlDOM->getElementsByTagName('Data') as $node) {
-            /** @var $node \DOMNode */
+            /** @var $node \DOMElement */
             $data = base64_decode($node->nodeValue);
             $iv = base64_decode($node->getAttribute('iv'));
 
@@ -109,6 +109,8 @@ class SyspassImport extends XmlImportBase
 
     /**
      * Obtener las categorías y añadirlas a sysPass.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processCategories()
     {
@@ -116,24 +118,30 @@ class SyspassImport extends XmlImportBase
             throw new SPException(SPException::SP_WARNING, _('Formato de XML inválido'), _('No hay categorías para importar'));
         }
 
+        /** @var \DOMElement $category */
         foreach ($this->xmlDOM->getElementsByTagName('Category') as $category) {
+            $name = '';
+            $description = '';
+
             foreach ($category->childNodes as $node) {
                 switch ($node->nodeName) {
                     case 'name':
-                        $this->setCategoryName($node->nodeValue);
+                        $name = $node->nodeValue;
                         break;
                     case 'description':
-                        $this->setCategoryDescription($node->nodeValue);
+                        $description = $node->nodeValue;
                         break;
                 }
             }
 
-            $this->categories[$category->getAttribute('id')] = $this->addCategory();
+            $this->categories[$category->getAttribute('id')] = $this->addCategory($name, $description);
         }
     }
 
     /**
      * Obtener los clientes y añadirlos a sysPass.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processCustomers()
     {
@@ -141,24 +149,30 @@ class SyspassImport extends XmlImportBase
             throw new SPException(SPException::SP_WARNING, _('Formato de XML inválido'), _('No hay clientes para importar'));
         }
 
+        /** @var \DOMElement $customer */
         foreach ($this->xmlDOM->getElementsByTagName('Customer') as $customer) {
+            $name = '';
+            $description = '';
+
             foreach ($customer->childNodes as $node) {
                 switch ($node->nodeName) {
                     case 'name':
-                        $this->setCustomerName($node->nodeValue);
+                        $name = $node->nodeValue;
                         break;
                     case 'description':
-                        $this->setCustomerDescription($node->nodeValue);
+                        $description = $node->nodeValue;
                         break;
                 }
             }
 
-            $this->customers[$customer->getAttribute('id')] = $this->addCustomer();
+            $this->customers[$customer->getAttribute('id')] = $this->addCustomer($name, $description);
         }
     }
 
     /**
      * Obtener los datos de las entradas de sysPass y crearlas.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processAccounts()
     {
@@ -166,39 +180,41 @@ class SyspassImport extends XmlImportBase
             throw new SPException(SPException::SP_WARNING, _('Formato de XML inválido'), _('No hay cuentas para importar'));
         }
 
+        $AccountData = new AccountData();
+
         foreach ($this->xmlDOM->getElementsByTagName('Account') as $account) {
-            $AccountData = new AccountData();
+            $AccountDataClone = clone $AccountData;
 
             foreach ($account->childNodes as $node) {
                 switch ($node->nodeName) {
                     case 'name';
-                        $AccountData->setAccountName($node->nodeValue);
+                        $AccountDataClone->setAccountName($node->nodeValue);
                         break;
                     case 'login';
-                        $AccountData->setAccountLogin($node->nodeValue);
+                        $AccountDataClone->setAccountLogin($node->nodeValue);
                         break;
                     case 'categoryId';
-                        $AccountData->setAccountCategoryId($this->categories[(int)$node->nodeValue]);
+                        $AccountDataClone->setAccountCategoryId($this->categories[(int)$node->nodeValue]);
                         break;
                     case 'customerId';
-                        $AccountData->setAccountCustomerId($this->customers[(int)$node->nodeValue]);
+                        $AccountDataClone->setAccountCustomerId($this->customers[(int)$node->nodeValue]);
                         break;
                     case 'url';
-                        $AccountData->setAccountUrl($node->nodeValue);
+                        $AccountDataClone->setAccountUrl($node->nodeValue);
                         break;
                     case 'pass';
-                        $AccountData->setAccountPass(base64_decode($node->nodeValue));
+                        $AccountDataClone->setAccountPass(base64_decode($node->nodeValue));
                         break;
                     case 'passiv';
-                        $AccountData->setAccountIV(base64_decode($node->nodeValue));
+                        $AccountDataClone->setAccountIV(base64_decode($node->nodeValue));
                         break;
                     case 'notes';
-                        $AccountData->setAccountNotes($node->nodeValue);
+                        $AccountDataClone->setAccountNotes($node->nodeValue);
                         break;
                 }
             }
 
-            $this->addAccount($AccountData);
+            $this->addAccount($AccountDataClone);
         }
     }
 }

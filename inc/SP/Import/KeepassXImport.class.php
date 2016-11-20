@@ -54,16 +54,16 @@ class KeepassXImport extends XmlImportBase
      */
     public function doImport()
     {
-        $this->setCustomerName('KeePassX');
-        $this->customerId = $this->addCustomer();
+        $this->customerId = $this->addCustomer('KeePassX');
 
-        self::processCategories($this->xml);
+        $this->processCategories($this->xml);
     }
 
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
      * @param SimpleXMLElement $xml con objeto XML del archivo de KeePass
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processCategories(SimpleXMLElement $xml)
     {
@@ -73,8 +73,7 @@ class KeepassXImport extends XmlImportBase
                     // Analizar grupo
                     if ($node->group->entry) {
                         // Crear la categoría
-                        $this->setCategoryName($group->title);
-                        $this->categoryId = $this->addCategory();
+                        $this->categoryId = $this->addCategory($group->title, 'KeePassX');
 
                         // Crear cuentas
                         $this->processAccounts($group->entry);
@@ -89,8 +88,7 @@ class KeepassXImport extends XmlImportBase
 
             if ($node->entry) {
                 // Crear la categoría
-                $this->setCategoryName($node->title);
-                $this->categoryId = $this->addCategory();
+                $this->categoryId = $this->addCategory($node->title, 'KeePassX');
 
                 // Crear cuentas
                 $this->processAccounts($node->entry);
@@ -102,15 +100,16 @@ class KeepassXImport extends XmlImportBase
      * Obtener los datos de las entradas de KeePass.
      *
      * @param SimpleXMLElement $entries El objeto XML con las entradas
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processAccounts(SimpleXMLElement $entries)
     {
         foreach ($entries as $entry) {
-            $notes = (isset($entry->comment)) ? (string)$entry->comment : '';
-            $password = (isset($entry->password)) ? (string)$entry->password : '';
-            $name = (isset($entry->title)) ? (string)$entry->title : '';
-            $url = (isset($entry->url)) ? (string)$entry->url : '';
-            $username = (isset($entry->username)) ? (string)$entry->username : '';
+            $notes = isset($entry->comment) ? (string)$entry->comment : '';
+            $password = isset($entry->password) ? (string)$entry->password : '';
+            $name = isset($entry->title) ? (string)$entry->title : '';
+            $url = isset($entry->url) ? (string)$entry->url : '';
+            $username = isset($entry->username) ? (string)$entry->username : '';
 
             $passData = Crypt::encryptData($password);
 

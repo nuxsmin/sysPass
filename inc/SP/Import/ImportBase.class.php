@@ -28,6 +28,7 @@ namespace SP\Import;
 use SP\Account\Account;
 use SP\DataModel\AccountData;
 use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Categories\Category;
 use SP\Core\Session;
@@ -111,6 +112,38 @@ abstract class ImportBase
      * @return bool
      */
     public abstract function doImport();
+
+    /**
+     * @return string
+     */
+    public function getCategoryName()
+    {
+        return $this->categoryName;
+    }
+
+    /**
+     * @param string $categoryName
+     */
+    public function setCategoryName($categoryName)
+    {
+        $this->categoryName = $categoryName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryDescription()
+    {
+        return $this->categoryDescription;
+    }
+
+    /**
+     * @param string $categoryDescription
+     */
+    public function setCategoryDescription($categoryDescription)
+    {
+        $this->categoryDescription = $categoryDescription;
+    }
 
     /**
      * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
@@ -197,55 +230,29 @@ abstract class ImportBase
     /**
      * Añadir una categoría y devolver el Id
      *
+     * @param $name
+     * @param $description
      * @return int
      */
-    protected function addCategory()
+    protected function addCategory($name, $description = null)
     {
-        // FIXME: CategoryData en propiedad de la clase
-        return Category::getItem(new CategoryData(null, $this->getCategoryName(), $this->getCategoryDescription()))->add()->getItemData()->getCategoryId();
-    }
+        $CategoryData = new CategoryData($name, $description);
 
-    /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        return $this->categoryName;
-    }
-
-    /**
-     * @param string $categoryName
-     */
-    public function setCategoryName($categoryName)
-    {
-        $this->categoryName = $categoryName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryDescription()
-    {
-        return $this->categoryDescription;
-    }
-
-    /**
-     * @param string $categoryDescription
-     */
-    public function setCategoryDescription($categoryDescription)
-    {
-        $this->categoryDescription = $categoryDescription;
+        return Category::getItem($CategoryData)->add()->getItemData()->getCategoryId();
     }
 
     /**
      * Añadir un cliente y devolver el Id
      *
+     * @param $name
+     * @param $description
      * @return int
      */
-    protected function addCustomer()
+    protected function addCustomer($name, $description = null)
     {
-        // FIXME: CustomerData en propiedad de la clase
-        return Customer::getItem(new CategoryData(null, $this->getCustomerName(), $this->getCustomerDescription()))->add()->getItemData()->getCustomerId();
+        $CustomerData = new CustomerData($name, $description);
+
+        return Customer::getItem($CustomerData)->add()->getItemData()->getCustomerId();
     }
 
     /**
