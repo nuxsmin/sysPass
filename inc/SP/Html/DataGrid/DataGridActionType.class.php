@@ -39,4 +39,5 @@ class DataGridActionType
     const EDIT_ITEM = 3;
     const DELETE_ITEM = 4;
     const SEARCH_ITEM = 5;
+    const SELECT_ITEM = 6;
 }

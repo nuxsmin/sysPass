@@ -230,6 +230,8 @@ class ItemActionController implements ItemControllerInterface
 
     /**
      * Eliminar los datos de los campos personalizados del módulo
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function deleteCustomFieldData()
     {

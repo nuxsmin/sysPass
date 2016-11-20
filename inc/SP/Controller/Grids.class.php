@@ -145,6 +145,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -239,6 +240,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -314,6 +316,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -380,6 +383,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -432,6 +436,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -548,6 +553,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -621,6 +627,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -702,6 +709,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -785,6 +793,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -864,6 +873,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }
@@ -935,6 +945,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }

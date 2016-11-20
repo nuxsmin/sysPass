@@ -42,7 +42,7 @@ trait RequestControllerTrait
      */
     protected $actionId;
     /**
-     * @var int
+     * @var int|array
      */
     protected $itemId;
     /**
@@ -86,7 +86,7 @@ trait RequestControllerTrait
      */
     protected function preActionChecks()
     {
-        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk) || !$this->actionId) {
+        if (!$this->sk || !$this->actionId || !SessionUtil::checkSessionKey($this->sk)) {
             $this->invalidAction();
         }
     }

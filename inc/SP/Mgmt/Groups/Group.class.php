@@ -79,7 +79,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
         try {
             GroupUsers::getItem($GroupUsers)->add();
-        } catch(SPException $e) {
+        } catch (SPException $e) {
             $Log->addDescription(_('Error al añadir los usuarios del grupo'));
         }
 
@@ -106,12 +106,20 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_WARNING, _('Grupo en uso'));
         }
@@ -133,7 +141,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
         try {
             GroupUsers::getItem()->delete($id);
-        } catch(SPException $e) {
+        } catch (SPException $e) {
             $Log->addDescription(_('Error al eliminar los usuarios del grupo'));
         }
 
@@ -226,7 +234,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
         try {
             GroupUsers::getItem($GroupUsers)->update();
-        } catch(SPException $e) {
+        } catch (SPException $e) {
             $Log->addDescription(_('Error al actualizar los usuarios del grupo'));
         }
 

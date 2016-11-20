@@ -33,6 +33,8 @@ sysPass.Theme = function (Common) {
      */
     var ajax = {
         complete: function () {
+            log.info("ajax:complete");
+
             // Actualizar componentes de MDL cargados con AJAX
             componentHandler.upgradeDom();
 

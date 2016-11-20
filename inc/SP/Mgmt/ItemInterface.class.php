@@ -46,7 +46,7 @@ interface ItemInterface
     public function add();
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return mixed
      */
     public function delete($id);

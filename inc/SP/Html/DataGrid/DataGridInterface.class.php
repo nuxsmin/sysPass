@@ -68,10 +68,10 @@ interface DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool                    $ismenu Añadir al menu de acciones
+     * @param bool                    $isMenu Añadir al menu de acciones
      * @return $this
      */
-    public function setDataActions(DataGridActionInterface $action, $ismenu = false);
+    public function setDataActions(DataGridActionInterface $action, $isMenu = false);
 
     /**
      * @return DataGridActionInterface

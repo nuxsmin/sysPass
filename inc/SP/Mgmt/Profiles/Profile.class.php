@@ -88,6 +88,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkDuplicatedOnAdd()
     {
@@ -106,12 +107,20 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_INFO, _('Perfil en uso'));
         }
@@ -252,6 +261,16 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
+     * Actualizar el perfil de la sesión
+     */
+    protected function updateSessionProfile()
+    {
+        if (Session::getUserProfile()->getUserprofileId() === $this->itemData->getUserprofileId()) {
+            Session::setUserProfile($this->itemData);
+        }
+    }
+
+    /**
      * @return ProfileData[]
      */
     public function getAll()
@@ -274,15 +293,5 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
 
         return DB::getResultsArray($Data);
-    }
-
-    /**
-     * Actualizar el perfil de la sesión
-     */
-    protected function updateSessionProfile()
-    {
-        if (Session::getUserProfile()->getUserprofileId() === $this->itemData->getUserprofileId()){
-            Session::setUserProfile($this->itemData);
-        }
     }
 }

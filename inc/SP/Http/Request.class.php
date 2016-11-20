@@ -136,7 +136,7 @@ class Request
         if ((is_numeric($value) || is_numeric($default))
             && !is_string($default)
         ) {
-            return intval($value);
+            return (int)$value;
         }
 
         if (is_string($value)) {

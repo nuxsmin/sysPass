@@ -168,12 +168,20 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return $this
      * @throws SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
 

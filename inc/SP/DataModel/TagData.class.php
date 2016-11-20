@@ -103,7 +103,7 @@ class TagData extends DataModelBase implements DataModelInterface
      */
     protected function createTagHash()
     {
-        $this->tag_hash = sha1(strtolower(preg_replace('#[.\s_,-;\'":()|/"]+#', '', $this->tag_name)));
+        $this->tag_hash = sha1(strtolower(preg_replace('#[\.\s_,\-;\'":()|/"]+#', '', $this->tag_name)));
     }
 
     /**

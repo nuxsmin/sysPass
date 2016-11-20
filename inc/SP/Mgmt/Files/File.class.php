@@ -107,12 +107,20 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         $fileInfo = $this->getInfoById($id)->getItemData();
 
         // Eliminamos el archivo de la BBDD

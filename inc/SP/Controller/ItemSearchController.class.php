@@ -148,7 +148,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getUsersGrid();
         $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -175,7 +175,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getGroupsGrid();
         $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -202,7 +202,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getProfilesGrid();
         $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -229,7 +229,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getTokensGrid();
         $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->ItemSearchData));
@@ -256,7 +256,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -283,7 +283,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getCategoriesGrid();
         $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -310,7 +310,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getCustomersGrid();
         $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -337,7 +337,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getCustomFieldsGrid();
         $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -364,7 +364,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getFilesGrid();
         $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
@@ -391,7 +391,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->ItemSearchData));
@@ -418,7 +418,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
             return;
         }
 
-        $this->view->addTemplate('datagrid-rows', 'grid');
+        $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->grids->getTagsGrid();
         $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->ItemSearchData));

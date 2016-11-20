@@ -2,12 +2,13 @@
 
 <?php
 /**
+ * @var $icons   SP\Core\UI\ThemeIconsBase
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $this    SP\Core\Template
  * @var $action  SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
  */
 ?>
-<div id="tabs">
+<div id="tabs" xmlns="http://www.w3.org/1999/html">
     <ul id="tabsHeader"></ul>
 
     <?php foreach ($tabs as $index => $data): ?>
@@ -16,7 +17,7 @@
         </script>
 
         <div id="tabs-<?php echo $index; ?>">
-            <div class="tab-actions action fullWidth">
+            <div class="tab-actions">
                 <ul>
                     <?php foreach ($data->getDataActions() as $action): ?>
                         <?php if ($action->getType() === \SP\Html\DataGrid\DataGridActionType::NEW_ITEM): ?>
@@ -37,7 +38,7 @@
                                 <form method="post" id="<?php echo $action->getName(); ?>"
                                       name="<?php echo $action->getName(); ?>"
                                       class="form-action"
-                                      data-target="#data-rows-<?php echo $data->getId(); ?>"
+                                      data-target="#data-table-<?php echo $data->getId(); ?>"
                                       data-activetab="<?php echo $index; ?>"
                                       data-onsubmit="<?php echo $action->getOnSubmit(); ?>">
 
@@ -57,7 +58,8 @@
 
                                     <input type="hidden" name="sk" value="">
                                     <input type="hidden" name="start" value="0">
-                                    <input type="hidden" name="count" value="<?php echo $data->getPager()->getLimitCount(); ?>">
+                                    <input type="hidden" name="count"
+                                           value="<?php echo $data->getPager()->getLimitCount(); ?>">
                                     <input type="hidden" name="actionId" value="<?php echo $action->getId(); ?>">
                                     <input type="hidden" name="isAjax" value="1">
                                 </form>
@@ -71,19 +73,34 @@
                             <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                         </button>
                     </li>
+                    <?php if (count($data->getDataActionsMenu()) > 0): ?>
+                        <li>
+                            <button id="<?php echo $data->getId(); ?>-menu-lower-right"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+
+                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                for="<?php echo $data->getId(); ?>-menu-lower-right">
+                                <?php foreach ($data->getDataActionsMenu() as $action): ?>
+                                    <li class="btn-action mdl-menu__item"
+                                        data-onclick="<?php echo $action->getOnClick(); ?>"
+                                        data-action-id="<?php echo $action->getId(); ?>"
+                                        data-nextaction-id="<?php echo $actionId; ?>"
+                                        data-activetab="<?php echo $index; ?>"
+                                        data-selection="#data-table-<?php echo $data->getId(); ?>">
+                                        <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
+                                        <?php echo _('Eliminar Seleccionados'); ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
 
-            <div id="<?php echo $data->getId(); ?>" class="data-header">
-                <ul class="round5 header-grey">
-                    <?php foreach ($data->getHeader()->getHeaders() as $header): ?>
-                        <li style="width: <?php echo $data->getHeader()->getWidth(); ?>%;"><?php echo $header; ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-
-            <div id="data-rows-<?php echo $data->getId(); ?>" class="data-rows">
-                <?php include $data->getDataRowTemplate(); ?>
+            <div id="data-table-<?php echo $data->getId(); ?>">
+                <?php include __DIR__ . DIRECTORY_SEPARATOR . 'datagrid-table.inc'; ?>
             </div>
         </div>
     <?php endforeach; ?>

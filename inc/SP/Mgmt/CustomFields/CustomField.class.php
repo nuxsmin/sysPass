@@ -46,6 +46,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
      * @param CustomFieldData $itemData
      * @param int             $customFieldDefId
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData, $customFieldDefId = null)
     {
@@ -53,7 +54,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
         parent::__construct($itemData);
 
-        if (!is_null($customFieldDefId)) {
+        if (null !== $customFieldDefId) {
             $field = CustomFieldDef::getItem()->getById($customFieldDefId);
 
             $itemData->setDefinitionId($customFieldDefId);
@@ -67,6 +68,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
@@ -126,6 +128,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
@@ -157,11 +160,20 @@ class CustomField extends CustomFieldBase implements ItemInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM customFieldsData
             WHERE customfielddata_itemId = ?

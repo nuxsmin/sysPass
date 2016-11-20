@@ -71,6 +71,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkDuplicatedOnAdd()
     {
@@ -80,16 +81,24 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getTagHash());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0 );
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId) {
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM tags WHERE tag_id = ? LIMIT 1';
 
@@ -132,6 +141,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkDuplicatedOnUpdate()
     {

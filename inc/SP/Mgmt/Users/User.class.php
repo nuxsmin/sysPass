@@ -116,11 +116,20 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return $this
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         $oldUserData = $this->getById($id);
 
         $query = 'DELETE FROM usrData WHERE user_id = ? LIMIT 1';

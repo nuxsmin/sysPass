@@ -96,12 +96,20 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_WARNING, _('No es posible eliminar'));
         }

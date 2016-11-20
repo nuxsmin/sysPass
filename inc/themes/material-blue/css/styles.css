@@ -580,6 +580,33 @@ pre, code, samp, kbd {
     padding: .3em .8em
 }
 
+#content .data-table {
+    width: 100%;
+}
+
+#content .data-table td:first-of-type,
+#content .data-table th:first-of-type {
+    width: 5em;
+}
+
+#content .data-table thead th {
+    background-color: #607d8b;
+    color: #fff;
+}
+
+#content .data-table tbody td.cell-data {
+    text-align: left;
+}
+
+#content .data-table tbody td.cell-nodata {
+    padding: 1em 0;
+    text-align: left;
+}
+
+#content .data-table tbody td.cell-actions {
+    text-align: right;
+}
+
 #content .data-rows ul {
     display: table;
     list-style: none;
@@ -1143,25 +1170,11 @@ footer img {
     background: none !important
 }
 
-.action {
-    max-width: 75%;
-    height: 4em;
-    margin: .7em auto;
-    text-align: right
-}
-
 .action-in-box {
     display: inline-block;
     height: 4em;
     margin: .7em 0;
     text-align: right
-}
-
-.action ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    padding-right: 2em
 }
 
 .action-in-box ul {
@@ -1170,18 +1183,24 @@ footer img {
     padding: 0
 }
 
-.action li {
-    display: inline-block;
-    width: 2em;
-    height: 2em;
-    margin-left: 3em
+.item-actions {
+    margin: 1em auto;
+    width: 75%;
 }
 
-.action li img, .action-in-box li img {
-    padding: 1em;
-    border: 1px solid #d9d9d9;
-    border-radius: 3em;
-    background-color: #f9f9f9 !important
+.item-actions > ul,
+.tab-actions > ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.item-actions > ul > li,
+.tab-actions > ul > li {
+    margin-left: .5em;
 }
 
 .fullWidth {

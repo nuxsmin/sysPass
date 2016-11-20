@@ -86,6 +86,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkDuplicatedOnAdd()
     {
@@ -108,21 +109,29 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
      */
     private function mkCustomerHash()
     {
-        $charsSrc = array(
-            ".", " ", "_", ", ", "-", ";",
-            "'", "\"", ":", "(", ")", "|", "/");
+        $charsSrc = [
+            '.', ' ', '_', ', ', '-', ';',
+            '\'', '"', ':', '(', ')', '|', '/'];
         $newValue = strtolower(str_replace($charsSrc, '', DBUtil::escape($this->itemData->getCustomerName())));
 
         return md5($newValue);
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_WARNING, _('No es posible eliminar'));
         }

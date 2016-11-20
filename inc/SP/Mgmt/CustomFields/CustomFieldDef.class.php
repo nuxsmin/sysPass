@@ -49,7 +49,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     public function __construct($itemData = null)
     {
         $this->setDataModel('SP\DataModel\CustomFieldDefData');
-        
+
         parent::__construct($itemData);
     }
 
@@ -75,12 +75,20 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     }
 
     /**
-     * @param $id int
+     * @param $id int|array
      * @return mixed
      * @throws SPException
      */
     public function delete($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId){
+                $this->delete($itemId);
+            }
+
+            return $this;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM customFieldsDef WHERE customfielddef_id = ? LIMIT 1';
 

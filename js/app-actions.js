@@ -860,6 +860,20 @@ sysPass.Actions = function (Common) {
             log.info("appMgmt:delete");
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
+            var selection = $obj.data("selection");
+            var items = [];
+
+            if (selection) {
+                $(selection).find(".is-selected").each(function (index, value) {
+                    var $this = $(this);
+
+                    items.push($this.data("item-id"));
+                });
+
+                if (items.length === 0) {
+                    return;
+                }
+            }
 
             alertify
                 .okBtn(Common.config().LANG[43])
@@ -870,7 +884,7 @@ sysPass.Actions = function (Common) {
                     var opts = Common.appRequests().getRequestOpts();
                     opts.url = ajaxUrl.appMgmt.save;
                     opts.data = {
-                        itemId: $obj.data("item-id"),
+                        itemId: selection ? items : $obj.data("item-id"),
                         actionId: $obj.data("action-id"),
                         sk: Common.sk.get(),
                         isAjax: 1
