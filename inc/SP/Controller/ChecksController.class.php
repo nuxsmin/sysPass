@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
+use SP\Auth\Ldap\LdapUtil;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Util\Json;
@@ -100,15 +101,16 @@ class ChecksController implements ItemControllerInterface
         $Ldap->setBindDn($ldapBindUser);
         $Ldap->setBindPass($ldapBindPass);
 
-        $resCheckLdap = $Ldap->checkConnection();
+        try {
+            $results = $Ldap->checkConnection();
 
-        if ($resCheckLdap === false) {
-            $this->jsonResponse->setDescription(_('Error de conexión a LDAP'));
-            $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
-        } else {
             $this->jsonResponse->setDescription(_('Conexión a LDAP correcta'));
-            $this->jsonResponse->addMessage(sprintf(_('Objetos encontrados: %d'), $resCheckLdap));
+            $this->jsonResponse->addMessage(sprintf(_('Objetos encontrados: %d'), (int)$results['count']));
+            $this->jsonResponse->setData(LdapUtil::getResultsData($results, 'dn'));
             $this->jsonResponse->setStatus(0);
+        } catch (SPException $e) {
+            $this->jsonResponse->setDescription($e->getMessage());
+            $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
         }
     }
 

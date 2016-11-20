@@ -89,7 +89,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Comprobar la conexión al servidor de LDAP.
      *
-     * @return false|int Con el número de entradas encontradas
+     * @return false|array Con el número de entradas encontradas
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkConnection()
     {
@@ -105,16 +106,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         try {
             $this->connect();
             $this->bind();
-            $numResults = $this->searchBase();
+            $results = $this->searchBase();
         } catch (SPException $e) {
-            return false;
+            throw $e;
         }
 
         $Log->addDescription(_('Conexión a LDAP correcta'));
-        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), $numResults));
+        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), (int)$results['count']));
         $Log->writeLog();
 
-        return $numResults;
+        return $results;
     }
 
     /**
@@ -182,7 +183,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Realizar una búsqueda de objetos en la ruta indicada.
      *
      * @throws SPException
-     * @return int El número de resultados
+     * @return array Con los resultados de la búsqueda
      */
     protected function searchBase()
     {
@@ -202,7 +203,29 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
-        return @ldap_count_entries($this->ldapHandler, $searchRes);
+        if (@ldap_count_entries($this->ldapHandler, $searchRes) > 0) {
+            $searchResults = @ldap_get_entries($this->ldapHandler, $searchRes);
+
+            if (!$searchResults) {
+                $Log->setLogLevel(Log::ERROR);
+                $Log->addDescription(_('Error al buscar objetos en DN base'));
+                $Log->addDetails('LDAP ERROR', $this->ldapError());
+                $Log->addDetails('LDAP FILTER', $this->getGroupDnFilter());
+                $Log->writeLog();
+
+                throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            }
+
+            return $searchResults;
+        } else {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(_('Error al buscar objetos en DN base'));
+            $Log->addDetails('LDAP ERROR', $this->ldapError());
+            $Log->addDetails('LDAP FILTER', $this->getGroupDnFilter());
+            $Log->writeLog();
+
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+        }
     }
 
     /**

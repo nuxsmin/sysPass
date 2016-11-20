@@ -4,13 +4,13 @@
 /** @var $AccountAcl \SP\Account\AccountAcl */
 ?>
 
-<div id="files-wrap" class="round">
+<div id="files-wrap" class="list-wrap round">
     <ul id="files-list">
         <?php foreach ($files as $file): ?>
             <li class="files-item round">
                 <div class="files-item-info" title="<?php echo $file->getAccfileName(); ?>">
                     <?php echo \SP\Html\Html::truncate($file->getAccfileName(), 35); ?>
-                    <?php printf('(%s KB)', $file->getAccfileSize()); ?>
+                    <?php printf('(%d KB)', $file->getAccfileSize() / 1024); ?>
                     <?php if ($file->getAccfileThumb() !== 'no_thumb'): ?>
                         <img src="data:image/png;base64,<?php echo $file->getAccfileThumb(); ?>"
                              title="<?php echo $file->getAccfileName(); ?>" alt="thumbnail"

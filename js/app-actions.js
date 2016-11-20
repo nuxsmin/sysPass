@@ -89,7 +89,10 @@ sysPass.Actions = function (Common) {
         opts.data = data;
 
         Common.appRequests().getActionCall(opts, function (response) {
-            $("#content").empty().html(response).find("input:first").focus();
+            var $content = $("#content");
+
+            $content.empty().html(response);
+            // $content.find(":input:text:visible:first").focus();
         });
     };
 
@@ -327,6 +330,10 @@ sysPass.Actions = function (Common) {
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
+
+                var $results = $("#ldap-results");
+                $results.find(".list-wrap").html(Common.appTheme().html.getList(json.data));
+                $results.show("slow");
             });
         },
         wiki: function ($obj) {

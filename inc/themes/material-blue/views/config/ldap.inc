@@ -241,6 +241,15 @@
                         </label>
                     </td>
                 </tr>
+                <tr id="ldap-results" style="display: none;">
+                    <td class="descField">
+                        <?php echo _('Resultados'); ?>
+                    </td>
+                    <td class="valField">
+                        <div class="list-wrap">
+                        </div>
+                    </td>
+                </tr>
             <?php else: ?>
                 <tr>
                     <td class="option-disabled">
@@ -262,13 +271,15 @@
     </form>
 
     <div class="action">
-        <button type="button" class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+        <button type="button"
+                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                 data-onclick="appMgmt/ldapSync"
                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_SYNC_LDAP; ?>"
                 title="<?php echo _('Importar usuarios de LDAP'); ?>">
             <i class="material-icons">get_app</i>
         </button>
-        <button type="button" class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+        <button type="button"
+                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
                 data-onclick="checks/ldap"
                 data-src="#frmLdap"
                 title="<?php echo $icons->getIconCheck()->getTitle(); ?>">

@@ -480,6 +480,31 @@ sysPass.Theme = function (Common) {
     };
 
     /**
+     * Elementos HTML del tema
+     *
+     * @type {{getList: html.getList}}
+     */
+    var html = {
+        getList: function (items) {
+            var $ul = $("<ul class=\"ldap-list-item mdl-list\"></ul>");
+            var $li = $("<li class=\"mdl-list__item\"></li>");
+            var $span = $("<span class=\"mdl-list__item-primary-content\"></span>");
+            var icon = "<i class=\"material-icons mdl-list__item-icon\">person</i>";
+
+            items.forEach(function (value) {
+                var $spanClone = $span.clone();
+                $spanClone.append(icon);
+                $spanClone.append(value);
+
+                var $item = $li.clone().append($spanClone);
+                $ul.append($item);
+            });
+
+            return $ul;
+        }
+    };
+
+    /**
      * Inicialización
      */
     var init = function () {
@@ -511,6 +536,7 @@ sysPass.Theme = function (Common) {
         password: password,
         viewsTriggers: viewsTriggers,
         loading: loading,
-        ajax: ajax
+        ajax: ajax,
+        html: html
     };
 };

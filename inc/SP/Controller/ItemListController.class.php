@@ -267,7 +267,6 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
 
         $this->setAction(self::ACTION_MGM_FILES);
 
-        // FIXME: añadir perfil
         if (!$this->checkAccess()) {
             return;
         }

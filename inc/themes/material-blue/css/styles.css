@@ -256,9 +256,10 @@ pre, code, samp, kbd {
     color: #555
 }
 
-#content td.valField, #fancyContainer td.valField {
-    padding-left: 20px;
-    width: 100%
+#content td.valField,
+#fancyContainer td.valField {
+    padding-left: 1em;
+    width: 100%;
 }
 
 #content #resBuscar {
@@ -358,47 +359,42 @@ pre, code, samp, kbd {
     min-width: 210px
 }
 
-#content .data #files-wrap {
-    max-height: 100px;
-    width: 95%;
-    overflow-y: auto;
+#content .data .list-wrap {
+    max-height: 10em;
+    overflow: auto;
     padding: .5em;
-    margin: 1em 0
+    margin: 1em 0;
 }
 
-#content .data #files-list {
+#content .data .list-wrap ul {
     list-style-type: none;
     margin: 0;
     padding: 0
 }
 
-#content .data #files-list li {
+#content .data .list-wrap li {
+    display: flex;
     background: #f2f2f2;
     padding: .5em;
     font-size: 1em;
-    margin-bottom: 5px
+    margin-bottom: .5em;
 }
 
-#content .data #files-list li:hover {
-    background: #fffccd;
-    color: #000
+#content .data .list-wrap li:hover {
+    background: #e8eaf6;
+    color: #000;
 }
 
-#content .data #files-list li div {
-    display: inline-block
+#content .data .list-wrap div.files-item-info {
+    flex-grow: 2;
 }
 
-#content .data #files-list li div.files-item-info {
-    width: 55%
+#content .data .list-wrap div.files-item-info img {
+    margin: 0 .5em;
 }
 
-#content .data #files-list li div.files-item-info img {
-    margin: 0 .5em
-}
-
-#content .data #files-list li div.files-item-actions {
-    width: 40%;
-    text-align: right
+#content .data .list-wrap div.files-item-actions {
+    padding: .3em 0;
 }
 
 #content .data .dropzone {

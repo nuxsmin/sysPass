@@ -85,6 +85,7 @@ class Acl implements ActionsInterface
             case self::ACTION_ACC_DELETE:
                 return ($curUserIsAdminAcc || $curUserProfile->isAccDelete());
             case self::ACTION_ACC_FILES:
+            case self::ACTION_MGM_FILES:
                 return ($curUserIsAdminAcc || $curUserProfile->isAccFiles());
             case self::ACTION_MGM:
                 return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
