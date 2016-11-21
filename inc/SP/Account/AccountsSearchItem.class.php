@@ -198,7 +198,7 @@ class AccountsSearchItem
      */
     public function getShortCustomerName()
     {
-        return Html::truncate($this->AccountSearchData->getCustomerName(), $this->textMaxLength);
+        return Html::truncate($this->AccountSearchData->getCustomerName(), $this->textMaxLength / 3);
     }
 
     /**

@@ -1666,6 +1666,10 @@ fieldset.warning a {
         width: 100%;
     }
 
+    footer {
+        display: none;
+    }
+
     footer,
     footer .footer-parts {
         justify-content: space-between;
