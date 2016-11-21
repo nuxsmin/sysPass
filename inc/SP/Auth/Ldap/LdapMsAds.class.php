@@ -43,9 +43,13 @@ class LdapMsAds extends LdapBase
      */
     protected function getGroupDnFilter()
     {
-        $groupDN = (!empty($this->group)) ? $this->searchGroupDN() : '*';
+        if (empty($this->group)) {
+            return '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
+        } else {
+            $groupDN = $this->searchGroupDN();
 
-        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+            return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        }
     }
 
     /**

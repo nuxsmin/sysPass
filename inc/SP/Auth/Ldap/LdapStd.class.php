@@ -42,9 +42,13 @@ class LdapStd extends LdapBase
      */
     protected function getGroupDnFilter()
     {
-        $groupDN = (!empty($this->group)) ? $this->searchGroupDN() : '*';
+        if (empty($this->group)){
+            return '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
+        } else {
+            $groupDN = $this->searchGroupDN();
 
-        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+            return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        }
     }
 
     /**
