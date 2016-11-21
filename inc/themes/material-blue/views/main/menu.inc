@@ -9,14 +9,15 @@
         <nav class="mdl-navigation mdl-layout--large-screen-only">
             <?php /** @var \SP\Html\DataGrid\DataGridAction $action */
             foreach ($actions as $action): ?>
-                <a class="btn-menu mdl-navigation__link"
-                   title="<?php echo $action->getTitle(); ?>"
+                <a id="btn-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
                    data-action-id="<?php echo $action->getId(); ?>"
                     <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                         <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                     <?php endforeach; ?>>
                     <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                 </a>
+                <span for="btn-<?php echo $action->getId(); ?>"
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
             <?php endforeach; ?>
         </nav>
     </div>

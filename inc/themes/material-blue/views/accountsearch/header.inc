@@ -9,10 +9,12 @@
     <ul>
         <?php foreach ($data->getHeader()->getSortFields() as $field): ?>
             <li>
-                <a class="round <?php echo ($data->getPager()->getSortKey() == $field->getSortKey()) ? 'filterOn' : ''; ?>"
-                   title="<?php echo $field->getTitle(); ?>">
+                <a id="btn-order-<?php echo $field->getSortKey(); ?>"
+                   class="round <?php echo ($data->getPager()->getSortKey() == $field->getSortKey()) ? 'filterOn' : ''; ?>">
                     <?php echo $field->getName(); ?>
                 </a>
+                <span for="btn-order-<?php echo $field->getSortKey(); ?>"
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo $field->getTitle(); ?></span>
                 <?php
                 $classDown = ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
                 $classUp = ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';

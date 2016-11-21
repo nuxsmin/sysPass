@@ -62,33 +62,41 @@
             </select>
 
             <div class="filter-buttons">
-                <button type="button"
+                <button type="button" id="btn-favorite"
                         class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
                     <i class="material-icons <?php echo ($searchFavorites === true) ? 'mdl-color-text--amber-A200' : ''; ?>"
                        title="<?php echo ($searchFavorites === true) ? _('Mostrar Todos') : _('Mostrar Favoritos'); ?>">star</i>
                 </button>
-                <button type="reset"
-                        class="btn-clear mdl-button mdl-js-button mdl-button--icon"
-                        title="<?php echo $icons->getIconClear()->getTitle(); ?>" tabindex="6">
+                <span for="btn-favorite"
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Filtrar Favoritos'); ?></span>
+
+                <button type="reset" id="btn-reset"
+                        class="btn-clear mdl-button mdl-js-button mdl-button--icon" tabindex="6">
                     <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
                 </button>
+                <span for="btn-reset"
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
             </div>
             <div class="filter-buttons filter-slider">
                 <span id="txt-slider"></span>
                 <input id="rpp" name="rpp" class="mdl-slider mdl-js-slider" type="range"
-                       title="<?php echo _('Cuentas por página'); ?>"
                        min="3" step="3" value="<?php echo $data->getPager()->getLimitCount(); ?>" tabindex="7"/>
+                <span for="rpp"
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Cuentas por página'); ?></span>
             </div>
-            <i class="material-icons show-filter" data-state="0" data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
-               data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"
-               title="<?php echo _('Más Filtros'); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
+            <i id="btn-filters" class="material-icons show-filter" data-state="0"
+               data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
+               data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
+            <span for="btn-filters"
+                  class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Más Filtros'); ?></span>
         </div>
 
         <div class="search-filters-tags">
             <select id="tags" name="tags[]" class="select-box" multiple tabindex="8">
                 <option value=""><?php echo _('Seleccionar Etiqueta'); ?></option>
                 <?php foreach ($tags as $tag): ?>
-                    <option value="<?php echo $tag->id; ?>" <?php echo in_array($tag->id, $searchTags) ? 'selected' : ''; ?>><?php echo $tag->name; ?></option>
+                    <option
+                        value="<?php echo $tag->id; ?>" <?php echo in_array($tag->id, $searchTags) ? 'selected' : ''; ?>><?php echo $tag->name; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

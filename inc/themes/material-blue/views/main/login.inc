@@ -87,19 +87,3 @@
 <?php if ($updated): ?>
     <div id="boxUpdated" class="round5"><?php echo _('Aplicación actualizada correctamente'); ?></div>
 <?php endif; ?>
-
-<?php if ($demoEnabled): ?>
-    <div id="whatsNewIcon">
-        <img src="imgs/gearscolorful.png" title="<?php echo _('Nuevas Características'); ?>"
-             alt="<?php echo _('Nuevas Características'); ?>" onclick="$('#whatsNew').show(500);"/>
-
-        <h2><?php echo _('Nuevas Características'); ?></h2>
-    </div>
-    <div id="whatsNew" class="round5 shadow">
-        <ul>
-            <?php foreach ($newFeatures as $feature): ?>
-                <li><?php echo $feature; ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-<?php endif; ?>
