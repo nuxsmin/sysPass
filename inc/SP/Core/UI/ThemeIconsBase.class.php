@@ -99,6 +99,16 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     protected $iconWarning;
     /** @var  FontIcon|ImageIcon */
     protected $iconCheck;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconSearch;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconAccount;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconGroup;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconSettings;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconHeadline;
 
     /**
      * Icons constructor.
@@ -354,5 +364,85 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     public function getIconCheck()
     {
         return $this->iconCheck;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconSearch()
+    {
+        return $this->iconSearch;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconSearch
+     */
+    public function setIconSearch($iconSearch)
+    {
+        $this->iconSearch = $iconSearch;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconAccount()
+    {
+        return $this->iconAccount;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconAccount
+     */
+    public function setIconAccount($iconAccount)
+    {
+        $this->iconAccount = $iconAccount;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconGroup()
+    {
+        return $this->iconGroup;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconGroup
+     */
+    public function setIconGroup($iconGroup)
+    {
+        $this->iconGroup = $iconGroup;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconSettings()
+    {
+        return $this->iconSettings;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconSettings
+     */
+    public function setIconSettings($iconSettings)
+    {
+        $this->iconSettings = $iconSettings;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconHeadline()
+    {
+        return $this->iconHeadline;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconHeadline
+     */
+    public function setIconHeadline($iconHeadline)
+    {
+        $this->iconHeadline = $iconHeadline;
     }
 }

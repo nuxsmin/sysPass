@@ -133,7 +133,7 @@ a, a:visited {
 
 a:hover, a:active, a:focus {
     text-decoration: none;
-    color: rgba(83, 109, 254, .6);
+    /*color: rgba(83, 109, 254, .6);*/
     cursor: pointer
 }
 
@@ -189,22 +189,21 @@ pre, code, samp, kbd {
     padding-top: 10em
 }
 
-#container.main {
+/*#container.main {
     position: absolute;
     top: 0;
     width: 100%;
     height: auto;
     background: url("../imgs/logo_full.svg") no-repeat left top transparent;
     background-size: auto 150px
-}
+}*/
 
 #container.error, #container.install, #container.passreset {
     width: 100%
 }
 
-#container #header {
-    width: 100%;
-    margin-bottom: 15px
+#container .logo {
+    height: 64px;
 }
 
 /* Action bar */
@@ -239,7 +238,7 @@ pre, code, samp, kbd {
 
 #container #content {
     width: 95%;
-    margin: 8em auto;
+    margin: 2em auto 8em auto;
 }
 
 #container #content.public-link {
@@ -330,11 +329,16 @@ pre, code, samp, kbd {
     color: #fff
 }
 
-#content .data {
+#content .data-container {
     width: 75%;
+    margin: 0 auto;
+}
+
+#content .data {
+    width: 100%;
     padding: 10px;
     border: 1px solid #c9c9c9;
-    margin: auto;
+    margin: 0 auto;
     background-color: #f9f9f9
 }
 
@@ -693,8 +697,6 @@ pre, code, samp, kbd {
 
 #content #searchbox {
     position: relative;
-    left: 8%;
-    width: 91%;
     height: auto;
     padding: .5em 1em;
     margin-bottom: 2em;
@@ -1183,9 +1185,17 @@ footer img {
     padding: 0
 }
 
+.tab-data {
+    margin: 2em auto 0;
+    width: 75%;
+}
+
 .item-actions {
     margin: 1em auto;
-    width: 75%;
+}
+
+.tab-actions {
+    margin: 2em 0;
 }
 
 .item-actions > ul,
@@ -1193,6 +1203,7 @@ footer img {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;

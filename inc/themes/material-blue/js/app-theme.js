@@ -503,6 +503,21 @@ sysPass.Theme = function (Common) {
             });
 
             return $ul;
+        },
+        tabs: {
+            add: function (header, index, title, isActive) {
+                var $header = $(header);
+                var active = "";
+
+                if (isActive === 1) {
+                    $header.parent().find("#tabs-" + index).addClass("is-active");
+                    active = "is-active";
+                }
+
+                var tab = "<a href=\"#tabs-" + index + "\" class=\"mdl-tabs__tab " + active + "\">" + title + "</a>";
+
+                $header.append(tab);
+            }
         }
     };
 
@@ -527,7 +542,7 @@ sysPass.Theme = function (Common) {
         });
 
         activeTooltip();
-        setFixedMenu();
+        // setFixedMenu();
     };
 
     init();

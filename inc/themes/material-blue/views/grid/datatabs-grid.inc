@@ -8,15 +8,11 @@
  * @var $action  SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
  */
 ?>
-<div id="tabs" xmlns="http://www.w3.org/1999/html">
-    <ul id="tabsHeader"></ul>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+    <div id="tabsHeader" class="mdl-tabs__tab-bar"></div>
 
     <?php foreach ($tabs as $index => $data): ?>
-        <script>
-            $('#tabsHeader').append('<li><a href="#tabs-<?php echo $index; ?>" title="<?php echo $data->getTitle(); ?>"><?php echo $data->getTitle(); ?></a></li>');
-        </script>
-
-        <div id="tabs-<?php echo $index; ?>">
+        <div id="tabs-<?php echo $index; ?>" class="mdl-tabs__panel">
             <div class="tab-actions">
                 <ul>
                     <?php foreach ($data->getDataActions() as $action): ?>
@@ -42,12 +38,18 @@
                                       data-activetab="<?php echo $index; ?>"
                                       data-onsubmit="<?php echo $action->getOnSubmit(); ?>">
 
-                                    <div class="mdl-textfield mdl-js-textfield">
-                                        <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text"
-                                               id="txtSearch"
-                                               name="search" value=""/>
-                                        <label class="mdl-textfield__label"
-                                               for="txtSearch"><?php echo $action->getTitle(); ?></label>
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                                        <label class="mdl-button mdl-js-button mdl-button--icon"
+                                               for="search-<?php echo $index; ?>"
+                                               title="<?php echo $action->getTitle(); ?>">
+                                            <i class="material-icons">search</i>
+                                        </label>
+                                        <div class="mdl-textfield__expandable-holder">
+                                            <input class="mdl-textfield__input" type="text"
+                                                   id="search-<?php echo $index; ?>" name="search"/>
+                                            <label class="mdl-textfield__label"
+                                                   for="search-<?php echo $index; ?>"><?php echo $action->getTitle(); ?></label>
+                                        </div>
                                     </div>
 
                                     <button type="reset"
@@ -103,9 +105,13 @@
                 <?php include __DIR__ . DIRECTORY_SEPARATOR . 'datagrid-table.inc'; ?>
             </div>
         </div>
+
+        <script type="text/javascript">
+            sysPassApp.theme().html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $data->getTitle(); ?>", <?php echo $index === $activeTabId ? 1 : 0; ?>);
+        </script>
     <?php endforeach; ?>
 </div> <!-- End Tabs-->
 
 <script type="text/javascript">
-    sysPassApp.triggers().views.datatabs(<?php echo $activeTabId; ?>);
+    sysPassApp.triggers().views.datatabs();
 </script>

@@ -263,10 +263,6 @@ sysPass.Triggers = function (Common) {
         datatabs: function (active) {
             log.info("views:datatabs");
 
-            $("#tabs").tabs({
-                active: active
-            });
-
             $(".datagrid-action-search>form").each(function () {
                 var $this = $(this);
 

@@ -28,10 +28,12 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Config\Config;
+use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\DiFactory;
 use SP\Core\Template;
+use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Http\Request;
@@ -53,8 +55,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -166,7 +168,7 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('sessionbar');
 
-        $this->view->assign('adminApp', Session::getUserData()->isUserIsAdminApp()? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
+        $this->view->assign('adminApp', Session::getUserData()->isUserIsAdminApp() ? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
         $this->view->assign('userId', Session::getUserData()->getUserId());
         $this->view->assign('userLogin', strtoupper(Session::getUserData()->getUserLogin()));
         $this->view->assign('userName', Session::getUserData()->getUserName() ?: strtoupper($this->view->userLogin));
@@ -181,50 +183,63 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('menu');
 
-        $this->view->assign('actions', [
-            [
-                'id' => self::ACTION_ACC_SEARCH,
-                'title' => _('Buscar'),
-                'img' => 'search.png',
-                'icon' => 'search',
-                'checkaccess' => 0,
-                'historyReset' => 1],
-            [
-                'id' => self::ACTION_ACC_NEW,
-                'title' => _('Nueva Cuenta'),
-                'img' => 'add.png',
-                'icon' => 'add',
-                'checkaccess' => 1,
-                'historyReset' => 0],
-            [
-                'id' => self::ACTION_USR,
-                'title' => _('Usuarios y Accesos'),
-                'img' => 'users.png',
-                'icon' => 'account_box',
-                'checkaccess' => 1,
-                'historyReset' => 0],
-            [
-                'id' => self::ACTION_MGM,
-                'title' => _('Elementos y Personalización'),
-                'img' => 'appmgmt.png',
-                'icon' => 'group_work',
-                'checkaccess' => 1,
-                'historyReset' => 0],
-            [
-                'id' => self::ACTION_CFG,
-                'title' => _('Configuración'),
-                'img' => 'config.png',
-                'icon' => 'settings_applications',
-                'checkaccess' => 1,
-                'historyReset' => 1],
-            [
-                'id' => self::ACTION_EVL,
-                'title' => _('Registro de Eventos'),
-                'img' => 'log.png',
-                'icon' => 'view_headline',
-                'checkaccess' => 1,
-                'historyReset' => 1]
-        ]);
+        $ActionSearch = new DataGridAction();
+        $ActionSearch->setId(self::ACTION_ACC_SEARCH);
+        $ActionSearch->setTitle(_('Buscar'));
+        $ActionSearch->setIcon($this->icons->getIconSearch());
+        $ActionSearch->setData(['historyReset' => 1]);
+
+        $this->view->append('actions', $ActionSearch);
+
+        if (Acl::checkUserAccess(self::ACTION_ACC_NEW)) {
+            $ActionNew = new DataGridAction();
+            $ActionNew->setId(self::ACTION_ACC_NEW);
+            $ActionNew->setTitle(_('Nueva Cuenta'));
+            $ActionNew->setIcon($this->icons->getIconAdd());
+            $ActionNew->setData(['historyReset' => 0]);
+
+            $this->view->append('actions', $ActionNew);
+        }
+
+        if (Acl::checkUserAccess(self::ACTION_USR)) {
+            $ActionUsr = new DataGridAction();
+            $ActionUsr->setId(self::ACTION_USR);
+            $ActionUsr->setTitle(_('Usuarios y Accesos'));
+            $ActionUsr->setIcon($this->icons->getIconAccount());
+            $ActionUsr->setData(['historyReset' => 0]);
+
+            $this->view->append('actions', $ActionUsr);
+        }
+
+        if (Acl::checkUserAccess(self::ACTION_MGM)) {
+            $ActionMgm = new DataGridAction();
+            $ActionMgm->setId(self::ACTION_MGM);
+            $ActionMgm->setTitle(_('Elementos y Personalización'));
+            $ActionMgm->setIcon($this->icons->getIconGroup());
+            $ActionMgm->setData(['historyReset' => 0]);
+
+            $this->view->append('actions', $ActionMgm);
+        }
+
+        if (Acl::checkUserAccess(self::ACTION_CFG)) {
+            $ActionConfig = new DataGridAction();
+            $ActionConfig->setId(self::ACTION_CFG);
+            $ActionConfig->setTitle(_('Configuración'));
+            $ActionConfig->setIcon($this->icons->getIconSettings());
+            $ActionConfig->setData(['historyReset' => 1]);
+
+            $this->view->append('actions', $ActionConfig);
+        }
+
+        if (Acl::checkUserAccess(self::ACTION_EVL) && Checks::logIsEnabled()) {
+            $ActionEventlog = new DataGridAction();
+            $ActionEventlog->setId(self::ACTION_EVL);
+            $ActionEventlog->setTitle(_('Registro de Eventos'));
+            $ActionEventlog->setIcon($this->icons->getIconHeadline());
+            $ActionEventlog->setData(['historyReset' => 1]);
+
+            $this->view->append('actions', $ActionEventlog);
+        }
     }
 
     /**

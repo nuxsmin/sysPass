@@ -289,7 +289,7 @@ class Util
      */
     public static function getAppInfo($index = null)
     {
-        $appinfo = array(
+        $appinfo = [
             'appname' => 'sysPass',
             'appdesc' => 'Systems Password Manager',
             'appwebsite' => 'http://www.syspass.org',
@@ -298,7 +298,7 @@ class Util
             'appupdates' => 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest',
             'appnotices' => 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices',
             'apphelp' => 'https://github.com/nuxsmin/sysPass/issues',
-            'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG');
+            'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG'];
 
         if (null !== $index && isset($appinfo[$index])) {
             return $appinfo[$index];

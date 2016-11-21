@@ -68,6 +68,11 @@ class Icons extends ThemeIconsBase
         $this->iconDownload = new FontIcon('file_download', 'mdl-color-text--indigo-A200', _('Descargar'));
         $this->iconWarning = new FontIcon('warning', 'mdl-color-text--amber-A100', _('Aviso'));
         $this->iconCheck = new FontIcon('cached', 'mdl-color-text--indigo-A200', _('Comprobar'));
+        $this->iconSearch = new FontIcon('search', 'mdl-color-text--indigo-A200', _('Buscar'));
+        $this->iconAccount = new FontIcon('account_box', 'mdl-color-text--indigo-A200');
+        $this->iconGroup = new FontIcon('group_work', 'mdl-color-text--indigo-A200');
+        $this->iconSettings = new FontIcon('settings_applications', 'mdl-color-text--indigo-A200', _('Configuración'));
+        $this->iconHeadline = new FontIcon('view_headline', 'mdl-color-text--indigo-A200');
 
         // Iconos de Navegación
         $this->iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));

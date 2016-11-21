@@ -656,6 +656,9 @@ sysPass.Main = function () {
             triggers: function () {
                 return appTriggers;
             },
+            theme: function () {
+                return appTheme;
+            },
             sk: sk,
             msg: msg,
             log: log,

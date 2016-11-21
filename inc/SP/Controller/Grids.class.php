@@ -100,7 +100,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Categorías'));
+        $Grid->setTitle(_('Categorías'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -195,7 +195,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Clientes'));
+        $Grid->setTitle(_('Clientes'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -351,7 +351,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Archivos'));
+        $Grid->setTitle(_('Archivos'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -412,7 +412,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Cuentas'));
+        $Grid->setTitle(_('Cuentas'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -474,7 +474,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Usuarios'));
+        $Grid->setTitle(_('Usuarios'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -582,7 +582,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Grupos'));
+        $Grid->setTitle(_('Grupos'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -654,7 +654,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Perfiles'));
+        $Grid->setTitle(_('Perfiles'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -738,7 +738,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Autorizaciones API'));
+        $Grid->setTitle(_('Autorizaciones API'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -830,7 +830,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Enlaces'));
+        $Grid->setTitle(_('Enlaces'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -900,7 +900,7 @@ class Grids implements ActionsInterface
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Gestión de Etiquetas'));
+        $Grid->setTitle(_('Etiquetas'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions

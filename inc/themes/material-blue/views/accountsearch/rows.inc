@@ -184,8 +184,8 @@
                                     <?php if ($actionMenu->getReflectionFilter()->invoke($AccountSearchItem)): ?>
                                         <li class="btn-action mdl-menu__item"
                                             data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
-                                            <?php foreach ($actionMenu->getData() as $name => $actionData): ?>
-                                                <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
+                                            <?php foreach ($actionMenu->getData() as $dataName => $dataValue): ?>
+                                                <?php echo 'data-', $dataName, '=', '"', $dataValue, '"'; ?>
                                             <?php endforeach; ?>>
                                             <i class="material-icons <?php echo $actionMenu->getIcon()->getClass(); ?>"
                                                title="<?php echo $actionMenu->getTitle(); ?>"><?php echo $actionMenu->getIcon()->getIcon(); ?></i>
