@@ -21,23 +21,21 @@
                         <div class="field-name"><?php echo _('Cliente'); ?></div>
                         <?php if (!empty($AccountSearchItem->getCustomerLink())): ?>
                             <a href="<?php echo $AccountSearchItem->getCustomerLink(); ?>" target="blank"
-                               title="<?php echo _('Buscar en Wiki'); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?>
+                               title="<?php echo _('Buscar en Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
-                        <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
-                              class="mdl-chip__contact mdl-color-text--white">
-                            <?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
-                        <span class="mdl-chip__text"
-                              title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
-                    </span>
+                                    <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
+                                          class="mdl-chip__contact mdl-color-text--white"><?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
+                                    <span class="mdl-chip__text"
+                                          title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
+                                </span>
                             </a>
                         <?php else: ?>
                             <span class="mdl-chip mdl-chip--contact">
-                        <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
-                              class="mdl-chip__contact mdl-color-text--white">
-                            <?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
-                        <span class="mdl-chip__text"
-                              title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
-                    </span>
+                                <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
+                                      class="mdl-chip__contact mdl-color-text--white"><?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
+                                <span class="mdl-chip__text"
+                                      title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
+                            </span>
                         <?php endif; ?>
                     </div>
 
@@ -137,7 +135,8 @@
 
                         <?php if ($AccountSearchData->getAccountNotes() !== ''): ?>
                             <i id="notes-<?php echo $AccountSearchData->getAccountId(); ?>" class="material-icons">speaker_notes</i>
-                            <div class="mdl-tooltip mdl-tooltip--top" for="notes-<?php echo $AccountSearchData->getAccountId(); ?>">
+                            <div class="mdl-tooltip mdl-tooltip--top"
+                                 for="notes-<?php echo $AccountSearchData->getAccountId(); ?>">
                                 <?php echo _('Notas'), '<br>', $AccountSearchItem->getShortNotes(); ?>
                             </div>
                         <?php endif; ?>

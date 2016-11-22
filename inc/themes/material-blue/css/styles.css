@@ -1410,50 +1410,41 @@ footer img {
 }
 
 #boxLogin {
-    width: 45em;
-    min-height: 150px;
+    position: relative;
+    width: 40em;
+    min-height: 22em;
     margin: 0 auto;
     padding: 1em;
-    background: url("../imgs/logo_full.svg") no-repeat #fff;
+    background: #fff url("../imgs/logo_full_new.png") no-repeat bottom left;
     background-size: 300px auto;
-    background-position: .5em .5em;
-}
-
-#boxLogin .error {
-    float: left;
-    width: 315px;
-    margin-top: 15px;
-    color: orange;
-    border: 1px orange solid;
-    margin-left: auto;
-    margin-right: auto
-}
-
-#boxLogin #boxData, #boxLogin #boxButton {
-    margin-top: 7em;
 }
 
 #boxLogin #boxData {
-    display: inline-block;
-    width: 250px;
     height: 100%;
-    min-height: 100px;
+    min-height: 15em;
     text-align: left;
-    margin-left: 13em;
-    background-color: transparent
+    background-color: transparent;
+    margin-bottom: 10em;
+}
+
+#boxLogin #boxData i {
+    margin-right: .5em;
+    opacity: .5;
 }
 
 #boxLogin #boxButton {
-    display: inline-block;
-    text-align: right;
-    margin-left: 2em;
+    position: absolute;
+    top: 2em;
+    right: 2em;
 }
 
 #boxLogin #boxActions {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
     width: 100%;
-    height: 1em;
-    margin-top: 1em;
-    text-align: right
+    padding: .5em;
+    text-align: right;
 }
 
 #boxLogin #boxActions a {
@@ -1514,7 +1505,7 @@ fieldset.warning a {
     -webkit-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);
     -moz-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);
     align-items: center;
-    background: url("../imgs/logo_full.svg") left no-repeat;
+    background: url("../imgs/logo_full_new.png") left no-repeat;
     background-size: auto 150px;
     height: 150px
 }

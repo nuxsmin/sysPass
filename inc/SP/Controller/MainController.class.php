@@ -89,7 +89,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('icons', DiFactory::getTheme()->getIcons());
         $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
         $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
-        $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full.svg');
+        $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full_new.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
 
         // Cargar la clave pública en la sesión
