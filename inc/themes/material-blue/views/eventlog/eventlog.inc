@@ -129,12 +129,16 @@
     </div>
 </div>
 
-<div class="action fullWidth">
-    <button
-        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
-        title="<?php echo _('Vaciar registro de eventos'); ?>"
-        data-onclick="eventlog/clear"
-        data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_EVL; ?>">
-        <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
-    </button>
+<div class="item-actions">
+    <ul>
+        <li>
+            <button
+                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
+                title="<?php echo _('Vaciar registro de eventos'); ?>"
+                data-onclick="eventlog/clear"
+                data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_EVL; ?>">
+                <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
+            </button>
+        </li>
+    </ul>
 </div>

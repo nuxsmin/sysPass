@@ -204,6 +204,27 @@
                             <span class="mdl-switch__label"
                                   title="<?php echo _('Gestión de enlaces'); ?>"><?php echo _('Enlaces Públicos'); ?></span>
                         </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accounts">
+                            <input type="checkbox" id="profile_accounts"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_accounts" <?php echo $profile->isMgmAccounts() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo _('Gestión de cuentas'); ?>"><?php echo _('Cuentas'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_files">
+                            <input type="checkbox" id="profile_files"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_files" <?php echo $profile->isMgmFiles() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo _('Gestión de archivos'); ?>"><?php echo _('Archivos'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_tags">
+                            <input type="checkbox" id="profile_tags"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_tags" <?php echo $profile->isMgmTags() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo _('Gestión de etiquetas'); ?>"><?php echo _('Etiquetas'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>

@@ -125,6 +125,18 @@ class ProfileData extends ProfileBaseData
     /**
      * @var bool
      */
+    protected $mgmAccounts = false;
+    /**
+     * @var bool
+     */
+    protected $mgmTags = false;
+    /**
+     * @var bool
+     */
+    protected $mgmFiles = false;
+    /**
+     * @var bool
+     */
     protected $evl = false;
     /**
      * @var bool
@@ -533,5 +545,53 @@ class ProfileData extends ProfileBaseData
     public function setAccPermission($accPermission)
     {
         $this->accPermission = $accPermission;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmAccounts()
+    {
+        return $this->mgmAccounts;
+    }
+
+    /**
+     * @param boolean $mgmAccounts
+     */
+    public function setMgmAccounts($mgmAccounts)
+    {
+        $this->mgmAccounts = $mgmAccounts;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmTags()
+    {
+        return $this->mgmTags;
+    }
+
+    /**
+     * @param boolean $mgmTags
+     */
+    public function setMgmTags($mgmTags)
+    {
+        $this->mgmTags = $mgmTags;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmFiles()
+    {
+        return $this->mgmFiles;
+    }
+
+    /**
+     * @param boolean $mgmFiles
+     */
+    public function setMgmFiles($mgmFiles)
+    {
+        $this->mgmFiles = $mgmFiles;
     }
 }

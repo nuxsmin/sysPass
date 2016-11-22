@@ -65,6 +65,9 @@ $sk = Request::analyze('sk', false);
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     $Json->setDescription(_('CONSULTA INVÁLIDA'));
     Json::returnJson($Json);
+} elseif (Checks::demoIsEnabled()) {
+    $Json->setDescription(_('Ey, esto es una DEMO!!'));
+    Json::returnJson($Json);
 }
 
 // Variables POST del formulario

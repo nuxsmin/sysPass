@@ -111,6 +111,9 @@ class ProfileForm extends FormBase implements FormInterface
         $this->ProfileData->setMgmProfiles(Request::analyze('profile_profiles', 0, false, 1));
         $this->ProfileData->setMgmApiTokens(Request::analyze('profile_apitokens', 0, false, 1));
         $this->ProfileData->setMgmPublicLinks(Request::analyze('profile_publinks', 0, false, 1));
+        $this->ProfileData->setMgmAccounts(Request::analyze('profile_accounts', 0, false, 1));
+        $this->ProfileData->setMgmFiles(Request::analyze('profile_files', 0, false, 1));
+        $this->ProfileData->setMgmTags(Request::analyze('profile_tags', 0, false, 1));
         $this->ProfileData->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
     }
 }

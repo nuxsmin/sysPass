@@ -18,7 +18,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
                 <input type="checkbox" id="log_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="log_enabled"
-                    <?php echo $chkLog, ' ', $isDisabled; ?>/>
+                    <?php echo $chkLog; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>
@@ -30,7 +30,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="syslog_enabled">
                 <input type="checkbox" id="syslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="syslog_enabled"
-                    <?php echo $chkSyslog, ' ', $isDisabled; ?>/>
+                    <?php echo $chkSyslog; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>
@@ -42,7 +42,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remotesyslog_enabled">
                 <input type="checkbox" id="remotesyslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="remotesyslog_enabled"
-                    <?php echo $chkRemoteSyslog, ' ', $isDisabled; ?>/>
+                    <?php echo $chkRemoteSyslog; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>

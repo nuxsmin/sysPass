@@ -27,7 +27,7 @@
                             <input type="checkbox" id="wiki_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="wiki_enabled"
-                                <?php echo $chkWiki, ' ', $isDisabled; ?>/>
+                                <?php echo $chkWiki; ?>/>
                             <span class="mdl-switch__label"></span>
                         </label>
                     </td>
@@ -143,7 +143,7 @@
                             <input type="checkbox" id="dokuwiki_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="dokuwiki_enabled"
-                                <?php echo $chkDokuWiki, ' ', $isDisabled; ?>/>
+                                <?php echo $chkDokuWiki; ?>/>
                             <span class="mdl-switch__label"></span>
                         </label>
                     </td>
@@ -171,7 +171,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiUrl; ?>" <?php echo $isDisabled; ?>/>
+                                   maxlength="128" value="<?php echo $dokuWikiUrl; ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo _('URL API'); ?></label>
                         </div>
                     </td>
@@ -198,7 +198,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_urlbase" name="dokuwiki_urlbase" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiUrlBase; ?>" <?php echo $isDisabled; ?>/>
+                                   maxlength="128" value="<?php echo $dokuWikiUrlBase; ?>"/>
                             <label class="mdl-textfield__label"
                                    for="dokuwiki_urlbase"><?php echo _('URL Base'); ?></label>
                         </div>
@@ -219,7 +219,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_user" name="dokuwiki_user" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiUser; ?>" <?php echo $isDisabled; ?>/>
+                                   maxlength="128" value="<?php echo $dokuWikiUser; ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_user"><?php echo _('Usuario'); ?></label>
                         </div>
                     </td>
@@ -232,7 +232,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_pass" name="dokuwiki_pass" type="password"
                                    class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiPass; ?>" <?php echo $isDisabled; ?>/>
+                                   maxlength="128" value="<?php echo $dokuWikiPass; ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_pass"><?php echo _('Clave'); ?></label>
                         </div>
                     </td>
@@ -253,17 +253,13 @@
                             <input id="dokuwiki_namespace" name="dokuwiki_namespace" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128"
-                                   value="<?php echo $dokuWikiNamespace; ?>" <?php echo $isDisabled; ?>/>
+                                   value="<?php echo $dokuWikiNamespace; ?>"/>
                             <label class="mdl-textfield__label"
                                    for="dokuwiki_namespace"><?php echo _('Namespace'); ?></label>
                         </div>
                     </td>
                 </tr>
             </table>
-
-            <?php if ($isDemoMode): ?>
-                <input type="hidden" name="wiki_enabled" value="1"/>
-            <?php endif; ?>
 
             <input type="hidden" name="type" value="dokuwiki"/>
             <input type="hidden" name="activeTab" value="<?php echo $wiki_tabIndex; ?>"/>

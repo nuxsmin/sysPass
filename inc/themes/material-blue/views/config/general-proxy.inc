@@ -11,7 +11,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="proxy_enabled">
                 <input type="checkbox" id="proxy_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="proxy_enabled"
-                    <?php echo $chkProxy, ' ', $isDisabled; ?>/>
+                    <?php echo $chkProxy; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>

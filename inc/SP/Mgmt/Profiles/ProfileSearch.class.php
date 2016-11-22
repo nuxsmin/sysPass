@@ -52,16 +52,10 @@ class ProfileSearch extends ProfileBase implements ItemSearchInterface
         $Data->setOrder('userprofile_name');
 
         if ($SearchData->getSeachString() !== '') {
-            if (Checks::demoIsEnabled()) {
-                $Data->setWhere('userprofile_name LIKE ? AND userprofile_name <> "Admin" AND userprofile_name <> "Demo"');
-            } else {
-                $Data->setWhere('userprofile_name LIKE ?');
-            }
+            $Data->setWhere('userprofile_name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
-        } elseif (Checks::demoIsEnabled()) {
-            $Data->setWhere('userprofile_name <> "Admin" AND userprofile_name <> "Demo"');
         }
 
         $Data->setLimit('?,?');

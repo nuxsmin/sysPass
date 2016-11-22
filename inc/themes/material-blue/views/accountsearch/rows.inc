@@ -191,7 +191,7 @@
                             <?php endif; ?>
                         <?php endforeach; ?>
 
-                        <?php if (count($data->getDataActionsMenu()) > 0): ?>
+                        <?php if (!$AccountSearchItem->isShowRequest() && count($data->getDataActionsMenu()) > 0): ?>
                             <button id="actions-menu-lower-right-<?php echo $AccountSearchData->getAccountId(); ?>"
                                     class="mdl-button mdl-js-button mdl-button--icon">
                                 <i class="material-icons">more_vert</i>

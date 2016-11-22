@@ -42,7 +42,7 @@
         </td>
         <td class="valField">
             <select name="sitetheme" id="sel-sitetheme" size="1"
-                    class="select-box sel-chosen-ns" <?php echo $isDisabled; ?>>
+                    class="select-box sel-chosen-ns" >
                 <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
                     <option
                         value='<?php echo $themeDir; ?>' <?php echo ($currentTheme == $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>
@@ -58,7 +58,7 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="session_timeout" name="session_timeout" type="number" step="300"
                        pattern="[0-9]{2,4}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
-                       value="<?php echo $sessionTimeout; ?>" <?php echo $isDisabled; ?> required/>
+                       value="<?php echo $sessionTimeout; ?>"  required/>
                 <label class="mdl-textfield__label"
                        for="session_timeout"><?php echo _('Timeout de sesión (s)'); ?></label>
             </div>
@@ -79,7 +79,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="https_enabled">
                 <input type="checkbox" id="https_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="https_enabled"
-                    <?php echo $chkHttps, ' ', $isDisabled; ?>/>
+                    <?php echo $chkHttps; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>
@@ -98,7 +98,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
                 <input type="checkbox" id="debug" class="mdl-switch__input mdl-color-text--indigo-400" name="debug"
-                    <?php echo $chkDebug, ' ', $isDisabled; ?>/>
+                    <?php echo $chkDebug; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>
@@ -117,7 +117,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
                 <input type="checkbox" id="maintenance" class="mdl-switch__input mdl-color-text--indigo-400" name="maintenance"
-                    <?php echo $chkMaintenance, ' ', $isDisabled; ?>/>
+                    <?php echo $chkMaintenance; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>

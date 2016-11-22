@@ -186,7 +186,7 @@ pre, code, samp, kbd {
 }
 
 #container.login {
-    padding-top: 10em
+    margin-top: 3%;
 }
 
 /*#container.main {
@@ -1409,36 +1409,43 @@ footer img {
     min-width: 20em;
 }
 
-#boxLogin {
-    position: relative;
+/* LOGIN - START */
+#login-container {
     width: 40em;
-    min-height: 22em;
     margin: 0 auto;
-    padding: 1em;
-    background: #fff url("../imgs/logo_full_new.png") no-repeat bottom left;
-    background-size: 300px auto;
+    background: transparent url("../imgs/logo_full_new.png") no-repeat top left;
+    background-size: auto 10em;
 }
 
-#boxLogin #boxData {
+#login-container #boxLogin {
+    position: relative;
+    margin: 10em auto 0 auto;
+    width: 100%;
+    min-height: 12em;
+    padding: 1em;
+    background-color: #fff;
+}
+
+#login-container #boxLogin #boxData {
     height: 100%;
-    min-height: 13em;
-    margin-bottom: 10em;
+    min-height: 14em;
+    /*margin-bottom: 10em;*/
     text-align: left;
     background-color: transparent;
 }
 
-#boxLogin #boxData i {
+#login-container #boxLogin #boxData i {
     margin-right: .5em;
     opacity: .5;
 }
 
-#boxLogin #boxButton {
+#login-container #boxLogin #boxButton {
     position: absolute;
     top: 2em;
     right: 2em;
 }
 
-#boxLogin #boxActions {
+#login-container #boxLogin #boxActions {
     position: absolute;
     bottom: 1em;
     right: 1em;
@@ -1447,11 +1454,11 @@ footer img {
     text-align: right;
 }
 
-#boxLogin #boxActions a {
+#login-container #boxLogin #boxActions a {
     color: #c9c9c9
 }
 
-#boxLogout {
+#login-container #boxLogout {
     width: 250px;
     margin: 8em auto 0 auto;
     font-size: 14px;
@@ -1462,7 +1469,7 @@ footer img {
     padding: .5em
 }
 
-#boxUpdated {
+#login-container #boxUpdated {
     width: 350px;
     margin: 5em auto 5em auto;
     font-size: 14px;
@@ -1472,6 +1479,8 @@ footer img {
     border: #dbfdcb 1px solid;
     padding: .5em
 }
+
+/* LOGIN - END */
 
 fieldset.warning {
     padding: 8px;
@@ -1492,7 +1501,7 @@ fieldset.warning a {
 
 #actions {
     width: 100%;
-    margin: auto auto 50px;
+    /*margin: auto auto 50px;*/
     line-height: 2em
 }
 
@@ -1501,9 +1510,9 @@ fieldset.warning a {
     width: 100%;
     margin-bottom: 30px;
     color: #607d8b;
-    box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);
-    -webkit-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);
-    -moz-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);
+    /*box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);*/
+    /*-webkit-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);*/
+    /*-moz-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);*/
     align-items: center;
     background: url("../imgs/logo_full_new.png") left no-repeat;
     background-size: auto 150px;

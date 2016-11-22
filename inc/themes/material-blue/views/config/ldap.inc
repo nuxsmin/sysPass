@@ -31,7 +31,7 @@
                                 <input type="checkbox" id="ldap_enabled"
                                        class="mdl-switch__input mdl-color-text--indigo-400"
                                        name="ldap_enabled"
-                                    <?php echo $chkLdap, ' ', $isDisabled; ?>/>
+                                    <?php echo $chkLdap; ?>/>
                                 <span class="mdl-switch__label"></span>
                             </label>
                         </td>
@@ -61,7 +61,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_server" name="ldap_server" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapServer; ?>" <?php echo $isDisabled; ?>/>
+                                       maxlength="128" value="<?php echo $ldapServer; ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_server"><?php echo _('Servidor'); ?></label>
                             </div>
@@ -91,7 +91,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_binduser" name="ldap_binduser" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapBindUser; ?>" <?php echo $isDisabled; ?>/>
+                                       maxlength="128" value="<?php echo $ldapBindUser; ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_binduser"><?php echo _('Usuario'); ?></label>
                             </div>
@@ -112,7 +112,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_bindpass" name="ldap_bindpass" type="password"
                                        class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapBindPass; ?>" <?php echo $isDisabled; ?>/>
+                                       maxlength="128" value="<?php echo $ldapBindPass; ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_bindpass"><?php echo _('Clave'); ?></label>
                             </div>
@@ -142,7 +142,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_base" name="ldap_base" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapBase; ?>" <?php echo $isDisabled; ?>/>
+                                       maxlength="128" value="<?php echo $ldapBase; ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_base"><?php echo _('Base de búsqueda'); ?></label>
                             </div>
@@ -176,7 +176,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_group" name="ldap_group" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapGroup; ?>" <?php echo $isDisabled; ?>/>
+                                       maxlength="128" value="<?php echo $ldapGroup; ?>"/>
                                 <label class="mdl-textfield__label" for="ldap_group"><?php echo _('Grupo'); ?></label>
                             </div>
                         </td>
@@ -194,7 +194,7 @@
                         </td>
                         <td class="valField">
                             <select id="ldap_defaultgroup" name="ldap_defaultgroup"
-                                    class="select-box sel-chosen-usergroup" <?php echo $isDisabled; ?> required>
+                                    class="select-box sel-chosen-usergroup" required>
                                 <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                                 <?php foreach ($groups as $group): ?>
                                     <option
@@ -216,7 +216,7 @@
                         </td>
                         <td class="valField">
                             <select id="ldap_defaultprofile" name="ldap_defaultprofile"
-                                    class="select-box sel-chosen-profile" <?php echo $isDisabled; ?> required>
+                                    class="select-box sel-chosen-profile" required>
                                 <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
                                 <?php foreach ($profiles as $profile): ?>
                                     <option
@@ -241,7 +241,7 @@
                                 <input type="checkbox" id="ldap_ads"
                                        class="mdl-switch__input mdl-color-text--indigo-400"
                                        name="ldap_ads"
-                                    <?php echo $chkLdapADS, ' ', $isDisabled; ?>/>
+                                    <?php echo $chkLdapADS; ?>/>
                                 <span class="mdl-switch__label"></span>
                             </label>
                         </td>
@@ -263,10 +263,6 @@
                     </tr>
                 <?php endif; ?>
             </table>
-
-            <?php if ($isDemoMode): ?>
-                <input type="hidden" name="ldap_enabled" value="0"/>
-            <?php endif; ?>
 
             <input type="hidden" name="type" value="ldap"/>
             <input type="hidden" name="activeTab" value="<?php echo $ldap_tabIndex; ?>"/>

@@ -114,7 +114,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function delete($id)
     {
         if (is_array($id)) {
-            foreach ($id as $itemId){
+            foreach ($id as $itemId) {
                 $this->delete($itemId);
             }
 
@@ -185,7 +185,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
 
         /**
          * @var ProfileBaseData $ProfileData
-         * @var ProfileData     $Profile
+         * @var ProfileData $Profile
          */
         $ProfileData = DB::getResults($Data);
         $Profile = unserialize($ProfileData->getUserprofileProfile());
@@ -275,18 +275,10 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
      */
     public function getAll()
     {
-        if (Checks::demoIsEnabled()) {
-            $query = /** @lang SQL */
-                'SELECT userprofile_id, userprofile_name
-                FROM usrProfiles
-                WHERE userprofile_name <> "Admin"
-                ORDER BY userprofile_name';
-        } else {
-            $query = /** @lang SQL */
-                'SELECT userprofile_id, userprofile_name
+        $query = /** @lang SQL */
+            'SELECT userprofile_id, userprofile_name
                 FROM usrProfiles
                 ORDER BY userprofile_name';
-        }
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

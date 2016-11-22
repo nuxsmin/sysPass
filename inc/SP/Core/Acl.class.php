@@ -85,7 +85,6 @@ class Acl implements ActionsInterface
             case self::ACTION_ACC_DELETE:
                 return ($curUserIsAdminAcc || $curUserProfile->isAccDelete());
             case self::ACTION_ACC_FILES:
-            case self::ACTION_MGM_FILES:
                 return ($curUserIsAdminAcc || $curUserProfile->isAccFiles());
             case self::ACTION_MGM:
                 return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
@@ -105,6 +104,12 @@ class Acl implements ActionsInterface
                 return $curUserProfile->isMgmPublicLinks();
             case self::ACTION_MGM_PUBLICLINKS_NEW:
                 return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
+            case self::ACTION_MGM_ACCOUNTS:
+                return $curUserProfile->isMgmAccounts();
+            case self::ACTION_MGM_FILES:
+                return $curUserProfile->isMgmFiles();
+            case self::ACTION_MGM_TAGS:
+                return $curUserProfile->isMgmTags();
             case self::ACTION_CFG_ENCRYPTION:
                 return $curUserProfile->isConfigEncryption();
             case self::ACTION_CFG_BACKUP:

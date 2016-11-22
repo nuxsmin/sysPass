@@ -28,7 +28,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="publinks_enabled">
                 <input type="checkbox" id="publinks_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="publinks_enabled"
-                    <?php echo $chkPubLinks, ' ', $isDisabled; ?>/>
+                    <?php echo $chkPubLinks; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>
@@ -74,7 +74,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="publinks_image_enabled">
                 <input type="checkbox" id="publinks_image_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="publinks_image_enabled"
-                    <?php echo $chkPubLinksImage, ' ', $isDisabled; ?>/>
+                    <?php echo $chkPubLinksImage; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>

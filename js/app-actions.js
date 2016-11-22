@@ -244,8 +244,8 @@ sysPass.Actions = function (Common) {
                         $obj.find("input[type='text'],input[type='password']").val("");
                         $obj.find("input:first").focus();
 
-                        $("#mpass").prop("disabled", false);
-                        $("#smpass").val("").show();
+                        $("#mpass").prop("disabled", false).val("");
+                        $("#smpass").show();
                         break;
                     default:
                         Common.msg.out(json);

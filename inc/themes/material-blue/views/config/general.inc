@@ -15,11 +15,6 @@
             <?php include $this->includeTemplate('general-links'); ?>
             <?php include $this->includeTemplate('general-proxy'); ?>
 
-            <?php if ($isDemoMode): ?>
-                <input type="hidden" name="log_enabled" value="1"/>
-                <input type="hidden" name="files_enabled" value="1"/>
-            <?php endif; ?>
-
             <input type="hidden" name="activeTab" value="<?php echo $config_tabIndex; ?>"/>
             <input type="hidden" name="actionId" value="<?php echo $config_actionId; ?>"/>
             <input type="hidden" name="sk" value="">

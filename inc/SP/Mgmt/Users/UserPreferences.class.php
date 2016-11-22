@@ -105,7 +105,9 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
 
         $UserPreferencesData = unserialize($queryRes->getUserPreferences());
 
-        if (get_class($UserPreferencesData) === '__PHP_Incomplete_Class') {
+        if ($UserPreferencesData === false) {
+            return new UserPreferencesData();
+        } elseif (get_class($UserPreferencesData) === '__PHP_Incomplete_Class') {
             $UserPreferencesData = Util::castToClass($this->getDataModel(), $UserPreferencesData);
         }
 

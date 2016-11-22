@@ -20,7 +20,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
                 <input type="checkbox" id="files_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="files_enabled"
-                    <?php echo $chkFiles, ' ', $isDisabled; ?>/>
+                    <?php echo $chkFiles; ?>/>
                 <span class="mdl-switch__label"></span>
             </label>
         </td>
@@ -68,7 +68,7 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="files_allowed_size" name="files_allowed_size" type="number" step="512"
                        pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
-                       value="<?php echo $filesAllowedSize; ?>" <?php echo $isDisabled; ?>/>
+                       value="<?php echo $filesAllowedSize; ?>"/>
                 <label class="mdl-textfield__label"
                        for="files_allowed_size"><?php echo _('Tamaño máximo de archivo en bytes'); ?></label>
             </div>

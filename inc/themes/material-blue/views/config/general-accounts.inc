@@ -55,7 +55,7 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="account_count" name="account_count" type="number" step="6"
                        pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
-                       value="<?php echo $accountCount; ?>" <?php echo $isDisabled; ?> required/>
+                       value="<?php echo $accountCount; ?>" required/>
                 <label class="mdl-textfield__label"
                        for="account_count"><?php echo _('Número de resultados por página'); ?></label>
             </div>

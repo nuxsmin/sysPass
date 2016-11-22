@@ -1,8 +1,8 @@
-<header class="mdl-layout__header">
+<header class="mdl-layout__header mdl-color--indigo-400">
     <div class="mdl-layout__header-row">
         <!-- Title -->
-        <span class="mdl-layout-icon"><img class="logo" src="<?php echo $logo; ?>" alt="logo"/></span>
-<!--        <span class="mdl-layout-title">--><?php //echo $appInfo['appname']; ?><!--</span>-->
+        <span class="mdl-layout-icon"><img class="logo" src="imgs/logo_full_new.png" alt="logo"/></span>
+<!--        <span class="mdl-layout-title">--><?php //echo '#', $appInfo['appname']; ?><!--</span>-->
         <!-- Add spacer, to align navigation to the right -->
         <div class="mdl-layout-spacer"></div>
         <!-- Navigation -->
