@@ -603,7 +603,7 @@ pre, code, samp, kbd {
 }
 
 #content .data-table tbody td.cell-nodata {
-    padding: 1em 0;
+    padding: 0 .5em;
     text-align: left;
 }
 
@@ -1645,6 +1645,10 @@ fieldset.warning a {
 
 .ui-dialog {
     z-index: 9999 !important
+}
+
+.help-box {
+    display: none;
 }
 
 @media screen and (max-width: 1000px) {

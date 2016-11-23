@@ -1,0 +1,26 @@
+#toast-container > div {
+    opacity: 1;
+    box-shadow: none;
+    filter: none;
+}
+
+#toast-container > div:hover {
+    box-shadow: none;
+    filter: none;
+}
+
+.toast {
+    background-color: #030303;
+}
+.toast-success {
+    background-color: #26a69a;
+}
+.toast-error {
+    background-color: #ef5350;
+}
+.toast-info {
+    background-color: #42a5f5;
+}
+.toast-warning {
+    background-color: #ffca28;
+}

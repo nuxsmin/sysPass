@@ -31,14 +31,18 @@ $themeInfo = [
     'js' => [
         'bootstrap-material-datetimepicker.min.js',
         'material.min.js',
-        'app-theme.min.js'],
+        'mdl-jquery-modal-dialog.js',
+        'app-theme.min.js'
+    ],
     'css' => [
         'fonts.min.css',
         'material.min.css',
         'material-custom.min.css',
         'bootstrap-material-datetimepicker.min.css',
         'jquery-ui.theme.min.css',
-        'styles.min.css',
-        'alertify-custom.min.css',
-        'selectize.bootstrap3.min.css']
+        'mdl-jquery-modal-dialog.min.css',
+        'selectize.bootstrap3.min.css',
+        'toastr.min.css',
+        'styles.min.css'
+    ]
 ];

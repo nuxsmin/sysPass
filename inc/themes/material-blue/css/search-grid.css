@@ -16,7 +16,6 @@
 #content #data-search .account-label {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
     width: 100%;
     min-height: 8em;
     height: auto;
@@ -138,6 +137,10 @@
 }
 
 @media screen and (max-width: 1000px) {
+    #content #data-search .account-label {
+        flex-wrap: wrap;
+    }
+
     #content #data-search .account-label .label-field {
         width: 100%;
     }

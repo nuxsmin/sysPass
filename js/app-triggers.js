@@ -137,9 +137,19 @@ sysPass.Triggers = function (Common) {
 
             formAction($(this));
         }).on("click", ".btn-help", function () {
-            var $this = $(this);
+            // var $this = $(this);
+            // $("#" + $this.data("help")).dialog("open");
 
-            $("#" + $this.data("help")).dialog("open");
+            var $this = $(this);
+            var helpText = $("#" + $this.data("help")).html();
+
+            showDialog({
+                title: Common.config().LANG[54],
+                text: helpText,
+                positive: {
+                    title: Common.config().LANG[43]
+                }
+            });
         }).on("reset", ".form-action", function (e) {
             e.preventDefault();
 
@@ -250,11 +260,11 @@ sysPass.Triggers = function (Common) {
 
             selectDetect($container);
 
-            $container.find(".help-box").dialog({
-                autoOpen: false,
-                title: Common.config().LANG[54],
-                width: screen.width / 2.5
-            });
+            // $container.find(".help-box").dialog({
+            //     autoOpen: false,
+            //     title: Common.config().LANG[54],
+            //     width: screen.width / 2.5
+            // });
 
             if (typeof Common.appTheme().viewsTriggers.common === "function") {
                 Common.appTheme().viewsTriggers.common($container);

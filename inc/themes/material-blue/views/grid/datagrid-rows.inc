@@ -26,8 +26,7 @@
                     <?php foreach ($data->getData()->getDataRowSourcesWithIcon() as $rowSrcIcon): ?>
                         <?php if ($dataItem->{$rowSrcIcon[0]} == 1): ?>
                             <i class="material-icons <?php echo $rowSrcIcon[1]->getClass(); ?>"
-                               title="<?php echo $rowSrcIcon[1]->getTitle(); ?>"><?php echo $rowSrcIcon[1]->getIcon(); ?>
-                            </i>
+                               title="<?php echo $rowSrcIcon[1]->getTitle(); ?>"><?php echo $rowSrcIcon[1]->getIcon(); ?></i>
                         <?php else: ?>
                             &nbsp;
                         <?php endif; ?>

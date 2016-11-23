@@ -91,10 +91,29 @@ sysPass.Main = function () {
     };
 
     // Configurar Alertify
-    var $alertify = alertify
-        .logPosition("top right")
-        .closeLogOnClick(true)
-        .delay(10000);
+    // var $alertify = alertify
+    //     .logPosition("top right")
+    //     .closeLogOnClick(true)
+    //     .delay(10000);
+
+    // Opciones para Toastr
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 
     /**
      * Retrollamadas de los elementos
@@ -126,16 +145,16 @@ sysPass.Main = function () {
     // Mostrar mensaje de aviso
     var msg = {
         ok: function (msg) {
-            $alertify.success(msg);
+            toastr.success(msg);
         },
         error: function (msg) {
-            $alertify.error(msg);
+            toastr.error(msg);
         },
         warn: function (msg) {
-            $alertify.warn(msg);
+            toastr.warning(msg);
         },
         info: function (msg) {
-            $alertify.info(msg);
+            toastr.info(msg);
         },
         out: function (data) {
             if (typeof data === "object") {
