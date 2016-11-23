@@ -1,9 +1,4 @@
 <div id="actions" align="center">
-
-    <?php if ($showLogo): ?>
-        <div id="logo"></div>
-    <?php endif; ?>
-
     <?php if (count($errors) > 0): ?>
         <ul class="errors round">
             <?php foreach ($errors as $err): ?>

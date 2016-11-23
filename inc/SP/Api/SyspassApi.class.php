@@ -69,7 +69,10 @@ class SyspassApi extends ApiBase
         $Account = new Account($AccountData);
         $Account->getData();
 
-        $access = (Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())
+        $Acl = new Acl(ActionsInterface::ACTION_ACC_VIEW_PASS);
+        $Acl->setAccountData($Account->getAccountDataForACL());
+
+        $access = ($Acl->checkAccountAccess()
             && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
 
         if (!$access){
@@ -131,8 +134,10 @@ class SyspassApi extends ApiBase
         }
 
         $Account = new Account(new AccountData($this->params->accountId));
+        $Acl = new Acl(ActionsInterface::ACTION_ACC_VIEW);
+        $Acl->setAccountData($Account->getAccountDataForACL());
 
-        $access = (Acl::checkAccountAccess(ActionsInterface::ACTION_ACC_VIEW, $Account->getAccountDataForACL())
+        $access = ($Acl->checkAccountAccess()
             && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
 
         if (!$access){

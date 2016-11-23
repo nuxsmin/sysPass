@@ -29,6 +29,7 @@ namespace SP\Core;
 use SP\DataModel\AccountData;
 use SP\Controller;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\UserData;
 use SP\Mgmt\Groups\Group;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
@@ -40,6 +41,50 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Acl implements ActionsInterface
 {
+    /**
+     * @var int
+     */
+    protected $actionId;
+    /**
+     * @var AccountExtData
+     */
+    protected $AccountData;
+    /**
+     * @var UserData
+     */
+    protected $UserData;
+    /**
+     * @var bool
+     */
+    protected $userInGroups = false;
+    /**
+     * @var bool
+     */
+    protected $userInUsers = false;
+    /**
+     * @var bool
+     */
+    protected $resultView = false;
+    /**
+     * @var bool
+     */
+    protected $resultEdit = false;
+    /**
+     * @var bool
+     */
+    private $compileAccountAccess = false;
+
+    /**
+     * Acl constructor.
+     *
+     * @param int $actionId
+     */
+    public function __construct($actionId = null)
+    {
+        $this->actionId = $actionId;
+        $this->UserData = Session::getUserData();
+    }
+
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
      * Esta función comprueba los permisos del usuario para realizar una acción.
@@ -161,9 +206,9 @@ class Acl implements ActionsInterface
             self::ACTION_MGM_CUSTOMERS => ['mgm_customers', _('Gestión Clientes')],
             self::ACTION_MGM_CUSTOMFIELDS => ['mgm_customfields', _('Gestión Campos Personalizados')],
             self::ACTION_MGM_APITOKENS => ['mgm_apitokens', _('Gestión Autorizaciones API')],
-            self::ACTION_MGM_FILES  => ['mgm_files', _('Gestión de Archivos')],
-            self::ACTION_MGM_ACCOUNTS  => ['mgm_accounts', _('Gestión de Cuentas')],
-            self::ACTION_MGM_TAGS  => ['mgm_tags', _('Gestión de Etiquetas')],
+            self::ACTION_MGM_FILES => ['mgm_files', _('Gestión de Archivos')],
+            self::ACTION_MGM_ACCOUNTS => ['mgm_accounts', _('Gestión de Cuentas')],
+            self::ACTION_MGM_TAGS => ['mgm_tags', _('Gestión de Etiquetas')],
             self::ACTION_USR => ['usr', _('Gestión Usuarios')],
             self::ACTION_USR_USERS => ['usr_users', _('Gestión Usuarios')],
             self::ACTION_USR_GROUPS => ['usr_groups', _('Gestión Grupos')],
@@ -191,67 +236,89 @@ class Acl implements ActionsInterface
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param string         $module      con la acción realizada
-     * @param AccountExtData $accountData con los datos de la cuenta a verificar
+     * @param null $actionId
      * @return bool
      */
-    public static function checkAccountAccess($module, AccountExtData $accountData)
+    public function checkAccountAccess($actionId = null)
     {
-        if (Session::getUserData()->isUserIsAdminApp()
-            || Session::getUserData()->isUserIsAdminAcc()
+        if ($this->UserData->isUserIsAdminApp()
+            || $this->UserData->isUserIsAdminAcc()
         ) {
             return true;
         }
 
-        $userId = Session::getUserData()->getUserId();
-        $userGroupId = Session::getUserData()->getUserGroupId();
-        $userInGroups = self::getIsUserInGroups($accountData);
-        $userInUsers = in_array($userId, $accountData->getAccountUsersId());
+        if ($this->compileAccountAccess === false) {
+            $this->compileAccountAccess();
+        }
 
-        switch ($module) {
+        $action = null === $actionId ? $this->actionId : $actionId;
+
+        switch ($action) {
             case self::ACTION_ACC_VIEW:
             case self::ACTION_ACC_VIEW_PASS:
             case self::ACTION_ACC_VIEW_HISTORY:
             case self::ACTION_ACC_COPY:
-                return ($userId === $accountData->getAccountUserId()
-                    || $userGroupId === $accountData->getAccountUserGroupId()
-                    || $userInUsers
-                    || $userInGroups);
+                return $this->resultView;
             case self::ACTION_ACC_EDIT:
             case self::ACTION_ACC_DELETE:
             case self::ACTION_ACC_EDIT_PASS:
-                return ($userId === $accountData->getAccountUserId()
-                    || $userGroupId === $accountData->getAccountUserGroupId()
-                    || ($userInUsers && $accountData->getAccountOtherUserEdit())
-                    || ($userInGroups && $accountData->getAccountOtherGroupEdit()));
+                return $this->resultEdit;
             default:
                 return false;
         }
     }
 
     /**
+     * Evaluar la ACL
+     */
+    protected function compileAccountAccess()
+    {
+        $this->userInGroups = $this->getIsUserInGroups();
+        $this->userInUsers = in_array($this->UserData->getUserId(), $this->AccountData->getAccountUsersId());
+
+        $this->resultView = ($this->UserData->getUserId() === $this->AccountData->getAccountUserId()
+            || $this->UserData->getUserGroupId() === $this->AccountData->getAccountUserGroupId()
+            || $this->userInUsers
+            || $this->userInGroups);
+
+        $this->resultEdit = ($this->UserData->getUserId() === $this->AccountData->getAccountUserId()
+            || $this->UserData->getUserGroupId() === $this->AccountData->getAccountUserGroupId()
+            || ($this->userInUsers && $this->AccountData->getAccountOtherUserEdit())
+            || ($this->userInGroups && $this->AccountData->getAccountOtherGroupEdit()));
+
+        $this->compileAccountAccess = true;
+    }
+
+    /**
      * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
      * cuenta.
      *
-     * @param AccountExtData $AccountData $AccountData
      * @return bool
      */
-    private static function getIsUserInGroups(AccountExtData $AccountData)
+    protected function getIsUserInGroups()
     {
         // Comprobar si el usuario está vinculado desde un grupo
-        foreach (GroupUsers::getItem()->getById($AccountData->getAccountUserGroupId()) as $GroupUsersData) {
-            if ($GroupUsersData->getUsertogroupUserId() === Session::getUserData()->getUserId()) {
+        foreach (GroupUsers::getItem()->getById($this->AccountData->getAccountUserGroupId()) as $GroupUsersData) {
+            if ($GroupUsersData->getUsertogroupUserId() === $this->UserData->getUserId()) {
                 return true;
             }
         }
 
         // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
-        foreach ($AccountData->getUserGroupsId() as $groupId) {
-            if ($groupId === Session::getUserData()->getUserGroupId()) {
+        foreach ($this->AccountData->getUserGroupsId() as $groupId) {
+            if ($groupId === $this->UserData->getUserGroupId()) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @param AccountExtData $AccountData
+     */
+    public function setAccountData($AccountData)
+    {
+        $this->AccountData = $AccountData;
     }
 }

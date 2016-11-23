@@ -1,10 +1,7 @@
 <div id="actions" class="public-link" align="center">
-    <div id="logo"></div>
     <div id="content" class="public-link">
         <div id="title" class="midroundup titleNormal">
-            <?php use SP\Util\Checks;
-
-            echo $title['name']; ?>
+            <?php echo $title['name']; ?>
             <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
         </div>
         <table class="data round">
@@ -17,13 +14,13 @@
             <tr>
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField">
-                    <?php echo $accountData->customer_name; ?>
+                    <?php echo $accountData->getCustomerName(); ?>
                 </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo _('Categoría'); ?></td>
                 <td class="valField">
-                    <?php echo $accountData->category_name; ?>
+                    <?php echo $accountData->getCategoryName(); ?>
                 </td>
             </tr>
             <tr>

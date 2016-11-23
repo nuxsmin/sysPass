@@ -215,7 +215,8 @@ class AccountAcl
      */
     protected function makeAcl()
     {
-        $aclData = $this->Account->getAccountDataForACL();
+        $Acl = new Acl();
+        $Acl->setAccountData($this->Account->getAccountDataForACL());
 
         // Mostrar historial
         $this->showHistory =
@@ -246,7 +247,7 @@ class AccountAcl
             ($this->action === Acl::ACTION_ACC_SEARCH
                 || $this->action === Acl::ACTION_ACC_VIEW
                 || $this->action === Acl::ACTION_ACC_VIEW_HISTORY)
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $aclData)
+            && $Acl->checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS)
             && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS);
 
         // Mostrar acción de guardar
@@ -256,7 +257,7 @@ class AccountAcl
         $this->showEdit =
             ($this->action === Acl::ACTION_ACC_SEARCH
                 || $this->action === Acl::ACTION_ACC_VIEW)
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $aclData)
+            && $Acl->checkAccountAccess(Acl::ACTION_ACC_EDIT)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT)
             && !$this->Account->getAccountIsHistory();
 
@@ -264,7 +265,7 @@ class AccountAcl
         $this->showEditPass =
             ($this->action === Acl::ACTION_ACC_EDIT
                 || $this->action === Acl::ACTION_ACC_VIEW)
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS, $aclData)
+            && $Acl->checkAccountAccess(Acl::ACTION_ACC_EDIT_PASS)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT_PASS)
             && !$this->Account->getAccountIsHistory();
 
@@ -273,26 +274,26 @@ class AccountAcl
             ($this->action === Acl::ACTION_ACC_SEARCH
                 || $this->action === Acl::ACTION_ACC_DELETE
                 || $this->action === Acl::ACTION_ACC_EDIT)
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_DELETE, $aclData)
+            && $Acl->checkAccountAccess(Acl::ACTION_ACC_DELETE)
             && Acl::checkUserAccess(Acl::ACTION_ACC_DELETE);
 
         // Mostrar acción de restaurar
         $this->showRestore = $this->action === Acl::ACTION_ACC_VIEW_HISTORY
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_EDIT, $aclData)
+            && $Acl->checkAccountAccess(Acl::ACTION_ACC_EDIT)
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT);
 
         // Mostrar acción de enlace público
         $this->showLink = Checks::publicLinksIsEnabled() && Acl::checkUserAccess(Acl::ACTION_MGM_PUBLICLINKS);
 
         // Mostrar acción de ver cuenta
-        $this->showView = Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW, $aclData) && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW);
+        $this->showView = $Acl->checkAccountAccess(Acl::ACTION_ACC_VIEW) && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW);
 
         // Mostrar acción de copiar cuenta
         $this->showCopy =
             ($this->action === Acl::ACTION_ACC_SEARCH
                 || $this->action === Acl::ACTION_ACC_VIEW
                 || $this->action === Acl::ACTION_ACC_EDIT)
-            && Acl::checkAccountAccess(Acl::ACTION_ACC_COPY, $aclData)
+            && $Acl->checkAccountAccess(Acl::ACTION_ACC_COPY)
             && Acl::checkUserAccess(Acl::ACTION_ACC_COPY);
 
         // Cambiar los permisos de la cuenta

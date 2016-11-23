@@ -499,8 +499,8 @@ class Grids implements ActionsInterface
 
         $Grid->setDataActions($GridActionNew);
 
-        if (Config::getConfig()->isLdapEnabled()
-            && Acl::checkUserAccess(ActionsInterface::ACTION_CFG_IMPORT)
+        if (Acl::checkUserAccess(ActionsInterface::ACTION_CFG_IMPORT)
+            && Config::getConfig()->isLdapEnabled()
         ) {
             $GridActionLdapSync = new DataGridAction();
             $GridActionLdapSync->setId(self::ACTION_USR_SYNC_LDAP);

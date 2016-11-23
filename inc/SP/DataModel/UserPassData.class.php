@@ -126,7 +126,7 @@ class UserPassData
      */
     public function getUserLastUpdateMPass()
     {
-        return $this->user_lastUpdateMPass;
+        return (int)$this->user_lastUpdateMPass;
     }
 
     /**
@@ -134,7 +134,7 @@ class UserPassData
      */
     public function setUserLastUpdateMPass($user_lastUpdateMPass)
     {
-        $this->user_lastUpdateMPass = $user_lastUpdateMPass;
+        $this->user_lastUpdateMPass = (int)$user_lastUpdateMPass;
     }
 
     /**
@@ -142,7 +142,7 @@ class UserPassData
      */
     public function getUserId()
     {
-        return $this->user_id;
+        return (int)$this->user_id;
     }
 
     /**
@@ -150,6 +150,6 @@ class UserPassData
      */
     public function setUserId($user_id)
     {
-        $this->user_id = $user_id;
+        $this->user_id = (int)$user_id;
     }
 }

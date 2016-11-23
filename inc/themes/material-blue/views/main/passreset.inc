@@ -1,9 +1,6 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
-<div id="actions" align="center">
-
-    <div id="logo"></div>
-
+<div id="actions">
     <form id="frmPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset">
         <fieldset id="resetdata">
             <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>

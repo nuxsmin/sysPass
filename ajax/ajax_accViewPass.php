@@ -70,9 +70,10 @@ if ($isHistory && !$Account->checkAccountMPass()) {
     Response::printJson(_('La clave maestra no coincide'));
 }
 
-if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS)
-    || !Acl::checkAccountAccess(Acl::ACTION_ACC_VIEW_PASS, $Account->getAccountDataForACL())
-) {
+$Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
+$Acl->setAccountData($Account->getAccountDataForACL());
+
+if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
     Response::printJson(_('No tiene permisos para acceder a esta cuenta'));
 } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
     Response::printJson(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));

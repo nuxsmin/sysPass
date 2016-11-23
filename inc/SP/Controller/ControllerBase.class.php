@@ -213,13 +213,13 @@ abstract class ControllerBase
      */
     protected function showError($type, $reset = true, $fancy = false)
     {
-        $errorsTypes = array(
+        $errorsTypes = [
             self::ERR_UNAVAILABLE => ['txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')],
             self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')],
             self::ERR_PAGE_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')],
             self::ERR_OPERATION_NO_PERMISSION => ['txt' => _('No tiene permisos para realizar esta operación'), 'hint' => _('Consulte con el administrador')],
             self::ERR_UPDATE_MPASS => ['txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla')]
-        );
+        ];
 
         if ($reset) {
             $this->view->resetTemplates();

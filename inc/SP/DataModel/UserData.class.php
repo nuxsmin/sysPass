@@ -220,7 +220,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserGroupId()
     {
-        return $this->user_groupId;
+        return (int)$this->user_groupId;
     }
 
     /**
@@ -228,7 +228,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserGroupId($user_groupId)
     {
-        $this->user_groupId = $user_groupId;
+        $this->user_groupId = (int)$user_groupId;
     }
 
     /**

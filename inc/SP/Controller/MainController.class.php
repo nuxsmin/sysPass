@@ -87,9 +87,10 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('loggedIn', Init::isLoggedIn());
         $this->view->assign('page', $page);
         $this->view->assign('icons', DiFactory::getTheme()->getIcons());
-        $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo.png');
-        $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo.svg');
-        $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full_new.png');
+        $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo_icon.png');
+        $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo_icon.svg');
+        $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full_bg.png');
+        $this->view->assign('logonobg', Init::$WEBURI . '/imgs/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
 
         // Cargar la clave pública en la sesión
@@ -157,7 +158,8 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->getSessionBar();
         $this->getMenu();
 
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-content');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
     }
 
@@ -181,7 +183,7 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     private function getMenu()
     {
-        $this->view->addTemplate('menu');
+        $this->view->addTemplate('body-header-menu');
 
         $ActionSearch = new DataGridAction();
         $ActionSearch->setId(self::ACTION_ACC_SEARCH);
@@ -248,7 +250,7 @@ class MainController extends ControllerBase implements ActionsInterface
     public function getLogin()
     {
         $this->view->addTemplate('login');
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
         $this->view->assign('demoEnabled', Checks::demoIsEnabled());
@@ -308,7 +310,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('errors', $errors);
 
         $this->view->addTemplate('install');
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
     }
 
@@ -319,8 +321,9 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getError($showLogo = false)
     {
+        $this->view->addTemplate('body-header');
         $this->view->addTemplate('error');
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
 
         $this->view->assign('showLogo', $showLogo);
     }
@@ -344,7 +347,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
 
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
     }
 
@@ -354,7 +357,7 @@ class MainController extends ControllerBase implements ActionsInterface
     public function getUpgrade()
     {
         $this->view->addTemplate('upgrade');
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
         $this->view->assign('action', Request::analyze('a'));
@@ -379,7 +382,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
 
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
     }
 
@@ -437,6 +440,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getPublicLink()
     {
+        $this->view->addTemplate('body-header');
+
         $hash = Request::analyze('h');
 
         $PublicLink = PublicLink::getItem()->getByHash($hash);
@@ -456,7 +461,7 @@ class MainController extends ControllerBase implements ActionsInterface
         }
 
         $this->getSessionBar();
-        $this->view->addTemplate('footer');
+        $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
     }
 }

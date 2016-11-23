@@ -1,7 +1,4 @@
-<div id="actions" align="center">
-
-    <div id="logo"></div>
-
+<div id="actions">
     <form id="frmPass2fa" action="" method="post" class="form-action" data-onsubmit="main/twofa">
         <fieldset id="resetdata">
             <legend><?php echo _('Autentificación en 2 pasos'); ?></legend>

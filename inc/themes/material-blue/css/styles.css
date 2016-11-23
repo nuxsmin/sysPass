@@ -711,7 +711,7 @@ pre, code, samp, kbd {
 }
 
 #content #searchbox .search-filters > * {
-    margin: 0 .5em;
+    margin: 0 1em;
 }
 
 #content #searchbox .search-filters .filter-buttons {
@@ -724,7 +724,7 @@ pre, code, samp, kbd {
 
 #content #searchbox .search-filters-tags {
     display: none;
-    flex-grow: 1;
+    flex-grow: 2;
 }
 
 #content .btn-clear {
@@ -1413,13 +1413,13 @@ footer img {
 #login-container {
     width: 40em;
     margin: 0 auto;
-    background: transparent url("../imgs/logo_full_new.png") no-repeat top left;
+    background: transparent url("../imgs/logo_full_bg.png") no-repeat top left;
     background-size: auto 10em;
 }
 
 #login-container #boxLogin {
     position: relative;
-    margin: 10em auto 0 auto;
+    margin: 11em auto 0 auto;
     width: 100%;
     min-height: 12em;
     padding: 1em;
@@ -1514,7 +1514,7 @@ fieldset.warning a {
     /*-webkit-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);*/
     /*-moz-box-shadow: 0 8px 6px -6px rgba(83, 109, 254, .3);*/
     align-items: center;
-    background: url("../imgs/logo_full_new.png") left no-repeat;
+    background: url("../imgs/logo_full_bg.png") left no-repeat;
     background-size: auto 150px;
     height: 150px
 }
