@@ -26,7 +26,6 @@
 namespace SP\Log;
 
 use SP\Core\DiFactory;
-use SP\Core\Init;
 use SP\Storage\DB;
 use SP\Core\Session;
 use SP\Storage\QueryData;
@@ -54,22 +53,13 @@ class Log extends ActionLog
      */
     public static function getEvents($start, $count)
     {
-        $query = 'SELECT ' .
-            'log_id,' .
-            'FROM_UNIXTIME(log_date) AS log_date,' .
-            'log_action,' .
-            'log_level,' .
-            'log_login,' .
-            'log_ipAddress,' .
-            'log_description ' .
-            'FROM log ' .
-            'ORDER BY log_id DESC ' .
-            'LIMIT :start, :count';
-
         $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($start, 'start');
-        $Data->addParam($count, 'count');
+        $Data->setSelect('log_id,FROM_UNIXTIME(log_date) AS log_date,log_action,log_level,log_login,log_ipAddress,log_description');
+        $Data->setFrom('log');
+        $Data->setOrder('log_id DESC');
+        $Data->setLimit('?, ?');
+        $Data->addParam($start);
+        $Data->addParam($count);
 
         // Obtenemos el número total de registros
         DB::setFullRowCount();

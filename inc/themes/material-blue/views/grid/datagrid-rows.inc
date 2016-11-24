@@ -3,6 +3,7 @@
  * @var $data  SP\Html\DataGrid\DataGridTab
  * @var $this  SP\Core\Template
  */
+use SP\Html\Html;
 ?>
 
     <!-- Rows -->
@@ -15,10 +16,13 @@
 <?php else: ?>
     <?php foreach ($data->getData()->getData() as $dataIndex => $dataItem): ?>
         <?php if ($dataIndex === 'count'): continue; endif; ?>
+
+        <?php $numFields =  count($data->getData()->getDataRowSources()); ?>
+
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
             data-activetab="<?php echo $index; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
-                <td class="cell-data"><?php echo ($dataItem->{$rowSrc} !== '') ? $dataItem->{$rowSrc} : '&nbsp;'; // Fix height ?></td>
+                <td class="cell-data"><?php echo ($dataItem->{$rowSrc} !== '') ? Html::truncate($dataItem->{$rowSrc}, 100 / $numFields) : '&nbsp;'; // Fix height ?></td>
             <?php endforeach; ?>
 
             <?php if (count($data->getData()->getDataRowSourcesWithIcon()) > 0): ?>

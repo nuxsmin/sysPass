@@ -274,16 +274,16 @@ class MainController extends ControllerBase implements ActionsInterface
             _('Mejoras de seguridad en XSS e inyección SQL')
         ));
 
-        // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
-        $this->view->assign('getParams');
+        $getParams = [];
 
+        // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
         if (count($_GET) > 0) {
             foreach ($_GET as $param => $value) {
                 $getParams['g_' . Html::sanitize($param)] = Html::sanitize($value);
             }
-
-            $this->view->assign('getParams', $getParams);
         }
+
+        $this->view->assign('getParams', $getParams);
     }
 
     /**
