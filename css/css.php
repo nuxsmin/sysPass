@@ -42,10 +42,10 @@ if (!$file) {
         ->addFile('jquery-ui.min.css')
         ->addFile('jquery-ui.structure.min.css')
         ->addFile('jquery.tagsinput.min.css')
-        ->addFile('jquery.fancybox.min.css')
         ->addFile('fonts.min.css')
         ->addFile('material-icons.min.css')
         ->addFile('toastr.min.css')
+        ->addFile('magnific-popup.min.css')
         ->getMinified();
 } elseif ($file && $base) {
     $base = Request::analyze('b');

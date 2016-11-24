@@ -42,7 +42,6 @@ if (!$file) {
     if ($group === 0) {
         $Minify->addFile('jquery-1.11.2.min.js')
             ->addFile('jquery-ui.min.js')
-            ->addFile('jquery.fancybox.pack.js')
             ->addFile('alertify.min.js')
             ->addFile('jquery.fileDownload.min.js')
             ->addFile('jquery.tagsinput.min.js')
@@ -54,7 +53,8 @@ if (!$file) {
             ->addFile('spark-md5.min.js')
             ->addFile('moment.min.js')
             ->addFile('moment-timezone.min.js')
-            ->addFile('toastr.min.js');
+            ->addFile('toastr.min.js')
+            ->addFile('jquery.magnific-popup.min.js');
     } elseif ($group === 1) {
         // FIXME: utilizar versiones .min
         $Minify->addFile('app.js')

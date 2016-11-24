@@ -184,7 +184,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($FileData->getAccfileExtension()) === 'TXT') {
-            exit('<div id="fancyView" class="backGrey"><pre>' . htmlentities($FileData->getAccfileContent()) . '</pre></div>');
+            exit('<pre>' . htmlentities($FileData->getAccfileContent()) . '</pre>');
         } else {
             exit();
         }

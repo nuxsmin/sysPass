@@ -525,24 +525,7 @@ sysPass.Theme = function (Common) {
      * Inicialización
      */
     var init = function () {
-        jQuery.extend(jQuery.fancybox.defaults, {
-            type: "ajax",
-            autoWidth: true,
-            autoHeight: true,
-            autoResize: true,
-            autoCenter: true,
-            fitToView: false,
-            minHeight: 50,
-            padding: 0,
-            helpers: {overlay: {css: {"background": "rgba(0, 0, 0, 0.3)"}}},
-            keys: {close: [27]},
-            afterShow: function () {
-                $("#fancyContainer").find("input[type='text']:visible:first").focus();
-            }
-        });
-
         activeTooltip();
-        // setFixedMenu();
     };
 
     init();

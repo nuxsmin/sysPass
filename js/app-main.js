@@ -643,6 +643,54 @@ sysPass.Main = function () {
         }
     };
 
+    /**
+     * Redimensionar una imagen al viewport
+     *
+     * @param $obj
+     */
+    var resizeImage = function ($obj) {
+        log.info("resizeImage");
+
+        var viewportWidth = $(window).width() * 0.90;
+        var viewportHeight = $(window).height() * 0.90;
+        var width = $obj.width();
+        var height = $obj.height();
+        var rel = width / height;
+
+        if (width > viewportWidth) {
+            var calcHeight = rel <= 1 ? viewportWidth * rel : viewportWidth / rel;
+
+            $obj.parent().css({
+                "width": viewportWidth,
+                "height": calcHeight
+            });
+
+            $obj.css({
+                "width": viewportWidth,
+                "height": calcHeight
+            });
+        } else if (height > viewportHeight) {
+            var calcWidth = rel <= 1 ? viewportHeight / rel : viewportHeight * rel;
+
+            $obj.parent().css({
+                "width": calcWidth,
+                "height": viewportHeight
+            });
+
+            $obj.css({
+                "width": calcWidth,
+                "height": viewportHeight
+            });
+        } else {
+            $obj.parent().css({
+                "width": width,
+                "height": height
+            });
+        }
+
+        $obj.show("slow");
+    };
+
     // Objeto con métodos y propiedades protegidas
     var getProtected = function () {
         return $.extend({
@@ -662,7 +710,8 @@ sysPass.Main = function () {
             appRequests: function () {
                 return appRequests;
             },
-            evalAction: evalAction
+            evalAction: evalAction,
+            resizeImage: resizeImage
         }, oPublic);
     };
 

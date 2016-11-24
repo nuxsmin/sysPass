@@ -186,7 +186,7 @@ pre, code, samp, kbd {
 }
 
 #container.login {
-    margin-top: 3%;
+    margin-top: 5%;
 }
 
 /*#container.main {
@@ -931,7 +931,23 @@ pre, code, samp, kbd {
 }
 
 #fancyContainer {
+    width: auto;
+    max-width: 50em;
+    margin: 5em auto;
     padding: 0;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+#fancyContainer.image {
+    background-color: transparent;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#fancyContainer.image img {
+    width: auto;
+    margin: 0 auto;
 }
 
 #fancyContainer > h2 {

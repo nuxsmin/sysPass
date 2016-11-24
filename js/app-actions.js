@@ -126,15 +126,56 @@ sysPass.Actions = function (Common) {
      * @param response
      */
     var showFloatingBox = function ($obj, response) {
-        $.fancybox(response, {
-            padding: [0, 0, 0, 0],
-            afterClose: function () {
-                if ($obj.data("item-dst")) {
-                    updateItems($obj);
+        $.magnificPopup.open({
+            items: {
+                src: response,
+                type: "inline"
+            },
+            callbacks: {
+                open: function () {
+                    Common.appTriggers().views.common("#fancyContainer");
+                },
+                close: function () {
+                    if ($obj.data("item-dst")) {
+                        updateItems($obj);
+                    }
                 }
             },
-            beforeShow: function () {
-                Common.appTriggers().views.common("#fancyContainer");
+            showCloseBtn: false
+        });
+    };
+
+    /**
+     * Mostrar una imagen
+     *
+     * @param $obj
+     * @param response
+     */
+    var showImageBox = function ($obj, response) {
+        var $content = $("<div id=\"fancyContainer\" class=\"image\">" + response + "</div>");
+        var $image = $content.find("img");
+
+        $image.hide();
+
+        $.magnificPopup.open({
+            items: {
+                src: $content,
+                type: "inline"
+            },
+            callbacks: {
+                open: function () {
+                    var $popup = this;
+
+                    $image.on("click", function () {
+                        $popup.close();
+                    });
+
+                    setTimeout(function () {
+                        Common.resizeImage($image);
+
+                        $content.css("background-color", "#fff");
+                    }, 500);
+                }
             }
         });
     };
@@ -445,12 +486,7 @@ sysPass.Actions = function (Common) {
                 }
 
                 if (response) {
-                    showFloatingBox($obj, response);
-
-                    // Actualizar fancybox para adaptarlo al tamaño de la imagen
-                    // setTimeout(function () {
-                    //     $.fancybox.update();
-                    // }, 1000);
+                    showImageBox($obj, response);
                 } else {
                     Common.msg.error(Common.config().LANG[14]);
                 }
@@ -472,7 +508,7 @@ sysPass.Actions = function (Common) {
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
 
                         Common.msg.error(Common.config().LANG[44]);
@@ -524,7 +560,7 @@ sysPass.Actions = function (Common) {
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
 
                         Common.appRequests().getActionCall(opts, function (json) {
@@ -596,7 +632,7 @@ sysPass.Actions = function (Common) {
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
 
                         Common.msg.error(Common.config().LANG[44]);
@@ -900,7 +936,7 @@ sysPass.Actions = function (Common) {
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
 
                         Common.msg.error(Common.config().LANG[44]);
@@ -946,7 +982,7 @@ sysPass.Actions = function (Common) {
                         doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                     }
 
-                    $.fancybox.close();
+                    $.magnificPopup.close();
                 }
             });
         },
@@ -988,7 +1024,7 @@ sysPass.Actions = function (Common) {
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
 
                         Common.msg.error(Common.config().LANG[44]);
@@ -1042,7 +1078,7 @@ sysPass.Actions = function (Common) {
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
-                    onClick: function(e) {
+                    onClick: function (e) {
                         e.preventDefault();
 
                         Common.msg.error(Common.config().LANG[44]);
