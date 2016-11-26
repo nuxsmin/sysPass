@@ -348,6 +348,7 @@ sysPass.Triggers = function (Common) {
             var $form = $("#frmInstall");
 
             Common.appTheme().passwordDetect($form);
+            selectDetect($form);
         }
     };
 

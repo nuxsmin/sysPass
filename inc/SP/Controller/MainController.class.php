@@ -32,6 +32,7 @@ use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\DiFactory;
+use SP\Core\Language;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
@@ -291,6 +292,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getInstaller()
     {
+        $this->view->addTemplate('body-header');
+
         $errors = array_merge(Checks::checkPhpVersion(), Checks::checkModules());
 
         if (@file_exists(__FILE__ . "\0Nullbyte")) {
@@ -308,6 +311,8 @@ class MainController extends ControllerBase implements ActionsInterface
         }
 
         $this->view->assign('errors', $errors);
+
+        $this->view->assign('langsAvailable', Language::getAvailableLanguages());
 
         $this->view->addTemplate('install');
         $this->view->addTemplate('body-footer');

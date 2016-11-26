@@ -80,6 +80,10 @@ class InstallData
      * @var string
      */
     private $dbAuthHost = '';
+    /**
+     * @var string
+     */
+    private $siteLang = 'en_US';
 
     /**
      * @return string
@@ -271,5 +275,21 @@ class InstallData
     public function setDbAdminPass($dbAdminPass)
     {
         $this->dbAdminPass = $dbAdminPass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSiteLang()
+    {
+        return $this->siteLang;
+    }
+
+    /**
+     * @param string $siteLang
+     */
+    public function setSiteLang($siteLang)
+    {
+        $this->siteLang = $siteLang;
     }
 }

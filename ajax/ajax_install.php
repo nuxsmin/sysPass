@@ -39,6 +39,7 @@ Request::checkReferer('POST');
 $Json = new JsonResponse();
 
 $InstallData = new InstallData();
+$InstallData->setSiteLang(Request::analyze('sitelang', 'en_US'));
 $InstallData->setAdminLogin(Request::analyze('adminlogin', 'admin'));
 $InstallData->setAdminPass(Request::analyzeEncrypted('adminpass'));
 $InstallData->setMasterPassword(Request::analyzeEncrypted('masterpassword'));
@@ -47,8 +48,6 @@ $InstallData->setDbAdminPass(Request::analyzeEncrypted('dbpass'));
 $InstallData->setDbName(Request::analyze('dbname', 'syspass'));
 $InstallData->setDbHost(Request::analyze('dbhost', 'localhost'));
 $InstallData->setHostingMode(Request::analyze('hostingmode', false));
-
-error_log($InstallData->getAdminPass());
 
 try {
     $Installer = new Installer($InstallData);

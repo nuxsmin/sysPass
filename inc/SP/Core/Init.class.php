@@ -177,11 +177,11 @@ class Init
 
         // Volver a cargar la configuración si se recarga la página
         if (Request::checkReload()) {
-            Config::loadConfig();
+            Config::loadConfig(true);
 
             // Restablecer el idioma y el tema visual
             Language::setLanguage();
-//            DiFactory::getTheme()->initTheme();
+            DiFactory::getTheme()->initTheme();
         }
 
         if (self::isLoggedIn() || Request::analyze('isAjax', false, true)) {

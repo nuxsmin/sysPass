@@ -116,6 +116,12 @@ i {
     cursor: pointer
 }
 
+form .form-field label {
+    display: inline-block;
+    width: 10em;
+    padding: .5em 0;
+}
+
 .altTable {
     border: 0;
     font-size: 10px
@@ -930,6 +936,7 @@ pre, code, samp, kbd {
     color: #555
 }
 
+
 #fancyContainer {
     width: auto;
     max-width: 50em;
@@ -1518,7 +1525,8 @@ fieldset.warning a {
 #actions {
     width: 100%;
     /*margin: auto auto 50px;*/
-    line-height: 2em
+    line-height: 2em;
+    margin-bottom: 5em;
 }
 
 #actions #logo {
@@ -1535,14 +1543,13 @@ fieldset.warning a {
     height: 150px
 }
 
-#actions #logo #pageDesc {
+#actions #page-title {
+    width: 100%;
     color: #607d8b;
-    align-self: auto;
-    flex: 1 0 auto;
     text-align: center
 }
 
-#actions #logo #pageDesc h1 {
+#actions #page-title h1 {
     font-weight: bold;
     font-size: 24px;
     letter-spacing: 3px

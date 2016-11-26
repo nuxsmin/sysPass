@@ -102,9 +102,12 @@ class Installer
             $this->InstallData->setDbAuthHost('localhost');
         }
 
-        // Save DB connection info
+        // Set DB connection info
         $this->Config->setDbHost($this->InstallData->getDbHost());
         $this->Config->setDbName($this->InstallData->getDbName());
+
+        // Set site config
+        $this->Config->setSiteLang($this->InstallData->getSiteLang());
 
         $this->connectDatabase();
         $this->setupMySQLDatabase();
@@ -226,11 +229,11 @@ class Installer
 
             // Guardar el nuevo usuario/clave de conexión a la BD
             $this->Config->setDbUser($this->InstallData->getDbUser());
-            $this->Config->setDbPass($this->InstallData->getDbPass());
+            $this->Config->setDbPass(utf8_encode($this->InstallData->getDbPass()));
         } else {
             // Guardar el usuario/clave de conexión a la BD
             $this->Config->setDbUser($this->InstallData->getDbAdminUser());
-            $this->Config->setDbPass($this->InstallData->getDbAdminPass());
+            $this->Config->setDbPass(utf8_encode($this->InstallData->getDbAdminPass()));
         }
 
         try {
@@ -255,7 +258,7 @@ class Installer
         }
 
         $query = sprintf(/** @lang SQL */
-            'CREATE USER `%s`@`%s` IDENTIFIED BY `%s`',
+            'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
             $this->InstallData->getDbUser(),
             $this->InstallData->getDbAuthHost(),
             $this->InstallData->getDbPass());
@@ -263,9 +266,10 @@ class Installer
         try {
             $this->DB->query($query);
         } catch (PDOException $e) {
-            throw new SPException(SPException::SP_CRITICAL,
-                sprintf(_('El usuario de MySQL ya existe') . ' (%s)', $this->InstallData->getDbUser()),
-                _('Indique un nuevo usuario o elimine el existente'));
+            throw new SPException(
+                SPException::SP_CRITICAL,
+                sprintf(_('Error al crear el usuario de conexión a MySQL \'%s\''), $this->InstallData->getDbUser()),
+                $e->getMessage());
         }
     }
 
@@ -301,7 +305,7 @@ class Installer
             }
 
             $query = sprintf(/** @lang SQL */
-                'GRANT ALL PRIVILEGES ON `%s`.* TO `%s`@`%s` IDENTIFIED BY `%s`;',
+                'GRANT ALL PRIVILEGES ON `%s`.* TO `%s`@`%s` IDENTIFIED BY \'%s\';',
                 $this->InstallData->getDbName(),
                 $this->InstallData->getDbUser(),
                 $this->InstallData->getDbAuthHost(),
@@ -311,7 +315,7 @@ class Installer
                 $this->DB->query($query);
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    sprintf(_('Error al establecer permisos de la BBDD') . ' (%s)', $e->getMessage()),
+                    sprintf(_('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),
                     _('Verifique los permisos del usuario de la Base de Datos'));
             }
         }

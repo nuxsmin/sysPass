@@ -110,7 +110,8 @@ class Checks
             'openssl',
             'pcre',
             'session',
-            'gd'
+            'gd',
+            'mbstring'
         ];
 
         $error = [];

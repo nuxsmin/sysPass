@@ -123,7 +123,7 @@ class XmlHandler implements FileStorageInterface
                     $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
                 }
             } elseif ($node->nodeType === XML_ELEMENT_NODE) {
-                $val = (is_numeric($node->nodeValue)) ? intval($node->nodeValue) : $node->nodeValue;
+                $val = is_numeric($node->nodeValue) ? (int)$node->nodeValue : $node->nodeValue;
 
                 if ($node->nodeName === 'item') {
                     $nodes[] = $val;
@@ -156,7 +156,7 @@ class XmlHandler implements FileStorageInterface
      */
     public function save($tag = 'root')
     {
-        if (is_null($this->items)) {
+        if (null === $this->items) {
             throw new \Exception(_('No hay elementos para guardar'));
         }
 
@@ -220,7 +220,7 @@ class XmlHandler implements FileStorageInterface
             return $items;
         } elseif (is_object($items)) {
 
-            return ($serialize) ? serialize($items) : $this->analyzeObject($items);
+            return $serialize ? serialize($items) : $this->analyzeObject($items);
         }
 
         return array();

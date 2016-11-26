@@ -28,8 +28,6 @@ namespace SP\Config;
 use ReflectionObject;
 use SP\Core\DiFactory;
 use SP\Core\Session;
-use SP\Core\Exceptions\SPException;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -45,14 +43,17 @@ class Config
 
     /**
      * Cargar la configuración desde el archivo
+     *
+     * @param bool $reload
      */
-    public static function loadConfig()
+    public static function loadConfig($reload = false)
     {
         $ConfigData = Session::getConfig();
 
-        if (gettype($ConfigData) !== 'object'
-            || time() >= (Session::getConfigTime() + $ConfigData->getSessionTimeout() / 2)
+        if ($reload === true
             || Session::getReload()
+            || !is_object($ConfigData)
+            || time() >= (Session::getConfigTime() + $ConfigData->getSessionTimeout() / 2)
         ) {
             Session::setConfig(self::arrayMapper());
             Session::setConfigTime(time());
