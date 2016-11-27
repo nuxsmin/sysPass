@@ -359,6 +359,21 @@ pre, code, samp, kbd {
     background-color: #f9f9f9
 }
 
+#content fieldset.data {
+    margin: 2em auto;
+}
+
+#content fieldset.data > legend {
+    color: #607d8b;
+    padding: 0 .5em;
+    font-size: 1.5em;
+}
+
+#content fieldset.data > table {
+    display: none;
+    width: 100%;
+}
+
 #content .data #history-icon {
     position: relative;
     top: 5em;
@@ -1553,7 +1568,7 @@ fieldset.warning a {
     font-size: 12px
 }
 
-#actions ul.errors > li > p.hint i{
+#actions ul.errors > li > p.hint i {
     margin-right: .5em;
 }
 

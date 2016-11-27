@@ -56,7 +56,7 @@
                         <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
                         <?php foreach ($customers as $customer): ?>
                             <option
-                                value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->getAccountCustomerId()) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                                    value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->getAccountCustomerId()) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (!$isView && \SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS)): ?>
@@ -77,7 +77,7 @@
                         <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
                         <?php foreach ($categories as $category): ?>
                             <option
-                                value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getAccountCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                                    value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getAccountCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (!$isView && \SP\Core\Acl::checkUserAccess(\SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES)): ?>
@@ -191,7 +191,7 @@
                             <option value=""><?php echo _('Seleccionar fecha'); ?></option>
                             <?php foreach ($historyData as $historyId => $historyData): ?>
                                 <option
-                                    value="<?php echo $historyId; ?>" <?php echo ($gotData && $accountIsHistory && $historyId === $accountHistoryId) ? 'selected' : ''; ?>><?php echo $historyData; ?></option>
+                                        value="<?php echo $historyId; ?>" <?php echo ($gotData && $accountIsHistory && $historyId === $accountHistoryId) ? 'selected' : ''; ?>><?php echo $historyData; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -205,6 +205,16 @@
                 </tr>
             <?php endif; ?>
 
+            <?php if ($gotData && $AccountAcl->isShowLink() && $accountData->getPublicLinkHash()): ?>
+                <tr>
+                    <td class="descField"><?php echo _('Enlace Público'); ?></td>
+                    <td class="valField">
+                        <a href="<?php echo $publicLinkUrl; ?>" target="_blank" title="<?php echo _('Enlace Público'); ?>">
+                            <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
 
         <?php if (!$isView): ?>

@@ -556,6 +556,8 @@ sysPass.Actions = function (Common) {
                 isAjax: 1
             };
 
+            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[48] + "</p></div>";
+
             showDialog({
                 text: atext,
                 negative: {

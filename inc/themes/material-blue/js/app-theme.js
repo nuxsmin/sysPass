@@ -402,11 +402,11 @@ sysPass.Theme = function (Common) {
                 var $tags = $frmSearch.find(".search-filters-tags");
 
                 if ($this.data("state") == 0) {
-                    $tags.show("slow");
+                    $tags.show("blind", "slow");
                     $this.data("state", "1");
                     $this.html($this.data("icon-up"));
                 } else {
-                    $tags.hide("slow");
+                    $tags.hide("blind", "slow");
                     $this.data("state", "0");
                     $this.html($this.data("icon-down"));
                 }

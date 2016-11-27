@@ -42,16 +42,22 @@
     <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     <input type="hidden" name="isAjax" value="1">
 </form>
-<div class="action">
-    <button id="btnBack" type="button"
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-            title="<?php echo $icons->getIconBack()->getTitle(); ?>">
-        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-    </button>
 
-    <button id="btnSave" form="frmRequestModify"
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-            title="<?php echo _('Enviar'); ?>">
-        <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
-    </button>
+<div class="item-actions">
+    <ul>
+        <li>
+            <button id="btnBack" type="button"
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                    title="<?php echo $icons->getIconBack()->getTitle(); ?>">
+                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+            </button>
+        </li>
+        <li>
+            <button id="btnSave" form="frmRequestModify"
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                    title="<?php echo _('Enviar'); ?>">
+                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+            </button>
+        </li>
+    </ul>
 </div>

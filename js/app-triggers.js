@@ -339,6 +339,25 @@ sysPass.Triggers = function (Common) {
             if ($form.length > 0) {
                 $form.attr("data-hash", SparkMD5.hash($form.serialize(), false));
             }
+
+            var $extraInfo = $(".show-extra-info");
+
+            if ($extraInfo.length > 0) {
+                $extraInfo.on("click", function () {
+                    var $this = $(this);
+                    var $table = $($this.data("target"));
+
+                    if ($this.data("state") == 0) {
+                        $table.show("blind", "slow");
+                        $this.data("state", "1");
+                        $this.html($this.data("icon-up"));
+                    } else {
+                        $table.hide("blind", "slow");
+                        $this.data("state", "0");
+                        $this.html($this.data("icon-down"));
+                    }
+                });
+            }
         },
         install: function () {
             log.info("views:install");
