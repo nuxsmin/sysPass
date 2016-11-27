@@ -28,10 +28,8 @@ namespace SP\Core;
 use SP\Auth\Auth;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
-use SP\Controller;
 use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -128,6 +126,15 @@ class Init
             return;
         }
 
+        // Volver a cargar la configuración si se recarga la página
+        if (Request::checkReload()) {
+            Config::loadConfig(true);
+
+            // Restablecer el idioma y el tema visual
+            Language::setLanguage(true);
+            DiFactory::getTheme()->initTheme(true);
+        }
+
         // Comprobar si está instalado
         self::checkInstalled();
 
@@ -158,33 +165,21 @@ class Init
             Session::setUserData();
         }
 
-        // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-        if (self::isLoggedIn() && !Auth::checkServerAuthUser(Session::getUserData()->getUserLogin())) {
-            self::logout();
+        // Si es una petición AJAX
+        if (Request::analyze('isAjax', false, true)) {
+            return;
         }
 
-        // Manejar la redirección para usuarios logeados
-        if (Request::analyze('redirect_url', '', true) && self::isLoggedIn()) {
-            $location = 'index.php';
-
-            // Denegar la regirección si la URL contiene una @
+        if (self::isLoggedIn()) {
+            // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+            if (!Auth::checkServerAuthUser(Session::getUserData()->getUserLogin())) {
+                self::logout();
+            // Denegar la redirección si la URL contiene una @
             // Esto previene redirecciones como ?redirect_url=:user@domain.com
-            if (strpos($location, '@') === false) {
-                header('Location: ' . $location);
-                return;
+            } elseif (Request::analyze('redirect_url', '', true) && strpos('index.php', '@') === false) {
+                header('Location: ' . 'index.php');
             }
-        }
 
-        // Volver a cargar la configuración si se recarga la página
-        if (Request::checkReload()) {
-            Config::loadConfig(true);
-
-            // Restablecer el idioma y el tema visual
-            Language::setLanguage();
-            DiFactory::getTheme()->initTheme();
-        }
-
-        if (self::isLoggedIn() || Request::analyze('isAjax', false, true)) {
             return;
         }
 
@@ -658,6 +653,8 @@ class Init
      * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public static function checkPreLoginActions()
     {

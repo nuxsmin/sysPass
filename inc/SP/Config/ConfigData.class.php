@@ -265,7 +265,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $siteLang = 'es_ES';
+    private $siteLang = '';
     /**
      * @var string
      */
