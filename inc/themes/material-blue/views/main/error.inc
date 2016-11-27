@@ -1,20 +1,16 @@
+<?php
+/**
+ * @var $icons \SP\Core\UI\ThemeIconsBase
+ */
+?>
 <div id="actions" align="center">
-    <?php if (count($errors) > 0): ?>
-        <ul class="errors round">
-            <?php foreach ($errors as $err): ?>
-                <?php if (is_array($err)): ?>
-                    <li class="err_<?php echo \SP\Core\Exceptions\SPException::getExceptionTypeName($err["type"]); ?>">
-                        <strong><?php echo $err['description']; ?></strong>
-                        <?php echo ($err['hint']) ? '<p class="hint">' . $err['hint'] . '</p>' : ''; ?>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
+    <?php include $this->includeTemplate('error-list'); ?>
+
     <div class="buttons">
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
                 onclick="window.location.href='index.php'">
-            <i class="material-icons" title="<?php echo _('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+            <i class="material-icons"
+               title="<?php echo _('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             <?php echo _('Volver'); ?>
         </button>
     </div>

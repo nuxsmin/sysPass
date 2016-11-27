@@ -116,10 +116,21 @@ i {
     cursor: pointer
 }
 
-form .form-field label {
-    display: inline-block;
-    width: 10em;
+form .form-field {
+    display: flex;
+    justify-content: space-between;
+}
+
+form .form-field > label {
+    min-width: 12em;
     padding: .5em 0;
+    font-size: 16px;
+    align-self: center;
+}
+
+form .form-field > div {
+    width: 100%;
+    align-self: center;
 }
 
 .altTable {
@@ -883,59 +894,9 @@ pre, code, samp, kbd {
     border-bottom: #d9d9d9 1px solid
 }
 
-#fancyMsg {
-    min-width: 250px;
-    height: 150px;
-    background-color: #f5f5f5;
-    font-family: Verdana, Arial;
-    font-size: 16px;
-    text-align: center;
-    display: table-cell;
-    vertical-align: middle;
-    font-weight: bold;
-    border: 0;
-    line-height: 20px;
-    padding: 0 15px;
-    border-radius: 25px;
-    -moz-border-radius: 25px;
-    -webkit-border-radius: 25px
-}
-
-#fancyMsg table {
-    border: 0;
-    width: 100%;
-    font-size: 14px;
-    text-align: left
-}
-
-#fancyMsg td {
-    border-bottom: #d9d9d9 1px solid
-}
-
-#fancyMsg.msgError {
-    background: url('../imgs/bg_msg_error.png') white repeat-x;
-    color: #c00
-}
-
-#fancyMsg.msgOk {
-    background: url('../imgs/bg_msg_ok.png') white repeat-x;
-    color: green
-}
-
-#fancyMsg.msgWarn {
-    background: url('../imgs/bg_msg_warn.png') white repeat-x;
-    color: orange
-}
-
-#fancyMsg.msgInfo {
-    background: url('../imgs/bg_msg_info.png') white repeat-x;
-    color: #555
-}
-
 #fancyView a, #fancyMsg a {
     color: #555
 }
-
 
 #fancyContainer {
     width: auto;
@@ -1560,7 +1521,7 @@ fieldset.warning a {
     margin: 0 auto;
     list-style: none;
     font-size: 14px;
-    text-align: left
+    text-align: left;
 }
 
 #actions ul.errors > li {
@@ -1569,32 +1530,31 @@ fieldset.warning a {
     padding: .5em
 }
 
-#actions ul.errors > li.err_critical {
-    color: #b94a48;
-    background: #fed7d7;
-    border: 1px solid red
+#actions ul.errors > li.error-critical {
+    color: #ef5350;
+    background-color: #ffcdd2;
+    border: 1px solid #ef5350;
 }
 
-#actions ul.errors > li.err_warning {
-    color: orange;
-    background: #fff2d9;
-    border: #ffe5b3 1px solid
+#actions ul.errors > li.error-warning {
+    color: #ffca28;
+    background-color: #fff8e1;
+    border: 1px solid #ffca28;
 }
 
-#actions ul.errors > li.err_ok {
-    color: green;
-    background: #ecfde4;
-    border: #dbfdcb 1px solid;
-    font-weight: bold
+#actions ul.errors > li.error-ok {
+    color: #26a69a;
+    background-color: #b2dfdb;
+    border: 1px solid #26a69a;
 }
 
 #actions ul.errors > li > p.hint {
-    background-image: url('../imgs/info.png');
-    background-repeat: no-repeat;
-    color: #777;
-    padding-left: 25px;
-    background-position: 0 .3em;
+    color: #aaa;
     font-size: 12px
+}
+
+#actions ul.errors > li > p.hint i{
+    margin-right: .5em;
 }
 
 #actions form {
@@ -1603,16 +1563,18 @@ fieldset.warning a {
     text-align: left
 }
 
+#actions form fieldset {
+    margin-bottom: 2em;
+}
+
 #actions form fieldset legend {
     width: 100%;
-    margin-top: 1em;
     color: #fff;
     font-size: 14px;
     font-weight: bold;
     text-align: center;
     background-color: #607d8b;
-    margin-bottom: 1em;
-    border-radius: 5px;
+    margin: 1em 0;
     letter-spacing: .2em;
     padding: .2em 0
 }

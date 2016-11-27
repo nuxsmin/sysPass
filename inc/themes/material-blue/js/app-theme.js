@@ -418,12 +418,7 @@ sysPass.Theme = function (Common) {
         },
         common: function ($container) {
             passwordDetect($container);
-            activeTooltip($container);
             setupDatePicker($container);
-
-            $container.find(".download").button({
-                icons: {primary: "ui-icon-arrowthickstop-1-s"}
-            });
         }
     };
 

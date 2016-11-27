@@ -73,12 +73,12 @@ class SPException extends Exception
      */
     public static function getExceptionTypeName($type)
     {
-        $typeName = array(
+        $typeName = [
             self::SP_OK => 'ok',
             self::SP_CRITICAL => 'critical',
             self::SP_WARNING => 'warning',
             self::SP_ERROR => 'error'
-        );
+        ];
 
         return $typeName[$type];
     }

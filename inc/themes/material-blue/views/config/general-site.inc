@@ -24,7 +24,7 @@
             <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
                 <?php foreach ($langsAvailable as $langName => $langValue): ?>
                     <option
-                        value='<?php echo $langValue; ?>' <?php echo ($currentLang == $langValue) ? "SELECTED" : ""; ?>><?php echo $langName; ?></option>
+                        value='<?php echo $langValue; ?>' <?php echo ($currentLang === $langValue) ? 'SELECTED' : ''; ?>><?php echo $langName; ?></option>
                 <?php endforeach; ?>
             </select>
         </td>

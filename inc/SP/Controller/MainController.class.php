@@ -313,6 +313,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('errors', $errors);
 
         $this->view->assign('langsAvailable', Language::getAvailableLanguages());
+        $this->view->assign('langBrowser', Language::$globalLang);
 
         $this->view->addTemplate('install');
         $this->view->addTemplate('body-footer');
@@ -338,6 +339,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getPassReset()
     {
+        $this->view->addTemplate('body-header');
+
         if (Checks::mailIsEnabled() || Request::analyze('f', 0) === 1) {
             $this->view->addTemplate('passreset');
 
@@ -347,8 +350,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
             $this->view->assign('passReset', $this->view->action === 'passreset' && $this->view->hash && $this->view->time);
         } else {
-            $this->view->assign('showLogo', true);
-
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
 
@@ -361,6 +362,7 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getUpgrade()
     {
+        $this->view->addTemplate('body-header');
         $this->view->addTemplate('upgrade');
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
@@ -375,6 +377,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function get2FA()
     {
+        $this->view->addTemplate('body-header');
+
         if (Request::analyze('f', 0) === 1) {
             $this->view->addTemplate('login-2fa');
 
@@ -382,8 +386,6 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->assign('userId', Request::analyze('i'));
             $this->view->assign('time', Request::analyze('t'));
         } else {
-            $this->view->assign('showLogo', true);
-
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
 
@@ -449,23 +451,26 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $hash = Request::analyze('h');
 
-        $PublicLink = PublicLink::getItem()->getByHash($hash);
+        if ($hash) {
+            $PublicLink = PublicLink::getItem()->getByHash($hash);
 
-        $this->view->assign('showLogo', true);
+            if (!$PublicLink
+                || time() > $PublicLink->getDateExpire()
+                || $PublicLink->getCountViews() >= $PublicLink->getMaxCountViews()
+            ) {
+                $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
+            } else {
+                PublicLink::getItem($PublicLink)->addLinkView();
 
-        if (!$PublicLink
-            || time() > $PublicLink->getDateExpire()
-            || $PublicLink->getCountViews() >= $PublicLink->getMaxCountViews()
-        ) {
-            $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
+                $controller = new AccountController($this->view, null, $PublicLink->getItemId());
+                $controller->getAccountFromLink($PublicLink);
+            }
+
+            $this->getSessionBar();
         } else {
-            PublicLink::getItem($PublicLink)->addLinkView();
-
-            $controller = new AccountController($this->view, null, $PublicLink->getItemId());
-            $controller->getAccountFromLink($PublicLink);
+            $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
         }
 
-        $this->getSessionBar();
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
     }

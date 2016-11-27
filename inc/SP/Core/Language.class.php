@@ -65,10 +65,11 @@ class Language
             self::$userLang = $Language->getUserLang();
             self::$globalLang = $Language->getGlobalLang();
 
-            $lang = (self::$userLang) ? self::$userLang : self::$globalLang;
+            $lang = self::$userLang ?: self::$globalLang;
 
             Session::setLocale($lang);
         }
+
 
         self::setLocales($lang);
     }
@@ -97,11 +98,11 @@ class Language
         // Establecer a en_US si no existe la traducción o no es español
         if (!$configLang
             && !$this->checkLangFile($browserLang)
-            && !preg_match('/^es_.*/i', $browserLang)
+            && strpos($browserLang, 'es_') === false
         ) {
             $lang = 'en_US';
         } else {
-            $lang = ($configLang) ? $configLang : $browserLang;
+            $lang = $configLang ?: $browserLang;
         }
 
         return $lang;
@@ -114,7 +115,7 @@ class Language
      */
     private function getBrowserLang()
     {
-        return str_replace("-", "_", substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
     }
 
     /**
@@ -137,12 +138,12 @@ class Language
     {
         $lang .= '.utf8';
 
-        putenv("LANG=" . $lang);
+        putenv('LANG=' . $lang);
         setlocale(LC_MESSAGES, $lang);
         setlocale(LC_ALL, $lang);
-        bindtextdomain("messages", LOCALES_PATH);
-        textdomain("messages");
-        bind_textdomain_codeset("messages", 'UTF-8');
+        bindtextdomain('messages', LOCALES_PATH);
+        textdomain('messages');
+        bind_textdomain_codeset('messages', 'UTF-8');
     }
 
     /**
@@ -152,13 +153,13 @@ class Language
      */
     public static function getAvailableLanguages()
     {
-        return array(
+        return [
             'Español' => 'es_ES',
             'Catalá' => 'ca_ES',
             'English' => 'en_US',
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
             'Français' => 'fr_FR'
-        );
+        ];
     }
 }

@@ -109,6 +109,10 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     protected $iconSettings;
     /** @var  FontIcon|ImageIcon */
     protected $iconHeadline;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconInfo;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconCritical;
 
     /**
      * Icons constructor.
@@ -444,5 +448,37 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     public function setIconHeadline($iconHeadline)
     {
         $this->iconHeadline = $iconHeadline;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconInfo()
+    {
+        return $this->iconInfo;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconInfo
+     */
+    public function setIconInfo($iconInfo)
+    {
+        $this->iconInfo = $iconInfo;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconCritical()
+    {
+        return $this->iconCritical;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconCritical
+     */
+    public function setIconCritical($iconCritical)
+    {
+        $this->iconCritical = $iconCritical;
     }
 }
