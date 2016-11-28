@@ -180,7 +180,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         // FIXME: Usar JSON en respuestas
         if (FileUtil::isImage($FileData)) {
             $imgData = chunk_split(base64_encode($FileData->getAccfileContent()));
-            exit('<img src="data:' . $FileData->getAccfileType() . ';base64, ' . $imgData . '" border="0" />');
+            exit('<img src="data:' . $FileData->getAccfileType() . ';base64, ' . $imgData . '" border="0" /><div class="title">' . $FileData->getAccfileName() . '</div>');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
         } elseif (strtoupper($FileData->getAccfileExtension()) === 'TXT') {

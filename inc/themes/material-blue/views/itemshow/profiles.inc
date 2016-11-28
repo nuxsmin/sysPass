@@ -19,7 +19,7 @@
                         <input id="profile_name" name="profile_name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $profile->getUserprofileName(); ?>"
-                               maxlength="50" <?php echo $isDisabled; ?>>
+                               maxlength="50" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
                                for="profile_name"><?php echo _('Nombre del perfil'); ?></label>
                     </div>
@@ -246,7 +246,18 @@
                 <tr>
                     <td class="descField"><?php echo _('Usado por'); ?></td>
                     <td class="valField">
-                        <?php echo $usedBy; ?>
+                        <div class="list-wrap">
+                            <ul class="mdl-list">
+                                <?php foreach ($usedBy as $user): ?>
+                                    <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                <i class="material-icons mdl-list__item-icon">person</i>
+                                    <?php echo $user->user_login; ?>
+                                </span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             <?php endif; ?>

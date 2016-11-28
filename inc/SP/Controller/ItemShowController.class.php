@@ -247,6 +247,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('user', $this->itemId ? User::getItem()->getById($this->itemId) : new UserData());
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
 
@@ -311,23 +312,10 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('profile', $Profile);
         $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
+        $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {
-            $users = ProfileUtil::getProfileInUsersName($this->itemId);
-
-            if (count($users) > 0) {
-                $usedBy = [];
-
-                foreach ($users as $user) {
-                    $usedBy[] = $user->user_login;
-                }
-
-                $usedBy = implode(' | ', $usedBy);
-            } else {
-                $usedBy = _('No usado');
-            }
-
-            $this->view->assign('usedBy', $usedBy);
+            $this->view->assign('usedBy', ProfileUtil::getProfileInUsersName($this->itemId));
         }
 
         $this->jsonResponse->setStatus(0);
@@ -421,6 +409,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de categoría
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getTag()
     {

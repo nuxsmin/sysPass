@@ -651,44 +651,89 @@ sysPass.Main = function () {
     var resizeImage = function ($obj) {
         log.info("resizeImage");
 
-        var viewportWidth = $(window).width() * 0.90;
-        var viewportHeight = $(window).height() * 0.90;
-        var width = $obj.width();
-        var height = $obj.height();
-        var rel = width / height;
+        var viewport = {
+            width: $(window).width() * 0.90,
+            height: $(window).height() * 0.90
+        };
+        var dimension = {
+            calc: 0,
+            main: 0,
+            secondary: 0,
+            factor: 0.90
+        };
+        var image = {
+            width: $obj.width(),
+            height: $obj.height()
+        };
+        var rel = image.width / image.height;
 
-        if (width > viewportWidth) {
-            var calcHeight = rel <= 1 ? viewportWidth * rel : viewportWidth / rel;
+        /**
+         * Ajustar la relación de aspecto de la imagen.
+         *
+         * Se tiene en cuenta la dimensión máxima en el eje opuesto.
+         *
+         * @param dimension
+         * @returns {*}
+         */
+        var adjustRel = function (dimension) {
+            if (rel > 1) {
+                dimension.calc = dimension.main / rel;
+            } else if (rel < 1) {
+                dimension.calc = dimension.main * rel;
+            }
 
-            $obj.parent().css({
-                "width": viewportWidth,
-                "height": calcHeight
-            });
+            if (dimension.calc > dimension.secondary) {
+                dimension.main *= dimension.factor;
+
+                adjustRel(dimension);
+            }
+
+            return dimension;
+        };
+
+        /**
+         * Redimensionar en relación a la anchura
+         */
+        var resizeWidth = function () {
+            dimension.main = viewport.width;
+            dimension.secondary = viewport.height;
+
+            var adjust = adjustRel(dimension);
 
             $obj.css({
-                "width": viewportWidth,
-                "height": calcHeight
+                "width": adjust.main,
+                "height": adjust.calc
             });
-        } else if (height > viewportHeight) {
-            var calcWidth = rel <= 1 ? viewportHeight / rel : viewportHeight * rel;
 
-            $obj.parent().css({
-                "width": calcWidth,
-                "height": viewportHeight
-            });
+            image.width = adjust.main;
+            image.height = adjust.calc;
+        };
+
+        /**
+         * Redimensionar en relación a la altura
+         */
+        var resizeHeight = function () {
+            dimension.main = viewport.height;
+            dimension.secondary = viewport.width;
+
+            var adjust = adjustRel(dimension);
 
             $obj.css({
-                "width": calcWidth,
-                "height": viewportHeight
+                "width": adjust.calc,
+                "height": adjust.main
             });
-        } else {
-            $obj.parent().css({
-                "width": width,
-                "height": height
-            });
+
+            image.width = adjust.calc;
+            image.height = adjust.main;
+        };
+
+        if (image.width > viewport.width) {
+            resizeWidth();
+        } else if (image.height > viewport.height) {
+            resizeHeight();
         }
 
-        $obj.show("slow");
+        return image;
     };
 
     // Objeto con métodos y propiedades protegidas

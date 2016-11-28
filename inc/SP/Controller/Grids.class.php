@@ -370,6 +370,7 @@ class Grids implements ActionsInterface
         $GridActionView->setId(self::ACTION_MGM_FILES_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(_('Ver Archivo'));
+        $GridActionView->setTitle(_('Ver Archivo'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('file/view');
 
@@ -379,6 +380,7 @@ class Grids implements ActionsInterface
         $GridActionDel->setId(self::ACTION_MGM_FILES_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(_('Eliminar Archivo'));
+        $GridActionDel->setTitle(_('Eliminar Archivo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 

@@ -15,35 +15,29 @@
             <tr>
                 <td class="descField"><?php echo _('Nombre') ?></td>
                 <td class="valField">
-                    <?php if (!$isView): ?>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="name" name="name" type="text" required
-                                   class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user->getUserName(); ?>" maxlength="80">
-                            <label class="mdl-textfield__label"
-                                   for="name"><?php echo _('Nombre de usuario completo'); ?></label>
-                        </div>
-                    <?php else: ?>
-                        <?php echo $user->getUserName(); ?>
-                    <?php endif; ?>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="name" name="name" type="text" required
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
+                               value="<?php echo $user->getUserName(); ?>"
+                               maxlength="80" <?php echo $isReadonly; ?>>
+                        <label class="mdl-textfield__label"
+                               for="name"><?php echo _('Nombre de usuario completo'); ?></label>
+                    </div>
                 </td>
             </tr>
 
             <tr>
                 <td class="descField"><?php echo _('Login'); ?></td>
                 <td class="valField">
-                    <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="login" name="login" type="text" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $user->getUserLogin(); ?>"
-                                   maxlength="80" <?php echo $user->isUserIsLdap() ? 'readonly' : ''; ?>>
+                                   maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly; ?>>
                             <label class="mdl-textfield__label"
                                    for="login"><?php echo _('Login de inicio de sesión'); ?></label>
                         </div>
-                    <?php else: ?>
-                        <?php echo $user->getUserLogin(); ?>
-                    <?php endif; ?>
                     <?php if ($user->isUserIsLdap()): ?>
                         <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>"
                            title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
@@ -59,7 +53,7 @@
                         <option value=""><?php echo _('Seleccionar Perfil'); ?></option>
                         <?php foreach ($profiles as $profile): ?>
                             <option
-                                value="<?php echo $profile->id; ?>" <?php echo ($profile->id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
+                                    value="<?php echo $profile->id; ?>" <?php echo ($profile->id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -73,7 +67,7 @@
                         <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                         <?php foreach ($groups as $group): ?>
                             <option
-                                value="<?php echo $group->id; ?>" <?php echo ($group->id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                    value="<?php echo $group->id; ?>" <?php echo ($group->id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -82,17 +76,13 @@
             <tr>
                 <td class="descField"><?php echo _('Email'); ?></td>
                 <td class="valField">
-                    <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="email" name="email" type="email" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user->getUserEmail(); ?>" maxlength="50">
+                                   value="<?php echo $user->getUserEmail(); ?>" maxlength="50" <?php echo $isReadonly; ?>>
                             <label class="mdl-textfield__label"
                                    for="email"><?php echo _('Dirección de correo'); ?></label>
                         </div
-                    <?php else: ?>
-                        <?php echo $user->getUserEmail(); ?>
-                    <?php endif; ?>
                 </td>
 
             </tr>
@@ -131,7 +121,7 @@
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
-                                  maxlength="1000"><?php echo $user->getUserNotes(); ?></textarea>
+                                  maxlength="1000" <?php echo $isReadonly ;?>><?php echo $user->getUserNotes(); ?></textarea>
                             <label class="mdl-textfield__label"
                                    for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
                         </div>

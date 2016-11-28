@@ -32,17 +32,29 @@
             <td class="valField"><?php echo $link->getCountViews(); ?></td>
         </tr>
         <tr>
-            <td class="descField"><?php echo _('Uso'); ?></td>
-            <td class="valField">
-                <?php foreach ($link->getUseInfo() as $useInfo): ?>
-                    <div class="link-use-info"><?php echo $useInfo['who'], ' - ' , date('Y-m-d H:i', $useInfo['time']); ?></div>
-                <?php endforeach; ?>
-            </td>
-        </tr>
-        <tr>
             <td class="descField"><?php echo _('Hash'); ?></td>
             <td class="valField"><?php echo $link->getPublicLinkHash(); ?></td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo _('Uso'); ?></td>
+            <td class="valField">
+                <div class="list-wrap">
+                    <ul class="mdl-list">
+                        <?php foreach ($link->getUseInfo() as $useInfo): ?>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                <i class="material-icons mdl-list__item-icon">access_time</i>
+                                    <?php printf('%s - %s', $useInfo['who'], date('Y-m-d H:i', $useInfo['time'])); ?>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
+<script type="text/javascript">
+    sysPassApp.sk.set("<?php echo $sk; ?>");
+</script>

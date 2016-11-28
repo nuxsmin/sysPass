@@ -58,7 +58,7 @@ sysPass.Actions = function (Common) {
         account: {
             save: "/ajax/ajax_itemSave.php",
             showPass: "/ajax/ajax_accViewPass.php",
-            saveFavorite: "/ajax/ajax_appMgmtSave.php",
+            saveFavorite: "/ajax/ajax_itemSave.php",
             request: "/ajax/ajax_sendRequest.php",
             getFiles: "/ajax/ajax_accGetFiles.php",
             search: "/ajax/ajax_accSearch.php"
@@ -171,9 +171,15 @@ sysPass.Actions = function (Common) {
                     });
 
                     setTimeout(function () {
-                        Common.resizeImage($image);
+                        var image = Common.resizeImage($image);
 
-                        $content.css("background-color", "#fff");
+                        $content.css({
+                            backgroundColor: "#fff",
+                            width: image.width,
+                            height: "auto"
+                        });
+
+                        $image.show("slow");
                     }, 500);
                 }
             }
@@ -591,7 +597,7 @@ sysPass.Actions = function (Common) {
                 "itemId": $obj.data("item-id"),
                 "actionId": $obj.data("action-id"),
                 "sk": Common.sk.get(),
-                "activeTab": $obj.data("activetab"),
+                "activeTab": $obj.data("activetab")
             };
 
             var opts = Common.appRequests().getRequestOpts();
@@ -600,6 +606,10 @@ sysPass.Actions = function (Common) {
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
+
+                if (json.status === 0) {
+                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                }
             });
         }
     };

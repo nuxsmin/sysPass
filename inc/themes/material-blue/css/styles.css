@@ -395,20 +395,23 @@ pre, code, samp, kbd {
     min-width: 210px
 }
 
-#content .data .list-wrap {
+#content .data .list-wrap,
+#fancyContainer .list-wrap{
     max-height: 10em;
     overflow: auto;
     padding: .5em;
     margin: 1em 0;
 }
 
-#content .data .list-wrap ul {
+#content .data .list-wrap ul,
+#fancyContainer .list-wrap ul{
     list-style-type: none;
     margin: 0;
     padding: 0
 }
 
-#content .data .list-wrap li {
+#content .data .list-wrap li,
+#fancyContainer .list-wrap li {
     display: flex;
     background: #f2f2f2;
     padding: .5em;
@@ -416,20 +419,24 @@ pre, code, samp, kbd {
     margin-bottom: .5em;
 }
 
-#content .data .list-wrap li:hover {
+#content .data .list-wrap li:hover,
+#fancyContainer .list-wrap li:hover{
     background: #e8eaf6;
     color: #000;
 }
 
-#content .data .list-wrap div.files-item-info {
+#content .data .list-wrap div.files-item-info,
+#fancyContainer .list-wrap div.files-item-info {
     flex-grow: 2;
 }
 
-#content .data .list-wrap div.files-item-info img {
+#content .data .list-wrap div.files-item-info img,
+#fancyContainer .list-wrap div.files-item-info img{
     margin: 0 .5em;
 }
 
-#content .data .list-wrap div.files-item-actions {
+#content .data .list-wrap div.files-item-actions,
+#fancyContainer .list-wrap div.files-item-actions{
     padding: .3em 0;
 }
 
@@ -926,11 +933,18 @@ pre, code, samp, kbd {
     background-color: transparent;
     max-width: 100%;
     margin: 0 auto;
+    border-radius: 0;
 }
 
 #fancyContainer.image img {
     width: auto;
     margin: 0 auto;
+}
+
+#fancyContainer.image > div.title {
+    background-color: #607d8b;
+    color: #fff;
+    padding: .5em;
 }
 
 #fancyContainer > h2 {
