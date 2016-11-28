@@ -693,6 +693,7 @@ class Account extends AccountBase implements AccountInterface
      */
     public function getAccountPassData()
     {
+        // FIXME: es necesario obtener los grupos secundarios de la cuenta
         $query = /** @lang SQL */
             'SELECT account_name,'
             . 'account_userId,'
@@ -709,6 +710,10 @@ class Account extends AccountBase implements AccountInterface
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
         $Data->addParam($this->accountData->getAccountId(), 'id');
+
+        // Obtener los usuarios y grupos secundarios
+        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
+        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
 
         return DB::getResults($Data);
     }
