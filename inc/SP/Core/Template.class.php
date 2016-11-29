@@ -30,7 +30,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use InvalidArgumentException;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\ThemeInterface;
-use SP\Log\Log;
 
 /**
  * Clase Template para la manipulación de plantillas
@@ -119,7 +118,8 @@ class Template
         $file = $this->Theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {
-            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
+            debugLog(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
+//            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
@@ -174,6 +174,8 @@ class Template
     public function __get($name)
     {
         if (!array_key_exists($name, $this->vars)) {
+            debugLog(sprintf(_('No es posible obtener la variable "%s"'), $name));
+
             throw new InvalidArgumentException(sprintf(_('No es posible obtener la variable "%s"'), $name));
         }
 
@@ -217,6 +219,7 @@ class Template
     public function __unset($name)
     {
         if (!array_key_exists($name, $this->vars)) {
+            debugLog(sprintf(_('No es posible destruir la variable "%s"'), $name));
             throw new InvalidArgumentException(sprintf(_('No es posible destruir la variable "%s"'), $name));
         }
 
@@ -237,7 +240,7 @@ class Template
             throw new FileNotFoundException(_('La plantilla no contiene archivos'));
         }
 
-        extract($this->vars);
+        extract($this->vars, EXTR_SKIP);
 
         ob_start();
 
