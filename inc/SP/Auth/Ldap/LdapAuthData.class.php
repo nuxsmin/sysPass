@@ -24,14 +24,14 @@
 
 namespace SP\Auth\Ldap;
 
-use SP\Auth\AuthData;
+use SP\Auth\AuthDataBase;
 
 /**
  * Class LdapUserData
  *
  * @package SP\Auth\Ldap
  */
-class LdapAuthData extends AuthData
+class LdapAuthData extends AuthDataBase
 {
     /**
      * @var string

@@ -28,6 +28,7 @@ namespace SP\Mgmt\Users;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Auth\Auth;
+use SP\Auth\AuthUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\Html\Html;
@@ -103,7 +104,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
 
         if ($this->itemData->isUserIsChangePass()) {
-            if (!Auth::mailPassRecover($this->itemData)) {
+            if (!AuthUtil::mailPassRecover($this->itemData)) {
                 $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
         }
@@ -248,7 +249,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
 
         if ($this->itemData->isUserIsChangePass()) {
-            if (!Auth::mailPassRecover($this->itemData)) {
+            if (!AuthUtil::mailPassRecover($this->itemData)) {
                 $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
             }
         }

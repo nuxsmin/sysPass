@@ -64,12 +64,15 @@ class Database implements AuthInterface
      * Autentificar al usuario
      *
      * @param UserData $UserData Datos del usuario
-     * @return bool
+     * @return DatabaseAuthData
      */
     public function authenticate(UserData $UserData)
     {
         $this->UserData = $UserData;
 
-        return $this->authUser();
+        $AuthData = new DatabaseAuthData();
+        $AuthData->setStatus($this->authUser());
+
+        return $AuthData;
     }
 }

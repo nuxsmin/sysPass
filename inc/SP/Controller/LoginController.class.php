@@ -25,6 +25,9 @@
 namespace SP\Controller;
 
 use SP\Auth\Auth;
+use SP\Auth\AuthUtil;
+use SP\Auth\Database\DatabaseAuthData;
+use SP\Auth\Ldap\LdapAuthDataBase;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\AuthException;
@@ -100,8 +103,17 @@ class LoginController
         $this->Log = new Log(_('Inicio sesión'));
 
         try {
-            if (!$this->authLdap()) {
-                $this->authDatabase();
+            $Auth = new Auth($this->UserData);
+            $result = $Auth->doAuth();
+
+            if ($result !== false) {
+                if ($result['type'] === 'ldap') {
+                    $this->authLdap($result['data']);
+                } elseif ($result['type'] === 'mysql') {
+                    $this->authDatabase($result['data']);
+                }
+            } else {
+                throw new AuthException(SPException::SP_INFO, _('Usuario/Clave incorrectos'));
             }
 
             $this->checkServerAuth();
@@ -124,23 +136,23 @@ class LoginController
     /**
      * Autentificación LDAP
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @param LdapAuthDataBase $LdapAuthData
+     * @return bool
+     * @throws AuthException
      */
-    protected function authLdap()
+    protected function authLdap(LdapAuthDataBase $LdapAuthData)
     {
         $this->Log->resetDescription();
 
-        $resLdap = Auth::authUserLDAP($this->UserData);
-
-        if ($resLdap === false && Auth::$status > 0) {
+        if ($LdapAuthData->getStatus() > 0) {
             $this->Log->addDetails(_('Tipo'), 'LDAP');
             $this->Log->addDetails(_('Usuario'), $this->UserData->getUserLogin());
 
-            if (Auth::$status === 49) {
+            if ($LdapAuthData->getStatus() === 49) {
                 $this->Log->addDescription(_('Login incorrecto'));
-            } elseif (Auth::$status === 701) {
+            } elseif ($LdapAuthData->getStatus() === 701) {
                 $this->Log->addDescription(_('Cuenta expirada'));
-            } else if (Auth::$status === 702) {
+            } else if ($LdapAuthData->getStatus() === 702) {
                 $this->Log->addDescription(_('El usuario no tiene grupos asociados'));
             } else {
                 $this->Log->addDescription(_('Error interno'));
@@ -149,12 +161,12 @@ class LoginController
             $this->Log->writeLog();
 
             throw new AuthException(SPException::SP_INFO, $this->Log->getDescription());
-        } elseif ($resLdap !== false) {
-            $this->UserData->setUserName($resLdap->getName());
-            $this->UserData->setUserEmail($resLdap->getEmail());
+        } else {
+            $this->UserData->setUserName($LdapAuthData->getName());
+            $this->UserData->setUserEmail($LdapAuthData->getEmail());
 
             $this->Log->addDetails(_('Tipo'), 'LDAP');
-            $this->Log->addDetails(_('Servidor LDAP'), $resLdap->getServer());
+            $this->Log->addDetails(_('Servidor LDAP'), $LdapAuthData->getServer());
 
             try {
                 // Verificamos si el usuario existe en la BBDD
@@ -165,8 +177,6 @@ class LoginController
                     // Actualizamos el usuario de LDAP en MySQL
                     UserLdap::getItem($this->UserData)->update();
                 }
-
-                return true;
             } catch (SPException $e) {
                 $this->Log->setLogLevel(Log::ERROR);
                 $this->Log->addDescription($e->getMessage());
@@ -175,21 +185,21 @@ class LoginController
                 throw new AuthException(SPException::SP_ERROR, _('Error interno'));
             }
         }
-
-        return false;
     }
 
     /**
      * Autentificación en BD
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @param DatabaseAuthData $AuthData
+     * @return bool
+     * @throws AuthException
      */
-    protected function authDatabase()
+    protected function authDatabase(DatabaseAuthData $AuthData)
     {
         $this->Log->resetDescription();
 
         // Autentificamos con la BBDD
-        if (!Auth::authUserMySQL($this->UserData)) {
+        if ($AuthData->getStatus() > 0) {
             $this->Log->addDescription(_('Login incorrecto'));
             $this->Log->addDetails(_('Usuario'), $this->UserData->getUserLogin());
             $this->Log->writeLog();
@@ -212,10 +222,10 @@ class LoginController
         $this->Log->resetDescription();
 
         // Comprobar si concide el login con la autentificación del servidor web
-        if (!Auth::checkServerAuthUser($this->UserData->getUserLogin())) {
+        if (!AuthUtil::checkServerAuthUser($this->UserData->getUserLogin())) {
             $this->Log->addDescription(_('Login incorrecto'));
             $this->Log->addDetails(_('Usuario'), $this->UserData->getUserLogin());
-            $this->Log->addDetails(_('Autentificación'), sprintf('%s (%s)', Auth::getServerAuthType(), Auth::getServerAuthUser()));
+            $this->Log->addDetails(_('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), AuthUtil::getServerAuthUser()));
             $this->Log->writeLog();
 
             throw new AuthException(SPException::SP_INFO, _('Usuario/Clave incorrectos'));

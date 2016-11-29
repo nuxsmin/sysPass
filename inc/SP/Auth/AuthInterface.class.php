@@ -20,7 +20,7 @@ interface AuthInterface
      * Autentificar al usuario
      *
      * @param UserData $UserData Datos del usuario
-     * @return bool
+     * @return mixed
      */
     public function authenticate(UserData $UserData);
 }

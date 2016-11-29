@@ -28,6 +28,7 @@ namespace SP\Api;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Auth\Auth;
+use SP\Auth\AuthUtil;
 use SP\Core\Acl;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
@@ -83,7 +84,7 @@ abstract class ApiBase
      */
     public function __construct($params)
     {
-        if (!Auth::checkAuthToken($this->getActionId($params->action), $params->authToken)) {
+        if (!AuthUtil::checkAuthToken($this->getActionId($params->action), $params->authToken)) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 

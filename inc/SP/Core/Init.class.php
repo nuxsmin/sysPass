@@ -26,6 +26,7 @@
 namespace SP\Core;
 
 use SP\Auth\Auth;
+use SP\Auth\AuthUtil;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller\MainController;
@@ -172,7 +173,7 @@ class Init
 
         if (self::isLoggedIn()) {
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if (!Auth::checkServerAuthUser(Session::getUserData()->getUserLogin())) {
+            if (!AuthUtil::checkServerAuthUser(Session::getUserData()->getUserLogin())) {
                 self::logout();
             // Denegar la redirección si la URL contiene una @
             // Esto previene redirecciones como ?redirect_url=:user@domain.com

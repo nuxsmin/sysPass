@@ -7,7 +7,7 @@ namespace SP\Auth;
  *
  * @package Auth
  */
-abstract class AuthData
+abstract class AuthDataBase
 {
     /**
      * @var string
@@ -67,7 +67,7 @@ abstract class AuthData
      */
     public function getStatus()
     {
-        return $this->status;
+        return (int)$this->status;
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class AuthData
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->status = (int)$status;
     }
 
     /**

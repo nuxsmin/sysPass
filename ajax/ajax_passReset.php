@@ -24,6 +24,7 @@
  */
 
 use SP\Auth\Auth;
+use SP\Auth\AuthUtil;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
@@ -62,7 +63,7 @@ if ($userLogin && $userEmail) {
     $UserData = User::getItem()->getByLogin($userLogin);
 
     if ($UserData->getUserEmail() === $userEmail
-        && Auth::mailPassRecover($UserData)
+        && AuthUtil::mailPassRecover($UserData)
     ) {
         $Log->addDescription(_('Solicitud enviada'));
         $Log->writeLog();
