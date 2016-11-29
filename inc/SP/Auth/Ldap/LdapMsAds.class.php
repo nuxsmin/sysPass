@@ -31,6 +31,8 @@ use SP\Log\Log;
 /**
  * Class LdapAds
  *
+ * Autentificación basada en Active Directory
+ *
  * @package SP\Auth\Ldap
  */
 class LdapMsAds extends LdapBase

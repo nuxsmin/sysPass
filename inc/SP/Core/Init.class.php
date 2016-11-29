@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Auth\Auth;
 use SP\Auth\AuthUtil;
+use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller\MainController;
@@ -172,8 +173,10 @@ class Init
         }
 
         if (self::isLoggedIn()) {
+            $AuthBrowser = new Browser();
+
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if (!AuthUtil::checkServerAuthUser(Session::getUserData()->getUserLogin())) {
+            if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false) {
                 self::logout();
             // Denegar la redirección si la URL contiene una @
             // Esto previene redirecciones como ?redirect_url=:user@domain.com
@@ -623,7 +626,7 @@ class Init
         if (Session::getSidStartTime() === 0) {
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
-        } else if (Session::getUserData()->getUserId() && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
+        } else if (Session::getUserData()->getUserId() > 0 && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
             $sessionMPass = SessionUtil::getSessionMPass();
             session_regenerate_id(true);
             Session::setSidStartTime(time());

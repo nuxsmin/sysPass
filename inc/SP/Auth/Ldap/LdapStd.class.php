@@ -31,6 +31,8 @@ use SP\Log\Log;
 /**
  * Class LdapStd
  *
+ * Autentificación basada en LDAP estándard
+ *
  * @package SP\Auth\Ldap
  */
 class LdapStd extends LdapBase

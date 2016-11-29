@@ -22,21 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth;
+namespace SP\Auth\Database;
 
-use SP\DataModel\UserData;
+use SP\Auth\AuthDataBase;
 
 /**
- * Interface AuthInterface
- * @package Auth
+ * Class DatabaseAuthData
+ *
+ * @package SP\Auth\Database
  */
-interface AuthInterface
+class DatabaseAuthData extends AuthDataBase
 {
-    /**
-     * Autentificar al usuario
-     *
-     * @param UserData $UserData Datos del usuario
-     * @return mixed|AuthDataBase
-     */
-    public function authenticate(UserData $UserData);
+
 }

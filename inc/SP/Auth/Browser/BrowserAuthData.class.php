@@ -22,21 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth;
+namespace SP\Auth\Browser;
 
-use SP\DataModel\UserData;
+use SP\Auth\AuthDataBase;
 
 /**
- * Interface AuthInterface
- * @package Auth
+ * Class BrowserAuthData
+ *
+ * @package SP\Auth\Browser
  */
-interface AuthInterface
+class BrowserAuthData extends AuthDataBase
 {
-    /**
-     * Autentificar al usuario
-     *
-     * @param UserData $UserData Datos del usuario
-     * @return mixed|AuthDataBase
-     */
-    public function authenticate(UserData $UserData);
+
 }

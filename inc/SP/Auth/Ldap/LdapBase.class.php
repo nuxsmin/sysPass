@@ -642,7 +642,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $error = ldap_error($this->ldapHandler);
         $errno = ldap_errno($this->ldapHandler);
 
-        $this->LdapAuthData->setStatus($error);
+        $this->LdapAuthData->setAuthenticated($error);
         $this->LdapAuthData->setStatusCode($errno);
 
         return sprintf('%s (%d)', $error, $errno);

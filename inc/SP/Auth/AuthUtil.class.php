@@ -1,4 +1,26 @@
 <?php
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace SP\Auth;
 
@@ -13,9 +35,13 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
+/**
+ * Class AuthUtil
+ *
+ * @package SP\Auth
+ */
 class AuthUtil
 {
-
     /**
      * Proceso para la recuperación de clave.
      *
@@ -56,6 +82,7 @@ class AuthUtil
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkAuthToken($actionId, $token)
     {
@@ -74,35 +101,6 @@ class AuthUtil
         DB::getQuery($Data);
 
         return ($Data->getQueryNumRows() === 1);
-    }
-
-    /**
-     * Comprobar si el usuario es autentificado por el servidor web
-     *
-     * @param $login string El login del usuario a comprobar
-     * @return bool
-     */
-    public static function checkServerAuthUser($login)
-    {
-        $authUser = self::getServerAuthUser();
-
-        return $authUser === null ?: $authUser === $login;
-    }
-
-    /**
-     * Devolver el nombre del usuario autentificado por el servidor web
-     *
-     * @return string
-     */
-    public static function getServerAuthUser()
-    {
-        if (isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) {
-            return $_SERVER['PHP_AUTH_USER'];
-        } elseif (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
-            return $_SERVER['REMOTE_USER'];
-        }
-
-        return null;
     }
 
     /**

@@ -25,8 +25,11 @@
 
 namespace SP\Auth;
 
+use SP\Auth\Browser\Browser;
+use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\Database;
 use SP\Auth\Database\DatabaseAuthData;
+use SP\Auth\Ldap\LdapAuthData;
 use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
@@ -38,16 +41,18 @@ use SP\Util\Checks;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 /**
+ * Class Auth
+ *
  * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
+ *
+ * @package SP\Auth
  */
 class Auth extends PluginAwareBase
 {
-    public static $status = 0;
-    public static $description;
     /**
      * @var array
      */
-    protected $authMethods = [];
+    protected $auths = [];
     /**
      * @var UserData
      */
@@ -55,57 +60,62 @@ class Auth extends PluginAwareBase
 
     /**
      * Auth constructor.
+     *
      * @param UserData $UserData
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct(UserData $UserData)
     {
-        $this->registerAuth('ldap', 'authUserLDAP');
-        $this->registerAuth('mysql', 'authUserMySQL');
+        $this->UserData = $UserData;
+
+        $this->registerAuth('authLdap');
+        $this->registerAuth('authDatabase');
+        $this->registerAuth('authBrowser');
     }
 
     /**
-     * Registrar un método de autentificación
+     * Registrar un método de autentificación primarios
      *
-     * @param string $type Tipo de autentificación
      * @param string $auth Función de autentificación
      * @throws SPException
      */
-    protected function registerAuth($type, $auth)
+    protected function registerAuth($auth)
     {
-        if (array_key_exists($type, $this->authMethods)) {
+        if (array_key_exists($auth, $this->auths)) {
             throw new SPException(SPException::SP_ERROR, _('Método ya inicializado'), __FUNCTION__);
         } elseif (!method_exists($this, $auth)) {
             throw new SPException(SPException::SP_ERROR, _('Método no disponible'), __FUNCTION__);
         }
 
-        $this->authMethods[$type] = $auth;
+        $this->auths[$auth] = $auth;
     }
-
 
     /**
      * Probar los métodos de autentificación
      *
-     * @return mixed
+     * @return bool|array
      */
     public function doAuth()
     {
-        foreach ($this->authMethods as $type => $auth) {
-            $result = call_user_func([$this, $auth]);
+        $auths = [];
 
-            if ($result !== false) {
-                return ['type' => $type, 'data' => $result];
+        foreach ($this->auths as $pAuth) {
+            $pResult = call_user_func([$this, $pAuth]);
+
+            if ($pResult !== false) {
+                $auths[] = ['auth' => $pAuth, 'data' => $pResult];
             }
         }
 
-        return false;
+        return (count($auths) > 0) ? $auths : false;
     }
 
     /**
      * Autentificación de usuarios con LDAP.
      *
-     * @return bool|Ldap\LdapAuthDataBase
+     * @return bool|LdapAuthData
      */
-    public function authUserLDAP()
+    public function authLdap()
     {
         if (!Checks::ldapIsAvailable()
             || !Checks::ldapIsEnabled()
@@ -123,36 +133,37 @@ class Auth extends PluginAwareBase
 
         // Comprobamos si la cuenta está bloqueada o expirada
         if ($LdapAuthData->getExpire() > 0) {
-            $LdapAuthData->setStatus(701);
+            $LdapAuthData->setStatusCode(701);
         } elseif (!$LdapAuthData->isInGroup()) {
-            $LdapAuthData->setStatus(702);
+            $LdapAuthData->setStatusCode(702);
         }
 
+        $LdapAuthData->setAuthenticated(1);
         return $LdapAuthData;
     }
 
     /**
-     * Autentificación de usuarios con MySQL.
+     * Autentificación de usuarios con base de datos
      *
-     * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado desde phpPMS,
+     * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado,
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return DatabaseAuthData
      */
-    public function authUserMySQL()
+    public function authDatabase()
     {
         $AuthDatabase = new Database();
-
         return $AuthDatabase->authenticate($this->UserData);
     }
 
     /**
-     * Devuelve los métodos de autentificación
+     * Autentificación de usuario con credenciales del navegador
      *
-     * @return array
+     * @return BrowserAuthData
      */
-    public function getAuthMethods()
+    public function authBrowser()
     {
-        return $this->authMethods;
+        $AuthBrowser = new Browser();
+        return $AuthBrowser->authenticate($this->UserData);
     }
 }
