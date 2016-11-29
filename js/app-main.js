@@ -655,17 +655,17 @@ sysPass.Main = function () {
             width: $(window).width() * 0.90,
             height: $(window).height() * 0.90
         };
-        var dimension = {
-            calc: 0,
-            main: 0,
-            secondary: 0,
-            factor: 0.90
-        };
         var image = {
             width: $obj.width(),
             height: $obj.height()
         };
-        var rel = image.width / image.height;
+        var dimension = {
+            calc: 0,
+            main: 0,
+            secondary: 0,
+            factor: 0.90,
+            rel: image.width / image.height
+        };
 
         /**
          * Ajustar la relación de aspecto de la imagen.
@@ -676,10 +676,10 @@ sysPass.Main = function () {
          * @returns {*}
          */
         var adjustRel = function (dimension) {
-            if (rel > 1) {
-                dimension.calc = dimension.main / rel;
-            } else if (rel < 1) {
-                dimension.calc = dimension.main * rel;
+            if (dimension.main > dimension.secondary) {
+                dimension.calc = dimension.main / dimension.rel;
+            } else if (dimension.main < dimension.secondary) {
+                dimension.calc = dimension.main * dimension.rel;
             }
 
             if (dimension.calc > dimension.secondary) {
@@ -730,6 +730,7 @@ sysPass.Main = function () {
         if (image.width > viewport.width) {
             resizeWidth();
         } else if (image.height > viewport.height) {
+            log.info("height");
             resizeHeight();
         }
 
