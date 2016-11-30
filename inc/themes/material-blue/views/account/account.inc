@@ -209,7 +209,8 @@
                 <tr>
                     <td class="descField"><?php echo _('Enlace Público'); ?></td>
                     <td class="valField">
-                        <a href="<?php echo $publicLinkUrl; ?>" target="_blank" title="<?php echo _('Enlace Público'); ?>">
+                        <a href="<?php echo $publicLinkUrl; ?>" target="_blank"
+                           title="<?php echo _('Enlace Público'); ?>">
                             <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
                         </a>
                     </td>
@@ -222,9 +223,19 @@
         <?php endif; ?>
 
         <?php if (count($customFields) > 0): ?>
-            <table class="data round extra-info secure-info">
-                <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
-            </table>
+            <fieldset class="data round">
+                <legend>
+                    <?php echo _('Campos Personalizados'); ?>
+                    <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
+                       data-target="#data-customfields"
+                       data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
+                       data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
+                </legend>
+
+                <table id="data-customfields">
+                    <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
+                </table>
+            </fieldset>
         <?php endif; ?>
 
     </form>

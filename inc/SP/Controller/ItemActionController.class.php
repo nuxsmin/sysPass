@@ -178,13 +178,13 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_USR_USERS_NEW:
                 User::getItem($Form->getItemData())->add();
-                $this->saveCustomFieldData();
+                $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Usuario creado'));
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDIT:
                 User::getItem($Form->getItemData())->update();
-                $this->saveCustomFieldData();
+                $this->updateCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Usuario actualizado'));
                 break;
@@ -219,12 +219,24 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Guardar los datos de los campos personalizados del módulo
      */
-    protected function saveCustomFieldData()
+    protected function addCustomFieldData()
     {
         $customFields = Request::analyze('customfield');
 
         if (is_array($customFields)) {
             CustomFieldsUtil::addItemCustomFields($customFields, $this->CustomFieldData);
+        }
+    }
+
+    /**
+     * Actualizar los datos de los campos personalizados del módulo
+     */
+    protected function updateCustomFieldData()
+    {
+        $customFields = Request::analyze('customfield');
+
+        if (is_array($customFields)) {
+            CustomFieldsUtil::updateItemCustomFields($customFields, $this->CustomFieldData);
         }
     }
 
@@ -254,13 +266,13 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_USR_GROUPS_NEW:
                 Group::getItem($Form->getItemData())->add();
-                $this->saveCustomFieldData();
+                $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Grupo creado'));
                 break;
             case ActionsInterface::ACTION_USR_GROUPS_EDIT:
                 Group::getItem($Form->getItemData())->update();
-                $this->saveCustomFieldData();
+                $this->updateCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Grupo actualizado'));
                 break;
@@ -291,13 +303,13 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_USR_PROFILES_NEW:
                 Profile::getItem($Form->getItemData())->add();
-                $this->saveCustomFieldData();
+                $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Perfil creado'));
                 break;
             case ActionsInterface::ACTION_USR_PROFILES_EDIT:
                 Profile::getItem($Form->getItemData())->update();
-                $this->saveCustomFieldData();
+                $this->updateCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Perfil actualizado'));
                 break;
@@ -328,13 +340,13 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
                 Customer::getItem($Form->getItemData())->add();
-                $this->saveCustomFieldData();
+                $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cliente creado'));
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
                 Customer::getItem($Form->getItemData())->update();
-                $this->saveCustomFieldData();
+                $this->updateCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cliente actualizado'));
                 break;
@@ -365,13 +377,13 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
                 Category::getItem($Form->getItemData())->add();
-                $this->saveCustomFieldData();
+                $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Categoría creada'));
                 break;
             case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
                 Category::getItem($Form->getItemData())->update();
-                $this->saveCustomFieldData();
+                $this->updateCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Categoría actualizada'));
                 break;
@@ -552,13 +564,13 @@ class ItemActionController implements ItemControllerInterface
                 $Form->getItemData()->setAccountUserId(Session::getUserData()->getUserId());
 
                 $Account->createAccount();
-                $this->saveCustomFieldData();
+                $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cuenta creada'));
                 break;
             case ActionsInterface::ACTION_ACC_EDIT:
                 $Account->updateAccount();
-                $this->saveCustomFieldData();
+                $this->updateCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cuenta actualizada'));
                 break;

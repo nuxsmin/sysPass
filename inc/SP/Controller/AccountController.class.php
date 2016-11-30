@@ -216,7 +216,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
         $AccountAcl->getAcl($this->getAccount(), $this->getAction());
         $this->view->assign('AccountAcl', $AccountAcl);
-        $this->view->assign('showViewPass', $AccountAcl->isShowViewPass());
+        $this->view->assign('showViewPass', Session::getUserProfile()->isAccViewPass());
     }
 
     /**

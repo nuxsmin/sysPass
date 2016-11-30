@@ -191,8 +191,6 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
         $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
-        $this->itemData = $fieldDef;
-
         return $fieldDef;
     }
 
