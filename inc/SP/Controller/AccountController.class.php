@@ -216,6 +216,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
         $AccountAcl->getAcl($this->getAccount(), $this->getAction());
         $this->view->assign('AccountAcl', $AccountAcl);
+        $this->view->assign('showViewPass', $AccountAcl->isShowViewPass());
     }
 
     /**
@@ -223,10 +224,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     private function getCustomFieldsForItem()
     {
-        // Establecer el id de la cuenta en activo y no del historial
-        $id = (Session::getLastAcountId() !== 0) ? Session::getLastAcountId() : $this->getId();
-
-        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC_NEW))->getById($id));
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC))->getById($this->getId()));
     }
 
     /**

@@ -268,12 +268,14 @@ sysPass.Theme = function (Common) {
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)
         $container.find(".passwordfield__input-show").each(function () {
             var $this = $(this);
+            var $icon = $("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\" data-targetid=\"" + $this.attr("id") + "\">remove_red_eye</i>");
 
-            var thisParent = $this.parent();
-            var targetId = $this.attr("id");
+            $this.parent().after($icon);
 
-            thisParent
-                .after("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\" data-targetid=\"" + targetId + "\">remove_red_eye</i>");
+            // Crear evento para mostrar clave generada/introducida
+            $icon.on("mouseover", function () {
+                $icon.attr("title", $this.val());
+            });
         });
     };
 

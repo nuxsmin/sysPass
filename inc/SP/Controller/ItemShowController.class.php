@@ -97,6 +97,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('activeTab', $this->activeTab);
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('isView', false);
+        $this->view->assign('showViewPass', true);
     }
 
     /**
