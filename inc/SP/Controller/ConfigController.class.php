@@ -78,14 +78,14 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('tabs', []);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp());
-        $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp()) ? 'DISABLED' : '');
+        $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !$this->UserData->isUserIsAdminApp());
+        $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !$this->UserData->isUserIsAdminApp()) ? 'disabled' : '');
     }
 
     /**
      * Obtener la pestaña de configuración
      *
-     * @return bool
+     * @return void
      */
     public function getGeneralTab()
     {
@@ -161,7 +161,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de encriptación
      *
-     * @return bool
+     * @return void
      */
     public function getEncryptionTab()
     {
@@ -185,7 +185,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de copia de seguridad
      *
-     * @return bool
+     * @return void
      */
     public function getBackupTab()
     {
@@ -230,7 +230,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de Importación
      *
-     * @return bool
+     * @return void
      */
     public function getImportTab()
     {
@@ -252,7 +252,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de información
      *
-     * @return bool
+     * @return void
      */
     public function getInfoTab()
     {
@@ -275,7 +275,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de Wiki
      *
-     * @return bool
+     * @return void
      */
     public function getWikiTab()
     {
@@ -307,7 +307,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de LDAP
      *
-     * @return bool
+     * @return void
      */
     public function getLdapTab()
     {
@@ -340,7 +340,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la pestaña de Correo
      *
-     * @return bool
+     * @return void
      */
     public function getMailTab()
     {

@@ -100,8 +100,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      */
     private function setVars()
     {
-        $this->view->assign('isAdmin', Session::getUserData()->isUserIsAdminApp() || Session::getUserData()->isUserIsAdminAcc());
-        $this->view->assign('showGlobalSearch', Config::getConfig()->isGlobalSearch());
+        $this->view->assign('isAdmin', $this->UserData->isUserIsAdminApp() || $this->UserData->isUserIsAdminAcc());
+        $this->view->assign('showGlobalSearch', Config::getConfig()->isGlobalSearch() && $this->UserProfileData->isAccGlobalSearch());
 
         // Obtener el filtro de búsqueda desde la sesión
         $filters = Session::getSearchFilters();

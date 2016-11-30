@@ -152,7 +152,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
+        } elseif (!UserPass::checkUserUpdateMPass($this->UserData->getUserId())) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0) {
@@ -207,7 +207,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('otherGroups', Group::getItem()->getItemsForSelect());
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
         $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getItemsForSelect()));
-        $this->view->assign('allowPrivate', Session::getUserProfile()->isAccPrivate());
+        $this->view->assign('allowPrivate', $this->UserProfileData->isAccPrivate());
 
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
@@ -216,7 +216,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
         $AccountAcl->getAcl($this->getAccount(), $this->getAction());
         $this->view->assign('AccountAcl', $AccountAcl);
-        $this->view->assign('showViewPass', Session::getUserProfile()->isAccViewPass());
+        $this->view->assign('showViewPass', $this->UserProfileData->isAccViewPass());
     }
 
     /**

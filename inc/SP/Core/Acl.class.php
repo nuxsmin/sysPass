@@ -140,20 +140,27 @@ class Acl implements ActionsInterface
             case self::ACTION_CFG_IMPORT:
                 return $curUserProfile->isConfigImport();
             case self::ACTION_MGM_CATEGORIES:
+            case self::ACTION_MGM_CATEGORIES_SEARCH:
                 return $curUserProfile->isMgmCategories();
             case self::ACTION_MGM_CUSTOMERS:
+            case self::ACTION_MGM_CUSTOMERS_SEARCH:
                 return $curUserProfile->isMgmCustomers();
             case self::ACTION_MGM_CUSTOMFIELDS:
+            case self::ACTION_MGM_CUSTOMFIELDS_SEARCH:
                 return $curUserProfile->isMgmCustomFields();
             case self::ACTION_MGM_PUBLICLINKS:
+            case self::ACTION_MGM_PUBLICLINKS_SEARCH:
                 return $curUserProfile->isMgmPublicLinks();
             case self::ACTION_MGM_PUBLICLINKS_NEW:
                 return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
             case self::ACTION_MGM_ACCOUNTS:
+            case self::ACTION_MGM_ACCOUNTS_SEARCH:
                 return $curUserProfile->isMgmAccounts();
             case self::ACTION_MGM_FILES:
+            case self::ACTION_MGM_FILES_SEARCH:
                 return $curUserProfile->isMgmFiles();
             case self::ACTION_MGM_TAGS:
+            case self::ACTION_MGM_TAGS_SEARCH:
                 return $curUserProfile->isMgmTags();
             case self::ACTION_CFG_ENCRYPTION:
                 return $curUserProfile->isConfigEncryption();
@@ -162,14 +169,18 @@ class Acl implements ActionsInterface
             case self::ACTION_USR:
                 return ($curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
             case self::ACTION_USR_USERS:
+            case self::ACTION_USR_USERS_SEARCH:
                 return $curUserProfile->isMgmUsers();
             case self::ACTION_USR_USERS_EDITPASS:
                 return ($userId === $curUserId || $curUserProfile->isMgmUsers());
             case self::ACTION_USR_GROUPS:
+            case self::ACTION_USR_GROUPS_SEARCH:
                 return $curUserProfile->isMgmGroups();
             case self::ACTION_USR_PROFILES:
+            case self::ACTION_USR_PROFILES_SEARCH:
                 return $curUserProfile->isMgmProfiles();
             case self::ACTION_MGM_APITOKENS:
+            case self::ACTION_MGM_APITOKENS_SEARCH:
                 return $curUserProfile->isMgmApiTokens();
             case self::ACTION_EVL:
                 return $curUserProfile->isEvl();

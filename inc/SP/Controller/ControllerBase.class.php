@@ -35,6 +35,8 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\DiFactory;
 use SP\Core\Template;
 use SP\Core\UI\ThemeIconsBase;
+use SP\DataModel\ProfileData;
+use SP\DataModel\UserData;
 use SP\Http\JsonResponse;
 
 /**
@@ -79,6 +81,14 @@ abstract class ControllerBase
      * @var JsonResponse
      */
     protected $Json;
+    /**
+     * @var UserData
+     */
+    protected $UserData;
+    /**
+     * @var ProfileData
+     */
+    protected $UserProfileData;
 
     /**
      * Constructor
@@ -243,8 +253,11 @@ abstract class ControllerBase
     {
         global $timeStart;
 
+        $this->UserData = Session::getUserData();
+        $this->UserProfileData = Session::getUserProfile();
+
         $this->view->assign('timeStart', $timeStart);
         $this->view->assign('icons', $this->icons);
-        $this->view->assign('SessionUserData', Session::getUserData());
+        $this->view->assign('SessionUserData', $this->UserData);
     }
 }

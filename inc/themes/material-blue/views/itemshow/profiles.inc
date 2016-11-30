@@ -106,6 +106,13 @@
                             <span class="mdl-switch__label"
                                   title="<?php echo _('Asignar permisos'); ?>"><?php echo _('Permisos'); ?></span>
                         </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accglobalsearch">
+                            <input type="checkbox" id="profile_accglobalsearch"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_accglobalsearch" <?php echo $profile->isAccGlobalSearch() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo _('Búsqueda global'); ?>"><?php echo _('Búsqueda global'); ?></span>
+                        </label>
                     </div>
                 </td>
             </tr>

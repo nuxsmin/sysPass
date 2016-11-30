@@ -171,12 +171,12 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('sessionbar');
 
-        $this->view->assign('adminApp', Session::getUserData()->isUserIsAdminApp() ? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
-        $this->view->assign('userId', Session::getUserData()->getUserId());
-        $this->view->assign('userLogin', strtoupper(Session::getUserData()->getUserLogin()));
-        $this->view->assign('userName', Session::getUserData()->getUserName() ?: strtoupper($this->view->userLogin));
-        $this->view->assign('userGroup', Session::getUserData()->getUsergroupName());
-        $this->view->assign('showPassIcon', !Session::getUserData()->isUserIsLdap());
+        $this->view->assign('adminApp', $this->UserData->isUserIsAdminApp() ? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
+        $this->view->assign('userId', $this->UserData->getUserId());
+        $this->view->assign('userLogin', strtoupper($this->UserData->getUserLogin()));
+        $this->view->assign('userName', $this->UserData->getUserName() ?: strtoupper($this->view->userLogin));
+        $this->view->assign('userGroup', $this->UserData->getUsergroupName());
+        $this->view->assign('showPassIcon', !$this->UserData->isUserIsLdap());
     }
 
     /**

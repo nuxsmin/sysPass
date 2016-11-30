@@ -81,6 +81,10 @@ class ProfileData extends ProfileBaseData
     /**
      * @var bool
      */
+    protected $accGlobalSearch = false;
+    /**
+     * @var bool
+     */
     protected $configGeneral = false;
     /**
      * @var bool
@@ -593,5 +597,21 @@ class ProfileData extends ProfileBaseData
     public function setMgmFiles($mgmFiles)
     {
         $this->mgmFiles = $mgmFiles;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAccGlobalSearch()
+    {
+        return $this->accGlobalSearch;
+    }
+
+    /**
+     * @param boolean $accGlobalSearch
+     */
+    public function setAccGlobalSearch($accGlobalSearch)
+    {
+        $this->accGlobalSearch = $accGlobalSearch;
     }
 }
