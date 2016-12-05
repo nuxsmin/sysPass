@@ -27,7 +27,7 @@ sysPass.Actions = function (Common) {
     var log = Common.log;
 
     // Variable para almacenar la llamada a setTimeout()
-    var timeout;
+    var timeout = 0;
 
     // Atributos de la ordenación de búsquedas
     var order = {key: 0, dir: 0};
@@ -184,6 +184,13 @@ sysPass.Actions = function (Common) {
                 }
             }
         });
+    };
+
+    /**
+     * Cerrar los diálogos
+     */
+    var closeFloatingBox = function () {
+        $.magnificPopup.close();
     };
 
     /**
@@ -675,101 +682,59 @@ sysPass.Actions = function (Common) {
             log.info("account:showpass");
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.showPass;
+            opts.url = ajaxUrl.appMgmt.show;
             opts.data = {
                 itemId: $obj.data("item-id"),
+                actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
-                isFull: $obj.data("full"),
+                isFull: 1,
+                sk: Common.sk.get(),
                 isAjax: 1
             };
 
             Common.appRequests().getActionCall(opts, function (json) {
-                if (json.status === 10) {
-                    main.logout();
-                    return;
-                }
+                if (json.status !== 0) {
+                    Common.msg.out(json);
+                } else {
+                    var $container = $(json.data.html);
 
-                var $dialog;
+                    showFloatingBox($obj, $container);
 
-                $("<div></div>").dialog({
-                    modal: true,
-                    title: Common.config().LANG[47],
-                    width: "auto",
-                    open: function () {
-                        $dialog = $(this);
-
-                        var content;
-                        var pass = "";
-                        var clipboardUserButton =
-                            "<button class=\"dialog-clip-user-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary\" data-clipboard-target=\".dialog-user-text\">" +
-                            "<span class=\"ui-button-icon-primary ui-icon ui-icon-clipboard\"></span>" +
-                            "<span class=\"ui-button-text\">" + Common.config().LANG[33] + "</span>" +
-                            "</button>";
-                        var clipboardPassButton =
-                            "<button class=\"dialog-clip-pass-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary\" data-clipboard-target=\".dialog-pass-text\">" +
-                            "<span class=\"ui-button-icon-primary ui-icon ui-icon-clipboard\"></span>" +
-                            "<span class=\"ui-button-text\">" + Common.config().LANG[34] + "</span>" +
-                            "</button>";
-                        var useImage = json.useimage;
-                        var user = "<p class=\"dialog-user-text\">" + json.acclogin + "</p>";
-
-                        if (json.status === 0) {
-                            if (useImage === 0) {
-                                pass = "<p class=\"dialog-pass-text\">" + json.accpass + "</p>";
-                            } else {
-                                pass = "<img class=\"dialog-pass-text\" src=\"data:image/png;base64," + json.accpass + "\" />";
-                                clipboardPassButton = "";
-                            }
-
-                            content = user + pass + "<div class=\"dialog-buttons\">" + clipboardUserButton + clipboardPassButton + "</div>";
-                        } else {
-                            content = "<span class=\"altTxtRed\">" + json.description + "</span>";
-
-                            $dialog.dialog("option", "buttons",
-                                [{
-                                    text: "Ok",
-                                    icons: {primary: "ui-icon-close"},
-                                    click: function () {
-                                        $dialog.dialog("close");
-                                    }
-                                }]
-                            );
-                        }
-
-                        $dialog.html(content);
-
-                        // Recentrar después de insertar el contenido
-                        $dialog.dialog("option", "position", "center");
-
-                        // Cerrar Dialog a los 30s
-                        $dialog.parent().on("mouseleave", function () {
-                            clearTimeout(timeout);
-                            timeout = setTimeout(function () {
-                                $dialog.dialog("close");
-                            }, 30000);
-                        });
-                    },
-                    // Forzar la eliminación del objeto para que siga copiando al protapapeles al abrirlo de nuevo
-                    close: function () {
+                    $container.on("mouseleave", function () {
                         clearTimeout(timeout);
-                        $dialog.dialog("destroy");
-                    }
-                });
+                        timeout = setTimeout(function () {
+                            closeFloatingBox();
+                        }, 30000);
+                    }).on("mouseenter", function () {
+                        if (timeout !== 0) {
+                            clearTimeout(timeout);
+                        }
+                    });
+                }
             });
         },
         copypass: function ($obj) {
             log.info("account:copypass");
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.showPass;
+            opts.url = ajaxUrl.appMgmt.show;
             opts.async = false;
             opts.data = {
                 itemId: $obj.data("item-id"),
+                actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
+                isFull: 0,
+                sk: Common.sk.get(),
                 isAjax: 1
             };
 
-            return Common.appRequests().getActionCall(opts);
+            var response = Common.appRequests().getActionCall(opts);
+
+            if (typeof response.responseJSON.csrf !== "undefined") {
+                Common.sk.set(response.responseJSON.csrf);
+            }
+
+            return response;
         },
         copy: function ($obj) {
             log.info("account:copy");

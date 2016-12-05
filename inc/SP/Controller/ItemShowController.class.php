@@ -27,12 +27,18 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Account\Account;
+use SP\Account\AccountHistory;
 use SP\Api\ApiTokensUtil;
+use SP\Core\Acl;
 use SP\Core\ActionsInterface;
+use SP\Core\Crypt;
+use SP\Core\Exceptions\ItemException;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
@@ -41,7 +47,6 @@ use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
-use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
@@ -51,14 +56,15 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupUsers;
-use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserPass;
 use SP\Util\Checks;
+use SP\Util\ImageUtil;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -224,11 +230,17 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
                     $this->view->assign('header', _('Editar Etiqueta'));
                     $this->getTag();
                     break;
+                case self::ACTION_ACC_VIEW_PASS:
+                    $this->view->assign('header', _('Clave de Cuenta'));
+                    $this->getAccountPass();
+                    break;
                 default:
                     $this->invalidAction();
             }
 
-            $this->jsonResponse->setData(['html' => $this->render()]);
+            if (count($this->jsonResponse->getData()) === 0) {
+                $this->jsonResponse->setData(['html' => $this->render()]);
+            }
         } catch (\Exception $e) {
             $this->jsonResponse->setDescription($e->getMessage());
         }
@@ -241,7 +253,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function getUser()
+    protected function getUser()
     {
         $this->module = self::ACTION_USR_USERS;
         $this->view->addTemplate('users');
@@ -260,7 +272,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener la lista de campos personalizados y sus valores
      */
-    private function getCustomFieldsForItem()
+    protected function getCustomFieldsForItem()
     {
         $this->view->assign('customFields', CustomField::getItem(new CustomFieldData($this->module))->getById($this->itemId));
     }
@@ -268,7 +280,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Inicializar la vista de cambio de clave de usuario
      */
-    public function getUserPass()
+    protected function getUserPass()
     {
         $this->module = self::ACTION_USR_USERS;
         $this->setAction(self::ACTION_USR_USERS_EDITPASS);
@@ -287,7 +299,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la ficha de grupo
      */
-    public function getGroup()
+    protected function getGroup()
     {
         $this->module = self::ACTION_USR_GROUPS;
         $this->view->addTemplate('groups');
@@ -304,7 +316,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la ficha de perfil
      */
-    public function getProfile()
+    protected function getProfile()
     {
         $this->module = self::ACTION_USR_PROFILES;
         $this->view->addTemplate('profiles');
@@ -325,7 +337,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la ficha de cliente
      */
-    public function getCustomer()
+    protected function getCustomer()
     {
         $this->module = self::ACTION_MGM_CUSTOMERS;
         $this->view->addTemplate('customers');
@@ -339,7 +351,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la ficha de categoría
      */
-    public function getCategory()
+    protected function getCategory()
     {
         $this->module = self::ACTION_MGM_CATEGORIES;
         $this->view->addTemplate('categories');
@@ -353,7 +365,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la ficha de tokens de API
      */
-    public function getToken()
+    protected function getToken()
     {
         $this->module = self::ACTION_MGM_APITOKENS;
         $this->view->addTemplate('tokens');
@@ -376,7 +388,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la ficha de campo personalizado
      */
-    public function getCustomField()
+    protected function getCustomField()
     {
         $this->module = self::ACTION_MGM_CUSTOMFIELDS;
         $this->view->addTemplate('customfields');
@@ -396,7 +408,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function getPublicLink()
+    protected function getPublicLink()
     {
         $this->module = self::ACTION_MGM_PUBLICLINKS;
         $this->view->addTemplate('publiclinks');
@@ -413,7 +425,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function getTag()
+    protected function getTag()
     {
         $this->module = self::ACTION_MGM_TAGS;
         $this->view->addTemplate('tags');
@@ -426,7 +438,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Obtener los datos para la vista de archivos de una cuenta
      */
-    public function getAccountFiles()
+    protected function getAccountFiles()
     {
         $this->setAction(self::ACTION_ACC_FILES);
 
@@ -441,5 +453,83 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->addTemplate('files');
 
         $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * Mostrar la clave de una cuenta
+     *
+     * @throws ItemException
+     */
+    public function getAccountPass()
+    {
+        $this->setAction(self::ACTION_ACC_VIEW_PASS);
+
+        $isHistory = Request::analyze('isHistory', false);
+        $isFull = Request::analyze('isFull', false);
+
+        $AccountData = new AccountExtData();
+
+        if (!$isHistory) {
+            $AccountData->setAccountId($this->itemId);
+            $Account = new Account($AccountData);
+        } else {
+            $Account = new AccountHistory($AccountData);
+            $Account->setId($this->itemId);
+        }
+
+        $Account->getAccountPassData();
+
+        if ($isHistory && !$Account->checkAccountMPass()) {
+            throw new ItemException(_('La clave maestra no coincide'));
+        }
+
+        $Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
+        $Acl->setAccountData($Account->getAccountDataForACL());
+
+        if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
+            throw new ItemException(_('No tiene permisos para acceder a esta cuenta'));
+        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
+            throw new ItemException(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+        }
+
+        $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
+
+        if (!$isHistory) {
+            $Account->incrementDecryptCounter();
+
+            $log = new Log(_('Ver Clave'));
+            $log->addDetails(_('ID'), $this->itemId);
+            $log->addDetails(_('Cuenta'), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+            $log->writeLog();
+        }
+
+        $useImage = (int)Checks::accountPassToImageIsEnabled();
+
+        if (!$useImage) {
+            $pass = $isFull ? htmlentities(trim($accountClearPass)) : trim($accountClearPass);
+        } else {
+            $pass = ImageUtil::convertText($accountClearPass);
+        }
+
+        $this->jsonResponse->setStatus(0);
+
+        if ($isFull) {
+            $this->view->addTemplate('viewpass', 'account');
+
+            $this->view->assign('login', $AccountData->getAccountLogin());
+            $this->view->assign('pass', $pass);
+            $this->view->assign('isImage', $useImage);
+
+            return;
+        }
+
+        $data = [
+            'acclogin' => $AccountData->getAccountLogin(),
+            'accpass' => $pass,
+            'useimage' => $useImage
+        ];
+
+        $this->jsonResponse->setCsrf($this->view->sk);
+        $this->jsonResponse->setData($data);
     }
 }
