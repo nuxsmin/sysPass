@@ -263,7 +263,8 @@ pre, code, samp, kbd {
     margin: 0
 }
 
-#content td.descField, #fancyContainer td.descField {
+#content td.descField,
+#fancyContainer td.descField {
     text-align: right;
     padding-right: 20px;
     width: 25%;
@@ -921,12 +922,41 @@ pre, code, samp, kbd {
 }
 
 #fancyContainer {
-    width: auto;
+    min-width: 25em;
     max-width: 50em;
     margin: 5em auto;
     padding: 0;
     background-color: #fff;
-    border-radius: 5px;
+}
+
+#fancyContainer > h2 {
+    width: 100%;
+    font-size: 18px;
+    color: white;
+    background-color: #607d8b;
+    margin: 0 0 1em 0;
+    padding: .5em 0;
+    line-height: 1em;
+}
+
+#fancyContainer > table {
+    width: 100%;
+    padding-bottom: 1em;
+}
+
+#fancyContainer select {
+    width: 220px
+}
+
+#fancyContainer #resFancyAccion {
+    display: none
+}
+
+#fancyContainer #resCheck {
+    display: inline-block;
+    width: 80%;
+    height: 4em;
+    padding: 1em 0
 }
 
 #fancyContainer.image {
@@ -947,20 +977,6 @@ pre, code, samp, kbd {
     padding: .5em;
 }
 
-#fancyContainer > h2 {
-    width: 100%;
-    font-size: 18px;
-    color: white;
-    background-color: #607d8b;
-    margin: 0 0 1em 0;
-    padding: .5em 0;
-    line-height: 1em;
-}
-
-#fancyContainer select {
-    width: 220px
-}
-
 #fancyContainer.help {
     min-height: 100px;
     background-color: #f5f5f5
@@ -970,17 +986,6 @@ pre, code, samp, kbd {
     font-size: 14px;
     text-align: justify;
     line-height: 2em
-}
-
-#fancyContainer #resFancyAccion {
-    display: none
-}
-
-#fancyContainer #resCheck {
-    display: inline-block;
-    width: 80%;
-    height: 4em;
-    padding: 1em 0
 }
 
 #debug {
@@ -1365,10 +1370,9 @@ footer img {
     line-height: 2.5em
 }
 
-.dialog-clip-pass-copy {
+.dialog-clip-copy {
     background-color: #ecfde4;
     color: green;
-    border: #dbfdcb 1px solid
 }
 
 .help-box {
@@ -1663,6 +1667,18 @@ fieldset.warning a {
 
 .help-box {
     display: none;
+}
+
+.center {
+    text-align: center !important;
+}
+
+.right {
+    text-align: right !important;
+}
+
+.left {
+    text-align: left !important;
 }
 
 @media screen and (max-width: 1000px) {

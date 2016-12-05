@@ -65,7 +65,7 @@ class ImageUtil
         imagefilledrectangle($im, 0, 0, strlen($text) * 20, 29, $bgColor);
 
         // Ruta de la fuente
-        $font = Init::$SERVERROOT . '/imgs/NotoSansUI-Regular.ttf';
+        $font = Init::$SERVERROOT . '/css/fonts/NotoSans-Regular-webfont.ttf';
 
         // Sombra
 //        imagettftext($im, 14, 0, 13, 23, $shadowColor, $font, $text);

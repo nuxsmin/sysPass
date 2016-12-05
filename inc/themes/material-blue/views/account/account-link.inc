@@ -51,19 +51,23 @@
             </tr>
         </table>
 
-        <div class="action">
-            <?php if (!$useImage): ?>
-                <button id="btnClipPass"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
-                        data-clipboard-target="#account-pass"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
-                        data-item-id="<?php echo $accountId; ?>"
-                        data-sk="<?php echo $sk; ?>"
-                        data-history="0"
-                        data-onclick="account/copypass">
-                    <i class="material-icons">content_paste</i>
-                </button>
-            <?php endif; ?>
+        <div class="item-actions">
+            <ul>
+                <?php if (!$useImage): ?>
+                    <li>
+                        <button id="btnClipPass"
+                                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
+                                data-clipboard-target="#account-pass"
+                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
+                                data-item-id="<?php echo $accountId; ?>"
+                                data-sk="<?php echo $sk; ?>"
+                                data-history="0"
+                                data-onclick="account/copypass">
+                            <i class="material-icons">content_paste</i>
+                        </button>
+                    </li>
+                <?php endif; ?>
+            </ul>
         </div>
     </div>
 </div>
