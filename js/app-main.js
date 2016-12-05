@@ -571,7 +571,7 @@ sysPass.Main = function () {
             text: function (trigger) {
                 var pass = appActions.account.copypass($(trigger));
 
-                return pass.responseJSON.accpass;
+                return pass.responseJSON.data.accpass;
             }
         });
 
@@ -590,11 +590,14 @@ sysPass.Main = function () {
         var clipboardUser = new Clipboard(".dialog-clip-user-button");
 
         clipboardPass.on("success", function (e) {
-            $(".dialog-pass-text").addClass("dialog-clip-pass-copy round");
+            $(".dialog-user-text").removeClass("dialog-clip-copy");
+            $(".dialog-pass-text").addClass("dialog-clip-copy");
             e.clearSelection();
         });
 
         clipboardUser.on("success", function (e) {
+            $(".dialog-pass-text").removeClass("dialog-clip-copy");
+            $(".dialog-user-text").addClass("dialog-clip-copy");
             e.clearSelection();
         });
     };

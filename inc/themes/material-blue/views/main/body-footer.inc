@@ -3,12 +3,11 @@
     <div id="footer-left" class="footer-parts">
         <?php if ($loggedIn === true): ?>
             <div id="session">
-                <i id="btnLogout" class="material-icons" title="<?php echo _('Salir'); ?>">exit_to_app</i>
+                <i id="btnLogout" class="material-icons">exit_to_app</i>
                 <span for="btnLogout"
                       class="mdl-tooltip mdl-tooltip--top"><?php echo _('Salir'); ?></span>
                 <?php if ($showPassIcon): ?>
-                    <i id="btnUserPass" class="btn-action material-icons"
-                       title=""
+                    <i id="btnUserPass" class="btn-action material-icons">
                        data-onclick="appMgmt/show"
                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
                        data-item-id="<?php echo $userId; ?>"
