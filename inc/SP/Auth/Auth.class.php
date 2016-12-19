@@ -125,11 +125,11 @@ class Auth extends PluginAwareBase
 
         $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
-        if (!$Ldap->authenticate($this->UserData)) {
-            return false;
-        }
-
         $LdapAuthData = $Ldap->getLdapAuthData();
+
+        if (!$Ldap->authenticate($this->UserData)) {
+            return $LdapAuthData->getAuthenticated() === 1 ? $LdapAuthData : false;
+        }
 
         // Comprobamos si la cuenta está bloqueada o expirada
         if ($LdapAuthData->getExpire() > 0) {

@@ -294,6 +294,15 @@ sysPass.Actions = function (Common) {
                         $("#mpass").prop("disabled", false).val("");
                         $("#smpass").show();
                         break;
+                    case 5:
+                        Common.msg.out(json);
+
+                        $obj.find("input[type='text'],input[type='password']").val("");
+                        $obj.find("input:first").focus();
+
+                        $("#oldpass").prop("disabled", false).val("");
+                        $("#soldpass").show();
+                        break;
                     default:
                         Common.msg.out(json);
 

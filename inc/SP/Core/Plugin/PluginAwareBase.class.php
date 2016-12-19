@@ -37,6 +37,10 @@ use SplSubject;
 abstract class PluginAwareBase implements SplSubject
 {
     /**
+     * @var string
+     */
+    protected $state;
+    /**
      * @var SplObserver[]
      */
     protected $observers = [];
@@ -92,5 +96,16 @@ abstract class PluginAwareBase implements SplSubject
         foreach ($this->observers as $observer) {
             $observer->update($this);
         }
+    }
+
+    /**
+     * Notificar un estado
+     *
+     * @param $state
+     */
+    protected function notifyState($state)
+    {
+        $this->state = $state;
+        $this->notify();
     }
 }
