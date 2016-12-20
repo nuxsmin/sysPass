@@ -95,6 +95,9 @@
         <div id="pageNav" class="round shadow">
             <div id="pageNavLeft">
                 <?php echo count($tab['query']); ?> @ <?php echo $tab['time']; ?>s
+                <?php if (isset($tab['filter'])): ?>
+                    <span class="filterOn round"><?php echo $tab['filter']; ?></span>
+                <?php endif; ?>
             </div>
         </div>
     </div>

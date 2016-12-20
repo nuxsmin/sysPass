@@ -143,7 +143,7 @@ sysPass.Util.Common = function ($) {
             data: data,
             success: function (response) {
                 elements.content().html(response);
-                setContentSize();
+                // setContentSize();
                 scrollUp();
             },
             error: function () {
@@ -160,11 +160,13 @@ sysPass.Util.Common = function ($) {
             return;
         }
 
-        // Calculate total height for full body resize
-        var totalHeight = elements.content().height() + 200;
-        //var totalWidth = $("#wrap").width();
+        var totalHeight = elements.content().height() + 150;
 
-        container.css("height", totalHeight);
+        if ($(document).height() >= totalHeight ) {
+            container.css("height", totalHeight);
+        } else {
+            container.css("height", "auto");
+        }
     };
 
     // Función para retornar el scroll a la posición inicial
@@ -230,8 +232,9 @@ sysPass.Util.Common = function ($) {
             url: APP_ROOT + "/ajax/ajax_search.php",
             data: frmData,
             success: function (response) {
-                $("#resBuscar").html(response).css("max-height", $("html").height() - windowAdjustSize);
+                $("#resBuscar").html(response); //.css("max-height", $("html").height() - windowAdjustSize);
                 scrollUp();
+                // setContentSize();
             },
             error: function () {
                 $("#resBuscar").html(resMsg("nofancyerror"));

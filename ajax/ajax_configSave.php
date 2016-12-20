@@ -69,6 +69,12 @@ if ($actionId === SP\Controller\ActionsInterface::ACTION_CFG_GENERAL
         $checkUpdatesEnabled = SP\Request::analyze('updates', false, false, true);
         $checkNoticesEnabled = SP\Request::analyze('notices', false, false, true);
 
+        if (!array_key_exists($siteTheme , \SP\Themes::getThemesAvailable())
+            || (\SP\Util::demoIsEnabled() && $siteTheme !== 'material-blue')
+        ) {
+            SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+        }
+
         SP\Config::setCacheConfigValue('sitelang', $siteLang);
         SP\Config::setCacheConfigValue('sitetheme', $siteTheme);
         SP\Config::setCacheConfigValue('session_timeout', $sessionTimeout);

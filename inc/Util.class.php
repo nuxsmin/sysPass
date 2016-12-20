@@ -70,9 +70,10 @@ class Util
      * Generar una cadena aleatoria usuando criptografía.
      *
      * @param int $length opcional, con la longitud de la cadena
+     * @param bool $useSpecial Usar caracteres especiales
      * @return string
      */
-    public static function generate_random_bytes($length = 30)
+    public static function generate_random_bytes($length = 30, $useSpecial = false)
     {
         // Try to use openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
@@ -91,7 +92,12 @@ class Util
 
         // Fallback to mt_rand()
         $characters = '0123456789';
-        $characters .= 'abcdefghijklmnopqrstuvwxyz';
+        $characters .= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWZ';
+
+        if ($useSpecial === true) {
+            $characters .= '@#$%&/?¿=!|_-^*';
+        }
+
         $charactersLength = strlen($characters) - 1;
         $pseudo_byte = "";
 
@@ -309,7 +315,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $version = array(1, 2, 0, '18');
+        $version = array(1, 2, 0, '19');
 
         if (!$retBuild) {
             array_pop($version);

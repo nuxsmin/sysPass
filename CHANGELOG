@@ -1,3 +1,16 @@
+=== ** v1.2.0.19 ===
+
+* [FIX] Solves #323, help display for bind password on LDAP configuration in classic theme. Thanks to @ejouvin
+* [FIX] Solves #325, Custom field creation, "empty" type list in theme classic. Thanks to @ejouvin
+* [FIX] Closes #319.
+* [FIX] Fixed issue when showing password through web UI. Closes #30. Thanks to @Naelwan for the feedback
+* [FIX] Closes #313, closes #317, closes #328. Fix for php7 for users / groups / profiles display. Thanks to @ejouvin
+* [MOD] Modified alertify theme for MDL
+* [FIX] Closes #352, Closes #329
+* [FIX] Closes #293, closes #292. Enforces MySQL password on installation
+* [FIX] Closes #321. Thanks to @ejouvin for the feedback
+* [FIX] Solves #345. Send request for account isn't working on classic theme. Thanks to @anburhce for the feedback
+
 === ** v1.2.0.18 ===
 
 * [FIX] Fixed API request error when user's preferences are not set. Thanks to @jtorresc for the feedback. Closes #290

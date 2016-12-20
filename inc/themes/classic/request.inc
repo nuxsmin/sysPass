@@ -35,7 +35,7 @@
         <img src="<?php \SP\Init::$WEBURI; ?>imgs/back.png" alt="save"/>
     </button>
 
-    <button type="submit" form="frmUpdUsrPass" title="<?php echo _('Enviar'); ?>" class="button-action">
+    <button type="submit" form="frmRequestModify" title="<?php echo _('Enviar'); ?>" class="button-action">
         <img src="<?php \SP\Init::$WEBURI; ?>imgs/check.png" alt="save"/>
     </button>
 </div>

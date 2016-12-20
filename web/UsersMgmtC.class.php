@@ -164,7 +164,8 @@ class UsersMgmtC extends Controller implements ActionsInterface
                 'title' => _('Gestión de Usuarios'),
                 'query' => UserUtil::getUsers(),
                 'props' => $arrUsersTableProp,
-                'time' => round(microtime() - $this->view->queryTimeStart, 5))
+                'time' => round(microtime() - $this->view->queryTimeStart, 5),
+                'filter' => !Session::getUserIsAdminApp() ? _('Filtro ON') : null)
         );
 
     }
