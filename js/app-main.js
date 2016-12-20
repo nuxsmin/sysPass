@@ -140,6 +140,10 @@ sysPass.Main = function () {
         if ($("footer").length > 0) {
             appTriggers.views.footer();
         }
+
+        $('#btnBack').click(function () {
+            redirect("index.php");
+        });
     };
 
     // Mostrar mensaje de aviso

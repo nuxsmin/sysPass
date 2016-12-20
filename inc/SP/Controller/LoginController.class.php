@@ -119,7 +119,7 @@ class LoginController
                     $this->{$auth['auth']}($auth['data']);
                 }
             } else {
-                throw new AuthException(SPException::SP_INFO, _('Usuario/Clave incorrectos'), '', self::STATUS_INVALID_LOGIN);
+                throw new AuthException(SPException::SP_INFO, _('Login incorrecto'), '', self::STATUS_INVALID_LOGIN);
             }
 
             $this->getUserData($userPass);
@@ -262,6 +262,8 @@ class LoginController
                 $this->Log->writeLog();
 
                 throw new AuthException(SPException::SP_INFO, _('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
+            } else {
+                Log::writeNewLog(_('Login'), _('Clave maestra actualizada'));
             }
         } else if ($oldPass) {
             if (!$UserPass->updateMasterPass($oldPass)) {
@@ -269,6 +271,8 @@ class LoginController
                 $this->Log->writeLog();
 
                 throw new AuthException(SPException::SP_INFO, _('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
+            } else {
+                Log::writeNewLog(_('Login'), _('Clave maestra actualizada'));
             }
         } else {
             $loadMPass = $UserPass->loadUserMPass();
@@ -276,7 +280,7 @@ class LoginController
             // Comprobar si es necesario actualizar la clave maestra
             if ($loadMPass === false) {
                 throw new AuthException(SPException::SP_INFO, _('Es necesaria su clave anterior'), '', self::STATUS_NEED_OLD_PASS);
-            // La clave no está establecida o se ha sido cambiada por el administrador
+                // La clave no está establecida o se ha sido cambiada por el administrador
             } else if ($loadMPass === null || !$UserPass->checkUserUpdateMPass()) {
                 throw new AuthException(SPException::SP_INFO, _('La clave maestra no ha sido guardada o es incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
             }
@@ -391,7 +395,7 @@ class LoginController
             $this->Log->addDetails(_('Usuario'), $this->UserData->getUserLogin());
             $this->Log->writeLog();
 
-            throw new AuthException(SPException::SP_INFO, _('Usuario/Clave incorrectos'), '', self::STATUS_INVALID_LOGIN);
+            throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_INVALID_LOGIN);
         }
 
         $this->Log->addDetails(_('Tipo'), __FUNCTION__);
@@ -417,7 +421,7 @@ class LoginController
             $this->Log->addDetails(_('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
             $this->Log->writeLog();
 
-            throw new AuthException(SPException::SP_INFO, _('Usuario/Clave incorrectos'), '', self::STATUS_INVALID_LOGIN);
+            throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_INVALID_LOGIN);
         }
 
         return true;

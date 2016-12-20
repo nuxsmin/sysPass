@@ -73,10 +73,3 @@
         </form>
     </div>
 </main>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-
-    $('#btnBack').click(function () {
-        window.history.back();
-    });
-</script>
