@@ -1,3 +1,16 @@
+=== ** v1.2.0.19 ===
+
+* [FIX] Solves #323, mostrar ayuda para la clave de conexión a LDAP en tema cñasico. Gracias a @ejouvin
+* [FIX] Solves #325, Lista de tipo en blanco en la creación de campo personalizado en tema clásico. Gracias a @ejouvin
+* [FIX] Closes #319.
+* [FIX] Corregido error al mostrar las claves en el navegador. Closes #30. Gracias a @Naelwan por el feedback
+* [FIX] Closes #313, #317. Parche para php7 al mostrar usuarios, grupos y perfiles. Gracias a @ejouvin
+* [MOD] Modificado tema de alertify para MDL
+* [FIX] Solves #345. El envío de peticiones de cuenta no funcionaba en el tema clásico. Gracias as @anburhce for the feedback
+* [FIX] Closes #352, Closes #329
+* [FIX] Closes #293, closes #292. Refuerza la clave de MySQL en la instalación
+* [FIX] Closes #321. Gracias a @ejouvin por el feedback
+
 === ** v1.2.0.18 ===
 
 * [FIX] Corregido error en peticiones a la API cuando las preferencias del usuario no están definidas. Gracias a @jtorresc por el aviso. Closes #290
