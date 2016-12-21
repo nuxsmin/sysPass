@@ -152,7 +152,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!UserPass::checkUserUpdateMPass($this->UserData->getUserId())) {
+        } elseif (!UserPass::getItem($this->UserData)->checkUserUpdateMPass()) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0) {

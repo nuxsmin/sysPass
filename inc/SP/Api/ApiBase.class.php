@@ -102,11 +102,12 @@ abstract class ApiBase
             User::getItem($UserData)->getById($this->userId);
 
             $UserPass = UserPass::getItem($UserData);
+            $Auth = new Auth($UserData);
             
             if (!$UserData->isUserIsDisabled()
-                && Auth::authUserMySQL($UserData)
+                && $Auth->doAuth()
                 && $UserPass->loadUserMPass()
-                && UserPass::checkUserUpdateMPass($UserData->getUserId())
+                && $UserPass->checkUserUpdateMPass()
             ) {
                 $this->mPass = $UserPass->getClearUserMPass();
                 SessionUtil::loadUserSession($UserData);

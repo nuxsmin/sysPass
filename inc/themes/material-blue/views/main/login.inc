@@ -63,6 +63,17 @@
                             </div>
                         </div>
 
+                        <div id="soldpass" style="display: none">
+                            <i class="material-icons">vpn_key</i>
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="oldpass" name="oldpass" type="password"
+                                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                                       maxlength="80" autocomplete="off">
+                                <label class="mdl-textfield__label"
+                                       for="oldpass"><?php echo _('Clave Anterior'); ?></label>
+                            </div>
+                        </div>
+
                         <div id="smpass" style="display: none">
                             <i class="material-icons">vpn_key</i>
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
