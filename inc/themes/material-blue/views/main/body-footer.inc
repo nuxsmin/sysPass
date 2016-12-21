@@ -7,7 +7,7 @@
                 <span for="btnLogout"
                       class="mdl-tooltip mdl-tooltip--top"><?php echo _('Salir'); ?></span>
                 <?php if ($showPassIcon): ?>
-                    <i id="btnUserPass" class="btn-action material-icons">
+                    <i id="btnUserPass" class="btn-action material-icons"
                        data-onclick="appMgmt/show"
                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
                        data-item-id="<?php echo $userId; ?>"
