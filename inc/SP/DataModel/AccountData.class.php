@@ -121,6 +121,10 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      * @var int
      */
     public $account_passDateChange = 0;
+    /**
+     * @var int
+     */
+    public $account_parentId = 0;
 
 
     /**
@@ -500,5 +504,21 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     public function setAccountPassDateChange($account_passDateChange)
     {
         $this->account_passDateChange = (int)$account_passDateChange;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountParentId()
+    {
+        return (int)$this->account_parentId;
+    }
+
+    /**
+     * @param int $account_parentId
+     */
+    public function setAccountParentId($account_parentId)
+    {
+        $this->account_parentId = (int)$account_parentId;
     }
 }

@@ -690,10 +690,12 @@ sysPass.Actions = function (Common) {
         showpass: function ($obj) {
             log.info("account:showpass");
 
+            var parentId = $obj.data("parent-id");
+
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
             opts.data = {
-                itemId: $obj.data("item-id"),
+                itemId: parentId == 0 ? $obj.data("item-id") : parentId,
                 actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
                 isFull: 1,
@@ -725,11 +727,13 @@ sysPass.Actions = function (Common) {
         copypass: function ($obj) {
             log.info("account:copypass");
 
+            var parentId = $obj.data("parent-id");
+
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
             opts.async = false;
             opts.data = {
-                itemId: $obj.data("item-id"),
+                itemId: parentId == 0 ? $obj.data("item-id") : parentId,
                 actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
                 isFull: 0,
@@ -810,7 +814,9 @@ sysPass.Actions = function (Common) {
         editpass: function ($obj) {
             log.info("account:editpass");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
+            var parentId = $obj.data("parent-id");
+
+            doAction({actionId: $obj.data("action-id"), itemId: parentId == 0 ? $obj.data("item-id") : parentId});
         },
         restore: function ($obj) {
             log.info("account:restore");

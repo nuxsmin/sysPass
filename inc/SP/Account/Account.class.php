@@ -114,7 +114,8 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_passDateChange = :accountPassDateChange,'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
-                . 'account_isPrivate = :accountIsPrivate '
+                . 'account_isPrivate = :accountIsPrivate, '
+                . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
 
             $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
@@ -132,7 +133,8 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_passDateChange = :accountPassDateChange,'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
-                . 'account_isPrivate = :accountIsPrivate '
+                . 'account_isPrivate = :accountIsPrivate, '
+                . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
 
         }
@@ -149,6 +151,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
 
         if (DB::getQuery($Data) === false) {
@@ -258,7 +261,8 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_pass = src.acchistory_pass,'
             . 'dst.account_IV = src.acchistory_IV,'
             . 'dst.account_passDate = src.acchistory_passDate,'
-            . 'dst.account_passDateChange = src.acchistory_passDateChange '
+            . 'dst.account_passDateChange = src.acchistory_passDateChange, '
+            . 'dst.account_parentId = src.acchistory_parentId '
             . 'WHERE dst.account_id = src.acchistory_accountId';
 
         $Data = new QueryData();
@@ -341,7 +345,8 @@ class Account extends AccountBase implements AccountInterface
             . 'account_otherGroupEdit = :accountOtherGroupEdit,'
             . 'account_isPrivate = :accountIsPrivate,'
             . 'account_passDate = UNIX_TIMESTAMP(),'
-            . 'account_passDateChange = :accountPassDateChange';
+            . 'account_passDateChange = :accountPassDateChange,'
+            . 'account_parentId = :accountParentId';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -359,6 +364,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al crear la cuenta'));

@@ -54,10 +54,11 @@ class UserPass extends UserBase
      * Category constructor.
      *
      * @param UserPassData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
-        $this->setDataModel('SP\DataModel\UserPassData');
+        $this->setDataModel(UserPassData::class);
 
         parent::__construct($itemData);
     }
@@ -103,7 +104,7 @@ class UserPass extends UserBase
             'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\UserPassData');
+        $Data->setMapClassName(UserPassData::class);
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserId());
 
@@ -247,7 +248,7 @@ class UserPass extends UserBase
 
         if ($configHashMPass === false) {
             return false;
-        } elseif (is_null($configHashMPass)) {
+        } elseif (null === $configHashMPass) {
             $configHashMPass = Crypt::mkHashPassword($masterPwd);
             ConfigDB::setValue('masterPwd', $configHashMPass);
         }

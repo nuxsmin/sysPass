@@ -361,7 +361,7 @@ class AccountSearch
         $queryLimit = '';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\AccountSearchData');
+        $Data->setMapClassName(AccountSearchData::class);
 
         if ($this->txtSearch) {
             // Analizar la cadena de búsqueda por etiquetas especiales

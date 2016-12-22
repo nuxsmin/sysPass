@@ -47,6 +47,7 @@ use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
+use SP\DataModel\UserPassData;
 use SP\Http\Request;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
@@ -486,9 +487,12 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
         $Acl->setAccountData($Account->getAccountDataForACL());
 
+        $UserPass = new UserPass(new UserPassData());
+        $UserPass->getItemData()->setUserId(Session::getUserData()->getUserId());
+
         if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
             throw new ItemException(_('No tiene permisos para acceder a esta cuenta'));
-        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
+        } elseif (!$UserPass->checkUserUpdateMPass()) {
             throw new ItemException(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
         }
 

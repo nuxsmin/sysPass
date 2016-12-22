@@ -358,6 +358,21 @@ sysPass.Triggers = function (Common) {
                     }
                 });
             }
+
+            $("#selParentAccount").on("change", function () {
+                var $this = $(this);
+                var $pass = $("#accountpass,#accountpassR");
+
+                if ($this[0].value > 0) {
+                    $pass.each(function () {
+                        $(this).prop("disabled", "true");
+                    });
+                } else {
+                    $pass.each(function () {
+                        $(this).prop("disabled", "");
+                    });
+                }
+            });
         },
         install: function () {
             log.info("views:install");

@@ -252,6 +252,7 @@ CREATE ALGORITHM = UNDEFINED
     conv(`accounts`.`account_isPrivate`, 10, 2)      AS `account_isPrivate`,
     `accounts`.`account_passDate`                    AS `account_passDate`,
     `accounts`.`account_passDateChange`              AS `account_passDateChange`,
+    `accounts`.`account_parentId`                    AS `account_parentId`,
     `categories`.`category_name`                     AS `category_name`,
     `customers`.`customer_name`                      AS `customer_name`,
     `ug`.`usergroup_name`                            AS `usergroup_name`,
@@ -268,31 +269,77 @@ CREATE ALGORITHM = UNDEFINED
       ON ((`accounts`.`account_customerId` = `customers`.`customer_id`))) LEFT JOIN `publicLinks`
       ON ((`accounts`.`account_id` = `publicLinks`.`publicLink_itemId`)));
 
-CREATE ALGORITHM = UNDEFINED
+CREATE
+OR REPLACE ALGORITHM = UNDEFINED
   DEFINER = CURRENT_USER
-  SQL SECURITY DEFINER VIEW `account_search_v` AS
+  SQL SECURITY DEFINER
+VIEW `account_search_v` AS
   SELECT DISTINCT
-    `accounts`.`account_id`                                            AS `account_id`,
-    `accounts`.`account_customerId`                                    AS `account_customerId`,
-    `accounts`.`account_categoryId`                                    AS `account_categoryId`,
-    `accounts`.`account_name`                                          AS `account_name`,
-    `accounts`.`account_login`                                         AS `account_login`,
-    `accounts`.`account_url`                                           AS `account_url`,
-    `accounts`.`account_notes`                                         AS `account_notes`,
-    `accounts`.`account_userId`                                        AS `account_userId`,
-    `accounts`.`account_userGroupId`                                   AS `account_userGroupId`,
-    conv(`accounts`.`account_otherUserEdit`, 10, 2)                    AS `account_otherUserEdit`,
-    conv(`accounts`.`account_otherGroupEdit`, 10, 2)                   AS `account_otherGroupEdit`,
-    conv(`accounts`.`account_isPrivate`, 10, 2)                        AS `account_isPrivate`,
-    `accounts`.`account_passDate`                                      AS `account_passDate`,
-    `accounts`.`account_passDateChange`                                AS `account_passDateChange`,
-    `ug`.`usergroup_name`                                              AS `usergroup_name`,
-    `categories`.`category_name`                                       AS `category_name`,
-    `customers`.`customer_name`                                        AS `customer_name`,
-    (SELECT count(0)
-     FROM `accFiles`
-     WHERE (`accFiles`.`accfile_accountId` = `accounts`.`account_id`)) AS `num_files`
-  FROM (((`accounts`
-    LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`))) LEFT JOIN
-    `usrGroups` `ug` ON ((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`))) LEFT JOIN `customers`
-      ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));
+    `accounts`.`account_id`                                        AS `account_id`,
+    `accounts`.`account_customerId`                                AS `account_customerId`,
+    `accounts`.`account_categoryId`                                AS `account_categoryId`,
+    `accounts`.`account_name`                                      AS `account_name`,
+    `accounts`.`account_login`                                     AS `account_login`,
+    `accounts`.`account_url`                                       AS `account_url`,
+    `accounts`.`account_notes`                                     AS `account_notes`,
+    `accounts`.`account_userId`                                    AS `account_userId`,
+    `accounts`.`account_userGroupId`                               AS `account_userGroupId`,
+    `accounts`.`account_otherUserEdit`                             AS `account_otherUserEdit`,
+    `accounts`.`account_otherGroupEdit`                            AS `account_otherGroupEdit`,
+    `accounts`.`account_isPrivate`                                 AS `account_isPrivate`,
+    `accounts`.`account_passDate`                                  AS `account_passDate`,
+    `accounts`.`account_passDateChange`                            AS `account_passDateChange`,
+    `accounts`.`account_parentId`                                  AS `account_parentId`,
+    `ug`.`usergroup_name`                                          AS `usergroup_name`,
+    `categories`.`category_name`                                   AS `category_name`,
+    `customers`.`customer_name`                                    AS `customer_name`,
+    (SELECT COUNT(0)
+     FROM
+       `accFiles`
+     WHERE
+       (`accFiles`.`accfile_accountId` = `accounts`.`account_id`)) AS `num_files`
+  FROM
+    (((`accounts`
+      LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))
+      LEFT JOIN `usrGroups` `ug` ON ((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`)))
+      LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));
+ALTER TABLE accounts`
+ADD COLUMN `account_parentId` SMALLINT (5) UNSIGNED NULL AFTER `account_passDateChange`;
+ALTER TABLE `accounts`
+  ADD CONSTRAINT `fk_accounts_customer_id`
+FOREIGN KEY (`account_customerId`)
+REFERENCES `customers` (`customer_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_accounts_category_id`
+FOREIGN KEY (`account_categoryId`)
+REFERENCES `categories` (`category_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_accounts_userGroup_id`
+FOREIGN KEY (`account_userGroupId`)
+REFERENCES `usrGroups` (`usergroup_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+ALTER TABLE `accHistory`
+  ADD COLUMN `accHistory_parentId` SMALLINT(5) UNSIGNED NULL
+  AFTER `accHistory_passDateChange`,
+  ADD INDEX `fk_accHistory_userGroup_id_idx` (`acchistory_userGroupId` ASC);
+ALTER TABLE `accHistory`
+  ADD CONSTRAINT `fk_accHistory_customer_id`
+FOREIGN KEY (`acchistory_customerId`)
+REFERENCES `customers` (`customer_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_accHistory_category_id`
+FOREIGN KEY (`acchistory_categoryId`)
+REFERENCES `categories` (`category_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_accHistory_userGroup_id`
+FOREIGN KEY (`acchistory_userGroupId`)
+REFERENCES `usrGroups` (`usergroup_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+ALTER TABLE `accounts`
+  ADD INDEX `IDX_parentId` USING BTREE (`account_parentId` ASC);
