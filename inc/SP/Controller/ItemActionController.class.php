@@ -564,6 +564,9 @@ class ItemActionController implements ItemControllerInterface
                 $Form->getItemData()->setAccountUserId(Session::getUserData()->getUserId());
 
                 $Account->createAccount();
+
+                $this->CustomFieldData->setId($Account->getAccountData()->getId());
+
                 $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cuenta creada'));

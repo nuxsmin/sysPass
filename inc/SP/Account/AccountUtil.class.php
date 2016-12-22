@@ -198,6 +198,10 @@ class AccountUtil
      */
     public static function getLinkedAccounts($accountId)
     {
+        if ($accountId === 0){
+            return [];
+        }
+
         $Data = new QueryData();
 
         $queryWhere = self::getAccountFilterUser($Data);
@@ -230,7 +234,7 @@ class AccountUtil
         $queryWhere = self::getAccountFilterUser($Data);
 
         if ($accountId !== 0) {
-            $queryWhere[] = 'account_id <> ?';
+            $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
             $Data->addParam($accountId);
         }
 
