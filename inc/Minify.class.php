@@ -66,7 +66,7 @@ class Minify
      */
     public function setBase($base)
     {
-        $this->_base = $base;
+        $this->_base = Request::getSecureAppPath($base);
     }
 
 
@@ -159,7 +159,7 @@ class Minify
         $md5Sum = '';
 
         foreach ($this->_files as $file) {
-            if (preg_match('#^https?://.*#', $file['name'])) {
+            if (preg_match('#^https?://#', $file['name'])) {
                 continue;
             }
 
@@ -214,14 +214,14 @@ class Minify
             foreach ($files as $file){
                 $this->_files[] = array(
                     'base' => $this->_base,
-                    'name' => $file,
+                    'name' => Request::getSecureAppFile($file, $this->_base),
                     'min' => $this->needsMinify($file)
                 );
             }
         } else {
             $this->_files[] = array(
                 'base' => $this->_base,
-                'name' => $file,
+                'name' => Request::getSecureAppFile($file, $this->_base),
                 'min' => $this->needsMinify($file)
             );
         }

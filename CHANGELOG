@@ -1,3 +1,7 @@
+=== ** v1.2.0.20 ===
+
+* [FIX] Critical bugfix that prevents directory traversal in JS/CSS includes. Thanks to Jan Van for the notice
+
 === ** v1.2.0.19 ===
 
 * [FIX] Solves #323, help display for bind password on LDAP configuration in classic theme. Thanks to @ejouvin

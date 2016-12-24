@@ -315,7 +315,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $version = array(1, 2, 0, '19');
+        $version = array(1, 2, 0, '20');
 
         if (!$retBuild) {
             array_pop($version);
