@@ -66,11 +66,12 @@ class Minify
 
     /**
      * @param string $base
+     * @param bool   $checkPath
      * @return $this
      */
-    public function setBase($base)
+    public function setBase($base, $checkPath = false)
     {
-        $this->base = $base;
+        $this->base = $checkPath === true ? Request::getSecureAppPath($base) : $base;
 
         return $this;
     }
@@ -218,16 +219,19 @@ class Minify
         } else {
             $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
 
+//            debugLog($this->base);
+//            debugLog($filePath);
+
             if (file_exists($filePath)) {
                 $this->files[] = array(
                     'type' => 'file',
                     'base' => $this->base,
-                    'name' => $file,
+                    'name' => Request::getSecureAppFile($file, $this->base),
                     'min' => $minify === true && $this->needsMinify($file),
                     'md5' => md5_file($filePath)
                 );
             } else {
-                error_log('File not found: ' . $filePath);
+                debugLog('File not found: ' . $filePath);
             }
         }
 
