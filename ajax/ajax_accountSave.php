@@ -1,5 +1,4 @@
 <?php
-
 /**
  * sysPass
  *
@@ -24,242 +23,242 @@
  *
  */
 
+use SP\Request;
+use SP\SessionUtil;
+
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Common::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+Request::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = SP_Common::parseParams('p', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printJSON(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
 }
 
 // Variables POST del formulario
-$frmSaveType = SP_Common::parseParams('p', 'savetyp', 0);
-$frmAccountId = SP_Common::parseParams('p', 'accountid', 0);
-$frmSelCustomer = SP_Common::parseParams('p', 'customerId', 0);
-$frmNewCustomer = SP_Common::parseParams('p', 'customer_new');
-$frmName = SP_Common::parseParams('p', 'name');
-$frmLogin = SP_Common::parseParams('p', 'login');
-$frmPassword = SP_Common::parseParams('p', 'password', '', false, false, false);
-$frmPasswordV = SP_Common::parseParams('p', 'password2', '', false, false, false);
-$frmCategoryId = SP_Common::parseParams('p', 'categoryId', 0);
-$frmOtherGroups = SP_Common::parseParams('p', 'othergroups');
-$frmOtherUsers = SP_Common::parseParams('p', 'otherusers');
-$frmNotes = SP_Common::parseParams('p', 'notice');
-$frmUrl = SP_Common::parseParams('p', 'url');
-$frmGroupEditEnabled = SP_Common::parseParams('p', 'geditenabled', 0, false, 1);
-$frmUserEditEnabled = SP_Common::parseParams('p', 'ueditenabled', 0, false, 1);
-$frmChangesHash = SP_Common::parseParams('p', 'hash');
+//$frmSaveType = SP_Request::analyze('savetyp', 0);
+$actionId = SP\Request::analyze('actionId', 0);
+$accountId = SP\Request::analyze('accountid', 0);
+$customerId = SP\Request::analyze('customerId', 0);
+$newCustomer = SP\Request::analyze('customer_new');
+$accountName = SP\Request::analyze('name');
+$accountLogin = SP\Request::analyze('login');
+$accountPassword = SP\Request::analyzeEncrypted('pass');
+$accountPasswordR = SP\Request::analyzeEncrypted('passR');
+$categoryId = SP\Request::analyze('categoryId', 0);
+$accountOtherGroups = SP\Request::analyze('othergroups');
+$accountOtherUsers = SP\Request::analyze('otherusers');
+$accountNotes = SP\Request::analyze('notes');
+$accountUrl = SP\Request::analyze('url');
+$accountGroupEditEnabled = SP\Request::analyze('geditenabled', 0, false, 1);
+$accountUserEditEnabled = SP\Request::analyze('ueditenabled', 0, false, 1);
+$accountMainGroupId = SP\Request::analyze('mainGroupId', 0);
+$accountChangesHash = SP\Request::analyze('hash');
+$customFields = SP\Request::analyze('customfield');
 
 // Datos del Usuario
-$userId = SP_Common::parseParams('s', 'uid', 0);
-$groupId = SP_Common::parseParams('s', 'ugroup', 0);
+$currentUserId = SP\Session::getUserId();
 
-if ($frmSaveType == 1) {
-    // Comprobaciones para nueva cuenta
-    if (!$frmName) {
-        SP_Common::printJSON(_('Es necesario un nombre de cuenta'));
-    }
-
-    if (!$frmSelCustomer && !$frmNewCustomer) {
-        SP_Common::printJSON(_('Es necesario un nombre de cliente'));
-    }
-
-    if (!$frmLogin) {
-        SP_Common::printJSON(_('Es necesario un usuario'));
-    }
-
-    if (!$frmPassword) {
-        SP_Common::printJSON(_('Es necesario una clave'));
-    }
-
-    if ($frmPassword != $frmPasswordV) {
-        SP_Common::printJSON(_('Las claves no coinciden'));
-    }
-} elseif ($frmSaveType == 2) {
-    // Comprobaciones para modificación de cuenta
-    if (!$frmSelCustomer && !$frmNewCustomer) {
-        SP_Common::printJSON(_('Es necesario un nombre de cliente'));
-    }
-
-    if (!$frmName) {
-        SP_Common::printJSON(_('Es necesario un nombre de cuenta'));
-    }
-
-    if (!$frmLogin) {
-        SP_Common::printJSON(_('Es necesario un usuario'));
-    }
-} elseif ($frmSaveType == 3) {
-    if (!$frmAccountId) {
-        SP_Common::printJSON(_('Id inválido'));
-    }
-} elseif ($frmSaveType == 4) {
-    // Comprobaciones para modficación de clave
-    if (!$frmPassword && !$frmPasswordV) {
-        SP_Common::printJSON(_('La clave no puede estar en blanco'));
-    }
-
-    if ($frmPassword != $frmPasswordV) {
-        SP_Common::printJSON(_('Las claves no coinciden'));
-    }
-} elseif ($frmSaveType == 5) {
-    if (!$frmAccountId) {
-        SP_Common::printJSON(_('Id inválido'));
-    }
-} else {
-    SP_Common::printJSON(_('Acción Inválida'));
+if ($accountMainGroupId === 0) {
+    $accountMainGroupId = SP\Session::getUserGroupId();
 }
 
-if ($frmSaveType == 1 || $frmSaveType == 4) {
-    // Comprobar el módulo de encriptación
-    if (!SP_Crypt::checkCryptModule()) {
-        SP_Common::printJSON(_('No se puede usar el módulo de encriptación'));
+if ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_NEW
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_COPY
+) {
+    // Comprobaciones para nueva cuenta
+    if (!$accountName) {
+        SP\Response::printJSON(_('Es necesario un nombre de cuenta'));
+    } elseif (!$customerId && !$newCustomer) {
+        SP\Response::printJSON(_('Es necesario un nombre de cliente'));
+    } elseif (!$accountLogin) {
+        SP\Response::printJSON(_('Es necesario un usuario'));
+    } elseif (!$accountPassword || !$accountPasswordR) {
+        SP\Response::printJSON(_('Es necesaria una clave'));
+    } elseif (!$categoryId) {
+        SP\Response::printJSON(_('Es necesario una categoría'));
+    }
+} elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT) {
+    // Comprobaciones para modificación de cuenta
+    if (!$customerId && !$newCustomer) {
+        SP\Response::printJSON(_('Es necesario un nombre de cliente'));
+    } elseif (!$accountName) {
+        SP\Response::printJSON(_('Es necesario un nombre de cuenta'));
+    } elseif (!$accountLogin) {
+        SP\Response::printJSON(_('Es necesario un usuario'));
+    } elseif (!$categoryId) {
+        SP\Response::printJSON(_('Es necesario una categoría'));
+    }
+} elseif ($actionId === \SP\Controller\ActionsInterface::ACTION_ACC_DELETE) {
+    if (!$accountId) {
+        SP\Response::printJSON(_('Id inválido'));
+    }
+} elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS) {
+    // Comprobaciones para modficación de clave
+    if (!$accountPassword || !$accountPasswordR) {
+        SP\Response::printJSON(_('Es necesaria una clave'));
+    }
+} elseif ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE) {
+    if (!$accountId) {
+        SP\Response::printJSON(_('Id inválido'));
+    }
+} else {
+    SP\Response::printJSON(_('Acción Inválida'));
+}
+
+if ($actionId == \SP\Controller\ActionsInterface::ACTION_ACC_NEW
+    || $actionId == \SP\Controller\ActionsInterface::ACTION_ACC_COPY
+    || $actionId === \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS
+) {
+    if ($accountPassword != $accountPasswordR) {
+        SP\Response::printJSON(_('Las claves no coinciden'));
     }
 
     // Encriptar clave de cuenta
-    $accountPass = SP_Crypt::mkEncrypt($frmPassword);
-
-    if ($accountPass === false || is_null($accountPass)) {
-        SP_Common::printJSON(_('Error al generar datos cifrados'));
+    try {
+        $accountEncPass = SP\Crypt::encryptData($accountPassword);
+    } catch (\SP\SPException $e) {
+        SP\Response::printJSON($e->getMessage());
     }
-
-    $accountIV = SP_Crypt::$strInitialVector;
 }
 
-$account = new SP_Account;
+$Account = new SP\Account;
 
-switch ($frmSaveType) {
-    case 1:
-        SP_Customer::$customerName = $frmNewCustomer;
+switch ($actionId) {
+    case \SP\Controller\ActionsInterface::ACTION_ACC_NEW:
+    case \SP\Controller\ActionsInterface::ACTION_ACC_COPY:
+        SP\Customer::$customerName = $newCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente
-        if ($frmNewCustomer) {
-            if (!SP_Customer::checkDupCustomer()) {
-                SP_Common::printJSON(_('Cliente duplicado'));
+        if ($customerId === 0 && $newCustomer) {
+            try {
+                SP\Customer::addCustomer();
+                $customerId = SP\Customer::$customerLastId;
+            } catch (\SP\SPException $e) {
+                SP\Response::printJSON($e->getMessage());
             }
-
-            if (!SP_Customer::addCustomer()) {
-                SP_Common::printJSON(_('Error al crear el cliente'));
-            }
-
-            $account->accountCustomerId = SP_Customer::$customerLastId;
-        } else {
-            $account->accountCustomerId = $frmSelCustomer;
         }
 
-        $account->accountName = $frmName;
-        $account->accountCategoryId = $frmCategoryId;
-        $account->accountLogin = $frmLogin;
-        $account->accountUrl = $frmUrl;
-        $account->accountPass = $accountPass;
-        $account->accountIV = $accountIV;
-        $account->accountNotes = $frmNotes;
-        $account->accountUserId = $userId;
-        $account->accountUserGroupId = $groupId;
-        $account->accountUserGroupsId = $frmOtherGroups;
-        $account->accountUsersId = $frmOtherUsers;
-        $account->accountOtherUserEdit = $frmUserEditEnabled;
-        $account->accountOtherGroupEdit = $frmGroupEditEnabled;
+        $Account->setAccountName($accountName);
+        $Account->setAccountCategoryId($categoryId);
+        $Account->setAccountCustomerId($customerId);
+        $Account->setAccountLogin($accountLogin);
+        $Account->setAccountUrl($accountUrl);
+        $Account->setAccountPass($accountEncPass['data']);
+        $Account->setAccountIV($accountEncPass['iv']);
+        $Account->setAccountNotes($accountNotes);
+        $Account->setAccountUserId($currentUserId);
+        $Account->setAccountUserGroupId($accountMainGroupId);
+        $Account->setAccountUsersId($accountOtherUsers);
+        $Account->setAccountUserGroupsId($accountOtherGroups);
+        $Account->setAccountOtherUserEdit($accountUserEditEnabled);
+        $Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
         // Crear cuenta
-        if ($account->createAccount()) {
-            SP_Common::printJSON(_('Cuenta creada'), 0);
+        if ($Account->createAccount()) {
+            if (is_array($customFields)) {
+                foreach ($customFields as $id => $value) {
+                    $CustomFields = new \SP\CustomFields($id, $Account->getAccountId(), $value);
+                    $CustomFields->addCustomField();
+                }
+            }
+
+            SP\Response::printJSON(_('Cuenta creada'), 0);
         }
-        SP_Common::printJSON(_('Error al crear la cuenta'), 0);
+
+        SP\Response::printJSON(_('Error al crear la cuenta'), 0);
         break;
-    case 2:
-        SP_Customer::$customerName = $frmNewCustomer;
-        $account->accountId = $frmAccountId;
-        $account->accountName = $frmName;
-        $account->accountCategoryId = $frmCategoryId;
-        $account->accountLogin = $frmLogin;
-        $account->accountUrl = $frmUrl;
-        $account->accountNotes = $frmNotes;
-        $account->accountUserEditId = $userId;
-        $account->accountUserGroupsId = $frmOtherGroups;
-        $account->accountUsersId = $frmOtherUsers;
-        $account->accountOtherUserEdit = $frmUserEditEnabled;
-        $account->accountOtherGroupEdit = $frmGroupEditEnabled;
+    case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT:
+        SP\Customer::$customerName = $newCustomer;
 
         // Comprobar si se ha introducido un nuevo cliente
-        if ($frmNewCustomer) {
-            if (!SP_Customer::checkDupCustomer()) {
-                SP_Common::printJSON(_('Cliente duplicado'));
+        if ($customerId === 0 && $newCustomer) {
+            try {
+                SP\Customer::addCustomer();
+                $customerId = SP\Customer::$customerLastId;
+            } catch (\SP\SPException $e) {
+                SP\Response::printJSON($e->getMessage());
             }
+        }
 
-            if (!SP_Customer::addCustomer()) {
-                SP_Common::printJSON(_('Error al crear el cliente'));
-            }
+        $Account->setAccountId($accountId);
+        $Account->setAccountName($accountName);
+        $Account->setAccountCategoryId($categoryId);
+        $Account->setAccountCustomerId($customerId);
+        $Account->setAccountLogin($accountLogin);
+        $Account->setAccountUrl($accountUrl);
+        $Account->setAccountNotes($accountNotes);
+        $Account->setAccountUserEditId($currentUserId);
+        $Account->setAccountUsersId($accountOtherUsers);
+        $Account->setAccountUserGroupsId($accountOtherGroups);
+        $Account->setAccountOtherUserEdit($accountUserEditEnabled);
+        $Account->setAccountOtherGroupEdit($accountGroupEditEnabled);
 
-            $account->accountCustomerId = SP_Customer::$customerLastId;
-        } else {
-            $account->accountCustomerId = $frmSelCustomer;
+        // Cambiar el grupo principal si el usuario es Admin
+        if (SP\Session::getUserIsAdminApp() || SP\Session::getUserIsAdminAcc()) {
+            $Account->setAccountUserGroupId($accountMainGroupId);
         }
 
         // Comprobar si han habido cambios
-        if ($frmChangesHash == $account->calcChangesHash()) {
-            SP_Common::printJSON(_('Sin cambios'), 0);
+        if ($accountChangesHash == $Account->calcChangesHash()) {
+            SP\Response::printJSON(_('Sin cambios'), 0);
         }
 
         // Actualizar cuenta
-        if ($account->updateAccount()) {
-            SP_Common::printJSON(_('Cuenta actualizada'), 0);
+        if ($Account->updateAccount()) {
+            if (is_array($customFields)) {
+                foreach ($customFields as $id => $value) {
+                    $CustomFields = new \SP\CustomFields($id, $accountId, $value);
+                    $CustomFields->updateCustomField();
+                }
+            }
+
+            SP\Response::printJSON(_('Cuenta actualizada'), 0);
         }
-        SP_Common::printJSON(_('Error al modificar la cuenta'));
+
+        SP\Response::printJSON(_('Error al modificar la cuenta'));
         break;
-    case 3:
-        $account->accountId = $frmAccountId;
+    case \SP\Controller\ActionsInterface::ACTION_ACC_DELETE:
+        $Account->setAccountId($accountId);
 
         // Eliminar cuenta
-        if ($account->deleteAccount()) {
-            SP_Common::printJSON(_('Cuenta eliminada'), 0, "doAction('accsearch');");
+        if ($Account->deleteAccount() && \SP\CustomFields::deleteCustomFieldForItem($accountId, \SP\Controller\ActionsInterface::ACTION_ACC_NEW)) {
+            SP\Response::printJSON(_('Cuenta eliminada'), 0, "sysPassUtil.Common.doAction('" . \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH . "');");
         }
-        SP_Common::printJSON(_('Error al eliminar la cuenta'));
+
+        SP\Response::printJSON(_('Error al eliminar la cuenta'));
         break;
-    case 4:
-        $account->accountId = $frmAccountId;
-        $account->accountPass = $accountPass;
-        $account->accountIV = $accountIV;
-        $account->accountUserEditId = $userId;
+    case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_PASS:
+        $Account->setAccountId($accountId);
+        $Account->setAccountPass($accountEncPass['data']);
+        $Account->setAccountIV($accountEncPass['iv']);
+        $Account->setAccountUserEditId($currentUserId);
 
         // Actualizar clave de cuenta
-        if ($account->updateAccountPass()) {
-            SP_Common::printJSON(_('Clave actualizada'), 0);
+        if ($Account->updateAccountPass()) {
+            SP\Response::printJSON(_('Clave actualizada'), 0);
         }
-        SP_Common::printJSON(_('Error al actualizar la clave'));
+
+        SP\Response::printJSON(_('Error al actualizar la clave'));
         break;
-    case 5:
-        $account->accountId = $frmAccountId;
-        $accountHistData = $account->getAccountHistory();
+    case \SP\Controller\ActionsInterface::ACTION_ACC_EDIT_RESTORE:
+        $Account->setAccountId(SP\AccountHistory::getAccountIdFromId($accountId));
+        $Account->setAccountUserEditId($currentUserId);
 
-        $account->accountId = $accountHistData->account_id;
-        $account->accountName = $accountHistData->account_name;
-        $account->accountCategoryId = $accountHistData->account_categoryId;
-        $account->accountCustomerId = $accountHistData->account_customerId;
-        $account->accountLogin = $accountHistData->account_login;
-        $account->accountUrl = $accountHistData->account_url;
-        $account->accountPass = $accountHistData->account_pass;
-        $account->accountIV = $accountHistData->account_IV;
-        $account->accountNotes = $accountHistData->account_notes;
-        $account->accountUserId = $accountHistData->account_userId;
-        $account->accountUserGroupId = $accountHistData->account_userGroupId;
-        $account->accountOtherUserEdit = $accountHistData->account_otherUserEdit;
-        $account->accountOtherGroupEdit = $accountHistData->account_otherGroupEdit;
-        $account->accountUserEditId = $userId;
-
-        // Restaurar cuenta y clave
-        if ($account->updateAccount(true) && $account->updateAccountPass(false, true)) {
-            SP_Common::printJSON(_('Cuenta restaurada'), 0);
+        if ($Account->restoreFromHistory($accountId)) {
+            SP\Response::printJSON(_('Cuenta restaurada'), 0);
         }
 
-        SP_Common::printJSON(_('Error al restaurar cuenta'));
+        SP\Response::printJSON(_('Error al restaurar cuenta'));
+
         break;
     default:
-        SP_Common::printJSON(_('Acción Inválida'));
+        SP\Response::printJSON(_('Acción Inválida'));
 }

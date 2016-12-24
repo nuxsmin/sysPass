@@ -1,1309 +1,1246 @@
-var lastlen = 0;
+//
+// From http://www.kenneth-truyers.net/2013/04/27/javascript-namespaces-and-modules/
+//
+var sysPass = sysPass || {};
 
-var order = {};
-order.key = 0;
-order.dir = 0;
+// create a general purpose namespace method
+// this will allow us to create namespace a bit easier
+sysPass.createNS = function (namespace) {
+    var nsparts = namespace.split(".");
+    var parent = sysPass;
 
-// Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
-var passToClip = 0;
-// Variable para el ajuste óptimo del contenido a la altura del documento
-var windowAdjustSize = 350;
-
-var strPassword;
-var minPasswordLength = 8;
-var baseScore = 0, score = 0;
-
-var num = {};
-num.Excess = 0;
-num.Upper = 0;
-num.Numbers = 0;
-num.Symbols = 0;
-
-var bonus = {};
-bonus.Excess = 3;
-bonus.Upper = 4;
-bonus.Numbers = 5;
-bonus.Symbols = 5;
-bonus.Combo = 0;
-bonus.FlatLower = 0;
-bonus.FlatNumber = 0;
-
-var powertipOptions = {placement: 'ne', smartPlacement: 'true', fadeOutTime: 500};
-
-jQuery.extend(jQuery.fancybox.defaults, {
-    type: 'ajax',
-    autoWidth: 'true',
-    autoHeight: 'true',
-    minHeight: 50,
-    padding: 0,
-    helpers: {overlay: {css: {'background': 'rgba(0, 0, 0, 0.1)'}}},
-    afterShow: function () {
-        "use strict";
-
-        $('#fancyContainer').find('input:visible:first').focus();
-    }
-});
-
-$(document).ready(function () {
-    "use strict";
-
-    $("[title]").powerTip(powertipOptions);
-    $('input, textarea').placeholder();
-    setContentSize();
-    setWindowAdjustSize();
-    if(!checkCookies()){
-        alert('Cookies are needed for this application, please enable them.');
-    }
-}).ajaxComplete(function () {
-    "use strict";
-
-    $("[title]").powerTip(powertipOptions);
-    $('input, textarea').placeholder();
-});
-
-/**
- * Función para comprobar si las cookies están habilitadas.
- *
- * @returns {boolean}
- */
-function checkCookies(){
-    "use strict";
-    if (navigator.cookieEnabled){
-        return true;
+    // we want to be able to include or exclude the root namespace
+    // So we strip it if it's in the namespace
+    if (nsparts[0] === "sysPass") {
+        nsparts = nsparts.slice(1);
     }
 
-    // set and read cookie
-    document.cookie = "checkcookie=1";
-    var ret = document.cookie.indexOf("checkcookie=") != -1;
+    // loop through the parts and create
+    // a nested namespace if necessary
+    for (var i = 0; i < nsparts.length; i++) {
+        var partname = nsparts[i];
+        // check if the current parent already has
+        // the namespace declared, if not create it
+        if (typeof parent[partname] === "undefined") {
+            parent[partname] = {};
+        }
+        // get a reference to the deepest element
+        // in the hierarchy so far
+        parent = parent[partname];
+    }
+    // the parent is now completely constructed
+    // with empty namespaces and can be used.
+    return parent;
+};
 
-    // delete cookie
-    document.cookie = "checkcookie=1; expires=Thu, 01-Jan-1970 00:00:01 GMT";
-
-    return ret;
-}
-
-/**
- * Función para cargar el contenido de la acción del menú seleccionada
- *
- * @param action
- * @param lastAction
- * @param id
- */
-function doAction(action, lastAction, id) {
+// Namespace principal de sysPass
+sysPass.createNS("sysPass.Util");
+sysPass.Util.Common = function ($) {
     "use strict";
 
-    var data = {'action': action, 'lastAction': lastAction, 'id': id, isAjax: 1};
+    var APP_ROOT, LANG, PK, MAX_FILE_SIZE;
 
-    $('#content').fadeOut(function () {
-        $.fancybox.showLoading();
+    // Atributos de la ordenación de búsquedas
+    var order = {key: 0, dir: 0};
+
+    // Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
+    var passToClip = 0;
+    // Variable para el ajuste óptimo del contenido a la altura del documento
+    var windowAdjustSize = 450;
+    // Variable para almacena la llamada a setTimeout()
+    var timeout;
+
+    // Atributos del generador de claves
+    var passwordData = {
+        passLength: 0,
+        minPasswordLength: 8,
+        complexity: {
+            numbers: true,
+            symbols: true,
+            uppercase: true,
+            numlength: 12
+        }
+    };
+
+    var elements = {
+        content: function () {
+            return $("#content");
+        },
+        frmSearch: function () {
+            return $("#frmSearch");
+        }
+    };
+
+    // Inicializar la encriptación RSA
+    var encrypt = new JSEncrypt();
+
+    $(document).ready(function () {
+        initializeClipboard();
+        PK !== "" && bindPassEncrypt();
+    });
+
+    //$.ajaxSetup({
+    //    error: function(jqXHR, exception) {
+    //        if (jqXHR.status === 0) {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //        } else if (jqXHR.status == 404) {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //        } else if (jqXHR.status == 500) {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //        } else if (exception === 'parsererror') {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //        } else if (exception === 'timeout') {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //        } else if (exception === 'abort') {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //        } else {
+    //            elements.content.fadeIn().html(resMsg("nofancyerror", jqXHR.responseText));
+    //            //alert('Uncaught Error.n' + jqXHR.responseText);
+    //        }
+    //    }
+    //});
+
+    var getEnvironment = function () {
+        var path = window.location.pathname.split("/");
+        var rootPath = function () {
+            var fullPath = "";
+
+            for (var i = 1; i <= path.length - 2; i++) {
+                fullPath += "/" + path[i];
+            }
+
+            return fullPath;
+        };
+        var url = window.location.protocol + "//" + window.location.host + rootPath();
 
         $.ajax({
-            type: 'POST',
-            dataType: 'html',
-            url: APP_ROOT + '/ajax/ajax_getContent.php',
-            data: data,
-            success: function (response) {
-                $('#content').fadeIn().html(response);
-                setContentSize();
-            },
-            error: function () {
-                $('#content').html(resMsg("nofancyerror"));
-            },
-            complete: function () {
-                $.fancybox.hideLoading();
+            type: "GET",
+            url: url + "/ajax/ajax_getEnvironment.php",
+            dataType: "json",
+            async: false,
+            data: {isAjax: 1},
+            success: function (json) {
+                APP_ROOT = json.app_root;
+                LANG = json.lang;
+                PK = json.pk;
+                MAX_FILE_SIZE = json.max_file_size;
+
+                encrypt.setPublicKey(PK);
             }
         });
-    });
-}
+    };
 
-/**
- * Función para establecer la altura del contenedor ajax
- */
-function setContentSize() {
-    "use strict";
+    getEnvironment();
 
-    // Calculate total height for full body resize
-    var totalHeight = $("#content").height() + 100;
-    //var totalWidth = $("#wrap").width();
-
-    $("#container").css("height", totalHeight);
-}
-
-/**
- * Función para establecer la variable de ajuste óptimo de altura
- */
-function setWindowAdjustSize() {
-    "use strict";
-
-    var browser = getBrowser();
-
-    if (browser === "MSIE") {
-        windowAdjustSize = 150;
-    }
-    //console.log(windowAdjustSize);
-}
-
-/**
- * Función para retornar el scroll a la posición inicial
- */
-function scrollUp() {
-    "use strict";
-
-    $('html, body').animate({ scrollTop: 0 }, 'slow');
-}
-
-/**
- * Función para limpiar un formulario
- *
- * @param clearStart
- */
-function clearSearch(clearStart) {
-    "use strict";
-
-    if (clearStart === 1) {
-        $('#frmSearch').find('input[name="start"]').val(0);
-        return;
-    }
-
-    document.frmSearch.search.value = "";
-    document.frmSearch.customer.selectedIndex = 0;
-    document.frmSearch.category.selectedIndex = 0;
-    $('#frmSearch').find('input[name="start"]').val(0);
-    $('#frmSearch').find('input[name="skey"]').val(0);
-    $('#frmSearch').find('input[name="sorder"]').val(0);
-    $(".select-box").val('').trigger("chosen:updated");
-    order.key = 0;
-    order.dir = 0;
-}
-
-/**
- * Función para crear un desplegable con opciones
- *
- * @param options
- */
-function mkChosen(options) {
-    "use strict";
-
-    $('#' + options.id).chosen({
-        allow_single_deselect: true,
-        placeholder_text_single: options.placeholder,
-        disable_search_threshold: 10,
-        no_results_text: options.noresults
-    });
-}
-
-/**
- * Función para la búsqueda de cuentas mediante filtros
- *
- * @param continous
- * @param event
- */
-function accSearch(continous, event) {
-    "use strict";
-
-    var lenTxtSearch = $('#txtSearch').val().length;
-
-    if (typeof (event) !== 'undefined' && ((event.keyCode < 48 && event.keyCode !== 13) || (event.keyCode > 105 && event.keyCode < 123))) {
-        return;
-    }
-
-    if (lenTxtSearch < 3 && continous === 1 && lenTxtSearch > window.lastlen && event.keyCode != 13) {
-        return;
-    }
-
-    window.lastlen = lenTxtSearch;
-
-    doSearch();
-}
-
-/**
- * Función para relizar la búsqueda de cuentas mediante ordenación
- *
- * @param skey
- * @param start
- * @param nav
- * @returns {boolean}
- */
-function searchSort(skey, start, nav) {
-    "use strict";
-
-    if (typeof(skey) === "undefined" || typeof(start) === "undefined") return false;
-
-    if (order.key > 0 && order.key != skey) {
-        order.key = skey;
-        order.dir = 0;
-    } else if (nav != 1) {
-        order.key = skey;
-
-        if (order.dir === 1) {
-            order.dir = 0;
-        } else {
-            order.dir = 1;
-        }
-    }
-
-    $('#frmSearch').find('input[name="skey"]').val(order.key);
-    $('#frmSearch').find('input[name="sorder"]').val(order.dir);
-    $('#frmSearch').find('input[name="start"]').val(start);
-
-    doSearch();
-}
-
-/**
- * Función para la búsqueda de cuentas
- */
-function doSearch() {
-    "use strict";
-
-    var frmData = $("#frmSearch").serialize();
-
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'html',
-        url: APP_ROOT + '/ajax/ajax_search.php',
-        data: frmData,
-        success: function (response) {
-            $('#resBuscar').html(response);
-            $('#resBuscar').css("max-height", $('html').height() - windowAdjustSize);
-
-            if (order.key) {
-                $('#search-sort-' + order.key).addClass('filterOn');
-                if (order.dir === 0) {
-                    $('#search-sort-' + order.key).append('<img src="imgs/arrow_down.png" style="width:17px;height:12px;" />');
-                } else {
-                    $('#search-sort-' + order.key).append('<img src="imgs/arrow_up.png" style="width:17px;height:12px;" />');
-                }
-            }
-        },
-        error: function () {
-            $('#resBuscar').html(resMsg("nofancyerror"));
-        },
-        complete: function () {
-            scrollUp();
-            $.fancybox.hideLoading();
-        }
-    });
-}
-
-/**
- * Función para navegar por el log de eventos
- *
- * @param start
- * @param current
- * @returns {boolean}
- */
-function navLog(start, current) {
-    "use strict";
-
-    if (typeof(start) === "undefined") return false;
-
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'html',
-        url: APP_ROOT + '/ajax/ajax_eventlog.php',
-        data: {'start': start, 'current': current},
-        success: function (response) {
-            $('#content').html(response);
-        },
-        error: function () {
-            $('#content').html(resMsg("nofancyerror"));
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
-            scrollUp();
-            setContentSize();
-        }
-    });
-}
-
-/**
- * Función para ver la clave de una cuenta
- *
- * @param id
- * @param full
- * @param history
- */
-function viewPass(id, full, history) {
-    "use strict";
-
-    // Comprobamos si la clave ha sido ya obtenida para copiar
-    if (passToClip === 1 && full === 0) {
-        return;
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: APP_ROOT + '/ajax/ajax_viewpass.php',
-        async: false,
-        data: {'accountid': id, 'full': full, 'isHistory': history, 'isAjax': 1},
-        success: function (data) {
-            if (data === "-1") {
-                doLogout();
-            } else {
-                if (full === 0) {
-                    // Copiamos la clave en el objeto que tiene acceso al portapapeles
-                    $('#clip_pass_text').html(data);
-                    passToClip = 1;
-                } else {
-                    resMsg("none", data);
-                }
-            }
-        }
-    });
-}
-
-/**
- * Función para obtener las variables de la URL y parsearlas a un array.
- *
- * @returns {Array}
- */
-function getUrlVars() {
-    "use strict";
-
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-
-/**
- * Función para autentificar usuarios
- *
- * @returns {boolean}
- */
-function doLogin() {
-    "use strict";
-
-    $.fancybox.showLoading();
-
-    var data = $('#frmLogin').serialize();
-
-    $("#btnLogin").prop('disabled', true);
-
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: APP_ROOT + '/ajax/ajax_doLogin.php',
-        data: data,
-        success: function (json) {
-            var status = json.status;
-            var description = json.description;
-
-            if (status === 0 || status === 2) {
-                location.href = description;
-            } else if (status === 3 || status === 4) {
-                resMsg("error", description);
-                $("#mpass").prop('disabled', false);
-                $('#smpass').show();
-            } else if (status === 5) {
-                resMsg("warn", description, '', "location.href = 'index.php';");
-            } else {
-                $('#user').val('').focus();
-                $('#pass').val('');
-                resMsg("error", description);
-            }
-        },
-        complete: function () {
-            $('#btnLogin').prop('disabled', false);
-            $.fancybox.hideLoading();
-        },
-        statusCode: {
-            404: function () {
-                var txt = LANG[1] + '<p>' + LANG[13] + '</p>';
-                resMsg("error", txt);
-            }
-        }
-    });
-
-    return false;
-}
-
-/**
- * Función para salir de la sesión
- */
-function doLogout() {
-    "use strict";
-
-    var url = window.location.search;
-
-    if (url.length > 0) {
-        location.href = 'index.php' + url + '&logout=1';
-    } else {
-        location.href = 'index.php?logout=1';
-    }
-}
-
-/**
- * Función para comprobar si se ha salido de la sesión
- */
-function checkLogout() {
-    "use strict";
-
-    var session = getUrlVars()["session"];
-
-    if (session === 0) {
-        resMsg("warn", LANG[2], '', "location.search = ''");
-    }
-}
-
-/**
- * Función para añadir/editar una cuenta
- *
- * @param frm
- */
-function saveAccount(frm) {
-    "use strict";
-
-    var data = $("#" + frm).serialize();
-    var id = $('input[name="accountid"]').val();
-    var savetyp = $('input[name="savetyp"]').val();
-    var action = $('input[name="next"]').val();
-
-    $('#btnGuardar').attr('disabled', true);
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: APP_ROOT + '/ajax/ajax_accountSave.php',
-        data: data,
-        success: function (json) {
-            var status = json.status;
-            var description = json.description;
-
-            if (status === 0) {
-                resMsg("ok", description);
-
-                if (savetyp === 1) {
-                    $('#btnSave').hide();
-                } else {
-                    $('#btnSave').attr('disabled', true);
-                }
-
-                if (action && id) {
-                    doAction(action, 'accsearch', id);
-                }
-            } else if (status === 10) {
-                doLogout();
-            } else {
-                resMsg("error", description);
-                $('#btnSave').removeAttr("disabled");
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
-            resMsg("error", txt);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
-        }
-    });
-}
-
-/**
- * Función para eliminar una cuenta
- *
- * @param id
- * @param action
- * @param sk
- */
-function delAccount(id, action, sk) {
-    "use strict";
-
-    var data = {accountid: id, savetyp: action, sk: sk};
-    var atext = '<div id="alert"><p id="alert-text">' + LANG[3] + '</p></div>';
-    var url = '/ajax/ajax_accountSave.php';
-
-    alertify.confirm(atext, function (e) {
-        if (e) {
-            sendAjax(data, url);
-        }
-    });
-}
-
-/**
- * Función para enviar una solicitud de modificación de cuenta
- */
-function sendRequest() {
-    "use strict";
-
-    var url = '/ajax/ajax_sendRequest.php';
-    var data = $('#frmRequestModify').serialize();
-
-    sendAjax(data, url);
-}
-
-/**
- * Función para guardar la configuración
- *
- * @param action
- */
-function configMgmt(action) {
-    "use strict";
-
-    var frm, url;
-
-    switch (action) {
-        case "saveconfig":
-            frm = 'frmConfig';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "savempwd":
-            frm = 'frmCrypt';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "genflpass":
-            frm = 'frmFirstLoginPass';
-            url = '/ajax/ajax_configSave.php';
-            break;
-        case "backup":
-            frm = 'frmBackup';
-            url = '/ajax/ajax_backup.php';
-            break;
-        case "migrate":
-            frm = 'frmMigrate';
-            url = '/ajax/ajax_migrate.php';
-            break;
-        default:
-            return;
-    }
-
-    var data = $('#' + frm).serialize();
-
-    sendAjax(data, url);
-}
-
-/**
- * Función para descargar/ver archivos de una cuenta
- *
- * @param id
- * @param sk
- * @param action
- */
-function downFile(id, sk, action) {
-    "use strict";
-
-    var data = {'fileId': id, 'sk': sk, 'action': action};
-
-    if (action === 'view') {
-        $.fancybox.showLoading();
+    // Función para cargar el contenido de la acción del menú seleccionada
+    var doAction = function (actionId, lastAction, itemId) {
+        var data = {"actionId": actionId, "lastAction": lastAction, "itemId": itemId, isAjax: 1};
 
         $.ajax({
             type: "POST",
-            cache: false,
-            url: APP_ROOT + "/ajax/ajax_files.php",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_getContent.php",
             data: data,
             success: function (response) {
-                if (response) {
-                    $.fancybox(response, {padding: [10, 10, 10, 10]});
-                    // Actualizar fancybox para adaptarlo al tamaño de la imagen
-                    setTimeout(function () {
-                        $.fancybox.update();
-                    }, 1000);
-                } else {
-                    resMsg("error", LANG[14]);
-                }
-
+                elements.content().html(response);
+                // setContentSize();
+                scrollUp();
             },
-            complete: function () {
-                $.fancybox.hideLoading();
+            error: function () {
+                elements.content().html(resMsg("nofancyerror"));
             }
         });
-    } else if (action === 'download') {
-        $.fileDownload(APP_ROOT + '/ajax/ajax_files.php', {'httpMethod': 'POST', 'data': data});
-    }
-}
-
-/**
- * Función para obtener la lista de archivos de una cuenta
- *
- * @param id
- * @param isDel
- * @param sk
- */
-function getFiles(id, isDel, sk) {
-    "use strict";
-
-    var data = {'id': id, 'del': isDel, 'sk': sk};
-
-    $.ajax({
-        type: "GET",
-        cache: false,
-        url: APP_ROOT + "/ajax/ajax_getFiles.php",
-        data: data,
-        success: function (response) {
-            $('#downFiles').html(response);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
-        }
-    });
-}
-
-/**
- * Función para eliminar archivos de una cuenta
- *
- * @param id
- * @param sk
- * @param accid
- */
-function delFile(id, sk, accid) {
-    "use strict";
-
-    var atext = '<div id="alert"><p id="alert-text">' + LANG[15] + '</p></div>';
-
-    alertify.confirm(atext, function (e) {
-        if (e) {
-            $.fancybox.showLoading();
-
-            var data = {'fileId': id, 'action': 'delete', 'sk': sk};
-
-            $.post(APP_ROOT + '/ajax/ajax_files.php', data,
-                function (data) {
-                    $.fancybox.hideLoading();
-                    resMsg("ok", data);
-                    $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accid + "&del=1&isAjax=1&sk=" + sk);
-                }
-            );
-        }
-    });
-}
-
-/**
- * Función para activar el Drag&Drop de archivos en las cuentas
- *
- * @param accountId
- * @param sk
- * @param maxsize
- */
-function dropFile(accountId, sk, maxsize) {
-    "use strict";
-
-    var dropfiles = $('#dropzone');
-    var file_exts_ok = dropfiles.attr('data-files-ext').toLowerCase().split(',');
-
-    dropfiles.filedrop({
-        fallback_id: 'inFile',
-        paramname: 'inFile',
-        maxfiles: 5,
-        maxfilesize: maxsize,
-        allowedfileextensions: file_exts_ok,
-        url: APP_ROOT + '/ajax/ajax_files.php',
-        data: {
-            sk: sk,
-            accountId: accountId,
-            action: 'upload',
-            isAjax: 1
-        },
-        uploadFinished: function (i, file, response) {
-            $.fancybox.hideLoading();
-
-            var sk = $('input[name="sk"]').val();
-            $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accountId + "&del=1&isAjax=1&sk=" + sk);
-
-            resMsg("ok", response);
-        },
-        error: function (err, file) {
-            switch (err) {
-                case 'BrowserNotSupported':
-                    resMsg("error", LANG[16]);
-                    break;
-                case 'TooManyFiles':
-                    resMsg("error", LANG[17] + ' (max. ' + this.maxfiles + ')');
-                    break;
-                case 'FileTooLarge':
-                    resMsg("error", LANG[18] + ' ' + maxsize + ' MB' + '<br>' + file.name);
-                    break;
-                case 'FileExtensionNotAllowed':
-                    resMsg("error", LANG[19]);
-                    break;
-                default:
-                    break;
-            }
-        },
-        uploadStarted: function (i, file, len) {
-            $.fancybox.showLoading();
-        }
-    });
-}
-
-/**
- * Función para activar el Drag&Drop de archivos en la importación de cuentas
- *
- * @param sk
- */
-function importFile(sk) {
-    "use strict";
-
-    var dropfiles = $('#dropzone');
-    var file_exts_ok = ['csv', 'xml'];
-
-    dropfiles.filedrop({
-        fallback_id: 'inFile',
-        paramname: 'inFile',
-        maxfiles: 1,
-        maxfilesize: 1,
-        allowedfileextensions: file_exts_ok,
-        url: APP_ROOT + '/ajax/ajax_import.php',
-        data: {
-            sk: sk,
-            action: 'import',
-            isAjax: 1
-        },
-        uploadFinished: function (i, file, json) {
-            $.fancybox.hideLoading();
-
-            var status = json.status;
-            var description = json.description;
-
-            if (status === 0) {
-                resMsg("ok", description);
-            } else if (status === 10) {
-                resMsg("error", description);
-                doLogout();
-            } else {
-                resMsg("error", description);
-            }
-        },
-        error: function (err, file) {
-            switch (err) {
-                case 'BrowserNotSupported':
-                    resMsg("error", LANG[16]);
-                    break;
-                case 'TooManyFiles':
-                    resMsg("error", LANG[17] + ' (max. ' + this.maxfiles + ')');
-                    break;
-                case 'FileTooLarge':
-                    resMsg("error", LANG[18] + '<br>' + file.name);
-                    break;
-                case 'FileExtensionNotAllowed':
-                    resMsg("error", LANG[19]);
-                    break;
-                default:
-                    break;
-            }
-        },
-        uploadStarted: function (i, file, len) {
-            $.fancybox.showLoading();
-        }
-    });
-}
-
-/**
- * Función para realizar una petición ajax
- *
- * @param data
- * @param url
- */
-function sendAjax(data, url) {
-    "use strict";
-
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: APP_ROOT + url,
-        data: data,
-        success: function (json) {
-            var status = json.status;
-            var description = json.description;
-            var action = json.action;
-
-            switch (status) {
-                case 0:
-                    $.fancybox.close();
-                    resMsg("ok", description, undefined, action);
-                    break;
-                case 1:
-                    $.fancybox.close();
-                    resMsg("error", description, undefined, action);
-                    break;
-                case 2:
-                    $("#resFancyAccion").html('<span class="altTxtError">' + description + '</span>').show();
-                    break;
-                case 3:
-                    $.fancybox.close();
-                    resMsg("warn", description, undefined, action);
-                    break;
-                case 10:
-                    doLogout();
-                    break;
-                default:
-                    return;
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
-            resMsg("error", txt);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
-        }
-    });
-}
-
-/**
- * Función para mostrar el formulario para cambio de clave de usuario
- *
- * @param id
- * @param usrlogin
- */
-function usrUpdPass(id, usrlogin) {
-    "use strict";
-
-    var data = {'usrid': id, 'usrlogin': usrlogin, 'isAjax': 1};
-
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: "GET",
-        cache: false,
-        url: APP_ROOT + '/ajax/ajax_usrpass.php',
-        data: data,
-        success: function (data) {
-            if (data.length === 0) {
-                doLogout();
-            } else {
-                $.fancybox(data, {padding: 0});
-            }
-        }
-    });
-}
-
-/**
- * Función para mostrar los datos de un registro
- *
- * @param id
- * @param type
- * @param sk
- * @param active
- * @param view
- */
-function appMgmtData(id, type, sk, active, view) {
-    "use strict";
-
-    var data = {'id': id, 'type': type, 'sk': sk, 'active': active, 'view': view, 'isAjax': 1};
-    var url = APP_ROOT + '/ajax/ajax_appMgmtData.php';
-
-    $.fancybox.showLoading();
-
-    $.ajax({
-        type: 'POST',
-        dataType: 'html',
-        url: url,
-        data: data,
-        success: function (response) {
-            $.fancybox(response, {padding: [0, 10, 10, 10]});
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            var txt = LANG[1] + '<p>' + errorThrown + textStatus + '</p>';
-            resMsg("error", txt);
-        },
-        complete: function () {
-            $.fancybox.hideLoading();
-        }
-    });
-}
-
-/**
- * Función para editar los datos de un registro
- *
- * @param frmId
- * @param isDel
- * @param id
- * @param type
- * @param sk
- * @param nextaction
- */
-function appMgmtSave(frmId, isDel, id, type, sk, nextaction) {
-    "use strict";
-
-    var data;
-    var url = '/ajax/ajax_appMgmtSave.php';
-
-    if (isDel === 1) {
-        data = {'id': id, 'type': type, 'action': 4, 'sk': sk, 'activeTab': frmId, 'onCloseAction': nextaction};
-        var atext = '<div id="alert"><p id="alert-text">' + LANG[12] + '</p></div>';
-
-        alertify.confirm(atext, function (e) {
-            if (e) {
-                sendAjax(data, url);
-            }
-        });
-    } else {
-        data = $("#" + frmId).serialize();
-        sendAjax(data, url);
-    }
-}
-
-/**
- * Función para verificar si existen actualizaciones
- */
-function checkUpds() {
-    "use strict";
-
-    $.ajax({
-        type: 'GET',
-        dataType: 'html',
-        url: APP_ROOT + '/ajax/ajax_checkUpds.php',
-        timeout: 10000,
-        success: function (response) {
-            $('#updates').html(response);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $('#updates').html('!');
-        }
-    });
-}
-
-/**
- * Función para limpiar el log de eventos
- *
- * @param sk
- */
-function clearEventlog(sk) {
-    "use strict";
-
-    var atext = '<div id="alert"><p id="alert-text">' + LANG[20] + '</p></div>';
-
-    alertify.confirm(atext, function (e) {
-        if (e) {
-            var data = {'clear': 1, 'sk': sk, 'isAjax': 1};
-            var url = '/ajax/ajax_eventlog.php';
-
-            sendAjax(data, url);
-        }
-    });
-}
-
-/**
- * Función para mostrar los botones de acción en los resultados de búsqueda
- *
- * @param me
- */
-function showOptional(me) {
-    "use strict";
-
-    $(me).hide();
-    //$(me).parent().css('width','15em');
-    //var actions =  $(me).closest('.account-actions').children('.actions-optional');
-    var actions = $(me).parent().children('.actions-optional');
-    actions.show(250);
-}
-
-/**
- * Función para obtener el tiempo actual en milisegundos
- *
- * @returns {number}
- */
-function getTime() {
-    "use strict";
-
-    var t = new Date();
-    return t.getTime();
-}
-
-/**
- * Función para generar claves aleatorias.
- * By Uzbekjon from  http://jquery-howto.blogspot.com.es
- *
- * @param length
- * @param special
- * @param fancy
- * @param dstId
- */
-function password(length, special, fancy, dstId) {
-    "use strict";
-
-    var iteration = 0;
-    var genPassword = '';
-    var randomNumber;
-
-    if (typeof special === 'undefined') {
-        special = false;
-    }
-
-    while (iteration < length) {
-        randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
-        if (!special) {
-            if ((randomNumber >= 33) && (randomNumber <= 47)) {
-                continue;
-            }
-            if ((randomNumber >= 58) && (randomNumber <= 64)) {
-                continue;
-            }
-            if ((randomNumber >= 91) && (randomNumber <= 96)) {
-                continue;
-            }
-            if ((randomNumber >= 123) && (randomNumber <= 126)) {
-                continue;
-            }
-        }
-        iteration++;
-        genPassword += String.fromCharCode(randomNumber);
-    }
-
-    if (fancy === true) {
-        $("#viewPass").attr("title", genPassword);
-        //alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + password + '</p>');
-    } else {
-        alertify.alert('<div id="alert"><p id="alert-text">' + LANG[6] + '</p><p id="alert-pass"> ' + genPassword + '</p>');
-    }
-
-    if (dstId) {
-        checkPassLevel(genPassword);
-        $('#' + dstId + ' input:password').val(genPassword);
-        $('#' + dstId + ' #passLevel').show(500);
-    } else {
-        checkPassLevel(genPassword);
-        $('input:password').val(genPassword);
-        $('#passLevel').show(500);
-    }
-    //return password;
-}
-
-/**
- * Funciones para analizar al fortaleza de una clave
- * From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
- *
- * @param password
- * @param dstId
- */
-function checkPassLevel(password, dstId) {
-    "use strict";
-
-    strPassword = password;
-
-    num.Excess = 0;
-    num.Upper = 0;
-    num.Numbers = 0;
-    num.Symbols = 0;
-    bonus.Combo = 0;
-    bonus.FlatLower = 0;
-    bonus.FlatNumber = 0;
-    baseScore = 0;
-    score = 0;
-
-    if (password.length >= minPasswordLength) {
-        baseScore = 50;
-        analyzeString();
-        calcComplexity();
-    } else {
-        baseScore = 0;
-    }
-
-    if (dstId) {
-        outputResult(dstId);
-    } else {
-        outputResult(dstId);
-    }
-}
-
-/**
- * Función para analizar la complejidad de una clave
- */
-function analyzeString() {
-    "use strict";
-
-    var chars = strPassword.split('');
-
-    for (var i = 0; i < strPassword.length; i++) {
-        if (chars[i].match(/[A-Z]/g)) {
-            num.Upper++;
-        }
-        if (chars[i].match(/[0-9]/g)) {
-            num.Numbers++;
-        }
-        if (chars[i].match(/(.*[!,@,#,$,%,&,*,?,%,_])/)) {
-            num.Symbols++;
-        }
-    }
-
-    num.Excess = strPassword.length - minPasswordLength;
-
-    if (num.Upper && num.Numbers && num.Symbols) {
-        bonus.Combo = 25;
-    }
-
-    else if ((num.Upper && num.Numbers) || (num.Upper && num.Symbols) || (num.Numbers && num.Symbols)) {
-        bonus.Combo = 15;
-    }
-
-    if (strPassword.match(/^[\sa-z]+$/)) {
-        bonus.FlatLower = -15;
-    }
-
-    if (strPassword.match(/^[\s0-9]+$/)) {
-        bonus.FlatNumber = -35;
-    }
-}
-
-/**
- * Función para calcular la complejidad de una clave
- */
-function calcComplexity() {
-    "use strict";
-
-    score = baseScore + (num.Excess * bonus.Excess) + (num.Upper * bonus.Upper) + (num.Numbers * bonus.Numbers) + (num.Symbols * bonus.Symbols) + bonus.Combo + bonus.FlatLower + bonus.FlatNumber;
-}
-
-/**
- * Función para mostrar el resultado de complejidad de una clave
- *
- * @param dstId
- */
-function outputResult(dstId) {
-    "use strict";
-
-    var complexity, selector = '.passLevel';
-
-    if (dstId) {
-        selector = '#' + dstId + ' .passLevel';
-    }
-
-    complexity = $(selector);
-    complexity.removeClass("weak good strong strongest");
-
-    if (strPassword.length === 0) {
-        complexity.attr('title', '').empty();
-    } else if (strPassword.length < minPasswordLength) {
-        complexity.attr('title', LANG[11]).addClass("weak");
-    } else if (score < 50) {
-        complexity.attr('title', LANG[9]).addClass("weak");
-    } else if (score >= 50 && score < 75) {
-        complexity.attr('title', LANG[8]).addClass("good");
-    } else if (score >= 75 && score < 100) {
-        complexity.attr('title', LANG[7]).addClass("strong");
-    } else if (score >= 100) {
-        complexity.attr('title', LANG[10]).addClass("strongest");
-    }
-
-    $('.passLevel').powerTip(powertipOptions);
-}
-
-/**
- * Función para mostrar mensaje con alertify
- *
- * @param type
- * @param txt
- * @param url
- * @param action
- * @returns {*}
- */
-function resMsg(type, txt, url, action) {
-    "use strict";
-
-    if (typeof url !== "undefined") {
-        $.ajax({
-            url: url, type: 'get', dataType: 'html', async: false, success: function (data) {
-                txt = data;
-            }
-        });
-    }
-
-    var html;
-
-    txt = txt.replace(/(\\n|;;)/g, "<br>");
-
-    switch (type) {
-        case "ok":
-            alertify.set({beforeCloseAction: action});
-            return alertify.success(txt);
-        case "error":
-            alertify.set({beforeCloseAction: action});
-            return alertify.error(txt);
-        case "warn":
-            alertify.set({beforeCloseAction: action});
-            return alertify.log(txt);
-        case "info":
-            html = '<div id="fancyMsg" class="msgInfo">' + txt + '</div>';
-            break;
-        case "none":
-            html = txt;
-            break;
-        case "nofancyerror":
-            html = '<P CLASS="error round">Oops...<BR />' + LANG[1] + '<BR />' + txt + '</P>';
-            return html;
-        default:
-            alertify.set({beforeCloseAction: action});
-            return alertify.error(txt);
-    }
-
-    $.fancybox(html, {
-        afterLoad: function () {
-            $('.fancybox-skin,.fancybox-outer,.fancybox-inner').css({
-                'border-radius': '25px',
-                '-moz-border-radius': '25px',
-                '-webkit-border-radius': '25px'
-            });
-        }, afterClose: function () {
-            if (typeof action !== "undefined") {
-                eval(action);
-        }
-        }
-    });
-}
-
-/**
- * Función para comprobar la conexión con LDAP
- */
-function checkLdapConn() {
-    "use strict";
-
-    var ldapServer = $('#frmConfig').find('[name=ldap_server]').val();
-    var ldapBase = $('#frmConfig').find('[name=ldap_base]').val();
-    var ldapGroup = $('#frmConfig').find('[name=ldap_group]').val();
-    var ldapBindUser = $('#frmConfig').find('[name=ldap_binduser]').val();
-    var ldapBindPass = $('#frmConfig').find('[name=ldap_bindpass]').val();
-    var sk = $('#frmConfig').find('[name=sk]').val();
-    var data = {
-        'ldap_server': ldapServer,
-        'ldap_base': ldapBase,
-        'ldap_group': ldapGroup,
-        'ldap_binduser': ldapBindUser,
-        'ldap_bindpass': ldapBindPass,
-        'isAjax': 1,
-        'sk': sk
     };
 
-    sendAjax(data, '/ajax/ajax_checkLdap.php');
-}
+    // Función para establecer la altura del contenedor ajax
+    var setContentSize = function () {
+        var container = $("#container");
 
-/**
- * Función para volver al login
- */
-function goLogin() {
-    "use strict";
+        if (container.hasClass("content-no-auto-resize")) {
+            return;
+        }
 
-    setTimeout(function () {
-        location.href = "index.php";
-    }, 2000);
-}
+        var totalHeight = elements.content().height() + 150;
 
-/**
- * Función para obtener el navegador usado
- *
- * @returns {*}
- */
-function getBrowser() {
-    "use strict";
+        if ($(document).height() >= totalHeight ) {
+            container.css("height", totalHeight);
+        } else {
+            container.css("height", "auto");
+        }
+    };
 
-    var browser;
-    var ua = navigator.userAgent;
-    var re = new RegExp("(MSIE|Firefox)[ /]?([0-9]{1,}[\.0-9]{0,})", "i");
-    if (re.exec(ua) !== null) {
-        browser = RegExp.$1;
-        //version = parseFloat( RegExp.$2 );
-    }
+    // Función para retornar el scroll a la posición inicial
+    var scrollUp = function () {
+        $("html, body").animate({scrollTop: 0}, "slow");
+    };
 
-    return browser;
-}
+    // Función para limpiar un formulario
+    var clearSearch = function (clearStart) {
+        var $frmSearch = elements.frmSearch();
+
+        if (clearStart === 1) {
+            $frmSearch.find("input[name=\"start\"]").val(0);
+            return;
+        }
+
+        document.frmSearch.search.value = "";
+        $frmSearch.find("select").prop("selectedIndex", -1).trigger("chosen:updated");
+        $frmSearch.find("input[name=\"start\"], input[name=\"skey\"], input[name=\"sorder\"]").val(0);
+        order.key = 0;
+        order.dir = 0;
+    };
+
+    // Funcion para crear un desplegable con opciones
+    var mkChosen = function (options) {
+        $("#" + options.id).chosen({
+            allow_single_deselect: true,
+            placeholder_text_single: options.placeholder,
+            disable_search_threshold: 10,
+            no_results_text: options.noresults,
+            width: "200px"
+        });
+    };
+
+    // Función para la búsqueda de cuentas mediante filtros
+    var accSearch = function (continous, event) {
+        elements.frmSearch().find("input[name=\"start\"]").val(0);
+
+        doSearch();
+    };
+
+    // Función para la búsqueda de cuentas mediante ordenación
+    var searchSort = function (skey, start, dir) {
+        if (typeof skey === "undefined" || typeof start === "undefined") {
+            return false;
+        }
+
+        var frmSearch = $("#frmSearch");
+        frmSearch.find("input[name=\"skey\"]").val(skey);
+        frmSearch.find("input[name=\"sorder\"]").val(dir);
+        frmSearch.find("input[name=\"start\"]").val(start);
+
+        doSearch();
+    };
+
+    // Función para la búsqueda de cuentas
+    var doSearch = function () {
+        var frmData = $("#frmSearch").serialize();
+
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_search.php",
+            data: frmData,
+            success: function (response) {
+                $("#resBuscar").html(response); //.css("max-height", $("html").height() - windowAdjustSize);
+                scrollUp();
+                // setContentSize();
+            },
+            error: function () {
+                $("#resBuscar").html(resMsg("nofancyerror"));
+            }
+        });
+    };
+
+    // Mostrar el orden de campo y orden de búsqueda utilizados
+    var showSearchOrder = function () {
+        if (order.key) {
+            var searchSort = $("#search-sort-" + order.key);
+            searchSort.addClass("filterOn");
+            if (order.dir === 0) {
+                searchSort.append("<img src=\"imgs/arrow_down.png\" style=\"width:17px;height:12px;\" />");
+            } else {
+                searchSort.append("<img src=\"imgs/arrow_up.png\" style=\"width:17px;height:12px;\" />");
+            }
+        }
+    };
+
+    // Función para navegar por el log de eventos
+    var navLog = function (start, current) {
+        if (typeof start === "undefined") {
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_eventlog.php",
+            data: {"start": start, "current": current},
+            success: function (response) {
+                elements.content().html(response);
+            },
+            error: function () {
+                elements.content().html(resMsg("nofancyerror"));
+            }
+        });
+    };
+
+    // Función para ver la clave de una cuenta
+    var viewPass = function (id, show, history) {
+        // Devolvemos el objeto AJAX para utilizar la respuesta JSON si es necesaria
+        return $.ajax({
+            type: "POST",
+            url: APP_ROOT + "/ajax/ajax_viewpass.php",
+            dataType: "json",
+            async: false,
+            data: {"accountid": id, "full": show, "isHistory": history, "isAjax": 1},
+            success: function (json) {
+
+                if (json.status === 10) {
+                    doLogout();
+                    return;
+                }
+
+                if (show === false || show === 0) {
+                    // Devolvemos OK
+                    return true;
+                }
+
+                $("<div></div>").dialog({
+                    modal: true,
+                    title: LANG[47],
+                    width: "auto",
+                    open: function () {
+                        var thisDialog = $(this);
+                        var content;
+                        var pass = "";
+                        var clipboardUserButton =
+                            "<button class=\"dialog-clip-user-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary\" data-clipboard-target=\".dialog-user-text\">" +
+                            "<span class=\"ui-button-icon-primary ui-icon ui-icon-clipboard\"></span>" +
+                            "<span class=\"ui-button-text\">" + LANG[33] + "</span>" +
+                            "</button>";
+                        var clipboardPassButton =
+                            "<button class=\"dialog-clip-pass-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary\" data-clipboard-target=\".dialog-pass-text\">" +
+                            "<span class=\"ui-button-icon-primary ui-icon ui-icon-clipboard\"></span>" +
+                            "<span class=\"ui-button-text\">" + LANG[34] + "</span>" +
+                            "</button>";
+                        var useImage = json.useimage;
+                        var user = "<p class=\"dialog-user-text\">" + json.acclogin + "</p>";
+
+                        if (json.status === 0) {
+                            if (useImage === 0) {
+                                pass = "<p class=\"dialog-pass-text\">" + json.accpass + "</p>";
+                            } else {
+                                pass = "<img class=\"dialog-pass-text\" src=\"data:image/png;base64," + json.accpass + "\" />";
+                                clipboardPassButton = "";
+                            }
+
+                            content = user + pass + "<div class=\"dialog-buttons\">" + clipboardUserButton + clipboardPassButton + "</div>";
+                        } else {
+                            content = "<span class=\"altTxtRed\">" + json.description + "</span>";
+
+                            thisDialog.dialog("option", "buttons",
+                                [{
+                                    text: "Ok",
+                                    icons: {primary: "ui-icon-close"},
+                                    click: function () {
+                                        thisDialog.dialog("close");
+                                    }
+                                }]
+                            );
+                        }
+
+                        thisDialog.html(content);
+
+                        // Recentrar después de insertar el contenido
+                        thisDialog.dialog("option", "position", "center");
+
+                        // Cerrar Dialog a los 30s
+                        $(this).parent().on("mouseleave", function () {
+                            clearTimeout(timeout);
+                            timeout = setTimeout(function () {
+                                thisDialog.dialog("close");
+                            }, 30000);
+                        });
+                    },
+                    // Forzar la eliminación del objeto para que siga copiando al protapapeles al abrirlo de nuevo
+                    close: function () {
+                        clearTimeout(timeout);
+                        $(this).dialog("destroy");
+                    }
+                });
+            }
+        });
+    };
+
+    // Función para obtener las variables de la URL y parsearlas a un array.
+    var getUrlVars = function () {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split("=");
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    };
+
+    // Función para autentificar usuarios
+    var doLogin = function () {
+        var data = $("#frmLogin").serialize();
+
+        $("#btnLogin").prop("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: APP_ROOT + "/ajax/ajax_doLogin.php",
+            data: data,
+            success: function (json) {
+                var status = json.status;
+                var description = json.description;
+
+                if (status === 0 || status === 2) {
+                    location.href = description;
+                } else if (status === 3 || status === 4) {
+                    resMsg("error", description);
+                    $("#user").val("").focus();
+                    $("#pass").val("");
+                    $("#mpass").prop("disabled", false);
+                    $("#smpass").val("").show();
+                } else if (status === 5) {
+                    resMsg("warn", description, "", "location.href = 'index.php';");
+                } else {
+                    $("#user").val("").focus();
+                    $("#pass").val("");
+                    resMsg("error", description);
+                }
+            },
+            complete: function () {
+                $("#btnLogin").prop("disabled", false);
+                sysPassUtil.hideLoading();
+            },
+            statusCode: {
+                404: function () {
+                    var txt = LANG[1] + "<p>" + LANG[13] + "</p>";
+                    resMsg("error", txt);
+                }
+            }
+        });
+
+        return false;
+    };
+
+    // Función para salir de la sesión
+    var doLogout = function () {
+        var url = window.location.search;
+
+        location.href = url.length > 0 ? "index.php" + url + "&logout=1" : "index.php?logout=1";
+    };
+
+    // Función para comprobar si se ha salido de la sesión
+    var checkLogout = function () {
+        var session = getUrlVars()["session"];
+
+        if (session === 0) {
+            resMsg("warn", LANG[2], "", "location.search = ''");
+        }
+    };
+
+    var redirect = function (url) {
+        location.href = url;
+    };
+
+    // Función para añadir/editar una cuenta
+    var saveAccount = function (frm) {
+        var data = $("#" + frm).serialize();
+        var id = $("input[name=\"accountid\"]").val();
+        var action = $("input[name=\"next\"]").val();
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: APP_ROOT + "/ajax/ajax_accountSave.php",
+            data: data,
+            success: function (json) {
+                var status = json.status;
+                var description = json.description;
+
+                if (status === 0) {
+                    resMsg("ok", description);
+
+                    if (action && id) {
+                        doAction(action, 1, id);
+                    } else if (action) {
+                        doAction(action, 1);
+                    }
+                } else if (status === 10) {
+                    doLogout();
+                } else {
+                    resMsg("error", description);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                resMsg("error", txt);
+            }
+        });
+    };
+
+    // Función para eliminar una cuenta
+    var delAccount = function (id, action, sk) {
+        var data = {accountid: id, actionId: action, sk: sk};
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[3] + "</p></div>";
+        var url = "/ajax/ajax_accountSave.php";
+
+        alertify
+            .okBtn(LANG[43])
+            .cancelBtn(LANG[44])
+            .confirm(atext, function (e) {
+                sendAjax(data, url);
+            }, function (e) {
+                e.preventDefault();
+
+                alertify.error(LANG[44]);
+            });
+    };
+
+    // Función para enviar una solicitud de modificación de cuenta
+    var sendRequest = function () {
+        var url = "/ajax/ajax_sendRequest.php";
+        var data = $("#frmRequestModify").serialize();
+
+        sendAjax(data, url);
+    };
+
+    // Función para guardar la configuración
+    var configMgmt = function (action, obj) {
+        var url;
+
+        switch (action) {
+            case "config":
+                url = "/ajax/ajax_configSave.php";
+                break;
+            case "export":
+                url = "/ajax/ajax_backup.php";
+                break;
+            case "import":
+                url = "/ajax/ajax_migrate.php";
+                break;
+            case "preferences":
+                url = "/ajax/ajax_userPrefsSave.php";
+                break;
+            default:
+                return;
+        }
+
+        var data = $(obj).serialize();
+
+        sendAjax(data, url);
+    };
+
+    // Función para descargar/ver archivos de una cuenta
+    var downFile = function (id, sk, action) {
+        var data = {"fileId": id, "sk": sk, "action": action};
+
+        if (action === "view") {
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: APP_ROOT + "/ajax/ajax_files.php",
+                data: data,
+                success: function (response) {
+                    if (response) {
+                        $.fancybox(response, {padding: [10, 10, 10, 10]});
+                        // Actualizar fancybox para adaptarlo al tamaño de la imagen
+                        setTimeout(function () {
+                            $.fancybox.update();
+                        }, 1000);
+                    } else {
+                        resMsg("error", LANG[14]);
+                    }
+
+                }
+            });
+        } else if (action === "download") {
+            $.fileDownload(APP_ROOT + "/ajax/ajax_files.php", {"httpMethod": "POST", "data": data});
+        }
+    };
+
+    // Función para obtener la lista de archivos de una cuenta
+    var getFiles = function (id, isDel, sk) {
+        var data = {"id": id, "del": isDel, "sk": sk};
+
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: APP_ROOT + "/ajax/ajax_getFiles.php",
+            data: data,
+            success: function (response) {
+                $("#downFiles").html(response);
+            }
+        });
+    };
+
+    // Función para eliminar archivos de una cuenta
+    var delFile = function (id, sk, accid) {
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[15] + "</p></div>";
+
+        alertify
+            .okBtn(LANG[43])
+            .cancelBtn(LANG[44])
+            .confirm(atext, function (e) {
+                var data = {"fileId": id, "action": "delete", "sk": sk};
+
+                $.post(APP_ROOT + "/ajax/ajax_files.php", data,
+                    function (data) {
+                        resMsg("ok", data);
+                        $("#downFiles").load(APP_ROOT + "/ajax/ajax_getFiles.php?id=" + accid + "&del=1&isAjax=1&sk=" + sk);
+                    }
+                );
+            }, function (e) {
+                e.preventDefault();
+
+                alertify.error(LANG[44]);
+            });
+    };
+
+    // Función para habilitar la subida de archivos en una zona o formulario
+    var fileUpload = function (opts) {
+        var options = {
+            targetId: "",
+            url: ""
+        };
+
+        var requestDoneAction, requestData = {}, beforeSendAction;
+
+        var setFn = {
+            setRequestDoneAction: function (a) {
+                requestDoneAction = a;
+            },
+            setRequestData: function (d) {
+                requestData = d;
+            },
+            setBeforeSendAction: function (a) {
+                beforeSendAction = a;
+            }
+        };
+
+        options = opts;
+
+        if (typeof options.targetId === "undefined" || options.targetId === "") {
+            return setFn;
+        }
+
+        var dropzone = document.getElementById(options.targetId);
+
+        // Subir un archivo
+        var sendFile = function (file) {
+            if (typeof options.url === "undefined" || options.url === "") {
+                return false;
+            }
+
+            // Objeto FormData para crear datos de un formulario
+            var fd = new FormData();
+            fd.append("inFile", file);
+            fd.append("isAjax", 1);
+
+            Object.keys(requestData).forEach(function (key) {
+                fd.append(key, requestData[key]);
+            });
+
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                processData: false,
+                contentType: false,
+                url: APP_ROOT + options.url,
+                data: fd,
+                success: function (json) {
+                    var status = json.status;
+                    var description = json.description;
+
+                    if (status === 0) {
+                        if (typeof requestDoneAction === "function") {
+                            requestDoneAction();
+                        }
+
+                        resMsg("ok", description);
+                    } else if (status === 10) {
+                        doLogout();
+                    } else {
+                        resMsg("error", description);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                    resMsg("error", txt);
+                }
+            });
+        };
+
+        var checkFileSize = function (size) {
+            return (size / 1000 > MAX_FILE_SIZE);
+        };
+
+        var checkFileExtension = function (name) {
+            var file_exts_ok = dropzone.getAttribute("data-files-ext").toLowerCase().split(",");
+
+            for (var i = 0; i <= file_exts_ok.length; i++) {
+                if (name.indexOf(file_exts_ok[i]) !== -1) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        // Comprobar los archivos y subirlos
+        var handleFiles = function (filesArray) {
+            if (filesArray.length > 5) {
+                resMsg("error", LANG[17] + " (Max: 5)");
+                return;
+            }
+
+            for (var i = 0; i < filesArray.length; i++) {
+                var file = filesArray[i];
+                if (checkFileSize(file.size)) {
+                    resMsg("error", LANG[18] + "<br>" + file.name + " (Max: " + MAX_FILE_SIZE + ")");
+                } else if (!checkFileExtension(file.name)) {
+                    resMsg("error", LANG[19] + "<br>" + file.name);
+                } else {
+                    sendFile(filesArray[i]);
+                }
+            }
+        };
+
+        // Inicializar la zona de subida de archivos Drag&Drop
+        var init = function () {
+            dropzone.ondragover = dropzone.ondragenter = function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            };
+
+            dropzone.ondrop = function (event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                if (typeof beforeSendAction === "function") {
+                    beforeSendAction();
+                }
+
+                handleFiles(event.dataTransfer.files);
+            };
+
+            var fallback = initForm(false);
+
+            dropzone.onclick = function () {
+                fallback.click();
+            };
+        };
+
+        // Inicializar el formulario de archivos en modo compatibilidad
+        var initForm = function (display) {
+            var form = document.getElementById("fileUploadForm");
+            var formTags = form.getElementsByTagName("input");
+
+            form.style.display = (display === false) ? "none" : "";
+
+            if (formTags[0].type === "file") {
+                formTags[0].addEventListener("change", function () {
+                    if (typeof beforeSendAction === "function") {
+                        beforeSendAction();
+                    }
+
+                    handleFiles(this.files);
+                }, false);
+            }
+
+            return formTags[0];
+        };
+
+
+        if (window.File && window.FileList && window.FileReader) {
+            init();
+        } else {
+            initForm(true);
+        }
+
+        return setFn;
+    };
+
+    // Función para realizar una petición ajax
+    var sendAjax = function (data, url) {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: APP_ROOT + url,
+            data: data,
+            success: function (json) {
+                var status = json.status;
+                var description = json.description;
+                var action = json.action;
+
+                switch (status) {
+                    case 0:
+                        $.fancybox.close();
+                        resMsg("ok", description, undefined, action);
+                        break;
+                    case 1:
+                        $.fancybox.close();
+                        $(":input[type=password]").val("");
+                        resMsg("error", description, undefined, action);
+                        break;
+                    case 2:
+                        $("#resFancyAccion").html("<span class=\"altTxtError\">" + description + "</span>").show();
+                        break;
+                    case 3:
+                        $.fancybox.close();
+                        resMsg("warn", description, undefined, action);
+                        break;
+                    case 10:
+                        doLogout();
+                        break;
+                    default:
+                        return;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                resMsg("error", txt);
+            }
+        });
+    };
+
+    // Función para mostrar el formulario para cambio de clave de usuario
+    var usrUpdPass = function (object, actionId, sk) {
+        var userId = $(object).attr("data-itemid");
+        var data = {"userId": userId, "actionId": actionId, "sk": sk, "isAjax": 1};
+
+        $.ajax({
+            type: "GET",
+            cache: false,
+            url: APP_ROOT + "/ajax/ajax_usrpass.php",
+            data: data,
+            success: function (data) {
+                if (data.length === 0) {
+                    doLogout();
+                } else {
+                    $.fancybox(data, {padding: 0});
+                }
+            }
+        });
+    };
+
+    // Función para mostrar los datos de un registro
+    var appMgmtData = function (obj, actionId, sk) {
+        var itemId = $(obj).attr("data-itemid");
+        var activeTab = $(obj).attr("data-activetab");
+
+        var data = {"itemId": itemId, "actionId": actionId, "sk": sk, "activeTab": activeTab, "isAjax": 1};
+        var url = APP_ROOT + "/ajax/ajax_appMgmtData.php";
+
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            url: url,
+            data: data,
+            success: function (response) {
+                $.fancybox(response, {padding: [0, 10, 10, 10]});
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var txt = LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                resMsg("error", txt);
+            }
+        });
+    };
+
+    // Función para borrar un registro
+    var appMgmtDelete = function (obj, actionId, sk) {
+        var itemId = $(obj).attr("data-itemid");
+        var activeTab = $(obj).attr("data-activetab");
+        var nextActionId = $(obj).attr("data-nextactionid");
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[12] + "</p></div>";
+
+        var url = "/ajax/ajax_appMgmtSave.php";
+        var data = {
+            "itemId": itemId,
+            "actionId": actionId,
+            "sk": sk,
+            "activeTab": activeTab,
+            "onCloseAction": nextActionId
+        };
+
+        alertify
+            .okBtn(LANG[43])
+            .cancelBtn(LANG[44])
+            .confirm(atext, function (e) {
+                sendAjax(data, url);
+            }, function (e) {
+                e.preventDefault();
+
+                alertify.error(LANG[44]);
+            });
+    };
+
+    // Función para editar los datos de un registro
+    var appMgmtSave = function (frmId) {
+        var url = "/ajax/ajax_appMgmtSave.php";
+        var data = $("#" + frmId).serialize();
+
+        sendAjax(data, url);
+    };
+
+    // Función para verificar si existen actualizaciones
+    var checkUpds = function () {
+        $.ajax({
+            type: "GET",
+            dataType: "html",
+            url: APP_ROOT + "/ajax/ajax_checkUpds.php",
+            timeout: 10000,
+            success: function (response) {
+                $("#updates").html(response);
+
+                if (typeof  componentHandler !== "undefined") {
+                    componentHandler.upgradeDom();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#updates").html("!");
+            }
+        });
+    };
+
+    // Función para limpiar el log de eventos
+    var clearEventlog = function (sk) {
+        var atext = "<div id=\"alert\"><p id=\"alert-text\">" + LANG[20] + "</p></div>";
+
+        alertify
+            .okBtn(LANG[43])
+            .cancelBtn(LANG[44])
+            .confirm(atext, function (e) {
+                var data = {"clear": 1, "sk": sk, "isAjax": 1};
+                var url = "/ajax/ajax_eventlog.php";
+
+                sendAjax(data, url);
+            }, function (e) {
+                e.preventDefault();
+
+                alertify.error(LANG[44]);
+            });
+    };
+
+    // Función para mostrar los botones de acción en los resultados de búsqueda
+    var showOptional = function (me) {
+        me.hide();
+        //$(me).parent().css('width','15em');
+        //var actions =  $(me).closest('.account-actions').children('.actions-optional');
+        var actions = me.parent().children(".actions-optional");
+        actions.show(250);
+    };
+
+    // Función para obtener el tiempo actual en milisegundos
+    var getTime = function () {
+        var t = new Date();
+        return t.getTime();
+    };
+
+    // Funciones para analizar al fortaleza de una clave
+    // From http://net.tutsplus.com/tutorials/javascript-ajax/build-a-simple-password-strength-checker/
+    var checkPassLevel = function (password, dst) {
+        var level = zxcvbn(password);
+
+        outputResult(level.score, dst);
+    };
+
+    var outputResult = function (level, dstId) {
+        var complexity, selector = ".passLevel-" + dstId;
+
+        complexity = $(selector);
+        complexity.removeClass("weak good strong strongest");
+
+        if (passwordData.passLength === 0) {
+            complexity.attr("title", "").empty();
+        } else if (passwordData.passLength < passwordData.minPasswordLength) {
+            complexity.attr("title", LANG[11]).addClass("weak");
+        } else if (level === 0) {
+            complexity.attr("title", LANG[9]).addClass("weak");
+        } else if (level === 1 || level === 2) {
+            complexity.attr("title", LANG[8]).addClass("good");
+        } else if (level === 3) {
+            complexity.attr("title", LANG[7]).addClass("strong");
+        } else if (level === 4) {
+            complexity.attr("title", LANG[10]).addClass("strongest");
+        }
+    };
+
+    // Función para mostrar mensaje con alertify
+    var resMsg = function (type, txt, url, action) {
+        if (typeof url !== "undefined") {
+            $.ajax({
+                url: url, type: "get", dataType: "html", async: false, success: function (data) {
+                    txt = data;
+                }
+            });
+        }
+
+        var html;
+
+        txt = txt.replace(/(\\n|;;)/g, "<br>");
+
+        switch (type) {
+            case "ok":
+                alertify.success(txt);
+                break;
+            case "error":
+                alertify.error(txt);
+                break;
+            case "warn":
+                alertify.log(txt);
+                break;
+            case "nofancyerror":
+                html = "<p class=\"error round\">Oops...<br>" + LANG[1] + "<br>" + txt + "</p>";
+                return html;
+            default:
+                alertify.error(txt);
+                break;
+        }
+
+        if (typeof action !== "undefined") {
+            eval(action);
+        }
+    };
+
+    // Función para comprobar la conexión con LDAP
+    var checkLdapConn = function () {
+        var form = $("#frmLdap");
+
+        sendAjax(form.serialize(), "/ajax/ajax_checkLdap.php");
+    };
+
+    // Función para volver al login
+    var goLogin = function () {
+        setTimeout(function () {
+            location.href = "index.php";
+        }, 2000);
+    };
+
+    // Función para obtener el navegador usado
+    var getBrowser = function () {
+        var browser;
+        var ua = navigator.userAgent;
+        var re = new RegExp("(MSIE|Firefox)[ /]?([0-9]{1,}[.0-9]{0,})", "i");
+        if (re.exec(ua) !== null) {
+            browser = RegExp.$1;
+            //version = parseFloat( RegExp.$2 );
+        }
+
+        return browser;
+    };
+
+    // Detectar los campos select y añadir funciones
+    var chosenDetect = function () {
+        var selectWidth = "250px";
+        var searchTreshold = 10;
+
+        $(".sel-chosen-usergroup").chosen({
+            placeholder_text_single: LANG[21],
+            placeholder_text_multiple: LANG[21],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
+
+        $(".sel-chosen-user").chosen({
+            placeholder_text_single: LANG[22],
+            placeholder_text_multiple: LANG[22],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
+
+        $(".sel-chosen-profile").chosen({
+            placeholder_text_single: LANG[23],
+            disable_search_threshold: searchTreshold,
+            no_results_text: LANG[26],
+            width: selectWidth
+        });
+
+        $(".sel-chosen-customer").each(function () {
+            var deselect = $(this).hasClass("sel-chosen-deselect");
+
+            $(this).chosen({
+                allow_single_deselect: deselect,
+                placeholder_text_single: LANG[24],
+                placeholder_text_multiple: LANG[24],
+                disable_search_threshold: searchTreshold,
+                no_results_text: LANG[26],
+                width: selectWidth
+            });
+        });
+
+        $(".sel-chosen-category").each(function () {
+            var deselect = $(this).hasClass("sel-chosen-deselect");
+
+            $(this).chosen({
+                allow_single_deselect: deselect,
+                placeholder_text_single: LANG[25],
+                placeholder_text_multiple: LANG[25],
+                disable_search_threshold: searchTreshold,
+                no_results_text: LANG[26],
+                width: selectWidth
+            });
+        });
+
+        $(".sel-chosen-action").each(function () {
+            var deselect = $(this).hasClass("sel-chosen-deselect");
+
+            $(this).chosen({
+                allow_single_deselect: deselect,
+                placeholder_text_single: LANG[39],
+                placeholder_text_multiple: LANG[39],
+                disable_search_threshold: searchTreshold,
+                no_results_text: LANG[26],
+                width: selectWidth
+            });
+        });
+
+        $(".sel-chosen-ns").chosen({disable_search: true, width: selectWidth});
+    };
+
+    /**
+     * Detectar los imputs del tipo checkbox para generar botones
+     *
+     * @param container El contenedor donde buscar
+     */
+    var checkboxDetect = function (container) {
+        $(container).find(".checkbox").button({
+            icons: {primary: "ui-icon-transferthick-e-w"}
+        }).click(
+            function () {
+                if ($(this).prop("checked") === true) {
+                    $(this).button("option", "label", LANG[40]);
+                } else {
+                    $(this).button("option", "label", LANG[41]);
+                }
+            }
+        );
+    };
+
+    /**
+     * Encriptar el valor de un campo del formulario
+     *
+     * @param inputId El id del campo
+     */
+    var encryptFormValue = function (inputId) {
+        var input = $(inputId);
+        var curValue = input.val();
+        var nextName = inputId + "-encrypted";
+        var nextInput = input.next(":input[name=\"" + nextName + "\"]");
+
+        if ((curValue !== '' && nextInput.attr("name") !== nextName)
+            || (curValue !== '' && nextInput.attr("name") === nextName && parseInt(input.next().val()) !== curValue.length)
+        ) {
+            var passEncrypted = encrypt.encrypt(curValue);
+            input.val(passEncrypted);
+
+            if (nextInput.length > 0) {
+                nextInput.val(passEncrypted.length);
+            } else {
+                input.after("<input type=\"hidden\" name=\"" + nextName + "\" value=\"" + passEncrypted.length + "\" />");
+            }
+        }
+    };
+
+    var initializeClipboard = function () {
+        var clipboard = new Clipboard(".clip-pass-button", {
+            text: function (trigger) {
+                var pass = viewPass(trigger.getAttribute("data-account-id"), false);
+
+                return pass.responseJSON.accpass;
+            }
+        });
+
+        clipboard.on("success", function (e) {
+            sysPassUtil.Common.resMsg("ok", LANG[45]);
+        });
+
+        clipboard.on("error", function (e) {
+            sysPassUtil.Common.resMsg("error", LANG[46]);
+        });
+
+        // Portapapeles para claves visualizadas
+
+        // Inicializar el objeto para copiar al portapapeles
+        var clipboardPass = new Clipboard(".dialog-clip-pass-button");
+        var clipboardUser = new Clipboard(".dialog-clip-user-button");
+
+        clipboardPass.on('success', function (e) {
+            $(".dialog-pass-text").addClass("dialog-clip-pass-copy round");
+            e.clearSelection();
+        });
+
+        clipboardUser.on("success", function (e) {
+            e.clearSelection();
+        });
+    };
+
+    /**
+     * Delegar los eventos 'blur' y 'keypress' para que los campos de claves
+     * sean encriptados antes de ser enviados por el formulario
+     */
+    var bindPassEncrypt = function () {
+        $("body").delegate(":input[type=password]", "blur", function (e) {
+            if ($(this).hasClass("passwordfield__no-pki")) {
+                return;
+            }
+
+            var id = $(this).attr("id");
+            encryptFormValue("#" + id);
+        }).delegate(":input[type=password]", "keypress", function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+
+                var form = $(this).closest("form");
+                var id = $(this).attr("id");
+
+                encryptFormValue("#" + id);
+                form.submit();
+            }
+        });
+    };
+
+    return {
+        accSearch: accSearch,
+        appMgmtData: appMgmtData,
+        appMgmtSave: appMgmtSave,
+        appMgmtDelete: appMgmtDelete,
+        checkboxDetect: checkboxDetect,
+        checkLdapConn: checkLdapConn,
+        checkPassLevel: checkPassLevel,
+        checkUpds: checkUpds,
+        clearEventlog: clearEventlog,
+        clearSearch: clearSearch,
+        chosenDetect: chosenDetect,
+        configMgmt: configMgmt,
+        delAccount: delAccount,
+        delFile: delFile,
+        doAction: doAction,
+        doLogin: doLogin,
+        doLogout: doLogout,
+        downFile: downFile,
+        encryptFormValue: encryptFormValue,
+        fileUpload: fileUpload,
+        getFiles: getFiles,
+        navLog: navLog,
+        outputResult: outputResult,
+        redirect: redirect,
+        resMsg: resMsg,
+        searchSort: searchSort,
+        saveAccount: saveAccount,
+        sendAjax: sendAjax,
+        sendRequest: sendRequest,
+        setContentSize: setContentSize,
+        scrollUp: scrollUp,
+        showOptional: showOptional,
+        showSearchOrder: showSearchOrder,
+        usrUpdPass: usrUpdPass,
+        viewPass: viewPass,
+        passwordData: passwordData,
+        passToClip: passToClip,
+        APP_ROOT: APP_ROOT,
+        LANG: LANG,
+        PK: PK
+    };
+}(jQuery);

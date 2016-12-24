@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
@@ -23,25 +23,13 @@
  *
  */
 
+
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-SP_Util::checkReferer('GET');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$checkVersion = SP_Common::parseParams('s', 'UPDATED', false, true);
+SP\Request::checkReferer('GET');
 
-// Una vez por sesión
-if (!$checkVersion) {
-    $_SESSION["UPDATED"] = $checkVersion = SP_Util::checkUpdates();
-}
-
-session_write_close();
-
-if (is_array($checkVersion)) {
-    $title = _('Descargar nueva versión') . ' - ' . $checkVersion['version'] . '<br><br>' . nl2br($checkVersion['description']);
-    echo '<a href="' . $checkVersion['url'] . '" target="_blank" title="' . $title . '"><img src="imgs/update.png" />&nbsp;' . $checkVersion['title'] . '</a>';
-} elseif ($checkVersion === true) {
-    echo '<img src="imgs/ok.png" title="' . _('Actualizado') . ' ' . implode('.', SP_Util::getVersion(true)) . '"/>';
-} elseif ($checkVersion === false) {
-    echo '!';
-}
+$controller = new \SP\Controller\MainC(null, null, false);
+$controller->getCheckUpdates();
+$controller->view();

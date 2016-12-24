@@ -25,8 +25,7 @@
 sysPass es una aplicación web en PHP para la gestión de claves en un entorno
 multiusuario.
 
-Esta aplicación es derivada de phpPasswordManager, la cual ha sido reescrita 
-casi por completo, añadiendo nuevas funcionalidades que permiten:
+Funcionalidades:
 
     - Seguridad basada en grupos y pefiles de usuario.
     - Acceso mediante LDAP y BBDD.
@@ -34,10 +33,12 @@ casi por completo, añadiendo nuevas funcionalidades que permiten:
     - Gestión de usuarios, grupos y perfiles.
     - Posibilidad de subir adjuntos para las cuentas.
     - Log de eventos de auditoría.
-    - Backup "portable".
+    - Exportación a XML y packup "portable".
     - Enlaces a Wiki.
     - Histórico de cambios en cuentas.
-    - Importación desde phpPMS.
+    - Importación desde XML, CSV y phpPMS.
+    - Temas visuales
+    - Multilenguaje
 
 Para realizar la instalación siga los pasos que se indican en http://wiki.syspass.org/doku.php/es:instalar
 
@@ -49,8 +50,7 @@ en el archivo COPYING se encuentra una copia de esta.
 sysPass is a PHP web based application, for passwords management in a multiuser
 environment.
 
-This application derives from phpPasswordManager, that was almost fully rewritten,
-and added new features that allows:
+Functionalities:
 
     - Group/Profile based security.
     - LDAP and DB access.
@@ -58,10 +58,12 @@ and added new features that allows:
     - Users/Groups management.
     - Attachments can be uploaded.
     - Audit event log.
-    - Backup "portable".
+    - XML exporting and "portable" backups.
     - Wiki links.
     - Accounts changes history.
-    - Import from phpPMS.
+    - Import from XML, CSV and phpPMS.
+    - Visual themes
+    - Multilanguage
 
 To install you can follow steps at http://wiki.syspass.org/doku.php/en:install
 

@@ -23,24 +23,36 @@
  *
  */
 
+use SP\Minify;
+
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-$cssFiles = array(
-    array('href' => 'css/reset.css', 'min' => true),
-    array('href' => 'css/smoothness/jquery-ui.css', 'min' => true),
-    array('href' => 'css/jquery.powertip.css', 'min' => true),
-    array('href' => 'css/jquery.powertip-yellow.min.css', 'min' => true),
-    array('href' => 'css/chosen.css', 'min' => true),
-    array('href' => 'css/alertify.core.css', 'min' => true),
-    array('href' => 'css/alertify.default.css', 'min' => true),
-    array('href' => 'css/jquery.tagsinput.css', 'min' => true),
-    array('href' => 'js/fancybox/jquery.fancybox.css', 'min' => true),
-    array('href' => 'css/styles.css', 'min' => true)
-);
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Util::resultsCardsIsEnabled()) {
-    array_push($cssFiles, array('href' => 'css/search-grid.css', 'min' => true));
+$file = \SP\Request::analyze('f');
+$base = \SP\Request::analyze('b');
+
+if (!$file) {
+    $Minify = new Minify();
+    $Minify->setType(Minify::FILETYPE_CSS);
+    $Minify->setBase(__DIR__);
+    $Minify->addFile('reset.min.css');
+    $Minify->addFile('jquery-ui.min.css');
+    $Minify->addFile('jquery-ui.structure.min.css');
+    $Minify->addFile('chosen.min.css');
+    $Minify->addFile('chosen-custom.min.css');
+    $Minify->addFile('alertify-bootstrap-3.min.css');
+    $Minify->addFile('jquery.tagsinput.min.css');
+    $Minify->addFile('jquery.fancybox.min.css');
+    $Minify->addFile('fonts.min.css');
+    $Minify->addFile('material-icons.min.css');
+    $Minify->getMinified();
+} elseif ($file && $base) {
+    $base = \SP\Request::analyze('b');
+
+    $Minify = new Minify();
+    $Minify->setType(Minify::FILETYPE_CSS);
+    $Minify->setBase(urldecode($base), true);
+    $Minify->addFile(urldecode($file));
+    $Minify->getMinified();
 }
-
-SP_Util::getMinified('css', $cssFiles);

@@ -1,11 +1,11 @@
 <?php
 /**
  * sysPass
- * 
- * @author nuxsmin
- * @link http://syspass.org
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
- *  
+ *
  * This file is part of sysPass.
  *
  * sysPass is free software: you can redistribute it and/or modify
@@ -23,85 +23,65 @@
  *
  */
 
+use SP\Request;
+use SP\UserPass;
+use SP\UserUtil;
+
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-SP_Util::checkReferer('POST');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
-    SP_Util::logout();
+Request::checkReferer('POST');
+
+if (!SP\Init::isLoggedIn()) {
+    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$accountId = SP_Common::parseParams('p', 'accountid', false);
-$fullTxt = SP_Common::parseParams('p', 'full', 0);
-$isHistory = SP_Common::parseParams('p', 'isHistory', 0);
+$accountId = SP\Request::analyze('accountid', false);
+$isHistory = SP\Request::analyze('isHistory', false);
+$full = SP\Request::analyze('full', 0, false, 1);
 
 if (!$accountId) {
     return;
 }
 
-$account = new SP_Account;
-$account->accountParentId = ( isset($_SESSION["accParentId"]) ) ? $_SESSION["accParentId"] : "";
-$account->accountId = $accountId;
-$account->accountIsHistory = $isHistory;
+$account = (!$isHistory) ? new SP\Account() : new SP\AccountHistory();
+
+$account->setAccountParentId(\SP\Session::getAccountParentId());
+$account->setAccountId($accountId);
+
+$accountData = $account->getAccountPassData();
+
+if ($isHistory && !$account->checkAccountMPass()) {
+    SP\Response::printJSON(_('La clave maestra no coincide'));
+}
+
+if (!SP\Acl::checkAccountAccess(SP\Acl::ACTION_ACC_VIEW_PASS, $account->getAccountDataForACL()) || !SP\Acl::checkUserAccess(SP\Acl::ACTION_ACC_VIEW_PASS)) {
+    SP\Response::printJSON(_('No tiene permisos para acceder a esta cuenta'));
+} elseif (!UserPass::checkUserUpdateMPass()) {
+    SP\Response::printJSON(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+}
+
+$accountClearPass = SP\Crypt::getDecrypt($accountData->pass, $accountData->iv);
 
 if (!$isHistory) {
-    $accountData = $account->getAccount();
-
-    if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
-        die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
-    }
-} else {
-    if ($account->checkAccountMPass()) {
-        $accountData = $account->getAccountHistory();
-        if (!SP_ACL::checkAccountAccess("accviewpass", $account->getAccountDataForACL()) || !SP_ACL::checkUserAccess("accviewpass")) {
-            die('<span class="altTxtRed">' . _('No tiene permisos para acceder a esta cuenta') . '</span>');
-        }
-    } else {
-        echo '<div id="fancyMsg" class="msgError">' . _('La clave maestra no coincide') . '</div>';
-        return;
-    }
-}
-
-if (!SP_Users::checkUserUpdateMPass()) {
-    if ($fullTxt) {
-        die('<div id="fancyMsg" class="msgError">' . _('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla') . '</div>');
-    } else {
-        die(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
-    }
-}
-
-$masterPass = SP_Crypt::getSessionMasterPass();
-$accountClearPass = SP_Crypt::getDecrypt($accountData->account_pass, $masterPass, $accountData->account_IV);
-
-if (!$isHistory && $fullTxt) {
     $account->incrementDecryptCounter();
 
-    $message['action'] = _('Ver Clave');
-    $message['text'][] = _('ID') . ': ' . $accountId;
-    $message['text'][] = _('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->account_name;
-
-    SP_Log::wrLogInfo($message);
+    $log = new \SP\Log(_('Ver Clave'));
+    $log->addDescription(_('ID') . ': ' . $accountId);
+    $log->addDescription(_('Cuenta') . ': ' . $accountData->customer_name . " / " . $accountData->name);
+    $log->writeLog();
 }
 
-$accountPass = htmlentities(trim($accountClearPass), ENT_COMPAT, 'UTF-8');
+//$accountPass = htmlspecialchars(trim($accountClearPass));
 
-if ($fullTxt) {
-    ?>
-    <div id="fancyMsg" class="msgInfo">
-        <table>
-            <tr>
-                <td><span class="altTxtBlue"><?php echo _('Usuario'); ?></span></td>
-                <td><?php echo $accountData->account_login; ?></td>
-            </tr>
-            <tr>
-                <td><span class="altTxtBlue"><?php echo _('Clave'); ?></span></td>
-                <td><?php echo $accountPass; ?></td>
-            </tr>
-        </table>
-    </div>
-<?php
-} else {
-    echo $accountPass;
-}
-?>
+$useImage = intval(\SP\Util::accountPassToImageIsEnabled());
+
+$data = array(
+    'title' => _('Clave de Cuenta'),
+    'acclogin' => $accountData->login,
+    'accpass' => (!$useImage) ? (($full === 1) ? htmlentities(trim($accountClearPass)) : trim($accountClearPass)) : \SP\ImageUtil::convertText($accountClearPass),
+    'useimage' => $useImage
+);
+
+SP\Response::printJSON($data, 0);

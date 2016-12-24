@@ -1,0 +1,10 @@
+.idea/
+config/config.php
+config/key.pem
+config/pubkey.pem
+/res/*
+/tools/*
+/patches/*
+/backup/*
+/js/jquery-1.11.2.min.map
+msg.po

@@ -23,54 +23,30 @@
  *
  */
 
+use SP\Request;
+use SP\SessionUtil;
+
 define('APP_ROOT', '..');
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'init.php';
 
-SP_Util::checkReferer('GET');
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!SP_Init::isLoggedIn()) {
+Request::checkReferer('GET');
+
+if (!SP\Init::isLoggedIn()) {
     return;
 }
 
-if (!SP_Util::fileIsEnabled()) {
+if (!SP\Util::fileIsEnabled()) {
     echo _('Gestión de archivos deshabilitada');
     return false;
 }
 
-$sk = SP_Common::parseParams('g', 'sk', false);
+$sk = SP\Request::analyze('sk', false);
 
-if (!$sk || !SP_Common::checkSessionKey($sk)) {
-    SP_Common::printXML(_('CONSULTA INVÁLIDA'));
+if (!$sk || !SessionUtil::checkSessionKey($sk)) {
+    SP\Response::printXML(_('CONSULTA INVÁLIDA'));
 }
 
-$accountId = SP_Common::parseParams('g', 'id', 0);
-$deleteEnabled = SP_Common::parseParams('g', 'del', 0);
-
-$files = SP_Files::getFileList($accountId, $deleteEnabled);
-
-if (!is_array($files) || count($files) === 0) {
-    return;
-}
-?>
-
-<div id="files-wrap" class="round">
-    <ul id="files-list">
-        <?php foreach ($files as $file): ?>
-            <li class="files-item round">
-                <span title="<?php echo $file['name'] ?>"> <?php echo SP_Html::truncate($file['name'], 25); ?>
-                    (<?php echo $file['size']; ?> KB)</span>
-                <?php if ($deleteEnabled === 1): ?>
-                    <img src="imgs/delete.png" title="<?php echo _('Eliminar Archivo'); ?>" id="btnDelete"
-                         class="inputImg" alt="Delete"
-                         OnClick="delFile(<?php echo $file['id']; ?>, '<?php echo SP_Common::getSessionKey(); ?>', <?php echo $accountId; ?>);"/>
-                <?php endif; ?>
-                <img src="imgs/download.png" title="<?php echo _('Descargar Archivo'); ?>" id="btnDownload"
-                     class="inputImg" alt="download"
-                     OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo SP_Common::getSessionKey(); ?>', 'download');"/>
-                <img src="imgs/view.png" title="<?php echo _('Ver Archivo'); ?>" id="btnView" class="inputImg"
-                     alt="View"
-                     OnClick="downFile(<?php echo $file['id']; ?>, '<?php echo SP_Common::getSessionKey(); ?>', 'view');"/>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-</div>
+$controller = new SP\Controller\AccountsMgmtC();
+$controller->getFiles();
+$controller->view();
