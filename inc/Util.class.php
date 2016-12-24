@@ -304,7 +304,7 @@ class Util
      */
     public static function curlIsAvailable()
     {
-        return (function_exists('curl_init'));
+        return function_exists('curl_init');
     }
 
     /**
@@ -315,7 +315,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $version = array(1, 2, 0, '20');
+        $version = array(1, 2, 0, '21');
 
         if (!$retBuild) {
             array_pop($version);
@@ -338,9 +338,9 @@ class Util
      */
     public static function getMaxUpload()
     {
-        $max_upload = (int)(ini_get('upload_max_filesize'));
-        $max_post = (int)(ini_get('post_max_size'));
-        $memory_limit = (int)(ini_get('memory_limit'));
+        $max_upload = (int)ini_get('upload_max_filesize');
+        $max_post = (int)ini_get('post_max_size');
+        $memory_limit = (int)ini_get('memory_limit');
         $upload_mb = min($max_upload, $max_post, $memory_limit);
 
         Log::writeNewLog(__FUNCTION__, "Max. PHP upload: " . $upload_mb . "MB");

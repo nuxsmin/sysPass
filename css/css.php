@@ -52,7 +52,7 @@ if (!$file) {
 
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_CSS);
-    $Minify->setBase(urldecode($base));
+    $Minify->setBase(urldecode($base), true);
     $Minify->addFile(urldecode($file));
     $Minify->getMinified();
 }

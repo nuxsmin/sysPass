@@ -1,3 +1,8 @@
+=== ** v1.2.0.21 ===
+
+* [FIX] Corrección de fallo crítico que previene la transversión de directorios en la inclusión de archivos JS/CSS. Gracias a Jav Van por el aviso
+* [FIX] Corrección de la inclusión de recursos
+
 === ** v1.2.0.20 ===
 
 * [FIX] Corrección de fallo crítico que previene la transversión de directorios en la inclusión de archivos JS/CSS. Gracias a Jav Van por el aviso

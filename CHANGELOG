@@ -1,3 +1,8 @@
+=== ** v1.2.0.21 ===
+
+* [FIX] Critical bugfix that prevents directory traversal in JS/CSS includes. Thanks to Jan Van for the notice
+* [FIX] Bugfixed resource includes
+
 === ** v1.2.0.20 ===
 
 * [FIX] Critical bugfix that prevents directory traversal in JS/CSS includes. Thanks to Jan Van for the notice
