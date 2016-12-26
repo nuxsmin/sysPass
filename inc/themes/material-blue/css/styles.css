@@ -930,8 +930,8 @@ pre, code, samp, kbd {
 }
 
 #box-popup.box-password-view {
-    min-width: 20em;
-    max-width: 25em;
+    min-width: 30em;
+    max-width: 35em;
 }
 
 #box-popup > h2 {
