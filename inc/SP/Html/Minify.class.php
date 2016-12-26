@@ -219,9 +219,6 @@ class Minify
         } else {
             $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
 
-//            debugLog($this->base);
-//            debugLog($filePath);
-
             if (file_exists($filePath)) {
                 $this->files[] = array(
                     'type' => 'file',

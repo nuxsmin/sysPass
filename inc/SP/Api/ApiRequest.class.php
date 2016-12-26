@@ -26,6 +26,7 @@
 namespace SP\Api;
 
 use ReflectionClass;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Request;
 use SP\Core\Exceptions\SPException;
 
@@ -42,12 +43,7 @@ class ApiRequest extends Request
      * Constantes de acciones
      */
     const ACTION = 'action';
-    const USER = 'user';
-    const USER_PASS = 'userPass';
     const AUTH_TOKEN = 'authToken';
-    const ITEM = 'itemId';
-    const SEARCH = 'searchText';
-    const SEARCH_COUNT = 'searchCount';
 
     /**
      * @var \stdClass

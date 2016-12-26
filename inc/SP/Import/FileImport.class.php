@@ -59,7 +59,7 @@ class FileImport
     protected $fileType = '';
 
     /**
-     * @return string|array
+     * @return array
      */
     public function getFileContent()
     {

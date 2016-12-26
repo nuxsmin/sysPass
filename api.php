@@ -38,6 +38,12 @@ header('Content-type: application/json');
 try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
+} catch (\SP\Core\Exceptions\InvalidArgumentException $e) {
+    Response::printJson(
+        [
+            'message' => $e->getMessage(),
+            'help' => $e->getHint()
+        ]);
 } catch (Exception $e) {
     Response::printJson(
         [

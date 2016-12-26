@@ -326,7 +326,7 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @return bool
+     * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function createAccount()
@@ -415,7 +415,7 @@ class Account extends AccountBase implements AccountInterface
 
         Email::sendEmail($Log);
 
-        return true;
+        return $this;
     }
 
     /**

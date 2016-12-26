@@ -179,20 +179,23 @@ abstract class ImportBase
      *
      * @param \SP\DataModel\AccountData $AccountData
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addAccount(AccountData $AccountData)
     {
-        if (null === $this->getUserId() || $this->getUserId() === 0) {
+        $userId = $this->getUserId();
+        $groupId = $this->getUserGroupId();
+
+        if (null === $userId || $userId === 0) {
             $this->setUserId(Session::getUserData()->getUserId());
         }
 
-        if (null === $this->getUserGroupId() || $this->getUserGroupId() === 0) {
+        if (null === $groupId || $groupId === 0) {
             $this->setUserGroupId(Session::getUserData()->getUserGroupId());
         }
 
         $Account = new Account($AccountData);
-
-        return $Account->createAccount();
+        $Account->createAccount();
     }
 
     /**
@@ -233,6 +236,7 @@ abstract class ImportBase
      * @param $name
      * @param $description
      * @return int
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addCategory($name, $description = null)
     {

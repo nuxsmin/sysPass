@@ -37,4 +37,12 @@ interface ApiInterface
      * @return array
      */
     public function getActions();
+
+    /**
+     * Devuelve la ayuda para una acción
+     *
+     * @param string $action
+     * @return array
+     */
+    public function getHelp($action);
 }

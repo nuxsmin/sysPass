@@ -28,7 +28,7 @@ namespace SP\Import;
 use SP\DataModel\AccountData;
 use SP\Core\Crypt;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
@@ -104,9 +104,9 @@ abstract class CsvImportBase extends ImportBase
     {
         $line = 0;
 
-        $lines = $this->file->getFileContent();
+        $Log = new Log(_('Importar Cuentas'));
 
-        foreach($lines as $data) {
+        foreach ($this->file->getFileContent() as $data) {
             $line++;
             $fields = explode($this->fieldDelimiter, $data);
             $numfields = count($fields);
@@ -122,7 +122,7 @@ abstract class CsvImportBase extends ImportBase
 
             // Eliminar las " del principio/fin de los campos
             array_walk($fields,
-                function(&$value, $key){
+                function (&$value, $key) {
                     $value = trim($value, '"');
                 }
             );
@@ -131,8 +131,8 @@ abstract class CsvImportBase extends ImportBase
             list($accountName, $customerName, $categoryName, $url, $login, $password, $notes) = $fields;
 
             // Obtener los ids de cliente, categoría y la clave encriptada
-            $customerId = Customer::getItem(new CategoryData(null, $customerName))->add()->getItemData()->getCustomerId();
-            $categoryId = Category::getItem(new CategoryData(null, $categoryName))->add();
+            $customerId = Customer::getItem(new CustomerData(null, $customerName))->add()->getItemData()->getCustomerId();
+            $categoryId = Category::getItem(new CategoryData(null, $categoryName))->add()->getItemData()->getCategoryId();
             $pass = Crypt::encryptData($password);
 
             // Crear la nueva cuenta
@@ -146,14 +146,21 @@ abstract class CsvImportBase extends ImportBase
             $AccountData->setAccountPass($pass['data']);
             $AccountData->setAccountIV($pass['iv']);
 
-            if (!$this->addAccount($AccountData)) {
-                $log = new Log(_('Importar Cuentas'));
-                $log->addDescription(_('Error importando cuenta'));
-                $log->addDescription(sprintf(_('Error procesando línea %s'), $line));
-                $log->writeLog();
-            } else {
-                Log::writeNewLog(_('Importar Cuentas'), sprintf(_('Cuenta importada: %s'), $accountName));
+            try {
+                $this->addAccount($AccountData);
+
+                $Log->addDescription(sprintf(_('Cuenta importada: %s'), $accountName));
+            } catch (SPException $e) {
+                // Escribir los mensajes pendientes
+                $Log->writeLog(true);
+                $Log->addDescription(_('Error importando cuenta'));
+                $Log->addDescription(sprintf(_('Error procesando línea %s'), $line));
+                $Log->addDescription($e->getMessage());
+                // Flush y reset
+                $Log->writeLog(true);
             }
         }
+
+        $Log->writeLog();
     }
 }
