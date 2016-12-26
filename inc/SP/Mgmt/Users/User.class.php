@@ -187,7 +187,12 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName($this->getDataModel());
+
+        if (is_object($this->itemData)) {
+            $Data->setMapClass($this->itemData);
+        } else {
+            $Data->setMapClassName($this->getDataModel());
+        }
         $Data->setQuery($query);
         $Data->addParam($id);
 

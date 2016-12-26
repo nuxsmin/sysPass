@@ -133,7 +133,7 @@ sysPass.Actions = function (Common) {
             },
             callbacks: {
                 open: function () {
-                    Common.appTriggers().views.common("#fancyContainer");
+                    Common.appTriggers().views.common("#box-popup");
                 },
                 close: function () {
                     if ($obj.data("item-dst")) {

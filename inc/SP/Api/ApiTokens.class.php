@@ -27,8 +27,6 @@ namespace SP\Api;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\ActionsInterface;
-use SP\Core\Acl;
 use SP\Storage\DB;
 use SP\Log\Email;
 use SP\Html\Html;
@@ -99,7 +97,7 @@ class ApiTokens
         $Data->addParam($this->userId, 'userid');
         $Data->addParam($this->actionId, 'actionid');
         $Data->addParam(Session::getUserData()->getUserId(), 'createdby');
-        $Data->addParam(($this->getUserToken()) ? $this->token : $this->generateToken(), 'token');
+        $Data->addParam($this->getUserToken() ? $this->token : $this->generateToken(), 'token');
 
         try {
             DB::getQuery($Data);
@@ -160,13 +158,23 @@ class ApiTokens
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->userId, 'userid');
-        $Data->addParam($this->generateToken(),'token');
+        $Data->addParam($this->generateToken(), 'token');
 
         try {
             DB::getQuery($Data);
         } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
         }
+    }
+
+    /**
+     * Generar un token de acceso
+     *
+     * @return string
+     */
+    private function generateToken()
+    {
+        return sha1(uniqid('sysPass-API', true) . time());
     }
 
     /**
@@ -225,7 +233,7 @@ class ApiTokens
         $Data->addParam($this->userId, 'userid');
         $Data->addParam($this->actionId, 'actionid');
         $Data->addParam(Session::getUserData()->getUserId(), 'createdby');
-        $Data->addParam(($this->getUserToken()) ? $this->token : $this->generateToken(), 'token');
+        $Data->addParam($this->getUserToken() ? $this->token : $this->generateToken(), 'token');
 
         try {
             DB::getQuery($Data);
@@ -247,11 +255,11 @@ class ApiTokens
      */
     public function deleteToken()
     {
-        $query = 'DELETE FROM authTokens WHERE authtoken_id = :id LIMIT 1';
+        $query = 'DELETE FROM authTokens WHERE authtoken_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->tokenId, 'id');
+        $Data->addParam($this->tokenId);
 
         try {
             DB::getQuery($Data);
@@ -312,15 +320,5 @@ class ApiTokens
     public function setActionId($actionId)
     {
         $this->actionId = $actionId;
-    }
-
-    /**
-     * Generar un token de acceso
-     *
-     * @return string
-     */
-    private function generateToken()
-    {
-        return sha1(uniqid() . time());
     }
 }

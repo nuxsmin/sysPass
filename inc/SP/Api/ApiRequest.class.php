@@ -55,13 +55,15 @@ class ApiRequest extends Request
     private $params;
 
     /** @var string */
-    private $verb = null;
+    private $verb;
 
     /** @var ReflectionClass */
     private $ApiReflection;
 
     /**
      * ApiRequest constructor.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct()
     {
@@ -104,11 +106,12 @@ class ApiRequest extends Request
      */
     private function getData()
     {
-        $data = self::parse(file_get_contents('php://input'), '', true);
+        $request = file_get_contents('php://input');
+        $data = self::parse($request, '', true);
 
         $this->params = json_decode($data);
 
-        if (json_last_error() !== JSON_ERROR_NONE || !is_object($this->params)) {
+        if (!is_object($this->params) || json_last_error() !== JSON_ERROR_NONE) {
             throw new SPException(SPException::SP_WARNING, _('Datos inválidos'));
         }
     }
@@ -120,9 +123,7 @@ class ApiRequest extends Request
      */
     private function checkBasicData()
     {
-        if (!isset($this->params->authToken)
-            || !isset($this->params->action)
-        ) {
+        if (!isset($this->params->authToken, $this->params->action)) {
             throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
         }
     }
@@ -134,7 +135,7 @@ class ApiRequest extends Request
      */
     private function checkAction()
     {
-        $this->ApiReflection = new ReflectionClass('\SP\Api\SyspassApi');
+        $this->ApiReflection = new ReflectionClass(SyspassApi::class);
 
         if (!$this->ApiReflection->hasMethod($this->params->action)) {
             throw new SPException(SPException::SP_WARNING, _('Acción inválida'));
@@ -148,14 +149,10 @@ class ApiRequest extends Request
      */
     public static function getHelp()
     {
-        return array(
+        return [
             self::AUTH_TOKEN => _('Token de autorización'),
-            self::ACTION => _('Acción a realizar'),
-            self::USER_PASS => _('Clave de usuario (opcional)'),
-            self::SEARCH => _('Cadena a buscar'),
-            self::SEARCH_COUNT => _('Numero de cuentas a mostar en la búsqueda'),
-            self::ITEM => _('Item a devolver')
-        );
+            self::ACTION => _('Acción a realizar')
+        ];
     }
 
     /**
@@ -173,6 +170,7 @@ class ApiRequest extends Request
      * Obtiene una nueva instancia de la Api
      *
      * @return SyspassApi
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function runApi()
     {

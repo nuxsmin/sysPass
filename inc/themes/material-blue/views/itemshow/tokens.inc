@@ -1,5 +1,5 @@
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></H2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></H2>
 
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"

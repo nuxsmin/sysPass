@@ -3,8 +3,8 @@
  * @var $link SP\DataModel\PublicLinkListData
  */
 ?>
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></H2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></H2>
     <table class="fancydata">
         <tbody>
         <tr>

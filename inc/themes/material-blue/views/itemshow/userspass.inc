@@ -3,8 +3,8 @@
 /** @var $user \SP\DataModel\UserData */
 ?>
 
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></h2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action" data-onsubmit="appMgmt/save">
         <table class="fancydata">

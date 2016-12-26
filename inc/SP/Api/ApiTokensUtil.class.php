@@ -60,9 +60,9 @@ class ApiTokensUtil
 
         $Data = new QueryData();
 
-        if (!is_null($tokenId)) {
-            $query .= 'WHERE authtoken_id = :id LIMIT 1';
-            $Data->addParam($tokenId, 'id');
+        if (null !== $tokenId) {
+            $query .= 'WHERE authtoken_id = ? LIMIT 1';
+            $Data->addParam($tokenId);
         } else {
             $query .= 'ORDER BY user_login';
         }
@@ -134,14 +134,16 @@ class ApiTokensUtil
      */
     public static function getTokenActions()
     {
-        $actions = array(
+        $actions = [
             ActionsInterface::ACTION_ACC_SEARCH => Acl::getActionName(ActionsInterface::ACTION_ACC_SEARCH),
             ActionsInterface::ACTION_ACC_VIEW => Acl::getActionName(ActionsInterface::ACTION_ACC_VIEW),
             ActionsInterface::ACTION_ACC_VIEW_PASS => Acl::getActionName(ActionsInterface::ACTION_ACC_VIEW_PASS),
             ActionsInterface::ACTION_ACC_DELETE => Acl::getActionName(ActionsInterface::ACTION_ACC_DELETE),
+            ActionsInterface::ACTION_ACC_NEW => Acl::getActionName(ActionsInterface::ACTION_ACC_NEW),
             ActionsInterface::ACTION_CFG_BACKUP => Acl::getActionName(ActionsInterface::ACTION_CFG_BACKUP),
-            ActionsInterface::ACTION_CFG_EXPORT => Acl::getActionName(ActionsInterface::ACTION_CFG_EXPORT),
-        );
+            ActionsInterface::ACTION_MGM_CATEGORIES => Acl::getActionName(ActionsInterface::ACTION_MGM_CATEGORIES),
+            ActionsInterface::ACTION_MGM_CUSTOMERS => Acl::getActionName(ActionsInterface::ACTION_MGM_CUSTOMERS)
+        ];
 
         return $actions;
     }
@@ -155,11 +157,11 @@ class ApiTokensUtil
      */
     public static function getUserIdForToken($token)
     {
-        $query = 'SELECT authtoken_userId FROM authTokens WHERE authtoken_token = :token LIMIT 1';
+        $query = 'SELECT authtoken_userId FROM authTokens WHERE authtoken_token = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($token, 'token');
+        $Data->addParam($token);
 
         try {
             $queryRes = DB::getResults($Data);

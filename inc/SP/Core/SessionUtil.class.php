@@ -53,6 +53,8 @@ class SessionUtil
 
     /**
      * Establecer la clave pública RSA en la sessión
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function loadPublicKey()
     {
@@ -125,31 +127,35 @@ class SessionUtil
      */
     public static function cleanSession()
     {
-        Session::unsetSessionKey('uid');
-        Session::unsetSessionKey('uisadminapp');
-        Session::unsetSessionKey('uisadminacc');
-        Session::unsetSessionKey('uprofile');
-        Session::unsetSessionKey('ulogin');
-        Session::unsetSessionKey('uname');
-        Session::unsetSessionKey('ugroup');
-        Session::unsetSessionKey('ugroupn');
-        Session::unsetSessionKey('uemail');
-        Session::unsetSessionKey('uisldap');
-        Session::unsetSessionKey('usrprofile');
-        Session::unsetSessionKey('searchFilters');
-        Session::unsetSessionKey('accParentId');
-        Session::unsetSessionKey('mPass');
-        Session::unsetSessionKey('mPassPwd');
-        Session::unsetSessionKey('mPassIV');
-        Session::unsetSessionKey('sidStartTime');
-        Session::unsetSessionKey('startActivity');
-        Session::unsetSessionKey('lastActivity');
-        Session::unsetSessionKey('lastAccountId');
-        Session::unsetSessionKey('theme');
-        Session::unsetSessionKey('2fapass');
-        Session::unsetSessionKey('locale');
-        Session::unsetSessionKey('userpreferences');
-        Session::unsetSessionKey('tempmasterpass');
-        Session::unsetSessionKey('accountcolor');
+        foreach ($_SESSION as $key => $value){
+            unset($_SESSION[$key]);
+        }
+
+//        Session::unsetSessionKey('userData');
+//        Session::unsetSessionKey('usrprofile');
+//        Session::unsetSessionKey('searchFilters');
+//        Session::unsetSessionKey('updated');
+//        Session::unsetSessionKey('sessionTimeout');
+//        Session::unsetSessionKey('reload');
+//        Session::unsetSessionKey('sk');
+//        Session::unsetSessionKey('mPass');
+//        Session::unsetSessionKey('mPassPwd');
+//        Session::unsetSessionKey('mPassIV');
+//        Session::unsetSessionKey('sidStartTime');
+//        Session::unsetSessionKey('startActivity');
+//        Session::unsetSessionKey('lastActivity');
+//        Session::unsetSessionKey('lastAccountId');
+//        Session::unsetSessionKey('theme');
+//        Session::unsetSessionKey('2fapass');
+//        Session::unsetSessionKey('pubkey');
+//        Session::unsetSessionKey('locale');
+//        Session::unsetSessionKey('userpreferences');
+//        Session::unsetSessionKey('tempmasterpass');
+//        Session::unsetSessionKey('accountcolor');
+//        Session::unsetSessionKey('curlcookiesession');
+//        Session::unsetSessionKey('dokuwikisession');
+//        Session::unsetSessionKey('sessiontype');
+//        Session::unsetSessionKey('config');
+//        Session::unsetSessionKey('configTime');
     }
 }

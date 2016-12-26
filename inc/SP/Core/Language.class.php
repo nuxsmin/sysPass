@@ -115,7 +115,11 @@ class Language
      */
     private function getBrowserLang()
     {
-        return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        } else {
+            return '';
+        }
     }
 
     /**

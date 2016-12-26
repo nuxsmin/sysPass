@@ -25,6 +25,7 @@
 namespace SP\Controller;
 
 use SP\Auth\Auth;
+use SP\Auth\AuthResult;
 use SP\Auth\AuthUtil;
 use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\DatabaseAuthData;
@@ -115,8 +116,10 @@ class LoginController
 
             if ($result !== false) {
                 // Ejecutar la acción asociada al tipo de autentificación
-                foreach ($result as $auth) {
-                    $this->{$auth['auth']}($auth['data']);
+
+                /** @var AuthResult $AuthResult */
+                foreach ($result as $AuthResult) {
+                    $this->{$AuthResult->getAuth()}($AuthResult->getData());
                 }
             } else {
                 throw new AuthException(SPException::SP_INFO, _('Login incorrecto'), '', self::STATUS_INVALID_LOGIN);
@@ -218,7 +221,7 @@ class LoginController
         $UserPass = $this->loadMasterPass();
 
         // Obtenemos la clave maestra del usuario
-        if ($UserPass->getClearUserMPass()) {
+        if ($UserPass->getClearUserMPass() !== '') {
             // Actualizar el último login del usuario
             UserUtil::setUserLastLogin($this->UserData->getUserId());
 
@@ -263,6 +266,8 @@ class LoginController
 
                 throw new AuthException(SPException::SP_INFO, _('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
             } else {
+                SessionUtil::saveSessionMPass($UserPass->getClearUserMPass());
+
                 Log::writeNewLog(_('Login'), _('Clave maestra actualizada'));
             }
         } else if ($oldPass) {
@@ -272,6 +277,8 @@ class LoginController
 
                 throw new AuthException(SPException::SP_INFO, _('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
             } else {
+                SessionUtil::saveSessionMPass($UserPass->getClearUserMPass());
+
                 Log::writeNewLog(_('Login'), _('Clave maestra actualizada'));
             }
         } else {

@@ -25,6 +25,7 @@
 
 use SP\Api\ApiRequest;
 use SP\Core\Init;
+use SP\Http\Response;
 
 define('APP_ROOT', '.');
 
@@ -38,9 +39,9 @@ try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
 } catch (Exception $e) {
-    \SP\Http\Response::printJson(
-        array(
+    Response::printJson(
+        [
             'message' => $e->getMessage(),
             'help' => ApiRequest::getHelp()
-        ));
+        ]);
 }

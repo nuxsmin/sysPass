@@ -30,7 +30,7 @@ namespace SP\DataModel;
  *
  * @package SP\DataModel
  */
-class UserPassData
+class UserPassData extends DataModelBase
 {
     /**
      * @var int

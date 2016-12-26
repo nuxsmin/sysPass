@@ -25,11 +25,14 @@
 
 namespace SP\Account;
 
+use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
+use SP\DataModel\CustomFieldData;
 use SP\DataModel\GroupAccountsData;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupAccounts;
 use SP\Mgmt\Groups\GroupAccountsUtil;
@@ -303,16 +306,18 @@ class Account extends AccountBase implements AccountInterface
         $Data->setMapClass($this->accountData);
         $Data->addParam($this->accountData->getAccountId(), 'id');
 
-        /** @var AccountExtData $queryRes */
+        /** @var AccountExtData|array $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
+        } elseif (is_array($queryRes) && count($queryRes) === 0){
+            throw new SPException(SPException::SP_CRITICAL, _('La cuenta no existe'));
         }
 
         // Obtener los usuarios y grupos secundarios  y las etiquetas
-        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($queryRes->getAccountId()));
-        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($queryRes->getAccountId()));
+        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
+        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
         $this->accountData->setTags(AccountTags::getTags($queryRes));
 
         return $this->accountData;
@@ -464,6 +469,10 @@ class Account extends AccountBase implements AccountInterface
         try {
             GroupAccounts::getItem()->delete($this->accountData->getAccountId());
             FileUtil::deleteAccountFiles($this->accountData->getAccountId());
+
+            $CustomFieldData = new CustomFieldData();
+            $CustomFieldData->setModule(ActionsInterface::ACTION_ACC);
+            CustomField::getItem($CustomFieldData)->delete($this->accountData->getAccountId());
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription($e->getMessage());

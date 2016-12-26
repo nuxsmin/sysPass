@@ -343,3 +343,5 @@ REFERENCES `usrGroups` (`usergroup_id`)
   ON UPDATE NO ACTION;
 ALTER TABLE `accounts`
   ADD INDEX `IDX_parentId` USING BTREE (`account_parentId` ASC);
+ALTER TABLE `categories`
+ADD COLUMN `category_hash` VARBINARY(40) NOT NULL DEFAULT 0 AFTER `category_description`;

@@ -2,8 +2,8 @@
 /** @var $tag \SP\DataModel\TagData */
 /** @var $icons \SP\Core\UI\ThemeIconsBase */
 ?>
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></h2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></h2>
 
     <form method="post" name="frmTags" id="frmTags" class="form-action"
           data-onsubmit="appMgmt/save"

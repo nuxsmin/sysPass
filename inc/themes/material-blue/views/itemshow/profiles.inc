@@ -3,8 +3,8 @@
 /** @var $profile \SP\DataModel\ProfileData */
 ?>
 
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></H2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></H2>
 
     <form method="post" name="frmProfiles" id="frmProfiles" class="form-action"
           data-onsubmit="appMgmt/save"

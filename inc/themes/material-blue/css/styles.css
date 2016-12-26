@@ -264,7 +264,7 @@ pre, code, samp, kbd {
 }
 
 #content td.descField,
-#fancyContainer td.descField {
+#box-popup td.descField {
     text-align: right;
     padding-right: 20px;
     width: 25%;
@@ -274,7 +274,7 @@ pre, code, samp, kbd {
 }
 
 #content td.valField,
-#fancyContainer td.valField {
+#box-popup td.valField {
     padding-left: 1em;
     width: 100%;
 }
@@ -397,7 +397,7 @@ pre, code, samp, kbd {
 }
 
 #content .data .list-wrap,
-#fancyContainer .list-wrap{
+#box-popup .list-wrap {
     max-height: 10em;
     overflow: auto;
     padding: .5em;
@@ -405,14 +405,14 @@ pre, code, samp, kbd {
 }
 
 #content .data .list-wrap ul,
-#fancyContainer .list-wrap ul{
+#box-popup .list-wrap ul {
     list-style-type: none;
     margin: 0;
     padding: 0
 }
 
 #content .data .list-wrap li,
-#fancyContainer .list-wrap li {
+#box-popup .list-wrap li {
     display: flex;
     background: #f2f2f2;
     padding: .5em;
@@ -421,23 +421,23 @@ pre, code, samp, kbd {
 }
 
 #content .data .list-wrap li:hover,
-#fancyContainer .list-wrap li:hover{
+#box-popup .list-wrap li:hover {
     background: #e8eaf6;
     color: #000;
 }
 
 #content .data .list-wrap div.files-item-info,
-#fancyContainer .list-wrap div.files-item-info {
+#box-popup .list-wrap div.files-item-info {
     flex-grow: 2;
 }
 
 #content .data .list-wrap div.files-item-info img,
-#fancyContainer .list-wrap div.files-item-info img{
+#box-popup .list-wrap div.files-item-info img {
     margin: 0 .5em;
 }
 
 #content .data .list-wrap div.files-item-actions,
-#fancyContainer .list-wrap div.files-item-actions{
+#box-popup .list-wrap div.files-item-actions {
     padding: .3em 0;
 }
 
@@ -921,7 +921,7 @@ pre, code, samp, kbd {
     color: #555
 }
 
-#fancyContainer {
+#box-popup {
     min-width: 25em;
     max-width: 50em;
     margin: 5em auto;
@@ -929,7 +929,12 @@ pre, code, samp, kbd {
     background-color: #fff;
 }
 
-#fancyContainer > h2 {
+#box-popup.box-password-view {
+    min-width: 20em;
+    max-width: 25em;
+}
+
+#box-popup > h2 {
     width: 100%;
     font-size: 18px;
     color: white;
@@ -939,50 +944,50 @@ pre, code, samp, kbd {
     line-height: 1em;
 }
 
-#fancyContainer > table {
+#box-popup > table {
     width: 100%;
     padding-bottom: 1em;
 }
 
-#fancyContainer select {
+#box-popup select {
     width: 220px
 }
 
-#fancyContainer #resFancyAccion {
+#box-popup #resFancyAccion {
     display: none
 }
 
-#fancyContainer #resCheck {
+#box-popup #resCheck {
     display: inline-block;
     width: 80%;
     height: 4em;
     padding: 1em 0
 }
 
-#fancyContainer.image {
+#box-popup.image {
     background-color: transparent;
     max-width: 100%;
     margin: 0 auto;
     border-radius: 0;
 }
 
-#fancyContainer.image img {
+#box-popup.image img {
     width: auto;
     margin: 0 auto;
 }
 
-#fancyContainer.image > div.title {
+#box-popup.image > div.title {
     background-color: #607d8b;
     color: #fff;
     padding: .5em;
 }
 
-#fancyContainer.help {
+#box-popup.help {
     min-height: 100px;
     background-color: #f5f5f5
 }
 
-#fancyContainer.help p {
+#box-popup.help p {
     font-size: 14px;
     text-align: justify;
     line-height: 2em

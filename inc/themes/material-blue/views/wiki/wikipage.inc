@@ -1,5 +1,5 @@
-<div id="fancyContainer" align="center">
-    <h2 class="midround"><?php echo (is_array($header) && !empty($header[0])) ? $header[0] : _('Ver Wiki'); ?></h2>
+<div id="box-popup">
+    <h2 class="center"><?php echo (is_array($header) && !empty($header[0])) ? $header[0] : _('Ver Wiki'); ?></h2>
 
     <div id="wikiPage">
         <?php if (is_array($pageData) && !empty($pageData[0])): ?>

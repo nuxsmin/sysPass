@@ -24,6 +24,7 @@
 
 namespace SP\Mgmt;
 use SP\DataModel\DataModelInterface;
+use SP\Storage\DBUtil;
 
 
 /**
@@ -53,5 +54,22 @@ trait ItemTrait
         }
 
         return $items;
+    }
+
+    /**
+     * Crear un hash con el nombre del elemento.
+     *
+     * Esta función crear un hash para detectar nombres de elementos duplicados mediante
+     * la eliminación de carácteres especiales y capitalización
+     *
+     * @param $name
+     * @return string con el hash generado
+     */
+    protected function makeItemHash($name)
+    {
+        $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
+        $newValue = strtolower(str_replace($charsSrc, '', DBUtil::escape($name)));
+
+        return md5($newValue);
     }
 }
