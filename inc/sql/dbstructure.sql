@@ -115,7 +115,7 @@ CREATE TABLE `accounts` (
   `account_isPrivate` bit(1) DEFAULT b'0',
   `account_passDate` int(11) unsigned DEFAULT NULL,
   `account_passDateChange` int(11) unsigned DEFAULT NULL,
-  `account_parentId` SMALLINT (5) UNSIGNED NULL,
+  `account_parentId` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`account_id`),
   KEY `IDX_categoryId` (`account_categoryId`),
   KEY `IDX_userId` (`account_userGroupId`,`account_userId`),
@@ -197,7 +197,7 @@ CREATE TABLE `accHistory` (
   `accHistory_otherGroupEdit` bit(1) DEFAULT b'0',
   `accHistory_passDate` int(10) unsigned DEFAULT NULL,
   `accHistory_passDateChange` int(10) unsigned DEFAULT NULL,
-  `accHistory_parentId` SMALLINT(5) UNSIGNED NULL,
+  `accHistory_parentId` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`),
   KEY `fk_accHistory_users_edit_id_idx` (`acchistory_userEditId`),
@@ -409,8 +409,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED
       ON ((`accounts`.`account_id` = `publicLinks`.`publicLink_itemId`)));
 
 DROP TABLE IF EXISTS `account_search_v`;
-CREATE
-OR REPLACE ALGORITHM = UNDEFINED
+CREATE OR REPLACE ALGORITHM = UNDEFINED
   DEFINER = CURRENT_USER
   SQL SECURITY DEFINER
 VIEW `account_search_v` AS
