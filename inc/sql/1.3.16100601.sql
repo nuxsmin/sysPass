@@ -303,8 +303,8 @@ VIEW `account_search_v` AS
       LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))
       LEFT JOIN `usrGroups` `ug` ON ((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`)))
       LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));
-ALTER TABLE accounts`
-ADD COLUMN `account_parentId` SMALLINT (5) UNSIGNED NULL AFTER `account_passDateChange`;
+ALTER TABLE `accounts`
+  ADD COLUMN `account_parentId` SMALLINT (5) UNSIGNED NULL AFTER `account_passDateChange`;
 ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_customer_id`
 FOREIGN KEY (`account_customerId`)

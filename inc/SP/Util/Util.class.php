@@ -134,7 +134,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '1.3-dev';
+        return '2.0-dev';
     }
 
     /**
@@ -194,9 +194,6 @@ class Util
             } else {
                 return false;
             }
-        } else {
-            // FIXME
-            error_log($updateInfo->message);
         }
 
         return false;
@@ -315,8 +312,8 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '16020501';
-        $version = [1, 3];
+        $build = '16122901';
+        $version = [2, 0];
 
         if ($retBuild) {
             $version[] = $build;

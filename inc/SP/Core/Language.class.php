@@ -166,4 +166,20 @@ class Language
             'Français' => 'fr_FR'
         ];
     }
+
+    /**
+     * Establecer el lenguaje global para las trdducciones
+     */
+    public static function setAppLocales()
+    {
+        self::setLocales(self::$globalLang);
+    }
+
+    /**
+     * Restablecer el lenguaje global para las trdducciones
+     */
+    public static function unsetAppLocales()
+    {
+        self::setLocales(Session::getLocale());
+    }
 }
