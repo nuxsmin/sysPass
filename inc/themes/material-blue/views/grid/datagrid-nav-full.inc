@@ -8,7 +8,7 @@
     <div class="pager-left">
         <?php echo $data->getData()->getDataCount(); ?> @ <?php echo $data->getTime(); ?>s
         <?php if ($data->getPager()->getFilterOn()): ?>
-            <span class="filterOn round"><?php echo _('Filtro ON'); ?></span>
+            <span class="filter-on round"><?php echo _('Filtro ON'); ?></span>
         <?php endif; ?>
     </div>
     <div class="pager-right">
@@ -37,7 +37,7 @@
                 class="mdl-tooltip mdl-tooltip--top"><?php echo $data->getPager()->getIconPrev()->getTitle(); ?></span>
         <?php endif; ?>
         &nbsp;
-        <?php echo $data->getPager()->getFirstPage(), '/', $data->getPager()->getLastPage(); ?>
+        <?php printf('%d / %d (%d)', $data->getPager()->getFirstPage(), $data->getPager()->getLastPage(), $data->getPager()->getLimitCount()); ?>
         &nbsp;
         <?php if ($data->getPager()->getLimitStart() < $data->getPager()->getTotalRows() && $data->getPager()->getFirstPage() != $data->getPager()->getLastPage()): ?>
             <i id="btn-pager-next"

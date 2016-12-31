@@ -5,7 +5,7 @@
 ?>
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?></H2>
-    <table class="fancydata">
+    <table class="popup-data">
         <tbody>
         <tr>
             <td class="descField"><?php echo _('Cuenta'); ?></td>

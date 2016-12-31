@@ -70,7 +70,7 @@
             <tr>
                 <td class="descField"><?php echo _('Grupo Principal'); ?></td>
                 <td class="valField">
-                    <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup" required>
+                    <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup">
                         <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
                         <?php foreach ($otherGroups as $group): ?>
                             <option

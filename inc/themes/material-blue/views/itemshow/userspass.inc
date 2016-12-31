@@ -7,7 +7,7 @@
     <h2 class="center"><?php echo $header; ?></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action" data-onsubmit="appMgmt/save">
-        <table class="fancydata">
+        <table class="popup-data">
             <tr>
                 <td class="descField"><?php echo _('Nombre') ?></td>
                 <td class="valField">
@@ -61,7 +61,6 @@
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 
-    <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <button form="frmUpdUsrPass"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
