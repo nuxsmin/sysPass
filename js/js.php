@@ -41,7 +41,6 @@ if (!$file) {
 
     if ($group === 0) {
         $Minify->addFile('jquery-1.11.2.min.js')
-            ->addFile('jquery-ui.min.js')
             ->addFile('jquery.fileDownload.min.js')
             ->addFile('jquery.tagsinput.min.js')
             ->addFile('clipboard.min.js')

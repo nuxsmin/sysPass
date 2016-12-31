@@ -56,20 +56,6 @@ sysPass.Theme = function (Common) {
         }
     };
 
-    var activeTooltip = function ($container) {
-        if (typeof $container === "undefined") {
-            $container = $("body");
-        }
-
-        // Activar tooltips
-        $container.find(".active-tooltip").tooltip({
-            content: function () {
-                return $(this).attr("title");
-            },
-            tooltipClass: "tooltip"
-        });
-    };
-
     // Función para generar claves aleatorias.
     // By Uzbekjon from  http://jquery-howto.blogspot.com.es
     var password = function ($target) {
@@ -519,13 +505,11 @@ sysPass.Theme = function (Common) {
      * Inicialización
      */
     var init = function () {
-        activeTooltip();
     };
 
     init();
 
     return {
-        activeTooltip: activeTooltip,
         passwordDetect: passwordDetect,
         password: password,
         viewsTriggers: viewsTriggers,
