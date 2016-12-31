@@ -6,14 +6,8 @@
 use SP\Html\Html;
 ?>
 
-    <!-- Rows -->
-<?php if ($data->getData()->getDataCount() === 0): ?>
-    <tr>
-        <td>
-            <?php echo _('No se encontraron registros'); ?>
-        </td>
-    </tr>
-<?php else: ?>
+<!-- Rows -->
+<?php if ($data->getData()->getDataCount() > 0): ?>
     <?php foreach ($data->getData()->getData() as $dataIndex => $dataItem): ?>
         <?php if ($dataIndex === 'count'): continue; endif; ?>
 

@@ -30,6 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
+use SP\Account\AccountUtil;
 use SP\Core\Acl;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
@@ -209,6 +210,9 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getItemsForSelect()));
         $this->view->assign('allowPrivate', $this->UserProfileData->isAccPrivate());
 
+        $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->getId()));
+        $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->getId()));
+
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
 
@@ -290,14 +294,6 @@ class AccountController extends ControllerBase implements ActionsInterface
             return false;
         }
         return true;
-    }
-
-    /**
-     * @param Account|AccountHistory $account
-     */
-    private function setAccount($account)
-    {
-        $this->Account = $account;
     }
 
     /**
@@ -512,5 +508,13 @@ class AccountController extends ControllerBase implements ActionsInterface
         }
 
         $this->view->assign('accountPass', $accountPass);
+    }
+
+    /**
+     * @param Account|AccountHistory $account
+     */
+    private function setAccount($account)
+    {
+        $this->Account = $account;
     }
 }

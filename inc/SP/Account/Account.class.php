@@ -25,11 +25,14 @@
 
 namespace SP\Account;
 
+use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
+use SP\DataModel\CustomFieldData;
 use SP\DataModel\GroupAccountsData;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupAccounts;
 use SP\Mgmt\Groups\GroupAccountsUtil;
@@ -114,7 +117,8 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_passDateChange = :accountPassDateChange,'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
-                . 'account_isPrivate = :accountIsPrivate '
+                . 'account_isPrivate = :accountIsPrivate, '
+                . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
 
             $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
@@ -132,7 +136,8 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_passDateChange = :accountPassDateChange,'
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
-                . 'account_isPrivate = :accountIsPrivate '
+                . 'account_isPrivate = :accountIsPrivate, '
+                . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
 
         }
@@ -149,6 +154,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
 
         if (DB::getQuery($Data) === false) {
@@ -258,7 +264,8 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_pass = src.acchistory_pass,'
             . 'dst.account_IV = src.acchistory_IV,'
             . 'dst.account_passDate = src.acchistory_passDate,'
-            . 'dst.account_passDateChange = src.acchistory_passDateChange '
+            . 'dst.account_passDateChange = src.acchistory_passDateChange, '
+            . 'dst.account_parentId = src.acchistory_parentId '
             . 'WHERE dst.account_id = src.acchistory_accountId';
 
         $Data = new QueryData();
@@ -299,16 +306,18 @@ class Account extends AccountBase implements AccountInterface
         $Data->setMapClass($this->accountData);
         $Data->addParam($this->accountData->getAccountId(), 'id');
 
-        /** @var AccountExtData $queryRes */
+        /** @var AccountExtData|array $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
+        } elseif (is_array($queryRes) && count($queryRes) === 0){
+            throw new SPException(SPException::SP_CRITICAL, _('La cuenta no existe'));
         }
 
         // Obtener los usuarios y grupos secundarios  y las etiquetas
-        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($queryRes->getAccountId()));
-        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($queryRes->getAccountId()));
+        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
+        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
         $this->accountData->setTags(AccountTags::getTags($queryRes));
 
         return $this->accountData;
@@ -317,7 +326,7 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @return bool
+     * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function createAccount()
@@ -341,7 +350,8 @@ class Account extends AccountBase implements AccountInterface
             . 'account_otherGroupEdit = :accountOtherGroupEdit,'
             . 'account_isPrivate = :accountIsPrivate,'
             . 'account_passDate = UNIX_TIMESTAMP(),'
-            . 'account_passDateChange = :accountPassDateChange';
+            . 'account_passDateChange = :accountPassDateChange,'
+            . 'account_parentId = :accountParentId';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -359,6 +369,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al crear la cuenta'));
@@ -404,7 +415,7 @@ class Account extends AccountBase implements AccountInterface
 
         Email::sendEmail($Log);
 
-        return true;
+        return $this;
     }
 
     /**
@@ -458,6 +469,10 @@ class Account extends AccountBase implements AccountInterface
         try {
             GroupAccounts::getItem()->delete($this->accountData->getAccountId());
             FileUtil::deleteAccountFiles($this->accountData->getAccountId());
+
+            $CustomFieldData = new CustomFieldData();
+            $CustomFieldData->setModule(ActionsInterface::ACTION_ACC);
+            CustomField::getItem($CustomFieldData)->delete($this->accountData->getAccountId());
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription($e->getMessage());

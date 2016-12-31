@@ -182,6 +182,7 @@
                                 <i id="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
                                    class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
                                    data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
+                                   data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
                                     <?php foreach ($action->getData() as $name => $actionData): ?>
                                         <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
                                     <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
@@ -203,6 +204,7 @@
                                     <?php if ($actionMenu->getReflectionFilter()->invoke($AccountSearchItem)): ?>
                                         <li class="btn-action mdl-menu__item"
                                             data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
+                                            data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
                                             <?php foreach ($actionMenu->getData() as $dataName => $dataValue): ?>
                                                 <?php echo 'data-', $dataName, '=', '"', $dataValue, '"'; ?>
                                             <?php endforeach; ?>>

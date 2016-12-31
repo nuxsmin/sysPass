@@ -25,6 +25,8 @@
 
 namespace SP\Account;
 
+use SP\Core\Session;
+use SP\DataModel\AccountSearchData;
 use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
 use SP\Core\Exceptions\SPException;
@@ -186,5 +188,92 @@ class AccountUtil
         $queryRes['count'] = $Data->getQueryNumRows();
 
         return $queryRes;
+    }
+
+    /**
+     * Devolver las cuentas enlazadas
+     *
+     * @param $accountId
+     * @return array
+     */
+    public static function getLinkedAccounts($accountId)
+    {
+        if ($accountId === 0){
+            return [];
+        }
+
+        $Data = new QueryData();
+
+        $queryWhere = self::getAccountFilterUser($Data);
+
+        $queryWhere[] = 'account_parentId = ?';
+        $Data->addParam($accountId);
+
+        $query = /** @lang SQL */
+            'SELECT account_id, account_name, customer_name ' .
+            'FROM accounts ' .
+            'LEFT JOIN customers ON customer_id = account_customerId ' .
+            'WHERE ' . implode(' AND ', $queryWhere);
+
+        $Data->setQuery($query);
+
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Obtiene los datos de las cuentas visibles por el usuario
+     *
+     * @param int $accountId Cuenta actual
+     * @return array
+     */
+    public static function getAccountsForUser($accountId = 0)
+    {
+        $Data = new QueryData();
+
+        $queryWhere = self::getAccountFilterUser($Data);
+
+        if ($accountId !== 0) {
+            $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
+            $Data->addParam($accountId);
+        }
+
+        $query = /** @lang SQL */
+            'SELECT account_id, account_name, customer_name ' .
+            'FROM accounts ' .
+            'LEFT JOIN customers ON customer_id = account_customerId ' .
+            'WHERE ' . implode(' AND ', $queryWhere);
+
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     *
+     * @param QueryData $Data
+     * @return array
+     */
+    protected static function getAccountFilterUser(QueryData $Data)
+    {
+        if (!Session::getUserData()->isUserIsAdminApp() && !Session::getUserData()->isUserIsAdminAcc()) {
+            $filterUser[] = 'account_userId = ?';
+            $Data->addParam(Session::getUserData()->getUserId());
+            $filterUser[] = 'account_userGroupId = ?';
+            $Data->addParam(Session::getUserData()->getUserGroupId());
+            $filterUser[] = 'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
+            $Data->addParam(Session::getUserData()->getUserId());
+            $Data->addParam(Session::getUserData()->getUserGroupId());
+            $filterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
+            $Data->addParam(Session::getUserData()->getUserId());
+
+            $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
+        }
+
+        $queryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
+        $Data->addParam(Session::getUserData()->getUserId());
+
+        return $queryWhere;
     }
 }

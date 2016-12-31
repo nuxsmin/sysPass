@@ -133,7 +133,7 @@ sysPass.Actions = function (Common) {
             },
             callbacks: {
                 open: function () {
-                    Common.appTriggers().views.common("#fancyContainer");
+                    Common.appTriggers().views.common("#box-popup");
                 },
                 close: function () {
                     if ($obj.data("item-dst")) {
@@ -210,7 +210,7 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 setTimeout(function () {
-                    window.location.replace("index.php");
+                    Common.redirect("index.php");
                 }, 2000);
             });
         },
@@ -435,8 +435,14 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && typeof $obj.data("nextaction-id") !== "undefined") {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                if (json.status === 0) {
+                    if ($obj.data("nextaction-id") !== "undefined") {
+                        doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                    } else {
+                        setTimeout(function () {
+                            Common.redirect("index.php");
+                        }, 2000);
+                    }
                 }
             });
         },
@@ -450,7 +456,7 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && typeof $obj.data("nextaction-id") !== "undefined") {
+                if (json.status === 0 && $obj.data("nextaction-id") !== "undefined") {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
@@ -465,7 +471,7 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && typeof $obj.data("nextaction-id") !== "undefined") {
+                if (json.status === 0 && $obj.data("nextaction-id") !== "undefined") {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
@@ -690,10 +696,12 @@ sysPass.Actions = function (Common) {
         showpass: function ($obj) {
             log.info("account:showpass");
 
+            var parentId = $obj.data("parent-id");
+
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
             opts.data = {
-                itemId: $obj.data("item-id"),
+                itemId: parentId == 0 ? $obj.data("item-id") : parentId,
                 actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
                 isFull: 1,
@@ -725,11 +733,13 @@ sysPass.Actions = function (Common) {
         copypass: function ($obj) {
             log.info("account:copypass");
 
+            var parentId = $obj.data("parent-id");
+
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
             opts.async = false;
             opts.data = {
-                itemId: $obj.data("item-id"),
+                itemId: parentId == 0 ? $obj.data("item-id") : parentId,
                 actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
                 isFull: 0,
@@ -810,7 +820,9 @@ sysPass.Actions = function (Common) {
         editpass: function ($obj) {
             log.info("account:editpass");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
+            var parentId = $obj.data("parent-id");
+
+            doAction({actionId: $obj.data("action-id"), itemId: parentId == 0 ? $obj.data("item-id") : parentId});
         },
         restore: function ($obj) {
             log.info("account:restore");
@@ -877,7 +889,9 @@ sysPass.Actions = function (Common) {
         show: function ($obj) {
             log.info("appMgmt:show");
 
-            if ($obj.data("item-dst") || !$obj.data("activetab")) {
+            if ($obj.data("item-dst") || $obj.data("activetab") === "undefined") {
+                log.info($obj.data("activetab"));
+
                 appMgmt.refreshTab = false;
             }
 

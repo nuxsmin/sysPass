@@ -37,7 +37,6 @@ use SP\Core\Session;
 use SP\Core\Template;
 use SP\Http\Request;
 use SP\Http\Response;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 define('APP_ROOT', '..');

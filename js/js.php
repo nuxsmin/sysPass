@@ -41,7 +41,6 @@ if (!$file) {
 
     if ($group === 0) {
         $Minify->addFile('jquery-1.11.2.min.js')
-            ->addFile('jquery-ui.min.js')
             ->addFile('jquery.fileDownload.min.js')
             ->addFile('jquery.tagsinput.min.js')
             ->addFile('clipboard.min.js')
@@ -67,7 +66,7 @@ if (!$file) {
 } elseif ($file && $base) {
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);
-    $Minify->setBase(\SP\Core\Init::$SERVERROOT . urldecode($base));
+    $Minify->setBase(urldecode($base), true);
     $Minify->addFile(urldecode($file));
     $Minify->getMinified();
 }

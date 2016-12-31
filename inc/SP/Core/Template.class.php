@@ -220,6 +220,7 @@ class Template
     {
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(_('No es posible destruir la variable "%s"'), $name));
+
             throw new InvalidArgumentException(sprintf(_('No es posible destruir la variable "%s"'), $name));
         }
 

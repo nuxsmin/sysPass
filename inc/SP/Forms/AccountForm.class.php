@@ -125,6 +125,7 @@ class AccountForm extends FormBase implements FormInterface
         $this->AccountData->setAccountPass(Request::analyzeEncrypted('pass'));
         $this->AccountData->setAccountIsPrivate(Request::analyze('privateEnabled', 0, false, 1));
         $this->AccountData->setAccountPassDateChange(Request::analyze('passworddatechange_unix', 0));
+        $this->AccountData->setAccountParentId(Request::analyze('parentAccountId', 0));
 
         // Arrays
         $accountOtherGroups = Request::analyze('otherGroups', 0);

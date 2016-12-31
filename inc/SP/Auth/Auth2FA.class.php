@@ -155,8 +155,6 @@ class Auth2FA
         $secretkey = Google2FA::base32_decode($this->initializationKey);
         $totp = Google2FA::oath_totp($secretkey, $timeStamp);
 
-        debugLog($totp . '/' . $userToken);
-
         return ($totp == $userToken);
     }
 }

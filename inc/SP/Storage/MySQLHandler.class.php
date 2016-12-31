@@ -125,8 +125,6 @@ class MySQLHandler implements DBStorageInterface
 
             if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
                 if ($isInstalled) {
-                    $this->dbStatus = 0;
-
                     Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
                 } else {
                     throw new SPException(SPException::SP_CRITICAL,

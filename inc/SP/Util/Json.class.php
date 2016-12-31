@@ -53,7 +53,7 @@ class Json
      * Devuelve una cadena en formato JSON
      *
      * @param $data
-     * @return string
+     * @return string La cadena en formato JSON
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function getJson($data)

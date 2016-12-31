@@ -28,9 +28,12 @@ namespace SP\Mgmt\Categories;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
+use SP\DataModel\CustomFieldData;
 use SP\Log\Email;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -58,12 +61,13 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO categories SET category_name = ? ,category_description = ?';
+            'INSERT INTO categories SET category_name = ?, category_description = ?, category_hash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryDescription());
+        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
@@ -81,15 +85,19 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     }
 
     /**
+     * Comprobar duplicados
+     *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT category_id FROM categories WHERE category_name = ?';
+            'SELECT category_id FROM categories WHERE category_hash = ? OR category_name = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
         $Data->addParam($this->itemData->getCategoryName());
 
         return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
@@ -103,7 +111,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function delete($id)
     {
         if (is_array($id)) {
-            foreach ($id as $itemId){
+            foreach ($id as $itemId) {
                 $this->delete($itemId);
             }
 
@@ -129,9 +137,21 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
 
         $Log = new Log(_('Eliminar Categoría'));
         $Log->addDetails(Html::strongText(_('Categoría')), sprintf('%s (%d)', $oldCategory->getCategoryName(), $id));
+
+        try {
+            $CustomFieldData = new CustomFieldData();
+            $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CATEGORIES);
+            CustomField::getItem($CustomFieldData)->delete($id);
+        } catch (SPException $e) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription($e->getMessage());
+        }
+
         $Log->writeLog();
 
         Email::sendEmail($Log);
+
+        return $this;
     }
 
     /**
@@ -184,13 +204,15 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $query = /** @lang SQL */
             'UPDATE categories
               SET category_name = ?,
-              category_description = ?
+              category_description = ?,
+              category_hash = ?
               WHERE category_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryDescription());
+        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
         $Data->addParam($this->itemData->getCategoryId());
 
         if (DB::getQuery($Data) === false) {
@@ -213,10 +235,11 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT category_id FROM categories WHERE category_name = ? AND category_id <> ?';
+            'SELECT category_id FROM categories WHERE (category_hash = ? OR category_name = ?) AND category_id <> ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryId());
 

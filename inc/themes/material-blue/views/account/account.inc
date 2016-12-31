@@ -181,6 +181,21 @@
                     <?php endif; ?>
                 </td>
             </tr>
+            <?php if (count($linkedAccounts) === 0): ?>
+                <tr>
+                    <td class="descField"><?php echo _('Cuenta Vinculada'); ?></td>
+                    <td class="valField">
+                        <select id="selParentAccount" name="parentAccountId" class="select-box select-box-deselect" <?php echo $disabled; ?>>
+                            <option value=""><?php echo _('Seleccionar Cuenta'); ?></option>
+                            <?php foreach ($otherAccounts as $otherAccount): ?>
+                                <?php $selected = ($gotData && (int)$otherAccount->account_id === $accountData->getAccountParentId()) ? 'selected' : ''; ?>
+
+                                <option value="<?php echo $otherAccount->account_id; ?>" <?php echo $selected; ?>><?php printf('%s (%s)', $otherAccount->account_name, $otherAccount->customer_name); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+            <?php endif; ?>
             <?php if ($AccountAcl->isShowHistory() && is_array($historyData) && count($historyData) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo _('Historial'); ?></td>
@@ -243,6 +258,10 @@
     <!--Files box -->
     <?php if ($gotData && $AccountAcl->isShowFiles()): ?>
         <?php include $this->includeTemplate('files'); ?>
+    <?php endif; ?>
+
+    <?php if (count($linkedAccounts) > 0): ?>
+        <?php include $this->includeTemplate('linkedAccounts'); ?>
     <?php endif; ?>
 
     <!--More info about account details -->

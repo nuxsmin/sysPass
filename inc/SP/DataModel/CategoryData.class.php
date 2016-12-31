@@ -46,6 +46,10 @@ class CategoryData extends DataModelBase implements DataModelInterface
      * @var string
      */
     public $category_description = '';
+    /**
+     * @var string
+     */
+    public $category_hash = '';
 
     /**
      * CategoryData constructor.
@@ -125,5 +129,13 @@ class CategoryData extends DataModelBase implements DataModelInterface
     public function getName()
     {
         return $this->category_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryHash()
+    {
+        return $this->category_hash;
     }
 }

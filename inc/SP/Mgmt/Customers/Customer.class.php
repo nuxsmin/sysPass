@@ -28,8 +28,11 @@ namespace SP\Mgmt\Customers;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Core\ActionsInterface;
 use SP\DataModel\CustomerData;
+use SP\DataModel\CustomFieldData;
 use SP\Log\Email;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -67,7 +70,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCustomerName());
         $Data->addParam($this->itemData->getCustomerDescription());
-        $Data->addParam($this->itemData->getCustomerHash());
+        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al crear el cliente'));
@@ -95,26 +98,9 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->mkCustomerHash());
+        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
 
         return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
-    }
-
-    /**
-     * Crear un hash con el nombre del cliente.
-     * Esta función crear un hash para detectar clientes duplicados mediante
-     * la eliminación de carácteres especiales y capitalización
-     *
-     * @return string con el hash generado
-     */
-    private function mkCustomerHash()
-    {
-        $charsSrc = [
-            '.', ' ', '_', ', ', '-', ';',
-            '\'', '"', ':', '(', ')', '|', '/'];
-        $newValue = strtolower(str_replace($charsSrc, '', DBUtil::escape($this->itemData->getCustomerName())));
-
-        return md5($newValue);
     }
 
     /**
@@ -125,7 +111,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function delete($id)
     {
         if (is_array($id)) {
-            foreach ($id as $itemId){
+            foreach ($id as $itemId) {
                 $this->delete($itemId);
             }
 
@@ -151,6 +137,17 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         $Log = new Log(_('Eliminar Cliente'));
         $Log->addDetails(Html::strongText(_('Cliente')), sprintf('%s (%d)', $oldCustomer->getCustomerName(), $id));
+
+
+        try {
+            $CustomFieldData = new CustomFieldData();
+            $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CUSTOMERS);
+            CustomField::getItem($CustomFieldData)->delete($id);
+        } catch (SPException $e) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription($e->getMessage());
+        }
+
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -216,7 +213,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCustomerName());
         $Data->addParam($this->itemData->getCustomerDescription());
-        $Data->addParam($this->mkCustomerHash());
+        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
         $Data->addParam($this->itemData->getCustomerId());
 
         if (DB::getQuery($Data) === false) {
@@ -243,7 +240,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->mkCustomerHash());
+        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
         $Data->addParam($this->itemData->getCustomerId());
 
         return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);

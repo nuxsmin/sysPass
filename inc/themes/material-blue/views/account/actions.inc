@@ -20,7 +20,7 @@ use SP\Util\Checks;
             </li>
         <?php endif; ?>
 
-        <?php if ($AccountAcl->isShowLink() && $AccountAcl->isShowViewPass()): ?>
+        <?php if ($AccountAcl->isShowLink() && $AccountAcl->isShowViewPass() && $accountData->getAccountParentId() === 0 && $accountIsHistory !== 1): ?>
             <li>
                 <button id="btnLink" type="button"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
@@ -40,6 +40,7 @@ use SP\Util\Checks;
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconViewPass()->getClassButton(); ?>"
                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
                         data-item-id="<?php echo $accountIsHistory !== 1 ? $accountId : $accountHistoryId; ?>"
+                        data-parent-id="<?php echo $accountData->getAccountParentId(); ?>"
                         data-full="1"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/showpass"
@@ -54,6 +55,7 @@ use SP\Util\Checks;
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClipboard()->getClassButton(); ?> clip-pass-button"
                             data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
                             data-item-id="<?php echo $accountIsHistory !== 1 ? $accountId : $accountHistoryId; ?>"
+                            data-parent-id="<?php echo $accountData->getAccountParentId(); ?>"
                             data-full="0"
                             data-sk="<?php echo $sk; ?>"
                             data-history="<?php echo $accountIsHistory; ?>"
@@ -71,6 +73,7 @@ use SP\Util\Checks;
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconEditPass()->getClassButton(); ?>"
                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_PASS; ?>"
                         data-item-id="<?php echo $accountId; ?>"
+                        data-parent-id="<?php echo $accountData->getAccountParentId(); ?>"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/editpass"
                         title="<?php echo _('Modificar Clave de Cuenta'); ?>">

@@ -3,9 +3,9 @@
  * @var $link SP\DataModel\PublicLinkListData
  */
 ?>
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></H2>
-    <table class="fancydata">
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></H2>
+    <table class="popup-data">
         <tbody>
         <tr>
             <td class="descField"><?php echo _('Cuenta'); ?></td>

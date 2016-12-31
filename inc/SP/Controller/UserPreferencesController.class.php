@@ -83,8 +83,6 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
 
         $this->view->addTemplate('preferences-security');
 
-        debugLog($this->userPrefs);
-
         $twoFa = new Auth2FA($this->userId, Session::getUserData()->getUserLogin());
 
         $this->view->assign('qrCode', !$this->userPrefs->isUse2Fa() ? $twoFa->getUserQRCode(): '');

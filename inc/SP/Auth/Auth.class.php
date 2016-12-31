@@ -103,7 +103,7 @@ class Auth extends PluginAwareBase
             $pResult = call_user_func([$this, $pAuth]);
 
             if ($pResult !== false) {
-                $auths[] = ['auth' => $pAuth, 'data' => $pResult];
+                $auths[] = new AuthResult($pAuth, $pResult);
             }
         }
 

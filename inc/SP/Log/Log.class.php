@@ -26,6 +26,7 @@
 namespace SP\Log;
 
 use SP\Core\DiFactory;
+use SP\Core\Language;
 use SP\Storage\DB;
 use SP\Core\Session;
 use SP\Storage\QueryData;
@@ -134,6 +135,8 @@ class Log extends ActionLog
             $this->sendToSyslog();
         }
 
+        Language::setAppLocales();
+
         $description = trim($this->getDescription() . PHP_EOL . $this->getDetails());
 
         $query = 'INSERT INTO log SET ' .
@@ -158,7 +161,11 @@ class Log extends ActionLog
             $this->resetDescription();
         }
 
-        return DB::getQuery($Data);
+        $query = DB::getQuery($Data);
+
+        Language::unsetAppLocales();
+
+        return $query;
     }
 
     /**

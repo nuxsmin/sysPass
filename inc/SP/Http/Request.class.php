@@ -218,4 +218,38 @@ class Request
 
         return count($params) > 0 ? '?' . implode('&', $params) : '';
     }
+
+    /**
+     * Devolver una ruta segura para
+     *
+     * @param      $path
+     * @param null $base
+     * @return string
+     */
+    public static function getSecureAppPath($path, $base = null)
+    {
+        if ($base === null) {
+            $base = Init::$SERVERROOT;
+        }
+
+        $realPath = realpath($base . DIRECTORY_SEPARATOR . $path);
+
+        if ($realPath === false || strpos($realPath, $base) !== 0) {
+            return '';
+        } else {
+            return $realPath;
+        }
+    }
+
+    /**
+     * Devuelve un nombre de archivo seguro
+     *
+     * @param      $file
+     * @param null $base
+     * @return string
+     */
+    public static function getSecureAppFile($file, $base = null)
+    {
+        return basename(self::getSecureAppPath($file, $base));
+    }
 }

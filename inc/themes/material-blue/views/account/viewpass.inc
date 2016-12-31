@@ -2,8 +2,8 @@
 /** @var  \SP\DataModel\CategoryData $category */
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></h2>
+<div id="box-popup" class="box-password-view">
+    <h2 class="center"><?php echo $header; ?></h2>
     <table>
         <tbody>
         <tr>

@@ -2,14 +2,14 @@
 /** @var $tag \SP\DataModel\TagData */
 /** @var $icons \SP\Core\UI\ThemeIconsBase */
 ?>
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></h2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></h2>
 
     <form method="post" name="frmTags" id="frmTags" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
           data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_TAGS; ?>">
-        <table class="fancydata">
+        <table class="popup-data">
             <tbody>
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -31,7 +31,6 @@
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
-    <div id="resCheck"><span id="resFancyAccion"></span></div>
     <div class="action-in-box">
         <button
             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"

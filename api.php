@@ -25,6 +25,7 @@
 
 use SP\Api\ApiRequest;
 use SP\Core\Init;
+use SP\Http\Response;
 
 define('APP_ROOT', '.');
 
@@ -37,10 +38,16 @@ header('Content-type: application/json');
 try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
+} catch (\SP\Core\Exceptions\InvalidArgumentException $e) {
+    Response::printJson(
+        [
+            'message' => $e->getMessage(),
+            'help' => $e->getHint()
+        ]);
 } catch (Exception $e) {
-    \SP\Http\Response::printJson(
-        array(
+    Response::printJson(
+        [
             'message' => $e->getMessage(),
             'help' => ApiRequest::getHelp()
-        ));
+        ]);
 }

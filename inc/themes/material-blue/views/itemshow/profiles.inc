@@ -3,14 +3,14 @@
 /** @var $profile \SP\DataModel\ProfileData */
 ?>
 
-<div id="fancyContainer" align="center">
-    <h2><?php echo $header; ?></H2>
+<div id="box-popup">
+    <h2 class="center"><?php echo $header; ?></H2>
 
     <form method="post" name="frmProfiles" id="frmProfiles" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
           data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PROFILES; ?>">
-        <table class="fancydata">
+        <table class="popup-data">
             <tbody>
             <tr>
                 <td class="descField"><?php echo _('Nombre'); ?></td>
@@ -280,7 +280,6 @@
     </form>
 
     <?php if (!$isView): ?>
-        <div id="resCheck"><span id="resFancyAccion"></span></div>
         <div class="action-in-box">
             <button form="frmProfiles"
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"

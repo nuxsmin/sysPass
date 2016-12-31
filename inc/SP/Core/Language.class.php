@@ -115,7 +115,11 @@ class Language
      */
     private function getBrowserLang()
     {
-        return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -161,5 +165,21 @@ class Language
             'Magyar' => 'hu_HU',
             'Français' => 'fr_FR'
         ];
+    }
+
+    /**
+     * Establecer el lenguaje global para las trdducciones
+     */
+    public static function setAppLocales()
+    {
+        self::setLocales(self::$globalLang);
+    }
+
+    /**
+     * Restablecer el lenguaje global para las trdducciones
+     */
+    public static function unsetAppLocales()
+    {
+        self::setLocales(Session::getLocale());
     }
 }

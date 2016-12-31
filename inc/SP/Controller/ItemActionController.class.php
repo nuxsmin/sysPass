@@ -352,7 +352,6 @@ class ItemActionController implements ItemControllerInterface
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE:
                 Customer::getItem()->delete($this->itemId);
-                $this->deleteCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cliente eliminado'));
                 break;
@@ -389,7 +388,6 @@ class ItemActionController implements ItemControllerInterface
                 break;
             case ActionsInterface::ACTION_MGM_CATEGORIES_DELETE:
                 Category::getItem()->delete($this->itemId);
-                $this->deleteCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Categoría eliminada'));
                 break;
@@ -564,6 +562,9 @@ class ItemActionController implements ItemControllerInterface
                 $Form->getItemData()->setAccountUserId(Session::getUserData()->getUserId());
 
                 $Account->createAccount();
+
+                $this->CustomFieldData->setId($Account->getAccountData()->getId());
+
                 $this->addCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cuenta creada'));
@@ -586,7 +587,6 @@ class ItemActionController implements ItemControllerInterface
                 break;
             case ActionsInterface::ACTION_ACC_DELETE:
                 $Account->deleteAccount();
-                $this->deleteCustomFieldData();
 
                 $this->jsonResponse->setDescription(_('Cuenta eliminada'));
                 break;

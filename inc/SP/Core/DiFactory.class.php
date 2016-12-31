@@ -89,8 +89,8 @@ class DiFactory
      * Devuelve la instancia de la clase del elemento solicitado
      *
      * @param  string $caller   La clase del objeto
-     * @param  object $itemData Los datos del elemento
-     * @return object
+     * @param  mixed $itemData Los datos del elemento
+     * @return ItemBase
      * @throws Exceptions\InvalidClassException
      */
     public static final function getItem($caller, $itemData = null)
