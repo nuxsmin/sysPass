@@ -36,6 +36,7 @@ use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
+use SP\Storage\DB;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -692,7 +693,7 @@ class Init
      */
     public static function isLoggedIn()
     {
-        return (Session::getUserData()->getUserLogin() && Session::get2FApassed());
+        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin() && Session::get2FApassed());
     }
 
     /**

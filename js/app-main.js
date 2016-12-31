@@ -98,7 +98,7 @@ sysPass.Main = function () {
 
     // Opciones para Toastr
     toastr.options = {
-        "closeButton": false,
+        "closeButton": true,
         "debug": false,
         "newestOnTop": false,
         "progressBar": false,
