@@ -9,7 +9,7 @@ html, body {
   box-sizing: border-box; }
 
 * {
-  font-family: Roboto-Regular, Verdana, Tahoma, sans-serif;
+  font-family: "Roboto Regular", Verdana, Tahoma, sans-serif;
   box-sizing: inherit; }
   *:before, *:after {
     box-sizing: inherit; }
