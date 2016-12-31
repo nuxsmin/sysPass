@@ -368,10 +368,7 @@ CREATE TABLE `usrToGroups` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `account_data_v`;
-CREATE OR REPLACE ALGORITHM = UNDEFINED
-  DEFINER = CURRENT_USER
-  SQL SECURITY DEFINER VIEW `account_data_v` AS
-  SELECT
+CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_data_v` AS SELECT
     `accounts`.`account_id`                          AS `account_id`,
     `accounts`.`account_name`                        AS `account_name`,
     `accounts`.`account_categoryId`                  AS `account_categoryId`,
@@ -409,11 +406,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED
       ON ((`accounts`.`account_id` = `publicLinks`.`publicLink_itemId`)));
 
 DROP TABLE IF EXISTS `account_search_v`;
-CREATE OR REPLACE ALGORITHM = UNDEFINED
-  DEFINER = CURRENT_USER
-  SQL SECURITY DEFINER
-VIEW `account_search_v` AS
-  SELECT DISTINCT
+CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_search_v` AS SELECT DISTINCT
     `accounts`.`account_id`                                        AS `account_id`,
     `accounts`.`account_customerId`                                AS `account_customerId`,
     `accounts`.`account_categoryId`                                AS `account_categoryId`,

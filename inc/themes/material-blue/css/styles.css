@@ -1587,7 +1587,7 @@ fieldset.warning a {
 }
 
 #actions ul.errors > li > p.hint {
-    color: #aaa;
+    color: #555;
     font-size: 12px
 }
 
