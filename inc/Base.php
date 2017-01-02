@@ -34,6 +34,7 @@ define('MODEL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'SP');
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
 define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
 define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Exts');
+define('PLUGINS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Plugins');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
 

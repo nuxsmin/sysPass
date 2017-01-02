@@ -98,6 +98,7 @@ class Installer
 
         if (!preg_match('/(localhost|127.0.0.1)/', $this->InstallData->getDbHost())) {
             $this->InstallData->setDbAuthHost($_SERVER['SERVER_ADDR']);
+            $this->InstallData->setDbAuthHostDns(gethostbyaddr($_SERVER['SERVER_ADDR']));
         } else {
             $this->InstallData->setDbAuthHost('localhost');
         }
@@ -263,8 +264,15 @@ class Installer
             $this->InstallData->getDbAuthHost(),
             $this->InstallData->getDbPass());
 
+        $queryDns = sprintf(/** @lang SQL */
+            'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
+            $this->InstallData->getDbUser(),
+            $this->InstallData->getDbAuthHostDns(),
+            $this->InstallData->getDbPass());
+
         try {
             $this->DB->query($query);
+            $this->DB->query($queryDns);
         } catch (PDOException $e) {
             throw new SPException(
                 SPException::SP_CRITICAL,
@@ -311,8 +319,16 @@ class Installer
                 $this->InstallData->getDbAuthHost(),
                 $this->InstallData->getDbPass());
 
+            $queryDns = sprintf(/** @lang SQL */
+                'GRANT ALL PRIVILEGES ON `%s`.* TO `%s`@`%s` IDENTIFIED BY \'%s\';',
+                $this->InstallData->getDbName(),
+                $this->InstallData->getDbUser(),
+                $this->InstallData->getDbAuthHostDns(),
+                $this->InstallData->getDbPass());
+
             try {
                 $this->DB->query($query);
+                $this->DB->query($queryDns);
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
                     sprintf(_('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),

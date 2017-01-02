@@ -78,7 +78,7 @@ sysPass.Actions = function (Common) {
     var doAction = function (obj) {
         var data = {
             actionId: obj.actionId,
-            itemId: typeof obj.itemId !== "undefined" ? obj.itemId : 0,
+            itemId: obj.itemId !== "undefined" ? obj.itemId : 0,
             isAjax: 1
         };
 
@@ -1142,5 +1142,4 @@ sysPass.Actions = function (Common) {
         eventlog: eventlog,
         ajaxUrl: ajaxUrl
     };
-}
-;
+};

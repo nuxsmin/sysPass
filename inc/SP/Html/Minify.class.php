@@ -65,13 +65,13 @@ class Minify
     private $base = '';
 
     /**
-     * @param string $base
+     * @param string $path
      * @param bool   $checkPath
      * @return $this
      */
-    public function setBase($base, $checkPath = false)
+    public function setBase($path, $checkPath = false)
     {
-        $this->base = $checkPath === true ? Request::getSecureAppPath($base) : $base;
+        $this->base = $checkPath === true ? Request::getSecureAppPath($path) : $path;
 
         return $this;
     }

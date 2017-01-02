@@ -24,12 +24,13 @@
  */
 
 use SP\Controller\MainController;
+use SP\Core\Init;
 
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!\SP\Core\Init::checkPostLoginActions()) {
+if (!Init::checkPostLoginActions()) {
     $Controller = new MainController(null, 'main');
     $Controller->getMain();
     $Controller->view();

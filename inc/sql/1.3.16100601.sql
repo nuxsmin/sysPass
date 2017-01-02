@@ -303,8 +303,10 @@ VIEW `account_search_v` AS
       LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))
       LEFT JOIN `usrGroups` `ug` ON ((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`)))
       LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));
+
 ALTER TABLE `accounts`
   ADD COLUMN `account_parentId` SMALLINT (5) UNSIGNED NULL AFTER `account_passDateChange`;
+
 ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_customer_id`
 FOREIGN KEY (`account_customerId`)
@@ -325,6 +327,7 @@ ALTER TABLE `accHistory`
   ADD COLUMN `accHistory_parentId` SMALLINT(5) UNSIGNED NULL
   AFTER `accHistory_passDateChange`,
   ADD INDEX `fk_accHistory_userGroup_id_idx` (`acchistory_userGroupId` ASC);
+
 ALTER TABLE `accHistory`
   ADD CONSTRAINT `fk_accHistory_customer_id`
 FOREIGN KEY (`acchistory_customerId`)
@@ -341,7 +344,17 @@ FOREIGN KEY (`acchistory_userGroupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
 ALTER TABLE `accounts`
   ADD INDEX `IDX_parentId` USING BTREE (`account_parentId` ASC);
+
 ALTER TABLE `categories`
 ADD COLUMN `category_hash` VARBINARY(40) NOT NULL DEFAULT 0 AFTER `category_description`;
+
+CREATE TABLE `plugins` (
+  `plugin_id` INT UNSIGNED NOT NULL,
+  `plugin_name` VARCHAR(100) NOT NULL,
+  `plugin_data` VARBINARY(5000) NULL,
+  `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`plugin_id`),
+  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC));

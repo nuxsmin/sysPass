@@ -72,40 +72,18 @@ $Tpl->assign('themeUri', DiFactory::getTheme()->getThemeUri());
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_SEARCH:
         $Controller = new AccountSearchController($Tpl);
-        $Controller->getSearchBox();
-        $Controller->getSearch();
+        $Controller->doAction();
         break;
     case ActionsInterface::ACTION_ACC_NEW:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getNewAccount();
-        break;
     case ActionsInterface::ACTION_ACC_COPY:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getCopyAccount();
-        break;
     case ActionsInterface::ACTION_ACC_EDIT:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getEditAccount();
-        break;
     case ActionsInterface::ACTION_ACC_EDIT_PASS:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getEditPassAccount();
-        break;
     case ActionsInterface::ACTION_ACC_VIEW:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getViewAccount();
-        break;
     case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getViewHistoryAccount();
-        break;
     case ActionsInterface::ACTION_ACC_DELETE:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getDeleteAccount();
-        break;
     case ActionsInterface::ACTION_ACC_REQUEST:
-        $Controller = new AccountController($Tpl, null, $itemId);
-        $Controller->getRequestAccountAccess();
+        $Controller = new AccountController($Tpl, $itemId);
+        $Controller->doAction($actionId);
         break;
     case ActionsInterface::ACTION_USR:
     case ActionsInterface::ACTION_USR_USERS:
@@ -114,12 +92,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_MGM_APITOKENS:
     case ActionsInterface::ACTION_MGM_PUBLICLINKS:
         $Controller = new ItemListController($Tpl);
-        $Controller->useTabs();
-        $Controller->getUsersList();
-        $Controller->getGroupsList();
-        $Controller->getProfilesList();
-        $Controller->getAPITokensList();
-        $Controller->getPublicLinksList();
+        $Controller->doAction(ItemListController::TYPE_ACCESSES);
         break;
     case ActionsInterface::ACTION_MGM:
     case ActionsInterface::ACTION_MGM_CATEGORIES:
@@ -129,13 +102,7 @@ switch ($actionId) {
     case ActionsInterface::ACTION_MGM_ACCOUNTS:
     case ActionsInterface::ACTION_MGM_TAGS:
         $Controller = new ItemListController($Tpl);
-        $Controller->useTabs();
-        $Controller->getCategories();
-        $Controller->getCustomers();
-        $Controller->getCustomFields();
-        $Controller->getFiles();
-        $Controller->getAccounts();
-        $Controller->getTags();
+        $Controller->doAction(ItemListController::TYPE_ACCOUNTS);
         break;
     case ActionsInterface::ACTION_CFG:
     case ActionsInterface::ACTION_CFG_GENERAL:
@@ -147,34 +114,18 @@ switch ($actionId) {
     case ActionsInterface::ACTION_CFG_BACKUP:
     case ActionsInterface::ACTION_CFG_EXPORT:
     case ActionsInterface::ACTION_CFG_IMPORT:
-        $Tpl->addTemplate('tabs-start', 'common');
-
         $Controller = new ConfigController($Tpl);
-        $Controller->getGeneralTab();
-        $Controller->getWikiTab();
-        $Controller->getLdapTab();
-        $Controller->getMailTab();
-        $Controller->getEncryptionTab();
-        $Controller->getBackupTab();
-        $Controller->getImportTab();
-        $Controller->getInfoTab();
-
-        $Tpl->addTemplate('tabs-end', 'common');
+        $Controller->doAction();
         break;
     case ActionsInterface::ACTION_EVL:
         $Controller = new EventlogController($Tpl);
-        $Controller->getEventlog();
+        $Controller->doAction();
         break;
     case ActionsInterface::ACTION_USR_PREFERENCES:
     case ActionsInterface::ACTION_USR_PREFERENCES_GENERAL:
     case ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
-        $Tpl->addTemplate('tabs-start', 'common');
-
         $Controller = new UserPreferencesController($Tpl);
-        $Controller->getPreferencesTab();
-        $Controller->getSecurityTab();
-
-        $Tpl->addTemplate('tabs-end', 'common');
+        $Controller->doAction();
         break;
 }
 

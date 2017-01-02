@@ -33,6 +33,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\DiFactory;
 use SP\Core\Language;
+use SP\Core\Plugin\PluginUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
@@ -135,6 +136,21 @@ class MainController extends ControllerBase implements ActionsInterface
             $themeCssFiles = urlencode(implode(',', $themeInfo['css']));
 
             $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?f=' . $themeCssFiles . '&b=' . $themeCssBase . '&v=' . $jsVersionHash);
+        }
+
+        // Cargar los recursos de los plugins
+        foreach (PluginUtil::getLoadedPlugins() as $Plugin) {
+            $base = str_replace(Init::$SERVERROOT, '', $Plugin->getBase());
+            $jsResources = $Plugin->getJsResources();
+            $cssResources = $Plugin->getCssResources();
+
+            if (count($jsResources) > 0) {
+                $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?f=' . urlencode(implode(',', $jsResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'js') . '&v=' . $jsVersionHash);
+            }
+
+            if (count($cssResources) > 0) {
+                $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?f=' . urlencode(implode(',', $cssResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'css') . '&v=' . $jsVersionHash);
+            }
         }
     }
 
@@ -285,6 +301,8 @@ class MainController extends ControllerBase implements ActionsInterface
         }
 
         $this->view->assign('getParams', $getParams);
+        $this->view();
+        exit();
     }
 
     /**
@@ -335,29 +353,6 @@ class MainController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Obtener los datos para el interface de restablecimiento de clave de usuario
-     */
-    public function getPassReset()
-    {
-        $this->view->addTemplate('body-header');
-
-        if (Checks::mailIsEnabled() || Request::analyze('f', 0) === 1) {
-            $this->view->addTemplate('passreset');
-
-            $this->view->assign('action', Request::analyze('a'));
-            $this->view->assign('hash', Request::analyze('h'));
-            $this->view->assign('time', Request::analyze('t'));
-
-            $this->view->assign('passReset', $this->view->action === 'passreset' && $this->view->hash && $this->view->time);
-        } else {
-            $this->showError(self::ERR_UNAVAILABLE, false);
-        }
-
-        $this->view->addTemplate('body-footer');
-        $this->view->addTemplate('body-end');
-    }
-
-    /**
      * Obtener los datos para el interface de actualización de BD
      */
     public function getUpgrade()
@@ -370,27 +365,9 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('action', Request::analyze('a'));
         $this->view->assign('time', Request::analyze('t'));
         $this->view->assign('upgrade', $this->view->action === 'upgrade');
-    }
 
-    /**
-     * Obtener los datos para el interface de autentificación en 2 pasos
-     */
-    public function get2FA()
-    {
-        $this->view->addTemplate('body-header');
-
-        if (Request::analyze('f', 0) === 1) {
-            $this->view->addTemplate('login-2fa');
-
-            $this->view->assign('action', Request::analyze('a'));
-            $this->view->assign('userId', Request::analyze('i'));
-            $this->view->assign('time', Request::analyze('t'));
-        } else {
-            $this->showError(self::ERR_UNAVAILABLE, false);
-        }
-
-        $this->view->addTemplate('body-footer');
-        $this->view->addTemplate('body-end');
+        $this->view();
+        exit();
     }
 
     /**
@@ -440,6 +417,51 @@ class MainController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        switch ($type) {
+            case 'prelogin.passreset':
+                $this->getPassReset();
+                break;
+            case 'prelogin.link':
+                $this->getPublicLink();
+                break;
+        }
+
+        DiFactory::getEventDispatcher()->notifyEvent('main.' . $type, $this);
+    }
+
+    /**
+     * Obtener los datos para el interface de restablecimiento de clave de usuario
+     */
+    public function getPassReset()
+    {
+        $this->view->addTemplate('body-header');
+
+        if (Checks::mailIsEnabled() || Request::analyze('f', 0) === 1) {
+            $this->view->addTemplate('passreset');
+
+            $this->view->assign('action', Request::analyze('a'));
+            $this->view->assign('hash', Request::analyze('h'));
+            $this->view->assign('time', Request::analyze('t'));
+
+            $this->view->assign('passReset', $this->view->action === 'passreset' && $this->view->hash && $this->view->time);
+        } else {
+            $this->showError(self::ERR_UNAVAILABLE, false);
+        }
+
+        $this->view->addTemplate('body-footer');
+        $this->view->addTemplate('body-end');
+
+        $this->view();
+        exit();
+    }
+
+    /**
      * Obtener la vista para mostrar un enlace publicado
      *
      * @return bool
@@ -462,7 +484,7 @@ class MainController extends ControllerBase implements ActionsInterface
             } else {
                 PublicLink::getItem($PublicLink)->addLinkView();
 
-                $controller = new AccountController($this->view, null, $PublicLink->getItemId());
+                $controller = new AccountController($this->view, $PublicLink->getItemId());
                 $controller->getAccountFromLink($PublicLink);
             }
 
@@ -473,5 +495,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
+
+        $this->view();
+        exit();
     }
 }

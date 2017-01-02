@@ -368,6 +368,19 @@ CREATE TABLE `usrToGroups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `plugins`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `plugins` (
+  `plugin_id` INT UNSIGNED NOT NULL,
+  `plugin_name` VARCHAR(100) NOT NULL,
+  `plugin_data` VARBINARY(5000) NULL,
+  `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`plugin_id`),
+  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC));
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 DROP TABLE IF EXISTS `account_data_v`;
 CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_data_v` AS SELECT
     `accounts`.`account_id`                          AS `account_id`,

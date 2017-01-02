@@ -25,18 +25,17 @@
 
 namespace SP\Core;
 
-use SP\Auth\Auth;
-use SP\Auth\AuthUtil;
+use Plugins\Authenticator\AuthenticatorPlugin;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Plugin\PluginUtil;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
-use SP\Storage\DB;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -53,7 +52,7 @@ class Init
     /**
      * @var array Associative array for autoloading. classname => filename
      */
-    public static $CLASSPATH = array();
+    public static $CLASSPATH = [];
 
     /**
      * @var string The installation path on the server (e.g. /srv/www/syspass)
@@ -158,6 +157,9 @@ class Init
         // Inicializar la sesión
         self::initSession();
 
+        // Cargar los plugins
+        self::loadPlugins();
+
         // Comprobar acciones en URL
         self::checkPreLoginActions();
 
@@ -254,6 +256,11 @@ class Init
         $ExtsLoader->setFileExtension('.class.php');
         $ExtsLoader->setPrepend(false);
         $ExtsLoader->register();
+
+        $PluginsLoader = new \SplClassLoader('Plugins', BASE_DIR);
+        $PluginsLoader->setFileExtension('.class.php');
+        $PluginsLoader->setPrepend(false);
+        $PluginsLoader->register();
     }
 
     /**
@@ -288,7 +295,7 @@ class Init
         $Controller = new MainController($Tpl, 'error', true);
         $Controller->getError(true);
         $Controller->view();
-        exit;
+        exit();
     }
 
     /**
@@ -345,6 +352,7 @@ class Init
 
         // Comprobar la configuración y cargar
         self::checkConfig();
+
         Config::loadConfig();
     }
 
@@ -420,9 +428,9 @@ class Init
     private static function checkInitSourceInclude()
     {
         $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = array('js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php');
+        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php'];
 
-        return in_array($srcScript, $skipInit);
+        return in_array($srcScript, $skipInit, true);
     }
 
     /**
@@ -533,8 +541,6 @@ class Init
     {
         $Controller = new MainController(null, 'login');
         $Controller->getLogin();
-        $Controller->view();
-        exit;
     }
 
     /**
@@ -580,8 +586,6 @@ class Init
                 } else {
                     $controller = new MainController();
                     $controller->getUpgrade();
-                    $controller->view();
-                    exit();
                 }
             }
         }
@@ -660,30 +664,14 @@ class Init
      */
     public static function checkPreLoginActions()
     {
-        if (!Request::analyze('a', '', true)) {
+        $action = Request::analyze('a');
+
+        if ($action === '' ) {
             return false;
         }
 
-        $action = Request::analyze('a');
         $Controller = new MainController(null, $action);
-
-        switch ($action) {
-            case 'passreset':
-                $Controller->getPassReset();
-                break;
-            case '2fa':
-                $Controller->get2FA();
-                break;
-            case 'link':
-                $Controller->getPublicLink();
-                break;
-            default:
-                return false;
-        }
-
-        $Controller->view();
-
-        exit();
+        $Controller->doAction('prelogin.' . $action);
     }
 
     /**
@@ -701,26 +689,7 @@ class Init
      */
     public static function setIncludes()
     {
-        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . EXTENSIONS_PATH . PATH_SEPARATOR . get_include_path());
-    }
-
-    /**
-     * Cargador de clases de sysPass
-     *
-     * @param $class string El nombre de la clase a cargar
-     */
-    public static function loadClass($class)
-    {
-        // Eliminar \\ para las clases con namespace definido
-        $class = strrpos($class, '\\') ? substr($class, strrpos($class, '\\') + 1) : $class;
-
-        // Buscar la clase en los directorios de include
-        foreach (explode(':', get_include_path()) as $includePath) {
-            $classFile = $includePath . DIRECTORY_SEPARATOR . $class . '.class.php';
-            if (is_readable($classFile)) {
-                require $classFile;
-            }
-        }
+        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . EXTENSIONS_PATH . PATH_SEPARATOR . PLUGINS_PATH . PATH_SEPARATOR . get_include_path());
     }
 
     /**
@@ -730,23 +699,15 @@ class Init
      */
     public static function checkPostLoginActions()
     {
-        if (!Request::analyze('a', '', true)) {
+        $action = Request::analyze('a');
+
+        if ($action === '' ) {
             return false;
         }
 
-        $action = Request::analyze('a');
-        $Controller = new MainController(null, 'main');
+        $Controller = new MainController(null, $action);
+        $Controller->doAction('postlogin.' . $action);
 
-        switch ($action) {
-            case 'accView':
-                $itemId = Request::analyze('i');
-//                $onLoad = 'doAction(' . ActionsInterface::ACTION_ACC_VIEW . ',' . ActionsInterface::ACTION_ACC_SEARCH . ',' . $itemId . ')';
-                $Controller->getMain();
-                $Controller->view();
-                break;
-            default:
-                return false;
-        }
         return true;
     }
 
@@ -760,5 +721,22 @@ class Init
     {
         list($usec, $sec) = explode(' ', microtime());
         return ((float)$usec + (float)$sec);
+    }
+
+    /**
+     * Cargar los Plugins disponibles
+     */
+    private static function loadPlugins()
+    {
+        foreach (PluginUtil::getPlugins() as $plugin){
+            $Plugin = PluginUtil::loadPlugin($plugin);
+
+            if ($Plugin !== false) {
+                DiFactory::getEventDispatcher()->attach($Plugin);
+            }
+        }
+
+        Session::setPluginsLoaded(PluginUtil::getLoadedPlugins());
+        Session::setPluginsDisabled(PluginUtil::getDisabledPlugins());
     }
 }

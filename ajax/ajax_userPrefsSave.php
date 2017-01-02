@@ -23,14 +23,13 @@
  *
  */
 
-use SP\Auth\Auth2FA;
+use Plugins\Authenticator\Authenticator;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Language;
 use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
 use SP\Core\DiFactory;
-use SP\DataModel\UserPreferencesData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
@@ -105,7 +104,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $pin = Request::analyze('security_pin', 0);
 
     $userLogin = UserUtil::getUserLoginById($itemId);
-    $twoFa = new Auth2FA($itemId, $userLogin);
+    $twoFa = new Authenticator($itemId, $userLogin);
 
     if (!$twoFa->verifyKey($pin)) {
         $Json->setDescription(_('Código incorrecto'));

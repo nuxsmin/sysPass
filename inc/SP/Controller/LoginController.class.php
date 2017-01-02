@@ -156,6 +156,7 @@ class LoginController
         try {
             $this->UserData = User::getItem($this->UserData)->getByLogin($this->UserData->getUserLogin());
             $this->UserData->setUserPass($userPass);
+            $this->UserData->setUserPreferences(UserPreferences::getItem()->getById($this->UserData->getUserId()));
         } catch (SPException $e) {
             $this->Log->setLogLevel(Log::ERROR);
             $this->Log->addDescription(_('Error al obtener los datos del usuario de la BBDD'));

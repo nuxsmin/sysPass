@@ -46,6 +46,37 @@ class Session
     const SESSION_API = 2;
 
     /**
+     * Establece los datos del usuario en la sesión.
+     *
+     * @param UserData $UserData
+     */
+    public static function setUserData($UserData = null)
+    {
+        self::setSessionKey('userData', $UserData);
+    }
+
+    /**
+     * Establecer una variable de sesión
+     *
+     * @param mixed $key   El nombre de la variable
+     * @param mixed $value El valor de la variable
+     */
+    public static function setSessionKey($key, $value)
+    {
+        $_SESSION[$key] = $value;
+    }
+
+    /**
+     * Devuelve los datos del usuario en la sesión.
+     *
+     * @return UserData
+     */
+    public static function getUserData()
+    {
+        return self::getSessionKey('userData', new UserData());
+    }
+
+    /**
      * Devolver una variable de sesión
      *
      * @param mixed $key
@@ -62,37 +93,6 @@ class Session
         }
 
         return $default;
-    }
-
-    /**
-     * Establece los datos del usuario en la sesión.
-     *
-     * @param UserData $UserData
-     */
-    public static function setUserData($UserData = null)
-    {
-        self::setSessionKey('userData', $UserData);
-    }
-
-    /**
-     * Devuelve los datos del usuario en la sesión.
-     *
-     * @return UserData
-     */
-    public static function getUserData()
-    {
-        return self::getSessionKey('userData', new UserData());
-    }
-
-    /**
-     * Establecer una variable de sesión
-     *
-     * @param mixed $key   El nombre de la variable
-     * @param mixed $value El valor de la variable
-     */
-    public static function setSessionKey($key, $value)
-    {
-        $_SESSION[$key] = $value;
     }
 
     /**
@@ -589,6 +589,42 @@ class Session
     public static function getConfigTime()
     {
         return self::getSessionKey('configTime');
+    }
+
+    /**
+     * Establecer los plugins cargados
+     *
+     * @param array $plugins
+     */
+    public static function setPluginsLoaded(array $plugins)
+    {
+        self::setSessionKey('plugins_loaded', $plugins);
+    }
+
+    /**
+     * Devolver los plugins cargados
+     */
+    public static function getPluginsLoaded()
+    {
+        return self::getSessionKey('plugins_loaded', []);
+    }
+
+    /**
+     * Establecer los plugins deshabilitados
+     *
+     * @param array $plugins
+     */
+    public static function setPluginsDisabled(array $plugins)
+    {
+        self::setSessionKey('plugins_disabled', $plugins);
+    }
+
+    /**
+     * Devolver los plugins deshabilitados
+     */
+    public static function getPluginsDisabled()
+    {
+        return self::getSessionKey('plugins_disabled', []);
     }
 
     /**

@@ -27,7 +27,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Auth\Auth2FA;
+use Plugins\Authenticator\Authenticator;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Language;
@@ -43,12 +43,8 @@ use SP\Mgmt\Users\UserPreferences;
  *
  * @package SP\Controller
  */
-class UserPreferencesController extends ControllerBase implements ActionsInterface
+class UserPreferencesController extends TabControllerBase implements ActionsInterface
 {
-    /**
-     * @var int
-     */
-    private $tabIndex = 0;
     /**
      * @var UserPreferencesData
      */
@@ -57,7 +53,6 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
      * @var int
      */
     private $userId;
-
 
     /**
      * Constructor
@@ -68,7 +63,7 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
     {
         parent::__construct($template);
 
-        $this->view->assign('tabs', array());
+        $this->view->assign('tabs', []);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->userId = $this->UserData->getUserId();
         $this->userPrefs = UserPreferences::getItem()->getById($this->userId);
@@ -83,28 +78,15 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
 
         $this->view->addTemplate('preferences-security');
 
-        $twoFa = new Auth2FA($this->userId, Session::getUserData()->getUserLogin());
+        $twoFa = new Authenticator($this->userId, Session::getUserData()->getUserLogin());
 
         $this->view->assign('qrCode', !$this->userPrefs->isUse2Fa() ? $twoFa->getUserQRCode(): '');
         $this->view->assign('userId', $this->userId);
         $this->view->assign('chk2FAEnabled', $this->userPrefs->isUse2Fa());
 
-        $this->view->append('tabs', array('title' => _('Seguridad')));
+        $this->view->append('tabs', ['title' => _('Seguridad')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'security');
         $this->view->assign('actionId', $this->getAction(), 'security');
-    }
-
-    /**
-     * Obtener el índice actual de las pestañas
-     *
-     * @return int
-     */
-    private function getTabIndex()
-    {
-        $index = $this->tabIndex;
-        $this->tabIndex++;
-
-        return $index;
     }
 
     /**
@@ -127,8 +109,22 @@ class UserPreferencesController extends ControllerBase implements ActionsInterfa
         $this->view->assign('chkTopNavbar', $this->userPrefs->isTopNavbar() ? 'checked="checked"' : '');
         $this->view->assign('chkOptionalActions', $this->userPrefs->isOptionalActions() ? 'checked="checked"' : '');
 
-        $this->view->append('tabs', array('title' => _('Preferencias')));
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'preferences');
+        $this->view->assign('tabIndex', $this->addTab(_('Preferencias')), 'preferences');
         $this->view->assign('actionId', $this->getAction(), 'preferences');
+    }
+
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        $this->view->addTemplate('tabs-start', 'common');
+
+        $this->getPreferencesTab();
+        $this->EventDispatcher->notifyEvent('show.preferences', $this);
+
+        $this->view->addTemplate('tabs-end', 'common');
     }
 }

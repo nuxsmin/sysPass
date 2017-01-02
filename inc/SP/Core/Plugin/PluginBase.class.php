@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,22 +24,44 @@
 
 namespace SP\Core\Plugin;
 
-use SplObserver;
+use SP\Core\DiFactory;
 
 /**
  * Class PluginBase
  *
  * @package SP\Core\Plugin
  */
-abstract class PluginBase implements SplObserver
+abstract class PluginBase implements PluginInterface
 {
+    /**
+     * @var string Directorio base
+     */
+    protected $base;
     /**
      * @var string Tipo de plugin
      */
     protected $type;
+    /**
+     * @var string
+     */
+    protected $themeDir;
+    /**
+     * @var string
+     */
+    protected $data;
 
     /**
-     * @return mixed
+     * PluginBase constructor.
+     */
+    public final function __construct()
+    {
+        DiFactory::getEventDispatcher()->attach($this);
+
+        $this->init();
+    }
+
+    /**
+     * @return string
      */
     public function getType()
     {
@@ -47,10 +69,42 @@ abstract class PluginBase implements SplObserver
     }
 
     /**
-     * @param mixed $type
+     * @param string $type
      */
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBase()
+    {
+        return $this->base;
+    }
+
+    /**
+     * @return string
+     */
+    public function getThemeDir()
+    {
+        return $this->themeDir;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
 }

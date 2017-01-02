@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,44 +22,41 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Plugin;
+namespace SP\Core\Events;
 
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SplObserver;
-use SplSubject;
 
 /**
- * Class PluginAwareBase
+ * Class EventDispatcherBase
  *
- * @package SP\Core\Plugin
+ * @package SP\Core\Events
  */
-abstract class PluginAwareBase implements SplSubject
+abstract class EventDispatcherBase implements EventDispatcherInterface
 {
     /**
-     * @var string
-     */
-    protected $state;
-    /**
-     * @var SplObserver[]
+     * @var EventReceiver[]
      */
     protected $observers = [];
 
     /**
      * Attach an SplObserver
-     * @link http://php.net/manual/en/splsubject.attach.php
+     *
+     * @link  http://php.net/manual/en/splsubject.attach.php
      * @param SplObserver $observer <p>
-     * The <b>SplObserver</b> to attach.
-     * </p>
-     * @throws InvalidClassException
+     *                              The <b>SplObserver</b> to attach.
+     *                              </p>
      * @since 5.1.0
      */
     public function attach(SplObserver $observer)
     {
         $observerClass = get_class($observer);
 
-        if (array_key_exists($observerClass, $this->observers)){
-            throw new InvalidClassException(SPException::SP_ERROR, _('Plugin ya inicializado'));
+        if (array_key_exists($observerClass, $this->observers)) {
+            return;
+//            throw new InvalidClassException(sprintf(_('Observador ya inicializado "%s"'), $observerClass));
         }
 
         $this->observers[$observerClass] = $observer;
@@ -67,10 +64,11 @@ abstract class PluginAwareBase implements SplSubject
 
     /**
      * Detach an observer
-     * @link http://php.net/manual/en/splsubject.detach.php
+     *
+     * @link  http://php.net/manual/en/splsubject.detach.php
      * @param SplObserver $observer <p>
-     * The <b>SplObserver</b> to detach.
-     * </p>
+     *                              The <b>SplObserver</b> to detach.
+     *                              </p>
      * @throws InvalidClassException
      * @since 5.1.0
      */
@@ -78,8 +76,8 @@ abstract class PluginAwareBase implements SplSubject
     {
         $observerClass = get_class($observer);
 
-        if (!array_key_exists($observerClass, $this->observers)){
-            throw new InvalidClassException(SPException::SP_ERROR, _('Plugin no inicializado'));
+        if (!array_key_exists($observerClass, $this->observers)) {
+            throw new InvalidClassException(_('Observador no inicializado'));
         }
 
         unset($this->observers[$observerClass]);
@@ -87,7 +85,8 @@ abstract class PluginAwareBase implements SplSubject
 
     /**
      * Notify an observer
-     * @link http://php.net/manual/en/splsubject.notify.php
+     *
+     * @link  http://php.net/manual/en/splsubject.notify.php
      * @return void
      * @since 5.1.0
      */
@@ -99,13 +98,22 @@ abstract class PluginAwareBase implements SplSubject
     }
 
     /**
-     * Notificar un estado
+     * Notificar un evento
      *
-     * @param $state
+     * @param string $event
+     * @param mixed  $object
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
-    protected function notifyState($state)
+    public function notifyEvent($event, $object)
     {
-        $this->state = $state;
-        $this->notify();
+        if (!is_object($object)) {
+            throw new InvalidArgumentException(SPException::SP_ERROR, _('Es necesario un objeto'));
+        }
+
+        foreach ($this->observers as $observer) {
+            if (in_array($event, $observer->getEvents(), true)) {
+                $observer->updateEvent($event, $object);
+            }
+        }
     }
 }

@@ -83,6 +83,10 @@ class InstallData
     /**
      * @var string
      */
+    private $dbAuthHostDns = '';
+    /**
+     * @var string
+     */
     private $siteLang = 'en_US';
 
     /**
@@ -291,5 +295,21 @@ class InstallData
     public function setSiteLang($siteLang)
     {
         $this->siteLang = $siteLang;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbAuthHostDns()
+    {
+        return $this->dbAuthHostDns;
+    }
+
+    /**
+     * @param string $dbAuthHostDns
+     */
+    public function setDbAuthHostDns($dbAuthHostDns)
+    {
+        $this->dbAuthHostDns = $dbAuthHostDns;
     }
 }

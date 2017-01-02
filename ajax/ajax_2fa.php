@@ -23,7 +23,7 @@
  *
  */
 
-use SP\Auth\Auth2FA;
+use Plugins\Authenticator\Authenticator;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
@@ -44,7 +44,7 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 $userId = Request::analyze('itemId', 0);
 $pin = Request::analyze('security_pin', 0);
 
-$TwoFa = new Auth2FA($userId);
+$TwoFa = new Authenticator($userId);
 
 if ($userId
     && $pin

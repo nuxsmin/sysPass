@@ -232,7 +232,7 @@ class Upgrade
      */
     public static function needConfigUpgrade($version)
     {
-        return (in_array($version, self::$cfgUpgrade));
+        return in_array($version, self::$cfgUpgrade);
     }
 
     /**
@@ -250,7 +250,7 @@ class Upgrade
             include CONFIG_FILE;
 
             if (isset($CONFIG) && is_array($CONFIG)) {
-                error_log('upgrade_old');
+                debugLog('upgrade_old');
 
                 foreach (self::getConfigParams() as $mapTo => $oldParam) {
                     $mapFrom = function () use ($oldParam) {

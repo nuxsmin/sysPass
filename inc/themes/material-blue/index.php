@@ -39,7 +39,6 @@ $themeInfo = [
         'material.min.css',
         'material-custom.min.css',
         'bootstrap-material-datetimepicker.min.css',
-        'jquery-ui.theme.min.css',
         'mdl-jquery-modal-dialog.min.css',
         'selectize.bootstrap3.min.css',
         'toastr.min.css',

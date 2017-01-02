@@ -80,11 +80,11 @@ class AccountController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param Template $template   instancia del motor de plantillas
-     * @param int      $lastAction int con la última acción realizada
-     * @param int      $accountId  int con el id de la cuenta
+     * @param Template $template  instancia del motor de plantillas
+     * @param int      $accountId int con el id de la cuenta
+     * @internal param int $lastAction int con la última acción realizada
      */
-    public function __construct(Template $template = null, $lastAction = null, $accountId = null)
+    public function __construct(Template $template = null, $accountId = null)
     {
         parent::__construct($template);
 
@@ -516,5 +516,49 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function setAccount($account)
     {
         $this->Account = $account;
+    }
+
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function doAction($type = null)
+    {
+        switch ($type) {
+            case ActionsInterface::ACTION_ACC_NEW:
+                $this->getNewAccount();
+                $this->EventDispatcher->notifyEvent('show.account.new', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_COPY:
+                $this->getCopyAccount();
+                $this->EventDispatcher->notifyEvent('show.account.copy', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_EDIT:
+                $this->getEditAccount();
+                $this->EventDispatcher->notifyEvent('show.account.edit', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_EDIT_PASS:
+                $this->getEditPassAccount();
+                $this->EventDispatcher->notifyEvent('show.account.editpass', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_VIEW:
+                $this->getViewAccount();
+                $this->EventDispatcher->notifyEvent('show.account.view', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
+                $this->getViewHistoryAccount();
+                $this->EventDispatcher->notifyEvent('show.account.viewhistory', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_DELETE:
+                $this->getDeleteAccount();
+                $this->EventDispatcher->notifyEvent('show.account.delete', $this);
+                break;
+            case ActionsInterface::ACTION_ACC_REQUEST:
+                $this->getRequestAccountAccess();
+                $this->EventDispatcher->notifyEvent('show.account.request', $this);
+                break;
+        }
     }
 }

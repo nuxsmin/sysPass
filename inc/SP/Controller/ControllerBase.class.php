@@ -28,6 +28,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Acl;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Init;
 use SP\Core\Session;
@@ -89,6 +90,10 @@ abstract class ControllerBase
      * @var ProfileData
      */
     protected $UserProfileData;
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $EventDispatcher;
 
     /**
      * Constructor
@@ -104,6 +109,7 @@ abstract class ControllerBase
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->icons = DiFactory::getTheme()->getIcons();
+        $this->EventDispatcher = DiFactory::getEventDispatcher();
 
         $this->setViewVars();
     }
@@ -117,6 +123,18 @@ abstract class ControllerBase
     protected function getTemplate($template = null)
     {
         return new Template($template);
+    }
+
+    private function setViewVars()
+    {
+        global $timeStart;
+
+        $this->UserData = Session::getUserData();
+        $this->UserProfileData = Session::getUserProfile();
+
+        $this->view->assign('timeStart', $timeStart);
+        $this->view->assign('icons', $this->icons);
+        $this->view->assign('SessionUserData', $this->UserData);
     }
 
     /**
@@ -188,6 +206,38 @@ abstract class ControllerBase
     }
 
     /**
+     * @return UserData
+     */
+    public function getUserData()
+    {
+        return $this->UserData;
+    }
+
+    /**
+     * @return ProfileData
+     */
+    public function getUserProfileData()
+    {
+        return $this->UserProfileData;
+    }
+
+    /**
+     * @return ThemeIconsBase
+     */
+    public function getIcons()
+    {
+        return $this->icons;
+    }
+
+    /**
+     * @return string
+     */
+    public function getControllerName()
+    {
+        return $this->controllerName;
+    }
+
+    /**
      * Establecer la instancia del motor de plantillas a utilizar.
      *
      * @param Template $template
@@ -221,7 +271,7 @@ abstract class ControllerBase
      * @param bool $reset
      * @param bool $fancy
      */
-    protected function showError($type, $reset = true, $fancy = false)
+    public function showError($type, $reset = true, $fancy = false)
     {
         $errorsTypes = [
             self::ERR_UNAVAILABLE => ['txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')],
@@ -249,15 +299,10 @@ abstract class ControllerBase
         );
     }
 
-    private function setViewVars()
-    {
-        global $timeStart;
-
-        $this->UserData = Session::getUserData();
-        $this->UserProfileData = Session::getUserProfile();
-
-        $this->view->assign('timeStart', $timeStart);
-        $this->view->assign('icons', $this->icons);
-        $this->view->assign('SessionUserData', $this->UserData);
-    }
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public abstract function doAction($type = null);
 }

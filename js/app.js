@@ -38,6 +38,7 @@ sysPass.createNS("Triggers");
 sysPass.createNS("Actions");
 sysPass.createNS("Requests");
 sysPass.createNS("Theme");
+sysPass.createNS("Plugin");
 
 // Objeto con las funciones públicas de sysPass
 var sysPassApp = {};

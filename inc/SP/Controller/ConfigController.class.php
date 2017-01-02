@@ -33,6 +33,7 @@ use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Language;
+use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
@@ -80,6 +81,29 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !$this->UserData->isUserIsAdminApp());
         $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !$this->UserData->isUserIsAdminApp()) ? 'disabled' : '');
+    }
+
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        $this->view->addTemplate('tabs-start', 'common');
+
+        $this->getGeneralTab();
+        $this->getWikiTab();
+        $this->getLdapTab();
+        $this->getMailTab();
+        $this->getEncryptionTab();
+        $this->getBackupTab();
+        $this->getImportTab();
+        $this->getInfoTab();
+
+        $this->EventDispatcher->notifyEvent('show.config', $this);
+
+        $this->view->addTemplate('tabs-end', 'common');
     }
 
     /**
@@ -156,6 +180,102 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->tabIndex++;
 
         return $index;
+    }
+
+    /**
+     * Obtener la pestaña de Wiki
+     *
+     * @return void
+     */
+    public function getWikiTab()
+    {
+        $this->setAction(self::ACTION_CFG_WIKI);
+
+        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+            return;
+        }
+
+        $this->view->addTemplate('wiki');
+
+        $this->view->assign('chkWiki', $this->Config->isWikiEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('wikiSearchUrl', $this->Config->getWikiSearchurl());
+        $this->view->assign('wikiPageUrl', $this->Config->getWikiPageurl());
+        $this->view->assign('wikiFilter', implode(',', $this->Config->getWikiFilter()));
+
+        $this->view->assign('chkDokuWiki', $this->Config->isDokuwikiEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('dokuWikiUrl', $this->Config->getDokuwikiUrl());
+        $this->view->assign('dokuWikiUrlBase', $this->Config->getDokuwikiUrlBase());
+        $this->view->assign('dokuWikiUser', $this->Config->getDokuwikiUser());
+        $this->view->assign('dokuWikiPass', $this->Config->getDokuwikiPass());
+        $this->view->assign('dokuWikiNamespace', $this->Config->getDokuwikiNamespace());
+
+        $this->view->assign('actionId', $this->getAction(), 'wiki');
+        $this->view->append('tabs', ['title' => _('Wiki')]);
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'wiki');
+    }
+
+    /**
+     * Obtener la pestaña de LDAP
+     *
+     * @return void
+     */
+    public function getLdapTab()
+    {
+        $this->setAction(self::ACTION_CFG_LDAP);
+
+        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+            return;
+        }
+
+        $this->view->addTemplate('ldap');
+
+        $this->view->assign('chkLdap', $this->Config->isLdapEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('chkLdapADS', $this->Config->isLdapAds() ? 'checked="checked"' : '');
+        $this->view->assign('ldapIsAvailable', Checks::ldapIsAvailable());
+        $this->view->assign('ldapServer', $this->Config->getLdapServer());
+        $this->view->assign('ldapBindUser', $this->Config->getLdapBindUser());
+        $this->view->assign('ldapBindPass', $this->Config->getLdapBindPass());
+        $this->view->assign('ldapBase', $this->Config->getLdapBase());
+        $this->view->assign('ldapGroup', $this->Config->getLdapGroup());
+        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
+        $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
+        $this->view->assign('ldapDefaultGroup', $this->Config->getLdapDefaultGroup());
+        $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
+
+        $this->view->assign('actionId', $this->getAction(), 'ldap');
+        $this->view->append('tabs', ['title' => _('LDAP')]);
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'ldap');
+    }
+
+    /**
+     * Obtener la pestaña de Correo
+     *
+     * @return void
+     */
+    public function getMailTab()
+    {
+        $this->setAction(self::ACTION_CFG_MAIL);
+
+        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+            return;
+        }
+
+        $this->view->addTemplate('mail');
+
+        $this->view->assign('chkMail', $this->Config->isMailEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('chkMailRequests', $this->Config->isMailRequestsEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('chkMailAuth', $this->Config->isMailAuthenabled() ? 'checked="checked"' : '');
+        $this->view->assign('mailServer', $this->Config->getMailServer());
+        $this->view->assign('mailPort', $this->Config->getMailPort());
+        $this->view->assign('mailUser', $this->Config->getMailUser());
+        $this->view->assign('mailPass', $this->Config->getMailPass());
+        $this->view->assign('currentMailSecurity', $this->Config->getMailSecurity());
+        $this->view->assign('mailFrom', $this->Config->getMailFrom());
+        $this->view->assign('mailSecurity', ['SSL', 'TLS']);
+
+        $this->view->assign('actionId', $this->getAction(), 'mail');
+        $this->view->append('tabs', ['title' => _('Correo')]);
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'mail');
     }
 
     /**
@@ -267,104 +387,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('dbInfo', DBUtil::getDBinfo());
         $this->view->assign('dbName', $this->Config->getDbName() . '@' . $this->Config->getDbHost());
         $this->view->assign('configBackupDate', date('r', $this->configDB['config_backupdate']));
+        $this->view->assign('plugins', PluginUtil::getLoadedPlugins());
 
         $this->view->append('tabs', ['title' => _('Información')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');
-    }
-
-    /**
-     * Obtener la pestaña de Wiki
-     *
-     * @return void
-     */
-    public function getWikiTab()
-    {
-        $this->setAction(self::ACTION_CFG_WIKI);
-
-        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
-            return;
-        }
-
-        $this->view->addTemplate('wiki');
-
-        $this->view->assign('chkWiki', $this->Config->isWikiEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('wikiSearchUrl', $this->Config->getWikiSearchurl());
-        $this->view->assign('wikiPageUrl', $this->Config->getWikiPageurl());
-        $this->view->assign('wikiFilter', implode(',', $this->Config->getWikiFilter()));
-
-        $this->view->assign('chkDokuWiki', $this->Config->isDokuwikiEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('dokuWikiUrl', $this->Config->getDokuwikiUrl());
-        $this->view->assign('dokuWikiUrlBase', $this->Config->getDokuwikiUrlBase());
-        $this->view->assign('dokuWikiUser', $this->Config->getDokuwikiUser());
-        $this->view->assign('dokuWikiPass', $this->Config->getDokuwikiPass());
-        $this->view->assign('dokuWikiNamespace', $this->Config->getDokuwikiNamespace());
-
-        $this->view->assign('actionId', $this->getAction(), 'wiki');
-        $this->view->append('tabs', ['title' => _('Wiki')]);
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'wiki');
-    }
-
-    /**
-     * Obtener la pestaña de LDAP
-     *
-     * @return void
-     */
-    public function getLdapTab()
-    {
-        $this->setAction(self::ACTION_CFG_LDAP);
-
-        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
-            return;
-        }
-
-        $this->view->addTemplate('ldap');
-
-        $this->view->assign('chkLdap', $this->Config->isLdapEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkLdapADS', $this->Config->isLdapAds() ? 'checked="checked"' : '');
-        $this->view->assign('ldapIsAvailable', Checks::ldapIsAvailable());
-        $this->view->assign('ldapServer', $this->Config->getLdapServer());
-        $this->view->assign('ldapBindUser', $this->Config->getLdapBindUser());
-        $this->view->assign('ldapBindPass', $this->Config->getLdapBindPass());
-        $this->view->assign('ldapBase', $this->Config->getLdapBase());
-        $this->view->assign('ldapGroup', $this->Config->getLdapGroup());
-        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
-        $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
-        $this->view->assign('ldapDefaultGroup', $this->Config->getLdapDefaultGroup());
-        $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
-
-        $this->view->assign('actionId', $this->getAction(), 'ldap');
-        $this->view->append('tabs', ['title' => _('LDAP')]);
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'ldap');
-    }
-
-    /**
-     * Obtener la pestaña de Correo
-     *
-     * @return void
-     */
-    public function getMailTab()
-    {
-        $this->setAction(self::ACTION_CFG_MAIL);
-
-        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
-            return;
-        }
-
-        $this->view->addTemplate('mail');
-
-        $this->view->assign('chkMail', $this->Config->isMailEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkMailRequests', $this->Config->isMailRequestsEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkMailAuth', $this->Config->isMailAuthenabled() ? 'checked="checked"' : '');
-        $this->view->assign('mailServer', $this->Config->getMailServer());
-        $this->view->assign('mailPort', $this->Config->getMailPort());
-        $this->view->assign('mailUser', $this->Config->getMailUser());
-        $this->view->assign('mailPass', $this->Config->getMailPass());
-        $this->view->assign('currentMailSecurity', $this->Config->getMailSecurity());
-        $this->view->assign('mailFrom', $this->Config->getMailFrom());
-        $this->view->assign('mailSecurity', ['SSL', 'TLS']);
-
-        $this->view->assign('actionId', $this->getAction(), 'mail');
-        $this->view->append('tabs', ['title' => _('Correo')]);
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'mail');
     }
 }

@@ -97,9 +97,6 @@ sysPass.Triggers = function (Common) {
     var formAction = function ($obj) {
         log.info("formAction");
 
-        var onsubmit = $obj.data("onsubmit").split("/");
-        var actions = Common.appActions();
-
         var lastHash = $obj.attr("data-hash");
         var currentHash = SparkMD5.hash($obj.serialize(), false);
 
@@ -107,6 +104,17 @@ sysPass.Triggers = function (Common) {
             Common.msg.ok(Common.config().LANG[55]);
             return false;
         }
+
+        var plugin = $obj.data("plugin");
+        var actions;
+
+        if (typeof plugin !== "undefined") {
+            actions = sysPass.Plugin[plugin](Common);
+        } else {
+            actions = Common.appActions();
+        }
+
+        var onsubmit = $obj.data("onsubmit").split("/");
 
         $obj.find("input[name='sk']").val(Common.sk.get());
 
@@ -137,9 +145,6 @@ sysPass.Triggers = function (Common) {
 
             formAction($(this));
         }).on("click", ".btn-help", function () {
-            // var $this = $(this);
-            // $("#" + $this.data("help")).dialog("open");
-
             var $this = $(this);
             var helpText = $("#" + $this.data("help")).html();
 

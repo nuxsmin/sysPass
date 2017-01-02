@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth;
+namespace Plugins\Authenticator;
 
-use Exts\Google2FA;
 use Exts\Base2n;
 use SP\Core\Exceptions\SPException;
 use SP\Mgmt\Users\UserPass;
@@ -38,7 +36,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Auth
  */
-class Auth2FA
+class Authenticator
 {
     /**
      * @var int
@@ -108,6 +106,7 @@ class Auth2FA
      *
      * @param $key
      * @return bool
+     * @throws \Exception
      */
     public function verifyKey($key)
     {
@@ -155,6 +154,6 @@ class Auth2FA
         $secretkey = Google2FA::base32_decode($this->initializationKey);
         $totp = Google2FA::oath_totp($secretkey, $timeStamp);
 
-        return ($totp == $userToken);
+        return ($totp === $userToken);
     }
 }

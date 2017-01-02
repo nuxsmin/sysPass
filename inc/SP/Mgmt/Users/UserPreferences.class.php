@@ -92,7 +92,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
             'SELECT user_id, user_preferences FROM usrData WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\UserData');
+        $Data->setMapClassName(UserData::class);
         $Data->setQuery($query);
         $Data->addParam($id);
 

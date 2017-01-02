@@ -130,4 +130,16 @@ class EventlogController extends ControllerBase implements ActionsInterface
 
         return $GridPager;
     }
+
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        $this->getEventlog();
+
+        $this->EventDispatcher->notifyEvent('show.eventlog', $this);
+    }
 }

@@ -389,4 +389,18 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         return $GridHeaderSort;
     }
+
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     * @throws \InvalidArgumentException
+     */
+    public function doAction($type = null)
+    {
+        $this->getSearchBox();
+        $this->getSearch();
+
+        $this->EventDispatcher->notifyEvent('show.account.search', $this);
+    }
 }

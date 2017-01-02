@@ -34,7 +34,6 @@ use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Plugin\PluginAwareBase;
 use SP\DataModel\UserData;
 use SP\Util\Checks;
 
@@ -47,7 +46,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP\Auth
  */
-class Auth extends PluginAwareBase
+class Auth
 {
     /**
      * @var array

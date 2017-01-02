@@ -1,0 +1,147 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace Plugins\Authenticator;
+
+use SP\Core\DiFactory;
+use SP\Core\Plugin\PluginBase;
+use SplSubject;
+
+/**
+ * Class Plugin
+ *
+ * @package Plugins\Authenticator
+ */
+class AuthenticatorPlugin extends PluginBase
+{
+    /**
+     * Receive update from subject
+     *
+     * @link  http://php.net/manual/en/splobserver.update.php
+     * @param SplSubject $subject <p>
+     *                            The <b>SplSubject</b> notifying the observer of an update.
+     *                            </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function update(SplSubject $subject)
+    {
+    }
+
+    /**
+     * Inicialización del plugin
+     */
+    public function init()
+    {
+        $this->base = __DIR__;
+        $this->themeDir = __DIR__ . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . DiFactory::getTheme()->getThemeName();
+    }
+
+    /**
+     * Evento de actualización
+     *
+     * @param string $event Nombre del evento
+     * @param mixed  $object
+     */
+    public function updateEvent($event, $object)
+    {
+        if ($event === 'show.preferences') {
+            $Controller = new PreferencesController($object, $this);
+            $Controller->getSecurityTab();
+        } elseif ($event === 'main.prelogin.2fa') {
+            $Controller = new LoginController($object, $this);
+            $Controller->get2FA();
+        }
+    }
+
+    /**
+     * Devuelve los eventos que implementa el observador
+     *
+     * @return array
+     */
+    public function getEvents()
+    {
+        return ['show.preferences', 'main.prelogin.2fa'];
+    }
+
+    /**
+     * Devuelve los recursos JS y CSS necesarios para el plugin
+     *
+     * @return array
+     */
+    public function getJsResources()
+    {
+        return ['plugin.min.js'];
+    }
+
+    /**
+     * Devuelve el autor del plugin
+     *
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return 'Rubén D.';
+    }
+
+    /**
+     * Devuelve la versión del plugin
+     *
+     * @return array
+     */
+    public function getVersion()
+    {
+        return [1, 0];
+    }
+
+    /**
+     * Devuelve la versión compatible de sysPass
+     *
+     * @return array
+     */
+    public function getCompatibleVersion()
+    {
+        return [2, 0];
+    }
+
+    /**
+     * Devuelve los recursos CSS necesarios para el plugin
+     *
+     * @return array
+     */
+    public function getCssResources()
+    {
+        return [];
+    }
+
+    /**
+     * Devuelve el nombre del plugin
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'Authenticator';
+    }
+}

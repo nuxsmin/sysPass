@@ -56,6 +56,28 @@
                     <?php echo $configBackupDate; ?>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo _('Plugins Cargados'); ?>
+                </td>
+                <td class="valField">
+                    <ul class="mdl-list">
+                        <?php /** @var \SP\Core\Plugin\PluginInterface[] $plugins */
+                        foreach ($plugins as $name => $plugin): ?>
+                            <li class="mdl-list__item">
+                                <span class="mdl-list__item-primary-content">
+                                <i class="material-icons mdl-list__item-icon">extension</i>
+                                    <?php echo $name; ?>
+                                    <br>
+                                    <?php printf('Version: %s', implode('.', $plugin->getVersion())); ?>
+                                    <br>
+                                    <?php printf('Autor: %s', $plugin->getAuthor()); ?>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </td>
+            </tr>
         </table>
     </div>
 </div> <!-- End Tab - Info -->

@@ -25,6 +25,8 @@
 
 namespace SP\Core;
 
+use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Mgmt\ItemBase;
@@ -56,6 +58,10 @@ class DiFactory
      * @var ThemeInterface
      */
     private static $ThemeFactory;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private static $EventDispatcher;
 
     /**
      * Devuelve el almacenamiento para la configuración
@@ -118,5 +124,19 @@ class DiFactory
         }
 
         return self::$ThemeFactory;
+    }
+
+    /**
+     * Devuelve el manejador de eventos
+     *
+     * @return EventDispatcherInterface
+     */
+    public static final function getEventDispatcher()
+    {
+        if (!self::$EventDispatcher instanceof EventDispatcher) {
+            self::$EventDispatcher = new EventDispatcher();
+        }
+
+        return self::$EventDispatcher;
     }
 }

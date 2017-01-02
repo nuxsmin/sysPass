@@ -105,17 +105,21 @@ class Template
      */
     private function checkTemplate($template, $base = null)
     {
+        $useBase = false;
+
         if (null !== $base) {
             $template = $base . DIRECTORY_SEPARATOR . $template . '.inc';
+
+            $useBase = is_readable($template);
         } elseif (null !== $this->base) {
             $template = $this->base . DIRECTORY_SEPARATOR . $template . '.inc';
+
+            $useBase = is_readable($template);
         } else {
             $template .= '.inc';
         }
 
-//        error_log('Plantilla: ' . $template);
-
-        $file = $this->Theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
+        $file = ($useBase === false) ? $this->Theme->getViewsPath() . DIRECTORY_SEPARATOR . $template : $template;
 
         if (!is_readable($file)) {
             debugLog(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
@@ -152,7 +156,7 @@ class Template
      * Añadir una nueva plantilla dentro de una plantilla
      *
      * @param string $file Con el nombre del archivo de plantilla
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return bool
      */
     public function includeTemplate($file, $base = null)
