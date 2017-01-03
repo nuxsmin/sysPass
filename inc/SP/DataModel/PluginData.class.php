@@ -46,7 +46,7 @@ class PluginData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $plugin_enabled;
+    public $plugin_enabled = 0;
 
     /**
      * @return int

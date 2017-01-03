@@ -27,7 +27,7 @@ namespace Plugins\Authenticator;
 use SP\Controller\ItemControllerInterface;
 use SP\Controller\RequestControllerTrait;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Plugin\PluginUtil;
+use SP\Core\Plugin\PluginDataStore;
 use SP\Core\Session;
 use SP\DataModel\PluginData;
 use SP\Http\Request;
@@ -51,9 +51,12 @@ class ActionController implements ItemControllerInterface
      */
     protected $Plugin;
 
+    /**
+     * ActionController constructor.
+     */
     public function __construct()
     {
-        $this->Plugin = PluginUtil::getPluginData('Authenticator');
+        $this->Plugin = PluginDataStore::load(new AuthenticatorPlugin());
 
         $this->init();
     }

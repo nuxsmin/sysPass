@@ -49,6 +49,10 @@ abstract class PluginBase implements PluginInterface
      * @var mixed
      */
     protected $data;
+    /**
+     * @var int
+     */
+    protected $enabled;
 
     /**
      * PluginBase constructor.
@@ -106,5 +110,21 @@ abstract class PluginBase implements PluginInterface
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEnabled()
+    {
+        return (int)$this->enabled;
+    }
+
+    /**
+     * @param int $enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = (int)$enabled;
     }
 }

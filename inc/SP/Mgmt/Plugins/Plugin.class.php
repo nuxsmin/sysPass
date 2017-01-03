@@ -27,7 +27,6 @@ namespace SP\Mgmt\Plugins;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\PluginData;
 use SP\Html\Html;
-use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
@@ -68,8 +67,6 @@ class Plugin extends PluginBase implements ItemInterface
         $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
         $Log->writeLog();
 
-        Email::sendEmail($Log);
-
         return $this;
     }
 
@@ -97,8 +94,6 @@ class Plugin extends PluginBase implements ItemInterface
         $Log->addDetails(Html::strongText(_('Plugin')), $name);
 
         $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -131,8 +126,6 @@ class Plugin extends PluginBase implements ItemInterface
         $Log = new Log(_('Modificar Plugin'));
         $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
         $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }

@@ -81,4 +81,24 @@ interface PluginInterface extends EventReceiver
      * @return string
      */
     public function getName();
+
+    /**
+     * @return mixed
+     */
+    public function getData();
+
+    /**
+     * @param mixed $data
+     */
+    public function setData($data);
+
+    /**
+     * @return int
+     */
+    public function getEnabled();
+
+    /**
+     * @param int $enabled
+     */
+    public function setEnabled($enabled);
 }
