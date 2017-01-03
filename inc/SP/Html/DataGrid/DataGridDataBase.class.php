@@ -123,12 +123,13 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param string   $source
+     * @param string $source
      * @param IconInterface $icon
+     * @param mixed $value Valor para mostrar el icono
      */
-    public function addDataRowSourceWithIcon($source, IconInterface $icon)
+    public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1)
     {
-        $this->_sourcesWithIcon[] = array($source, $icon);
+        $this->_sourcesWithIcon[] = ['field' => $source, 'icon' => $icon, 'value' => $value];
     }
 
     /**

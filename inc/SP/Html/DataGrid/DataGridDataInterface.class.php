@@ -83,8 +83,10 @@ interface DataGridDataInterface
      *
      * @param $source string
      * @param $icon IconInterface
+     * @param mixed $value Valor para mostrar el icono
+     * @return
      */
-    public function addDataRowSourceWithIcon($source, IconInterface $icon);
+    public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1);
 
     /**
      * Devolver los orígenes de datos que se muestran con iconos

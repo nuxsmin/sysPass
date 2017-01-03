@@ -55,6 +55,7 @@ sysPass.Actions = function (Common) {
         },
         file: "/ajax/ajax_filesMgmt.php",
         link: "/ajax/ajax_itemSave.php",
+        plugin: "/ajax/ajax_itemSave.php",
         account: {
             save: "/ajax/ajax_itemSave.php",
             showPass: "/ajax/ajax_accViewPass.php",
@@ -1129,6 +1130,34 @@ sysPass.Actions = function (Common) {
         }
     };
 
+    /**
+     * Objeto para las acciones de los plugins
+     */
+    var plugin = {
+        toggle: function ($obj) {
+            log.info("plugin:enable");
+
+            var data = {
+                "itemId": $obj.data("item-id"),
+                "actionId": $obj.data("action-id"),
+                "sk": Common.sk.get(),
+                "activeTab": $obj.data("activetab")
+            };
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.appMgmt.save;
+            opts.data = data;
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                }
+            });
+        }
+    };
+
     return {
         doAction: doAction,
         appMgmt: appMgmt,
@@ -1140,6 +1169,7 @@ sysPass.Actions = function (Common) {
         user: user,
         link: link,
         eventlog: eventlog,
-        ajaxUrl: ajaxUrl
+        ajaxUrl: ajaxUrl,
+        plugin: plugin
     };
 };

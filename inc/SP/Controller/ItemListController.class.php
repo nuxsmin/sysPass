@@ -39,6 +39,7 @@ use SP\Mgmt\CustomFields\CustomFieldDefSearch;
 use SP\Mgmt\Files\FileSearch;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupSearch;
+use SP\Mgmt\Plugins\PluginSearch;
 use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Core\Template;
@@ -110,6 +111,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             $this->getFiles();
             $this->getAccounts();
             $this->getTags();
+            $this->getPluginsList();
 
             $this->EventDispatcher->notifyEvent('show.itemlist.accounts', $this);
         } elseif ($type === self::TYPE_ACCESSES) {
@@ -346,6 +348,26 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
 
         $Grid = $this->Grids->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->view->append('tabs', $Grid);
+    }
+
+    /**
+     * Obtener los datos para la pestaña de tokens de API
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getPluginsList()
+    {
+        $this->setAction(self::ACTION_MGM_PLUGINS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $Grid = $this->Grids->getPluginsGrid();
+        $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);

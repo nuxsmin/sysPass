@@ -8,7 +8,7 @@
         </div>
 
         <form method="post" name="frmSecurity" id="frmSecurity" class="form-action"
-              data-onsubmit="twofa"
+              data-onsubmit="twofa/save"
               data-plugin="Authenticator"
               data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY; ?>"
               data-activetab="<?php echo $security_tabIndex; ?>">

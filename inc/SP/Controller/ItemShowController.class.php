@@ -35,6 +35,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\ItemException;
 use SP\Core\Init;
+use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -44,6 +45,7 @@ use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\GroupData;
+use SP\DataModel\PluginData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
@@ -57,6 +59,7 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupUsers;
+use SP\Mgmt\Plugins\Plugin;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
@@ -122,9 +125,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     /**
      * Realizar la acción solicitada en la la petición HTTP
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @param mixed $type Tipo de acción
      */
-    public function doAction()
+    public function doAction($type = null)
     {
         try {
             switch ($this->actionId) {
@@ -234,6 +237,11 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
                 case self::ACTION_ACC_VIEW_PASS:
                     $this->view->assign('header', _('Clave de Cuenta'));
                     $this->getAccountPass();
+                    break;
+                case self::ACTION_MGM_PLUGINS_VIEW:
+                    $this->view->assign('header', _('Detalles de Plugin'));
+                    $this->view->assign('isView', true);
+                    $this->getPlugin();
                     break;
                 default:
                     $this->invalidAction();
@@ -535,5 +543,22 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->jsonResponse->setCsrf($this->view->sk);
         $this->jsonResponse->setData($data);
+    }
+
+    /**
+     * Obtener los datos para la vista de plugins
+     */
+    private function getPlugin()
+    {
+        $this->module = self::ACTION_MGM_PLUGINS;
+        $this->view->addTemplate('plugins');
+
+        $Plugin = Plugin::getItem()->getById($this->itemId);
+
+        $this->view->assign('isReadonly', $this->view->isView ? 'readonly' : '');
+        $this->view->assign('plugin', $Plugin);
+        $this->view->assign('pluginInfo', PluginUtil::getPluginInfo($Plugin->getPluginName()));
+
+        $this->jsonResponse->setStatus(0);
     }
 }

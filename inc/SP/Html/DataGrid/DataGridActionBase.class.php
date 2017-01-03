@@ -89,7 +89,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var string
      */
-    protected $_filterRowSource = '';
+    protected $_filterRowSource;
     /**
      * Si es una acción de ayuda
      *
@@ -302,12 +302,15 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
+     * Filtro para mostrar la acción
+     *
      * @param $rowSource string
+     * @param mixed $value Valor a filtrar
      * @return $this
      */
-    public function setFilterRowSource($rowSource)
+    public function setFilterRowSource($rowSource, $value = 1)
     {
-        $this->_filterRowSource = $rowSource;
+        $this->_filterRowSource = ['field' => $rowSource, 'value' => $value];
 
         return $this;
     }

@@ -36,6 +36,11 @@ use SplSubject;
 class AuthenticatorPlugin extends PluginBase
 {
     /**
+     * @var AuthenticatorData[]
+     */
+    protected $data = [];
+
+    /**
      * Receive update from subject
      *
      * @link  http://php.net/manual/en/splobserver.update.php

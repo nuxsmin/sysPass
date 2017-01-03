@@ -27,18 +27,27 @@ sysPass.Plugin.Authenticator = function (Common) {
     var log = Common.log;
     var base = "/inc/Plugins/Authenticator";
 
-    var twofa = function ($obj) {
-        log.info("Authenticator:twofa");
+    var twofa = {
+        check: function ($obj) {
+        },
+        save: function ($obj) {
+            log.info("Authenticator:twofa");
 
-        var opts = Common.appRequests().getRequestOpts();
-        opts.url = base + "/ajax/ajax_save.php";
-        opts.data = $obj.serialize();
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = base + "/ajax/ajax_prefsSave.php";
+            opts.data = $obj.serialize();
 
-        Common.appRequests().getActionCall(opts, function (json) {
-            Common.msg.out(json);
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
 
-            Common.appActions().doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-        });
+                if (json.status === 0) {
+                    Common.appActions().doAction({
+                        actionId: $obj.data("nextaction-id"),
+                        itemId: $obj.data("activetab")
+                    });
+                }
+            });
+        }
     };
 
     var init = function () {

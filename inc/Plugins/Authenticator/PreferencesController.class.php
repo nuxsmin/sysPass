@@ -26,8 +26,8 @@ namespace Plugins\Authenticator;
 
 use InvalidArgumentException;
 use SP\Controller\TabControllerBase;
-use SP\Core\ActionsInterface;
 use SP\Core\Plugin\PluginBase;
+use SP\Util\ArrayUtil;
 
 /**
  * Class Controller
@@ -49,7 +49,7 @@ class PreferencesController
      * Controller constructor.
      *
      * @param TabControllerBase $Controller
-     * @param PluginBase        $Plugin
+     * @param PluginBase $Plugin
      */
     public function __construct(TabControllerBase $Controller, PluginBase $Plugin)
     {
@@ -64,19 +64,27 @@ class PreferencesController
     {
         $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'userpreferences';
 
+        // Datos del plugin
+        $pluginData = $this->Plugin->getData();
+
+        // Datos del usuario de la sesión
         $UserData = $this->Controller->getUserData();
+
+        // Buscar al usuario en los datos del plugin
+        /** @var AuthenticatorData $AuthenticatorData */
+        $AuthenticatorData = ArrayUtil::searchInObject($pluginData, 'userId', $UserData->getUserId(), new AuthenticatorData());
 
         $this->Controller->view->addTemplate('preferences-security', $base);
 
         try {
             $twoFa = new Authenticator($UserData->getUserId(), $UserData->getUserLogin());
 
-            $this->Controller->view->assign('qrCode', !$UserData->getUserPreferences()->isUse2Fa() ? $twoFa->getUserQRCode() : '');
+            $this->Controller->view->assign('qrCode', !$AuthenticatorData->isTwofaEnabled() ? $twoFa->getUserQRCode() : '');
             $this->Controller->view->assign('userId', $UserData->getUserId());
-            $this->Controller->view->assign('chk2FAEnabled', $UserData->getUserPreferences()->isUse2Fa());
+            $this->Controller->view->assign('chk2FAEnabled', $AuthenticatorData->isTwofaEnabled());
 
             $this->Controller->view->assign('tabIndex', $this->Controller->addTab(_('Seguridad')), 'security');
-            $this->Controller->view->assign('actionId', ActionsInterface::ACTION_USR_PREFERENCES_SECURITY, 'security');
+            $this->Controller->view->assign('actionId', ActionController::ACTION_TWOFA_SAVE, 'security');
         } catch (InvalidArgumentException $e) {
         }
     }

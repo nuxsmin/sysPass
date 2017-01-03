@@ -14,6 +14,7 @@
  * @author Brian Reavis <brian@thirdroute.com>
  */
 
+
 (function(root, factory) {
 	if (typeof define === 'function' && define.amd) {
 		define('sifter', factory);

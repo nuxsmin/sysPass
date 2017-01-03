@@ -40,6 +40,7 @@ use SP\Mgmt\Customers\CustomerSearch;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
 use SP\Mgmt\Files\FileSearch;
 use SP\Mgmt\Groups\GroupSearch;
+use SP\Mgmt\Plugins\PluginSearch;
 use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Mgmt\Tags\TagSearch;
@@ -79,9 +80,9 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
     /**
      * Realizar la acción solicitada en la la petición HTTP
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @param mixed $type Tipo de acción
      */
-    public function doAction()
+    public function doAction($type = null)
     {
         $this->view->assign('isDemo', Checks::demoIsEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
@@ -121,6 +122,9 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
                     break;
                 case ActionsInterface::ACTION_MGM_TAGS_SEARCH:
                     $this->getTags();
+                    break;
+                case ActionsInterface::ACTION_MGM_PLUGINS_SEARCH:
+                    $this->getPlugins();
                     break;
                 default:
                     $this->invalidAction();
@@ -422,6 +426,33 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $Grid = $this->grids->getTagsGrid();
         $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->updatePager($Grid->getPager(), $this->ItemSearchData);
+
+        $this->view->assign('data', $Grid);
+        $this->view->assign('actionId', self::ACTION_MGM);
+
+        $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * Obtener los plugins de una búsqueda
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getPlugins()
+    {
+        $this->setAction(self::ACTION_MGM_PLUGINS_SEARCH);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->addTemplate('datagrid-table', 'grid');
+
+        $Grid = $this->grids->getPluginsGrid();
+        $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);

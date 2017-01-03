@@ -113,8 +113,10 @@ interface DataGridActionInterface
 
     /**
      * @param $rowSource string
+     * @param mixed $value Valor a filtrar
+     * @return
      */
-    public function setFilterRowSource($rowSource);
+    public function setFilterRowSource($rowSource, $value = 1);
 
     /**
      * @return string
@@ -151,4 +153,20 @@ interface DataGridActionInterface
      * @param mixed  $data Los datos del atributo
      */
     public function addData($name, $data);
+
+    /**
+     * Devolver el método reflexivo que determina si se muestra la acción
+     *
+     * @return \ReflectionMethod
+     */
+    public function getReflectionFilter();
+
+    /**
+     * Establecer el método reflexivo que determina si se muestra la acción
+     *
+     * @param string $class
+     * @param string $method
+     * @return $this
+     */
+    public function setReflectionFilter($class, $method);
 }

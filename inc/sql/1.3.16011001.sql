@@ -1,7 +1,7 @@
 -- To 1.3.16011001
 CREATE TABLE `publicLinks` (
-  publicLink_id       INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  publicLink_itemId   INT,
+  publicLink_id       INT UNSIGNEDPRIMARY KEY NOT NULL AUTO_INCREMENT,
+  publicLink_itemId   INT UNSIGNED,
   publicLink_hash     VARBINARY(100)  NOT NULL,
   publicLink_linkData LONGBLOB
 );

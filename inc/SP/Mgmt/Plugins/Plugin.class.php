@@ -141,12 +141,12 @@ class Plugin extends PluginBase implements ItemInterface
      * Devuelve los datos de un plugin por su id
      *
      * @param $id int
-     * @return mixed
+     * @return bool|PluginData
      */
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_enabled FROM plugins WHERE plugin_id = ? LIMIT 1';
+            'SELECT plugin_id, plugin_name, plugin_data, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -164,7 +164,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_enabled FROM plugins ORDER BY plugin_name';
+            'SELECT plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled FROM plugins ORDER BY plugin_name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -207,7 +207,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getByName($name)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_enabled FROM plugins WHERE plugin_name = ? LIMIT 1';
+            'SELECT plugin_id, plugin_name, plugin_data, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -215,5 +215,37 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($name);
 
         return DB::getResults($Data);
+    }
+
+    /**
+     * Cambiar el estado del plugin
+     *
+     * @return $this
+     * @throws SPException
+     */
+    public function toggle()
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_enabled = ?
+              WHERE plugin_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginId());
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el plugin'));
+        }
+
+        $Log = new Log(_('Modificar Plugin'));
+        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
+        $Log->addDetails(Html::strongText(_('Estado')), $this->itemData->getPluginEnabled() === 1 ? _('Habilitado') : _('Deshabilitado'));
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
+
+        return $this;
     }
 }

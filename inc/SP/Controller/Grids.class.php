@@ -955,6 +955,79 @@ class Grids implements ActionsInterface
     }
 
     /**
+     * @return DataGridTab
+     * @throws \InvalidArgumentException
+     */
+    public function getPluginsGrid()
+    {
+        // Grid Header
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(_('Plugin'));
+        $GridHeaders->addHeader(_('Estado'));
+
+        // Grid Data
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('plugin_id');
+        $GridData->addDataRowSource('plugin_name');
+        $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconEnabled());
+        $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconDisabled(), 0);
+
+        // Grid
+        $Grid = new DataGridTab();
+        $Grid->setId('tblPlugins');
+        $Grid->setDataRowTemplate('datagrid-rows', 'grid');
+        $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(_('Plugins'));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+
+        // Grid Actions
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_MGM_PLUGINS_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchPlugin');
+        $GridActionSearch->setTitle(_('Buscar Plugin'));
+        $GridActionSearch->setOnSubmitFunction('appMgmt/search');
+
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setPager($this->getPager($GridActionSearch));
+
+        // Grid item's actions
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_MGM_PLUGINS_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(_('Ver Plugin'));
+        $GridActionView->setTitle(_('Ver Plugin'));
+        $GridActionView->setIcon($this->icons->getIconView());
+        $GridActionView->setOnClickFunction('appMgmt/show');
+
+        $Grid->setDataActions($GridActionView);
+
+        $GridActionEnable= new DataGridAction();
+        $GridActionEnable->setId(self::ACTION_MGM_PLUGINS_ENABLE);
+        $GridActionEnable->setName(_('Habilitar'));
+        $GridActionEnable->setTitle(_('Habilitar'));
+        $GridActionEnable->setIcon($this->icons->getIconEnabled());
+        $GridActionEnable->setOnClickFunction('plugin/toggle');
+        $GridActionEnable->setFilterRowSource('plugin_enabled', 1);
+
+        $Grid->setDataActions($GridActionEnable);
+
+        $GridActionDisable = new DataGridAction();
+        $GridActionDisable->setId(self::ACTION_MGM_PLUGINS_DISABLE);
+        $GridActionDisable->setName(_('Deshabilitar'));
+        $GridActionDisable->setTitle(_('Deshabilitar'));
+        $GridActionDisable->setIcon($this->icons->getIconDisabled());
+        $GridActionDisable->setOnClickFunction('plugin/toggle');
+        $GridActionDisable->setFilterRowSource('plugin_enabled', 0);
+
+        $Grid->setDataActions($GridActionDisable);
+
+        return $Grid;
+    }
+
+    /**
      * @param boolean $filter
      */
     public function setFilter($filter)

@@ -70,26 +70,6 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
     }
 
     /**
-     * Obtener la pestaña de seguridad
-     */
-    public function getSecurityTab()
-    {
-        $this->setAction(self::ACTION_USR_PREFERENCES_SECURITY);
-
-        $this->view->addTemplate('preferences-security');
-
-        $twoFa = new Authenticator($this->userId, Session::getUserData()->getUserLogin());
-
-        $this->view->assign('qrCode', !$this->userPrefs->isUse2Fa() ? $twoFa->getUserQRCode(): '');
-        $this->view->assign('userId', $this->userId);
-        $this->view->assign('chk2FAEnabled', $this->userPrefs->isUse2Fa());
-
-        $this->view->append('tabs', ['title' => _('Seguridad')]);
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'security');
-        $this->view->assign('actionId', $this->getAction(), 'security');
-    }
-
-    /**
      * Obtener la pestaña de preferencias
      */
     public function getPreferencesTab()
@@ -123,6 +103,7 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
         $this->view->addTemplate('tabs-start', 'common');
 
         $this->getPreferencesTab();
+
         $this->EventDispatcher->notifyEvent('show.preferences', $this);
 
         $this->view->addTemplate('tabs-end', 'common');

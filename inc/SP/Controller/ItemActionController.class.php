@@ -30,6 +30,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\DataModel\CustomFieldData;
+use SP\DataModel\PluginData;
 use SP\DataModel\PublicLinkData;
 use SP\Forms\AccountForm;
 use SP\Forms\ApiTokenForm;
@@ -49,6 +50,7 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Files\File;
 use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Plugins\Plugin;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
@@ -135,6 +137,10 @@ class ItemActionController implements ItemControllerInterface
                     break;
                 case ActionsInterface::ACTION_MGM_FILES_DELETE:
                     $this->fileAction();
+                    break;
+                case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
+                case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
+                    $this->pluginAction();
                     break;
                 case ActionsInterface::ACTION_ACC_NEW:
                 case ActionsInterface::ACTION_ACC_COPY:
@@ -636,5 +642,31 @@ class ItemActionController implements ItemControllerInterface
         }
 
         $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
+    }
+
+    /**
+     * Acciones sobre plugins
+     */
+    private function pluginAction()
+    {
+        $PluginData = new PluginData();
+        $PluginData->setPluginId($this->itemId);
+
+        switch ($this->actionId) {
+            case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
+                $PluginData->setPluginEnabled(1);
+                Plugin::getItem($PluginData)->toggle();
+
+                $this->jsonResponse->setDescription(_('Plugin habilitado'));
+                break;
+            case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
+                $PluginData->setPluginEnabled(0);
+                Plugin::getItem($PluginData)->toggle();
+
+                $this->jsonResponse->setDescription(_('Plugin deshabilitado'));
+                break;
+        }
+
+        $this->jsonResponse->setStatus(0);
     }
 }

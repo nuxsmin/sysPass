@@ -298,7 +298,7 @@ DROP TABLE IF EXISTS `log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log` (
-  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `log_id` int unsigned NOT NULL AUTO_INCREMENT,
   `log_date` int(10) unsigned NOT NULL,
   `log_login` varchar(25) NOT NULL,
   `log_userId` smallint(5) unsigned NOT NULL,
@@ -315,8 +315,8 @@ DROP TABLE IF EXISTS `publicLinks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `publicLinks` (
-  `publicLink_id` int(11) NOT NULL AUTO_INCREMENT,
-  `publicLink_itemId` int(11) DEFAULT NULL,
+  `publicLink_id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `publicLink_itemId` int UNSIGNED DEFAULT NULL,
   `publicLink_hash` varbinary(100) NOT NULL,
   `publicLink_linkData` longblob,
   PRIMARY KEY (`publicLink_id`),
@@ -331,7 +331,7 @@ DROP TABLE IF EXISTS `tags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tags` (
-  `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tag_id` int unsigned NOT NULL AUTO_INCREMENT,
   `tag_name` varchar(45) NOT NULL,
   `tag_hash` binary(40) NOT NULL,
   PRIMARY KEY (`tag_id`),
@@ -344,10 +344,10 @@ DROP TABLE IF EXISTS `usrPassRecover`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `usrPassRecover` (
-  `userpassr_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `userpassr_id` int unsigned NOT NULL AUTO_INCREMENT,
   `userpassr_userId` smallint(5) unsigned NOT NULL,
   `userpassr_hash` varbinary(40) NOT NULL,
-  `userpassr_date` int(10) unsigned NOT NULL,
+  `userpassr_date` int unsigned NOT NULL,
   `userpassr_used` bit(1) DEFAULT b'0',
   PRIMARY KEY (`userpassr_id`),
   KEY `IDX_userId` (`userpassr_userId`,`userpassr_date`),
@@ -372,7 +372,7 @@ DROP TABLE IF EXISTS `plugins`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `plugins` (
-  `plugin_id` INT UNSIGNED NOT NULL,
+  `plugin_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `plugin_name` VARCHAR(100) NOT NULL,
   `plugin_data` VARBINARY(5000) NULL,
   `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',

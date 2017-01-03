@@ -352,7 +352,7 @@ ALTER TABLE `categories`
 ADD COLUMN `category_hash` VARBINARY(40) NOT NULL DEFAULT 0 AFTER `category_description`;
 
 CREATE TABLE `plugins` (
-  `plugin_id` INT UNSIGNED NOT NULL,
+  `plugin_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `plugin_name` VARCHAR(100) NOT NULL,
   `plugin_data` VARBINARY(5000) NULL,
   `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',

@@ -153,4 +153,71 @@ class PluginUtil
     {
         return self::$disabledPlugins;
     }
+
+    /**
+     * Obtener la información de un plugin
+     *
+     * @param string $name Nombre del plugin
+     * @return bool|PluginInterface
+     */
+    public static function getPluginInfo($name)
+    {
+        $name = ucfirst($name);
+
+        $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
+
+        if (isset(self::$loadedPlugins[$name])) {
+            return self::$loadedPlugins[$name];
+        }
+
+        try {
+            $Reflection = new \ReflectionClass($pluginClass);
+
+            /** @var PluginBase $Plugin */
+            $Plugin = $Reflection->newInstance();
+
+            self::$loadedPlugins[$name] = $Plugin;
+
+            return $Plugin;
+        } catch (\ReflectionException $e) {
+            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible cargar el plugin "%s"'), $name));
+        }
+
+        return false;
+    }
+
+    /**
+     * Obtener los datos de un plugin
+     *
+     * @param string $name Nombre del plugin
+     * @return bool|PluginInterface
+     */
+    public static function getPluginData($name)
+    {
+        $name = ucfirst($name);
+
+        $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
+
+        if (isset(self::$loadedPlugins[$name])) {
+            return self::$loadedPlugins[$name];
+        }
+
+        try {
+            $PluginData = self::getDataFromDb($name);
+
+            $Reflection = new \ReflectionClass($pluginClass);
+
+            /** @var PluginBase $Plugin */
+            $Plugin = $Reflection->newInstance();
+            $Plugin->setData(unserialize($PluginData->getPluginData()));
+
+            self::$loadedPlugins[$name] = $Plugin;
+
+            return $Plugin;
+        } catch (\ReflectionException $e) {
+            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible cargar el plugin "%s"'), $name));
+        }
+
+        return false;
+    }
 }

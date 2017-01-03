@@ -64,6 +64,8 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     /** @var  FontIcon|ImageIcon */
     protected $iconDisabled;
     /** @var  FontIcon|ImageIcon */
+    protected $iconEnabled;
+    /** @var  FontIcon|ImageIcon */
     protected $iconViewPass;
     /** @var  FontIcon|ImageIcon */
     protected $iconCopy;
@@ -480,5 +482,21 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     public function setIconCritical($iconCritical)
     {
         $this->iconCritical = $iconCritical;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconEnabled()
+    {
+        return $this->iconEnabled;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconEnabled
+     */
+    public function setIconEnabled($iconEnabled)
+    {
+        $this->iconEnabled = $iconEnabled;
     }
 }

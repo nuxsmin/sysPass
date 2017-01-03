@@ -53,6 +53,7 @@ class Icons extends ThemeIconsBase
         $this->iconAccAdmin = new FontIcon('star_half', 'mdl-color-text--amber-A100', _('Admin Cuentas'));
         $this->iconLdapUser = new FontIcon('business', 'mdl-color-text--deep-purple-A100', _('Usuario de LDAP'));
         $this->iconDisabled = new FontIcon('error', 'mdl-color-text--red-A100', _('Deshabilitado'));
+        $this->iconEnabled = new FontIcon('check_circle', 'mdl-color-text--teal-500', _('Habilitado'));
         $this->iconRefresh = new FontIcon('refresh', 'mdl-color-text--teal-500', _('Actualizar'));
         $this->iconCopy = new FontIcon('content_copy', 'mdl-color-text--indigo-A200', _('Copiar'));
         $this->iconClipboard = new FontIcon('content_paste', 'mdl-color-text--indigo-A200');

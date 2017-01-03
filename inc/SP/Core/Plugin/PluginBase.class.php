@@ -46,7 +46,7 @@ abstract class PluginBase implements PluginInterface
      */
     protected $themeDir;
     /**
-     * @var string
+     * @var mixed
      */
     protected $data;
 
@@ -93,7 +93,7 @@ abstract class PluginBase implements PluginInterface
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getData()
     {
@@ -101,7 +101,7 @@ abstract class PluginBase implements PluginInterface
     }
 
     /**
-     * @param string $data
+     * @param mixed $data
      */
     public function setData($data)
     {
