@@ -135,6 +135,7 @@ class Acl implements ActionsInterface
                 return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
             case self::ACTION_CFG:
                 return ($curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
+            case self::ACTION_MGM_PLUGINS:
             case self::ACTION_CFG_GENERAL:
                 return $curUserProfile->isConfigGeneral();
             case self::ACTION_CFG_IMPORT:

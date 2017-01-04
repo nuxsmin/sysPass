@@ -66,7 +66,7 @@ class PreferencesController
         $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'userpreferences';
 
         // Datos del plugin
-        $pluginData = $this->Plugin->getData();
+        $pluginData = $this->Plugin->getData() ?: [];
 
         // Datos del usuario de la sesión
         $UserData = $this->Controller->getUserData();

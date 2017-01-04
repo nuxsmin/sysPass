@@ -29,9 +29,11 @@ use SP\Controller\RequestControllerTrait;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginDataStore;
 use SP\Core\Session as CoreSession;
+use SP\Core\Session;
 use SP\DataModel\PluginData;
 use SP\Http\Request;
 use SP\Mgmt\Plugins\Plugin;
+use SP\Util\Checks;
 use SP\Util\Json;
 
 /**
@@ -91,6 +93,11 @@ class ActionController implements ItemControllerInterface
 
         if (!$twoFa->verifyKey($pin)) {
             $this->jsonResponse->setDescription(_('Código incorrecto'));
+            Json::returnJson($this->jsonResponse);
+        }
+
+        if (Checks::demoIsEnabled()) {
+            $this->jsonResponse->setDescription(_('Ey, esto es una DEMO!!'));
             Json::returnJson($this->jsonResponse);
         }
 

@@ -54,7 +54,7 @@ class AuthenticatorPlugin extends PluginBase
      */
     public function init()
     {
-        if ($this->data === null) {
+        if (!is_array($this->data)) {
             $this->data = [];
         }
 
