@@ -95,8 +95,6 @@ class PluginUtil
             $Plugin = $Reflection->newInstance();
 
             if (PluginDataStore::load($Plugin) === true) {
-                $Plugin->init();
-
                 self::$loadedPlugins[$name] = $Plugin;
 
                 return $Plugin;

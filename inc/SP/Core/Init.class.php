@@ -175,7 +175,7 @@ class Init
             return;
         }
 
-        if (self::isLoggedIn()) {
+        if (self::isLoggedIn() === true && Session::getAuthCompleted() === true) {
             $AuthBrowser = new Browser();
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
@@ -516,7 +516,6 @@ class Init
     private static function logout()
     {
         self::wrLogoutInfo();
-        SessionUtil::cleanSession();
     }
 
     /**
@@ -539,6 +538,8 @@ class Init
      */
     private static function goLogin()
     {
+        SessionUtil::cleanSession();
+
         $Controller = new MainController(null, 'login');
         $Controller->getLogin();
     }
@@ -681,7 +682,7 @@ class Init
      */
     public static function isLoggedIn()
     {
-        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin() && Session::get2FApassed());
+        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin());
     }
 
     /**

@@ -32,13 +32,29 @@ namespace Plugins\Authenticator;
 class AuthenticatorData
 {
     /**
+     * Id de usuario
+     *
      * @var
      */
     public $userId;
     /**
+     * Si está habilitado 2FA
+     *
      * @var int
      */
     public $twofaEnabled = 0;
+    /**
+     * Fecha de activación
+     *
+     * @var int
+     */
+    public $date;
+    /**
+     * Fecha de caducidad
+     *
+     * @var int
+     */
+    public $dateExpire;
 
     /**
      * @return mixed
@@ -70,5 +86,37 @@ class AuthenticatorData
     public function setTwofaEnabled($twofaEnabled)
     {
         $this->twofaEnabled = (int)$twofaEnabled;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param int $date
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDateExpire()
+    {
+        return $this->dateExpire;
+    }
+
+    /**
+     * @param int $dateExpire
+     */
+    public function setDateExpire($dateExpire)
+    {
+        $this->dateExpire = $dateExpire;
     }
 }

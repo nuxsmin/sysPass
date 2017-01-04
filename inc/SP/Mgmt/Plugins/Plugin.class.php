@@ -237,8 +237,6 @@ class Plugin extends PluginBase implements ItemInterface
         $Log->addDetails(Html::strongText(_('Estado')), $this->itemData->getPluginEnabled() === 1 ? _('Habilitado') : _('Deshabilitado'));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
-
         return $this;
     }
 }

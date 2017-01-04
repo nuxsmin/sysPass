@@ -25,8 +25,12 @@
 namespace Plugins\Authenticator;
 
 use SP\Controller\ControllerBase;
+use SP\Core\Init;
 use SP\Core\Plugin\PluginBase;
+use SP\Core\Session as CoreSession;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Util\Json;
 
 /**
  * Class LoginController
@@ -36,10 +40,6 @@ use SP\Http\Request;
 class LoginController
 {
     /**
-     * @var ControllerBase
-     */
-    protected $Controller;
-    /**
      * @var PluginBase
      */
     protected $Plugin;
@@ -47,38 +47,65 @@ class LoginController
     /**
      * Controller constructor.
      *
-     * @param ControllerBase $Controller
      * @param PluginBase        $Plugin
      */
-    public function __construct(ControllerBase $Controller, PluginBase $Plugin)
+    public function __construct(PluginBase $Plugin)
     {
-        $this->Controller = $Controller;
         $this->Plugin = $Plugin;
     }
 
     /**
      * Obtener los datos para el interface de autentificación en 2 pasos
+     *
+     * @param ControllerBase $Controller
      */
-    public function get2FA()
+    public function get2FA(ControllerBase $Controller)
     {
         $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'main';
 
-        $this->Controller->view->addTemplate('body-header');
+        $Controller->view->addTemplate('body-header');
 
         if (Request::analyze('f', 0) === 1) {
-            $this->Controller->view->addTemplate('login-2fa', $base);
+            $Controller->view->addTemplate('login-2fa', $base);
 
-            $this->Controller->view->assign('action', Request::analyze('a'));
-            $this->Controller->view->assign('userId', Request::analyze('i'));
-            $this->Controller->view->assign('time', Request::analyze('t'));
+            $Controller->view->assign('action', Request::analyze('a'));
+            $Controller->view->assign('userId', Request::analyze('i'));
+            $Controller->view->assign('time', Request::analyze('t'));
+
+            $Controller->view->assign('actionId', ActionController::ACTION_TWOFA_CHECKCODE);
         } else {
-            $this->Controller->showError(ControllerBase::ERR_UNAVAILABLE, false);
+            $Controller->showError(ControllerBase::ERR_UNAVAILABLE, false);
         }
 
-        $this->Controller->view->addTemplate('body-footer');
-        $this->Controller->view->addTemplate('body-end');
+        $Controller->view->addTemplate('body-footer');
+        $Controller->view->addTemplate('body-end');
 
-        $this->Controller->view();
+        $Controller->view();
         exit();
+    }
+
+    /**
+     * Comprobar 2FA en el login
+     */
+    public function checkLogin()
+    {
+        /** @var AuthenticatorData[] $data */
+        $data = $this->Plugin->getData();
+
+        $userId = CoreSession::getUserData()->getUserId();
+
+        if (isset($data[$userId]) && $data[$userId]->isTwofaEnabled()) {
+            Session::setTwoFApass(false);
+            CoreSession::setAuthCompleted(false);
+
+            $data = ['url' => Init::$WEBURI . '/index.php?a=2fa&i=' . $userId . '&t=' . time() . '&f=1'];
+
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setData($data);
+            $JsonResponse->setStatus(0);
+            Json::returnJson($JsonResponse);
+        } else {
+            Session::setTwoFApass(true);
+        }
     }
 }

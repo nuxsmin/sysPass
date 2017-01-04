@@ -336,23 +336,6 @@ sysPass.Actions = function (Common) {
                 }
             });
         },
-        twofa: function ($obj) {
-            log.info("main:twofa");
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.main.twofa;
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                if (json.status == 0) {
-                    setTimeout(function () {
-                        Common.redirect("index.php");
-                    }, 1000);
-                }
-            });
-        },
         getUpdates: function ($obj) {
             log.info("main:getUpdates");
 

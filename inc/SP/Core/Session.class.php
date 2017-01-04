@@ -372,26 +372,6 @@ class Session
     }
 
     /**
-     * Devuelve si el usuario ha pasado la autentificación en 2 pasos
-     *
-     * @return bool
-     */
-    public static function get2FApassed()
-    {
-        return self::getSessionKey('2fapass', false);
-    }
-
-    /**
-     * Establece esi el usuario ha pasado la autentificación en 2 pasos
-     *
-     * @param $passed bool
-     */
-    public static function set2FApassed($passed)
-    {
-        self::setSessionKey('2fapass', $passed);
-    }
-
-    /**
      * Devolver la clave pública
      *
      * @return mixed
@@ -633,5 +613,23 @@ class Session
     public static function unsetSessionKey($key)
     {
         unset($_SESSION[$key]);
+    }
+
+    /**
+     * Establecer si el usuario está completamente autorizado
+     *
+     * @param $bool
+     */
+    public static function setAuthCompleted($bool)
+    {
+        self::setSessionKey('authCompleted', (bool)$bool);
+    }
+
+    /**
+     * Devolver si el usuario está completamente logeado
+     */
+    public static function getAuthCompleted()
+    {
+        return self::getSessionKey('authCompleted', false);
     }
 }

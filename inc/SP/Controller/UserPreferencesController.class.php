@@ -104,7 +104,7 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
 
         $this->getPreferencesTab();
 
-        $this->EventDispatcher->notifyEvent('show.preferences', $this);
+        $this->EventDispatcher->notifyEvent('user.preferences', $this);
 
         $this->view->addTemplate('tabs-end', 'common');
     }

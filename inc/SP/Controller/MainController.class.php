@@ -86,7 +86,6 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('appInfo', Util::getAppInfo());
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('isDemoMode', Checks::demoIsEnabled());
-        $this->view->assign('loggedIn', Init::isLoggedIn());
         $this->view->assign('page', $page);
         $this->view->assign('icons', DiFactory::getTheme()->getIcons());
         $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo_icon.png');
@@ -94,6 +93,10 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full_bg.png');
         $this->view->assign('logonobg', Init::$WEBURI . '/imgs/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
+
+        $this->view->assign('loadApp', Session::getAuthCompleted());
+
+        $this->setLoggedIn(Init::isLoggedIn());
 
         // Cargar la clave pública en la sesión
         SessionUtil::loadPublicKey();

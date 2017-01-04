@@ -8,7 +8,7 @@
 
         sysPassApp.log.info("DOMContentLoaded");
 
-        <?php if ($loggedIn): ?>
+        <?php if ($loadApp === true): ?>
             sysPassApp.triggers().views.main();
         <?php elseif ($isInstalled === false): ?>
             sysPassApp.triggers().views.install();

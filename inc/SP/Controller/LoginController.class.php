@@ -309,17 +309,9 @@ class LoginController
         DiFactory::getTheme()->initTheme(true);
         Session::setUserPreferences($UserPreferencesData);
         Session::setSessionType(Session::SESSION_INTERACTIVE);
+        Session::setAuthCompleted(true);
 
-        if ($UserPreferencesData->isUse2Fa()) {
-            Session::set2FApassed(false);
-
-            $data = ['url' => Init::$WEBURI . '/index.php?a=2fa&i=' . $this->UserData->getUserId() . '&t=' . time() . '&f=1'];
-            $this->jsonResponse->setData($data);
-            $this->jsonResponse->setStatus(0);
-            Json::returnJson($this->jsonResponse);
-        } else {
-            Session::set2FApassed(true);
-        }
+        DiFactory::getEventDispatcher()->notifyEvent('login.preferences', $this);
     }
 
     /**

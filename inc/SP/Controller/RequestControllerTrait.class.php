@@ -91,6 +91,9 @@ trait RequestControllerTrait
         }
     }
 
+    /**
+     * Acción no disponible
+     */
     protected function invalidAction()
     {
         $this->jsonResponse->setDescription(_('Acción Inválida'));

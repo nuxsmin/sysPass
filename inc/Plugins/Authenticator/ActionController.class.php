@@ -28,7 +28,7 @@ use SP\Controller\ItemControllerInterface;
 use SP\Controller\RequestControllerTrait;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginDataStore;
-use SP\Core\Session;
+use SP\Core\Session as CoreSession;
 use SP\DataModel\PluginData;
 use SP\Http\Request;
 use SP\Mgmt\Plugins\Plugin;
@@ -42,7 +42,7 @@ use SP\Util\Json;
 class ActionController implements ItemControllerInterface
 {
     const ACTION_TWOFA_SAVE = 1;
-    const ACTION_TWOFA_CHECK = 1;
+    const ACTION_TWOFA_CHECKCODE = 2;
 
     use RequestControllerTrait;
 
@@ -56,9 +56,28 @@ class ActionController implements ItemControllerInterface
      */
     public function __construct()
     {
-        $this->Plugin = PluginDataStore::load(new AuthenticatorPlugin());
+        $this->Plugin = new AuthenticatorPlugin();
+
+        PluginDataStore::load($this->Plugin);
 
         $this->init();
+    }
+
+    /**
+     * Realizar la acción solicitada en la la petición HTTP
+     */
+    public function doAction()
+    {
+        switch ($this->actionId) {
+            case ActionController::ACTION_TWOFA_SAVE:
+                $this->save();
+                break;
+            case ActionController::ACTION_TWOFA_CHECKCODE:
+                $this->checkCode();
+                break;
+            default:
+                $this->invalidAction();
+        }
     }
 
     /**
@@ -68,7 +87,7 @@ class ActionController implements ItemControllerInterface
     {
         $pin = Request::analyze('security_pin', 0);
 
-        $twoFa = new Authenticator($this->itemId, Session::getUserData()->getUserLogin());
+        $twoFa = new Authenticator($this->itemId, CoreSession::getUserData()->getUserLogin());
 
         if (!$twoFa->verifyKey($pin)) {
             $this->jsonResponse->setDescription(_('Código incorrecto'));
@@ -104,17 +123,31 @@ class ActionController implements ItemControllerInterface
     }
 
     /**
-     * Realizar la acción solicitada en la la petición HTTP
+     * Comprobar el código 2FA
      */
-    public function doAction()
+    protected function checkCode()
     {
-        switch ($this->actionId) {
-            case ActionController::ACTION_TWOFA_SAVE:
-                $this->save();
-                break;
-            case ActionController::ACTION_TWOFA_CHECK:
-                break;
-            default:
+        $userId = Request::analyze('itemId', 0);
+        $pin = Request::analyze('security_pin', 0);
+
+        $TwoFa = new Authenticator($userId);
+
+        if ($userId
+            && $pin
+            && $TwoFa->verifyKey($pin)
+        ) {
+            Session::setTwoFApass(true);
+            CoreSession::setAuthCompleted(true);
+
+            $this->jsonResponse->setDescription(_('Código correcto'));
+            $this->jsonResponse->setStatus(0);
+        } else {
+            Session::setTwoFApass(false);
+            CoreSession::setAuthCompleted(false);
+
+            $this->jsonResponse->setDescription(_('Código incorrecto'));
         }
+
+        Json::returnJson($this->jsonResponse);
     }
 }

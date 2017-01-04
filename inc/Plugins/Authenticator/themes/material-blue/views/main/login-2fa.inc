@@ -1,6 +1,8 @@
 <main class="mdl-layout__content">
     <div id="actions">
-        <form id="frmPass2fa" action="" method="post" class="form-action" data-onsubmit="main/twofa">
+        <form id="frmPass2fa" action="" method="post" class="form-action"
+              data-onsubmit="twofa/check"
+              data-plugin="Authenticator">
             <fieldset id="resetdata">
                 <legend><?php echo _('Autentificación en 2 pasos'); ?></legend>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -11,6 +13,7 @@
                            for="security_pin"><?php echo _('Introducir código'); ?></label>
                 </div>
                 <br>
+                <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
                 <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>
                 <input type="hidden" name="time" value="<?php echo $time; ?>"/>
                 <input type="hidden" name="sk" value=""/>
@@ -18,6 +21,13 @@
             </fieldset>
 
             <div class="buttons">
+                <button id="btnBack" type="button"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                    <i class="material-icons"
+                       title="<?php echo _('Volver a iniciar sesión'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    <?php echo _('Volver'); ?>
+                </button>
+
                 <button id="btnLogin" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                     <?php echo _('Acceder'); ?>
                     <i class="material-icons"

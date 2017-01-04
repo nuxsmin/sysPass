@@ -94,6 +94,10 @@ abstract class ControllerBase
      * @var EventDispatcherInterface
      */
     protected $EventDispatcher;
+    /**
+     * @var bool
+     */
+    protected $loggedIn = false;
 
     /**
      * Constructor
@@ -235,6 +239,23 @@ abstract class ControllerBase
     public function getControllerName()
     {
         return $this->controllerName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoggedIn()
+    {
+        return $this->loggedIn;
+    }
+
+    /**
+     * @param bool $loggedIn
+     */
+    public function setLoggedIn($loggedIn)
+    {
+        $this->loggedIn = (bool)$loggedIn;
+        $this->view->assign('loggedIn', $this->loggedIn);
     }
 
     /**

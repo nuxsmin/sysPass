@@ -27,6 +27,7 @@ namespace Plugins\Authenticator;
 use InvalidArgumentException;
 use SP\Controller\TabControllerBase;
 use SP\Core\Plugin\PluginBase;
+use SP\Core\Plugin\PluginInterface;
 use SP\Util\ArrayUtil;
 
 /**
@@ -49,9 +50,9 @@ class PreferencesController
      * Controller constructor.
      *
      * @param TabControllerBase $Controller
-     * @param PluginBase $Plugin
+     * @param PluginInterface $Plugin
      */
-    public function __construct(TabControllerBase $Controller, PluginBase $Plugin)
+    public function __construct(TabControllerBase $Controller, PluginInterface $Plugin)
     {
         $this->Controller = $Controller;
         $this->Plugin = $Plugin;
