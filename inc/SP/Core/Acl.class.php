@@ -182,6 +182,9 @@ class Acl implements ActionsInterface
                 return $curUserProfile->isMgmApiTokens();
             case self::ACTION_EVL:
                 return $curUserProfile->isEvl();
+            case self::ACTION_NOT:
+            case self::ACTION_NOT_USER:
+                return true;
         }
 
         Log::writeNewLog(__FUNCTION__, sprintf(_('Denegado acceso a %s'), self::getActionName($action)), Log::NOTICE);
