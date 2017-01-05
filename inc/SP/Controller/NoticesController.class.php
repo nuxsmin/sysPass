@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\Core\Init;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
@@ -121,7 +122,7 @@ class NoticesController extends GridTabControllerBase implements ActionsInterfac
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(_('Notificaciones'));
-        $Grid->setTime(round(microtime() - $timeStart, 5));
+        $Grid->setTime(round(Init::microtime_float() - $timeStart, 5));
 
         // Grid Actions
 //        $GridActionSearch = new DataGridActionSearch();

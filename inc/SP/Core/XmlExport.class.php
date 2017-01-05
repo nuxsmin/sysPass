@@ -473,9 +473,11 @@ class XmlExport
      */
     private function checkExportDir()
     {
-        if (!is_dir($this->exportDir) || !@mkdir($this->exportDir, 0550)) {
+        if (!is_dir($this->exportDir) && !@mkdir($this->exportDir, 0750)) {
             throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->exportDir . ')');
         }
+
+        clearstatcache(true, $this->exportDir);
 
         if (!is_writable($this->exportDir)) {
             throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));

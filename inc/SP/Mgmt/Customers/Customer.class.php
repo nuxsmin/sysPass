@@ -93,7 +93,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT customer_id FROM customers WHERE customer_hash = ?';
+            'SELECT customer_id FROM customers WHERE customer_hash = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -235,7 +235,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT customer_id FROM customers WHERE customer_hash = ? AND customer_id <> ?';
+            'SELECT customer_id FROM customers WHERE customer_hash = ? AND customer_id <> ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

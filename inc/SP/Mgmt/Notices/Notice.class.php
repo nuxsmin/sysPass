@@ -313,7 +313,40 @@ class Notice extends NoticeBase implements ItemInterface
             throw new SPException(SPException::SP_ERROR, _('Error al obtener las notificaciones'));
         }
 
-        debugLog($queryRes);
+        return $queryRes;
+    }
+
+    /**
+     * @return NoticeData[]
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getAllActiveForUser()
+    {
+        $query = /** @lang SQL */
+            'SELECT notice_id,
+            notice_type,
+            notice_component,
+            notice_description,
+            FROM_UNIXTIME(notice_date) AS notice_date,
+            notice_checked,
+            notice_userId,
+            notice_sticky,
+            notice_onlyAdmin 
+            FROM notices 
+            WHERE notice_userId = ? AND notice_onlyAdmin = 0
+            AND (notice_checked = 0 OR notice_sticky = 1)
+            ORDER BY notice_date DESC ';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setMapClassName($this->getDataModel());
+        $Data->addParam(Session::getUserData()->getUserId());
+
+        try {
+            $queryRes = DB::getResultsArray($Data);
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_ERROR, _('Error al obtener las notificaciones'));
+        }
 
         return $queryRes;
     }

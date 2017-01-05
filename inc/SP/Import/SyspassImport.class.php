@@ -25,9 +25,9 @@
 
 namespace SP\Import;
 
-use SP\DataModel\AccountData;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountExtData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -124,13 +124,15 @@ class SyspassImport extends XmlImportBase
             $description = '';
 
             foreach ($category->childNodes as $node) {
-                switch ($node->nodeName) {
-                    case 'name':
-                        $name = $node->nodeValue;
-                        break;
-                    case 'description':
-                        $description = $node->nodeValue;
-                        break;
+                if (isset($node->tagName)) {
+                    switch ($node->tagName) {
+                        case 'name':
+                            $name = $node->nodeValue;
+                            break;
+                        case 'description':
+                            $description = $node->nodeValue;
+                            break;
+                    }
                 }
             }
 
@@ -155,13 +157,15 @@ class SyspassImport extends XmlImportBase
             $description = '';
 
             foreach ($customer->childNodes as $node) {
-                switch ($node->nodeName) {
-                    case 'name':
-                        $name = $node->nodeValue;
-                        break;
-                    case 'description':
-                        $description = $node->nodeValue;
-                        break;
+                if (isset($node->tagName)) {
+                    switch ($node->tagName) {
+                        case 'name':
+                            $name = $node->nodeValue;
+                            break;
+                        case 'description':
+                            $description = $node->nodeValue;
+                            break;
+                    }
                 }
             }
 
@@ -180,37 +184,39 @@ class SyspassImport extends XmlImportBase
             throw new SPException(SPException::SP_WARNING, _('Formato de XML inválido'), _('No hay cuentas para importar'));
         }
 
-        $AccountData = new AccountData();
+        $AccountData = new AccountExtData();
 
         foreach ($this->xmlDOM->getElementsByTagName('Account') as $account) {
             $AccountDataClone = clone $AccountData;
 
             foreach ($account->childNodes as $node) {
-                switch ($node->nodeName) {
-                    case 'name';
-                        $AccountDataClone->setAccountName($node->nodeValue);
-                        break;
-                    case 'login';
-                        $AccountDataClone->setAccountLogin($node->nodeValue);
-                        break;
-                    case 'categoryId';
-                        $AccountDataClone->setAccountCategoryId($this->categories[(int)$node->nodeValue]);
-                        break;
-                    case 'customerId';
-                        $AccountDataClone->setAccountCustomerId($this->customers[(int)$node->nodeValue]);
-                        break;
-                    case 'url';
-                        $AccountDataClone->setAccountUrl($node->nodeValue);
-                        break;
-                    case 'pass';
-                        $AccountDataClone->setAccountPass(base64_decode($node->nodeValue));
-                        break;
-                    case 'passiv';
-                        $AccountDataClone->setAccountIV(base64_decode($node->nodeValue));
-                        break;
-                    case 'notes';
-                        $AccountDataClone->setAccountNotes($node->nodeValue);
-                        break;
+                if (isset($node->tagName)) {
+                    switch ($node->tagName) {
+                        case 'name';
+                            $AccountDataClone->setAccountName($node->nodeValue);
+                            break;
+                        case 'login';
+                            $AccountDataClone->setAccountLogin($node->nodeValue);
+                            break;
+                        case 'categoryId';
+                            $AccountDataClone->setAccountCategoryId($this->categories[(int)$node->nodeValue]);
+                            break;
+                        case 'customerId';
+                            $AccountDataClone->setAccountCustomerId($this->customers[(int)$node->nodeValue]);
+                            break;
+                        case 'url';
+                            $AccountDataClone->setAccountUrl($node->nodeValue);
+                            break;
+                        case 'pass';
+                            $AccountDataClone->setAccountPass(base64_decode($node->nodeValue));
+                            break;
+                        case 'passiv';
+                            $AccountDataClone->setAccountIV(base64_decode($node->nodeValue));
+                            break;
+                        case 'notes';
+                            $AccountDataClone->setAccountNotes($node->nodeValue);
+                            break;
+                    }
                 }
             }
 

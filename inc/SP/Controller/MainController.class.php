@@ -37,6 +37,7 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
+use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Http\Request;
 use SP\Core\Session;
@@ -57,8 +58,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -196,6 +197,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('userName', $this->UserData->getUserName() ?: strtoupper($this->view->userLogin));
         $this->view->assign('userGroup', $this->UserData->getUsergroupName());
         $this->view->assign('showPassIcon', !(Config::getConfig()->isLdapEnabled() && $this->UserData->isUserIsLdap()));
+        $this->view->assign('userNotices', count(Notice::getItem()->getAllActiveForUser()));
     }
 
     /**
@@ -389,7 +391,6 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('update');
 
         $this->view->assign('hasUpdates', false);
-        $this->view->assign('hasNotices', false);
 
         if (Config::getConfig()->isCheckUpdates()) {
             $updates = Util::checkUpdates();
@@ -403,7 +404,7 @@ class MainController extends ControllerBase implements ActionsInterface
                 $this->view->assign('url', $updates['url']);
                 $this->view->assign('description', sprintf('%s - %s <br><br>%s', _('Descargar nueva versión'), $version, $description));
             } else {
-                $this->view->assign('status', $updates);
+                $this->view->assign('updateStatus', $updates);
             }
         }
 
@@ -413,13 +414,11 @@ class MainController extends ControllerBase implements ActionsInterface
             $noticesTitle = '';
 
             if ($notices !== false && $numNotices > 0) {
-                $noticesTitle = sprintf('%s<br><br>', _('Avisos de sysPass'));
+                $noticesTitle = _('Avisos de sysPass') . '<br>';
 
                 foreach ($notices as $notice) {
-                    $noticesTitle .= sprintf('%s<br>', $notice[0]);
+                    $noticesTitle .= '<br>' . $notice[0];
                 }
-
-                $this->view->assign('hasNotices', true);
             }
 
             $this->view->assign('numNotices', $numNotices);

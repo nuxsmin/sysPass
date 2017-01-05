@@ -26,9 +26,12 @@
 namespace SP\Import;
 
 use SP\Account\Account;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
+use SP\Log\Log;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Categories\Category;
 use SP\Core\Session;
@@ -47,13 +50,13 @@ abstract class ImportBase
      *
      * @var int
      */
-    public $userId = 0;
+    public $userId;
     /**
      * El id del grupo propietario de la cuenta.
      *
      * @var int
      */
-    public $userGroupId = 0;
+    public $userGroupId;
     /**
      * Nombre de la categoría.
      *
@@ -177,11 +180,11 @@ abstract class ImportBase
     /**
      * Añadir una cuenta desde un archivo importado.
      *
-     * @param \SP\DataModel\AccountData $AccountData
+     * @param \SP\DataModel\AccountExtData $AccountData
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function addAccount(AccountData $AccountData)
+    protected function addAccount(AccountExtData $AccountData)
     {
         $userId = $this->getUserId();
         $groupId = $this->getUserGroupId();
@@ -193,6 +196,9 @@ abstract class ImportBase
         if (null === $groupId || $groupId === 0) {
             $this->setUserGroupId(Session::getUserData()->getUserGroupId());
         }
+
+        $AccountData->setAccountUserId($this->getUserId());
+        $AccountData->setAccountUserGroupId($this->getUserGroupId());
 
         $Account = new Account($AccountData);
         $Account->createAccount();
@@ -240,9 +246,13 @@ abstract class ImportBase
      */
     protected function addCategory($name, $description = null)
     {
-        $CategoryData = new CategoryData($name, $description);
+        $CategoryData = new CategoryData(null, $name, $description);
 
-        return Category::getItem($CategoryData)->add()->getItemData()->getCategoryId();
+        try {
+            return Category::getItem($CategoryData)->add()->getItemData()->getCategoryId();
+        } catch (SPException $e) {
+            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+        }
     }
 
     /**
@@ -254,9 +264,13 @@ abstract class ImportBase
      */
     protected function addCustomer($name, $description = null)
     {
-        $CustomerData = new CustomerData($name, $description);
+        $CustomerData = new CustomerData(null, $name, $description);
 
-        return Customer::getItem($CustomerData)->add()->getItemData()->getCustomerId();
+        try {
+            return Customer::getItem($CustomerData)->add()->getItemData()->getCustomerId();
+        } catch (SPException $e) {
+            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+        }
     }
 
     /**

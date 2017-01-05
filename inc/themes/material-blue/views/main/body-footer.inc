@@ -17,9 +17,25 @@
                 <?php endif; ?>
                 <i id="btnPrefs" class="material-icons"
                    data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">account_circle</i>
-                <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
                 <span for="btnPrefs"
                       class="mdl-tooltip mdl-tooltip--top"><?php echo _('Preferencias de usuario'); ?></span>
+
+                <?php if ($userNotices > 0): ?>
+                    <div id="notices-user"
+                         class="btn-menu material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200"
+                         data-badge="<?php echo $userNotices; ?>"
+                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>">notifications
+                    </div>
+                    <span for="notices-user"
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf(_('Hay %d notificaciones pendientes'), $userNotices); ?></span>
+                <?php else: ?>
+                    <div id="notices-user" class="material-icons mdl-badge mdl-badge--overlap"
+                         data-badge="0">notifications</div>
+                    <span for="notices-user"
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('No hay notificaciones pendientes'); ?></span>
+                <?php endif; ?>
+
+                <span id="user-info"><?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?></span>
             </div>
         <?php endif; ?>
     </div>

@@ -442,6 +442,7 @@ sysPass.Main = function () {
 
             $obj.on("drop", function (e) {
                 log.info("fileUpload:drop");
+                log.info(e);
 
                 e.stopPropagation();
                 e.preventDefault();

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-05 02:20+0100\n"
-"PO-Revision-Date: 2017-01-05 02:33+0100\n"
+"POT-Creation-Date: 2017-01-05 09:03+0100\n"
+"PO-Revision-Date: 2017-01-05 09:19+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -20,6 +20,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.6.10\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
 #: ../../../../ajax/ajax_2fa.php:41 ../../../../ajax/ajax_accGetFiles.php:51
@@ -94,7 +95,7 @@ msgstr "Restart session to update"
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:226
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:227
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:511
-#: ../../../../inc/SP/Core/Acl.class.php:209
+#: ../../../../inc/SP/Core/Acl.class.php:212
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:48
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:48
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:51
@@ -464,7 +465,7 @@ msgstr "Download File"
 #: ../../../../inc/SP/Controller/LoginController.class.php:358
 #: ../../../../inc/SP/Controller/LoginController.class.php:401
 #: ../../../../inc/SP/Controller/LoginController.class.php:419
-#: ../../../../inc/SP/Controller/NoticesController.class.php:102
+#: ../../../../inc/SP/Controller/NoticesController.class.php:103
 #: ../../../../inc/SP/Core/Init.class.php:385
 #: ../../../../inc/SP/Core/Init.class.php:597
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:89
@@ -606,7 +607,7 @@ msgstr "Customer"
 #: ../../../../inc/SP/Controller/Grids.class.php:87
 #: ../../../../inc/SP/Controller/Grids.class.php:182
 #: ../../../../inc/SP/Controller/Grids.class.php:573
-#: ../../../../inc/SP/Controller/NoticesController.class.php:104
+#: ../../../../inc/SP/Controller/NoticesController.class.php:105
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:224
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:224
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:242
@@ -846,8 +847,8 @@ msgstr "Error on account creation"
 
 #: ../../../../inc/SP/Account/Account.class.php:376
 #: ../../../../inc/SP/Controller/AccountController.class.php:134
-#: ../../../../inc/SP/Controller/MainController.class.php:219
-#: ../../../../inc/SP/Core/Acl.class.php:205
+#: ../../../../inc/SP/Controller/MainController.class.php:221
+#: ../../../../inc/SP/Core/Acl.class.php:208
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
@@ -857,7 +858,7 @@ msgstr "New Account"
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:282
 #: ../../../../inc/SP/Controller/Grids.class.php:434
 #: ../../../../inc/SP/Controller/Grids.class.php:435
-#: ../../../../inc/SP/Core/Acl.class.php:210
+#: ../../../../inc/SP/Core/Acl.class.php:213
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:17
 msgid "Eliminar Cuenta"
 msgstr "Delete Account"
@@ -1076,7 +1077,6 @@ msgstr "New Authorization"
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:238
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:103
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:253
-#: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:51
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:33
@@ -1360,8 +1360,8 @@ msgstr "The user doesn't belong to the group"
 
 #: ../../../../inc/SP/Config/ConfigDB.class.php:103
 #: ../../../../inc/SP/Config/ConfigDB.class.php:139
-#: ../../../../inc/SP/Controller/MainController.class.php:249
-#: ../../../../inc/SP/Core/Acl.class.php:233
+#: ../../../../inc/SP/Controller/MainController.class.php:251
+#: ../../../../inc/SP/Core/Acl.class.php:236
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:75
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:120
 msgid "Configuración"
@@ -1383,14 +1383,14 @@ msgstr "Value"
 #: ../../../../inc/SP/Controller/AccountController.class.php:270
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:268
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:269
-#: ../../../../inc/SP/Core/Acl.class.php:204
+#: ../../../../inc/SP/Core/Acl.class.php:207
 msgid "Copiar Cuenta"
 msgstr "Copy Account"
 
 #: ../../../../inc/SP/Controller/AccountController.class.php:317
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:255
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:256
-#: ../../../../inc/SP/Core/Acl.class.php:206
+#: ../../../../inc/SP/Core/Acl.class.php:209
 msgid "Editar Cuenta"
 msgstr "Edit Account"
 
@@ -1494,7 +1494,7 @@ msgid "Error de conexión a DokuWiki"
 msgstr "Error while connecting to DokuWiki"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:301
-#: ../../../../inc/SP/Core/Acl.class.php:235
+#: ../../../../inc/SP/Core/Acl.class.php:238
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
 msgid "Encriptación"
 msgstr "Encryption"
@@ -1516,7 +1516,7 @@ msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:346
-#: ../../../../inc/SP/Core/Acl.class.php:236
+#: ../../../../inc/SP/Core/Acl.class.php:239
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:7
 msgid "Copia de Seguridad"
 msgstr "Backup"
@@ -1587,13 +1587,13 @@ msgstr "New Category"
 #: ../../../../inc/SP/Controller/Grids.class.php:131
 #: ../../../../inc/SP/Controller/Grids.class.php:132
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:195
-#: ../../../../inc/SP/Core/Acl.class.php:217
+#: ../../../../inc/SP/Core/Acl.class.php:220
 msgid "Editar Categoría"
 msgstr "Edit Category"
 
 #: ../../../../inc/SP/Controller/Grids.class.php:141
 #: ../../../../inc/SP/Controller/Grids.class.php:142
-#: ../../../../inc/SP/Core/Acl.class.php:218
+#: ../../../../inc/SP/Core/Acl.class.php:221
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:138
 msgid "Eliminar Categoría"
 msgstr "Delete Category"
@@ -1619,13 +1619,13 @@ msgstr "New Customer"
 #: ../../../../inc/SP/Controller/Grids.class.php:226
 #: ../../../../inc/SP/Controller/Grids.class.php:227
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:182
-#: ../../../../inc/SP/Core/Acl.class.php:222
+#: ../../../../inc/SP/Core/Acl.class.php:225
 msgid "Editar Cliente"
 msgstr "Edit Customer"
 
 #: ../../../../inc/SP/Controller/Grids.class.php:236
 #: ../../../../inc/SP/Controller/Grids.class.php:237
-#: ../../../../inc/SP/Core/Acl.class.php:223
+#: ../../../../inc/SP/Core/Acl.class.php:226
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:137
 msgid "Eliminar Cliente"
 msgstr "Delete Customer"
@@ -1664,7 +1664,7 @@ msgid "Eliminar Campo"
 msgstr "Delete Field"
 
 #: ../../../../inc/SP/Controller/Grids.class.php:353
-#: ../../../../inc/SP/Core/Acl.class.php:211
+#: ../../../../inc/SP/Core/Acl.class.php:214
 #: ../../../../inc/themes/material-blue/views/account/files.inc:5
 #: ../../../../inc/themes/material-blue/views/account/files.inc:14
 #: ../../../../inc/themes/material-blue/views/config/general-files.inc:4
@@ -1931,7 +1931,7 @@ msgid "Plugin"
 msgstr "Plugin"
 
 #: ../../../../inc/SP/Controller/Grids.class.php:965
-#: ../../../../inc/SP/Controller/NoticesController.class.php:105
+#: ../../../../inc/SP/Controller/NoticesController.class.php:106
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:237
 msgid "Estado"
 msgstr "Status"
@@ -2203,121 +2203,121 @@ msgstr "LDAP Server"
 msgid "Autentificación"
 msgstr "Authentication"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:193
+#: ../../../../inc/SP/Controller/MainController.class.php:194
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:52
 msgid "Admin Aplicación"
 msgstr "Application Admin"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:210
+#: ../../../../inc/SP/Controller/MainController.class.php:212
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:72
 msgid "Buscar"
 msgstr "Search"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:229
+#: ../../../../inc/SP/Controller/MainController.class.php:231
 msgid "Usuarios y Accesos"
 msgstr "Users and Accesses"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:239
+#: ../../../../inc/SP/Controller/MainController.class.php:241
 msgid "Elementos y Personalización"
 msgstr "Items and Customizations"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:259
+#: ../../../../inc/SP/Controller/MainController.class.php:261
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:7
 msgid "Registro de Eventos"
 msgstr "Event Log"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:268
-#: ../../../../inc/SP/Controller/NoticesController.class.php:123
+#: ../../../../inc/SP/Controller/MainController.class.php:270
+#: ../../../../inc/SP/Controller/NoticesController.class.php:124
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:79
 msgid "Notificaciones"
 msgstr "Notifications"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:289
+#: ../../../../inc/SP/Controller/MainController.class.php:291
 msgid "Nuevo estilo visual basado en Material Design Lite by Google"
 msgstr "New visual design based on Material Design by Google"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:290
+#: ../../../../inc/SP/Controller/MainController.class.php:292
 msgid "Usuarios en múltiples grupos"
 msgstr "Users can belong to multiple groups"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:291
+#: ../../../../inc/SP/Controller/MainController.class.php:293
 msgid "Previsualización de imágenes"
 msgstr "Images previsualization"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:292
+#: ../../../../inc/SP/Controller/MainController.class.php:294
 msgid "Mostrar claves como imágenes"
 msgstr "Show passwords as images"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:293
+#: ../../../../inc/SP/Controller/MainController.class.php:295
 msgid "Campos personalizados"
 msgstr "Custom Fields"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:294
+#: ../../../../inc/SP/Controller/MainController.class.php:296
 msgid "API de consultas"
 msgstr "API queries"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:295
+#: ../../../../inc/SP/Controller/MainController.class.php:297
 #: ../../../../inc/Plugins/Authenticator/themes/material-blue/views/main/login-2fa.inc:7
 #: ../../../../inc/Plugins/Authenticator/themes/material-blue/views/userpreferences/preferences-security.inc:18
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-security.inc:17
 msgid "Autentificación en 2 pasos"
 msgstr "Two factor authentication"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:296
+#: ../../../../inc/SP/Controller/MainController.class.php:298
 msgid "Complejidad de generador de claves"
 msgstr "Random number generator with complexity configuration"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:297
+#: ../../../../inc/SP/Controller/MainController.class.php:299
 msgid "Consultas especiales"
 msgstr "Special queries"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:298
+#: ../../../../inc/SP/Controller/MainController.class.php:300
 msgid "Exportación a XML"
 msgstr "XML Export"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:299
+#: ../../../../inc/SP/Controller/MainController.class.php:301
 msgid "Clave maestra temporal"
 msgstr "Temporary Master Password"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:300
+#: ../../../../inc/SP/Controller/MainController.class.php:302
 msgid "Importación de cuentas desde sysPass, KeePass, KeePassX y CSV"
 msgstr "Accounts import from KeePass, KeePassX and CSV"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:301
+#: ../../../../inc/SP/Controller/MainController.class.php:303
 msgid "Optimización del código y mayor rapidez de carga"
 msgstr "Code optimization and faster loading"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:302
+#: ../../../../inc/SP/Controller/MainController.class.php:304
 msgid "Mejoras de seguridad en XSS e inyección SQL"
 msgstr "Improved security to prevent XSS and SQL injection"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:331
+#: ../../../../inc/SP/Controller/MainController.class.php:333
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr "This PHP version is vulnerable to NULL Byte attack CVE-2006-7243)"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:332
+#: ../../../../inc/SP/Controller/MainController.class.php:334
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Please update PHP version to run sysPass in a secure way"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:338
+#: ../../../../inc/SP/Controller/MainController.class.php:340
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Cannot find random number generator."
 
-#: ../../../../inc/SP/Controller/MainController.class.php:339
+#: ../../../../inc/SP/Controller/MainController.class.php:341
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr ""
 "Without this function, an attacker could take your account on password reset."
 
-#: ../../../../inc/SP/Controller/MainController.class.php:404
+#: ../../../../inc/SP/Controller/MainController.class.php:405
 msgid "Descargar nueva versión"
 msgstr "Download new version"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:416
+#: ../../../../inc/SP/Controller/MainController.class.php:417
 msgid "Avisos de sysPass"
 msgstr "sysPass Notices"
 
-#: ../../../../inc/SP/Controller/NoticesController.class.php:101
+#: ../../../../inc/SP/Controller/NoticesController.class.php:102
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:65
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:85
 #: ../../../../inc/themes/material-blue/views/account/account.inc:151
@@ -2325,22 +2325,22 @@ msgstr "sysPass Notices"
 msgid "Fecha"
 msgstr "Date"
 
-#: ../../../../inc/SP/Controller/NoticesController.class.php:103
+#: ../../../../inc/SP/Controller/NoticesController.class.php:104
 msgid "Componente"
 msgstr "Component"
 
-#: ../../../../inc/SP/Controller/NoticesController.class.php:140
 #: ../../../../inc/SP/Controller/NoticesController.class.php:141
+#: ../../../../inc/SP/Controller/NoticesController.class.php:142
 msgid "Ver Notificación"
 msgstr "View Notification"
 
-#: ../../../../inc/SP/Controller/NoticesController.class.php:149
 #: ../../../../inc/SP/Controller/NoticesController.class.php:150
+#: ../../../../inc/SP/Controller/NoticesController.class.php:151
 msgid "Marcar Notificación"
 msgstr "Checkout Notification"
 
-#: ../../../../inc/SP/Controller/NoticesController.class.php:159
 #: ../../../../inc/SP/Controller/NoticesController.class.php:160
+#: ../../../../inc/SP/Controller/NoticesController.class.php:161
 msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
@@ -2348,102 +2348,102 @@ msgstr "Delete Notification"
 msgid "Preferencias"
 msgstr "Preferences"
 
-#: ../../../../inc/SP/Core/Acl.class.php:187
+#: ../../../../inc/SP/Core/Acl.class.php:190
 #, php-format
 msgid "Denegado acceso a %s"
 msgstr "Access denied to %s"
 
-#: ../../../../inc/SP/Core/Acl.class.php:202
+#: ../../../../inc/SP/Core/Acl.class.php:205
 msgid "Buscar Cuentas"
 msgstr "Search Accounts"
 
-#: ../../../../inc/SP/Core/Acl.class.php:203
+#: ../../../../inc/SP/Core/Acl.class.php:206
 msgid "Ver Cuenta"
 msgstr "View Account"
 
-#: ../../../../inc/SP/Core/Acl.class.php:207
+#: ../../../../inc/SP/Core/Acl.class.php:210
 msgid "Editar Clave de Cuenta"
 msgstr "Edit Account Password"
 
-#: ../../../../inc/SP/Core/Acl.class.php:208
+#: ../../../../inc/SP/Core/Acl.class.php:211
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:58
 msgid "Ver Historial"
 msgstr "View History"
 
-#: ../../../../inc/SP/Core/Acl.class.php:212
+#: ../../../../inc/SP/Core/Acl.class.php:215
 msgid "Peticiones"
 msgstr "Requests"
 
-#: ../../../../inc/SP/Core/Acl.class.php:213
+#: ../../../../inc/SP/Core/Acl.class.php:216
 msgid "Gestión Aplicación"
 msgstr "Application Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:214
+#: ../../../../inc/SP/Core/Acl.class.php:217
 msgid "Gestión Categorías"
 msgstr "Categories Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:215
+#: ../../../../inc/SP/Core/Acl.class.php:218
 msgid "Buscar Categorías"
 msgstr "Search for Categories"
 
-#: ../../../../inc/SP/Core/Acl.class.php:216
+#: ../../../../inc/SP/Core/Acl.class.php:219
 msgid "Añadir Categoría"
 msgstr "Add Category"
 
-#: ../../../../inc/SP/Core/Acl.class.php:219
+#: ../../../../inc/SP/Core/Acl.class.php:222
 msgid "Gestión Clientes"
 msgstr "Customers Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:220
+#: ../../../../inc/SP/Core/Acl.class.php:223
 msgid "Buscar Clientes"
 msgstr "Search for Customers"
 
-#: ../../../../inc/SP/Core/Acl.class.php:221
+#: ../../../../inc/SP/Core/Acl.class.php:224
 msgid "Añadir Cliente"
 msgstr "Add Customer"
 
-#: ../../../../inc/SP/Core/Acl.class.php:224
+#: ../../../../inc/SP/Core/Acl.class.php:227
 msgid "Gestión Campos Personalizados"
 msgstr "Custom Fields Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:225
+#: ../../../../inc/SP/Core/Acl.class.php:228
 msgid "Gestión Autorizaciones API"
 msgstr "API Authorizations Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:226
+#: ../../../../inc/SP/Core/Acl.class.php:229
 msgid "Gestión de Archivos"
 msgstr "Files Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:227
+#: ../../../../inc/SP/Core/Acl.class.php:230
 msgid "Gestión de Cuentas"
 msgstr "Accounts Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:228
+#: ../../../../inc/SP/Core/Acl.class.php:231
 msgid "Gestión de Etiquetas"
 msgstr "Tags Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:229
-#: ../../../../inc/SP/Core/Acl.class.php:230
+#: ../../../../inc/SP/Core/Acl.class.php:232
+#: ../../../../inc/SP/Core/Acl.class.php:233
 msgid "Gestión Usuarios"
 msgstr "Users Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:231
+#: ../../../../inc/SP/Core/Acl.class.php:234
 msgid "Gestión Grupos"
 msgstr "Groups Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:232
+#: ../../../../inc/SP/Core/Acl.class.php:235
 msgid "Gestión Perfiles"
 msgstr "Profiles Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:234
+#: ../../../../inc/SP/Core/Acl.class.php:237
 msgid "Configuración General"
 msgstr "General Configuration"
 
-#: ../../../../inc/SP/Core/Acl.class.php:237
+#: ../../../../inc/SP/Core/Acl.class.php:240
 msgid "Exportar"
 msgstr "Export"
 
-#: ../../../../inc/SP/Core/Acl.class.php:238
+#: ../../../../inc/SP/Core/Acl.class.php:241
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
 msgid "Importar"
 msgstr "Import"
@@ -3278,6 +3278,7 @@ msgstr "Error while retrieving notification"
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:194
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:279
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:313
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:348
 msgid "Error al obtener las notificaciones"
 msgstr "Error while retrieving notifications"
 
@@ -5378,32 +5379,41 @@ msgstr "Sign Out"
 msgid "Cambiar clave de usuario"
 msgstr "Change user password"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:22
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:21
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:56
 msgid "Preferencias de usuario"
 msgstr "User preferences"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:41
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:30
+#, php-format
+msgid "Hay %d notificaciones pendientes"
+msgstr "There are %d unread notifications"
+
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:35
+msgid "No hay notificaciones pendientes"
+msgstr "There aren't pending notifications"
+
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:57
 msgid "Indica si la conexión utiliza HTTPS."
 msgstr "It tells if the connection uses HTTPS"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:41
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:57
 msgid ""
 "Las claves de formularios enviados se encriptan mediante PKI, el resto de "
 "datos no."
 msgstr ""
 "The passwords sent from the forms are encrypted with PKI, the other data not."
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:46
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:62
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:74
 msgid "Demo"
 msgstr "Demo"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:57
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:73
 msgid "Ayuda :: FAQ :: Changelog"
 msgstr "Help :: FAQ :: Changelog"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:61
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:77
 msgid "Un proyecto de cygnux.org"
 msgstr "A cygnux.org project"
 
@@ -5498,11 +5508,11 @@ msgstr "User's Email"
 msgid "Cambiar"
 msgstr "Change"
 
-#: ../../../../inc/themes/material-blue/views/main/update.inc:19
+#: ../../../../inc/themes/material-blue/views/main/update.inc:21
 msgid "Actualizado"
 msgstr "Updated"
 
-#: ../../../../inc/themes/material-blue/views/main/update.inc:25
+#: ../../../../inc/themes/material-blue/views/main/update.inc:27
 msgid "Error al comprobar actualizaciones"
 msgstr "Error while checking for updates"
 
