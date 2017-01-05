@@ -54,5 +54,20 @@
     padding: 0.5em;
     @include color-teal();
   }
+  #demo-info {
+    margin: 1em auto;
+    color: #c9c9c9;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+    padding: .5em;
+    ul {
+      display: flex;
+      justify-content: space-around;
+      list-style: none;
+      li span{
+        margin: 0 2em;
+      }
+    }
+  }
 }
 

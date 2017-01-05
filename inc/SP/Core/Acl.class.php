@@ -26,11 +26,8 @@
 
 namespace SP\Core;
 
-use SP\DataModel\AccountData;
-use SP\Controller;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\UserData;
-use SP\Mgmt\Groups\Group;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
 

@@ -55,7 +55,7 @@ class XmlExport
     /**
      * @var string
      */
-    private $exportPass = null;
+    private $exportPass;
     /**
      * @var bool
      */
@@ -87,7 +87,7 @@ class XmlExport
     {
         $xml = new XmlExport();
 
-        if (!is_null($pass) && !empty($pass)) {
+        if (null !== $pass && !empty($pass)) {
             $xml->setExportPass($pass);
             $xml->setEncrypted(true);
         }
@@ -244,8 +244,8 @@ class XmlExport
      */
     private function escapeChars($data)
     {
-        $arrStrFrom = array("&", "<", ">", "\"", "\'");
-        $arrStrTo = array("&#38;", "&#60;", "&#62;", "&#34;", "&#39;");
+        $arrStrFrom = ['&', '<', '>', '"', '\''];
+        $arrStrTo = ['&#38;', '&#60;', '&#62;', '&#34;', '&#39;'];
 
         return str_replace($arrStrFrom, $arrStrTo, $data);
     }
@@ -386,14 +386,16 @@ class XmlExport
 
     /**
      * Crear el hash del archivo XML e insertarlo en el árbol DOM
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function createHash()
     {
         try {
             if ($this->encrypted === true) {
-                $hash = md5($this->getNodeXML('Encrypted'));
+                $hash = sha1($this->getNodeXML('Encrypted'));
             } else {
-                $hash = md5($this->getNodeXML('Categories') . $this->getNodeXML('Customers') . $this->getNodeXML('Accounts'));
+                $hash = sha1($this->getNodeXML('Categories') . $this->getNodeXML('Customers') . $this->getNodeXML('Accounts'));
             }
 
             $metaHash = $this->xml->createElement('Hash', $hash);
@@ -448,7 +450,7 @@ class XmlExport
     private function setExportFile()
     {
         // Generar hash unico para evitar descargas no permitidas
-        $exportUniqueHash = uniqid();
+        $exportUniqueHash = sha1(uniqid('sysPassExport', true));
         Config::getConfig()->setExportHash($exportUniqueHash);
         Config::saveConfig();
 
@@ -464,24 +466,6 @@ class XmlExport
     }
 
     /**
-     * Devolver el archivo XML con las cabeceras HTTP
-     */
-    private function sendFileToBrowser($file)
-    {
-        // Enviamos el archivo al navegador
-        header('Set-Cookie: fileDownload=true; path=/');
-        header('Cache-Control: max-age=60, must-revalidate');
-        header("Content-length: " . filesize($file));
-        Header('Content-type: text/xml');
-//        header("Content-type: " . filetype($this->_exportFile));
-        header("Content-Disposition: attachment; filename=\"$file\"");
-        header("Content-Description: PHP Generated Data");
-//        header("Content-transfer-encoding: binary");
-
-        return file_get_contents($file);
-    }
-
-    /**
      * Comprobar y crear el directorio de exportación.
      *
      * @throws SPException
@@ -489,10 +473,8 @@ class XmlExport
      */
     private function checkExportDir()
     {
-        if (!is_dir($this->exportDir)) {
-            if (!@mkdir($this->exportDir, 0550)) {
-                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->exportDir . ')');
-            }
+        if (!is_dir($this->exportDir) || !@mkdir($this->exportDir, 0550)) {
+            throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->exportDir . ')');
         }
 
         if (!is_writable($this->exportDir)) {

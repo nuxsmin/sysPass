@@ -28,7 +28,6 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\ActionsInterface;
-use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridActionSearch;

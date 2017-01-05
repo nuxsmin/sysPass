@@ -30,7 +30,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
-use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
 use SP\Core\UI\ThemeIconsBase;

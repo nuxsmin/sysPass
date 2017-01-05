@@ -28,7 +28,6 @@ namespace SP\Api;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Auth\Auth;
-use SP\Auth\AuthDataBase;
 use SP\Auth\AuthResult;
 use SP\Auth\AuthUtil;
 use SP\Core\Acl;

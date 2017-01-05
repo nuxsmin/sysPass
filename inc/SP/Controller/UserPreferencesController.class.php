@@ -27,11 +27,9 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use Plugins\Authenticator\Authenticator;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Language;
-use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
 use SP\Core\Template;

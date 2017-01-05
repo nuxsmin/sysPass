@@ -83,6 +83,7 @@ class PreferencesController
             $this->Controller->view->assign('qrCode', !$AuthenticatorData->isTwofaEnabled() ? $twoFa->getUserQRCode() : '');
             $this->Controller->view->assign('userId', $UserData->getUserId());
             $this->Controller->view->assign('chk2FAEnabled', $AuthenticatorData->isTwofaEnabled());
+            $this->Controller->view->assign('expireDays', $AuthenticatorData->getExpireDays());
 
             $this->Controller->view->assign('tabIndex', $this->Controller->addTab(_('Seguridad')), 'security');
             $this->Controller->view->assign('actionId', ActionController::ACTION_TWOFA_SAVE, 'security');

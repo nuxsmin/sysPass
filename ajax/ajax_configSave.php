@@ -23,7 +23,6 @@
  *
  */
 
-use SP\Mgmt\Users\UserLdapSync;
 use SP\Account\Account;
 use SP\Account\AccountHistory;
 use SP\Config\Config;

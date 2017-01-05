@@ -31,7 +31,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupUsers;
 use SP\Storage\DB;
 use SP\Storage\QueryData;

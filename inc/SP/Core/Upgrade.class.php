@@ -31,7 +31,6 @@ use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Storage\DB;
 use SP\Mgmt\Users\UserMigrate;

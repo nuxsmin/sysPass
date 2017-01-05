@@ -49,7 +49,7 @@ class PublicLinkBaseData extends DataModelBase
     /**
      * @var PublicLinkData
      */
-    public $publicLink_linkData = null;
+    public $publicLink_linkData;
 
     /**
      * @return int

@@ -54,8 +54,20 @@
                         <br>
 
                         <div
-                            class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                                class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                         <?php echo _('Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado.'); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField"><?php echo _('Días Caducidad'); ?></td>
+                    <td class="valField">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="expiredays" name="expiredays" type="number" step="1"
+                                   min="1" max="720" class="mdl-textfield__input mdl-color-text--indigo-400"
+                                   value="<?php echo $expireDays ?: 90; ?>" required/>
+                            <label class="mdl-textfield__label"
+                                   for="expiredays"><?php echo _('Días'); ?></label>
+                        </div>
                     </td>
                 </tr>
             </table>

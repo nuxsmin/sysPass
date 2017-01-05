@@ -83,7 +83,7 @@ class Crypt
         // Crear el IV y asegurar que tiene una longitud de 32 bytes
         do {
             $cryptIV = mcrypt_create_iv(mcrypt_enc_get_iv_size($mcryptRes), $source);
-        } while (strlen($cryptIV) < 32);
+        } while ($cryptIV === false || strlen($cryptIV) < 32);
 
         mcrypt_module_close($mcryptRes);
 

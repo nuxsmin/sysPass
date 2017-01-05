@@ -25,7 +25,6 @@
 
 namespace SP\Core;
 
-use Plugins\Authenticator\AuthenticatorPlugin;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigDB;

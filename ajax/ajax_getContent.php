@@ -127,6 +127,11 @@ switch ($actionId) {
         $Controller = new UserPreferencesController($Tpl);
         $Controller->doAction();
         break;
+    case ActionsInterface::ACTION_NOT:
+    case ActionsInterface::ACTION_NOT_USER:
+        $Controller = new \SP\Controller\NoticesController($Tpl);
+        $Controller->doAction();
+        break;
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración

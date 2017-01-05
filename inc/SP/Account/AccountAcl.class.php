@@ -26,7 +26,6 @@ namespace SP\Account;
 
 use SP\Core\Acl;
 use SP\Core\Session;
-use SP\Log\Log;
 use SP\Util\Checks;
 
 /**

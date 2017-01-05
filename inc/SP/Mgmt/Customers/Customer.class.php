@@ -40,7 +40,6 @@ use SP\Storage\DB;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Exceptions\SPException;
-use SP\Storage\DBUtil;
 use SP\Storage\QueryData;
 
 /**

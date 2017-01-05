@@ -50,11 +50,11 @@ class AuthenticatorData
      */
     public $date;
     /**
-     * Fecha de caducidad
+     * Días de caducidad
      *
      * @var int
      */
-    public $dateExpire;
+    public $expireDays;
 
     /**
      * @return mixed
@@ -107,16 +107,16 @@ class AuthenticatorData
     /**
      * @return int
      */
-    public function getDateExpire()
+    public function getExpireDays()
     {
-        return $this->dateExpire;
+        return $this->expireDays;
     }
 
     /**
-     * @param int $dateExpire
+     * @param int $expireDays
      */
-    public function setDateExpire($dateExpire)
+    public function setExpireDays($expireDays)
     {
-        $this->dateExpire = $dateExpire;
+        $this->expireDays = $expireDays;
     }
 }

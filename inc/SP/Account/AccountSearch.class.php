@@ -27,19 +27,11 @@ namespace SP\Account;
 
 use SP\Config\Config;
 use SP\Core\Acl;
-use SP\Core\ActionsInterface;
-use SP\DataModel\AccountData;
-use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountSearchData;
-use SP\Log\Log;
-use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\Users\User;
 use SP\Storage\DB;
-use SP\Mgmt\Groups\Group;
-use SP\Html\Html;
 use SP\Core\Session;
-use SP\Mgmt\Users\UserUtil;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 

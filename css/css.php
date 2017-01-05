@@ -23,7 +23,6 @@
  *
  */
 
-use SP\Core\Init;
 use SP\Html\Minify;
 use SP\Http\Request;
 

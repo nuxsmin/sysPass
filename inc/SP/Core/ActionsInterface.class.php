@@ -133,6 +133,11 @@ interface ActionsInterface
     const ACTION_USR_PREFERENCES_GENERAL = 741;
     const ACTION_USR_PREFERENCES_SECURITY = 742;
     const ACTION_USR_SYNC_LDAP = 751;
+    const ACTION_NOT = 760;
+    const ACTION_NOT_USER = 761;
+    const ACTION_NOT_USER_VIEW = 7610;
+    const ACTION_NOT_USER_CHECK = 7612;
+    const ACTION_NOT_USER_DELETE = 7613;
     const ACTION_CFG = 80;
     const ACTION_CFG_GENERAL = 81;
     const ACTION_CFG_ENCRYPTION = 82;

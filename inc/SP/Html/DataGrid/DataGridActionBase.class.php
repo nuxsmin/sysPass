@@ -77,7 +77,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var IconInterface
      */
-    protected $_icon = null;
+    protected $_icon;
     /**
      * Si se debe de omitir para los elementos del listado
      *

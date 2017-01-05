@@ -1104,6 +1104,18 @@ fieldset.warning {
     color: #26a69a;
     background-color: #b2dfdb;
     border: 1px solid #26a69a; }
+  #login-container #demo-info {
+    margin: 1em auto;
+    color: #c9c9c9;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+    padding: .5em; }
+    #login-container #demo-info ul {
+      display: flex;
+      justify-content: space-around;
+      list-style: none; }
+      #login-container #demo-info ul li span {
+        margin: 0 2em; }
 
 @media screen and (max-width: 1000px) {
   #content #searchbox {

@@ -28,7 +28,6 @@ use SP\Core\Init;
 use SP\Http\Request;
 use SP\Core\SessionUtil;
 use SP\Http\Response;
-use SP\Util\Util;
 
 define('APP_ROOT', '..');
 

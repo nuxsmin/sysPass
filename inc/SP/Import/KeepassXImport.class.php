@@ -28,7 +28,6 @@ namespace SP\Import;
 use SimpleXMLElement;
 use SP\DataModel\AccountData;
 use SP\Core\Crypt;
-use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 

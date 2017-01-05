@@ -26,8 +26,6 @@
 namespace SP\Import;
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 

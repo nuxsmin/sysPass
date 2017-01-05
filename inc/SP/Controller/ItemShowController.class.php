@@ -45,7 +45,6 @@ use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\GroupData;
-use SP\DataModel\PluginData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;

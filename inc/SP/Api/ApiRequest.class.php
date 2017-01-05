@@ -26,7 +26,6 @@
 namespace SP\Api;
 
 use ReflectionClass;
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Request;
 use SP\Core\Exceptions\SPException;
 

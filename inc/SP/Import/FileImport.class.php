@@ -42,7 +42,7 @@ class FileImport
      *
      * @var string|array
      */
-    protected $fileContent = null;
+    protected $fileContent;
 
     /**
      * Archivo temporal utilizado en la subida HTML

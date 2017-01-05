@@ -23,12 +23,9 @@
  *
  */
 
-use SP\Auth\Auth;
 use SP\Auth\AuthUtil;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
-use SP\Html\Html;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Email;
@@ -36,7 +33,6 @@ use SP\Log\Log;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
-use SP\Mgmt\Users\UserUtil;
 
 define('APP_ROOT', '..');
 

@@ -10,11 +10,9 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Html\DataGrid\DataGridPagerInterface;
-use SP\Util\Checks;
 
 /**
  * Class GridItemsSearch para construcción de clases que usen el Grid de búsqueda de registros

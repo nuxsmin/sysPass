@@ -28,7 +28,6 @@ namespace SP\Util\Wiki;
 use DOMDocument;
 use DOMException;
 use SP\Config\Config;
-use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
 use SP\Http\XMLRPCResponseParse;
 use SP\Log\Log;

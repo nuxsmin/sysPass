@@ -511,14 +511,6 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * @param Account|AccountHistory $account
-     */
-    private function setAccount($account)
-    {
-        $this->Account = $account;
-    }
-
-    /**
      * Realizar las accione del controlador
      *
      * @param mixed $type Tipo de acción

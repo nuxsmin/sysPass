@@ -26,10 +26,8 @@ namespace Plugins\Authenticator;
 
 use SP\Controller\ItemControllerInterface;
 use SP\Controller\RequestControllerTrait;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginDataStore;
 use SP\Core\Session as CoreSession;
-use SP\Core\Session;
 use SP\DataModel\PluginData;
 use SP\Http\Request;
 use SP\Mgmt\Plugins\Plugin;
@@ -55,6 +53,8 @@ class ActionController implements ItemControllerInterface
 
     /**
      * ActionController constructor.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct()
     {
@@ -67,23 +67,34 @@ class ActionController implements ItemControllerInterface
 
     /**
      * Realizar la acción solicitada en la la petición HTTP
+     *
+     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function doAction()
     {
-        switch ($this->actionId) {
-            case ActionController::ACTION_TWOFA_SAVE:
-                $this->save();
-                break;
-            case ActionController::ACTION_TWOFA_CHECKCODE:
-                $this->checkCode();
-                break;
-            default:
-                $this->invalidAction();
+        try {
+            switch ($this->actionId) {
+                case ActionController::ACTION_TWOFA_SAVE:
+                    $this->save();
+                    break;
+                case ActionController::ACTION_TWOFA_CHECKCODE:
+                    $this->checkCode();
+                    break;
+                default:
+                    $this->invalidAction();
+            }
+        } catch (\Exception $e) {
+            $this->jsonResponse->setDescription($e->getMessage());
+            Json::returnJson($this->jsonResponse);
         }
     }
 
     /**
      * Guardar los datos del plugin
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \InvalidArgumentException
      */
     protected function save()
     {
@@ -101,36 +112,37 @@ class ActionController implements ItemControllerInterface
             Json::returnJson($this->jsonResponse);
         }
 
-        try {
-            $data = $this->Plugin->getData();
+        $data = $this->Plugin->getData();
 
-            if (!isset($data[$this->itemId])) {
-                $data[$this->itemId] = new AuthenticatorData();
-            }
-
-            /** @var AuthenticatorData $AuthenticatorData */
-            $AuthenticatorData = $data[$this->itemId];
-            $AuthenticatorData->setUserId($this->itemId);
-            $AuthenticatorData->setTwofaEnabled(Request::analyze('security_2faenabled', 0, false, 1));
-
-            $PluginData = new PluginData();
-            $PluginData->setPluginName($this->Plugin->getName());
-            $PluginData->setPluginEnabled(1);
-            $PluginData->setPluginData(serialize($data));
-
-            Plugin::getItem($PluginData)->update();
-
-            $this->jsonResponse->setStatus(0);
-            $this->jsonResponse->setDescription(_('Preferencias actualizadas'));
-        } catch (SPException $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+        if (!isset($data[$this->itemId])) {
+            $data[$this->itemId] = new AuthenticatorData();
         }
+
+        /** @var AuthenticatorData $AuthenticatorData */
+        $AuthenticatorData = $data[$this->itemId];
+        $AuthenticatorData->setUserId($this->itemId);
+        $AuthenticatorData->setTwofaEnabled(Request::analyze('security_2faenabled', 0, false, 1));
+        $AuthenticatorData->setExpireDays(Request::analyze('expiredays', 0));
+        $AuthenticatorData->setDate(time());
+
+        $PluginData = new PluginData();
+        $PluginData->setPluginName($this->Plugin->getName());
+        $PluginData->setPluginEnabled(1);
+        $PluginData->setPluginData(serialize($data));
+
+        Plugin::getItem($PluginData)->update();
+
+        $this->jsonResponse->setStatus(0);
+        $this->jsonResponse->setDescription(_('Preferencias actualizadas'));
 
         Json::returnJson($this->jsonResponse);
     }
 
     /**
      * Comprobar el código 2FA
+     *
+     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function checkCode()
     {

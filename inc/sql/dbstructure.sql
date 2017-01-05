@@ -380,6 +380,23 @@ CREATE TABLE `plugins` (
   UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC));
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `notices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notices` (
+  `notice_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `notice_type` VARCHAR(100) NULL,
+  `notice_component` VARCHAR(100) NOT NULL,
+  `notice_description` VARCHAR(500) NOT NULL,
+  `notice_date` INT UNSIGNED NOT NULL,
+  `notice_checked` BIT(1) NULL DEFAULT b'0',
+  `notice_userId` SMALLINT(5) UNSIGNED NULL,
+  `notice_sticky` BIT(1) NULL DEFAULT b'0',
+  `notice_onlyAdmin` BIT(1) NULL DEFAULT b'0',
+  PRIMARY KEY (`notice_id`),
+  INDEX `IDX_userId` (`notice_userId` ASC, `notice_checked` ASC, `notice_date` ASC),
+  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC));
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `account_data_v`;
 CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_data_v` AS SELECT

@@ -28,8 +28,10 @@ use SP\Controller\ControllerBase;
 use SP\Core\Init;
 use SP\Core\Plugin\PluginBase;
 use SP\Core\Session as CoreSession;
+use SP\DataModel\NoticeData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Mgmt\Notices\Notice;
 use SP\Util\Json;
 
 /**
@@ -39,6 +41,8 @@ use SP\Util\Json;
  */
 class LoginController
 {
+    const WARNING_TIME = 432000;
+
     /**
      * @var PluginBase
      */
@@ -58,21 +62,25 @@ class LoginController
      * Obtener los datos para el interface de autentificación en 2 pasos
      *
      * @param ControllerBase $Controller
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function get2FA(ControllerBase $Controller)
     {
-        $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'main';
-
         $Controller->view->addTemplate('body-header');
 
         if (Request::analyze('f', 0) === 1) {
+            $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'main';
+
             $Controller->view->addTemplate('login-2fa', $base);
 
             $Controller->view->assign('action', Request::analyze('a'));
-            $Controller->view->assign('userId', Request::analyze('i'));
-            $Controller->view->assign('time', Request::analyze('t'));
+            $Controller->view->assign('userId', Request::analyze('i', 0));
+            $Controller->view->assign('time', Request::analyze('t', 0));
 
             $Controller->view->assign('actionId', ActionController::ACTION_TWOFA_CHECKCODE);
+
+            $this->checkExpireTime();
         } else {
             $Controller->showError(ControllerBase::ERR_UNAVAILABLE, false);
         }
@@ -86,6 +94,8 @@ class LoginController
 
     /**
      * Comprobar 2FA en el login
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkLogin()
     {
@@ -103,9 +113,46 @@ class LoginController
             $JsonResponse = new JsonResponse();
             $JsonResponse->setData($data);
             $JsonResponse->setStatus(0);
+
             Json::returnJson($JsonResponse);
         } else {
             Session::setTwoFApass(true);
+        }
+    }
+
+    /**
+     * Comprobar la caducidad del código
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function checkExpireTime()
+    {
+        /** @var AuthenticatorData[] $data */
+        $data = $this->Plugin->getData();
+
+        $userId = Request::analyze('i', 0);
+
+        if (!isset($data[$userId]) || $data[$userId]->getExpireDays() === 0) {
+            return;
+        }
+
+        $NoticeData = new NoticeData();
+        $NoticeData->setNoticeComponent($this->Plugin->getName());
+        $NoticeData->setNoticeUserId($userId);
+
+        if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0){
+            return;
+        }
+
+        $expireTime = $data[$userId]->getDate() + ($data[$userId]->getExpireDays() * 86400);
+        $timeRemaining = $expireTime - time();
+
+        if ($timeRemaining <= self::WARNING_TIME) {
+            $NoticeData->setNoticeType(_('Aviso Caducidad'));
+            $NoticeData->setNoticeDescription(sprintf(_('El código 2FA se ha de restablecer en %d días'), $timeRemaining / 86400));
+            $NoticeData->setNoticeUserId($userId);
+
+            Notice::getItem($NoticeData)->add();
         }
     }
 }

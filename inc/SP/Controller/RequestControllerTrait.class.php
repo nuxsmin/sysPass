@@ -93,6 +93,8 @@ trait RequestControllerTrait
 
     /**
      * Acción no disponible
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function invalidAction()
     {

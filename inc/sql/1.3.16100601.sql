@@ -358,3 +358,17 @@ CREATE TABLE `plugins` (
   `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`plugin_id`),
   UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC));
+
+CREATE TABLE `notices` (
+  `notice_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `notice_type` VARCHAR(100) NULL,
+  `notice_component` VARCHAR(100) NOT NULL,
+  `notice_description` VARCHAR(500) NOT NULL,
+  `notice_date` INT UNSIGNED NOT NULL,
+  `notice_checked` BIT(1) NULL DEFAULT b'0',
+  `notice_userId` SMALLINT(5) UNSIGNED NULL,
+  `notice_sticky` BIT(1) NULL DEFAULT b'0',
+  `notice_onlyAdmin` BIT(1) NULL DEFAULT b'0',
+  PRIMARY KEY (`notice_id`),
+  INDEX `IDX_userId` (`notice_userId` ASC, `notice_checked` ASC, `notice_date` ASC),
+  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC));

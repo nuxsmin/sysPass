@@ -27,8 +27,6 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Core\Session;
-use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;

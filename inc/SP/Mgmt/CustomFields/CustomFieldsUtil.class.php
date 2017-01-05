@@ -28,7 +28,6 @@ namespace SP\Mgmt\CustomFields;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Crypt;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Log\Log;
 use SP\Storage\DB;

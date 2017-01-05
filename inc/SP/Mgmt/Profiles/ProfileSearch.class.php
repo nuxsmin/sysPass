@@ -31,7 +31,6 @@ use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
 
 /**
  * Class ProfileSearch

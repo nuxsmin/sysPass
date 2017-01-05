@@ -27,9 +27,7 @@ namespace SP\Account;
 
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
-use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\AccountHistoryData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\CustomFields\CustomField;
@@ -38,8 +36,6 @@ use SP\Mgmt\Groups\GroupAccounts;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Storage\DB;
 use SP\Log\Email;
-use SP\Mgmt\Files\File;
-use SP\Mgmt\Groups\Group;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Core\Session;

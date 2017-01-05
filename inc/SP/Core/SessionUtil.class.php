@@ -28,8 +28,6 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
-use SP\Mgmt\Profiles\ProfileUtil;
-use SP\Mgmt\Users\User;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 

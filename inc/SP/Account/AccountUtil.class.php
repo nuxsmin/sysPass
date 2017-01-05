@@ -26,7 +26,6 @@
 namespace SP\Account;
 
 use SP\Core\Session;
-use SP\DataModel\AccountSearchData;
 use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
 use SP\Core\Exceptions\SPException;

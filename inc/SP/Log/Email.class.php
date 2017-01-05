@@ -25,7 +25,6 @@
 
 namespace SP\Log;
 
-use PHPMailer;
 use SP\Config\Config;
 use SP\Html\Html;
 use SP\Core\Init;

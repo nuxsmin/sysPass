@@ -32,7 +32,6 @@ use SP\Log\Log;
 use SP\Core\Exceptions\SPException;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 

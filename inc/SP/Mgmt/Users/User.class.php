@@ -27,7 +27,6 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Auth\Auth;
 use SP\Auth\AuthUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;

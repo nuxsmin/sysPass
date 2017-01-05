@@ -41,8 +41,8 @@ if (!$file) {
 
     if ($group === 0) {
         $Minify->addFile('jquery-1.11.2.min.js')
+            ->addFile('jquery-ui.min.js')
             ->addFile('jquery.fileDownload.min.js')
-            ->addFile('jquery.tagsinput.min.js')
             ->addFile('clipboard.min.js')
             ->addFile('selectize.min.js')
             ->addFile('selectize-plugins.min.js')
@@ -54,15 +54,14 @@ if (!$file) {
             ->addFile('toastr.min.js')
             ->addFile('jquery.magnific-popup.min.js');
     } elseif ($group === 1) {
-        // FIXME: utilizar versiones .min
-        $Minify->addFile('app.js')
-            ->addFile('app-triggers.js')
-            ->addFile('app-actions.js')
-            ->addFile('app-requests.js')
-            ->addFile('app-main.js');
+        $Minify->addFile('app.min.js')
+            ->addFile('app-triggers.min.js')
+            ->addFile('app-actions.min.js')
+            ->addFile('app-requests.min.js')
+            ->addFile('app-main.min.js');
     }
 
-    $Minify->getMinified(true);
+    $Minify->getMinified();
 } elseif ($file && $base) {
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);
