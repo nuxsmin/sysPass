@@ -576,16 +576,17 @@ class AccountHistory extends AccountBase implements AccountInterface
     /**
      * Eliminar una cuenta del historial
      *
+     * @param $id
      * @return bool
      */
-    public function deleteAccount()
+    public function deleteAccount($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+            'DELETE FROM accHistory WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->getId(), 'id');
+        $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
             return false;

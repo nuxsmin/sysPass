@@ -307,7 +307,7 @@ class Account extends AccountBase implements AccountInterface
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
-        } elseif (is_array($queryRes) && count($queryRes) === 0){
+        } elseif (is_array($queryRes) && count($queryRes) === 0) {
             throw new SPException(SPException::SP_CRITICAL, _('La cuenta no existe'));
         }
 
@@ -430,51 +430,60 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
+     * @param $id
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public function deleteAccount()
+    public function deleteAccount($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $itemId) {
+                $this->deleteAccount($itemId);
+            }
+
+            return true;
+        }
+
         $Log = new Log(_('Eliminar Cuenta'));
 
         // Guardamos una copia de la cuenta en el histórico
-        if (!AccountHistory::addHistory($this->accountData->getAccountId(), true)) {
+        if (!AccountHistory::addHistory($id, true)) {
             $Log->addDescription(_('Error al actualizar el historial'));
             $Log->writeLog();
 
             throw new SPException(SPException::SP_ERROR, _('Error al eliminar la cuenta'));
         }
 
-        $accountInfo = array('account_name,customer_name');
+        $accountInfo = ['account_name,customer_name'];
         $this->getAccountInfoById($accountInfo);
 
         $Log->addDetails(Html::strongText(_('Cliente')), $this->cacheParams['customer_name']);
-        $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $this->accountData->getAccountId()));
+        $Log->addDetails(Html::strongText(_('Cuenta')), sprintf('%s (%s)', $this->accountData->getAccountName(), $id));
 
         $query = /** @lang SQL */
-            'DELETE FROM accounts WHERE account_id = :id LIMIT 1';
+            'DELETE FROM accounts WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
+        $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al eliminar la cuenta'));
         }
 
         try {
-            GroupAccounts::getItem()->delete($this->accountData->getAccountId());
-            FileUtil::deleteAccountFiles($this->accountData->getAccountId());
+            GroupAccounts::getItem()->delete($id);
+            FileUtil::deleteAccountFiles($id);
 
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setModule(ActionsInterface::ACTION_ACC);
-            CustomField::getItem($CustomFieldData)->delete($this->accountData->getAccountId());
+            CustomField::getItem($CustomFieldData)->delete($id);
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription($e->getMessage());
         }
 
-        if (!UserAccounts::deleteUsersForAccount($this->accountData->getAccountId())) {
+        if (!UserAccounts::deleteUsersForAccount($id)) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(_('Error al eliminar usuarios asociados a la cuenta'));
         }
@@ -524,8 +533,8 @@ class Account extends AccountBase implements AccountInterface
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
      * @param string $currentMasterPass con la clave maestra actual
-     * @param string $newMasterPass     con la nueva clave maestra
-     * @param string $newHash           con el nuevo hash de la clave maestra
+     * @param string $newMasterPass con la nueva clave maestra
+     * @param string $newHash con el nuevo hash de la clave maestra
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */

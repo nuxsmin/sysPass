@@ -590,7 +590,8 @@ class ItemActionController implements ItemControllerInterface
                 $this->jsonResponse->setDescription(_('Cuenta restaurada'));
                 break;
             case ActionsInterface::ACTION_ACC_DELETE:
-                $Account->deleteAccount();
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE:
+                $Account->deleteAccount($this->itemId);
 
                 $this->jsonResponse->setDescription(_('Cuenta eliminada'));
                 break;

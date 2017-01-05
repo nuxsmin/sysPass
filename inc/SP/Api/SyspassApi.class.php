@@ -188,15 +188,13 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_DELETE);
 
-        $AccountData = new AccountData();
-        $AccountData->setAccountId($this->getParam('id', true));
+        $accountId = $this->getParam('id', true);
 
-        $Account = new Account($AccountData);
-
-        $Account->deleteAccount();
+        $Account = new Account();
+        $Account->deleteAccount($accountId);
 
         $ret = [
-            'accountId' => $AccountData->getAccountId(),
+            'accountId' => $accountId,
             'result' => _('Cuenta eliminada'),
             'resultCode' => 0
         ];

@@ -47,9 +47,10 @@ interface AccountInterface
     public function createAccount();
 
     /**
+     * @param $id
      * @return mixed
      */
-    public function deleteAccount();
+    public function deleteAccount($id);
 
     /**
      * @param      $currentMasterPass

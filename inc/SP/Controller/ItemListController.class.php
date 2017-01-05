@@ -250,6 +250,26 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     }
 
     /**
+     * Obtener los datos para la pestaña de tokens de API
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getPluginsList()
+    {
+        $this->setAction(self::ACTION_MGM_PLUGINS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $Grid = $this->Grids->getPluginsGrid();
+        $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->view->append('tabs', $Grid);
+    }
+
+    /**
      * Obtener los datos para la pestaña de usuarios
      *
      * @throws \InvalidArgumentException
@@ -348,26 +368,6 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
 
         $Grid = $this->Grids->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->ItemSearchData));
-        $Grid->updatePager();
-
-        $this->view->append('tabs', $Grid);
-    }
-
-    /**
-     * Obtener los datos para la pestaña de tokens de API
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function getPluginsList()
-    {
-        $this->setAction(self::ACTION_MGM_PLUGINS);
-
-        if (!$this->checkAccess()) {
-            return;
-        }
-
-        $Grid = $this->Grids->getPluginsGrid();
-        $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);
