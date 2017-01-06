@@ -606,7 +606,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      */
-    private function favoriteAction()
+    protected function favoriteAction()
     {
         $userId = Session::getUserData()->getUserId();
 
@@ -629,7 +629,7 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Importar usuarios de LDAP
      */
-    private function ldapImportAction()
+    protected function ldapImportAction()
     {
         if (UserLdapSync::run()) {
             $this->jsonResponse->setStatus(0);
@@ -645,8 +645,10 @@ class ItemActionController implements ItemControllerInterface
 
     /**
      * Acciones sobre plugins
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
-    private function pluginAction()
+    protected function pluginAction()
     {
         $PluginData = new PluginData();
         $PluginData->setPluginId($this->itemId);

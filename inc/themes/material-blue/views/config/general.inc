@@ -5,8 +5,11 @@
 ?>
 <div id="tabs-<?php echo $config_tabIndex; ?>" class="mdl-tabs__panel">
     <div class="tab-data">
-        <form method="post" name="frmConfig" id="frmConfig" class="form-action" data-onsubmit="config/save"
-              data-type="general" data-hash="">
+        <form method="post" name="frmConfig" id="frmConfig" class="form-action"
+              data-onsubmit="config/save"
+              data-type="general"
+              data-reload="1"
+              data-hash="">
 
             <?php include $this->includeTemplate('general-site');; ?>
             <?php include $this->includeTemplate('general-events'); ?>

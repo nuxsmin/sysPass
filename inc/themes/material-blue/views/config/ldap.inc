@@ -7,7 +7,9 @@
             <?php echo _('LDAP'); ?>
         </div>
 
-        <form method="post" name="frmLdap" id="frmLdap" class="form-action" data-onsubmit="config/save" data-type="ldap"
+        <form method="post" name="frmLdap" id="frmLdap" class="form-action"
+              data-onsubmit="config/save"
+              data-type="ldap"
               data-hash="">
             <table id="tblLdap" class="data tblConfig round">
                 <?php if ($ldapIsAvailable || $isDemoMode): ?>

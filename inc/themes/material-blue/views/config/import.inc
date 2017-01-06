@@ -74,6 +74,20 @@ use SP\Core\Session; ?>
                 </tr>
                 <tr>
                     <td class="descField">
+                        <?php echo _('Clave Maestra'); ?>
+                    </td>
+                    <td class="valField">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="masterPwd" name="masterPwd" type="password"
+                                   class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
+                                   maxlength="255" />
+                            <label class="mdl-textfield__label"
+                                   for="masterPwd"><?php echo _('Clave Maestra'); ?></label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField">
                         <?php echo _('Delimitador CSV'); ?>
                     </td>
                     <td class="valField">

@@ -391,6 +391,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('update');
 
         $this->view->assign('hasUpdates', false);
+        $this->view->assign('updateStatus', null);
 
         if (Config::getConfig()->isCheckUpdates()) {
             $updates = Util::checkUpdates();

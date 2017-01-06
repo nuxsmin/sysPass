@@ -420,9 +420,9 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    if ($obj.data("nextaction-id") !== "undefined") {
+                    if ($obj.data("nextaction-id") !== undefined) {
                         doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-                    } else {
+                    } else if ($obj.data("reload") !== undefined) {
                         setTimeout(function () {
                             Common.redirect("index.php");
                         }, 2000);
@@ -440,7 +440,7 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && $obj.data("nextaction-id") !== "undefined") {
+                if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
@@ -455,7 +455,7 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && $obj.data("nextaction-id") !== "undefined") {
+                if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
@@ -470,7 +470,7 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && typeof $obj.data("nextaction-id") !== "undefined") {
+                if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
@@ -492,7 +492,7 @@ sysPass.Actions = function (Common) {
             opts.data = {fileId: $obj.data("item-id"), sk: Common.sk.get(), actionId: $obj.data("action-id")};
 
             Common.appRequests().getActionCall(opts, function (response) {
-                if (typeof response.status !== "undefined" && response.status === 1) {
+                if (response.status !== undefined && response.status === 1) {
                     Common.msg.out(response);
                     return;
                 }
@@ -733,7 +733,7 @@ sysPass.Actions = function (Common) {
 
             var response = Common.appRequests().getActionCall(opts);
 
-            if (typeof response.responseJSON.csrf !== "undefined") {
+            if (response.responseJSON.csrf !== undefined) {
                 Common.sk.set(response.responseJSON.csrf);
             }
 
@@ -873,7 +873,7 @@ sysPass.Actions = function (Common) {
         show: function ($obj) {
             log.info("appMgmt:show");
 
-            if ($obj.data("item-dst") || $obj.data("activetab") === "undefined") {
+            if ($obj.data("item-dst") || $obj.data("activetab") === undefined) {
                 log.info($obj.data("activetab"));
 
                 appMgmt.refreshTab = false;
@@ -1041,7 +1041,7 @@ sysPass.Actions = function (Common) {
      */
     var eventlog = {
         nav: function ($obj) {
-            if (typeof $obj.data("start") === "undefined") {
+            if ($obj.data("start") === undefined) {
                 return false;
             }
 
