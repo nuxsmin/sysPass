@@ -26,6 +26,7 @@
 
 namespace SP\Import;
 
+use SP\Http\Message;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Core\Exceptions\SPException;
@@ -38,61 +39,28 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Import
 {
     /**
-     * @var string
+     * @var ImportParams Parámetros de importación
      */
-    public static $importPwd = '';
-    /**
-     * @var int
-     */
-    public static $defUser = 0;
-    /**
-     * @var int
-     */
-    public static $defGroup = 0;
-    /**
-     * @var string
-     */
-    public static $csvDelimiter = '';
+    protected $ImportParams;
 
     /**
-     * @param string $importPwd
+     * Import constructor.
+     *
+     * @param ImportParams $ImportParams
      */
-    public static function setImportPwd($importPwd)
+    public function __construct(ImportParams $ImportParams)
     {
-        self::$importPwd = $importPwd;
-    }
-
-    /**
-     * @param int $defUser
-     */
-    public static function setDefUser($defUser)
-    {
-        self::$defUser = $defUser;
-    }
-
-    /**
-     * @param int $defGroup
-     */
-    public static function setDefGroup($defGroup)
-    {
-        self::$defGroup = $defGroup;
-    }
-
-    /**
-     * @param string $csvDelimiter
-     */
-    public static function setCsvDelimiter($csvDelimiter)
-    {
-        self::$csvDelimiter = $csvDelimiter;
+        $this->ImportParams = $ImportParams;
     }
 
     /**
      * Iniciar la importación de cuentas.
      *
-     * @param array  $fileData  Los datos del archivo
-     * @return array resultado del proceso
+     * @param array $fileData Los datos del archivo
+     * @return Message
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public static function doImport(&$fileData)
+    public function doImport(&$fileData)
     {
         $Log = new Log(_('Importar Cuentas'));
 
@@ -102,32 +70,27 @@ class Import
             switch ($file->getFileType()) {
                 case 'text/csv':
                 case 'application/vnd.ms-excel':
-                    $import = new CsvImport($file);
-                    $import->setFieldDelimiter(self::$csvDelimiter);
+                    $Import = new CsvImport($file, $this->ImportParams);
                     break;
                 case 'text/xml':
-                    $import = new XmlImport($file);
-                    $import->setImportPass(self::$importPwd);
+                    $Import = new XmlImport($file, $this->ImportParams);
                     break;
                 default:
                     throw new SPException(
                         SPException::SP_WARNING,
-                        _('Tipo mime no soportado'),
+                        sprintf(_('Tipo mime no soportado ("%s")'), $file->getFileType()),
                         _('Compruebe el formato del archivo')
                     );
             }
 
-            $import->setUserId(self::$defUser);
-            $import->setUserGroupId(self::$defGroup);
-            $import->doImport();
+            $Import->doImport();
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription($e->getMessage());
             $Log->addDetails(_('Ayuda'), $e->getHint());
             $Log->writeLog();
 
-            $result['error'] = array('description' => $e->getMessage(), 'hint' => $e->getHint());
-            return $result;
+            throw $e;
         }
 
         $Log->addDescription(_('Importación finalizada'));
@@ -135,11 +98,10 @@ class Import
 
         Email::sendEmail($Log);
 
-        $result['ok'] = array(
-            _('Importación finalizada'),
-            _('Revise el registro de eventos para más detalles')
-        );
+        $Message = new Message();
+        $Message->setDescription(_('Importación finalizada'));
+        $Message->setHint(_('Revise el registro de eventos para más detalles'));
 
-        return $result;
+        return $Message;
     }
 }

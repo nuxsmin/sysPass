@@ -9,7 +9,7 @@ use SP\Core\Session; ?>
         </div>
 
         <table class="data round">
-            <form method="post" name="frmImport" id="form-action" data-onsubmit="config/import" data-hash="">
+            <form method="post" name="frmImport" id="frmImport">
                 <tr>
                     <td class="descField">
                         <?php echo _('Usuario por Defecto'); ?>
@@ -78,11 +78,11 @@ use SP\Core\Session; ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="masterPwd" name="masterPwd" type="password"
+                            <input id="importMasterPwd" name="importMasterPwd" type="password"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                    maxlength="255" />
                             <label class="mdl-textfield__label"
-                                   for="masterPwd"><?php echo _('Clave Maestra'); ?></label>
+                                   for="importMasterPwd"><?php echo _('Clave Maestra'); ?></label>
                         </div>
                     </td>
                 </tr>

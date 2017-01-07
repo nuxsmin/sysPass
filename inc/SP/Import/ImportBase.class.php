@@ -26,15 +26,16 @@
 namespace SP\Import;
 
 use SP\Account\Account;
+use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
+use SP\DataModel\TagData;
 use SP\Log\Log;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Categories\Category;
-use SP\Core\Session;
+use SP\Mgmt\Tags\Tag;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -46,66 +47,24 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 abstract class ImportBase
 {
     /**
-     * El id de usuario propietario de la cuenta.
-     *
-     * @var int
+     * @var ImportParams
      */
-    public $userId;
-    /**
-     * El id del grupo propietario de la cuenta.
-     *
-     * @var int
-     */
-    public $userGroupId;
-    /**
-     * Nombre de la categoría.
-     *
-     * @var string
-     */
-    protected $categoryName = '';
-    /**
-     * Nombre del cliente.
-     *
-     * @var string
-     */
-    protected $customerName = '';
-    /**
-     * Descrición de la categoría.
-     *
-     * @var string
-     */
-    protected $categoryDescription = '';
-    /**
-     * Descripción del cliente.
-     *
-     * @var string
-     */
-    protected $customerDescription = '';
+    protected $ImportParams;
     /**
      * @var FileImport
      */
     protected $file;
+
     /**
-     * La clave de importación
+     * ImportBase constructor.
      *
-     * @var string
+     * @param FileImport   $File
+     * @param ImportParams $ImportParams
      */
-    protected $importPass;
-
-    /**
-     * @return string
-     */
-    public function getImportPass()
+    public function __construct(FileImport $File, ImportParams $ImportParams)
     {
-        return $this->importPass;
-    }
-
-    /**
-     * @param string $importPass
-     */
-    public function setImportPass($importPass)
-    {
-        $this->importPass = $importPass;
+        $this->file = $File;
+        $this->ImportParams = $ImportParams;
     }
 
     /**
@@ -115,38 +74,6 @@ abstract class ImportBase
      * @return bool
      */
     public abstract function doImport();
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        return $this->categoryName;
-    }
-
-    /**
-     * @param string $categoryName
-     */
-    public function setCategoryName($categoryName)
-    {
-        $this->categoryName = $categoryName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryDescription()
-    {
-        return $this->categoryDescription;
-    }
-
-    /**
-     * @param string $categoryDescription
-     */
-    public function setCategoryDescription($categoryDescription)
-    {
-        $this->categoryDescription = $categoryDescription;
-    }
 
     /**
      * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
@@ -186,122 +113,85 @@ abstract class ImportBase
      */
     protected function addAccount(AccountExtData $AccountData)
     {
-        $userId = $this->getUserId();
-        $groupId = $this->getUserGroupId();
-
-        if (null === $userId || $userId === 0) {
-            $this->setUserId(Session::getUserData()->getUserId());
+        if ($AccountData->getAccountCategoryId() === 0) {
+            Log::writeNewLog(__FUNCTION__, _('Id de categoría no definido. No es posible importar cuenta.'), Log::INFO);
+            return false;
+        } elseif ($AccountData->getAccountCustomerId() === 0) {
+            Log::writeNewLog(__FUNCTION__, _('Id de cliente no definido. No es posible importar cuenta.'), Log::INFO);
+            return false;
         }
 
-        if (null === $groupId || $groupId === 0) {
-            $this->setUserGroupId(Session::getUserData()->getUserGroupId());
+        $encryptPass = false;
+
+        if ($this->ImportParams->getImportMasterPwd() !== '') {
+            $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->ImportParams->getImportMasterPwd());
+            $AccountData->setAccountPass($pass);
+
+            $encryptPass = true;
         }
 
-        $AccountData->setAccountUserId($this->getUserId());
-        $AccountData->setAccountUserGroupId($this->getUserGroupId());
+        $AccountData->setAccountUserId($this->ImportParams->getDefaultUser());
+        $AccountData->setAccountUserGroupId($this->ImportParams->getDefaultGroup());
 
         $Account = new Account($AccountData);
-        $Account->createAccount();
-    }
+        $Account->createAccount($encryptPass);
 
-    /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserGroupId()
-    {
-        return $this->userGroupId;
-    }
-
-    /**
-     * @param int $userGroupId
-     */
-    public function setUserGroupId($userGroupId)
-    {
-        $this->userGroupId = $userGroupId;
+        return true;
     }
 
     /**
      * Añadir una categoría y devolver el Id
      *
-     * @param $name
-     * @param $description
-     * @return int
+     * @param CategoryData $CategoryData
+     * @return Category|null
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function addCategory($name, $description = null)
+    protected function addCategory(CategoryData $CategoryData)
     {
-        $CategoryData = new CategoryData(null, $name, $description);
-
         try {
-            return Category::getItem($CategoryData)->add()->getItemData()->getCategoryId();
+            return Category::getItem($CategoryData)->add();
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
+
+        return null;
     }
 
     /**
      * Añadir un cliente y devolver el Id
      *
-     * @param $name
-     * @param $description
-     * @return int
+     * @param CustomerData $CustomerData
+     * @return Customer|null
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    protected function addCustomer($name, $description = null)
+    protected function addCustomer(CustomerData $CustomerData)
     {
-        $CustomerData = new CustomerData(null, $name, $description);
-
         try {
-            return Customer::getItem($CustomerData)->add()->getItemData()->getCustomerId();
+            return Customer::getItem($CustomerData)->add();
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
+
+        return null;
     }
 
     /**
-     * @return string
+     * Añadir una etiqueta y devolver el Id
+     *
+     * @param TagData $TagData
+     * @return Tag|null
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function getCustomerName()
+    protected function addTag(TagData $TagData)
     {
-        return $this->customerName;
-    }
+        try {
+            return Tag::getItem($TagData)->add();
+        } catch (SPException $e) {
+            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+        }
 
-    /**
-     * @param string $customerName
-     */
-    public function setCustomerName($customerName)
-    {
-        $this->customerName = $customerName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerDescription()
-    {
-        return $this->customerDescription;
-    }
-
-    /**
-     * @param string $customerDescription
-     */
-    public function setCustomerDescription($customerDescription)
-    {
-        $this->customerDescription = $customerDescription;
+        return null;
     }
 }

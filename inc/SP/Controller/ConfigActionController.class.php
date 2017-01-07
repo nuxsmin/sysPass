@@ -29,12 +29,16 @@ use SP\Account\AccountHistory;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
+use SP\Core\Backup;
 use SP\Core\Crypt;
 use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
+use SP\Core\XmlExport;
 use SP\Html\Html;
 use SP\Http\Request;
+use SP\Import\Import;
+use SP\Import\ImportParams;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
@@ -86,6 +90,15 @@ class ConfigActionController implements ItemControllerInterface
                     break;
                 case ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
                     $this->tempMasterPassAction();
+                    break;
+                case ActionsInterface::ACTION_CFG_IMPORT:
+                    $this->importAction();
+                    break;
+                case ActionsInterface::ACTION_CFG_EXPORT:
+                    $this->exportAction();
+                    break;
+                case ActionsInterface::ACTION_CFG_BACKUP:
+                    $this->backupAction();
                     break;
                 default:
                     $this->invalidAction();
@@ -508,7 +521,7 @@ class ConfigActionController implements ItemControllerInterface
     }
 
     /**
-     * Acción para generarclave maestra temporal
+     * Acción para generar clave maestra temporal
      */
     protected function tempMasterPassAction()
     {
@@ -532,5 +545,75 @@ class ConfigActionController implements ItemControllerInterface
 
         $Log->writeLog();
         Email::sendEmail($Log);
+    }
+
+    /**
+     * Acción para importar cuentas
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function importAction()
+    {
+        if (Checks::demoIsEnabled()) {
+            $this->jsonResponse->setDescription(_('Ey, esto es una DEMO!!'));
+            return;
+        }
+
+        $ImportParams = new ImportParams();
+        $ImportParams->setDefaultUser(Request::analyze('defUser', Session::getUserData()->getUserId()));
+        $ImportParams->setDefaultGroup(Request::analyze('defGroup', Session::getUserData()->getUserGroupId()));
+        $ImportParams->setImportPwd(Request::analyzeEncrypted('importPwd'));
+        $ImportParams->setImportMasterPwd(Request::analyzeEncrypted('importMasterPwd'));
+        $ImportParams->setCsvDelimiter(Request::analyze('csvDelimiter'));
+
+        $Import = new Import($ImportParams);
+        $Message = $Import->doImport($_FILES['inFile']);
+
+        $this->jsonResponse->setDescription($Message->getDescription());
+        $this->jsonResponse->addMessage($Message->getHint());
+        $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * Acción para exportar cuentas
+     */
+    protected function exportAction()
+    {
+        $exportPassword = Request::analyzeEncrypted('exportPwd');
+        $exportPasswordR = Request::analyzeEncrypted('exportPwdR');
+
+        if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
+            $this->jsonResponse->setDescription(_('Las claves no coinciden'));
+            return;
+        }
+
+        if (!XmlExport::doExport($exportPassword)) {
+            $this->jsonResponse->setDescription(_('Error al realizar la exportación'));
+            $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
+            return;
+        }
+
+        $this->jsonResponse->setStatus(0);
+        $this->jsonResponse->setDescription(_('Proceso de exportación finalizado'));
+    }
+
+    /**
+     * Acción para realizar el backup de sysPass
+     */
+    protected function backupAction()
+    {
+        if (Checks::demoIsEnabled()) {
+            $this->jsonResponse->setDescription(_('Ey, esto es una DEMO!!'));
+            return;
+        }
+
+        if (!Backup::doBackup()) {
+            $this->jsonResponse->setDescription(_('Error al realizar el backup'));
+            $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
+            return;
+        }
+
+        $this->jsonResponse->setStatus(0);
+        $this->jsonResponse->setDescription(_('Proceso de backup finalizado'));
     }
 }

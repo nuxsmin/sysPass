@@ -298,10 +298,11 @@ sysPass.Triggers = function (Common) {
 
                 upload.url = Common.appActions().ajaxUrl.config.import;
                 upload.beforeSendAction = function () {
-                    upload.requestData({
+                    upload.setRequestData({
                         sk: Common.sk.get(),
                         csvDelimiter: $("#csvDelimiter").val(),
                         importPwd: $("#importPwd").val(),
+                        importMasterPwd: $("#importMasterPwd").val(),
                         import_defaultuser: $("#import_defaultuser").val(),
                         import_defaultgroup: $("#import_defaultgroup").val()
                     });

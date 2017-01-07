@@ -25,8 +25,7 @@
 
 namespace SP\Import;
 
-use SP\DataModel\AccountData;
-use SP\Core\Crypt;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\Mgmt\Customers\Customer;
@@ -50,34 +49,7 @@ abstract class CsvImportBase extends ImportBase
     /**
      * @var array
      */
-    protected $mapFields = array();
-    /**
-     * @var string
-     */
-    protected $fieldDelimiter = ';';
-
-    /**
-     * Constructor
-     *
-     * @param $file FileImport Instancia de la clase FileImport
-     * @throws SPException
-     */
-    public function __construct($file)
-    {
-        try {
-            $this->file = $file;
-        } catch (SPException $e) {
-            throw $e;
-        }
-    }
-
-    /**
-     * @param string $fieldDelimiter
-     */
-    public function setFieldDelimiter($fieldDelimiter)
-    {
-        $this->fieldDelimiter = $fieldDelimiter;
-    }
+    protected $mapFields = [];
 
     /**
      * @param int $numFields
@@ -99,6 +71,7 @@ abstract class CsvImportBase extends ImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function processAccounts()
     {
@@ -108,7 +81,7 @@ abstract class CsvImportBase extends ImportBase
 
         foreach ($this->file->getFileContent() as $data) {
             $line++;
-            $fields = explode($this->fieldDelimiter, $data);
+            $fields = str_getcsv($data, $this->ImportParams->getCsvDelimiter());
             $numfields = count($fields);
 
             // Comprobar el número de campos de la línea
@@ -121,30 +94,31 @@ abstract class CsvImportBase extends ImportBase
             }
 
             // Eliminar las " del principio/fin de los campos
-            array_walk($fields,
-                function (&$value, $key) {
-                    $value = trim($value, '"');
-                }
-            );
+//            array_walk($fields,
+//                function (&$value, $key) {
+//                    $value = trim($value, '"');
+//                }
+//            );
 
             // Asignar los valores del array a variables
             list($accountName, $customerName, $categoryName, $url, $login, $password, $notes) = $fields;
 
-            // Obtener los ids de cliente, categoría y la clave encriptada
-            $customerId = Customer::getItem(new CustomerData(null, $customerName))->add()->getItemData()->getCustomerId();
-            $categoryId = Category::getItem(new CategoryData(null, $categoryName))->add()->getItemData()->getCategoryId();
-            $pass = Crypt::encryptData($password);
+            // Obtener los ids de cliente y categoría
+            $CustomerData = new CustomerData(null, $customerName);
+            Customer::getItem($CustomerData)->add();
+
+            $CategoryData = new CategoryData(null, $categoryName);
+            Category::getItem($CategoryData)->add();
 
             // Crear la nueva cuenta
-            $AccountData = new AccountData();
+            $AccountData = new AccountExtData();
             $AccountData->setAccountName($accountName);
             $AccountData->setAccountLogin($login);
-            $AccountData->setAccountCategoryId($categoryId);
-            $AccountData->setAccountCustomerId($customerId);
+            $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
+            $AccountData->setAccountCustomerId($CustomerData->getCustomerId());
             $AccountData->setAccountNotes($notes);
             $AccountData->setAccountUrl($url);
-            $AccountData->setAccountPass($pass['data']);
-            $AccountData->setAccountIV($pass['iv']);
+            $AccountData->setAccountPass($password);
 
             try {
                 $this->addAccount($AccountData);

@@ -65,6 +65,7 @@ abstract class ItemBase
      *
      * @param $itemData
      * @return static
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public final static function getItem($itemData = null)
     {

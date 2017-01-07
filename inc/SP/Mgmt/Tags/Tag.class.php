@@ -76,12 +76,22 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT tag_hash FROM tags WHERE tag_hash = ?';
+            'SELECT tag_id FROM tags WHERE tag_hash = ?';
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getTagHash());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes !== false) {
+            if ($Data->getQueryNumRows() === 0) {
+                return false;
+            } elseif ($Data->getQueryNumRows() === 1) {
+                $this->itemData->setTagId($queryRes->tag_id);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -185,7 +195,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name FROM tags ORDER BY tag_name';
+            'SELECT tag_id, tag_name, tag_hash FROM tags ORDER BY tag_name';
 
         $Data = new QueryData();
         $Data->setQuery($query);

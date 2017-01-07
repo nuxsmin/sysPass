@@ -46,7 +46,7 @@ $data = array(
     'app_root' => Init::$WEBURI,
     'pk' => '',
     'max_file_size' => $Config->getFilesAllowedSize(),
-    'check_updates' => ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserData()->isUserIsAdminApp() || Checks::demoIsEnabled()),
+    'check_updates' => Session::getAuthCompleted() && ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserData()->isUserIsAdminApp() || Checks::demoIsEnabled()),
     'timezone' => date_default_timezone_get(),
     'debug' => DEBUG || $Config->isDebug()
 );

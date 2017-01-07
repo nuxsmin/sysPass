@@ -57,7 +57,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
+            throw new SPException(SPException::SP_WARNING, _('Categoría duplicada'));
         }
 
         $query = /** @lang SQL */
@@ -100,7 +100,17 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
         $Data->addParam($this->itemData->getCategoryName());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes !== false) {
+            if ($Data->getQueryNumRows() === 0) {
+                return false;
+            } elseif ($Data->getQueryNumRows() === 1) {
+                $this->itemData->setCategoryId($queryRes->category_id);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -252,7 +262,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT category_id, category_name, category_description FROM categories ORDER BY category_name';
+            'SELECT category_id, category_name, category_description, category_hash FROM categories ORDER BY category_name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

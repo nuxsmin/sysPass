@@ -33,6 +33,7 @@ use SP\Log\Email;
 use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Tags\Tag;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -132,6 +133,7 @@ class XmlExport
             $this->createMeta();
             $this->createCategories();
             $this->createCustomers();
+            $this->createTags();
             $this->createAccounts();
             $this->createHash();
             $this->writeXML();
@@ -316,20 +318,53 @@ class XmlExport
             foreach ($customers as $CustomerData) {
                 $customerName = $this->xml->createElement('name', $this->escapeChars($CustomerData->getCustomerName()));
                 $customerDescription = $this->xml->createElement('description', $this->escapeChars($CustomerData->getCustomerDescription()));
-                $customerHash = $this->xml->createElement('hash', $this->escapeChars($CustomerData->getCustomerHash()));
 
-                // Crear el nodo de categoría
+                // Crear el nodo de clientes
                 $nodeCustomer = $this->xml->createElement('Customer');
                 $nodeCustomer->setAttribute('id', $CustomerData->getCustomerId());
                 $nodeCustomer->appendChild($customerName);
                 $nodeCustomer->appendChild($customerDescription);
-                $nodeCustomer->appendChild($customerHash);
 
-                // Añadir categoría al nodo de categorías
+                // Añadir cliente al nodo de clientes
                 $nodeCustomers->appendChild($nodeCustomer);
             }
 
             $this->appendNode($nodeCustomers);
+        } catch (\DOMException $e) {
+            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+        }
+    }
+
+    /**
+     * Crear el nodo con los datos de las etiquetas
+     *
+     * #@throws SPException
+     */
+    private function createTags()
+    {
+        $Tags = Tag::getItem()->getAll();
+
+        if (count($Tags) === 0) {
+            return;
+        }
+
+        try {
+            // Crear el nodo de etiquetas
+            $nodeTags= $this->xml->createElement('Tags');
+
+            foreach ($Tags as $TagData) {
+                $tagName = $this->xml->createElement('name', $this->escapeChars($TagData->getTagName()));
+
+                // Crear el nodo de etiquetas
+                $nodeTag = $this->xml->createElement('Tag');
+                $nodeTag->setAttribute('id', $TagData->getTagId());
+                $nodeTag->appendChild($tagName);
+
+                // Añadir etiqueta al nodo de etiquetas
+                $nodeTags->appendChild($nodeTag);
+            }
+
+            $this->appendNode($nodeTags);
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
@@ -473,8 +508,8 @@ class XmlExport
      */
     private function checkExportDir()
     {
-        if (!is_dir($this->exportDir) && !@mkdir($this->exportDir, 0750)) {
-            throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->exportDir . ')');
+        if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
+            throw new SPException(SPException::SP_CRITICAL, sprintf(_('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
         }
 
         clearstatcache(true, $this->exportDir);

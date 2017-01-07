@@ -26,8 +26,9 @@
 namespace SP\Import;
 
 use SimpleXMLElement;
-use SP\DataModel\AccountData;
-use SP\Core\Crypt;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -39,20 +40,20 @@ class KeepassImport extends XmlImportBase
     /**
      * @var int
      */
-    private $customerId = 0;
-    /**
-     * @var int
-     */
-    private $categoryId = 0;
+    protected $customerId = 0;
 
     /**
      * Iniciar la importación desde KeePass
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doImport()
     {
-        $this->customerId = $this->addCustomer('KeePass');
+        $customerData = new CustomerData(null, 'KeePass');
+        $this->addCustomer($customerData);
+
+        $this->customerId = $customerData->getCustomerId();
 
         $this->processCategories($this->xml->Root->Group);
     }
@@ -62,6 +63,7 @@ class KeepassImport extends XmlImportBase
      *
      * @param SimpleXMLElement $xml El objeto XML del archivo de KeePass
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function processCategories(SimpleXMLElement $xml)
     {
@@ -71,10 +73,11 @@ class KeepassImport extends XmlImportBase
                     // Analizar grupo
                     if ($node->Group->Entry) {
                         // Crear la categoría
-                        $this->categoryId = $this->addCategory($group->Name, 'KeePass');
+                        $CategoryData = new CategoryData(null, $group->Name, 'KeePass');
+                        $this->addCategory($CategoryData);
 
                         // Crear cuentas
-                        $this->processAccounts($group->Entry);
+                        $this->processAccounts($group->Entry, $CategoryData->getCategoryId());
                     }
 
                     if ($group->Group) {
@@ -86,10 +89,11 @@ class KeepassImport extends XmlImportBase
 
             if ($node->Entry) {
                 // Crear la categoría
-                $this->categoryId = $this->addCategory($node->Name, 'KeePass');
+                $CategoryData = new CategoryData(null, $node->Name, 'KeePass');
+                $this->addCategory($CategoryData);
 
                 // Crear cuentas
-                $this->processAccounts($node->Entry);
+                $this->processAccounts($node->Entry, $CategoryData->getCategoryId());
             }
         }
     }
@@ -97,25 +101,24 @@ class KeepassImport extends XmlImportBase
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param SimpleXMLElement $entries El objeto XML con las entradas
+     * @param SimpleXMLElement $entries    El objeto XML con las entradas
+     * @param int              $categoryId Id de la categoría
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function processAccounts(SimpleXMLElement $entries)
+    protected function processAccounts(SimpleXMLElement $entries, $categoryId)
     {
         foreach ($entries as $entry) {
-            $AccountData = new AccountData();
+            $AccountData = new AccountExtData();
 
             foreach ($entry->String as $account) {
                 $value = isset($account->Value) ? (string)$account->Value : '';
+
                 switch ($account->Key) {
                     case 'Notes':
                         $AccountData->setAccountNotes($value);
                         break;
                     case 'Password':
-                        $passData = Crypt::encryptData($value);
-
-                        $AccountData->setAccountPass($passData['data']);
-                        $AccountData->setAccountIV($passData['iv']);
+                        $AccountData->setAccountPass($value);
                         break;
                     case 'Title':
                         $AccountData->setAccountName($value);
@@ -129,7 +132,7 @@ class KeepassImport extends XmlImportBase
                 }
             }
 
-            $AccountData->setAccountCategoryId($this->categoryId);
+            $AccountData->setAccountCategoryId($categoryId);
             $AccountData->setAccountCustomerId($this->customerId);
 
             $this->addAccount($AccountData);

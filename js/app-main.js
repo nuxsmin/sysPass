@@ -141,7 +141,7 @@ sysPass.Main = function () {
             appTriggers.views.footer();
         }
 
-        $('#btnBack').click(function () {
+        $("#btnBack").click(function () {
             redirect("index.php");
         });
     };
@@ -165,7 +165,7 @@ sysPass.Main = function () {
                 var status = data.status;
                 var description = data.description;
 
-                if (typeof data.messages !== "undefined" && data.messages.length > 0) {
+                if (data.messages !== undefined && data.messages.length > 0) {
                     description = description + "<br>" + data.messages.join("<br>");
                 }
 
@@ -329,20 +329,19 @@ sysPass.Main = function () {
 
     // Función para habilitar la subida de archivos en una zona o formulario
     var fileUpload = function ($obj) {
-        var requestData = function () {
-            return {
-                actionId: $obj.data("action-id"),
-                itemId: $obj.data("item-id"),
-                sk: sk.get()
-            };
+        var requestData = {
+            actionId: $obj.data("action-id"),
+            itemId: $obj.data("item-id"),
+            sk: sk.get()
         };
 
         var options = {
             requestDoneAction: "",
-            requestData: function (data) {
-                requestData = function () {
-                    return data;
-                };
+            setRequestData: function (data) {
+                $.extend(requestData, data);
+            },
+            getRequestData: function () {
+                return requestData;
             },
             beforeSendAction: "",
             url: ""
@@ -350,7 +349,7 @@ sysPass.Main = function () {
 
         // Subir un archivo
         var sendFile = function (file) {
-            if (typeof options.url === "undefined" || options.url === "") {
+            if (options.url === undefined || options.url === "") {
                 return false;
             }
 
@@ -359,12 +358,10 @@ sysPass.Main = function () {
             fd.append("inFile", file);
             fd.append("isAjax", 1);
 
-            var data = requestData();
-
-            Object.keys(data).forEach(function (key) {
+            Object.keys(requestData).forEach(function (key) {
                 log.info(key);
 
-                fd.append(key, data[key]);
+                fd.append(key, requestData[key]);
             });
 
             var opts = appRequests.getRequestOpts();
@@ -442,7 +439,6 @@ sysPass.Main = function () {
 
             $obj.on("drop", function (e) {
                 log.info("fileUpload:drop");
-                log.info(e);
 
                 e.stopPropagation();
                 e.preventDefault();
@@ -451,7 +447,7 @@ sysPass.Main = function () {
                     options.beforeSendAction();
                 }
 
-                handleFiles(e.dataTransfer.files);
+                handleFiles(e.originalEvent.dataTransfer.files);
             });
 
             $obj.on("click", function () {

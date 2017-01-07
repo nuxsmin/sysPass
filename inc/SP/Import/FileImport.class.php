@@ -85,6 +85,9 @@ class FileImport
 
     /**
      * FileImport constructor.
+     *
+     * @param array $fileData Datos del archivo a importar
+     * @throws SPException
      */
     public function __construct(&$fileData)
     {
@@ -100,7 +103,6 @@ class FileImport
      *
      * @param array $fileData con los datos del archivo
      * @throws SPException
-     * @return bool
      */
     private function checkFile(&$fileData)
     {
@@ -112,7 +114,7 @@ class FileImport
             // Comprobamos la extensión del archivo
             $fileExtension = strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
 
-            if ($fileExtension != 'CSV' && $fileExtension != 'XML') {
+            if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
                 throw new SPException(
                     SPException::SP_CRITICAL,
                     _('Tipo de archivo no soportado'),
@@ -123,7 +125,7 @@ class FileImport
 
         // Variables con información del archivo
         $this->tmpFile = $fileData['tmp_name'];
-        $this->fileType = $fileData['type'];
+        $this->fileType = strtolower($fileData['type']);
 
         if (!file_exists($this->tmpFile) || !is_readable($this->tmpFile)) {
             // Registramos el máximo tamaño permitido por PHP
@@ -144,6 +146,8 @@ class FileImport
      */
     public function readFileToArray()
     {
+        $this->autodetectEOL();
+
         $this->fileContent = file($this->tmpFile, FILE_SKIP_EMPTY_LINES);
 
         if ($this->fileContent === false){
@@ -162,6 +166,8 @@ class FileImport
      */
     public function readFileToString()
     {
+        $this->autodetectEOL();
+
         $this->fileContent = file_get_contents($this->tmpFile);
 
         if ($this->fileContent === false){
@@ -171,5 +177,13 @@ class FileImport
                 _('Compruebe los permisos del directorio temporal')
             );
         }
+    }
+
+    /**
+     * Activar la autodetección de fin de línea
+     */
+    protected function autodetectEOL()
+    {
+        ini_set('auto_detect_line_endings', true);
     }
 }

@@ -46,26 +46,28 @@ abstract class XmlImportBase extends ImportBase
     protected $xmlDOM;
 
     /**
-     * Constructor
+     * ImportBase constructor.
      *
-     * @param $file FileImport Instancia de la clase FileImport
+     * @param FileImport   $File
+     * @param ImportParams $ImportParams
      * @throws SPException
      */
-    public function __construct($file)
+    public function __construct(FileImport $File, ImportParams $ImportParams)
     {
+        parent::__construct($File, $ImportParams);
+
         try {
-            $this->file = $file;
             $this->readXMLFile();
         } catch (SPException $e) {
             throw $e;
         }
     }
 
+
     /**
      * Leer el archivo a un objeto XML.
      *
      * @throws SPException
-     * @return \SimpleXMLElement Con los datos del archivo XML
      */
     protected function readXMLFile()
     {
@@ -91,9 +93,9 @@ abstract class XmlImportBase extends ImportBase
      */
     public function detectXMLFormat()
     {
-        if ($this->xml->Meta->Generator == 'KeePass') {
+        if ((string)$this->xml->Meta->Generator === 'KeePass') {
             return 'keepass';
-        } else if ($this->xml->Meta->Generator == 'sysPass') {
+        } else if ((string)$this->xml->Meta->Generator === 'sysPass') {
             return 'syspass';
         } else if ($xmlApp = $this->parseFileHeader()) {
             switch ($xmlApp) {
@@ -113,5 +115,31 @@ abstract class XmlImportBase extends ImportBase
         }
 
         return '';
+    }
+
+    /**
+     * Obtener los datos de los nodos
+     *
+     * @param string $nodeName      Nombre del nodo principal
+     * @param string $childNodeName Nombre de los nodos hijos
+     * @throws SPException
+     */
+    protected function getNodesData($nodeName, $childNodeName, $callback)
+    {
+        $ParentNode = $this->xmlDOM->getElementsByTagName($nodeName);
+
+        if ($ParentNode->length === 0) {
+            throw new SPException(SPException::SP_WARNING, _('Formato de XML inválido'), sprintf(_('El nodo "%s" no existe'), $nodeName));
+        } elseif (!is_callable([$this, $callback])) {
+            throw new SPException(SPException::SP_WARNING, _('Método inválido'));
+        }
+
+        /** @var \DOMElement $nodes */
+        foreach ($ParentNode as $nodes) {
+            /** @var \DOMElement $Account */
+            foreach ($nodes->getElementsByTagName($childNodeName) as $Node) {
+                $this->$callback($Node);
+            }
+        }
     }
 }

@@ -49,12 +49,13 @@ abstract class XMLRPCResponseParse
     /**
      * @var array
      */
-    private $data = array();
+    private $data = [];
 
     /**
      * Constructor
      *
      * @param string $xml El documento XML
+     * @throws \InvalidArgumentException
      */
     public function __construct($xml)
     {
@@ -125,7 +126,7 @@ abstract class XMLRPCResponseParse
      */
     private function parseStruct(DOMElement $xmlStruct)
     {
-        $dataStruct = array();
+        $dataStruct = [];
         $nStruct = 0;
 
         foreach ($xmlStruct->childNodes as $struct) {
@@ -179,20 +180,18 @@ abstract class XMLRPCResponseParse
      */
     private function parseArray(DOMElement $xmlArray)
     {
-        $arrayData = array();
+        $arrayData = [];
 
         foreach ($xmlArray->childNodes as $array) {
             foreach ($array->childNodes as $data) {
-                if ($data instanceof DOMElement) {
-                    /**
-                     * @var $data DOMElement
-                     */
-                    if ($data->nodeName === 'value') {
-                        $values = $this->parseValues($data);
+                /**
+                 * @var $data DOMElement
+                 */
+                if ($data instanceof DOMElement && $data->nodeName === 'value') {
+                    $values = $this->parseValues($data);
 
-                        if (is_array($values)) {
-                            $arrayData[] = $values;
-                        }
+                    if (is_array($values)) {
+                        $arrayData[] = $values;
                     }
                 }
             }
@@ -209,13 +208,13 @@ abstract class XMLRPCResponseParse
      */
     private function parseValues(DOMElement $xmlValues)
     {
-        $valuesData = array();
+        $valuesData = [];
 
         foreach ($xmlValues->childNodes as $xmlValue) {
             if ($xmlValue instanceof DOMElement) {
                 $val = $this->parseNodeType($xmlValue);
 
-                if (is_null($val)) {
+                if (null === $val) {
                     return $this->parseNodes($xmlValues->childNodes);
                 } else {
                     $valuesData[] = $val;
@@ -234,19 +233,17 @@ abstract class XMLRPCResponseParse
      */
     private function parseFault(DOMElement $xmlFault)
     {
-        $faultData = array();
+        $faultData = [];
 
         foreach ($xmlFault->childNodes as $fault) {
-            if ($fault instanceof DOMElement) {
-                /**
-                 * @var $fault DOMElement
-                 */
-                if ($fault->nodeName === 'value') {
-                    $values = $this->parseValues($fault);
+            /**
+             * @var $fault DOMElement
+             */
+            if ($fault instanceof DOMElement && $fault->nodeName === 'value') {
+                $values = $this->parseValues($fault);
 
-                    if (is_array($values)) {
-                        return $values;
-                    }
+                if (is_array($values)) {
+                    return $values;
                 }
             }
         }

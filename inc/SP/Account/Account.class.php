@@ -325,9 +325,11 @@ class Account extends AccountBase implements AccountInterface
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function createAccount()
+    public function createAccount($encryptPass = true)
     {
-        $this->setPasswordEncrypted();
+        if ($encryptPass === true) {
+            $this->setPasswordEncrypted();
+        }
 
         $query = /** @lang SQL */
             'INSERT INTO accounts SET '

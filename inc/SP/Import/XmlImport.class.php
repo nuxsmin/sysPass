@@ -46,29 +46,26 @@ class XmlImport extends XmlImportBase
      */
     public function doImport()
     {
-        $import = null;
+        $Import = null;
         $format = $this->detectXMLFormat();
 
         switch ($format) {
             case 'syspass':
-                $import = new SyspassImport($this->file);
+                $Import = new SyspassImport($this->file, $this->ImportParams);
                 break;
             case 'keepass':
-                $import = new KeepassImport($this->file);
+                $Import = new KeepassImport($this->file, $this->ImportParams);
                 break;
             case 'keepassx':
-                $import = new KeepassXImport($this->file);
+                $Import = new KeepassXImport($this->file, $this->ImportParams);
                 break;
         }
 
-        if (is_object($import)){
+        if (is_object($Import)){
             Log::writeNewLog(_('Importar Cuentas'), _('Inicio'));
-            Log::writeNewLog(_('Importar Cuentas'), _('Formato detectado') . ': ' . strtoupper($format));
+            Log::writeNewLog(_('Importar Cuentas'), sprintf(_('Formato detectado: %s'), strtoupper($format)));
 
-            $import->setUserId($this->getUserId());
-            $import->setUserGroupId($this->getUserGroupId());
-            $import->setImportPass($this->getImportPass());
-            $import->doImport();
+            $Import->doImport();
         }
     }
 }

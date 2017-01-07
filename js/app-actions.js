@@ -50,8 +50,8 @@ sysPass.Actions = function (Common) {
         checks: "/ajax/ajax_checkConnection.php",
         config: {
             save: "/ajax/ajax_configSave.php",
-            export: "/ajax/ajax_export.php",
-            import: "/ajax/ajax_import.php"
+            export: "/ajax/ajax_configSave.php",
+            import: "/ajax/ajax_configSave.php"
         },
         file: "/ajax/ajax_filesMgmt.php",
         link: "/ajax/ajax_itemSave.php",

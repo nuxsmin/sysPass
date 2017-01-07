@@ -38,6 +38,37 @@ use SP\Core\Exceptions\SPException;
 class DBUtil
 {
     /**
+     * @var array Tablas de la BBDD
+     */
+    public static $tables = [
+        'customers',
+        'categories',
+        'usrGroups',
+        'usrProfiles',
+        'usrData',
+        'accounts',
+        'accFavorites',
+        'accFiles',
+        'accGroups',
+        'accHistory',
+        'accTags',
+        'accUsers',
+        'authTokens',
+        'config',
+        'customFieldsData',
+        'customFieldsDef',
+        'log',
+        'publicLinks',
+        'tags',
+        'usrPassRecover',
+        'usrToGroups',
+        'plugins',
+        'notices',
+        'account_data_v',
+        'account_search_v'
+    ];
+
+    /**
      * Comprobar que la base de datos existe.
      *
      * @return bool
@@ -51,17 +82,12 @@ class DBUtil
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
-                WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'
-                AND table_name = \'usrData\'';
+                WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'';
 
-            if ((int)$db->query($query)->fetchColumn() !== 0) {
-                return true;
-            }
+            return (int)$db->query($query)->fetchColumn() === count(self::$tables);
         } catch (\Exception $e) {
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
-
-        return false;
     }
 
     /**

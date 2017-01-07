@@ -42,9 +42,10 @@ interface AccountInterface
     public function getData();
 
     /**
+     * @param bool $encryptPass Si se encripta la clave de la cuenta
      * @return mixed
      */
-    public function createAccount();
+    public function createAccount($encryptPass = true);
 
     /**
      * @param $id

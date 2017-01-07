@@ -24,12 +24,16 @@
                     <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
                         <a href="<?php echo $backupDbFile['relative']; ?>"
                            download="<?php echo $backupDbFile['filename']; ?>" class="download">
-                            Backup BBDD
+                            <button type="button" class="mdl-button mdl-js-button">
+                                <?php echo _('Copia BBDD'); ?>
+                            </button>
                         </a>
 
                         <a href="<?php echo $backupFile['relative']; ?>"
                            download="<?php echo $backupFile['filename']; ?>" class="download">
-                            Backup <?php echo $siteName; ?>
+                            <button type="button" class="mdl-button mdl-js-button">
+                                <?php echo _('Copia sysPass'); ?>
+                            </button>
                         </a>
                     <?php else: echo _('No hay backups para descargar'); ?>
                     <?php endif; ?>
@@ -100,7 +104,9 @@
                             <a href="<?php echo $exportFile['relative']; ?>"
                                download="<?php echo $exportFile['filename']; ?>"
                                class="download">
-                                XML <?php echo $siteName; ?></>
+                                <button type="button" class="mdl-button mdl-js-button">
+                                    XML <?php echo $siteName; ?>
+                                </button>
                             </a>
                         <?php else: echo _('No hay archivos XML para descargar'); ?>
                         <?php endif; ?>

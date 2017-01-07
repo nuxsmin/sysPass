@@ -254,7 +254,6 @@ class Crypt
 
         if (null === $password) {
             $password = SessionUtil::getSessionMPass();
-//            self::getSessionMasterPass();
         }
 
         $mcryptRes = self::getMcryptResource();

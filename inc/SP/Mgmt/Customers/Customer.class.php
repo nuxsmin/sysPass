@@ -99,7 +99,17 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes !== false) {
+            if ($Data->getQueryNumRows() === 0) {
+                return false;
+            } elseif ($Data->getQueryNumRows() === 1) {
+                $this->itemData->setCustomerId($queryRes->customer_id);
+            }
+        }
+
+        return true;
     }
 
     /**

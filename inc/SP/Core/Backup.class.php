@@ -55,7 +55,7 @@ class Backup
         $backupDir = Init::$SERVERROOT;
 
         // Generar hash unico para evitar descargas no permitidas
-        $backupUniqueHash = uniqid();
+        $backupUniqueHash = sha1(uniqid('sysPassBackup', true));
         Config::getConfig()->setBackupHash($backupUniqueHash);
         Config::saveConfig();
 
@@ -87,11 +87,42 @@ class Backup
     }
 
     /**
+     * Comprobar y crear el directorio de backups.
+     *
+     * @param string $backupDir ruta del directorio de backup
+     * @throws SPException
+     * @return bool
+     */
+    private static function checkBackupDir($backupDir)
+    {
+        if (@mkdir($backupDir, 0750) === false && is_dir($backupDir) === false) {
+            throw new SPException(SPException::SP_CRITICAL, sprintf(_('No es posible crear el directorio de backups ("%s")'), $backupDir));
+        }
+
+        if (!is_writable($backupDir)) {
+            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
+        }
+
+        return true;
+    }
+
+    /**
+     * Eliminar las copias de seguridad anteriores
+     *
+     * @param string $backupDir El directorio de backups
+     */
+    private static function deleteOldBackups($backupDir)
+    {
+        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.tar.gz'));
+        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.sql'));
+    }
+
+    /**
      * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
-     * @param string $tables
-     * @param string $backupFile
+     * @param string|array $tables
+     * @param string       $backupFile
      * @throws SPException
      * @return bool
      */
@@ -104,10 +135,8 @@ class Backup
 
             $Data = new QueryData();
 
-            if ($tables == '*') {
-                $Data->setQuery('SHOW TABLES');
-
-                $resTables = DB::getResults($Data);
+            if ($tables === '*') {
+                $resTables = DBUtil::$tables;
             } else {
                 $resTables = is_array($tables) ? $tables : explode(',', $tables);
             }
@@ -121,51 +150,62 @@ class Backup
             $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
             fwrite($handle, $sqlOut);
 
+            $sqlOutViews = '';
             // Recorrer las tablas y almacenar los datos
             foreach ($resTables as $table) {
-                $tableName = $table->{'Tables_in_' . $dbname};
+                $tableName = is_object($table) ? $table->{'Tables_in_' . $dbname} : $table;
 
                 $Data->setQuery('SHOW CREATE TABLE ' . $tableName);
 
-                $sqlOut = '-- ' . PHP_EOL;
-                $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
-                $sqlOut .= '-- ' . PHP_EOL;
-
                 // Consulta para crear la tabla
-                $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
                 $txtCreate = DB::getResults($Data);
-                $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
-                fwrite($handle, $sqlOut);
 
-                $Data->setQuery('SELECT * FROM ' . $tableName);
+                if (isset($txtCreate->{'Create Table'})) {
+                    $sqlOut = '-- ' . PHP_EOL;
+                    $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
+                    $sqlOut .= '-- ' . PHP_EOL;
+                    $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
+                    $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
+                    fwrite($handle, $sqlOut);
 
-                // Consulta para obtener los registros de la tabla
-                $queryRes = DB::getResultsRaw($Data);
+                    $Data->setQuery('SELECT * FROM ' . $tableName);
 
-                $numColumns = $queryRes->columnCount();
+                    // Consulta para obtener los registros de la tabla
+                    $queryRes = DB::getResultsRaw($Data);
 
-                while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
-                    fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
+                    $numColumns = $queryRes->columnCount();
 
-                    $field = 1;
-                    foreach ($row as $value) {
-                        if (is_numeric($value)) {
-                            fwrite($handle, $value);
-                        } else {
-                            fwrite($handle, DBUtil::escape($value));
+                    while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
+                        fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
+
+                        $field = 1;
+                        foreach ($row as $value) {
+                            if (is_numeric($value)) {
+                                fwrite($handle, $value);
+                            } else {
+                                fwrite($handle, DBUtil::escape($value));
+                            }
+
+                            if ($field < $numColumns) {
+                                fwrite($handle, ',');
+                            }
+
+                            $field++;
                         }
-
-                        if ($field < $numColumns) {
-                            fwrite($handle, ',');
-                        }
-
-                        $field++;
+                        fwrite($handle, ');' . PHP_EOL);
                     }
-                    fwrite($handle, ');' . PHP_EOL);
+                } elseif ($txtCreate->{'Create View'}) {
+                    $sqlOutViews .= '-- ' . PHP_EOL;
+                    $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
+                    $sqlOutViews .= '-- ' . PHP_EOL;
+                    $sqlOutViews .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
+                    $sqlOutViews .= $txtCreate->{'Create View'} . ';' . PHP_EOL . PHP_EOL;
                 }
 
                 fwrite($handle, PHP_EOL . PHP_EOL);
             }
+
+            fwrite($handle, $sqlOutViews);
 
             $sqlOut = '--' . PHP_EOL;
             $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;
@@ -191,7 +231,7 @@ class Backup
      */
     private static function backupApp($backupFile)
     {
-        if (!class_exists('PharData')) {
+        if (!class_exists(\PharData::class)) {
             if (Checks::checkIsWindows()) {
                 throw new SPException(SPException::SP_CRITICAL, _('Esta operación sólo es posible en entornos Linux'));
             } elseif (!self::backupAppLegacyLinux($backupFile)) {
@@ -236,38 +276,5 @@ class Backup
         exec($command, $resOut, $resBakApp);
 
         return $resBakApp;
-    }
-
-    /**
-     * Comprobar y crear el directorio de backups.
-     *
-     * @param string $backupDir ruta del directorio de backup
-     * @throws SPException
-     * @return bool
-     */
-    private static function checkBackupDir($backupDir)
-    {
-        if (!is_dir($backupDir)) {
-            if (!@mkdir($backupDir, 0550)) {
-                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $backupDir . ')');
-            }
-        }
-
-        if (!is_writable($backupDir)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
-        }
-
-        return true;
-    }
-
-    /**
-     * Eliminar las copias de seguridad anteriores
-     *
-     * @param string $backupDir El directorio de backups
-     */
-    private static function deleteOldBackups($backupDir)
-    {
-        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.tar.gz'));
-        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.sql'));
     }
 }

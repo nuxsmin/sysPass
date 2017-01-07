@@ -489,8 +489,9 @@ class AccountHistory extends AccountBase implements AccountInterface
      * Crear una cuenta en el historial
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function createAccount()
+    public function createAccount($encryptPass = true)
     {
         $query = /** @lang SQL */
             'INSERT INTO accHistory SET '
