@@ -185,7 +185,8 @@
                 <tr>
                     <td class="descField"><?php echo _('Cuenta Vinculada'); ?></td>
                     <td class="valField">
-                        <select id="selParentAccount" name="parentAccountId" class="select-box select-box-deselect" <?php echo $disabled; ?>>
+                        <select id="selParentAccount" name="parentAccountId"
+                                class="select-box select-box-deselect" <?php echo $disabled; ?>>
                             <option value=""><?php echo _('Seleccionar Cuenta'); ?></option>
                             <?php foreach ($otherAccounts as $otherAccount): ?>
                                 <?php $selected = ($gotData && (int)$otherAccount->account_id === $accountData->getAccountParentId()) ? 'selected' : ''; ?>
@@ -247,9 +248,11 @@
                        data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
                 </legend>
 
-                <table id="data-customfields">
-                    <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
-                </table>
+                <div id="data-customfields">
+                    <table>
+                        <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
+                    </table>
+                </div>
             </fieldset>
         <?php endif; ?>
 
