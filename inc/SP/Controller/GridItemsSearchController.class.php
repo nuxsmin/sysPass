@@ -10,6 +10,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Controller\Grids\Items;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Html\DataGrid\DataGridPagerInterface;
@@ -22,22 +23,9 @@ use SP\Html\DataGrid\DataGridPagerInterface;
 abstract class GridItemsSearchController extends ControllerBase
 {
     /**
-     * @var Grids
+     * @var mixed
      */
     protected $grids;
-
-    /**
-     * Constructor
-     *
-     * @param $template Template con instancia de plantilla
-     */
-    public function __construct(Template $template = null)
-    {
-        parent::__construct($template);
-
-        $this->grids = new Grids();
-        $this->grids->setQueryTimeStart(microtime());
-    }
 
     /**
      * Actualizar los datos del paginador

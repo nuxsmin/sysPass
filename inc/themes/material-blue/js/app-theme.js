@@ -66,16 +66,10 @@ sysPass.Theme = function (Common) {
         while (iteration < Common.passwordData.complexity.numlength) {
             randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
             if (!Common.passwordData.complexity.symbols) {
-                if ((randomNumber >= 33) && (randomNumber <= 47)) {
-                    continue;
-                }
-                if ((randomNumber >= 58) && (randomNumber <= 64)) {
-                    continue;
-                }
-                if ((randomNumber >= 91) && (randomNumber <= 96)) {
-                    continue;
-                }
-                if ((randomNumber >= 123) && (randomNumber <= 126)) {
+                if ((randomNumber >= 33 && randomNumber <= 47) ||
+                    (randomNumber >= 58 && randomNumber <= 64) ||
+                    (randomNumber >= 91 && randomNumber <= 96) ||
+                    (randomNumber >= 123 && randomNumber <= 126)) {
                     continue;
                 }
             }
@@ -386,13 +380,11 @@ sysPass.Theme = function (Common) {
                 var $this = $(this);
                 var $tags = $frmSearch.find(".search-filters-tags");
 
-                if ($this.data("state") == 0) {
-                    $tags.show("blind", "slow");
-                    $this.data("state", "1");
+                if ($tags.is(":hidden")) {
+                    $tags.slideDown("slow");
                     $this.html($this.data("icon-up"));
                 } else {
-                    $tags.hide("blind", "slow");
-                    $this.data("state", "0");
+                    $tags.slideUp("slow");
                     $this.html($this.data("icon-down"));
                 }
             });

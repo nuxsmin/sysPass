@@ -1,49 +1,4 @@
-$font-stack: "Roboto Regular", Verdana, Tahoma, sans-serif;
-$font-stack-mono: Consolas, "Andale Mono WT", "Andale Mono", "Bitstream Vera Sans Mono", "Nimbus Mono L", Monaco, "Courier New", monospace;
-$color-teal-bg: #b2dfdb;
-$color-teal-fg: #26a69a;
-$color-red-bg: #ffcdd2;
-$color-red-fg: #ef5350;
-$color-amber-bg: #fff8e1;
-$color-amber-fg: #ffca28;
-$color-indigo-bg: #e8eaf6;
-$color-indigo-fg: #5c6bc0;
-$color-indigo-fg-accent: #536dfe;
-$color-bluegrey-bg: #eceff1;
-$color-bluegrey-fg: #607d8b;
-$color-blue-bg: #e3f2fd;
-$color-blue-fg: #2196f3;
-
-@mixin box-shadow() {
-  -webkit-box-shadow: 2px 2px 3px -3px #a9a9a9;
-  -moz-box-shadow: 2px 2px 3px -3px #a9a9a9;
-  box-shadow: 1px 1px 2px #d9d9d9;
-}
-
-@mixin color-red() {
-  color: $color-red-fg;
-  background-color: $color-red-bg;
-  border: 1px solid $color-red-fg;
-}
-
-@mixin color-teal() {
-  color: $color-teal-fg;
-  background-color: $color-teal-bg;
-  border: 1px solid $color-teal-fg;
-}
-
-@mixin color-amber() {
-  color: $color-amber-fg;
-  background-color: $color-amber-bg;
-  border: 1px solid $color-amber-fg;
-}
-
-@mixin color-blue() {
-  color: $color-blue-fg;
-  background-color: $color-blue-bg;
-  border: 1px solid $color-blue-fg;
-}
-
+@import "base";
 @import "elements";
 
 #nojs {
@@ -142,12 +97,6 @@ $color-blue-fg: #2196f3;
 }
 
 #content {
-  #resBuscar {
-    margin-bottom: 50px;
-    img {
-      vertical-align: middle;
-    }
-  }
   .pager {
     width: 100%;
     margin-top: 15px;
@@ -209,9 +158,11 @@ $color-blue-fg: #2196f3;
         padding: 0 .5em;
         font-size: 1.5em;
       }
-      table {
+      div {
         display: none;
-        width: 100%;
+        table {
+          width: 100%;
+        }
       }
     }
   }
@@ -575,43 +526,10 @@ $color-blue-fg: #2196f3;
       filter: alpha(opacity=100);
     }
   }
-  #tabs {
-    &.ui-widget-content {
-      border: 0;
-      background-color: transparent;
-    }
-    .ui-widget-header {
-      background: 0;
-      border: 0;
-      border-bottom: 1px solid #c9c9c9;
-    }
-    &.ui-widget-content {
-      background: none !important;
-    }
-    .tabs-spacer {
-      float: left;
-      height: 200px;
-    }
-  }
-  .tabs-bottom .ui-tabs-nav {
-    clear: left;
-    padding: 0 0.2em 0.2em 0.2em;
-    li {
-      top: auto;
-      bottom: 0;
-      margin: 0 .2em 1px 0;
-      border-top: 0;
-      &.ui-tabs-active {
-        margin-top: -1px;
-        padding-top: 1px;
-      }
-    }
+  .actions-optional {
+    display: none;
   }
 }
-
-/* START - Search box */
-
-/* END - Search box */
 
 #box-popup {
   min-width: 25em;

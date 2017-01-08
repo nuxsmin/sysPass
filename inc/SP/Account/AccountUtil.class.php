@@ -26,6 +26,7 @@
 namespace SP\Account;
 
 use SP\Core\Session;
+use SP\DataModel\AccountData;
 use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
 use SP\Core\Exceptions\SPException;
@@ -43,10 +44,10 @@ class AccountUtil
     /**
      * Obtener los datos de usuario y modificador de una cuenta.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $id con el Id de la cuenta
      * @return false|object con el id de usuario y modificador.
      */
-    public static function getAccountRequestData($accountId)
+    public static function getAccountRequestData($id)
     {
         $query = 'SELECT account_userId,'
             . 'account_userEditId,'
@@ -54,11 +55,11 @@ class AccountUtil
             . 'customer_name '
             . 'FROM accounts '
             . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'WHERE account_id = :id LIMIT 1';
+            . 'WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
+        $Data->addParam($id);
 
         $queryRes = DB::getResults($Data);
 

@@ -49,9 +49,9 @@ $Controller = new AccountSearchController();
 $Controller->setIsAjax(true);
 $Controller->getSearch();
 
-$data = array(
+$data = [
     'sk' => SessionUtil::getSessionKey(),
     'html' => $Controller->render()
-);
+];
 
 Response::printJson($data, 0);

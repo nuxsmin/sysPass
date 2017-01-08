@@ -321,7 +321,7 @@ abstract class ControllerBase
     }
 
     /**
-     * Realizar las accione del controlador
+     * Realizar las acciones del controlador
      *
      * @param mixed $type Tipo de acción
      */

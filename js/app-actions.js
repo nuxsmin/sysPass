@@ -60,7 +60,7 @@ sysPass.Actions = function (Common) {
             save: "/ajax/ajax_itemSave.php",
             showPass: "/ajax/ajax_accViewPass.php",
             saveFavorite: "/ajax/ajax_itemSave.php",
-            request: "/ajax/ajax_sendRequest.php",
+            request: "/ajax/ajax_itemSave.php",
             getFiles: "/ajax/ajax_accGetFiles.php",
             search: "/ajax/ajax_accSearch.php"
         },
@@ -72,6 +72,10 @@ sysPass.Actions = function (Common) {
         eventlog: "/ajax/ajax_eventlog.php",
         wiki: {
             show: "/ajax/ajax_wiki.php"
+        },
+        notice: {
+            show: "/ajax/ajax_noticeShow.php",
+            search: "/ajax/ajax_noticeSearch.php"
         }
     };
 
@@ -93,7 +97,6 @@ sysPass.Actions = function (Common) {
             var $content = $("#content");
 
             $content.empty().html(response);
-            // $content.find(":input:text:visible:first").focus();
         });
     };
 
@@ -135,6 +138,8 @@ sysPass.Actions = function (Common) {
             callbacks: {
                 open: function () {
                     Common.appTriggers().views.common("#box-popup");
+
+                    $obj.find(":input:text:visible:first").focus();
                 },
                 close: function () {
                     if ($obj.data("item-dst")) {
@@ -1179,6 +1184,72 @@ sysPass.Actions = function (Common) {
         }
     };
 
+    /**
+     * Objeto para las acciones de las notificaciones
+     */
+    var notice = {
+        check: function ($obj) {
+            log.info("notice:check");
+
+            var data = {
+                "itemId": $obj.data("item-id"),
+                "actionId": $obj.data("action-id"),
+                "sk": Common.sk.get()
+            };
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.appMgmt.save;
+            opts.data = data;
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                }
+            });
+        },
+        search: function ($obj) {
+            log.info("notice:search");
+
+            var $target = $($obj.data("target"));
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.notice.search;
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status === 0) {
+                    $target.html(json.data.html);
+                } else {
+                    $target.html(Common.msg.html.error(json.description));
+                }
+
+                Common.sk.set(json.csrf);
+            });
+        },
+        show: function ($obj) {
+            log.info("notice:show");
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.notice.show;
+            opts.data = {
+                itemId: $obj.data("item-id"),
+                actionId: $obj.data("action-id"),
+                activeTab: $obj.data("activetab"),
+                sk: Common.sk.get(),
+                isAjax: 1
+            };
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status !== 0) {
+                    Common.msg.out(json);
+                } else {
+                    showFloatingBox($obj, json.data.html);
+                }
+            });
+        }
+    };
+
     return {
         doAction: doAction,
         appMgmt: appMgmt,
@@ -1191,6 +1262,7 @@ sysPass.Actions = function (Common) {
         link: link,
         eventlog: eventlog,
         ajaxUrl: ajaxUrl,
-        plugin: plugin
+        plugin: plugin,
+        notice: notice
     };
 };

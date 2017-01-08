@@ -39,7 +39,7 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="field-account label-field">
+                    <div class="field-account field-text label-field">
                         <div class="field-name"><?php echo _('Nombre'); ?></div>
                         <?php if ($AccountSearchItem->isShow() && $AccountSearchItem->getLink()): ?>
                             <a title="<?php echo _('Detalles de Cuenta'); ?>" class="btn-action"
@@ -53,18 +53,18 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="field-category label-field">
+                    <div class="field-category field-text label-field">
                         <div class="field-name"><?php echo _('Categoría'); ?></div>
                         <div class="field-text"><?php echo $AccountSearchData->getCategoryName(); ?></div>
                     </div>
 
                     <?php if ($AccountSearchItem->isShow()): ?>
-                        <div class="field-user label-field">
+                        <div class="field-user field-text label-field">
                             <div class="field-name"><?php echo _('Usuario'); ?></div>
                             <div class="field-text"><?php echo $AccountSearchItem->getShortLogin(); ?></div>
                         </div>
 
-                        <div class="field-url label-field">
+                        <div class="field-url field-text label-field">
                             <div class="field-name"><?php echo _('URL / IP'); ?></div>
                             <?php if ($AccountSearchItem->isUrlIslink()): ?>
                                 <a href="<?php echo $AccountSearchData->getAccountUrl(); ?>" target="_blank"
@@ -84,15 +84,15 @@
                 </div>
             </div>
             <div class="label-right">
-                <?php if ($AccountSearchItem->isShow()): ?>
-                    <div class="account-info">
+                <div class="account-info">
+                    <?php if ($AccountSearchItem->isShow()): ?>
                         <?php if ($AccountSearchItem->isPasswordExpired()): ?>
                             <i id="icon-expired-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>">
                                 <?php echo $icons->getIconWarning()->getIcon(); ?></i>
                             <span
-                                for="icon-expired-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Clave Caducada'); ?></span>
+                                    for="icon-expired-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo _('Clave Caducada'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($AccountSearchData->getAccountIsPrivate() === 0): ?>
@@ -107,8 +107,8 @@
                             <i id="icon-private-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons">lock</i>
                             <span
-                                for="icon-private-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Cuenta Privada'); ?></span>
+                                    for="icon-private-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo _('Cuenta Privada'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($AccountSearchItem->isFavorite()): ?>
@@ -119,8 +119,8 @@
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-status="<?php echo 'on'; ?>">star</i>
                             <span
-                                for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Eliminar Favorito'); ?></span>
+                                    for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo _('Eliminar Favorito'); ?></span>
                         <?php else: ?>
                             <i id="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons icon-favorite"
@@ -129,8 +129,8 @@
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-status="<?php echo 'off'; ?>">star_border</i>
                             <span
-                                for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Marcar Favorito'); ?></span>
+                                    for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo _('Marcar Favorito'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($AccountSearchData->getAccountNotes() !== ''): ?>
@@ -172,8 +172,9 @@
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
-                    </div>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+
 
                 <?php if ($AccountSearchItem->isShow() || $AccountSearchItem->isShowRequest()): ?>
                     <div class="account-actions">
@@ -187,8 +188,8 @@
                                         <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
                                     <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
                                 <span
-                                    for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
+                                        for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
+                                        class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                             <?php endif; ?>
                         <?php endforeach; ?>
 

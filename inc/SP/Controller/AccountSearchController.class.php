@@ -61,8 +61,6 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      * @var bool
      */
     private $filterOn = false;
-
-
     /** @var string */
     private $sk = '';
     /** @var int */
@@ -179,14 +177,13 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         AccountsSearchItem::$accountLink = Session::getUserPreferences()->isAccountLink();
         AccountsSearchItem::$topNavbar = Session::getUserPreferences()->isTopNavbar();
         AccountsSearchItem::$optionalActions = Session::getUserPreferences()->isOptionalActions();
-        AccountsSearchItem::$requestEnabled = Checks::mailrequestIsEnabled();
         AccountsSearchItem::$wikiEnabled = Checks::wikiIsEnabled();
         AccountsSearchItem::$dokuWikiEnabled = Checks::dokuWikiIsEnabled();
         AccountsSearchItem::$isDemoMode = Checks::demoIsEnabled();
 
         if (AccountsSearchItem::$wikiEnabled) {
             $wikiFilter = array_map(function ($value) {
-                return preg_quote($value);
+                return preg_quote($value, '/');
             }, Config::getConfig()->getWikiFilter());
 
             $this->view->assign('wikiFilter', implode('|', $wikiFilter));
@@ -215,7 +212,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionView->setName(_('Detalles de Cuenta'));
         $GridActionView->setTitle(_('Detalles de Cuenta'));
         $GridActionView->setIcon($this->icons->getIconView());
-        $GridActionView->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowView');
+        $GridActionView->setReflectionFilter(AccountsSearchItem::class, 'isShowView');
         $GridActionView->addData('action-id', self::ACTION_ACC_VIEW);
         $GridActionView->addData('action-sk', $this->sk);
         $GridActionView->addData('onclick', 'account/show');
@@ -226,7 +223,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionViewPass->setName(_('Ver Clave'));
         $GridActionViewPass->setTitle(_('Ver Clave'));
         $GridActionViewPass->setIcon($this->icons->getIconViewPass());
-        $GridActionViewPass->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowViewPass');
+        $GridActionViewPass->setReflectionFilter(AccountsSearchItem::class, 'isShowViewPass');
         $GridActionViewPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
         $GridActionViewPass->addData('action-full', 1);
         $GridActionViewPass->addData('action-sk', $this->sk);
@@ -241,7 +238,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopyPass->setName(_('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setTitle(_('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setIcon($ClipboardIcon);
-        $GridActionCopyPass->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowCopyPass');
+        $GridActionCopyPass->setReflectionFilter(AccountsSearchItem::class, 'isShowCopyPass');
         $GridActionCopyPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
         $GridActionCopyPass->addData('action-full', 0);
         $GridActionCopyPass->addData('action-sk', $this->sk);
@@ -255,7 +252,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionEdit->setName(_('Editar Cuenta'));
         $GridActionEdit->setTitle(_('Editar Cuenta'));
         $GridActionEdit->setIcon($EditIcon);
-        $GridActionEdit->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowEdit');
+        $GridActionEdit->setReflectionFilter(AccountsSearchItem::class, 'isShowEdit');
         $GridActionEdit->addData('action-id', self::ACTION_ACC_EDIT);
         $GridActionEdit->addData('action-sk', $this->sk);
         $GridActionEdit->addData('onclick', 'account/edit');
@@ -268,7 +265,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopy->setName(_('Copiar Cuenta'));
         $GridActionCopy->setTitle(_('Copiar Cuenta'));
         $GridActionCopy->setIcon($CopyIcon);
-        $GridActionCopy->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowCopy');
+        $GridActionCopy->setReflectionFilter(AccountsSearchItem::class, 'isShowCopy');
         $GridActionCopy->addData('action-id', self::ACTION_ACC_COPY);
         $GridActionCopy->addData('action-sk', $this->sk);
         $GridActionCopy->addData('onclick', 'account/copy');
@@ -281,7 +278,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionDel->setName(_('Eliminar Cuenta'));
         $GridActionDel->setTitle(_('Eliminar Cuenta'));
         $GridActionDel->setIcon($DeleteIcon);
-        $GridActionDel->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowDelete');
+        $GridActionDel->setReflectionFilter(AccountsSearchItem::class, 'isShowDelete');
         $GridActionDel->addData('action-id', self::ACTION_ACC_DELETE);
         $GridActionDel->addData('action-sk', $this->sk);
         $GridActionDel->addData('onclick', 'account/delete');
@@ -291,17 +288,17 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionRequest->setName(_('Solicitar Modificación'));
         $GridActionRequest->setTitle(_('Solicitar Modificación'));
         $GridActionRequest->setIcon($this->icons->getIconEmail());
-        $GridActionRequest->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowRequest');
+        $GridActionRequest->setReflectionFilter(AccountsSearchItem::class, 'isShowRequest');
         $GridActionRequest->addData('action-id', self::ACTION_ACC_REQUEST);
         $GridActionRequest->addData('action-sk', $this->sk);
-        $GridActionRequest->addData('onclick', 'account/request');
+        $GridActionRequest->addData('onclick', 'account/show');
 
         $GridActionOptional = new DataGridAction();
         $GridActionOptional->setId(0);
         $GridActionOptional->setName(_('Más Acciones'));
         $GridActionOptional->setTitle(_('Más Acciones'));
         $GridActionOptional->setIcon($this->icons->getIconOptional());
-        $GridActionOptional->setReflectionFilter('\\SP\\Account\\AccountsSearchItem', 'isShowOptional');
+        $GridActionOptional->setReflectionFilter(AccountsSearchItem::class, 'isShowOptional');
         $GridActionOptional->addData('onclick', 'account/menu');
 
         $GridPager = new DataGridPager();

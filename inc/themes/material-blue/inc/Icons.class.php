@@ -77,6 +77,7 @@ class Icons extends ThemeIconsBase
         $this->iconInfo = new FontIcon('info_outline', 'mdl-color-text--indigo-A200', _('Información'));
         $this->iconCritical = new FontIcon('error_outline', 'mdl-color-text--red-A200', _('Crítico'));
         $this->iconNotices = new FontIcon('notifications', 'mdl-color-text--indigo-A200', _('Notificaciones'));
+        $this->iconRemove = new FontIcon('remove', 'mdl-color-text--indigo-A200', _('Eliminar'));
 
         // Iconos de Navegación
         $this->iconNavPrev = new FontIcon('chevron_left', null, _('Página anterior'));

@@ -27,6 +27,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
+use SP\Controller\Grids\Items;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Util\Checks;
@@ -43,7 +44,7 @@ abstract class GridTabControllerBase extends ControllerBase
      */
     const MAX_NUM_ACTIONS = 3;
     /**
-     * @var Grids
+     * @var mixed
      */
     protected $Grids;
 
@@ -65,7 +66,7 @@ abstract class GridTabControllerBase extends ControllerBase
      */
     public function useTabs()
     {
-        $this->Grids = new Grids();
+        $this->Grids = new Items();
         $this->Grids->setQueryTimeStart($this->view->queryTimeStart);
 
         $this->view->addTemplate('datatabs-grid', 'grid');

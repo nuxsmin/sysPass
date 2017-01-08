@@ -30,6 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
+use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
@@ -140,11 +141,19 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getCategoriesGrid();
+        $Grid = $this->getGrids()->getCategoriesGrid();
         $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);
+    }
+
+    /**
+     * @return Items
+     */
+    public function getGrids()
+    {
+        return $this->Grids;
     }
 
     /**
@@ -161,7 +170,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getCustomersGrid();
+        $Grid = $this->getGrids()->getCustomersGrid();
         $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -182,7 +191,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getCustomFieldsGrid();
+        $Grid = $this->getGrids()->getCustomFieldsGrid();
         $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -207,7 +216,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getFilesGrid();
+        $Grid = $this->getGrids()->getFilesGrid();
         $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -227,7 +236,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getAccountsGrid();
+        $Grid = $this->getGrids()->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -248,7 +257,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getTagsGrid();
+        $Grid = $this->getGrids()->getTagsGrid();
         $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -269,7 +278,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getPluginsGrid();
+        $Grid = $this->getGrids()->getPluginsGrid();
         $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -290,7 +299,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getUsersGrid();
+        $Grid = $this->getGrids()->getUsersGrid();
         $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -311,7 +320,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getGroupsGrid();
+        $Grid = $this->getGrids()->getGroupsGrid();
         $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -332,7 +341,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getProfilesGrid();
+        $Grid = $this->getGrids()->getProfilesGrid();
         $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -352,7 +361,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getTokensGrid();
+        $Grid = $this->getGrids()->getTokensGrid();
         $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -377,7 +386,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getPublicLinksGrid();
+        $Grid = $this->getGrids()->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 

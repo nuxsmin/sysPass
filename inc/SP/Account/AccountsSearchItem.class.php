@@ -48,7 +48,7 @@ class AccountsSearchItem
     /** @var bool */
     public static $optionalActions = false;
     /** @var bool */
-    public static $requestEnabled = false;
+    public static $requestEnabled = true;
     /** @var bool */
     public static $wikiEnabled = false;
     /** @var bool */

@@ -39,7 +39,7 @@
                        title="<?php echo _('Búsqueda global'); ?>">
                     <input type="checkbox" id="globalSearch" class="mdl-switch__input mdl-color-text--indigo-400"
                            name="chkgsearch" tabindex="2"
-                        <?php echo ($searchGlobal) ? 'checked="checked"' : ''; ?>/>
+                        <?php echo $searchGlobal ? 'checked="checked"' : ''; ?>/>
                     <span class="mdl-switch__label" title="<?php echo _('Búsqueda global'); ?>"></span>
                 </label>
                 <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
@@ -85,8 +85,8 @@
                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Cuentas por página'); ?></span>
             </div>
             <i id="btn-filters" class="material-icons show-filter" data-state="0"
-               data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
-               data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
+               data-icon-down="<?php echo $icons->getIconAdd()->getIcon(); ?>"
+               data-icon-up="<?php echo $icons->getIconRemove()->getIcon(); ?>"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
             <span for="btn-filters"
                   class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Más Filtros'); ?></span>
         </div>

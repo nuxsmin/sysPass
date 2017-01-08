@@ -71,7 +71,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var array
      */
-    protected $_onClickArgs = array();
+    protected $_onClickArgs = [];
     /**
      * El icono de la acción
      *
@@ -227,7 +227,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getOnClick()
     {
-        $args = array();
+        $args = [];
 
         foreach ($this->_onClickArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;

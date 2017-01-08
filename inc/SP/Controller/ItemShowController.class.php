@@ -125,6 +125,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Realizar la acción solicitada en la la petición HTTP
      *
      * @param mixed $type Tipo de acción
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function doAction($type = null)
     {
@@ -260,6 +261,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de usuario
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getUser()
     {
@@ -279,6 +281,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener la lista de campos personalizados y sus valores
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getCustomFieldsForItem()
     {
@@ -287,6 +291,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Inicializar la vista de cambio de clave de usuario
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getUserPass()
     {
@@ -306,6 +312,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de grupo
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getGroup()
     {
@@ -323,6 +331,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de perfil
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getProfile()
     {
@@ -344,6 +354,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de cliente
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getCustomer()
     {
@@ -358,6 +370,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de categoría
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getCategory()
     {
@@ -372,6 +386,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de tokens de API
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getToken()
     {
@@ -395,6 +411,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la ficha de campo personalizado
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getCustomField()
     {
@@ -415,6 +433,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de enlace público
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getPublicLink()
     {
@@ -432,6 +451,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de categoría
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getTag()
     {
@@ -467,6 +487,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Mostrar la clave de una cuenta
      *
      * @throws ItemException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getAccountPass()
     {
@@ -546,8 +567,10 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Obtener los datos para la vista de plugins
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    private function getPlugin()
+    protected function getPlugin()
     {
         $this->module = self::ACTION_MGM_PLUGINS;
         $this->view->addTemplate('plugins');

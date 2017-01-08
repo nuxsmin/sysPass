@@ -117,6 +117,8 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     protected $iconCritical;
     /** @var  FontIcon|ImageIcon */
     protected $iconNotices;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconRemove;
 
     /**
      * Icons constructor.
@@ -516,5 +518,21 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     public function setIconNotices($iconNotices)
     {
         $this->iconNotices = $iconNotices;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconRemove()
+    {
+        return $this->iconRemove;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconRemove
+     */
+    public function setIconRemove($iconRemove)
+    {
+        $this->iconRemove = $iconRemove;
     }
 }

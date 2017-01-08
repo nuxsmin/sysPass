@@ -30,6 +30,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
+use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -71,10 +72,22 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
     {
         parent::__construct($template);
 
+        $this->grids = new Items();
+        $this->grids->setQueryTimeStart(microtime());
         $this->ItemSearchData = new ItemSearchData();
 
         $this->init();
         $this->setItemSearchData();
+    }
+
+    /**
+     * Establecer las propiedades de búsqueda
+     */
+    protected function setItemSearchData()
+    {
+        $this->ItemSearchData->setSeachString(Request::analyze('search'));
+        $this->ItemSearchData->setLimitStart(Request::analyze('start', 0));
+        $this->ItemSearchData->setLimitCount(Request::analyze('count', Config::getConfig()->getAccountCount()));
     }
 
     /**
@@ -154,7 +167,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getUsersGrid();
+        $Grid = $this->getGrids()->getUsersGrid();
         $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -164,6 +177,14 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('actionId', self::ACTION_USR);
 
         $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * @return Items
+     */
+    public function getGrids()
+    {
+        return $this->grids;
     }
 
     /**
@@ -181,7 +202,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getGroupsGrid();
+        $Grid = $this->getGrids()->getGroupsGrid();
         $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -208,7 +229,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getProfilesGrid();
+        $Grid = $this->getGrids()->getProfilesGrid();
         $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -235,7 +256,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getTokensGrid();
+        $Grid = $this->getGrids()->getTokensGrid();
         $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -262,7 +283,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getPublicLinksGrid();
+        $Grid = $this->getGrids()->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -289,7 +310,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getCategoriesGrid();
+        $Grid = $this->getGrids()->getCategoriesGrid();
         $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -316,7 +337,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getCustomersGrid();
+        $Grid = $this->getGrids()->getCustomersGrid();
         $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -343,7 +364,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getCustomFieldsGrid();
+        $Grid = $this->getGrids()->getCustomFieldsGrid();
         $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -370,7 +391,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getFilesGrid();
+        $Grid = $this->getGrids()->getFilesGrid();
         $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -397,7 +418,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getAccountsGrid();
+        $Grid = $this->getGrids()->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -424,7 +445,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getTagsGrid();
+        $Grid = $this->getGrids()->getTagsGrid();
         $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -451,7 +472,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $this->view->addTemplate('datagrid-table', 'grid');
 
-        $Grid = $this->grids->getPluginsGrid();
+        $Grid = $this->getGrids()->getPluginsGrid();
         $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -461,15 +482,5 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('actionId', self::ACTION_MGM);
 
         $this->jsonResponse->setStatus(0);
-    }
-
-    /**
-     * Establecer las propiedades de búsqueda
-     */
-    protected function setItemSearchData()
-    {
-        $this->ItemSearchData->setSeachString(Request::analyze('search'));
-        $this->ItemSearchData->setLimitStart(Request::analyze('start', 0));
-        $this->ItemSearchData->setLimitCount(Request::analyze('count', Config::getConfig()->getAccountCount()));
     }
 }

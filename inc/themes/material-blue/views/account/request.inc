@@ -16,17 +16,15 @@
                 <td class="descField"><?php echo _('Cliente'); ?></td>
                 <td class="valField"><?php echo $accountData->customer_name; ?></td>
             </tr>
-            <?php if ($lastAction === \SP\Core\ActionsInterface::ACTION_ACC_SEARCH): ?>
-                <tr>
-                    <td class="descField"><?php echo _('URL / IP'); ?></td>
-                    <td class="valField"><A href="<?php echo $accountData->getAccountUrl(); ?>"
-                                            target="_blank"><?php echo $accountData->getAccountUrl(); ?></td>
-                </tr>
-                <tr>
-                    <td class="descField"><?php echo _('Usuario'); ?></td>
-                    <td class="valField"><?php echo $accountData->getAccountLogin(); ?></td>
-                </tr>
-            <?php endif; ?>
+            <tr>
+                <td class="descField"><?php echo _('URL / IP'); ?></td>
+                <td class="valField"><A href="<?php echo $accountData->getAccountUrl(); ?>"
+                                        target="_blank"><?php echo $accountData->getAccountUrl(); ?></td>
+            </tr>
+            <tr>
+                <td class="descField"><?php echo _('Usuario'); ?></td>
+                <td class="valField"><?php echo $accountData->getAccountLogin(); ?></td>
+            </tr>
             <tr>
                 <td class="descField"><?php echo _('Petición'); ?></td>
                 <td class="valField">
@@ -39,8 +37,9 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="accountid" value="<?php echo $accountId; ?>"/>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
+        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
+        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
 
@@ -48,8 +47,8 @@
         <ul>
             <li>
                 <button id="btnBack" type="button"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo $icons->getIconBack()->getTitle(); ?>">
+                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        title="<?php echo _('Atrás'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                 </button>
             </li>
@@ -63,3 +62,6 @@
         </ul>
     </div>
 </div>
+<script>
+    sysPassApp.sk.set("<?php echo $sk; ?>");
+</script>

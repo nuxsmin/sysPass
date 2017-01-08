@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ $themeInfo = [
         'fonts.min.css',
         'material.min.css',
         'material-custom.min.css',
-        'bootstrap-material-datetimepicker.min.css',
+        'mdl-datetimepicker.min.css',
         'mdl-jquery-modal-dialog.min.css',
         'selectize.custom.min.css',
         'toastr.min.css',

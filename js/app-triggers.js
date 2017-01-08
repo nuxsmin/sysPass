@@ -214,12 +214,10 @@ sysPass.Triggers = function (Common) {
 
             $frmSearch.find("input:text:visible:first").focus();
 
-            $("#chkgsearch").click(
-                function () {
+            $("#globalSearch").click(function () {
                     var val = $(this).prop("checked") == true ? 1 : 0;
 
                     $frmSearch.find("input[name='gsearch']").val(val);
-
                     $frmSearch.submit();
                 }
             );
@@ -351,15 +349,13 @@ sysPass.Triggers = function (Common) {
             if ($extraInfo.length > 0) {
                 $extraInfo.on("click", function () {
                     var $this = $(this);
-                    var $table = $($this.data("target"));
+                    var $target = $($this.data("target"));
 
-                    if ($this.data("state") == 0) {
-                        $table.show("blind", "slow");
-                        $this.data("state", "1");
+                    if ($target.is(":hidden")) {
+                        $target.slideDown("slow");
                         $this.html($this.data("icon-up"));
                     } else {
-                        $table.hide("blind", "slow");
-                        $this.data("state", "0");
+                        $target.slideUp("slow");
                         $this.html($this.data("icon-down"));
                     }
                 });

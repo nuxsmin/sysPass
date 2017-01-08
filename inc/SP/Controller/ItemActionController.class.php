@@ -26,9 +26,11 @@ namespace SP\Controller;
 
 use SP\Account\Account;
 use SP\Account\AccountFavorites;
+use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\DataModel\CustomFieldData;
+use SP\DataModel\NoticeData;
 use SP\DataModel\PluginData;
 use SP\DataModel\PublicLinkData;
 use SP\Forms\AccountForm;
@@ -40,7 +42,10 @@ use SP\Forms\GroupForm;
 use SP\Forms\ProfileForm;
 use SP\Forms\TagForm;
 use SP\Forms\UserForm;
+use SP\Html\Html;
 use SP\Http\Request;
+use SP\Log\Email;
+use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
@@ -48,12 +53,15 @@ use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Files\File;
 use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\Plugins\Plugin;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserLdapSync;
+use SP\Mgmt\Users\UserUtil;
+use SP\Util\Checks;
 use SP\Util\Json;
 
 /**
@@ -156,6 +164,14 @@ class ItemActionController implements ItemControllerInterface
                     break;
                 case ActionsInterface::ACTION_USR_SYNC_LDAP:
                     $this->ldapImportAction();
+                    break;
+                case ActionsInterface::ACTION_NOT_USER_CHECK:
+                case ActionsInterface::ACTION_NOT_USER_VIEW:
+                case ActionsInterface::ACTION_NOT_USER_DELETE:
+                    $this->noticeAction();
+                    break;
+                case ActionsInterface::ACTION_ACC_REQUEST:
+                    $this->requestAccountAction();
                     break;
                 default:
                     $this->invalidAction();
@@ -547,6 +563,40 @@ class ItemActionController implements ItemControllerInterface
     }
 
     /**
+     * Acciones sobre plugins
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function pluginAction()
+    {
+        $PluginData = new PluginData();
+        $PluginData->setPluginId($this->itemId);
+
+        switch ($this->actionId) {
+            case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
+                $PluginData->setPluginEnabled(1);
+                Plugin::getItem($PluginData)->toggle();
+
+                $this->jsonResponse->setDescription(_('Plugin habilitado'));
+                break;
+            case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
+                $PluginData->setPluginEnabled(0);
+                Plugin::getItem($PluginData)->toggle();
+
+                $this->jsonResponse->setDescription(_('Plugin deshabilitado'));
+                break;
+            case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
+                Plugin::getItem()->reset($this->itemId);
+
+                $this->jsonResponse->setDescription(_('Plugin restablecido'));
+                break;
+        }
+
+        $this->jsonResponse->setStatus(0);
+    }
+
+    /**
      * Acciones sobre cuentas
      *
      * @throws \SP\Core\Exceptions\ValidationException
@@ -645,36 +695,94 @@ class ItemActionController implements ItemControllerInterface
     }
 
     /**
-     * Acciones sobre plugins
+     * Acciones sobre notificaciones
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    protected function pluginAction()
+    protected function noticeAction()
     {
-        $PluginData = new PluginData();
-        $PluginData->setPluginId($this->itemId);
-
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
-                $PluginData->setPluginEnabled(1);
-                Plugin::getItem($PluginData)->toggle();
+            case ActionsInterface::ACTION_NOT_USER_CHECK:
+                Notice::getItem()->setChecked($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Plugin habilitado'));
+                $this->jsonResponse->setDescription(_('Notificación leída'));
                 break;
-            case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
-                $PluginData->setPluginEnabled(0);
-                Plugin::getItem($PluginData)->toggle();
+            case ActionsInterface::ACTION_NOT_USER_DELETE:
+                Notice::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Plugin deshabilitado'));
-                break;
-            case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
-                Plugin::getItem()->reset($this->itemId);
-
-                $this->jsonResponse->setDescription(_('Plugin restablecido'));
+                $this->jsonResponse->setDescription(_('Notificación eliminada'));
                 break;
         }
 
+        $this->jsonResponse->setStatus(0);
+    }
+
+    /**
+     * Acciones para peticiones sobre cuentas
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function requestAccountAction()
+    {
+        $description = Request::analyze('description');
+
+        if (!$description) {
+            $this->jsonResponse->setDescription(_('Es necesaria una descripción'));
+            return;
+        }
+
+        $account = AccountUtil::getAccountRequestData($this->itemId);
+
+        if ($account->account_userId === $account->account_userEditId) {
+            $users = [$account->account_userId];
+        } else {
+            $users = [$account->account_userId, $account->account_userEditId];
+        }
+
+        $requestUsername = Session::getUserData()->getUserName();
+        $requestLogin = Session::getUserData()->getUserLogin();
+
+        $Log = new Log(_('Solicitud de Modificación de Cuenta'));
+        $Log->addDetails(Html::strongText(_('Solicitante')), sprintf('%s (%s)', $requestUsername, $requestLogin));
+        $Log->addDetails(Html::strongText(_('Cuenta')), $account->account_name);
+        $Log->addDetails(Html::strongText(_('Cliente')), $account->customer_name);
+        $Log->addDetails(Html::strongText(_('Descripción')), $description);
+
+        // Enviar por correo si está disponible
+        if (Checks::mailrequestIsEnabled()) {
+            $recipients = [];
+
+            foreach ($users as $user) {
+                $recipients[] = UserUtil::getUserEmail($user);
+            }
+
+            $mailto = implode(',', $recipients);
+
+            if (strlen($mailto) > 1
+                && Email::sendEmail($Log, $mailto)
+            ) {
+                $Log->writeLog();
+
+                $this->jsonResponse->addMessage(_('Solicitud enviada por correo'));
+            } else {
+                $this->jsonResponse->addMessage(_('Solicitud no enviada por correo'));
+            }
+        }
+
+        // Crear notificaciones
+        foreach ($users as $user) {
+            $NoticeData = new NoticeData();
+            $NoticeData->setNoticeUserId($user);
+            $NoticeData->setNoticeComponent('Accounts');
+            $NoticeData->setNoticeType('Solicitud');
+            $NoticeData->setNoticeDescription(utf8_decode($Log->getDetails()));
+
+            Notice::getItem($NoticeData)->add();
+        }
+
+        $this->jsonResponse->setDescription(_('Solicitud realizada'));
         $this->jsonResponse->setStatus(0);
     }
 }

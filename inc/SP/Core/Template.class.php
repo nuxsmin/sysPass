@@ -299,7 +299,7 @@ class Template
      */
     public function resetTemplates()
     {
-        $this->file = array();
+        $this->file = [];
     }
 
     /**
@@ -307,7 +307,7 @@ class Template
      */
     public function resetVariables()
     {
-        $this->vars = array();
+        $this->vars = [];
     }
 
     /**

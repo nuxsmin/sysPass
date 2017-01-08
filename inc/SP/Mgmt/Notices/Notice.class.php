@@ -144,7 +144,7 @@ class Notice extends NoticeBase implements ItemInterface
             'SELECT notice_type,
             notice_component,
             notice_description,
-            notice_date,
+            FROM_UNIXTIME(notice_date) AS notice_date,
             notice_checked,
             notice_userId,
             notice_sticky,
@@ -155,7 +155,7 @@ class Notice extends NoticeBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClassName($this->getDataModel());
-        $Data->addParam($this->itemData->getNoticeId());
+        $Data->addParam($id);
 
         try {
             $queryRes = DB::getResults($Data);
@@ -177,7 +177,7 @@ class Notice extends NoticeBase implements ItemInterface
             notice_type,
             notice_component,
             notice_description,
-            notice_date,
+            FROM_UNIXTIME(notice_date) AS notice_date,
             notice_checked,
             notice_userId,
             notice_sticky,
@@ -225,17 +225,18 @@ class Notice extends NoticeBase implements ItemInterface
     /**
      * Marcar una notificación como leída
      *
+     * @param $id
      * @return $this
      * @throws SPException
      */
-    public function setChecked()
+    public function setChecked($id)
     {
         $query = /** @lang SQL */
             'UPDATE notices SET notice_checked = 1 WHERE notice_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getNoticeId());
+        $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_CRITICAL, _('Error al modificar la notificación'));
@@ -299,7 +300,7 @@ class Notice extends NoticeBase implements ItemInterface
             notice_sticky,
             notice_onlyAdmin 
             FROM notices 
-            WHERE notice_userId = ? OR notice_onlyAdmin = 0 
+            WHERE notice_userId = ? OR (notice_userId = NULL AND notice_onlyAdmin = 0) 
             ORDER BY notice_date DESC ';
 
         $Data = new QueryData();

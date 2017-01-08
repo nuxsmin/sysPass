@@ -44,7 +44,7 @@ class DataGridActionSearch extends DataGridActionBase
      *
      * @var array
      */
-    private $_onSubmitArgs = array();
+    private $_onSubmitArgs = [];
 
     /**
      * DataGridActionSearch constructor.
@@ -63,7 +63,7 @@ class DataGridActionSearch extends DataGridActionBase
      */
     public function getOnSubmit()
     {
-        $args = array();
+        $args = [];
 
         foreach ($this->_onSubmitArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;

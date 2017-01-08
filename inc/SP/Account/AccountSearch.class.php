@@ -355,7 +355,7 @@ class AccountSearch
         $Data = new QueryData();
         $Data->setMapClassName(AccountSearchData::class);
 
-        if ($this->txtSearch !== null) {
+        if ($this->txtSearch !== null && $this->txtSearch !== '') {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
 

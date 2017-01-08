@@ -93,40 +93,6 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     }
 
     Json::returnJson($Json);
-} else if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
-    if (Checks::demoIsEnabled() && Session::getUserData()->getUserLogin() === 'demo') {
-        $Json->setDescription(_('Ey, esto es una DEMO!!'));
-        Json::returnJson($Json);
-    }
-
-    // Variables POST del formulario
-    $twoFaEnabled = Request::analyze('security_2faenabled', 0, false, 1);
-    $pin = Request::analyze('security_pin', 0);
-
-    $userLogin = UserUtil::getUserLoginById($itemId);
-    $twoFa = new Authenticator($itemId, $userLogin);
-
-    if (!$twoFa->verifyKey($pin)) {
-        $Json->setDescription(_('Código incorrecto'));
-        Json::returnJson($Json);
-    }
-
-    try {
-        $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
-        $UserPreferencesData->setUserId($itemId);
-        $UserPreferencesData->setUse2Fa(Util::boolval($twoFaEnabled));
-        UserPreferences::getItem($UserPreferencesData)->update();
-
-        // Actualizar las preferencias en la sesión
-        Session::setUserPreferences($UserPreferencesData);
-
-        $Json->setStatus(0);
-        $Json->setDescription(_('Preferencias actualizadas'));
-    } catch (SPException $e) {
-        $Json->setDescription($e->getMessage());
-    }
-
-    Json::returnJson($Json);
 } else {
     $Json->setDescription(_('Acción Inválida'));
     Json::returnJson($Json);

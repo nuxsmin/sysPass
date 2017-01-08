@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,27 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Controller;
+namespace SP\Controller\Grids;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
-use SP\Core\SessionUtil;
-use SP\Core\DiFactory;
-use SP\Core\UI\ThemeIconsBase;
 use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
-use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
 
 /**
@@ -47,34 +42,8 @@ use SP\Html\DataGrid\DataGridTab;
  *
  * @package SP\Controller
  */
-class Grids implements ActionsInterface
+class Items extends GridBase
 {
-    /**
-     * @var ThemeIconsBase
-     */
-    private $icons;
-    /**
-     * @var string
-     */
-    private $sk;
-    /**
-     * @var int
-     */
-    private $queryTimeStart;
-    /**
-     * @var bool
-     */
-    private $filter = false;
-
-    /**
-     * Grids constructor.
-     */
-    public function __construct()
-    {
-        $this->sk = SessionUtil::getSessionKey();
-        $this->icons = DiFactory::getTheme()->getIcons();
-    }
-
     /**
      * @return DataGridTab
      * @throws \InvalidArgumentException
@@ -147,27 +116,6 @@ class Grids implements ActionsInterface
         $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
-    }
-
-    /**
-     * Devolver el paginador por defecto
-     *
-     * @param DataGridActionSearch $sourceAction
-     * @return DataGridPager
-     */
-    public function getPager(DataGridActionSearch $sourceAction)
-    {
-        $GridPager = new DataGridPager();
-        $GridPager->setSourceAction($sourceAction);
-        $GridPager->setOnClickFunction('appMgmt/nav');
-        $GridPager->setLimitStart(0);
-        $GridPager->setLimitCount(Config::getConfig()->getAccountCount());
-        $GridPager->setIconPrev($this->icons->getIconNavPrev());
-        $GridPager->setIconNext($this->icons->getIconNavNext());
-        $GridPager->setIconFirst($this->icons->getIconNavFirst());
-        $GridPager->setIconLast($this->icons->getIconNavLast());
-
-        return $GridPager;
     }
 
     /**
@@ -1003,7 +951,7 @@ class Grids implements ActionsInterface
 
         $Grid->setDataActions($GridActionView);
 
-        $GridActionEnable= new DataGridAction();
+        $GridActionEnable = new DataGridAction();
         $GridActionEnable->setId(self::ACTION_MGM_PLUGINS_ENABLE);
         $GridActionEnable->setName(_('Habilitar'));
         $GridActionEnable->setTitle(_('Habilitar'));
@@ -1033,21 +981,5 @@ class Grids implements ActionsInterface
         $Grid->setDataActions($GridActionReset);
 
         return $Grid;
-    }
-
-    /**
-     * @param boolean $filter
-     */
-    public function setFilter($filter)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * @param int $queryTimeStart
-     */
-    public function setQueryTimeStart($queryTimeStart)
-    {
-        $this->queryTimeStart = $queryTimeStart;
     }
 }
