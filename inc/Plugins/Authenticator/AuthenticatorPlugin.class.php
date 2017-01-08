@@ -35,6 +35,8 @@ use SplSubject;
  */
 class AuthenticatorPlugin extends PluginBase
 {
+    const PLUGIN_NAME = 'Authenticator';
+
     /**
      * Receive update from subject
      *
@@ -66,7 +68,7 @@ class AuthenticatorPlugin extends PluginBase
      * Evento de actualización
      *
      * @param string $event Nombre del evento
-     * @param mixed $object
+     * @param mixed  $object
      */
     public function updateEvent($event, $object)
     {
@@ -153,6 +155,14 @@ class AuthenticatorPlugin extends PluginBase
      */
     public function getName()
     {
-        return 'Authenticator';
+        return self::PLUGIN_NAME;
+    }
+
+    /**
+     * @return array|AuthenticatorData[]
+     */
+    public function getData()
+    {
+        return (array)parent::getData();
     }
 }

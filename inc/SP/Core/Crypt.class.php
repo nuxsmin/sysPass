@@ -71,7 +71,7 @@ class Crypt
      *
      * @return string con el IV
      */
-    private static function getIV()
+    public static function getIV()
     {
         $source = MCRYPT_DEV_URANDOM;
         $mcryptRes = self::getMcryptResource();

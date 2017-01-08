@@ -26,6 +26,7 @@ namespace Plugins\Authenticator;
 
 use InvalidArgumentException;
 use SP\Controller\TabControllerBase;
+use SP\Core\Crypt;
 use SP\Core\Plugin\PluginBase;
 use SP\Core\Plugin\PluginInterface;
 use SP\Util\ArrayUtil;
@@ -65,20 +66,28 @@ class PreferencesController
     {
         $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'userpreferences';
 
-        // Datos del plugin
-        $pluginData = $this->Plugin->getData() ?: [];
-
         // Datos del usuario de la sesión
         $UserData = $this->Controller->getUserData();
 
         // Buscar al usuario en los datos del plugin
         /** @var AuthenticatorData $AuthenticatorData */
-        $AuthenticatorData = ArrayUtil::searchInObject($pluginData, 'userId', $UserData->getUserId(), new AuthenticatorData());
+        $AuthenticatorData = ArrayUtil::searchInObject($this->Plugin->getData(), 'userId', $UserData->getUserId(), new AuthenticatorData());
 
         $this->Controller->view->addTemplate('preferences-security', $base);
 
         try {
-            $twoFa = new Authenticator($UserData->getUserId(), $UserData->getUserLogin());
+            $IV = null;
+
+            if (!$AuthenticatorData->isTwofaEnabled()) {
+                $IV = Crypt::getIV();
+                $AuthenticatorData->setIV($IV);
+
+                Session::setUserData($AuthenticatorData);
+            } else {
+                $IV = $AuthenticatorData->getIV();
+            }
+
+            $twoFa = new Authenticator($UserData->getUserId(), $UserData->getUserLogin(), $IV);
 
             $this->Controller->view->assign('qrCode', !$AuthenticatorData->isTwofaEnabled() ? $twoFa->getUserQRCode() : '');
             $this->Controller->view->assign('userId', $UserData->getUserId());

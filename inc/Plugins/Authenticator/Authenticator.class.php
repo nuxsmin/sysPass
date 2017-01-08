@@ -62,24 +62,26 @@ class Authenticator
     /**
      * @param int    $userId    El Id de usuario
      * @param string $userLogin El login de usuario
+     * @param string $IV
      * @throws \InvalidArgumentException
      */
-    public function __construct($userId, $userLogin = null)
+    public function __construct($userId, $userLogin = null, $IV = null)
     {
         $this->userId = $userId;
         $this->userLogin = $userLogin;
-        $this->initializationKey = $this->genUserInitializationKey();
+        $this->initializationKey = $this->genUserInitializationKey($IV);
     }
 
     /**
      * Generar una clave de inicialización codificada en Base32
      *
+     * @param string $IV
      * @return string
      * @throws \InvalidArgumentException
      */
-    private function genUserInitializationKey()
+    private function genUserInitializationKey($IV = null)
     {
-        $userIV = UserPass::getUserIVById($this->userId);
+        $userIV = $IV === null ? UserPass::getUserIVById($this->userId) : $IV;
         $base32 = new Base2n(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567', false, true, true);
 
         return substr($base32->encode($userIV), 0, 16);

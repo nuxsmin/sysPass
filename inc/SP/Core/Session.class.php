@@ -58,12 +58,24 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param mixed $key   El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
      */
     public static function setSessionKey($key, $value)
     {
         $_SESSION[$key] = $value;
+    }
+
+    /**
+     * Establecer una variable de sesión para un plugin
+     *
+     * @param string $plugin Nombre del plugin
+     * @param string $key    El nombre de la variable
+     * @param mixed  $value  El valor de la variable
+     */
+    public static function setPluginKey($plugin, $key, $value)
+    {
+        $_SESSION[$plugin][$key] = $value;
     }
 
     /**
@@ -79,17 +91,31 @@ class Session
     /**
      * Devolver una variable de sesión
      *
-     * @param mixed $key
-     * @param mixed $default
+     * @param string $key
+     * @param mixed  $default
      * @return mixed
      */
     public static function getSessionKey($key, $default = '')
     {
         if (isset($_SESSION[$key])) {
-            if (is_numeric($default)) {
-                return (int)$_SESSION[$key];
-            }
-            return $_SESSION[$key];
+            return is_numeric($default) ? (int)$_SESSION[$key] : $_SESSION[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Devolver una variable de sesión
+     *
+     * @param string $plugin
+     * @param string $key
+     * @param mixed  $default
+     * @return mixed
+     */
+    public static function getPluginKey($plugin, $key, $default = '')
+    {
+        if (isset($_SESSION[$plugin][$key])) {
+            return is_numeric($default) ? (int)$_SESSION[$plugin][$key] : $_SESSION[$plugin][$key];
         }
 
         return $default;

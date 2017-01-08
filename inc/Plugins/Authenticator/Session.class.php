@@ -24,7 +24,7 @@ class Session
      */
     public static function setTwoFApass($pass)
     {
-        CoreSession::setSessionKey('Authenticator.twofapass', $pass);
+        CoreSession::setPluginKey(AuthenticatorPlugin::PLUGIN_NAME, 'twofapass', $pass);
     }
 
     /**
@@ -34,6 +34,26 @@ class Session
      */
     public static function getTwoFApass()
     {
-        CoreSession::getSessionKey('Authenticator.twofapass');
+        return CoreSession::getPluginKey(AuthenticatorPlugin::PLUGIN_NAME, 'twofapass');
+    }
+
+    /**
+     * Establecer los datos del usuario
+     *
+     * @param AuthenticatorData $data
+     */
+    public static function setUserData(AuthenticatorData $data)
+    {
+        CoreSession::setPluginKey(AuthenticatorPlugin::PLUGIN_NAME, 'userdata', $data);
+    }
+
+    /**
+     * Devolver los datos del usuario
+     *
+     * @return AuthenticatorData
+     */
+    public static function getUserData()
+    {
+        return CoreSession::getPluginKey(AuthenticatorPlugin::PLUGIN_NAME, 'userdata');
     }
 }

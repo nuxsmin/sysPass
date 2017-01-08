@@ -31,6 +31,7 @@ use SP\Core\Session as CoreSession;
 use SP\DataModel\PluginData;
 use SP\Http\Request;
 use SP\Mgmt\Plugins\Plugin;
+use SP\Util\ArrayUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
 
@@ -99,8 +100,11 @@ class ActionController implements ItemControllerInterface
     protected function save()
     {
         $pin = Request::analyze('security_pin', 0);
+        $twofa_enabled = Request::analyze('security_2faenabled', 0, false, 1);
 
-        $twoFa = new Authenticator($this->itemId, CoreSession::getUserData()->getUserLogin());
+        $AuthenticatorData = Session::getUserData();
+
+        $twoFa = new Authenticator($this->itemId, CoreSession::getUserData()->getUserLogin(), $AuthenticatorData->getIV());
 
         if (!$twoFa->verifyKey($pin)) {
             $this->jsonResponse->setDescription(_('Código incorrecto'));
@@ -114,16 +118,17 @@ class ActionController implements ItemControllerInterface
 
         $data = $this->Plugin->getData();
 
-        if (!isset($data[$this->itemId])) {
-            $data[$this->itemId] = new AuthenticatorData();
-        }
+        if ($twofa_enabled) {
+            /** @var AuthenticatorData $AuthenticatorData */
+            $AuthenticatorData->setUserId($this->itemId);
+            $AuthenticatorData->setTwofaEnabled($twofa_enabled);
+            $AuthenticatorData->setExpireDays(Request::analyze('expiredays', 0));
+            $AuthenticatorData->setDate(time());
 
-        /** @var AuthenticatorData $AuthenticatorData */
-        $AuthenticatorData = $data[$this->itemId];
-        $AuthenticatorData->setUserId($this->itemId);
-        $AuthenticatorData->setTwofaEnabled(Request::analyze('security_2faenabled', 0, false, 1));
-        $AuthenticatorData->setExpireDays(Request::analyze('expiredays', 0));
-        $AuthenticatorData->setDate(time());
+            $data[$this->itemId] = $AuthenticatorData;
+        } elseif (!$twofa_enabled) {
+            unset($data[$this->itemId]);
+        }
 
         $PluginData = new PluginData();
         $PluginData->setPluginName($this->Plugin->getName());
@@ -149,7 +154,11 @@ class ActionController implements ItemControllerInterface
         $userId = Request::analyze('itemId', 0);
         $pin = Request::analyze('security_pin', 0);
 
-        $TwoFa = new Authenticator($userId);
+        // Buscar al usuario en los datos del plugin
+        /** @var AuthenticatorData $AuthenticatorData */
+        $AuthenticatorData = ArrayUtil::searchInObject($this->Plugin->getData(), 'userId', $userId, new AuthenticatorData());
+
+        $TwoFa = new Authenticator($userId, null, $AuthenticatorData->getIV());
 
         if ($userId
             && $pin

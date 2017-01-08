@@ -41,7 +41,7 @@ class ArrayUtil
      * @param object $default Valor por defecto
      * @return false|object
      */
-    public static function searchInObject(array &$array, $property, $value, $default = null)
+    public static function searchInObject(array $array, $property, $value, $default = null)
     {
         foreach($array as $object) {
             if ($value == $object->$property) {

@@ -124,6 +124,7 @@ class LoginController
      * Comprobar la caducidad del código
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function checkExpireTime()
     {
@@ -139,6 +140,7 @@ class LoginController
         $NoticeData = new NoticeData();
         $NoticeData->setNoticeComponent($this->Plugin->getName());
         $NoticeData->setNoticeUserId($userId);
+        $NoticeData->setNoticeType(_('Aviso Caducidad'));
 
         if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0){
             return;
@@ -148,9 +150,11 @@ class LoginController
         $timeRemaining = $expireTime - time();
 
         if ($timeRemaining <= self::WARNING_TIME) {
-            $NoticeData->setNoticeType(_('Aviso Caducidad'));
             $NoticeData->setNoticeDescription(sprintf(_('El código 2FA se ha de restablecer en %d días'), $timeRemaining / 86400));
-            $NoticeData->setNoticeUserId($userId);
+
+            Notice::getItem($NoticeData)->add();
+        } elseif (time() > $expireTime) {
+            $NoticeData->setNoticeDescription(_('El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias'));
 
             Notice::getItem($NoticeData)->add();
         }

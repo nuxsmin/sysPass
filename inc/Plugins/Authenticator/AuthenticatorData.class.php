@@ -55,6 +55,12 @@ class AuthenticatorData
      * @var int
      */
     public $expireDays;
+    /**
+     * Vector de inicialización
+     *
+     * @var string
+     */
+    public $IV;
 
     /**
      * @return mixed
@@ -118,5 +124,21 @@ class AuthenticatorData
     public function setExpireDays($expireDays)
     {
         $this->expireDays = $expireDays;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIV()
+    {
+        return $this->IV;
+    }
+
+    /**
+     * @param string $IV
+     */
+    public function setIV($IV)
+    {
+        $this->IV = $IV;
     }
 }

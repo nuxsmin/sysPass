@@ -94,13 +94,13 @@ class Request
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 if (!isset($_GET[$param])) {
-                    return ($force) ? !$force : $default;
+                    return $force ? !$force : $default;
                 }
                 $value = &$_GET[$param];
                 break;
             case 'POST':
                 if (!isset($_POST[$param])) {
-                    return ($force) ? !$force : $default;
+                    return $force ? !$force : $default;
                 }
                 $value = &$_POST[$param];
                 break;
