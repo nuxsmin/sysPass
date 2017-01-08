@@ -80,5 +80,6 @@ $stringsJsLang = array(
     54 => _('Ayuda'),
     55 => _('Sin cambios'),
     56 => _('Ahora'),
-    57 => _('Este proceso importará los usuarios de LDAP detectados. Desea continuar?')
+    57 => _('Este proceso importará los usuarios de LDAP detectados. Desea continuar?'),
+    58 => _('Esta acción restablecerá todos los datos del plugin. Desea continuar?')
 );

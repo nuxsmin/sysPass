@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -100,6 +100,7 @@ class Plugin extends PluginBase implements ItemInterface
 
     /**
      * Actualizar los datos de un plugin
+     *
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -235,6 +236,35 @@ class Plugin extends PluginBase implements ItemInterface
         $Log = new Log(_('Modificar Plugin'));
         $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
         $Log->addDetails(Html::strongText(_('Estado')), $this->itemData->getPluginEnabled() === 1 ? _('Habilitado') : _('Deshabilitado'));
+        $Log->writeLog();
+
+        return $this;
+    }
+
+    /**
+     * Restablecer los datos de un plugin
+     *
+     * @param int $id Id del plugin
+     * @return $this
+     * @throws SPException
+     */
+    public function reset($id)
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_data = NULL 
+              WHERE plugin_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el plugin'));
+        }
+
+        $Log = new Log(_('Modificar Plugin'));
+        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
         $Log->writeLog();
 
         return $this;

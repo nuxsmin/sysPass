@@ -138,6 +138,7 @@ class ItemActionController implements ItemControllerInterface
                     break;
                 case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
                 case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
+                case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
                     $this->pluginAction();
                     break;
                 case ActionsInterface::ACTION_ACC_NEW:
@@ -647,6 +648,7 @@ class ItemActionController implements ItemControllerInterface
      * Acciones sobre plugins
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function pluginAction()
     {
@@ -665,6 +667,11 @@ class ItemActionController implements ItemControllerInterface
                 Plugin::getItem($PluginData)->toggle();
 
                 $this->jsonResponse->setDescription(_('Plugin deshabilitado'));
+                break;
+            case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
+                Plugin::getItem()->reset($this->itemId);
+
+                $this->jsonResponse->setDescription(_('Plugin restablecido'));
                 break;
         }
 

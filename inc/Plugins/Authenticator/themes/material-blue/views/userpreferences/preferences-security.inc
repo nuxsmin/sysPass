@@ -4,7 +4,7 @@
 <div id="tabs-<?php echo $security_tabIndex; ?>" class="mdl-tabs__panel">
     <div class="tab-data">
         <div id="title" class="midroundup titleNormal">
-            <?php echo _('Autentificación'); ?>
+            <?php echo _t('authenticator', 'Autentificación'); ?>
         </div>
 
         <form method="post" name="frmSecurity" id="frmSecurity" class="form-action"
@@ -15,16 +15,16 @@
             <table id="tblSite" class="data tblConfig round">
                 <tr>
                     <td class="descField">
-                        <?php echo _('Autentificación en 2 pasos'); ?>
+                        <?php echo _t('authenticator', 'Autentificación en 2 pasos'); ?>
                         <div id="help-security_2fa"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-security_2fa">
                             <p>
-                                <?php echo _('Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator.'); ?>
+                                <?php echo _t('authenticator', 'Habilita la autentificación en 2 pasos que requiere de la introducción de un token generado por una aplicación como Google Authenticator.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('Escanee el código QR proporcionado y a continuación introduzca la clave de 6 dígitos.'); ?>
+                                <?php echo _t('authenticator', 'Escanee el código QR proporcionado y a continuación introduzca la clave de 6 dígitos.'); ?>
                             </p>
                         </div>
                     </td>
@@ -32,14 +32,14 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="security_2faenabled">
                             <input type="checkbox" id="security_2faenabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="security_2faenabled" <?php echo ($chk2FAEnabled) ? 'checked' : ''; ?>/>
-                            <span class="mdl-switch__label"><?php echo _('Activar'); ?></span>
+                                   name="security_2faenabled" <?php echo $chk2FAEnabled ? 'checked' : ''; ?>/>
+                            <span class="mdl-switch__label"><?php echo _t('authenticator', 'Activar'); ?></span>
                         </label>
                         <?php if (!$chk2FAEnabled && $qrCode): ?>
                             <br><br>
                             <img id="security_qrcode" src="data:image/gif;base64,<?php echo $qrCode; ?>" alt="QR Code"/>
                         <?php elseif ($qrCode === false): ?>
-                            <p class="ui-state-error"><?php echo _('Error al obtener el código QR. Inténtelo de nuevo'); ?></p>
+                            <p class="ui-state-error"><?php echo _t('authenticator', 'Error al obtener el código QR. Inténtelo de nuevo'); ?></p>
                         <?php endif; ?>
                         <br><br>
 
@@ -49,24 +49,24 @@
                                    maxlength="6"
                                    required/>
                             <label class="mdl-textfield__label"
-                                   for="security_pin"><?php echo _('Código'); ?></label>
+                                   for="security_pin"><?php echo _t('authenticator', 'Código'); ?></label>
                         </div>
                         <br>
 
                         <div
                                 class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
-                        <?php echo _('Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado.'); ?>
+                        <?php echo _t('authenticator', 'Una vez activada, sólo es posible acceder si se dispone del dispositivo generador de códigos asociado.'); ?>
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField"><?php echo _('Días Caducidad'); ?></td>
+                    <td class="descField"><?php echo _t('authenticator', 'Días Caducidad'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="expiredays" name="expiredays" type="number" step="1"
                                    min="1" max="720" class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $expireDays ?: 90; ?>" required/>
                             <label class="mdl-textfield__label"
-                                   for="expiredays"><?php echo _('Días'); ?></label>
+                                   for="expiredays"><?php echo _t('authenticator', 'Días'); ?></label>
                         </div>
                     </td>
                 </tr>

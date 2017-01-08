@@ -1023,6 +1023,15 @@ class Grids implements ActionsInterface
 
         $Grid->setDataActions($GridActionDisable);
 
+        $GridActionReset = new DataGridAction();
+        $GridActionReset->setId(self::ACTION_MGM_PLUGINS_RESET);
+        $GridActionReset->setName(_('Restablecer Datos'));
+        $GridActionReset->setTitle(_('Restablecer Datos'));
+        $GridActionReset->setIcon($this->icons->getIconRefresh());
+        $GridActionReset->setOnClickFunction('plugin/reset');
+
+        $Grid->setDataActions($GridActionReset);
+
         return $Grid;
     }
 

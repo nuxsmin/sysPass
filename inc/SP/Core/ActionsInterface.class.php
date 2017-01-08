@@ -109,6 +109,7 @@ interface ActionsInterface
     const ACTION_MGM_PLUGINS_SEARCH = 695;
     const ACTION_MGM_PLUGINS_ENABLE= 696;
     const ACTION_MGM_PLUGINS_DISABLE= 697;
+    const ACTION_MGM_PLUGINS_RESET= 698;
     const ACTION_USR = 70;
     const ACTION_USR_USERS = 71;
     const ACTION_USR_USERS_VIEW = 710;

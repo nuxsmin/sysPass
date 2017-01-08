@@ -62,6 +62,8 @@ class AuthenticatorPlugin extends PluginBase
 
         $this->base = __DIR__;
         $this->themeDir = __DIR__ . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . DiFactory::getTheme()->getThemeName();
+
+        $this->setLocales();
     }
 
     /**

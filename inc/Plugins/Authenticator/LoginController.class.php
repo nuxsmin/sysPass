@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -51,7 +51,7 @@ class LoginController
     /**
      * Controller constructor.
      *
-     * @param PluginBase        $Plugin
+     * @param PluginBase $Plugin
      */
     public function __construct(PluginBase $Plugin)
     {
@@ -93,6 +93,46 @@ class LoginController
     }
 
     /**
+     * Comprobar la caducidad del código
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function checkExpireTime()
+    {
+        /** @var AuthenticatorData[] $data */
+        $data = $this->Plugin->getData();
+
+        $userId = Request::analyze('i', 0);
+
+        if (!isset($data[$userId]) || $data[$userId]->getExpireDays() === 0) {
+            return;
+        }
+
+        $NoticeData = new NoticeData();
+        $NoticeData->setNoticeComponent($this->Plugin->getName());
+        $NoticeData->setNoticeUserId($userId);
+        $NoticeData->setNoticeType(_('Aviso Caducidad'));
+
+        if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0) {
+            return;
+        }
+
+        $expireTime = $data[$userId]->getDate() + ($data[$userId]->getExpireDays() * 86400);
+        $timeRemaining = $expireTime - time();
+
+        if ($timeRemaining <= self::WARNING_TIME) {
+            $NoticeData->setNoticeDescription(sprintf(_t('authenticator', 'El código 2FA se ha de restablecer en %d días'), $timeRemaining / 86400));
+
+            Notice::getItem($NoticeData)->add();
+        } elseif (time() > $expireTime) {
+            $NoticeData->setNoticeDescription(_t('authenticator', 'El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias'));
+
+            Notice::getItem($NoticeData)->add();
+        }
+    }
+
+    /**
      * Comprobar 2FA en el login
      *
      * @throws \SP\Core\Exceptions\SPException
@@ -117,46 +157,6 @@ class LoginController
             Json::returnJson($JsonResponse);
         } else {
             Session::setTwoFApass(true);
-        }
-    }
-
-    /**
-     * Comprobar la caducidad del código
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    protected function checkExpireTime()
-    {
-        /** @var AuthenticatorData[] $data */
-        $data = $this->Plugin->getData();
-
-        $userId = Request::analyze('i', 0);
-
-        if (!isset($data[$userId]) || $data[$userId]->getExpireDays() === 0) {
-            return;
-        }
-
-        $NoticeData = new NoticeData();
-        $NoticeData->setNoticeComponent($this->Plugin->getName());
-        $NoticeData->setNoticeUserId($userId);
-        $NoticeData->setNoticeType(_('Aviso Caducidad'));
-
-        if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0){
-            return;
-        }
-
-        $expireTime = $data[$userId]->getDate() + ($data[$userId]->getExpireDays() * 86400);
-        $timeRemaining = $expireTime - time();
-
-        if ($timeRemaining <= self::WARNING_TIME) {
-            $NoticeData->setNoticeDescription(sprintf(_('El código 2FA se ha de restablecer en %d días'), $timeRemaining / 86400));
-
-            Notice::getItem($NoticeData)->add();
-        } elseif (time() > $expireTime) {
-            $NoticeData->setNoticeDescription(_('El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias'));
-
-            Notice::getItem($NoticeData)->add();
         }
     }
 }

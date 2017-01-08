@@ -1138,6 +1138,44 @@ sysPass.Actions = function (Common) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
+        },
+        reset: function ($obj) {
+            log.info("plugin:reset");
+
+            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[58] + "</p></div>";
+
+            showDialog({
+                text: atext,
+                negative: {
+                    title: Common.config().LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        Common.msg.error(Common.config().LANG[44]);
+                    }
+                },
+                positive: {
+                    title: Common.config().LANG[43],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        var data = {
+                            "itemId": $obj.data("item-id"),
+                            "actionId": $obj.data("action-id"),
+                            "sk": Common.sk.get(),
+                            "activeTab": $obj.data("activetab")
+                        };
+
+                        var opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.appMgmt.save;
+                        opts.data = data;
+
+                        Common.appRequests().getActionCall(opts, function (json) {
+                            Common.msg.out(json);
+                        });
+                    }
+                }
+            });
         }
     };
 

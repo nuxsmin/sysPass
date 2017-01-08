@@ -78,5 +78,16 @@ function debugLog($data, $printLastCaller = false)
     }
 }
 
+/**
+ * Alias para obtener las locales de un dominio
+ *
+ * @param $domain
+ * @param $message
+ * @return string
+ */
+function _t($domain, $message) {
+    return dgettext($domain, $message);
+}
+
 // Inicializar sysPass
 Init::start();

@@ -99,6 +99,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      *
      * @param mixed $type Tipo de acción
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doAction($type = null)
     {
@@ -129,6 +130,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de categorías
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getCategories()
     {
@@ -149,6 +151,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de clientes
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getCustomers()
     {
@@ -169,6 +172,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de campos personalizados
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getCustomFields()
     {
@@ -189,6 +193,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de archivos
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getFiles()
     {
@@ -233,6 +238,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de etiquetas
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getTags()
     {
@@ -253,6 +259,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de tokens de API
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getPluginsList()
     {
@@ -273,6 +280,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de usuarios
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getUsersList()
     {
@@ -293,6 +301,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de grupos
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getGroupsList()
     {
@@ -313,6 +322,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de perfiles
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getProfilesList()
     {
@@ -353,6 +363,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Obtener los datos para la pestaña de tokens de API
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getPublicLinksList()
     {

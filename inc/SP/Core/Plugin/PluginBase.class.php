@@ -127,4 +127,16 @@ abstract class PluginBase implements PluginInterface
     {
         $this->enabled = (int)$enabled;
     }
+
+    /**
+     * Establecer las locales del plugin
+     */
+    protected function setLocales()
+    {
+        $locales = $this->getBase() . DIRECTORY_SEPARATOR . 'locales';
+        $name = strtolower($this->getName());
+
+        bindtextdomain($name, $locales);
+        bind_textdomain_codeset($name, 'UTF-8');
+    }
 }
