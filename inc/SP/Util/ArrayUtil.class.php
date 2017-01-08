@@ -35,16 +35,19 @@ class ArrayUtil
     /**
      * Buscar un objeto en un array según el valor de una propiedad
      *
-     * @param array $array
+     * @param array  $array
      * @param string $property Nombre de la propiedad
-     * @param string $value Valor de la propiedad
-     * @param object $default Valor por defecto
+     * @param string $value    Valor de la propiedad
+     * @param object $default  Valor por defecto
      * @return false|object
      */
     public static function searchInObject(array $array, $property, $value, $default = null)
     {
-        foreach($array as $object) {
-            if ($value == $object->$property) {
+        foreach ($array as $object) {
+            if (is_object($object)
+                && isset($object->$property)
+                && $value == $object->$property
+            ) {
                 return $object;
             }
         }
