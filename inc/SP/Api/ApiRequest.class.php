@@ -38,6 +38,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * {"jsonrpc": "2.0", "method": "subtract", "params": {"minuend": 42, "subtrahend": 23}, "id": 3}
  *
+ * @see http://www.jsonrpc.org/specification
  * @package SP
  */
 class ApiRequest extends Request

@@ -34,6 +34,7 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\Plugins\Plugin;
 use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -180,8 +181,8 @@ class Init
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
             if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false) {
                 self::logout();
-            // Denegar la redirección si la URL contiene una @
-            // Esto previene redirecciones como ?redirect_url=:user@domain.com
+                // Denegar la redirección si la URL contiene una @
+                // Esto previene redirecciones como ?redirect_url=:user@domain.com
             } elseif (Request::analyze('redirect_url', '', true) && strpos('index.php', '@') === false) {
                 header('Location: ' . 'index.php');
             }
@@ -284,7 +285,7 @@ class Init
     /**
      * Devuelve un eror utilizando la plantilla de error.
      *
-     * @param string $str  con la descripción del error
+     * @param string $str con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
      */
     public static function initError($str, $hint = '')
@@ -656,6 +657,23 @@ class Init
     }
 
     /**
+     * Cargar los Plugins disponibles
+     */
+    private static function loadPlugins()
+    {
+        foreach (PluginUtil::getPlugins() as $plugin) {
+            $Plugin = PluginUtil::loadPlugin($plugin);
+
+            if ($Plugin !== false) {
+                DiFactory::getEventDispatcher()->attach($Plugin);
+            }
+        }
+
+        Session::setPluginsLoaded(PluginUtil::getLoadedPlugins());
+        Session::setPluginsDisabled(PluginUtil::getDisabledPlugins());
+    }
+
+    /**
      * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
      *
      * @return bool
@@ -666,7 +684,7 @@ class Init
     {
         $action = Request::analyze('a');
 
-        if ($action === '' ) {
+        if ($action === '') {
             return false;
         }
 
@@ -701,7 +719,7 @@ class Init
     {
         $action = Request::analyze('a');
 
-        if ($action === '' ) {
+        if ($action === '') {
             return false;
         }
 
@@ -721,22 +739,5 @@ class Init
     {
         list($usec, $sec) = explode(' ', microtime());
         return ((float)$usec + (float)$sec);
-    }
-
-    /**
-     * Cargar los Plugins disponibles
-     */
-    private static function loadPlugins()
-    {
-        foreach (PluginUtil::getPlugins() as $plugin){
-            $Plugin = PluginUtil::loadPlugin($plugin);
-
-            if ($Plugin !== false) {
-                DiFactory::getEventDispatcher()->attach($Plugin);
-            }
-        }
-
-        Session::setPluginsLoaded(PluginUtil::getLoadedPlugins());
-        Session::setPluginsDisabled(PluginUtil::getDisabledPlugins());
     }
 }

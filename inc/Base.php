@@ -72,8 +72,9 @@ function debugLog($data, $printLastCaller = false)
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $n = count($backtrace);
 
-        for ($i = 1; $i <= $n - 1; $i++){
-            error_log(sprintf('Caller %d: %s\%s', $i, $backtrace[$i]['class'], $backtrace[$i]['function']));
+        for ($i = 1; $i <= $n - 1; $i++) {
+            $class = isset($backtrace[$i]['class']) ? $backtrace[$i]['class'] : '';
+            error_log(sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']));
         }
     }
 }
@@ -85,7 +86,8 @@ function debugLog($data, $printLastCaller = false)
  * @param $message
  * @return string
  */
-function _t($domain, $message) {
+function _t($domain, $message)
+{
     return dgettext($domain, $message);
 }
 

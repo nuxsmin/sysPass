@@ -214,8 +214,8 @@ class UserPass extends UserBase
 
         if ($queryRes === false) {
             return false;
-        } elseif ($queryRes->user_mPass === null
-            || $queryRes->user_mIV === null
+        } elseif ($queryRes->user_mPass === ''
+            || $queryRes->user_mIV === ''
         ) {
             return null;
         }

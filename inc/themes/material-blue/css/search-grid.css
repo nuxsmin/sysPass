@@ -24,7 +24,6 @@
     #content #data-search .account-label .label-row-up,
     #content #data-search .account-label .label-row-down {
       display: flex;
-      flex-wrap: wrap;
       min-height: 3em;
       height: auto;
       width: 100%;
@@ -34,23 +33,27 @@
     #content #data-search .account-label .label-left {
       display: flex;
       flex-wrap: wrap;
-      align-items: center; }
+      align-items: center;
+      width: 100%;
+      height: 4em; }
     #content #data-search .account-label .label-right {
       display: flex;
       flex-wrap: wrap;
-      width: 18em; }
+      width: 18em;
+      height: 4em; }
       #content #data-search .account-label .label-right > div {
         width: 18em; }
     #content #data-search .account-label .label-field {
-      width: 18em;
+      width: 100%;
       min-height: 3em;
-      height: auto; }
+      height: auto;
+      padding: 0 .3em; }
     #content #data-search .account-label .field-text {
       word-wrap: break-word; }
       #content #data-search .account-label .field-text a {
         color: #5c6bc0; }
     #content #data-search .account-label .field-customer {
-      width: 20em; }
+      flex-grow: 2; }
     #content #data-search .account-label .field-name {
       padding: 0.3em 0.2em;
       color: #b9b9b9;

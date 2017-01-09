@@ -59,8 +59,6 @@ abstract class PluginBase implements PluginInterface
      */
     public final function __construct()
     {
-        DiFactory::getEventDispatcher()->attach($this);
-
         $this->init();
     }
 

@@ -30,7 +30,7 @@
       .label-row-up,
       .label-row-down {
         display: flex;
-        flex-wrap: wrap;
+        //flex-wrap: wrap;
         min-height: 3em;
         height: auto;
         width: 100%;
@@ -45,21 +45,25 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        width: 100%;
+        height: 4em;
       }
 
       .label-right {
         display: flex;
         flex-wrap: wrap;
         width: 18em;
+        height: 4em;
         & > div {
           width: 18em;
         }
       }
 
       .label-field {
-        width: 18em;
+        width: 100%;
         min-height: 3em;
         height: auto;
+        padding: 0 .3em;
       }
 
       .field-text {
@@ -70,7 +74,8 @@
       }
 
       .field-customer {
-        width: 20em;
+        flex-grow: 2;
+        //width: 20em;
       }
 
       .field-name {

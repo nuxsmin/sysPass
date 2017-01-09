@@ -1145,7 +1145,12 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                    // Recargar para cargar/descargar el plugin
+                    setTimeout(function () {
+                        Common.redirect("index.php");
+                    }, 2000);
+
+                    //doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
         },
