@@ -26,8 +26,6 @@ use SP\Html\Html;
                         <?php if ($dataItem->{$rowSrcIcon['field']} == $rowSrcIcon['value']): ?>
                             <i class="material-icons <?php echo $rowSrcIcon['icon']->getClass(); ?>"
                                title="<?php echo $rowSrcIcon['icon']->getTitle(); ?>"><?php echo $rowSrcIcon['icon']->getIcon(); ?></i>
-                        <?php else: ?>
-                            &nbsp;
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </td>

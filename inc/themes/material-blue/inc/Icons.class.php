@@ -47,7 +47,7 @@ class Icons extends ThemeIconsBase
         $this->iconView = new FontIcon('visibility', 'mdl-color-text--indigo-A200', _('Ver Detalles'));
         $this->iconViewPass = new FontIcon('lock_open', 'mdl-color-text--indigo-A200', _('Ver Clave'));
         $this->iconEdit = new FontIcon('mode_edit', 'mdl-color-text--amber-A200', _('Editar'));
-        $this->iconDelete = new FontIcon('delete', 'mdl-color-text--red-A200', _('Eliminar'));
+        $this->iconDelete = new FontIcon('remove_circle', 'mdl-color-text--red-A200', _('Eliminar'));
         $this->iconEditPass = new FontIcon('lock_outline', 'mdl-color-text--amber-A200', _('Cambiar Clave'));
         $this->iconAppAdmin = new FontIcon('star', 'mdl-color-text--amber-A100', _('Admin Aplicación'));
         $this->iconAccAdmin = new FontIcon('star_half', 'mdl-color-text--amber-A100', _('Admin Cuentas'));

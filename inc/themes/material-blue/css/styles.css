@@ -434,6 +434,10 @@ pre, code, samp, kbd {
     text-align: left; }
   #content .data-table tbody td.cell-actions {
     text-align: right; }
+    #content .data-table tbody td.cell-actions i {
+      opacity: .5; }
+      #content .data-table tbody td.cell-actions i:hover {
+        opacity: 1; }
 #content .data-rows ul {
   display: table;
   list-style: none;
