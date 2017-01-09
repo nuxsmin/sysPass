@@ -434,6 +434,7 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param $id
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws SPException
      */
     public function deleteAccount($id)

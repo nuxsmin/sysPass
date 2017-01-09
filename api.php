@@ -24,41 +24,16 @@
  */
 
 use SP\Api\ApiRequest;
-use SP\Core\Init;
-use SP\Http\Response;
 
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
-
-Init::setLogging();
 
 header('Content-type: application/json');
 
 try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
-} catch (\SP\Core\Exceptions\InvalidArgumentException $e) {
-    $code = $e->getCode();
-
-    Response::printJson(
-        [
-            'jsonrpc' => '2.0',
-            'error' => [
-                'code' => $code,
-                'message' => $e->getMessage(),
-                'data' => $e->getHint()
-                ],
-            'id' => ($code === -32700 || $code === -32600) ? null : $ApiRequest->getId()
-        ]);
 } catch (Exception $e) {
-    Response::printJson(
-        [
-            'jsonrpc' => '2.0',
-            'error' => [
-                'code' => $e->getCode(),
-                'message' => $e->getMessage(),
-            ],
-            'id' => null
-        ]);
+    exit($ApiRequest->formatJsonError($e));
 }

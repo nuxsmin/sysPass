@@ -121,6 +121,7 @@ abstract class ApiBase implements ApiInterface
      * Cargar los datos del usuario
      *
      * @return UserData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function loadUserData()
@@ -160,6 +161,7 @@ abstract class ApiBase implements ApiInterface
      * Realizar la autentificación del usuario
      *
      * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function doAuth()
     {

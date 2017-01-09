@@ -325,22 +325,26 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $exportHash = $this->Config->getExportHash();
 
         $this->view->assign('backupFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $backupHash . '.tar.gz',
+            ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $backupHash . '.tar.gz',
                 'relative' => $this->view->backupPath . '/' . $this->view->siteName . '-' . $backupHash . '.tar.gz',
-                'filename' => $this->view->siteName . '-' . $backupHash . '.tar.gz')
+                'filename' => $this->view->siteName . '-' . $backupHash . '.tar.gz']
         );
         $this->view->assign('backupDbFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . 'db-' . $backupHash . '.sql',
+            ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . 'db-' . $backupHash . '.sql',
                 'relative' => $this->view->backupPath . '/' . $this->view->siteName . 'db-' . $backupHash . '.sql',
-                'filename' => $this->view->siteName . 'db-' . $backupHash . '.sql')
+                'filename' => $this->view->siteName . 'db-' . $backupHash . '.sql']
         );
+
+        clearstatcache(true, $this->view->backupFile['absolute']);
         $this->view->assign('lastBackupTime', file_exists($this->view->backupFile['absolute']) ? _('Último backup') . ': ' . date('r', filemtime($this->view->backupFile['absolute'])) : _('No se encontraron backups'));
 
         $this->view->assign('exportFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $exportHash . '.xml',
+            ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $exportHash . '.xml',
                 'relative' => $this->view->backupPath . '/' . $this->view->siteName . '-' . $exportHash . '.xml',
-                'filename' => $this->view->siteName . '-' . $exportHash . '.xml')
+                'filename' => $this->view->siteName . '-' . $exportHash . '.xml']
         );
+
+        clearstatcache(true, $this->view->exportFile['absolute']);
         $this->view->assign('lastExportTime', file_exists($this->view->exportFile['absolute']) ? _('Última exportación') . ': ' . date('r', filemtime($this->view->exportFile['absolute'])) : _('No se encontró archivo de exportación'));
 
         $this->view->append('tabs', ['title' => _('Copia de Seguridad')]);

@@ -134,6 +134,10 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
 
         $oldCategory = $this->getById($id);
 
+        if (!is_object($oldCategory)) {
+            throw new SPException(SPException::SP_CRITICAL, _('Categoría no encontrada'));
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM categories WHERE category_id = ? LIMIT 1';
 

@@ -133,6 +133,10 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         $oldCustomer = $this->getById($id);
 
+        if (!is_object($oldCustomer)) {
+            throw new SPException(SPException::SP_CRITICAL, _('Cliente no encontrado'));
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM customers WHERE customer_id = ? LIMIT 1';
 

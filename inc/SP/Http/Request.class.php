@@ -123,7 +123,7 @@ class Request
      * @param $sanitize  bool   limpiar una cadena de caracteres
      * @return mixed
      */
-    protected static function parse(&$value, $default, $sanitize)
+    public static function parse(&$value, $default, $sanitize)
     {
         if (is_array($value)) {
             foreach ($value as &$data) {

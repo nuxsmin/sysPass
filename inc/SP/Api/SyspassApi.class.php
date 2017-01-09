@@ -26,7 +26,7 @@
 namespace SP\Api;
 
 use SP\Account\Account;
-use SP\DataModel\AccountData;
+use SP\Core\Backup;
 use SP\Account\AccountSearch;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
@@ -62,7 +62,8 @@ class SyspassApi extends ApiBase
 
         $accountId = $this->getParam('id', true, 0);
 
-        $Account = new Account(new AccountData($accountId));
+        $AccountData = new AccountExtData($accountId);
+        $Account = new Account($AccountData);
         $Account->getData();
 
         $Acl = new Acl(ActionsInterface::ACTION_ACC_VIEW_PASS);
@@ -80,11 +81,15 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'accountId' => $accountId,
-            'pass' => Crypt::getDecrypt($Account->getAccountData()->getAccountPass(), $Account->getAccountData()->getAccountIV(), $this->mPass)
+            'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->mPass)
         ];
 
-        if ($this->getParam('details', true, 0)) {
-            $ret['details'] = $Account->getAccountData();
+        if ($this->getParam('details', false, 0)) {
+            // Para evitar los caracteres especiales
+            $AccountData->setAccountPass('');
+            $AccountData->setAccountIV('');
+
+            $ret['details'] = $AccountData;
         }
 
         return $this->wrapJSON($ret);
@@ -180,6 +185,7 @@ class SyspassApi extends ApiBase
      * Eliminar una cuenta
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function deleteAccount()
@@ -204,6 +210,7 @@ class SyspassApi extends ApiBase
      * Devuelve el listado de categorías
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getCategories()
@@ -223,6 +230,7 @@ class SyspassApi extends ApiBase
      * Añade una nueva categoría
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function addCategory()
@@ -248,6 +256,7 @@ class SyspassApi extends ApiBase
      * Elimina una categoría
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function deleteCategory()
@@ -270,6 +279,7 @@ class SyspassApi extends ApiBase
      * Devuelve el listado de clientes
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getCustomers()
@@ -289,6 +299,7 @@ class SyspassApi extends ApiBase
      * Añade un nuevo cliente
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function addCustomer()
@@ -314,6 +325,7 @@ class SyspassApi extends ApiBase
      * Elimina un cñiente
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function deleteCustomer()
@@ -328,6 +340,29 @@ class SyspassApi extends ApiBase
             'result' => _('Cliente eliminado'),
             'resultCode' => 0
         ];
+
+        return $this->wrapJSON($ret);
+    }
+
+    /**
+     * Realizar un backup de sysPass
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function backup()
+    {
+        $ret = [
+            'result' => _('Proceso de backup finalizado'),
+            'resultCode' => 0
+        ];
+
+        if (!Backup::doBackup()) {
+            $ret = [
+                'result' => _('Error al realizar el backup'),
+                'hint' => _('Revise el registro de eventos para más detalles'),
+                'resultCode' => 1
+            ];
+        }
 
         return $this->wrapJSON($ret);
     }
@@ -384,6 +419,7 @@ class SyspassApi extends ApiBase
             'addAccount' => [
                 'id' => ActionsInterface::ACTION_ACC_NEW,
                 'help' => [
+                    'userPass' => _('Clave del usuario asociado al token'),
                     'name' => _('Nombre de cuenta'),
                     'categoryId' => _('Id de categoría'),
                     'customerId' => _('Id de cliente'),

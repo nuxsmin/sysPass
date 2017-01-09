@@ -98,6 +98,7 @@ class AccountHistory extends AccountBase implements AccountInterface
      * @param int  $id       el id de la cuenta primaria
      * @param bool $isDelete indica que la cuenta es eliminada
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function addHistory($id, $isDelete = false)
     {

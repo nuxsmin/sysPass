@@ -26,8 +26,10 @@
 namespace SP\Api;
 
 use ReflectionClass;
-use SP\Http\Request;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
+use SP\Http\Request;
+use SP\Util\Json;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -38,10 +40,10 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * {"jsonrpc": "2.0", "method": "subtract", "params": {"minuend": 42, "subtrahend": 23}, "id": 3}
  *
- * @see http://www.jsonrpc.org/specification
+ * @see     http://www.jsonrpc.org/specification
  * @package SP
  */
-class ApiRequest extends Request
+class ApiRequest
 {
     /**
      * Constantes de acciones
@@ -59,11 +61,59 @@ class ApiRequest extends Request
     private $ApiReflection;
 
     /**
-     * ApiRequest constructor.
+     * Devolver un error formateado en JSON-RPC 2.0
      *
+     * @param \Exception|SPException $e
+     * @return string
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function __construct()
+    public function formatJsonError($e)
+    {
+        $class = get_class($e);
+        $code = $e->getCode();
+
+        $error = [
+            'jsonrpc' => '2.0',
+            'error' => [
+                'code' => $code,
+                'message' => $e->getMessage(),
+                'data' => $class === SPException::class || $class === InvalidArgumentException::class ? $e->getHint() : ''
+            ],
+            'id' => ($code === -32700 || $code === -32600) ? null : $this->getId()
+        ];
+
+        return Json::getJson($error);
+    }
+
+    /**
+     * Devielve el Id de la petición
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return (int)$this->data->id;
+    }
+
+    /**
+     * Obtiene una nueva instancia de la Api
+     *
+     * @return SyspassApi
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function runApi()
+    {
+        $this->init();
+
+        return $this->ApiReflection->getMethod($this->data->method)->invoke(new SyspassApi($this->data));
+    }
+
+    /**
+     * Inicializar la API
+     *
+     * @throws SPException
+     */
+    protected function init()
     {
         try {
             $this->analyzeRequestMethod();
@@ -107,7 +157,7 @@ class ApiRequest extends Request
     private function getRequestData()
     {
         $request = file_get_contents('php://input');
-        $data = json_decode(self::parse($request, '', true));
+        $data = json_decode(Request::parse($request, '', true));
 
         if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
             throw new SPException(SPException::SP_WARNING, _('Datos inválidos'), '', -32700);
@@ -145,17 +195,6 @@ class ApiRequest extends Request
     }
 
     /**
-     * Obtiene una nueva instancia de la Api
-     *
-     * @return SyspassApi
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function runApi()
-    {
-        return $this->ApiReflection->getMethod($this->data->method)->invoke(new SyspassApi($this->data));
-    }
-
-    /**
      * Obtener el id de la acción
      *
      * @return int
@@ -163,15 +202,5 @@ class ApiRequest extends Request
     public function getAction()
     {
         return $this->data->method;
-    }
-
-    /**
-     * Devielve el Id de la petición
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return (int)$this->data->id;
     }
 }
