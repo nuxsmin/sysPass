@@ -259,8 +259,14 @@ class Util
 
         $data = curl_exec($ch);
 
-        if ($data === false) {
-            $Log = Log::writeNewLog(__FUNCTION__, curl_error($ch));
+        $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($data === false || $httpStatus !== 200) {
+            $Log = new Log(__FUNCTION__);
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(curl_error($ch));
+            $Log->addDetails(_('Respuesta'), $httpStatus);
+            $Log->writeLog();
 
             throw new SPException(SPException::SP_WARNING, $Log->getDescription());
         }
