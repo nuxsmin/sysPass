@@ -1135,18 +1135,28 @@ fieldset.warning {
 @import "login";
 
 @media screen and (max-width: 1000px) {
-  #content #searchbox {
-    position: relative;
-    left: 0;
-    width: 100%;
-    form {
-      flex-wrap: wrap;
-      > div {
-        width: 100%;
+  #content {
+    #searchbox {
+      .search-text {
+        margin: 0 auto;
+      }
+      .search-filters {
+        & > * {
+          margin: .5em 0;
+        }
+        .selectize-control {
+          width: 100%;
+        }
       }
     }
-    input[type=text] {
+    .data-container {
       width: 100%;
+      #title {
+        width: 90%;
+      }
+      .selectize-control {
+        width: 100%;
+      }
     }
   }
   footer {

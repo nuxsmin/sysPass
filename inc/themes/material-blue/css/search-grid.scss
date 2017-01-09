@@ -30,7 +30,6 @@
       .label-row-up,
       .label-row-down {
         display: flex;
-        //flex-wrap: wrap;
         min-height: 3em;
         height: auto;
         width: 100%;
@@ -75,13 +74,16 @@
 
       .field-customer {
         flex-grow: 2;
-        //width: 20em;
       }
 
       .field-name {
         padding: 0.3em 0.2em;
         color: #b9b9b9;
         display: none
+      }
+
+      .field-name-hidden {
+        display: none;
       }
 
       .header .field-name {
@@ -139,14 +141,23 @@
       .account-label {
         flex-wrap: wrap;
 
-        .label-field {
-          width: 100%;
+        .label-row-up,
+        .label-row-down {
+          flex-wrap: wrap;
+          height: auto;
         }
 
-        .field-name {
-          display: block;
-          text-align: left;
-          border-bottom: 1px solid #d9d9d9;
+        .label-field {
+          .field-name {
+            display: block;
+            text-align: left;
+            border-bottom: 1px solid #d9d9d9;
+          }
+        }
+
+        .label-left,
+        .label-right {
+          height: auto;
         }
 
         .label-right,

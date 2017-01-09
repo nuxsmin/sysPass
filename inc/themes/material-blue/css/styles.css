@@ -1096,15 +1096,17 @@ fieldset.warning {
         margin: 0 2em; }
 
 @media screen and (max-width: 1000px) {
-  #content #searchbox {
-    position: relative;
-    left: 0;
+  #content #searchbox .search-text {
+    margin: 0 auto; }
+  #content #searchbox .search-filters > * {
+    margin: .5em 0; }
+  #content #searchbox .search-filters .selectize-control {
     width: 100%; }
-    #content #searchbox form {
-      flex-wrap: wrap; }
-      #content #searchbox form > div {
-        width: 100%; }
-    #content #searchbox input[type=text] {
+  #content .data-container {
+    width: 100%; }
+    #content .data-container #title {
+      width: 90%; }
+    #content .data-container .selectize-control {
       width: 100%; }
 
   footer {

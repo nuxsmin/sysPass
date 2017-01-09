@@ -58,6 +58,8 @@
       padding: 0.3em 0.2em;
       color: #b9b9b9;
       display: none; }
+    #content #data-search .account-label .field-name-hidden {
+      display: none; }
     #content #data-search .account-label .header .field-name {
       color: white;
       font-weight: bold; }
@@ -92,12 +94,17 @@
 @media screen and (max-width: 1000px) {
   #content #data-search .account-label {
     flex-wrap: wrap; }
-    #content #data-search .account-label .label-field {
-      width: 100%; }
-    #content #data-search .account-label .field-name {
+    #content #data-search .account-label .label-row-up,
+    #content #data-search .account-label .label-row-down {
+      flex-wrap: wrap;
+      height: auto; }
+    #content #data-search .account-label .label-field .field-name {
       display: block;
       text-align: left;
       border-bottom: 1px solid #d9d9d9; }
+    #content #data-search .account-label .label-left,
+    #content #data-search .account-label .label-right {
+      height: auto; }
     #content #data-search .account-label .label-right,
     #content #data-search .account-label .label-right > div {
       width: 100%; } }

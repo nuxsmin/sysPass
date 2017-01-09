@@ -18,7 +18,7 @@
             <div class="label-left">
                 <div class="label-row-up">
                     <div class="field-customer label-field">
-                        <div class="field-name"><?php echo _('Cliente'); ?></div>
+                        <div class="field-name-hidden"><?php echo _('Cliente'); ?></div>
                         <?php if (!empty($AccountSearchItem->getCustomerLink())): ?>
                             <a href="<?php echo $AccountSearchItem->getCustomerLink(); ?>" target="blank"
                                title="<?php echo _('Buscar en Wiki'); ?>">
