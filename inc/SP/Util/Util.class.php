@@ -43,7 +43,7 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int  $length     Longitud de la clave
+     * @param int $length Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @return string
@@ -203,7 +203,7 @@ class Util
      * Obtener datos desde una URL usando CURL
      *
      * @param           $url string La URL
-     * @param array     $data
+     * @param array $data
      * @param bool|null $useCookie
      * @return bool|string
      * @throws SPException
@@ -237,6 +237,10 @@ class Util
         curl_setopt($ch, CURLOPT_USERAGENT, 'sysPass-App');
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
+        // Trust SSL enabled server
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
         if (null !== $data) {
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -399,8 +403,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in     The variable to check
-     * @param bool  $strict If set to false, consider everything that is not false to
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -507,9 +511,9 @@ class Util
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array  $objectArray
+     * @param array $objectArray
      * @param string $method
-     * @param mixed  $value
+     * @param mixed $value
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)

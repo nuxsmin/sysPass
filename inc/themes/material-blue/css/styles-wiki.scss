@@ -3,7 +3,8 @@
 #box-popup {
   #wikiPage {
     text-align: left;
-    min-width: 300px;
+    width: 100%;
+    padding: 0 1em;
 
     h1, h2, h3, h4, h5, h6 {
       font-weight: bold;
@@ -12,6 +13,9 @@
       clear: left;
       color: #777777;
       border-bottom: 1px solid #777777;
+      a {
+        color: #777;
+      }
     }
     h1 {
       font-size: 2em;

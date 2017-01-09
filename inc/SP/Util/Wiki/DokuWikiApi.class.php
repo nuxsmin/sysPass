@@ -48,7 +48,7 @@ class DokuWikiApi extends DokuWikiApiBase
     /**
      * Constructor
      *
-     * @param string $url  La URL de conexión
+     * @param string $url La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @throws \SP\Core\Exceptions\SPException
@@ -83,7 +83,7 @@ class DokuWikiApi extends DokuWikiApiBase
     /**
      * Comprobar la conexión a DokuWiki
      *
-     * @param string $url  La URL de conexión
+     * @param string $url La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @return DokuWikiApi
@@ -110,12 +110,14 @@ class DokuWikiApi extends DokuWikiApiBase
     {
         try {
             $this->createMsg('dokuwiki.getPagelist');
+            $this->addParam($this->namespace);
+            $this->addParam(['depth' => 0]);
             $Res = new DokuWikiApiParse($this->callWiki());
             $this->catchError($Res);
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -136,7 +138,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -161,7 +163,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -182,7 +184,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -207,7 +209,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -226,7 +228,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -245,7 +247,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }

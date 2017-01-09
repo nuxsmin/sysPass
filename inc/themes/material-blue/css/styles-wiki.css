@@ -1,6 +1,7 @@
 #box-popup #wikiPage {
   text-align: left;
-  min-width: 300px; }
+  width: 100%;
+  padding: 0 1em; }
   #box-popup #wikiPage h1, #box-popup #wikiPage h2, #box-popup #wikiPage h3, #box-popup #wikiPage h4, #box-popup #wikiPage h5, #box-popup #wikiPage h6 {
     font-weight: bold;
     padding: 0;
@@ -8,6 +9,8 @@
     clear: left;
     color: #777777;
     border-bottom: 1px solid #777777; }
+    #box-popup #wikiPage h1 a, #box-popup #wikiPage h2 a, #box-popup #wikiPage h3 a, #box-popup #wikiPage h4 a, #box-popup #wikiPage h5 a, #box-popup #wikiPage h6 a {
+      color: #777; }
   #box-popup #wikiPage h1 {
     font-size: 2em;
     margin: 0 0 .444em; }

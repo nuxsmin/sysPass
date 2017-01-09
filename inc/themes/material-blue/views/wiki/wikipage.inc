@@ -27,3 +27,6 @@
         <?php endif; ?>
     </div>
 </div>
+<script>
+    sysPassApp.sk.set("<?php echo $sk; ?>");
+</script>

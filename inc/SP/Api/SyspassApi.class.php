@@ -108,8 +108,6 @@ class SyspassApi extends ApiBase
 
         $ret = $Search->getAccounts();
 
-        debugLog($ret);
-
         return $this->wrapJSON($ret);
     }
 

@@ -30,7 +30,6 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Auth\Auth;
 use SP\Auth\AuthResult;
 use SP\Auth\AuthUtil;
-use SP\Core\Acl;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
@@ -47,12 +46,6 @@ use SP\Util\Json;
  */
 abstract class ApiBase implements ApiInterface
 {
-    /**
-     * Acción a realizar
-     *
-     * @var
-     */
-    protected $action;
     /**
      * El ID de la acción
      *
@@ -76,7 +69,7 @@ abstract class ApiBase implements ApiInterface
      *
      * @var mixed
      */
-    protected $params;
+    protected $data;
     /**
      * @var string
      */
@@ -87,20 +80,20 @@ abstract class ApiBase implements ApiInterface
     protected $UserData;
 
     /**
-     * @param $params
+     * @param $data
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function __construct($params)
+    public function __construct($data)
     {
-        $this->action = $params->action;
-        $this->actionId = $this->getActionId($params->action);
+        $this->actionId = $this->getActionId($data->method);
 
-        if (!AuthUtil::checkAuthToken($this->actionId, $params->authToken)) {
+        if (!AuthUtil::checkAuthToken($this->actionId, $data->params->authToken)) {
             throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
         }
 
-        $this->params = $params;
-        $this->userId = ApiTokensUtil::getUserIdForToken($params->authToken);
+        $this->data = $data;
+
+        $this->userId = ApiTokensUtil::getUserIdForToken($data->params->authToken);
 
         $this->loadUserData();
 
@@ -109,28 +102,6 @@ abstract class ApiBase implements ApiInterface
         }
 
         Session::setSessionType(Session::SESSION_API);
-    }
-
-    /**
-     * Devolver el valor de un parámetro
-     *
-     * @param string $name     Nombre del parámetro
-     * @param bool   $required Si es requerido
-     * @param mixed  $default  Valor por defecto
-     * @return int|string
-     * @throws SPException
-     */
-    protected function getParam($name, $required = false, $default = null)
-    {
-        if ($required === true && !isset($this->params->$name)) {
-            throw new InvalidArgumentException(SPException::SP_WARNING, _('Parámetros incorrectos'), $this->getHelp($this->action));
-        }
-
-        if (isset($this->params->$name)) {
-            return $this->params->$name;
-        }
-
-        return $default;
     }
 
     /**
@@ -161,6 +132,28 @@ abstract class ApiBase implements ApiInterface
         $this->UserData = User::getItem($UserData)->getById($this->userId);
 
         SessionUtil::loadUserSession($this->UserData);
+    }
+
+    /**
+     * Devolver el valor de un parámetro
+     *
+     * @param string $name Nombre del parámetro
+     * @param bool $required Si es requerido
+     * @param mixed $default Valor por defecto
+     * @return int|string
+     * @throws SPException
+     */
+    protected function getParam($name, $required = false, $default = null)
+    {
+        if ($required === true && !isset($this->data->params->$name)) {
+            throw new InvalidArgumentException(SPException::SP_WARNING, _('Parámetros incorrectos'), $this->getHelp($this->data->method));
+        }
+
+        if (isset($this->data->params->$name)) {
+            return $this->data->params->$name;
+        }
+
+        return $default;
     }
 
     /**
@@ -215,6 +208,8 @@ abstract class ApiBase implements ApiInterface
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
+     * {"jsonrpc": "2.0", "result": 19, "id": 3}
+     *
      * @param string $data Los datos a devolver
      * @return string La cadena en formato JSON
      * @throws SPException
@@ -222,9 +217,9 @@ abstract class ApiBase implements ApiInterface
     protected function wrapJSON(&$data)
     {
         $json = [
-            'action' => Acl::getActionName($this->actionId, true),
-            'params' => $this->params,
-            'data' => $data
+            'jsonrpc' => '2.0',
+            'result' => $data,
+            'id' => $this->data->id
         ];
 
         return Json::getJson($json);

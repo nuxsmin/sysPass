@@ -33,7 +33,9 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
+use SP\Http\Request;
 use SP\Util\Checks;
+use SP\Util\Json;
 use SP\Util\Wiki\DokuWikiApi;
 
 /**
@@ -43,6 +45,8 @@ use SP\Util\Wiki\DokuWikiApi;
  */
 class WikiController extends ControllerBase implements ActionsInterface
 {
+    use RequestControllerTrait;
+
     /**
      * Constructor
      *
@@ -52,18 +56,46 @@ class WikiController extends ControllerBase implements ActionsInterface
     {
         parent::__construct($template);
 
+        $this->init();
+
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp());
         $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp()) ? 'DISABLED' : '');
     }
 
     /**
-     * Obtener los datos para la ficha de una página de la Wiki
+     * Realizar las acciones del controlador
      *
-     * @param string $pageName El nombre de la página
+     * @param mixed $type Tipo de acción
      */
-    public function getWikiPage($pageName)
+    public function doAction($type = null)
     {
+        try {
+            switch ($this->actionId) {
+                case self::ACTION_WIKI_VIEW:
+                    $this->getWikiPage();
+                    break;
+                default:
+                    $this->invalidAction();
+            }
+
+            if (count($this->jsonResponse->getData()) === 0) {
+                $this->jsonResponse->setData(['html' => $this->render()]);
+            }
+        } catch (\Exception $e) {
+            $this->jsonResponse->setDescription($e->getMessage());
+        }
+
+        Json::returnJson($this->jsonResponse);
+    }
+
+    /**
+     * Obtener los datos para la ficha de una página de la Wiki
+     */
+    public function getWikiPage()
+    {
+        $pageName = Request::analyze('pageName');
+
         $this->view->addTemplate('wikipage');
 
         $pageData = '';
@@ -82,6 +114,7 @@ class WikiController extends ControllerBase implements ActionsInterface
                 $pageSearch = $DokuWikiApi->getSearch($pageName);
             }
         } catch (SPException $e) {
+//            $DokuWikiApi->getPageList();
         }
 
         $this->view->assign('pageName', $pageName);
@@ -90,5 +123,7 @@ class WikiController extends ControllerBase implements ActionsInterface
         $this->view->assign('pageSearch', $pageSearch);
         $this->view->assign('pageInfo', $pageInfo);
         $this->view->assign('header', $headerData);
+
+        $this->jsonResponse->setStatus(0);
     }
 }

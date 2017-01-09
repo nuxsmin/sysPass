@@ -39,15 +39,26 @@ try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
 } catch (\SP\Core\Exceptions\InvalidArgumentException $e) {
+    $code = $e->getCode();
+
     Response::printJson(
         [
-            'message' => $e->getMessage(),
-            'help' => $e->getHint()
+            'jsonrpc' => '2.0',
+            'error' => [
+                'code' => $code,
+                'message' => $e->getMessage(),
+                'data' => $e->getHint()
+                ],
+            'id' => ($code === -32700 || $code === -32600) ? null : $ApiRequest->getId()
         ]);
 } catch (Exception $e) {
     Response::printJson(
         [
-            'message' => $e->getMessage(),
-            'help' => ApiRequest::getHelp()
+            'jsonrpc' => '2.0',
+            'error' => [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ],
+            'id' => null
         ]);
 }

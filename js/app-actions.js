@@ -139,7 +139,7 @@ sysPass.Actions = function (Common) {
                 open: function () {
                     Common.appTriggers().views.common("#box-popup");
 
-                    $obj.find(":input:text:visible:first").focus();
+                    $("#box-popup").find(":input:text:visible:first").focus();
                 },
                 close: function () {
                     if ($obj.data("item-dst")) {
@@ -1102,18 +1102,23 @@ sysPass.Actions = function (Common) {
      */
     var wiki = {
         show: function ($obj) {
+            log.info("wiki:show");
+
             var opts = Common.appRequests().getRequestOpts();
-            opts.type = "html";
-            opts.url = ajaxUrl.wiki;
+            opts.url = ajaxUrl.wiki.show;
             opts.data = {
-                pageName: $obj.data("pageName"),
-                actionId: $obj.data("actionId"),
+                pageName: $obj.data("pagename"),
+                actionId: $obj.data("action-id"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (response) {
-                showFloatingBox($obj, response);
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status !== 0) {
+                    Common.msg.out(json);
+                } else {
+                    showFloatingBox($obj, json.data.html);
+                }
             });
         }
     };
@@ -1263,6 +1268,7 @@ sysPass.Actions = function (Common) {
         eventlog: eventlog,
         ajaxUrl: ajaxUrl,
         plugin: plugin,
-        notice: notice
+        notice: notice,
+        wiki: wiki
     };
 };

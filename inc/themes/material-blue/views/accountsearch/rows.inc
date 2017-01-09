@@ -161,7 +161,7 @@
                                     <i class="btn-action material-icons fg-green100"
                                        title="<?php echo _('Ver en Wiki'); ?>"
                                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
-                                       data-item-id="<?php echo $AccountSearchData->getAccountName(); ?>"
+                                       data-pagename="<?php echo $AccountSearchData->getAccountName(); ?>"
                                        data-onclick="wiki/show">library_books</i>
                                 <?php else: ?>
                                     <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"

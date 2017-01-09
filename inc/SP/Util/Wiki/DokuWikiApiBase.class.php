@@ -181,13 +181,18 @@ abstract class DokuWikiApiBase
      * Escribir el error en el registro de eventos
      *
      * @param \SP\Core\Exceptions\SPException $e
+     * @param string $source Origen del error
      */
-    protected function logException(SPException $e)
+    protected function logException(SPException $e, $source = null)
     {
         $Log = new Log('DokuWiki API', $e->getMessage(), LogLevel::ERROR);
 
         if ($e->getHint()) {
             $Log->addDetails('Error', $e->getHint());
+        }
+
+        if (null !== $source) {
+            $Log->addDetails('Source', $source);
         }
 
         $Log->writeLog();
@@ -207,7 +212,7 @@ abstract class DokuWikiApiBase
         $this->apiUser = (empty($user)) ? Config::getConfig()->getDokuwikiUser() : $user;
         $this->apiPassword = (empty($pass)) ? Config::getConfig()->getDokuwikiPass() : $pass;
 
-        if (empty($this->apiUrl)){
+        if (empty($this->apiUrl)) {
             throw new SPException(SPException::SP_WARNING, _('URL de conexión no establecida'));
         }
     }

@@ -23,9 +23,7 @@
  *
  */
 
-use SP\Core\Init;
 use SP\Http\Request;
-use SP\Http\Response;
 
 define('APP_ROOT', '..');
 
@@ -33,22 +31,5 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!Init::isLoggedIn()) {
-    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
-}
-
-$actionId = Request::analyze('actionId', 0);
-
 $Controller = new \SP\Controller\WikiController();
-
-switch ($actionId) {
-    case \SP\Core\ActionsInterface::ACTION_WIKI_VIEW:
-        $pageName = Request::analyze('pageName');
-        $Controller->getWikiPage($pageName);
-        break;
-    default:
-        exit();
-        break;
-}
-
-$Controller->view();
+$Controller->doAction();

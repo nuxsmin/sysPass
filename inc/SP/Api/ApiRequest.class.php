@@ -34,6 +34,10 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 /**
  * Class ApiRequest encargada de atender la peticiones a la API de sysPass
  *
+ * Procesa peticiones en formato JSON-RPC 2.0
+ *
+ * {"jsonrpc": "2.0", "method": "subtract", "params": {"minuend": 42, "subtrahend": 23}, "id": 3}
+ *
  * @package SP
  */
 class ApiRequest extends Request
@@ -47,11 +51,9 @@ class ApiRequest extends Request
     /**
      * @var \stdClass
      */
-    private $params;
-
+    private $data;
     /** @var string */
     private $verb;
-
     /** @var ReflectionClass */
     private $ApiReflection;
 
@@ -64,7 +66,7 @@ class ApiRequest extends Request
     {
         try {
             $this->analyzeRequestMethod();
-            $this->getData();
+            $this->getRequestData();
             $this->checkBasicData();
             $this->checkAction();
         } catch (SPException $e) {
@@ -90,25 +92,29 @@ class ApiRequest extends Request
                 $this->verb = $requestMethod;
                 break;
             default:
-                throw new SPException(SPException::SP_WARNING, _('Método inválido'));
+                throw new SPException(SPException::SP_WARNING, _('Método inválido'), '', -32600);
         }
     }
 
     /**
      * Obtener los datos de la petición
      *
+     * Comprueba que el JSON esté bien formado
+     *
      * @throws \SP\Core\Exceptions\SPException
      */
-    private function getData()
+    private function getRequestData()
     {
         $request = file_get_contents('php://input');
-        $data = self::parse($request, '', true);
+        $data = json_decode(self::parse($request, '', true));
 
-        $this->params = json_decode($data);
-
-        if (!is_object($this->params) || json_last_error() !== JSON_ERROR_NONE) {
-            throw new SPException(SPException::SP_WARNING, _('Datos inválidos'));
+        if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
+            throw new SPException(SPException::SP_WARNING, _('Datos inválidos'), '', -32700);
+        } elseif (!isset($data->jsonrpc, $data->method, $data->params, $data->id)) {
+            throw new SPException(SPException::SP_WARNING, _('Formato incorrecto'), '', -32600);
         }
+
+        $this->data = $data;
     }
 
     /**
@@ -118,8 +124,8 @@ class ApiRequest extends Request
      */
     private function checkBasicData()
     {
-        if (!isset($this->params->authToken, $this->params->action)) {
-            throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'));
+        if (!isset($this->data->params->authToken)) {
+            throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'), '', -32602);
         }
     }
 
@@ -132,33 +138,9 @@ class ApiRequest extends Request
     {
         $this->ApiReflection = new ReflectionClass(SyspassApi::class);
 
-        if (!$this->ApiReflection->hasMethod($this->params->action)) {
-            throw new SPException(SPException::SP_WARNING, _('Acción inválida'));
+        if (!$this->ApiReflection->hasMethod($this->data->method)) {
+            throw new SPException(SPException::SP_WARNING, _('Acción inválida'), '', -32601);
         }
-    }
-
-    /**
-     * Devolver un array con la ayuda de parámetros
-     *
-     * @return array
-     */
-    public static function getHelp()
-    {
-        return [
-            self::AUTH_TOKEN => _('Token de autorización'),
-            self::ACTION => _('Acción a realizar')
-        ];
-    }
-
-    /**
-     * Añade una nueva variable de petición al array
-     *
-     * @param $name  string El nombre de la variable
-     * @param $value mixed El valor de la variable
-     */
-    public function addVar($name, $value)
-    {
-        $this->params->$name = $value;
     }
 
     /**
@@ -169,7 +151,7 @@ class ApiRequest extends Request
      */
     public function runApi()
     {
-        return $this->ApiReflection->getMethod($this->params->action)->invoke(new SyspassApi($this->params));
+        return $this->ApiReflection->getMethod($this->data->method)->invoke(new SyspassApi($this->data));
     }
 
     /**
@@ -179,6 +161,16 @@ class ApiRequest extends Request
      */
     public function getAction()
     {
-        return $this->params->action;
+        return $this->data->method;
+    }
+
+    /**
+     * Devielve el Id de la petición
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return (int)$this->data->id;
     }
 }
